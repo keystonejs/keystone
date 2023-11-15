@@ -1,50 +1,50 @@
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
   fieldType,
-  FieldTypeFunc,
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   orderDirectionEnum,
   Decimal,
-  FieldData,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
+  type FieldData,
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     validation?: {
-      min?: string;
-      max?: string;
-      isRequired?: boolean;
-    };
-    precision?: number;
-    scale?: number;
-    defaultValue?: string;
-    isIndexed?: boolean | 'unique';
+      min?: string
+      max?: string
+      isRequired?: boolean
+    }
+    precision?: number
+    scale?: number
+    defaultValue?: string
+    isIndexed?: boolean | 'unique'
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
-  };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
-function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
-  let decimal: Decimal;
+function parseDecimalValueOption (meta: FieldData, value: string, name: string) {
+  let decimal: Decimal
   try {
-    decimal = new Decimal(value);
+    decimal = new Decimal(value)
   } catch (err) {
     throw new Error(
       `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies ${name}: ${value}, this is not valid decimal value.`
-    );
+    )
   }
   if (!decimal.isFinite()) {
     throw new Error(
       `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies ${name}: ${value} which is not finite but ${name} must be finite.`
-    );
+    )
   }
-  return decimal;
+  return decimal
 }
 
 export const decimal =
@@ -58,56 +58,56 @@ export const decimal =
   }: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if (meta.provider === 'sqlite') {
-      throw new Error('The decimal field does not support sqlite');
+      throw new Error('The decimal field does not support sqlite')
     }
 
     if (!Number.isInteger(scale)) {
       throw new Error(
         `The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
-      );
+      )
     }
 
     if (!Number.isInteger(precision)) {
       throw new Error(
         `The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
-      );
+      )
     }
 
     if (scale > precision) {
       throw new Error(
         `The scale configured for decimal field at ${meta.listKey}.${meta.fieldKey} (${scale}) ` +
           `must not be larger than the field's precision (${precision})`
-      );
+      )
     }
 
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     const max =
       validation?.max === undefined
         ? undefined
-        : parseDecimalValueOption(meta, validation.max, 'validation.max');
+        : parseDecimalValueOption(meta, validation.max, 'validation.max')
     const min =
       validation?.min === undefined
         ? undefined
-        : parseDecimalValueOption(meta, validation.min, 'validation.min');
+        : parseDecimalValueOption(meta, validation.min, 'validation.min')
 
     if (min !== undefined && max !== undefined && max.lessThan(min)) {
       throw new Error(
         `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      );
+      )
     }
 
     const parsedDefaultValue =
       defaultValue === undefined
         ? undefined
-        : parseDecimalValueOption(meta, defaultValue, 'defaultValue');
+        : parseDecimalValueOption(meta, defaultValue, 'defaultValue')
 
-    const isNullable = getResolvedIsNullable(validation, config.db);
+    const isNullable = getResolvedIsNullable(validation, config.db)
 
-    assertReadIsNonNullAllowed(meta, config, isNullable);
+    assertReadIsNonNullAllowed(meta, config, isNullable)
 
-    const mode = isNullable === false ? 'required' : 'optional';
-    const index = isIndexed === true ? 'index' : isIndexed || undefined;
+    const mode = isNullable === false ? 'required' : 'optional'
+    const index = isIndexed === true ? 'index' : isIndexed || undefined
     const dbField = {
       kind: 'scalar',
       mode,
@@ -118,28 +118,28 @@ export const decimal =
         defaultValue === undefined ? undefined : { kind: 'literal' as const, value: defaultValue },
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
-    } as const;
+    } as const
     return fieldType(dbField)({
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
-          const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey];
+        async validateInput (args) {
+          const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey]
 
           if (val === null && (validation?.isRequired || isNullable === false)) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
           if (val != null) {
             if (min !== undefined && val.lessThan(min)) {
-              args.addValidationError(`${fieldLabel} must be greater than or equal to ${min}`);
+              args.addValidationError(`${fieldLabel} must be greater than or equal to ${min}`)
             }
 
             if (max !== undefined && val.greaterThan(max)) {
-              args.addValidationError(`${fieldLabel} must be less than or equal to ${max}`);
+              args.addValidationError(`${fieldLabel} must be less than or equal to ${max}`)
             }
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -154,11 +154,11 @@ export const decimal =
             type: graphql.Decimal,
             defaultValue: parsedDefaultValue,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
-              return parsedDefaultValue ?? null;
+              return parsedDefaultValue ?? null
             }
-            return val;
+            return val
           },
         },
         update: {
@@ -168,13 +168,13 @@ export const decimal =
       },
       output: graphql.field({
         type: graphql.Decimal,
-        resolve({ value }) {
+        resolve ({ value }) {
           if (value === null) {
-            return null;
+            return null
           }
-          const val: Decimal & { scaleToPrint?: number } = new Decimal(value);
-          val.scaleToPrint = scale;
-          return val;
+          const val: Decimal & { scaleToPrint?: number } = new Decimal(value)
+          val.scaleToPrint = scale
+          return val
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/decimal',
@@ -189,5 +189,5 @@ export const decimal =
           min: validation?.min ?? null,
         },
       }),
-    });
-  };
+    })
+  }

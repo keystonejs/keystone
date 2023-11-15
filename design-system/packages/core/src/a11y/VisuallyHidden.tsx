@@ -1,19 +1,19 @@
-import React, { ReactNode } from 'react';
-import { forwardRefWithAs } from '../utils';
+import React, { type ReactNode } from 'react'
+import { forwardRefWithAs } from '../utils'
 
 // Only display content to screen readers
 // ------------------------------
 // See: https://a11yproject.com/posts/how-to-hide-content/
 
 type Props = {
-  children?: ReactNode;
-};
+  children?: ReactNode
+}
 
 export const VisuallyHidden = forwardRefWithAs<'span', Props>(
   ({ as: Tag = 'span', ...props }, ref) => {
-    return <Tag ref={ref} style={visuallyHiddenStyles} {...props} />;
+    return <Tag ref={ref} style={visuallyHiddenStyles} {...props} />
   }
-);
+)
 
 export const visuallyHiddenStyles = {
   border: 0,
@@ -24,4 +24,4 @@ export const visuallyHiddenStyles = {
   position: 'absolute',
   whiteSpace: 'nowrap',
   width: 1,
-} as const;
+} as const

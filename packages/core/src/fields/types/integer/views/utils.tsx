@@ -1,13 +1,13 @@
-import { ChangeEvent, FocusEvent, useState } from 'react';
+import { type ChangeEvent, type FocusEvent, useState } from 'react'
 
-type ParsedValueBase = undefined | symbol | boolean | object | number | null | bigint;
+type ParsedValueBase = undefined | symbol | boolean | object | number | null | bigint
 
 type Config<ParsedValue extends ParsedValueBase> = {
-  parse: (value: string) => ParsedValue | string;
-  format: (value: ParsedValue) => string;
-};
+  parse: (value: string) => ParsedValue | string
+  format: (value: ParsedValue) => string
+}
 
-export function useFormattedInput<ParsedValue extends ParsedValueBase>(
+export function useFormattedInput<ParsedValue extends ParsedValueBase> (
   config: Config<ParsedValue>,
   {
     value,
@@ -15,63 +15,63 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase>(
     onBlur,
     onFocus,
   }: {
-    value: string | ParsedValue;
-    onChange: (value: string | ParsedValue) => void;
-    onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-    onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+    value: string | ParsedValue
+    onChange: (value: string | ParsedValue) => void
+    onFocus?: (event: FocusEvent<HTMLInputElement>) => void
+    onBlur?: (event: FocusEvent<HTMLInputElement>) => void
   }
 ) {
   // typeof value === 'string' implies the unparsed form
   // typeof value !== 'string' implies the parsed form
   if (typeof value === 'string' && typeof config.parse(value) !== 'string') {
-    throw new Error(`Expected ${typeof config.parse(value)}, got ${typeof value}`);
+    throw new Error(`Expected ${typeof config.parse(value)}, got ${typeof value}`)
   }
   let [internalValueState, setInternalValueState] = useState(() =>
     typeof value === 'string' ? value : config.format(value)
-  );
-  const [isFocused, setIsFocused] = useState(false);
+  )
+  const [isFocused, setIsFocused] = useState(false)
   if (typeof value === 'string' && value !== internalValueState) {
-    setInternalValueState(value);
+    setInternalValueState(value)
   }
   // If the value is not a string, we know it's in the parsed form
   if (typeof value !== 'string') {
-    const formatted = config.format(value);
+    const formatted = config.format(value)
     // When the input is blurred, we want to show always show the formatted
     // version so if we're not focussed and the formatted version is different
     // to the current version, we need to update it.
     if (!isFocused && formatted !== internalValueState) {
-      setInternalValueState(formatted);
+      setInternalValueState(formatted)
     }
 
-    const parsedInternal = config.parse(internalValueState);
+    const parsedInternal = config.parse(internalValueState)
 
     // We updating the internal value here because the
     // external value has changed.
     if (typeof parsedInternal !== 'string' && config.format(parsedInternal) !== formatted) {
-      setInternalValueState(formatted);
+      setInternalValueState(formatted)
     }
   }
 
   return {
     value: internalValueState,
-    onChange(event: ChangeEvent<HTMLInputElement>) {
-      const value = event.target.value;
-      const parsed = config.parse(value);
-      onChange(parsed);
-      setInternalValueState(value);
+    onChange (event: ChangeEvent<HTMLInputElement>) {
+      const value = event.target.value
+      const parsed = config.parse(value)
+      onChange(parsed)
+      setInternalValueState(value)
     },
-    onFocus(event: FocusEvent<HTMLInputElement>) {
-      onFocus?.(event);
-      setIsFocused(true);
+    onFocus (event: FocusEvent<HTMLInputElement>) {
+      onFocus?.(event)
+      setIsFocused(true)
     },
-    onBlur(event: FocusEvent<HTMLInputElement>) {
-      onBlur?.(event);
-      setIsFocused(false);
+    onBlur (event: FocusEvent<HTMLInputElement>) {
+      onBlur?.(event)
+      setIsFocused(false)
       // this isn't strictly necessary since we already do this in render
       // this just saves another rerender after setIsFocused(false)
       if (typeof value !== 'string') {
-        setInternalValueState(config.format(value));
+        setInternalValueState(config.format(value))
       }
     },
-  };
+  }
 }

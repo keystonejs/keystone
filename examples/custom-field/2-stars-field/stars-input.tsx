@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
 type StarsInputProps = {
-  value: number | null;
-  onChange?: (value: number | null) => void;
-  maxStars: number;
-  autoFocus?: boolean;
-};
+  value: number | null
+  onChange?: (value: number | null) => void
+  maxStars: number
+  autoFocus?: boolean
+}
 
-export function StarsInput(props: StarsInputProps) {
+export function StarsInput (props: StarsInputProps) {
   return (
     <div>
       <div>
@@ -18,7 +18,7 @@ export function StarsInput(props: StarsInputProps) {
             disabled={props.onChange === undefined}
             checked={props.value === 0}
             onChange={() => {
-              props.onChange?.(0);
+              props.onChange?.(0)
             }}
           />
           0 Stars
@@ -27,7 +27,7 @@ export function StarsInput(props: StarsInputProps) {
       {Array.from({
         length: props.maxStars,
       }).map((_, i) => {
-        const star = i + 1;
+        const star = i + 1
         return (
           <div>
             <label key={star}>
@@ -36,14 +36,14 @@ export function StarsInput(props: StarsInputProps) {
                 checked={props.value === star}
                 disabled={props.onChange === undefined}
                 onChange={() => {
-                  props.onChange?.(star);
+                  props.onChange?.(star)
                 }}
               />
               {props.value !== null && props.value >= star ? fullStar : emptyStar}
               {star} Star{star === 1 ? '' : 's'}
             </label>
           </div>
-        );
+        )
       })}
       <div>
         <label>
@@ -52,14 +52,14 @@ export function StarsInput(props: StarsInputProps) {
             checked={props.value === null}
             disabled={props.onChange === undefined}
             onChange={() => {
-              props.onChange?.(null);
+              props.onChange?.(null)
             }}
           />
           No selection
         </label>
       </div>
     </div>
-  );
+  )
 }
 
 const fullStar = (
@@ -71,7 +71,7 @@ const fullStar = (
       d="M22 30.972L10.244 39.18l4.175-13.717-11.44-8.643 14.335-.27L22 3l4.686 13.55 14.335.27-11.44 8.643 4.175 13.717z"
     />
   </svg>
-);
+)
 
 const emptyStar = (
   <svg width="22" height="21" viewBox="0 0 44 42" xmlns="http://www.w3.org/2000/svg">
@@ -82,4 +82,4 @@ const emptyStar = (
       d="M22 30.972L10.244 39.18l4.175-13.717-11.44-8.643 14.335-.27L22 3l4.686 13.55 14.335.27-11.44 8.643 4.175 13.717z"
     />
   </svg>
-);
+)

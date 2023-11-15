@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Heading, jsx, useTheme } from '@keystone-ui/core';
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { Fragment, HTMLAttributes, ReactNode } from 'react';
-import { Container } from '../../../../admin-ui/components/Container';
-import { Link } from '../../../../admin-ui/router';
-import { ListMeta } from '../../../../types';
+import { Heading, jsx, useTheme } from '@keystone-ui/core'
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
+import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
+import { Container } from '../../../../admin-ui/components/Container'
+import { Link } from '../../../../admin-ui/router'
+import { type ListMeta } from '../../../../types'
 
-export function ItemPageHeader(props: { list: ListMeta; label: string }) {
-  const { palette, spacing } = useTheme();
+export function ItemPageHeader (props: { list: ListMeta, label: string }) {
+  const { palette, spacing } = useTheme()
 
   return (
     <Container
@@ -64,11 +64,11 @@ export function ItemPageHeader(props: { list: ListMeta; label: string }) {
         )}
       </div>
     </Container>
-  );
+  )
 }
 
-export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
-  const { spacing } = useTheme();
+export function ColumnLayout (props: HTMLAttributes<HTMLDivElement>) {
+  const { spacing } = useTheme()
 
   return (
     // this container must be relative to catch absolute children
@@ -88,11 +88,11 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
         {...props}
       />
     </Container>
-  );
+  )
 }
 
-export function BaseToolbar(props: { children: ReactNode }) {
-  const { colors, spacing } = useTheme();
+export function BaseToolbar (props: { children: ReactNode }) {
+  const { colors, spacing } = useTheme()
 
   return (
     <div
@@ -111,5 +111,5 @@ export function BaseToolbar(props: { children: ReactNode }) {
     >
       {props.children}
     </div>
-  );
+  )
 }

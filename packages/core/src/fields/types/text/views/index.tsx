@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
+import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import {
   Checkbox,
   FieldContainer,
@@ -8,16 +8,16 @@ import {
   FieldDescription,
   TextArea,
   TextInput,
-} from '@keystone-ui/fields';
-import { useState } from 'react';
+} from '@keystone-ui/fields'
+import { useState } from 'react'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types';
-import { CellContainer, CellLink } from '../../../../admin-ui/components';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+} from '../../../../types'
+import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
 export const Field = ({
   field,
@@ -26,9 +26,9 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const { typography, fields } = useTheme();
-  const [shouldShowErrors, setShouldShowErrors] = useState(false);
-  const validationMessages = validate(value, field.validation, field.label);
+  const { typography, fields } = useTheme()
+  const [shouldShowErrors, setShouldShowErrors] = useState(false)
+  const validationMessages = validate(value, field.validation, field.label)
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
@@ -45,7 +45,7 @@ export const Field = ({
               value={value.inner.kind === 'null' ? '' : value.inner.value}
               disabled={value.inner.kind === 'null'}
               onBlur={() => {
-                setShouldShowErrors(true);
+                setShouldShowErrors(true)
               }}
               aria-describedby={
                 field.description === null ? undefined : `${field.path}-description`
@@ -61,7 +61,7 @@ export const Field = ({
               value={value.inner.kind === 'null' ? '' : value.inner.value}
               disabled={value.inner.kind === 'null'}
               onBlur={() => {
-                setShouldShowErrors(true);
+                setShouldShowErrors(true)
               }}
               aria-describedby={
                 field.description === null ? undefined : `${field.path}-description`
@@ -80,7 +80,7 @@ export const Field = ({
                       kind: 'null',
                       prev: value.inner.value,
                     },
-                  });
+                  })
                 } else {
                   onChange({
                     ...value,
@@ -88,7 +88,7 @@ export const Field = ({
                       kind: 'value',
                       value: value.inner.prev,
                     },
-                  });
+                  })
                 }
               }}
               checked={value.inner.kind === 'null'}
@@ -110,14 +110,14 @@ export const Field = ({
         value.inner.value
       )}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  let value = item[field.path] + ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -125,18 +125,18 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
-type Config = FieldControllerConfig<import('..').TextFieldMeta>;
+type Config = FieldControllerConfig<import('..').TextFieldMeta>
 
 type Validation = {
-  isRequired: boolean;
-  match: { regex: RegExp; explanation: string | null } | null;
-  length: { min: number | null; max: number | null };
-};
+  isRequired: boolean
+  match: { regex: RegExp, explanation: string | null } | null
+  length: { min: number | null, max: number | null }
+}
 
-function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
+function validate (value: TextValue, validation: Validation, fieldLabel: string): string[] {
   // if the value is the same as the initial for an update, we don't want to block saving
   // since we're not gonna send it anyway if it's the same
   // and going "fix this thing that is unrelated to the thing you're doing" is bad
@@ -148,55 +148,55 @@ function validate(value: TextValue, validation: Validation, fieldLabel: string):
         value.inner.kind === 'value' &&
         value.inner.value === value.initial.value))
   ) {
-    return [];
+    return []
   }
 
   if (value.inner.kind === 'null') {
     if (validation.isRequired) {
-      return [`${fieldLabel} is required`];
+      return [`${fieldLabel} is required`]
     }
-    return [];
+    return []
   }
 
-  const val = value.inner.value;
+  const val = value.inner.value
 
-  let messages: string[] = [];
+  let messages: string[] = []
   if (validation.length.min !== null && val.length < validation.length.min) {
     if (validation.length.min === 1) {
-      messages.push(`${fieldLabel} must not be empty`);
+      messages.push(`${fieldLabel} must not be empty`)
     } else {
-      messages.push(`${fieldLabel} must be at least ${validation.length.min} characters long`);
+      messages.push(`${fieldLabel} must be at least ${validation.length.min} characters long`)
     }
   }
   if (validation.length.max !== null && val.length > validation.length.max) {
-    messages.push(`${fieldLabel} must be no longer than ${validation.length.max} characters`);
+    messages.push(`${fieldLabel} must be no longer than ${validation.length.max} characters`)
   }
   if (validation.match && !validation.match.regex.test(val)) {
     messages.push(
       validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`
-    );
+    )
   }
-  return messages;
+  return messages
 }
-type InnerTextValue = { kind: 'null'; prev: string } | { kind: 'value'; value: string };
+type InnerTextValue = { kind: 'null', prev: string } | { kind: 'value', value: string }
 
 type TextValue =
-  | { kind: 'create'; inner: InnerTextValue }
-  | { kind: 'update'; inner: InnerTextValue; initial: InnerTextValue };
+  | { kind: 'create', inner: InnerTextValue }
+  | { kind: 'update', inner: InnerTextValue, initial: InnerTextValue }
 
-function deserializeTextValue(value: string | null): InnerTextValue {
+function deserializeTextValue (value: string | null): InnerTextValue {
   if (value === null) {
-    return { kind: 'null', prev: '' };
+    return { kind: 'null', prev: '' }
   }
-  return { kind: 'value', value };
+  return { kind: 'value', value }
 }
 
 export const controller = (
   config: Config
 ): FieldController<TextValue, string> & {
-  displayMode: 'input' | 'textarea';
-  validation: Validation;
-  isNullable: boolean;
+  displayMode: 'input' | 'textarea'
+  validation: Validation
+  isNullable: boolean
 } => {
   const validation: Validation = {
     isRequired: config.fieldMeta.validation.isRequired,
@@ -210,7 +210,7 @@ export const controller = (
           explanation: config.fieldMeta.validation.match.explanation,
         }
       : null,
-  };
+  }
   return {
     path: config.path,
     label: config.label,
@@ -220,44 +220,44 @@ export const controller = (
     displayMode: config.fieldMeta.displayMode,
     isNullable: config.fieldMeta.isNullable,
     deserialize: data => {
-      const inner = deserializeTextValue(data[config.path]);
-      return { kind: 'update', inner, initial: inner };
+      const inner = deserializeTextValue(data[config.path])
+      return { kind: 'update', inner, initial: inner }
     },
     serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
     validation,
     validate: val => validate(val, validation, config.label).length === 0,
     filter: {
-      Filter(props) {
+      Filter (props) {
         return (
           <TextInput
             onChange={event => {
-              props.onChange(event.target.value);
+              props.onChange(event.target.value)
             }}
             value={props.value}
             autoFocus={props.autoFocus}
           />
-        );
+        )
       },
 
       graphql: ({ type, value }) => {
-        const isNot = type.startsWith('not_');
+        const isNot = type.startsWith('not_')
         const key =
           type === 'is_i' || type === 'not_i'
             ? 'equals'
             : type
                 .replace(/_i$/, '')
                 .replace('not_', '')
-                .replace(/_([a-z])/g, (_, char: string) => char.toUpperCase());
-        const filter = { [key]: value };
+                .replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
+        const filter = { [key]: value }
         return {
           [config.path]: {
             ...(isNot ? { not: filter } : filter),
             mode: config.fieldMeta.shouldUseModeInsensitive ? 'insensitive' : undefined,
           },
-        };
+        }
       },
-      Label({ label, value }) {
-        return `${label.toLowerCase()}: "${value}"`;
+      Label ({ label, value }) {
+        return `${label.toLowerCase()}: "${value}"`
       },
       types: {
         contains_i: {
@@ -294,5 +294,5 @@ export const controller = (
         },
       },
     },
-  };
-};
+  }
+}

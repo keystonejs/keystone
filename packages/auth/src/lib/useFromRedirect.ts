@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo } from 'react'
 
 // TODO: remove or fix
-export function useRedirect() {
-  return useMemo(() => '/', []);
+export function useRedirect () {
+  return useMemo(() => '/', [])
 }

@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, type IconProps } from './util'
 
-export function Slack({ grad, ...props }: IconProps) {
+export function Slack ({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -35,5 +35,5 @@ export function Slack({ grad, ...props }: IconProps) {
         d="M80.1 99.8c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3 0-13.2-5.9-13.2-13.2 0-7.3 5.9-13.2 13.2-13.2h33.1c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H80.1z"
       />
     </svg>
-  );
+  )
 }

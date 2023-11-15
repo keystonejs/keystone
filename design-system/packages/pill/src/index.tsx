@@ -1,25 +1,25 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core';
-import { ButtonHTMLAttributes, HTMLAttributes, forwardRef, ReactNode } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { type ButtonHTMLAttributes, type HTMLAttributes, forwardRef, type ReactNode } from 'react'
 
-import { XIcon } from '@keystone-ui/icons/icons/XIcon';
+import { XIcon } from '@keystone-ui/icons/icons/XIcon'
 
-type Tone = 'active' | 'passive' | 'positive' | 'warning' | 'negative' | 'help';
-type Weight = 'bold' | 'light';
+type Tone = 'active' | 'passive' | 'positive' | 'warning' | 'negative' | 'help'
+type Weight = 'bold' | 'light'
 
 type PillButtonProps = {
-  tone: Tone;
-  weight: Weight;
-} & ButtonHTMLAttributes<HTMLButtonElement>;
+  tone: Tone
+  weight: Weight
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
   ({ tone: toneKey, weight, onClick, tabIndex, ...props }, ref) => {
-    const { radii, spacing, tones, typography } = useTheme();
+    const { radii, spacing, tones, typography } = useTheme()
 
-    const isInteractive = !!onClick;
+    const isInteractive = !!onClick
 
-    const tone = tones[toneKey];
+    const tone = tones[toneKey]
     const tokens = {
       bold: {
         background: tone.fill[0],
@@ -49,7 +49,7 @@ const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
           background: tone.tint[2],
         },
       },
-    }[weight];
+    }[weight]
 
     const baseStyles = {
       alignItems: 'center',
@@ -82,7 +82,7 @@ const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
         paddingLeft: spacing.medium,
         paddingRight: spacing.medium,
       },
-    } as const;
+    } as const
 
     const interactiveStyles = isInteractive
       ? {
@@ -99,7 +99,7 @@ const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
             color: tokens.active.foreground,
           },
         }
-      : {};
+      : {}
 
     return (
       <button
@@ -109,18 +109,18 @@ const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
         tabIndex={!isInteractive ? -1 : tabIndex}
         {...props}
       />
-    );
+    )
   }
-);
+)
 
 type PillProps = {
-  children: ReactNode;
-  onClick?: () => void;
-  onRemove?: () => void;
-  tone?: Tone;
-  containerProps?: HTMLAttributes<HTMLDivElement>;
-  weight?: Weight;
-} & HTMLAttributes<HTMLButtonElement>;
+  children: ReactNode
+  onClick?: () => void
+  onRemove?: () => void
+  tone?: Tone
+  containerProps?: HTMLAttributes<HTMLDivElement>
+  weight?: Weight
+} & HTMLAttributes<HTMLButtonElement>
 
 export const Pill = forwardRef<HTMLButtonElement, PillProps>(
   (
@@ -138,6 +138,6 @@ export const Pill = forwardRef<HTMLButtonElement, PillProps>(
           </PillButton>
         ) : null}
       </div>
-    );
+    )
   }
-);
+)

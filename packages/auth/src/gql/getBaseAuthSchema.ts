@@ -1,10 +1,10 @@
-import type { BaseItem } from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, SecretFieldImpl } from '../types';
+import type { BaseItem } from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
+import { type AuthGqlNames, type SecretFieldImpl } from '../types'
 
-import { validateSecret } from '../lib/validateSecret';
+import { validateSecret } from '../lib/validateSecret'
 
-export function getBaseAuthSchema<I extends string, S extends string>({
+export function getBaseAuthSchema<I extends string, S extends string> ({
   listKey,
   identityField,
   secretField,
@@ -12,47 +12,47 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretFieldImpl,
   base,
 }: {
-  listKey: string;
-  identityField: I;
-  secretField: S;
-  gqlNames: AuthGqlNames;
-  secretFieldImpl: SecretFieldImpl;
-  base: graphql.BaseSchemaMeta;
+  listKey: string
+  identityField: I
+  secretField: S
+  gqlNames: AuthGqlNames
+  secretFieldImpl: SecretFieldImpl
+  base: graphql.BaseSchemaMeta
 
   // TODO: return type required by pnpm :(
 }): {
-  extension: graphql.Extension;
+  extension: graphql.Extension
   ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
-    sessionToken: string;
-    item: BaseItem;
-  }>;
+    sessionToken: string
+    item: BaseItem
+  }>
 } {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
-    sessionToken: string;
-    item: BaseItem;
+    sessionToken: string
+    item: BaseItem
   }>()({
     name: gqlNames.ItemAuthenticationWithPasswordSuccess,
     fields: {
       sessionToken: graphql.field({ type: graphql.nonNull(graphql.String) }),
       item: graphql.field({ type: graphql.nonNull(base.object(listKey)) }),
     },
-  });
+  })
   const ItemAuthenticationWithPasswordFailure = graphql.object<{ message: string }>()({
     name: gqlNames.ItemAuthenticationWithPasswordFailure,
     fields: {
       message: graphql.field({ type: graphql.nonNull(graphql.String) }),
     },
-  });
+  })
   const AuthenticationResult = graphql.union({
     name: gqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
-    resolveType(val) {
+    resolveType (val) {
       if ('sessionToken' in val) {
-        return gqlNames.ItemAuthenticationWithPasswordSuccess;
+        return gqlNames.ItemAuthenticationWithPasswordSuccess
       }
-      return gqlNames.ItemAuthenticationWithPasswordFailure;
+      return gqlNames.ItemAuthenticationWithPasswordFailure
     },
-  });
+  })
 
   const extension = {
     query: {
@@ -62,17 +62,17 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           types: [base.object(listKey) as graphql.ObjectType<BaseItem>],
           resolveType: (root, context) => context.session?.listKey,
         }),
-        resolve(root, args, context) {
-          const { session } = context;
-          if (!session) return null;
-          if (!session.itemId) return null;
-          if (session.listKey !== listKey) return null;
+        resolve (root, args, context) {
+          const { session } = context
+          if (!session) return null
+          if (!session.itemId) return null
+          if (session.listKey !== listKey) return null
 
           return context.db[listKey].findOne({
             where: {
               id: session.itemId,
             },
-          });
+          })
         },
       }),
     },
@@ -83,12 +83,12 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
+        async resolve (root, { [identityField]: identity, [secretField]: secret }, context) {
           if (!context.sessionStrategy) {
-            throw new Error('No session implementation available on context');
+            throw new Error('No session implementation available on context')
           }
 
-          const dbItemAPI = context.sudo().db[listKey];
+          const dbItemAPI = context.sudo().db[listKey]
           const result = await validateSecret(
             secretFieldImpl,
             identityField,
@@ -96,10 +96,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             secretField,
             secret,
             dbItemAPI
-          );
+          )
 
           if (!result.success) {
-            return { code: 'FAILURE', message: 'Authentication failed.' };
+            return { code: 'FAILURE', message: 'Authentication failed.' }
           }
 
           // Update system state
@@ -109,17 +109,17 @@ export function getBaseAuthSchema<I extends string, S extends string>({
               itemId: result.item.id,
             },
             context,
-          });
+          })
 
           // return Failure if sessionStrategy.start() returns null
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
-            return { code: 'FAILURE', message: 'Failed to start session.' };
+            return { code: 'FAILURE', message: 'Failed to start session.' }
           }
 
-          return { sessionToken, item: result.item };
+          return { sessionToken, item: result.item }
         },
       }),
     },
-  };
-  return { extension, ItemAuthenticationWithPasswordSuccess };
+  }
+  return { extension, ItemAuthenticationWithPasswordSuccess }
 }

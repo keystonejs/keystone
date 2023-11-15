@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor } from 'slate';
-import { jsx, makeEditor } from './tests/utils';
+import { Editor } from 'slate'
+import { jsx, makeEditor } from './tests/utils'
 
 test('basic soft break', () => {
   let editor = makeEditor(
@@ -14,9 +14,9 @@ test('basic soft break', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertSoftBreak();
+  editor.insertSoftBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -27,8 +27,8 @@ test('basic soft break', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('soft break deletes selection', () => {
   let editor = makeEditor(
@@ -42,9 +42,9 @@ test('soft break deletes selection', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertSoftBreak();
+  editor.insertSoftBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -56,9 +56,9 @@ test('soft break deletes selection', () => {
         </text>
       </paragraph>
     </editor>
-  `);
+  `)
   expect(Editor.string(editor, [])).toMatchInlineSnapshot(`
     "some 
     nt"
-  `);
-});
+  `)
+})

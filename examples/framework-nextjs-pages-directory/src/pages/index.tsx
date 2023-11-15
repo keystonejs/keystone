@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Head from 'next/head';
-import { gql } from 'graphql-request';
-import { client } from '../util/request';
-import { keystoneContext } from '../keystone/context';
+import React, { useEffect, useState } from 'react'
+import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import Head from 'next/head'
+import { gql } from 'graphql-request'
+import { client } from '../util/request'
+import { keystoneContext } from '../keystone/context'
 
 const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -63,23 +63,23 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
         </section>
       </main>
     </div>
-  );
-};
+  )
+}
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const context = await keystoneContext.withRequest(req, res);
+  const context = await keystoneContext.withRequest(req, res)
   const users = await context.query.User.findMany({
     query: 'id name about',
-  });
+  })
   return {
     props: { users: users }, // will be passed to the page component as props
-  };
-};
+  }
+}
 
-function ServerRenderedContent({
+function ServerRenderedContent ({
   users,
 }: {
-  users: { id: string; name: string; about: string | null }[];
+  users: { id: string, name: string, about: string | null }[]
 }) {
   return (
     <div>
@@ -98,15 +98,15 @@ function ServerRenderedContent({
                 </>
               )}
             </li>
-          );
+          )
         })}
       </ol>
     </div>
-  );
+  )
 }
 
-function ClientRenderedContent() {
-  const [users, setUsers] = useState<Array<{ id: string; name: string; about: string | null }>>([]);
+function ClientRenderedContent () {
+  const [users, setUsers] = useState<Array<{ id: string, name: string, about: string | null }>>([])
 
   // Fetch users from REST api route
   useEffect(() => {
@@ -123,9 +123,9 @@ function ClientRenderedContent() {
         `
       )
       .then((data: any) => {
-        setUsers(data.users);
-      });
-  }, []);
+        setUsers(data.users)
+      })
+  }, [])
 
   return (
     <div style={{ minHeight: '8rem' }}>
@@ -145,14 +145,14 @@ function ClientRenderedContent() {
                   </>
                 )}
               </li>
-            );
+            )
           })}
         </ol>
       ) : (
         <div>loading...</div>
       )}
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home

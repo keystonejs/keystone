@@ -1,11 +1,11 @@
-import { gen, sampleOne } from 'testcheck';
-import { text, relationship } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allOperations, allowAll } from '@keystone-6/core/access';
-import { testConfig, expectSingleRelationshipError } from '../../utils';
+import { gen, sampleOne } from 'testcheck'
+import { text, relationship } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allOperations, allowAll } from '@keystone-6/core/access'
+import { testConfig, expectSingleRelationshipError } from '../../utils'
 
-const alphanumGenerator = gen.alphaNumString.notEmpty();
+const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -55,24 +55,24 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 describe('no access control', () => {
   test(
     'connect nested from within create mutation',
     runner(async ({ context }) => {
-      const noteContent = sampleOne(alphanumGenerator);
+      const noteContent = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
 
       // Create an item that does the linking
       const user = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id }',
-      });
+      })
 
-      expect(user).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
+      expect(user).toMatchObject({ id: expect.any(String), notes: expect.any(Array) })
 
       // Create an item that does the linking
       const user1 = await context.query.User.createOne({
@@ -81,31 +81,31 @@ describe('no access control', () => {
           notes: { connect: [{ id: createNote.id }, { id: createNote.id }] },
         },
         query: 'id notes { id }',
-      });
+      })
 
-      expect(user1).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
+      expect(user1).toMatchObject({ id: expect.any(String), notes: expect.any(Array) })
 
       // Test an empty list of related notes
       const user2 = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [] } },
         query: 'id notes { id }',
-      });
+      })
 
-      expect(user2).toMatchObject({ id: expect.any(String), notes: [] });
+      expect(user2).toMatchObject({ id: expect.any(String), notes: [] })
     })
-  );
+  )
 
   test(
     'connect nested from within create many mutation',
     runner(async ({ context }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      const noteContent = sampleOne(alphanumGenerator)
+      const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
       const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
-      });
+      })
 
       // Create an item that does the linking
       const users = await context.query.User.createMany({
@@ -113,38 +113,38 @@ describe('no access control', () => {
           { username: 'A thing 1', notes: { connect: [{ id: createNote.id }] } },
           { username: 'A thing 2', notes: { connect: [{ id: createNote2.id }] } },
         ],
-      });
+      })
 
-      expect(users).toMatchObject([{ id: expect.any(String) }, { id: expect.any(String) }]);
+      expect(users).toMatchObject([{ id: expect.any(String) }, { id: expect.any(String) }])
     })
-  );
+  )
 
   test(
     'connect nested from within update mutation adds to an empty list',
     runner(async ({ context }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      const noteContent = sampleOne(alphanumGenerator)
+      const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
       const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
-      });
+      })
 
       // Create an item to update
-      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } });
+      const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
 
       // Update the item and link the relationship field
       const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
         query: 'id notes { id content }',
-      });
+      })
 
       expect(user).toMatchObject({
         id: expect.any(String),
         notes: [{ id: expect.any(String), content: noteContent }],
-      });
+      })
 
       // Update the item and link multiple relationship fields
       const _user = await context.query.User.updateOne({
@@ -154,40 +154,40 @@ describe('no access control', () => {
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
         },
         query: 'id notes { id content }',
-      });
+      })
       expect(_user).toMatchObject({
         id: expect.any(String),
         notes: [
           { id: createNote.id, content: noteContent },
           { id: createNote2.id, content: noteContent2 },
         ],
-      });
+      })
     })
-  );
+  )
 
   test(
     'connect nested from within update mutation adds to an existing list',
     runner(async ({ context }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      const noteContent = sampleOne(alphanumGenerator)
+      const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
       const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
-      });
+      })
 
       // Create an item to update
       const createUser = await context.query.User.createOne({
         data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
-      });
+      })
 
       // Update the item and link the relationship field
       const user = await context.query.User.updateOne({
         where: { id: createUser.id },
         data: { username: 'A thing', notes: { connect: [{ id: createNote2.id }] } },
         query: 'id notes { id content }',
-      });
+      })
 
       expect(user).toMatchObject({
         id: expect.any(String),
@@ -195,21 +195,21 @@ describe('no access control', () => {
           { id: createNote.id, content: noteContent },
           { id: createNote2.id, content: noteContent2 },
         ],
-      });
+      })
     })
-  );
+  )
 
   test(
     'connect nested from within update many mutation adds to an existing list',
     runner(async ({ context }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      const noteContent = sampleOne(alphanumGenerator)
+      const noteContent2 = sampleOne(alphanumGenerator)
 
       // Create an item to link against
-      const createNote = await context.query.Note.createOne({ data: { content: noteContent } });
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
       const createNote2 = await context.query.Note.createOne({
         data: { content: noteContent2 },
-      });
+      })
 
       // Create an item to update
       const createUser = await context.query.User.createOne({
@@ -217,8 +217,8 @@ describe('no access control', () => {
           username: 'user1',
           notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
         },
-      });
-      const createUser2 = await context.query.User.createOne({ data: { username: 'user2' } });
+      })
+      const createUser2 = await context.query.User.createOne({ data: { username: 'user2' } })
 
       const users = await context.query.User.updateMany({
         data: [
@@ -232,21 +232,21 @@ describe('no access control', () => {
           },
         ],
         query: 'id notes { id content }',
-      });
+      })
 
       expect(users).toMatchObject([
         { id: expect.any(String), notes: [{ id: createNote.id, content: noteContent }] },
         { id: expect.any(String), notes: [{ id: createNote2.id, content: noteContent2 }] },
-      ]);
+      ])
     })
-  );
-});
+  )
+})
 
 describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during creating',
     runner(async ({ context }) => {
-      const FAKE_ID = 'cabc123';
+      const FAKE_ID = 'cabc123'
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -260,20 +260,20 @@ describe('non-matching filter', () => {
                   id
                 }
               }`,
-      });
-      expect(data).toEqual({ createUser: null });
-      const message = `Access denied: You cannot connect that Note - it may not exist`;
-      expectSingleRelationshipError(errors, 'createUser', 'User.notes', message);
+      })
+      expect(data).toEqual({ createUser: null })
+      const message = `Access denied: You cannot connect that Note - it may not exist`
+      expectSingleRelationshipError(errors, 'createUser', 'User.notes', message)
     })
-  );
+  )
 
   test(
     'errors if connecting items which cannot be found during update',
     runner(async ({ context }) => {
-      const FAKE_ID = 'cabc123';
+      const FAKE_ID = 'cabc123'
 
       // Create an item to link against
-      const createUser = await context.query.User.createOne({ data: {} });
+      const createUser = await context.query.User.createOne({ data: {} })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -290,19 +290,19 @@ describe('non-matching filter', () => {
                   id
                 }
               }`,
-      });
+      })
 
-      expect(data).toEqual({ updateUser: null });
-      const message = `Access denied: You cannot connect that Note - it may not exist`;
-      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
+      expect(data).toEqual({ updateUser: null })
+      const message = `Access denied: You cannot connect that Note - it may not exist`
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message)
     })
-  );
+  )
 
   test(
     'errors on incomplete data',
     runner(async ({ context }) => {
       // Create an item to link against
-      const createUser = await context.query.User.createOne({ data: {} });
+      const createUser = await context.query.User.createOne({ data: {} })
 
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
@@ -315,27 +315,27 @@ describe('non-matching filter', () => {
                   id
                 }
               }`,
-      });
+      })
 
-      expect(data).toEqual({ updateUser: null });
+      expect(data).toEqual({ updateUser: null })
       const message =
-        'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.';
-      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
+        'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.'
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message)
     })
-  );
-});
+  )
+})
 
 describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'throws when link nested from within create mutation',
       runner(async ({ context }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
         const createNoteNoRead = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
-        });
+        })
 
         const { data, errors } = await context.graphql.raw({
           query: `
@@ -347,33 +347,33 @@ describe('with access control', () => {
                     id
                   }
                 }`,
-        });
+        })
 
-        expect(data).toEqual({ createUserToNotesNoRead: null });
-        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`;
+        expect(data).toEqual({ createUserToNotesNoRead: null })
+        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`
         expectSingleRelationshipError(
           errors,
           'createUserToNotesNoRead',
           'UserToNotesNoRead.notes',
           message
-        );
+        )
       })
-    );
+    )
 
     test(
       'throws when link nested from within update mutation',
       runner(async ({ context }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
         const createNote = await context.sudo().query.NoteNoRead.createOne({
           data: { content: noteContent },
-        });
+        })
 
         // Create an item to update
         const createUser = await context.sudo().query.UserToNotesNoRead.createOne({
           data: { username: 'A thing' },
-        });
+        })
 
         // Update the item and link the relationship field
         const { data, errors } = await context.graphql.raw({
@@ -389,62 +389,62 @@ describe('with access control', () => {
                     id
                   }
                 }`,
-        });
-        expect(data).toEqual({ updateUserToNotesNoRead: null });
-        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`;
+        })
+        expect(data).toEqual({ updateUserToNotesNoRead: null })
+        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`
         expectSingleRelationshipError(
           errors,
           'updateUserToNotesNoRead',
           'UserToNotesNoRead.notes',
           message
-        );
+        )
       })
-    );
-  });
+    )
+  })
 
   describe('create: false on related list', () => {
     test(
       'does not throw when link nested from within create mutation',
       runner(async ({ context }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
         const createNoteNoCreate = await context.sudo().query.NoteNoCreate.createOne({
           data: { content: noteContent },
-        });
+        })
 
         // Create an item that does the linking
         const data = await context.query.UserToNotesNoCreate.createOne({
           data: { username: 'A thing', notes: { connect: [{ id: createNoteNoCreate.id }] } },
-        });
+        })
 
-        expect(data).toMatchObject({ id: expect.any(String) });
+        expect(data).toMatchObject({ id: expect.any(String) })
       })
-    );
+    )
 
     test(
       'does not throw when link nested from within update mutation',
       runner(async ({ context }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        const noteContent = sampleOne(alphanumGenerator)
 
         // Create an item to link against
         const createNote = await context.sudo().query.NoteNoCreate.createOne({
           data: { content: noteContent },
-        });
+        })
 
         // Create an item to update
         const createUser = await context.sudo().query.UserToNotesNoCreate.createOne({
           data: { username: 'A thing' },
-        });
+        })
 
         // Update the item and link the relationship field
         const data = await context.query.UserToNotesNoCreate.updateOne({
           where: { id: createUser.id },
           data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
-        });
+        })
 
-        expect(data).toMatchObject({ id: expect.any(String) });
+        expect(data).toMatchObject({ id: expect.any(String) })
       })
-    );
-  });
-});
+    )
+  })
+})

@@ -1,9 +1,9 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { integer, text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql';
-import { testConfig, dbProvider } from './utils';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { integer, text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
+import { testConfig, dbProvider } from './utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -33,12 +33,12 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 test(
   'non-sudo context does not bypass isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery });
+    const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery })
     expect(res).toMatchInlineSnapshot(`
       {
         "data": null,
@@ -46,14 +46,14 @@ test(
           [GraphQLError: Access denied],
         ],
       }
-    `);
+    `)
   })
-);
+)
 
 test(
   'sudo context bypasses isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const data = await context.sudo().graphql.run({ query: staticAdminMetaQuery });
+    const data = await context.sudo().graphql.run({ query: staticAdminMetaQuery })
     expect(data).toEqual({
       keystone: {
         __typename: 'KeystoneMeta',
@@ -147,18 +147,18 @@ test(
           ],
         },
       },
-    });
+    })
   })
-);
+)
 
 const names = {
   label: 'Test Stuff',
   plural: 'Test Things',
   singular: 'Test Thing',
   path: 'thing',
-};
+}
 
-const gql = ([content]: TemplateStringsArray) => content;
+const gql = ([content]: TemplateStringsArray) => content
 
 test(
   'ui.{label,plural,singular,path} are returned in the admin meta',
@@ -189,12 +189,12 @@ test(
           }
         }
       `,
-    });
+    })
     expect(res.data!).toEqual({
       keystone: { adminMeta: { list: names } },
-    });
+    })
   })
-);
+)
 
 test(
   'listView and createView',
@@ -220,7 +220,7 @@ test(
           }
         }
       `,
-    });
+    })
     expect(data).toMatchInlineSnapshot(`
       {
         "keystone": {
@@ -262,6 +262,6 @@ test(
           },
         },
       }
-    `);
+    `)
   })
-);
+)

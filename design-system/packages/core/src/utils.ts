@@ -1,15 +1,15 @@
 import {
-  ComponentPropsWithoutRef,
-  ElementType,
+  type ComponentPropsWithoutRef,
+  type ElementType,
   forwardRef,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   useEffect,
   useLayoutEffect,
   useState,
-} from 'react';
-import { createPortal } from 'react-dom';
+} from 'react'
+import { createPortal } from 'react-dom'
 
 /*
   Simple switch to return a child tag from a parent tag argument.
@@ -19,20 +19,20 @@ export const getChildTag = (parentTag?: ElementType<any>) => {
   switch (parentTag) {
     case 'ul':
     case 'ol':
-      return 'li';
+      return 'li'
     default:
-      return 'div';
+      return 'div'
   }
-};
+}
 
 /*
   @johannes' one weird trick for fixing TypeScript autocomplete
 */
-export function identityType<T>() {
-  function inner<U extends T>(u: U): U {
-    return u;
+export function identityType<T> () {
+  function inner<U extends T> (u: U): U {
+    return u
   }
-  return inner;
+  return inner
 }
 
 /*
@@ -41,10 +41,10 @@ export function identityType<T>() {
 export const devWarning = (condition: boolean, message: string) => {
   if (process.env.NODE_ENV !== 'production') {
     if (condition) {
-      console.error(message);
+      console.error(message)
     }
   }
-};
+}
 
 /*
   forwardRefWithAs lets us forward refs while keeping the correct component type,
@@ -52,24 +52,24 @@ export const devWarning = (condition: boolean, message: string) => {
 */
 
 type ElementTagNameMap = HTMLElementTagNameMap &
-  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;
+  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>
 
 type AsProp<Comp extends ElementType, Props> = {
-  as?: Comp;
+  as?: Comp
   ref?: Ref<
     Comp extends keyof ElementTagNameMap
       ? ElementTagNameMap[Comp]
       : Comp extends new (...args: any) => any
       ? InstanceType<Comp>
       : undefined
-  >;
-} & Omit<ComponentPropsWithoutRef<Comp>, 'as' | keyof Props>;
+  >
+} & Omit<ComponentPropsWithoutRef<Comp>, 'as' | keyof Props>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = <
   Comp extends ElementType = DefaultElementType
 >(
   props: AsProp<Comp, Props> & Props
-) => ReactElement;
+) => ReactElement
 
 export const forwardRefWithAs = <DefaultElementType extends ElementType, BaseProps>(
   render: (
@@ -77,15 +77,15 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
     ref: React.Ref<any>
   ) => Exclude<ReactNode, undefined>
 ): CompWithAsProp<BaseProps, DefaultElementType> => {
-  // @ts-ignore
-  return forwardRef(render);
-};
+  // @ts-expect-error
+  return forwardRef(render)
+}
 
 /*
   A helper for making valid IDs from a set of inputs
 */
-export function makeId(...args: (string | number | null | undefined)[]) {
-  return args.filter(val => val != null).join('--');
+export function makeId (...args: (string | number | null | undefined)[]) {
+  return args.filter(val => val != null).join('--')
 }
 
 /*
@@ -103,11 +103,11 @@ export const mapResponsiveProp = <
   valueMap: Map
 ) => {
   if (Array.isArray(value)) {
-    return value.map(k => (k == null ? null : valueMap[k]));
+    return value.map(k => (k == null ? null : valueMap[k]))
   }
-  // @ts-ignore
-  return valueMap[value];
-};
+  // @ts-expect-error
+  return valueMap[value]
+}
 
 /**
  * Utils below are ported with thanks from @reach-ui
@@ -116,41 +116,41 @@ export const mapResponsiveProp = <
 
 // Autogenerate IDs to facilitate WAI-ARIA and server rendering. For reasoning, see
 // https://github.com/reach/reach-ui/blob/develop/packages/auto-id/src/index.tsx
-let serverHandoffComplete = false;
-let id = 0;
-const genId = () => ++id;
+let serverHandoffComplete = false
+let id = 0
+const genId = () => ++id
 
 export const useId = (idFromProps?: string | null) => {
-  const initialId = idFromProps || (serverHandoffComplete ? genId() : null);
+  const initialId = idFromProps || (serverHandoffComplete ? genId() : null)
 
-  const [id, setId] = useState(initialId);
+  const [id, setId] = useState(initialId)
 
   useSafeLayoutEffect(() => {
     if (id === null) {
-      setId(genId());
+      setId(genId())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (serverHandoffComplete === false) {
-      serverHandoffComplete = true;
+      serverHandoffComplete = true
     }
-  }, []);
-  return id != null ? String(id) : undefined;
-};
+  }, [])
+  return id != null ? String(id) : undefined
+}
 
 // Works around useLayoutEffect throwing a warning when used in SSR
-export const useSafeLayoutEffect = typeof window === 'undefined' ? () => {} : useLayoutEffect;
+export const useSafeLayoutEffect = typeof window === 'undefined' ? () => {} : useLayoutEffect
 
 type Props = {
-  children: ReactElement;
-};
+  children: ReactElement
+}
 
 export const Portal = ({ children }: Props): React.ReactPortal | null => {
   if (typeof document === 'undefined') {
-    return null;
+    return null
   }
 
-  return createPortal(children, document.body);
-};
+  return createPortal(children, document.body)
+}

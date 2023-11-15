@@ -1,61 +1,61 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
+import { Fragment, type HTMLAttributes, type ReactNode, useEffect, useMemo, useState } from 'react'
 
-import { Button } from '@keystone-ui/button';
-import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
-import { CheckboxControl, TextInput } from '@keystone-ui/fields';
-import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
-import { LoadingDots } from '@keystone-ui/loading';
-import { AlertDialog } from '@keystone-ui/modals';
-import { useToasts } from '@keystone-ui/toast';
+import { Button } from '@keystone-ui/button'
+import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core'
+import { CheckboxControl, TextInput } from '@keystone-ui/fields'
+import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon'
+import { LoadingDots } from '@keystone-ui/loading'
+import { AlertDialog } from '@keystone-ui/modals'
+import { useToasts } from '@keystone-ui/toast'
 
-import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon';
-import { ListMeta } from '../../../../types';
+import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon'
+import { type ListMeta } from '../../../../types'
 import {
   getRootGraphQLFieldsFromFieldController,
-  DataGetter,
-  DeepNullable,
+  type DataGetter,
+  type DeepNullable,
   makeDataGetter,
-} from '../../../../admin-ui/utils';
-import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
-import { CellLink } from '../../../../admin-ui/components';
-import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
-import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
-import { useList } from '../../../../admin-ui/context';
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice';
-import { Link, useRouter } from '../../../../admin-ui/router';
-import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect';
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink';
-import { FieldSelection } from './FieldSelection';
-import { FilterAdd } from './FilterAdd';
-import { FilterList } from './FilterList';
-import { SortSelection } from './SortSelection';
-import { useFilters } from './useFilters';
-import { useSelectedFields } from './useSelectedFields';
-import { useSort } from './useSort';
+} from '../../../../admin-ui/utils'
+import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import { CellLink } from '../../../../admin-ui/components'
+import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
+import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination'
+import { useList } from '../../../../admin-ui/context'
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
+import { Link, useRouter } from '../../../../admin-ui/router'
+import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
+import { FieldSelection } from './FieldSelection'
+import { FilterAdd } from './FilterAdd'
+import { FilterList } from './FilterList'
+import { SortSelection } from './SortSelection'
+import { useFilters } from './useFilters'
+import { useSelectedFields } from './useSelectedFields'
+import { useSort } from './useSort'
 
-type ListPageProps = { listKey: string };
+type ListPageProps = { listKey: string }
 
 type FetchedFieldMeta = {
-  path: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
-  listView: { fieldMode: 'read' | 'hidden' };
-};
+  path: string
+  isOrderable: boolean
+  isFilterable: boolean
+  listView: { fieldMode: 'read' | 'hidden' }
+}
 
 let listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
         list: {
-          hideCreate: boolean;
-          hideDelete: boolean;
-          fields: FetchedFieldMeta[];
-        } | null;
-      };
-    };
+          hideCreate: boolean
+          hideDelete: boolean
+          fields: FetchedFieldMeta[]
+        } | null
+      }
+    }
   },
   { listKey: string }
 > = gql`
@@ -77,114 +77,114 @@ let listMetaGraphqlQuery: TypedDocumentNode<
       }
     }
   }
-`;
+`
 
-const storeableQueries = ['sortBy', 'fields'];
+const storeableQueries = ['sortBy', 'fields']
 
-function useQueryParamsFromLocalStorage(listKey: string) {
-  const router = useRouter();
-  const localStorageKey = `keystone.list.${listKey}.list.page.info`;
+function useQueryParamsFromLocalStorage (listKey: string) {
+  const router = useRouter()
+  const localStorageKey = `keystone.list.${listKey}.list.page.info`
 
   const resetToDefaults = () => {
-    localStorage.removeItem(localStorageKey);
-    router.replace({ pathname: router.pathname });
-  };
+    localStorage.removeItem(localStorageKey)
+    router.replace({ pathname: router.pathname })
+  }
 
   // GET QUERY FROM CACHE IF CONDITIONS ARE RIGHT
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(
     () => {
       let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
-        return x.startsWith('!') || storeableQueries.includes(x);
-      });
+        return x.startsWith('!') || storeableQueries.includes(x)
+      })
 
       if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
-        const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
-        let parsed;
+        const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
+        let parsed
         try {
-          parsed = JSON.parse(queryParamsFromLocalStorage!);
+          parsed = JSON.parse(queryParamsFromLocalStorage!)
         } catch (err) {}
         if (parsed) {
-          router.replace({ query: { ...router.query, ...parsed } });
+          router.replace({ query: { ...router.query, ...parsed } })
         }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [localStorageKey, router.isReady]
-  );
+  )
   useEffect(() => {
-    let queryParamsToSerialize: Record<string, string> = {};
+    let queryParamsToSerialize: Record<string, string> = {}
     Object.keys(router.query).forEach(key => {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
-        queryParamsToSerialize[key] = router.query[key] as string;
+        queryParamsToSerialize[key] = router.query[key] as string
       }
-    });
+    })
     if (Object.keys(queryParamsToSerialize).length) {
-      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize));
+      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize))
     } else {
-      localStorage.removeItem(localStorageKey);
+      localStorage.removeItem(localStorageKey)
     }
-  }, [localStorageKey, router]);
+  }, [localStorageKey, router])
 
-  return { resetToDefaults };
+  return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />;
+export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 const ListPage = ({ listKey }: ListPageProps) => {
-  const list = useList(listKey);
+  const list = useList(listKey)
 
-  const { query, push } = useRouter();
+  const { query, push } = useRouter()
 
-  const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
+  const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
 
   const currentPage =
-    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1;
+    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1
   const pageSize =
     typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
       ? parseInt(query.pageSize)
-      : list.pageSize;
+      : list.pageSize
 
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
-    const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
-    const orderableFields = new Set<string>();
-    const filterableFields = new Set<string>();
+    const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
+    const orderableFields = new Set<string>()
+    const filterableFields = new Set<string>()
     for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
-      listViewFieldModesByField[field.path] = field.listView.fieldMode;
+      listViewFieldModesByField[field.path] = field.listView.fieldMode
       if (field.isOrderable) {
-        orderableFields.add(field.path);
+        orderableFields.add(field.path)
       }
       if (field.isFilterable) {
-        filterableFields.add(field.path);
+        filterableFields.add(field.path)
       }
     }
 
-    return { listViewFieldModesByField, orderableFields, filterableFields };
-  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+    return { listViewFieldModesByField, orderableFields, filterableFields }
+  }, [metaQuery.data?.keystone.adminMeta.list?.fields])
 
-  const sort = useSort(list, orderableFields);
-  const filters = useFilters(list, filterableFields);
+  const sort = useSort(list, orderableFields)
+  const filters = useFilters(list, filterableFields)
 
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
-  const searchLabels = searchFields.map(key => list.fields[key].label);
+  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
+  const searchLabels = searchFields.map(key => list.fields[key].label)
 
-  const searchParam = typeof query.search === 'string' ? query.search : '';
-  const [searchString, updateSearchString] = useState(searchParam);
-  const search = useFilter(searchParam, list, searchFields);
+  const searchParam = typeof query.search === 'string' ? query.search : ''
+  const [searchString, updateSearchString] = useState(searchParam)
+  const search = useFilter(searchParam, list, searchFields)
 
   const updateSearch = (value: string) => {
-    const { search, ...queries } = query;
+    const { search, ...queries } = query
 
     if (value.trim()) {
-      push({ query: { ...queries, search: value } });
+      push({ query: { ...queries, search: value } })
     } else {
-      push({ query: queries });
+      push({ query: queries })
     }
-  };
+  }
 
-  const selectedFields = useSelectedFields(list, listViewFieldModesByField);
+  const selectedFields = useSelectedFields(list, listViewFieldModesByField)
 
   const {
     data: newData,
@@ -194,9 +194,9 @@ const ListPage = ({ listKey }: ListPageProps) => {
     useMemo(() => {
       const selectedGqlFields = [...selectedFields]
         .map(fieldPath => {
-          return list.fields[fieldPath].controller.graphqlSelection;
+          return list.fields[fieldPath].controller.graphqlSelection
         })
-        .join('\n');
+        .join('\n')
 
       // TODO: FIXME: this is bad
       return gql`
@@ -214,7 +214,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         }
         count: ${list.gqlNames.listQueryCountName}(where: $where)
       }
-    `;
+    `
     }, [list, selectedFields]),
     {
       fetchPolicy: 'cache-and-network',
@@ -227,37 +227,37 @@ const ListPage = ({ listKey }: ListPageProps) => {
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
       },
     }
-  );
+  )
 
-  const [dataState, setDataState] = useState({ data: newData, error: newError });
+  const [dataState, setDataState] = useState({ data: newData, error: newError })
   if (newData && dataState.data !== newData) {
-    setDataState({ data: newData, error: newError });
+    setDataState({ data: newData, error: newError })
   }
 
-  const { data, error } = dataState;
+  const { data, error } = dataState
   const dataGetter = makeDataGetter<
-    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
-  >(data, error?.graphQLErrors);
+    DeepNullable<{ count: number, items: { id: string, [key: string]: any }[] }>
+  >(data, error?.graphQLErrors)
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
     itemsFromServer: undefined as any,
     selectedItems: new Set() as ReadonlySet<string>,
-  }));
+  }))
 
   // this removes the selected items which no longer exist when the data changes
   // because someone goes to another page, changes filters or etc.
   if (data && data.items && selectedItemsState.itemsFromServer !== data.items) {
-    const newSelectedItems = new Set<string>();
+    const newSelectedItems = new Set<string>()
     data.items.forEach((item: any) => {
       if (selectedItemsState.selectedItems.has(item.id)) {
-        newSelectedItems.add(item.id);
+        newSelectedItems.add(item.id)
       }
-    });
-    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems });
+    })
+    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems })
   }
 
-  const theme = useTheme();
-  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
+  const theme = useTheme()
+  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null
 
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
@@ -273,8 +273,8 @@ const ListPage = ({ listKey }: ListPageProps) => {
           <Stack across gap="medium" align="center" marginTop="xlarge">
             <form
               onSubmit={e => {
-                e.preventDefault();
-                updateSearch(searchString);
+                e.preventDefault()
+                updateSearch(searchString)
               }}
             >
               <Stack across>
@@ -305,8 +305,8 @@ const ListPage = ({ listKey }: ListPageProps) => {
             <Fragment>
               <ResultsSummaryContainer>
                 {(() => {
-                  const selectedItems = selectedItemsState.selectedItems;
-                  const selectedItemsCount = selectedItems.size;
+                  const selectedItems = selectedItemsState.selectedItems
+                  const selectedItemsCount = selectedItems.size
                   if (selectedItemsCount) {
                     return (
                       <Fragment>
@@ -321,7 +321,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                           />
                         )}
                       </Fragment>
-                    );
+                    )
                   }
                   return (
                     <Fragment>
@@ -339,7 +339,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         fieldModesByFieldPath={listViewFieldModesByField}
                       />{' '}
                     </Fragment>
-                  );
+                  )
                 })()}
               </ResultsSummaryContainer>
               <ListTable
@@ -355,7 +355,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                   setSelectedItems({
                     itemsFromServer: selectedItemsState.itemsFromServer,
                     selectedItems,
-                  });
+                  })
                 }}
                 orderableFields={orderableFields}
               />
@@ -370,11 +370,11 @@ const ListPage = ({ listKey }: ListPageProps) => {
         </Center>
       )}
     </PageContainer>
-  );
-};
+  )
+}
 
 const ListPageHeader = ({ listKey }: { listKey: string }) => {
-  const list = useList(listKey);
+  const list = useList(listKey)
   return (
     <Fragment>
       <div
@@ -388,8 +388,8 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
         <Heading type="h3">{list.label}</Heading>
       </div>
     </Fragment>
-  );
-};
+  )
+}
 
 const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
   <p
@@ -404,10 +404,10 @@ const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
   >
     {children}
   </p>
-);
+)
 
 const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
-  const size = '0.25em';
+  const size = '0.25em'
   return (
     <span
       css={{
@@ -423,17 +423,17 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
         transform: `rotate(${direction === 'DESC' ? '0deg' : '180deg'})`,
       }}
     />
-  );
-};
+  )
+}
 
-function DeleteManyButton({
+function DeleteManyButton ({
   selectedItems,
   list,
   refetch,
 }: {
-  selectedItems: ReadonlySet<string>;
-  list: ListMeta;
-  refetch: () => void;
+  selectedItems: ReadonlySet<string>
+  list: ListMeta
+  refetch: () => void
 }) {
   const [deleteItems, deleteItemsState] = useMutation(
     useMemo(
@@ -449,16 +449,16 @@ function DeleteManyButton({
       [list]
     ),
     { errorPolicy: 'all' }
-  );
-  const [isOpen, setIsOpen] = useState(false);
-  const toasts = useToasts();
+  )
+  const [isOpen, setIsOpen] = useState(false)
+  const toasts = useToasts()
   return (
     <Fragment>
       <Button
         isLoading={deleteItemsState.loading}
         tone="negative"
         onClick={async () => {
-          setIsOpen(true);
+          setIsOpen(true)
         }}
       >
         Delete
@@ -474,7 +474,7 @@ function DeleteManyButton({
             action: async () => {
               const { data, errors } = await deleteItems({
                 variables: { where: [...selectedItems].map(id => ({ id })) },
-              });
+              })
               /*
                 Data returns an array where successful deletions are item objects
                 and unsuccessful deletions are null values.
@@ -486,29 +486,29 @@ function DeleteManyButton({
               ].reduce(
                 (
                   acc: {
-                    successfulItems: number;
-                    unsuccessfulItems: number;
-                    successMessage: string;
+                    successfulItems: number
+                    unsuccessfulItems: number
+                    successMessage: string
                   },
                   curr: any
                 ) => {
                   if (curr) {
-                    acc.successfulItems++;
+                    acc.successfulItems++
                     acc.successMessage =
                       acc.successMessage === ''
                         ? (acc.successMessage += curr[list.labelField])
-                        : (acc.successMessage += `, ${curr[list.labelField]}`);
+                        : (acc.successMessage += `, ${curr[list.labelField]}`)
                   } else {
-                    acc.unsuccessfulItems++;
+                    acc.unsuccessfulItems++
                   }
-                  return acc;
+                  return acc
                 },
                 { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
-                  successfulItems: number;
-                  unsuccessfulItems: number;
-                  successMessage: string;
+                  successfulItems: number
+                  unsuccessfulItems: number
+                  successMessage: string
                 }
-              );
+              )
 
               // If there are errors
               if (errors?.length) {
@@ -522,12 +522,12 @@ function DeleteManyButton({
                   message: errors
                     .reduce((acc, error) => {
                       if (acc.indexOf(error.message) < 0) {
-                        acc.push(error.message);
+                        acc.push(error.message)
                       }
-                      return acc;
+                      return acc
                     }, [] as string[])
                     .join('\n'),
-                });
+                })
               }
 
               if (successfulItems) {
@@ -537,16 +537,16 @@ function DeleteManyButton({
                     data[list.gqlNames.deleteManyMutationName].length
                   } ${list.plural} successfully`,
                   message: successMessage,
-                });
+                })
               }
 
-              return refetch();
+              return refetch()
             },
           },
           cancel: {
             label: 'Cancel',
             action: () => {
-              setIsOpen(false);
+              setIsOpen(false)
             },
           },
         }}
@@ -555,10 +555,10 @@ function DeleteManyButton({
         {selectedItems.size === 1 ? list.singular : list.plural}?
       </AlertDialog>
     </Fragment>
-  );
+  )
 }
 
-function ListTable({
+function ListTable ({
   selectedFields,
   listKey,
   itemsGetter,
@@ -570,21 +570,21 @@ function ListTable({
   onSelectedItemsChange,
   orderableFields,
 }: {
-  selectedFields: ReturnType<typeof useSelectedFields>;
-  listKey: string;
-  itemsGetter: DataGetter<DeepNullable<{ id: string; [key: string]: any }[]>>;
-  count: number;
-  sort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  currentPage: number;
-  pageSize: number;
-  selectedItems: ReadonlySet<string>;
-  onSelectedItemsChange(selectedItems: ReadonlySet<string>): void;
-  orderableFields: Set<string>;
+  selectedFields: ReturnType<typeof useSelectedFields>
+  listKey: string
+  itemsGetter: DataGetter<DeepNullable<{ id: string, [key: string]: any }[]>>
+  count: number
+  sort: { field: string, direction: 'ASC' | 'DESC' } | null
+  currentPage: number
+  pageSize: number
+  selectedItems: ReadonlySet<string>
+  onSelectedItemsChange(selectedItems: ReadonlySet<string>): void
+  orderableFields: Set<string>
 }) {
-  const list = useList(listKey);
-  const { query } = useRouter();
+  const list = useList(listKey)
+  const { query } = useRouter()
   const shouldShowLinkIcon =
-    !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo;
+    !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
@@ -611,24 +611,24 @@ function ListTable({
                 checked={selectedItems.size === itemsGetter.data?.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
-                  const newSelectedItems = new Set<string>();
+                  const newSelectedItems = new Set<string>()
                   if (selectedItems.size !== itemsGetter.data?.length) {
                     itemsGetter.data?.forEach(item => {
                       if (item !== null && item.id !== null) {
-                        newSelectedItems.add(item.id);
+                        newSelectedItems.add(item.id)
                       }
-                    });
+                    })
                   }
-                  onSelectedItemsChange(newSelectedItems);
+                  onSelectedItemsChange(newSelectedItems)
                 }}
               />
             </label>
           </TableHeaderCell>
           {shouldShowLinkIcon && <TableHeaderCell />}
           {[...selectedFields].map(path => {
-            const label = list.fields[path].label;
+            const label = list.fields[path].label
             if (!orderableFields.has(path)) {
-              return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
+              return <TableHeaderCell key={path}>{label}</TableHeaderCell>
             }
             return (
               <TableHeaderCell key={path}>
@@ -650,23 +650,23 @@ function ListTable({
                   {sort?.field === path && <SortDirectionArrow direction={sort.direction} />}
                 </Link>
               </TableHeaderCell>
-            );
+            )
           })}
         </TableHeaderRow>
         <tbody>
           {(itemsGetter.data ?? []).map((_, index) => {
-            const itemGetter = itemsGetter.get(index);
+            const itemGetter = itemsGetter.get(index)
             if (itemGetter.data === null || itemGetter.data.id === null) {
               if (itemGetter.errors) {
                 return (
                   <tr css={{ color: 'red' }} key={`index:${index}`}>
                     {itemGetter.errors[0].message}
                   </tr>
-                );
+                )
               }
-              return null;
+              return null
             }
-            const itemId = itemGetter.data.id;
+            const itemId = itemGetter.data.id
             return (
               <tr key={itemId || `index:${index}`}>
                 <TableBodyCell>
@@ -683,13 +683,13 @@ function ListTable({
                       checked={selectedItems.has(itemId)}
                       css={{ cursor: 'default' }}
                       onChange={() => {
-                        const newSelectedItems = new Set(selectedItems);
+                        const newSelectedItems = new Set(selectedItems)
                         if (selectedItems.has(itemId)) {
-                          newSelectedItems.delete(itemId);
+                          newSelectedItems.delete(itemId)
                         } else {
-                          newSelectedItems.add(itemId);
+                          newSelectedItems.add(itemId)
                         }
-                        onSelectedItemsChange(newSelectedItems);
+                        onSelectedItemsChange(newSelectedItems)
                       }}
                     />
                   </label>
@@ -712,15 +712,15 @@ function ListTable({
                   </TableBodyCell>
                 )}
                 {[...selectedFields].map((path, i) => {
-                  const field = list.fields[path];
-                  let { Cell } = list.fields[path].views;
-                  const itemForField: Record<string, any> = {};
+                  const field = list.fields[path]
+                  let { Cell } = list.fields[path].views
+                  const itemForField: Record<string, any> = {}
                   for (const graphqlField of getRootGraphQLFieldsFromFieldController(
                     field.controller
                   )) {
-                    const fieldGetter = itemGetter.get(graphqlField);
+                    const fieldGetter = itemGetter.get(graphqlField)
                     if (fieldGetter.errors) {
-                      const errorMessage = fieldGetter.errors[0].message;
+                      const errorMessage = fieldGetter.errors[0].message
                       return (
                         <TableBodyCell css={{ color: 'red' }} key={path}>
                           {i === 0 && Cell.supportsLinkTo ? (
@@ -734,9 +734,9 @@ function ListTable({
                             errorMessage
                           )}
                         </TableBodyCell>
-                      );
+                      )
                     }
-                    itemForField[graphqlField] = fieldGetter.data;
+                    itemForField[graphqlField] = fieldGetter.data
                   }
 
                   return (
@@ -754,16 +754,16 @@ function ListTable({
                         }
                       />
                     </TableBodyCell>
-                  );
+                  )
                 })}
               </tr>
-            );
+            )
           })}
         </tbody>
       </TableContainer>
       <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
-  );
+  )
 }
 
 const TableContainer = ({ children }: { children: ReactNode }) => {
@@ -779,19 +779,19 @@ const TableContainer = ({ children }: { children: ReactNode }) => {
     >
       {children}
     </table>
-  );
-};
+  )
+}
 
 const TableHeaderRow = ({ children }: { children: ReactNode }) => {
   return (
     <thead>
       <tr>{children}</tr>
     </thead>
-  );
-};
+  )
+}
 
 const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme()
   return (
     <th
       css={{
@@ -807,11 +807,11 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 const TableBodyCell = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, typography } = useTheme();
+  const { colors, typography } = useTheme()
   return (
     <td
       css={{
@@ -820,5 +820,5 @@ const TableBodyCell = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}

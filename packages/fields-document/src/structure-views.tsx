@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '@keystone-6/core/types';
-import { useEffect, useMemo, useRef } from 'react';
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
-import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
-import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview';
-import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+} from '@keystone-6/core/types'
+import { useEffect, useMemo, useRef } from 'react'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
+import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
+import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
+import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
 
 export const Field = ({
   field,
@@ -25,19 +25,19 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const valueRef = useRef(value);
+  const valueRef = useRef(value)
   useEffect(() => {
-    valueRef.current = value;
-  });
+    valueRef.current = value
+  })
   const createPreviewProps = useMemo(() => {
     return createGetPreviewProps(
       field.schema,
       getNewVal => {
-        onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) });
+        onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) })
       },
       () => undefined
-    );
-  }, [field.schema, onChange]);
+    )
+  }, [field.schema, onChange])
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
@@ -47,28 +47,28 @@ export const Field = ({
         {...createPreviewProps(value.value)}
       />
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({}) => {
-  return null;
-};
+  return null
+}
 
 export const CardValue: CardValueComponent = ({}) => {
-  return null as any;
-};
+  return null as any
+}
 
-export const allowedExportsOnCustomViews = ['schema'];
+export const allowedExportsOnCustomViews = ['schema']
 
 export const controller = (
   config: FieldControllerConfig
-): FieldController<{ kind: 'create' | 'update'; value: unknown }> & {
-  schema: ComponentSchemaForGraphQL;
+): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
+  schema: ComponentSchemaForGraphQL
 } => {
   if (!config.customViews.schema) {
     throw new Error(
       `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
-    );
+    )
   }
   return {
     path: config.path,
@@ -82,17 +82,17 @@ export const controller = (
       return {
         kind: 'update',
         value: data[`${config.path}`]?.json ?? null,
-      };
+      }
     },
     serialize: value => {
       return {
         [config.path]: serializeValue(config.customViews.schema, value.value, value.kind),
-      };
+      }
     },
-  };
-};
+  }
+}
 
-function serializeValue(
+function serializeValue (
   schema: ComponentSchemaForGraphQL,
   value: any,
   kind: 'update' | 'create'
@@ -100,36 +100,36 @@ function serializeValue(
   if (schema.kind === 'conditional') {
     return {
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
-    };
+    }
   }
   if (schema.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(schema.element, a, kind));
+    return (value as any[]).map(a => serializeValue(schema.element, a, kind))
   }
   if (schema.kind === 'form') {
-    return value;
+    return value
   }
   if (schema.kind === 'object') {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, val]) => {
-        return [key, serializeValue(val, value[key], kind)];
+        return [key, serializeValue(val, value[key], kind)]
       })
-    );
+    )
   }
   if (schema.kind === 'relationship') {
     if (Array.isArray(value)) {
       return {
         [kind === 'create' ? 'connect' : 'set']: value.map(x => ({ id: x.id })),
-      };
+      }
     }
     if (value === null) {
       if (kind === 'create') {
-        return undefined;
+        return undefined
       }
-      return { disconnect: true };
+      return { disconnect: true }
     }
     return {
       connect: { id: value.id },
-    };
+    }
   }
-  assertNever(schema);
+  assertNever(schema)
 }

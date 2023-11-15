@@ -1,9 +1,9 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
 
-import { Session, nextAuthSessionStrategy } from './session';
-import type { TypeInfo } from '.keystone/types';
+import { type Session, nextAuthSessionStrategy } from './session'
+import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -35,14 +35,14 @@ export default config<TypeInfo<Session>>({
 
     // adding page middleware ensures that users are redirected to the signin page if they are not signed in.
     pageMiddleware: async ({ wasAccessAllowed }) => {
-      if (wasAccessAllowed) return;
+      if (wasAccessAllowed) return
       return {
         kind: 'redirect',
         to: '/api/auth/signin',
-      };
+      }
     },
   },
   lists,
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   session: nextAuthSessionStrategy,
-});
+})

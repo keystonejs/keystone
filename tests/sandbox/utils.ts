@@ -1,5 +1,5 @@
-import { timestamp } from '@keystone-6/core/fields';
-import { BaseKeystoneTypeInfo, DatabaseConfig, StorageConfig } from '@keystone-6/core/types';
+import { timestamp } from '@keystone-6/core/fields'
+import { type BaseKeystoneTypeInfo, type DatabaseConfig, type StorageConfig } from '@keystone-6/core/types'
 
 export const localStorageConfig: Record<string, StorageConfig> = {
   images: {
@@ -16,7 +16,7 @@ export const localStorageConfig: Record<string, StorageConfig> = {
     serverRoute: { path: '/files' },
     storagePath: 'public/files',
   },
-};
+}
 
 // our monorepo tests have their @prisma/client dependencies hoisted
 //   to build them and use them without conflict, we need to ensure .prisma/client
@@ -27,13 +27,13 @@ export const localStorageConfig: Record<string, StorageConfig> = {
 //   transforms
 export const fixPrismaPath = {
   prismaClientPath: 'node_modules/.testprisma/client',
-};
+}
 
 export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {
   provider: 'sqlite',
   url: process.env.DATABASE_URL || 'file:./dev.db',
   ...fixPrismaPath,
-};
+}
 
 export const trackingFields = {
   createdAt: timestamp({
@@ -56,4 +56,4 @@ export const trackingFields = {
       itemView: { fieldMode: 'read' },
     },
   }),
-};
+}

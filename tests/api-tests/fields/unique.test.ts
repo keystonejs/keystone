@@ -1,16 +1,16 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
-import globby from 'globby';
-import { list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, dbProvider } from '../utils';
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
+import globby from 'globby'
+import { list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
+import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, dbProvider } from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
-});
+})
 
 describe(dbProvider, () => {
   testModules
@@ -25,24 +25,24 @@ describe(dbProvider, () => {
         describe(`${mod.name} (${matrixValue}, isIndexed: 'unique')`, () => {
           beforeEach(() => {
             if (mod.beforeEach) {
-              mod.beforeEach(matrixValue);
+              mod.beforeEach(matrixValue)
             }
-          });
+          })
           afterEach(async () => {
             if (mod.afterEach) {
-              await mod.afterEach(matrixValue);
+              await mod.afterEach(matrixValue)
             }
-          });
+          })
           beforeAll(() => {
             if (mod.beforeAll) {
-              mod.beforeAll(matrixValue);
+              mod.beforeAll(matrixValue)
             }
-          });
+          })
           afterAll(async () => {
             if (mod.afterAll) {
-              await mod.afterAll(matrixValue);
+              await mod.afterAll(matrixValue)
             }
-          });
+          })
           const runner = setupTestRunner({
             config: testConfig({
               lists: {
@@ -78,13 +78,13 @@ describe(dbProvider, () => {
                 },
               },
             }),
-          });
+          })
           test(
             'uniqueness is enforced over multiple mutations',
             runner(async ({ context }) => {
               await context.query.Test.createOne({
                 data: { testField: mod.exampleValue(matrixValue) },
-              });
+              })
 
               const { data, errors } = await context.graphql.raw({
                 query: `
@@ -93,13 +93,13 @@ describe(dbProvider, () => {
                     }
                   `,
                 variables: { data: { testField: mod.exampleValue(matrixValue) } },
-              });
-              expect(data).toEqual({ createTest: null });
+              })
+              expect(data).toEqual({ createTest: null })
               for (const error of errors ?? []) {
-                expect(error.message).toEqual(expect.stringContaining('Unique constraint failed'));
+                expect(error.message).toEqual(expect.stringContaining('Unique constraint failed'))
               }
             })
-          );
+          )
 
           test(
             'uniqueness is enforced over single mutation',
@@ -115,14 +115,14 @@ describe(dbProvider, () => {
                   fooData: { testField: mod.exampleValue(matrixValue) },
                   barData: { testField: mod.exampleValue(matrixValue) },
                 },
-              });
+              })
 
-              expect(data).toEqual({ foo: { id: expect.any(String) }, bar: null });
+              expect(data).toEqual({ foo: { id: expect.any(String) }, bar: null })
               for (const error of errors ?? []) {
-                expect(error.message).toEqual(expect.stringContaining('Unique constraint failed'));
+                expect(error.message).toEqual(expect.stringContaining('Unique constraint failed'))
               }
             })
-          );
+          )
 
           test(
             'Configuring uniqueness on one field does not affect others',
@@ -132,13 +132,13 @@ describe(dbProvider, () => {
                   { testField: mod.exampleValue(matrixValue), name: 'jess' },
                   { testField: mod.exampleValue2(matrixValue), name: 'jess' },
                 ],
-              });
-              expect(items).toHaveLength(2);
+              })
+              expect(items).toHaveLength(2)
             })
-          );
-        });
-      });
-    });
+          )
+        })
+      })
+    })
 
   testModules
     .map(require)
@@ -154,7 +154,7 @@ describe(dbProvider, () => {
         describe(`${mod.name} (${matrixValue}, isIndexed: 'unique')`, () => {
           test('Ensure non-supporting fields throw an error', async () => {
             // Try to create a thing and have it fail
-            let erroredOut = false;
+            let erroredOut = false
             try {
               await setupTestEnv({
                 config: testConfig({
@@ -191,16 +191,16 @@ describe(dbProvider, () => {
                     },
                   },
                 }),
-              });
+              })
             } catch (error: any) {
               expect(error.message).toMatch(
                 "isIndexed: 'unique' is not a supported option for field type"
-              );
-              erroredOut = true;
+              )
+              erroredOut = true
             }
-            expect(erroredOut).toEqual(true);
-          });
-        });
-      });
-    });
-});
+            expect(erroredOut).toEqual(true)
+          })
+        })
+      })
+    })
+})

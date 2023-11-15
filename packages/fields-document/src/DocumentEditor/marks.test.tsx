@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { allMarkdownShortcuts } from './marks';
-import { jsx, makeEditor } from './tests/utils';
+import { allMarkdownShortcuts } from './marks'
+import { jsx, makeEditor } from './tests/utils'
 
 describe.each(
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[])
@@ -19,10 +19,10 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
-    editor.insertText('s');
+    editor.insertText(shortcut.slice(-1))
+    editor.insertText('s')
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -34,8 +34,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
 
   test('works when selection is not collapsed', () => {
     let editor = makeEditor(
@@ -49,9 +49,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -63,8 +63,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('works when the start and ends are in different text nodes', () => {
     let editor = makeEditor(
       <editor>
@@ -77,9 +77,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -95,8 +95,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('does match when start of shortcut is in a different text node', () => {
     let editor = makeEditor(
       <editor>
@@ -108,9 +108,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -122,8 +122,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   if (shortcut.length === 2) {
     test('matches when the end shortcut is in a different text node', () => {
       let editor = makeEditor(
@@ -136,9 +136,9 @@ describe.each(
             </text>
           </paragraph>
         </editor>
-      );
+      )
 
-      editor.insertText(shortcut.slice(-1));
+      editor.insertText(shortcut.slice(-1))
       expect(editor).toEqualEditor(
         makeEditor(
           <editor marks={{}}>
@@ -150,8 +150,8 @@ describe.each(
             </paragraph>
           </editor>
         )
-      );
-    });
+      )
+    })
     test('does match when first and second characters in the start shortcut are in different text nodes', () => {
       let editor = makeEditor(
         <editor>
@@ -163,9 +163,9 @@ describe.each(
             </text>
           </paragraph>
         </editor>
-      );
+      )
 
-      editor.insertText(shortcut.slice(-1));
+      editor.insertText(shortcut.slice(-1))
       expect(editor).toEqualEditor(
         makeEditor(
           <editor marks={{}}>
@@ -177,8 +177,8 @@ describe.each(
             </paragraph>
           </editor>
         )
-      );
-    });
+      )
+    })
   }
   test('matches when the shortcut appears in an invalid position after the valid position in the same text node', () => {
     let editor = makeEditor(
@@ -190,9 +190,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -205,8 +205,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('matches when the shortcut appears in an invalid position before the valid position in the same text node', () => {
     let editor = makeEditor(
       <editor>
@@ -217,9 +217,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -232,8 +232,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test("does not match when there is a different text node before the start of the shortcut that doesn't end in whitespace", () => {
     let editor = makeEditor(
       <editor>
@@ -245,9 +245,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -260,8 +260,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('does not match when there is nothing between the start and end of the shortcut', () => {
     let editor = makeEditor(
       <editor>
@@ -272,8 +272,8 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
-    editor.insertText(shortcut.slice(-1));
+    )
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -285,8 +285,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('does not match when there is whitespace immediately after the end of the start of the shortcut', () => {
     let editor = makeEditor(
       <editor>
@@ -297,9 +297,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -311,8 +311,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
 
   test('does not match when there is whitespace immediately before the start of the end shortcut', () => {
     let editor = makeEditor(
@@ -324,9 +324,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -338,8 +338,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('does not match if there is a non-whitespace character before the start of the shortcut', () => {
     let editor = makeEditor(
       <editor>
@@ -350,9 +350,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -364,8 +364,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('does match if there is content before the text but still whitespace before the shortcut', () => {
     let editor = makeEditor(
       <editor>
@@ -376,9 +376,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -391,8 +391,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test("does match if there's text in the same block with marks and still whitespace before the new place", () => {
     let editor = makeEditor(
       <editor>
@@ -404,9 +404,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -420,8 +420,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test("does match if there's lots of text in the same block with marks and still whitespace before the new place", () => {
     let editor = makeEditor(
       <editor>
@@ -446,9 +446,9 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
+    editor.insertText(shortcut.slice(-1))
     expect(editor).toEqualEditor(
       makeEditor(
         <editor marks={{}}>
@@ -475,8 +475,8 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
 
   test('undo only undos adding the mark and removing the shortcut, keeps the inserted text', () => {
     let editor = makeEditor(
@@ -488,10 +488,10 @@ describe.each(
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(shortcut.slice(-1));
-    editor.undo();
+    editor.insertText(shortcut.slice(-1))
+    editor.undo()
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -503,9 +503,9 @@ describe.each(
           </paragraph>
         </editor>
       )
-    );
-  });
-});
+    )
+  })
+})
 
 test('inserting a break at the end of a block with a mark removes the mark', () => {
   let editor = makeEditor(
@@ -520,10 +520,10 @@ test('inserting a break at the end of a block with a mark removes the mark', () 
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
-  editor.insertText('a');
+  editor.insertBreak()
+  editor.insertText('a')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -543,8 +543,8 @@ test('inserting a break at the end of a block with a mark removes the mark', () 
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test("inserting a break in the middle of text doesn't remove the mark", () => {
   let editor = makeEditor(
@@ -558,10 +558,10 @@ test("inserting a break in the middle of text doesn't remove the mark", () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
-  editor.insertText('a');
+  editor.insertBreak()
+  editor.insertText('a')
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -590,5 +590,5 @@ test("inserting a break in the middle of text doesn't remove the mark", () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

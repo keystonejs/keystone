@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, makeEditor } from './tests/utils';
+import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a heading with a shortcut works', () => {
   let editor = makeEditor(
@@ -13,9 +13,9 @@ test('inserting a heading with a shortcut works', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText(' ');
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <heading
@@ -29,8 +29,8 @@ test('inserting a heading with a shortcut works', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break at the end of the heading exits the heading', () => {
   let editor = makeEditor(
@@ -45,9 +45,9 @@ test('inserting a break at the end of the heading exits the heading', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <heading
@@ -66,8 +66,8 @@ test('inserting a break at the end of the heading exits the heading', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break in the middle of the heading splits the text and does not exit the heading', () => {
   let editor = makeEditor(
@@ -82,9 +82,9 @@ test('inserting a break in the middle of the heading splits the text and does no
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <heading
@@ -106,8 +106,8 @@ test('inserting a break in the middle of the heading splits the text and does no
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break at the start of the heading inserts a paragraph above the heading', () => {
   let editor = makeEditor(
@@ -122,9 +122,9 @@ test('inserting a break at the start of the heading inserts a paragraph above th
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -142,5 +142,5 @@ test('inserting a break at the start of the heading inserts a paragraph above th
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

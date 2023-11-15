@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { graphql } from '@keystone-6/core';
-import { jsx } from '@keystone-ui/core';
+import { graphql } from '@keystone-6/core'
+import { jsx } from '@keystone-ui/core'
 import {
   FieldContainer,
   FieldLabel,
@@ -9,9 +9,9 @@ import {
   TextInput,
   Checkbox,
   MultiSelect,
-} from '@keystone-ui/fields';
-import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
-import { isValidURL } from '../isValidURL';
+} from '@keystone-ui/fields'
+import { type HTMLAttributes, type ReactElement, type ReactNode, useState } from 'react'
+import { isValidURL } from '../isValidURL'
 
 export type FormFieldValue =
   | string
@@ -19,26 +19,26 @@ export type FormFieldValue =
   | boolean
   | null
   | readonly FormFieldValue[]
-  | { [key: string]: FormFieldValue | undefined };
+  | { [key: string]: FormFieldValue | undefined }
 
 export type FormField<Value extends FormFieldValue, Options> = {
-  kind: 'form';
+  kind: 'form'
   Input(props: {
-    value: Value;
-    onChange(value: Value): void;
-    autoFocus: boolean;
+    value: Value
+    onChange(value: Value): void
+    autoFocus: boolean
     /**
      * This will be true when validate has returned false and the user has attempted to close the form
      * or when the form is open and they attempt to save the item
      */
-    forceValidation: boolean;
-  }): ReactElement | null;
+    forceValidation: boolean
+  }): ReactElement | null
   /**
    * The options are config about the field that are available on the
    * preview props when rendering the toolbar and preview component
    */
-  options: Options;
-  defaultValue: Value;
+  options: Options
+  defaultValue: Value
   /**
    * validate will be called in two cases:
    * - on the client in the editor when a user is changing the value.
@@ -50,8 +50,8 @@ export type FormField<Value extends FormFieldValue, Options> = {
    * this value to be of the correct type because it could come from
    * a potentially malicious client
    */
-  validate(value: unknown): boolean;
-};
+  validate(value: unknown): boolean
+}
 
 export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = FormField<
   Value,
@@ -63,77 +63,77 @@ export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = F
       Record<string, graphql.Arg<graphql.InputType, boolean>>,
       graphql.OutputType,
       'value'
-    >;
-    input: graphql.NullableInputType;
-  };
-};
+    >
+    input: graphql.NullableInputType
+  }
+}
 
 type InlineMarksConfig =
   | 'inherit'
   | {
-      bold?: 'inherit';
-      code?: 'inherit';
-      italic?: 'inherit';
-      strikethrough?: 'inherit';
-      underline?: 'inherit';
-      keyboard?: 'inherit';
-      subscript?: 'inherit';
-      superscript?: 'inherit';
-    };
+      bold?: 'inherit'
+      code?: 'inherit'
+      italic?: 'inherit'
+      strikethrough?: 'inherit'
+      underline?: 'inherit'
+      keyboard?: 'inherit'
+      subscript?: 'inherit'
+      superscript?: 'inherit'
+    }
 
 type BlockFormattingConfig = {
-  alignment?: 'inherit';
-  blockTypes?: 'inherit';
-  headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
-  inlineMarks?: InlineMarksConfig;
-  listTypes?: 'inherit';
-  softBreaks?: 'inherit';
-};
+  alignment?: 'inherit'
+  blockTypes?: 'inherit'
+  headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[]
+  inlineMarks?: InlineMarksConfig
+  listTypes?: 'inherit'
+  softBreaks?: 'inherit'
+}
 
 export type ChildField = {
-  kind: 'child';
+  kind: 'child'
   options:
     | {
-        kind: 'block';
-        placeholder: string;
-        formatting?: BlockFormattingConfig;
-        dividers?: 'inherit';
-        links?: 'inherit';
-        relationships?: 'inherit';
+        kind: 'block'
+        placeholder: string
+        formatting?: BlockFormattingConfig
+        dividers?: 'inherit'
+        links?: 'inherit'
+        relationships?: 'inherit'
       }
     | {
-        kind: 'inline';
-        placeholder: string;
+        kind: 'inline'
+        placeholder: string
         formatting?: {
-          inlineMarks?: InlineMarksConfig;
-          softBreaks?: 'inherit';
-        };
-        links?: 'inherit';
-        relationships?: 'inherit';
-      };
-};
+          inlineMarks?: InlineMarksConfig
+          softBreaks?: 'inherit'
+        }
+        links?: 'inherit'
+        relationships?: 'inherit'
+      }
+}
 
 export type ArrayField<ElementField extends ComponentSchema> = {
-  kind: 'array';
-  element: ElementField;
+  kind: 'array'
+  element: ElementField
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
-  itemLabel?(props: unknown): string;
-  label?: string;
-};
+  itemLabel?(props: unknown): string
+  label?: string
+}
 
 export type RelationshipField<Many extends boolean> = {
-  kind: 'relationship';
-  listKey: string;
-  selection: string | undefined;
-  label: string;
-  many: Many;
-};
+  kind: 'relationship'
+  listKey: string
+  selection: string | undefined
+  label: string
+  many: Many
+}
 
 export interface ObjectField<
   Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > {
-  kind: 'object';
-  fields: Fields;
+  kind: 'object'
+  fields: Fields
 }
 
 export type ConditionalField<
@@ -142,19 +142,19 @@ export type ConditionalField<
     [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema;
   }
 > = {
-  kind: 'conditional';
-  discriminant: DiscriminantField;
-  values: ConditionalValues;
-};
+  kind: 'conditional'
+  discriminant: DiscriminantField
+  values: ConditionalValues
+}
 
 // this is written like this rather than ArrayField<ComponentSchema> to avoid TypeScript erroring about circularity
 type ArrayFieldInComponentSchema = {
-  kind: 'array';
-  element: ComponentSchema;
+  kind: 'array'
+  element: ComponentSchema
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
-  itemLabel?(props: unknown): string;
-  label?: string;
-};
+  itemLabel?(props: unknown): string
+  label?: string
+}
 
 export type ComponentSchema =
   | ChildField
@@ -162,16 +162,16 @@ export type ComponentSchema =
   | ObjectField
   | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
-  | ArrayFieldInComponentSchema;
+  | ArrayFieldInComponentSchema
 
 // this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
 type ArrayFieldInComponentSchemaForGraphQL = {
-  kind: 'array';
-  element: ComponentSchemaForGraphQL;
+  kind: 'array'
+  element: ComponentSchemaForGraphQL
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
-  itemLabel?(props: unknown): string;
-  label?: string;
-};
+  itemLabel?(props: unknown): string
+  label?: string
+}
 
 export type ComponentSchemaForGraphQL =
   | FormFieldWithGraphQLField<any, any>
@@ -181,19 +181,19 @@ export type ComponentSchemaForGraphQL =
       { [key: string]: ComponentSchemaForGraphQL }
     >
   | RelationshipField<boolean>
-  | ArrayFieldInComponentSchemaForGraphQL;
+  | ArrayFieldInComponentSchemaForGraphQL
 
 export const fields = {
-  text({
+  text ({
     label,
     defaultValue = '',
   }: {
-    label: string;
-    defaultValue?: string;
+    label: string
+    defaultValue?: string
   }): FormFieldWithGraphQLField<string, undefined> {
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -201,39 +201,39 @@ export const fields = {
               autoFocus={autoFocus}
               value={value}
               onChange={event => {
-                onChange(event.target.value);
+                onChange(event.target.value)
               }}
             />
           </FieldContainer>
-        );
+        )
       },
       options: undefined,
       defaultValue,
-      validate(value) {
-        return typeof value === 'string';
+      validate (value) {
+        return typeof value === 'string'
       },
       graphql: {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
       },
-    };
+    }
   },
-  integer({
+  integer ({
     label,
     defaultValue = 0,
   }: {
-    label: string;
-    defaultValue?: number;
+    label: string
+    defaultValue?: number
   }): FormFieldWithGraphQLField<number, undefined> {
     const validate = (value: unknown) => {
-      return typeof value === 'number' && Number.isFinite(value);
-    };
+      return typeof value === 'number' && Number.isFinite(value)
+    }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus, forceValidation }) {
-        const [blurred, setBlurred] = useState(false);
-        const [inputValue, setInputValue] = useState(String(value));
-        const showValidation = forceValidation || (blurred && !validate(value));
+      Input ({ value, onChange, autoFocus, forceValidation }) {
+        const [blurred, setBlurred] = useState(false)
+        const [inputValue, setInputValue] = useState(String(value))
+        const showValidation = forceValidation || (blurred && !validate(value))
 
         return (
           <FieldContainer>
@@ -243,18 +243,18 @@ export const fields = {
               autoFocus={autoFocus}
               value={inputValue}
               onChange={event => {
-                const raw = event.target.value;
-                setInputValue(raw);
+                const raw = event.target.value
+                setInputValue(raw)
                 if (/^[+-]?\d+$/.test(raw)) {
-                  onChange(Number(raw));
+                  onChange(Number(raw))
                 } else {
-                  onChange(NaN);
+                  onChange(NaN)
                 }
               }}
             />
             {showValidation && <span css={{ color: 'red' }}>Please specify an integer</span>}
           </FieldContainer>
-        );
+        )
       },
       options: undefined,
       defaultValue,
@@ -263,23 +263,23 @@ export const fields = {
         input: graphql.Int,
         output: graphql.field({ type: graphql.Int }),
       },
-    };
+    }
   },
-  url({
+  url ({
     label,
     defaultValue = '',
   }: {
-    label: string;
-    defaultValue?: string;
+    label: string
+    defaultValue?: string
   }): FormFieldWithGraphQLField<string, undefined> {
     const validate = (value: unknown) => {
-      return typeof value === 'string' && (value === '' || isValidURL(value));
-    };
+      return typeof value === 'string' && (value === '' || isValidURL(value))
+    }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus, forceValidation }) {
-        const [blurred, setBlurred] = useState(false);
-        const showValidation = forceValidation || (blurred && !validate(value));
+      Input ({ value, onChange, autoFocus, forceValidation }) {
+        const [blurred, setBlurred] = useState(false)
+        const showValidation = forceValidation || (blurred && !validate(value))
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -288,12 +288,12 @@ export const fields = {
               autoFocus={autoFocus}
               value={value}
               onChange={event => {
-                onChange(event.target.value);
+                onChange(event.target.value)
               }}
             />
             {showValidation && <span css={{ color: 'red' }}>Please provide a valid URL</span>}
           </FieldContainer>
-        );
+        )
       },
       options: undefined,
       defaultValue,
@@ -302,26 +302,26 @@ export const fields = {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
       },
-    };
+    }
   },
-  select<Option extends { label: string; value: string }>({
+  select<Option extends { label: string, value: string }> ({
     label,
     options,
     defaultValue,
   }: {
-    label: string;
-    options: readonly Option[];
-    defaultValue: Option['value'];
+    label: string
+    options: readonly Option[]
+    defaultValue: Option['value']
   }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
-    const optionValuesSet = new Set(options.map(x => x.value));
+    const optionValuesSet = new Set(options.map(x => x.value))
     if (!optionValuesSet.has(defaultValue)) {
       throw new Error(
         `A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`
-      );
+      )
     }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -330,44 +330,44 @@ export const fields = {
               value={options.find(option => option.value === value) || null}
               onChange={option => {
                 if (option) {
-                  onChange(option.value);
+                  onChange(option.value)
                 }
               }}
               options={options}
             />
           </FieldContainer>
-        );
+        )
       },
       options,
       defaultValue,
-      validate(value) {
-        return typeof value === 'string' && optionValuesSet.has(value);
+      validate (value) {
+        return typeof value === 'string' && optionValuesSet.has(value)
       },
       graphql: {
         input: graphql.String,
         output: graphql.field({
           type: graphql.String,
           // TODO: investigate why this resolve is required here
-          resolve({ value }) {
-            return value;
+          resolve ({ value }) {
+            return value
           },
         }),
       },
-    };
+    }
   },
-  multiselect<Option extends { label: string; value: string }>({
+  multiselect<Option extends { label: string, value: string }> ({
     label,
     options,
     defaultValue,
   }: {
-    label: string;
-    options: readonly Option[];
-    defaultValue: readonly Option['value'][];
+    label: string
+    options: readonly Option[]
+    defaultValue: readonly Option['value'][]
   }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
-    const valuesToOption = new Map(options.map(x => [x.value, x]));
+    const valuesToOption = new Map(options.map(x => [x.value, x]))
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -376,101 +376,101 @@ export const fields = {
               value={value.map(x => valuesToOption.get(x)!)}
               options={options}
               onChange={options => {
-                onChange(options.map(x => x.value));
+                onChange(options.map(x => x.value))
               }}
             />
           </FieldContainer>
-        );
+        )
       },
       options,
       defaultValue,
-      validate(value) {
+      validate (value) {
         return (
           Array.isArray(value) &&
           value.every(value => typeof value === 'string' && valuesToOption.has(value))
-        );
+        )
       },
       graphql: {
         input: graphql.list(graphql.nonNull(graphql.String)),
         output: graphql.field({
           type: graphql.list(graphql.nonNull(graphql.String)),
           // TODO: investigate why this resolve is required here
-          resolve({ value }) {
-            return value;
+          resolve ({ value }) {
+            return value
           },
         }),
       },
-    };
+    }
   },
-  checkbox({
+  checkbox ({
     label,
     defaultValue = false,
   }: {
-    label: string;
-    defaultValue?: boolean;
+    label: string
+    defaultValue?: boolean
   }): FormFieldWithGraphQLField<boolean, undefined> {
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <Checkbox
               checked={value}
               autoFocus={autoFocus}
               onChange={event => {
-                onChange(event.target.checked);
+                onChange(event.target.checked)
               }}
             >
               {label}
             </Checkbox>
           </FieldContainer>
-        );
+        )
       },
       options: undefined,
       defaultValue,
-      validate(value) {
-        return typeof value === 'boolean';
+      validate (value) {
+        return typeof value === 'boolean'
       },
       graphql: {
         input: graphql.Boolean,
         output: graphql.field({ type: graphql.Boolean }),
       },
-    };
+    }
   },
-  empty(): FormField<null, undefined> {
+  empty (): FormField<null, undefined> {
     return {
       kind: 'form',
-      Input() {
-        return null;
+      Input () {
+        return null
       },
       options: undefined,
       defaultValue: null,
-      validate(value) {
-        return value === null || value === undefined;
+      validate (value) {
+        return value === null || value === undefined
       },
-    };
+    }
   },
-  child(
+  child (
     options:
       | {
-          kind: 'block';
-          placeholder: string;
-          formatting?: BlockFormattingConfig | 'inherit';
-          dividers?: 'inherit';
-          links?: 'inherit';
-          relationships?: 'inherit';
+          kind: 'block'
+          placeholder: string
+          formatting?: BlockFormattingConfig | 'inherit'
+          dividers?: 'inherit'
+          links?: 'inherit'
+          relationships?: 'inherit'
         }
       | {
-          kind: 'inline';
-          placeholder: string;
+          kind: 'inline'
+          placeholder: string
           formatting?:
             | 'inherit'
             | {
-                inlineMarks?: InlineMarksConfig;
-                softBreaks?: 'inherit';
-              };
-          links?: 'inherit';
-          relationships?: 'inherit';
+                inlineMarks?: InlineMarksConfig
+                softBreaks?: 'inherit'
+              }
+          links?: 'inherit'
+          relationships?: 'inherit'
         }
   ): ChildField {
     return {
@@ -505,17 +505,17 @@ export const fields = {
               links: options.links,
               relationships: options.relationships,
             },
-    };
+    }
   },
-  object<Fields extends Record<string, ComponentSchema>>(fields: Fields): ObjectField<Fields> {
-    return { kind: 'object', fields };
+  object<Fields extends Record<string, ComponentSchema>> (fields: Fields): ObjectField<Fields> {
+    return { kind: 'object', fields }
   },
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,
     ConditionalValues extends {
       [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema;
     }
-  >(
+  > (
     discriminant: DiscriminantField,
     values: ConditionalValues
   ): ConditionalField<DiscriminantField, ConditionalValues> {
@@ -525,23 +525,23 @@ export const fields = {
     ) {
       throw new Error(
         'The discriminant of a conditional field only supports string values, or boolean values, not both.'
-      );
+      )
     }
     return {
       kind: 'conditional',
       discriminant,
       values: values,
-    };
+    }
   },
-  relationship<Many extends boolean | undefined = false>({
+  relationship<Many extends boolean | undefined = false> ({
     listKey,
     selection,
     label,
     many,
   }: {
-    listKey: string;
-    label: string;
-    selection?: string;
+    listKey: string
+    label: string
+    selection?: string
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
     Many extends true ? true : false
   > {
@@ -551,52 +551,52 @@ export const fields = {
       selection,
       label,
       many: (many ? true : false) as any,
-    };
+    }
   },
-  array<ElementField extends ComponentSchema>(
+  array<ElementField extends ComponentSchema> (
     element: ElementField,
     opts?: {
-      itemLabel?: (props: GenericPreviewProps<ElementField, unknown>) => string;
-      label?: string;
+      itemLabel?: (props: GenericPreviewProps<ElementField, unknown>) => string
+      label?: string
     }
   ): ArrayField<ElementField> {
-    return { kind: 'array', element, itemLabel: opts?.itemLabel, label: opts?.label };
+    return { kind: 'array', element, itemLabel: opts?.itemLabel, label: opts?.label }
   },
-};
+}
 
 export type ComponentBlock<
   Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > = {
-  preview: (props: any) => ReactElement | null;
-  schema: Fields;
-  label: string;
+  preview: (props: any) => ReactElement | null
+  schema: Fields
+  label: string
 } & (
   | {
-      chromeless: true;
-      toolbar?: (props: { props: Record<string, any>; onRemove(): void }) => ReactElement;
+      chromeless: true
+      toolbar?: (props: { props: Record<string, any>, onRemove(): void }) => ReactElement
     }
   | {
-      chromeless?: false;
+      chromeless?: false
       toolbar?: (props: {
-        props: Record<string, any>;
-        onShowEditMode(): void;
-        onRemove(): void;
-        isValid: boolean;
-      }) => ReactElement;
+        props: Record<string, any>
+        onShowEditMode(): void
+        onRemove(): void
+        isValid: boolean
+      }) => ReactElement
     }
-);
+)
 
 type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
-  readonly element: ChildFieldElement;
-  readonly schema: Schema;
-};
+  readonly element: ChildFieldElement
+  readonly schema: Schema
+}
 
 type FormFieldPreviewProps<Schema extends FormField<any, any>> = {
-  readonly value: Schema['defaultValue'];
-  onChange(value: Schema['defaultValue']): void;
-  readonly options: Schema['options'];
-  readonly schema: Schema;
-};
+  readonly value: Schema['defaultValue']
+  onChange(value: Schema['defaultValue']): void
+  readonly options: Schema['options']
+  readonly schema: Schema
+}
 
 type ObjectFieldPreviewProps<Schema extends ObjectField<any>, ChildFieldElement> = {
   readonly fields: {
@@ -604,54 +604,54 @@ type ObjectFieldPreviewProps<Schema extends ObjectField<any>, ChildFieldElement>
       Schema['fields'][Key],
       ChildFieldElement
     >;
-  };
+  }
   onChange(value: {
     readonly [Key in keyof Schema['fields']]?: InitialOrUpdateValueFromComponentPropField<
       Schema['fields'][Key]
     >;
-  }): void;
-  readonly schema: Schema;
-};
+  }): void
+  readonly schema: Schema
+}
 
 type ConditionalFieldPreviewProps<
   Schema extends ConditionalField<FormField<string | boolean, any>, any>,
   ChildFieldElement
 > = {
   readonly [Key in keyof Schema['values']]: {
-    readonly discriminant: DiscriminantStringToDiscriminantValue<Schema['discriminant'], Key>;
+    readonly discriminant: DiscriminantStringToDiscriminantValue<Schema['discriminant'], Key>
     onChange<Discriminant extends Schema['discriminant']['defaultValue']>(
       discriminant: Discriminant,
       value?: InitialOrUpdateValueFromComponentPropField<Schema['values'][`${Discriminant}`]>
-    ): void;
-    readonly options: Schema['discriminant']['options'];
-    readonly value: GenericPreviewProps<Schema['values'][Key], ChildFieldElement>;
-    readonly schema: Schema;
+    ): void
+    readonly options: Schema['discriminant']['options']
+    readonly value: GenericPreviewProps<Schema['values'][Key], ChildFieldElement>
+    readonly schema: Schema
   };
-}[keyof Schema['values']];
+}[keyof Schema['values']]
 
 // this is a separate type so that this is distributive
 type RelationshipDataType<Many extends boolean> = Many extends true
   ? readonly HydratedRelationshipData[]
-  : HydratedRelationshipData | null;
+  : HydratedRelationshipData | null
 
 type RelationshipFieldPreviewProps<Schema extends RelationshipField<boolean>> = {
-  readonly value: RelationshipDataType<Schema['many']>;
-  onChange(relationshipData: RelationshipDataType<Schema['many']>): void;
-  readonly schema: Schema;
-};
+  readonly value: RelationshipDataType<Schema['many']>
+  onChange(relationshipData: RelationshipDataType<Schema['many']>): void
+  readonly schema: Schema
+}
 
 type ArrayFieldPreviewProps<Schema extends ArrayField<ComponentSchema>, ChildFieldElement> = {
   readonly elements: readonly (GenericPreviewProps<Schema['element'], ChildFieldElement> & {
-    readonly key: string;
-  })[];
+    readonly key: string
+  })[]
   readonly onChange: (
     value: readonly {
-      key: string | undefined;
-      value?: InitialOrUpdateValueFromComponentPropField<Schema['element']>;
+      key: string | undefined
+      value?: InitialOrUpdateValueFromComponentPropField<Schema['element']>
     }[]
-  ) => void;
-  readonly schema: Schema;
-};
+  ) => void
+  readonly schema: Schema
+}
 
 export type GenericPreviewProps<
   Schema extends ComponentSchema,
@@ -668,9 +668,9 @@ export type GenericPreviewProps<
   ? RelationshipFieldPreviewProps<Schema>
   : Schema extends ArrayField<infer ElementField>
   ? ArrayFieldPreviewProps<Schema, ChildFieldElement>
-  : never;
+  : never
 
-export type PreviewProps<Schema extends ComponentSchema> = GenericPreviewProps<Schema, ReactNode>;
+export type PreviewProps<Schema extends ComponentSchema> = GenericPreviewProps<Schema, ReactNode>
 
 export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentSchema> =
   Schema extends ChildField
@@ -684,8 +684,8 @@ export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentS
     : Schema extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
-          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-          readonly value?: InitialOrUpdateValueFromComponentPropField<Values[Key]>;
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>
+          readonly value?: InitialOrUpdateValueFromComponentPropField<Values[Key]>
         };
       }[keyof Values]
     : Schema extends RelationshipField<infer Many>
@@ -694,10 +694,10 @@ export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentS
       : HydratedRelationshipData | null
     : Schema extends ArrayField<infer ElementField>
     ? readonly {
-        key: string | undefined;
-        value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
+        key: string | undefined
+        value?: InitialOrUpdateValueFromComponentPropField<ElementField>
       }[]
-    : never;
+    : never
 
 type DiscriminantStringToDiscriminantValue<
   DiscriminantField extends FormField<any, any>,
@@ -708,65 +708,65 @@ type DiscriminantStringToDiscriminantValue<
     : 'false' extends DiscriminantString
     ? false
     : never
-  : DiscriminantString;
+  : DiscriminantString
 
 export type PreviewPropsForToolbar<Schema extends ComponentSchema> = GenericPreviewProps<
   Schema,
   undefined
->;
+>
 
 export type HydratedRelationshipData = {
-  id: string;
-  label: string;
-  data: Record<string, any>;
-};
+  id: string
+  label: string
+  data: Record<string, any>
+}
 
 export type RelationshipData = {
-  id: string;
-  label: string | undefined;
-  data: Record<string, any> | undefined;
-};
+  id: string
+  label: string | undefined
+  data: Record<string, any> | undefined
+}
 
 export function component<
   Schema extends {
     [Key in any]: ComponentSchema;
   }
->(
+> (
   options: {
     /** The preview component shown in the editor */
-    preview: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null;
+    preview: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null
     /** The schema for the props that the preview component, toolbar and rendered component will receive */
-    schema: Schema;
+    schema: Schema
     /** The label to show in the insert menu and chrome around the block if chromeless is false */
-    label: string;
+    label: string
   } & (
     | {
-        chromeless: true;
+        chromeless: true
         toolbar?: (props: {
-          props: PreviewPropsForToolbar<ObjectField<Schema>>;
-          onRemove(): void;
-        }) => ReactElement;
+          props: PreviewPropsForToolbar<ObjectField<Schema>>
+          onRemove(): void
+        }) => ReactElement
       }
     | {
-        chromeless?: false;
+        chromeless?: false
         toolbar?: (props: {
-          props: PreviewPropsForToolbar<ObjectField<Schema>>;
-          onShowEditMode(): void;
-          onRemove(): void;
-        }) => ReactElement;
+          props: PreviewPropsForToolbar<ObjectField<Schema>>
+          onShowEditMode(): void
+          onRemove(): void
+        }) => ReactElement
       }
   )
 ): ComponentBlock<Schema> {
-  return options as any;
+  return options as any
 }
 
 export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
   </span>
-);
+)
 
-type Comp<Props> = (props: Props) => ReactElement | null;
+type Comp<Props> = (props: Props) => ReactElement | null
 
 type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =
   Schema extends ChildField
@@ -778,8 +778,8 @@ type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =
     : Schema extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
-          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-          readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>
+          readonly value: ValueForRenderingFromComponentPropField<Values[Key]>
         };
       }[keyof Values]
     : Schema extends RelationshipField<infer Many>
@@ -788,7 +788,7 @@ type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =
       : HydratedRelationshipData | null
     : Schema extends ArrayField<infer ElementField>
     ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
-    : never;
+    : never
 
 export type ValueForComponentSchema<Schema extends ComponentSchema> = Schema extends ChildField
   ? null
@@ -799,8 +799,8 @@ export type ValueForComponentSchema<Schema extends ComponentSchema> = Schema ext
   : Schema extends ConditionalField<infer DiscriminantField, infer Values>
   ? {
       readonly [Key in keyof Values]: {
-        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-        readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
+        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>
+        readonly value: ValueForRenderingFromComponentPropField<Values[Key]>
       };
     }[keyof Values]
   : Schema extends RelationshipField<infer Many>
@@ -809,11 +809,11 @@ export type ValueForComponentSchema<Schema extends ComponentSchema> = Schema ext
     : HydratedRelationshipData | null
   : Schema extends ArrayField<infer ElementField>
   ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
-  : never;
+  : never
 
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentSchema>> = {
   readonly [Key in keyof Props]: ValueForRenderingFromComponentPropField<Props[Key]>;
-};
+}
 
 export type InferRenderersForComponentBlocks<
   ComponentBlocks extends Record<string, ComponentBlock<any>>
@@ -821,4 +821,4 @@ export type InferRenderersForComponentBlocks<
   [Key in keyof ComponentBlocks]: Comp<
     ExtractPropsForPropsForRendering<ComponentBlocks[Key]['schema']>
   >;
-};
+}

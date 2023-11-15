@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Fragment, type ReactNode } from 'react'
+import { jsx, useTheme } from '@keystone-ui/core'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const Brand = () => {
-  const { palette } = useTheme();
+  const { palette } = useTheme()
   return (
     <h2>
       <Link
@@ -21,24 +21,24 @@ const Brand = () => {
         Keystone UI
       </Link>
     </h2>
-  );
-};
+  )
+}
 
-type SectionProps = { label: string; children: ReactNode };
+type SectionProps = { label: string, children: ReactNode }
 const Section = ({ label, children }: SectionProps) => {
   return (
     <Fragment>
       <h3>{label}</h3>
       <ul css={{ margin: 0, padding: 0 }}>{children}</ul>
     </Fragment>
-  );
-};
+  )
+}
 
-type NavItemProps = { href: string; children: ReactNode };
+type NavItemProps = { href: string, children: ReactNode }
 const NavItem = ({ href, children }: NavItemProps) => {
-  const { palette, radii, spacing } = useTheme();
-  const router = useRouter();
-  const isSelected = router.pathname === href;
+  const { palette, radii, spacing } = useTheme()
+  const router = useRouter()
+  const isSelected = router.pathname === href
   return (
     <li
       css={{
@@ -65,8 +65,8 @@ const NavItem = ({ href, children }: NavItemProps) => {
         {children}
       </Link>
     </li>
-  );
-};
+  )
+}
 
 export const Navigation = () => {
   return (
@@ -95,5 +95,5 @@ export const Navigation = () => {
         <NavItem href="/components/toast">Toast</NavItem>
       </Section>
     </Fragment>
-  );
-};
+  )
+}

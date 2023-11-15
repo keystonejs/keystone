@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Box, useTheme } from '@keystone-ui/core';
+import { jsx, Box, useTheme } from '@keystone-ui/core'
 
-import { Page } from '../../components/Page';
-import { Code } from '../../components/Code';
+import { Page } from '../../components/Page'
+import { Code } from '../../components/Code'
 
-export default function ThemePage() {
-  const { palette } = useTheme();
+export default function ThemePage () {
+  const { palette } = useTheme()
   return (
     <Page>
       <h1>Box</h1>
@@ -34,5 +34,5 @@ export default function ThemePage() {
       <h2>TODO</h2>
       <p>Add support for border properties, elevation, etc?</p>
     </Page>
-  );
+  )
 }

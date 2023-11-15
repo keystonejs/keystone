@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes, ElementType } from 'react';
+import { jsx } from '@emotion/react'
+import { type HTMLAttributes, type ElementType } from 'react'
 
 const styleMap = {
   grad1: {
@@ -28,14 +28,14 @@ const styleMap = {
     '--grad-1': 'var(--grad6-1)',
     '--grad-2': 'var(--grad6-2)',
   },
-};
+}
 
 type HighlightProps = {
-  as?: ElementType;
-  look?: keyof typeof styleMap;
-} & HTMLAttributes<HTMLElement>;
+  as?: ElementType
+  look?: keyof typeof styleMap
+} & HTMLAttributes<HTMLElement>
 
-export function Highlight({ look = 'grad1', as: Tag = 'span', ...props }: HighlightProps) {
+export function Highlight ({ look = 'grad1', as: Tag = 'span', ...props }: HighlightProps) {
   return (
     <Tag
       css={{
@@ -49,5 +49,5 @@ export function Highlight({ look = 'grad1', as: Tag = 'span', ...props }: Highli
       }}
       {...props}
     />
-  );
+  )
 }

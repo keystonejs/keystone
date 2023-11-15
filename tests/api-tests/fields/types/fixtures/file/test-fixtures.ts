@@ -1,32 +1,31 @@
-import path from 'path';
-import os from 'os';
-import fs from 'fs-extra';
-// @ts-ignore
-import Upload from 'graphql-upload/Upload.js';
-import mime from 'mime';
-import { file } from '@keystone-6/core/fields';
-import { KeystoneConfig } from '@keystone-6/core/types';
+import path from 'path'
+import os from 'os'
+import fs from 'fs-extra'
+// @ts-expect-error
+import Upload from 'graphql-upload/Upload.js'
+import mime from 'mime'
+import { file } from '@keystone-6/core/fields'
+import { type KeystoneConfig } from '@keystone-6/core/types'
 
 export const prepareFile = (_filePath: string) => {
-  const filePath = path.resolve(`${__dirname}/test-files/${_filePath}`);
-  const upload = new Upload();
+  const filePath = path.resolve(`${__dirname}/test-files/${_filePath}`)
+  const upload = new Upload()
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
-    // @ts-ignore
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
-  });
-  return { upload };
-};
-
-export const testMatrix: Array<MatrixValue> = ['local'];
-
-if (process.env.S3_BUCKET_NAME) {
-  testMatrix.push('s3');
+  })
+  return { upload }
 }
 
-export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'));
+export const testMatrix: Array<MatrixValue> = ['local']
+
+if (process.env.S3_BUCKET_NAME) {
+  testMatrix.push('s3')
+}
+
+export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'))
 
 export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig> => {
   if (matrixValue === 'local') {
@@ -42,7 +41,7 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
           },
         },
       },
-    };
+    }
   }
   return {
     storage: {
@@ -57,29 +56,29 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
         forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
       },
     },
-  };
-};
+  }
+}
 
-export const name = 'File';
-export const typeFunction = file;
+export const name = 'File'
+export const typeFunction = file
 
-export const exampleValue = () => prepareFile('keystone.jpg');
-export const exampleValue2 = () => prepareFile('react.jpg');
-export const createReturnedValue = 3250;
-export const updateReturnedValue = 5562;
+export const exampleValue = () => prepareFile('keystone.jpg')
+export const exampleValue2 = () => prepareFile('react.jpg')
+export const createReturnedValue = 3250
+export const updateReturnedValue = 5562
 
-export const supportsNullInput = true;
-export const supportsUnique = false;
-export const skipRequiredTest = true;
-export const fieldName = 'secretFile';
-export const subfieldName = 'filesize';
-export const fieldConfig = () => ({ storage: 'test_file' });
+export const supportsNullInput = true
+export const supportsUnique = false
+export const skipRequiredTest = true
+export const fieldName = 'secretFile'
+export const subfieldName = 'filesize'
+export const fieldConfig = () => ({ storage: 'test_file' })
 
-export type MatrixValue = 's3' | 'local';
+export type MatrixValue = 's3' | 'local'
 
 export const getTestFields = () => ({
   secretFile: file({ storage: 'test_file' }),
-});
+})
 
 export const initItems = () => [
   { secretFile: prepareFile('graphql.jpg'), name: 'file0' },
@@ -89,7 +88,7 @@ export const initItems = () => [
   { secretFile: prepareFile('thinkmill1.jpg'), name: 'file4' },
   { secretFile: null, name: 'file5' },
   { secretFile: null, name: 'file6' },
-];
+]
 
 export const storedValues = () => [
   { secretFile: { filesize: 2759 }, name: 'file0' },
@@ -99,4 +98,4 @@ export const storedValues = () => [
   { secretFile: { filesize: 1028 }, name: 'file4' },
   { secretFile: null, name: 'file5' },
   { secretFile: null, name: 'file6' },
-];
+]

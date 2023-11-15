@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const LayoutIcon = createIcon(
   <React.Fragment>
     <rect x={3} y={3} width={18} height={18} rx={2} ry={2} />
@@ -7,4 +7,4 @@ export const LayoutIcon = createIcon(
     <line x1={9} y1={21} x2={9} y2={9} />
   </React.Fragment>,
   'LayoutIcon'
-);
+)

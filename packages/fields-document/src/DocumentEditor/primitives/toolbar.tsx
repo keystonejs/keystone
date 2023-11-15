@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext, ReactNode } from 'react';
-import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
+import { type ButtonHTMLAttributes, type HTMLAttributes, createContext, useContext, type ReactNode } from 'react'
+import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
 
 // Spacers and Separators
 // ------------------------------
 
 export const ToolbarSpacer = () => {
-  const { spacing } = useTheme();
+  const { spacing } = useTheme()
 
-  return <span css={{ display: 'inline-block', width: spacing.large }} />;
-};
+  return <span css={{ display: 'inline-block', width: spacing.large }} />
+}
 export const ToolbarSeparator = () => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
 
   return (
     <span
@@ -26,27 +26,27 @@ export const ToolbarSeparator = () => {
         width: 1,
       }}
     />
-  );
-};
+  )
+}
 
 // Groups
 // ------------------------------
 
-type DirectionType = 'row' | 'column';
+type DirectionType = 'row' | 'column'
 
 const directionToAlignment = {
   row: 'center',
   column: 'start',
-};
+}
 
-const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' });
-const useToolbarGroupContext = () => useContext(ToolbarGroupContext);
+const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' })
+const useToolbarGroupContext = () => useContext(ToolbarGroupContext)
 
 type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
-  HTMLAttributes<HTMLDivElement>;
+  HTMLAttributes<HTMLDivElement>
 export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
   ({ children, direction = 'row', ...props }, ref) => {
-    const { spacing } = useTheme();
+    const { spacing } = useTheme()
     return (
       <ToolbarGroupContext.Provider value={{ direction }}>
         <Box
@@ -65,30 +65,30 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
           {children}
         </Box>
       </ToolbarGroupContext.Provider>
-    );
+    )
   }
-);
+)
 
 // Buttons
 // ------------------------------
 
 type ToolbarButtonProps = {
-  as?: string;
-  isDisabled?: boolean;
-  isPressed?: boolean;
-  isSelected?: boolean;
-  variant?: 'default' | 'action' | 'destructive';
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
-export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(function ToolbarButton(
+  as?: string
+  isDisabled?: boolean
+  isPressed?: boolean
+  isSelected?: boolean
+  variant?: 'default' | 'action' | 'destructive'
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>
+export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(function ToolbarButton (
   { as: Tag = 'button', isDisabled, isPressed, isSelected, variant = 'default', ...props },
   ref
 ) {
-  const extraProps: any = {};
-  const { direction: groupDirection } = useToolbarGroupContext();
-  const { colors, palette, radii, sizing, spacing, typography } = useTheme();
+  const extraProps: any = {}
+  const { direction: groupDirection } = useToolbarGroupContext()
+  const { colors, palette, radii, sizing, spacing, typography } = useTheme()
 
   if (Tag === 'button') {
-    extraProps.type = 'button';
+    extraProps.type = 'button'
   }
 
   const variants = {
@@ -99,8 +99,8 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
     },
     action: { bgHover: palette.blue50, bgActive: palette.blue100, fg: palette.blue600 },
     destructive: { bgHover: palette.red50, bgActive: palette.red100, fg: palette.red600 },
-  };
-  const style = variants[variant];
+  }
+  const style = variants[variant]
 
   return (
     <Tag
@@ -156,11 +156,11 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
       }}
       {...props}
     />
-  );
-});
+  )
+})
 
-export function KeyboardInTooltip({ children }: { children: ReactNode }) {
-  const theme = useTheme();
+export function KeyboardInTooltip ({ children }: { children: ReactNode }) {
+  const theme = useTheme()
   return (
     <kbd
       css={{
@@ -175,5 +175,5 @@ export function KeyboardInTooltip({ children }: { children: ReactNode }) {
     >
       {children}
     </kbd>
-  );
+  )
 }

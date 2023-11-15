@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const SlackIcon = createIcon(
   <React.Fragment>
     <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z" />
@@ -12,4 +12,4 @@ export const SlackIcon = createIcon(
     <path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z" />
   </React.Fragment>,
   'SlackIcon'
-);
+)

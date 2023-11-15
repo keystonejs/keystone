@@ -1,5 +1,5 @@
-import { sanitizeUrl } from '@braintree/sanitize-url';
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
-export function isValidURL(url: string) {
-  return url === sanitizeUrl(url);
+export function isValidURL (url: string) {
+  return url === sanitizeUrl(url)
 }

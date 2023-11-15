@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { shortcuts } from './shortcuts';
-import { jsx, makeEditor } from './tests/utils';
+import { shortcuts } from './shortcuts'
+import { jsx, makeEditor } from './tests/utils'
 
 describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, result) => {
   test('can be inserted', () => {
@@ -15,9 +15,9 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(' ');
+    editor.insertText(' ')
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -29,8 +29,8 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
           </paragraph>
         </editor>
       )
-    );
-  });
+    )
+  })
   test('the replacement can be undone', () => {
     let editor = makeEditor(
       <editor>
@@ -41,9 +41,9 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
           </text>
         </paragraph>
       </editor>
-    );
+    )
 
-    editor.insertText(' ');
+    editor.insertText(' ')
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -55,8 +55,8 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
           </paragraph>
         </editor>
       )
-    );
-    editor.undo();
+    )
+    editor.undo()
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>
@@ -68,6 +68,6 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
           </paragraph>
         </editor>
       )
-    );
-  });
-});
+    )
+  })
+})

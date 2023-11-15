@@ -1,8 +1,8 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { select } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { select } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Task: list({
@@ -29,4 +29,4 @@ export const lists: Lists = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
-};
+}

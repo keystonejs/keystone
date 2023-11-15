@@ -4,24 +4,24 @@ import type {
   KeystoneConfig,
   BaseKeystoneTypeInfo,
   ListConfig,
-} from './types';
+} from './types'
 
-export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
-  return config;
+export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>) {
+  return config
 }
 
-let i = 0;
+let i = 0
 export function group<
   __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
->(config: {
-  label: string;
-  description?: string;
-  fields: BaseFields<ListTypeInfo>;
+> (config: {
+  label: string
+  description?: string
+  fields: BaseFields<ListTypeInfo>
 }): BaseFields<ListTypeInfo> {
-  const keys = Object.keys(config.fields);
+  const keys = Object.keys(config.fields)
   if (keys.some(key => key.startsWith('__group'))) {
-    throw new Error('groups cannot be nested');
+    throw new Error('groups cannot be nested')
   }
 
   return {
@@ -31,12 +31,12 @@ export function group<
       description: config.description ?? null,
     },
     ...config.fields,
-  } as any; // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
+  } as any // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
 export function list<
   __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
->(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
-  return { ...config };
+> (config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
+  return { ...config }
 }

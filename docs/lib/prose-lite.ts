@@ -251,4 +251,4 @@ export const proseStyles = {
   '> :last-child': {
     marginBottom: '0',
   },
-};
+}

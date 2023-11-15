@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Node } from 'slate';
-import { makeEditor, jsx } from '../tests/utils';
-import { MyDataTransfer } from './data-transfer';
+import { Node } from 'slate'
+import { makeEditor, jsx } from '../tests/utils'
+import { MyDataTransfer } from './data-transfer'
 
 const deserializeMarkdown = (markdown: string) => {
   let editor = makeEditor(
@@ -14,12 +14,12 @@ const deserializeMarkdown = (markdown: string) => {
         </text>
       </paragraph>
     </editor>
-  );
-  const data = new MyDataTransfer();
-  data.setData('text/plain', markdown);
-  editor.insertData(data);
-  return editor;
-};
+  )
+  const data = new MyDataTransfer()
+  data.setData('text/plain', markdown)
+  editor.insertData(data)
+  return editor
+}
 
 test('document with all the things', () => {
   expect(
@@ -269,8 +269,8 @@ there is a break before this
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('a mark stays in the same block', () => {
   expect(deserializeMarkdown(`__some bold content__`)).toMatchInlineSnapshot(`
@@ -290,8 +290,8 @@ test('a mark stays in the same block', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('a link stays in the same block', () => {
   expect(deserializeMarkdown(`[link](https://keystonejs.com)`)).toMatchInlineSnapshot(`
@@ -311,8 +311,8 @@ test('a link stays in the same block', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('a link nested inside bold', () => {
   expect(deserializeMarkdown(`__content [link](https://keystonejs.com) content__`))
@@ -348,17 +348,17 @@ test('a link nested inside bold', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // this is written like this rather than a snapshot because the snapshot
 // formatting creates html escapes(which is nice for the formatting)
 // this test shows ensures that the snapshot formatting is not buggy
 // and we're not showing html escapes to users or something
 test('html in inline content is just written', () => {
-  const input = `a<code>blah</code>b`;
-  expect(Node.string(deserializeMarkdown(input))).toEqual(input);
-});
+  const input = `a<code>blah</code>b`
+  expect(Node.string(deserializeMarkdown(input))).toEqual(input)
+})
 
 test('html in complex inline content', () => {
   expect(deserializeMarkdown(`__content [link<code>blah</code>](https://keystonejs.com) content__`))
@@ -394,8 +394,8 @@ test('html in complex inline content', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // the difference between a delightful "oh, nice! the editor did the formatting i wanted"
 // and "UGH!! the editor just removed some of the content i wanted" can be really subtle
@@ -414,19 +414,19 @@ test('link and image references and images are left alone', () => {
 
 [1]: http://keystonejs.com/link-reference
 
-[2]: http://keystonejs.com/image-reference`;
+[2]: http://keystonejs.com/image-reference`
 
   expect(
     deserializeMarkdown(input)
       .children.map(node => Node.string(node))
       .join('\n\n')
-  ).toEqual(input);
-});
+  ).toEqual(input)
+})
 
 // ideally, we would probably convert the mark here, but like the comment on the previous test says,
 // it being not perfect is fine, as long as it doesn't make things _worse_
 test('marks in image tags are converted', () => {
-  const input = `![Image **blah**](https://keystonejs.com/image)`;
+  const input = `![Image **blah**](https://keystonejs.com/image)`
 
   expect(deserializeMarkdown(input)).toMatchInlineSnapshot(`
     <editor>
@@ -437,5 +437,5 @@ test('marks in image tags are converted', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

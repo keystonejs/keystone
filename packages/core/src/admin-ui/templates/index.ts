@@ -1,16 +1,16 @@
-import * as Path from 'path';
-import type { GraphQLSchema } from 'graphql';
-import type { KeystoneConfig, AdminFileToWrite } from '../../types';
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta';
-import { appTemplate } from './app';
-import { homeTemplate } from './home';
-import { listTemplate } from './list';
-import { itemTemplate } from './item';
-import { noAccessTemplate } from './no-access';
-import { createItemTemplate } from './create-item';
-import { nextConfigTemplate } from './next-config';
+import * as Path from 'path'
+import type { GraphQLSchema } from 'graphql'
+import type { KeystoneConfig, AdminFileToWrite } from '../../types'
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import { appTemplate } from './app'
+import { homeTemplate } from './home'
+import { listTemplate } from './list'
+import { itemTemplate } from './item'
+import { noAccessTemplate } from './no-access'
+import { createItemTemplate } from './create-item'
+import { nextConfigTemplate } from './next-config'
 
-const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'));
+const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'))
 
 export const writeAdminFiles = (
   config: KeystoneConfig,
@@ -46,5 +46,5 @@ export const writeAdminFiles = (
       { mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
       { mode: 'write', src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
     ]),
-  ];
-};
+  ]
+}

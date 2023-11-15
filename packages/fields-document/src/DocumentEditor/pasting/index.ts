@@ -1,29 +1,29 @@
-import { Element, Descendant, Editor, Transforms, Range } from 'slate';
-import { isValidURL } from '../isValidURL';
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils';
-import { deserializeHTML } from './html';
-import { deserializeMarkdown } from './markdown';
+import { Element, type Descendant, Editor, Transforms, Range } from 'slate'
+import { isValidURL } from '../isValidURL'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
+import { deserializeHTML } from './html'
+import { deserializeMarkdown } from './markdown'
 
-const urlPattern = /https?:\/\//;
+const urlPattern = /https?:\/\//
 
-function insertFragmentButDifferent(editor: Editor, nodes: Descendant[]) {
-  const firstNode = nodes[0];
+function insertFragmentButDifferent (editor: Editor, nodes: Descendant[]) {
+  const firstNode = nodes[0]
   if (Element.isElement(firstNode) && Editor.isBlock(editor, firstNode)) {
-    insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, nodes);
+    insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, nodes)
   } else {
-    Transforms.insertFragment(editor, nodes);
+    Transforms.insertFragment(editor, nodes)
   }
 }
 
-export function withPasting(editor: Editor): Editor {
-  const { insertData, setFragmentData } = editor;
+export function withPasting (editor: Editor): Editor {
+  const { insertData, setFragmentData } = editor
 
   editor.setFragmentData = data => {
     if (editor.selection) {
-      data.setData('application/x-keystone-document-editor', 'true');
+      data.setData('application/x-keystone-document-editor', 'true')
     }
-    setFragmentData(data);
-  };
+    setFragmentData(data)
+  }
 
   editor.insertData = data => {
     // this exists because behind the scenes, Slate sets the slate document
@@ -41,35 +41,35 @@ export function withPasting(editor: Editor): Editor {
     // TODO: handle the case of copying between editors with different components blocks
     // (right now, things will blow up in most cases)
     if (data.getData('application/x-keystone-document-editor') === 'true') {
-      insertData(data);
-      return;
+      insertData(data)
+      return
     }
     const blockAbove = Editor.above(editor, {
       match: node => Element.isElement(node) && Editor.isBlock(editor, node),
-    });
+    })
     if (blockAbove?.[0].type === 'code') {
-      const plain = data.getData('text/plain');
-      editor.insertText(plain);
-      return;
+      const plain = data.getData('text/plain')
+      editor.insertText(plain)
+      return
     }
-    let vsCodeEditorData = data.getData('vscode-editor-data');
+    let vsCodeEditorData = data.getData('vscode-editor-data')
     if (vsCodeEditorData) {
       try {
-        const vsCodeData = JSON.parse(vsCodeEditorData);
+        const vsCodeData = JSON.parse(vsCodeEditorData)
         if (vsCodeData?.mode === 'markdown' || vsCodeData?.mode === 'mdx') {
-          const plain = data.getData('text/plain');
+          const plain = data.getData('text/plain')
           if (plain) {
-            const fragment = deserializeMarkdown(plain);
-            insertFragmentButDifferent(editor, fragment);
-            return;
+            const fragment = deserializeMarkdown(plain)
+            insertFragmentButDifferent(editor, fragment)
+            return
           }
         }
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     }
 
-    const plain = data.getData('text/plain');
+    const plain = data.getData('text/plain')
 
     if (
       // isValidURL is a bit more permissive than a user might expect
@@ -91,25 +91,25 @@ export function withPasting(editor: Editor): Editor {
         match: node => Element.isElement(node) && Editor.isInline(editor, node),
       }).next().done
     ) {
-      Transforms.wrapNodes(editor, { type: 'link', href: plain, children: [] }, { split: true });
-      return;
+      Transforms.wrapNodes(editor, { type: 'link', href: plain, children: [] }, { split: true })
+      return
     }
 
-    const html = data.getData('text/html');
+    const html = data.getData('text/html')
     if (html) {
-      const fragment = deserializeHTML(html);
-      insertFragmentButDifferent(editor, fragment);
-      return;
+      const fragment = deserializeHTML(html)
+      insertFragmentButDifferent(editor, fragment)
+      return
     }
 
     if (plain) {
-      const fragment = deserializeMarkdown(plain);
-      insertFragmentButDifferent(editor, fragment);
-      return;
+      const fragment = deserializeMarkdown(plain)
+      insertFragmentButDifferent(editor, fragment)
+      return
     }
 
-    insertData(data);
-  };
+    insertData(data)
+  }
 
-  return editor;
+  return editor
 }

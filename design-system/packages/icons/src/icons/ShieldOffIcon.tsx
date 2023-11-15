@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ShieldOffIcon = createIcon(
   <React.Fragment>
     <path d="M19.69 14a6.9 6.9 0 0 0 .31-2V5l-8-3-3.16 1.18" />
@@ -7,4 +7,4 @@ export const ShieldOffIcon = createIcon(
     <line x1={1} y1={1} x2={23} y2={23} />
   </React.Fragment>,
   'ShieldOffIcon'
-);
+)

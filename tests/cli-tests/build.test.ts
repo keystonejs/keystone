@@ -1,5 +1,5 @@
-import execa from 'execa';
-import * as fs from 'fs-extra';
+import execa from 'execa'
+import * as fs from 'fs-extra'
 import {
   ExitError,
   basicKeystoneConfig,
@@ -9,30 +9,30 @@ import {
   schemas,
   symlinkKeystoneDeps,
   testdir,
-} from './utils';
+} from './utils'
 
 test("start errors when a build hasn't happened", async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.js': basicKeystoneConfig,
-  });
-  const recording = recordConsole();
-  await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1));
+  })
+  const recording = recordConsole()
+  await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1))
   expect(recording()).toMatchInlineSnapshot(`
     "? Starting Keystone
     ? keystone build must be run before running keystone start"
-  `);
-});
+  `)
+})
 
-jest.setTimeout(1000000);
+jest.setTimeout(1000000)
 
 test('build works with typescript without the user defining a babel config', async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': await fs.readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
-  });
+  })
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
     all: true,
@@ -40,19 +40,19 @@ test('build works with typescript without the user defining a babel config', asy
     env: {
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
-  });
-  expect(result.stdout.includes('Compiled successfully')).toBe(true);
-  expect(result.stdout.includes('Generating static pages')).toBe(true);
-  expect(result.stdout.includes('Finalizing page optimization')).toBe(true);
-  expect(result.exitCode).toBe(0);
-});
+  })
+  expect(result.stdout.includes('Compiled successfully')).toBe(true)
+  expect(result.stdout.includes('Generating static pages')).toBe(true)
+  expect(result.stdout.includes('Finalizing page optimization')).toBe(true)
+  expect(result.exitCode).toBe(0)
+})
 
 test('process.env.NODE_ENV is production in production', async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': await fs.readFile(`${__dirname}/fixtures/log-node-env.ts`, 'utf8'),
-  });
+  })
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
     all: true,
@@ -61,8 +61,8 @@ test('process.env.NODE_ENV is production in production', async () => {
     env: {
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
-  });
-  expect(result.exitCode).toBe(0);
+  })
+  expect(result.exitCode).toBe(0)
   const startResult = execa('node', [cliBinPath, 'start'], {
     reject: false,
     all: true,
@@ -71,8 +71,8 @@ test('process.env.NODE_ENV is production in production', async () => {
       NODE_ENV: 'production',
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
-  });
-  let output = '';
+  })
+  let output = ''
   try {
     await Promise.race([
       new Promise((resolve, reject) =>
@@ -80,17 +80,17 @@ test('process.env.NODE_ENV is production in production', async () => {
       ),
       new Promise<void>(resolve => {
         startResult.all!.on('data', data => {
-          output += data;
+          output += data
           if (
             output.includes('CLI-TESTS-NODE-ENV: production') &&
             output.includes('CLI-TESTS-NODE-ENV-EVAL: production')
           ) {
-            resolve();
+            resolve()
           }
-        });
+        })
       }),
-    ]);
+    ])
   } finally {
-    startResult.kill();
+    startResult.kill()
   }
-});
+})

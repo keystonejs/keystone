@@ -1,28 +1,28 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { ReactElement } from 'react';
-import { jsx, makeEditor } from '../tests/utils';
-import { component, fields } from '../../component-blocks';
-import { ArrayField, ChildField, ObjectField, PreviewProps } from './api';
+import React, { type ReactElement } from 'react'
+import { jsx, makeEditor } from '../tests/utils'
+import { component, fields } from '../../component-blocks'
+import { type ArrayField, type ChildField, type ObjectField, type PreviewProps } from './api'
 
 type ListItems = ArrayField<
   ObjectField<{
-    content: ChildField;
-    children: ListItems;
+    content: ChildField
+    children: ListItems
   }>
->;
+>
 
 const children: ListItems = fields.array(
   fields.object({
     content: fields.child({ kind: 'inline', placeholder: '' }),
-    get children() {
-      return children;
+    get children () {
+      return children
     },
   })
-);
+)
 
-function List(props: PreviewProps<ListItems>): ReactElement {
+function List (props: PreviewProps<ListItems>): ReactElement {
   return React.createElement(
     'ul',
     null,
@@ -32,7 +32,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
         { key: x.key },
         x.fields.content.element,
         React.createElement(List, x.fields.children)
-      );
+      )
     }),
     React.createElement(
       'button',
@@ -42,7 +42,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
       },
       'Insert'
     )
-  );
+  )
 }
 
 const list = component({
@@ -51,7 +51,7 @@ const list = component({
   schema: {
     children,
   },
-});
+})
 
 test('recursive arrays of child fields existing does not crash and are not normalized away', () => {
   makeEditor(
@@ -117,5 +117,5 @@ test('recursive arrays of child fields existing does not crash and are not norma
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-});
+  )
+})

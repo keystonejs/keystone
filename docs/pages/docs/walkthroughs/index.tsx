@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Type } from '../../../components/primitives/Type';
-import { DocsPage } from '../../../components/Page';
-import { Well } from '../../../components/primitives/Well';
-import { useMediaQuery } from '../../../lib/media';
-import { InlineCode } from '../../../components/primitives/Code';
+import { Type } from '../../../components/primitives/Type'
+import { DocsPage } from '../../../components/Page'
+import { Well } from '../../../components/primitives/Well'
+import { useMediaQuery } from '../../../lib/media'
+import { InlineCode } from '../../../components/primitives/Code'
 
-export function QuickStart() {
-  const mq = useMediaQuery();
+export function QuickStart () {
+  const mq = useMediaQuery()
   return (
     <div>
       <div
@@ -24,11 +24,11 @@ export function QuickStart() {
         </Well>
       </div>
     </div>
-  );
+  )
 }
 
-export function Foundations() {
-  const mq = useMediaQuery();
+export function Foundations () {
+  const mq = useMediaQuery()
   return (
     <div>
       <div
@@ -66,10 +66,10 @@ export function Foundations() {
         </Well>
       </div>
     </div>
-  );
+  )
 }
 
-export default function Docs() {
+export default function Docs () {
   return (
     <DocsPage
       noRightNav
@@ -111,5 +111,5 @@ export default function Docs() {
 
       <Foundations />
     </DocsPage>
-  );
+  )
 }

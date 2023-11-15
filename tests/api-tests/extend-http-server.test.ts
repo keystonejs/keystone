@@ -1,17 +1,16 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import { list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import supertest from 'supertest';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from './utils';
-import { withServer } from './with-server';
+import { type IncomingMessage, type ServerResponse } from 'http'
+import { list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import supertest from 'supertest'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from './utils'
+import { withServer } from './with-server'
 
 const runner = withServer(
   setupTestRunner({
     config: testConfig({
       lists: {
-        // prettier-ignore
         User: list({
           access: allowAll,
           fields: {
@@ -22,17 +21,17 @@ const runner = withServer(
       server: {
         extendHttpServer: server => {
           server.prependListener('request', (req: IncomingMessage, res: ServerResponse) => {
-            res.setHeader('test-header', 'test-header-value');
-          });
+            res.setHeader('test-header', 'test-header-value')
+          })
         },
       },
     }),
   })
-);
+)
 
 test(
   'server extension',
   runner(async ({ server }) => {
-    await supertest(server).get('/anything').expect('test-header', 'test-header-value');
+    await supertest(server).get('/anything').expect('test-header', 'test-header-value')
   })
-);
+)

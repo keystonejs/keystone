@@ -1,10 +1,3 @@
-node_modules
-coverage
-dist
-reports
-docs/public/assets/
-examples/extend-graphql-schema-nexus/nexus-types.ts
-examples/framework-remix/build/index.js
-tests/test-projects/live-reloading/schemas/syntax-error.js
-__generated__
-
+dist/
+node_modules/
+syntax-error.js

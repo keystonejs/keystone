@@ -1,6 +1,6 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../../sandbox/utils';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../../sandbox/utils'
+import { lists } from './schema'
 
 export default config({
   db: {
@@ -11,4 +11,4 @@ export default config({
     ...fixPrismaPath,
   },
   lists,
-});
+})

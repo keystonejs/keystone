@@ -1,16 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
-import { FieldProps } from '@keystone-6/core/types';
-import { css } from '@emotion/css';
-import { Button } from '@keystone-ui/button';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { MinusCircleIcon, EditIcon } from '@keystone-ui/icons';
-import { controller } from '@keystone-6/core/fields/types/json/views';
-import { Fragment, useState } from 'react';
+import React from 'react'
+import Link from 'next/link'
+import { type FieldProps } from '@keystone-6/core/types'
+import { css } from '@emotion/css'
+import { Button } from '@keystone-ui/button'
+import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { MinusCircleIcon, EditIcon } from '@keystone-ui/icons'
+import { type controller } from '@keystone-6/core/fields/types/json/views'
+import { Fragment, useState } from 'react'
 
 interface RelatedLink {
-  label: string;
-  href: string;
+  label: string
+  href: string
 }
 
 const styles = {
@@ -66,54 +66,54 @@ const styles = {
       margin: 0 0 0 0.5rem;
     `,
   },
-};
+}
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
-  const [labelValue, setLabelValue] = useState('');
-  const [hrefValue, setHrefValue] = useState('');
-  const [index, setIndex] = useState<number | null>(null);
+  const [labelValue, setLabelValue] = useState('')
+  const [hrefValue, setHrefValue] = useState('')
+  const [index, setIndex] = useState<number | null>(null)
 
-  const relatedLinks: RelatedLink[] = value ? JSON.parse(value) : [];
+  const relatedLinks: RelatedLink[] = value ? JSON.parse(value) : []
 
   const onSubmitNewRelatedLink = () => {
     if (onChange) {
-      const relatedLinksCopy = [...relatedLinks, { label: labelValue, href: hrefValue }];
-      onChange(JSON.stringify(relatedLinksCopy));
-      onCancelRelatedLink();
+      const relatedLinksCopy = [...relatedLinks, { label: labelValue, href: hrefValue }]
+      onChange(JSON.stringify(relatedLinksCopy))
+      onCancelRelatedLink()
     }
-  };
+  }
 
   const onDeleteRelatedLink = (index: number) => {
     if (onChange) {
-      const relatedLinksCopy = [...relatedLinks];
-      relatedLinksCopy.splice(index, 1);
-      onChange(JSON.stringify(relatedLinksCopy));
-      onCancelRelatedLink();
+      const relatedLinksCopy = [...relatedLinks]
+      relatedLinksCopy.splice(index, 1)
+      onChange(JSON.stringify(relatedLinksCopy))
+      onCancelRelatedLink()
     }
-  };
+  }
 
   const onEditRelatedLink = (index: number) => {
     if (onChange) {
-      setIndex(index);
-      setLabelValue(relatedLinks[index].label);
-      setHrefValue(relatedLinks[index].href);
+      setIndex(index)
+      setLabelValue(relatedLinks[index].label)
+      setHrefValue(relatedLinks[index].href)
     }
-  };
+  }
 
   const onUpdateRelatedLink = () => {
     if (onChange && index !== null) {
-      const relatedLinksCopy = [...relatedLinks];
-      relatedLinksCopy[index] = { label: labelValue, href: hrefValue };
-      onChange(JSON.stringify(relatedLinksCopy));
-      onCancelRelatedLink();
+      const relatedLinksCopy = [...relatedLinks]
+      relatedLinksCopy[index] = { label: labelValue, href: hrefValue }
+      onChange(JSON.stringify(relatedLinksCopy))
+      onCancelRelatedLink()
     }
-  };
+  }
 
   const onCancelRelatedLink = () => {
-    setIndex(null);
-    setLabelValue('');
-    setHrefValue('');
-  };
+    setIndex(null)
+    setLabelValue('')
+    setHrefValue('')
+  }
 
   return (
     <FieldContainer>
@@ -186,9 +186,9 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
                 </div>
               )}
             </li>
-          );
+          )
         })}
       </ul>
     </FieldContainer>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
-import path from 'path';
-import fs from 'fs-extra';
-import execa from 'execa';
-import { ExitError } from './utils';
+import path from 'path'
+import fs from 'fs-extra'
+import execa from 'execa'
+import { ExitError } from './utils'
 import {
   cliBinPath,
   getFiles,
@@ -10,102 +10,102 @@ import {
   runCommand,
   symlinkKeystoneDeps,
   testdir,
-} from './utils';
+} from './utils'
 
-const dbUrl = 'file:./app.db';
-let mockPromptResponseEntries: [string, string | boolean][] = [];
+const dbUrl = 'file:./app.db'
+let mockPromptResponseEntries: [string, string | boolean][] = []
 
 jest.mock('prompts', () => {
   return function (
     args:
-      | { name: 'value'; type: 'text'; message: string }
-      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
+      | { name: 'value', type: 'text', message: string }
+      | { name: 'value', type: 'confirm', message: string, initial: boolean }
   ) {
     const getPromptAnswer = (message: string) => {
-      message = message.replace(/[^ -~\n]+/g, '?');
-      const response = mockPromptResponseEntries.shift()!;
+      message = message.replace(/[^ -~\n]+/g, '?')
+      const response = mockPromptResponseEntries.shift()!
       if (!response) {
         throw new Error(
           `The prompt question "${message}" was asked but there are no responses left`
-        );
+        )
       }
-      const [expectedMessage, answer] = response;
+      const [expectedMessage, answer] = response
       if (expectedMessage !== message) {
         throw new Error(
           `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"`
-        );
+        )
       }
-      return answer;
-    };
+      return answer
+    }
 
     if (args.type === 'confirm') {
-      const answer = getPromptAnswer(args.message);
+      const answer = getPromptAnswer(args.message)
       if (typeof answer === 'string') {
         throw new Error(
           `The answer to "${args.message}" is a string but the question is a confirm prompt that should return a boolean`
-        );
+        )
       }
-      console.log(`Prompt: ${args.message} ${answer}`);
-      return { value: answer };
+      console.log(`Prompt: ${args.message} ${answer}`)
+      return { value: answer }
     } else {
-      const answer = getPromptAnswer(args.message);
+      const answer = getPromptAnswer(args.message)
       if (typeof answer === 'boolean') {
         throw new Error(
           `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
-        );
+        )
       }
-      console.log(`Prompt: ${args.message} ${answer}`);
-      return { value: answer };
+      console.log(`Prompt: ${args.message} ${answer}`)
+      return { value: answer }
     }
-  };
-});
+  }
+})
 
-function getPrismaClient(cwd: string) {
+function getPrismaClient (cwd: string) {
   return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
-  });
+  })
 }
 
-async function getGeneratedMigration(
+async function getGeneratedMigration (
   cwd: string,
   expectedNumberOfMigrations: number,
   expectedName: string
 ) {
-  const prismaClient = getPrismaClient(cwd);
+  const prismaClient = getPrismaClient(cwd)
   const migrations: {
-    migration_name: string;
-    finished_at: string;
+    migration_name: string
+    finished_at: string
   }[] =
-    await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
-  await prismaClient.$disconnect();
-  expect(migrations).toHaveLength(expectedNumberOfMigrations);
-  expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
-  const migrationName = migrations[0].migration_name;
-  expect(migrationName).toMatch(new RegExp(`\\d+_${expectedName}$`));
-  const migrationFilepath = `${cwd}/migrations/${migrationName}/migration.sql`;
-  const migration = await fs.readFile(migrationFilepath, 'utf8');
-  return { migration, migrationFilepath, migrationName };
+    await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`
+  await prismaClient.$disconnect()
+  expect(migrations).toHaveLength(expectedNumberOfMigrations)
+  expect(migrations.every(x => !!x.finished_at)).toBeTruthy()
+  const migrationName = migrations[0].migration_name
+  expect(migrationName).toMatch(new RegExp(`\\d+_${expectedName}$`))
+  const migrationFilepath = `${cwd}/migrations/${migrationName}/migration.sql`
+  const migration = await fs.readFile(migrationFilepath, 'utf8')
+  return { migration, migrationFilepath, migrationName }
 }
 
-function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
+function cleanOutputForApplyingMigration (output: string, generatedMigrationName: string) {
   // sometimes "? The migration has been applied" is printed in a different order which messes up the snapshots
   // so we just assert the text exists somewhere and remove it from what we snapshot
-  expect(output).toContain('? The migration has been applied\n');
+  expect(output).toContain('? The migration has been applied\n')
   return output
     .replace(new RegExp(generatedMigrationName, 'g'), 'migration_name')
-    .replace('? The migration has been applied\n', '');
+    .replace('? The migration has been applied\n', '')
 }
 
-const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8');
+const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8')
 
-async function setupInitialProjectWithoutMigrations() {
+async function setupInitialProjectWithoutMigrations () {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     'keystone.js': basicKeystoneConfig,
-  });
-  const recording = recordConsole();
+  })
+  const recording = recordConsole()
 
-  await runCommand(tmp, 'dev');
+  await runCommand(tmp, 'dev')
   expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
   provider = "sqlite"
   url      = "file:./app.db"
@@ -115,7 +115,7 @@ model Todo {
   id    String @id
   title String @default("")
 }
-`);
+`)
 
   expect(recording()).toEqual(`? Starting Keystone
 ? Server listening on :3000 (http://localhost:3000/)
@@ -125,19 +125,19 @@ model Todo {
 ? Your database is now in sync with your schema
 ? Connecting to the database
 ? Creating server
-? GraphQL API ready`);
-  return tmp;
+? GraphQL API ready`)
+  return tmp
 }
 
 // TODO: when we can make fields non-nullable, we should have tests for unexecutable migrations
 describe('useMigrations: false', () => {
   test('creates database and pushes schema from empty', async () => {
-    await setupInitialProjectWithoutMigrations();
-  });
+    await setupInitialProjectWithoutMigrations()
+  })
   test('logs correctly when things are already up to date', async () => {
-    const tmp = await setupInitialProjectWithoutMigrations();
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    const tmp = await setupInitialProjectWithoutMigrations()
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(recording()).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -148,21 +148,21 @@ describe('useMigrations: false', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test('warns when dropping field that has data in it', async () => {
-    const prevCwd = await setupInitialProjectWithoutMigrations();
-    const prismaClient = getPrismaClient(prevCwd);
-    await prismaClient.todo.create({ data: { title: 'todo' } });
-    await prismaClient.$disconnect();
+    const prevCwd = await setupInitialProjectWithoutMigrations()
+    const prismaClient = getPrismaClient(prevCwd)
+    await prismaClient.todo.create({ data: { title: 'todo' } })
+    await prismaClient.$disconnect()
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
-    });
-    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]];
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    })
+    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]]
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -174,7 +174,7 @@ describe('useMigrations: false', () => {
         id String @id
       }
       "
-    `);
+    `)
     expect(recording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
@@ -189,22 +189,22 @@ describe('useMigrations: false', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test('exits when refusing data loss prompt', async () => {
-    const prevCwd = await setupInitialProjectWithoutMigrations();
-    const prismaClient = getPrismaClient(prevCwd);
-    await prismaClient.todo.create({ data: { title: 'todo' } });
-    await prismaClient.$disconnect();
+    const prevCwd = await setupInitialProjectWithoutMigrations()
+    const prismaClient = getPrismaClient(prevCwd)
+    await prismaClient.todo.create({ data: { title: 'todo' } })
+    await prismaClient.$disconnect()
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
-    });
+    })
 
-    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]];
-    const recording = recordConsole();
-    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
+    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
+    const recording = recordConsole()
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0))
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -217,7 +217,7 @@ describe('useMigrations: false', () => {
         title String @default("")
       }
       "
-    `);
+    `)
     expect(recording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
@@ -229,23 +229,23 @@ describe('useMigrations: false', () => {
         ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
       Prompt: Do you want to continue? Some data will be lost false
       Push cancelled"
-    `);
-  });
+    `)
+  })
   test('prisma db push --force-reset works', async () => {
-    const tmp = await setupInitialProjectWithoutMigrations();
+    const tmp = await setupInitialProjectWithoutMigrations()
     {
-      const prismaClient = getPrismaClient(tmp);
-      await prismaClient.todo.create({ data: { title: 'something' } });
-      await prismaClient.$disconnect();
+      const prismaClient = getPrismaClient(tmp)
+      await prismaClient.todo.create({ data: { title: 'something' } })
+      await prismaClient.$disconnect()
     }
-    const recording = recordConsole();
+    const recording = recordConsole()
 
-    await runCommand(tmp, ['prisma', 'db', 'push', '--force-reset']);
-    await runCommand(tmp, 'dev');
+    await runCommand(tmp, ['prisma', 'db', 'push', '--force-reset'])
+    await runCommand(tmp, 'dev')
     {
-      const prismaClient = getPrismaClient(tmp);
-      expect(await prismaClient.todo.findMany()).toHaveLength(0);
-      await prismaClient.$disconnect();
+      const prismaClient = getPrismaClient(tmp)
+      expect(await prismaClient.todo.findMany()).toHaveLength(0)
+      await prismaClient.$disconnect()
     }
 
     expect(recording()).toMatchInlineSnapshot(`
@@ -257,26 +257,26 @@ describe('useMigrations: false', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
-});
+    `)
+  })
+})
 
 const basicWithMigrations = fs.readFileSync(
   `${__dirname}/fixtures/one-field-with-migrations.ts`,
   'utf8'
-);
+)
 
-async function setupInitialProjectWithMigrations() {
+async function setupInitialProjectWithMigrations () {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     'keystone.js': basicWithMigrations,
-  });
+  })
   mockPromptResponseEntries = [
     ['Name of migration', 'init'],
     ['Would you like to apply this migration?', true],
-  ];
-  const recording = recordConsole();
-  await runCommand(tmp, 'dev');
+  ]
+  const recording = recordConsole()
+  await runCommand(tmp, 'dev')
 
   expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
   provider = "sqlite"
@@ -287,15 +287,15 @@ model Todo {
   id    String @id
   title String @default("")
 }
-`);
+`)
 
-  const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+  const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init')
   expect(migration).toEqual(`-- CreateTable
 CREATE TABLE "Todo" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL DEFAULT ''
 );
-`);
+`)
 
   expect(cleanOutputForApplyingMigration(recording(), migrationName)).toEqual(`? Starting Keystone
 ? Server listening on :3000 (http://localhost:3000/)
@@ -310,20 +310,20 @@ Prompt: Would you like to apply this migration? true
 Applying migration \`migration_name\`
 ? Connecting to the database
 ? Creating server
-? GraphQL API ready`);
-  return { migrationName, prevCwd: tmp };
+? GraphQL API ready`)
+  return { migrationName, prevCwd: tmp }
 }
 
-async function getDatabaseFiles(cwd: string) {
-  return getFiles(cwd, ['app.db', 'migrations/**/*'], null);
+async function getDatabaseFiles (cwd: string) {
+  return getFiles(cwd, ['app.db', 'migrations/**/*'], null)
 }
 
 describe('useMigrations: true', () => {
   test('creates database, creates migration and applies from empty', async () => {
-    await setupInitialProjectWithMigrations();
-  });
+    await setupInitialProjectWithMigrations()
+  })
   test('adding a field', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations()
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -331,13 +331,13 @@ describe('useMigrations: true', () => {
         `${__dirname}/fixtures/two-fields-with-migrations.ts`,
         'utf8'
       ),
-    });
+    })
     mockPromptResponseEntries = [
       ['Name of migration', 'add-is-complete'],
       ['Would you like to apply this migration?', true],
-    ];
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    ]
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -351,9 +351,9 @@ describe('useMigrations: true', () => {
         isComplete Boolean @default(false)
       }
       "
-    `);
+    `)
 
-    const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete');
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete')
 
     expect(migration).toMatchInlineSnapshot(`
       "-- RedefineTables
@@ -369,7 +369,7 @@ describe('useMigrations: true', () => {
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
-    `);
+    `)
 
     expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -385,13 +385,13 @@ describe('useMigrations: true', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test('warns when dropping field that has data in it', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    const prismaClient = getPrismaClient(prevCwd);
-    await prismaClient.todo.create({ data: { title: 'todo' } });
-    await prismaClient.$disconnect();
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    const prismaClient = getPrismaClient(prevCwd)
+    await prismaClient.todo.create({ data: { title: 'todo' } })
+    await prismaClient.$disconnect()
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -399,13 +399,13 @@ describe('useMigrations: true', () => {
         `${__dirname}/fixtures/no-fields-with-migrations.ts`,
         'utf8'
       ),
-    });
+    })
     mockPromptResponseEntries = [
       ['Name of migration', 'remove all fields except id'],
       ['Would you like to apply this migration?', true],
-    ];
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    ]
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -417,13 +417,13 @@ describe('useMigrations: true', () => {
         id String @id
       }
       "
-    `);
+    `)
 
     const { migration, migrationName } = await getGeneratedMigration(
       tmp,
       2,
       'remove_all_fields_except_id'
-    );
+    )
 
     expect(migration).toMatchInlineSnapshot(`
       "/*
@@ -443,7 +443,7 @@ describe('useMigrations: true', () => {
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
-    `);
+    `)
 
     expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -463,24 +463,24 @@ describe('useMigrations: true', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
-    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations();
+    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations()
 
     // we copy the database, but the previous *_init.sql migration will be lost
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
-    });
+    })
     mockPromptResponseEntries = [
       ['Do you want to continue? All data will be lost', true],
       ['Name of migration', 'init2'],
       ['Would you like to apply this migration?', true],
-    ];
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    ]
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -493,9 +493,9 @@ describe('useMigrations: true', () => {
         title String @default("")
       }
       "
-    `);
+    `)
 
-    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init2');
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init2')
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
       CREATE TABLE "Todo" (
@@ -503,7 +503,7 @@ describe('useMigrations: true', () => {
           "title" TEXT NOT NULL DEFAULT ''
       );
       "
-    `);
+    `)
 
     expect(
       cleanOutputForApplyingMigration(recording(), migrationName).replace(
@@ -539,22 +539,22 @@ describe('useMigrations: true', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test("doesn't drop when prompt denied", async () => {
-    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations();
-    const dbBuffer = await fs.readFile(`${prevCwd}/app.db`);
+    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations()
+    const dbBuffer = await fs.readFile(`${prevCwd}/app.db`)
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': dbBuffer,
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
-    });
-    mockPromptResponseEntries = [['Do you want to continue? All data will be lost', false]];
-    const recording = recordConsole();
+    })
+    mockPromptResponseEntries = [['Do you want to continue? All data will be lost', false]]
+    const recording = recordConsole()
 
-    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0))
 
-    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer);
+    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer)
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -577,22 +577,22 @@ describe('useMigrations: true', () => {
       Prompt: Do you want to continue? All data will be lost false
 
       Reset cancelled"
-    `);
-  });
+    `)
+  })
   test('create migration but do not apply', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    const dbFiles = await getDatabaseFiles(prevCwd);
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    const dbFiles = await getDatabaseFiles(prevCwd)
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...dbFiles,
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`),
-    });
+    })
     mockPromptResponseEntries = [
       ['Name of migration', 'add-is-complete'],
       ['Would you like to apply this migration?', false],
-    ];
-    const recording = recordConsole();
-    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
+    ]
+    const recording = recordConsole()
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0))
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -605,13 +605,13 @@ describe('useMigrations: true', () => {
         title String @default("")
       }
       "
-    `);
+    `)
 
-    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbFiles['app.db']);
+    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbFiles['app.db'])
 
     const migrationName = (await fs.readdir(`${tmp}/migrations`)).find(x =>
       x.endsWith('_add_is_complete')
-    );
+    )
     expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
       .toMatchInlineSnapshot(`
       "-- RedefineTables
@@ -627,7 +627,7 @@ describe('useMigrations: true', () => {
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
-    `);
+    `)
 
     expect(recording().replace(migrationName!, 'migration_name')).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -640,18 +640,18 @@ describe('useMigrations: true', () => {
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? false
       Please edit the migration and try again"
-    `);
-  });
+    `)
+  })
   test('apply already existing migrations', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd)
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...migrations,
       'keystone.js': basicWithMigrations,
-    });
-    const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    })
+    const recording = recordConsole()
+    await runCommand(tmp, 'dev')
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -664,9 +664,9 @@ describe('useMigrations: true', () => {
         title String @default("")
       }
       "
-    `);
+    `)
 
-    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init')
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
@@ -682,12 +682,12 @@ describe('useMigrations: true', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
+    `)
+  })
   test('logs correctly when no migrations need to be created or applied', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    const recording = recordConsole();
-    await runCommand(prevCwd, 'dev');
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    const recording = recordConsole()
+    await runCommand(prevCwd, 'dev')
 
     expect(recording()).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -698,47 +698,47 @@ describe('useMigrations: true', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
-    `);
-  });
-});
+    `)
+  })
+})
 
 describe('start --with-migrations', () => {
-  async function startAndStopServer(tmp: string) {
+  async function startAndStopServer (tmp: string) {
     const startResult = execa('node', [cliBinPath, 'start', '--no-ui', '--with-migrations'], {
       reject: false,
       all: true,
       cwd: tmp,
-    });
+    })
 
-    let output = '';
+    let output = ''
     try {
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000);
+        const timeout = setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
 
         startResult.all!.on('data', data => {
-          output += data;
+          output += data
           if (output.includes('Server listening on :3000 (http://localhost:3000/)')) {
-            clearTimeout(timeout);
-            resolve();
+            clearTimeout(timeout)
+            resolve()
           }
-        });
-      });
+        })
+      })
     } finally {
-      startResult.kill();
+      startResult.kill()
     }
-    return output;
+    return output
   }
   test('apply existing migrations', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd)
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...migrations,
       'keystone.js': basicWithMigrations,
-    });
+    })
 
-    await runCommand(tmp, ['build', '--no-ui']);
-    const output = await startAndStopServer(tmp);
+    await runCommand(tmp, ['build', '--no-ui'])
+    const output = await startAndStopServer(tmp)
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
         provider = "sqlite"
@@ -750,9 +750,9 @@ describe('start --with-migrations', () => {
         title String @default("")
       }
       "
-    `);
+    `)
 
-    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init')
 
     expect(
       output
@@ -769,12 +769,12 @@ describe('start --with-migrations', () => {
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)
       "
-    `);
-  });
+    `)
+  })
   test('logs correctly when no migrations need applied', async () => {
-    const { prevCwd } = await setupInitialProjectWithMigrations();
-    await runCommand(prevCwd, ['build', '--no-ui']);
-    const output = await startAndStopServer(prevCwd);
+    const { prevCwd } = await setupInitialProjectWithMigrations()
+    await runCommand(prevCwd, ['build', '--no-ui'])
+    const output = await startAndStopServer(prevCwd)
 
     expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -785,6 +785,6 @@ describe('start --with-migrations', () => {
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)
       "
-    `);
-  });
-});
+    `)
+  })
+})

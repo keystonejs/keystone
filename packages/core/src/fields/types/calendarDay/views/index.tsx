@@ -1,21 +1,21 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useState } from 'react';
+import { useState } from 'react'
 
-import { jsx, Inline, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, DatePicker, FieldDescription } from '@keystone-ui/fields';
+import { jsx, Inline, Stack, Text } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel, DatePicker, FieldDescription } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types';
-import { CellContainer, CellLink } from '../../../../admin-ui/components';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+} from '../../../../types'
+import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
 export type Value =
-  | { kind: 'create'; value: string | null }
-  | { kind: 'update'; value: string | null; initial: string | null };
+  | { kind: 'create', value: string | null }
+  | { kind: 'update', value: string | null, initial: string | null }
 
 export const Field = ({
   field,
@@ -23,12 +23,12 @@ export const Field = ({
   onChange,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const [touchedInput, setTouchedInput] = useState(false);
-  const showValidation = touchedInput || forceValidation;
+  const [touchedInput, setTouchedInput] = useState(false)
+  const showValidation = touchedInput || forceValidation
 
   const validationMessage = showValidation
     ? validate(value, field.fieldMeta, field.label)
-    : undefined;
+    : undefined
 
   return (
     <FieldContainer>
@@ -43,10 +43,10 @@ export const Field = ({
                   onChange({
                     ...value,
                     value: date,
-                  });
+                  })
                 }}
                 onClear={() => {
-                  onChange({ ...value, value: null });
+                  onChange({ ...value, value: null })
                 }}
                 onBlur={() => setTouchedInput(true)}
                 value={value.value ?? ''}
@@ -63,10 +63,10 @@ export const Field = ({
         )}
       </Stack>
     </FieldContainer>
-  );
-};
+  )
+}
 
-function validate(
+function validate (
   value: Value,
   fieldMeta: CalendarDayFieldMeta,
   label: string
@@ -76,24 +76,24 @@ function validate(
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
   if (value.kind === 'update' && value.initial === null && value.value === null) {
-    return undefined;
+    return undefined
   }
 
   if (fieldMeta.isRequired && value.value === null) {
-    return `${label} is required`;
+    return `${label} is required`
   }
-  return undefined;
+  return undefined
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path];
+  let value = item[field.path]
   return linkTo ? (
     <CellLink {...linkTo}>{formatOutput(value)}</CellLink>
   ) : (
     <CellContainer>{formatOutput(value)}</CellContainer>
-  );
-};
-Cell.supportsLinkTo = true;
+  )
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -101,26 +101,26 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {formatOutput(item[field.path])}
     </FieldContainer>
-  );
-};
+  )
+}
 
-function formatOutput(isoDateString: string | null) {
+function formatOutput (isoDateString: string | null) {
   if (!isoDateString) {
-    return null;
+    return null
   }
-  const date = new Date(`${isoDateString}T00:00Z`);
+  const date = new Date(`${isoDateString}T00:00Z`)
   const dateInLocalTimezone = new Date(
     date.getUTCFullYear(),
     date.getUTCMonth(),
     date.getUTCDate()
-  );
-  return dateInLocalTimezone.toLocaleDateString();
+  )
+  return dateInLocalTimezone.toLocaleDateString()
 }
 
 export type CalendarDayFieldMeta = {
-  defaultValue: string | null;
-  isRequired: boolean;
-};
+  defaultValue: string | null
+  isRequired: boolean
+}
 
 export const controller = (
   config: FieldControllerConfig<CalendarDayFieldMeta>
@@ -133,12 +133,12 @@ export const controller = (
     fieldMeta: config.fieldMeta,
     defaultValue: { kind: 'create', value: null },
     deserialize: data => {
-      const value = data[config.path];
-      return { kind: 'update', initial: value, value };
+      const value = data[config.path]
+      return { kind: 'update', initial: value, value }
     },
     serialize: ({ value }) => {
-      return { [config.path]: value };
+      return { [config.path]: value }
     },
     validate: value => validate(value, config.fieldMeta, config.label) === undefined,
-  };
-};
+  }
+}

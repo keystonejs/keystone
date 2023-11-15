@@ -1,10 +1,10 @@
-import http from 'http';
-import { list, config } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
-import { dbConfig } from '../utils';
+import http from 'http'
+import { list, config } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
+import { dbConfig } from '../utils'
 
-function makeQuery(size = 0) {
+function makeQuery (size = 0) {
   const query = JSON.stringify({
     variables: {
       data: {
@@ -16,9 +16,9 @@ function makeQuery(size = 0) {
         id
       }
     }`,
-  }).slice(1, -1);
-  const padding = Math.max(0, size - (query.length + 3));
-  return `{ ${' '.repeat(padding)} ${query} }`;
+  }).slice(1, -1)
+  const padding = Math.max(0, size - (query.length + 3))
+  return `{ ${' '.repeat(padding)} ${query} }`
 }
 
 export const lists = {
@@ -28,14 +28,14 @@ export const lists = {
       value: text(),
     },
   }),
-};
+}
 
 export default config({
   db: {
     ...dbConfig,
     onConnect: async () => {
       // try something ~2MiB
-      const json = makeQuery(2 * 1024 * 1024);
+      const json = makeQuery(2 * 1024 * 1024)
       const req = http.request(
         {
           method: 'POST',
@@ -48,13 +48,13 @@ export default config({
           path: '/api/graphql',
         },
         res => {
-          const { statusCode, headers } = res;
-          console.error({ statusCode, headers });
-          res.on('data', data => console.error(data.toString('utf8')));
+          const { statusCode, headers } = res
+          console.error({ statusCode, headers })
+          res.on('data', data => console.error(data.toString('utf8')))
         }
-      );
+      )
 
-      req.end(json);
+      req.end(json)
     },
   },
   graphql: {
@@ -63,4 +63,4 @@ export default config({
     },
   },
   lists,
-});
+})

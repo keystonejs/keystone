@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { Decimal } from 'decimal.js';
-import { useState } from 'react';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { Decimal } from 'decimal.js'
+import { useState } from 'react'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types';
-import { CellLink, CellContainer } from '../../../../admin-ui/components';
-import { useFormattedInput } from '../../integer/views/utils';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+} from '../../../../types'
+import { CellLink, CellContainer } from '../../../../admin-ui/components'
+import { useFormattedInput } from '../../integer/views/utils'
 
 export const Field = ({
   field,
@@ -22,41 +22,41 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const [hasBlurred, setHasBlurred] = useState(false);
+  const [hasBlurred, setHasBlurred] = useState(false)
   const inputProps = useFormattedInput<Decimal | null>(
     {
-      format(decimal) {
+      format (decimal) {
         if (decimal === null) {
-          return '';
+          return ''
         }
 
-        return decimal.toFixed(field.scale);
+        return decimal.toFixed(field.scale)
       },
-      parse(value) {
-        value = value.trim();
+      parse (value) {
+        value = value.trim()
         if (value === '') {
-          return null;
+          return null
         }
-        let decimal: Decimal;
+        let decimal: Decimal
         try {
-          decimal = new Decimal(value);
+          decimal = new Decimal(value)
         } catch (err) {
-          return value;
+          return value
         }
-        return decimal;
+        return decimal
       },
     },
     {
-      onChange(val) {
-        onChange?.({ ...value, value: val });
+      onChange (val) {
+        onChange?.({ ...value, value: val })
       },
       value: value.value,
-      onBlur() {
-        setHasBlurred(true);
+      onBlur () {
+        setHasBlurred(true)
       },
     }
-  );
-  const validationMessage = validate(value, field.validation, field.label);
+  )
+  const validationMessage = validate(value, field.validation, field.label)
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
@@ -75,14 +75,14 @@ export const Field = ({
         <span css={{ color: 'red' }}>{validationMessage}</span>
       )}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] || '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  let value = item[field.path] || ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -90,45 +90,45 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export type DecimalFieldMeta = {
-  precision: number;
-  scale: number;
-  defaultValue: string | null;
+  precision: number
+  scale: number
+  defaultValue: string | null
   validation: {
-    isRequired: boolean;
-    max: string | null;
-    min: string | null;
-  };
-};
+    isRequired: boolean
+    max: string | null
+    min: string | null
+  }
+}
 
-type Config = FieldControllerConfig<DecimalFieldMeta>;
+type Config = FieldControllerConfig<DecimalFieldMeta>
 
 type Validation = {
-  isRequired: boolean;
-  max: Decimal | null;
-  min: Decimal | null;
-};
+  isRequired: boolean
+  max: Decimal | null
+  min: Decimal | null
+}
 
-type InnerValue = string | Decimal | null;
+type InnerValue = string | Decimal | null
 
 type Value =
   | {
-      kind: 'create';
-      value: InnerValue;
+      kind: 'create'
+      value: InnerValue
     }
   | {
-      kind: 'update';
-      initial: InnerValue;
-      value: InnerValue;
-    };
+      kind: 'update'
+      initial: InnerValue
+      value: InnerValue
+    }
 
-function validate(value: Value, validation: Validation, label: string): string | undefined {
-  const val = value.value;
+function validate (value: Value, validation: Validation, label: string): string | undefined {
+  const val = value.value
   if (typeof val === 'string') {
-    return `${label} must be a number`;
+    return `${label} must be a number`
   }
 
   // if we recieve null initially on the item view and the current value is null,
@@ -136,37 +136,37 @@ function validate(value: Value, validation: Validation, label: string): string |
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
   if (value.kind === 'update' && value.initial === null && val === null) {
-    return undefined;
+    return undefined
   }
 
   if (val !== null && !val.isFinite()) {
-    return `${label} must be finite`;
+    return `${label} must be finite`
   }
 
   if (validation.isRequired && val === null) {
-    return `${label} is required`;
+    return `${label} is required`
   }
   if (val !== null) {
     if (validation.min !== null && val.lessThan(validation.min)) {
-      return `${label} must be greater than or equal to ${validation.min}`;
+      return `${label} must be greater than or equal to ${validation.min}`
     }
     if (validation.max !== null && val.greaterThan(validation.max)) {
-      return `${label} must be less than or equal to ${validation.max}`;
+      return `${label} must be less than or equal to ${validation.max}`
     }
   }
 
-  return undefined;
+  return undefined
 }
 
 export const controller = (
   config: Config
-): FieldController<Value, string> & { scale: number; validation: Validation } => {
-  const _validation = config.fieldMeta.validation;
+): FieldController<Value, string> & { scale: number, validation: Validation } => {
+  const _validation = config.fieldMeta.validation
   const validation: Validation = {
     isRequired: _validation.isRequired,
     max: _validation.max === null ? null : new Decimal(_validation.max),
     min: _validation.min === null ? null : new Decimal(_validation.min),
-  };
+  }
   return {
     path: config.path,
     label: config.label,
@@ -180,12 +180,12 @@ export const controller = (
         config.fieldMeta.defaultValue === null ? null : new Decimal(config.fieldMeta.defaultValue),
     },
     deserialize: data => {
-      const value = data[config.path] === null ? null : new Decimal(data[config.path]);
+      const value = data[config.path] === null ? null : new Decimal(data[config.path])
       return {
         kind: 'update',
         initial: value,
         value,
-      };
+      }
     },
     serialize: value => ({
       [config.path]:
@@ -197,44 +197,44 @@ export const controller = (
     }),
     validate: val => validate(val, validation, config.label) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             onChange={event => {
               if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
-                return;
+                onChange(event.target.value.replace(/[^\d,\s-]/g, ''))
+                return
               }
 
-              onChange(event.target.value.replace(/[^\d\s-]/g, ''));
+              onChange(event.target.value.replace(/[^\d\s-]/g, ''))
             }}
             value={value}
             autoFocus={autoFocus}
           />
-        );
+        )
       },
 
       graphql: ({ type, value }) => {
-        const valueWithoutWhitespace = value.replace(/\s/g, '');
+        const valueWithoutWhitespace = value.replace(/\s/g, '')
         const parsed =
           type === 'in' || type === 'not_in'
             ? valueWithoutWhitespace.split(',')
-            : valueWithoutWhitespace;
+            : valueWithoutWhitespace
         if (type === 'not') {
-          return { [config.path]: { not: { equals: parsed } } };
+          return { [config.path]: { not: { equals: parsed } } }
         }
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
-        return { [config.path]: { [key]: parsed } };
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
+        return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
-        let renderedValue = value;
+      Label ({ label, value, type }) {
+        let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value
             .split(',')
             .map(value => value.trim())
-            .join(', ');
+            .join(', ')
         }
-        return `${label.toLowerCase()}: ${renderedValue}`;
+        return `${label.toLowerCase()}: ${renderedValue}`
       },
       types: {
         is: {
@@ -271,5 +271,5 @@ export const controller = (
         },
       },
     },
-  };
-};
+  }
+}

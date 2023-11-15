@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { useState } from 'react';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { useState } from 'react'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types';
-import { CellLink, CellContainer } from '../../../../admin-ui/components';
-import { useFormattedInput } from './utils';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+} from '../../../../types'
+import { CellLink, CellContainer } from '../../../../admin-ui/components'
+import { useFormattedInput } from './utils'
 
-function IntegerInput({
+function IntegerInput ({
   value,
   onChange,
   id,
@@ -23,41 +23,41 @@ function IntegerInput({
   validationMessage,
   placeholder,
 }: {
-  id: string;
-  autoFocus?: boolean;
-  value: number | string | null;
-  onChange: (value: number | string | null) => void;
-  forceValidation?: boolean;
-  validationMessage?: string;
-  placeholder?: string;
+  id: string
+  autoFocus?: boolean
+  value: number | string | null
+  onChange: (value: number | string | null) => void
+  forceValidation?: boolean
+  validationMessage?: string
+  placeholder?: string
 }) {
-  const [hasBlurred, setHasBlurred] = useState(false);
+  const [hasBlurred, setHasBlurred] = useState(false)
   const props = useFormattedInput<number | null>(
     {
       format: value => (value === null ? '' : value.toString()),
       parse: raw => {
-        raw = raw.trim();
+        raw = raw.trim()
         if (raw === '') {
-          return null;
+          return null
         }
         if (/^[+-]?\d+$/.test(raw)) {
-          let parsed = parseInt(raw);
+          let parsed = parseInt(raw)
           if (!Number.isSafeInteger(parsed)) {
-            return raw;
+            return raw
           }
-          return parsed;
+          return parsed
         }
-        return raw;
+        return raw
       },
     },
     {
       value,
       onChange,
       onBlur: () => {
-        setHasBlurred(true);
+        setHasBlurred(true)
       },
     }
-  );
+  )
   return (
     <span>
       <TextInput
@@ -71,7 +71,7 @@ function IntegerInput({
         <span css={{ color: 'red' }}>{validationMessage}</span>
       )}
     </span>
-  );
+  )
 }
 
 export const Field = ({
@@ -81,7 +81,7 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
-  const message = validate(value, field.validation, field.label, field.hasAutoIncrementDefault);
+  const message = validate(value, field.validation, field.label, field.hasAutoIncrementDefault)
 
   return (
     <FieldContainer>
@@ -93,7 +93,7 @@ export const Field = ({
             id={field.path}
             autoFocus={autoFocus}
             onChange={val => {
-              onChange({ ...value, value: val });
+              onChange({ ...value, value: val })
             }}
             value={value.value}
             forceValidation={forceValidation}
@@ -110,14 +110,14 @@ export const Field = ({
         value.value
       )}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  let value = item[field.path] + ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -125,18 +125,18 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path] === null ? '' : item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
-function validate(
+function validate (
   value: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const val = value.value;
+  const val = value.value
   if (typeof val === 'string') {
-    return `${label} must be a whole number`;
+    return `${label} must be a whole number`
   }
 
   // if we recieve null initially on the item view and the current value is null,
@@ -144,46 +144,46 @@ function validate(
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
   if (value.kind === 'update' && value.initial === null && val === null) {
-    return undefined;
+    return undefined
   }
 
   if (value.kind === 'create' && value.value === null && hasAutoIncrementDefault) {
-    return undefined;
+    return undefined
   }
 
   if (validation.isRequired && val === null) {
-    return `${label} is required`;
+    return `${label} is required`
   }
   if (typeof val === 'number') {
     if (val < validation.min) {
-      return `${label} must be greater than or equal to ${validation.min}`;
+      return `${label} must be greater than or equal to ${validation.min}`
     }
     if (val > validation.max) {
-      return `${label} must be less than or equal to ${validation.max}`;
+      return `${label} must be less than or equal to ${validation.max}`
     }
   }
 
-  return undefined;
+  return undefined
 }
 
 type Validation = {
-  isRequired: boolean;
-  min: number;
-  max: number;
-};
+  isRequired: boolean
+  min: number
+  max: number
+}
 
 type Value =
-  | { kind: 'update'; initial: number | null; value: string | number | null }
-  | { kind: 'create'; value: string | number | null };
+  | { kind: 'update', initial: number | null, value: string | number | null }
+  | { kind: 'create', value: string | number | null }
 
 export const controller = (
   config: FieldControllerConfig<{
-    validation: Validation;
-    defaultValue: number | null | 'autoincrement';
+    validation: Validation
+    defaultValue: number | null | 'autoincrement'
   }>
 ): FieldController<Value, string> & {
-  validation: Validation;
-  hasAutoIncrementDefault: boolean;
+  validation: Validation
+  hasAutoIncrementDefault: boolean
 } => {
   return {
     path: config.path,
@@ -207,45 +207,45 @@ export const controller = (
         config.fieldMeta.defaultValue === 'autoincrement'
       ) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             type="text"
             onChange={event => {
               if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
-                return;
+                onChange(event.target.value.replace(/[^\d,\s-]/g, ''))
+                return
               }
 
-              onChange(event.target.value.replace(/[^\d\s-]/g, ''));
+              onChange(event.target.value.replace(/[^\d\s-]/g, ''))
             }}
             value={value}
             autoFocus={autoFocus}
           />
-        );
+        )
       },
 
       graphql: ({ type, value }) => {
-        const valueWithoutWhitespace = value.replace(/\s/g, '');
+        const valueWithoutWhitespace = value.replace(/\s/g, '')
         const parsed =
           type === 'in' || type === 'not_in'
             ? valueWithoutWhitespace.split(',').map(x => parseInt(x))
-            : parseInt(valueWithoutWhitespace);
+            : parseInt(valueWithoutWhitespace)
         if (type === 'not') {
-          return { [config.path]: { not: { equals: parsed } } };
+          return { [config.path]: { not: { equals: parsed } } }
         }
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
-        return { [config.path]: { [key]: parsed } };
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
+        return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
-        let renderedValue = value;
+      Label ({ label, value, type }) {
+        let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value
             .split(',')
             .map(value => value.trim())
-            .join(', ');
+            .join(', ')
         }
-        return `${label.toLowerCase()}: ${renderedValue}`;
+        return `${label.toLowerCase()}: ${renderedValue}`
       },
       types: {
         is: {
@@ -282,5 +282,5 @@ export const controller = (
         },
       },
     },
-  };
-};
+  }
+}

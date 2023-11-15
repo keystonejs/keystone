@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, type IconProps } from './util'
 
-export function Thinkmill({ grad, ...props }: IconProps) {
+export function Thinkmill ({ grad, ...props }: IconProps) {
   return (
     <svg aria-label="Thinkmill" role="img" viewBox="0 0 400 400" {...props}>
       <Gradients name="Thinkmill" />
@@ -33,5 +33,5 @@ export function Thinkmill({ grad, ...props }: IconProps) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

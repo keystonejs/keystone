@@ -1,34 +1,34 @@
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
-    defaultValue?: number | { kind: 'autoincrement' };
+    isIndexed?: boolean | 'unique'
+    defaultValue?: number | { kind: 'autoincrement' }
     validation?: {
-      isRequired?: boolean;
-      min?: number;
-      max?: number;
-    };
+      isRequired?: boolean
+      min?: number
+      max?: number
+    }
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
-  };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
 // These are the max and min values available to a 32 bit signed integer
-const MAX_INT = 2147483647;
-const MIN_INT = -2147483648;
+const MAX_INT = 2147483647
+const MIN_INT = -2147483648
 
 export const integer =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -38,49 +38,49 @@ export const integer =
     ...config
   }: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const defaultValue = _defaultValue ?? null;
+    const defaultValue = _defaultValue ?? null
     const hasAutoIncDefault =
       typeof defaultValue == 'object' &&
       defaultValue !== null &&
-      defaultValue.kind === 'autoincrement';
+      defaultValue.kind === 'autoincrement'
 
-    const isNullable = getResolvedIsNullable(validation, config.db);
+    const isNullable = getResolvedIsNullable(validation, config.db)
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
-        );
+        )
       }
       if (isNullable !== false) {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
-        );
+        )
       }
     }
 
     if (validation?.min !== undefined && !Number.isInteger(validation.min)) {
       throw new Error(
         `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be an integer`
-      );
+      )
     }
     if (validation?.max !== undefined && !Number.isInteger(validation.max)) {
       throw new Error(
         `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be an integer`
-      );
+      )
     }
 
     if (validation?.min !== undefined && (validation?.min > MAX_INT || validation?.min < MIN_INT)) {
       throw new Error(
         `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
-      );
+      )
     }
     if (validation?.max !== undefined && (validation?.max > MAX_INT || validation?.max < MIN_INT)) {
       throw new Error(
         `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
-      );
+      )
     }
 
     if (
@@ -90,14 +90,14 @@ export const integer =
     ) {
       throw new Error(
         `The integer field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      );
+      )
     }
 
-    assertReadIsNonNullAllowed(meta, config, isNullable);
+    assertReadIsNonNullAllowed(meta, config, isNullable)
 
-    const mode = isNullable === false ? 'required' : 'optional';
+    const mode = isNullable === false ? 'required' : 'optional'
 
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     return fieldType({
       kind: 'scalar',
@@ -117,31 +117,31 @@ export const integer =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
-          const value = args.resolvedData[meta.fieldKey];
+        async validateInput (args) {
+          const value = args.resolvedData[meta.fieldKey]
 
           if (
             (validation?.isRequired || isNullable === false) &&
             (value === null ||
               (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
           ) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
           if (typeof value === 'number') {
             if (validation?.min !== undefined && value < validation.min) {
               args.addValidationError(
                 `${fieldLabel} must be greater than or equal to ${validation.min}`
-              );
+              )
             }
 
             if (validation?.max !== undefined && value > validation.max) {
               args.addValidationError(
                 `${fieldLabel} must be less than or equal to ${validation.max}`
-              );
+              )
             }
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -156,11 +156,11 @@ export const integer =
             type: graphql.Int,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
-          resolve(value) {
+          resolve (value) {
             if (value === undefined && typeof defaultValue === 'number') {
-              return defaultValue;
+              return defaultValue
             }
-            return value;
+            return value
           },
         },
         update: { arg: graphql.arg({ type: graphql.Int }) },
@@ -171,7 +171,7 @@ export const integer =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           validation: {
             min: validation?.min ?? MIN_INT,
@@ -182,7 +182,7 @@ export const integer =
             defaultValue === null || typeof defaultValue === 'number'
               ? defaultValue
               : 'autoincrement',
-        };
+        }
       },
-    });
-  };
+    })
+  }

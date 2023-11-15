@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ReactNode } from 'react';
-import { CSSObject, jsx } from '@emotion/react';
-import Link from 'next/link';
+import { type ReactNode } from 'react'
+import { type CSSObject, jsx } from '@emotion/react'
+import Link from 'next/link'
 
-import { forwardRefWithAs } from '../../lib/forwardRefWithAs';
-import { Loading } from './Loading';
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs'
+import { Loading } from './Loading'
 
 const styleMap = {
   default: {},
@@ -53,7 +53,7 @@ const styleMap = {
     padding: 0,
     borderRadius: 0,
   },
-};
+}
 
 const shadowMap: Record<keyof typeof styleMap, any> = {
   default: {
@@ -74,7 +74,7 @@ const shadowMap: Record<keyof typeof styleMap, any> = {
     '--button-shadow-active': '0 3px 14px 0 rgb(0 118 255 / 08%)',
   },
   text: {},
-};
+}
 
 const sizeMap = {
   default: {
@@ -101,18 +101,18 @@ const sizeMap = {
     height: '2rem',
     padding: '0 12px',
   },
-};
+}
 
 type ButtonProps = {
-  children?: ReactNode;
-  disabled?: boolean;
-  href?: string;
-  loading?: boolean;
-  look?: keyof typeof styleMap;
-  shadow?: boolean;
-  size?: keyof typeof sizeMap;
-  styleOverrides?: CSSObject;
-};
+  children?: ReactNode
+  disabled?: boolean
+  href?: string
+  loading?: boolean
+  look?: keyof typeof styleMap
+  shadow?: boolean
+  size?: keyof typeof sizeMap
+  styleOverrides?: CSSObject
+}
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
   (
@@ -130,17 +130,17 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
     ref
   ) => {
     if (Tag === 'a' && !props.href) {
-      Tag = 'button';
+      Tag = 'button'
     }
 
     if (Tag === 'a' && props.href) {
-      disabled = undefined;
-      Tag = Link;
+      disabled = undefined
+      Tag = Link
     }
 
     if (look === 'text') {
-      disabled = loading ? true : disabled;
-      loading = false;
+      disabled = loading ? true : disabled
+      loading = false
     }
 
     return (
@@ -247,8 +247,8 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
           />
         ) : null}
       </Tag>
-    );
+    )
   }
-);
+)
 
-Button.displayName = 'Button';
+Button.displayName = 'Button'

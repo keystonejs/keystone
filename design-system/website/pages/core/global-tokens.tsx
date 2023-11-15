@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core'
 
-import { Fragment } from 'react';
-import { Page } from '../../components/Page';
-import { ReadableColor } from '../../components/ReadableColor';
+import { Fragment } from 'react'
+import { Page } from '../../components/Page'
+import { ReadableColor } from '../../components/ReadableColor'
 
 const PALETTES = [
   'neutral',
@@ -18,17 +18,17 @@ const PALETTES = [
   'red',
   'pink',
   'purple',
-];
+]
 
-const PALETTE_RANGE = ['100', '200', '300', '400', '500', '600', '700', '800', '900'];
+const PALETTE_RANGE = ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 
 const Palette = ({ name }: { name: string }) => {
-  const { palette, spacing, radii, typography } = useTheme();
+  const { palette, spacing, radii, typography } = useTheme()
 
   return (
     <div css={{ position: 'relative', marginLeft: `-${spacing.medium}px` }}>
       {PALETTE_RANGE.map(i => {
-        const color = `${name}${i}` as keyof typeof palette;
+        const color = `${name}${i}` as keyof typeof palette
         return (
           <div
             key={i}
@@ -49,13 +49,13 @@ const Palette = ({ name }: { name: string }) => {
               {i}
             </ReadableColor>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default function ThemePage() {
+export default function ThemePage () {
   return (
     <Page>
       <h1>Theme</h1>
@@ -73,5 +73,5 @@ export default function ThemePage() {
         </Fragment>
       ))}
     </Page>
-  );
+  )
 }

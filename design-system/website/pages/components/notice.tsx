@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { Notice, noticeToneValues } from '@keystone-ui/notice';
+import { jsx } from '@keystone-ui/core'
+import { Notice, noticeToneValues } from '@keystone-ui/notice'
 
-import { Page } from '../../components/Page';
-import { toLabel, aAn } from '../../utils';
+import { Page } from '../../components/Page'
+import { toLabel, aAn } from '../../utils'
 
-export default function ButtonPage() {
+export default function ButtonPage () {
   const actions = {
     primary: { label: 'Primary Action', onPress: () => undefined },
     secondary: { label: 'Secondary Action', onPress: () => undefined },
-  };
+  }
   return (
     <Page>
       <h1>Notice</h1>
@@ -31,5 +31,5 @@ export default function ButtonPage() {
         ))}
       </div>
     </Page>
-  );
+  )
 }

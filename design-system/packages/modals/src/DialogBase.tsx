@@ -1,36 +1,36 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, KeyboardEvent, ReactNode } from 'react';
-import FocusLock from 'react-focus-lock';
-import { RemoveScroll } from 'react-remove-scroll';
-import { jsx, keyframes, Portal, useTheme } from '@keystone-ui/core';
-import { Blanket } from './Blanket';
+import { Fragment, type KeyboardEvent, type ReactNode } from 'react'
+import FocusLock from 'react-focus-lock'
+import { RemoveScroll } from 'react-remove-scroll'
+import { jsx, keyframes, Portal, useTheme } from '@keystone-ui/core'
+import { Blanket } from './Blanket'
 
 type DialogBaseProps = {
-  children: ReactNode;
-  isOpen: boolean;
-  onClose: () => void;
-  width: number;
-};
+  children: ReactNode
+  isOpen: boolean
+  onClose: () => void
+  width: number
+}
 
 const slideInAnim = keyframes({
   from: {
     transform: 'translateY(20%)',
     opacity: 0,
   },
-});
-const easing = 'cubic-bezier(0.2, 0, 0, 1)';
+})
+const easing = 'cubic-bezier(0.2, 0, 0, 1)'
 
 export const DialogBase = ({ children, isOpen, onClose, width, ...props }: DialogBaseProps) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape' && !event.defaultPrevented) {
-      event.preventDefault(); // Avoid potential drawer close
-      onClose();
+      event.preventDefault() // Avoid potential drawer close
+      onClose()
     }
-  };
+  }
 
   return isOpen ? (
     <Portal>
@@ -73,5 +73,5 @@ export const DialogBase = ({ children, isOpen, onClose, width, ...props }: Dialo
         </FocusLock>
       </Fragment>
     </Portal>
-  ) : null;
-};
+  ) : null
+}

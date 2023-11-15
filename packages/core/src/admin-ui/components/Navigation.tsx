@@ -1,30 +1,30 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { AllHTMLAttributes, ReactNode, Fragment } from 'react';
-import { useRouter } from 'next/router';
-import { Stack, jsx, useTheme, Text } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
-import { Popover } from '@keystone-ui/popover';
-import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { NavigationProps, ListMeta, AuthenticatedItem } from '../../types';
+import { type AllHTMLAttributes, type ReactNode, Fragment } from 'react'
+import { useRouter } from 'next/router'
+import { Stack, jsx, useTheme, Text } from '@keystone-ui/core'
+import { Button } from '@keystone-ui/button'
+import { Popover } from '@keystone-ui/popover'
+import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
+import { type NavigationProps, type ListMeta, type AuthenticatedItem } from '../../types'
 
-import { useKeystone } from '../context';
-import { Link } from '../router';
-import { SignoutButton } from './SignoutButton';
+import { useKeystone } from '../context'
+import { Link } from '../router'
+import { SignoutButton } from './SignoutButton'
 
 type NavItemProps = {
-  href: string;
-  children: ReactNode;
-  isSelected?: boolean;
-};
+  href: string
+  children: ReactNode
+  isSelected?: boolean
+}
 
 export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProps) => {
-  const { colors, palette, spacing, radii, typography } = useTheme();
-  const router = useRouter();
+  const { colors, palette, spacing, radii, typography } = useTheme()
+  const router = useRouter()
 
-  const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href;
+  const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href
   return (
     <li>
       <Link
@@ -57,12 +57,12 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
         {children}
       </Link>
     </li>
-  );
-};
+  )
+}
 
 const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
-  const { apiPath } = useKeystone();
-  const { spacing, typography } = useTheme();
+  const { apiPath } = useKeystone()
+  const { spacing, typography } = useTheme()
   return (
     <div
       css={{
@@ -115,11 +115,11 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
         </Popover>
       )}
     </div>
-  );
-};
+  )
+}
 
 const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement>) => {
-  const { typography } = useTheme();
+  const { typography } = useTheme()
 
   return (
     <a
@@ -134,15 +134,15 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
       {children}
       <ChevronRightIcon size="small" />
     </a>
-  );
-};
+  )
+}
 
 export type NavigationContainerProps = Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
-  const { spacing } = useTheme();
+  const { spacing } = useTheme()
   return (
     <div
       css={{
@@ -167,11 +167,11 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
         </ul>
       </nav>
     </div>
-  );
-};
+  )
+}
 
 export const ListNavItem = ({ list }: { list: ListMeta }) => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <NavItem
       isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
@@ -179,22 +179,22 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
     >
       {list.label}
     </NavItem>
-  );
-};
+  )
+}
 
-type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] };
+type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] }
 
 export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
-  const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists;
+  const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists
 
   return (
     <Fragment>
       {renderedList.map((list: ListMeta) => {
-        return <ListNavItem key={list.key} list={list} />;
+        return <ListNavItem key={list.key} list={list} />
       })}
     </Fragment>
-  );
-};
+  )
+}
 
 export const Navigation = () => {
   const {
@@ -202,9 +202,9 @@ export const Navigation = () => {
     adminConfig,
     authenticatedItem,
     visibleLists,
-  } = useKeystone();
+  } = useKeystone()
 
-  if (visibleLists.state === 'loading') return null;
+  if (visibleLists.state === 'loading') return null
   // This visible lists error is critical and likely to result in a server restart
   // if it happens, we'll show the error and not render the navigation component/s
   if (visibleLists.state === 'error') {
@@ -214,14 +214,14 @@ export const Navigation = () => {
           ? visibleLists.error.message
           : visibleLists.error[0].message}
       </Text>
-    );
+    )
   }
   const renderableLists = Object.keys(lists)
     .map(key => {
-      if (!visibleLists.lists.has(key)) return null;
-      return lists[key];
+      if (!visibleLists.lists.has(key)) return null
+      return lists[key]
     })
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
 
   if (adminConfig?.components?.Navigation) {
     return (
@@ -229,7 +229,7 @@ export const Navigation = () => {
         authenticatedItem={authenticatedItem}
         lists={renderableLists}
       />
-    );
+    )
   }
 
   return (
@@ -237,5 +237,5 @@ export const Navigation = () => {
       <NavItem href="/">Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
-  );
-};
+  )
+}

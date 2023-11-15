@@ -1,7 +1,7 @@
-import type { KeystoneConfig } from '../types';
-import { idFieldType } from './id-field';
+import type { KeystoneConfig } from '../types'
+import { idFieldType } from './id-field'
 
-function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
+function applyIdFieldDefaults (config: KeystoneConfig): KeystoneConfig['lists'] {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -9,18 +9,18 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
         `A field with the \`id\` path is defined in the fields object on the ${JSON.stringify(
           listKey
         )} list. This is not allowed, use the idField option instead.`
-      );
+      )
     }
 
     if (list.isSingleton && list.db?.idField) {
       throw new Error(
         `A singleton list cannot specify an idField, but it is configured at db.idField on the ${listKey} list`
-      );
+      )
     }
   }
 
   // inject ID fields
-  const listsWithIds: KeystoneConfig['lists'] = {};
+  const listsWithIds: KeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
@@ -37,9 +37,9 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
           ),
           ...list.fields,
         },
-      };
+      }
 
-      continue;
+      continue
     }
 
     listsWithIds[listKey] = {
@@ -48,25 +48,25 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
         id: idFieldType(list.db?.idField ?? config.db.idField ?? { kind: 'cuid' }, false),
         ...list.fields,
       },
-    };
+    }
   }
 
-  return listsWithIds;
+  return listsWithIds
 }
 
-export function initConfig(config: KeystoneConfig) {
+export function initConfig (config: KeystoneConfig) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(
       'Invalid db configuration. Please specify db.provider as either "sqlite", "postgresql" or "mysql"'
-    );
+    )
   }
 
   // WARNING: Typescript should prevent this, but empty string is useful for Prisma errors
-  config.db.url ??= 'postgres://';
+  config.db.url ??= 'postgres://'
 
   // TODO: use zod or something if want to follow this path
   return {
     ...config,
     lists: applyIdFieldDefaults(config),
-  };
+  }
 }

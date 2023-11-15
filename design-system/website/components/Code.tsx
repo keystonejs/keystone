@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import { type ReactNode } from 'react'
+import { jsx, useTheme } from '@keystone-ui/core'
 
 export const Code = ({ children }: { children: ReactNode }) => {
-  const { palette, spacing, radii } = useTheme();
+  const { palette, spacing, radii } = useTheme()
   return (
     <code
       css={{
@@ -17,5 +17,5 @@ export const Code = ({ children }: { children: ReactNode }) => {
     >
       {children}
     </code>
-  );
-};
+  )
+}

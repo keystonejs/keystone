@@ -1,8 +1,8 @@
-import { group, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { getContext } from '@keystone-6/core/context';
-import { integer, text } from '@keystone-6/core/fields';
-import { testConfig } from './utils';
+import { group, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { getContext } from '@keystone-6/core/context'
+import { integer, text } from '@keystone-6/core/fields'
+import { testConfig } from './utils'
 
 test('errors with nested field groups', () => {
   expect(() =>
@@ -30,8 +30,8 @@ test('errors with nested field groups', () => {
       }),
       {}
     )
-  ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`);
-});
+  ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`)
+})
 
 test('errors if you write a group manually differently to the group function', () => {
   expect(() =>
@@ -53,5 +53,5 @@ test('errors if you write a group manually differently to the group function', (
       }),
       {}
     )
-  ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`);
-});
+  ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`)
+})

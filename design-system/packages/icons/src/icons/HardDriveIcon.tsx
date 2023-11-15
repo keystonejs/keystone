@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const HardDriveIcon = createIcon(
   <React.Fragment>
     <line x1={22} y1={12} x2={2} y2={12} />
@@ -8,4 +8,4 @@ export const HardDriveIcon = createIcon(
     <line x1={10} y1={16} x2={10.01} y2={16} />
   </React.Fragment>,
   'HardDriveIcon'
-);
+)

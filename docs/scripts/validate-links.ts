@@ -1,7 +1,7 @@
-import Markdoc from '@markdoc/markdoc';
-import { getIdForHeading, baseMarkdocConfig, Pages } from '../markdoc/config';
-import { printValidationError } from '../markdoc';
-import { loadAllMarkdoc } from '../markdoc/load-all';
+import Markdoc from '@markdoc/markdoc'
+import { getIdForHeading, baseMarkdocConfig, type Pages } from '../markdoc/config'
+import { printValidationError } from '../markdoc'
+import { loadAllMarkdoc } from '../markdoc/load-all'
 
 // for the things that aren't Markdoc that are linked from Markdoc
 const NON_MARKDOWN_PAGES = [
@@ -16,33 +16,33 @@ const NON_MARKDOWN_PAGES = [
 
 (async () => {
   const parsedFiles = (await loadAllMarkdoc()).map(({ file, contents }) => {
-    const root = Markdoc.parse(contents, file);
-    const ids = new Set<string>();
+    const root = Markdoc.parse(contents, file)
+    const ids = new Set<string>()
     for (const node of root.walk()) {
       if (node.type === 'heading') {
-        const id = getIdForHeading(node);
-        ids.add(id);
+        const id = getIdForHeading(node)
+        ids.add(id)
       }
     }
-    return { root, ids, path: file.replace(/\.md$/, '') };
-  });
+    return { root, ids, path: file.replace(/\.md$/, '') }
+  })
 
   const pages: Pages = new Map(
     parsedFiles.map(({ path, ids }) => [path.replace(/^pages/, '').replace(/\.md$/, ''), { ids }])
-  );
+  )
   for (const NON_MARKDOWN_PAGE of NON_MARKDOWN_PAGES) {
-    pages.set(NON_MARKDOWN_PAGE, { ids: new Set() });
+    pages.set(NON_MARKDOWN_PAGE, { ids: new Set() })
   }
 
-  const markdocConfig = { ...baseMarkdocConfig, pages, variables: { nextRelease: false } };
-  const errors = parsedFiles.flatMap(({ root }) => Markdoc.validate(root, markdocConfig));
+  const markdocConfig = { ...baseMarkdocConfig, pages, variables: { nextRelease: false } }
+  const errors = parsedFiles.flatMap(({ root }) => Markdoc.validate(root, markdocConfig))
   if (errors.length) {
     for (const error of errors) {
-      console.error(printValidationError(error));
+      console.error(printValidationError(error))
     }
-    process.exitCode = 1;
+    process.exitCode = 1
   }
 })().catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+  console.error(err)
+  process.exitCode = 1
+})

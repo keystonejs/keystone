@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Global, css } from '@emotion/react';
-import { Fragment, HTMLAttributes } from 'react';
+import { jsx, Global, css } from '@emotion/react'
+import { Fragment, type HTMLAttributes } from 'react'
 
-import { algoliaStyles } from '../../lib/algoliaStyles';
-import { SearchKeys } from '../icons/SearchKeys';
-import { Search } from '../icons/Search';
-import { Field } from './Field';
+import { algoliaStyles } from '../../lib/algoliaStyles'
+import { SearchKeys } from '../icons/SearchKeys'
+import { Search } from '../icons/Search'
+import { Field } from './Field'
 
-type SearchFieldProps = HTMLAttributes<HTMLElement>;
+type SearchFieldProps = HTMLAttributes<HTMLElement>
 
-export function SearchField(props: SearchFieldProps) {
+export function SearchField (props: SearchFieldProps) {
   return (
     <Fragment>
       <Global
@@ -69,5 +69,5 @@ export function SearchField(props: SearchFieldProps) {
         </label>
       </span>
     </Fragment>
-  );
+  )
 }

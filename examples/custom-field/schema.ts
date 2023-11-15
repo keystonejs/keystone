@@ -1,14 +1,14 @@
-import { list } from '@keystone-6/core';
+import { list } from '@keystone-6/core'
 
-import { allowAll } from '@keystone-6/core/access';
-import { text } from './1-text-field';
-import { stars } from './2-stars-field';
-import { pair } from './3-pair-field';
-import { pair as pairNested } from './3-pair-field-nested';
-import { pair as pairJson } from './3-pair-field-json';
-import { feedback } from './4-conditional-field';
+import { allowAll } from '@keystone-6/core/access'
+import { text } from './1-text-field'
+import { stars } from './2-stars-field'
+import { pair } from './3-pair-field'
+import { pair as pairNested } from './3-pair-field-nested'
+import { pair as pairJson } from './3-pair-field-json'
+import { feedback } from './4-conditional-field'
 
-import type { Lists } from '.keystone/types';
+import type { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -27,8 +27,8 @@ export const lists: Lists = {
               inputData,
               item,
               fieldKey,
-            });
-            return resolvedData[fieldKey];
+            })
+            return resolvedData[fieldKey]
           },
 
           validateInput: async ({
@@ -43,7 +43,7 @@ export const lists: Lists = {
               inputData,
               item,
               fieldKey,
-            });
+            })
           },
         },
       }),
@@ -89,24 +89,24 @@ export const lists: Lists = {
             operation,
             inputData,
             item,
-          });
+          })
           return {
             ...resolvedData,
             pair: {
               left: resolvedData.pair?.left ?? null,
               right: resolvedData.pair?.right ?? null,
             },
-          };
+          }
         },
       },
 
       validateInput: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
-        console.log('Post.hooks.validateInput', { resolvedData, operation, inputData, item });
+        console.log('Post.hooks.validateInput', { resolvedData, operation, inputData, item })
 
         if (Math.random() > 0.95) {
-          addValidationError('oh oh, try again, this is part of the example');
+          addValidationError('oh oh, try again, this is part of the example')
         }
       },
     },
   }),
-};
+}

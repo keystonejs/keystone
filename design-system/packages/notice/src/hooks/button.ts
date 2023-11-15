@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useTheme } from '@keystone-ui/core';
-import type { ButtonTokens, WeightKey, ToneKey, SizeKey } from '@keystone-ui/button';
+import { useTheme } from '@keystone-ui/core'
+import type { ButtonTokens, WeightKey, ToneKey, SizeKey } from '@keystone-ui/button'
 
 type ButtonTokensProps = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
-};
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
+}
 
 type Weight = Omit<
   ButtonTokens,
@@ -20,16 +20,16 @@ type Weight = Omit<
   | 'height'
   | 'paddingX'
   | 'transition'
->;
+>
 
-export function useButtonTokens({
+export function useButtonTokens ({
   tone: toneKey,
   size: sizeKey,
   weight: weightKey,
 }: ButtonTokensProps): ButtonTokens {
-  const { animation, colors, tones, typography, controlSizes, opacity } = useTheme();
-  const tone = tones[toneKey];
-  const size = controlSizes[sizeKey];
+  const { animation, colors, tones, typography, controlSizes, opacity } = useTheme()
+  const tone = tones[toneKey]
+  const size = controlSizes[sizeKey]
 
   const weights: { [key in WeightKey]: Weight } = {
     bold: {
@@ -91,9 +91,9 @@ export function useButtonTokens({
         textDecoration: 'underline',
       },
     },
-  };
+  }
 
-  const weight = weights[weightKey];
+  const weight = weights[weightKey]
 
   const tokens: ButtonTokens = {
     borderRadius: size.borderRadius,
@@ -110,7 +110,7 @@ export function useButtonTokens({
       opacity ${animation.duration100},
     `,
     ...weight,
-  };
+  }
 
-  return tokens;
+  return tokens
 }

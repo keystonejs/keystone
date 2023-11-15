@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { forwardRefWithAs, jsx } from '@keystone-ui/core';
+import { forwardRefWithAs, jsx } from '@keystone-ui/core'
 
 const Icon = ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   return (
@@ -32,8 +32,8 @@ const Icon = ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorEleme
     >
       {children}
     </a>
-  );
-};
+  )
+}
 
 export const IconTwitter = (props: any) => (
   <Icon {...props}>
@@ -46,7 +46,7 @@ export const IconTwitter = (props: any) => (
     </svg>
     <A11yText>Hear about KeystoneJS on Twitter</A11yText>
   </Icon>
-);
+)
 export const IconGithub = (props: any) => (
   <Icon {...props}>
     <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true">
@@ -58,7 +58,7 @@ export const IconGithub = (props: any) => (
     </svg>
     <A11yText>KeystoneJS repository on GitHub</A11yText>
   </Icon>
-);
+)
 
 // ==============================
 // Misc
@@ -79,4 +79,4 @@ const A11yText = forwardRefWithAs<'span', {}>(({ as: Tag = 'span', ...props }, r
     }}
     {...props}
   />
-));
+))

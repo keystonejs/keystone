@@ -1,9 +1,9 @@
-import { ComponentSchema, ComponentBlock } from '../../component-blocks';
-import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props';
-import { assertNever, findChildPropPaths } from './utils';
+import { type ComponentSchema, type ComponentBlock } from '../../component-blocks'
+import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
+import { assertNever, findChildPropPaths } from './utils'
 
-export function getInitialValue(type: string, componentBlock: ComponentBlock) {
-  const props = getInitialPropsValue({ kind: 'object', fields: componentBlock.schema });
+export function getInitialValue (type: string, componentBlock: ComponentBlock) {
+  const props = getInitialPropsValue({ kind: 'object', fields: componentBlock.schema })
   return {
     type: 'component-block' as const,
     component: type,
@@ -17,89 +17,89 @@ export function getInitialValue(type: string, componentBlock: ComponentBlock) {
           : { text: '' },
       ],
     })),
-  };
+  }
 }
 
-export function getInitialPropsValue(schema: ComponentSchema): any {
+export function getInitialPropsValue (schema: ComponentSchema): any {
   switch (schema.kind) {
     case 'form':
-      return schema.defaultValue;
+      return schema.defaultValue
     case 'child':
-      return null;
+      return null
     case 'relationship':
-      return schema.many ? [] : null;
+      return schema.many ? [] : null
     case 'conditional': {
-      const defaultValue = schema.discriminant.defaultValue;
+      const defaultValue = schema.discriminant.defaultValue
       return {
         discriminant: defaultValue,
         value: getInitialPropsValue(schema.values[defaultValue.toString()]),
-      };
+      }
     }
     case 'object': {
-      const obj: Record<string, any> = {};
+      const obj: Record<string, any> = {}
       for (const key of Object.keys(schema.fields)) {
-        obj[key] = getInitialPropsValue(schema.fields[key]);
+        obj[key] = getInitialPropsValue(schema.fields[key])
       }
-      return obj;
+      return obj
     }
     case 'array': {
-      return [];
+      return []
     }
   }
-  assertNever(schema);
+  assertNever(schema)
 }
 
-export function getInitialPropsValueFromInitializer(
+export function getInitialPropsValueFromInitializer (
   schema: ComponentSchema,
   initializer: any
 ): any {
   switch (schema.kind) {
     case 'form':
-      return initializer === undefined ? schema.defaultValue : initializer;
+      return initializer === undefined ? schema.defaultValue : initializer
     case 'child':
-      return null;
+      return null
     case 'relationship':
-      return initializer === undefined ? (schema.many ? [] : null) : initializer;
+      return initializer === undefined ? (schema.many ? [] : null) : initializer
     case 'conditional': {
       const defaultValue =
-        initializer === undefined ? schema.discriminant.defaultValue : initializer.discriminant;
+        initializer === undefined ? schema.discriminant.defaultValue : initializer.discriminant
       return {
         discriminant: defaultValue,
         value: getInitialPropsValueFromInitializer(
           schema.values[defaultValue.toString()],
           initializer === undefined ? undefined : initializer.value
         ),
-      };
+      }
     }
     case 'object': {
-      const obj: Record<string, any> = {};
+      const obj: Record<string, any> = {}
       for (const key of Object.keys(schema.fields)) {
         obj[key] = getInitialPropsValueFromInitializer(
           schema.fields[key],
           initializer === undefined ? undefined : initializer[key]
-        );
+        )
       }
-      return obj;
+      return obj
     }
     case 'array': {
       return ((initializer ?? []) as { value?: unknown }[]).map(x =>
         getInitialPropsValueFromInitializer(schema.element, x.value)
-      );
+      )
     }
   }
-  assertNever(schema);
+  assertNever(schema)
 }
 
-export function updateValue(schema: ComponentSchema, currentValue: any, updater: any): any {
-  if (updater === undefined) return currentValue;
+export function updateValue (schema: ComponentSchema, currentValue: any, updater: any): any {
+  if (updater === undefined) return currentValue
 
   switch (schema.kind) {
     case 'relationship':
-      return updater;
+      return updater
     case 'form':
-      return updater;
+      return updater
     case 'child':
-      return null;
+      return null
     case 'conditional': {
       return {
         discriminant: updater.discriminant,
@@ -114,53 +114,53 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
                 schema.values[updater.discriminant.toString()],
                 updater.value
               ),
-      };
+      }
     }
     case 'object': {
-      const obj: Record<string, any> = {};
+      const obj: Record<string, any> = {}
       for (const key of Object.keys(schema.fields)) {
-        obj[key] = updateValue(schema.fields[key], currentValue[key], updater[key]);
+        obj[key] = updateValue(schema.fields[key], currentValue[key], updater[key])
       }
-      return obj;
+      return obj
     }
     case 'array': {
-      const currentArrVal = currentValue as unknown[];
-      const newVal = updater as { key: string | undefined; value: unknown }[];
-      const uniqueKeys = new Set();
+      const currentArrVal = currentValue as unknown[]
+      const newVal = updater as { key: string | undefined, value: unknown }[]
+      const uniqueKeys = new Set()
       for (const x of newVal) {
         if (x.key !== undefined) {
           if (uniqueKeys.has(x.key)) {
-            throw new Error('Array elements must have unique keys');
+            throw new Error('Array elements must have unique keys')
           }
-          uniqueKeys.add(x.key);
+          uniqueKeys.add(x.key)
         }
       }
       const keys = newVal.map(x => {
-        if (x.key !== undefined) return x.key;
-        let elementKey = getNewArrayElementKey();
+        if (x.key !== undefined) return x.key
+        let elementKey = getNewArrayElementKey()
         // just in case someone gives a key that is above our counter
         while (uniqueKeys.has(elementKey)) {
-          elementKey = getNewArrayElementKey();
+          elementKey = getNewArrayElementKey()
         }
-        uniqueKeys.add(elementKey);
-        return elementKey;
-      });
-      const prevKeys = getKeysForArrayValue(currentArrVal);
+        uniqueKeys.add(elementKey)
+        return elementKey
+      })
+      const prevKeys = getKeysForArrayValue(currentArrVal)
       const prevValuesByKey = new Map(
         currentArrVal.map((value, i) => {
-          return [prevKeys[i], value];
+          return [prevKeys[i], value]
         })
-      );
+      )
       const val = newVal.map((x, i) => {
-        const id = keys[i];
+        const id = keys[i]
         if (prevValuesByKey.has(id)) {
-          return updateValue(schema.element, prevValuesByKey.get(id), x.value);
+          return updateValue(schema.element, prevValuesByKey.get(id), x.value)
         }
-        return getInitialPropsValueFromInitializer(schema.element, x.value);
-      });
-      setKeysForArrayValue(val, keys);
-      return val;
+        return getInitialPropsValueFromInitializer(schema.element, x.value)
+      })
+      setKeysForArrayValue(val, keys)
+      return val
     }
   }
-  assertNever(schema);
+  assertNever(schema)
 }

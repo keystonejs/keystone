@@ -1,40 +1,40 @@
 import {
-  GraphQLSchema,
+  type GraphQLSchema,
   GraphQLScalarType,
   GraphQLEnumType,
-  GraphQLType,
+  type GraphQLType,
   GraphQLNonNull,
-  GraphQLNamedType,
+  type GraphQLNamedType,
   GraphQLList,
   GraphQLInputObjectType,
   introspectionTypes,
-} from 'graphql';
-import type { InitialisedList } from './core/initialise-lists';
+} from 'graphql'
+import type { InitialisedList } from './core/initialise-lists'
 
-const introspectionTypesSet = new Set(introspectionTypes);
+const introspectionTypesSet = new Set(introspectionTypes)
 
-function stringify(x: string) {
-  return JSON.stringify(x).slice(1, -1);
+function stringify (x: string) {
+  return JSON.stringify(x).slice(1, -1)
 }
 
-function printEnumTypeDefinition(type: GraphQLEnumType) {
+function printEnumTypeDefinition (type: GraphQLEnumType) {
   return [
     `export type ${type.name} =`,
     type
       .getValues()
       .map(x => `  | '${stringify(x.name)}'`)
       .join('\n') + ';',
-  ].join('\n');
+  ].join('\n')
 }
 
-function printTypeReference(type: GraphQLType, scalars: Record<string, string>): string {
+function printTypeReference (type: GraphQLType, scalars: Record<string, string>): string {
   if (type instanceof GraphQLNonNull) {
-    return printTypeReferenceWithoutNullable(type.ofType, scalars);
+    return printTypeReferenceWithoutNullable(type.ofType, scalars)
   }
-  return `${printTypeReferenceWithoutNullable(type, scalars)} | null`;
+  return `${printTypeReferenceWithoutNullable(type, scalars)} | null`
 }
 
-function printTypeReferenceWithoutNullable(
+function printTypeReferenceWithoutNullable (
   type: GraphQLNamedType | GraphQLList<GraphQLType>,
   scalars: Record<string, string>
 ): string {
@@ -42,79 +42,79 @@ function printTypeReferenceWithoutNullable(
     return `ReadonlyArray<${printTypeReference(type.ofType, scalars)}> | ${printTypeReference(
       type.ofType,
       scalars
-    )}`;
+    )}`
   }
 
-  const name = type.name;
+  const name = type.name
   if (type instanceof GraphQLScalarType) {
-    if (scalars[name] === undefined) return 'any';
-    return `Scalars['${stringify(name)}']`;
+    if (scalars[name] === undefined) return 'any'
+    return `Scalars['${stringify(name)}']`
   }
 
-  return name;
+  return name
 }
 
-function printInputObjectTypeDefinition(
+function printInputObjectTypeDefinition (
   type: GraphQLInputObjectType,
   scalars: Record<string, string>
 ) {
   return [
     `export type ${type.name} = {`,
     ...Object.values(type.getFields()).map(({ type, defaultValue, name }) => {
-      const maybe = type instanceof GraphQLNonNull ? '' : '?';
-      return `  readonly ${name}${maybe}: ${printTypeReference(type, scalars)};`;
+      const maybe = type instanceof GraphQLNonNull ? '' : '?'
+      return `  readonly ${name}${maybe}: ${printTypeReference(type, scalars)};`
     }),
     '};',
-  ].join('\n');
+  ].join('\n')
 }
 
-function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string, string>) {
+function printInputTypesFromSchema (schema: GraphQLSchema, scalars: Record<string, string>) {
   const output = [
     'type Scalars = {',
     ...Object.keys(scalars).map(scalar => `  readonly ${scalar}: ${scalars[scalar]};`),
     '};',
-  ];
+  ]
 
   for (const type of Object.values(schema.getTypeMap())) {
     // We don't want to print TS types for the built-in GraphQL introspection types
     // they won't be used for anything we want to print here.
-    if (introspectionTypesSet.has(type)) continue;
+    if (introspectionTypesSet.has(type)) continue
     if (type instanceof GraphQLInputObjectType) {
-      output.push('', printInputObjectTypeDefinition(type, scalars));
+      output.push('', printInputObjectTypeDefinition(type, scalars))
     }
     if (type instanceof GraphQLEnumType) {
-      output.push('', printEnumTypeDefinition(type));
+      output.push('', printEnumTypeDefinition(type))
     }
   }
 
-  return output.join('\n');
+  return output.join('\n')
 }
 
-function printInterimType<L extends InitialisedList>(
+function printInterimType<L extends InitialisedList> (
   prismaClientPath: string,
   list: L,
   listKey: string,
   typename: string,
   operation: 'Create' | 'Update'
 ) {
-  const prismaType = `import('${prismaClientPath}').Prisma.${listKey}${operation}Input`;
+  const prismaType = `import('${prismaClientPath}').Prisma.${listKey}${operation}Input`
 
   return [
     `type Resolved${typename} = {`,
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
-      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined;`;
+      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined;`
 
       // TODO: this could be elsewhere, maybe id-field.ts
       if (fieldKey === 'id') {
         // autoincrement doesn't support passing an identifier
         if ('default' in dbField) {
           if (dbField.default?.kind === 'autoincrement') {
-            return `  id?: undefined;`;
+            return `  id?: undefined;`
           }
         }
 
         // soft-block `id` updates for relationship safety
-        if (operation === 'Update') return `  id?: undefined;`;
+        if (operation === 'Update') return `  id?: undefined;`
       }
 
       if (dbField.kind === 'multi') {
@@ -123,38 +123,36 @@ function printInterimType<L extends InitialisedList>(
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
             // TODO: untrue if a db defaultValue is set
             //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?';
-            const optional = '?';
-            return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}'];`;
+            const optional = '?'
+            return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}'];`
           }),
           `  };`,
-        ].join('\n');
+        ].join('\n')
       }
 
       // TODO: untrue if a db defaultValue is set
       //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?';
-      const optional = '?';
-      return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}'];`;
+      const optional = '?'
+      return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}'];`
     }),
     `};`,
-  ].join('\n');
+  ].join('\n')
 }
 
-function printListTypeInfo<L extends InitialisedList>(
+function printListTypeInfo<L extends InitialisedList> (
   prismaClientPath: string,
   listKey: string,
   list: L
 ) {
-  // prettier-ignore
   const {
     whereInputName,
     whereUniqueInputName,
     createInputName,
     updateInputName,
     listOrderName,
-  } = list.graphql.names;
-  const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+  } = list.graphql.names
+  const listTypeInfoName = `Lists.${listKey}.TypeInfo`
 
-  // prettier-ignore
   return [
     `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>>;`,
     `namespace ${listKey} {`,
@@ -180,21 +178,21 @@ function printListTypeInfo<L extends InitialisedList>(
     `}`,
   ]
     .map(line => `  ${line}`)
-    .join('\n');
+    .join('\n')
 }
 
-export function printGeneratedTypes(
+export function printGeneratedTypes (
   prismaClientPath: string,
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
 ) {
-  const interimCreateUpdateTypes = [];
-  const listsTypeInfo = [];
-  const listsNamespaces = [];
-  prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`);
+  const interimCreateUpdateTypes = []
+  const listsTypeInfo = []
+  const listsNamespaces = []
+  prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`)
 
   for (const [listKey, list] of Object.entries(lists)) {
-    const listTypeInfoName = `Lists.${listKey}.TypeInfo<Session>`;
+    const listTypeInfoName = `Lists.${listKey}.TypeInfo<Session>`
 
     if (list.graphql.isEnabled.create) {
       interimCreateUpdateTypes.push(
@@ -205,7 +203,7 @@ export function printGeneratedTypes(
           list.graphql.names.createInputName,
           'Create'
         )
-      );
+      )
     }
 
     if (list.graphql.isEnabled.update) {
@@ -217,11 +215,11 @@ export function printGeneratedTypes(
           list.graphql.names.updateInputName,
           'Update'
         )
-      );
+      )
     }
 
-    listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName};`);
-    listsNamespaces.push(printListTypeInfo(prismaClientPath, listKey, list));
+    listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName};`)
+    listsNamespaces.push(printListTypeInfo(prismaClientPath, listKey, list))
   }
 
   return [
@@ -262,5 +260,5 @@ export function printGeneratedTypes(
     ``,
     `export {}`,
     ``,
-  ].join('\n');
+  ].join('\n')
 }

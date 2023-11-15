@@ -1,23 +1,23 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
-import { AnchorHTMLAttributes, ReactNode } from 'react';
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
+import { type AnchorHTMLAttributes, type ReactNode } from 'react'
 
-import { Type } from './Type';
-import { Badge } from './Badge';
+import { Type } from './Type'
+import { Badge } from './Badge'
 
-export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
+export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4'
 
 type WellProps = {
-  grad?: WellGradient;
-  heading?: ReactNode;
-  badge?: string;
-  href: string;
-  children: ReactNode;
-} & AnchorHTMLAttributes<HTMLAnchorElement>;
+  grad?: WellGradient
+  heading?: ReactNode
+  badge?: string
+  href: string
+  children: ReactNode
+} & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
+export function Well ({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
   return (
     <Link
       href={href}
@@ -90,5 +90,5 @@ export function Well({ grad = 'grad1', heading, badge, href, children, ...props 
         {children}
       </Type>
     </Link>
-  );
+  )
 }

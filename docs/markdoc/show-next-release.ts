@@ -1,1 +1,1 @@
-export const showNextReleaseWithoutReplacement = !!process.env.SHOW_NEXT_RELEASE;
+export const showNextReleaseWithoutReplacement = !!process.env.SHOW_NEXT_RELEASE

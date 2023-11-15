@@ -1,20 +1,20 @@
-import { json } from '@keystone-6/core/fields';
+import { json } from '@keystone-6/core/fields'
 
-export const name = 'Json';
-export const typeFunction = json;
+export const name = 'Json'
+export const typeFunction = json
 export const exampleValue = () => ({
   a: 3,
-});
+})
 export const exampleValue2 = () => ({
   b: [],
-});
-export const supportsNullInput = true;
-export const supportsUnique = false;
-export const skipRequiredTest = true;
-export const supportsDbMap = true;
-export const fieldName = 'testField';
+})
+export const supportsNullInput = true
+export const supportsUnique = false
+export const skipRequiredTest = true
+export const supportsDbMap = true
+export const fieldName = 'testField'
 
-export const getTestFields = () => ({ testField: json() });
+export const getTestFields = () => ({ testField: json() })
 
 export const initItems = () => {
   return [
@@ -25,8 +25,8 @@ export const initItems = () => {
     { name: 'e', testField: { e: null } },
     { name: 'f', testField: null },
     { name: 'g' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'a', testField: { a: [] } },
@@ -36,4 +36,4 @@ export const storedValues = () => [
   { name: 'e', testField: { e: null } },
   { name: 'f', testField: null },
   { name: 'g', testField: null },
-];
+]

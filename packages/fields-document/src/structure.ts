@@ -1,27 +1,27 @@
 import {
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
-  JSONValue,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
-import { getOutputGraphQLField } from './structure-graphql-output';
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
+  type JSONValue,
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
+import { getOutputGraphQLField } from './structure-graphql-output'
+import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import {
   getGraphQLInputType,
   getValueForCreate,
   getValueForUpdate,
-} from './structure-graphql-input';
-import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions';
-import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data';
+} from './structure-graphql-input'
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
+import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data'
 
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    db?: { map?: string };
-    schema: ComponentSchemaForGraphQL;
-  };
+    db?: { map?: string }
+    schema: ComponentSchemaForGraphQL
+  }
 
 export const structure =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -30,37 +30,37 @@ export const structure =
   }: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type structure");
+      throw Error("isIndexed: 'unique' is not a supported option for field type structure")
     }
-    const lists = new Set(Object.keys(meta.lists));
+    const lists = new Set(Object.keys(meta.lists))
     try {
-      assertValidComponentSchema(schema, lists);
+      assertValidComponentSchema(schema, lists)
     } catch (err) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`);
+      throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`)
     }
 
-    const defaultValue = getInitialPropsValue(schema);
+    const defaultValue = getInitialPropsValue(schema)
 
-    const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
+    const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = []
 
-    const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1);
+    const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
         hooks: {
           ...config.hooks,
-          async resolveInput(args) {
-            let val = args.resolvedData[meta.fieldKey];
+          async resolveInput (args) {
+            let val = args.resolvedData[meta.fieldKey]
             if (args.operation === 'update') {
-              let prevVal = args.item[meta.fieldKey];
+              let prevVal = args.item[meta.fieldKey]
               if (meta.provider === 'sqlite') {
-                prevVal = JSON.parse(prevVal as any);
-                val = args.inputData[meta.fieldKey];
+                prevVal = JSON.parse(prevVal as any)
+                val = args.inputData[meta.fieldKey]
               }
-              val = await getValueForUpdate(schema, val, prevVal, args.context, []);
+              val = await getValueForUpdate(schema, val, prevVal, args.context, [])
               if (meta.provider === 'sqlite') {
-                val = JSON.stringify(val);
+                val = JSON.stringify(val)
               }
             }
 
@@ -69,7 +69,7 @@ export const structure =
                   ...args,
                   resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
                 })
-              : val;
+              : val
           },
         },
         input: {
@@ -77,8 +77,8 @@ export const structure =
             arg: graphql.arg({
               type: getGraphQLInputType(name, schema, 'create', new Map(), meta),
             }),
-            async resolve(val, context) {
-              return await getValueForCreate(schema, val, context, []);
+            async resolve (val, context) {
+              return await getValueForCreate(schema, val, context, [])
             },
           },
           update: {
@@ -106,7 +106,7 @@ export const structure =
                     defaultValue: false,
                   }),
                 },
-                resolve({ value }, args, context) {
+                resolve ({ value }, args, context) {
                   if (args.hydrateRelationships) {
                     return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
                       fetchRelationshipData(
@@ -116,15 +116,15 @@ export const structure =
                         schema.selection || '',
                         value
                       )
-                    );
+                    )
                   }
-                  return value;
+                  return value
                 },
               }),
             },
           }),
-          resolve(source) {
-            return source;
+          resolve (source) {
+            return source
           },
         }),
         __ksTelemetryFieldTypeName: '@keystone-6/structure',
@@ -140,5 +140,5 @@ export const structure =
         map: config.db?.map,
         mode: 'required',
       }
-    );
-  };
+    )
+  }

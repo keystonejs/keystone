@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
 const statusMap = {
   notStarted: {
@@ -33,13 +33,13 @@ const statusMap = {
     bg: 'success-bg',
     color: 'text-heading',
   },
-};
+}
 
 type StatusProps = {
-  look: keyof typeof statusMap;
-};
-export function Status({ look }: StatusProps) {
-  const status = statusMap[look];
+  look: keyof typeof statusMap
+}
+export function Status ({ look }: StatusProps) {
+  const status = statusMap[look]
 
   return (
     <span
@@ -54,5 +54,5 @@ export function Status({ look }: StatusProps) {
     >
       {status.label}
     </span>
-  );
+  )
 }

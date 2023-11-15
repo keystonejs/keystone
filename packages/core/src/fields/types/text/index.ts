@@ -1,34 +1,34 @@
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
-  FieldTypeFunc,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { filters } from '../../filters';
+  type FieldTypeFunc,
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: true | 'unique';
+    isIndexed?: true | 'unique'
     ui?: {
-      displayMode?: 'input' | 'textarea';
-    };
+      displayMode?: 'input' | 'textarea'
+    }
     validation?: {
       /**
        * Makes the field disallow null values and require a string at least 1 character long
        */
-      isRequired?: boolean;
-      match?: { regex: RegExp; explanation?: string };
-      length?: { min?: number; max?: number };
-    };
-    defaultValue?: string;
+      isRequired?: boolean
+      match?: { regex: RegExp, explanation?: string }
+      length?: { min?: number, max?: number }
+    }
+    defaultValue?: string
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
       /**
        * The underlying database type.
        * Only some of the types are supported on PostgreSQL and MySQL.
@@ -49,9 +49,9 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
         | 'Citext'
         | 'TinyText' // MySQL
         | 'MediumText'
-        | 'LargeText';
-    };
-  };
+        | 'LargeText'
+    }
+  }
 
 export const text =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -62,16 +62,16 @@ export const text =
   }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     for (const type of ['min', 'max'] as const) {
-      const val = _validation?.length?.[type];
+      const val = _validation?.length?.[type]
       if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
         throw new Error(
           `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`
-        );
+        )
       }
       if (_validation?.isRequired && val !== undefined && val === 0) {
         throw new Error(
           `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
-        );
+        )
       }
     }
 
@@ -82,7 +82,7 @@ export const text =
     ) {
       throw new Error(
         `The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
-      );
+      )
     }
 
     const validation = {
@@ -91,19 +91,19 @@ export const text =
         min: _validation?.isRequired ? _validation?.length?.min ?? 1 : _validation?.length?.min,
         max: _validation?.length?.max,
       },
-    };
+    }
 
     // defaulted to false as a zero length string is preferred to null
-    const isNullable = config.db?.isNullable ?? false;
+    const isNullable = config.db?.isNullable ?? false
 
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
-    assertReadIsNonNullAllowed(meta, config, isNullable);
+    assertReadIsNonNullAllowed(meta, config, isNullable)
 
-    const mode = isNullable ? 'optional' : 'required';
+    const mode = isNullable ? 'optional' : 'required'
 
     const defaultValue =
-      isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined;
+      isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined
     return fieldType({
       kind: 'scalar',
       mode,
@@ -117,34 +117,34 @@ export const text =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
-          const val = args.resolvedData[meta.fieldKey];
+        async validateInput (args) {
+          const val = args.resolvedData[meta.fieldKey]
           if (val === null && (validation?.isRequired || isNullable === false)) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
           if (val != null) {
             if (validation?.length?.min !== undefined && val.length < validation.length.min) {
               if (validation.length.min === 1) {
-                args.addValidationError(`${fieldLabel} must not be empty`);
+                args.addValidationError(`${fieldLabel} must not be empty`)
               } else {
                 args.addValidationError(
                   `${fieldLabel} must be at least ${validation.length.min} characters long`
-                );
+                )
               }
             }
             if (validation?.length?.max !== undefined && val.length > validation.length.max) {
               args.addValidationError(
                 `${fieldLabel} must be no longer than ${validation.length.max} characters`
-              );
+              )
             }
             if (validation?.match && !validation.match.regex.test(val)) {
               args.addValidationError(
                 validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`
-              );
+              )
             }
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -161,11 +161,11 @@ export const text =
             type: graphql.String,
             defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
-              return defaultValue ?? null;
+              return defaultValue ?? null
             }
-            return val;
+            return val
           },
         },
         update: { arg: graphql.arg({ type: graphql.String }) },
@@ -176,7 +176,7 @@ export const text =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/text',
       views: '@keystone-6/core/fields/types/text/views',
-      getAdminMeta(): TextFieldMeta {
+      getAdminMeta (): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',
           shouldUseModeInsensitive: meta.provider === 'postgresql',
@@ -195,19 +195,19 @@ export const text =
           },
           defaultValue: defaultValue ?? (isNullable ? null : ''),
           isNullable,
-        };
+        }
       },
-    });
-  };
+    })
+  }
 
 export type TextFieldMeta = {
-  displayMode: 'input' | 'textarea';
-  shouldUseModeInsensitive: boolean;
-  isNullable: boolean;
+  displayMode: 'input' | 'textarea'
+  shouldUseModeInsensitive: boolean
+  isNullable: boolean
   validation: {
-    isRequired: boolean;
-    match: { regex: { source: string; flags: string }; explanation: string | null } | null;
-    length: { min: number | null; max: number | null };
-  };
-  defaultValue: string | null;
-};
+    isRequired: boolean
+    match: { regex: { source: string, flags: string }, explanation: string | null } | null
+    length: { min: number | null, max: number | null }
+  }
+  defaultValue: string | null
+}

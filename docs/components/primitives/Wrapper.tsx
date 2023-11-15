@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import type { ElementType, HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import type { ElementType, HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media';
+import { useMediaQuery } from '../../lib/media'
 
 type WrapperProps = {
-  as?: ElementType;
-} & HTMLAttributes<HTMLElement>;
+  as?: ElementType
+} & HTMLAttributes<HTMLElement>
 
-export function Wrapper({ as: Tag = 'div', ...props }: WrapperProps) {
-  const mq = useMediaQuery();
+export function Wrapper ({ as: Tag = 'div', ...props }: WrapperProps) {
+  const mq = useMediaQuery()
 
   return (
     <Tag
@@ -22,5 +22,5 @@ export function Wrapper({ as: Tag = 'div', ...props }: WrapperProps) {
       })}
       {...props}
     />
-  );
+  )
 }

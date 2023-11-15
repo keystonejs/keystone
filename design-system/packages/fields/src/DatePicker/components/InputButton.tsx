@@ -1,38 +1,38 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core';
-import { XIcon } from '@keystone-ui/icons/icons/XIcon';
-import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon';
-import { useInputTokens, useInputStyles } from '../..';
-import { Adornment, AdornmentWrapper } from './Adornments';
+import { type ButtonHTMLAttributes, forwardRef } from 'react'
+import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core'
+import { XIcon } from '@keystone-ui/icons/icons/XIcon'
+import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon'
+import { useInputTokens, useInputStyles } from '../..'
+import { Adornment, AdornmentWrapper } from './Adornments'
 
 type ButtonProps = {
-  invalid?: boolean;
-  isSelected?: boolean;
-  onClear?: () => void;
-} & ButtonHTMLAttributes<HTMLButtonElement>;
+  invalid?: boolean
+  isSelected?: boolean
+  onClear?: () => void
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 export const InputButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ invalid = false, isSelected, onClear, ...props }, ref) => {
-    const { spacing } = useTheme();
-    const inputTokens = useInputTokens({ size: 'medium' });
-    const inputStyles = useInputStyles({ invalid, tokens: inputTokens });
+    const { spacing } = useTheme()
+    const inputTokens = useInputTokens({ size: 'medium' })
+    const inputStyles = useInputStyles({ invalid, tokens: inputTokens })
     const focusStyles = isSelected
       ? {
           ...inputStyles[':focus'],
           ':hover': inputStyles[':focus'],
           ':focus': inputStyles[':focus'],
         }
-      : null;
+      : null
     const buttonStyles = {
       ...inputStyles,
       ...focusStyles,
       cursor: 'pointer',
       lineHeight: 'initial', // let the button vertically align its text; the have different native behaviour to inputs
       textAlign: 'left',
-    } as const;
+    } as const
 
     return (
       <AdornmentWrapper shape="square" size="medium">
@@ -42,12 +42,12 @@ export const InputButton = forwardRef<HTMLButtonElement, ButtonProps>(
           <CalendarIcon color="dim" />
         </Adornment>
       </AdornmentWrapper>
-    );
+    )
   }
-);
+)
 
 const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <Adornment
@@ -81,5 +81,5 @@ const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       <VisuallyHidden as="span">clear date value</VisuallyHidden>
       <XIcon size="small" />
     </Adornment>
-  );
-};
+  )
+}

@@ -1,15 +1,12 @@
-.env
-.next
-.keystone
+.keystone/
+.next/
 dist/
 node_modules/
-
-# sqlite databases
 *.db
 
 # ts-gql
 __generated__
 
-# OS
+# system
 .DS_Store
 *.vscode

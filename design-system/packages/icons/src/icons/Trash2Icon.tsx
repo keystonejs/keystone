@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const Trash2Icon = createIcon(
   <React.Fragment>
     <polyline points="3 6 5 6 21 6" />
@@ -8,4 +8,4 @@ export const Trash2Icon = createIcon(
     <line x1={14} y1={11} x2={14} y2={17} />
   </React.Fragment>,
   'Trash2Icon'
-);
+)

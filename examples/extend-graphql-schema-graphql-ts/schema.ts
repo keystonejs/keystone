@@ -1,7 +1,7 @@
-import { graphql, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { Context, Lists } from '.keystone/types';
+import { graphql, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { type Context, type Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -29,7 +29,7 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphql.extend(base => {
   const Statistics = graphql.object<{ authorId: string }>()({
@@ -37,33 +37,33 @@ export const extendGraphqlSchema = graphql.extend(base => {
     fields: {
       draft: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
-          });
+          })
         },
       }),
       published: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
-          });
+          })
         },
       }),
       latest: graphql.field({
         type: base.object('Post'),
-        async resolve({ authorId }, args, context: Context) {
+        async resolve ({ authorId }, args, context: Context) {
           const [post] = await context.db.Post.findMany({
             take: 1,
             orderBy: { publishDate: 'desc' },
             where: { author: { id: { equals: authorId } } },
-          });
-          return post;
+          })
+          return post
         },
       }),
     },
-  });
+  })
 
   return {
     mutation: {
@@ -72,7 +72,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-        resolve(source, { id }, context: Context) {
+        resolve (source, { id }, context: Context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
           // If you accidentally use `context.query.Post` here you can expect problems
@@ -80,7 +80,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
           return context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toISOString() },
-          });
+          })
         },
       }),
 
@@ -90,11 +90,11 @@ export const extendGraphqlSchema = graphql.extend(base => {
             banPost: graphql.field({
               type: base.object('Post'),
               args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-              resolve(source, { id }, context: Context) {
+              resolve (source, { id }, context: Context) {
                 return context.db.Post.updateOne({
                   where: { id },
                   data: { status: 'banned' },
-                });
+                })
               },
             }),
           }
@@ -107,8 +107,8 @@ export const extendGraphqlSchema = graphql.extend(base => {
           id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),
           seconds: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 600 }),
         },
-        resolve(source, { id, seconds }, context: Context) {
-          const cutoff = new Date(Date.now() - seconds * 1000);
+        resolve (source, { id, seconds }, context: Context) {
+          const cutoff = new Date(Date.now() - seconds * 1000)
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
@@ -116,16 +116,16 @@ export const extendGraphqlSchema = graphql.extend(base => {
           // when accessing the fields in your GraphQL client.
           return context.db.Post.findMany({
             where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
-          });
+          })
         },
       }),
       stats: graphql.field({
         type: Statistics,
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-        resolve(source, { id }) {
-          return { authorId: id };
+        resolve (source, { id }) {
+          return { authorId: id }
         },
       }),
     },
-  };
-});
+  }
+})

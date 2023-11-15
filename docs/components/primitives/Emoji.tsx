@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, keyframes } from '@emotion/react';
-import { useRef, useState, useEffect, HTMLAttributes, ReactNode } from 'react';
+import { jsx, keyframes } from '@emotion/react'
+import { useRef, useState, useEffect, type HTMLAttributes, type ReactNode } from 'react'
 
 const fadeInTop = keyframes`
   from {
@@ -12,7 +12,7 @@ const fadeInTop = keyframes`
     bottom: 100%;
     opacity: 1;
   }
-`;
+`
 
 const fadeInBottom = keyframes`
   from {
@@ -23,7 +23,7 @@ const fadeInBottom = keyframes`
     top: 100%;
     opacity: 1;
   }
-`;
+`
 
 /*
  * The Emoji component makes emojis more accessible to people:
@@ -35,20 +35,20 @@ const fadeInBottom = keyframes`
  */
 
 type EmojiProps = {
-  symbol: ReactNode;
-  alt: string;
-} & HTMLAttributes<HTMLElement>;
+  symbol: ReactNode
+  alt: string
+} & HTMLAttributes<HTMLElement>
 
-export function Emoji({ symbol, alt, ...props }: EmojiProps) {
-  const posRef = useRef<HTMLElement>(null);
-  const [showOnTop, setShownTop] = useState(true);
+export function Emoji ({ symbol, alt, ...props }: EmojiProps) {
+  const posRef = useRef<HTMLElement>(null)
+  const [showOnTop, setShownTop] = useState(true)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (posRef.current && posRef.current.offsetTop - window.pageYOffset < 50) {
-      setShownTop(false);
+      setShownTop(false)
     }
-  });
+  })
 
   return (
     <span
@@ -87,5 +87,5 @@ export function Emoji({ symbol, alt, ...props }: EmojiProps) {
     >
       {symbol}
     </span>
-  );
+  )
 }

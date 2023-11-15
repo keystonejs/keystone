@@ -1,8 +1,8 @@
 import {
-  ArrayField,
-  ComponentSchemaForGraphQL,
+  type ArrayField,
+  type ComponentSchemaForGraphQL,
   fields,
-} from '@keystone-6/fields-document/component-blocks';
+} from '@keystone-6/fields-document/component-blocks'
 
 export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   fields.relationship({
@@ -12,7 +12,7 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   }),
   {
     itemLabel: props => {
-      return `${props.value?.label}`;
+      return `${props.value?.label}`
     },
   }
-);
+)

@@ -1,14 +1,14 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor } from 'slate';
-import { makeEditor, jsx } from '../tests/utils';
-import { MyDataTransfer } from './data-transfer';
+import { type Editor } from 'slate'
+import { makeEditor, jsx } from '../tests/utils'
+import { MyDataTransfer } from './data-transfer'
 
-function pasteText(editor: Editor, text: string) {
-  const data = new MyDataTransfer();
-  data.setData('text/plain', text);
-  editor.insertData(data);
+function pasteText (editor: Editor, text: string) {
+  const data = new MyDataTransfer()
+  data.setData('text/plain', text)
+  editor.insertData(data)
 }
 
 test('pasting a url on some text wraps the text with a link', () => {
@@ -22,8 +22,8 @@ test('pasting a url on some text wraps the text with a link', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  pasteText(editor, 'https://keystonejs.com');
+  )
+  pasteText(editor, 'https://keystonejs.com')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -45,8 +45,8 @@ test('pasting a url on some text wraps the text with a link', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('pasting a url on a selection spanning multiple blocks replaces the selection with the url', () => {
   const editor = makeEditor(
@@ -64,8 +64,8 @@ test('pasting a url on a selection spanning multiple blocks replaces the selecti
         </text>
       </paragraph>
     </editor>
-  );
-  pasteText(editor, 'https://keystonejs.com');
+  )
+  pasteText(editor, 'https://keystonejs.com')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -86,8 +86,8 @@ test('pasting a url on a selection spanning multiple blocks replaces the selecti
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('pasting a url on a selection with a link inside replaces the selection with the url', () => {
   const editor = makeEditor(
@@ -106,8 +106,8 @@ test('pasting a url on a selection with a link inside replaces the selection wit
         </text>
       </paragraph>
     </editor>
-  );
-  pasteText(editor, 'https://keystonejs.com');
+  )
+  pasteText(editor, 'https://keystonejs.com')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -128,5 +128,5 @@ test('pasting a url on a selection with a link inside replaces the selection wit
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

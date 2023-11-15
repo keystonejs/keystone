@@ -1,11 +1,11 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { relationship, text, timestamp } from '@keystone-6/core/fields';
-import { createId } from '@paralleldrive/cuid2';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { relationship, text, timestamp } from '@keystone-6/core/fields'
+import { createId } from '@paralleldrive/cuid2'
+import type { Lists } from '.keystone/types'
 
-function makeCustomIdentifier(listKey: string) {
-  return `${listKey.toUpperCase()}_${createId()}`;
+function makeCustomIdentifier (listKey: string) {
+  return `${listKey.toUpperCase()}_${createId()}`
 }
 
 export const lists: Lists = {
@@ -43,9 +43,9 @@ export const lists: Lists = {
     hooks: {
       resolveInput: {
         create: async ({ listKey, operation, resolvedData }) => {
-          return { ...resolvedData, id: makeCustomIdentifier(listKey) };
+          return { ...resolvedData, id: makeCustomIdentifier(listKey) }
         },
       },
     },
   }),
-};
+}

@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Text, Stack } from '@keystone-ui/core';
+import { jsx, Text, Stack } from '@keystone-ui/core'
 
-import { Page } from '../../components/Page';
-import { Code } from '../../components/Code';
+import { Page } from '../../components/Page'
+import { Code } from '../../components/Code'
 
-export default function ThemePage() {
+export default function ThemePage () {
   return (
     <Page>
       <h1>Stack</h1>
@@ -132,5 +132,5 @@ export default function ThemePage() {
         </Stack>
       </Stack>
     </Page>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ZoomOutIcon = createIcon(
   <React.Fragment>
     <circle cx={11} cy={11} r={8} />
@@ -7,4 +7,4 @@ export const ZoomOutIcon = createIcon(
     <line x1={8} y1={11} x2={14} y2={11} />
   </React.Fragment>,
   'ZoomOutIcon'
-);
+)

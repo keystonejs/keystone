@@ -1,32 +1,32 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { HTMLAttributes, useEffect, useState } from 'react';
-import { jsx } from '@emotion/react';
-import copy from 'clipboard-copy';
+import { type HTMLAttributes, useEffect, useState } from 'react'
+import { jsx } from '@emotion/react'
+import copy from 'clipboard-copy'
 
-import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
-import { Copy } from '../icons/Copy';
+import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'
+import { Copy } from '../icons/Copy'
 
 type CodeBoxProps = {
-  code: string;
-} & HTMLAttributes<HTMLElement>;
+  code: string
+} & HTMLAttributes<HTMLElement>
 
-export function CodeBox({ code, ...props }: CodeBoxProps) {
-  const [didJustCopy, setDidJustCopy] = useState(false);
+export function CodeBox ({ code, ...props }: CodeBoxProps) {
+  const [didJustCopy, setDidJustCopy] = useState(false)
   useEffect(() => {
     if (didJustCopy) {
-      const timeout = setTimeout(() => setDidJustCopy(false), 1000);
-      return () => clearTimeout(timeout);
+      const timeout = setTimeout(() => setDidJustCopy(false), 1000)
+      return () => clearTimeout(timeout)
     }
-  }, [didJustCopy]);
+  }, [didJustCopy])
 
   const handleCopy = async () => {
     try {
-      await copy(code);
-      setDidJustCopy(true);
+      await copy(code)
+      setDidJustCopy(true)
       // we don't want to do anything if the copy fails
     } catch {}
-  };
+  }
 
   return (
     <div
@@ -68,5 +68,5 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
         {didJustCopy ? <CheckIcon color="green" /> : <Copy css={{ height: '1.5rem' }} />}
       </button>
     </div>
-  );
+  )
 }

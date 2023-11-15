@@ -1,25 +1,25 @@
-import type { MaybePromise } from './types/utils';
-import type { BaseListTypeInfo } from './types';
+import type { MaybePromise } from './types/utils'
+import type { BaseListTypeInfo } from './types'
 
-export function allowAll() {
-  return true;
+export function allowAll () {
+  return true
 }
 
-export function denyAll() {
-  return false;
+export function denyAll () {
+  return false
 }
 
-export function unfiltered<ListTypeInfo extends BaseListTypeInfo>(): MaybePromise<
+export function unfiltered<ListTypeInfo extends BaseListTypeInfo> (): MaybePromise<
   boolean | ListTypeInfo['inputs']['where']
 > {
-  return true;
+  return true
 }
 
-export function allOperations<F>(f: F) {
+export function allOperations<F> (f: F) {
   return {
     query: f,
     create: f,
     update: f,
     delete: f,
-  };
+  }
 }

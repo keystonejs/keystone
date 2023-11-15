@@ -1,30 +1,30 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { createContext, useContext, useMemo } from 'react';
-import { Editor, Element, Node, Transforms, Range, Point } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
+import { createContext, useContext, useMemo } from 'react'
+import { Editor, Element, Node, Transforms, Range, Point } from 'slate'
+import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 
-import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
-import { useControlledPopover } from '@keystone-ui/popover';
-import { DocumentFeatures } from '../views';
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
-import { paragraphElement } from './paragraphs';
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon'
+import { useControlledPopover } from '@keystone-ui/popover'
+import { type DocumentFeatures } from '../views'
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
+import { paragraphElement } from './paragraphs'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   isElementActive,
   moveChildren,
   useStaticEditor,
-} from './utils';
-import { useToolbarState } from './toolbar-state';
+} from './utils'
+import { useToolbarState } from './toolbar-state'
 
-const LayoutOptionsContext = createContext<[number, ...number[]][]>([]);
+const LayoutOptionsContext = createContext<[number, ...number[]][]>([])
 
-export const LayoutOptionsProvider = LayoutOptionsContext.Provider;
+export const LayoutOptionsProvider = LayoutOptionsContext.Provider
 
 // UI Components
 export const LayoutContainer = ({
@@ -32,17 +32,17 @@ export const LayoutContainer = ({
   children,
   element,
 }: RenderElementProps & { element: { type: 'layout' } }) => {
-  const { spacing } = useTheme();
-  const focused = useFocused();
-  const selected = useSelected();
-  const editor = useStaticEditor();
+  const { spacing } = useTheme()
+  const focused = useFocused()
+  const selected = useSelected()
+  const editor = useStaticEditor()
 
-  const layout = element.layout;
-  const layoutOptions = useContext(LayoutOptionsContext);
+  const layout = element.layout
+  const layoutOptions = useContext(LayoutOptionsContext)
   const { dialog, trigger } = useControlledPopover(
     { isOpen: focused && selected, onClose: () => {} },
     { modifiers: [{ name: 'offset', options: { offset: [0, 8] } }] }
-  );
+  )
   return (
     <div
       css={{
@@ -71,8 +71,8 @@ export const LayoutContainer = ({
                 isSelected={layoutOption.toString() === layout.toString()}
                 key={i}
                 onMouseDown={event => {
-                  event.preventDefault();
-                  const path = ReactEditor.findPath(editor, element);
+                  event.preventDefault()
+                  const path = ReactEditor.findPath(editor, element)
                   Transforms.setNodes(
                     editor,
                     {
@@ -80,7 +80,7 @@ export const LayoutContainer = ({
                       layout: layoutOption,
                     },
                     { at: path }
-                  );
+                  )
                 }}
               >
                 {makeLayoutIcon(layoutOption)}
@@ -92,9 +92,9 @@ export const LayoutContainer = ({
                 <ToolbarButton
                   variant="destructive"
                   onMouseDown={event => {
-                    event.preventDefault();
-                    const path = ReactEditor.findPath(editor, element);
-                    Transforms.removeNodes(editor, { at: path });
+                    event.preventDefault()
+                    const path = ReactEditor.findPath(editor, element)
+                    Transforms.removeNodes(editor, { at: path })
                   }}
                   {...attrs}
                 >
@@ -106,11 +106,11 @@ export const LayoutContainer = ({
         </InlineDialog>
       )}
     </div>
-  );
-};
+  )
+}
 
 export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
-  const { colors, radii, spacing } = useTheme();
+  const { colors, radii, spacing } = useTheme()
   return (
     <div
       css={{
@@ -123,8 +123,8 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
 export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [
@@ -135,16 +135,16 @@ export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
         { type: 'layout-area', children: [{ type: 'paragraph', children: [{ text: '' }] }] },
       ],
     },
-  ]);
-  const layoutEntry = Editor.above(editor, { match: x => x.type === 'layout' });
+  ])
+  const layoutEntry = Editor.above(editor, { match: x => x.type === 'layout' })
   if (layoutEntry) {
-    Transforms.select(editor, [...layoutEntry[1], 0]);
+    Transforms.select(editor, [...layoutEntry[1], 0])
   }
-};
+}
 
 // Plugin
-export function withLayouts(editor: Editor): Editor {
-  const { normalizeNode, deleteBackward } = editor;
+export function withLayouts (editor: Editor): Editor {
+  const { normalizeNode, deleteBackward } = editor
   editor.deleteBackward = unit => {
     if (
       editor.selection &&
@@ -157,23 +157,23 @@ export function withLayouts(editor: Editor): Editor {
     ) {
       const [aboveNode, abovePath] = Editor.above(editor, {
         match: node => node.type === 'layout-area',
-      }) || [editor, []];
+      }) || [editor, []]
       if (
         aboveNode.type === 'layout-area' &&
         Point.equals(Editor.start(editor, abovePath), editor.selection.anchor)
       ) {
-        return;
+        return
       }
     }
-    deleteBackward(unit);
-  };
+    deleteBackward(unit)
+  }
   editor.normalizeNode = entry => {
-    const [node, path] = entry;
+    const [node, path] = entry
 
     if (Element.isElement(node) && node.type === 'layout') {
       if (node.layout === undefined) {
-        Transforms.unwrapNodes(editor, { at: path });
-        return;
+        Transforms.unwrapNodes(editor, { at: path })
+        return
       }
       if (node.children.length < node.layout.length) {
         Transforms.insertNodes(
@@ -187,8 +187,8 @@ export function withLayouts(editor: Editor): Editor {
           {
             at: [...path, node.children.length],
           }
-        );
-        return;
+        )
+        return
       }
       if (node.children.length > node.layout.length) {
         Array.from({
@@ -197,8 +197,8 @@ export function withLayouts(editor: Editor): Editor {
           .map((_, i) => i)
           .reverse()
           .forEach(i => {
-            const layoutAreaToRemovePath = [...path, i + node.layout.length];
-            const child = node.children[i + node.layout.length] as Element;
+            const layoutAreaToRemovePath = [...path, i + node.layout.length]
+            const child = node.children[i + node.layout.length] as Element
             moveChildren(
               editor,
               layoutAreaToRemovePath,
@@ -208,25 +208,25 @@ export function withLayouts(editor: Editor): Editor {
                 (node.children[node.layout.length - 1] as Element).children.length,
               ],
               node => node.type !== 'paragraph' || Node.string(child) !== ''
-            );
+            )
 
             Transforms.removeNodes(editor, {
               at: layoutAreaToRemovePath,
-            });
-          });
-        return;
+            })
+          })
+        return
       }
     }
-    normalizeNode(entry);
-  };
-  return editor;
+    normalizeNode(entry)
+  }
+  return editor
 }
 
 // Utils
 // ------------------------------
 
-function makeLayoutIcon(ratios: number[]) {
-  const size = 16;
+function makeLayoutIcon (ratios: number[]) {
+  const size = 16
 
   const element = (
     <div
@@ -240,21 +240,21 @@ function makeLayoutIcon(ratios: number[]) {
       }}
     >
       {ratios.map((_, i) => {
-        return <div key={i} css={{ backgroundColor: 'currentcolor', borderRadius: 1 }} />;
+        return <div key={i} css={{ backgroundColor: 'currentcolor', borderRadius: 1 }} />
       })}
     </div>
-  );
+  )
 
-  return element;
+  return element
 }
 
-const layoutsIcon = <ColumnsIcon size="small" />;
+const layoutsIcon = <ColumnsIcon size="small" />
 
 export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'] }) => {
   const {
     editor,
     layouts: { isSelected },
-  } = useToolbarState();
+  } = useToolbarState()
   return useMemo(
     () => (
       <Tooltip content="Layouts" weight="subtle">
@@ -262,14 +262,14 @@ export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'
           <ToolbarButton
             isSelected={isSelected}
             onMouseDown={event => {
-              event.preventDefault();
+              event.preventDefault()
               if (isElementActive(editor, 'layout')) {
                 Transforms.unwrapNodes(editor, {
                   match: node => node.type === 'layout',
-                });
-                return;
+                })
+                return
               }
-              insertLayout(editor, layouts[0]);
+              insertLayout(editor, layouts[0])
             }}
             {...attrs}
           >
@@ -279,5 +279,5 @@ export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'
       </Tooltip>
     ),
     [editor, isSelected, layouts]
-  );
-};
+  )
+}

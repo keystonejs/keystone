@@ -1,5 +1,5 @@
-import { bigInt } from '@keystone-6/core/fields';
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils';
+import { bigInt } from '@keystone-6/core/fields'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
 
 for (const isNullable of [true, false]) {
   describe(`bigInt with isNullable: ${isNullable}`, () => {
@@ -9,14 +9,14 @@ for (const isNullable of [true, false]) {
       '0',
       '65536',
       '3452345324523145',
-    ] as const;
+    ] as const
     filterTests(bigInt({ db: { isNullable } }), match => {
-      orderableFilterTests(match, values, isNullable);
-    });
+      orderableFilterTests(match, values, isNullable)
+    })
     uniqueEqualityFilterTest(
       bigInt({ db: { isNullable }, isIndexed: 'unique' }),
       values,
       isNullable
-    );
-  });
+    )
+  })
 }

@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import React from 'react';
-import { fetchGraphQL, gql } from '../utils';
+import Link from 'next/link'
+import React from 'react'
+import { fetchGraphQL, gql } from '../utils'
 
-type Author = { id: string; name: string; posts: { id: string; slug: string; title: string }[] };
+type Author = { id: string, name: string, posts: { id: string, slug: string, title: string }[] }
 
-export default function Index({ authors }: { authors: Author[] }) {
-  <h1>Keystone Blog Project - Home</h1>;
+export default function Index ({ authors }: { authors: Author[] }) {
+  <h1>Keystone Blog Project - Home</h1>
   return (
     <ul>
       {authors.map(author => (
@@ -23,10 +23,10 @@ export default function Index({ authors }: { authors: Author[] }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps () {
   const data = await fetchGraphQL(gql`
     query {
       authors {
@@ -39,6 +39,6 @@ export async function getStaticProps() {
         }
       }
     }
-  `);
-  return { props: { authors: data.authors }, revalidate: 30 };
+  `)
+  return { props: { authors: data.authors }, revalidate: 30 }
 }

@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, type IconProps } from './util'
 
-export function Code({ grad, ...props }: IconProps) {
+export function Code ({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,5 +23,5 @@ export function Code({ grad, ...props }: IconProps) {
         d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
       />
     </svg>
-  );
+  )
 }

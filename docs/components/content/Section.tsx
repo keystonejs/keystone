@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../../lib/media';
+import { useMediaQuery } from '../../lib/media'
 
-export function Section(props: HTMLAttributes<HTMLElement>) {
-  const mq = useMediaQuery();
+export function Section (props: HTMLAttributes<HTMLElement>) {
+  const mq = useMediaQuery()
 
   return (
     <section
@@ -15,15 +15,15 @@ export function Section(props: HTMLAttributes<HTMLElement>) {
       })}
       {...props}
     />
-  );
+  )
 }
 
 type SideBySideSectionProps = {
-  reverse?: boolean;
-} & HTMLAttributes<HTMLElement>;
+  reverse?: boolean
+} & HTMLAttributes<HTMLElement>
 
-export function SideBySideSection({ reverse, children, ...props }: SideBySideSectionProps) {
-  const mq = useMediaQuery();
+export function SideBySideSection ({ reverse, children, ...props }: SideBySideSectionProps) {
+  const mq = useMediaQuery()
 
   return (
     <Section
@@ -47,5 +47,5 @@ export function SideBySideSection({ reverse, children, ...props }: SideBySideSec
     >
       {children}
     </Section>
-  );
+  )
 }

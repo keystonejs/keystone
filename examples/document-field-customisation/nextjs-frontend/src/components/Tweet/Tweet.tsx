@@ -1,18 +1,18 @@
-import React from 'react';
-import styles from './Tweet.module.css';
+import React from 'react'
+import styles from './Tweet.module.css'
 
 type TweetProps = {
-  url: string;
-};
+  url: string
+}
 
-export function Tweet({ url }: TweetProps) {
-  const wrapper = React.useRef<HTMLQuoteElement>(null);
+export function Tweet ({ url }: TweetProps) {
+  const wrapper = React.useRef<HTMLQuoteElement>(null)
 
   React.useEffect(() => {
-    const script = document.createElement('script');
-    script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
-    wrapper.current!.appendChild(script);
-  }, []);
+    const script = document.createElement('script')
+    script.setAttribute('src', 'https://platform.twitter.com/widgets.js')
+    wrapper.current!.appendChild(script)
+  }, [])
 
   return (
     <div className={styles.tweet}>
@@ -20,5 +20,5 @@ export function Tweet({ url }: TweetProps) {
         <a href={url}>Loading tweet...</a>
       </blockquote>
     </div>
-  );
+  )
 }

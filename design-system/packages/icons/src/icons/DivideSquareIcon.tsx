@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const DivideSquareIcon = createIcon(
   <React.Fragment>
     <rect x={3} y={3} width={18} height={18} rx={2} ry={2} />
@@ -8,4 +8,4 @@ export const DivideSquareIcon = createIcon(
     <line x1={12} y1={8} x2={12} y2={8} />
   </React.Fragment>,
   'DivideSquareIcon'
-);
+)

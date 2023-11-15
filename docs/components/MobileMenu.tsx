@@ -1,37 +1,37 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
 // import { useRouter } from 'next/router';
-import { Fragment, useEffect, ReactNode, MouseEvent } from 'react';
-import FocusLock from 'react-focus-lock';
+import { Fragment, useEffect, type ReactNode, type MouseEvent } from 'react'
+import FocusLock from 'react-focus-lock'
 
-import { useHeaderContext } from './Header';
-import { Highlight } from './primitives/Highlight';
+import { useHeaderContext } from './Header'
+import { Highlight } from './primitives/Highlight'
 
-import { DocsNavigation, NavItem } from './docs/Navigation';
-import { Keystone } from './icons/Keystone';
-import { Close } from './icons/Close';
+import { DocsNavigation, NavItem } from './docs/Navigation'
+import { Keystone } from './icons/Keystone'
+import { Close } from './icons/Close'
 
 type MobileMenuProps = {
-  handleClose: (e?: MouseEvent) => void;
-};
+  handleClose: (e?: MouseEvent) => void
+}
 
-export function MobileMenu({ handleClose }: MobileMenuProps) {
-  const { mobileNavIsOpen } = useHeaderContext();
+export function MobileMenu ({ handleClose }: MobileMenuProps) {
+  const { mobileNavIsOpen } = useHeaderContext()
 
   useEffect(() => {
     const handleEsc = ({ keyCode }: KeyboardEvent) => {
       if (keyCode === 27 && mobileNavIsOpen) {
-        handleClose();
+        handleClose()
       }
-    };
+    }
 
-    document.body.addEventListener('keydown', handleEsc);
+    document.body.addEventListener('keydown', handleEsc)
     return () => {
-      document.body.removeEventListener('keydown', handleEsc);
-    };
-  }, [mobileNavIsOpen, handleClose]);
+      document.body.removeEventListener('keydown', handleEsc)
+    }
+  }, [mobileNavIsOpen, handleClose])
 
   return (
     <Fragment>
@@ -72,15 +72,15 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
 
       <Overlay handleClose={handleClose} mobileNavIsOpen={mobileNavIsOpen} />
     </Fragment>
-  );
+  )
 }
 
 type NavContainerProps = {
-  children: ReactNode;
-  mobileNavIsOpen: boolean;
-};
+  children: ReactNode
+  mobileNavIsOpen: boolean
+}
 
-function NavContainer({ mobileNavIsOpen, children }: NavContainerProps) {
+function NavContainer ({ mobileNavIsOpen, children }: NavContainerProps) {
   return (
     <nav
       id={mobileNavIsOpen ? 'skip-link-navigation' : ''}
@@ -104,15 +104,15 @@ function NavContainer({ mobileNavIsOpen, children }: NavContainerProps) {
     >
       {children}
     </nav>
-  );
+  )
 }
 
 type NavHeaderProps = {
-  handleClose: (e?: MouseEvent) => void;
-  mobileNavIsOpen: boolean;
-};
+  handleClose: (e?: MouseEvent) => void
+  mobileNavIsOpen: boolean
+}
 
-function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
+function NavHeader ({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
   return (
     <div
       css={{
@@ -159,10 +159,10 @@ function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
         <Close css={{ height: '1.4rem' }} />
       </button>
     </div>
-  );
+  )
 }
 
-function Overlay({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
+function Overlay ({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
   return (
     <div
       onClick={handleClose}
@@ -190,5 +190,5 @@ function Overlay({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
             }
       }
     />
-  );
+  )
 }

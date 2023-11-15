@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { jsx } from '@keystone-ui/core'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 export const youtubeVideo = component({
   label: 'YouTube Video',
@@ -16,17 +16,17 @@ export const youtubeVideo = component({
       defaultValue: 'Embedded YouTube video',
     }),
   },
-  preview: function YouTubeVideo(props) {
-    const url = props.fields.url.value;
-    let embedId = '';
+  preview: function YouTubeVideo (props) {
+    const url = props.fields.url.value
+    let embedId = ''
     const parsedUrl = (url || '')
       .replace(/(>|<)/gi, '')
-      .split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+      .split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
     if (parsedUrl[2] !== undefined) {
-      const parsedId = parsedUrl[2].split(/[^0-9a-z_\-]/i);
-      embedId = parsedId[0];
+      const parsedId = parsedUrl[2].split(/[^0-9a-z_\-]/i)
+      embedId = parsedId[0]
     } else {
-      embedId = url;
+      embedId = url
     }
 
     return (
@@ -51,6 +51,6 @@ export const youtubeVideo = component({
           />
         </div>
       </NotEditable>
-    );
+    )
   },
-});
+})

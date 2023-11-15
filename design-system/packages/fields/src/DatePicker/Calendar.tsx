@@ -1,31 +1,31 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { DayPicker, DayPickerProps } from 'react-day-picker';
-import { jsx, useTheme } from '@keystone-ui/core';
-import { getContrastText } from './utils/getContrastText';
-import { hexToRgb } from './utils/hexToRgb';
+import { DayPicker, type DayPickerProps } from 'react-day-picker'
+import { jsx, useTheme } from '@keystone-ui/core'
+import { getContrastText } from './utils/getContrastText'
+import { hexToRgb } from './utils/hexToRgb'
 
 export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
-  const styles = useCalendarStyles();
-  const indexOfMonday = 1;
+  const styles = useCalendarStyles()
+  const indexOfMonday = 1
 
   return (
     <div css={styles}>
       <DayPicker weekStartsOn={indexOfMonday} {...props} />
     </div>
-  );
-};
+  )
+}
 
 // Styles
 // ------------------------------
 
 const useCalendarStyles = () => {
-  const { colors, palette } = useTheme();
-  const cellSize = 40; // theme.sizing.base;
-  const navButtonSize = 24; // theme.sizing.xsmall;
-  const interactionColor = '#007AFF'; //theme.palette.actions.active;
-  const rangeBetweenColor = hexToRgb('#007AFF', 0.2); //hexToRgb(interactionColor, 0.2);
+  const { colors, palette } = useTheme()
+  const cellSize = 40 // theme.sizing.base;
+  const navButtonSize = 24 // theme.sizing.xsmall;
+  const interactionColor = '#007AFF' //theme.palette.actions.active;
+  const rangeBetweenColor = hexToRgb('#007AFF', 0.2) //hexToRgb(interactionColor, 0.2);
 
   return {
     padding: 8, //theme.spacing.small,
@@ -254,5 +254,5 @@ const useCalendarStyles = () => {
         background: `linear-gradient(to right, ${rangeBetweenColor}, ${colors.overlayBackground})`,
       },
     },
-  } as const;
-};
+  } as const
+}

@@ -1,11 +1,11 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists, Session } from './schema';
-import type { Context, TypeInfo } from '.keystone/types';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists, type Session } from './schema'
+import type { Context, TypeInfo } from '.keystone/types'
 
 const sillySessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
-    if (!context.req) return;
+  async get ({ context }: { context: Context }): Promise<Session | undefined> {
+    if (!context.req) return
 
     // WARNING: for demonstrative purposes only, this has no authentication
     //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
@@ -13,27 +13,27 @@ const sillySessionStrategy = {
     //   use `Cookie:user=clh9v7ahs0004sbhmpx30w85n` for Eve (contributor)
     //
     // in practice, you should use authentication for your sessions, such as OAuth or JWT
-    const { cookie = '' } = context.req.headers;
-    const [cookieName, id] = cookie.split('=');
-    if (cookieName !== 'user') return;
+    const { cookie = '' } = context.req.headers
+    const [cookieName, id] = cookie.split('=')
+    if (cookieName !== 'user') return
 
-    const who = await context.sudo().db.User.findOne({ where: { id } });
-    if (!who) return;
+    const who = await context.sudo().db.User.findOne({ where: { id } })
+    if (!who) return
     return {
       id,
       admin: who.admin,
       moderator: who.moderatorId ? { id: who.moderatorId } : null,
       contributor: who.contributorId ? { id: who.contributorId } : null,
-    };
+    }
   },
 
   // we don't need these unless we want to support the functions
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start() {},
-  async end() {},
-};
+  async start () {},
+  async end () {},
+}
 
 export default config<TypeInfo>({
   db: {
@@ -45,4 +45,4 @@ export default config<TypeInfo>({
   },
   lists,
   session: sillySessionStrategy,
-});
+})

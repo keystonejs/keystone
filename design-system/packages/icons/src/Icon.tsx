@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { SVGAttributes, forwardRef, ReactNode } from 'react';
-import { ResponsiveProp, jsx, mapResponsiveProp } from '@keystone-ui/core';
+import { type SVGAttributes, forwardRef, type ReactNode } from 'react'
+import { type ResponsiveProp, jsx, mapResponsiveProp } from '@keystone-ui/core'
 
 export type IconProps = SVGAttributes<SVGSVGElement> & {
   /** The color for the SVG fill property. */
-  color?: string;
+  color?: string
   /** The size key for the icon. */
-  size?: ResponsiveProp<keyof typeof sizeMap> | number;
-};
+  size?: ResponsiveProp<keyof typeof sizeMap> | number
+}
 
 // TODO: Move to theme?
 const sizeMap = {
@@ -18,12 +18,12 @@ const sizeMap = {
   medium: 24,
   largish: 28,
   large: 32,
-};
+}
 
 export const createIcon = (children: ReactNode, name: string) => {
   let Icon = forwardRef<SVGSVGElement, IconProps>(
     ({ size = 'medium', color, ...props }: IconProps, ref: any) => {
-      const resolvedSize = typeof size === 'number' ? size : mapResponsiveProp(size, sizeMap);
+      const resolvedSize = typeof size === 'number' ? size : mapResponsiveProp(size, sizeMap)
 
       return (
         <svg
@@ -47,9 +47,9 @@ export const createIcon = (children: ReactNode, name: string) => {
         >
           {children}
         </svg>
-      );
+      )
     }
-  );
-  Icon.displayName = name;
-  return Icon;
-};
+  )
+  Icon.displayName = name
+  return Icon
+}

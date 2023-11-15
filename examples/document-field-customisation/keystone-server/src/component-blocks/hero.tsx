@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { jsx } from '@keystone-ui/core'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 export const hero = component({
   label: 'Hero',
@@ -21,7 +21,7 @@ export const hero = component({
       }),
     }),
   },
-  preview: function Hero(props) {
+  preview: function Hero (props) {
     return (
       <div>
         <NotEditable>
@@ -39,6 +39,6 @@ export const hero = component({
           <div css={{ textAlign: 'center' }}>{props.fields.caption.value.element}</div>
         ) : null}
       </div>
-    );
+    )
   },
-});
+})

@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState } from 'react';
-import { jsx, Stack } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
-import { Drawer, DrawerController, AlertDialog } from '@keystone-ui/modals';
-import { Page } from '../../components/Page';
+import { useState } from 'react'
+import { jsx, Stack } from '@keystone-ui/core'
+import { Button } from '@keystone-ui/button'
+import { Drawer, DrawerController, AlertDialog } from '@keystone-ui/modals'
+import { Page } from '../../components/Page'
 
-export default function ModalsPage() {
-  let [isNarrowOpen, setIsNarrowOpen] = useState(false);
-  let [isWideOpen, setIsWideOpen] = useState(false);
-  let [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+export default function ModalsPage () {
+  let [isNarrowOpen, setIsNarrowOpen] = useState(false)
+  let [isWideOpen, setIsWideOpen] = useState(false)
+  let [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   return (
     <Page>
@@ -19,7 +19,7 @@ export default function ModalsPage() {
         <Button
           tone="active"
           onClick={() => {
-            setIsNarrowOpen(true);
+            setIsNarrowOpen(true)
           }}
         >
           Open Narrow Drawer
@@ -27,7 +27,7 @@ export default function ModalsPage() {
         <Button
           tone="active"
           onClick={() => {
-            setIsWideOpen(true);
+            setIsWideOpen(true)
           }}
         >
           Open Wide Drawer
@@ -35,7 +35,7 @@ export default function ModalsPage() {
         <Button
           tone="active"
           onClick={() => {
-            setIsAlertDialogOpen(true);
+            setIsAlertDialogOpen(true)
           }}
         >
           Open Alert Dialog
@@ -92,5 +92,5 @@ export default function ModalsPage() {
         content
       </AlertDialog>
     </Page>
-  );
+  )
 }

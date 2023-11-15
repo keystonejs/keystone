@@ -1,4 +1,4 @@
 // you don't need this if you're building something outside of the Keystone repo
-const withPreconstruct = require('@preconstruct/next');
+const withPreconstruct = require('@preconstruct/next')
 
-module.exports = withPreconstruct();
+module.exports = withPreconstruct()

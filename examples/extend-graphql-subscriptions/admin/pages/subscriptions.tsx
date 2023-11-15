@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { PageContainer } from '@keystone-6/core/admin-ui/components';
-import { jsx, Heading } from '@keystone-ui/core';
+import { PageContainer } from '@keystone-6/core/admin-ui/components'
+import { jsx, Heading } from '@keystone-ui/core'
 import {
   ApolloClient,
   gql,
   InMemoryCache,
   useSubscription,
   HttpLink,
-} from '@keystone-6/core/admin-ui/apollo';
-import { createClient } from 'graphql-ws';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { css } from '@emotion/css';
+} from '@keystone-6/core/admin-ui/apollo'
+import { createClient } from 'graphql-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { css } from '@emotion/css'
 
-import { useState } from 'react';
+import { useState } from 'react'
 
 const styles = {
   container: css`
@@ -25,7 +25,7 @@ const styles = {
     overflow-y: scroll;
     padding: 1rem;
   `,
-};
+}
 // Setup the TIME subscription
 const TIME = gql`
   subscription TIME {
@@ -33,7 +33,7 @@ const TIME = gql`
       iso
     }
   }
-`;
+`
 
 // Setup the Post subscriptions
 const POST_PUBLISHED = gql`
@@ -47,7 +47,7 @@ const POST_PUBLISHED = gql`
       }
     }
   }
-`;
+`
 
 const POST_UPDATED = gql`
   subscription POST_UPDATED {
@@ -60,12 +60,12 @@ const POST_UPDATED = gql`
       }
     }
   }
-`;
+`
 
 // Setup a backup http link for Apollo
 const httpLink = new HttpLink({
   uri: `http://localhost:3000/api/graphql`,
-});
+})
 
 // Setup the WebSocket link for Apollo
 // NOTE: to stop Next.js SSR from breaking, we need to check if window is defined
@@ -77,38 +77,38 @@ const wsLink =
           url: 'ws://localhost:3000/api/graphql',
         })
       )
-    : httpLink;
+    : httpLink
 
 // Setup the Apollo client for subscriptions
 const subClient = new ApolloClient({
   link: wsLink,
   cache: new InMemoryCache(),
-});
+})
 
-export default function CustomPage() {
-  const [timeRows, setTimeRows] = useState([] as string[]);
-  const [updatedPostRows, setUpdatedPostRows] = useState([] as string[]);
-  const [publishedPostRows, setPublishedPostRows] = useState([] as string[]);
+export default function CustomPage () {
+  const [timeRows, setTimeRows] = useState([] as string[])
+  const [updatedPostRows, setUpdatedPostRows] = useState([] as string[])
+  const [publishedPostRows, setPublishedPostRows] = useState([] as string[])
 
-  function appendTime(row: string) {
-    setTimeRows([...timeRows, row]);
+  function appendTime (row: string) {
+    setTimeRows([...timeRows, row])
   }
 
   // Subscribe to `time` [using the Apollo client above]
   const { data, loading } = useSubscription(TIME, {
     client: subClient,
     onSubscriptionData: ({ subscriptionData }) => {
-      appendTime(JSON.stringify(subscriptionData.data.time));
+      appendTime(JSON.stringify(subscriptionData.data.time))
     },
-  });
+  })
 
   // Subscribe to `postPublished`
   const { data: updatedPostData, loading: updatedPostLoading } = useSubscription(POST_UPDATED, {
     client: subClient,
     onSubscriptionData: ({ subscriptionData }) => {
-      setUpdatedPostRows([...updatedPostRows, JSON.stringify(subscriptionData.data.postUpdated)]);
+      setUpdatedPostRows([...updatedPostRows, JSON.stringify(subscriptionData.data.postUpdated)])
     },
-  });
+  })
 
   // Subscribe to `postUpdated`
   const { data: publishedPostData, loading: publishedPostLoading } = useSubscription(
@@ -119,10 +119,10 @@ export default function CustomPage() {
         setPublishedPostRows([
           ...publishedPostRows,
           JSON.stringify(subscriptionData.data.postPublished),
-        ]);
+        ])
       },
     }
-  );
+  )
 
   return (
     <PageContainer header={<Heading type="h3">Subscriptions</Heading>}>
@@ -164,5 +164,5 @@ export default function CustomPage() {
         </div>
       </div>
     </PageContainer>
-  );
+  )
 }

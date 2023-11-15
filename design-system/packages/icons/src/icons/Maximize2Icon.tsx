@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const Maximize2Icon = createIcon(
   <React.Fragment>
     <polyline points="15 3 21 3 21 9" />
@@ -8,4 +8,4 @@ export const Maximize2Icon = createIcon(
     <line x1={3} y1={21} x2={10} y2={14} />
   </React.Fragment>,
   'Maximize2Icon'
-);
+)

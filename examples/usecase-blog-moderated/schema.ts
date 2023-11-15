@@ -1,80 +1,80 @@
-import { list } from '@keystone-6/core';
-import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access';
-import { checkbox, text, relationship, timestamp } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
+import { checkbox, text, relationship, timestamp } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
 export type Session = {
-  id: string;
-  admin: boolean;
-  moderator: null | { id: string };
-  contributor: null | { id: string };
-};
+  id: string
+  admin: boolean
+  moderator: null | { id: string }
+  contributor: null | { id: string }
+}
 
 type Has<T, K extends keyof T> = {
   [key in keyof T]: key extends K ? Exclude<T[key], null | undefined> : T[key];
-};
-
-function isAdmin<T extends Session>(session?: T): session is T & { admin: true } {
-  return session?.admin === true;
-}
-function isModerator<T extends Session>(session?: T): session is Has<T, 'moderator'> {
-  return session?.moderator !== null;
-}
-function isContributor<T extends Session>(session?: T): session is Has<T, 'contributor'> {
-  return session?.contributor !== null;
 }
 
-function forUsers<T>({
+function isAdmin<T extends Session> (session?: T): session is T & { admin: true } {
+  return session?.admin === true
+}
+function isModerator<T extends Session> (session?: T): session is Has<T, 'moderator'> {
+  return session?.moderator !== null
+}
+function isContributor<T extends Session> (session?: T): session is Has<T, 'contributor'> {
+  return session?.contributor !== null
+}
+
+function forUsers<T> ({
   admin,
   moderator,
   contributor,
   default: _default,
 }: {
-  admin?: ({ session }: { session: Session & { admin: true } }) => T;
-  moderator?: ({ session }: { session: Has<Session, 'moderator'> }) => T;
-  contributor?: ({ session }: { session: Has<Session, 'contributor'> }) => T;
-  default: () => T;
+  admin?: ({ session }: { session: Session & { admin: true } }) => T
+  moderator?: ({ session }: { session: Has<Session, 'moderator'> }) => T
+  contributor?: ({ session }: { session: Has<Session, 'contributor'> }) => T
+  default: () => T
 }) {
   return ({ session }: { session?: Session }): T => {
-    if (!session) return _default();
-    if (admin && isAdmin(session)) return admin({ session });
-    if (moderator && isModerator(session)) return moderator({ session });
-    if (contributor && isContributor(session)) return contributor({ session });
-    return _default();
-  };
+    if (!session) return _default()
+    if (admin && isAdmin(session)) return admin({ session })
+    if (moderator && isModerator(session)) return moderator({ session })
+    if (contributor && isContributor(session)) return contributor({ session })
+    return _default()
+  }
 }
 
 const adminOnly = forUsers({
   admin: allowAll,
   default: denyAll,
-});
+})
 
 const moderatorsOrAbove = forUsers({
   admin: allowAll,
   moderator: allowAll,
   default: denyAll,
-});
+})
 
 const contributorsOrAbove = forUsers({
   admin: allowAll,
   moderator: allowAll,
   contributor: allowAll,
   default: denyAll,
-});
+})
 
-function readOnlyBy(f: ({ session }: { session?: Session }) => boolean) {
+function readOnlyBy (f: ({ session }: { session?: Session }) => boolean) {
   return {
     read: f,
     create: denyAll,
     update: denyAll,
-  };
+  }
 }
 
-function viewOnlyBy(f: ({ session }: { session?: Session }) => boolean, mode: 'edit' | 'read') {
+function viewOnlyBy (f: ({ session }: { session?: Session }) => boolean, mode: 'edit' | 'read') {
   return {
     createView: {
       fieldMode: ({ session }: { session?: Session }) =>
@@ -86,15 +86,15 @@ function viewOnlyBy(f: ({ session }: { session?: Session }) => boolean, mode: 'e
     listView: {
       fieldMode: ({ session }: { session?: Session }) => (f({ session }) ? 'read' : 'hidden'),
     },
-  };
+  }
 }
 
-function readOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
-  return viewOnlyBy(f, 'read');
+function readOnlyViewBy (f: ({ session }: { session?: Session }) => boolean) {
+  return viewOnlyBy(f, 'read')
 }
 
-function editOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
-  return viewOnlyBy(f, 'edit');
+function editOnlyViewBy (f: ({ session }: { session?: Session }) => boolean) {
+  return viewOnlyBy(f, 'edit')
 }
 
 export const lists: Lists<Session> = {
@@ -178,7 +178,7 @@ export const lists: Lists<Session> = {
     hooks: {
       resolveInput: {
         create: ({ context: { session }, resolvedData }) => {
-          resolvedData.createdAt = new Date();
+          resolvedData.createdAt = new Date()
           if (isContributor(session)) {
             return {
               ...resolvedData,
@@ -187,12 +187,12 @@ export const lists: Lists<Session> = {
                   id: session.contributor.id,
                 },
               },
-            };
+            }
           }
-          return resolvedData;
+          return resolvedData
         },
         update: ({ context: { session }, resolvedData }) => {
-          resolvedData.updatedAt = new Date();
+          resolvedData.updatedAt = new Date()
           if ('hidden' in resolvedData && isModerator(session)) {
             resolvedData.hiddenBy = resolvedData.hidden
               ? {
@@ -203,12 +203,12 @@ export const lists: Lists<Session> = {
                 }
               : {
                   disconnect: true,
-                };
+                }
 
-            resolvedData.hiddenAt = resolvedData.hidden ? new Date() : null;
+            resolvedData.hiddenAt = resolvedData.hidden ? new Date() : null
           }
 
-          return resolvedData;
+          return resolvedData
         },
       },
     },
@@ -275,4 +275,4 @@ export const lists: Lists<Session> = {
       moderator: relationship({ ref: 'Moderator' }),
     },
   }),
-};
+}

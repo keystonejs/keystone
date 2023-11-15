@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { type HTMLAttributes } from 'react'
 
 const styleMap = {
   success: {
@@ -20,13 +20,13 @@ const styleMap = {
     color: 'var(--danger)',
     background: 'var(--danger-bg)',
   },
-};
+}
 
 type BadgeProps = {
-  look?: keyof typeof styleMap;
-} & HTMLAttributes<HTMLElement>;
+  look?: keyof typeof styleMap
+} & HTMLAttributes<HTMLElement>
 
-export function Badge({ look = 'warning', ...props }: BadgeProps) {
+export function Badge ({ look = 'warning', ...props }: BadgeProps) {
   return (
     <span
       css={{
@@ -39,5 +39,5 @@ export function Badge({ look = 'warning', ...props }: BadgeProps) {
       }}
       {...props}
     />
-  );
+  )
 }

@@ -1,48 +1,48 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-import globby from 'globby';
-import { list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
-import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from '../utils';
+import fs from 'fs'
+import path from 'path'
+import os from 'os'
+import globby from 'globby'
+import { list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
+import { setupTestEnv } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
-});
+})
 
 const unsupportedModules = testModules
   .map(require)
   .filter(({ unSupportedAdapterList = [] }) =>
     unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
-  );
+  )
 if (unsupportedModules.length > 0) {
   unsupportedModules.forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-      const listKey = 'Test';
+      const listKey = 'Test'
 
       describe(`${mod.name} - Unsupported field type`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
-            mod.beforeEach(matrixValue);
+            mod.beforeEach(matrixValue)
           }
-        });
+        })
         afterEach(async () => {
           if (mod.afterEach) {
-            await mod.afterEach(matrixValue);
+            await mod.afterEach(matrixValue)
           }
-        });
+        })
         beforeAll(() => {
           if (mod.beforeAll) {
-            mod.beforeAll(matrixValue);
+            mod.beforeAll(matrixValue)
           }
-        });
+        })
         afterAll(async () => {
           if (mod.afterAll) {
-            await mod.afterAll(matrixValue);
+            await mod.afterAll(matrixValue)
           }
-        });
+        })
 
         test('Throws', async () => {
           await expect(
@@ -77,12 +77,12 @@ if (unsupportedModules.length > 0) {
                   },
                 }),
               })
-          ).rejects.toThrow(Error);
-        });
-      });
-    });
-  });
+          ).rejects.toThrow(Error)
+        })
+      })
+    })
+  })
 } else {
   // Appease jest, which doesn't like it when you have an empty test file.
-  test('noop', () => {});
+  test('noop', () => {})
 }

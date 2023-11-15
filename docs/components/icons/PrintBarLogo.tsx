@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { type IconProps } from './util'
 
-export function PrintBarLogo(props: IconProps) {
+export function PrintBarLogo (props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -36,5 +36,5 @@ export function PrintBarLogo(props: IconProps) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

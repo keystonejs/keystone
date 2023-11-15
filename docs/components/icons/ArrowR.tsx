@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, type IconProps } from './util'
 
-export function ArrowR({ grad, ...props }: IconProps) {
+export function ArrowR ({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,5 +18,5 @@ export function ArrowR({ grad, ...props }: IconProps) {
       <Gradients name="ArrowR" />
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
     </svg>
-  );
+  )
 }

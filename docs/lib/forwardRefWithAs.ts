@@ -1,30 +1,30 @@
 import {
-  ComponentPropsWithoutRef,
-  ElementType,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   forwardRef,
-} from 'react';
+} from 'react'
 
 type ElementTagNameMap = HTMLElementTagNameMap &
-  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;
+  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>
 
 type AsProp<Comp extends ElementType> = {
-  as?: Comp;
+  as?: Comp
   ref?: Ref<
     Comp extends keyof ElementTagNameMap
       ? ElementTagNameMap[Comp]
       : Comp extends new (...args: any) => any
       ? InstanceType<Comp>
       : undefined
-  >;
-} & Omit<ComponentPropsWithoutRef<Comp>, 'as'>;
+  >
+} & Omit<ComponentPropsWithoutRef<Comp>, 'as'>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = {
-  displayName?: string;
-  <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement;
-};
+  displayName?: string
+  <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement
+}
 
 export const forwardRefWithAs = <DefaultElementType extends ElementType, BaseProps>(
   render: (
@@ -32,6 +32,6 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
     ref: React.Ref<any>
   ) => Exclude<ReactNode, undefined>
 ): CompWithAsProp<BaseProps, DefaultElementType> => {
-  // @ts-ignore
-  return forwardRef(render);
-};
+  // @ts-expect-error
+  return forwardRef(render)
+}

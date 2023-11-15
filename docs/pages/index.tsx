@@ -1,48 +1,48 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { useMediaQuery } from '../lib/media';
-import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
-import { CommunityCta } from '../components/content/CommunityCta';
-import { FrontEndLogos } from '../components/icons/FrontEndLogos';
-import { Highlight } from '../components/primitives/Highlight';
-import { WhyKeystone } from '../components/icons/WhyKeystone';
-import { MWrapper } from '../components/content/MWrapper';
-import { Relational } from '../components/icons/Relational';
-import { TweetBox } from '../components/content/TweetBox';
-import { Typescript } from '../components/icons/Typescript';
-import { Code as SourceCode, InlineCode } from '../components/primitives/Code';
-import { Automated } from '../components/icons/Automated';
-import { Section } from '../components/content/Section';
-import { Thinkmill } from '../components/icons/Thinkmill';
-import { CodeBox } from '../components/content/CodeBox';
-import { PillCta } from '../components/content/PillCta';
-import { Migration } from '../components/icons/Migration';
-import { Button } from '../components/primitives/Button';
-import { EndCta } from '../components/content/EndCta';
-import { Emoji } from '../components/primitives/Emoji';
-import { Updates } from '../components/icons/Updates';
-import { Type } from '../components/primitives/Type';
-import { ArrowR } from '../components/icons/ArrowR';
-import { Custom } from '../components/icons/Custom';
-import { Filter } from '../components/icons/Filter';
-import { Shield } from '../components/icons/Shield';
-import { Watch } from '../components/icons/Watch';
-import { Tick } from '../components/icons/Tick';
-import { Page } from '../components/Page';
-import { Organization } from '../components/icons/Organization';
-import { Content } from '../components/icons/Content';
-import { Code } from '../components/icons/Code';
-import contentEditorMockui from '../public/assets/content-editor-mockui.png';
-import docEditorHome from '../public/assets/doc-editor-home.png';
-import deployTargets from '../public/assets/deploy-targets.png';
+import { useMediaQuery } from '../lib/media'
+import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow'
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro'
+import { CommunityCta } from '../components/content/CommunityCta'
+import { FrontEndLogos } from '../components/icons/FrontEndLogos'
+import { Highlight } from '../components/primitives/Highlight'
+import { WhyKeystone } from '../components/icons/WhyKeystone'
+import { MWrapper } from '../components/content/MWrapper'
+import { Relational } from '../components/icons/Relational'
+import { TweetBox } from '../components/content/TweetBox'
+import { Typescript } from '../components/icons/Typescript'
+import { Code as SourceCode, InlineCode } from '../components/primitives/Code'
+import { Automated } from '../components/icons/Automated'
+import { Section } from '../components/content/Section'
+import { Thinkmill } from '../components/icons/Thinkmill'
+import { CodeBox } from '../components/content/CodeBox'
+import { PillCta } from '../components/content/PillCta'
+import { Migration } from '../components/icons/Migration'
+import { Button } from '../components/primitives/Button'
+import { EndCta } from '../components/content/EndCta'
+import { Emoji } from '../components/primitives/Emoji'
+import { Updates } from '../components/icons/Updates'
+import { Type } from '../components/primitives/Type'
+import { ArrowR } from '../components/icons/ArrowR'
+import { Custom } from '../components/icons/Custom'
+import { Filter } from '../components/icons/Filter'
+import { Shield } from '../components/icons/Shield'
+import { Watch } from '../components/icons/Watch'
+import { Tick } from '../components/icons/Tick'
+import { Page } from '../components/Page'
+import { Organization } from '../components/icons/Organization'
+import { Content } from '../components/icons/Content'
+import { Code } from '../components/icons/Code'
+import contentEditorMockui from '../public/assets/content-editor-mockui.png'
+import docEditorHome from '../public/assets/doc-editor-home.png'
+import deployTargets from '../public/assets/deploy-targets.png'
 
-export default function IndexPage() {
-  const mq = useMediaQuery();
+export default function IndexPage () {
+  const mq = useMediaQuery()
   return (
     <Page
       title={'KeystoneJS: The superpowered Node.js Headless CMS for developers'}
@@ -921,5 +921,5 @@ export const lists = {
         <EndCta grad="grad4" />
       </MWrapper>
     </Page>
-  );
+  )
 }

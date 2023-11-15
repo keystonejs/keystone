@@ -1,6 +1,6 @@
-export const gql = ([content]: TemplateStringsArray) => content;
+export const gql = ([content]: TemplateStringsArray) => content
 
-export async function fetchGraphQL(query: string, variables?: Record<string, any>) {
+export async function fetchGraphQL (query: string, variables?: Record<string, any>) {
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
@@ -11,8 +11,8 @@ export async function fetchGraphQL(query: string, variables?: Record<string, any
       if (errors) {
         throw new Error(
           `GraphQL errors occurred:\n${errors.map((x: any) => x.message).join('\n')}`
-        );
+        )
       }
-      return data;
-    });
+      return data
+    })
 }

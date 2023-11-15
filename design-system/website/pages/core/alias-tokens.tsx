@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme, Inline } from '@keystone-ui/core';
+import { jsx, useTheme, Inline } from '@keystone-ui/core'
 
-import { Fragment } from 'react';
-import { Page } from '../../components/Page';
-import { ReadableColor } from '../../components/ReadableColor';
+import { Fragment } from 'react'
+import { Page } from '../../components/Page'
+import { ReadableColor } from '../../components/ReadableColor'
 
-type SelectableColorType = keyof ReturnType<typeof useTheme>['selectableColors'];
+type SelectableColorType = keyof ReturnType<typeof useTheme>['selectableColors']
 
 const SelectableColor = ({ name }: { name: SelectableColorType }) => {
-  const { selectableColors, spacing, radii, typography } = useTheme();
-  const color = selectableColors[name];
+  const { selectableColors, spacing, radii, typography } = useTheme()
+  const color = selectableColors[name]
   return (
     <div>
       <div
@@ -47,14 +47,14 @@ const SelectableColor = ({ name }: { name: SelectableColorType }) => {
         {name}
       </div>
     </div>
-  );
-};
+  )
+}
 
-type ToneType = keyof ReturnType<typeof useTheme>['tones'];
+type ToneType = keyof ReturnType<typeof useTheme>['tones']
 
 const Tone = ({ name }: { name: ToneType }) => {
-  const { tones, spacing, radii, typography } = useTheme();
-  const color = tones[name];
+  const { tones, spacing, radii, typography } = useTheme()
+  const color = tones[name]
   return (
     <div>
       <div
@@ -107,13 +107,13 @@ const Tone = ({ name }: { name: ToneType }) => {
         Border
       </div>
     </div>
-  );
-};
+  )
+}
 
-type ColorType = keyof ReturnType<typeof useTheme>['colors'];
+type ColorType = keyof ReturnType<typeof useTheme>['colors']
 
 const Color = ({ color }: { color: ColorType }) => {
-  const { spacing, typography, colors, radii } = useTheme();
+  const { spacing, typography, colors, radii } = useTheme()
   return (
     <div
       css={{
@@ -129,11 +129,11 @@ const Color = ({ color }: { color: ColorType }) => {
     >
       <ReadableColor background={colors[color]}>{color}</ReadableColor>
     </div>
-  );
-};
+  )
+}
 
-export default function ThemePage() {
-  const { colors, tones, selectableColors } = useTheme();
+export default function ThemePage () {
+  const { colors, tones, selectableColors } = useTheme()
   return (
     <Page>
       <h1>Alias Tokens</h1>
@@ -170,5 +170,5 @@ export default function ThemePage() {
         </Fragment>
       ))}
     </Page>
-  );
+  )
 }

@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ComponentProps, ReactNode, useState } from 'react';
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
+import { type ComponentProps, type ReactNode, useState } from 'react'
+import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import {
   Checkbox,
   Radio,
@@ -11,14 +11,14 @@ import {
   Switch,
   Select,
   DatePicker,
-  DateType,
-} from '@keystone-ui/fields';
-import { SegmentedControl } from '@keystone-ui/segmented-control';
+  type DateType,
+} from '@keystone-ui/fields'
+import { SegmentedControl } from '@keystone-ui/segmented-control'
 
-import { Page } from '../../components/Page';
+import { Page } from '../../components/Page'
 
 const FieldWrapper = ({ children }: { children: ReactNode }) => {
-  const { spacing } = useTheme();
+  const { spacing } = useTheme()
   return (
     <div
       css={{
@@ -28,32 +28,32 @@ const FieldWrapper = ({ children }: { children: ReactNode }) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
 const StatefulSwitch = ({ children, ...props }: ComponentProps<typeof Switch>) => {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(false)
   return (
     <Switch checked={checked} onClick={() => setChecked(!checked)} {...props}>
       {children}
     </Switch>
-  );
-};
+  )
+}
 
 const BasicDatePicker = () => {
-  let [value, setValue] = useState<DateType>('');
+  let [value, setValue] = useState<DateType>('')
   return (
     <Stack gap="small">
       <pre>{value || 'no value'}</pre>
       <DatePicker onUpdate={setValue} onClear={() => setValue('')} value={value} />
     </Stack>
-  );
-};
+  )
+}
 
-export default function FieldsPage() {
-  const { spacing } = useTheme();
-  const [selectVal, setSelectVal] = useState<{ label: string; value: string } | null>(null);
-  const [segmentedControlVal, setSegmentedControlVal] = useState<number | undefined>(undefined);
+export default function FieldsPage () {
+  const { spacing } = useTheme()
+  const [selectVal, setSelectVal] = useState<{ label: string, value: string } | null>(null)
+  const [segmentedControlVal, setSegmentedControlVal] = useState<number | undefined>(undefined)
   return (
     <Page>
       <h1>Form Fields</h1>
@@ -116,7 +116,7 @@ export default function FieldsPage() {
           segments={['one', 'two', 'three']}
           selectedIndex={segmentedControlVal}
           onChange={val => {
-            setSegmentedControlVal(val);
+            setSegmentedControlVal(val)
           }}
         />
       </FieldWrapper>
@@ -211,5 +211,5 @@ export default function FieldsPage() {
       <br />
       <br />
     </Page>
-  );
+  )
 }

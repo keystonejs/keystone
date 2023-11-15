@@ -1,15 +1,15 @@
-import { calendarDay } from '@keystone-6/core/fields';
+import { calendarDay } from '@keystone-6/core/fields'
 
-export const name = 'calendarDay';
-export const typeFunction = calendarDay;
-export const exampleValue = () => '1990-12-31';
-export const exampleValue2 = () => '2000-01-20';
-export const supportsNullInput = true;
-export const supportsUnique = true;
-export const supportsDbMap = true;
-export const fieldName = 'lastOnline';
+export const name = 'calendarDay'
+export const typeFunction = calendarDay
+export const exampleValue = () => '1990-12-31'
+export const exampleValue2 = () => '2000-01-20'
+export const supportsNullInput = true
+export const supportsUnique = true
+export const supportsDbMap = true
+export const fieldName = 'lastOnline'
 
-export const getTestFields = () => ({ lastOnline: calendarDay() });
+export const getTestFields = () => ({ lastOnline: calendarDay() })
 
 export const initItems = () => {
   return [
@@ -20,8 +20,8 @@ export const initItems = () => {
     { name: 'person5', lastOnline: '2020-06-10' },
     { name: 'person6', lastOnline: null },
     { name: 'person7' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'person1', lastOnline: '1979-04-12' },
@@ -31,4 +31,4 @@ export const storedValues = () => [
   { name: 'person5', lastOnline: '2020-06-10' },
   { name: 'person6', lastOnline: null },
   { name: 'person7', lastOnline: null },
-];
+]

@@ -1,5 +1,5 @@
-import execa from 'execa';
-import { basicKeystoneConfig, cliBinPath, schemas, symlinkKeystoneDeps, testdir } from './utils';
+import execa from 'execa'
+import { basicKeystoneConfig, cliBinPath, schemas, symlinkKeystoneDeps, testdir } from './utils'
 
 // testing erroring when the schemas are not up to date is in artifacts.test.ts
 
@@ -8,12 +8,12 @@ test('keystone prisma exits with the same code as the prisma child process exits
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.js': basicKeystoneConfig,
-  });
+  })
   const result = await execa('node', [cliBinPath, 'prisma', 'bad-thing'], {
     reject: false,
     all: true,
     cwd: tmp,
-  });
+  })
   expect(result.all!.replace(/[^ -~\n]/g, '?')).toMatchInlineSnapshot(`
     "
     ! Unknown command "bad-thing"
@@ -64,25 +64,25 @@ test('keystone prisma exits with the same code as the prisma child process exits
       Format your Prisma schema
       $ prisma format
     "
-  `);
-  expect(result.exitCode).toBe(1);
-});
+  `)
+  expect(result.exitCode).toBe(1)
+})
 
 test('keystone prisma uses the db url in the keystone config', async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.js': basicKeystoneConfig,
-  });
+  })
   const result = await execa('node', [cliBinPath, 'prisma', 'migrate', 'status'], {
     reject: false,
     all: true,
     cwd: tmp,
-  });
+  })
   expect(result.all).toMatchInlineSnapshot(`
     "Prisma schema loaded from schema.prisma
     Datasource "sqlite": SQLite database "app.db" at "file:./app.db"
     Error: P1003: Database app.db does not exist at ./app.db"
-  `);
-  expect(result.exitCode).toBe(1);
-});
+  `)
+  expect(result.exitCode).toBe(1)
+})

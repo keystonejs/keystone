@@ -1,29 +1,29 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { useMediaQuery } from '../lib/media';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
-import { Highlight } from '../components/primitives/Highlight';
-import { ClientLogos } from '../components/icons/ClientLogos';
-import { TweetBox } from '../components/content/TweetBox';
-import { MWrapper } from '../components/content/MWrapper';
-import { Section } from '../components/content/Section';
-import { Thinkmill } from '../components/icons/Thinkmill';
-import { Quote } from '../components/content/Quote';
-import { Type } from '../components/primitives/Type';
-import { Pill } from '../components/content/Pill';
-import { Tick } from '../components/icons/Tick';
-import { Page } from '../components/Page';
+import { useMediaQuery } from '../lib/media'
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro'
+import { Highlight } from '../components/primitives/Highlight'
+import { ClientLogos } from '../components/icons/ClientLogos'
+import { TweetBox } from '../components/content/TweetBox'
+import { MWrapper } from '../components/content/MWrapper'
+import { Section } from '../components/content/Section'
+import { Thinkmill } from '../components/icons/Thinkmill'
+import { Quote } from '../components/content/Quote'
+import { Type } from '../components/primitives/Type'
+import { Pill } from '../components/content/Pill'
+import { Tick } from '../components/icons/Tick'
+import { Page } from '../components/Page'
 
-import editor from '../public/assets/editor.png';
-import dataIntegrity from '../public/assets/data-integrity.png';
-import { EndCta } from '../components/content/EndCta';
+import editor from '../public/assets/editor.png'
+import dataIntegrity from '../public/assets/data-integrity.png'
+import { EndCta } from '../components/content/EndCta'
 
-export default function ForOrganisations() {
-  const mq = useMediaQuery();
+export default function ForOrganisations () {
+  const mq = useMediaQuery()
 
   return (
     <Page
@@ -348,5 +348,5 @@ export default function ForOrganisations() {
         <EndCta grad="grad4" />
       </MWrapper>
     </Page>
-  );
+  )
 }

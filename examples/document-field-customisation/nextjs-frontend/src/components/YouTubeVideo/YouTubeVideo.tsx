@@ -1,13 +1,13 @@
-import React from 'react';
-import styles from './YouTubeVideo.module.css';
+import React from 'react'
+import styles from './YouTubeVideo.module.css'
 
 type YouTubeVideoProps = {
-  url: string;
-  altText: string;
-};
+  url: string
+  altText: string
+}
 
-export function YouTubeVideo({ url, altText = 'Embedded YouTube video' }: YouTubeVideoProps) {
-  const embedId = getYouTubeEmbedId(url);
+export function YouTubeVideo ({ url, altText = 'Embedded YouTube video' }: YouTubeVideoProps) {
+  const embedId = getYouTubeEmbedId(url)
 
   return (
     <div className={styles.youtubeVideo}>
@@ -23,17 +23,17 @@ export function YouTubeVideo({ url, altText = 'Embedded YouTube video' }: YouTub
         />
       </div>
     </div>
-  );
+  )
 }
 
-function getYouTubeEmbedId(url: string) {
-  let embedId = '';
-  const parsedUrl = url.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+function getYouTubeEmbedId (url: string) {
+  let embedId = ''
+  const parsedUrl = url.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
   if (parsedUrl[2] !== undefined) {
-    const parsedId = parsedUrl[2].split(/[^0-9a-z_\-]/i);
-    embedId = parsedId[0];
+    const parsedId = parsedUrl[2].split(/[^0-9a-z_\-]/i)
+    embedId = parsedId[0]
   } else {
-    embedId = url;
+    embedId = url
   }
-  return embedId;
+  return embedId
 }

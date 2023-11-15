@@ -1,18 +1,18 @@
-import { config } from '@keystone-6/core';
-import type { Request, Response } from 'express';
+import { config } from '@keystone-6/core'
+import type { Request, Response } from 'express'
 
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
-import { getTasks } from './routes/tasks';
-import { TypeInfo, Context } from '.keystone/types';
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
+import { getTasks } from './routes/tasks'
+import { type TypeInfo, type Context } from '.keystone/types'
 
 function withContext<F extends (req: Request, res: Response, context: Context) => void>(
   commonContext: Context,
   f: F
 ) {
   return async (req: Request, res: Response) => {
-    return f(req, res, await commonContext.withRequest(req, res));
-  };
+    return f(req, res, await commonContext.withRequest(req, res))
+  }
 }
 
 export default config<TypeInfo>({
@@ -34,9 +34,9 @@ export default config<TypeInfo>({
         Keystone schema and return the results as JSON
     */
     extendExpressApp: (app, commonContext) => {
-      app.get('/rest/tasks', withContext(commonContext, getTasks));
+      app.get('/rest/tasks', withContext(commonContext, getTasks))
       // app.put('/rest/tasks', withContext(commonContext, putTask));
     },
   },
   lists,
-});
+})

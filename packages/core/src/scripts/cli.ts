@@ -1,45 +1,45 @@
-import meow from 'meow';
-import { ExitError } from './utils';
-import { build } from './build';
-import { dev } from './dev';
-import { prisma } from './prisma';
-import { start } from './start';
-import { telemetry } from './telemetry';
+import meow from 'meow'
+import { ExitError } from './utils'
+import { build } from './build'
+import { dev } from './dev'
+import { prisma } from './prisma'
+import { start } from './start'
+import { telemetry } from './telemetry'
 
 export type Flags = {
-  dbPush: boolean;
-  fix: boolean; // TODO: remove, deprecated
-  frozen: boolean;
-  prisma: boolean;
-  server: boolean;
-  ui: boolean;
-  withMigrations: boolean;
-};
+  dbPush: boolean
+  fix: boolean // TODO: remove, deprecated
+  frozen: boolean
+  prisma: boolean
+  server: boolean
+  ui: boolean
+  withMigrations: boolean
+}
 
-function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
-  flags = { ...defaults, ...flags };
+function defaultFlags (flags: Partial<Flags>, defaults: Partial<Flags>) {
+  flags = { ...defaults, ...flags }
 
   for (const [key, value] of Object.entries(flags)) {
     if (value !== undefined && !(key in defaults)) {
       // TODO: maybe we should prevent other flags?
       //throw new Error(`Option '${key}' is unsupported for this command`);
-      continue;
+      continue
     }
 
-    const defaultValue = defaults[key as keyof Flags];
+    const defaultValue = defaults[key as keyof Flags]
     // should we default the flag?
     if (value === undefined) {
-      flags[key as keyof Flags] = defaultValue;
+      flags[key as keyof Flags] = defaultValue
     }
 
     if (typeof value !== typeof defaultValue) {
-      throw new Error(`Option '${key}' should be of type ${typeof defaultValue}`);
+      throw new Error(`Option '${key}' should be of type ${typeof defaultValue}`)
     }
   }
-  return flags as Flags;
+  return flags as Flags
 }
 
-export async function cli(cwd: string, argv: string[]) {
+export async function cli (cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
     `
     Usage
@@ -77,26 +77,26 @@ export async function cli(cwd: string, argv: string[]) {
     {
       argv,
     }
-  );
+  )
 
-  const command = input[0] || 'dev';
+  const command = input[0] || 'dev'
   if (command === 'dev') {
-    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }));
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
   }
 
   if (command === 'build') {
-    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }));
+    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }))
   }
 
   if (command === 'start') {
-    return start(cwd, defaultFlags(flags, { ui: true, withMigrations: false }));
+    return start(cwd, defaultFlags(flags, { ui: true, withMigrations: false }))
   }
 
   if (command === 'prisma') {
-    return prisma(cwd, argv.slice(1), Boolean(flags.frozen));
+    return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
   }
 
-  if (command === 'telemetry') return telemetry(cwd, argv[1]);
+  if (command === 'telemetry') return telemetry(cwd, argv[1])
 
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
@@ -104,10 +104,10 @@ export async function cli(cwd: string, argv: string[]) {
       frozen: !defaultFlags(flags, { fix: false }).fix,
       prisma: true,
       ui: false,
-    });
+    })
   }
 
-  console.log(`${command} is an unknown command`);
-  console.log(help);
-  throw new ExitError(1);
+  console.log(`${command} is an unknown command`)
+  console.log(help)
+  throw new ExitError(1)
 }

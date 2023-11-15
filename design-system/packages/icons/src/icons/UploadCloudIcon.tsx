@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const UploadCloudIcon = createIcon(
   <React.Fragment>
     <polyline points="16 16 12 12 8 16" />
@@ -8,4 +8,4 @@ export const UploadCloudIcon = createIcon(
     <polyline points="16 16 12 12 8 16" />
   </React.Fragment>,
   'UploadCloudIcon'
-);
+)

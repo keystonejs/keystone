@@ -1,35 +1,35 @@
-import path from 'path';
-import fs from 'fs/promises';
-import { ExecaChildProcess } from 'execa';
-import { Browser, Page, chromium } from 'playwright';
-import { parse, print } from 'graphql';
-import fetch from 'node-fetch';
-import { generalStartKeystone, waitForIO, loadIndex, makeGqlRequest } from './utils';
+import path from 'path'
+import fs from 'fs/promises'
+import { type ExecaChildProcess } from 'execa'
+import { type Browser, type Page, chromium } from 'playwright'
+import { parse, print } from 'graphql'
+import fetch from 'node-fetch'
+import { generalStartKeystone, waitForIO, loadIndex, makeGqlRequest } from './utils'
 
-const gql = ([content]: TemplateStringsArray) => content;
-const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading');
+const gql = ([content]: TemplateStringsArray) => content
+const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')
 
-async function replaceSchema(schema: string) {
+async function replaceSchema (schema: string) {
   await fs.writeFile(
     path.join(testProjectPath, 'schema.ts'),
     await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))
-  );
+  )
 }
 
-let exit = async () => {};
-let ksProcess: ExecaChildProcess = undefined as any;
-let page: Page = undefined as any;
-let browser: Browser = undefined as any;
+let exit = async () => {}
+let ksProcess: ExecaChildProcess = undefined as any
+let page: Page = undefined as any
+let browser: Browser = undefined as any
 
 test('start keystone', async () => {
   // just in case a previous failing test run messed things up, let's reset it
   await replaceSchema('initial.ts');
-  ({ exit, process: ksProcess } = await generalStartKeystone(testProjectPath, 'dev'));
-  browser = await chromium.launch();
-  page = await browser.newPage();
+  ({ exit, process: ksProcess } = await generalStartKeystone(testProjectPath, 'dev'))
+  browser = await chromium.launch()
+  page = await browser.newPage()
 
-  await loadIndex(page);
-});
+  await loadIndex(page)
+})
 
 test('Creating an item with the GraphQL API and navigating to the item page for it', async () => {
   const {
@@ -40,53 +40,53 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
         id
       }
     }
-  `);
+  `)
 
-  await page.goto(`http://localhost:3000/somethings/${id}`);
-  await page.waitForSelector('label:has-text("Text")');
+  await page.goto(`http://localhost:3000/somethings/${id}`)
+  await page.waitForSelector('label:has-text("Text")')
 
   const element = await page.waitForSelector(
     'label:has-text("Initial Label For Text") >> .. >> input'
-  );
+  )
 
-  const value = await element.inputValue();
+  const value = await element.inputValue()
 
-  expect(value).toBe('blah');
-});
+  expect(value).toBe('blah')
+})
 
 test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
   expect(
     await fetch('http://localhost:3000/api/blah/asdasdas/das/da/sdad').then(x => x.text())
-  ).toEqual('something');
-});
+  ).toEqual('something')
+})
 
 test('changing the label of a field updates in the Admin UI', async () => {
-  await replaceSchema('second.ts');
-  await waitForIO(ksProcess, 'compiled successfully');
+  await replaceSchema('second.ts')
+  await waitForIO(ksProcess, 'compiled successfully')
 
   const element = await page.waitForSelector(
     'label:has-text("Very Important Text") >> .. >> input'
-  );
-  const value = await element.inputValue();
-  expect(value).toBe('blah');
-});
+  )
+  const value = await element.inputValue()
+  expect(value).toBe('blah')
+})
 
 test('adding a virtual field', async () => {
-  const element = await page.waitForSelector('label:has-text("Virtual") >> ..');
-  const value = await element.textContent();
-  expect(value).toBe('Virtualblah');
-});
+  const element = await page.waitForSelector('label:has-text("Virtual") >> ..')
+  const value = await element.textContent()
+  expect(value).toBe('Virtualblah')
+})
 
 test('the generated schema includes schema updates', async () => {
   // we want to make sure the field that we added worked
   // and the change we made to the have worked
-  const schema = await fs.readFile(path.join(testProjectPath, 'schema.graphql'), 'utf8');
-  const parsed = parse(schema);
+  const schema = await fs.readFile(path.join(testProjectPath, 'schema.graphql'), 'utf8')
+  const parsed = parse(schema)
   const objectTypes = parsed.definitions.filter(
     x =>
       x.kind === 'ObjectTypeDefinition' &&
       (x.name.value === 'Query' || x.name.value === 'Something')
-  );
+  )
   expect(objectTypes.map(x => print(x)).join('\n\n')).toMatchInlineSnapshot(`
         "type Something {
           id: ID!
@@ -101,29 +101,29 @@ test('the generated schema includes schema updates', async () => {
           keystone: KeystoneMeta!
           someNumber: Int!
         }"
-      `);
-});
+      `)
+})
 
 test("a syntax error is shown and doesn't crash the process", async () => {
-  await replaceSchema('syntax-error.js');
-  await waitForIO(ksProcess, '✘ [ERROR] Expected ";" but found "const"');
-});
+  await replaceSchema('syntax-error.js')
+  await waitForIO(ksProcess, '✘ [ERROR] Expected ";" but found "const"')
+})
 
 test("a runtime error is shown and doesn't crash the process", async () => {
-  await replaceSchema('runtime-error.ts');
-  await waitForIO(ksProcess, 'ReferenceError: doesNotExist is not defined');
-});
+  await replaceSchema('runtime-error.ts')
+  await waitForIO(ksProcess, 'ReferenceError: doesNotExist is not defined')
+})
 
 test('errors can be recovered from', async () => {
-  await replaceSchema('initial.ts');
+  await replaceSchema('initial.ts')
 
   const element = await page.waitForSelector(
     'label:has-text("Initial Label For Text") >> .. >> input'
-  );
-  const value = await element.inputValue();
-  expect(value).toBe('blah');
-});
+  )
+  const value = await element.inputValue()
+  expect(value).toBe('blah')
+})
 
 afterAll(async () => {
-  await Promise.all([exit(), browser.close()]);
-});
+  await Promise.all([exit(), browser.close()])
+})

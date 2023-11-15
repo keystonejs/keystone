@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, makeEditor } from './tests/utils';
+import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a divider with a shortcut works', () => {
   let editor = makeEditor(
@@ -13,9 +13,9 @@ test('inserting a divider with a shortcut works', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('-');
+  editor.insertText('-')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <divider
@@ -32,5 +32,5 @@ test('inserting a divider with a shortcut works', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

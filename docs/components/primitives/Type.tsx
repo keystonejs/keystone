@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { forwardRefWithAs } from '../../lib/forwardRefWithAs';
-import { useMediaQuery } from '../../lib/media';
+import { forwardRefWithAs } from '../../lib/forwardRefWithAs'
+import { useMediaQuery } from '../../lib/media'
 
 const common = {
   brand: {
@@ -17,7 +17,7 @@ const common = {
     lineHeight: 1.2,
     maxWidth: '85ch',
   },
-};
+}
 
 export const styleMap = {
   heading20: {
@@ -144,19 +144,19 @@ export const styleMap = {
     fontWeight: 600,
     lineHeight: 1.7,
   },
-} as const;
+} as const
 
 type TypeProps = {
-  look?: keyof typeof styleMap;
-  fontSize?: string | Array<string | null>;
-  margin?: string | Array<string | null>;
-  padding?: string | Array<string | null>;
-  color?: string | Array<string | null>;
-};
+  look?: keyof typeof styleMap
+  fontSize?: string | Array<string | null>
+  margin?: string | Array<string | null>
+  padding?: string | Array<string | null>
+  color?: string | Array<string | null>
+}
 
 export const Type = forwardRefWithAs<'span', TypeProps>(
   ({ as: Tag = 'span', look, fontSize, margin, padding, color, ...props }, ref) => {
-    const mq = useMediaQuery();
+    const mq = useMediaQuery()
 
     return (
       <Tag
@@ -170,7 +170,7 @@ export const Type = forwardRefWithAs<'span', TypeProps>(
         })}
         {...props}
       />
-    );
+    )
   }
-);
-Type.displayName = 'Type';
+)
+Type.displayName = 'Type'

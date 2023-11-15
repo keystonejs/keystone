@@ -1,31 +1,31 @@
 // Float in GQL: A signed double-precision floating-point value.
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: number;
-    isIndexed?: boolean | 'unique';
+    defaultValue?: number
+    isIndexed?: boolean | 'unique'
     validation?: {
-      min?: number;
-      max?: number;
-      isRequired?: boolean;
-    };
+      min?: number
+      max?: number
+      isRequired?: boolean
+    }
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
-  };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
 export const float =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -41,7 +41,7 @@ export const float =
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
-      );
+      )
     }
 
     if (
@@ -50,7 +50,7 @@ export const float =
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
-      );
+      )
     }
 
     if (
@@ -59,7 +59,7 @@ export const float =
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
-      );
+      )
     }
 
     if (
@@ -69,15 +69,15 @@ export const float =
     ) {
       throw new Error(
         `The float field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      );
+      )
     }
 
-    const isNullable = getResolvedIsNullable(validation, config.db);
+    const isNullable = getResolvedIsNullable(validation, config.db)
 
-    assertReadIsNonNullAllowed(meta, config, isNullable);
+    assertReadIsNonNullAllowed(meta, config, isNullable)
 
-    const mode = isNullable === false ? 'required' : 'optional';
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    const mode = isNullable === false ? 'required' : 'optional'
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     return fieldType({
       kind: 'scalar',
@@ -92,28 +92,28 @@ export const float =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
-          const value = args.resolvedData[meta.fieldKey];
+        async validateInput (args) {
+          const value = args.resolvedData[meta.fieldKey]
 
           if ((validation?.isRequired || isNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
 
           if (typeof value === 'number') {
             if (validation?.max !== undefined && value > validation.max) {
               args.addValidationError(
                 `${fieldLabel} must be less than or equal to ${validation.max}`
-              );
+              )
             }
 
             if (validation?.min !== undefined && value < validation.min) {
               args.addValidationError(
                 `${fieldLabel} must be greater than or equal to ${validation.min}`
-              );
+              )
             }
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -128,11 +128,11 @@ export const float =
             type: graphql.Float,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
-          resolve(value) {
+          resolve (value) {
             if (value === undefined) {
-              return defaultValue ?? null;
+              return defaultValue ?? null
             }
-            return value;
+            return value
           },
         },
         update: { arg: graphql.arg({ type: graphql.Float }) },
@@ -143,7 +143,7 @@ export const float =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           validation: {
             min: validation?.min || null,
@@ -151,7 +151,7 @@ export const float =
             isRequired: validation?.isRequired ?? false,
           },
           defaultValue: defaultValue ?? null,
-        };
+        }
       },
-    });
-  };
+    })
+  }

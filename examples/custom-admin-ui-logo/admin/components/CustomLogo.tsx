@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import Link from 'next/link';
-import { jsx, H3 } from '@keystone-ui/core';
+import Link from 'next/link'
+import { jsx, H3 } from '@keystone-ui/core'
 
 export const CustomLogo = () => {
   return (
@@ -22,5 +22,5 @@ export const CustomLogo = () => {
         LegendBoulder After
       </Link>
     </H3>
-  );
-};
+  )
+}

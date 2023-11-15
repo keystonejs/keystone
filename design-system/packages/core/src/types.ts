@@ -1,7 +1,7 @@
-import { theme } from './themes/default';
+import { type theme } from './themes/default'
 
 // Theme Types
 
-export type Theme = typeof theme;
+export type Theme = typeof theme
 
-export type ResponsiveProp<T> = T | readonly (T | null)[];
+export type ResponsiveProp<T> = T | readonly (T | null)[]

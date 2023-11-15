@@ -1,5 +1,5 @@
-import { Text } from 'slate';
-import { Mark } from '../utils';
+import { type Text } from 'slate'
+import { type Mark } from '../utils'
 
 // a v important note
 // marks in the markdown ast/html are represented quite differently to how they are in slate
@@ -7,60 +7,60 @@ import { Mark } from '../utils';
 // the bold node is the parent of the link node
 // but in slate, marks are only represented on text nodes
 
-const currentlyActiveMarks = new Set<Mark>();
-const currentlyDisabledMarks = new Set<Mark>();
-let currentLink: string | null = null;
+const currentlyActiveMarks = new Set<Mark>()
+const currentlyDisabledMarks = new Set<Mark>()
+let currentLink: string | null = null
 
-export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
-  const wasPreviouslyActive = currentlyActiveMarks.has(mark);
-  currentlyActiveMarks.add(mark);
+export function addMarkToChildren<T> (mark: Mark, cb: () => T): T {
+  const wasPreviouslyActive = currentlyActiveMarks.has(mark)
+  currentlyActiveMarks.add(mark)
   try {
-    return cb();
+    return cb()
   } finally {
     if (!wasPreviouslyActive) {
-      currentlyActiveMarks.delete(mark);
+      currentlyActiveMarks.delete(mark)
     }
   }
 }
 
-export function setLinkForChildren<T>(href: string, cb: () => T): T {
+export function setLinkForChildren<T> (href: string, cb: () => T): T {
   // we'll only use the outer link
   if (currentLink !== null) {
-    return cb();
+    return cb()
   }
-  currentLink = href;
+  currentLink = href
   try {
-    return cb();
+    return cb()
   } finally {
-    currentLink = null;
+    currentLink = null
   }
 }
 
-export function addMarksToChildren<T>(marks: Set<Mark>, cb: () => T): T {
-  const marksToRemove = new Set<Mark>();
+export function addMarksToChildren<T> (marks: Set<Mark>, cb: () => T): T {
+  const marksToRemove = new Set<Mark>()
   for (const mark of marks) {
     if (!currentlyActiveMarks.has(mark)) {
-      marksToRemove.add(mark);
+      marksToRemove.add(mark)
     }
-    currentlyActiveMarks.add(mark);
+    currentlyActiveMarks.add(mark)
   }
   try {
-    return cb();
+    return cb()
   } finally {
     for (const mark of marksToRemove) {
-      currentlyActiveMarks.delete(mark);
+      currentlyActiveMarks.delete(mark)
     }
   }
 }
 
-export function forceDisableMarkForChildren<T>(mark: Mark, cb: () => T): T {
-  const wasPreviouslyDisabled = currentlyDisabledMarks.has(mark);
-  currentlyDisabledMarks.add(mark);
+export function forceDisableMarkForChildren<T> (mark: Mark, cb: () => T): T {
+  const wasPreviouslyDisabled = currentlyDisabledMarks.has(mark)
+  currentlyDisabledMarks.add(mark)
   try {
-    return cb();
+    return cb()
   } finally {
     if (!wasPreviouslyDisabled) {
-      currentlyDisabledMarks.delete(mark);
+      currentlyDisabledMarks.delete(mark)
     }
   }
 }
@@ -75,17 +75,17 @@ export function forceDisableMarkForChildren<T>(mark: Mark, cb: () => T): T {
  * non-void inlines are probably always bad but that would imply changing the document
  * structure which would be such unnecessary breakage)
  */
-type StrictLink = { type: 'link'; href: string; children: Text[] };
+type StrictLink = { type: 'link', href: string, children: Text[] }
 // inline relationships are not here because we never create them from handling a paste from html or markdown
-export type InlineFromExternalPaste = Text | StrictLink;
+export type InlineFromExternalPaste = Text | StrictLink
 
-export function getInlineNodes(
+export function getInlineNodes (
   text: string
 ): [InlineFromExternalPaste, ...InlineFromExternalPaste[]] {
-  const node: Text = { text };
+  const node: Text = { text }
   for (const mark of currentlyActiveMarks) {
     if (!currentlyDisabledMarks.has(mark)) {
-      node[mark] = true;
+      node[mark] = true
     }
   }
   if (currentLink !== null) {
@@ -93,7 +93,7 @@ export function getInlineNodes(
       { text: '' },
       { type: 'link' as const, href: currentLink, children: [node] },
       { text: '' },
-    ];
+    ]
   }
-  return [node];
+  return [node]
 }

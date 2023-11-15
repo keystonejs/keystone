@@ -1,38 +1,37 @@
-import { text, password } from '@keystone-6/core/fields';
-import { list, ListSchemaConfig } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from '../utils';
+import { text, password } from '@keystone-6/core/fields'
+import { list, type ListSchemaConfig } from '@keystone-6/core'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from '../utils'
 
-const FAKE_ID = 'cdsfasfafafadfasdf';
-const FAKE_ID_2 = 'csdfbstrsbaf';
-const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
+const FAKE_ID = 'cdsfasfafafadfasdf'
+const FAKE_ID_2 = 'csdfbstrsbaf'
+const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
 
-const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
+const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No')
 
-type BooleanAccess = { create: boolean; query: boolean; update: boolean; delete?: boolean };
+type BooleanAccess = { create: boolean, query: boolean, update: boolean, delete?: boolean }
 
 const getPrefix = (access: BooleanAccess) => {
-  // prettier-ignore
-  let prefix = `${yesNo(access.create)}Create${yesNo(access.query)}Query${yesNo(access.update)}Update`;
+  let prefix = `${yesNo(access.create)}Create${yesNo(access.query)}Query${yesNo(access.update)}Update`
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
-    prefix = `${prefix}${yesNo(access.delete)}Delete`;
+    prefix = `${prefix}${yesNo(access.delete)}Delete`
   }
-  return prefix;
-};
+  return prefix
+}
 
 // Operation tests
-const getOperationListName = (access: BooleanAccess) => `${getPrefix(access)}OperationList`;
+const getOperationListName = (access: BooleanAccess) => `${getPrefix(access)}OperationList`
 
 // Filter tests
-const getFilterListName = (access: BooleanAccess) => `${getPrefix(access)}FilterList`;
+const getFilterListName = (access: BooleanAccess) => `${getPrefix(access)}FilterList`
 
 // Filter - boolean tests
-const getFilterBoolListName = (access: BooleanAccess) => `${getPrefix(access)}FilterBoolList`;
+const getFilterBoolListName = (access: BooleanAccess) => `${getPrefix(access)}FilterBoolList`
 
 /// Item tests
-const getItemListName = (access: BooleanAccess) => `${getPrefix(access)}ItemList`;
+const getItemListName = (access: BooleanAccess) => `${getPrefix(access)}ItemList`
 
 /* Generated with:
   const result = [];
@@ -64,7 +63,7 @@ const listAccessVariations: (BooleanAccess & { delete: boolean })[] = [
   { create: true, query: false, update: true, delete: true },
   { create: false, query: true, update: true, delete: true },
   { create: true, query: true, update: true, delete: true },
-];
+]
 
 const fieldMatrix: BooleanAccess[] = [
   { create: false, query: false, update: false },
@@ -75,15 +74,15 @@ const fieldMatrix: BooleanAccess[] = [
   { create: true, query: false, update: true },
   { create: false, query: true, update: true },
   { create: true, query: true, update: true },
-];
-const getFieldName = (access: BooleanAccess) => getPrefix(access);
+]
+const getFieldName = (access: BooleanAccess) => getPrefix(access)
 
 const nameFn = {
   item: getItemListName,
   filter: getFilterListName,
   filterBool: getFilterBoolListName,
   operation: getOperationListName,
-};
+}
 
 const createFieldStatic = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
@@ -93,7 +92,7 @@ const createFieldStatic = (fieldAccess: BooleanAccess) => ({
       update: () => fieldAccess.update,
     },
   }),
-});
+})
 const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
     access: {
@@ -102,7 +101,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
       update: () => fieldAccess.update,
     },
   }),
-});
+})
 
 const lists: ListSchemaConfig = {
   User: list({
@@ -115,7 +114,7 @@ const lists: ListSchemaConfig = {
     },
     access: allowAll,
   }),
-};
+}
 
 listAccessVariations.forEach(access => {
   lists[getOperationListName(access)] = list({
@@ -131,7 +130,7 @@ listAccessVariations.forEach(access => {
         delete: () => access.delete,
       },
     },
-  });
+  })
   lists[getFilterListName(access)] = list({
     fields: { name: text() },
     access: {
@@ -143,7 +142,7 @@ listAccessVariations.forEach(access => {
         delete: () => access.delete && { name: { equals: 'Hello' } },
       },
     },
-  });
+  })
   lists[getFilterBoolListName(access)] = list({
     fields: { name: text() },
     access: {
@@ -154,7 +153,7 @@ listAccessVariations.forEach(access => {
         delete: () => access.delete,
       },
     },
-  });
+  })
   lists[getItemListName(access)] = list({
     fields: Object.assign(
       { name: text() },
@@ -168,21 +167,21 @@ listAccessVariations.forEach(access => {
         delete: () => access.delete,
       },
     },
-  });
-});
+  })
+})
 const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
   sessionData: 'id',
-});
+})
 
 const config = auth.withAuth(
   testConfig({
     lists,
     session: statelessSessions({ secret: COOKIE_SECRET }),
   })
-);
+)
 
 export {
   FAKE_ID,
@@ -196,4 +195,4 @@ export {
   nameFn,
   config,
   getFieldName,
-};
+}

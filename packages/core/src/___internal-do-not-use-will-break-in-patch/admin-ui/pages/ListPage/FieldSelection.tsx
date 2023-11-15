@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Button } from '@keystone-ui/button';
-import { Box, jsx } from '@keystone-ui/core';
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options';
-import { Popover } from '@keystone-ui/popover';
-import { useRouter } from 'next/router';
-import { ListMeta } from '../../../../types';
-import { useSelectedFields } from './useSelectedFields';
+import { Button } from '@keystone-ui/button'
+import { Box, jsx } from '@keystone-ui/core'
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
+import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options'
+import { Popover } from '@keystone-ui/popover'
+import { useRouter } from 'next/router'
+import { type ListMeta } from '../../../../types'
+import { useSelectedFields } from './useSelectedFields'
 
-function isArrayEqual(arrA: string[], arrB: string[]) {
-  if (arrA.length !== arrB.length) return false;
+function isArrayEqual (arrA: string[], arrB: string[]) {
+  if (arrA.length !== arrB.length) return false
   for (let i = 0; i < arrA.length; i++) {
     if (arrA[i] !== arrB[i]) {
-      return false;
+      return false
     }
   }
-  return true;
+  return true
 }
 
 const Option: typeof OptionPrimitive = props => {
@@ -29,42 +29,42 @@ const Option: typeof OptionPrimitive = props => {
         isSelected={props.isSelected}
       />
     </OptionPrimitive>
-  );
-};
+  )
+}
 
 // TODO: return type required by pnpm :(
 export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
   Option,
-};
+}
 
-export function FieldSelection({
+export function FieldSelection ({
   list,
   fieldModesByFieldPath,
 }: {
-  list: ListMeta;
-  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>;
+  list: ListMeta
+  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
 }) {
-  const router = useRouter();
-  const selectedFields = useSelectedFields(list, fieldModesByFieldPath);
+  const router = useRouter()
+  const selectedFields = useSelectedFields(list, fieldModesByFieldPath)
 
   const setNewSelectedFields = (selectedFields: string[]) => {
     if (isArrayEqual(selectedFields, list.initialColumns)) {
-      const { fields: _ignore, ...otherQueryFields } = router.query;
-      router.push({ query: otherQueryFields });
+      const { fields: _ignore, ...otherQueryFields } = router.query
+      router.push({ query: otherQueryFields })
     } else {
-      router.push({ query: { ...router.query, fields: selectedFields.join(',') } });
+      router.push({ query: { ...router.query, fields: selectedFields.join(',') } })
     }
-  };
-  const fields: { value: string; label: string; isDisabled: boolean }[] = [];
+  }
+  const fields: { value: string, label: string, isDisabled: boolean }[] = []
   Object.keys(fieldModesByFieldPath).forEach(fieldPath => {
     if (fieldModesByFieldPath[fieldPath] === 'read') {
       fields.push({
         value: fieldPath,
         label: list.fields[fieldPath].label,
         isDisabled: selectedFields.size === 1 && selectedFields.has(fieldPath),
-      });
+      })
     }
-  });
+  })
 
   return (
     <Popover
@@ -77,15 +77,15 @@ export function FieldSelection({
               <ChevronDownIcon size="smallish" />
             </span>
           </Button>
-        );
+        )
       }}
     >
       <div css={{ width: 320 }}>
         <Box padding="medium">
           <Options
             onChange={options => {
-              if (!Array.isArray(options)) return;
-              setNewSelectedFields(options.map(x => x.value));
+              if (!Array.isArray(options)) return
+              setNewSelectedFields(options.map(x => x.value))
             }}
             isMulti
             value={fields.filter(option => selectedFields.has(option.value))}
@@ -95,5 +95,5 @@ export function FieldSelection({
         </Box>
       </div>
     </Popover>
-  );
+  )
 }

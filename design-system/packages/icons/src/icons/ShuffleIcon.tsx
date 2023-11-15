@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ShuffleIcon = createIcon(
   <React.Fragment>
     <polyline points="16 3 21 3 21 8" />
@@ -9,4 +9,4 @@ export const ShuffleIcon = createIcon(
     <line x1={4} y1={4} x2={9} y2={9} />
   </React.Fragment>,
   'ShuffleIcon'
-);
+)

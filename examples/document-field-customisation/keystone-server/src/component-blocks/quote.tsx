@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { jsx } from '@keystone-ui/core'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 export const quote = component({
   label: 'Quote',
@@ -15,7 +15,7 @@ export const quote = component({
     }),
     attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
   },
-  preview: function Quote(props) {
+  preview: function Quote (props) {
     return (
       <div
         css={{
@@ -39,6 +39,6 @@ export const quote = component({
           {props.fields.attribution.element}
         </div>
       </div>
-    );
+    )
   },
-});
+})

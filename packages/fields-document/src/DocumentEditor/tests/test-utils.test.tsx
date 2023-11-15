@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor } from 'slate';
-import { jsx, makeEditor } from './utils';
+import { Editor } from 'slate'
+import { jsx, makeEditor } from './utils'
 
 test('basic cursor snapshot', () => {
   let editor = makeEditor(
@@ -13,7 +13,7 @@ test('basic cursor snapshot', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
       <editor>
         <paragraph>
@@ -22,8 +22,8 @@ test('basic cursor snapshot', () => {
           </text>
         </paragraph>
       </editor>
-    `);
-});
+    `)
+})
 
 test('editor equality match', () => {
   let editor = makeEditor(
@@ -34,7 +34,7 @@ test('editor equality match', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
   expect(editor).toEqualEditor(
     makeEditor(
       <editor>
@@ -45,8 +45,8 @@ test('editor equality match', () => {
         </paragraph>
       </editor>
     )
-  );
-});
+  )
+})
 
 test('editor equality mismatch', () => {
   expect(() =>
@@ -72,8 +72,8 @@ test('editor equality mismatch', () => {
         </editor>
       )
     )
-  ).toThrowError();
-});
+  ).toThrowError()
+})
 
 test('cursor in the middle of text', () => {
   expect(
@@ -98,8 +98,8 @@ test('cursor in the middle of text', () => {
           </text>
         </paragraph>
       </editor>
-    `);
-});
+    `)
+})
 
 test('cursor split in the same text', () => {
   expect(
@@ -126,7 +126,7 @@ test('cursor split in the same text', () => {
           </text>
         </paragraph>
       </editor>
-    `);
+    `)
   expect(
     makeEditor(
       <editor>
@@ -151,8 +151,8 @@ test('cursor split in the same text', () => {
           </text>
         </paragraph>
       </editor>
-    `);
-});
+    `)
+})
 
 test('cursor split in different text', () => {
   expect(
@@ -191,7 +191,7 @@ test('cursor split in different text', () => {
           </text>
         </paragraph>
       </editor>
-    `);
+    `)
   expect(
     makeEditor(
       <editor>
@@ -228,8 +228,8 @@ test('cursor split in different text', () => {
           </text>
         </paragraph>
       </editor>
-    `);
-});
+    `)
+})
 
 test('throws on non-normalized input', () => {
   expect(() =>
@@ -246,8 +246,8 @@ test('throws on non-normalized input', () => {
         </paragraph>
       </editor>
     )
-  ).toThrow();
-});
+  ).toThrow()
+})
 
 test('allows non-normalized input when passed normalization: "skip"', () => {
   let editor = makeEditor(
@@ -263,7 +263,7 @@ test('allows non-normalized input when passed normalization: "skip"', () => {
       </paragraph>
     </editor>,
     { normalization: 'skip' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -276,8 +276,8 @@ test('allows non-normalized input when passed normalization: "skip"', () => {
         </paragraph>
       </paragraph>
     </editor>
-  `);
-  Editor.normalize(editor, { force: true });
+  `)
+  Editor.normalize(editor, { force: true })
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -288,8 +288,8 @@ test('allows non-normalized input when passed normalization: "skip"', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('delete backward', () => {
   let editor = makeEditor(
@@ -302,8 +302,8 @@ test('delete backward', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.deleteBackward('character');
+  )
+  editor.deleteBackward('character')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -314,8 +314,8 @@ test('delete backward', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('marks that conflict with .marks', () => {
   expect(() =>
@@ -330,8 +330,8 @@ test('marks that conflict with .marks', () => {
         </paragraph>
       </editor>
     )
-  ).toThrowError();
-});
+  ).toThrowError()
+})
 
 test('differing current marks', () => {
   let editor = makeEditor(
@@ -343,7 +343,7 @@ test('differing current marks', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
   expect(editor).not.toEqualEditor(
     makeEditor(
       <editor marks={{}}>
@@ -355,5 +355,5 @@ test('differing current marks', () => {
         </paragraph>
       </editor>
     )
-  );
-});
+  )
+})

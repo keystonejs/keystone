@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
 
-import wesBosCta from '../../public/assets/wesbos-cta.jpg';
+import wesBosCta from '../../public/assets/wesbos-cta.jpg'
 
-import { useMediaQuery } from '../../lib/media';
-import { Button } from '../primitives/Button';
-import { Type } from '../primitives/Type';
-import { ArrowR } from '../icons/ArrowR';
-import { Tick } from '../icons/Tick';
-import { Section } from './Section';
+import { useMediaQuery } from '../../lib/media'
+import { Button } from '../primitives/Button'
+import { Type } from '../primitives/Type'
+import { ArrowR } from '../icons/ArrowR'
+import { Tick } from '../icons/Tick'
+import { Section } from './Section'
 
-export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
-  const mq = useMediaQuery();
+export function AdvancedReactCta (props: HTMLAttributes<HTMLElement>) {
+  const mq = useMediaQuery()
 
   return (
     <Section
@@ -114,5 +114,5 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
         </div>
       </div>
     </Section>
-  );
+  )
 }

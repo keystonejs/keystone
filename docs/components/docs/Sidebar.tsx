@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../../lib/media';
-import { DocsNavigation, UpdatesNavigation } from './Navigation';
+import { useMediaQuery } from '../../lib/media'
+import { DocsNavigation, UpdatesNavigation } from './Navigation'
 
 type SidebarProps = {
-  isUpdatesPage?: boolean;
-};
+  isUpdatesPage?: boolean
+}
 
-export function Sidebar({ isUpdatesPage }: SidebarProps) {
-  const mq = useMediaQuery();
-  const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation;
+export function Sidebar ({ isUpdatesPage }: SidebarProps) {
+  const mq = useMediaQuery()
+  const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation
 
   return (
     <aside
@@ -46,5 +46,5 @@ export function Sidebar({ isUpdatesPage }: SidebarProps) {
         </div>
       </div>
     </aside>
-  );
+  )
 }

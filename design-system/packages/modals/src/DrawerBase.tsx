@@ -1,31 +1,31 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, KeyboardEvent, MutableRefObject, ReactNode, useCallback, useRef } from 'react';
-import FocusLock from 'react-focus-lock';
-import { RemoveScroll } from 'react-remove-scroll';
-import { makeId, useId, useTheme, Portal, jsx } from '@keystone-ui/core';
-import { Blanket } from './Blanket';
+import { Fragment, type KeyboardEvent, type MutableRefObject, type ReactNode, useCallback, useRef } from 'react'
+import FocusLock from 'react-focus-lock'
+import { RemoveScroll } from 'react-remove-scroll'
+import { makeId, useId, useTheme, Portal, jsx } from '@keystone-ui/core'
+import { Blanket } from './Blanket'
 
-import { useDrawerManager } from './drawer-context';
-import { TransitionState } from './types';
-import { DrawerControllerContextProvider } from './DrawerController';
+import { useDrawerManager } from './drawer-context'
+import { type TransitionState } from './types'
+import { DrawerControllerContextProvider } from './DrawerController'
 
 export const DRAWER_WIDTHS = {
   narrow: 580,
   wide: 740,
-};
-export type WidthType = keyof typeof DRAWER_WIDTHS;
-const easing = 'cubic-bezier(0.2, 0, 0, 1)';
+}
+export type WidthType = keyof typeof DRAWER_WIDTHS
+const easing = 'cubic-bezier(0.2, 0, 0, 1)'
 
 export type DrawerBaseProps = {
-  children: ReactNode;
-  initialFocusRef?: MutableRefObject<any>;
-  onClose: () => void;
-  transitionState: TransitionState;
-  onSubmit?: () => void;
-  width?: WidthType;
-};
+  children: ReactNode
+  initialFocusRef?: MutableRefObject<any>
+  onClose: () => void
+  transitionState: TransitionState
+  onSubmit?: () => void
+  width?: WidthType
+}
 
 const blanketTransition = {
   entering: { opacity: 0 },
@@ -33,7 +33,7 @@ const blanketTransition = {
   exiting: { opacity: 0 },
   exited: { opacity: 0 },
   unmounted: { opacity: 0 },
-};
+}
 
 export const DrawerBase = ({
   children,
@@ -44,42 +44,42 @@ export const DrawerBase = ({
   transitionState,
   ...props
 }: DrawerBaseProps) => {
-  const theme = useTheme();
-  const containerRef = useRef(null);
+  const theme = useTheme()
+  const containerRef = useRef(null)
 
-  const id = useId();
-  const uniqueKey = makeId('drawer', id);
+  const id = useId()
+  const uniqueKey = makeId('drawer', id)
 
   // sync drawer state
-  let drawerDepth = useDrawerManager(uniqueKey);
+  let drawerDepth = useDrawerManager(uniqueKey)
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape' && !event.defaultPrevented) {
-      event.preventDefault();
-      onClose();
+      event.preventDefault()
+      onClose()
     }
-  };
+  }
 
   const activateFocusLock = useCallback(() => {
     if (initialFocusRef && initialFocusRef.current) {
-      initialFocusRef.current.focus();
+      initialFocusRef.current.focus()
     }
-  }, [initialFocusRef]);
+  }, [initialFocusRef])
 
-  const dialogTransition = getDialogTransition(drawerDepth);
+  const dialogTransition = getDialogTransition(drawerDepth)
 
-  let Tag: 'div' | 'form' = 'div';
+  let Tag: 'div' | 'form' = 'div'
   if (onSubmit) {
-    Tag = 'form';
-    let oldOnSubmit = onSubmit;
-    // @ts-ignore
+    Tag = 'form'
+    let oldOnSubmit = onSubmit
+    // @ts-expect-error
     onSubmit = (event: any) => {
       if (!event.defaultPrevented) {
-        event.preventDefault();
-        event.stopPropagation();
-        oldOnSubmit();
+        event.preventDefault()
+        event.stopPropagation()
+        oldOnSubmit()
       }
-    };
+    }
   }
 
   return (
@@ -127,15 +127,15 @@ export const DrawerBase = ({
         </FocusLock>
       </Fragment>
     </Portal>
-  );
-};
+  )
+}
 
 // Utils
 // ------------------------------
 
-function getDialogTransition(depth: number) {
-  let scaleInc = 0.05;
-  let transformValue = `scale(${1 - scaleInc * depth}) translateX(-${depth * 40}px)`;
+function getDialogTransition (depth: number) {
+  let scaleInc = 0.05
+  let transformValue = `scale(${1 - scaleInc * depth}) translateX(-${depth * 40}px)`
 
   return {
     entering: { transform: 'translateX(100%)' },
@@ -143,5 +143,5 @@ function getDialogTransition(depth: number) {
     exiting: { transform: 'translateX(100%)' },
     exited: { transform: 'translateX(100%)' },
     unmounted: { transform: 'none' },
-  };
+  }
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const SunriseIcon = createIcon(
   <React.Fragment>
     <path d="M17 18a5 5 0 0 0-10 0" />
@@ -12,4 +12,4 @@ export const SunriseIcon = createIcon(
     <polyline points="8 6 12 2 16 6" />
   </React.Fragment>,
   'SunriseIcon'
-);
+)

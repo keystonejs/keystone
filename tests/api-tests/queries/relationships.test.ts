@@ -1,12 +1,12 @@
-import { gen, sampleOne } from 'testcheck';
+import { gen, sampleOne } from 'testcheck'
 
-import { text, relationship } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, ListKeyFromRunner } from '../utils';
+import { text, relationship } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, type ListKeyFromRunner } from '../utils'
 
-const alphanumGenerator = gen.alphaNumString.notEmpty();
+const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -27,9 +27,9 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
-type ListKey = ListKeyFromRunner<typeof runner>;
+type ListKey = ListKeyFromRunner<typeof runner>
 
 describe('Querying with relationship filters', () => {
   describe('to-single', () => {
@@ -39,7 +39,7 @@ describe('Querying with relationship filters', () => {
         // Create an item to link against
         const users = await context.query.User.createMany({
           data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
-        });
+        })
         const posts = await context.query.Post.createMany({
           data: [
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
@@ -48,44 +48,44 @@ describe('Querying with relationship filters', () => {
             { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
           ],
           query: 'id title',
-        });
+        })
 
         // Create an item that does the linking
         const allPosts = await context.query.Post.findMany({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title',
-        });
-        expect(allPosts).toHaveLength(3);
+        })
+        expect(allPosts).toHaveLength(3)
 
         // We don't know the order, so we have to check individually
-        expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
-        expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title });
-        expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title });
+        expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title })
+        expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title })
+        expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title })
       })
-    );
+    )
 
     test(
       'without data',
       runner(async ({ context }) => {
         // Create an item to link against
-        const user = await context.query.User.createOne({ data: { name: 'Jess' } });
+        const user = await context.query.User.createOne({ data: { name: 'Jess' } })
         const posts = await context.query.Post.createMany({
           data: [
             { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
             { title: sampleOne(alphanumGenerator) },
           ],
           query: 'id title',
-        });
+        })
 
         // Create an item that does the linking
         const _posts = await context.query.Post.findMany({
           where: { author: { name: { contains: 'J' } } },
           query: 'id title author { id name }',
-        });
-        expect(_posts).toMatchObject([{ id: posts[0].id, title: posts[0].title }]);
+        })
+        expect(_posts).toMatchObject([{ id: posts[0].id, title: posts[0].title }])
       })
-    );
-  });
+    )
+  })
 
   describe('to-many', () => {
     const setup = async (create: (...args: any) => Promise<any>) => {
@@ -94,7 +94,7 @@ describe('Querying with relationship filters', () => {
         create('Post', { title: 'Just in time' }),
         create('Post', { title: 'Bye' }),
         create('Post', { title: 'I like Jelly' }),
-      ]);
+      ])
 
       const users = await Promise.all([
         create('User', {
@@ -109,75 +109,75 @@ describe('Querying with relationship filters', () => {
           feed: { connect: [{ id: posts[3].id }] },
           name: sampleOne(alphanumGenerator),
         }),
-      ]);
+      ])
 
-      return { posts, users };
-    };
+      return { posts, users }
+    }
 
     test(
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // EVERY
         const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
-        });
+        })
 
-        expect(_users).toMatchObject([{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }]);
+        expect(_users).toMatchObject([{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }])
       })
-    );
+    )
 
     test(
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // SOME
         const _users = await context.query.User.findMany({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id feed(orderBy: { title: asc }) { title }',
-        });
+        })
 
-        expect(_users).toHaveLength(2);
+        expect(_users).toHaveLength(2)
         // We don't know the order, so we have to check individually
         expect(_users).toContainEqual({
           id: users[0].id,
           feed: [{ title: 'Hello' }, { title: 'Just in time' }],
-        });
-        expect(_users).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] });
+        })
+        expect(_users).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] })
       })
-    );
+    )
 
     test(
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // NONE
         const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id name feed { id title }',
-        });
+        })
 
-        expect(_users).toMatchObject([{ id: users[1].id, feed: [{ title: 'Bye' }] }]);
+        expect(_users).toMatchObject([{ id: users[1].id, feed: [{ title: 'Bye' }] }])
       })
-    );
-  });
+    )
+  })
 
   describe('to-many with empty list', () => {
     const setup = async (create: (...args: any) => Promise<any>) => {
       const posts = await Promise.all([
         create('Post', { title: 'Hello' }),
         create('Post', { title: 'I like Jelly' }),
-      ]);
+      ])
 
       const users = await Promise.all([
         create('User', {
@@ -190,71 +190,71 @@ describe('Querying with relationship filters', () => {
         }),
         create('User', { name: sampleOne(alphanumGenerator) }),
         create('User', { name: sampleOne(alphanumGenerator) }),
-      ]);
+      ])
 
-      return { posts, users };
-    };
+      return { posts, users }
+    }
 
     test(
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // EVERY
         const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
-        });
+        })
 
-        expect(_users).toHaveLength(2);
-        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+        expect(_users).toHaveLength(2)
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] })
       })
-    );
+    )
 
     test(
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // SOME
         const _users = await context.query.User.findMany({
           where: { feed: { some: { title: { contains: 'J' } } } },
           query: 'id name feed(orderBy: { title: asc }) { id title }',
-        });
+        })
 
         expect(_users).toMatchObject([
           { id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] },
-        ]);
-        expect(_users).toHaveLength(1);
+        ])
+        expect(_users).toHaveLength(1)
       })
-    );
+    )
 
     test(
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // NONE
         const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
-        });
+        })
 
-        expect(_users).toHaveLength(3);
+        expect(_users).toHaveLength(3)
         // We don't know the order, so we have to check individually
-        expect(_users).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
-        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] })
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] })
       })
-    );
-  });
+    )
+  })
 
   describe('to-many with empty related list', () => {
     const setup = async (create: (...args: any) => Promise<any>) => {
@@ -263,70 +263,70 @@ describe('Querying with relationship filters', () => {
         create('User', { name: sampleOne(alphanumGenerator) }),
         create('User', { name: sampleOne(alphanumGenerator) }),
         create('User', { name: sampleOne(alphanumGenerator) }),
-      ]);
+      ])
 
-      return { users };
-    };
+      return { users }
+    }
 
     test(
       'every condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // EVERY
         const _users = await context.query.User.findMany({
           where: { feed: { every: { title: { contains: 'J' } } } },
           query: 'id feed { id title }',
-        });
+        })
 
-        expect(_users).toHaveLength(4);
+        expect(_users).toHaveLength(4)
         // We don't know the order, so we have to check individually
-        expect(_users).toContainEqual({ id: users[0].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[1].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[0].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[1].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] })
       })
-    );
+    )
 
     test(
       'some condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // SOME
         const _users = await context.query.User.findMany({
           where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
           query: 'id name feed { id title }',
-        });
-        expect(_users).toEqual([]);
+        })
+        expect(_users).toEqual([])
       })
-    );
+    )
 
     test(
       'none condition',
       runner(async ({ context }) => {
         const create = async (listKey: ListKey, data: any) =>
-          context.query[listKey].createOne({ data });
-        const { users } = await setup(create);
+          context.query[listKey].createOne({ data })
+        const { users } = await setup(create)
 
         // NONE
         const _users = await context.query.User.findMany({
           where: { feed: { none: { title: { contains: 'J' } } } },
           query: 'id feed { title }',
-        });
+        })
 
-        expect(_users).toHaveLength(4);
+        expect(_users).toHaveLength(4)
 
         // We don't know the order, so we have to check individually
-        expect(_users).toContainEqual({ id: users[0].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[1].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
-        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[0].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[1].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] })
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] })
       })
-    );
-  });
-});
+    )
+  })
+})

@@ -19,20 +19,14 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: Prettier
-        run: pnpm lint:prettier
-
       - name: TypeScript
-        run: pnpm lint:types
-
-      - name: ESLint
-        run: pnpm lint:eslint
+        run: pnpm test:types
 
       - name: Preconstruct
         run: pnpm build
 
       - name: Prisma Filters
-        run: pnpm lint:filters
+        run: pnpm test:filters
 
   unit_tests:
     name: Package Unit Tests

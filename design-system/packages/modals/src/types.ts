@@ -1,13 +1,13 @@
 type Action = {
-  action: () => void;
-  label: string;
-};
+  action: () => void
+  label: string
+}
 
 export type ActionsType = {
-  cancel: Action;
+  cancel: Action
   confirm: Action & {
-    loading?: boolean;
-  };
-};
+    loading?: boolean
+  }
+}
 
-export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited' | 'unmounted';
+export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited' | 'unmounted'

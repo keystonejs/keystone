@@ -1,20 +1,20 @@
-import { KeystoneContext } from '@keystone-6/core/types';
-import { Descendant } from 'slate';
-import { GraphQLSchema, executeSync, parse, ExecutionResult } from 'graphql';
-import weakMemoize from '@emotion/weak-memoize';
+import { type KeystoneContext } from '@keystone-6/core/types'
+import { type Descendant } from 'slate'
+import { type GraphQLSchema, executeSync, parse, type ExecutionResult } from 'graphql'
+import weakMemoize from '@emotion/weak-memoize'
 import {
-  ComponentBlock,
-  ComponentSchema,
-  RelationshipData,
-  RelationshipField,
-} from './DocumentEditor/component-blocks/api';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
-import { Relationships } from './DocumentEditor/relationship';
+  type ComponentBlock,
+  type ComponentSchema,
+  type RelationshipData,
+  type RelationshipField,
+} from './DocumentEditor/component-blocks/api'
+import { assertNever } from './DocumentEditor/component-blocks/utils'
+import { type Relationships } from './DocumentEditor/relationship'
 
-const labelFieldAlias = '____document_field_relationship_item_label';
-const idFieldAlias = '____document_field_relationship_item_id';
+const labelFieldAlias = '____document_field_relationship_item_label'
+const idFieldAlias = '____document_field_relationship_item_id'
 
-export function addRelationshipData(
+export function addRelationshipData (
   nodes: Descendant[],
   context: KeystoneContext,
   relationships: Relationships,
@@ -23,8 +23,8 @@ export function addRelationshipData(
   return Promise.all(
     nodes.map(async (node): Promise<Descendant> => {
       if (node.type === 'relationship') {
-        const relationship = relationships[node.relationship];
-        if (!relationship) return node;
+        const relationship = relationships[node.relationship]
+        if (!relationship) return node
 
         return {
           ...node,
@@ -34,10 +34,10 @@ export function addRelationshipData(
             relationship.selection || '',
             node.data
           ),
-        };
+        }
       }
       if (node.type === 'component-block') {
-        const componentBlock = componentBlocks[node.component as string];
+        const componentBlock = componentBlocks[node.component as string]
         if (componentBlock) {
           const [props, children] = await Promise.all([
             addRelationshipDataToComponentProps(
@@ -53,12 +53,12 @@ export function addRelationshipData(
                 )
             ),
             addRelationshipData(node.children, context, relationships, componentBlocks),
-          ]);
+          ])
           return {
             ...node,
             props,
             children,
-          };
+          }
         }
       }
       if ('children' in node && Array.isArray(node.children)) {
@@ -70,26 +70,26 @@ export function addRelationshipData(
             relationships,
             componentBlocks
           ),
-        };
+        }
       }
-      return node;
+      return node
     })
-  );
+  )
 }
 
-export async function fetchRelationshipData(
+export async function fetchRelationshipData (
   context: KeystoneContext,
   listKey: string,
   many: boolean,
   selection: string,
   data: any
 ) {
-  if (!many) return fetchDataForOne(context, listKey, selection, data);
+  if (!many) return fetchDataForOne(context, listKey, selection, data)
 
-  const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
-  if (!ids.length) return [];
+  const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : []
+  if (!ids.length) return []
 
-  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
+  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey]
   const val = (await context.graphql.run({
     query: `query($ids: [ID!]!) {items:${
       context.gqlNames(listKey).listQueryName
@@ -97,26 +97,26 @@ export async function fetchRelationshipData(
       selection || ''
     }}}`,
     variables: { ids },
-  })) as { items: { [idFieldAlias]: string | number; [labelFieldAlias]: string }[] };
+  })) as { items: { [idFieldAlias]: string | number, [labelFieldAlias]: string }[] }
 
   return Array.isArray(val.items)
     ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
-        return { id, label, data };
+        return { id, label, data }
       })
-    : [];
+    : []
 }
 
-async function fetchDataForOne(
+async function fetchDataForOne (
   context: KeystoneContext,
   listKey: string,
   selection: string,
   data: any
 ): Promise<RelationshipData | null> {
   // Single related item
-  const id = data?.id;
-  if (id == null) return null;
+  const id = data?.id
+  if (id == null) return null
 
-  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
+  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey]
 
   // An exception here indicates something wrong with either the system or the
   // configuration (e.g. a bad selection field). These will surface as system
@@ -126,7 +126,7 @@ async function fetchDataForOne(
       context.gqlNames(listKey).itemQueryName
     }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
     variables: { id },
-  })) as { item: Record<string, any> | null };
+  })) as { item: Record<string, any> | null }
 
   if (val.item === null) {
     if (!process.env.TEST_ADAPTER) {
@@ -134,22 +134,22 @@ async function fetchDataForOne(
       // then simply return { id } and leave `label` and `data` undefined.
       console.error(
         `Unable to fetch relationship data: listKey: ${listKey}, many: false, selection: ${selection}, id: ${id} `
-      );
+      )
     }
-    return { id, data: undefined, label: undefined };
+    return { id, data: undefined, label: undefined }
   }
 
   return {
     id,
     label: val.item[labelFieldAlias],
     data: (() => {
-      const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
-      return otherData;
+      const { [labelFieldAlias]: _ignore, ...otherData } = val.item
+      return otherData
     })(),
-  };
+  }
 }
 
-export async function addRelationshipDataToComponentProps(
+export async function addRelationshipDataToComponentProps (
   schema: ComponentSchema,
   val: any,
   fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
@@ -157,10 +157,10 @@ export async function addRelationshipDataToComponentProps(
   switch (schema.kind) {
     case 'child':
     case 'form': {
-      return val;
+      return val
     }
     case 'relationship': {
-      return fetchData(schema, val);
+      return fetchData(schema, val)
     }
     case 'object': {
       return Object.fromEntries(
@@ -177,7 +177,7 @@ export async function addRelationshipDataToComponentProps(
               : await addRelationshipDataToComponentProps(schema.fields[key], val[key], fetchData),
           ])
         )
-      );
+      )
     }
     case 'conditional': {
       return {
@@ -187,17 +187,17 @@ export async function addRelationshipDataToComponentProps(
           val.value,
           fetchData
         ),
-      };
+      }
     }
     case 'array': {
       return await Promise.all(
         (val as any[]).map(async innerVal =>
           addRelationshipDataToComponentProps(schema.element, innerVal, fetchData)
         )
-      );
+      )
     }
   }
-  assertNever(schema);
+  assertNever(schema)
 }
 
 const document = parse(`
@@ -211,9 +211,9 @@ const document = parse(`
       }
     }
   }
-`);
+`)
 
-export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists(
+export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists (
   schema: GraphQLSchema
 ): Record<string, string> {
   const { data, errors } = executeSync({
@@ -221,10 +221,10 @@ export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForList
     document,
     contextValue: { isAdminUIBuildProcess: true },
   }) as ExecutionResult<{
-    keystone: { adminMeta: { lists: { key: string; labelField: string }[] } };
-  }>;
+    keystone: { adminMeta: { lists: { key: string, labelField: string }[] } }
+  }>
   if (errors?.length) {
-    throw errors[0];
+    throw errors[0]
   }
-  return Object.fromEntries(data!.keystone.adminMeta.lists.map(x => [x.key, x.labelField]));
-});
+  return Object.fromEntries(data!.keystone.adminMeta.lists.map(x => [x.key, x.labelField]))
+})

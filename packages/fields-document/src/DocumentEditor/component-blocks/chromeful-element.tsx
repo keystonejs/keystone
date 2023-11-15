@@ -1,38 +1,38 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { ReactNode, useMemo, useState, useCallback, Fragment } from 'react';
-import { RenderElementProps, useSelected } from 'slate-react';
-import { Stack } from '@keystone-ui/core';
-import { Button as KeystoneUIButton } from '@keystone-ui/button';
-import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { type ReactNode, useMemo, useState, useCallback, Fragment } from 'react'
+import { type RenderElementProps, useSelected } from 'slate-react'
+import { Stack } from '@keystone-ui/core'
+import { Button as KeystoneUIButton } from '@keystone-ui/button'
+import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives'
 import {
-  PreviewPropsForToolbar,
-  ObjectField,
-  ComponentSchema,
-  ComponentBlock,
+  type PreviewPropsForToolbar,
+  type ObjectField,
+  type ComponentSchema,
+  type ComponentBlock,
   NotEditable,
-} from './api';
-import { clientSideValidateProp } from './utils';
-import { GenericPreviewProps } from './api';
+} from './api'
+import { clientSideValidateProp } from './utils'
+import { type GenericPreviewProps } from './api'
 import {
   FormValueContentFromPreviewProps,
-  NonChildFieldComponentSchema,
-} from './form-from-preview';
+  type NonChildFieldComponentSchema,
+} from './form-from-preview'
 
-export function ChromefulComponentBlockElement(props: {
-  children: ReactNode;
-  renderedBlock: ReactNode;
-  componentBlock: ComponentBlock & { chromeless?: false };
-  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>;
-  elementProps: Record<string, unknown>;
-  onRemove: () => void;
-  attributes: RenderElementProps['attributes'];
+export function ChromefulComponentBlockElement (props: {
+  children: ReactNode
+  renderedBlock: ReactNode
+  componentBlock: ComponentBlock & { chromeless?: false }
+  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>
+  elementProps: Record<string, unknown>
+  onRemove: () => void
+  attributes: RenderElementProps['attributes']
 }) {
-  const selected = useSelected();
-  const { colors, fields, spacing, typography } = useTheme();
+  const selected = useSelected()
+  const { colors, fields, spacing, typography } = useTheme()
 
   const isValid = useMemo(
     () =>
@@ -42,17 +42,17 @@ export function ChromefulComponentBlockElement(props: {
       ),
 
     [props.componentBlock, props.elementProps]
-  );
+  )
 
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(false)
   const onCloseEditMode = useCallback(() => {
-    setEditMode(false);
-  }, []);
+    setEditMode(false)
+  }, [])
   const onShowEditMode = useCallback(() => {
-    setEditMode(true);
-  }, []);
+    setEditMode(true)
+  }, [])
 
-  const ChromefulToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithChrome;
+  const ChromefulToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithChrome
   return (
     <div
       {...props.attributes}
@@ -108,25 +108,25 @@ export function ChromefulComponentBlockElement(props: {
         </Fragment>
       )}
     </div>
-  );
+  )
 }
 
-function DefaultToolbarWithChrome({
+function DefaultToolbarWithChrome ({
   onShowEditMode,
   onRemove,
   isValid,
 }: {
-  onShowEditMode(): void;
-  onRemove(): void;
-  props: any;
-  isValid: boolean;
+  onShowEditMode(): void
+  onRemove(): void
+  props: any
+  isValid: boolean
 }) {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <ToolbarGroup as={NotEditable} marginTop="small">
       <ToolbarButton
         onClick={() => {
-          onShowEditMode();
+          onShowEditMode()
         }}
       >
         Edit
@@ -137,7 +137,7 @@ function DefaultToolbarWithChrome({
           <ToolbarButton
             variant="destructive"
             onClick={() => {
-              onRemove();
+              onRemove()
             }}
             {...attrs}
           >
@@ -161,19 +161,19 @@ function DefaultToolbarWithChrome({
         </Fragment>
       )}
     </ToolbarGroup>
-  );
+  )
 }
 
-function FormValue({
+function FormValue ({
   onClose,
   props,
   isValid,
 }: {
-  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>;
-  onClose(): void;
-  isValid: boolean;
+  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>
+  onClose(): void
+  isValid: boolean
 }) {
-  const [forceValidation, setForceValidation] = useState(false);
+  const [forceValidation, setForceValidation] = useState(false)
 
   return (
     <Stack gap="xlarge" contentEditable={false}>
@@ -184,14 +184,14 @@ function FormValue({
         weight="bold"
         onClick={() => {
           if (isValid) {
-            onClose();
+            onClose()
           } else {
-            setForceValidation(true);
+            setForceValidation(true)
           }
         }}
       >
         Done
       </KeystoneUIButton>
     </Stack>
-  );
+  )
 }

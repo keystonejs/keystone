@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { type HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../../lib/media';
-import { Quote as QuoteIcon } from '../icons/Quote';
-import { Type } from '../primitives/Type';
-import { Section } from './Section';
+import { useMediaQuery } from '../../lib/media'
+import { Quote as QuoteIcon } from '../icons/Quote'
+import { Type } from '../primitives/Type'
+import { Section } from './Section'
 
 type QuoteProps = {
-  name: string;
-  title?: string;
-  img: any;
-  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6';
-} & HTMLAttributes<HTMLElement>;
+  name: string
+  title?: string
+  img: any
+  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6'
+} & HTMLAttributes<HTMLElement>
 
-export function Quote({ name, title, img, grad, children, ...props }: QuoteProps) {
-  const mq = useMediaQuery();
+export function Quote ({ name, title, img, grad, children, ...props }: QuoteProps) {
+  const mq = useMediaQuery()
 
   return (
     <Section>
@@ -70,5 +70,5 @@ export function Quote({ name, title, img, grad, children, ...props }: QuoteProps
         </div>
       </div>
     </Section>
-  );
+  )
 }

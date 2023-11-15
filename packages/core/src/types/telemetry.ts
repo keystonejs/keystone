@@ -1,26 +1,26 @@
-import type { DatabaseProvider } from './core';
+import type { DatabaseProvider } from './core'
 
 export type Telemetry = {
-  informedAt: string | null;
+  informedAt: string | null
   device: {
-    lastSentDate: string | null;
-  };
+    lastSentDate: string | null
+  }
   projects: Partial<{
     [projectPath: string]: {
-      lastSentDate: string;
-    };
-  }>;
-};
+      lastSentDate: string
+    }
+  }>
+}
 
 export type Configuration = {
-  telemetry?: undefined | false | Telemetry;
-};
+  telemetry?: undefined | false | Telemetry
+}
 
 export type Device = {
-  previous: string | null; // new Date().toISOString().slice(0, 10)
-  os: string; // `linux` | `darwin` | `windows` | ... // os.platform()
-  node: string; // `14` | ... | `18` // process.version.split('.').shift().slice(1)
-};
+  previous: string | null // new Date().toISOString().slice(0, 10)
+  os: string // `linux` | `darwin` | `windows` | ... // os.platform()
+  node: string // `14` | ... | `18` // process.version.split('.').shift().slice(1)
+}
 
 export type PackageName =
   | '@keystone-6/core'
@@ -28,10 +28,10 @@ export type PackageName =
   | '@keystone-6/fields-document'
   | '@keystone-6/cloudinary'
   | '@keystone-6/session-store-redis'
-  | '@opensaas/keystone-nextjs-auth';
+  | '@opensaas/keystone-nextjs-auth'
 
 export type Project = {
-  previous: string | null; // new Date().toISOString().slice(0, 10)
+  previous: string | null // new Date().toISOString().slice(0, 10)
   // omitted uuid for <BII
   // omitted anything GraphQL related <BII
 
@@ -39,11 +39,11 @@ export type Project = {
   // - `@keystone-6`
   // - `@opensaas`
   // - ...
-  versions: Partial<Record<PackageName, string>>;
-  lists: number;
-  database: DatabaseProvider;
+  versions: Partial<Record<PackageName, string>>
+  lists: number
+  database: DatabaseProvider
   // uses a new `field.__ksTelemetryFieldTypeName` for the key, defaults to `unknown`
   fields: {
-    [key: string]: number;
-  };
-};
+    [key: string]: number
+  }
+}

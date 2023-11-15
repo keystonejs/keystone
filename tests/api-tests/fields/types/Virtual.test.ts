@@ -1,10 +1,10 @@
-import { integer, relationship, text, virtual } from '@keystone-6/core/fields';
-import { BaseFields, list, graphql } from '@keystone-6/core';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from '../../utils';
+import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
+import { type BaseFields, list, graphql } from '@keystone-6/core'
+import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from '../../utils'
 
-function makeRunner(fields: BaseFields<any>) {
+function makeRunner (fields: BaseFields<any>) {
   return setupTestRunner({
     config: testConfig({
       lists: {
@@ -17,7 +17,7 @@ function makeRunner(fields: BaseFields<any>) {
         }),
       },
     }),
-  });
+  })
 }
 
 describe('Virtual field type', () => {
@@ -27,8 +27,8 @@ describe('Virtual field type', () => {
       foo: virtual({
         field: graphql.field({
           type: graphql.Int,
-          resolve() {
-            return 42;
+          resolve () {
+            return 42
           },
         }),
       }),
@@ -36,11 +36,11 @@ describe('Virtual field type', () => {
       const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo',
-      });
-      expect(data.value).toEqual(1);
-      expect(data.foo).toEqual(42);
+      })
+      expect(data.value).toEqual(1)
+      expect(data.foo).toEqual(42)
     })
-  );
+  )
 
   test(
     'args',
@@ -59,11 +59,11 @@ describe('Virtual field type', () => {
       const data = await context.query.Post.createOne({
         data: { value: 1 },
         query: 'value foo(x: 10, y: 20)',
-      });
-      expect(data.value).toEqual(1);
-      expect(data.foo).toEqual(200);
+      })
+      expect(data.value).toEqual(1)
+      expect(data.foo).toEqual(200)
     })
-  );
+  )
 
   test(
     'referencing other list type',
@@ -97,7 +97,7 @@ describe('Virtual field type', () => {
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
-                    async resolve(rootVal, args, context) {
+                    async resolve (rootVal, args, context) {
                       const [personAuthors, organisationAuthors] = await Promise.all([
                         context.db.Person.findMany({
                           where: {
@@ -109,12 +109,12 @@ describe('Virtual field type', () => {
                             authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
                           },
                         }),
-                      ]);
+                      ])
                       if (personAuthors.length) {
-                        return { __typename: 'Person', ...personAuthors[0] };
+                        return { __typename: 'Person', ...personAuthors[0] }
                       }
                       if (organisationAuthors.length) {
-                        return { __typename: 'Organisation', ...organisationAuthors[0] };
+                        return { __typename: 'Organisation', ...organisationAuthors[0] }
                       }
                     },
                   }),
@@ -137,9 +137,9 @@ describe('Virtual field type', () => {
                   }
                 }
               `,
-      });
-      expect(data.author.name).toEqual('person author');
-      expect(data.author.__typename).toEqual('Person');
+      })
+      expect(data.author.name).toEqual('person author')
+      expect(data.author.__typename).toEqual('Person')
       const data2 = await context.query.Post.createOne({
         data: { organisationAuthor: { create: { name: 'organisation author' } } },
         query: `
@@ -153,11 +153,11 @@ describe('Virtual field type', () => {
                   }
                 }
               `,
-      });
-      expect(data2.author.name).toEqual('organisation author');
-      expect(data2.author.__typename).toEqual('Organisation');
+      })
+      expect(data2.author.name).toEqual('organisation author')
+      expect(data2.author.__typename).toEqual('Organisation')
     })
-  );
+  )
 
   test("errors when a non leaf type is used but the field isn't hidden in the Admin UI and ui.query isn't provided", async () => {
     await expect(
@@ -191,6 +191,6 @@ describe('Virtual field type', () => {
                 virtual\${ui.query}
               }
             }]
-          `);
-  });
-});
+          `)
+  })
+})

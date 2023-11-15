@@ -1,40 +1,40 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, useState, ReactNode, SyntheticEvent, HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import { Fragment, useState, type ReactNode, type SyntheticEvent, type HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../lib/media';
-import { Button } from './primitives/Button';
-import { Field } from './primitives/Field';
-import { Stack } from './primitives/Stack';
+import { useMediaQuery } from '../lib/media'
+import { Button } from './primitives/Button'
+import { Field } from './primitives/Field'
+import { Stack } from './primitives/Stack'
 
 const validEmail = (email: string) =>
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
     email
-  );
+  )
 
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
 
 type SubscriptFormProps = {
-  autoFocus?: boolean;
-  children: ReactNode;
-  stacked?: boolean;
-} & HTMLAttributes<HTMLFormElement>;
+  autoFocus?: boolean
+  children: ReactNode
+  stacked?: boolean
+} & HTMLAttributes<HTMLFormElement>
 
-export function SubscribeForm({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const mq = useMediaQuery();
+export function SubscribeForm ({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const mq = useMediaQuery()
 
   const onSubmit = (event: SyntheticEvent) => {
-    event.preventDefault();
-    setError(null);
+    event.preventDefault()
+    setError(null)
     // Check if user wants to subscribe.
     // and there's a valid email address.
     // Basic validation check on the email?
-    setLoading(true);
+    setLoading(true)
     if (validEmail(email)) {
       // if good add email to mailing list
       // and redirect to dashboard.
@@ -54,25 +54,25 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
             // any status that isn't 200 we assume is a failure
             // which we want to surface to the user
             res.json().then(({ error }) => {
-              setError(error);
-              setLoading(false);
-            });
+              setError(error)
+              setLoading(false)
+            })
           } else {
-            setFormSubmitted(true);
+            setFormSubmitted(true)
           }
         })
         .catch(err => {
           // network errors or failed parse
-          setError(err.toString());
-          setLoading(false);
-        });
+          setError(err.toString())
+          setLoading(false)
+        })
     } else {
-      setLoading(false);
+      setLoading(false)
       // if email fails validation set error message
-      setError('Please enter a valid email');
-      return;
+      setError('Please enter a valid email')
+      return
     }
-  };
+  }
 
   return !formSubmitted ? (
     <Fragment>
@@ -106,5 +106,5 @@ export function SubscribeForm({ autoFocus, stacked, children, ...props }: Subscr
     </Fragment>
   ) : (
     <p>❤️ Thank you for subscribing!</p>
-  );
+  )
 }

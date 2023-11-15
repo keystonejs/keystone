@@ -1,15 +1,15 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Node } from 'slate';
-import { component, fields } from '../../component-blocks';
-import { makeEditor, jsx } from '../tests/utils';
-import { Children } from '../tests/jsx/namespace';
-import { ChildField } from './api';
+import { type Node } from 'slate'
+import { component, fields } from '../../component-blocks'
+import { makeEditor, jsx } from '../tests/utils'
+import { type Children } from '../tests/jsx/namespace'
+import { type ChildField } from './api'
 
 const cases: Record<
   string,
-  { schema: ChildField; children: Node | Node[]; expectedNormalized?: Node }
+  { schema: ChildField, children: Node | Node[], expectedNormalized?: Node }
 > = {
   'mark where it should not exist in inline': {
     schema: fields.child({ kind: 'inline', placeholder: '' }),
@@ -219,14 +219,14 @@ const cases: Record<
       </paragraph>
     ),
   },
-};
+}
 
-function makeEditorWithChildField(
+function makeEditorWithChildField (
   childField: ChildField,
   children: Children,
   normalization: 'disallow-non-normalized' | 'normalize' | 'skip' = 'disallow-non-normalized'
 ) {
-  const Prop = `component-${childField.options.kind}-prop` as const;
+  const Prop = `component-${childField.options.kind}-prop` as const
   return makeEditor(
     <editor>
       <component-block component={'comp'} props={{ child: null }}>
@@ -249,18 +249,18 @@ function makeEditorWithChildField(
         },
       },
     }
-  );
+  )
 }
 
 Object.keys(cases).forEach(key => {
-  const testCase = cases[key];
+  const testCase = cases[key]
   test(key, () => {
-    const Prop = `component-${testCase.schema.options.kind}-prop` as const;
+    const Prop = `component-${testCase.schema.options.kind}-prop` as const
     let editor = makeEditorWithChildField(
       testCase.schema,
       testCase.children,
       testCase.expectedNormalized === undefined ? 'disallow-non-normalized' : 'normalize'
-    );
+    )
     if (testCase.expectedNormalized !== undefined) {
       expect(editor).toEqualEditor(
         makeEditor(
@@ -273,10 +273,10 @@ Object.keys(cases).forEach(key => {
             </paragraph>
           </editor>
         )
-      );
+      )
     }
-  });
-});
+  })
+})
 
 test('mark disabled in inline prop', () => {
   const editor = makeEditorWithChildField(
@@ -285,8 +285,8 @@ test('mark disabled in inline prop', () => {
       **thing*
       <cursor />
     </text>
-  );
-  editor.insertText('*');
+  )
+  editor.insertText('*')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -314,8 +314,8 @@ test('mark disabled in inline prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('mark enabled in inline prop', () => {
   const editor = makeEditorWithChildField(
@@ -324,8 +324,8 @@ test('mark enabled in inline prop', () => {
       **thing*
       <cursor />
     </text>
-  );
-  editor.insertText('*');
+  )
+  editor.insertText('*')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -355,8 +355,8 @@ test('mark enabled in inline prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('mark disabled in block prop', () => {
   const editor = makeEditorWithChildField(
@@ -367,8 +367,8 @@ test('mark disabled in block prop', () => {
         <cursor />
       </text>
     </paragraph>
-  );
-  editor.insertText('*');
+  )
+  editor.insertText('*')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -398,8 +398,8 @@ test('mark disabled in block prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('mark enabled in block prop', () => {
   const editor = makeEditorWithChildField(
@@ -410,8 +410,8 @@ test('mark enabled in block prop', () => {
         <cursor />
       </text>
     </paragraph>
-  );
-  editor.insertText('*');
+  )
+  editor.insertText('*')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -443,8 +443,8 @@ test('mark enabled in block prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('heading disabled in block prop', () => {
   const editor = makeEditorWithChildField(
@@ -455,8 +455,8 @@ test('heading disabled in block prop', () => {
         <cursor />
       </text>
     </paragraph>
-  );
-  editor.insertText(' ');
+  )
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -486,8 +486,8 @@ test('heading disabled in block prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('heading enabled in block prop', () => {
   const editor = makeEditorWithChildField(
@@ -498,8 +498,8 @@ test('heading enabled in block prop', () => {
         <cursor />
       </text>
     </paragraph>
-  );
-  editor.insertText(' ');
+  )
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -530,5 +530,5 @@ test('heading enabled in block prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

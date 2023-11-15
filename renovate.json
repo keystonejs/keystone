@@ -6,12 +6,6 @@
   "prConcurrentLimit": 0,
   "prHourlyLimit": 3,
   "baseBranches": ["main"],
-  "packageRules": [
-    {
-      "packagePatterns": ["remark", "react-day-picker", "^slate"],
-      "enabled": false
-    }
-  ],
   "rangeStrategy": "replace",
   "schedule": ["before 7am on Tuesday", "before 7am on Wednesday"],
   "timezone": "Australia/Sydney",

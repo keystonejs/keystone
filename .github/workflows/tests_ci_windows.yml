@@ -8,16 +8,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linting:
-    name: Linting
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
-
-      - name: TypeScript
-        run: pnpm lint:types
-
   unit_tests:
     name: Package Unit Tests
     runs-on: windows-latest

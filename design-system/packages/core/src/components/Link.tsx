@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '../emotion';
-import { useTheme } from '../theme';
-import { forwardRefWithAs } from '../utils';
+import { jsx } from '../emotion'
+import { useTheme } from '../theme'
+import { forwardRefWithAs } from '../utils'
 
 export const Link = forwardRefWithAs<'a', {}>(({ as: Tag = 'a', ...props }, ref) => {
-  const { typography, colors } = useTheme();
+  const { typography, colors } = useTheme()
 
   const styles = {
     color: colors.linkColor,
@@ -18,7 +18,7 @@ export const Link = forwardRefWithAs<'a', {}>(({ as: Tag = 'a', ...props }, ref)
       color: colors.linkHoverColor,
       textDecoration: 'underline',
     },
-  };
+  }
 
-  return <Tag css={styles} ref={ref} {...props} />;
-});
+  return <Tag css={styles} ref={ref} {...props} />
+})

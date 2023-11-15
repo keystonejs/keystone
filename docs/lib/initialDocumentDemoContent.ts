@@ -265,4 +265,4 @@ export const initialContent = [
       },
     ],
   },
-];
+]

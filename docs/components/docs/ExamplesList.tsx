@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Well } from '../primitives/Well';
-import { useMediaQuery } from '../../lib/media';
-import { InlineCode } from '../../components/primitives/Code';
+import { Well } from '../primitives/Well'
+import { useMediaQuery } from '../../lib/media'
+import { InlineCode } from '../../components/primitives/Code'
 
-export function Examples() {
-  const mq = useMediaQuery();
+export function Examples () {
+  const mq = useMediaQuery()
   return (
     <div
       css={mq({
@@ -156,5 +156,5 @@ export function Examples() {
         Example to demonstrate customisation of Keystone's document field and document renderer.
       </Well>
     </div>
-  );
+  )
 }

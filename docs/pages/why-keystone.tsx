@@ -1,44 +1,44 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { useMediaQuery } from '../lib/media';
-import { Highlight } from '../components/primitives/Highlight';
-import { Relationship } from '../components/icons/Relationship';
-import { WhyKeystone } from '../components/icons/WhyKeystone';
-import { MWrapper } from '../components/content/MWrapper';
-import { TweetBox } from '../components/content/TweetBox';
-import { Typescript } from '../components/icons/Typescript';
-import { Automated } from '../components/icons/Automated';
-import { Migration } from '../components/icons/Migration';
-import { Section } from '../components/content/Section';
-import { Button } from '../components/primitives/Button';
-import { AdvancedReactCta } from '../components/content/AdvancedReactCta';
-import { EndCta } from '../components/content/EndCta';
-import { Emoji } from '../components/primitives/Emoji';
-import { Updates } from '../components/icons/Updates';
-import { Quote } from '../components/content/Quote';
-import { Type } from '../components/primitives/Type';
-import { ArrowR } from '../components/icons/ArrowR';
-import { Code } from '../components/icons/Code';
-import { Content } from '../components/icons/Content';
-import { Organization } from '../components/icons/Organization';
-import { Custom } from '../components/icons/Custom';
-import { Editor } from '../components/icons/Editor';
-import { Filter } from '../components/icons/Filter';
-import { Pill } from '../components/content/Pill';
-import { Shield } from '../components/icons/Shield';
-import { Watch } from '../components/icons/Watch';
-import { Cli } from '../components/icons/Cli';
-import { Page } from '../components/Page';
-import { IntroHeading } from '../components/content/Intro';
+import { useMediaQuery } from '../lib/media'
+import { Highlight } from '../components/primitives/Highlight'
+import { Relationship } from '../components/icons/Relationship'
+import { WhyKeystone } from '../components/icons/WhyKeystone'
+import { MWrapper } from '../components/content/MWrapper'
+import { TweetBox } from '../components/content/TweetBox'
+import { Typescript } from '../components/icons/Typescript'
+import { Automated } from '../components/icons/Automated'
+import { Migration } from '../components/icons/Migration'
+import { Section } from '../components/content/Section'
+import { Button } from '../components/primitives/Button'
+import { AdvancedReactCta } from '../components/content/AdvancedReactCta'
+import { EndCta } from '../components/content/EndCta'
+import { Emoji } from '../components/primitives/Emoji'
+import { Updates } from '../components/icons/Updates'
+import { Quote } from '../components/content/Quote'
+import { Type } from '../components/primitives/Type'
+import { ArrowR } from '../components/icons/ArrowR'
+import { Code } from '../components/icons/Code'
+import { Content } from '../components/icons/Content'
+import { Organization } from '../components/icons/Organization'
+import { Custom } from '../components/icons/Custom'
+import { Editor } from '../components/icons/Editor'
+import { Filter } from '../components/icons/Filter'
+import { Pill } from '../components/content/Pill'
+import { Shield } from '../components/icons/Shield'
+import { Watch } from '../components/icons/Watch'
+import { Cli } from '../components/icons/Cli'
+import { Page } from '../components/Page'
+import { IntroHeading } from '../components/content/Intro'
 
-import adminUi from '../public/assets/admin-ui.png';
+import adminUi from '../public/assets/admin-ui.png'
 
-export default function WhyKeystonePage() {
-  const mq = useMediaQuery();
+export default function WhyKeystonePage () {
+  const mq = useMediaQuery()
 
   return (
     <Page
@@ -618,5 +618,5 @@ export default function WhyKeystonePage() {
         <EndCta grad="grad2" />
       </MWrapper>
     </Page>
-  );
+  )
 }

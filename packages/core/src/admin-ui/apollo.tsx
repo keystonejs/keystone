@@ -3,4 +3,4 @@
  * packages import the same instance of apollo.
  */
 
-export * from '@apollo/client';
+export * from '@apollo/client'

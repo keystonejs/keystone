@@ -14,13 +14,13 @@
   "dependencies": {
     "@keystone-6/core": "^5.7.0",
     "@prisma/client": "^4.16.2",
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
     "@ts-gql/compiler": "^0.15.3",
     "@ts-gql/eslint-plugin": "^0.9.0",
     "@ts-gql/tag": "^0.7.0",
     "eslint": "^8.0.0",
-    "graphql": "^16.8.1"
-  },
-  "devDependencies": {
     "prisma": "^4.16.2",
     "typescript": "~5.0.0"
   },

@@ -1,29 +1,29 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { useState, useEffect, HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { useState, useEffect, type HTMLAttributes } from 'react'
 
-import { Loading } from './Loading';
-import { Type } from './Type';
+import { Loading } from './Loading'
+import { Type } from './Type'
 
 type GitHubButtonProps = {
-  repo: string;
-} & HTMLAttributes<HTMLElement>;
+  repo: string
+} & HTMLAttributes<HTMLElement>
 
-export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
-  const [count, setCount] = useState(0);
-  repo = repo.replace('https://github.com/', '');
+export function GitHubButton ({ repo, ...props }: GitHubButtonProps) {
+  const [count, setCount] = useState(0)
+  repo = repo.replace('https://github.com/', '')
 
   useEffect(() => {
     fetch(`https://api.github.com/repos/${repo}`)
       .then(res => res.json())
       .then(({ stargazers_count }) => {
-        setCount(stargazers_count);
+        setCount(stargazers_count)
       })
       .catch(error => {
-        console.error('Error retrieving stargazing data', error);
-      });
-  });
+        console.error('Error retrieving stargazing data', error)
+      })
+  })
 
   return (
     <div
@@ -94,5 +94,5 @@ export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
         {count ? count.toLocaleString() : <Loading />}
       </Type>
     </div>
-  );
+  )
 }

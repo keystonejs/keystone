@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react'
 
-import { jsx, Box, Center, useTheme } from '@keystone-ui/core';
-import { Head } from '@keystone-6/core/admin-ui/router';
+import { jsx, Box, Center, useTheme } from '@keystone-ui/core'
+import { Head } from '@keystone-6/core/admin-ui/router'
 
 type SigninContainerProps = {
-  children: ReactNode;
-  title?: string;
-};
+  children: ReactNode
+  title?: string
+}
 
 export const SigninContainer = ({ children, title }: SigninContainerProps) => {
-  const { colors, shadow } = useTheme();
+  const { colors, shadow } = useTheme()
   return (
     <div>
       <Head>
@@ -40,5 +40,5 @@ export const SigninContainer = ({ children, title }: SigninContainerProps) => {
         </Box>
       </Center>
     </div>
-  );
-};
+  )
+}

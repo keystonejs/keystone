@@ -1,18 +1,18 @@
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
+  type FieldTypeFunc,
+  type CommonFieldConfig,
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
 
-type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>;
+type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>
 
 type PairInput = {
-  left: string | null | undefined;
-  right: string | null | undefined;
-};
-type PairOutput = PairInput;
+  left: string | null | undefined
+  right: string | null | undefined
+}
+type PairOutput = PairInput
 
 const PairInput = graphql.inputObject({
   name: 'PairJsonInput',
@@ -20,7 +20,7 @@ const PairInput = graphql.inputObject({
     left: graphql.arg({ type: graphql.String }),
     right: graphql.arg({ type: graphql.String }),
   },
-});
+})
 
 const PairOutput = graphql.object<PairOutput>()({
   name: 'PairJsonOutput',
@@ -28,7 +28,7 @@ const PairOutput = graphql.object<PairOutput>()({
     left: graphql.field({ type: graphql.String }),
     right: graphql.field({ type: graphql.String }),
   },
-});
+})
 
 const PairFilter = graphql.inputObject({
   name: 'PairJsonFilter',
@@ -37,31 +37,31 @@ const PairFilter = graphql.inputObject({
       type: PairInput,
     }),
   },
-});
+})
 
-export function pair<ListTypeInfo extends BaseListTypeInfo>(
+export function pair<ListTypeInfo extends BaseListTypeInfo> (
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  function resolveInput(value: PairInput | null | undefined) {
-    if (value === undefined) return undefined;
-    const { left = null, right = null } = value ?? {};
-    return JSON.stringify({ left, right });
+  function resolveInput (value: PairInput | null | undefined) {
+    if (value === undefined) return undefined
+    const { left = null, right = null } = value ?? {}
+    return JSON.stringify({ left, right })
   }
 
-  function resolveOutput(value: string | null) {
-    if (value === null) return { left: null, right: null };
-    return JSON.parse(value) as PairOutput;
+  function resolveOutput (value: string | null) {
+    if (value === null) return { left: null, right: null }
+    return JSON.parse(value) as PairOutput
   }
 
-  function resolveWhere(value: null | { equals: PairInput | null | undefined }) {
+  function resolveWhere (value: null | { equals: PairInput | null | undefined }) {
     if (value === null) {
-      throw new Error('PairFilter cannot be null');
+      throw new Error('PairFilter cannot be null')
     }
     if (value.equals === undefined) {
-      return {};
+      return {}
     }
-    const json = resolveInput(value.equals);
-    return { equals: json };
+    const json = resolveInput(value.equals)
+    return { equals: json }
   }
 
   return meta =>
@@ -76,32 +76,32 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         where: {
           arg: graphql.arg({ type: PairFilter }),
-          resolve(value, context) {
-            return resolveWhere(value);
+          resolve (value, context) {
+            return resolveWhere(value)
           },
         },
         create: {
           arg: graphql.arg({ type: PairInput }),
-          resolve(value, context) {
-            return resolveInput(value);
+          resolve (value, context) {
+            return resolveInput(value)
           },
         },
         update: {
           arg: graphql.arg({ type: PairInput }),
-          resolve(value, context) {
-            return resolveInput(value);
+          resolve (value, context) {
+            return resolveInput(value)
           },
         },
       },
       output: graphql.field({
         type: PairOutput,
-        resolve({ value, item }, args, context, info) {
-          return resolveOutput(value);
+        resolve ({ value, item }, args, context, info) {
+          return resolveOutput(value)
         },
       }),
       views: './3-pair-field-json/views',
-      getAdminMeta() {
-        return {};
+      getAdminMeta () {
+        return {}
       },
-    });
+    })
 }

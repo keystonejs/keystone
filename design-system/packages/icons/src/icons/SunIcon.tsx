@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const SunIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={12} r={5} />
@@ -13,4 +13,4 @@ export const SunIcon = createIcon(
     <line x1={18.36} y1={5.64} x2={19.78} y2={4.22} />
   </React.Fragment>,
   'SunIcon'
-);
+)

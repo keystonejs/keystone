@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { Options, CheckMark } from '@keystone-ui/options';
-import { ComponentProps, useState } from 'react';
+import { jsx } from '@keystone-ui/core'
+import { Options, CheckMark } from '@keystone-ui/options'
+import { type ComponentProps, useState } from 'react'
 
-import { Page } from '../../components/Page';
+import { Page } from '../../components/Page'
 
 const props: ComponentProps<typeof CheckMark>[] = [
   {},
@@ -14,18 +14,18 @@ const props: ComponentProps<typeof CheckMark>[] = [
   { isDisabled: true, isSelected: true },
   { isFocused: true, isSelected: true },
   { isSelected: true },
-];
+]
 
-export default function OptionsPage() {
-  let [value, setValue] = useState<undefined | { label: string; value: string }>();
+export default function OptionsPage () {
+  let [value, setValue] = useState<undefined | { label: string, value: string }>()
   return (
     <Page>
       <h1>Options</h1>
       <Options
         value={value}
         onChange={value => {
-          console.log(value);
-          setValue(value as { label: string; value: string });
+          console.log(value)
+          setValue(value as { label: string, value: string })
         }}
         options={[
           {
@@ -62,5 +62,5 @@ export default function OptionsPage() {
         </div>
       ))}
     </Page>
-  );
+  )
 }

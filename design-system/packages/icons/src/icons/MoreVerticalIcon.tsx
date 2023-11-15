@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const MoreVerticalIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={12} r={1} />
@@ -7,4 +7,4 @@ export const MoreVerticalIcon = createIcon(
     <circle cx={12} cy={19} r={1} />
   </React.Fragment>,
   'MoreVerticalIcon'
-);
+)

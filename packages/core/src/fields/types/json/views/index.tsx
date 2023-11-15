@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields';
+import { jsx, Stack, Text } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-  JSONValue,
-} from '../../../../types';
-import { CellContainer, CellLink } from '../../../../admin-ui/components';
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+  type JSONValue,
+} from '../../../../types'
+import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
 export const Field = ({
   field,
@@ -53,14 +53,14 @@ export const Field = ({
         )}
       </Stack>
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  let value = item[field.path] + ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -68,10 +68,10 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
-type Config = FieldControllerConfig<{ defaultValue: JSONValue }>;
+type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
 
 export const controller = (config: Config): FieldController<string, string> => {
   return {
@@ -84,27 +84,27 @@ export const controller = (config: Config): FieldController<string, string> => {
         ? ''
         : JSON.stringify(config.fieldMeta.defaultValue, null, 2),
     validate: value => {
-      if (!value) return true;
+      if (!value) return true
       try {
-        JSON.parse(value);
-        return true;
+        JSON.parse(value)
+        return true
       } catch (e) {
-        return false;
+        return false
       }
     },
     deserialize: data => {
-      const value = data[config.path];
+      const value = data[config.path]
       // null is equivalent to Prisma.DbNull, and we show that as an empty input
-      if (value === null) return '';
-      return JSON.stringify(value, null, 2);
+      if (value === null) return ''
+      return JSON.stringify(value, null, 2)
     },
     serialize: value => {
-      if (!value) return { [config.path]: null };
+      if (!value) return { [config.path]: null }
       try {
-        return { [config.path]: JSON.parse(value) };
+        return { [config.path]: JSON.parse(value) }
       } catch (e) {
-        return { [config.path]: undefined };
+        return { [config.path]: undefined }
       }
     },
-  };
-};
+  }
+}

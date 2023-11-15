@@ -1,26 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from '@keystone-6/fields-document/primitives';
-import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon';
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
-import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
-import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
-import { Tooltip } from '@keystone-ui/tooltip';
+} from '@keystone-6/fields-document/primitives'
+import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
+import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
+import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
+import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Tooltip } from '@keystone-ui/tooltip'
 
 const calloutIconMap = {
   info: InfoIcon,
   error: AlertOctagonIcon,
   warning: AlertTriangleIcon,
   success: CheckCircleIcon,
-};
+}
 
 export const callout = component({
   label: 'Callout',
@@ -45,8 +45,8 @@ export const callout = component({
       relationships: 'inherit',
     }),
   },
-  preview: function Callout(props) {
-    const { palette, radii, spacing } = useTheme();
+  preview: function Callout (props) {
+    const { palette, radii, spacing } = useTheme()
     const intentMap = {
       info: {
         background: palette.blue100,
@@ -68,8 +68,8 @@ export const callout = component({
         foreground: palette.green700,
         icon: calloutIconMap.success,
       },
-    };
-    const intentConfig = intentMap[props.fields.intent.value];
+    }
+    const intentConfig = intentMap[props.fields.intent.value]
 
     return (
       <div
@@ -96,13 +96,13 @@ export const callout = component({
         </NotEditable>
         <div css={{ flex: 1 }}>{props.fields.content.element}</div>
       </div>
-    );
+    )
   },
-  toolbar: function CalloutToolbar({ props, onRemove }) {
+  toolbar: function CalloutToolbar ({ props, onRemove }) {
     return (
       <ToolbarGroup>
         {props.fields.intent.options.map(opt => {
-          const Icon = calloutIconMap[opt.value];
+          const Icon = calloutIconMap[opt.value]
 
           return (
             <Tooltip key={opt.value} content={opt.label} weight="subtle">
@@ -110,7 +110,7 @@ export const callout = component({
                 <ToolbarButton
                   isSelected={props.fields.intent.value === opt.value}
                   onClick={() => {
-                    props.fields.intent.onChange(opt.value);
+                    props.fields.intent.onChange(opt.value)
                   }}
                   {...attrs}
                 >
@@ -118,7 +118,7 @@ export const callout = component({
                 </ToolbarButton>
               )}
             </Tooltip>
-          );
+          )
         })}
 
         <ToolbarSeparator />
@@ -131,6 +131,6 @@ export const callout = component({
           )}
         </Tooltip>
       </ToolbarGroup>
-    );
+    )
   },
-});
+})

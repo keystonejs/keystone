@@ -1,10 +1,10 @@
-import { maybeCacheControlFromInfo } from '@apollo/cache-control-types';
-import { text, relationship, integer } from '@keystone-6/core/fields';
-import { list, graphql } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, ContextFromRunner } from '../utils';
-import { withServer } from '../with-server';
+import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
+import { text, relationship, integer } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, type ContextFromRunner } from '../utils'
+import { withServer } from '../with-server'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -31,15 +31,15 @@ const runner = setupTestRunner({
         graphql: {
           cacheHint: ({ results, operationName, meta }) => {
             if (meta) {
-              return { scope: 'PUBLIC', maxAge: 90 };
+              return { scope: 'PUBLIC', maxAge: 90 }
             }
             if (operationName === 'complexQuery') {
-              return { maxAge: 1 };
+              return { maxAge: 1 }
             }
             if (results.length === 0) {
-              return { maxAge: 5 };
+              return { maxAge: 5 }
             }
-            return { maxAge: 100 };
+            return { maxAge: 100 }
           },
         },
       }),
@@ -51,15 +51,15 @@ const runner = setupTestRunner({
           original: graphql.field({ type: graphql.Int }),
           double: graphql.field({ type: graphql.Int, resolve: ({ original }) => original * 2 }),
         },
-      });
+      })
       return {
         query: {
           double: graphql.field({
             type: MyType,
             args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
             resolve: (_, { x }, context, info) => {
-              maybeCacheControlFromInfo(info)?.setCacheHint({ maxAge: 100, scope: 'PUBLIC' });
-              return { original: x, double: x * 2 };
+              maybeCacheControlFromInfo(info)?.setCacheHint({ maxAge: 100, scope: 'PUBLIC' })
+              return { original: x, double: x * 2 }
             },
           }),
         },
@@ -70,10 +70,10 @@ const runner = setupTestRunner({
             resolve: (_, { x }) => x * 3,
           }),
         },
-      };
+      }
     }),
   }),
-});
+})
 
 const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
   const users = await context.query.User.createMany({
@@ -82,7 +82,7 @@ const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
       { name: 'Johanna', favNumber: 8 },
       { name: 'Sam', favNumber: 5 },
     ],
-  });
+  })
 
   const posts = await context.query.Post.createMany({
     data: [
@@ -93,16 +93,16 @@ const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
         title: 'Three authors',
       },
     ],
-  });
+  })
 
-  return { users, posts };
-};
+  return { users, posts }
+}
 
 describe('cache hints', () => {
   test(
     'users',
     withServer(runner)(async ({ context, graphQLRequest }) => {
-      await addFixtures(context);
+      await addFixtures(context)
 
       // Basic query
       const { body, headers } = await graphQLRequest({
@@ -113,9 +113,9 @@ describe('cache hints', () => {
             }
           }
         `,
-      });
-      expect(body.data).toHaveProperty('users');
-      expect(headers['cache-control']).toBe('max-age=80, public');
+      })
+      expect(body.data).toHaveProperty('users')
+      expect(headers['cache-control']).toBe('max-age=80, public')
 
       // favNumber has the most restrictive hint
       {
@@ -128,19 +128,19 @@ describe('cache hints', () => {
               }
             }
           `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('users');
-        expect(headers['cache-control']).toBe('max-age=10, private');
+        expect(body.data).toHaveProperty('users')
+        expect(headers['cache-control']).toBe('max-age=10, private')
       }
       // Count query
       {
         const { body, headers } = await graphQLRequest({
           query: `query { usersCount }`,
-        });
+        })
 
-        expect(body.data).toHaveProperty('usersCount');
-        expect(headers['cache-control']).toBe('max-age=90, public');
+        expect(body.data).toHaveProperty('usersCount')
+        expect(headers['cache-control']).toBe('max-age=90, public')
       }
       // User post relationship
       {
@@ -154,10 +154,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('users');
-        expect(headers['cache-control']).toBe('max-age=100, public');
+        expect(body.data).toHaveProperty('users')
+        expect(headers['cache-control']).toBe('max-age=100, public')
       }
       // Operation name detected
       {
@@ -169,10 +169,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('users');
-        expect(headers['cache-control']).toBe('max-age=1, public');
+        expect(body.data).toHaveProperty('users')
+        expect(headers['cache-control']).toBe('max-age=1, public')
       }
       // Hint based on query results
       {
@@ -184,18 +184,18 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('users');
-        expect(headers['cache-control']).toBe('max-age=5, public');
+        expect(body.data).toHaveProperty('users')
+        expect(headers['cache-control']).toBe('max-age=5, public')
       }
     })
-  );
+  )
 
   test(
     'posts',
     withServer(runner)(async ({ context, graphQLRequest }) => {
-      await addFixtures(context);
+      await addFixtures(context)
       // The Post list has a static cache hint
 
       // Basic query
@@ -208,10 +208,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('posts');
-        expect(headers['cache-control']).toBe('max-age=100, public');
+        expect(body.data).toHaveProperty('posts')
+        expect(headers['cache-control']).toBe('max-age=100, public')
       }
 
       // Hints on post authors are more restrictive
@@ -227,10 +227,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('posts');
-        expect(headers['cache-control']).toBe('max-age=10, private');
+        expect(body.data).toHaveProperty('posts')
+        expect(headers['cache-control']).toBe('max-age=10, private')
       }
 
       // Post author meta query
@@ -243,10 +243,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('posts');
-        expect(headers['cache-control']).toBe('max-age=90, public');
+        expect(body.data).toHaveProperty('posts')
+        expect(headers['cache-control']).toBe('max-age=90, public')
       }
 
       // Author subquery detects operation name
@@ -261,10 +261,10 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('posts');
-        expect(headers['cache-control']).toBe('max-age=1, public');
+        expect(body.data).toHaveProperty('posts')
+        expect(headers['cache-control']).toBe('max-age=1, public')
       }
       // Post author query using cache hint dynamically caculated from results
       {
@@ -278,18 +278,18 @@ describe('cache hints', () => {
             }
           }
         `,
-        });
+        })
 
-        expect(body.data).toHaveProperty('posts');
-        expect(headers['cache-control']).toBe('max-age=5, public');
+        expect(body.data).toHaveProperty('posts')
+        expect(headers['cache-control']).toBe('max-age=5, public')
       }
     })
-  );
+  )
 
   test(
     'mutations',
     withServer(runner)(async ({ context, graphQLRequest }) => {
-      const { posts } = await addFixtures(context);
+      const { posts } = await addFixtures(context)
 
       // Mutation responses shouldn't be cached.
       // Here's a smoke test to make sure they still work.
@@ -303,16 +303,16 @@ describe('cache hints', () => {
             }
           }
         `,
-      });
+      })
 
-      expect(body.data).toHaveProperty('deletePost');
+      expect(body.data).toHaveProperty('deletePost')
     })
-  );
+  )
 
   test(
     'extendGraphQLSchemaQueries',
     withServer(runner)(async ({ context, graphQLRequest }) => {
-      await addFixtures(context);
+      await addFixtures(context)
 
       // Basic query
       let { body, headers } = await graphQLRequest({
@@ -324,17 +324,17 @@ describe('cache hints', () => {
             }
           }
         `,
-      });
+      })
 
-      expect(body.data).toHaveProperty('double');
-      expect(headers['cache-control']).toBe('max-age=100, public');
+      expect(body.data).toHaveProperty('double')
+      expect(headers['cache-control']).toBe('max-age=100, public')
     })
-  );
+  )
 
   test(
     'extendGraphQLSchemaMutations',
     withServer(runner)(async ({ context, graphQLRequest }) => {
-      await addFixtures(context);
+      await addFixtures(context)
 
       // Mutation responses shouldn't be cached.
       // Here's a smoke test to make sure they still work.
@@ -344,9 +344,9 @@ describe('cache hints', () => {
             triple(x: 3)
           }
         `,
-      });
+      })
 
-      expect(body.data).toHaveProperty('triple');
+      expect(body.data).toHaveProperty('triple')
     })
-  );
-});
+  )
+})

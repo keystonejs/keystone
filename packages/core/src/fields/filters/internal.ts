@@ -1,39 +1,39 @@
-export * as postgresql from './providers/postgresql';
-export * as sqlite from './providers/sqlite';
-export * as mysql from './providers/mysql';
+export * as postgresql from './providers/postgresql'
+export * as sqlite from './providers/sqlite'
+export * as mysql from './providers/mysql'
 
 type EntriesAssumingNoExtraProps<T> = {
   [Key in keyof T]-?: [Key, T[Key]];
-}[keyof T][];
+}[keyof T][]
 
 const objectEntriesButAssumeNoExtraProperties: <T>(obj: T) => EntriesAssumingNoExtraProps<T> =
-  Object.entries as any;
+  Object.entries as any
 
 type CommonFilter<T> = {
-  equals?: T | null;
-  in?: readonly T[] | null;
-  notIn?: readonly T[] | null;
-  lt?: T | null;
-  lte?: T | null;
-  gt?: T | null;
-  gte?: T | null;
-  contains?: T | null;
-  startsWith?: T | null;
-  endsWith?: T | null;
-  not?: CommonFilter<T> | null;
-};
+  equals?: T | null
+  in?: readonly T[] | null
+  notIn?: readonly T[] | null
+  lt?: T | null
+  lte?: T | null
+  gt?: T | null
+  gte?: T | null
+  contains?: T | null
+  startsWith?: T | null
+  endsWith?: T | null
+  not?: CommonFilter<T> | null
+}
 
-function internalResolveFilter(
+function internalResolveFilter (
   entries: EntriesAssumingNoExtraProps<CommonFilter<any>>,
   mode: 'default' | 'insensitive' | undefined
 ): object {
-  const entry = entries.shift();
-  if (entry === undefined) return {};
-  const [key, val] = entry;
+  const entry = entries.shift()
+  if (entry === undefined) return {}
+  const [key, val] = entry
   if (val == null) {
     return {
       AND: [{ [key]: val }, internalResolveFilter(entries, mode)],
-    };
+    }
   }
   switch (key) {
     case 'equals':
@@ -47,7 +47,7 @@ function internalResolveFilter(
     case 'endsWith': {
       return {
         AND: [{ [key]: val, mode }, { not: null }, internalResolveFilter(entries, mode)],
-      };
+      }
     }
 
     case 'notIn': {
@@ -60,7 +60,7 @@ function internalResolveFilter(
           },
           internalResolveFilter(entries, mode),
         ],
-      };
+      }
     }
     case 'not': {
       return {
@@ -70,20 +70,20 @@ function internalResolveFilter(
           },
           internalResolveFilter(entries, mode),
         ],
-      };
+      }
     }
   }
 }
 
-export function resolveCommon(val: CommonFilter<any> | null) {
-  if (val === null) return null;
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), undefined);
+export function resolveCommon (val: CommonFilter<any> | null) {
+  if (val === null) return null
+  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), undefined)
 }
 
-export function resolveString(
+export function resolveString (
   val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
 ) {
-  if (val === null) return null;
-  const { mode, ...value } = val;
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(value), mode ?? undefined);
+  if (val === null) return null
+  const { mode, ...value } = val
+  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(value), mode ?? undefined)
 }

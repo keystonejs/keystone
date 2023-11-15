@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import { useRouter } from 'next/router';
+import { jsx } from '@emotion/react'
+import { useRouter } from 'next/router'
 
-import { Highlight } from '../components/primitives/Highlight';
-import { Type } from '../components/primitives/Type';
-import { Page } from '../components/Page';
+import { Highlight } from '../components/primitives/Highlight'
+import { Type } from '../components/primitives/Type'
+import { Page } from '../components/Page'
 
-function ConstructionIllustration() {
+function ConstructionIllustration () {
   return (
     <div
       css={{
@@ -27,16 +27,16 @@ function ConstructionIllustration() {
         }}
       />
     </div>
-  );
+  )
 }
 
 // modifying this code may have security implications
 //   see https://github.com/keystonejs/keystone/pull/6411#issuecomment-906085389
-const v5PathList = ['/tutorials', '/guides', '/keystonejs', '/api', '/discussions'];
+const v5PathList = ['/tutorials', '/guides', '/keystonejs', '/api', '/discussions']
 
-export default function NotFoundPage() {
-  const { asPath } = useRouter();
-  const tryV5Link = v5PathList.some(x => asPath.startsWith(x));
+export default function NotFoundPage () {
+  const { asPath } = useRouter()
+  const tryV5Link = v5PathList.some(x => asPath.startsWith(x))
   return (
     <Page title={'Page Not Found (404)'} description={'Page Not Found (404)'}>
       <div
@@ -62,5 +62,5 @@ export default function NotFoundPage() {
         <ConstructionIllustration />
       </div>
     </Page>
-  );
+  )
 }

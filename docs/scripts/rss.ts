@@ -1,35 +1,35 @@
-import path from 'path';
-import fs from 'fs/promises';
-import RSS from 'rss';
-import { globby } from 'globby';
-import { extractBlogFrontmatter } from '../markdoc';
-import { siteBaseUrl } from '../lib/og-util';
+import path from 'path'
+import fs from 'fs/promises'
+import RSS from 'rss'
+import { globby } from 'globby'
+import { extractBlogFrontmatter } from '../markdoc'
+import { siteBaseUrl } from '../lib/og-util'
 
-async function getPosts() {
+async function getPosts () {
   const files = await globby('*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
-  });
+  })
 
   const posts = await Promise.all(
     files.map(async filename => {
-      const contents = await fs.readFile(path.join(process.cwd(), 'pages/blog', filename), 'utf8');
+      const contents = await fs.readFile(path.join(process.cwd(), 'pages/blog', filename), 'utf8')
       return {
         slug: filename.replace(/\.md$/, ''),
         frontmatter: extractBlogFrontmatter(contents),
-      };
+      }
     })
-  );
+  )
 
   const reverseChronologicallySortedPosts = posts.sort((a, b) => {
     if (a.frontmatter.publishDate === b.frontmatter.publishDate) {
-      return a.frontmatter.title.localeCompare(b.frontmatter.title);
+      return a.frontmatter.title.localeCompare(b.frontmatter.title)
     }
-    return b.frontmatter.publishDate.localeCompare(a.frontmatter.publishDate);
-  });
+    return b.frontmatter.publishDate.localeCompare(a.frontmatter.publishDate)
+  })
 
-  return reverseChronologicallySortedPosts;
+  return reverseChronologicallySortedPosts
 }
-export default async function generateRssFeed() {
+export default async function generateRssFeed () {
   const feedOptions = {
     title: 'Keystone Blog',
     description: 'Blog posts from the team maintaining Keystone.',
@@ -38,10 +38,10 @@ export default async function generateRssFeed() {
     image_url: `${siteBaseUrl}/favicon-32x32.png`,
     pubDate: new Date(),
     copyright: `Thinkmill Labs Pty Ltd`,
-  };
+  }
 
-  const feed = new RSS(feedOptions);
-  const posts = await getPosts();
+  const feed = new RSS(feedOptions)
+  const posts = await getPosts()
   posts.forEach(post => {
     feed.item({
       title: post.frontmatter.title,
@@ -50,15 +50,15 @@ export default async function generateRssFeed() {
       date: post.frontmatter.publishDate,
       // TODO: Render post as HTML for <content:encoded>
       // custom_elements: [{'content:encoded': ''}]
-    });
-  });
+    })
+  })
 
-  return fs.writeFile('./public/feed.xml', feed.xml({ indent: true }));
+  return fs.writeFile('./public/feed.xml', feed.xml({ indent: true }))
 }
 
 (async () => {
-  await generateRssFeed();
+  await generateRssFeed()
 })().catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+  console.error(err)
+  process.exitCode = 1
+})

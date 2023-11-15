@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Well } from '../primitives/Well';
-import { useMediaQuery } from '../../lib/media';
-import { InlineCode } from '../../components/primitives/Code';
+import { Well } from '../primitives/Well'
+import { useMediaQuery } from '../../lib/media'
+import { InlineCode } from '../../components/primitives/Code'
 
-export function Walkthroughs() {
-  const mq = useMediaQuery();
+export function Walkthroughs () {
+  const mq = useMediaQuery()
   return (
     <div>
       <div
@@ -56,5 +56,5 @@ export function Walkthroughs() {
         </Well>
       </div>
     </div>
-  );
+  )
 }

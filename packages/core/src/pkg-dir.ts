@@ -1,3 +1,3 @@
-import path from 'path';
+import path from 'path'
 
-export const pkgDir = path.dirname(__dirname);
+export const pkgDir = path.dirname(__dirname)

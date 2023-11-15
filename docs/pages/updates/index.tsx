@@ -1,26 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { HTMLAttributes, ReactNode } from 'react';
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
+import { type HTMLAttributes, type ReactNode } from 'react'
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
 
-import { InlineCode } from '../../components/primitives/Code';
-import { Button } from '../../components/primitives/Button';
-import { Alert } from '../../components/primitives/Alert';
-import { Type } from '../../components/primitives/Type';
-import { DocsPage } from '../../components/Page';
-import { ArrowR } from '../../components/icons/ArrowR';
-import { Emoji } from '../../components/primitives/Emoji';
+import { InlineCode } from '../../components/primitives/Code'
+import { Button } from '../../components/primitives/Button'
+import { Alert } from '../../components/primitives/Alert'
+import { Type } from '../../components/primitives/Type'
+import { DocsPage } from '../../components/Page'
+import { ArrowR } from '../../components/icons/ArrowR'
+import { Emoji } from '../../components/primitives/Emoji'
 // import { Stack } from '../../components/primitives/Stack';
-import { useMediaQuery } from '../../lib/media';
+import { useMediaQuery } from '../../lib/media'
 
 type TimelineProps = {
-  date: string;
-  isLatest?: boolean;
-  isFirst?: boolean;
-} & HTMLAttributes<HTMLElement>;
+  date: string
+  isLatest?: boolean
+  isFirst?: boolean
+} & HTMLAttributes<HTMLElement>
 
-function Timeline({ date, isLatest, isFirst, ...props }: TimelineProps) {
+function Timeline ({ date, isLatest, isFirst, ...props }: TimelineProps) {
   return (
     <div
       css={{
@@ -83,16 +83,16 @@ function Timeline({ date, isLatest, isFirst, ...props }: TimelineProps) {
         {date}
       </Type>
     </div>
-  );
+  )
 }
 
 type BoxProps = {
-  link?: string;
-  heading?: ReactNode;
-  children: ReactNode;
-} & HTMLAttributes<HTMLElement>;
+  link?: string
+  heading?: ReactNode
+  children: ReactNode
+} & HTMLAttributes<HTMLElement>
 
-function Box({ link, heading, children, ...props }: BoxProps) {
+function Box ({ link, heading, children, ...props }: BoxProps) {
   return (
     <Type
       as="div"
@@ -119,11 +119,11 @@ function Box({ link, heading, children, ...props }: BoxProps) {
         </Link>
       )}
     </Type>
-  );
+  )
 }
 
-export default function WhatsNew() {
-  const mq = useMediaQuery();
+export default function WhatsNew () {
+  const mq = useMediaQuery()
 
   return (
     <DocsPage
@@ -915,5 +915,5 @@ export default function WhatsNew() {
         </Button>
       </Alert>
     </DocsPage>
-  );
+  )
 }

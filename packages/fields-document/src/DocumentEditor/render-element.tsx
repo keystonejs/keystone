@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { RenderElementProps, useSelected } from 'slate-react';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { type RenderElementProps, useSelected } from 'slate-react'
 
-import { LayoutArea, LayoutContainer } from './layouts';
-import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks';
-import { LinkElement } from './link';
-import { HeadingElement } from './heading';
-import { BlockquoteElement } from './blockquote';
-import { RelationshipElement } from './relationship';
+import { LayoutArea, LayoutContainer } from './layouts'
+import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks'
+import { LinkElement } from './link'
+import { HeadingElement } from './heading'
+import { BlockquoteElement } from './blockquote'
+import { RelationshipElement } from './relationship'
 
 // some of the renderers read properties of the element
 // and TS doesn't understand the type narrowing when doing a spread for some reason
@@ -23,11 +23,11 @@ export const renderElement = (props: RenderElementProps) => {
           children={props.children}
           element={props.element}
         />
-      );
+      )
     case 'layout-area':
-      return <LayoutArea {...props} />;
+      return <LayoutArea {...props} />
     case 'code':
-      return <CodeElement {...props} />;
+      return <CodeElement {...props} />
     case 'component-block': {
       return (
         <ComponentBlocksElement
@@ -35,11 +35,11 @@ export const renderElement = (props: RenderElementProps) => {
           children={props.children}
           element={props.element}
         />
-      );
+      )
     }
     case 'component-inline-prop':
     case 'component-block-prop':
-      return <ComponentInlineProp {...props} />;
+      return <ComponentInlineProp {...props} />
     case 'heading':
       return (
         <HeadingElement
@@ -47,7 +47,7 @@ export const renderElement = (props: RenderElementProps) => {
           children={props.children}
           element={props.element}
         />
-      );
+      )
     case 'link':
       return (
         <LinkElement
@@ -55,17 +55,17 @@ export const renderElement = (props: RenderElementProps) => {
           children={props.children}
           element={props.element}
         />
-      );
+      )
     case 'ordered-list':
-      return <ol {...props.attributes}>{props.children}</ol>;
+      return <ol {...props.attributes}>{props.children}</ol>
     case 'unordered-list':
-      return <ul {...props.attributes}>{props.children}</ul>;
+      return <ul {...props.attributes}>{props.children}</ul>
     case 'list-item':
-      return <li {...props.attributes}>{props.children}</li>;
+      return <li {...props.attributes}>{props.children}</li>
     case 'list-item-content':
-      return <span {...props.attributes}>{props.children}</span>;
+      return <span {...props.attributes}>{props.children}</span>
     case 'blockquote':
-      return <BlockquoteElement {...props} />;
+      return <BlockquoteElement {...props} />
     case 'relationship':
       return (
         <RelationshipElement
@@ -73,22 +73,22 @@ export const renderElement = (props: RenderElementProps) => {
           children={props.children}
           element={props.element}
         />
-      );
+      )
     case 'divider':
-      return <DividerElement {...props} />;
+      return <DividerElement {...props} />
     default:
       return (
         <p css={{ textAlign: props.element.textAlign }} {...props.attributes}>
           {props.children}
         </p>
-      );
+      )
   }
-};
+}
 
 /* Block Elements */
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
-  const { colors, radii, spacing, typography } = useTheme();
+  const { colors, radii, spacing, typography } = useTheme()
   return (
     <pre
       spellCheck="false"
@@ -105,12 +105,12 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
     >
       <code css={{ fontFamily: 'inherit' }}>{children}</code>
     </pre>
-  );
-};
+  )
+}
 
 const DividerElement = ({ attributes, children }: RenderElementProps) => {
-  const { colors, spacing } = useTheme();
-  const selected = useSelected();
+  const { colors, spacing } = useTheme()
+  const selected = useSelected()
   return (
     <div
       {...attributes}
@@ -131,5 +131,5 @@ const DividerElement = ({ attributes, children }: RenderElementProps) => {
       />
       {children}
     </div>
-  );
-};
+  )
+}

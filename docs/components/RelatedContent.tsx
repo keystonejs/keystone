@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { ReactNode } from 'react';
+import { jsx } from '@emotion/react'
+import { type ReactNode } from 'react'
 
-import { useMediaQuery } from '../lib/media';
+import { useMediaQuery } from '../lib/media'
 
-export function RelatedContent({ children }: { children: ReactNode }) {
-  const mq = useMediaQuery();
+export function RelatedContent ({ children }: { children: ReactNode }) {
+  const mq = useMediaQuery()
 
   return (
     <div
@@ -21,5 +21,5 @@ export function RelatedContent({ children }: { children: ReactNode }) {
     >
       {children}
     </div>
-  );
+  )
 }

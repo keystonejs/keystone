@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { jsx } from '@keystone-ui/core'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   useSensors,
   useSensor,
@@ -10,25 +10,25 @@ import {
   KeyboardSensor,
   DndContext,
   closestCenter,
-} from '@dnd-kit/core';
+} from '@dnd-kit/core'
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { createContext, ReactNode, useContext } from 'react';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { Button } from '@keystone-ui/button';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+} from '@dnd-kit/sortable'
+import { createContext, type ReactNode, useContext } from 'react'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import { Button } from '@keystone-ui/button'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 
-const RemoveContext = createContext<null | ((index: number) => void)>(null);
+const RemoveContext = createContext<null |((index: number) => void)>(null)
 
-export function OrderableList(props: {
-  onChange: (elements: readonly { key: string }[]) => void;
-  elements: readonly { key: string }[];
-  children: ReactNode;
+export function OrderableList (props: {
+  onChange: (elements: readonly { key: string }[]) => void
+  elements: readonly { key: string }[]
+  children: ReactNode
 }) {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 3 } }),
@@ -36,19 +36,19 @@ export function OrderableList(props: {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
-  );
-  const elementsRef = useRef(props.elements);
+  )
+  const elementsRef = useRef(props.elements)
 
   useEffect(() => {
-    elementsRef.current = props.elements;
-  });
-  const { onChange } = props;
+    elementsRef.current = props.elements
+  })
+  const { onChange } = props
   const onRemove = useCallback(
     (index: number) => {
-      onChange(elementsRef.current.filter((_, i) => i !== index).map(x => ({ key: x.key })));
+      onChange(elementsRef.current.filter((_, i) => i !== index).map(x => ({ key: x.key })))
     },
     [onChange]
-  );
+  )
   return (
     <RemoveContext.Provider value={onRemove}>
       <DndContext
@@ -57,14 +57,14 @@ export function OrderableList(props: {
         modifiers={[restrictToVerticalAxis]}
         onDragEnd={({ over, active }) => {
           if (over && over.id !== active.id) {
-            const activeIndex = props.elements.findIndex(x => x.key === active.id);
-            const overIndex = props.elements.findIndex(x => x.key === over.id);
+            const activeIndex = props.elements.findIndex(x => x.key === active.id)
+            const overIndex = props.elements.findIndex(x => x.key === over.id)
             const newValue = arrayMove(
               props.elements.map(x => ({ key: x.key })),
               activeIndex,
               overIndex
-            );
-            props.onChange(newValue);
+            )
+            props.onChange(newValue)
           }
         }}
       >
@@ -87,19 +87,19 @@ export function OrderableList(props: {
         </SortableContext>
       </DndContext>
     </RemoveContext.Provider>
-  );
+  )
 }
 
 const DragHandleListenersContext = createContext<Pick<
   ReturnType<typeof useSortable>,
   'listeners' | 'isDragging' | 'attributes' | 'index'
-> | null>(null);
+> | null>(null)
 
-export function OrderableItem(props: { elementKey: string; children: ReactNode }) {
+export function OrderableItem (props: { elementKey: string, children: ReactNode }) {
   const { attributes, isDragging, listeners, setNodeRef, transform, transition, index } =
     useSortable({
       id: props.elementKey,
-    });
+    })
 
   const style = {
     transition,
@@ -107,7 +107,7 @@ export function OrderableItem(props: { elementKey: string; children: ReactNode }
     '--translate-x': `${Math.round(transform?.x ?? 0)}px`,
     '--translate-y': `${Math.round(transform?.y ?? 0)}px`,
     cursor: isDragging ? 'grabbing' : undefined,
-  };
+  }
   return (
     <DragHandleListenersContext.Provider
       value={useMemo(() => {
@@ -116,7 +116,7 @@ export function OrderableItem(props: { elementKey: string; children: ReactNode }
           listeners,
           isDragging,
           index,
-        };
+        }
       }, [attributes, listeners, isDragging, index])}
     >
       <li
@@ -144,14 +144,14 @@ export function OrderableItem(props: { elementKey: string; children: ReactNode }
         </div>
       </li>
     </DragHandleListenersContext.Provider>
-  );
+  )
 }
 
-export function RemoveButton() {
-  const sortable = useContext(DragHandleListenersContext);
-  const onRemove = useContext(RemoveContext);
+export function RemoveButton () {
+  const sortable = useContext(DragHandleListenersContext)
+  const onRemove = useContext(RemoveContext)
   if (sortable === null || onRemove === null) {
-    throw new Error('Must use OrderableItem above RemoveButton');
+    throw new Error('Must use OrderableItem above RemoveButton')
   }
 
   return (
@@ -163,13 +163,13 @@ export function RemoveButton() {
     >
       <Trash2Icon size="small" />
     </Button>
-  );
+  )
 }
 
-export function DragHandle() {
-  const sortable = useContext(DragHandleListenersContext);
+export function DragHandle () {
+  const sortable = useContext(DragHandleListenersContext)
   if (sortable === null) {
-    throw new Error('Must use OrderableItem above DragHandle');
+    throw new Error('Must use OrderableItem above DragHandle')
   }
 
   return (
@@ -183,7 +183,7 @@ export function DragHandle() {
     >
       {dragIcon}
     </Button>
-  );
+  )
 }
 
 export const dragIcon = (
@@ -195,4 +195,4 @@ export const dragIcon = (
       />
     </svg>
   </span>
-);
+)

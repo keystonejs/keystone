@@ -1,11 +1,11 @@
-import type { Readable } from 'stream';
+import type { Readable } from 'stream'
 
-export async function streamToBuffer(stream: Readable): Promise<Buffer> {
-  const chunks = [];
+export async function streamToBuffer (stream: Readable): Promise<Buffer> {
+  const chunks = []
 
   for await (let chunk of stream) {
-    chunks.push(chunk);
+    chunks.push(chunk)
   }
 
-  return Buffer.concat(chunks);
+  return Buffer.concat(chunks)
 }

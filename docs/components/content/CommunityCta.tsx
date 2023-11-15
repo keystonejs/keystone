@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
 
-import communityMap from '../../public/assets/community-map.png';
+import communityMap from '../../public/assets/community-map.png'
 
-import { useMediaQuery } from '../../lib/media';
-import { Button } from '../primitives/Button';
-import { Type } from '../primitives/Type';
-import { ArrowR } from '../icons/ArrowR';
-import { Tick } from '../icons/Tick';
-import { Section } from './Section';
+import { useMediaQuery } from '../../lib/media'
+import { Button } from '../primitives/Button'
+import { Type } from '../primitives/Type'
+import { ArrowR } from '../icons/ArrowR'
+import { Tick } from '../icons/Tick'
+import { Section } from './Section'
 
-export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
-  const mq = useMediaQuery();
+export function CommunityCta (props: HTMLAttributes<HTMLElement>) {
+  const mq = useMediaQuery()
 
   return (
     <Section
@@ -106,5 +106,5 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
         </ul>
       </div>
     </Section>
-  );
+  )
 }

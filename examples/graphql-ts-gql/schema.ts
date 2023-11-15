@@ -1,8 +1,8 @@
-import { list, graphql } from '@keystone-6/core';
-import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
-import { gql } from '@ts-gql/tag/no-transform';
-import { Lists, Context } from '.keystone/types';
+import { list, graphql } from '@keystone-6/core'
+import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
+import { gql } from '@ts-gql/tag/no-transform'
+import { type Lists, type Context } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -20,8 +20,8 @@ export const lists: Lists = {
       isPublished: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve(item: any) {
-            return item.status === 'published';
+          resolve (item: any) {
+            return item.status === 'published'
           },
         }),
       }),
@@ -34,9 +34,9 @@ export const lists: Lists = {
         },
         field: graphql.field({
           type: graphql.object<{
-            words: number;
-            sentences: number;
-            paragraphs: number;
+            words: number
+            sentences: number
+            paragraphs: number
           }>()({
             name: 'PostCounts',
             fields: {
@@ -45,13 +45,13 @@ export const lists: Lists = {
               paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
-          resolve(item) {
-            const content = item.content || '';
+          resolve (item) {
+            const content = item.content || ''
             return {
               words: content.split(' ').length,
               sentences: content.split('.').length,
               paragraphs: content.split('\n\n').length,
-            };
+            }
           },
         }),
       }),
@@ -62,15 +62,15 @@ export const lists: Lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
           },
-          resolve(item, { length }) {
+          resolve (item, { length }) {
             if (!item.content) {
-              return null;
+              return null
             }
-            const content = item.content;
+            const content = item.content
             if (content.length <= length) {
-              return content;
+              return content
             } else {
-              return content.slice(0, length - 3) + '...';
+              return content.slice(0, length - 3) + '...'
             }
           },
         }),
@@ -82,8 +82,8 @@ export const lists: Lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve(item, args, _context) {
-            const context = _context as Context;
+          async resolve (item, args, _context) {
+            const context = _context as Context
             const POST_AUTHOR_QUERY = gql`
               query POST_AUTHOR_QUERY($id: ID!) {
                 post(where: { id: $id }) {
@@ -94,13 +94,13 @@ export const lists: Lists = {
                   }
                 }
               }
-            ` as import('./__generated__/ts-gql/POST_AUTHOR_QUERY').type;
+            ` as import('./__generated__/ts-gql/POST_AUTHOR_QUERY').type
             const data = await context.graphql.run({
               query: POST_AUTHOR_QUERY,
               variables: { id: item.id },
-            });
-            const author = data?.post?.author;
-            return author && author.name;
+            })
+            const author = data?.post?.author
+            return author && author.name
           },
         }),
       }),
@@ -117,8 +117,8 @@ export const lists: Lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve(item, args, _context) {
-              const context = _context as Context;
+            async resolve (item, args, _context) {
+              const context = _context as Context
               const LATEST_POST_QUERY = gql`
                 query LATEST_POST_QUERY($id: ID!) {
                   author(where: { id: $id }) {
@@ -128,14 +128,14 @@ export const lists: Lists = {
                     }
                   }
                 }
-              ` as import('./__generated__/ts-gql/LATEST_POST_QUERY').type;
+              ` as import('./__generated__/ts-gql/LATEST_POST_QUERY').type
               const data = await context.graphql.run({
                 query: LATEST_POST_QUERY,
                 variables: { id: item.id },
-              });
-              const posts = data?.author?.posts;
+              })
+              const posts = data?.author?.posts
               if (posts && posts.length > 0) {
-                return context.db.Post.findOne({ where: { id: posts[0].id } });
+                return context.db.Post.findOne({ where: { id: posts[0].id } })
               }
             },
           }),
@@ -143,4 +143,4 @@ export const lists: Lists = {
       }),
     },
   }),
-};
+}

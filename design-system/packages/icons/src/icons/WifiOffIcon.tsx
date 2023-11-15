@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const WifiOffIcon = createIcon(
   <React.Fragment>
     <line x1={1} y1={1} x2={23} y2={23} />
@@ -11,4 +11,4 @@ export const WifiOffIcon = createIcon(
     <line x1={12} y1={20} x2={12.01} y2={20} />
   </React.Fragment>,
   'WifiOffIcon'
-);
+)

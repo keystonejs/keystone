@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA';
-import { Type } from '../../../components/primitives/Type';
-import { Well } from '../../../components/primitives/Well';
-import { DocsPage } from '../../../components/Page';
-import { useMediaQuery } from '../../../lib/media';
+import { CommunitySlackCTA } from '../../../components/docs/CommunitySlackCTA'
+import { Type } from '../../../components/primitives/Type'
+import { Well } from '../../../components/primitives/Well'
+import { DocsPage } from '../../../components/Page'
+import { useMediaQuery } from '../../../lib/media'
 
-export default function Docs() {
-  const mq = useMediaQuery();
+export default function Docs () {
+  const mq = useMediaQuery()
 
   return (
     <DocsPage
@@ -63,5 +63,5 @@ export default function Docs() {
         </Well>
       </div>
     </DocsPage>
-  );
+  )
 }

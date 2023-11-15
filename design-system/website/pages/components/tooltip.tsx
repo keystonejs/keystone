@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { Page } from '../../components/Page';
+import { jsx } from '@keystone-ui/core'
+import { Button } from '@keystone-ui/button'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { Page } from '../../components/Page'
 
-export default function PopoverPage() {
+export default function PopoverPage () {
   return (
     <Page>
       <p>
@@ -18,5 +18,5 @@ export default function PopoverPage() {
         {props => <Button {...props}>Save changes</Button>}
       </Tooltip>
     </Page>
-  );
+  )
 }

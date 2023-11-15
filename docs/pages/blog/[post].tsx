@@ -1,41 +1,41 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import path from 'path';
-import { jsx } from '@emotion/react';
+import path from 'path'
+import { jsx } from '@emotion/react'
 import {
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-  GetStaticPropsResult,
-  InferGetStaticPropsType,
-} from 'next';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
-import { globby } from 'globby';
-import { BlogContent, readBlogContent } from '../../markdoc';
-import { extractHeadings, Markdoc } from '../../components/Markdoc';
-import { BlogPage } from '../../components/Page';
-import { Heading } from '../../components/docs/Heading';
-import { Type } from '../../components/primitives/Type';
-import { getOgAbsoluteUrl } from '../../lib/og-util';
+  type GetStaticPathsResult,
+  type GetStaticPropsContext,
+  type GetStaticPropsResult,
+  type InferGetStaticPropsType,
+} from 'next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import parse from 'date-fns/parse'
+import format from 'date-fns/format'
+import { globby } from 'globby'
+import { type BlogContent, readBlogContent } from '../../markdoc'
+import { extractHeadings, Markdoc } from '../../components/Markdoc'
+import { BlogPage } from '../../components/Page'
+import { Heading } from '../../components/docs/Heading'
+import { Type } from '../../components/primitives/Type'
+import { getOgAbsoluteUrl } from '../../lib/og-util'
 
-export default function Page(props: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter();
+export default function Page (props: InferGetStaticPropsType<typeof getStaticProps>) {
+  const router = useRouter()
   const headings = [
     { id: 'title', depth: 1, label: props.title },
     ...extractHeadings(props.content),
-  ];
-  const publishedDate = props.publishDate;
-  const parsedDate = parse(publishedDate, 'yyyy-M-d', new Date());
-  const formattedDateStr = format(parsedDate, 'MMMM do, yyyy');
+  ]
+  const publishedDate = props.publishDate
+  const parsedDate = parse(publishedDate, 'yyyy-M-d', new Date())
+  const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
 
-  let ogImageUrl = props.metaImageUrl;
+  let ogImageUrl = props.metaImageUrl
   if (!ogImageUrl) {
     ogImageUrl = getOgAbsoluteUrl({
       title: props.title,
       type: 'Blog',
-    });
+    })
   }
 
   return (
@@ -78,21 +78,21 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
         <Markdoc key={i} content={child} />
       ))}
     </BlogPage>
-  );
+  )
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   const files = await globby('**/*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
-  });
+  })
   return {
     paths: files.map(file => ({ params: { post: file.replace(/\.md$/, '') } })),
     fallback: false,
-  };
+  }
 }
 
-export async function getStaticProps(
+export async function getStaticProps (
   args: GetStaticPropsContext<{ post: string }>
 ): Promise<GetStaticPropsResult<BlogContent>> {
-  return { props: await readBlogContent(`pages/blog/${args.params!.post}.md`) };
+  return { props: await readBlogContent(`pages/blog/${args.params!.post}.md`) }
 }

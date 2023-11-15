@@ -1,24 +1,24 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import { useMediaQuery } from '../lib/media';
-import { Highlight } from '../components/primitives/Highlight';
-import { MWrapper } from '../components/content/MWrapper';
-import { Quote } from '../components/content/Quote';
-import { Type } from '../components/primitives/Type';
-import { Pill } from '../components/content/Pill';
-import { Page } from '../components/Page';
-import { ContactForm } from '../components/ContactForm';
-import { CustomerCard } from '../components/content/CustomerCard';
-import { VocalLogo } from '../components/icons/VocalLogo';
-import { PJohnsonLogo } from '../components/icons/PJohnsonLogo';
-import { DFATLogo } from '../components/icons/DFATLogo';
-import { EnliticLogo } from '../components/icons/EnliticLogo';
-import { RugbyAuLogo } from '../components/icons/RugbyAuLogo';
-import { WestpacLogo } from '../components/icons/WestpacLogo';
-import { PrintBarLogo } from '../components/icons/PrintBarLogo';
-import { IntroHeading, IntroLead, IntroWrapper } from '../components/content/Intro';
-import { Stack } from '../components/primitives/Stack';
+import { jsx } from '@emotion/react'
+import { useMediaQuery } from '../lib/media'
+import { Highlight } from '../components/primitives/Highlight'
+import { MWrapper } from '../components/content/MWrapper'
+import { Quote } from '../components/content/Quote'
+import { Type } from '../components/primitives/Type'
+import { Pill } from '../components/content/Pill'
+import { Page } from '../components/Page'
+import { ContactForm } from '../components/ContactForm'
+import { CustomerCard } from '../components/content/CustomerCard'
+import { VocalLogo } from '../components/icons/VocalLogo'
+import { PJohnsonLogo } from '../components/icons/PJohnsonLogo'
+import { DFATLogo } from '../components/icons/DFATLogo'
+import { EnliticLogo } from '../components/icons/EnliticLogo'
+import { RugbyAuLogo } from '../components/icons/RugbyAuLogo'
+import { WestpacLogo } from '../components/icons/WestpacLogo'
+import { PrintBarLogo } from '../components/icons/PrintBarLogo'
+import { IntroHeading, IntroLead, IntroWrapper } from '../components/content/Intro'
+import { Stack } from '../components/primitives/Stack'
 
 const customers = [
   {
@@ -60,10 +60,10 @@ const customers = [
     title: 'The Print Bar',
     copy: 'Application backend for a custom design and ordering platform.',
   },
-];
+]
 
-export default function ForOrganisations() {
-  const mq = useMediaQuery();
+export default function ForOrganisations () {
+  const mq = useMediaQuery()
 
   return (
     <Page
@@ -188,5 +188,5 @@ export default function ForOrganisations() {
         </div>
       </MWrapper>
     </Page>
-  );
+  )
 }

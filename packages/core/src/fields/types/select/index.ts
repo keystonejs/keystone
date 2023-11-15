@@ -1,15 +1,15 @@
-import { classify } from 'inflection';
-import { humanize } from '../../../lib/utils';
+import { classify } from 'inflection'
+import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -19,40 +19,40 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
            * When a value is provided as just a string, it will be formatted in the same way
            * as field labels are to create the label.
            */
-          options: readonly ({ label: string; value: string } | string)[];
+          options: readonly ({ label: string, value: string } | string)[]
           /**
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
-          type?: 'string' | 'enum';
-          defaultValue?: string;
+          type?: 'string' | 'enum'
+          defaultValue?: string
         }
       | {
-          options: readonly { label: string; value: number }[];
-          type: 'integer';
-          defaultValue?: number;
+          options: readonly { label: string, value: number }[]
+          type: 'integer'
+          defaultValue?: number
         }
     ) & {
       ui?: {
-        displayMode?: 'select' | 'segmented-control' | 'radio';
-      };
+        displayMode?: 'select' | 'segmented-control' | 'radio'
+      }
 
       validation?: {
         /**
          * @default false
          */
-        isRequired?: boolean;
-      };
-      isIndexed?: boolean | 'unique';
+        isRequired?: boolean
+      }
+      isIndexed?: boolean | 'unique'
       db?: {
-        isNullable?: boolean;
-        map?: string;
-        extendPrismaSchema?: (field: string) => string;
-      };
-    };
+        isNullable?: boolean
+        map?: string
+        extendPrismaSchema?: (field: string) => string
+      }
+    }
 
 // These are the max and min values available to a 32 bit signed integer
-const MAX_INT = 2147483647;
-const MIN_INT = -2147483648;
+const MAX_INT = 2147483647
+const MIN_INT = -2147483648
 
 export const select =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -63,40 +63,40 @@ export const select =
     ...config
   }: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
-    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
-    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
+    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
 
     const commonConfig = (
-      options: readonly { value: string | number; label: string }[]
+      options: readonly { value: string | number, label: string }[]
     ): CommonFieldConfig<ListTypeInfo> & {
-      __ksTelemetryFieldTypeName: string;
-      views: string;
-      getAdminMeta: () => import('./views').AdminSelectFieldMeta;
+      __ksTelemetryFieldTypeName: string
+      views: string
+      getAdminMeta: () => import('./views').AdminSelectFieldMeta
     } => {
-      const values = new Set(options.map(x => x.value));
+      const values = new Set(options.map(x => x.value))
       if (values.size !== options.length) {
         throw new Error(
           `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
-        );
+        )
       }
       return {
         ...config,
         ui,
         hooks: {
           ...config.hooks,
-          async validateInput(args) {
-            const value = args.resolvedData[meta.fieldKey];
+          async validateInput (args) {
+            const value = args.resolvedData[meta.fieldKey]
             if (value != null && !values.has(value)) {
-              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`);
+              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
             }
             if (
               (validation?.isRequired || resolvedIsNullable === false) &&
               (value === null || (value === undefined && args.operation === 'create'))
             ) {
-              args.addValidationError(`${fieldLabel} is required`);
+              args.addValidationError(`${fieldLabel} is required`)
             }
-            await config.hooks?.validateInput?.(args);
+            await config.hooks?.validateInput?.(args)
           },
         },
         __ksTelemetryFieldTypeName: '@keystone-6/select',
@@ -108,9 +108,9 @@ export const select =
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
         }),
-      };
-    };
-    const mode = resolvedIsNullable === false ? 'required' : 'optional';
+      }
+    }
+    const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const commonDbFieldConfig = {
       mode,
       index: isIndexed === true ? 'index' : isIndexed || undefined,
@@ -120,14 +120,14 @@ export const select =
           : { kind: 'literal' as const, value: defaultValue as any },
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
-    } as const;
+    } as const
 
     const resolveCreate = <T extends string | number>(val: T | null | undefined): T | null => {
       if (val === undefined) {
-        return (defaultValue as T | undefined) ?? null;
+        return (defaultValue as T | undefined) ?? null
       }
-      return val;
-    };
+      return val
+    }
 
     if (config.type === 'integer') {
       if (
@@ -137,7 +137,7 @@ export const select =
       ) {
         throw new Error(
           `The select field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
-        );
+        )
       }
       return fieldType({
         kind: 'scalar',
@@ -163,24 +163,24 @@ export const select =
           orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
         output: graphql.field({ type: graphql.Int }),
-      });
+      })
     }
     const options = config.options.map(option => {
       if (typeof option === 'string') {
         return {
           label: humanize(option),
           value: option,
-        };
+        }
       }
-      return option;
-    });
+      return option
+    })
 
     if (config.type === 'enum') {
-      const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`;
+      const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`
       const graphQLType = graphql.enum({
         name: enumName,
         values: graphql.enumValues(options.map(x => x.value)),
-      });
+      })
       return fieldType(
         meta.provider === 'sqlite'
           ? { kind: 'scalar', scalar: 'String', ...commonDbFieldConfig }
@@ -210,7 +210,7 @@ export const select =
           orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
         output: graphql.field({ type: graphQLType }),
-      });
+      })
     }
     return fieldType({ kind: 'scalar', scalar: 'String', ...commonDbFieldConfig })({
       ...commonConfig(options),
@@ -232,5 +232,5 @@ export const select =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({ type: graphql.String }),
-    });
-  };
+    })
+  }

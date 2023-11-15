@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const BellOffIcon = createIcon(
   <React.Fragment>
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -9,4 +9,4 @@ export const BellOffIcon = createIcon(
     <line x1={1} y1={1} x2={23} y2={23} />
   </React.Fragment>,
   'BellOffIcon'
-);
+)

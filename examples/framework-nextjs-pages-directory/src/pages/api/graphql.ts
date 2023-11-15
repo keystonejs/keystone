@@ -1,6 +1,6 @@
-import { createYoga } from 'graphql-yoga';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { keystoneContext } from '../../keystone/context';
+import { createYoga } from 'graphql-yoga'
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { keystoneContext } from '../../keystone/context'
 
 /*
   An example of how to setup your own yoga graphql server
@@ -11,12 +11,12 @@ export const config = {
     // Disable body parsing (required for file uploads)
     bodyParser: false,
   },
-};
+}
 
 // Use Keystone API to create GraphQL handler
 export default createYoga<{
-  req: NextApiRequest;
-  res: NextApiResponse;
+  req: NextApiRequest
+  res: NextApiResponse
 }>({
   graphqlEndpoint: '/api/graphql',
   schema: keystoneContext.graphql.schema,
@@ -28,4 +28,4 @@ export default createYoga<{
     and an elevated sudo context to bypass access control if needed (context.sudo()).
   */
   context: ({ req, res }) => keystoneContext.withRequest(req, res),
-});
+})

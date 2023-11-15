@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import { type HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { Type } from '../primitives/Type';
+import { Type } from '../primitives/Type'
 
-export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
+export function IntroWrapper (props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       css={{
@@ -15,10 +15,10 @@ export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export function IntroHeading(props: HTMLAttributes<HTMLElement>) {
+export function IntroHeading (props: HTMLAttributes<HTMLElement>) {
   return (
     <Type
       as="h1"
@@ -30,10 +30,10 @@ export function IntroHeading(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export function IntroLead(props: HTMLAttributes<HTMLElement>) {
+export function IntroLead (props: HTMLAttributes<HTMLElement>) {
   return (
     <Type
       as="p"
@@ -44,5 +44,5 @@ export function IntroLead(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }

@@ -1,34 +1,34 @@
 import {
   GraphQLScalarType,
   GraphQLObjectType,
-  GraphQLArgument,
-  GraphQLArgumentConfig,
+  type GraphQLArgument,
+  type GraphQLArgumentConfig,
   GraphQLSchema,
-  DocumentNode,
+  type DocumentNode,
   execute,
-  GraphQLField,
-  VariableDefinitionNode,
-  TypeNode,
-  GraphQLType,
+  type GraphQLField,
+  type VariableDefinitionNode,
+  type TypeNode,
+  type GraphQLType,
   GraphQLNonNull,
   GraphQLList,
-  GraphQLEnumType,
-  GraphQLInputObjectType,
-  GraphQLInterfaceType,
-  GraphQLUnionType,
-  ListTypeNode,
-  NamedTypeNode,
-  ArgumentNode,
-  GraphQLFieldConfig,
-  GraphQLOutputType,
+  type GraphQLEnumType,
+  type GraphQLInputObjectType,
+  type GraphQLInterfaceType,
+  type GraphQLUnionType,
+  type ListTypeNode,
+  type NamedTypeNode,
+  type ArgumentNode,
+  type GraphQLFieldConfig,
+  type GraphQLOutputType,
   astFromValue,
   Kind,
   OperationTypeNode,
-  ConstValueNode,
-} from 'graphql';
-import { KeystoneContext } from '../../types';
+  type ConstValueNode,
+} from 'graphql'
+import { type KeystoneContext } from '../../types'
 
-function getNamedOrListTypeNodeForType(
+function getNamedOrListTypeNodeForType (
   type:
     | GraphQLScalarType
     | GraphQLObjectType<any, any>
@@ -39,19 +39,19 @@ function getNamedOrListTypeNodeForType(
     | GraphQLList<any>
 ): NamedTypeNode | ListTypeNode {
   if (type instanceof GraphQLList) {
-    return { kind: Kind.LIST_TYPE, type: getTypeNodeForType(type.ofType) };
+    return { kind: Kind.LIST_TYPE, type: getTypeNodeForType(type.ofType) }
   }
-  return { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: type.name } };
+  return { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: type.name } }
 }
 
-export function getTypeNodeForType(type: GraphQLType): TypeNode {
+export function getTypeNodeForType (type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
-    return { kind: Kind.NON_NULL_TYPE, type: getNamedOrListTypeNodeForType(type.ofType) };
+    return { kind: Kind.NON_NULL_TYPE, type: getNamedOrListTypeNodeForType(type.ofType) }
   }
-  return getNamedOrListTypeNodeForType(type);
+  return getNamedOrListTypeNodeForType(type)
 }
 
-export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
+export function getVariablesForGraphQLField (field: GraphQLField<any, any>) {
   const variableDefinitions: VariableDefinitionNode[] = field.args.map(
     (arg): VariableDefinitionNode => ({
       kind: Kind.VARIABLE_DEFINITION,
@@ -62,32 +62,32 @@ export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
           ? undefined
           : (astFromValue(arg.defaultValue, arg.type) as ConstValueNode) ?? undefined,
     })
-  );
+  )
 
   const argumentNodes: ArgumentNode[] = field.args.map(arg => ({
     kind: Kind.ARGUMENT,
     name: { kind: Kind.NAME, value: arg.name },
     value: { kind: Kind.VARIABLE, name: { kind: Kind.NAME, value: arg.name } },
-  }));
+  }))
 
-  return { variableDefinitions, argumentNodes };
+  return { variableDefinitions, argumentNodes }
 }
 
-const rawField = 'raw';
+const rawField = 'raw'
 
-const RawScalar = new GraphQLScalarType({ name: 'RawThingPlsDontRelyOnThisAnywhere' });
+const RawScalar = new GraphQLScalarType({ name: 'RawThingPlsDontRelyOnThisAnywhere' })
 
 const ReturnRawValueObjectType = new GraphQLObjectType({
   name: 'ReturnRawValue',
   fields: {
     [rawField]: {
       type: RawScalar,
-      resolve(rootVal) {
-        return rootVal;
+      resolve (rootVal) {
+        return rootVal
       },
     },
   },
-});
+})
 
 type RequiredButStillAllowUndefined<
   T extends Record<string, any>,
@@ -99,9 +99,9 @@ type RequiredButStillAllowUndefined<
   Key extends keyof T = keyof T
 > = {
   [K in Key]: T[K];
-};
+}
 
-function argsToArgsConfig(args: readonly GraphQLArgument[]) {
+function argsToArgsConfig (args: readonly GraphQLArgument[]) {
   return Object.fromEntries(
     args.map(arg => {
       const argConfig: RequiredButStillAllowUndefined<GraphQLArgumentConfig> = {
@@ -111,42 +111,42 @@ function argsToArgsConfig(args: readonly GraphQLArgument[]) {
         description: arg.description,
         extensions: arg.extensions,
         type: arg.type,
-      };
-      return [arg.name, argConfig];
+      }
+      return [arg.name, argConfig]
     })
-  );
+  )
 }
 
-type OutputTypeWithoutNonNull = GraphQLObjectType | GraphQLList<OutputType>;
+type OutputTypeWithoutNonNull = GraphQLObjectType | GraphQLList<OutputType>
 
-type OutputType = OutputTypeWithoutNonNull | GraphQLNonNull<OutputTypeWithoutNonNull>;
+type OutputType = OutputTypeWithoutNonNull | GraphQLNonNull<OutputTypeWithoutNonNull>
 
 // note the GraphQLNonNull and GraphQLList constructors are incorrectly
 // not generic over their inner type which is why we have to use as
 // (the classes are generic but not the constructors)
-function getTypeForField(originalType: GraphQLOutputType): OutputType {
+function getTypeForField (originalType: GraphQLOutputType): OutputType {
   if (originalType instanceof GraphQLNonNull) {
-    return new GraphQLNonNull(getTypeForField(originalType.ofType)) as OutputType;
+    return new GraphQLNonNull(getTypeForField(originalType.ofType)) as OutputType
   }
   if (originalType instanceof GraphQLList) {
-    return new GraphQLList(getTypeForField(originalType.ofType)) as OutputType;
+    return new GraphQLList(getTypeForField(originalType.ofType)) as OutputType
   }
-  return ReturnRawValueObjectType;
+  return ReturnRawValueObjectType
 }
 
-function getRootValGivenOutputType(originalType: OutputType, value: any): any {
+function getRootValGivenOutputType (originalType: OutputType, value: any): any {
   if (originalType instanceof GraphQLNonNull) {
-    return getRootValGivenOutputType(originalType.ofType, value);
+    return getRootValGivenOutputType(originalType.ofType, value)
   }
-  if (value === null) return null;
+  if (value === null) return null
   if (originalType instanceof GraphQLList) {
-    return value.map((x: any) => getRootValGivenOutputType(originalType.ofType, x));
+    return value.map((x: any) => getRootValGivenOutputType(originalType.ofType, x))
   }
-  return value[rawField];
+  return value[rawField]
 }
 
-export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
-  const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
+export function executeGraphQLFieldToRootVal (field: GraphQLField<any, any>) {
+  const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,
     definitions: [
@@ -170,9 +170,9 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
         variableDefinitions,
       },
     ],
-  };
+  }
 
-  const type = getTypeForField(field.type);
+  const type = getTypeForField(field.type)
 
   const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<any, any>> = {
     args: argsToArgsConfig(field.args),
@@ -183,7 +183,7 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
     resolve: field.resolve,
     subscribe: field.subscribe,
     type,
-  };
+  }
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'Query',
@@ -192,7 +192,7 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
       },
     }),
     assumeValid: true,
-  });
+  })
 
   return async (
     args: Record<string, any>,
@@ -205,10 +205,10 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
       contextValue: context,
       variableValues: args,
       rootValue,
-    });
+    })
     if (result.errors?.length) {
-      throw result.errors[0];
+      throw result.errors[0]
     }
-    return getRootValGivenOutputType(type, result.data![field.name]);
-  };
+    return getRootValGivenOutputType(type, result.data![field.name])
+  }
 }

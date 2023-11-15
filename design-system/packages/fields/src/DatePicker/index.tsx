@@ -1,39 +1,39 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import FocusLock from 'react-focus-lock';
-import { jsx } from '@keystone-ui/core';
-import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import FocusLock from 'react-focus-lock'
+import { jsx } from '@keystone-ui/core'
+import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover'
 
 import {
   deserializeDate,
   formatDate,
   formatDateType,
   dateFormatPlaceholder,
-} from '../utils/dateFormatters';
-import { DateType } from '../types';
-import { Calendar } from './Calendar';
-import { InputButton } from './components/InputButton';
+} from '../utils/dateFormatters'
+import { type DateType } from '../types'
+import { Calendar } from './Calendar'
+import { InputButton } from './components/InputButton'
 
-export type DateInputValue = string | undefined;
+export type DateInputValue = string | undefined
 
 export type DatePickerProps = {
-  onUpdate: (value: DateType) => void;
-  onClear: () => void;
-  onBlur?: () => void;
-  value: DateType;
-};
+  onUpdate: (value: DateType) => void
+  onClear: () => void
+  onBlur?: () => void
+  value: DateType
+}
 
 export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
-  const callbackRef = useRef(callback);
+  const callbackRef = useRef(callback)
   const cb = useCallback((...args: any[]) => {
-    return callbackRef.current(...args);
-  }, []);
+    return callbackRef.current(...args)
+  }, [])
   useEffect(() => {
-    callbackRef.current = callback;
-  });
-  return cb as any;
+    callbackRef.current = callback
+  })
+  return cb as any
 }
 
 export const DatePicker = ({
@@ -43,24 +43,24 @@ export const DatePicker = ({
   onBlur: _onBlur,
   ...props
 }: DatePickerProps) => {
-  const [isOpen, _setOpen] = useState(false);
+  const [isOpen, _setOpen] = useState(false)
   const onBlur = useEventCallback(() => {
-    _onBlur?.();
-  });
+    _onBlur?.()
+  })
   const setOpen = useCallback(
     (val: boolean) => {
-      _setOpen(val);
+      _setOpen(val)
       if (!val) {
-        onBlur?.();
+        onBlur?.()
       }
     },
     [onBlur]
-  );
+  )
   const { dialog, trigger, arrow } = useControlledPopover(
     {
       isOpen,
       onClose: useCallback(() => {
-        setOpen(false);
+        setOpen(false)
       }, [setOpen]),
     },
     {
@@ -74,24 +74,24 @@ export const DatePicker = ({
         },
       ],
     }
-  );
+  )
 
   const handleDayClick = useCallback(
     (day: Date) => {
-      onUpdate(formatDateType(day));
+      onUpdate(formatDateType(day))
       // wait a moment so the user has time to see the day become selected
       setTimeout(() => {
-        setOpen(false);
-      }, 300);
+        setOpen(false)
+      }, 300)
     },
     [onUpdate, setOpen]
-  );
+  )
 
   // We **can** memoize this, but its a trivial operation
   // and in the opinion of the author not really something to do
   // before other more important performance optimisations
-  const selectedDay = deserializeDate(value);
-  const formattedDate: DateInputValue = value ? formatDate(selectedDay) : undefined;
+  const selectedDay = deserializeDate(value)
+  const formattedDate: DateInputValue = value ? formatDate(selectedDay) : undefined
 
   return (
     <Fragment>
@@ -101,8 +101,8 @@ export const DatePicker = ({
         onClear={
           value
             ? () => {
-                onClear();
-                onBlur?.();
+                onClear()
+                onBlur?.()
               }
             : undefined
         }
@@ -123,5 +123,5 @@ export const DatePicker = ({
         </PopoverDialog>
       )}
     </Fragment>
-  );
-};
+  )
+}

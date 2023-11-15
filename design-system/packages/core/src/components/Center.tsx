@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '../emotion';
+import { jsx } from '../emotion'
 
-import { forwardRefWithAs } from '../utils';
-import { Box, BoxProps } from './Box';
+import { forwardRefWithAs } from '../utils'
+import { Box, type BoxProps } from './Box'
 
 type CenterProps = {
-  fillView?: boolean;
-} & BoxProps;
+  fillView?: boolean
+} & BoxProps
 
 export const Center = forwardRefWithAs<'div', CenterProps>(
   ({ fillView = false, ...props }, ref) => {
@@ -24,6 +24,6 @@ export const Center = forwardRefWithAs<'div', CenterProps>(
         }}
         {...props}
       />
-    );
+    )
   }
-);
+)

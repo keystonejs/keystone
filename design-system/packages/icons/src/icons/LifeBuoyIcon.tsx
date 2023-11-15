@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const LifeBuoyIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={12} r={10} />
@@ -11,4 +11,4 @@ export const LifeBuoyIcon = createIcon(
     <line x1={4.93} y1={19.07} x2={9.17} y2={14.83} />
   </React.Fragment>,
   'LifeBuoyIcon'
-);
+)

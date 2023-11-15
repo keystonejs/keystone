@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
-import type { ReactNode } from 'react';
+import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
+import type { ReactNode } from 'react'
 
 type FieldLabelProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 export const FieldLabel = forwardRefWithAs<'label', FieldLabelProps>(
   ({ as: Tag = 'label', children, ...props }, ref) => {
-    const { typography, fields, spacing } = useTheme();
+    const { typography, fields, spacing } = useTheme()
     return (
       <Tag
         ref={ref}
@@ -25,6 +25,6 @@ export const FieldLabel = forwardRefWithAs<'label', FieldLabelProps>(
       >
         {children}
       </Tag>
-    );
+    )
   }
-);
+)

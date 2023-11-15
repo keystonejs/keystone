@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
 type YouTubeEmbedProps = {
-  url: string;
-  label: string;
-};
+  url: string
+  label: string
+}
 
-export function YouTubeEmbed({ url, label }: YouTubeEmbedProps) {
+export function YouTubeEmbed ({ url, label }: YouTubeEmbedProps) {
   return (
     <div
       style={{
@@ -33,5 +33,5 @@ export function YouTubeEmbed({ url, label }: YouTubeEmbedProps) {
         allowFullScreen
       />
     </div>
-  );
+  )
 }

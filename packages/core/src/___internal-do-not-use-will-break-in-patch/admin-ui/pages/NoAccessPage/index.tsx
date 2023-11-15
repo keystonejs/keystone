@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Stack } from '@keystone-ui/core';
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
-import { SignoutButton } from '../../../../admin-ui/components/SignoutButton';
-import { ErrorContainer } from '../../../../admin-ui/components/Errors';
+import { jsx, Stack } from '@keystone-ui/core'
+import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
+import { SignoutButton } from '../../../../admin-ui/components/SignoutButton'
+import { ErrorContainer } from '../../../../admin-ui/components/Errors'
 
-type NoAccessPage = { sessionsEnabled: boolean };
+type NoAccessPage = { sessionsEnabled: boolean }
 
-export const getNoAccessPage = (props: NoAccessPage) => () => <NoAccessPage {...props} />;
+export const getNoAccessPage = (props: NoAccessPage) => () => <NoAccessPage {...props} />
 
 export const NoAccessPage = ({ sessionsEnabled }: NoAccessPage) => {
   return (
@@ -19,5 +19,5 @@ export const NoAccessPage = ({ sessionsEnabled }: NoAccessPage) => {
         {sessionsEnabled ? <SignoutButton /> : null}
       </Stack>
     </ErrorContainer>
-  );
-};
+  )
+}

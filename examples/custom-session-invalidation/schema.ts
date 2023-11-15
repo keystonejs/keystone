@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { denyAll, unfiltered } from '@keystone-6/core/access';
-import { text, password, timestamp } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { denyAll, unfiltered } from '@keystone-6/core/access'
+import { text, password, timestamp } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -9,28 +9,28 @@ import type { Lists } from '.keystone/types';
 
 // needs to be compatible with withAuth
 export type Session = {
-  listKey: string;
-  itemId: string;
+  listKey: string
+  itemId: string
   data: {
-    passwordChangedAt: string;
-  };
-  startedAt: number;
-};
-
-function hasSession({ session }: { session?: Session }) {
-  return Boolean(session);
+    passwordChangedAt: string
+  }
+  startedAt: number
 }
 
-function isSameUserFilter({ session }: { session?: Session }) {
+function hasSession ({ session }: { session?: Session }) {
+  return Boolean(session)
+}
+
+function isSameUserFilter ({ session }: { session?: Session }) {
   // you need to have a session
-  if (!session) return false;
+  if (!session) return false
 
   // the authenticated user can only see themselves
   return {
     id: {
       equals: session.itemId,
     },
-  };
+  }
 }
 
 export const lists: Lists = {
@@ -77,12 +77,12 @@ export const lists: Lists = {
       resolveInput: {
         update: ({ resolvedData }) => {
           if ('password' in resolvedData) {
-            resolvedData.passwordChangedAt = new Date();
+            resolvedData.passwordChangedAt = new Date()
           }
 
-          return resolvedData;
+          return resolvedData
         },
       },
     },
   }),
-};
+}

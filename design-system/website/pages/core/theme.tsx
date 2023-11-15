@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core'
 
-import { Page } from '../../components/Page';
+import { Page } from '../../components/Page'
 
-export default function ThemePage() {
+export default function ThemePage () {
   return (
     <Page>
       <h1>Theme</h1>
@@ -29,5 +29,5 @@ export default function ThemePage() {
         <a href="https://smart-swatch.netlify.app/">Smart Swatch</a>.
       </p>
     </Page>
-  );
+  )
 }

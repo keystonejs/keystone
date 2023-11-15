@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Alert } from '../primitives/Alert';
-import { Button } from '../primitives/Button';
-import { ArrowR } from '../icons/ArrowR';
+import { Alert } from '../primitives/Alert'
+import { Button } from '../primitives/Button'
+import { ArrowR } from '../icons/ArrowR'
 
-export function GitHubExamplesCTA() {
+export function GitHubExamplesCTA () {
   return (
     <Alert css={{ margin: '2rem 0' }}>
       <span
@@ -28,5 +28,5 @@ export function GitHubExamplesCTA() {
         Keystone GitHub repo <ArrowR />
       </Button>
     </Alert>
-  );
+  )
 }

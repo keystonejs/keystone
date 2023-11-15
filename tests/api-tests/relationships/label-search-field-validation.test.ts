@@ -1,8 +1,8 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { getContext } from '@keystone-6/core/context';
-import { integer, relationship, text } from '@keystone-6/core/fields';
-import { testConfig } from '../utils';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { getContext } from '@keystone-6/core/context'
+import { integer, relationship, text } from '@keystone-6/core/fields'
+import { testConfig } from '../utils'
 
 const Thing = list({
   access: allowAll,
@@ -11,7 +11,7 @@ const Thing = list({
     other: text(),
     notText: integer(),
   },
-});
+})
 
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
   expect(() =>
@@ -36,8 +36,8 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.labelField option for field 'A.something' uses 'doesNotExist' but that field doesn't exist."`
-  );
-});
+  )
+})
 
 test("labelField that doesn't exist is rejected with displayMode: cards", () => {
   expect(() =>
@@ -64,8 +64,8 @@ test("labelField that doesn't exist is rejected with displayMode: cards", () => 
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.inlineConnect.labelField option for field 'A.something' uses 'doesNotExist' but that field doesn't exist."`
-  );
-});
+  )
+})
 
 test("searchFields that don't exist are rejected with displayMode: select", () => {
   expect(() =>
@@ -90,8 +90,8 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.searchFields option for relationship field 'A.something' includes 'doesNotExist' but that field doesn't exist."`
-  );
-});
+  )
+})
 
 test("searchFields that don't exist are rejected with displayMode: cards", () => {
   expect(() =>
@@ -118,8 +118,8 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.inlineConnect.searchFields option for relationship field 'A.something' includes 'doesNotExist' but that field doesn't exist."`
-  );
-});
+  )
+})
 
 test("searchFields that aren't searchable are rejected with displayMode: select", () => {
   expect(() =>
@@ -144,8 +144,8 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.searchFields option for field 'A.something' includes 'notText' but that field doesn't have a contains filter that accepts a GraphQL String"`
-  );
-});
+  )
+})
 
 test("searchFields that aren't searchable are rejected with displayMode: cards", () => {
   expect(() =>
@@ -172,5 +172,5 @@ test("searchFields that aren't searchable are rejected with displayMode: cards",
     )
   ).toThrowErrorMatchingInlineSnapshot(
     `"The ui.searchFields option for field 'A.something' includes 'notText' but that field doesn't have a contains filter that accepts a GraphQL String"`
-  );
-});
+  )
+})

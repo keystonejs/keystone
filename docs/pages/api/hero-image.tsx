@@ -1,23 +1,23 @@
-import React from 'react';
-import { ImageResponse } from '@vercel/og';
-import type { NextRequest } from 'next/server';
-import { siteBaseUrl } from '../../lib/og-util';
+import React from 'react'
+import { ImageResponse } from '@vercel/og'
+import type { NextRequest } from 'next/server'
+import { siteBaseUrl } from '../../lib/og-util'
 
 export const config = {
   runtime: 'experimental-edge',
-};
+}
 
-const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`;
+const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`
 
-export const HeroImage = ({ title, type }: { title: string; type?: string }) => {
-  const clippedTitle = title.length > 100 ? title.substring(0, 100) + '...' : title;
-  let titleFontSize = 96;
+export const HeroImage = ({ title, type }: { title: string, type?: string }) => {
+  const clippedTitle = title.length > 100 ? title.substring(0, 100) + '...' : title
+  let titleFontSize = 96
   if (clippedTitle.length > 35) {
-    titleFontSize = 80;
+    titleFontSize = 80
   } else if (clippedTitle.length > 60) {
-    titleFontSize = 72;
+    titleFontSize = 72
   } else if (title.length > 80) {
-    titleFontSize = 60;
+    titleFontSize = 60
   }
 
   return (
@@ -103,25 +103,25 @@ export const HeroImage = ({ title, type }: { title: string; type?: string }) => 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const interSemiBold = fetch(
   new URL('../../public/assets/blog/font/Inter-SemiBold.ttf', import.meta.url)
-).then(res => res.arrayBuffer());
+).then(res => res.arrayBuffer())
 const interExtraBold = fetch(
   new URL('../../public/assets/blog/font/Inter-ExtraBold.ttf', import.meta.url)
-).then(res => res.arrayBuffer());
+).then(res => res.arrayBuffer())
 
 // vercel API route that generates the OG image
-export default async function handler(req: NextRequest) {
-  const interSemiBoldData = await interSemiBold;
-  const interExtraBoldData = await interExtraBold;
+export default async function handler (req: NextRequest) {
+  const interSemiBoldData = await interSemiBold
+  const interExtraBoldData = await interExtraBold
 
   try {
-    const { searchParams } = new URL(req.url);
-    const title = searchParams.has('title') ? searchParams.get('title') || '' : '';
-    const type = searchParams.get('type') || undefined;
+    const { searchParams } = new URL(req.url)
+    const title = searchParams.has('title') ? searchParams.get('title') || '' : ''
+    const type = searchParams.get('type') || undefined
 
     if (title?.length > 100) {
       return new Response(
@@ -130,7 +130,7 @@ export default async function handler(req: NextRequest) {
           message: 'Param title too long',
         }),
         { status: 400 }
-      );
+      )
     }
 
     return new ImageResponse(<HeroImage title={title} type={type} />, {
@@ -151,10 +151,10 @@ export default async function handler(req: NextRequest) {
           weight: 800,
         },
       ],
-    });
+    })
   } catch (e: any) {
     return new Response(`Failed to generate hero image`, {
       status: 500,
-    });
+    })
   }
 }

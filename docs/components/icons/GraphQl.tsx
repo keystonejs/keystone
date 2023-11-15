@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, type IconProps } from './util'
 
-export function GraphQl({ grad, ...props }: IconProps) {
+export function GraphQl ({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -76,5 +76,5 @@ export function GraphQl({ grad, ...props }: IconProps) {
         d="M22.0002 9.25002C19.5877 9.25002 17.6377 7.30002 17.6377 4.88752C17.6377 2.47502 19.5877 0.525024 22.0002 0.525024C24.4127 0.525024 26.3627 2.47502 26.3627 4.88752C26.3627 7.30002 24.4127 9.25002 22.0002 9.25002Z"
       />
     </svg>
-  );
+  )
 }

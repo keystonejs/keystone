@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Box } from '@keystone-ui/core';
-import { Drawer } from '@keystone-ui/modals';
-import { LoadingDots } from '@keystone-ui/loading';
+import { jsx, Box } from '@keystone-ui/core'
+import { Drawer } from '@keystone-ui/modals'
+import { LoadingDots } from '@keystone-ui/loading'
 
-import { useKeystone, useList } from '../context';
+import { useKeystone, useList } from '../context'
 
-import { Fields } from '../utils/Fields';
-import { useCreateItem } from '../utils/useCreateItem';
-import { GraphQLErrorNotice } from './GraphQLErrorNotice';
+import { Fields } from '../utils/Fields'
+import { useCreateItem } from '../utils/useCreateItem'
+import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 
-export function CreateItemDrawer({
+export function CreateItemDrawer ({
   listKey,
   onClose,
   onCreate,
 }: {
-  listKey: string;
-  onClose: () => void;
-  onCreate: (item: { id: string; label: string }) => void;
+  listKey: string
+  onClose: () => void
+  onCreate: (item: { id: string, label: string }) => void
 }) {
-  const { createViewFieldModes } = useKeystone();
-  const list = useList(listKey);
-  const createItemState = useCreateItem(list);
+  const { createViewFieldModes } = useKeystone()
+  const list = useList(listKey)
+  const createItemState = useCreateItem(list)
 
   return (
     <Drawer
@@ -33,9 +33,9 @@ export function CreateItemDrawer({
           label: `Create ${list.singular}`,
           loading: createItemState.state === 'loading',
           action: async () => {
-            const item = await createItemState.create();
+            const item = await createItemState.create()
             if (item) {
-              onCreate({ id: item.id, label: item.label || item.id });
+              onCreate({ id: item.id, label: item.label || item.id })
             }
           },
         },
@@ -46,7 +46,7 @@ export function CreateItemDrawer({
               !createItemState.shouldPreventNavigation ||
               window.confirm('There are unsaved changes, are you sure you want to exit?')
             ) {
-              onClose();
+              onClose()
             }
           },
         },
@@ -73,5 +73,5 @@ export function CreateItemDrawer({
         <Fields {...createItemState.props} />
       </Box>
     </Drawer>
-  );
+  )
 }

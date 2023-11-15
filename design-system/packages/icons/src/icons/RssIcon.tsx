@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const RssIcon = createIcon(
   <React.Fragment>
     <path d="M4 11a9 9 0 0 1 9 9" />
@@ -7,4 +7,4 @@ export const RssIcon = createIcon(
     <circle cx={5} cy={19} r={1} />
   </React.Fragment>,
   'RssIcon'
-);
+)

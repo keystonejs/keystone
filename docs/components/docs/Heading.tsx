@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import slugify from '@sindresorhus/slugify';
-import { jsx } from '@emotion/react';
-import { ReactNode } from 'react';
+import slugify from '@sindresorhus/slugify'
+import { jsx } from '@emotion/react'
+import { type ReactNode } from 'react'
 
-import { HeadingIdLink } from './CopyToClipboard';
+import { HeadingIdLink } from './CopyToClipboard'
 
 /*
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
  */
 
-function getAnchor(text: string | string[]) {
+function getAnchor (text: string | string[]) {
   if (typeof text === 'string') {
-    return slugify(text);
+    return slugify(text)
   } else if (Array.isArray(text)) {
-    return slugify(text.join('-').replace('[object Object]', ''));
+    return slugify(text.join('-').replace('[object Object]', ''))
   } else {
-    return '';
+    return ''
   }
 }
 
@@ -46,21 +46,21 @@ const headingStyles = {
   6: {
     fontSize: 'var(--font-xsmall)',
   },
-};
+}
 
 type BaseHeadingProps = {
-  className?: string;
-  children: ReactNode;
-} & ({ id: string } | { id?: undefined; children: string });
+  className?: string
+  children: ReactNode
+} & ({ id: string } | { id?: undefined, children: string })
 
 type HeadingProps = BaseHeadingProps & {
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-};
+  level: 1 | 2 | 3 | 4 | 5 | 6
+}
 
-export function Heading({ level, id, children, ...props }: HeadingProps) {
-  const hasHeadingIdLink = level > 1 && level < 5;
-  const computedId = id === undefined ? getAnchor(children) : id;
-  const Tag = `h${level}` as const;
+export function Heading ({ level, id, children, ...props }: HeadingProps) {
+  const hasHeadingIdLink = level > 1 && level < 5
+  const computedId = id === undefined ? getAnchor(children) : id
+  const Tag = `h${level}` as const
   return (
     <Tag
       css={{
@@ -88,29 +88,29 @@ export function Heading({ level, id, children, ...props }: HeadingProps) {
         {children}
       </span>
     </Tag>
-  );
+  )
 }
 
-export function H1(props: BaseHeadingProps) {
-  return <Heading level={1} {...props} />;
+export function H1 (props: BaseHeadingProps) {
+  return <Heading level={1} {...props} />
 }
 
-export function H2(props: BaseHeadingProps) {
-  return <Heading level={2} {...props} />;
+export function H2 (props: BaseHeadingProps) {
+  return <Heading level={2} {...props} />
 }
 
-export function H3(props: BaseHeadingProps) {
-  return <Heading level={3} {...props} />;
+export function H3 (props: BaseHeadingProps) {
+  return <Heading level={3} {...props} />
 }
 
-export function H4(props: BaseHeadingProps) {
-  return <Heading level={4} {...props} />;
+export function H4 (props: BaseHeadingProps) {
+  return <Heading level={4} {...props} />
 }
 
-export function H5(props: BaseHeadingProps) {
-  return <Heading level={5} {...props} />;
+export function H5 (props: BaseHeadingProps) {
+  return <Heading level={5} {...props} />
 }
 
-export function H6(props: BaseHeadingProps) {
-  return <Heading level={6} {...props} />;
+export function H6 (props: BaseHeadingProps) {
+  return <Heading level={6} {...props} />
 }

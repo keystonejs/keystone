@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ApertureIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={12} r={10} />
@@ -11,4 +11,4 @@ export const ApertureIcon = createIcon(
     <line x1={16.62} y1={12} x2={10.88} y2={21.94} />
   </React.Fragment>,
   'ApertureIcon'
-);
+)

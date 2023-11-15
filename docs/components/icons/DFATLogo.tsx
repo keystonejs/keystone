@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { type IconProps } from './util'
 
-export function DFATLogo(props: IconProps) {
+export function DFATLogo (props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -53,5 +53,5 @@ export function DFATLogo(props: IconProps) {
         clipRule="evenodd"
       />
     </svg>
-  );
+  )
 }

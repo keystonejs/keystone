@@ -1,23 +1,23 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { type HTMLAttributes } from 'react'
 
-import { Highlight } from '../primitives/Highlight';
-import { Button } from '../primitives/Button';
-import { Type } from '../primitives/Type';
-import { ArrowR } from '../icons/ArrowR';
-import { useMediaQuery } from '../../lib/media';
-import { Tick } from '../icons/Tick';
-import { CodeBox } from './CodeBox';
-import { Section } from './Section';
+import { Highlight } from '../primitives/Highlight'
+import { Button } from '../primitives/Button'
+import { Type } from '../primitives/Type'
+import { ArrowR } from '../icons/ArrowR'
+import { useMediaQuery } from '../../lib/media'
+import { Tick } from '../icons/Tick'
+import { CodeBox } from './CodeBox'
+import { Section } from './Section'
 
 type EndCtaProps = {
-  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
-} & HTMLAttributes<HTMLElement>;
+  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'
+} & HTMLAttributes<HTMLElement>
 
-export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
-  const mq = useMediaQuery();
+export function EndCta ({ grad = 'grad1', ...props }: EndCtaProps) {
+  const mq = useMediaQuery()
 
   return (
     <Section
@@ -80,5 +80,5 @@ export function EndCta({ grad = 'grad1', ...props }: EndCtaProps) {
         </Button>
       </div>
     </Section>
-  );
+  )
 }

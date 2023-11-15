@@ -1,23 +1,23 @@
-import { userInputError } from '../../../lib/core/graphql-errors';
+import { userInputError } from '../../../lib/core/graphql-errors'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   fieldType,
-  FieldTypeFunc,
+  type FieldTypeFunc,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { filters } from '../../filters';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
+import { filters } from '../../filters'
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: boolean;
+    defaultValue?: boolean
     db?: {
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
-  };
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
 export const checkbox =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -26,10 +26,10 @@ export const checkbox =
   }: CheckboxFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
+      throw Error("isIndexed: 'unique' is not a supported option for field type checkbox")
     }
 
-    assertReadIsNonNullAllowed(meta, config, false);
+    assertReadIsNonNullAllowed(meta, config, false)
 
     return fieldType({
       kind: 'scalar',
@@ -47,20 +47,20 @@ export const checkbox =
             type: graphql.Boolean,
             defaultValue: typeof defaultValue === 'boolean' ? defaultValue : undefined,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === null) {
-              throw userInputError('Checkbox fields cannot be set to null');
+              throw userInputError('Checkbox fields cannot be set to null')
             }
-            return val ?? defaultValue;
+            return val ?? defaultValue
           },
         },
         update: {
           arg: graphql.arg({ type: graphql.Boolean }),
-          resolve(val) {
+          resolve (val) {
             if (val === null) {
-              throw userInputError('Checkbox fields cannot be set to null');
+              throw userInputError('Checkbox fields cannot be set to null')
             }
-            return val;
+            return val
           },
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
@@ -71,5 +71,5 @@ export const checkbox =
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),
-    });
-  };
+    })
+  }

@@ -1,44 +1,44 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react'
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   Stack,
   Text,
   jsx,
   useTheme,
   forwardRefWithAs,
   VisuallyHidden,
-} from '@keystone-ui/core';
+} from '@keystone-ui/core'
 
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Button } from '@keystone-ui/button';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { LoadingDots } from '@keystone-ui/loading';
-import { useEffect, useRef, useState } from 'react';
-import { FieldProps, ListMeta } from '../../../../../types';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
+import { Button } from '@keystone-ui/button'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { LoadingDots } from '@keystone-ui/loading'
+import { useEffect, useRef, useState } from 'react'
+import { type FieldProps, type ListMeta } from '../../../../../types'
 import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
-} from '../../../../../admin-ui/utils';
-import { Link } from '../../../../../admin-ui/router';
-import { gql, useApolloClient } from '../../../../../admin-ui/apollo';
-import { controller } from '../index';
-import { RelationshipSelect } from '../RelationshipSelect';
-import { useItemState } from './useItemState';
-import { InlineEdit } from './InlineEdit';
-import { InlineCreate } from './InlineCreate';
+} from '../../../../../admin-ui/utils'
+import { Link } from '../../../../../admin-ui/router'
+import { gql, useApolloClient } from '../../../../../admin-ui/apollo'
+import { type controller } from '../index'
+import { RelationshipSelect } from '../RelationshipSelect'
+import { useItemState } from './useItemState'
+import { InlineEdit } from './InlineEdit'
+import { InlineCreate } from './InlineCreate'
 
 type CardContainerProps = {
-  children: ReactNode;
-  mode: 'view' | 'create' | 'edit';
-} & BoxProps;
+  children: ReactNode
+  mode: 'view' | 'create' | 'edit'
+} & BoxProps
 const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContainerProps, ref) => {
-  const { tones } = useTheme();
+  const { tones } = useTheme()
 
-  const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive'];
+  const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive']
 
   return (
     <Box
@@ -61,10 +61,10 @@ const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContain
       }}
       {...props}
     />
-  );
-});
+  )
+})
 
-export function Cards({
+export function Cards ({
   localList,
   field,
   foreignList,
@@ -73,27 +73,27 @@ export function Cards({
   onChange,
   forceValidation,
 }: {
-  foreignList: ListMeta;
-  localList: ListMeta;
-  id: string | null;
-  value: { kind: 'cards-view' };
+  foreignList: ListMeta
+  localList: ListMeta
+  id: string | null
+  value: { kind: 'cards-view' }
 } & FieldProps<typeof controller>) {
-  const { displayOptions } = value;
+  const { displayOptions } = value
   let selectedFields = [
     ...new Set([...displayOptions.cardFields, ...(displayOptions.inlineEdit?.fields || [])]),
   ]
     .map(fieldPath => {
-      return foreignList.fields[fieldPath].controller.graphqlSelection;
+      return foreignList.fields[fieldPath].controller.graphqlSelection
     })
-    .join('\n');
+    .join('\n')
   if (!displayOptions.cardFields.includes('id')) {
-    selectedFields += '\nid';
+    selectedFields += '\nid'
   }
   if (
     !displayOptions.cardFields.includes(foreignList.labelField) &&
     foreignList.labelField !== 'id'
   ) {
-    selectedFields += `\n${foreignList.labelField}`;
+    selectedFields += `\n${foreignList.labelField}`
   }
 
   const {
@@ -105,43 +105,43 @@ export function Cards({
     localList,
     id,
     field,
-  });
+  })
 
-  const client = useApolloClient();
+  const client = useApolloClient()
 
-  const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false);
-  const [showConnectItems, setShowConnectItems] = useState(false);
-  const [hideConnectItemsLabel, setHideConnectItemsLabel] = useState<'Cancel' | 'Done'>('Cancel');
-  const editRef = useRef<HTMLDivElement | null>(null);
+  const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false)
+  const [showConnectItems, setShowConnectItems] = useState(false)
+  const [hideConnectItemsLabel, setHideConnectItemsLabel] = useState<'Cancel' | 'Done'>('Cancel')
+  const editRef = useRef<HTMLDivElement | null>(null)
 
-  const isMountedRef = useRef(false);
+  const isMountedRef = useRef(false)
   useEffect(() => {
-    isMountedRef.current = true;
+    isMountedRef.current = true
     return () => {
-      isMountedRef.current = false;
-    };
-  });
+      isMountedRef.current = false
+    }
+  })
 
   useEffect(() => {
     if (value.itemsBeingEdited) {
-      editRef?.current?.focus();
+      editRef?.current?.focus()
     }
-  }, [value]);
+  }, [value])
 
   if (itemsState.kind === 'loading') {
     return (
       <div>
         <LoadingDots label={`Loading items for ${field.label} field`} />
       </div>
-    );
+    )
   }
   if (itemsState.kind === 'error') {
-    return <span css={{ color: 'red' }}>{itemsState.message}</span>;
+    return <span css={{ color: 'red' }}>{itemsState.message}</span>
   }
 
   const currentIdsArrayWithFetchedItems = [...value.currentIds]
     .map(id => ({ itemGetter: items[id], id }))
-    .filter(x => x.itemGetter);
+    .filter(x => x.itemGetter)
 
   return (
     <Stack gap="medium">
@@ -158,7 +158,7 @@ export function Cards({
           }}
         >
           {currentIdsArrayWithFetchedItems.map(({ id, itemGetter }, index) => {
-            const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
+            const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id)
             return (
               <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>
                 <VisuallyHidden as="h2">{`${field.label} ${index + 1} ${
@@ -172,44 +172,44 @@ export function Cards({
                       setItems({
                         ...items,
                         [id]: newItemGetter,
-                      });
-                      const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                      itemsBeingEdited.delete(id);
+                      })
+                      const itemsBeingEdited = new Set(value.itemsBeingEdited)
+                      itemsBeingEdited.delete(id)
                       onChange!({
                         ...value,
                         itemsBeingEdited,
-                      });
+                      })
                     }}
                     selectedFields={selectedFields}
                     itemGetter={itemGetter}
                     onCancel={() => {
-                      const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                      itemsBeingEdited.delete(id);
+                      const itemsBeingEdited = new Set(value.itemsBeingEdited)
+                      itemsBeingEdited.delete(id)
                       onChange!({
                         ...value,
                         itemsBeingEdited,
-                      });
+                      })
                     }}
                   />
                 ) : (
                   <Stack gap="xlarge">
                     {displayOptions.cardFields.map(fieldPath => {
-                      const field = foreignList.fields[fieldPath];
-                      const itemForField: Record<string, any> = {};
+                      const field = foreignList.fields[fieldPath]
+                      const itemForField: Record<string, any> = {}
                       for (const graphqlField of getRootGraphQLFieldsFromFieldController(
                         field.controller
                       )) {
-                        const fieldGetter = itemGetter.get(graphqlField);
+                        const fieldGetter = itemGetter.get(graphqlField)
                         if (fieldGetter.errors) {
-                          const errorMessage = fieldGetter.errors[0].message;
+                          const errorMessage = fieldGetter.errors[0].message
                           return (
                             <FieldContainer>
                               <FieldLabel>{field.label}</FieldLabel>
                               {errorMessage}
                             </FieldContainer>
-                          );
+                          )
                         }
-                        itemForField[graphqlField] = fieldGetter.data;
+                        itemForField[graphqlField] = fieldGetter.data
                       }
                       return (
                         <field.views.CardValue
@@ -217,7 +217,7 @@ export function Cards({
                           field={field.controller}
                           item={itemForField}
                         />
-                      );
+                      )
                     })}
                     <Stack across gap="small">
                       {displayOptions.inlineEdit && onChange !== undefined && (
@@ -228,7 +228,7 @@ export function Cards({
                             onChange({
                               ...value,
                               itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
-                            });
+                            })
                           }}
                           tone="active"
                         >
@@ -242,12 +242,12 @@ export function Cards({
                               size="small"
                               disabled={onChange === undefined}
                               onClick={() => {
-                                const currentIds = new Set(value.currentIds);
-                                currentIds.delete(id);
+                                const currentIds = new Set(value.currentIds)
+                                currentIds.delete(id)
                                 onChange({
                                   ...value,
                                   currentIds,
-                                });
+                                })
                               }}
                               {...props}
                               tone="negative"
@@ -273,7 +273,7 @@ export function Cards({
                   </Stack>
                 )}
               </CardContainer>
-            );
+            )
           })}
         </Stack>
       )}
@@ -302,14 +302,14 @@ export function Cards({
               portalMenu
               state={{
                 kind: 'many',
-                async onChange(options) {
+                async onChange (options) {
                   // TODO: maybe use the extraSelection prop on RelationshipSelect here
-                  const itemsToFetchAndConnect: string[] = [];
+                  const itemsToFetchAndConnect: string[] = []
                   options.forEach(item => {
                     if (!value.currentIds.has(item.id)) {
-                      itemsToFetchAndConnect.push(item.id);
+                      itemsToFetchAndConnect.push(item.id)
                     }
-                  });
+                  })
                   if (itemsToFetchAndConnect.length) {
                     try {
                       const { data, errors } = await client.query({
@@ -319,46 +319,46 @@ export function Cards({
                       }
                     }`,
                         variables: { ids: itemsToFetchAndConnect },
-                      });
+                      })
                       if (isMountedRef.current) {
-                        const dataGetters = makeDataGetter(data, errors);
-                        const itemsDataGetter = dataGetters.get('items');
-                        let newItems = { ...items };
+                        const dataGetters = makeDataGetter(data, errors)
+                        const itemsDataGetter = dataGetters.get('items')
+                        let newItems = { ...items }
                         let newCurrentIds = field.many
                           ? new Set(value.currentIds)
-                          : new Set<string>();
+                          : new Set<string>()
                         if (Array.isArray(itemsDataGetter.data)) {
                           itemsDataGetter.data.forEach((item, i) => {
                             if (item?.id != null) {
-                              newCurrentIds.add(item.id);
-                              newItems[item.id] = itemsDataGetter.get(i);
+                              newCurrentIds.add(item.id)
+                              newItems[item.id] = itemsDataGetter.get(i)
                             }
-                          });
+                          })
                         }
                         if (newCurrentIds.size) {
-                          setItems(newItems);
+                          setItems(newItems)
                           onChange({
                             ...value,
                             currentIds: newCurrentIds,
-                          });
-                          setHideConnectItemsLabel('Done');
+                          })
+                          setHideConnectItemsLabel('Done')
                         }
                       }
                     } finally {
                       if (isMountedRef.current) {
-                        setIsLoadingLazyItems(false);
+                        setIsLoadingLazyItems(false)
                       }
                     }
                   }
                 },
                 value: (() => {
-                  let options: { label: string; id: string }[] = [];
+                  let options: { label: string, id: string }[] = []
                   Object.keys(items).forEach(id => {
                     if (value.currentIds.has(id)) {
-                      options.push({ id, label: id });
+                      options.push({ id, label: id })
                     }
-                  });
-                  return options;
+                  })
+                  return options
                 })(),
               }}
             />
@@ -372,16 +372,16 @@ export function Cards({
             fields={displayOptions.inlineCreate!.fields}
             list={foreignList}
             onCancel={() => {
-              onChange({ ...value, itemBeingCreated: false });
+              onChange({ ...value, itemBeingCreated: false })
             }}
             onCreate={itemGetter => {
-              const id = itemGetter.data.id;
-              setItems({ ...items, [id]: itemGetter });
+              const id = itemGetter.data.id
+              setItems({ ...items, [id]: itemGetter })
               onChange({
                 ...value,
                 itemBeingCreated: false,
                 currentIds: field.many ? new Set([...value.currentIds, id]) : new Set([id]),
-              });
+              })
             }}
           />
         </CardContainer>
@@ -397,7 +397,7 @@ export function Cards({
                   onChange({
                     ...value,
                     itemBeingCreated: true,
-                  });
+                  })
                 }}
               >
                 Create {foreignList.singular}
@@ -409,8 +409,8 @@ export function Cards({
                 weight="none"
                 tone="passive"
                 onClick={() => {
-                  setShowConnectItems(true);
-                  setHideConnectItemsLabel('Cancel');
+                  setShowConnectItems(true)
+                  setHideConnectItemsLabel('Cancel')
                 }}
               >
                 Link existing {foreignList.singular}
@@ -427,5 +427,5 @@ export function Cards({
         </Text>
       )}
     </Stack>
-  );
+  )
 }

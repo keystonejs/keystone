@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const LoaderIcon = createIcon(
   <React.Fragment>
     <line x1={12} y1={2} x2={12} y2={6} />
@@ -12,4 +12,4 @@ export const LoaderIcon = createIcon(
     <line x1={16.24} y1={7.76} x2={19.07} y2={4.93} />
   </React.Fragment>,
   'LoaderIcon'
-);
+)

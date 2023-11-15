@@ -1,16 +1,16 @@
-import React from 'react';
-import { H1, H2 } from '../../../components/docs/Heading';
-import { DocsPage } from '../../../components/Page';
+import React from 'react'
+import { H1, H2 } from '../../../components/docs/Heading'
+import { DocsPage } from '../../../components/Page'
 import {
   DocumentEditorDemo,
   DocumentFeaturesProvider,
-} from '../../../components/docs/DocumentEditorDemo';
-import { Well } from '../../../components/primitives/Well';
-import { RelatedContent } from '../../../components/RelatedContent';
-import { InlineCode } from '../../../components/primitives/Code';
+} from '../../../components/docs/DocumentEditorDemo'
+import { Well } from '../../../components/primitives/Well'
+import { RelatedContent } from '../../../components/RelatedContent'
+import { InlineCode } from '../../../components/primitives/Code'
 
-export default function DocumentFieldDemo() {
-  const title = 'Document Fields Demo';
+export default function DocumentFieldDemo () {
+  const title = 'Document Fields Demo'
   return (
     <DocsPage
       noProse
@@ -86,5 +86,5 @@ export default function DocumentFieldDemo() {
         </div>
       </DocumentFeaturesProvider>
     </DocsPage>
-  );
+  )
 }

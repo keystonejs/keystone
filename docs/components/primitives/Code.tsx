@@ -1,67 +1,67 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Highlight, Prism } from 'prism-react-renderer';
-import { jsx } from '@emotion/react';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { Highlight, Prism } from 'prism-react-renderer'
+import { jsx } from '@emotion/react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
-import theme from '../../lib/prism-theme';
+import theme from '../../lib/prism-theme'
 
-type Range = { start: number; end: number };
-type CollapseRange = Range & { isCollapsed: boolean };
+type Range = { start: number, end: number }
+type CollapseRange = Range & { isCollapsed: boolean }
 
 const getRanges = (lines: string): Range[] => {
-  let ranges: Range[] = [];
+  let ranges: Range[] = []
 
   lines.split(',').forEach(lineRange => {
     if (lineRange.length) {
-      const [range1, range2] = lineRange.split('-');
+      const [range1, range2] = lineRange.split('-')
 
-      let parsedRange1 = parseInt(range1);
-      let parsedRange2 = parseInt(range2);
+      let parsedRange1 = parseInt(range1)
+      let parsedRange2 = parseInt(range2)
 
       if (isNaN(parsedRange1)) {
-        throw new Error(`When trying to do highlighting, error in {${lines}}`);
+        throw new Error(`When trying to do highlighting, error in {${lines}}`)
       }
 
       if (!isNaN(parsedRange2)) {
-        ranges.push({ start: parsedRange1 - 1, end: parsedRange2 - 1 });
+        ranges.push({ start: parsedRange1 - 1, end: parsedRange2 - 1 })
         while (parsedRange1 <= parsedRange2) {
-          parsedRange1++;
+          parsedRange1++
         }
       } else {
-        ranges.push({ start: parsedRange1 - 1, end: parsedRange1 - 1 });
+        ranges.push({ start: parsedRange1 - 1, end: parsedRange1 - 1 })
       }
     }
-  });
+  })
 
-  return ranges;
-};
+  return ranges
+}
 
 const parseClassName = (
   className?: string
-): { highlightRanges: Range[]; collapseRanges: CollapseRange[]; language: string } => {
-  let trimmedLanguage = (className || '').replace(/language-/, '');
-  let language, highlights, collapses;
+): { highlightRanges: Range[], collapseRanges: CollapseRange[], language: string } => {
+  let trimmedLanguage = (className || '').replace(/language-/, '')
+  let language, highlights, collapses
 
   if (
     !trimmedLanguage.includes('[') ||
     trimmedLanguage.indexOf('{') < trimmedLanguage.indexOf('[')
   ) {
-    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('{');
+    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('{')
 
-    let [scopedHighlights, scopedCollapses] = modifiers.split('[');
+    let [scopedHighlights, scopedCollapses] = modifiers.split('[')
 
-    language = scopedLanguage;
-    highlights = scopedHighlights;
-    collapses = scopedCollapses;
+    language = scopedLanguage
+    highlights = scopedHighlights
+    collapses = scopedCollapses
   } else {
-    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('[');
+    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('[')
 
-    let [scopedCollapses, scopedHighlights] = modifiers.split('{');
+    let [scopedCollapses, scopedHighlights] = modifiers.split('{')
 
-    language = scopedLanguage;
-    highlights = scopedHighlights;
-    collapses = scopedCollapses;
+    language = scopedLanguage
+    highlights = scopedHighlights
+    collapses = scopedCollapses
   }
 
   return {
@@ -71,36 +71,36 @@ const parseClassName = (
       ...range,
       isCollapsed: true,
     })),
-  };
-};
+  }
+}
 
 const findRange = <TRange extends Range | CollapseRange>(
   ranges: TRange[],
   num: number
-): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num);
+): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num)
 
-export function CodeBlock(props: { children: string; className?: string }) {
+export function CodeBlock (props: { children: string, className?: string }) {
   /*
     In MDX 2, we no longer get different components for rendering `inlineCode` and code blocks.
     This function returns us to our old behaviour, though a bit inelegantly
   */
   if (props.children.includes('\n')) {
-    return <Code {...props} />;
+    return <Code {...props} />
   }
-  return <InlineCode {...props} />;
+  return <InlineCode {...props} />
 }
 
-export function Code({ children, className }: { children: string; className?: string }) {
+export function Code ({ children, className }: { children: string, className?: string }) {
   let { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
     [className]
-  );
+  )
 
-  const [collapseState, updateCollapseState] = useState<CollapseRange[]>(collapseRanges);
+  const [collapseState, updateCollapseState] = useState<CollapseRange[]>(collapseRanges)
 
   useEffect(() => {
-    updateCollapseState(collapseRanges);
-  }, [collapseRanges]);
+    updateCollapseState(collapseRanges)
+  }, [collapseRanges])
 
   return (
     <Highlight prism={Prism} code={children.trim()} language={language} theme={theme}>
@@ -121,9 +121,9 @@ export function Code({ children, className }: { children: string; className?: st
                     onClick={() => {
                       let updated = collapseState.map(item =>
                         item.start === i ? { ...item, isCollapsed: false } : item
-                      );
+                      )
 
-                      updateCollapseState(updated);
+                      updateCollapseState(updated)
                     }}
                     css={{
                       border: 'inherit',
@@ -135,11 +135,11 @@ export function Code({ children, className }: { children: string; className?: st
                   >
                     ...
                   </button>
-                );
+                )
               }
 
               if (findRange(collapseState, i)?.isCollapsed) {
-                return undefined;
+                return undefined
               }
 
               return (
@@ -165,21 +165,21 @@ export function Code({ children, className }: { children: string; className?: st
                   {line.map((token, key) => {
                     // Fix for document field import
                     if (token.content === 'document' && token.types[0] === 'imports') {
-                      token.types = ['imports'];
+                      token.types = ['imports']
                     }
-                    return <span key={key} {...getTokenProps({ token, key })} />;
+                    return <span key={key} {...getTokenProps({ token, key })} />
                   })}
                 </div>
-              );
+              )
             })}
           </div>
-        );
+        )
       }}
     </Highlight>
-  );
+  )
 }
 
-export function InlineCode({ children }: { children: ReactNode }) {
+export function InlineCode ({ children }: { children: ReactNode }) {
   return (
     <code
       css={{
@@ -197,5 +197,5 @@ export function InlineCode({ children }: { children: ReactNode }) {
     >
       {children}
     </code>
-  );
+  )
 }

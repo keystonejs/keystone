@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const AlignJustifyIcon = createIcon(
   <React.Fragment>
     <line x1={21} y1={10} x2={3} y2={10} />
@@ -8,4 +8,4 @@ export const AlignJustifyIcon = createIcon(
     <line x1={21} y1={18} x2={3} y2={18} />
   </React.Fragment>,
   'AlignJustifyIcon'
-);
+)

@@ -1,24 +1,24 @@
-import React from 'react';
-import type { LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { json } from '@remix-run/node';
-import { keystoneContext } from '../utils/keystone.server';
+import React from 'react'
+import type { LoaderArgs } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
+import { json } from '@remix-run/node'
+import { keystoneContext } from '../utils/keystone.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
   // WARNING: this does nothing for now
   //   You will probably use Remix Sessions like in
   //   https://remix.run/docs/en/main/tutorials/jokes
-  const session = {};
-  const context = keystoneContext.withSession(session);
+  const session = {}
+  const context = keystoneContext.withSession(session)
   return json({
     posts: (await context.query.Post.findMany({
       query: 'id name content',
-    })) as { id: string; name: string; content: string }[],
-  });
-};
+    })) as { id: string, name: string, content: string }[],
+  })
+}
 
-export default function UsersIndexRoute() {
-  const data = useLoaderData<typeof loader>();
+export default function UsersIndexRoute () {
+  const data = useLoaderData<typeof loader>()
 
   return (
     <div>
@@ -32,5 +32,5 @@ export default function UsersIndexRoute() {
         ))}
       </ul>
     </div>
-  );
+  )
 }

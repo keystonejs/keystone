@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ComponentPropsWithoutRef } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { type ComponentPropsWithoutRef } from 'react'
+import { jsx } from '@keystone-ui/core'
 
 /**
  * NOTE: should probably come from the DS?
  */
-type ContainerProps = ComponentPropsWithoutRef<'div'>;
+type ContainerProps = ComponentPropsWithoutRef<'div'>
 export const Container = ({ children, ...props }: ContainerProps) => (
   <div
     css={{
@@ -20,4 +20,4 @@ export const Container = ({ children, ...props }: ContainerProps) => (
   >
     {children}
   </div>
-);
+)

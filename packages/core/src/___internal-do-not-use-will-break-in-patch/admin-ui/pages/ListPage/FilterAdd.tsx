@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ComponentProps, Fragment, FormEvent, useMemo, useState } from 'react';
-import { Button } from '@keystone-ui/button';
-import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { Select } from '@keystone-ui/fields';
-import { ChevronLeftIcon } from '@keystone-ui/icons/icons/ChevronLeftIcon';
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { OptionPrimitive, Options } from '@keystone-ui/options';
-import { PopoverDialog, usePopover } from '@keystone-ui/popover';
+import { type ComponentProps, Fragment, type FormEvent, useMemo, useState } from 'react'
+import { Button } from '@keystone-ui/button'
+import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
+import { Select } from '@keystone-ui/fields'
+import { ChevronLeftIcon } from '@keystone-ui/icons/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
+import { OptionPrimitive, Options } from '@keystone-ui/options'
+import { PopoverDialog, usePopover } from '@keystone-ui/popover'
 
-import { FieldMeta, JSONValue } from '../../../../types';
-import { useList } from '../../../../admin-ui/context';
-import { useRouter } from '../../../../admin-ui/router';
+import { type FieldMeta, type JSONValue } from '../../../../types'
+import { useList } from '../../../../admin-ui/context'
+import { useRouter } from '../../../../admin-ui/router'
 
 type State =
   | { kind: 'selecting-field' }
-  | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue };
+  | { kind: 'filter-value', fieldPath: string, filterType: string, filterValue: JSONValue }
 
 const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
   Option: ({ children, ...props }) => {
-    let theme = useTheme();
-    let iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim;
+    let theme = useTheme()
+    let iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim
     return (
       <OptionPrimitive {...props}>
         <span>{children}</span>
@@ -38,20 +38,20 @@ const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
           <ChevronRightIcon css={{ color: iconColor }} />
         </div>
       </OptionPrimitive>
-    );
+    )
   },
-};
-export function FilterAdd({
+}
+export function FilterAdd ({
   listKey,
   filterableFields,
 }: {
-  listKey: string;
-  filterableFields: Set<string>;
+  listKey: string
+  filterableFields: Set<string>
 }) {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
-  });
+  })
 
   return (
     <Fragment>
@@ -71,7 +71,7 @@ export function FilterAdd({
         {isOpen && (
           <FilterAddPopoverContent
             onClose={() => {
-              setOpen(false);
+              setOpen(false)
             }}
             listKey={listKey}
             filterableFields={filterableFields}
@@ -79,52 +79,52 @@ export function FilterAdd({
         )}
       </PopoverDialog>
     </Fragment>
-  );
+  )
 }
 
-function FilterAddPopoverContent({
+function FilterAddPopoverContent ({
   onClose,
   listKey,
   filterableFields,
 }: {
-  onClose: () => void;
-  listKey: string;
-  filterableFields: Set<string>;
+  onClose: () => void
+  listKey: string
+  filterableFields: Set<string>
 }) {
-  const list = useList(listKey);
-  const router = useRouter();
+  const list = useList(listKey)
+  const router = useRouter()
   const fieldsWithFilters = useMemo(() => {
     const fieldsWithFilters: Record<
       string,
       FieldMeta & { controller: { filter: NonNullable<FieldMeta['controller']['filter']> } }
-    > = {};
+    > = {}
     Object.keys(list.fields).forEach(fieldPath => {
-      const field = list.fields[fieldPath];
+      const field = list.fields[fieldPath]
       if (filterableFields.has(fieldPath) && field.controller.filter) {
-        fieldsWithFilters[fieldPath] = field as any;
+        fieldsWithFilters[fieldPath] = field as any
       }
-    });
-    return fieldsWithFilters;
-  }, [list.fields, filterableFields]);
+    })
+    return fieldsWithFilters
+  }, [list.fields, filterableFields])
   const filtersByFieldThenType = useMemo(() => {
-    const filtersByFieldThenType: Record<string, Record<string, string>> = {};
+    const filtersByFieldThenType: Record<string, Record<string, string>> = {}
     Object.keys(fieldsWithFilters).forEach(fieldPath => {
-      const field = fieldsWithFilters[fieldPath];
-      let hasUnusedFilters = false;
-      const filters: Record<string, string> = {};
+      const field = fieldsWithFilters[fieldPath]
+      let hasUnusedFilters = false
+      const filters: Record<string, string> = {}
       Object.keys(field.controller.filter.types).forEach(filterType => {
         if (router.query[`!${fieldPath}_${filterType}`] === undefined) {
-          hasUnusedFilters = true;
-          filters[filterType] = field.controller.filter.types[filterType].label;
+          hasUnusedFilters = true
+          filters[filterType] = field.controller.filter.types[filterType].label
         }
-      });
+      })
       if (hasUnusedFilters) {
-        filtersByFieldThenType[fieldPath] = filters;
+        filtersByFieldThenType[fieldPath] = filters
       }
-    });
-    return filtersByFieldThenType;
-  }, [router.query, fieldsWithFilters]);
-  const [state, setState] = useState<State>({ kind: 'selecting-field' });
+    })
+    return filtersByFieldThenType
+  }, [router.query, fieldsWithFilters])
+  const [state, setState] = useState<State>({ kind: 'selecting-field' })
 
   return (
     <Stack
@@ -132,15 +132,15 @@ function FilterAddPopoverContent({
       as="form"
       css={{ minWidth: 320 }}
       onSubmit={(event: FormEvent) => {
-        event.preventDefault();
+        event.preventDefault()
         if (state.kind === 'filter-value') {
           router.push({
             query: {
               ...router.query,
               [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
             },
-          });
-          onClose();
+          })
+          onClose()
         }
       }}
       gap="small"
@@ -150,7 +150,7 @@ function FilterAddPopoverContent({
           <button
             type="button"
             onClick={() => {
-              setState({ kind: 'selecting-field' });
+              setState({ kind: 'selecting-field' })
             }}
             css={{
               border: 0,
@@ -167,10 +167,10 @@ function FilterAddPopoverContent({
           {(() => {
             switch (state.kind) {
               case 'selecting-field': {
-                return 'Filter';
+                return 'Filter'
               }
               case 'filter-value': {
-                return list.fields[state.fieldPath].label;
+                return list.fields[state.fieldPath].label
               }
             }
           })()}
@@ -181,15 +181,15 @@ function FilterAddPopoverContent({
         <Options
           components={fieldSelectComponents}
           onChange={newVal => {
-            const fieldPath: string = (newVal as any).value;
-            const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0];
+            const fieldPath: string = (newVal as any).value
+            const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0]
             setState({
               kind: 'filter-value',
               fieldPath,
               filterType,
               filterValue:
                 fieldsWithFilters[fieldPath].controller.filter.types[filterType].initialValue,
-            });
+            })
           }}
           options={Object.keys(filtersByFieldThenType).map(fieldPath => ({
             label: fieldsWithFilters[fieldPath].label,
@@ -213,7 +213,7 @@ function FilterAddPopoverContent({
                   fieldsWithFilters[state.fieldPath].controller.filter.types[newVal.value]
                     .initialValue,
                 filterType: newVal.value,
-              });
+              })
             }
           }}
           options={Object.keys(filtersByFieldThenType[state.fieldPath]).map(filterType => ({
@@ -224,7 +224,7 @@ function FilterAddPopoverContent({
       )}
       {state.kind == 'filter-value' &&
         (() => {
-          const { Filter } = fieldsWithFilters[state.fieldPath].controller.filter;
+          const { Filter } = fieldsWithFilters[state.fieldPath].controller.filter
           return (
             <Filter
               type={state.filterType}
@@ -233,10 +233,10 @@ function FilterAddPopoverContent({
                 setState(state => ({
                   ...state,
                   filterValue: value,
-                }));
+                }))
               }}
             />
-          );
+          )
         })()}
       {state.kind == 'filter-value' && (
         <div css={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -245,5 +245,5 @@ function FilterAddPopoverContent({
         </div>
       )}
     </Stack>
-  );
+  )
 }

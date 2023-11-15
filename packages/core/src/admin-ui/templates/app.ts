@@ -1,20 +1,20 @@
-import hashString from '@emotion/hash';
+import hashString from '@emotion/hash'
 import {
   executeSync,
   GraphQLNonNull,
   GraphQLScalarType,
-  GraphQLSchema,
+  type GraphQLSchema,
   GraphQLUnionType,
   parse,
-  FragmentDefinitionNode,
-  SelectionNode,
-  ExecutionResult,
+  type FragmentDefinitionNode,
+  type SelectionNode,
+  type ExecutionResult,
   Kind,
-} from 'graphql';
-import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta';
+} from 'graphql'
+import { staticAdminMetaQuery, type StaticAdminMetaQuery } from '../admin-meta-graphql'
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
-type AppTemplateOptions = { configFileExists: boolean };
+type AppTemplateOptions = { configFileExists: boolean }
 
 export const appTemplate = (
   adminMetaRootVal: AdminMetaRootVal,
@@ -26,25 +26,25 @@ export const appTemplate = (
     document: staticAdminMetaQuery,
     schema: graphQLSchema,
     contextValue: { isAdminUIBuildProcess: true },
-  }) as ExecutionResult<StaticAdminMetaQuery>;
+  }) as ExecutionResult<StaticAdminMetaQuery>
   if (result.errors) {
-    throw result.errors[0];
+    throw result.errors[0]
   }
-  const { adminMeta } = result.data!.keystone;
-  const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
+  const { adminMeta } = result.data!.keystone
+  const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta))
 
   const allViews = adminMetaRootVal.views.map(viewRelativeToProject => {
     const isRelativeToFile =
-      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../');
+      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
     const viewRelativeToAppFile = isRelativeToFile
       ? '../../../' + viewRelativeToProject
-      : viewRelativeToProject;
+      : viewRelativeToProject
 
     // we're not using serializePathForImport here because we want the thing you write for a view
     // to be exactly what you would put in an import in the project directory.
     // we're still using JSON.stringify to escape anything that might need to be though
-    return JSON.stringify(viewRelativeToAppFile);
-  });
+    return JSON.stringify(viewRelativeToAppFile)
+  })
   // -- TEMPLATE START
   return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';
 
@@ -63,11 +63,11 @@ export default getApp({
   adminConfig: adminConfig,
   apiPath: "${apiPath}",
 });
-`;
+`
   // -- TEMPLATE END
-};
+}
 
-function getLazyMetadataQuery(
+function getLazyMetadataQuery (
   graphqlSchema: GraphQLSchema,
   adminMeta: StaticAdminMetaQuery['keystone']['adminMeta']
 ) {
@@ -88,52 +88,52 @@ function getLazyMetadataQuery(
       }
     }
   }`).definitions[0] as FragmentDefinitionNode
-  ).selectionSet.selections as SelectionNode[];
+  ).selectionSet.selections as SelectionNode[]
 
-  const queryType = graphqlSchema.getQueryType();
+  const queryType = graphqlSchema.getQueryType()
   if (queryType) {
-    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name);
-    const fields = queryType.getFields();
+    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name)
+    const fields = queryType.getFields()
     if (fields['authenticatedItem'] !== undefined) {
-      const authenticatedItemType = fields['authenticatedItem'].type;
+      const authenticatedItemType = fields['authenticatedItem'].type
       if (
         !(authenticatedItemType instanceof GraphQLUnionType) ||
         authenticatedItemType.name !== 'AuthenticatedItem'
       ) {
         throw new Error(
           `The type of Query.authenticatedItem must be a type named AuthenticatedItem and be a union of types that refer to Keystone lists but it is "${authenticatedItemType.toString()}"`
-        );
+        )
       }
       for (const type of authenticatedItemType.getTypes()) {
-        const fields = type.getFields();
-        const list = getListByKey(type.name);
+        const fields = type.getFields()
+        const list = getListByKey(type.name)
         if (list === undefined) {
           throw new Error(
             `All members of the AuthenticatedItem union must refer to Keystone lists but "${type.name}" is in the AuthenticatedItem union but is not a Keystone list`
-          );
+          )
         }
-        let labelGraphQLField = fields[list.labelField];
+        let labelGraphQLField = fields[list.labelField]
         if (labelGraphQLField === undefined) {
           throw new Error(
             `The labelField for the list "${list.key}" is "${list.labelField}" but the GraphQL type does not have a field named "${list.labelField}"`
-          );
+          )
         }
-        let labelGraphQLFieldType = labelGraphQLField.type;
+        let labelGraphQLFieldType = labelGraphQLField.type
         if (labelGraphQLFieldType instanceof GraphQLNonNull) {
-          labelGraphQLFieldType = labelGraphQLFieldType.ofType;
+          labelGraphQLFieldType = labelGraphQLFieldType.ofType
         }
         if (!(labelGraphQLFieldType instanceof GraphQLScalarType)) {
           throw new Error(
             `Label fields must be scalar GraphQL types but the labelField "${list.labelField}" on the list "${list.key}" is not a scalar type`
-          );
+          )
         }
         const requiredArgs = labelGraphQLField.args.filter(
           arg => arg.defaultValue === undefined && arg.type instanceof GraphQLNonNull
-        );
+        )
         if (requiredArgs.length) {
           throw new Error(
             `Label fields must have no required arguments but the labelField "${list.labelField}" on the list "${list.key}" has a required argument "${requiredArgs[0].name}"`
-          );
+          )
         }
       }
 
@@ -157,7 +157,7 @@ function getLazyMetadataQuery(
             },
           })),
         },
-      });
+      })
     }
   }
 
@@ -171,5 +171,5 @@ function getLazyMetadataQuery(
         selectionSet: { kind: 'SelectionSet', selections },
       },
     ],
-  };
+  }
 }

@@ -3,23 +3,23 @@
 
 import {
   Fragment,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   forwardRef,
   useEffect,
   useState,
   useRef,
   useCallback,
-  CSSProperties,
+  type CSSProperties,
   useMemo,
-} from 'react';
-import * as focusTrapModule from 'focus-trap';
-import { Options, Placement } from '@popperjs/core';
-import { usePopper } from 'react-popper';
-import { jsx, Portal, useTheme } from '@keystone-ui/core';
+} from 'react'
+import * as focusTrapModule from 'focus-trap'
+import { type Options, type Placement } from '@popperjs/core'
+import { usePopper } from 'react-popper'
+import { jsx, Portal, useTheme } from '@keystone-ui/core'
 
-type AnchorElementType = HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | HTMLSpanElement;
+type AnchorElementType = HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | HTMLSpanElement
 
 // Hooks
 // ------------------------------
@@ -27,17 +27,17 @@ type AnchorElementType = HTMLAnchorElement | HTMLButtonElement | HTMLDivElement 
 // Generic Hook
 
 type PopoverOptions = {
-  handleClose: 'both' | 'mouse' | 'keyboard' | 'none';
-};
+  handleClose: 'both' | 'mouse' | 'keyboard' | 'none'
+}
 
 export const useControlledPopover = (
-  { isOpen, onClose }: { isOpen: boolean; onClose: () => void },
+  { isOpen, onClose }: { isOpen: boolean, onClose: () => void },
   popperOptions: Partial<Options> = {},
   popoverOptions: PopoverOptions = { handleClose: 'both' }
 ) => {
-  const [anchorElement, setAnchorElement] = useState<AnchorElementType | null>(null);
-  const [popoverElement, setPopoverElement] = useState<HTMLDivElement>();
-  const [arrowElement, setArrowElement] = useState<HTMLDivElement>();
+  const [anchorElement, setAnchorElement] = useState<AnchorElementType | null>(null)
+  const [popoverElement, setPopoverElement] = useState<HTMLDivElement>()
+  const [arrowElement, setArrowElement] = useState<HTMLDivElement>()
 
   const { styles, attributes, update } = usePopper(anchorElement, popoverElement, {
     ...popperOptions,
@@ -46,35 +46,35 @@ export const useControlledPopover = (
       { name: 'arrow', options: { element: arrowElement } },
       { name: 'eventListeners', options: { scroll: isOpen, resize: isOpen } },
     ],
-  });
+  })
 
   // update popper when it opens to get the latest placement
   // useful for prerendered popovers in modals etc.
   useEffect(() => {
     if (update && isOpen) {
-      update();
+      update()
     }
-  }, [isOpen, update]);
+  }, [isOpen, update])
 
   // close on click outside
   useClickOutside({
     handler: () => onClose(),
     elements: [anchorElement, popoverElement],
     listenWhen: ['both', 'mouse'].includes(popoverOptions.handleClose) && isOpen,
-  });
+  })
 
   // close on esc press
   useKeyPress({
     targetKey: 'Escape',
     downHandler: useCallback(
       (event: KeyboardEvent) => {
-        event.preventDefault(); // Avoid potential close of modal
-        onClose();
+        event.preventDefault() // Avoid potential close of modal
+        onClose()
       },
       [onClose]
     ),
     listenWhen: ['both', 'keyboard'].includes(popoverOptions.handleClose) && isOpen,
-  });
+  })
 
   return {
     trigger: useMemo(
@@ -106,14 +106,14 @@ export const useControlledPopover = (
       }),
       [styles.arrow]
     ),
-  };
-};
+  }
+}
 
 export const usePopover = (
   popperOptions: Partial<Options> = {},
   popoverOptions: PopoverOptions = { handleClose: 'both' }
 ) => {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false)
   return {
     isOpen,
     setOpen,
@@ -122,27 +122,27 @@ export const usePopover = (
       popperOptions,
       popoverOptions
     ),
-  };
-};
+  }
+}
 
 // Component
 // ------------------------------
 
 export type TriggerRendererOptions = {
-  isOpen: boolean;
+  isOpen: boolean
   triggerProps: {
-    onClick: () => void;
-    ref: Ref<any>;
-  };
-};
+    onClick: () => void
+    ref: Ref<any>
+  }
+}
 type Props = {
   /** The content of the dialog. */
-  children: ReactNode;
+  children: ReactNode
   /** Where, in relation to the trigger, to place the dialog. */
-  placement?: Placement;
+  placement?: Placement
   /** The trigger element, which the dialog is bound to. */
-  triggerRenderer: (options: TriggerRendererOptions) => ReactElement;
-};
+  triggerRenderer: (options: TriggerRendererOptions) => ReactElement
+}
 
 export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Props) => {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
@@ -155,7 +155,7 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
         },
       },
     ],
-  });
+  })
 
   return (
     <Fragment>
@@ -175,52 +175,52 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
         {...props}
       />
     </Fragment>
-  );
-};
+  )
+}
 
 // Dialog
 // ------------------------------
 
 type DialogProps = {
   /** The content of the dialog. */
-  children: ReactNode;
+  children: ReactNode
   /** When true, the popover will be visible. */
-  isVisible: boolean;
+  isVisible: boolean
   arrow: {
-    ref: (element: HTMLDivElement) => void;
+    ref: (element: HTMLDivElement) => void
     props: {
-      style: CSSProperties;
-    };
-  };
-};
+      style: CSSProperties
+    }
+  }
+}
 
 export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
   ({ isVisible, children, arrow, ...props }, consumerRef) => {
-    const { elevation, radii, shadow, colors } = useTheme();
-    const focusTrapRef = useRef<HTMLDivElement | null>(null);
-    const focusTrap = useRef<focusTrapModule.FocusTrap | null>(null);
+    const { elevation, radii, shadow, colors } = useTheme()
+    const focusTrapRef = useRef<HTMLDivElement | null>(null)
+    const focusTrap = useRef<focusTrapModule.FocusTrap | null>(null)
 
     useEffect(() => {
       if (focusTrapRef.current) {
         focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current, {
           allowOutsideClick: true,
-        });
+        })
       }
-    }, [focusTrapRef]);
+    }, [focusTrapRef])
 
     useEffect(() => {
-      const focusTrapInstance = focusTrap.current;
+      const focusTrapInstance = focusTrap.current
       if (focusTrapInstance) {
         if (isVisible) {
-          focusTrapInstance.activate();
+          focusTrapInstance.activate()
           return () => {
-            focusTrapInstance.deactivate();
-          };
+            focusTrapInstance.deactivate()
+          }
         } else {
-          focusTrapInstance.deactivate();
+          focusTrapInstance.deactivate()
         }
       }
-    }, [isVisible, focusTrap]);
+    }, [isVisible, focusTrap])
 
     return (
       <Portal>
@@ -244,20 +244,20 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           <div ref={focusTrapRef}>{isVisible ? children : null}</div>
         </div>
       </Portal>
-    );
+    )
   }
-);
+)
 
 // TODO: maybe we should add an invisible blanket and have a regular react event listener on that instead of this?
 
 // NOTE: mouse event handler defined here rather than imported from react becase
 // the event listener will return a native event, not a synthetic event
-type MouseHandler = (event: MouseEvent) => void;
+type MouseHandler = (event: MouseEvent) => void
 type UseClickOutsideProps = {
-  handler: MouseHandler;
-  elements: (HTMLElement | undefined | null)[];
-  listenWhen: boolean;
-};
+  handler: MouseHandler
+  elements: (HTMLElement | undefined | null)[]
+  listenWhen: boolean
+}
 
 const useClickOutside = ({ handler, elements, listenWhen }: UseClickOutsideProps) => {
   useEffect(() => {
@@ -265,28 +265,28 @@ const useClickOutside = ({ handler, elements, listenWhen }: UseClickOutsideProps
       let handleMouseDown = (event: MouseEvent) => {
         // bail on mouse down "inside" any of the provided elements
         if (elements.some(el => el && el.contains(event.target as Node))) {
-          return;
+          return
         }
 
-        handler(event);
-      };
-      document.addEventListener('mousedown', handleMouseDown);
+        handler(event)
+      }
+      document.addEventListener('mousedown', handleMouseDown)
 
       return () => {
-        document.removeEventListener('mousedown', handleMouseDown);
-      };
+        document.removeEventListener('mousedown', handleMouseDown)
+      }
     }
-  }, [handler, elements, listenWhen]);
-};
+  }, [handler, elements, listenWhen])
+}
 
-type KeyboardHandler = (event: KeyboardEvent) => void;
+type KeyboardHandler = (event: KeyboardEvent) => void
 type UseKeyPressProps = {
-  targetKey: string;
-  targetElement?: HTMLElement | null;
-  downHandler?: KeyboardHandler;
-  upHandler?: KeyboardHandler;
-  listenWhen: boolean;
-};
+  targetKey: string
+  targetElement?: HTMLElement | null
+  downHandler?: KeyboardHandler
+  upHandler?: KeyboardHandler
+  listenWhen: boolean
+}
 
 const useKeyPress = ({
   targetKey,
@@ -296,47 +296,47 @@ const useKeyPress = ({
   listenWhen,
 }: UseKeyPressProps) => {
   // Keep track of whether the target key is pressed
-  const [keyPressed, setKeyPressed] = useState(false);
+  const [keyPressed, setKeyPressed] = useState(false)
 
   // add event listeners
   useEffect(() => {
-    let target = targetElement || document.body;
+    let target = targetElement || document.body
     let onDown = (event: KeyboardEvent) => {
       if (event.key === targetKey) {
-        setKeyPressed(true);
+        setKeyPressed(true)
 
         if (typeof downHandler === 'function') {
-          downHandler(event);
+          downHandler(event)
         }
       }
-    };
+    }
     let onUp = (event: KeyboardEvent) => {
       if (event.key === targetKey) {
-        setKeyPressed(false);
+        setKeyPressed(false)
 
         if (typeof upHandler === 'function') {
-          upHandler(event);
+          upHandler(event)
         }
       }
-    };
+    }
     if (listenWhen) {
-      target.addEventListener('keydown', onDown);
-      target.addEventListener('keyup', onUp);
+      target.addEventListener('keydown', onDown)
+      target.addEventListener('keyup', onUp)
 
       // Remove event listeners on cleanup
       return () => {
-        target.removeEventListener('keydown', onDown);
-        target.removeEventListener('keyup', onUp);
-      };
+        target.removeEventListener('keydown', onDown)
+        target.removeEventListener('keyup', onUp)
+      }
     }
-  }, [listenWhen, targetKey, downHandler, upHandler, targetElement]);
+  }, [listenWhen, targetKey, downHandler, upHandler, targetElement])
 
-  return keyPressed;
-};
+  return keyPressed
+}
 
 const useArrowStyles = () => {
-  const theme = useTheme();
-  const size = 16;
+  const theme = useTheme()
+  const size = 16
   return {
     '& [data-popper-arrow]': {
       position: 'absolute',
@@ -384,5 +384,5 @@ const useArrowStyles = () => {
         left: '50%',
       },
     },
-  } as const;
-};
+  } as const
+}

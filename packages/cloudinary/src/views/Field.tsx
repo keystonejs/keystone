@@ -1,49 +1,49 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { jsx, Stack, useTheme } from '@keystone-ui/core'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
-import { Pill } from '@keystone-ui/pill';
-import { Button } from '@keystone-ui/button';
-import { FieldProps } from '@keystone-6/core/types';
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
+import { Pill } from '@keystone-ui/pill'
+import { Button } from '@keystone-ui/button'
+import { type FieldProps } from '@keystone-6/core/types'
 
-function useObjectURL(fileData: File | undefined) {
-  let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
+function useObjectURL (fileData: File | undefined) {
+  let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (fileData) {
-      let url = URL.createObjectURL(fileData);
-      setObjectURL(url);
+      let url = URL.createObjectURL(fileData)
+      setObjectURL(url)
       return () => {
-        URL.revokeObjectURL(url);
-      };
+        URL.revokeObjectURL(url)
+      }
     }
-  }, [fileData]);
-  return objectURL;
+  }, [fileData])
+  return objectURL
 }
 
-export function Field({
+export function Field ({
   autoFocus,
   field,
   value,
   onChange,
 }: FieldProps<typeof import('.').controller>) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined;
+  const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined
 
   const imagePathFromUpload = useObjectURL(
     errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
-  );
+  )
   const imagePath =
-    value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload;
+    value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload
 
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const inputKey = useMemo(() => Math.random(), [value]);
+  const inputKey = useMemo(() => Math.random(), [value])
 
   return (
     <FieldContainer>
@@ -57,7 +57,7 @@ export function Field({
               <Button
                 size="small"
                 onClick={() => {
-                  inputRef.current?.click();
+                  inputRef.current?.click()
                 }}
               >
                 Change image
@@ -67,7 +67,7 @@ export function Field({
                   size="small"
                   tone="negative"
                   onClick={() => {
-                    onChange({ kind: 'remove', previous: value });
+                    onChange({ kind: 'remove', previous: value })
                   }}
                 >
                   Remove
@@ -78,7 +78,7 @@ export function Field({
                   size="small"
                   tone="negative"
                   onClick={() => {
-                    onChange(value.previous);
+                    onChange(value.previous)
                   }}
                 >
                   Cancel
@@ -104,7 +104,7 @@ export function Field({
             size="small"
             disabled={onChange === undefined}
             onClick={() => {
-              inputRef.current?.click();
+              inputRef.current?.click()
             }}
           >
             Upload Image
@@ -114,7 +114,7 @@ export function Field({
               size="small"
               tone="negative"
               onClick={() => {
-                onChange?.(value.previous);
+                onChange?.(value.previous)
               }}
             >
               Undo removal
@@ -138,34 +138,34 @@ export function Field({
         key={inputKey}
         name={field.path}
         onChange={({ target: { validity, files } }) => {
-          const file = files?.[0];
-          if (!file) return; // bail if the user cancels from the file browser
+          const file = files?.[0]
+          if (!file) return // bail if the user cancels from the file browser
           onChange?.({
             kind: 'upload',
             data: { file, validity },
             previous: value,
-          });
+          })
         }}
         type="file"
         disabled={onChange === undefined}
       />
     </FieldContainer>
-  );
+  )
 }
 
-export function validateImage({
+export function validateImage ({
   file,
   validity,
 }: {
-  file: File;
-  validity: ValidityState;
+  file: File
+  validity: ValidityState
 }): string | undefined {
   if (!validity.valid) {
-    return 'Something went wrong, please reload and try again.';
+    return 'Something went wrong, please reload and try again.'
   }
   // check if the file is actually an image
   if (!file.type.includes('image')) {
-    return 'Only image files are allowed. Please try again.';
+    return 'Only image files are allowed. Please try again.'
   }
 }
 
@@ -173,8 +173,8 @@ export function validateImage({
 // Styled Components
 // ==============================
 
-const Image = (props: { src: string; alt: string }) => {
-  const theme = useTheme();
+const Image = (props: { src: string, alt: string }) => {
+  const theme = useTheme()
   return (
     <div
       css={{
@@ -197,5 +197,5 @@ const Image = (props: { src: string; alt: string }) => {
         {...props}
       />
     </div>
-  );
-};
+  )
+}

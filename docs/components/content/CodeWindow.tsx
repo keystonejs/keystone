@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../../lib/media';
+import { useMediaQuery } from '../../lib/media'
 
 const codeFontStyle = {
   fontSize: 13,
   lineHeight: 1.6,
   fontFamily: 'var(--font-mono)',
-};
+}
 
-function MenuBtn(props: HTMLAttributes<HTMLElement>) {
+function MenuBtn (props: HTMLAttributes<HTMLElement>) {
   return (
     <span
       css={{
@@ -24,10 +24,10 @@ function MenuBtn(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
+export function WindowWrapper (props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       css={{
@@ -37,10 +37,10 @@ export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export function WindowL(props: HTMLAttributes<HTMLElement>) {
+export function WindowL (props: HTMLAttributes<HTMLElement>) {
   return (
     <pre
       css={{
@@ -50,10 +50,10 @@ export function WindowL(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
-export function WindowR(props: HTMLAttributes<HTMLElement>) {
+export function WindowR (props: HTMLAttributes<HTMLElement>) {
   return (
     <pre
       css={{
@@ -65,15 +65,15 @@ export function WindowR(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 type CodeWindowProps = {
-  lines: number;
-} & HTMLAttributes<HTMLElement>;
+  lines: number
+} & HTMLAttributes<HTMLElement>
 
-export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
-  const mq = useMediaQuery();
+export function CodeWindow ({ lines = 1, children, ...props }: CodeWindowProps) {
+  const mq = useMediaQuery()
 
   return (
     <div
@@ -140,5 +140,5 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

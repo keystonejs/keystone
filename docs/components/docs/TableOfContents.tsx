@@ -1,67 +1,67 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useState, useEffect } from 'react';
-import { jsx } from '@emotion/react';
+import { useState, useEffect } from 'react'
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../../lib/media';
-import { Type } from '../primitives/Type';
+import { useMediaQuery } from '../../lib/media'
+import { Type } from '../primitives/Type'
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
-function sortVisible(allIds: (string | null)[], targetId: string | null) {
+function sortVisible (allIds: (string | null)[], targetId: string | null) {
   return (ids: (string | null)[] | never[]): (string | null)[] | never[] =>
-    [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+    [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1))
 }
 
 const observerOptions = {
   rootMargin: '-10px',
   threshold: 1.0,
-};
-
-interface Heading {
-  id: string;
-  label: string;
-  depth: number;
 }
 
-export function TableOfContents({
+interface Heading {
+  id: string
+  label: string
+  depth: number
+}
+
+export function TableOfContents ({
   container,
   headings,
 }: {
-  container: React.RefObject<HTMLElement | null>;
-  headings: Heading[];
+  container: React.RefObject<HTMLElement | null>
+  headings: Heading[]
 }) {
-  let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
-  let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
+  let [visibleIds, setVisibleIds] = useState<Array<string | null>>([])
+  let [lastVisibleId, setLastVisbleId] = useState<string | null>(null)
 
-  const mq = useMediaQuery();
+  const mq = useMediaQuery()
 
   // observe relevant headings
 
   useEffect(() => {
     if (container.current) {
-      let allIds = headings.map(h => h.id);
+      let allIds = headings.map(h => h.id)
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          const targetId: string | null = entry.target.getAttribute('id');
+          const targetId: string | null = entry.target.getAttribute('id')
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
-            setVisibleIds(sortVisible(allIds, targetId));
-            setLastVisbleId(targetId);
+            setVisibleIds(sortVisible(allIds, targetId))
+            setLastVisbleId(targetId)
           } else {
-            setVisibleIds(ids => ids.filter(id => id !== targetId));
+            setVisibleIds(ids => ids.filter(id => id !== targetId))
           }
-        });
-      }, observerOptions);
+        })
+      }, observerOptions)
 
       container.current.querySelectorAll('h1, h2, h3').forEach((node: Element) => {
-        observer.observe(node);
-      });
-      return () => observer.disconnect();
+        observer.observe(node)
+      })
+      return () => observer.disconnect()
     }
-  }, [container, headings]);
+  }, [container, headings])
 
   // catch if we're in a long gap between headings and resolve to the last available.
-  let activeId = visibleIds[0] || lastVisibleId;
+  let activeId = visibleIds[0] || lastVisibleId
 
   return (
     <div id="toc">
@@ -86,8 +86,8 @@ export function TableOfContents({
         </Type>
         <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {headings.map((h: Heading, i: number) => {
-            let isActive = activeId === h.id;
-            const slug = `#${h.id}`;
+            let isActive = activeId === h.id
+            const slug = `#${h.id}`
             return (
               <li
                 key={h.label + i}
@@ -115,10 +115,10 @@ export function TableOfContents({
                   {h.label}
                 </a>
               </li>
-            );
+            )
           })}
         </ul>
       </div>
     </div>
-  );
+  )
 }

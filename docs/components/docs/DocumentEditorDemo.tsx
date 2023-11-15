@@ -1,26 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { DocumentFeatures } from '@keystone-6/fields-document/views';
+import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { type DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
-  ComponentBlock,
+  type ComponentBlock,
   fields,
-  InferRenderersForComponentBlocks,
-} from '@keystone-6/fields-document/component-blocks';
-import { Global, jsx } from '@emotion/react';
-import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values';
+  type InferRenderersForComponentBlocks,
+} from '@keystone-6/fields-document/component-blocks'
+import { Global, jsx } from '@emotion/react'
+import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
 import {
   createDocumentEditor,
   DocumentEditor,
   Editor,
-} from '../../../packages/fields-document/src/DocumentEditor';
-import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
-import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props';
-import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks';
-import { initialContent } from '../../lib/initialDocumentDemoContent';
-import { Code } from '../primitives/Code';
+} from '../../../packages/fields-document/src/DocumentEditor'
+import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
+import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
+import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks'
+import { initialContent } from '../../lib/initialDocumentDemoContent'
+import { Code } from '../primitives/Code'
 
-const headingLevels = ['1', '2', '3', '4', '5', '6'] as const;
+const headingLevels = ['1', '2', '3', '4', '5', '6'] as const
 
 const marks = [
   'bold',
@@ -31,7 +31,7 @@ const marks = [
   'subscript',
   'superscript',
   'underline',
-] as const;
+] as const
 
 const documentFeaturesProp = fields.object({
   inlineMarks: fields.multiselect({
@@ -69,15 +69,15 @@ const documentFeaturesProp = fields.object({
   }),
   layouts: fields.checkbox({ label: 'Layouts', defaultValue: true }),
   useShorthand: fields.checkbox({ label: 'Use shorthand in code example', defaultValue: true }),
-});
+})
 
 type DocumentFeaturesFormValue = Parameters<
   InferRenderersForComponentBlocks<
     Record<'documentFeatures', ComponentBlock<(typeof documentFeaturesProp)['fields']>>
   >['documentFeatures']
->[0];
+>[0]
 
-const emptyObj = {};
+const emptyObj = {}
 
 const componentBlocks = {
   notice: componentBlocksInSandboxProject.notice,
@@ -85,11 +85,11 @@ const componentBlocks = {
   quote: componentBlocksInSandboxProject.quote,
   checkboxList: componentBlocksInSandboxProject.checkboxList,
   carousel: componentBlocksInSandboxProject.carousel,
-};
+}
 
-type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
+type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0]
 
-function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
+function documentFeaturesCodeExample (config: DocumentFieldConfig | DocumentFeatures) {
   return `import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
@@ -130,10 +130,10 @@ export default config({
   },
   /* ... */
 });
-`;
+`
 }
 
-function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): DocumentFieldConfig {
+function documentFeaturesToShorthand (documentFeatures: DocumentFeatures): DocumentFieldConfig {
   return {
     formatting: objToShorthand({
       alignment: objToShorthand({
@@ -164,31 +164,31 @@ function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): Docume
     links: boolToTrueOrUndefined(documentFeatures.links),
     layouts: documentFeatures.layouts.length === 0 ? undefined : documentFeatures.layouts,
     dividers: boolToTrueOrUndefined(documentFeatures.dividers),
-  };
+  }
 }
 
 function objToShorthand<
   Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
->(obj: Obj): Obj | true | undefined {
-  const values = Object.values(obj);
-  let state: (typeof values)[number] = values[0]!;
+> (obj: Obj): Obj | true | undefined {
+  const values = Object.values(obj)
+  let state: (typeof values)[number] = values[0]!
   for (const val of values) {
     if (val !== state || (val !== undefined && val !== true)) {
-      return obj;
+      return obj
     }
   }
-  return state as any;
+  return state as any
 }
 
-function boolToTrueOrUndefined(bool: boolean): true | undefined {
-  return bool ? true : undefined;
+function boolToTrueOrUndefined (bool: boolean): true | undefined {
+  return bool ? true : undefined
 }
 
 const fromEntriesButTypedWell: <Key extends string | number | symbol, Val>(
   iterable: Iterable<readonly [Key, Val]>
-) => Record<Key, Val> = Object.fromEntries;
+) => Record<Key, Val> = Object.fromEntries
 
-function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): DocumentFeatures {
+function documentFeaturesFormToValue (formValue: DocumentFeaturesFormValue): DocumentFeatures {
   return {
     formatting: {
       alignment: {
@@ -201,7 +201,7 @@ function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): Docu
       },
       inlineMarks: fromEntriesButTypedWell(
         marks.map(mark => {
-          return [mark, formValue.inlineMarks.includes(mark)];
+          return [mark, formValue.inlineMarks.includes(mark)]
         })
       ),
       headingLevels: formValue.blocks
@@ -225,19 +225,19 @@ function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): Docu
         ]
       : [],
     dividers: formValue.dividers,
-  };
+  }
 }
 
 const DocumentFeaturesContext = React.createContext<{
-  documentFeatures: DocumentFeatures;
-  formValue: DocumentFeaturesFormValue;
-  setFormValue: (value: DocumentFeaturesFormValue) => void;
-}>({} as any);
+  documentFeatures: DocumentFeatures
+  formValue: DocumentFeaturesFormValue
+  setFormValue:(value: DocumentFeaturesFormValue) => void
+}>({} as any)
 
-export function DocumentFeaturesProvider({ children }: { children: ReactNode }) {
+export function DocumentFeaturesProvider ({ children }: { children: ReactNode }) {
   const [formValue, setFormValue] = useState<DocumentFeaturesFormValue>(() =>
     getInitialPropsValue(documentFeaturesProp)
-  );
+  )
   return (
     <DocumentFeaturesContext.Provider
       value={useMemo(
@@ -251,43 +251,43 @@ export function DocumentFeaturesProvider({ children }: { children: ReactNode }) 
     >
       {children}
     </DocumentFeaturesContext.Provider>
-  );
+  )
 }
 
-export function DocumentFeaturesFormAndCode() {
-  const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
+export function DocumentFeaturesFormAndCode () {
+  const { formValue, setFormValue } = useContext(DocumentFeaturesContext)
   return (
     <div>
       <FormValueContentFromPreviewProps
         {...createGetPreviewProps(
           documentFeaturesProp,
           getNewVal => {
-            setFormValue(getNewVal(formValue));
+            setFormValue(getNewVal(formValue))
           },
           () => undefined
         )(formValue)}
       />
     </div>
-  );
+  )
 }
 
 export const DocumentEditorDemo = () => {
-  const [value, setValue] = useState(initialContent as any);
-  const [key, setKey] = useState(0);
-  const { documentFeatures, formValue } = useContext(DocumentFeaturesContext);
+  const [value, setValue] = useState(initialContent as any)
+  const [key, setKey] = useState(0)
+  const { documentFeatures, formValue } = useContext(DocumentFeaturesContext)
 
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
-    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj);
-    editor.children = value;
-    Editor.normalize(editor, { force: true });
-    setValue(editor.children);
+    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj)
+    editor.children = value
+    Editor.normalize(editor, { force: true })
+    setValue(editor.children)
     // slate looks like it's a controlled component but it actually isn't
     // so we need to re-mount it so that it looks at the updated value
-    setKey(x => x + 1);
+    setKey(x => x + 1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentFeatures]);
+  }, [documentFeatures])
 
   return (
     <div
@@ -366,5 +366,5 @@ export const DocumentEditorDemo = () => {
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>
     </div>
-  );
-};
+  )
+}

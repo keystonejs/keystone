@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Box, jsx, useTheme } from '@keystone-ui/core';
-import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon';
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
-import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
-import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { Box, jsx, useTheme } from '@keystone-ui/core'
+import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
+import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
+import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
+import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from '@keystone-6/fields-document/primitives';
-import { useEffect } from 'react';
-import { Button } from '@keystone-ui/button';
+} from '@keystone-6/fields-document/primitives'
+import { useEffect } from 'react'
+import { Button } from '@keystone-ui/button'
 
 const noticeIconMap = {
   info: InfoIcon,
   error: AlertOctagonIcon,
   warning: AlertTriangleIcon,
   success: CheckCircleIcon,
-};
+}
 
 export const componentBlocks = {
   carousel: component({
@@ -75,11 +75,11 @@ export const componentBlocks = {
                     {item.fields.title.value}
                   </h1>
                 </Box>
-              );
+              )
             })}
           </div>
         </NotEditable>
-      );
+      )
     },
     schema: {
       items: fields.array(
@@ -118,14 +118,14 @@ export const componentBlocks = {
                         props.fields.questions.elements
                           .filter(x => x.key !== questionAndAnswer.key)
                           .map(x => ({ key: x.key }))
-                      );
+                      )
                     }}
                   >
                     Remove
                   </Button>
                 </NotEditable>
               </div>
-            );
+            )
           })}
           <NotEditable>
             <Button
@@ -133,24 +133,24 @@ export const componentBlocks = {
                 props.fields.questions.onChange([
                   ...props.fields.questions.elements,
                   { key: undefined },
-                ]);
+                ])
               }}
             >
               Insert
             </Button>
           </NotEditable>
         </div>
-      );
+      )
     },
   }),
   table: component({
-    preview: function MyTable(props) {
+    preview: function MyTable (props) {
       useEffect(() => {
-        let maxColumns = 1;
-        const rows = props.fields.rows;
+        let maxColumns = 1
+        const rows = props.fields.rows
         for (const row of rows.elements) {
           if (row.elements.length > maxColumns) {
-            maxColumns = row.elements.length;
+            maxColumns = row.elements.length
           }
         }
         if (rows.elements.some(x => x.elements.length !== maxColumns)) {
@@ -164,11 +164,11 @@ export const componentBlocks = {
                     key: undefined,
                   })),
                 ],
-              };
+              }
             })
-          );
+          )
         }
-      });
+      })
 
       return (
         <div>
@@ -182,7 +182,7 @@ export const componentBlocks = {
                         <td key={i} css={{ border: '1px solid black' }}>
                           {column.fields.content.element}
                         </td>
-                      );
+                      )
                     })}
                     <NotEditable>
                       <Button
@@ -195,16 +195,16 @@ export const componentBlocks = {
                                   ...element.elements.map(x => ({ key: x.key })),
                                   { key: undefined },
                                 ],
-                              };
+                              }
                             })
-                          );
+                          )
                         }}
                       >
                         Insert Column
                       </Button>
                     </NotEditable>
                   </tr>
-                );
+                )
               })}
             </tbody>
           </table>
@@ -214,14 +214,14 @@ export const componentBlocks = {
                 props.fields.rows.onChange([
                   ...props.fields.rows.elements.map(x => ({ key: x.key })),
                   { key: undefined },
-                ]);
+                ])
               }}
             >
               <Button>Insert row</Button>
             </div>
           </NotEditable>
         </div>
-      );
+      )
     },
     label: 'Table',
     schema: {
@@ -239,12 +239,12 @@ export const componentBlocks = {
     },
   }),
   checkboxList: component({
-    preview: function CheckboxList(props) {
+    preview: function CheckboxList (props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
-          props.fields.children.onChange([{ key: undefined }]);
+          props.fields.children.onChange([{ key: undefined }])
         }
-      });
+      })
       return (
         <ul css={{ padding: 0 }}>
           {props.fields.children.elements.map(element => (
@@ -266,7 +266,7 @@ export const componentBlocks = {
             </li>
           ))}
         </ul>
-      );
+      )
     },
     label: 'Checkbox List',
     schema: {
@@ -338,7 +338,7 @@ export const componentBlocks = {
             </div>
           ) : null}
         </div>
-      );
+      )
     },
     label: 'Hero',
     schema: {
@@ -391,16 +391,16 @@ export const componentBlocks = {
                     {author.label}
                     <ul>
                       {author.data.posts.map((post: { title: string | null }, i: number) => {
-                        return <li key={i}>{post.title}</li>;
+                        return <li key={i}>{post.title}</li>
                       })}
                     </ul>
                   </li>
-                );
+                )
               })}
             </ul>
           </NotEditable>
         </div>
-      );
+      )
     },
     schema: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
@@ -413,8 +413,8 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    preview: function Notice(props) {
-      const { palette, radii, spacing } = useTheme();
+    preview: function Notice (props) {
+      const { palette, radii, spacing } = useTheme()
       const intentMap = {
         info: {
           background: palette.blue100,
@@ -436,8 +436,8 @@ export const componentBlocks = {
           foreground: palette.green700,
           icon: noticeIconMap.success,
         },
-      };
-      const intentConfig = intentMap[props.fields.intent.value];
+      }
+      const intentConfig = intentMap[props.fields.intent.value]
 
       return (
         <div
@@ -464,7 +464,7 @@ export const componentBlocks = {
           </NotEditable>
           <div css={{ flex: 1 }}>{props.fields.content.element}</div>
         </div>
-      );
+      )
     },
     label: 'Notice',
     chromeless: true,
@@ -488,11 +488,11 @@ export const componentBlocks = {
         relationships: 'inherit',
       }),
     },
-    toolbar({ props, onRemove }) {
+    toolbar ({ props, onRemove }) {
       return (
         <ToolbarGroup>
           {props.fields.intent.options.map(opt => {
-            const Icon = noticeIconMap[opt.value];
+            const Icon = noticeIconMap[opt.value]
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
@@ -500,8 +500,8 @@ export const componentBlocks = {
                   <ToolbarButton
                     isSelected={props.fields.intent.value === opt.value}
                     onMouseDown={event => {
-                      event.preventDefault();
-                      props.fields.intent.onChange(opt.value);
+                      event.preventDefault()
+                      props.fields.intent.onChange(opt.value)
                     }}
                     {...attrs}
                   >
@@ -509,7 +509,7 @@ export const componentBlocks = {
                   </ToolbarButton>
                 )}
               </Tooltip>
-            );
+            )
           })}
 
           <ToolbarSeparator />
@@ -519,8 +519,8 @@ export const componentBlocks = {
               <ToolbarButton
                 variant="destructive"
                 onMouseDown={event => {
-                  event.preventDefault();
-                  onRemove();
+                  event.preventDefault()
+                  onRemove()
                 }}
                 {...attrs}
               >
@@ -529,7 +529,7 @@ export const componentBlocks = {
             )}
           </Tooltip>
         </ToolbarGroup>
-      );
+      )
     },
   }),
   quote: component({
@@ -557,7 +557,7 @@ export const componentBlocks = {
             {props.fields.attribution.element}
           </div>
         </div>
-      );
+      )
     },
     label: 'Quote',
     schema: {
@@ -585,4 +585,4 @@ export const componentBlocks = {
       // }),
     },
   }),
-};
+}

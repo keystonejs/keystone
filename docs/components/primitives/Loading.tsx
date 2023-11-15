@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, keyframes } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx, keyframes } from '@emotion/react'
+import { type HTMLAttributes } from 'react'
 
 const loading = keyframes({
   '0%, 80%, 100%': {
@@ -10,7 +10,7 @@ const loading = keyframes({
   '40%': {
     opacity: 1,
   },
-});
+})
 
 const commonStyles = {
   display: 'block',
@@ -19,11 +19,11 @@ const commonStyles = {
   width: '1em',
   borderRadius: '50%',
   animation: `${loading} 1s linear infinite`,
-};
+}
 
-type LoadingProps = HTMLAttributes<HTMLElement>;
+type LoadingProps = HTMLAttributes<HTMLElement>
 
-export function Loading(props: LoadingProps) {
+export function Loading (props: LoadingProps) {
   return (
     <div
       aria-live="polite"
@@ -55,5 +55,5 @@ export function Loading(props: LoadingProps) {
         }}
       />
     </div>
-  );
+  )
 }

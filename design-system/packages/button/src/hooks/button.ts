@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useTheme } from '@keystone-ui/core';
+import { useTheme } from '@keystone-ui/core'
 
-export const buttonSizeValues = ['large', 'medium', 'small'] as const;
+export const buttonSizeValues = ['large', 'medium', 'small'] as const
 export const buttonToneValues = [
   'active',
   'passive',
@@ -11,60 +11,60 @@ export const buttonToneValues = [
   'warning',
   'negative',
   'help',
-] as const;
-export const buttonWeightValues = ['bold', 'light', 'none', 'link'] as const;
+] as const
+export const buttonWeightValues = ['bold', 'light', 'none', 'link'] as const
 
-export type SizeKey = (typeof buttonSizeValues)[number];
-export type ToneKey = (typeof buttonToneValues)[number];
-export type WeightKey = (typeof buttonWeightValues)[number];
+export type SizeKey = (typeof buttonSizeValues)[number]
+export type ToneKey = (typeof buttonToneValues)[number]
+export type WeightKey = (typeof buttonWeightValues)[number]
 
 export type ButtonPropDefaults = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
-};
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
+}
 export const buttonPropDefaults = {
   size: 'medium',
   tone: 'passive',
   weight: 'light',
-} as const;
+} as const
 
 type ButtonTokensProps = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
-};
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
+}
 type ButtonStateTokens = {
-  background?: string;
-  borderColor?: string;
-  foreground?: string;
-  shadow?: string;
-  textDecoration?: string;
-};
+  background?: string
+  borderColor?: string
+  foreground?: string
+  shadow?: string
+  textDecoration?: string
+}
 export type ButtonTokens = {
-  borderRadius?: number;
-  borderWidth?: number;
-  disabledOpacity: number;
-  fontSize?: number | string;
-  fontWeight?: number;
-  height?: number;
-  paddingX?: number;
-  transition?: string;
-  focus: ButtonStateTokens;
-  hover: ButtonStateTokens;
-  pressed: ButtonStateTokens;
-} & ButtonStateTokens;
+  borderRadius?: number
+  borderWidth?: number
+  disabledOpacity: number
+  fontSize?: number | string
+  fontWeight?: number
+  height?: number
+  paddingX?: number
+  transition?: string
+  focus: ButtonStateTokens
+  hover: ButtonStateTokens
+  pressed: ButtonStateTokens
+} & ButtonStateTokens
 
-type Weight = ButtonStateTokens & Pick<ButtonTokens, 'focus' | 'hover' | 'pressed'>;
+type Weight = ButtonStateTokens & Pick<ButtonTokens, 'focus' | 'hover' | 'pressed'>
 
-export function useButtonTokens({
+export function useButtonTokens ({
   tone: toneKey,
   size: sizeKey,
   weight: weightKey,
 }: ButtonTokensProps): ButtonTokens {
-  const { animation, colors, tones, typography, controlSizes, opacity } = useTheme();
-  const tone = tones[toneKey];
-  const size = controlSizes[sizeKey];
+  const { animation, colors, tones, typography, controlSizes, opacity } = useTheme()
+  const tone = tones[toneKey]
+  const size = controlSizes[sizeKey]
 
   const weights: { [key in WeightKey]: Weight } = {
     bold: {
@@ -125,9 +125,9 @@ export function useButtonTokens({
         textDecoration: 'underline',
       },
     },
-  };
+  }
 
-  const weight = weights[weightKey];
+  const weight = weights[weightKey]
 
   const tokens: ButtonTokens = {
     borderRadius: size.borderRadius,
@@ -144,18 +144,18 @@ export function useButtonTokens({
       opacity ${animation.duration100},
     `,
     ...weight,
-  };
+  }
 
-  return tokens;
+  return tokens
 }
 
 type ButtonStylesProps = {
-  isDisabled?: boolean;
-  isBlock?: boolean;
-  tokens: ButtonTokens;
-};
+  isDisabled?: boolean
+  isBlock?: boolean
+  tokens: ButtonTokens
+}
 
-export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesProps) {
+export function useButtonStyles ({ isDisabled, isBlock, tokens }: ButtonStylesProps) {
   const baseStyles = {
     alignItems: 'center',
     borderStyle: 'solid',
@@ -172,7 +172,7 @@ export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesPro
     userSelect: 'none',
     whiteSpace: 'nowrap',
     width: isBlock ? '100%' : undefined,
-  } as const;
+  } as const
 
   const tokenStyles = {
     backgroundColor: tokens.background || 'transparent',
@@ -209,7 +209,7 @@ export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesPro
       color: tokens.pressed.foreground,
       textDecoration: tokens.pressed.textDecoration,
     },
-  };
+  }
 
-  return { ...baseStyles, ...tokenStyles };
+  return { ...baseStyles, ...tokenStyles }
 }

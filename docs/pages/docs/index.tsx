@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
 
-import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA';
-import { Keystone5DocsCTA } from '../../components/docs/Keystone5DocsCTA';
-import { Examples } from '../../components/docs/ExamplesList';
-import { Walkthroughs } from '../../components/docs/WalkthroughsList';
-import { Type } from '../../components/primitives/Type';
-import { Well } from '../../components/primitives/Well';
-import { DocsPage } from '../../components/Page';
-import { useMediaQuery } from '../../lib/media';
-import { CommunityCta } from '../../components/content/CommunityCta';
-import { Content } from '../../components/icons/Content';
-import { Code } from '../../components/icons/Code';
-import { Bulb } from '../../components/icons/Bulb';
-import { Video } from '../../components/icons/Video';
-import { Organization } from '../../components/icons/Organization';
-import { Alert } from '../../components/primitives/Alert';
-import { Button } from '../../components/primitives/Button';
-import { ArrowR } from '../../components/icons';
+import { CommunitySlackCTA } from '../../components/docs/CommunitySlackCTA'
+import { Keystone5DocsCTA } from '../../components/docs/Keystone5DocsCTA'
+import { Examples } from '../../components/docs/ExamplesList'
+import { Walkthroughs } from '../../components/docs/WalkthroughsList'
+import { Type } from '../../components/primitives/Type'
+import { Well } from '../../components/primitives/Well'
+import { DocsPage } from '../../components/Page'
+import { useMediaQuery } from '../../lib/media'
+import { CommunityCta } from '../../components/content/CommunityCta'
+import { Content } from '../../components/icons/Content'
+import { Code } from '../../components/icons/Code'
+import { Bulb } from '../../components/icons/Bulb'
+import { Video } from '../../components/icons/Video'
+import { Organization } from '../../components/icons/Organization'
+import { Alert } from '../../components/primitives/Alert'
+import { Button } from '../../components/primitives/Button'
+import { ArrowR } from '../../components/icons'
 
-export default function Docs() {
-  const mq = useMediaQuery();
+export default function Docs () {
+  const mq = useMediaQuery()
 
   return (
     <DocsPage
@@ -340,5 +340,5 @@ export default function Docs() {
 
       <CommunityCta />
     </DocsPage>
-  );
+  )
 }

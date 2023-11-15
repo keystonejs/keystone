@@ -1,21 +1,21 @@
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   orderDirectionEnum,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
-  isIndexed?: boolean | 'unique';
+  isIndexed?: boolean | 'unique'
   dependency: {
-    field: string;
-    minimumValue: number;
-  };
-};
+    field: string
+    minimumValue: number
+  }
+}
 
-export function feedback<ListTypeInfo extends BaseListTypeInfo>({
+export function feedback<ListTypeInfo extends BaseListTypeInfo> ({
   isIndexed,
   dependency,
   ...config
@@ -32,8 +32,8 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo>({
         create: {
           arg: graphql.arg({ type: graphql.String }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          resolve(value, context) {
-            return value;
+          resolve (value, context) {
+            return value
           },
         },
         update: { arg: graphql.arg({ type: graphql.String }) },
@@ -42,15 +42,15 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo>({
       output: graphql.field({
         type: graphql.String,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        resolve({ value, item }, args, context, info) {
-          return value;
+        resolve ({ value, item }, args, context, info) {
+          return value
         },
       }),
       views: './4-conditional-field/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           dependency,
-        };
+        }
       },
-    });
+    })
 }

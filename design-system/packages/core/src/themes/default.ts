@@ -1,6 +1,6 @@
-import { CSSObject } from '@emotion/react';
-import { identityType } from '../utils';
-import { palette as basePalette } from './colors';
+import { type CSSObject } from '@emotion/react'
+import { identityType } from '../utils'
+import { palette as basePalette } from './colors'
 
 /**
  * Global Tokens
@@ -49,7 +49,7 @@ const typography = {
     loose: '0.01em',
     looser: '0.02em',
   },
-};
+}
 
 const palette = {
   black: '#000000',
@@ -68,14 +68,14 @@ const palette = {
   neutral900: '#111827',
 
   ...basePalette,
-};
+}
 
 const breakpoints = {
   small: 576,
   medium: 768,
   large: 992,
   xlarge: 1200,
-};
+}
 
 const elevation = {
   e100: 100, // Cards
@@ -83,7 +83,7 @@ const elevation = {
   e300: 300, // Tooltip
   e400: 400, // Modals
   e500: 500, // Toasts (notifications)
-};
+}
 
 const radii = {
   none: 0,
@@ -92,7 +92,7 @@ const radii = {
   medium: 8,
   large: 12,
   full: 9999,
-};
+}
 
 const sizing = {
   xxsmall: 16,
@@ -102,7 +102,7 @@ const sizing = {
   large: 38,
   xlarge: 42,
   xxlarge: 48,
-};
+}
 
 const spacing = {
   none: 0,
@@ -113,7 +113,7 @@ const spacing = {
   large: 16,
   xlarge: 24,
   xxlarge: 32,
-};
+}
 
 const shadow = {
   s100: `0px 1px 2px rgba(0, 0, 0, 0.2)`, // Cards
@@ -121,7 +121,7 @@ const shadow = {
   s300: `0px 2px 8px rgba(0, 0, 0, 0.2)`, // Tooltip
   s400: `0px 4px 16px rgba(0, 0, 0, 0.2)`, // Modals
   s500: `-8px 8px 32px rgba(0, 0, 0, 0.2)`, // Toasts (notifications)
-};
+}
 
 const animation = {
   duration0: '0ms',
@@ -141,25 +141,25 @@ const animation = {
   easeIn: `cubic-bezier(0.2, 0, 0, 1)`,
   easeOut: `cubic-bezier(0.165, 0.840, 0.440, 1)`,
   linear: 'cubic-bezier(0, 0, 1, 1)',
-};
+}
 
 const opacity = {
   full: 1,
   none: 0,
   disabled: 0.65,
-};
+}
 
 /**
  * Alias Tokens
  */
 
 type HeadingStyle = {
-  color: string;
-  family: string;
-  size: string;
-  transform: Extract<CSSObject['textTransform'], string>;
-  weight: number;
-};
+  color: string
+  family: string
+  size: string
+  transform: Extract<CSSObject['textTransform'], string>
+  weight: number
+}
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
@@ -204,20 +204,20 @@ const headingStyles: { [key: string]: HeadingStyle } = {
     transform: 'uppercase',
     weight: typography.fontWeight.bold,
   },
-};
+}
 
 type ControlSize = {
-  borderRadius: number;
-  borderWidth: number;
-  gutter: number;
-  paddingX: number;
-  paddingY: number;
-  height: number;
-  gap: number;
-  fontSize: number | string;
-  indicatorBoxSize: number | string;
-  indicatorFontSize: number | string;
-};
+  borderRadius: number
+  borderWidth: number
+  gutter: number
+  paddingX: number
+  paddingY: number
+  height: number
+  gap: number
+  fontSize: number | string
+  indicatorBoxSize: number | string
+  indicatorFontSize: number | string
+}
 
 const controlSizes: { [key: string]: ControlSize } = {
   small: {
@@ -256,7 +256,7 @@ const controlSizes: { [key: string]: ControlSize } = {
     indicatorBoxSize: sizing.medium,
     indicatorFontSize: typography.fontSize.small,
   },
-};
+}
 
 const colors = {
   background: 'white',
@@ -276,7 +276,7 @@ const colors = {
   overlayBackground: 'rgba(18,18,18, 0.3)', // blanket behind modal dialogs
   loaderDark: palette.neutral500,
   loaderLight: palette.neutral200,
-};
+}
 
 /**
 
@@ -291,15 +291,15 @@ Tones have 2 foregrounds that should work on these backgrounds:
 
 */
 
-type ToneColor = [string, string, string];
+type ToneColor = [string, string, string]
 type Tone = {
-  focusRing: string;
-  border: ToneColor;
-  fill: ToneColor;
-  tint: ToneColor;
-  foreground: ToneColor;
-  fillForeground: ToneColor;
-};
+  focusRing: string
+  border: ToneColor
+  fill: ToneColor
+  tint: ToneColor
+  foreground: ToneColor
+  fillForeground: ToneColor
+}
 
 const tones = identityType<{ [key: string]: Tone }>()({
   active: {
@@ -350,15 +350,15 @@ const tones = identityType<{ [key: string]: Tone }>()({
     foreground: [palette.purple600, palette.purple700, palette.purple800],
     fillForeground: [palette.white, palette.white, palette.white],
   },
-});
+})
 
 type SelectableColor = {
-  border: string;
-  fill: string;
-  fillForeground: string;
-  foreground: string;
-  tint: string;
-};
+  border: string
+  fill: string
+  fillForeground: string
+  foreground: string
+  tint: string
+}
 
 const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
   silver: {
@@ -403,42 +403,42 @@ const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
     foreground: palette.purple600,
     tint: palette.purple200,
   },
-});
+})
 
 type SharedFieldStateTokens = {
-  labelColor?: string;
-  legendColor?: string;
-  shadow?: string;
-};
+  labelColor?: string
+  legendColor?: string
+  shadow?: string
+}
 
 type ControlFieldStateTokens = {
-  controlBackground?: string;
-  controlBorderColor?: string;
-  controlBorderRadius?: number | string;
-  controlForeground?: string;
-};
+  controlBackground?: string
+  controlBorderColor?: string
+  controlBorderRadius?: number | string
+  controlForeground?: string
+}
 
 type InputFieldStateTokens = {
-  inputBackground?: string;
-  inputBorderColor?: string;
-  inputBorderRadius?: number | string;
-  inputForeground?: string;
-  iconColor?: string;
-};
+  inputBackground?: string
+  inputBorderColor?: string
+  inputBorderRadius?: number | string
+  inputForeground?: string
+  iconColor?: string
+}
 
-type FieldStateTokens = SharedFieldStateTokens & ControlFieldStateTokens & InputFieldStateTokens;
+type FieldStateTokens = SharedFieldStateTokens & ControlFieldStateTokens & InputFieldStateTokens
 
 type FieldTokens = FieldStateTokens & {
-  controlBorderWidth?: number | string;
-  inputBorderWidth?: number | string;
-  inputPlaceholder?: string;
-  switchForeground?: string;
-  disabled: FieldStateTokens;
-  focus: FieldStateTokens;
-  hover: FieldStateTokens;
-  invalid: FieldStateTokens;
-  selected: SharedFieldStateTokens & ControlFieldStateTokens;
-};
+  controlBorderWidth?: number | string
+  inputBorderWidth?: number | string
+  inputPlaceholder?: string
+  switchForeground?: string
+  disabled: FieldStateTokens
+  focus: FieldStateTokens
+  hover: FieldStateTokens
+  invalid: FieldStateTokens
+  selected: SharedFieldStateTokens & ControlFieldStateTokens
+}
 
 const fields: FieldTokens = {
   controlBackground: 'white',
@@ -486,7 +486,7 @@ const fields: FieldTokens = {
     controlBorderColor: palette.blue500,
     controlForeground: 'white',
   },
-};
+}
 
 /**
  * Export
@@ -512,4 +512,4 @@ export const theme = {
   tones,
   selectableColors,
   fields,
-};
+}

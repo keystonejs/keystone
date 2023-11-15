@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { type IconProps } from './util'
 
-export function RugbyAuLogo(props: IconProps) {
+export function RugbyAuLogo (props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -37,5 +37,5 @@ export function RugbyAuLogo(props: IconProps) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

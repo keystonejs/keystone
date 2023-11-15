@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core';
-import { useIndicatorTokens } from '@keystone-ui/fields';
-import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
-import { useMemo } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { useIndicatorTokens } from '@keystone-ui/fields'
+import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'
+import { useMemo } from 'react'
 import ReactSelect, {
-  StylesConfig,
+  type StylesConfig,
   components as reactSelectComponents,
-  Props,
-} from 'react-select';
+  type Props,
+} from 'react-select'
 
 export const CheckMark = ({
   isDisabled,
   isFocused,
   isSelected,
 }: {
-  isDisabled?: boolean;
-  isFocused?: boolean;
-  isSelected?: boolean;
+  isDisabled?: boolean
+  isFocused?: boolean
+  isSelected?: boolean
 }) => {
   const tokens = useIndicatorTokens({
     size: 'medium',
     type: 'radio',
-  });
+  })
 
   return (
     <div
@@ -72,8 +72,8 @@ export const CheckMark = ({
     >
       <CheckIcon size="small" />
     </div>
-  );
-};
+  )
+}
 
 export const OptionPrimitive: (typeof reactSelectComponents)['Option'] = ({
   children,
@@ -83,7 +83,7 @@ export const OptionPrimitive: (typeof reactSelectComponents)['Option'] = ({
   innerRef,
   className,
 }) => {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <div
       ref={innerRef}
@@ -117,21 +117,21 @@ export const OptionPrimitive: (typeof reactSelectComponents)['Option'] = ({
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
 const Control: (typeof reactSelectComponents)['Control'] = ({ selectProps, ...props }) => {
-  return <reactSelectComponents.Control selectProps={selectProps} {...props} />;
-};
+  return <reactSelectComponents.Control selectProps={selectProps} {...props} />
+}
 
 const defaultComponents = {
   Control,
   Option: OptionPrimitive,
   DropdownIndicator: null,
   IndicatorSeparator: null,
-};
+}
 
-type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>;
+type OptionsProps = Props<{ label: string, value: string, isDisabled?: boolean }, boolean>
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
@@ -140,10 +140,10 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
       ...propComponents,
     }),
     [propComponents]
-  );
-  const theme = useTheme();
+  )
+  const theme = useTheme()
 
-  const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
+  const optionRendererStyles: StylesConfig<{ label: string, value: string, isDisabled?: boolean }> =
     useMemo(
       () => ({
         control: (provided: any) => ({
@@ -167,7 +167,7 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
         }),
       }),
       [theme]
-    );
+    )
 
   return (
     <ReactSelect
@@ -188,5 +188,5 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
       components={components as any}
       {...props}
     />
-  );
-};
+  )
+}

@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { ComponentProps, Fragment, ReactNode } from 'react';
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
+import { type ComponentProps, Fragment, type ReactNode } from 'react'
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
 
-import { InlineCode } from '../../components/primitives/Code';
-import { Highlight } from '../../components/primitives/Highlight';
-import { Gradient } from '../../components/primitives/Gradient';
-import { Alert } from '../../components/primitives/Alert';
-import { Emoji } from '../../components/primitives/Emoji';
-import { Type } from '../../components/primitives/Type';
-import { DocsPage } from '../../components/Page';
-import { useMediaQuery } from '../../lib/media';
+import { InlineCode } from '../../components/primitives/Code'
+import { Highlight } from '../../components/primitives/Highlight'
+import { Gradient } from '../../components/primitives/Gradient'
+import { Alert } from '../../components/primitives/Alert'
+import { Emoji } from '../../components/primitives/Emoji'
+import { Type } from '../../components/primitives/Type'
+import { DocsPage } from '../../components/Page'
+import { useMediaQuery } from '../../lib/media'
 
-function TimelineItem({ children }: { children: ReactNode }) {
+function TimelineItem ({ children }: { children: ReactNode }) {
   return (
     <div
       css={{
@@ -22,10 +22,10 @@ function TimelineItem({ children }: { children: ReactNode }) {
     >
       {children}
     </div>
-  );
+  )
 }
 
-function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
+function TimelineMarker ({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
   return (
     <div
       css={{
@@ -53,12 +53,12 @@ function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>)
         }}
       />
     </div>
-  );
+  )
 }
 
-function TimelineWeAreHere() {
-  const arrowSize = '0.4rem';
-  const mq = useMediaQuery();
+function TimelineWeAreHere () {
+  const arrowSize = '0.4rem'
+  const mq = useMediaQuery()
   return (
     <span
       css={mq({
@@ -87,14 +87,14 @@ function TimelineWeAreHere() {
       />
       We are here! <Emoji symbol="👋" alt="Hand waving" />
     </span>
-  );
+  )
 }
 
 type TimelineContentProps = {
-  title: ReactNode;
-  children: ReactNode;
-} & Pick<ComponentProps<typeof Highlight>, 'look'>;
-function TimelineContent({ title, look, children }: TimelineContentProps) {
+  title: ReactNode
+  children: ReactNode
+} & Pick<ComponentProps<typeof Highlight>, 'look'>
+function TimelineContent ({ title, look, children }: TimelineContentProps) {
   return (
     <div css={{ height: '100%' }}>
       <Type as="h3" look="heading20bold" margin="1rem 0">
@@ -104,15 +104,15 @@ function TimelineContent({ title, look, children }: TimelineContentProps) {
         {children}
       </Type>
     </div>
-  );
+  )
 }
 
 type RoadmapListProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
-function RoadmapList({ children }: RoadmapListProps) {
-  const mq = useMediaQuery();
+function RoadmapList ({ children }: RoadmapListProps) {
+  const mq = useMediaQuery()
   return (
     <ul
       css={mq({
@@ -126,7 +126,7 @@ function RoadmapList({ children }: RoadmapListProps) {
     >
       {children}
     </ul>
-  );
+  )
 }
 
 const roadmapItemSectionStyles = {
@@ -136,7 +136,7 @@ const roadmapItemSectionStyles = {
   padding: '0.1825rem 0.5rem',
   fontSize: '0.9rem',
   fontWeight: 700,
-};
+}
 const roadmapItemSection = {
   docs: () => (
     <span css={{ ...roadmapItemSectionStyles, background: '#f1f3f5', color: '#495057' }}>Docs</span>
@@ -154,15 +154,15 @@ const roadmapItemSection = {
       Admin UI
     </span>
   ),
-};
+}
 
 type RoadmapItemProps = {
-  title: ReactNode;
-  section?: keyof typeof roadmapItemSection;
-  children: ReactNode;
-};
-function RoadmapItem({ title, section, children }: RoadmapItemProps) {
-  const Section = section ? roadmapItemSection[section] : null;
+  title: ReactNode
+  section?: keyof typeof roadmapItemSection
+  children: ReactNode
+}
+function RoadmapItem ({ title, section, children }: RoadmapItemProps) {
+  const Section = section ? roadmapItemSection[section] : null
   return (
     <li>
       {Section && <Section />}
@@ -173,10 +173,10 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
         {children}
       </Type>
     </li>
-  );
+  )
 }
 
-function Divider() {
+function Divider () {
   return (
     <hr
       css={{
@@ -186,11 +186,11 @@ function Divider() {
         backgroundColor: 'var(--border)',
       }}
     />
-  );
+  )
 }
 
-export default function Roadmap() {
-  const mq = useMediaQuery();
+export default function Roadmap () {
+  const mq = useMediaQuery()
 
   return (
     <DocsPage
@@ -486,5 +486,5 @@ export default function Roadmap() {
         </Type>
       </Alert>
     </DocsPage>
-  );
+  )
 }

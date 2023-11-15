@@ -4,4 +4,4 @@ export {
   ToolbarGroup,
   ToolbarSeparator,
   ToolbarSpacer,
-} from './DocumentEditor/primitives';
+} from './DocumentEditor/primitives'

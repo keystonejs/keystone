@@ -1,20 +1,20 @@
-import { text, relationship } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, ContextFromRunner } from '../utils';
+import { text, relationship } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, type ContextFromRunner } from '../utils'
 
-type IdType = any;
+type IdType = any
 
 const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
   const roles = (await context.query.Role.createMany({
     data: [{ name: 'RoleA' }, { name: 'RoleB' }, { name: 'RoleC' }],
     query: 'id name',
-  })) as { id: IdType; name: string }[];
+  })) as { id: IdType, name: string }[]
   const companies = (await context.query.Company.createMany({
     data: [{ name: 'CompanyA' }, { name: 'CompanyB' }, { name: 'CompanyC' }],
     query: 'id name',
-  })) as { id: IdType; name: string }[];
+  })) as { id: IdType, name: string }[]
   const employees = (await context.query.Employee.createMany({
     data: [
       {
@@ -34,7 +34,7 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
       },
     ],
     query: 'id name',
-  })) as { id: IdType; name: string }[];
+  })) as { id: IdType, name: string }[]
   await context.query.Location.createMany({
     data: [
       {
@@ -63,7 +63,7 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
       },
     ],
     query: 'id name',
-  });
+  })
   await context.query.Role.updateMany({
     data: [
       {
@@ -88,8 +88,8 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
         },
       },
     ],
-  });
-};
+  })
+}
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -126,17 +126,17 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 test(
   'Query',
   runner(async ({ context }) => {
-    await createInitialData(context);
+    await createInitialData(context)
     const employees = await context.query.Employee.findMany({
       where: { company: { employees: { some: { role: { name: { equals: 'RoleA' } } } } } },
       query: 'id name',
-    });
-    expect(employees).toHaveLength(1);
-    expect(employees[0].name).toEqual('EmployeeA');
+    })
+    expect(employees).toHaveLength(1)
+    expect(employees[0].name).toEqual('EmployeeA')
   })
-);
+)

@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, keyframes, useTheme } from '@keystone-ui/core';
+import { jsx, keyframes, useTheme } from '@keystone-ui/core'
 
-export const loadingSizeValues = ['large', 'medium', 'small'] as const;
+export const loadingSizeValues = ['large', 'medium', 'small'] as const
 export const loadingToneValues = [
   'active',
   'passive',
@@ -11,22 +11,22 @@ export const loadingToneValues = [
   'warning',
   'negative',
   'help',
-] as const;
+] as const
 
-export type SizeKey = (typeof loadingSizeValues)[number];
-export type ToneKey = (typeof loadingToneValues)[number];
+export type SizeKey = (typeof loadingSizeValues)[number]
+export type ToneKey = (typeof loadingToneValues)[number]
 
 // NOTE: a more accurate implementation might use `aria-busy="true|false"` on
 // the wrapping element, but it's difficult to abstract
 
 type Props = {
   /** The aria-label for screen readers. */
-  label: string;
+  label: string
   /** The color of the loading indicator. */
-  tone?: ToneKey;
+  tone?: ToneKey
   /** The size of the loading indicator. */
-  size?: SizeKey;
-};
+  size?: SizeKey
+}
 
 // TODO: Should this be a box, to support margin etc?
 
@@ -36,11 +36,11 @@ export const LoadingDots = ({
   size: sizeKey = 'medium',
   ...props
 }: Props) => {
-  const { controlSizes, tones } = useTheme();
+  const { controlSizes, tones } = useTheme()
 
-  const size = controlSizes[sizeKey];
-  const tone = toneKey ? tones[toneKey] : null;
-  const color = tone ? tone.fill[0] : 'currentColor';
+  const size = controlSizes[sizeKey]
+  const tone = toneKey ? tones[toneKey] : null
+  const color = tone ? tone.fill[0] : 'currentColor'
 
   return (
     <div
@@ -57,13 +57,13 @@ export const LoadingDots = ({
       <Dot delay={160} />
       <Dot delay={320} />
     </div>
-  );
-};
+  )
+}
 
 const fadeAnimation = keyframes({
   '0%, 80%, 100%': { opacity: 0 },
   '40%': { opacity: 1 },
-});
+})
 
 const Dot = ({ delay }: { delay: number }) => {
   return (
@@ -82,5 +82,5 @@ const Dot = ({ delay }: { delay: number }) => {
         },
       }}
     />
-  );
-};
+  )
+}

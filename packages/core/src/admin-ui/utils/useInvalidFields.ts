@@ -1,27 +1,27 @@
-import { useMemo } from 'react';
-import type { FieldMeta } from '../../types';
-import type { Value } from './item-form';
+import { useMemo } from 'react'
+import type { FieldMeta } from '../../types'
+import type { Value } from './item-form'
 
-export function useInvalidFields(
+export function useInvalidFields (
   fields: Record<string, FieldMeta>,
   value: Value
 ): ReadonlySet<string> {
   return useMemo(() => {
-    const invalidFields = new Set<string>();
+    const invalidFields = new Set<string>()
 
     Object.keys(value).forEach(fieldPath => {
-      const val = value[fieldPath];
+      const val = value[fieldPath]
 
       if (val.kind === 'value') {
-        const validateFn = fields[fieldPath].controller.validate;
+        const validateFn = fields[fieldPath].controller.validate
         if (validateFn) {
-          const result = validateFn(val.value);
+          const result = validateFn(val.value)
           if (result === false) {
-            invalidFields.add(fieldPath);
+            invalidFields.add(fieldPath)
           }
         }
       }
-    });
-    return invalidFields;
-  }, [fields, value]);
+    })
+    return invalidFields
+  }, [fields, value])
 }

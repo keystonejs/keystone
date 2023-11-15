@@ -1,107 +1,107 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import 'intersection-observer';
-import { RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react';
+import 'intersection-observer'
+import { type RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react'
 
-import { jsx } from '@keystone-ui/core';
-import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
-import type { ListMeta } from '../../../../types';
+import { jsx } from '@keystone-ui/core'
+import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
+import type { ListMeta } from '../../../../types'
 import {
   ApolloClient,
   gql,
   InMemoryCache,
-  TypedDocumentNode,
+  type TypedDocumentNode,
   useApolloClient,
   useQuery,
-} from '../../../../admin-ui/apollo';
+} from '../../../../admin-ui/apollo'
 
-function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
-  const cbRef = useRef(cb);
+function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObject<any>) {
+  const cbRef = useRef(cb)
   useEffect(() => {
-    cbRef.current = cb;
-  });
+    cbRef.current = cb
+  })
   useEffect(() => {
-    let observer = new IntersectionObserver((...args) => cbRef.current(...args), {});
-    let node = ref.current;
+    let observer = new IntersectionObserver((...args) => cbRef.current(...args), {})
+    let node = ref.current
     if (node !== null) {
-      observer.observe(node);
-      return () => observer.unobserve(node);
+      observer.observe(node)
+      return () => observer.unobserve(node)
     }
-  }, [ref]);
+  }, [ref])
 }
 
-function useDebouncedValue<T>(value: T, limitMs: number) {
-  const [debouncedValue, setDebouncedValue] = useState(() => value);
+function useDebouncedValue<T> (value: T, limitMs: number) {
+  const [debouncedValue, setDebouncedValue] = useState(() => value)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setDebouncedValue(() => value);
-    }, limitMs);
-    return () => clearTimeout(timeout);
-  }, [value, limitMs]);
+      setDebouncedValue(() => value)
+    }, limitMs)
+    return () => clearTimeout(timeout)
+  }, [value, limitMs])
 
-  return debouncedValue;
+  return debouncedValue
 }
 
-function isInt(x: string) {
-  return Number.isInteger(Number(x));
+function isInt (x: string) {
+  return Number.isInteger(Number(x))
 }
 
-function isBigInt(x: string) {
+function isBigInt (x: string) {
   try {
-    BigInt(x);
-    return true;
+    BigInt(x)
+    return true
   } catch {
-    return true;
+    return true
   }
 }
 
-export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
+export function useFilter (search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
-    const trimmedSearch = search.trim();
-    if (!trimmedSearch.length) return { OR: [] };
+    const trimmedSearch = search.trim()
+    if (!trimmedSearch.length) return { OR: [] }
 
-    const conditions: Record<string, any>[] = [];
-    const { type: idFieldType } = (list.fields.id.fieldMeta as any) ?? {};
+    const conditions: Record<string, any>[] = []
+    const { type: idFieldType } = (list.fields.id.fieldMeta as any) ?? {}
     if (idFieldType === 'String') {
-      conditions.push({ id: { equals: trimmedSearch } });
+      conditions.push({ id: { equals: trimmedSearch } })
     } else if (idFieldType === 'Int' && isInt(trimmedSearch)) {
-      conditions.push({ id: { equals: Number(trimmedSearch) } });
+      conditions.push({ id: { equals: Number(trimmedSearch) } })
     } else if (idFieldType === 'BigInt' && isBigInt(trimmedSearch)) {
-      conditions.push({ id: { equals: trimmedSearch } });
+      conditions.push({ id: { equals: trimmedSearch } })
     } else if (idFieldType === 'UUID') {
-      conditions.push({ id: { equals: trimmedSearch } }); // TODO: remove in breaking change?
+      conditions.push({ id: { equals: trimmedSearch } }) // TODO: remove in breaking change?
     }
 
     if ((list.fields.id.fieldMeta as any)?.type === 'String') {
-      conditions.push({ id: { equals: trimmedSearch } });
+      conditions.push({ id: { equals: trimmedSearch } })
     }
 
     for (const fieldKey of searchFields) {
-      const field = list.fields[fieldKey];
+      const field = list.fields[fieldKey]
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
           mode: field.search === 'insensitive' ? 'insensitive' : undefined,
         },
-      });
+      })
     }
 
-    return { OR: conditions };
-  }, [search, list, searchFields]);
+    return { OR: conditions }
+  }, [search, list, searchFields])
 }
 
-const idFieldAlias = '____id____';
-const labelFieldAlias = '____label____';
+const idFieldAlias = '____id____'
+const labelFieldAlias = '____label____'
 
 const LoadingIndicatorContext = createContext<{
-  count: number;
-  ref: (element: HTMLElement | null) => void;
+  count: number
+  ref:(element: HTMLElement | null) => void
 }>({
   count: 0,
   ref: () => {},
-});
+})
 
 export const RelationshipSelect = ({
   autoFocus,
@@ -116,38 +116,38 @@ export const RelationshipSelect = ({
   state,
   extraSelection = '',
 }: {
-  autoFocus?: boolean;
-  controlShouldRenderValue: boolean;
-  isDisabled: boolean;
-  isLoading?: boolean;
-  labelField: string;
-  searchFields: string[];
-  list: ListMeta;
-  placeholder?: string;
-  portalMenu?: true | undefined;
+  autoFocus?: boolean
+  controlShouldRenderValue: boolean
+  isDisabled: boolean
+  isLoading?: boolean
+  labelField: string
+  searchFields: string[]
+  list: ListMeta
+  placeholder?: string
+  portalMenu?: true | undefined
   state:
     | {
-        kind: 'many';
-        value: { label: string; id: string; data?: Record<string, any> }[];
-        onChange(value: { label: string; id: string; data: Record<string, any> }[]): void;
+        kind: 'many'
+        value: { label: string, id: string, data?: Record<string, any> }[]
+        onChange(value: { label: string, id: string, data: Record<string, any> }[]): void
       }
     | {
-        kind: 'one';
-        value: { label: string; id: string; data?: Record<string, any> } | null;
-        onChange(value: { label: string; id: string; data: Record<string, any> } | null): void;
-      };
-  extraSelection?: string;
+        kind: 'one'
+        value: { label: string, id: string, data?: Record<string, any> } | null
+        onChange(value: { label: string, id: string, data: Record<string, any> } | null): void
+      }
+  extraSelection?: string
 }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
   // because we want a re-render if the element changes
   // so that we can register the intersection observer
   // on the right element
-  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
+  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null)
 
   const QUERY: TypedDocumentNode<
-    { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]; count: number },
-    { where: Record<string, any>; take: number; skip: number }
+    { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[], count: number },
+    { where: Record<string, any>, take: number, skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -157,12 +157,12 @@ export const RelationshipSelect = ({
       }
       count: ${list.gqlNames.listQueryCountName}(where: $where)
     }
-  `;
+  `
 
-  const debouncedSearch = useDebouncedValue(search, 200);
-  const where = useFilter(debouncedSearch, list, searchFields);
+  const debouncedSearch = useDebouncedValue(search, 200)
+  const where = useFilter(debouncedSearch, list, searchFields)
 
-  const link = useApolloClient().link;
+  const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies
   // would require making assumptions about how pagination should work which won't always be right
   const apolloClient = useMemo(
@@ -176,12 +176,12 @@ export const RelationshipSelect = ({
                 [list.gqlNames.listQueryName]: {
                   keyArgs: ['where'],
                   merge: (existing: readonly unknown[], incoming: readonly unknown[], { args }) => {
-                    const merged = existing ? existing.slice() : [];
-                    const { skip } = args!;
+                    const merged = existing ? existing.slice() : []
+                    const { skip } = args!
                     for (let i = 0; i < incoming.length; ++i) {
-                      merged[skip + i] = incoming[i];
+                      merged[skip + i] = incoming[i]
                     }
-                    return merged;
+                    return merged
                   },
                 },
               },
@@ -190,24 +190,24 @@ export const RelationshipSelect = ({
         }),
       }),
     [link, list.gqlNames.listQueryName]
-  );
+  )
 
-  const initialItemsToLoad = Math.min(list.pageSize, 10);
-  const subsequentItemsToLoad = Math.min(list.pageSize, 50);
+  const initialItemsToLoad = Math.min(list.pageSize, 10)
+  const subsequentItemsToLoad = Math.min(list.pageSize, 50)
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
     variables: { where, take: initialItemsToLoad, skip: 0 },
     client: apolloClient,
-  });
+  })
 
-  const count = data?.count || 0;
+  const count = data?.count || 0
 
   const options =
     data?.items?.map(({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
       value,
       label: label || value,
       data,
-    })) || [];
+    })) || []
 
   const loadingIndicatorContextVal = useMemo(
     () => ({
@@ -215,20 +215,20 @@ export const RelationshipSelect = ({
       ref: setLoadingIndicatorElement,
     }),
     [count]
-  );
+  )
 
   // we want to avoid fetching more again and `loading` from Apollo
   // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
-    where: Record<string, any>;
-    extraSelection: string;
-    list: ListMeta;
-    skip: number;
-  } | null>(null);
+    where: Record<string, any>
+    extraSelection: string
+    list: ListMeta
+    skip: number
+  } | null>(null)
 
   useIntersectionObserver(
     ([{ isIntersecting }]) => {
-      const skip = data?.items.length;
+      const skip = data?.items.length
       if (
         !loading &&
         skip &&
@@ -240,8 +240,8 @@ export const RelationshipSelect = ({
           lastFetchMore?.skip !== skip)
       ) {
         const QUERY: TypedDocumentNode<
-          { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[] },
-          { where: Record<string, any>; take: number; skip: number }
+          { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
+          { where: Record<string, any>, take: number, skip: number }
         > = gql`
               query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
                 items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -250,8 +250,8 @@ export const RelationshipSelect = ({
                   ${extraSelection}
                 }
               }
-            `;
-        setLastFetchMore({ extraSelection, list, skip, where });
+            `
+        setLastFetchMore({ extraSelection, list, skip, where })
         fetchMore({
           query: QUERY,
           variables: {
@@ -261,22 +261,22 @@ export const RelationshipSelect = ({
           },
         })
           .then(() => {
-            setLastFetchMore(null);
+            setLastFetchMore(null)
           })
           .catch(() => {
-            setLastFetchMore(null);
-          });
+            setLastFetchMore(null)
+          })
       }
     },
     { current: loadingIndicatorElement }
-  );
+  )
 
   // TODO: better error UI
   // TODO: Handle permission errors
   // (ie; user has permission to read this relationship field, but
   // not the related list, or some items on the list)
   if (error) {
-    return <span>Error</span>;
+    return <span>Error</span>
   }
 
   if (state.kind === 'one') {
@@ -295,7 +295,7 @@ export const RelationshipSelect = ({
               ? {
                   value: state.value.id,
                   label: state.value.label,
-                  // @ts-ignore
+                  // @ts-expect-error
                   data: state.value.data,
                 }
               : null
@@ -310,7 +310,7 @@ export const RelationshipSelect = ({
                     data: (value as any).data,
                   }
                 : null
-            );
+            )
           }}
           placeholder={placeholder}
           controlShouldRenderValue={controlShouldRenderValue}
@@ -318,7 +318,7 @@ export const RelationshipSelect = ({
           isDisabled={isDisabled}
         />
       </LoadingIndicatorContext.Provider>
-    );
+    )
   }
 
   return (
@@ -337,7 +337,7 @@ export const RelationshipSelect = ({
         }))}
         options={options}
         onChange={value => {
-          state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })));
+          state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })))
         }}
         placeholder={placeholder}
         controlShouldRenderValue={controlShouldRenderValue}
@@ -345,12 +345,12 @@ export const RelationshipSelect = ({
         isDisabled={isDisabled}
       />
     </LoadingIndicatorContext.Provider>
-  );
-};
+  )
+}
 
 const relationshipSelectComponents: Partial<typeof selectComponents> = {
   MenuList: ({ children, ...props }) => {
-    const { count, ref } = useContext(LoadingIndicatorContext);
+    const { count, ref } = useContext(LoadingIndicatorContext)
     return (
       <selectComponents.MenuList {...props}>
         {children}
@@ -358,6 +358,6 @@ const relationshipSelectComponents: Partial<typeof selectComponents> = {
           {props.options.length < count && <span css={{ padding: 8 }}>Loading...</span>}
         </div>
       </selectComponents.MenuList>
-    );
+    )
   },
-};
+}

@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Global } from '@emotion/react';
+import { jsx, Global } from '@emotion/react'
 
-import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS';
+import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS'
 
-export function Theme() {
+export function Theme () {
   return (
     <Global
       styles={{
@@ -18,5 +18,5 @@ export function Theme() {
         },
       }}
     />
-  );
+  )
 }

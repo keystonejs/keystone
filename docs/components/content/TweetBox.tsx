@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { Type } from '../primitives/Type';
-import { Quote } from '../icons/Quote';
+import { Type } from '../primitives/Type'
+import { Quote } from '../icons/Quote'
 
 type TweetBoxProps = {
-  user: string;
-  img: string;
-  grad: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
-} & HTMLAttributes<HTMLElement>;
+  user: string
+  img: string
+  grad: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'
+} & HTMLAttributes<HTMLElement>
 
-export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps) {
+export function TweetBox ({ user, img, grad, children, ...props }: TweetBoxProps) {
   return (
     <div
       css={{
@@ -58,5 +58,5 @@ export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps)
         @{user}
       </a>
     </div>
-  );
+  )
 }

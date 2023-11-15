@@ -1,75 +1,75 @@
-import { GraphQLError } from 'graphql';
+import { GraphQLError } from 'graphql'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
-  FieldData,
-  FieldTypeFunc,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
+  type FieldData,
+  type FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  JSONValue,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
-import { Relationships } from './DocumentEditor/relationship';
-import { ComponentBlock } from './component-blocks';
-import { DocumentFeatures } from './views';
-import { validateAndNormalizeDocument } from './validation';
-import { addRelationshipData } from './relationship-data';
-import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions';
+  type JSONValue,
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
+import { type Relationships } from './DocumentEditor/relationship'
+import { type ComponentBlock } from './component-blocks'
+import { type DocumentFeatures } from './views'
+import { validateAndNormalizeDocument } from './validation'
+import { addRelationshipData } from './relationship-data'
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
 
 type RelationshipsConfig = Record<
   string,
   {
-    listKey: string;
+    listKey: string
     /** GraphQL fields to select when querying the field */
-    selection?: string;
-    label: string;
+    selection?: string
+    label: string
   }
->;
+>
 
 type FormattingConfig = {
   inlineMarks?:
     | true
     | {
-        bold?: true;
-        italic?: true;
-        underline?: true;
-        strikethrough?: true;
-        code?: true;
-        superscript?: true;
-        subscript?: true;
-        keyboard?: true;
-      };
+        bold?: true
+        italic?: true
+        underline?: true
+        strikethrough?: true
+        code?: true
+        superscript?: true
+        subscript?: true
+        keyboard?: true
+      }
   listTypes?:
     | true
     | {
-        ordered?: true;
-        unordered?: true;
-      };
+        ordered?: true
+        unordered?: true
+      }
   alignment?:
     | true
     | {
-        center?: true;
-        end?: true;
-      };
-  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[];
+        center?: true
+        end?: true
+      }
+  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[]
   blockTypes?:
     | true
     | {
-        blockquote?: true;
-        code?: true;
-      };
-  softBreaks?: true;
-};
+        blockquote?: true
+        code?: true
+      }
+  softBreaks?: true
+}
 
 export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    relationships?: RelationshipsConfig;
-    componentBlocks?: Record<string, ComponentBlock>;
-    formatting?: true | FormattingConfig;
-    links?: true;
-    dividers?: true;
-    layouts?: readonly (readonly [number, ...number[]])[];
-    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
-  };
+    relationships?: RelationshipsConfig
+    componentBlocks?: Record<string, ComponentBlock>
+    formatting?: true | FormattingConfig
+    links?: true
+    dividers?: true
+    layouts?: readonly (readonly [number, ...number[]])[]
+    db?: { map?: string, extendPrismaSchema?: (field: string) => string }
+  }
 
 export const document =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -87,30 +87,30 @@ export const document =
       formatting,
       layouts,
       links,
-    });
-    const relationships = normaliseRelationships(configRelationships, meta);
+    })
+    const relationships = normaliseRelationships(configRelationships, meta)
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
-        throw new GraphQLError('Input error: Document fields cannot be set to null');
+        throw new GraphQLError('Input error: Document fields cannot be set to null')
       }
       if (data === undefined) {
-        return data;
+        return data
       }
-      return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships);
-    };
+      return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships)
+    }
 
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type document");
+      throw Error("isIndexed: 'unique' is not a supported option for field type document")
     }
-    const lists = new Set(Object.keys(meta.lists));
+    const lists = new Set(Object.keys(meta.lists))
     for (const [name, block] of Object.entries(componentBlocks)) {
       try {
-        assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists);
+        assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists)
       } catch (err) {
         throw new Error(
           `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
-        );
+        )
       }
     }
 
@@ -122,11 +122,11 @@ export const document =
         input: {
           create: {
             arg: graphql.arg({ type: graphql.JSON }),
-            resolve(val) {
+            resolve (val) {
               if (val === undefined) {
-                val = [{ type: 'paragraph', children: [{ text: '' }] }];
+                val = [{ type: 'paragraph', children: [{ text: '' }] }]
               }
-              return inputResolver(val);
+              return inputResolver(val)
             },
           },
           update: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
@@ -143,28 +143,28 @@ export const document =
                   }),
                 },
                 type: graphql.nonNull(graphql.JSON),
-                resolve({ document }, { hydrateRelationships }, context) {
+                resolve ({ document }, { hydrateRelationships }, context) {
                   return hydrateRelationships
                     ? addRelationshipData(document as any, context, relationships, componentBlocks)
-                    : (document as any);
+                    : (document as any)
                 },
               }),
             },
           }),
-          resolve({ value }) {
+          resolve ({ value }) {
             if (value === null) {
-              return null;
+              return null
             }
-            return { document: value };
+            return { document: value }
           },
         }),
         views: '@keystone-6/fields-document/views',
-        getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+        getAdminMeta (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
           return {
             relationships,
             documentFeatures,
             componentBlocksPassedOnServer: Object.keys(componentBlocks),
-          };
+          }
         },
       },
       {
@@ -176,29 +176,29 @@ export const document =
         map: config.db?.map,
         extendPrismaSchema: config.db?.extendPrismaSchema,
       }
-    );
-  };
+    )
+  }
 
-function normaliseRelationships(
+function normaliseRelationships (
   configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
   meta: FieldData
 ) {
-  const relationships: Relationships = {};
+  const relationships: Relationships = {}
   if (configRelationships) {
     Object.keys(configRelationships).forEach(key => {
-      const relationship = configRelationships[key];
+      const relationship = configRelationships[key]
       if (meta.lists[relationship.listKey] === undefined) {
         throw new Error(
           `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
-        );
+        )
       }
-      relationships[key] = { ...relationship, selection: relationship.selection ?? null };
-    });
+      relationships[key] = { ...relationship, selection: relationship.selection ?? null }
+    })
   }
-  return relationships;
+  return relationships
 }
 
-function normaliseDocumentFeatures(
+function normaliseDocumentFeatures (
   config: Pick<
     DocumentFieldConfig<BaseListTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'
@@ -214,7 +214,7 @@ function normaliseDocumentFeatures(
           listTypes: true,
           softBreaks: true,
         }
-      : config.formatting ?? {};
+      : config.formatting ?? {}
   const documentFeatures: DocumentFeatures = {
     formatting: {
       alignment:
@@ -274,8 +274,8 @@ function normaliseDocumentFeatures(
       JSON.parse(x)
     ),
     dividers: !!config.dividers,
-  };
-  return documentFeatures;
+  }
+  return documentFeatures
 }
 
-export { structure } from './structure';
+export { structure } from './structure'

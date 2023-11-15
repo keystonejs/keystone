@@ -1,18 +1,18 @@
-import type { BaseItem, KeystoneContext } from '../../../types';
-import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors';
-import { mapUniqueWhereToWhere } from '../queries/resolvers';
-import type { InitialisedList } from '../initialise-lists';
-import { runWithPrisma } from '../utils';
-import { cannotForItem, cannotForItemFields } from '../access-control';
+import type { BaseItem, KeystoneContext } from '../../../types'
+import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors'
+import { mapUniqueWhereToWhere } from '../queries/resolvers'
+import type { InitialisedList } from '../initialise-lists'
+import { runWithPrisma } from '../utils'
+import { cannotForItem, cannotForItemFields } from '../access-control'
 import {
-  InputFilter,
+  type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-  UniqueInputFilter,
-  UniquePrismaFilter,
-} from '../where-inputs';
+  type UniqueInputFilter,
+  type UniquePrismaFilter,
+} from '../where-inputs'
 
-async function getFilteredItem(
+async function getFilteredItem (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
@@ -21,66 +21,66 @@ async function getFilteredItem(
 ) {
   // early exit if they want to exclude everything
   if (accessFilters === false) {
-    throw accessDeniedError(cannotForItem(operation, list));
+    throw accessDeniedError(cannotForItem(operation, list))
   }
 
   // merge the filter access control and try to get the item
-  let where = mapUniqueWhereToWhere(uniqueWhere);
+  let where = mapUniqueWhereToWhere(uniqueWhere)
   if (typeof accessFilters === 'object') {
-    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
+    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
   }
 
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
-  if (item !== null) return item;
+  const item = await runWithPrisma(context, list, model => model.findFirst({ where }))
+  if (item !== null) return item
 
-  throw accessDeniedError(cannotForItem(operation, list));
+  throw accessDeniedError(cannotForItem(operation, list))
 }
 
-export async function checkUniqueItemExists(
+export async function checkUniqueItemExists (
   uniqueInput: UniqueInputFilter,
   foreignList: InitialisedList,
   context: KeystoneContext,
   operation: string
 ) {
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context);
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context)
 
   // Check whether the item exists (from this users POV).
   try {
-    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
-    if (item !== null) return uniqueWhere;
+    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
+    if (item !== null) return uniqueWhere
   } catch (err) {}
 
-  throw accessDeniedError(cannotForItem(operation, foreignList));
+  throw accessDeniedError(cannotForItem(operation, foreignList))
 }
 
-async function enforceListLevelAccessControl({
+async function enforceListLevelAccessControl ({
   context,
   operation,
   list,
   item,
   inputData,
 }: {
-  context: KeystoneContext;
-  operation: 'create' | 'update' | 'delete';
-  list: InitialisedList;
-  item: BaseItem | undefined;
-  inputData: Record<string, unknown>;
+  context: KeystoneContext
+  operation: 'create' | 'update' | 'delete'
+  list: InitialisedList
+  item: BaseItem | undefined
+  inputData: Record<string, unknown>
 }) {
-  let accepted: unknown; // should be boolean, but dont trust, it might accidentally be a filter
+  let accepted: unknown // should be boolean, but dont trust, it might accidentally be a filter
   try {
     // apply access.item.* controls
     if (operation === 'create') {
-      const itemAccessControl = list.access.item[operation];
+      const itemAccessControl = list.access.item[operation]
       accepted = await itemAccessControl({
         operation,
         session: context.session,
         listKey: list.listKey,
         context,
         inputData,
-      });
+      })
     } else if (operation === 'update' && item !== undefined) {
-      const itemAccessControl = list.access.item[operation];
+      const itemAccessControl = list.access.item[operation]
       accepted = await itemAccessControl({
         operation,
         session: context.session,
@@ -88,25 +88,25 @@ async function enforceListLevelAccessControl({
         context,
         item,
         inputData,
-      });
+      })
     } else if (operation === 'delete' && item !== undefined) {
-      const itemAccessControl = list.access.item[operation];
+      const itemAccessControl = list.access.item[operation]
       accepted = await itemAccessControl({
         operation,
         session: context.session,
         listKey: list.listKey,
         context,
         item,
-      });
+      })
     }
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${list.listKey}.access.item.${operation}` },
-    ]);
+    ])
   }
 
   // short circuit the safe path
-  if (accepted === true) return;
+  if (accepted === true) return
 
   if (typeof accepted !== 'boolean') {
     throw accessReturnError([
@@ -114,36 +114,36 @@ async function enforceListLevelAccessControl({
         tag: `${list.listKey}.access.item.${operation}`,
         returned: typeof accepted,
       },
-    ]);
+    ])
   }
 
-  throw accessDeniedError(cannotForItem(operation, list));
+  throw accessDeniedError(cannotForItem(operation, list))
 }
 
-async function enforceFieldLevelAccessControl({
+async function enforceFieldLevelAccessControl ({
   context,
   operation,
   list,
   item,
   inputData,
 }: {
-  context: KeystoneContext;
-  operation: 'create' | 'update';
-  list: InitialisedList;
-  item: BaseItem | undefined;
-  inputData: Record<string, unknown>;
+  context: KeystoneContext
+  operation: 'create' | 'update'
+  list: InitialisedList
+  item: BaseItem | undefined
+  inputData: Record<string, unknown>
 }) {
-  const nonBooleans: { tag: string; returned: string }[] = [];
-  const fieldsDenied: string[] = [];
-  const accessErrors: { error: Error; tag: string }[] = [];
+  const nonBooleans: { tag: string, returned: string }[] = []
+  const fieldsDenied: string[] = []
+  const accessErrors: { error: Error, tag: string }[] = []
 
   await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {
-      let accepted: unknown; // should be boolean, but dont trust
+      let accepted: unknown // should be boolean, but dont trust
       try {
         // apply fields.[fieldKey].access.* controls
         if (operation === 'create') {
-          const fieldAccessControl = list.fields[fieldKey].access[operation];
+          const fieldAccessControl = list.fields[fieldKey].access[operation]
           accepted = await fieldAccessControl({
             operation,
             session: context.session,
@@ -151,9 +151,9 @@ async function enforceFieldLevelAccessControl({
             fieldKey,
             context,
             inputData: inputData as any, // FIXME
-          });
+          })
         } else if (operation === 'update' && item !== undefined) {
-          const fieldAccessControl = list.fields[fieldKey].access[operation];
+          const fieldAccessControl = list.fields[fieldKey].access[operation]
           accepted = await fieldAccessControl({
             operation,
             session: context.session,
@@ -162,41 +162,41 @@ async function enforceFieldLevelAccessControl({
             context,
             item,
             inputData,
-          });
+          })
         }
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
-        return;
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` })
+        return
       }
 
       // short circuit the safe path
-      if (accepted === true) return;
-      fieldsDenied.push(fieldKey);
+      if (accepted === true) return
+      fieldsDenied.push(fieldKey)
 
       // wrong type?
       if (typeof accepted !== 'boolean') {
         nonBooleans.push({
           tag: `${list.listKey}.${fieldKey}.access.${operation}`,
           returned: typeof accepted,
-        });
+        })
       }
     })
-  );
+  )
 
   if (nonBooleans.length) {
-    throw accessReturnError(nonBooleans);
+    throw accessReturnError(nonBooleans)
   }
 
   if (accessErrors.length) {
-    throw extensionError('Access control', accessErrors);
+    throw extensionError('Access control', accessErrors)
   }
 
   if (fieldsDenied.length) {
-    throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied));
+    throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied))
   }
 }
 
-export async function applyAccessControlForCreate(
+export async function applyAccessControlForCreate (
   list: InitialisedList,
   context: KeystoneContext,
   inputData: Record<string, unknown>
@@ -207,7 +207,7 @@ export async function applyAccessControlForCreate(
     list,
     inputData,
     item: undefined,
-  });
+  })
 
   await enforceFieldLevelAccessControl({
     context,
@@ -215,10 +215,10 @@ export async function applyAccessControlForCreate(
     list,
     inputData,
     item: undefined,
-  });
+  })
 }
 
-export async function getAccessControlledItemForUpdate(
+export async function getAccessControlledItemForUpdate (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
@@ -226,7 +226,7 @@ export async function getAccessControlledItemForUpdate(
   inputData: Record<string, any>
 ) {
   // apply access.filter.* controls
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update');
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
 
   await enforceListLevelAccessControl({
     context,
@@ -234,7 +234,7 @@ export async function getAccessControlledItemForUpdate(
     list,
     inputData,
     item,
-  });
+  })
 
   await enforceFieldLevelAccessControl({
     context,
@@ -242,19 +242,19 @@ export async function getAccessControlledItemForUpdate(
     list,
     inputData,
     item,
-  });
+  })
 
-  return item;
+  return item
 }
 
-export async function getAccessControlledItemForDelete(
+export async function getAccessControlledItemForDelete (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter
 ) {
   // apply access.filter.* controls
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete');
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
 
   await enforceListLevelAccessControl({
     context,
@@ -262,9 +262,9 @@ export async function getAccessControlledItemForDelete(
     list,
     inputData: {},
     item,
-  });
+  })
 
   // no field level access control for delete
 
-  return item;
+  return item
 }

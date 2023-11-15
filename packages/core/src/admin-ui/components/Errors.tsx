@@ -1,30 +1,30 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Component, ReactNode } from 'react';
-import { Button } from '@keystone-ui/button';
-import { jsx, Box, Center, Stack, useTheme } from '@keystone-ui/core';
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
+import { Component, type ReactNode } from 'react'
+import { Button } from '@keystone-ui/button'
+import { jsx, Box, Center, Stack, useTheme } from '@keystone-ui/core'
+import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
 
 type ErrorBoundaryProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 type ErrorBoundaryState = {
-  error?: any;
-  hasError: boolean;
-  isReloading: boolean;
-};
+  error?: any
+  hasError: boolean
+  isReloading: boolean
+}
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false, isReloading: false };
-  static getDerivedStateFromError(error: any) {
-    return { error, hasError: true };
+  state: ErrorBoundaryState = { hasError: false, isReloading: false }
+  static getDerivedStateFromError (error: any) {
+    return { error, hasError: true }
   }
   reloadPage = () => {
-    this.setState({ isReloading: true });
-    window.location.reload();
-  };
-  render() {
+    this.setState({ isReloading: true })
+    window.location.reload()
+  }
+  render () {
     if (this.state.hasError) {
       return (
         <ErrorContainer>
@@ -36,18 +36,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </Button>
           </Stack>
         </ErrorContainer>
-      );
+      )
     }
-    return this.props.children;
+    return this.props.children
   }
 }
 
 type ErrorContainerProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 export const ErrorContainer = ({ children }: ErrorContainerProps) => {
-  const { colors, shadow } = useTheme();
+  const { colors, shadow } = useTheme()
   return (
     <Center
       css={{
@@ -69,5 +69,5 @@ export const ErrorContainer = ({ children }: ErrorContainerProps) => {
         {children}
       </Box>
     </Center>
-  );
-};
+  )
+}

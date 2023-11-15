@@ -1,14 +1,14 @@
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
-import React from 'react';
-import createEmotionServer from '@emotion/server/create-instance';
-import { cache } from '@emotion/css';
+import Document, { Html, Head, Main, NextScript, type DocumentContext } from 'next/document'
+import React from 'react'
+import createEmotionServer from '@emotion/server/create-instance'
+import { cache } from '@emotion/css'
 
-const { extractCriticalToChunks } = createEmotionServer(cache);
+const { extractCriticalToChunks } = createEmotionServer(cache)
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await Document.getInitialProps(ctx);
-    const data = extractCriticalToChunks(initialProps.html);
+  static async getInitialProps (ctx: DocumentContext) {
+    const initialProps = await Document.getInitialProps(ctx)
+    const data = extractCriticalToChunks(initialProps.html)
 
     return {
       ...initialProps,
@@ -24,10 +24,10 @@ class MyDocument extends Document {
           ))}
         </React.Fragment>,
       ],
-    };
+    }
   }
 
-  render() {
+  render () {
     return (
       <Html data-theme="light">
         <Head>
@@ -95,8 +95,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    );
+    )
   }
 }
 
-export default MyDocument;
+export default MyDocument

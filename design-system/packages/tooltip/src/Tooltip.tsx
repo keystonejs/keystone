@@ -2,45 +2,45 @@
 /** @jsx jsx */
 
 import {
-  CSSProperties,
+  type CSSProperties,
   Fragment,
-  ReactElement,
-  Ref,
+  type ReactElement,
+  type Ref,
   forwardRef,
   useEffect,
   useRef,
   memo,
   useCallback,
   useMemo,
-  ReactNode,
-} from 'react';
-import { applyRefs } from 'apply-ref';
-import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
-import { usePopover } from '@keystone-ui/popover';
+  type ReactNode,
+} from 'react'
+import { applyRefs } from 'apply-ref'
+import { jsx, useId, useTheme, Portal } from '@keystone-ui/core'
+import { usePopover } from '@keystone-ui/popover'
 
-type Weights = 'bold' | 'subtle';
+type Weights = 'bold' | 'subtle'
 
 type RenderProps = {
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  onFocus: () => void;
-  onBlur: () => void;
-  'aria-describedby': string | undefined;
-  ref: Ref<any>;
-};
+  onMouseEnter: () => void
+  onMouseLeave: () => void
+  onFocus: () => void
+  onBlur: () => void
+  'aria-describedby': string | undefined
+  ref: Ref<any>
+}
 
 type Props = {
   /** The target element. */
-  children: (props: RenderProps) => ReactElement;
+  children: (props: RenderProps) => ReactElement
   /** The content of the tooltip. */
-  content: ReactNode;
+  content: ReactNode
   /** Turn off, to maintain the tooltip when the user clicks the trigger element. */
-  hideOnClick?: boolean;
+  hideOnClick?: boolean
   /** Where, in relation to the target, to place the tooltip. */
-  placement?: 'top' | 'right' | 'bottom' | 'left';
+  placement?: 'top' | 'right' | 'bottom' | 'left'
   /** The visual weight of the tooltip. */
-  weight?: Weights;
-};
+  weight?: Weights
+}
 
 export const Tooltip = ({
   children,
@@ -49,8 +49,8 @@ export const Tooltip = ({
   placement = 'top',
   weight = 'bold',
 }: Props) => {
-  const { spacing } = useTheme();
-  const isBold = weight === 'bold';
+  const { spacing } = useTheme()
+  const isBold = weight === 'bold'
 
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement,
@@ -62,23 +62,23 @@ export const Tooltip = ({
         },
       },
     ],
-  });
+  })
 
-  const tooltipId = useId();
-  const showTooltip = useCallback(() => setOpen(true), [setOpen]);
-  const hideTooltip = useCallback(() => setOpen(false), [setOpen]);
-  const internalRef = useRef<HTMLElement>(null);
+  const tooltipId = useId()
+  const showTooltip = useCallback(() => setOpen(true), [setOpen])
+  const hideTooltip = useCallback(() => setOpen(false), [setOpen])
+  const internalRef = useRef<HTMLElement>(null)
 
   // avoid overriding the consumer's `onClick` handler
   useEffect(() => {
-    const triggerEl = internalRef.current;
+    const triggerEl = internalRef.current
 
     if (hideOnClick && triggerEl) {
-      triggerEl.addEventListener('click', hideTooltip);
+      triggerEl.addEventListener('click', hideTooltip)
 
-      return () => triggerEl.removeEventListener('click', hideTooltip);
+      return () => triggerEl.removeEventListener('click', hideTooltip)
     }
-  }, [isOpen, hideOnClick, hideTooltip]);
+  }, [isOpen, hideOnClick, hideTooltip])
 
   return (
     <Fragment>
@@ -105,36 +105,36 @@ export const Tooltip = ({
         {content}
       </TooltipElement>
     </Fragment>
-  );
-};
+  )
+}
 
 // Styled Component
 // ------------------------------
 
 type ElementProps = {
   /** The content of the tooltip. */
-  children: ReactNode;
+  children: ReactNode
   /** ID used to describe the invoking element. */
-  id?: string;
+  id?: string
   /** When true, the tooltip will be visible. */
-  isVisible: boolean;
+  isVisible: boolean
   /** The visual weight of the tooltip. */
-  weight: Weights;
+  weight: Weights
   /** Popper's arrow config. */
   arrow?: {
-    ref: (element: HTMLDivElement) => void;
+    ref: (element: HTMLDivElement) => void
     props: {
-      style: CSSProperties;
-    };
-  };
-};
+      style: CSSProperties
+    }
+  }
+}
 
 export const TooltipElement = memo(
   forwardRef<HTMLDivElement, ElementProps>(
     ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
-      const isBold = weight === 'bold';
-      const { elevation, radii, colors, spacing, typography } = useTheme();
-      const arrowStyles = useArrowStyles();
+      const isBold = weight === 'bold'
+      const { elevation, radii, colors, spacing, typography } = useTheme()
+      const arrowStyles = useArrowStyles()
 
       return (
         <Portal>
@@ -166,13 +166,13 @@ export const TooltipElement = memo(
             )}
           </div>
         </Portal>
-      );
+      )
     }
   )
-);
+)
 
 const useArrowStyles = () => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
   return {
     '.tooltipArrow': {
       position: 'absolute',
@@ -219,5 +219,5 @@ const useArrowStyles = () => {
         left: '50%',
       },
     },
-  } as const;
-};
+  } as const
+}

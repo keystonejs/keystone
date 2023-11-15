@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Fragment, HTMLAttributes, ReactNode, useState } from 'react';
-import { MenuIcon, XCircleIcon } from '@keystone-ui/icons';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Fragment, type HTMLAttributes, type ReactNode, useState } from 'react'
+import { MenuIcon, XCircleIcon } from '@keystone-ui/icons'
 
-import { Navigation } from './Navigation';
-import { Logo } from './Logo';
+import { Navigation } from './Navigation'
+import { Logo } from './Logo'
 
 type PageContainerProps = {
-  children: ReactNode;
-  header: ReactNode;
-  title?: string;
-};
+  children: ReactNode
+  header: ReactNode
+  title?: string
+}
 
-export const HEADER_HEIGHT = 80;
+export const HEADER_HEIGHT = 80
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
   // const { colors } = useTheme();
@@ -38,14 +38,14 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
         {...props}
       />
     </Fragment>
-  );
-};
+  )
+}
 
 const Sidebar = ({
   isSidebarOpen,
   ...props
 }: HTMLAttributes<HTMLElement> & {
-  isSidebarOpen: boolean;
+  isSidebarOpen: boolean
 }) => {
   // const { colors } = useTheme();
 
@@ -75,11 +75,11 @@ const Sidebar = ({
         {...props}
       />
     </div>
-  );
-};
+  )
+}
 
 const Content = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
 
   return (
     <main
@@ -95,12 +95,12 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 export const PageContainer = ({ children, header, title }: PageContainerProps) => {
-  const { colors, spacing } = useTheme();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { colors, spacing } = useTheme()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   return (
     <PageWrapper>
       <div
@@ -117,7 +117,7 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
         <Logo />
         <div
           onClick={() => {
-            setIsSidebarOpen(!isSidebarOpen);
+            setIsSidebarOpen(!isSidebarOpen)
           }}
           css={{ display: 'block', '@media (min-width: 576px)': { display: 'none' } }}
         >
@@ -146,5 +146,5 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
       </Sidebar>
       <Content>{children}</Content>
     </PageWrapper>
-  );
-};
+  )
+}

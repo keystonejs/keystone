@@ -1,10 +1,10 @@
-import { config } from '@keystone-6/core';
-import { storedSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
-import { createClient } from '@redis/client';
-import { fixPrismaPath } from '../example-utils';
-import { lists, Session } from './schema';
-import type { TypeInfo } from '.keystone/types';
+import { config } from '@keystone-6/core'
+import { storedSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { createClient } from '@redis/client'
+import { fixPrismaPath } from '../example-utils'
+import { lists, type Session } from './schema'
+import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -30,31 +30,31 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
-});
+})
 
-const redis = createClient();
+const redis = createClient()
 
-function redisSessionStrategy() {
+function redisSessionStrategy () {
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   return storedSessions<Session>({
     store: ({ maxAge }) => ({
-      async get(sessionId) {
-        const result = await redis.get(sessionId);
-        if (!result) return;
+      async get (sessionId) {
+        const result = await redis.get(sessionId)
+        if (!result) return
 
-        return JSON.parse(result) as Session;
+        return JSON.parse(result) as Session
       },
 
-      async set(sessionId, data) {
+      async set (sessionId, data) {
         // we use redis for our Session data, in JSON
-        await redis.setEx(sessionId, maxAge, JSON.stringify(data));
+        await redis.setEx(sessionId, maxAge, JSON.stringify(data))
       },
 
-      async delete(sessionId) {
-        await redis.del(sessionId);
+      async delete (sessionId) {
+        await redis.del(sessionId)
       },
     }),
-  });
+  })
 }
 
 export default withAuth(
@@ -62,8 +62,8 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-      async onConnect() {
-        await redis.connect();
+      async onConnect () {
+        await redis.connect()
       },
 
       // WARNING: this is only needed for our monorepo examples, dont do this
@@ -72,4 +72,4 @@ export default withAuth(
     lists,
     session: redisSessionStrategy(),
   })
-);
+)

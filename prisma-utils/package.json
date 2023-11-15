@@ -6,8 +6,7 @@
     "@prisma/generator-helper": "^4.16.2",
     "@prisma/internals": "^4.16.2",
     "fs-extra": "^11.0.0",
-    "tsx": "^4.0.0",
-    "prettier": "^2.5.0"
+    "tsx": "^4.0.0"
   },
   "scripts": {
     "generate": "tsx main.ts",

@@ -1,6 +1,6 @@
-import { select } from '@keystone-6/core/fields';
-import { dbProvider } from '../../utils';
-import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils';
+import { select } from '@keystone-6/core/fields'
+import { dbProvider } from '../../utils'
+import { orderableFilterTests, filterTests, uniqueEqualityFilterTest } from './utils'
 
 for (const isNullable of [true, false]) {
   describe(`select with isNullable: ${isNullable}`, () => {
@@ -37,16 +37,16 @@ for (const isNullable of [true, false]) {
           options[3].value,
           options[4].value,
           options[5].value,
-        ] as const;
+        ] as const
         filterTests(select({ db: { isNullable }, options, type }), match => {
-          orderableFilterTests(match, values, isNullable);
-        });
+          orderableFilterTests(match, values, isNullable)
+        })
         uniqueEqualityFilterTest(
           select({ db: { isNullable }, options, type, isIndexed: 'unique' }),
           values,
           isNullable
-        );
-      });
+        )
+      })
     }
-  });
+  })
 }

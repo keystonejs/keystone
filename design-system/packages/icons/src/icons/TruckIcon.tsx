@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const TruckIcon = createIcon(
   <React.Fragment>
     <rect x={1} y={3} width={15} height={13} />
@@ -8,4 +8,4 @@ export const TruckIcon = createIcon(
     <circle cx={18.5} cy={18.5} r={2.5} />
   </React.Fragment>,
   'TruckIcon'
-);
+)

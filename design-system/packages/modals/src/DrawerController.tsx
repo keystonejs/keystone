@@ -1,27 +1,27 @@
-import React, { ReactNode, useContext } from 'react';
-import { Transition } from 'react-transition-group';
+import React, { type ReactNode, useContext } from 'react'
+import { Transition } from 'react-transition-group'
 
-import { TransitionState } from './types';
+import { type TransitionState } from './types'
 
 type DrawerControllerProps = {
-  isOpen: boolean;
-  children: ReactNode;
-};
+  isOpen: boolean
+  children: ReactNode
+}
 
-const DrawerControllerContext = React.createContext<null | TransitionState>(null);
+const DrawerControllerContext = React.createContext<null | TransitionState>(null)
 
-export const DrawerControllerContextProvider = DrawerControllerContext.Provider;
+export const DrawerControllerContextProvider = DrawerControllerContext.Provider
 
 export const useDrawerControllerContext = () => {
-  let context = useContext(DrawerControllerContext);
+  let context = useContext(DrawerControllerContext)
   if (!context) {
     throw new Error(
       'Drawers must be wrapped in a <DrawerController>. You should generally do this outside of the component that renders the <Drawer> or <TabbedDrawer>.'
-    );
+    )
   }
 
-  return context;
-};
+  return context
+}
 
 export const DrawerController = ({ isOpen, children }: DrawerControllerProps) => {
   return (
@@ -32,5 +32,5 @@ export const DrawerController = ({ isOpen, children }: DrawerControllerProps) =>
         </DrawerControllerContextProvider>
       )}
     </Transition>
-  );
-};
+  )
+}

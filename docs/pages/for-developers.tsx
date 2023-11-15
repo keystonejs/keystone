@@ -1,40 +1,40 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { jsx } from '@emotion/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { useMediaQuery } from '../lib/media';
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
-import { CommunityCta } from '../components/content/CommunityCta';
-import { FrontEndLogos } from '../components/icons/FrontEndLogos';
-import { Highlight } from '../components/primitives/Highlight';
-import { Relational } from '../components/icons/Relational';
-import { TweetBox } from '../components/content/TweetBox';
-import { MWrapper } from '../components/content/MWrapper';
-import { Typescript } from '../components/icons/Typescript';
-import { Section, SideBySideSection } from '../components/content/Section';
-import { CodeBox } from '../components/content/CodeBox';
-import { Button } from '../components/primitives/Button';
-import { EndCta } from '../components/content/EndCta';
-import { Postgres } from '../components/icons/Postgres';
-import { Emoji } from '../components/primitives/Emoji';
-import { GraphQl } from '../components/icons/GraphQl';
-import { Type } from '../components/primitives/Type';
-import { ArrowR } from '../components/icons/ArrowR';
-import { Nextjs } from '../components/icons/Nextjs';
-import { Shield } from '../components/icons/Shield';
-import { Prisma } from '../components/icons/Prisma';
-import { Pill } from '../components/content/Pill';
-import { Tick } from '../components/icons/Tick';
-import { Cli } from '../components/icons/Cli';
-import { Page } from '../components/Page';
+import { useMediaQuery } from '../lib/media'
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro'
+import { CommunityCta } from '../components/content/CommunityCta'
+import { FrontEndLogos } from '../components/icons/FrontEndLogos'
+import { Highlight } from '../components/primitives/Highlight'
+import { Relational } from '../components/icons/Relational'
+import { TweetBox } from '../components/content/TweetBox'
+import { MWrapper } from '../components/content/MWrapper'
+import { Typescript } from '../components/icons/Typescript'
+import { Section, SideBySideSection } from '../components/content/Section'
+import { CodeBox } from '../components/content/CodeBox'
+import { Button } from '../components/primitives/Button'
+import { EndCta } from '../components/content/EndCta'
+import { Postgres } from '../components/icons/Postgres'
+import { Emoji } from '../components/primitives/Emoji'
+import { GraphQl } from '../components/icons/GraphQl'
+import { Type } from '../components/primitives/Type'
+import { ArrowR } from '../components/icons/ArrowR'
+import { Nextjs } from '../components/icons/Nextjs'
+import { Shield } from '../components/icons/Shield'
+import { Prisma } from '../components/icons/Prisma'
+import { Pill } from '../components/content/Pill'
+import { Tick } from '../components/icons/Tick'
+import { Cli } from '../components/icons/Cli'
+import { Page } from '../components/Page'
 
-import editorStorytelling from '../public/assets/editor-storytelling.png';
-import richTextEditor from '../public/assets/rich-text-editor.png';
+import editorStorytelling from '../public/assets/editor-storytelling.png'
+import richTextEditor from '../public/assets/rich-text-editor.png'
 
-export default function ForDevelopers() {
-  const mq = useMediaQuery();
+export default function ForDevelopers () {
+  const mq = useMediaQuery()
 
   return (
     <Page
@@ -515,5 +515,5 @@ export default function ForDevelopers() {
         <EndCta grad="grad3" />
       </MWrapper>
     </Page>
-  );
+  )
 }

@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { ReactNode, useState } from 'react';
-import { RenderLeafProps } from 'slate-react';
-import { InsertMenu } from './insert-menu';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { type ReactNode, useState } from 'react'
+import { type RenderLeafProps } from 'slate-react'
+import { InsertMenu } from './insert-menu'
 
-function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
-  const [width, setWidth] = useState(0);
+function Placeholder ({ placeholder, children }: { placeholder: string, children: ReactNode }) {
+  const [width, setWidth] = useState(0)
   return (
     <span css={{ position: 'relative', display: 'inline-block', width }}>
       <span
@@ -31,9 +31,9 @@ function Placeholder({ placeholder, children }: { placeholder: string; children:
         <span
           ref={node => {
             if (node) {
-              const offsetWidth = node.offsetWidth;
+              const offsetWidth = node.offsetWidth
               if (offsetWidth !== width) {
-                setWidth(offsetWidth);
+                setWidth(offsetWidth)
               }
             }
           }}
@@ -43,11 +43,11 @@ function Placeholder({ placeholder, children }: { placeholder: string; children:
       </span>
       {children}
     </span>
-  );
+  )
 }
 
 const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
-  const { colors, radii, spacing, typography } = useTheme();
+  const { colors, radii, spacing, typography } = useTheme()
   const {
     underline,
     strikethrough,
@@ -59,14 +59,14 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
     subscript,
     placeholder,
     insertMenu,
-  } = leaf;
+  } = leaf
 
   if (placeholder !== undefined) {
-    children = <Placeholder placeholder={placeholder}>{children}</Placeholder>;
+    children = <Placeholder placeholder={placeholder}>{children}</Placeholder>
   }
 
   if (insertMenu) {
-    children = <InsertMenu text={text}>{children}</InsertMenu>;
+    children = <InsertMenu text={text}>{children}</InsertMenu>
   }
 
   if (code) {
@@ -83,32 +83,32 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
       >
         {children}
       </code>
-    );
+    )
   }
   if (bold) {
-    children = <strong>{children}</strong>;
+    children = <strong>{children}</strong>
   }
   if (strikethrough) {
-    children = <s>{children}</s>;
+    children = <s>{children}</s>
   }
   if (italic) {
-    children = <em>{children}</em>;
+    children = <em>{children}</em>
   }
   if (keyboard) {
-    children = <kbd>{children}</kbd>;
+    children = <kbd>{children}</kbd>
   }
   if (superscript) {
-    children = <sup>{children}</sup>;
+    children = <sup>{children}</sup>
   }
   if (subscript) {
-    children = <sub>{children}</sub>;
+    children = <sub>{children}</sub>
   }
   if (underline) {
-    children = <u>{children}</u>;
+    children = <u>{children}</u>
   }
-  return <span {...attributes}>{children}</span>;
-};
+  return <span {...attributes}>{children}</span>
+}
 
 export const renderLeaf = (props: RenderLeafProps) => {
-  return <Leaf {...props} />;
-};
+  return <Leaf {...props} />
+}

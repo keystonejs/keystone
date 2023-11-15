@@ -1,20 +1,20 @@
-import { getNamedType, isLeafType } from 'graphql';
+import { getNamedType, isLeafType } from 'graphql'
 import {
-  BaseListTypeInfo,
-  BaseItem,
-  CommonFieldConfig,
-  FieldTypeFunc,
+  type BaseListTypeInfo,
+  type BaseItem,
+  type CommonFieldConfig,
+  type FieldTypeFunc,
   fieldType,
-  KeystoneContext,
-  ListGraphQLTypes,
+  type KeystoneContext,
+  type ListGraphQLTypes,
   getGqlNames,
-} from '../../../types';
-import { graphql } from '../../..';
+} from '../../../types'
+import { graphql } from '../../..'
 
 type VirtualFieldGraphQLField<
   Item extends BaseItem,
   Context extends KeystoneContext
-> = graphql.Field<Item, any, graphql.OutputType, string, Context>;
+> = graphql.Field<Item, any, graphql.OutputType, string, Context>
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -22,8 +22,8 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
       | ((
           lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>);
-    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
+        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
     ui?: {
       /**
        * Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:
@@ -38,9 +38,9 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        * This is only needed when you your field returns a GraphQL type other than a scalar(String and etc.)
        * or an enum or you need to provide arguments to the field.
        */
-      query?: string;
-    };
-  };
+      query?: string
+    }
+  }
 
 export const virtual =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -48,13 +48,13 @@ export const virtual =
     ...config
   }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const usableField = typeof field === 'function' ? field(meta.lists) : field;
-    const namedType = getNamedType(usableField.type.graphQLType);
+    const usableField = typeof field === 'function' ? field(meta.lists) : field
+    const namedType = getNamedType(usableField.type.graphQLType)
     const hasRequiredArgs =
       usableField.args &&
       Object.values(
         usableField.args as Record<string, graphql.Arg<graphql.InputType, boolean>>
-      ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined);
+      ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined)
     if (
       (!isLeafType(namedType) || hasRequiredArgs) &&
       !config.ui?.query &&
@@ -71,7 +71,7 @@ export const virtual =
           `    ${meta.fieldKey}\${ui.query}\n` +
           `  }\n` +
           `}`
-      );
+      )
     }
     return fieldType({
       kind: 'none',
@@ -79,12 +79,12 @@ export const virtual =
       ...config,
       output: graphql.field({
         ...(usableField as any),
-        resolve({ item }, ...args) {
-          return usableField.resolve!(item as any, ...args);
+        resolve ({ item }, ...args) {
+          return usableField.resolve!(item as any, ...args)
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
       getAdminMeta: () => ({ query: config.ui?.query || '' }),
-    });
-  };
+    })
+  }

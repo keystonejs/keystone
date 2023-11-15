@@ -1,15 +1,14 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { testConfig, dbProvider, dbName } from './utils';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { testConfig, dbProvider, dbName } from './utils'
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
     config: testConfig({
       db: { enableLogging },
       lists: {
-        // prettier-ignore
         User: list({
           access: allowAll,
           fields: {
@@ -18,18 +17,18 @@ const runner = (enableLogging: boolean) =>
         }),
       },
     }),
-  });
+  })
 
 test(
   'enableLogging: true enables logging',
   runner(true)(async ({ context }) => {
-    let prevConsoleLog = console.log;
-    const logs: unknown[][] = [];
+    let prevConsoleLog = console.log
+    const logs: unknown[][] = []
     console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, '^') : x)));
-    };
+      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, '^') : x)))
+    }
     try {
-      expect(await context.query.User.findMany()).toEqual([]);
+      expect(await context.query.User.findMany()).toEqual([])
       expect(logs).toEqual([
         [
           expect.stringContaining('prisma:query'),
@@ -45,26 +44,26 @@ test(
               '`.`User` WHERE 1=1'
             : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1',
         ],
-      ]);
+      ])
     } finally {
-      console.log = prevConsoleLog;
+      console.log = prevConsoleLog
     }
   })
-);
+)
 
 test(
   'enableLogging: false does not enable logging',
   runner(false)(async ({ context }) => {
-    let prevConsoleLog = console.log;
-    let didLog = false;
+    let prevConsoleLog = console.log
+    let didLog = false
     console.log = () => {
-      didLog = true;
-    };
+      didLog = true
+    }
     try {
-      expect(await context.query.User.findMany()).toEqual([]);
-      expect(didLog).toEqual(false);
+      expect(await context.query.User.findMany()).toEqual([])
+      expect(didLog).toEqual(false)
     } finally {
-      console.log = prevConsoleLog;
+      console.log = prevConsoleLog
     }
   })
-);
+)

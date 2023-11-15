@@ -1,36 +1,36 @@
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
-  ImageData,
-  ImageExtension,
-  KeystoneContext,
-} from '../../../types';
-import { graphql } from '../../..';
-import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
+  type FieldTypeFunc,
+  type CommonFieldConfig,
+  type ImageData,
+  type ImageExtension,
+  type KeystoneContext,
+} from '../../../types'
+import { graphql } from '../../..'
+import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: string;
+    storage: string
     db?: {
-      extendPrismaSchema?: (field: string) => string;
-    };
-  };
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
   values: graphql.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
-});
+})
 
 const ImageFieldInput = graphql.inputObject({
   name: 'ImageFieldInput',
   fields: {
     upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
   },
-});
+})
 
-const inputArg = graphql.arg({ type: ImageFieldInput });
+const inputArg = graphql.arg({ type: ImageFieldInput })
 
 const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
   name: 'ImageFieldOutput',
@@ -42,29 +42,29 @@ const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
     extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
-        return context.images(data.storage).getUrl(data.id, data.extension);
+      resolve (data, args, context) {
+        return context.images(data.storage).getUrl(data.id, data.extension)
       },
     }),
   },
-});
+})
 
-async function inputResolver(
+async function inputResolver (
   storage: string,
   data: graphql.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, width: data };
+    return { extension: data, filesize: data, height: data, id: data, width: data }
   }
-  const upload = await data.upload;
-  return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename);
+  const upload = await data.upload
+  return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
-const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
+const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS)
 
-function isValidImageExtension(extension: string): extension is ImageExtension {
-  return extensionsSet.has(extension);
+function isValidImageExtension (extension: string): extension is ImageExtension {
+  return extensionsSet.has(extension)
 }
 
 export const image =
@@ -72,16 +72,16 @@ export const image =
     config: ImageFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.getStorage(config.storage);
+    const storage = meta.getStorage(config.storage)
 
     if (!storage) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      );
+      )
     }
 
     if ('isIndexed' in config) {
-      throw Error("isIndexed: 'unique' is not a supported option for field type image");
+      throw Error("isIndexed: 'unique' is not a supported option for field type image")
     }
 
     return fieldType({
@@ -100,13 +100,13 @@ export const image =
         ? config.hooks
         : {
             ...config.hooks,
-            async beforeOperation(args) {
-              await config.hooks?.beforeOperation?.(args);
+            async beforeOperation (args) {
+              await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
-                const idKey = `${meta.fieldKey}_id`;
-                const id = args.item[idKey];
-                const extensionKey = `${meta.fieldKey}_extension`;
-                const extension = args.item[extensionKey];
+                const idKey = `${meta.fieldKey}_id`
+                const id = args.item[idKey]
+                const extensionKey = `${meta.fieldKey}_extension`
+                const extension = args.item[extensionKey]
 
                 // This will occur on an update where an image already existed but has been
                 // changed, or on a delete, where there is no longer an item
@@ -118,7 +118,7 @@ export const image =
                   typeof extension === 'string' &&
                   isValidImageExtension(extension)
                 ) {
-                  await args.context.images(config.storage).deleteAtSource(id, extension);
+                  await args.context.images(config.storage).deleteAtSource(id, extension)
                 }
               }
             },
@@ -135,7 +135,7 @@ export const image =
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, width } }) {
+        resolve ({ value: { extension, filesize, height, id, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
@@ -144,7 +144,7 @@ export const image =
             width === null ||
             id === null
           ) {
-            return null;
+            return null
           }
           return {
             extension,
@@ -153,10 +153,10 @@ export const image =
             width,
             id,
             storage: config.storage,
-          };
+          }
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/image',
       views: '@keystone-6/core/fields/types/image/views',
-    });
-  };
+    })
+  }

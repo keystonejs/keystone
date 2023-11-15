@@ -1,74 +1,74 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import {
-  AnchorHTMLAttributes,
-  ReactNode,
+  type AnchorHTMLAttributes,
+  type ReactNode,
   useState,
   createContext,
   useContext,
   useMemo,
-} from 'react';
-import { useRouter } from 'next/router';
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
+} from 'react'
+import { useRouter } from 'next/router'
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
 
-import { useMediaQuery } from '../../lib/media';
-import { useHeaderContext } from '../Header';
-import { Badge } from '../primitives/Badge';
-import { ArrowR } from '../icons/ArrowR';
+import { useMediaQuery } from '../../lib/media'
+import { useHeaderContext } from '../Header'
+import { Badge } from '../primitives/Badge'
+import { ArrowR } from '../icons/ArrowR'
 
 type NavContext = {
-  isSectionCollapsed: (title: string) => boolean;
-  collapseSection: (title: string) => void;
-  expandSection: (title: string) => void;
-};
+  isSectionCollapsed: (title: string) => boolean
+  collapseSection: (title: string) => void
+  expandSection: (title: string) => void
+}
 
-const NavContext = createContext<NavContext | undefined>(undefined);
+const NavContext = createContext<NavContext | undefined>(undefined)
 
 /* Save section collapse/expand states */
 export const NavContextProvider = ({ children }: { children: ReactNode }) => {
-  const [collapsedSections, setCollapsedSections] = useState<string[]>([]);
+  const [collapsedSections, setCollapsedSections] = useState<string[]>([])
 
   const contextValue = useMemo(() => {
     const collapseSection = (title: string) => {
-      const isSectionAlreadyCollapsed = collapsedSections.includes(title);
+      const isSectionAlreadyCollapsed = collapsedSections.includes(title)
       if (!isSectionAlreadyCollapsed) {
-        setCollapsedSections([...collapsedSections, title]);
+        setCollapsedSections([...collapsedSections, title])
       }
-    };
+    }
     const expandSection = (title: string) => {
-      const isSectionAlreadyExpanded = !collapsedSections.includes(title);
+      const isSectionAlreadyExpanded = !collapsedSections.includes(title)
       if (!isSectionAlreadyExpanded) {
-        setCollapsedSections(collapsedSections.filter(cs => cs !== title));
+        setCollapsedSections(collapsedSections.filter(cs => cs !== title))
       }
-    };
+    }
     const isSectionCollapsed = (title: string) => {
-      return collapsedSections.some(cs => cs === title);
-    };
+      return collapsedSections.some(cs => cs === title)
+    }
 
-    return { isSectionCollapsed, collapseSection, expandSection };
-  }, [collapsedSections, setCollapsedSections]);
+    return { isSectionCollapsed, collapseSection, expandSection }
+  }, [collapsedSections, setCollapsedSections])
 
-  return <NavContext.Provider value={contextValue}>{children}</NavContext.Provider>;
-};
+  return <NavContext.Provider value={contextValue}>{children}</NavContext.Provider>
+}
 
 const useNavContext = () => {
-  const navContext = useContext(NavContext);
+  const navContext = useContext(NavContext)
   if (navContext === undefined) {
-    throw new Error('NavContextProvider is not wrapped in the tree');
+    throw new Error('NavContextProvider is not wrapped in the tree')
   }
 
-  return navContext;
-};
+  return navContext
+}
 
 type NavSectionProps = {
-  title: string;
-  children: ReactNode;
-};
+  title: string
+  children: ReactNode
+}
 
-function NavSection({ title, children }: NavSectionProps) {
-  const { isSectionCollapsed, collapseSection, expandSection } = useNavContext();
-  const isCollapsed = isSectionCollapsed(title);
+function NavSection ({ title, children }: NavSectionProps) {
+  const { isSectionCollapsed, collapseSection, expandSection } = useNavContext()
+  const isCollapsed = isSectionCollapsed(title)
   return (
     <section>
       <button
@@ -112,29 +112,29 @@ function NavSection({ title, children }: NavSectionProps) {
         {children}
       </div>
     </section>
-  );
+  )
 }
 
 type NavItemProps = {
-  href: string;
-  isActive?: boolean;
-  isPlaceholder?: boolean;
-  alwaysVisible?: boolean;
-} & AnchorHTMLAttributes<HTMLAnchorElement>;
+  href: string
+  isActive?: boolean
+  isPlaceholder?: boolean
+  alwaysVisible?: boolean
+} & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function NavItem({
+export function NavItem ({
   href,
   isActive: _isActive,
   isPlaceholder,
   alwaysVisible,
   ...props
 }: NavItemProps) {
-  const { asPath } = useRouter();
-  const mq = useMediaQuery();
-  const isActive = typeof _isActive !== 'undefined' ? _isActive : asPath === href;
-  const ctx = useHeaderContext();
-  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
-  const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
+  const { asPath } = useRouter()
+  const mq = useMediaQuery()
+  const isActive = typeof _isActive !== 'undefined' ? _isActive : asPath === href
+  const ctx = useHeaderContext()
+  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true
+  const desktopOpenState = ctx ? ctx.desktopOpenState : -1
 
   return (
     <Link
@@ -153,20 +153,20 @@ export function NavItem({
       })}
       {...props}
     />
-  );
+  )
 }
 
 type PrimaryNavItemProps = {
-  href: string;
-  children: ReactNode;
-} & AnchorHTMLAttributes<HTMLAnchorElement>;
+  href: string
+  children: ReactNode
+} & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
-  const { asPath } = useRouter();
-  const isActive = asPath === href;
-  const ctx = useHeaderContext();
-  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
-  const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
+export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {
+  const { asPath } = useRouter()
+  const isActive = asPath === href
+  const ctx = useHeaderContext()
+  const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true
+  const desktopOpenState = ctx ? ctx.desktopOpenState : -1
 
   return (
     <Link
@@ -186,10 +186,10 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
     >
       {children}
     </Link>
-  );
+  )
 }
 
-export function DocsNavigation() {
+export function DocsNavigation () {
   return (
     // <NavContextProvider>
     <nav
@@ -293,10 +293,10 @@ export function DocsNavigation() {
       </NavSection>
     </nav>
     // </NavContextProvider>
-  );
+  )
 }
 
-export function UpdatesNavigation() {
+export function UpdatesNavigation () {
   return (
     <NavContextProvider>
       <nav
@@ -308,5 +308,5 @@ export function UpdatesNavigation() {
         <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
       </nav>
     </NavContextProvider>
-  );
+  )
 }

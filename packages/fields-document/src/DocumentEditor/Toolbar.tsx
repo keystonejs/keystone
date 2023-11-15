@@ -3,59 +3,59 @@
 
 import {
   Fragment,
-  ReactNode,
+  type ReactNode,
   forwardRef,
   useState,
-  HTMLAttributes,
+  type HTMLAttributes,
   useMemo,
   useContext,
-} from 'react';
-import { Editor, Transforms } from 'slate';
-import { applyRefs } from 'apply-ref';
+} from 'react'
+import { Editor, Transforms } from 'slate'
+import { applyRefs } from 'apply-ref'
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { useControlledPopover } from '@keystone-ui/popover';
-import { Tooltip } from '@keystone-ui/tooltip';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { useControlledPopover } from '@keystone-ui/popover'
+import { Tooltip } from '@keystone-ui/tooltip'
 
-import { BoldIcon } from '@keystone-ui/icons/icons/BoldIcon';
-import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon';
-import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
-import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
-import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
+import { BoldIcon } from '@keystone-ui/icons/icons/BoldIcon'
+import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon'
+import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
+import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon'
+import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon'
+import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 
-import { DocumentFeatures } from '../views';
+import { type DocumentFeatures } from '../views'
 import {
   InlineDialog,
   KeyboardInTooltip,
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from './primitives';
-import { linkButton } from './link';
-import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks';
-import { clearFormatting, Mark, modifierKeyText } from './utils';
-import { LayoutsButton } from './layouts';
-import { ListButton } from './lists';
-import { blockquoteButton } from './blockquote';
-import { DocumentFieldRelationshipsContext, RelationshipButton } from './relationship';
-import { codeButton } from './code-block';
-import { TextAlignMenu } from './alignment';
-import { dividerButton } from './divider';
-import { useToolbarState } from './toolbar-state';
+} from './primitives'
+import { linkButton } from './link'
+import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks'
+import { clearFormatting, type Mark, modifierKeyText } from './utils'
+import { LayoutsButton } from './layouts'
+import { ListButton } from './lists'
+import { blockquoteButton } from './blockquote'
+import { DocumentFieldRelationshipsContext, RelationshipButton } from './relationship'
+import { codeButton } from './code-block'
+import { TextAlignMenu } from './alignment'
+import { dividerButton } from './divider'
+import { useToolbarState } from './toolbar-state'
 
-export function Toolbar({
+export function Toolbar ({
   documentFeatures,
   viewState,
 }: {
-  documentFeatures: DocumentFeatures;
-  viewState?: { expanded: boolean; toggle: () => void };
+  documentFeatures: DocumentFeatures
+  viewState?: { expanded: boolean, toggle: () => void }
 }) {
-  const relationship = useContext(DocumentFieldRelationshipsContext);
-  const blockComponent = useContext(ComponentBlockContext);
-  const hasBlockItems = Object.entries(relationship).length || Object.keys(blockComponent).length;
-  const hasMarks = Object.values(documentFeatures.formatting.inlineMarks).some(x => x);
+  const relationship = useContext(DocumentFieldRelationshipsContext)
+  const blockComponent = useContext(ComponentBlockContext)
+  const hasBlockItems = Object.entries(relationship).length || Object.keys(blockComponent).length
+  const hasMarks = Object.values(documentFeatures.formatting.inlineMarks).some(x => x)
   return (
     <ToolbarContainer>
       <ToolbarGroup>
@@ -113,7 +113,7 @@ export function Toolbar({
         {!!hasBlockItems && <InsertBlockMenu />}
       </ToolbarGroup>
       {useMemo(() => {
-        const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
+        const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon
         return (
           viewState && (
             <ToolbarGroup>
@@ -122,8 +122,8 @@ export function Toolbar({
                 {attrs => (
                   <ToolbarButton
                     onMouseDown={event => {
-                      event.preventDefault();
-                      viewState.toggle();
+                      event.preventDefault()
+                      viewState.toggle()
                     }}
                     {...attrs}
                   >
@@ -133,15 +133,15 @@ export function Toolbar({
               </Tooltip>
             </ToolbarGroup>
           )
-        );
+        )
       }, [viewState])}
     </ToolbarContainer>
-  );
+  )
 }
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton(
+const MarkButton = forwardRef<any, { children: ReactNode, type: Mark }>(function MarkButton (
   props,
   ref
 ) {
@@ -150,30 +150,30 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
     marks: {
       [props.type]: { isDisabled, isSelected },
     },
-  } = useToolbarState();
+  } = useToolbarState()
   return useMemo(() => {
-    const { type, ...restProps } = props;
+    const { type, ...restProps } = props
     return (
       <ToolbarButton
         ref={ref}
         isDisabled={isDisabled}
         isSelected={isSelected}
         onMouseDown={event => {
-          event.preventDefault();
+          event.preventDefault()
           if (isSelected) {
-            Editor.removeMark(editor, props.type);
+            Editor.removeMark(editor, props.type)
           } else {
-            Editor.addMark(editor, props.type, true);
+            Editor.addMark(editor, props.type, true)
           }
         }}
         {...restProps}
       />
-    );
-  }, [editor, isDisabled, isSelected, props, ref]);
-});
+    )
+  }, [editor, isDisabled, isSelected, props, ref])
+})
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
 
   return (
     <div
@@ -201,24 +201,24 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
         {children}
       </div>
     </div>
-  );
-};
+  )
+}
 
-const downIcon = <ChevronDownIcon size="small" />;
+const downIcon = <ChevronDownIcon size="small" />
 
-function HeadingButton({
+function HeadingButton ({
   trigger,
   onToggleShowMenu,
   showMenu,
 }: {
-  trigger: ReturnType<typeof useControlledPopover>['trigger'];
-  showMenu: boolean;
-  onToggleShowMenu: () => void;
+  trigger: ReturnType<typeof useControlledPopover>['trigger']
+  showMenu: boolean
+  onToggleShowMenu: () => void
 }) {
-  const { textStyles } = useToolbarState();
+  const { textStyles } = useToolbarState()
   let buttonLabel =
-    textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected;
-  const isDisabled = textStyles.allowedHeadingLevels.length === 0;
+    textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected
+  const isDisabled = textStyles.allowedHeadingLevels.length === 0
   return useMemo(
     () => (
       <ToolbarButton
@@ -226,8 +226,8 @@ function HeadingButton({
         isPressed={showMenu}
         isDisabled={isDisabled}
         onMouseDown={event => {
-          event.preventDefault();
-          onToggleShowMenu();
+          event.preventDefault()
+          onToggleShowMenu()
         }}
         style={{ textAlign: 'left', width: 116 }}
         {...trigger.props}
@@ -237,15 +237,15 @@ function HeadingButton({
       </ToolbarButton>
     ),
     [buttonLabel, trigger, showMenu, onToggleShowMenu, isDisabled]
-  );
+  )
 }
 
 const HeadingMenu = ({
   headingLevels,
 }: {
-  headingLevels: DocumentFeatures['formatting']['headingLevels'];
+  headingLevels: DocumentFeatures['formatting']['headingLevels']
 }) => {
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -262,7 +262,7 @@ const HeadingMenu = ({
         },
       ],
     }
-  );
+  )
 
   return (
     <div
@@ -275,7 +275,7 @@ const HeadingMenu = ({
         showMenu={showMenu}
         trigger={trigger}
         onToggleShowMenu={() => {
-          setShowMenu(x => !x);
+          setShowMenu(x => !x)
         }}
       />
 
@@ -284,57 +284,57 @@ const HeadingMenu = ({
           <HeadingDialog
             headingLevels={headingLevels}
             onCloseMenu={() => {
-              setShowMenu(false);
+              setShowMenu(false)
             }}
           />
         </InlineDialog>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
-function HeadingDialog({
+function HeadingDialog ({
   headingLevels,
   onCloseMenu,
 }: {
-  headingLevels: DocumentFeatures['formatting']['headingLevels'];
-  onCloseMenu: () => void;
+  headingLevels: DocumentFeatures['formatting']['headingLevels']
+  onCloseMenu: () => void
 }) {
-  const { editor, textStyles } = useToolbarState();
+  const { editor, textStyles } = useToolbarState()
   return (
     <ToolbarGroup direction="column">
       {headingLevels.map(hNum => {
-        let Tag = `h${hNum}` as const;
-        const isSelected = textStyles.selected === hNum;
+        let Tag = `h${hNum}` as const
+        const isSelected = textStyles.selected === hNum
         return (
           <ToolbarButton
             key={hNum}
             isSelected={isSelected}
             onMouseDown={event => {
-              event.preventDefault();
+              event.preventDefault()
 
               if (isSelected) {
-                Transforms.unwrapNodes(editor, { match: n => n.type === 'heading' });
+                Transforms.unwrapNodes(editor, { match: n => n.type === 'heading' })
               } else {
                 Transforms.setNodes(
                   editor,
                   { type: 'heading', level: hNum },
                   { match: node => node.type === 'paragraph' || node.type === 'heading' }
-                );
+                )
               }
-              onCloseMenu();
+              onCloseMenu()
             }}
           >
             <Tag>Heading {hNum}</Tag>
           </ToolbarButton>
-        );
+        )
       })}
     </ToolbarGroup>
-  );
+  )
 }
 
-function InsertBlockMenu() {
-  const [showMenu, setShowMenu] = useState(false);
+function InsertBlockMenu () {
+  const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -351,7 +351,7 @@ function InsertBlockMenu() {
         },
       ],
     }
-  );
+  )
 
   return (
     <div
@@ -373,8 +373,8 @@ function InsertBlockMenu() {
             ref={applyRefs(ref, trigger.ref)}
             isPressed={showMenu}
             onMouseDown={event => {
-              event.preventDefault();
-              setShowMenu(v => !v);
+              event.preventDefault()
+              setShowMenu(v => !v)
             }}
             {...trigger.props}
             {...attrs}
@@ -393,11 +393,11 @@ function InsertBlockMenu() {
         </InlineDialog>
       ) : null}
     </div>
-  );
+  )
 }
 
-function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
-  const [showMenu, setShowMenu] = useState(false);
+function InlineMarks ({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
+  const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -414,7 +414,7 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
         },
       ],
     }
-  );
+  )
   return (
     <Fragment>
       {marks.bold && (
@@ -457,7 +457,7 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
           <MoreFormattingButton
             isOpen={showMenu}
             onToggle={() => {
-              setShowMenu(v => !v);
+              setShowMenu(v => !v)
             }}
             trigger={trigger}
             attrs={attrs}
@@ -467,36 +467,36 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
       {showMenu && (
         <MoreFormattingDialog
           onCloseMenu={() => {
-            setShowMenu(false);
+            setShowMenu(false)
           }}
           dialog={dialog}
           marks={marks}
         />
       )}
     </Fragment>
-  );
+  )
 }
 
-function MoreFormattingDialog({
+function MoreFormattingDialog ({
   dialog,
   marks,
   onCloseMenu,
 }: {
-  dialog: ReturnType<typeof useControlledPopover>['dialog'];
-  marks: DocumentFeatures['formatting']['inlineMarks'];
-  onCloseMenu: () => void;
+  dialog: ReturnType<typeof useControlledPopover>['dialog']
+  marks: DocumentFeatures['formatting']['inlineMarks']
+  onCloseMenu: () => void
 }) {
   // not doing optimisations in here because this will only render when it's open
   // which will be rare and you won't be typing while it's open
   const {
     editor,
     clearFormatting: { isDisabled },
-  } = useToolbarState();
+  } = useToolbarState()
   return (
     <InlineDialog
       onMouseDown={event => {
         if (event.target instanceof HTMLElement && event.target.closest('button')) {
-          onCloseMenu();
+          onCloseMenu()
         }
       }}
       ref={dialog.ref}
@@ -516,8 +516,8 @@ function MoreFormattingDialog({
         <ToolbarButton
           isDisabled={isDisabled}
           onMouseDown={event => {
-            event.preventDefault();
-            clearFormatting(editor);
+            event.preventDefault()
+            clearFormatting(editor)
           }}
         >
           <ContentInButtonWithShortcut
@@ -527,11 +527,11 @@ function MoreFormattingDialog({
         </ToolbarButton>
       </ToolbarGroup>
     </InlineDialog>
-  );
+  )
 }
 
-function ContentInButtonWithShortcut({ content, shortcut }: { content: string; shortcut: string }) {
-  const theme = useTheme();
+function ContentInButtonWithShortcut ({ content, shortcut }: { content: string, shortcut: string }) {
+  const theme = useTheme()
   return (
     <span
       css={{
@@ -558,36 +558,36 @@ function ContentInButtonWithShortcut({ content, shortcut }: { content: string; s
         {shortcut}
       </kbd>
     </span>
-  );
+  )
 }
 
-function MoreFormattingButton({
+function MoreFormattingButton ({
   onToggle,
   isOpen,
   trigger,
   attrs,
 }: {
-  onToggle: () => void;
-  isOpen: boolean;
-  trigger: ReturnType<typeof useControlledPopover>['trigger'];
-  attrs: { ref: any };
+  onToggle: () => void
+  isOpen: boolean
+  trigger: ReturnType<typeof useControlledPopover>['trigger']
+  attrs: { ref: any }
 }) {
-  const { marks } = useToolbarState();
+  const { marks } = useToolbarState()
   const isActive =
     marks.strikethrough.isSelected ||
     marks.underline.isSelected ||
     marks.code.isSelected ||
     marks.keyboard.isSelected ||
     marks.subscript.isSelected ||
-    marks.superscript.isSelected;
+    marks.superscript.isSelected
   return useMemo(
     () => (
       <ToolbarButton
         isPressed={isOpen}
         isSelected={isActive}
         onMouseDown={event => {
-          event.preventDefault();
-          onToggle();
+          event.preventDefault()
+          onToggle()
         }}
         {...trigger.props}
         {...attrs}
@@ -597,7 +597,7 @@ function MoreFormattingButton({
       </ToolbarButton>
     ),
     [isActive, onToggle, isOpen, trigger, attrs]
-  );
+  )
 }
 
 // Custom (non-feather) Icons
@@ -614,15 +614,15 @@ export const IconBase = (props: HTMLAttributes<HTMLOrSVGElement>) => (
     width="16"
     {...props}
   />
-);
+)
 
 const BulletListIcon = () => (
   <IconBase>
     <path d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z" />
   </IconBase>
-);
+)
 const NumberedListIcon = () => (
   <IconBase>
     <path d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z" />
   </IconBase>
-);
+)

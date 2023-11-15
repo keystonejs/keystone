@@ -1,60 +1,60 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import bytes from 'bytes';
-import { Fragment, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
-import { Button } from '@keystone-ui/button';
-import { FieldProps } from '../../../../types';
-import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils';
-import { ImageValue } from './index';
+import bytes from 'bytes'
+import { Fragment, type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { jsx, Stack, Text } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
+import { Button } from '@keystone-ui/button'
+import { type FieldProps } from '../../../../types'
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
+import { type ImageValue } from './index'
 
-function useObjectURL(fileData: File | undefined) {
-  let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
+function useObjectURL (fileData: File | undefined) {
+  let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (fileData) {
-      let url = URL.createObjectURL(fileData);
-      setObjectURL(url);
+      let url = URL.createObjectURL(fileData)
+      setObjectURL(url)
       return () => {
-        URL.revokeObjectURL(url);
-      };
+        URL.revokeObjectURL(url)
+      }
     }
-  }, [fileData]);
-  return objectURL;
+  }, [fileData])
+  return objectURL
 }
 
-export function Field({
+export function Field ({
   autoFocus,
   field,
   value,
   onChange,
 }: FieldProps<typeof import('.').controller>) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const errorMessage = createErrorMessage(value);
+  const errorMessage = createErrorMessage(value)
 
   const onUploadChange = ({
     currentTarget: { validity, files },
   }: React.SyntheticEvent<HTMLInputElement>) => {
-    const file = files?.[0];
-    if (!file) return; // bail if the user cancels from the file browser
+    const file = files?.[0]
+    if (!file) return // bail if the user cancels from the file browser
     onChange?.({
       kind: 'upload',
       data: { file, validity },
       previous: value,
-    });
-  };
+    })
+  }
 
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const inputKey = useMemo(() => Math.random(), [value]);
+  const inputKey = useMemo(() => Math.random(), [value])
   const accept = useMemo(
     () => SUPPORTED_IMAGE_EXTENSIONS.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(', '),
     []
-  );
+  )
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -91,27 +91,27 @@ export function Field({
         </span>
       )}
     </FieldContainer>
-  );
+  )
 }
 
-function ImgView({
+function ImgView ({
   errorMessage,
   value,
   onChange,
   field,
   inputRef,
 }: {
-  errorMessage?: string;
-  value: ImageValue;
-  onChange?: (value: ImageValue) => void;
-  field: ReturnType<typeof import('.').controller>;
-  inputRef: RefObject<HTMLInputElement>;
+  errorMessage?: string
+  value: ImageValue
+  onChange?: (value: ImageValue) => void
+  field: ReturnType<typeof import('.').controller>
+  inputRef: RefObject<HTMLInputElement>
 }) {
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 })
   const imagePathFromUpload = useObjectURL(
     errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
-  );
-  const imageSrc = value.kind === 'from-server' ? value.data.src : imagePathFromUpload;
+  )
+  const imageSrc = value.kind === 'from-server' ? value.data.src : imagePathFromUpload
 
   return (
     <Stack gap="small" across align="end">
@@ -148,7 +148,7 @@ function ImgView({
                   setImageDimensions({
                     width: event.currentTarget.naturalWidth,
                     height: event.currentTarget.naturalHeight,
-                  });
+                  })
                 }
               }}
               css={{
@@ -192,7 +192,7 @@ function ImgView({
               <Button
                 size="small"
                 onClick={() => {
-                  inputRef.current?.click();
+                  inputRef.current?.click()
                 }}
               >
                 Change
@@ -202,7 +202,7 @@ function ImgView({
                   size="small"
                   tone="negative"
                   onClick={() => {
-                    onChange({ kind: 'remove', previous: value });
+                    onChange({ kind: 'remove', previous: value })
                   }}
                 >
                   Remove
@@ -213,7 +213,7 @@ function ImgView({
                   size="small"
                   tone="negative"
                   onClick={() => {
-                    onChange(value.previous);
+                    onChange(value.previous)
                   }}
                 >
                   Cancel
@@ -228,7 +228,7 @@ function ImgView({
             size="small"
             disabled={onChange === undefined}
             onClick={() => {
-              inputRef.current?.click();
+              inputRef.current?.click()
             }}
           >
             Upload Image
@@ -239,7 +239,7 @@ function ImgView({
               tone="negative"
               onClick={() => {
                 if (value.previous !== undefined) {
-                  onChange?.(value?.previous);
+                  onChange?.(value?.previous)
                 }
               }}
             >
@@ -249,40 +249,40 @@ function ImgView({
         </Stack>
       )}
     </Stack>
-  );
+  )
 }
 
-function createErrorMessage(value: ImageValue) {
+function createErrorMessage (value: ImageValue) {
   if (value.kind === 'upload') {
-    return validateImage(value.data);
+    return validateImage(value.data)
   }
 }
 
-export function validateImage({
+export function validateImage ({
   file,
   validity,
 }: {
-  file: File;
-  validity: ValidityState;
+  file: File
+  validity: ValidityState
 }): string | undefined {
   if (!validity.valid) {
-    return 'Something went wrong, please reload and try again.';
+    return 'Something went wrong, please reload and try again.'
   }
   // check if the file is actually an image
   if (!file.type.includes('image')) {
     return `Sorry, that file type isn't accepted. Please try ${SUPPORTED_IMAGE_EXTENSIONS.reduce(
       (acc, curr, currentIndex) => {
         if (currentIndex === SUPPORTED_IMAGE_EXTENSIONS.length - 1) {
-          acc += ` or .${curr}`;
+          acc += ` or .${curr}`
         } else if (currentIndex > 0) {
-          acc += `, .${curr}`;
+          acc += `, .${curr}`
         } else {
-          acc += `.${curr}`;
+          acc += `.${curr}`
         }
-        return acc;
+        return acc
       },
       ''
-    )}.`;
+    )}.`
   }
 }
 
@@ -295,19 +295,19 @@ export const ImageMeta = ({
   height = 0,
   size,
 }: {
-  width?: number;
-  height?: number;
-  size: number;
+  width?: number
+  height?: number
+  size: number
 }) => {
   return (
     <Stack padding="xxsmall" gap="xxsmall">
       <Text size="small">Size: {`${bytes(size)}`}</Text>
       <Text size="small">Dimensions: {`${width} x ${height}`}</Text>
     </Stack>
-  );
-};
+  )
+}
 
-export const ImageWrapper = ({ children, url }: { children: ReactNode; url?: string }) => {
+export const ImageWrapper = ({ children, url }: { children: ReactNode, url?: string }) => {
   if (url) {
     return (
       <a
@@ -329,7 +329,7 @@ export const ImageWrapper = ({ children, url }: { children: ReactNode; url?: str
       >
         {children}
       </a>
-    );
+    )
   }
   return (
     <div
@@ -348,8 +348,8 @@ export const ImageWrapper = ({ children, url }: { children: ReactNode; url?: str
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
 export const Placeholder = () => {
   return (
@@ -368,5 +368,5 @@ export const Placeholder = () => {
         fill="#b1b5b9"
       />
     </svg>
-  );
-};
+  )
+}

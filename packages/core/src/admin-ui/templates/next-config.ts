@@ -12,4 +12,4 @@ export const nextConfigTemplate = (basePath?: string) =>
     ${basePath ? `basePath: '${basePath}',` : ''} 
   }
   
-  module.exports = nextConfig`;
+  module.exports = nextConfig`

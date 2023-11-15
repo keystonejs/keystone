@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
-import { memo, ReactNode, useContext, useId, useMemo } from 'react';
-import { FieldDescription } from '@keystone-ui/fields';
-import { ButtonContext } from '@keystone-ui/button';
-import { FieldGroupMeta, FieldMeta } from '../../types';
-import { Value } from '.';
+import { jsx, Stack, useTheme, Text } from '@keystone-ui/core'
+import { memo, type ReactNode, useContext, useId, useMemo } from 'react'
+import { FieldDescription } from '@keystone-ui/fields'
+import { ButtonContext } from '@keystone-ui/button'
+import { type FieldGroupMeta, type FieldMeta } from '../../types'
+import { type Value } from '.'
 
 type RenderFieldProps = {
-  field: FieldMeta;
-  value: unknown;
-  itemValue: unknown;
-  onChange?(value: (value: Value) => Value): void;
-  autoFocus?: boolean;
-  forceValidation?: boolean;
-};
+  field: FieldMeta
+  value: unknown
+  itemValue: unknown
+  onChange?(value: (value: Value) => Value): void
+  autoFocus?: boolean
+  forceValidation?: boolean
+}
 
-const RenderField = memo(function RenderField({
+const RenderField = memo(function RenderField ({
   field,
   value,
   itemValue,
@@ -28,32 +28,32 @@ const RenderField = memo(function RenderField({
     <field.views.Field
       field={field.controller}
       onChange={useMemo(() => {
-        if (onChange === undefined) return undefined;
+        if (onChange === undefined) return undefined
         return value => {
-          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }));
-        };
+          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }))
+        }
       }, [onChange, field.controller.path])}
       value={value}
       itemValue={itemValue}
       autoFocus={autoFocus}
       forceValidation={forceValidation}
     />
-  );
-});
+  )
+})
 
 type FieldsProps = {
-  fields: Record<string, FieldMeta>;
-  groups?: FieldGroupMeta[];
-  value: Value;
-  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null;
-  fieldPositions?: Record<string, 'form' | 'sidebar'> | null;
-  forceValidation: boolean;
-  position?: 'form' | 'sidebar';
-  invalidFields: ReadonlySet<string>;
-  onChange(value: (value: Value) => Value): void;
-};
+  fields: Record<string, FieldMeta>
+  groups?: FieldGroupMeta[]
+  value: Value
+  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
+  fieldPositions?: Record<string, 'form' | 'sidebar'> | null
+  forceValidation: boolean
+  position?: 'form' | 'sidebar'
+  invalidFields: ReadonlySet<string>
+  onChange(value: (value: Value) => Value): void
+}
 
-export function Fields({
+export function Fields ({
   fields,
   value,
   fieldModes = null,
@@ -66,19 +66,19 @@ export function Fields({
 }: FieldsProps) {
   const renderedFields = Object.fromEntries(
     Object.keys(fields).map((fieldKey, index) => {
-      const field = fields[fieldKey];
-      const val = value[fieldKey];
-      const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey];
-      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey];
-      if (fieldMode === 'hidden') return [fieldKey, null];
-      if (fieldPosition !== position) return [fieldKey, null];
+      const field = fields[fieldKey]
+      const val = value[fieldKey]
+      const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
+      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+      if (fieldMode === 'hidden') return [fieldKey, null]
+      if (fieldPosition !== position) return [fieldKey, null]
       if (val.kind === 'error') {
         return [
           fieldKey,
           <div key={fieldKey}>
             {field.label}: <span css={{ color: 'red' }}>{val.errors[0].message}</span>
           </div>,
-        ];
+        ]
       }
       return [
         fieldKey,
@@ -91,57 +91,57 @@ export function Fields({
           onChange={fieldMode === 'edit' ? onChange : undefined}
           autoFocus={index === 0}
         />,
-      ];
+      ]
     })
-  );
-  const rendered: ReactNode[] = [];
-  const fieldGroups = new Map<string, { rendered: boolean; group: FieldGroupMeta }>();
+  )
+  const rendered: ReactNode[] = []
+  const fieldGroups = new Map<string, { rendered: boolean, group: FieldGroupMeta }>()
   for (const group of groups) {
-    const state = { group, rendered: false };
+    const state = { group, rendered: false }
     for (const field of group.fields) {
-      fieldGroups.set(field.path, state);
+      fieldGroups.set(field.path, state)
     }
   }
   for (const field of Object.values(fields)) {
-    const fieldKey = field.path;
+    const fieldKey = field.path
     if (fieldGroups.has(fieldKey)) {
-      const groupState = fieldGroups.get(field.path)!;
+      const groupState = fieldGroups.get(field.path)!
       if (groupState.rendered) {
-        continue;
+        continue
       }
-      groupState.rendered = true;
-      const { group } = groupState;
-      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path]);
+      groupState.rendered = true
+      const { group } = groupState
+      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
       if (renderedFieldsInGroup.every(field => field === null)) {
-        continue;
+        continue
       }
       rendered.push(
         <FieldGroup label={group.label} description={group.description}>
           {renderedFieldsInGroup}
         </FieldGroup>
-      );
-      continue;
+      )
+      continue
     }
     if (renderedFields[fieldKey] === null) {
-      continue;
+      continue
     }
-    rendered.push(renderedFields[fieldKey]);
+    rendered.push(renderedFields[fieldKey])
   }
 
   return (
     <Stack gap="xlarge">
       {rendered.length === 0 ? 'There are no fields that you can read or edit' : rendered}
     </Stack>
-  );
+  )
 }
 
-function FieldGroup(props: { label: string; description: string | null; children: ReactNode }) {
-  const descriptionId = useId();
-  const labelId = useId();
-  const theme = useTheme();
-  const buttonSize = 24;
-  const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
-  const buttonStyles = useButtonStyles({ tokens: useButtonTokens(defaults) });
+function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {
+  const descriptionId = useId()
+  const labelId = useId()
+  const theme = useTheme()
+  const buttonSize = 24
+  const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext)
+  const buttonStyles = useButtonStyles({ tokens: useButtonTokens(defaults) })
   const divider = (
     <div
       css={{
@@ -150,7 +150,7 @@ function FieldGroup(props: { label: string; description: string | null; children
         backgroundColor: theme.colors.border,
       }}
     />
-  );
+  )
   return (
     <div
       role="group"
@@ -200,11 +200,11 @@ function FieldGroup(props: { label: string; description: string | null; children
         </div>
       </details>
     </div>
-  );
+  )
 }
 
 const downChevron = (
   <svg width="16" height="16" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
     <path d="M5 3L8.75 6L5 9L5 3Z" fill="currentColor" />
   </svg>
-);
+)

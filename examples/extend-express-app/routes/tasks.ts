@@ -1,5 +1,5 @@
-import type { Request, Response } from 'express';
-import type { Context } from '.keystone/types';
+import type { Request, Response } from 'express'
+import type { Context } from '.keystone/types'
 
 /*
   This example route handler gets all the tasks in the database and returns
@@ -11,13 +11,13 @@ import type { Context } from '.keystone/types';
   We're also demonstrating how you can query related data through the schema.
 */
 
-export async function getTasks(req: Request, res: Response, context: Context) {
+export async function getTasks (req: Request, res: Response, context: Context) {
   // Let's map the `complete` query param to a where filter
-  let isComplete;
+  let isComplete
   if (req.query.complete === 'true') {
-    isComplete = { equals: true };
+    isComplete = { equals: true }
   } else if (req.query.complete === 'false') {
-    isComplete = { equals: false };
+    isComplete = { equals: false }
   }
   // Now we can use it to query the Keystone Schema
   const tasks = await context.query.Task.findMany({
@@ -34,7 +34,7 @@ export async function getTasks(req: Request, res: Response, context: Context) {
         name
       }
     `,
-  });
+  })
   // And return the result as JSON
-  res.json(tasks);
+  res.json(tasks)
 }

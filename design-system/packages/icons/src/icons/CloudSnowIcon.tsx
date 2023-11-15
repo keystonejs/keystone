@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const CloudSnowIcon = createIcon(
   <React.Fragment>
     <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
@@ -11,4 +11,4 @@ export const CloudSnowIcon = createIcon(
     <line x1={16} y1={20} x2={16.01} y2={20} />
   </React.Fragment>,
   'CloudSnowIcon'
-);
+)

@@ -1,7 +1,7 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists, extendGraphqlSchema } from './schema';
-import { extendHttpServer } from './websocket';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists, extendGraphqlSchema } from './schema'
+import { extendHttpServer } from './websocket'
 
 export default config({
   db: {
@@ -16,4 +16,4 @@ export default config({
     extendHttpServer,
   },
   extendGraphqlSchema,
-});
+})

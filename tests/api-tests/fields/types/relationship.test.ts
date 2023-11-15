@@ -1,13 +1,13 @@
-import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';
-import { createSystem, initConfig } from '@keystone-6/core/system';
-import type { ListSchemaConfig } from '@keystone-6/core/types';
-import { config, list } from '@keystone-6/core';
-import { text, relationship } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
+import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
+import { createSystem, initConfig } from '@keystone-6/core/system'
+import type { ListSchemaConfig } from '@keystone-6/core/types'
+import { config, list } from '@keystone-6/core'
+import { text, relationship } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
 
-const fieldKey = 'foo';
+const fieldKey = 'foo'
 
-function getSchema(field: { ref: string; many?: boolean }) {
+function getSchema (field: { ref: string, many?: boolean }) {
   return createSystem(
     initConfig(
       config({
@@ -23,47 +23,47 @@ function getSchema(field: { ref: string; many?: boolean }) {
         },
       })
     )
-  ).graphQLSchema;
+  ).graphQLSchema
 }
 
 describe('Type Generation', () => {
   test('inputs for relationship fields in create args', () => {
-    const relMany = getSchema({ many: true, ref: 'Zip' });
+    const relMany = getSchema({ many: true, ref: 'Zip' })
     expect(
       assertInputObjectType(relMany.getType('TestCreateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToManyForCreateInput');
+    ).toEqual('ZipRelateToManyForCreateInput')
 
-    const relSingle = getSchema({ many: false, ref: 'Zip' });
+    const relSingle = getSchema({ many: false, ref: 'Zip' })
     expect(
       assertInputObjectType(relSingle.getType('TestCreateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToOneForCreateInput');
-  });
+    ).toEqual('ZipRelateToOneForCreateInput')
+  })
 
   test('inputs for relationship fields in update args', () => {
-    const relMany = getSchema({ many: true, ref: 'Zip' });
+    const relMany = getSchema({ many: true, ref: 'Zip' })
     expect(
       assertInputObjectType(relMany.getType('TestUpdateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToManyForUpdateInput');
+    ).toEqual('ZipRelateToManyForUpdateInput')
 
-    const relSingle = getSchema({ many: false, ref: 'Zip' });
+    const relSingle = getSchema({ many: false, ref: 'Zip' })
     expect(
       assertInputObjectType(relSingle.getType('TestUpdateInput')).getFields().foo.type.toString()
-    ).toEqual('ZipRelateToOneForUpdateInput');
-  });
+    ).toEqual('ZipRelateToOneForUpdateInput')
+  })
 
   test('to-one for create relationship nested mutation input', () => {
-    const schema = getSchema({ many: false, ref: 'Zip' });
+    const schema = getSchema({ many: false, ref: 'Zip' })
 
     expect(printType(schema.getType('ZipRelateToOneForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForCreateInput {
   create: ZipCreateInput
   connect: ZipWhereUniqueInput
 }"
-`);
-  });
+`)
+  })
 
   test('to-one for update relationship nested mutation input', () => {
-    const schema = getSchema({ many: false, ref: 'Zip' });
+    const schema = getSchema({ many: false, ref: 'Zip' })
 
     expect(printType(schema.getType('ZipRelateToOneForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForUpdateInput {
@@ -71,22 +71,22 @@ describe('Type Generation', () => {
   connect: ZipWhereUniqueInput
   disconnect: Boolean
 }"
-`);
-  });
+`)
+  })
 
   test('to-many for create relationship nested mutation input', () => {
-    const schema = getSchema({ many: true, ref: 'Zip' });
+    const schema = getSchema({ many: true, ref: 'Zip' })
 
     expect(printType(schema.getType('ZipRelateToManyForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForCreateInput {
   create: [ZipCreateInput!]
   connect: [ZipWhereUniqueInput!]
 }"
-`);
-  });
+`)
+  })
 
   test('to-many for update relationship nested mutation input', () => {
-    const schema = getSchema({ many: true, ref: 'Zip' });
+    const schema = getSchema({ many: true, ref: 'Zip' })
 
     expect(printType(schema.getType('ZipRelateToManyForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForUpdateInput {
@@ -95,11 +95,11 @@ describe('Type Generation', () => {
   create: [ZipCreateInput!]
   connect: [ZipWhereUniqueInput!]
 }"
-`);
-  });
+`)
+  })
 
   test('to-one relationships cannot be filtered at the field level', () => {
-    const schema = getSchema({ many: false, ref: 'Zip' });
+    const schema = getSchema({ many: false, ref: 'Zip' })
 
     expect(
       (
@@ -116,11 +116,11 @@ describe('Type Generation', () => {
           value: 'Zip',
         },
       },
-    });
-  });
+    })
+  })
 
   test('to-many relationships can be filtered at the field level', () => {
-    const schema = getSchema({ many: true, ref: 'Zip' });
+    const schema = getSchema({ many: true, ref: 'Zip' })
 
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
@@ -128,12 +128,12 @@ describe('Type Generation', () => {
   foo(where: ZipWhereInput! = {}, orderBy: [ZipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ZipWhereUniqueInput): [Zip!]
   fooCount(where: ZipWhereInput! = {}): Int
 }"
-`);
-  });
-});
+`)
+  })
+})
 
 describe('Reference errors', () => {
-  function tryf(lists: ListSchemaConfig) {
+  function tryf (lists: ListSchemaConfig) {
     return createSystem(
       initConfig(
         config({
@@ -141,7 +141,7 @@ describe('Reference errors', () => {
           lists,
         })
       )
-    ).graphQLSchema;
+    ).graphQLSchema
   }
 
   const fixtures = {
@@ -237,21 +237,21 @@ describe('Reference errors', () => {
       },
       error: null,
     },
-  };
+  }
 
   for (const [description, { lists, error }] of Object.entries(fixtures)) {
     if (error) {
       test(`throws for ${description}`, () => {
         expect(() => {
-          tryf(lists);
-        }).toThrow(error);
-      });
+          tryf(lists)
+        }).toThrow(error)
+      })
     } else {
       test(`does not throw for ${description}`, () => {
         expect(() => {
-          tryf(lists);
-        }).not.toThrow();
-      });
+          tryf(lists)
+        }).not.toThrow()
+      })
     }
   }
-});
+})

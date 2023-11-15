@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, Box, useTheme, Center } from '@keystone-ui/core';
+import { jsx, Box, useTheme, Center } from '@keystone-ui/core'
 
-import { Page } from '../../components/Page';
-import { Code } from '../../components/Code';
+import { Page } from '../../components/Page'
+import { Code } from '../../components/Code'
 
-export default function CenterPage() {
-  const { palette } = useTheme();
+export default function CenterPage () {
+  const { palette } = useTheme()
   return (
     <Page>
       <h1>Center</h1>
@@ -29,5 +29,5 @@ export default function CenterPage() {
         </Box>
       </Center>
     </Page>
-  );
+  )
 }

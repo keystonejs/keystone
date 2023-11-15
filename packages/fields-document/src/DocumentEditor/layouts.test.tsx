@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, makeEditor } from './tests/utils';
+import { jsx, makeEditor } from './tests/utils'
 
 test('layout with no layout are unwrapped', () => {
   let editor = makeEditor(
@@ -17,7 +17,7 @@ test('layout with no layout are unwrapped', () => {
       </layout>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -27,8 +27,8 @@ test('layout with no layout are unwrapped', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('layout with not enough layout-area are added', () => {
   let editor = makeEditor(
@@ -44,7 +44,7 @@ test('layout with not enough layout-area are added', () => {
       </layout>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -73,8 +73,8 @@ test('layout with not enough layout-area are added', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('layout with extra layout-areas that are empty are removed', () => {
   let editor = makeEditor(
@@ -105,7 +105,7 @@ test('layout with extra layout-areas that are empty are removed', () => {
       </layout>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -134,8 +134,8 @@ test('layout with extra layout-areas that are empty are removed', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('the content of extra layout-areas are merged into the last layout-area', () => {
   let editor = makeEditor(
@@ -176,7 +176,7 @@ test('the content of extra layout-areas are merged into the last layout-area', (
       </layout>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -222,8 +222,8 @@ test('the content of extra layout-areas are merged into the last layout-area', (
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('enter in layout area never exits layout area', () => {
   let editor = makeEditor(
@@ -245,11 +245,11 @@ test('enter in layout area never exits layout area', () => {
       </paragraph>
     </editor>,
     {}
-  );
+  )
 
-  editor.insertBreak();
-  editor.insertBreak();
-  editor.insertBreak();
+  editor.insertBreak()
+  editor.insertBreak()
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -284,8 +284,8 @@ test('enter in layout area never exits layout area', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('delete backward never deletes or exits in first layout area', () => {
   let editor = makeEditor(
@@ -307,11 +307,11 @@ test('delete backward never deletes or exits in first layout area', () => {
       </paragraph>
     </editor>,
     {}
-  );
+  )
 
-  editor.deleteBackward('character');
-  editor.deleteBackward('character');
-  editor.deleteBackward('character');
+  editor.deleteBackward('character')
+  editor.deleteBackward('character')
+  editor.deleteBackward('character')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -337,8 +337,8 @@ test('delete backward never deletes or exits in first layout area', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('delete backward never deletes or exits in second layout area', () => {
   let editor = makeEditor(
@@ -365,11 +365,11 @@ test('delete backward never deletes or exits in second layout area', () => {
       </paragraph>
     </editor>,
     {}
-  );
+  )
 
-  editor.deleteBackward('character');
-  editor.deleteBackward('character');
-  editor.deleteBackward('character');
+  editor.deleteBackward('character')
+  editor.deleteBackward('character')
+  editor.deleteBackward('character')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -401,5 +401,5 @@ test('delete backward never deletes or exits in second layout area', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

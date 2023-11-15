@@ -1,27 +1,27 @@
-import { Element, Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
-import { DocumentFeatures } from '../views';
-import { ComponentBlock } from './component-blocks/api';
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
-import { EditorAfterButIgnoringingPointsWithNoContent, Mark } from './utils';
+import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from 'slate'
+import { type DocumentFeatures } from '../views'
+import { type ComponentBlock } from './component-blocks/api'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
+import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils'
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],
   italic: ['*', '_'],
   strikethrough: ['~~'],
   code: ['`'],
-};
+}
 
-function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
+function applyMark (editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
-  editor.writeHistory('undos', { operations: [], selectionBefore: null });
-  const startPointRef = Editor.pointRef(editor, startOfStartPoint);
+  editor.writeHistory('undos', { operations: [], selectionBefore: null })
+  const startPointRef = Editor.pointRef(editor, startOfStartPoint)
 
   Transforms.delete(editor, {
     at: editor.selection!.anchor,
     distance: shortcutText.length,
     reverse: true,
-  });
-  Transforms.delete(editor, { at: startOfStartPoint, distance: shortcutText.length });
+  })
+  Transforms.delete(editor, { at: startOfStartPoint, distance: shortcutText.length })
 
   Transforms.setNodes(
     editor,
@@ -31,97 +31,97 @@ function applyMark(editor: Editor, mark: string, shortcutText: string, startOfSt
       split: true,
       at: { anchor: startPointRef.unref()!, focus: editor.selection!.anchor },
     }
-  );
+  )
   // once you've ended the shortcut, you're done with the mark
   // so we need to remove it so the text you insert after doesn't have it
-  editor.removeMark(mark);
+  editor.removeMark(mark)
 }
 
-export function withMarks(
+export function withMarks (
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor
 ): Editor {
-  const { insertText, insertBreak } = editor;
+  const { insertText, insertBreak } = editor
 
   editor.insertBreak = () => {
-    insertBreak();
-    const marksAfterInsertBreak = Editor.marks(editor);
-    if (!marksAfterInsertBreak || !editor.selection) return;
+    insertBreak()
+    const marksAfterInsertBreak = Editor.marks(editor)
+    if (!marksAfterInsertBreak || !editor.selection) return
     const parentBlock = Editor.above(editor, {
       match: node => Element.isElement(node) && Editor.isBlock(editor, node),
-    });
-    if (!parentBlock) return;
-    const point = EditorAfterButIgnoringingPointsWithNoContent(editor, editor.selection.anchor);
+    })
+    if (!parentBlock) return
+    const point = EditorAfterButIgnoringingPointsWithNoContent(editor, editor.selection.anchor)
     const marksAfterInsertBreakArr = Object.keys(
       marksAfterInsertBreak
-    ) as (keyof typeof marksAfterInsertBreak)[];
+    ) as (keyof typeof marksAfterInsertBreak)[]
     if (!point || !Path.isDescendant(point.path, parentBlock[1])) {
       for (const mark of marksAfterInsertBreakArr) {
-        editor.removeMark(mark);
+        editor.removeMark(mark)
       }
 
-      return;
+      return
     }
-    const textNode = Node.get(editor, point.path) as Text;
+    const textNode = Node.get(editor, point.path) as Text
 
     for (const mark of marksAfterInsertBreakArr) {
       if (!textNode[mark]) {
-        editor.removeMark(mark);
+        editor.removeMark(mark)
       }
     }
-  };
+  }
 
-  const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {};
+  const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {}
   const enabledMarks = editorDocumentFeatures.formatting.inlineMarks;
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
     if (enabledMarks[mark]) {
-      selectedMarkdownShortcuts[mark] = allMarkdownShortcuts[mark];
+      selectedMarkdownShortcuts[mark] = allMarkdownShortcuts[mark]
     }
-  });
+  })
 
-  if (Object.keys(selectedMarkdownShortcuts).length === 0) return editor;
+  if (Object.keys(selectedMarkdownShortcuts).length === 0) return editor
 
   editor.insertText = text => {
-    insertText(text);
+    insertText(text)
     if (editor.selection && Range.isCollapsed(editor.selection)) {
       for (const [mark, shortcuts] of Object.entries(selectedMarkdownShortcuts)) {
         for (const shortcutText of shortcuts!) {
           if (text === shortcutText[shortcutText.length - 1]) {
             // this function is not inlined because
             // https://github.com/swc-project/swc/issues/2622
-            const startOfBlock = getStartOfBlock(editor);
+            const startOfBlock = getStartOfBlock(editor)
 
             let startOfBlockToEndOfShortcutString = Editor.string(editor, {
               anchor: editor.selection.anchor,
               focus: startOfBlock,
-            });
+            })
             const hasWhitespaceBeforeEndOfShortcut = /\s/.test(
               startOfBlockToEndOfShortcutString.slice(
                 -shortcutText.length - 1,
                 -shortcutText.length
               )
-            );
+            )
 
             const endOfShortcutContainsExpectedContent =
-              shortcutText === startOfBlockToEndOfShortcutString.slice(-shortcutText.length);
+              shortcutText === startOfBlockToEndOfShortcutString.slice(-shortcutText.length)
 
             if (hasWhitespaceBeforeEndOfShortcut || !endOfShortcutContainsExpectedContent) {
-              continue;
+              continue
             }
 
             const strToMatchOn = startOfBlockToEndOfShortcutString.slice(
               0,
               -shortcutText.length - 1
-            );
+            )
             // TODO: use regex probs
             for (const [offsetFromStartOfBlock] of [...strToMatchOn].reverse().entries()) {
               const expectedShortcutText = strToMatchOn.slice(
                 offsetFromStartOfBlock,
                 offsetFromStartOfBlock + shortcutText.length
-              );
+              )
               if (expectedShortcutText !== shortcutText) {
-                continue;
+                continue
               }
 
               const startOfStartOfShortcut =
@@ -129,11 +129,11 @@ export function withMarks(
                   ? startOfBlock
                   : EditorAfterButIgnoringingPointsWithNoContent(editor, startOfBlock, {
                       distance: offsetFromStartOfBlock,
-                    })!;
+                    })!
 
               const endOfStartOfShortcut = Editor.after(editor, startOfStartOfShortcut, {
                 distance: shortcutText.length,
-              })!;
+              })!
 
               if (
                 offsetFromStartOfBlock !== 0 &&
@@ -144,16 +144,16 @@ export function withMarks(
                   })
                 )
               ) {
-                continue;
+                continue
               }
 
               const contentBetweenShortcuts = Editor.string(editor, {
                 anchor: endOfStartOfShortcut,
                 focus: editor.selection.anchor,
-              }).slice(0, -shortcutText.length);
+              }).slice(0, -shortcutText.length)
 
               if (contentBetweenShortcuts === '' || /\s/.test(contentBetweenShortcuts[0])) {
-                continue;
+                continue
               }
 
               // this is a bit of a weird one
@@ -165,38 +165,38 @@ export function withMarks(
                 mark === 'italic' &&
                 (contentBetweenShortcuts[0] === '_' || contentBetweenShortcuts[0] === '*')
               ) {
-                continue;
+                continue
               }
               const ancestorComponentChildFieldDocumentFeatures =
                 getAncestorComponentChildFieldDocumentFeatures(
                   editor,
                   editorDocumentFeatures,
                   componentBlocks
-                );
+                )
               if (
                 ancestorComponentChildFieldDocumentFeatures &&
                 ancestorComponentChildFieldDocumentFeatures.inlineMarks !== 'inherit' &&
                 ancestorComponentChildFieldDocumentFeatures.inlineMarks[mark as Mark] === false
               ) {
-                continue;
+                continue
               }
-              applyMark(editor, mark, shortcutText, startOfStartOfShortcut);
-              return;
+              applyMark(editor, mark, shortcutText, startOfStartOfShortcut)
+              return
             }
           }
         }
       }
     }
-  };
+  }
 
-  return editor;
+  return editor
 }
 
-function getStartOfBlock(editor: Editor) {
+function getStartOfBlock (editor: Editor) {
   return Editor.start(
     editor,
     Editor.above(editor, {
       match: node => Element.isElement(node) && Editor.isBlock(editor, node),
     })![1]
-  );
+  )
 }

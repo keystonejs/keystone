@@ -1,24 +1,24 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro';
-import { Highlight } from '../components/primitives/Highlight';
-import { MWrapper } from '../components/content/MWrapper';
-import { Download } from '../components/icons/Download';
-import { Keystone } from '../components/icons/Keystone';
-import { Type } from '../components/primitives/Type';
-import { Pill } from '../components/content/Pill';
-import { Nope } from '../components/icons/Nope';
-import { Tick } from '../components/icons/Tick';
-import { useMediaQuery } from '../lib/media';
-import { Page } from '../components/Page';
-import { Alert } from '../components/primitives/Alert';
-import { Button } from '../components/primitives/Button';
-import { ArrowR } from '../components/icons/ArrowR';
+import { IntroWrapper, IntroHeading, IntroLead } from '../components/content/Intro'
+import { Highlight } from '../components/primitives/Highlight'
+import { MWrapper } from '../components/content/MWrapper'
+import { Download } from '../components/icons/Download'
+import { Keystone } from '../components/icons/Keystone'
+import { Type } from '../components/primitives/Type'
+import { Pill } from '../components/content/Pill'
+import { Nope } from '../components/icons/Nope'
+import { Tick } from '../components/icons/Tick'
+import { useMediaQuery } from '../lib/media'
+import { Page } from '../components/Page'
+import { Alert } from '../components/primitives/Alert'
+import { Button } from '../components/primitives/Button'
+import { ArrowR } from '../components/icons/ArrowR'
 
-export default function Brand() {
-  const mq = useMediaQuery();
+export default function Brand () {
+  const mq = useMediaQuery()
 
   return (
     <Page title="KeystoneJS Brand" description="Keystones brand assets and guidelines">
@@ -199,5 +199,5 @@ export default function Brand() {
         </Alert>
       </MWrapper>
     </Page>
-  );
+  )
 }

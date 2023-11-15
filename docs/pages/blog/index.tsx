@@ -1,45 +1,45 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import path from 'path';
-import fs from 'fs/promises';
-import { globby } from 'globby';
-import { InferGetStaticPropsType, GetStaticPropsResult } from 'next';
-import Link from 'next/link';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
-import { jsx } from '@emotion/react';
+import path from 'path'
+import fs from 'fs/promises'
+import { globby } from 'globby'
+import { type InferGetStaticPropsType, type GetStaticPropsResult } from 'next'
+import Link from 'next/link'
+import parse from 'date-fns/parse'
+import format from 'date-fns/format'
+import { jsx } from '@emotion/react'
 
-import { MWrapper } from '../../components/content/MWrapper';
-import { Page } from '../../components/Page';
-import { Type } from '../../components/primitives/Type';
-import { Highlight } from '../../components/primitives/Highlight';
-import { useMediaQuery } from '../../lib/media';
-import { BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc';
-import { siteBaseUrl } from '../../lib/og-util';
+import { MWrapper } from '../../components/content/MWrapper'
+import { Page } from '../../components/Page'
+import { Type } from '../../components/primitives/Type'
+import { Highlight } from '../../components/primitives/Highlight'
+import { useMediaQuery } from '../../lib/media'
+import { type BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc'
+import { siteBaseUrl } from '../../lib/og-util'
 
-const today = new Date();
-export default function Docs(props: InferGetStaticPropsType<typeof getStaticProps>) {
-  const mq = useMediaQuery();
+const today = new Date()
+export default function Docs (props: InferGetStaticPropsType<typeof getStaticProps>) {
+  const mq = useMediaQuery()
 
   // reverse chronologically sorted
   const posts = props.posts
     .map(p => {
-      const publishedDate = p.frontmatter.publishDate;
-      const parsedDate = parse(publishedDate, 'yyyy-M-d', today);
-      const formattedDateStr = format(parsedDate, 'MMMM do, yyyy');
+      const publishedDate = p.frontmatter.publishDate
+      const parsedDate = parse(publishedDate, 'yyyy-M-d', today)
+      const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
       return {
         ...p,
         frontmatter: { ...p.frontmatter },
         parsedDate: parsedDate,
         formattedDateStr: formattedDateStr,
-      };
+      }
     })
     .sort((a, b) => {
       if (a.frontmatter.publishDate === b.frontmatter.publishDate) {
-        return a.frontmatter.title.localeCompare(b.frontmatter.title);
+        return a.frontmatter.title.localeCompare(b.frontmatter.title)
       }
-      return b.frontmatter.publishDate.localeCompare(a.frontmatter.publishDate);
-    });
+      return b.frontmatter.publishDate.localeCompare(a.frontmatter.publishDate)
+    })
 
   return (
     <Page
@@ -151,26 +151,26 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
                     </Type>
                   </div>
                 </li>
-              );
+              )
             })}
           </ul>
         </section>
       </MWrapper>
     </Page>
-  );
+  )
 }
 
-export async function getStaticProps(): Promise<
+export async function getStaticProps (): Promise<
   GetStaticPropsResult<{
     posts: {
-      slug: string;
-      frontmatter: BlogFrontmatter;
-    }[];
+      slug: string
+      frontmatter: BlogFrontmatter
+    }[]
   }>
 > {
   const files = await globby('*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
-  });
+  })
 
   return {
     props: {
@@ -179,13 +179,13 @@ export async function getStaticProps(): Promise<
           const contents = await fs.readFile(
             path.join(process.cwd(), 'pages/blog', filename),
             'utf8'
-          );
+          )
           return {
             slug: filename.replace(/\.md$/, ''),
             frontmatter: extractBlogFrontmatter(contents),
-          };
+          }
         })
       ),
     },
-  };
+  }
 }

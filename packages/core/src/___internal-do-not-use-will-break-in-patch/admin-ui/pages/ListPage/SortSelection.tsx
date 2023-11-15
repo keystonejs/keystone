@@ -1,28 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Button } from '@keystone-ui/button';
-import { Divider, Heading, jsx, Stack } from '@keystone-ui/core';
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { Options } from '@keystone-ui/options';
-import { PopoverDialog, usePopover } from '@keystone-ui/popover';
-import { Fragment } from 'react';
-import { ListMeta } from '../../../../types';
-import { useRouter } from '../../../../admin-ui/router';
-import { fieldSelectionOptionsComponents } from './FieldSelection';
-import { useSort } from './useSort';
+import { Button } from '@keystone-ui/button'
+import { Divider, Heading, jsx, Stack } from '@keystone-ui/core'
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
+import { Options } from '@keystone-ui/options'
+import { PopoverDialog, usePopover } from '@keystone-ui/popover'
+import { Fragment } from 'react'
+import { type ListMeta } from '../../../../types'
+import { useRouter } from '../../../../admin-ui/router'
+import { fieldSelectionOptionsComponents } from './FieldSelection'
+import { useSort } from './useSort'
 
-export function SortSelection({
+export function SortSelection ({
   list,
   orderableFields,
 }: {
-  list: ListMeta;
-  orderableFields: Set<string>;
+  list: ListMeta
+  orderableFields: Set<string>
 }) {
-  const sort = useSort(list, orderableFields);
+  const sort = useSort(list, orderableFields)
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
-  });
+  })
 
   return (
     <Fragment>
@@ -53,7 +53,7 @@ export function SortSelection({
         {isOpen && (
           <SortSelectionPopoverContent
             onClose={() => {
-              setOpen(false);
+              setOpen(false)
             }}
             list={list}
             orderableFields={orderableFields}
@@ -61,25 +61,25 @@ export function SortSelection({
         )}
       </PopoverDialog>
     </Fragment>
-  );
+  )
 }
 
 const noFieldOption = {
   label: 'No field',
   value: '___________NO_FIELD___________',
-};
+}
 
-function SortSelectionPopoverContent({
+function SortSelectionPopoverContent ({
   onClose,
   list,
   orderableFields,
 }: {
-  onClose: () => void;
-  list: ListMeta;
-  orderableFields: Set<string>;
+  onClose: () => void
+  list: ListMeta
+  orderableFields: Set<string>
 }) {
-  const sort = useSort(list, orderableFields);
-  const router = useRouter();
+  const sort = useSort(list, orderableFields)
+  const router = useRouter()
 
   return (
     <Stack padding="medium" css={{ minWidth: 320 }} gap="small">
@@ -93,9 +93,9 @@ function SortSelectionPopoverContent({
         value={sort ? { label: list.fields[sort.field].label, value: sort.field } : noFieldOption}
         components={fieldSelectionOptionsComponents}
         onChange={newVal => {
-          const fieldPath: string = (newVal as any).value;
+          const fieldPath: string = (newVal as any).value
           if (fieldPath === noFieldOption.value) {
-            const { sortBy, ...restOfQuery } = router.query;
+            const { sortBy, ...restOfQuery } = router.query
 
             if (list.initialSort) {
               router.push({
@@ -103,9 +103,9 @@ function SortSelectionPopoverContent({
                   ...router.query,
                   sortBy: ''
                 }
-              });
+              })
             } else {
-              router.push({ query: restOfQuery });
+              router.push({ query: restOfQuery })
             }
           } else {
             router.push({
@@ -116,15 +116,15 @@ function SortSelectionPopoverContent({
                     ? `-${sort.field}`
                     : fieldPath,
               },
-            });
+            })
           }
 
-          onClose();
+          onClose()
         }}
         options={[...orderableFields]
           .map(fieldPath => ({ label: list.fields[fieldPath].label, value: fieldPath }))
           .concat(noFieldOption)}
       />
     </Stack>
-  );
+  )
 }

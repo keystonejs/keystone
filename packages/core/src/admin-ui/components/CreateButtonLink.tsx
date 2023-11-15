@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Button } from '@keystone-ui/button';
-import { jsx } from '@keystone-ui/core';
-import type { ListMeta } from '../../types';
-import { Link } from '../router';
+import { Button } from '@keystone-ui/button'
+import { jsx } from '@keystone-ui/core'
+import type { ListMeta } from '../../types'
+import { Link } from '../router'
 
-export function CreateButtonLink(props: { list: ListMeta }) {
+export function CreateButtonLink (props: { list: ListMeta }) {
   return (
     <Button
       css={{
@@ -22,5 +22,5 @@ export function CreateButtonLink(props: { list: ListMeta }) {
     >
       Create {props.list.singular}
     </Button>
-  );
+  )
 }

@@ -6,7 +6,7 @@ export const SPACE = {
   '--space-large': '1rem',
   '--space-xlarge': '1.5rem',
   '--space-xxlarge': '6rem',
-} as const;
+} as const
 
 export const TYPE = {
   '--font-brand':
@@ -15,7 +15,7 @@ export const TYPE = {
     'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
   '--font-mono':
     'ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace',
-} as const;
+} as const
 
 export const TYPESCALE = {
   '--font-xxsmall': '0.75rem',
@@ -25,7 +25,7 @@ export const TYPESCALE = {
   '--font-large': '1.5rem',
   '--font-xlarge': '1.875rem',
   '--font-xxlarge': '2.625rem',
-} as const;
+} as const
 
 export const COLORS = {
   light: {
@@ -120,4 +120,4 @@ export const COLORS = {
     '--grad6-1': '#F7F9FC',
     '--grad6-2': '#F7F9FC',
   },
-} as const;
+} as const

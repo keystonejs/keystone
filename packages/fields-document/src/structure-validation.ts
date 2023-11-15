@@ -1,12 +1,12 @@
-import * as t from 'io-ts';
-import excess from 'io-ts-excess';
-import { RelationshipData } from './DocumentEditor/component-blocks/api';
-import { Mark } from './DocumentEditor/utils';
-import { isValidURL } from './DocumentEditor/isValidURL';
+import * as t from 'io-ts'
+import excess from 'io-ts-excess'
+import { type RelationshipData } from './DocumentEditor/component-blocks/api'
+import { type Mark } from './DocumentEditor/utils'
+import { isValidURL } from './DocumentEditor/isValidURL'
 // note that this validation isn't about ensuring that a document has nodes in the right positions and things
 // it's just about validating that it's a valid slate structure
 // we'll then run normalize on it which will enforce more things
-const markValue = t.union([t.undefined, t.literal(true)]);
+const markValue = t.union([t.undefined, t.literal(true)])
 
 const text: t.Type<TextWithMarks> = excess(
   t.type({
@@ -21,28 +21,28 @@ const text: t.Type<TextWithMarks> = excess(
     keyboard: markValue,
     insertMenu: markValue,
   })
-);
-export type TextWithMarks = { type?: never; text: string } & {
+)
+export type TextWithMarks = { type?: never, text: string } & {
   [Key in Mark | 'insertMenu']: true | undefined;
-};
+}
 
-type Inline = TextWithMarks | Link | Relationship;
+type Inline = TextWithMarks | Link | Relationship
 
-type Link = { type: 'link'; href: string; children: Children };
+type Link = { type: 'link', href: string, children: Children }
 
 class URLType extends t.Type<string> {
-  readonly _tag: 'URLType' = 'URLType';
-  constructor() {
+  readonly _tag: 'URLType' = 'URLType'
+  constructor () {
     super(
       'string',
       (u): u is string => typeof u === 'string' && isValidURL(u),
       (u, c) => (this.is(u) ? t.success(u) : t.failure(u, c)),
       t.identity
-    );
+    )
   }
 }
 
-const urlType = new URLType();
+const urlType = new URLType()
 
 const link: t.Type<Link> = t.recursion('Link', () =>
   excess(
@@ -52,14 +52,14 @@ const link: t.Type<Link> = t.recursion('Link', () =>
       children,
     })
   )
-);
+)
 
 type Relationship = {
-  type: 'relationship';
-  relationship: string;
-  data: RelationshipData | null;
-  children: Children;
-};
+  type: 'relationship'
+  relationship: string
+  data: RelationshipData | null
+  children: Children
+}
 
 const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
   excess(
@@ -70,11 +70,11 @@ const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
       children,
     })
   )
-);
+)
 
-const inline = t.union([text, link, relationship]);
+const inline = t.union([text, link, relationship])
 
-type Children = (Block | Inline)[];
+type Children = (Block | Inline)[]
 
 const layoutArea: t.Type<Layout> = t.recursion('Layout', () =>
   excess(
@@ -84,13 +84,13 @@ const layoutArea: t.Type<Layout> = t.recursion('Layout', () =>
       children,
     })
   )
-);
+)
 
 type Layout = {
-  type: 'layout';
-  layout: number[];
-  children: Children;
-};
+  type: 'layout'
+  layout: number[]
+  children: Children
+}
 
 const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChildrenElements', () =>
   excess(
@@ -108,7 +108,7 @@ const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChil
       children,
     })
   )
-);
+)
 
 type OnlyChildrenElements = {
   type:
@@ -119,11 +119,11 @@ type OnlyChildrenElements = {
     | 'list-item'
     | 'list-item-content'
     | 'ordered-list'
-    | 'unordered-list';
-  children: Children;
-};
+    | 'unordered-list'
+  children: Children
+}
 
-const textAlign = t.union([t.undefined, t.literal('center'), t.literal('end')]);
+const textAlign = t.union([t.undefined, t.literal('center'), t.literal('end')])
 
 const heading: t.Type<Heading> = t.recursion('Heading', () =>
   excess(
@@ -141,20 +141,20 @@ const heading: t.Type<Heading> = t.recursion('Heading', () =>
       children,
     })
   )
-);
+)
 
 type Heading = {
-  type: 'heading';
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  textAlign: 'center' | 'end' | undefined;
-  children: Children;
-};
+  type: 'heading'
+  level: 1 | 2 | 3 | 4 | 5 | 6
+  textAlign: 'center' | 'end' | undefined
+  children: Children
+}
 
 type Paragraph = {
-  type: 'paragraph';
-  textAlign: 'center' | 'end' | undefined;
-  children: Children;
-};
+  type: 'paragraph'
+  textAlign: 'center' | 'end' | undefined
+  children: Children
+}
 
 const paragraph: t.Type<Paragraph> = t.recursion('Paragraph', () =>
   excess(
@@ -164,7 +164,7 @@ const paragraph: t.Type<Paragraph> = t.recursion('Paragraph', () =>
       children,
     })
   )
-);
+)
 
 const relationshipData: t.Type<RelationshipData> = excess(
   t.type({
@@ -172,14 +172,14 @@ const relationshipData: t.Type<RelationshipData> = excess(
     label: t.union([t.undefined, t.string]),
     data: t.union([t.undefined, t.record(t.string, t.any)]),
   })
-);
+)
 
 type ComponentBlock = {
-  type: 'component-block';
-  component: string;
-  props: Record<string, any>;
-  children: Children;
-};
+  type: 'component-block'
+  component: string
+  props: Record<string, any>
+  children: Children
+}
 
 const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () =>
   excess(
@@ -190,13 +190,13 @@ const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () 
       children,
     })
   )
-);
+)
 
 type ComponentProp = {
-  type: 'component-inline-prop' | 'component-block-prop';
-  propPath: (string | number)[] | undefined;
-  children: Children;
-};
+  type: 'component-inline-prop' | 'component-block-prop'
+  propPath: (string | number)[] | undefined
+  children: Children
+}
 
 const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>
   excess(
@@ -206,27 +206,27 @@ const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>
       children,
     })
   )
-);
+)
 
-type Block = Layout | OnlyChildrenElements | Heading | ComponentBlock | ComponentProp | Paragraph;
+type Block = Layout | OnlyChildrenElements | Heading | ComponentBlock | ComponentProp | Paragraph
 
 const block: t.Type<Block> = t.recursion('Element', () =>
   t.union([layoutArea, onlyChildrenElements, heading, componentBlock, componentProp, paragraph])
-);
+)
 
-export type ElementFromValidation = Block | Inline;
+export type ElementFromValidation = Block | Inline
 
-const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union([block, inline])));
+const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union([block, inline])))
 
-export const editorCodec = t.array(block);
+export const editorCodec = t.array(block)
 
-export function isRelationshipData(val: unknown): val is RelationshipData {
-  return relationshipData.validate(val, [])._tag === 'Right';
+export function isRelationshipData (val: unknown): val is RelationshipData {
+  return relationshipData.validate(val, [])._tag === 'Right'
 }
 
-export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
-  const result = editorCodec.validate(val, []);
+export function validateDocumentStructure (val: unknown): asserts val is ElementFromValidation[] {
+  const result = editorCodec.validate(val, [])
   if (result._tag === 'Left') {
-    throw new Error('Invalid document structure');
+    throw new Error('Invalid document structure')
   }
 }

@@ -1,12 +1,12 @@
-import chalk from 'chalk';
+import chalk from 'chalk'
 import {
   printTelemetryStatus,
   enableTelemetry,
   disableTelemetry,
   resetTelemetry,
-} from '../lib/telemetry';
+} from '../lib/telemetry'
 
-export async function telemetry(cwd: string, command?: string) {
+export async function telemetry (cwd: string, command?: string) {
   const usageText = `
     Usage
       $ keystone telemetry [command]
@@ -17,18 +17,18 @@ export async function telemetry(cwd: string, command?: string) {
       status      show if telemetry is enabled, disabled or uninitialised
 
 For more details visit: https://keystonejs.com/telemetry
-    `;
+    `
 
-  if (command === 'disable') return disableTelemetry();
-  if (command === 'enable') return enableTelemetry();
-  if (command === 'reset') return resetTelemetry();
-  if (command === 'status') return printTelemetryStatus();
+  if (command === 'disable') return disableTelemetry()
+  if (command === 'enable') return enableTelemetry()
+  if (command === 'reset') return resetTelemetry()
+  if (command === 'status') return printTelemetryStatus()
   if (command === '--help') {
-    console.log(`${chalk.bold('Keystone Telemetry')}`);
-    console.log(usageText);
-    return;
+    console.log(`${chalk.bold('Keystone Telemetry')}`)
+    console.log(usageText)
+    return
   }
 
-  console.error(command ? `Invalid option: ${command}` : '');
-  console.error(usageText);
+  console.error(command ? `Invalid option: ${command}` : '')
+  console.error(usageText)
 }

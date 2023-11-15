@@ -1,28 +1,28 @@
-import { list } from '@keystone-6/core';
-import { allowAll, unfiltered, allOperations } from '@keystone-6/core/access';
-import { checkbox, text } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll, unfiltered, allOperations } from '@keystone-6/core/access'
+import { checkbox, text } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 export type Session = {
-  id: string;
-  admin: boolean;
-};
-
-function hasSession({ session }: { session?: Session }) {
-  return Boolean(session);
+  id: string
+  admin: boolean
 }
 
-function isAdmin({ session }: { session?: Session }) {
-  if (!session) return false;
-  return session.admin;
+function hasSession ({ session }: { session?: Session }) {
+  return Boolean(session)
 }
 
-function isAdminOrOnlySameUser({ session }: { session?: Session }) {
-  if (!session) return false;
-  if (session.admin) return {}; // unfiltered for admins
+function isAdmin ({ session }: { session?: Session }) {
+  if (!session) return false
+  return session.admin
+}
+
+function isAdminOrOnlySameUser ({ session }: { session?: Session }) {
+  if (!session) return false
+  if (session.admin) return {} // unfiltered for admins
   return {
     id: { equals: session.id },
-  };
+  }
 }
 
 export const lists: Lists = {
@@ -61,4 +61,4 @@ export const lists: Lists = {
       admin: checkbox(),
     },
   }),
-};
+}

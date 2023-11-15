@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode } from 'react';
-import { jsx, Global } from '../emotion';
+import { Fragment, type ReactNode } from 'react'
+import { jsx, Global } from '../emotion'
 
-import { normalize } from '../normalize';
-import { useTheme } from '../theme';
+import { normalize } from '../normalize'
+import { useTheme } from '../theme'
 
 type CoreProps = {
   /** The app content. */
-  children: ReactNode;
+  children: ReactNode
   /** Include styles to normalize element styles among browsers. */
-  includeNormalize?: boolean;
+  includeNormalize?: boolean
   /** Optimize text rendering with CSS. */
-  optimizeLegibility?: boolean;
-};
+  optimizeLegibility?: boolean
+}
 
 export const Core = ({
   children,
@@ -26,16 +26,16 @@ export const Core = ({
       <BaseCSS includeNormalize={includeNormalize} optimizeLegibility={optimizeLegibility} />
       {children}
     </Fragment>
-  );
-};
+  )
+}
 
 // Base CSS
 // ------------------------------
 
-type BaseCSSProps = Omit<CoreProps, 'children'>;
+type BaseCSSProps = Omit<CoreProps, 'children'>
 
 const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
-  const { typography, colors } = useTheme();
+  const { typography, colors } = useTheme()
 
   return (
     <Fragment>
@@ -81,5 +81,5 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
         }}
       />
     </Fragment>
-  );
-};
+  )
+}

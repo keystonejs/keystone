@@ -1,7 +1,7 @@
 // WARNING: be careful not to import `esbuild` within next
-import type { BuildOptions } from 'esbuild';
+import type { BuildOptions } from 'esbuild'
 
-export function getEsbuildConfig(cwd: string): BuildOptions {
+export function getEsbuildConfig (cwd: string): BuildOptions {
   return {
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
@@ -14,7 +14,7 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
     plugins: [
       {
         name: 'external-node_modules',
-        setup(build) {
+        setup (build) {
           build.onResolve(
             {
               // this regex is intended to be the opposite of /^\.\.?(?:\/|$)/
@@ -26,11 +26,11 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
               filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
             },
             args => {
-              return { external: true, path: args.path };
+              return { external: true, path: args.path }
             }
-          );
+          )
         },
       },
     ],
-  };
+  }
 }

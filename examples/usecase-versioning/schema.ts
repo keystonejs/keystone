@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { integer, text } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { integer, text } from '@keystone-6/core/fields'
+import { type Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -27,13 +27,13 @@ export const lists: Lists = {
         },
         hooks: {
           resolveInput: async ({ resolvedData, operation, item }) => {
-            if (operation === 'create') return resolvedData.version;
-            if (resolvedData.version !== item.version) throw new Error('Out of sync');
+            if (operation === 'create') return resolvedData.version
+            if (resolvedData.version !== item.version) throw new Error('Out of sync')
 
-            return item.version + 1;
+            return item.version + 1
           },
         },
       }),
     },
   }),
-};
+}

@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes, ElementType } from 'react';
+import { jsx } from '@emotion/react'
+import { type HTMLAttributes, type ElementType } from 'react'
 
 const styleMap = {
   grad1: {
@@ -24,14 +24,14 @@ const styleMap = {
     '--grad-1': 'var(--grad5-1)',
     '--grad-2': 'var(--grad5-2)',
   },
-};
+}
 
 type GradientProps = {
-  as?: ElementType;
-  look?: keyof typeof styleMap;
-} & HTMLAttributes<HTMLElement>;
+  as?: ElementType
+  look?: keyof typeof styleMap
+} & HTMLAttributes<HTMLElement>
 
-export function Gradient({ look = 'grad1', as: Tag = 'span', ...props }: GradientProps) {
+export function Gradient ({ look = 'grad1', as: Tag = 'span', ...props }: GradientProps) {
   return (
     <Tag
       css={{
@@ -40,5 +40,5 @@ export function Gradient({ look = 'grad1', as: Tag = 'span', ...props }: Gradien
       }}
       {...props}
     />
-  );
+  )
 }
