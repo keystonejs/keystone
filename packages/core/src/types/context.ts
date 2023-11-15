@@ -33,62 +33,61 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
 
 // List item API
 
-// TODO: Work out whether we can generate useful return types based on the GraphQL Query
-// passed to List API functions (see `readonly Record<string, any>` below)
-
 type UniqueWhereInput<ListTypeInfo extends BaseListTypeInfo> =
   false extends ListTypeInfo['isSingleton']
     ? { readonly where: ListTypeInfo['inputs']['uniqueWhere'] }
     : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] }
 
+type ListAPI <ListTypeInfo extends BaseListTypeInfo> = {
+  findMany(
+    args?: {
+      readonly where?: ListTypeInfo['inputs']['where']
+      readonly take?: number
+      readonly skip?: number
+      readonly orderBy?:
+        | ListTypeInfo['inputs']['orderBy']
+        | readonly ListTypeInfo['inputs']['orderBy'][]
+      readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
+    } & ResolveFields
+  ): Promise<readonly Record<string, any>[]>
+  findOne(
+    args: UniqueWhereInput<ListTypeInfo> & ResolveFields
+  ): Promise<Record<string, any>>
+  count(args?: {
+    readonly where?: ListTypeInfo['inputs']['where']
+  }): Promise<number>
+  updateOne(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly data: ListTypeInfo['inputs']['update']
+    } & ResolveFields
+  ): Promise<Record<string, any>>
+  updateMany(
+    args: {
+      readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
+        readonly data: ListTypeInfo['inputs']['update']
+      })[]
+    } & ResolveFields
+  ): Promise<Record<string, any>[]>
+  createOne(
+    args: { readonly data: ListTypeInfo['inputs']['create'] } & ResolveFields
+  ): Promise<Record<string, any>>
+  createMany(
+    args: {
+      readonly data: readonly ListTypeInfo['inputs']['create'][]
+    } & ResolveFields
+  ): Promise<Record<string, any>[]>
+  deleteOne(
+    args: UniqueWhereInput<ListTypeInfo> & ResolveFields
+  ): Promise<Record<string, any> | null>
+  deleteMany(
+    args: {
+      readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
+    } & ResolveFields
+  ): Promise<Record<string, any>[]>
+}
+
 export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: {
-    findMany(
-      args?: {
-        readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where']
-        readonly take?: number
-        readonly skip?: number
-        readonly orderBy?:
-          | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
-          | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][]
-        readonly cursor?: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere']
-      } & ResolveFields
-    ): Promise<readonly Record<string, any>[]>
-    findOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & ResolveFields
-    ): Promise<Record<string, any>>
-    count(args?: {
-      readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where']
-    }): Promise<number>
-    updateOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
-        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update']
-      } & ResolveFields
-    ): Promise<Record<string, any>>
-    updateMany(
-      args: {
-        readonly data: readonly (UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
-          readonly data: KeystoneListsTypeInfo[Key]['inputs']['update']
-        })[]
-      } & ResolveFields
-    ): Promise<Record<string, any>[]>
-    createOne(
-      args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
-    ): Promise<Record<string, any>>
-    createMany(
-      args: {
-        readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][]
-      } & ResolveFields
-    ): Promise<Record<string, any>[]>
-    deleteOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & ResolveFields
-    ): Promise<Record<string, any> | null>
-    deleteMany(
-      args: {
-        readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][]
-      } & ResolveFields
-    ): Promise<Record<string, any>[]>
-  };
+  [Key in keyof KeystoneListsTypeInfo]: ListAPI<KeystoneListsTypeInfo[Key]>
 }
 
 type ResolveFields = {
@@ -98,46 +97,48 @@ type ResolveFields = {
   readonly query?: string
 }
 
+type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
+  findMany(args?: {
+    readonly where?: ListTypeInfo['inputs']['where']
+    readonly take?: number
+    readonly skip?: number
+    readonly orderBy?:
+      | ListTypeInfo['inputs']['orderBy']
+      | readonly ListTypeInfo['inputs']['orderBy'][]
+    readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
+  }): Promise<readonly ListTypeInfo['item'][]>
+  findOne(
+    args: UniqueWhereInput<ListTypeInfo>
+  ): Promise<ListTypeInfo['item'] | null>
+  count(args?: {
+    readonly where?: ListTypeInfo['inputs']['where']
+  }): Promise<number>
+  updateOne(
+    args: UniqueWhereInput<ListTypeInfo> & {
+      readonly data: ListTypeInfo['inputs']['update']
+    }
+  ): Promise<ListTypeInfo['item']>
+  updateMany(args: {
+    readonly data: readonly (UniqueWhereInput<ListTypeInfo> & {
+      readonly data: ListTypeInfo['inputs']['update']
+    })[]
+  }): Promise<ListTypeInfo['item'][]>
+  createOne(args: {
+    readonly data: ListTypeInfo['inputs']['create']
+  }): Promise<ListTypeInfo['item']>
+  createMany(args: {
+    readonly data: readonly ListTypeInfo['inputs']['create'][]
+  }): Promise<ListTypeInfo['item'][]>
+  deleteOne(
+    args: UniqueWhereInput<ListTypeInfo>
+  ): Promise<ListTypeInfo['item']>
+  deleteMany(args: {
+    readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
+  }): Promise<ListTypeInfo['item'][]>
+}
+
 export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: {
-    findMany(args?: {
-      readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where']
-      readonly take?: number
-      readonly skip?: number
-      readonly orderBy?:
-        | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
-        | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][]
-      readonly cursor?: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere']
-    }): Promise<readonly KeystoneListsTypeInfo[Key]['item'][]>
-    findOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]>
-    ): Promise<KeystoneListsTypeInfo[Key]['item'] | null>
-    count(args?: {
-      readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where']
-    }): Promise<number>
-    updateOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
-        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update']
-      }
-    ): Promise<KeystoneListsTypeInfo[Key]['item']>
-    updateMany(args: {
-      readonly data: readonly (UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
-        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update']
-      })[]
-    }): Promise<KeystoneListsTypeInfo[Key]['item'][]>
-    createOne(args: {
-      readonly data: KeystoneListsTypeInfo[Key]['inputs']['create']
-    }): Promise<KeystoneListsTypeInfo[Key]['item']>
-    createMany(args: {
-      readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][]
-    }): Promise<KeystoneListsTypeInfo[Key]['item'][]>
-    deleteOne(
-      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]>
-    ): Promise<KeystoneListsTypeInfo[Key]['item']>
-    deleteMany(args: {
-      readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][]
-    }): Promise<KeystoneListsTypeInfo[Key]['item'][]>
-  };
+  [Key in keyof KeystoneListsTypeInfo]: DbAPI<KeystoneListsTypeInfo[Key]>
 }
 
 // GraphQL API
