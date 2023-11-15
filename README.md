@@ -87,4 +87,4 @@ For vulnerability reporting, please refer to our [security policy](/SECURITY.md)
 
 <a href="https://thinkmill.com.au" target="_blank"><img height="48" alt="Thinkmill" src="https://thinkmill.github.io/badge/brandmark.svg"></a>
 
-Copyright (c) 2022 [Thinkmill Labs](https://www.thinkmill.com.au/labs?utm_campaign=keystone-github) Pty Ltd. Licensed under the MIT License.
+Copyright (c) 2023 [Thinkmill Labs](https://www.thinkmill.com.au/labs?utm_campaign=keystone-github) Pty Ltd. Licensed under the MIT License.
