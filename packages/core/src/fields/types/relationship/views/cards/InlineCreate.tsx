@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { type FormEvent, useState } from 'react'
+import { useState } from 'react'
 import { jsx, Stack } from '@keystone-ui/core'
 import isDeepEqual from 'fast-deep-equal'
 import { useToasts } from '@keystone-ui/toast'
@@ -53,11 +53,9 @@ export function InlineCreate ({
   })
 
   const invalidFields = useInvalidFields(fields, value)
-
   const [forceValidation, setForceValidation] = useState(false)
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const onSubmit = () => {
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
 
@@ -106,7 +104,7 @@ export function InlineCreate ({
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <section>
       <Stack gap="xlarge">
         {error && (
           <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
@@ -119,7 +117,7 @@ export function InlineCreate ({
           value={value}
         />
         <Stack gap="small" across>
-          <Button isLoading={loading} size="small" tone="positive" weight="bold" type="submit">
+          <Button onClick={onSubmit} isLoading={loading} size="small" tone="positive" weight="bold">
             Create {list.singular}
           </Button>
           <Button size="small" weight="none" onClick={onCancel}>
@@ -127,6 +125,6 @@ export function InlineCreate ({
           </Button>
         </Stack>
       </Stack>
-    </form>
+    </section>
   )
 }
