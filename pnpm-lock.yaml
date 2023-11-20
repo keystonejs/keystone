@@ -2233,8 +2233,8 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0
       slate-hyperscript:
-        specifier: ^0.81.3
-        version: 0.81.3(slate@0.94.1)
+        specifier: ^0.100.0
+        version: 0.100.0(slate@0.94.1)
 
   prisma-utils:
     dependencies:
@@ -18756,8 +18756,8 @@ packages:
       slate: 0.94.1
     dev: false
 
-  /slate-hyperscript@0.81.3(slate@0.94.1):
-    resolution: {integrity: sha512-A/jvoLTAgeRcJaUPQCYOikCJxSws6+/jkL7mM+QuZljNd7EA5YqafGA7sVBJRFpcoSsDRUIah1yNiC/7vxZPYg==}
+  /slate-hyperscript@0.100.0(slate@0.94.1):
+    resolution: {integrity: sha512-fb2KdAYg6RkrQGlqaIi4wdqz3oa0S4zKNBJlbnJbNOwa23+9FLD6oPVx9zUGqCSIpy+HIpOeqXrg0Kzwh/Ii4A==}
     peerDependencies:
       slate: '>=0.65.3'
     dependencies:
