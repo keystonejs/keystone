@@ -28,7 +28,7 @@
     "@markdoc/markdoc": "^0.3.0",
     "@preconstruct/next": "^4.0.0",
     "@sindresorhus/slugify": "^1.1.2",
-    "@types/babel__core": "7.20.4",
+    "@types/babel__core": "7.20.5",
     "@types/facepaint": "^1.2.2",
     "@types/gtag.js": "^0.0.18",
     "@types/js-yaml": "^4.0.5",
