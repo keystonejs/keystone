@@ -2085,8 +2085,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.4
       '@types/cookie':
-        specifier: ^0.5.0
-        version: 0.5.4
+        specifier: ^0.6.0
+        version: 0.6.0
       '@types/cors':
         specifier: ^2.8.13
         version: 2.8.17
@@ -8723,8 +8723,8 @@ packages:
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
 
-  /@types/cookie@0.5.4:
-    resolution: {integrity: sha512-7z/eR6O859gyWIAjuvBWFzNURmf2oPBmJlfVWkwehU5nzIyjwBsTh7WMmEEV4JFnHuQ3ex4oyTvfKzcyJVDBNA==}
+  /@types/cookie@0.6.0:
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: true
 
   /@types/cookiejar@2.1.5:
