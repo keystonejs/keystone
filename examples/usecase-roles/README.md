@@ -15,7 +15,7 @@ The permissions affect both the Admin UI and GraphQL API.
 To run the project locally:
 
 - Clone this repo
-- Run `pnpm` in the root (this repo is a monorepo and uses pnpm workspaces, so that will install everything you'll need)
+- Run `pnpm install` in the root (this repo is a monorepo and uses pnpm workspaces, so that will install everything you'll need)
 - Open this folder in your terminal and run `pnpm dev`
 
 If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)

@@ -5,7 +5,7 @@ This can be useful when trying to use represent union (or sum) types in a list, 
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `pnpm` at the root of this repository, then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm install` at the root of this repository, then navigate to this directory and run:
 
 ```shell
 pnpm dev

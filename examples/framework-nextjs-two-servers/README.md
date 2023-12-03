@@ -9,7 +9,7 @@ An example of a frontend nextjs server and backend API server
 Make sure you are at the root of the repo and install dependencies.
 
 ```shell
-pnpm
+pnpm install
 ```
 
 2. Start Keystone and Next.js servers

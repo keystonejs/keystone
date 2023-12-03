@@ -4,7 +4,7 @@ This project demonstrates usage of different limits you can add to your GraphQL 
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `pnpm` at the root of this repository, then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm install` at the root of this repository, then navigate to this directory and run:
 
 ```shell
 pnpm dev

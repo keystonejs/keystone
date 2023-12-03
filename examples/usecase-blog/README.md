@@ -6,7 +6,7 @@ Use it as a starting place for learning how to use Keystone.
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `pnpm` at the root of this repository, then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm install` at the root of this repository, then navigate to this directory and run:
 
 ```shell
 pnpm dev

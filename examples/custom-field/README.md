@@ -4,7 +4,7 @@ This project demonstrates how to create different types of custom fields
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `pnpm` at the root of the repository then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm install` at the root of the repository then navigate to this directory and run:
 
 ```shell
 pnpm dev
