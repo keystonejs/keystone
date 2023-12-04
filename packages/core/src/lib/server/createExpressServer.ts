@@ -10,7 +10,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
-import { addHealthCheck } from './addHealthCheck'
+import { healthCheckPath as defaultHealthCheckPath } from '../defaults'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -44,8 +44,8 @@ const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
 }
 
 export const createExpressServer = async (
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  graphQLSchema: GraphQLSchema, // TODO: redundant, remove in breaking change
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
@@ -65,7 +65,20 @@ export const createExpressServer = async (
     expressServer.use(cors(corsConfig))
   }
 
-  addHealthCheck({ config, server: expressServer })
+  /** @deprecated, TODO: remove in breaking change */
+  if (config.server?.healthCheck) {
+    const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck
+
+    expressServer.use(healthCheck.path ?? defaultHealthCheckPath, (req, res) => {
+      const data = (typeof healthCheck.data === 'function'
+        ? healthCheck.data()
+        : healthCheck.data) || {
+        status: 'pass',
+        timestamp: Date.now(),
+      }
+      res.json(data)
+    })
+  }
 
   if (config.server?.extendExpressApp) {
     await config.server.extendExpressApp(expressServer, context)
