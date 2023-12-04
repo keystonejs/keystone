@@ -497,8 +497,8 @@ importers:
         specifier: workspace:^
         version: link:../design-system/packages/icons
       '@markdoc/markdoc':
-        specifier: ^0.3.0
-        version: 0.3.5(@types/react@18.2.41)(react@18.2.0)
+        specifier: ^0.4.0
+        version: 0.4.0(@types/react@18.2.41)(react@18.2.0)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -3119,6 +3119,7 @@ packages:
   /@aws-sdk/client-sso@3.465.0:
     resolution: {integrity: sha512-JXDBa3Sl+LS0KEOs0PZoIjpNKEEGfeyFwdnRxi8Y1hMXNEKyJug1cI2Psqu2olpn4KeXwoP1BuITppZYdolOew==}
     engines: {node: '>=14.0.0'}
+    requiresBuild: true
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
@@ -3546,6 +3547,7 @@ packages:
   /@aws-sdk/token-providers@3.465.0:
     resolution: {integrity: sha512-NaZbsyLs3whzRHGV27hrRwEdXB/tEK6tqn/aCNBy862LhVzocY1A+eYLKrnrvpraOOd2vyAuOtvvB3RMIdiL6g==}
     engines: {node: '>=14.0.0'}
+    requiresBuild: true
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
@@ -7074,8 +7076,8 @@ packages:
       read-yaml-file: 1.1.0
     dev: true
 
-  /@markdoc/markdoc@0.3.5(@types/react@18.2.41)(react@18.2.0):
-    resolution: {integrity: sha512-Z3agu2wnodoOYd5kzKbtwZduSfX19Kbsg/FlK0TeMn29cTTEEVPJtjfgKSMTN/Wq+kUQXnPtOEhHRgke5d/Xiw==}
+  /@markdoc/markdoc@0.4.0(@types/react@18.2.41)(react@18.2.0):
+    resolution: {integrity: sha512-fSh4P3Y4E7oaKYc2oNzSIJVPDto7SMzAuQN1Iyx53UxzleA6QzRdNWRxmiPqtVDaDi5dELd2yICoG91csrGrAw==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
