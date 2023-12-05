@@ -243,8 +243,8 @@ importers:
         specifier: ^18.0.9
         version: 18.2.41
       '@types/react-transition-group':
-        specifier: 4.4.9
-        version: 4.4.9
+        specifier: 4.4.10
+        version: 4.4.10
 
   design-system/packages/notice:
     dependencies:
@@ -9058,10 +9058,17 @@ packages:
     dependencies:
       '@types/react': 18.2.41
 
+  /@types/react-transition-group@4.4.10:
+    resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
+    dependencies:
+      '@types/react': 18.2.41
+    dev: true
+
   /@types/react-transition-group@4.4.9:
     resolution: {integrity: sha512-ZVNmWumUIh5NhH8aMD9CR2hdW0fNuYInlocZHaZ+dgk/1K49j1w/HoAuK1ki+pgscQrOFRTlXeoURtuzEkV3dg==}
     dependencies:
       '@types/react': 18.2.41
+    dev: false
 
   /@types/react@18.2.41:
     resolution: {integrity: sha512-CwOGr/PiLiNBxEBqpJ7fO3kocP/2SSuC9fpH5K7tusrg4xPSRT/193rzolYwQnTN02We/ATXKnb6GqA5w4fRxw==}
