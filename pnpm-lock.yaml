@@ -2124,8 +2124,8 @@ importers:
         specifier: ^7.16.3
         version: 7.23.5
       '@braintree/sanitize-url':
-        specifier: ^6.0.1
-        version: 6.0.4
+        specifier: ^7.0.0
+        version: 7.0.0
       '@dnd-kit/core':
         specifier: ^6.0.6
         version: 6.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -5161,8 +5161,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@braintree/sanitize-url@6.0.4:
-    resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
+  /@braintree/sanitize-url@7.0.0:
+    resolution: {integrity: sha512-GMu2OJiTd1HSe74bbJYQnVvELANpYiGFZELyyTM1CR0sdv5ReQAcJ/c/8pIrPab3lO11+D+EpuGLUxqz+y832g==}
     dev: false
 
   /@changesets/apply-release-plan@7.0.0:
