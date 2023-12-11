@@ -39,8 +39,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.1
       '@preconstruct/cli':
-        specifier: 2.8.1
-        version: 2.8.1
+        specifier: 2.8.2
+        version: 2.8.2
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.10
@@ -7313,8 +7313,8 @@ packages:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
     dev: false
 
-  /@preconstruct/cli@2.8.1:
-    resolution: {integrity: sha512-PX5w+au06iY/QaT+9RLmRlIfavRCRoMTC/krwtNrgPEnubR9e6P+QlywrKmwiEvkzbR9AEzGnRZL8uNRDDMzrQ==}
+  /@preconstruct/cli@2.8.2:
+    resolution: {integrity: sha512-/nra7Arq622kVCfvQi4nhrZN+0m1OVq0PAuUcMLKNUR8O/JHOmesultWpeTGB17HzYEx8qYWO11QaTF7oz1yAQ==}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.23.5
@@ -7329,6 +7329,7 @@ packages:
       '@rollup/plugin-replace': 2.4.2(rollup@2.79.1)
       builtin-modules: 3.3.0
       chalk: 4.1.2
+      ci-info: 3.9.0
       dataloader: 2.2.2
       detect-indent: 6.1.0
       enquirer: 2.4.1
@@ -7336,7 +7337,6 @@ packages:
       fast-deep-equal: 2.0.1
       fast-glob: 3.3.2
       fs-extra: 9.1.0
-      is-ci: 2.0.0
       is-reference: 1.2.1
       jest-worker: 26.6.2
       magic-string: 0.30.5
