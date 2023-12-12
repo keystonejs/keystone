@@ -527,8 +527,8 @@ importers:
         specifier: ^18.0.4
         version: 18.2.17
       '@vercel/og':
-        specifier: ^0.5.0
-        version: 0.5.20
+        specifier: ^0.6.0
+        version: 0.6.1
       classnames:
         specifier: ^2.3.1
         version: 2.3.2
@@ -9314,8 +9314,8 @@ packages:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
     dev: true
 
-  /@vercel/og@0.5.20:
-    resolution: {integrity: sha512-zi+ZXSx/peXA+1lq7s/5Vzmm/TTfTSf/5P1qNYnh42+7X+pZmahWoXt0i7SWiq3WagfsNUNA4hUDapDiHRoXqA==}
+  /@vercel/og@0.6.1:
+    resolution: {integrity: sha512-o0ItpTQrn7TdBRiYLoBmATfunenfI87AZ5S/SvS9puxN4rjuNdDHSV6ND24WBt0FK2SljfM9LYowK/99ql2bEA==}
     engines: {node: '>=16'}
     dependencies:
       '@resvg/resvg-wasm': 2.6.0
