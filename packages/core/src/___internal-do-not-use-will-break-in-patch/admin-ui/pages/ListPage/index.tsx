@@ -26,7 +26,7 @@ import { Pagination, PaginationLabel, usePaginationParams } from '../../../../ad
 import { useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
-import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { RelationsSearchFields, useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
@@ -84,7 +84,6 @@ const storeableQueries = ['sortBy', 'fields']
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
-
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
     router.replace({ pathname: router.pathname })
@@ -136,8 +135,8 @@ function ListPage ({ listKey }: ListPageProps) {
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
@@ -157,13 +156,29 @@ function ListPage ({ listKey }: ListPageProps) {
 
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
-
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
-  const searchLabels = searchFields.map(key => list.fields[key].label)
 
+  const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields)
+    .map((key) => {
+      const field = list.fields[key]
+
+      // @ts-expect-error Wrong types for relationship fields
+      if (!field.fieldMeta.many !== undefined) return
+
+      return {
+        field: key,
+        // @ts-expect-error Wrong types for relationship fields
+        refSearchFields: field.fieldMeta?.refSearchFields,
+        // @ts-expect-error Wrong types for relationship fields
+        many: field.fieldMeta?.many,
+      }
+    })
+    .filter(Boolean) as RelationsSearchFields[]
+
+  const searchLabels = searchFields.map(key => list.fields[key].label)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
-  const search = useFilter(searchParam, list, searchFields)
+  const search = useFilter(searchParam, list, searchFields, relationsSearchFields)
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
