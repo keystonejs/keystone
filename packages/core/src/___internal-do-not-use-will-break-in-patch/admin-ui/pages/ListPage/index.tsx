@@ -26,7 +26,7 @@ import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pag
 import { useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
-import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { RelationsSearchFields, useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
@@ -169,17 +169,20 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
-	const relationsSearchFields =  Object.keys(list.fields).map(key => {
+	const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields).map(key => {
 		const field = list.fields[key]
 
 		// @ts-expect-error Wrong types for relationship fields
 		const isRelationField = field.fieldMeta.many !== undefined
 		if (!isRelationField) return;
 
-		// @ts-expect-error Wrong types for relationship fields
-		const relSearchFields: string[] = field.fieldMeta.refSearchFields
-		return relSearchFields.map(str => `${key}.${str}`)
-	}).filter(Boolean).flat() as string[]
+		return ({
+			field: key,
+			// @ts-expect-error Wrong types for relationship fields
+			relSearchFields: field.fieldMeta?.refSearchFields,
+			// @ts-expect-error Wrong types for relationship fields
+			many: field.fieldMeta?.many,
+	})}).filter(Boolean) as RelationsSearchFields[]
 
   const searchLabels = searchFields.map(key => list.fields[key].label)
 

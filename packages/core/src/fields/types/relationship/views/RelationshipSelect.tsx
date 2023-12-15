@@ -57,7 +57,13 @@ function isBigInt (x: string) {
   }
 }
 
-export function useFilter (search: string, list: ListMeta, searchFields: string[], relationsSearchFields: string[] = []) {
+export type RelationsSearchFields = {
+	field: string
+	relSearchFields: string[]
+	many: boolean
+}
+
+export function useFilter (search: string, list: ListMeta, searchFields: string[], relationsSearchFields: RelationsSearchFields[] = []) {
   return useMemo(() => {
     const trimmedSearch = search.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -88,20 +94,30 @@ export function useFilter (search: string, list: ListMeta, searchFields: string[
       })
     }
 
-		for (const fieldKey of relationsSearchFields) {
-      const [relation, relationsSearchField] = fieldKey.split('.')
-      const field = list.fields[relation]
+		for (const { field, relSearchFields, many } of relationsSearchFields) {
+			conditions.push(
+				...relSearchFields.map((relSearchField) =>
+					many
+						? {
+								[field]: {
+									some: {
+										[relSearchField]: {
+											contains: trimmedSearch,
+										},
+									},
+								},
+							}
+						: {
+								[field]: {
+									[relSearchField]: {
+										contains: trimmedSearch,
+									},
+								},
+							},
+				),
+			);
+		}
 
-      conditions.push({
-        [field.path]: {
-          some:{
-            [relationsSearchField]: {
-              contains: trimmedSearch,
-            }
-          }
-        }
-      })
-    }
 
     return { OR: conditions }
   }, [search, list, searchFields])
