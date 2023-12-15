@@ -169,20 +169,23 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
-	const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields).map(key => {
-		const field = list.fields[key]
+	const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields)
+  .map((key) => {
+    const field = list.fields[key];
 
-		// @ts-expect-error Wrong types for relationship fields
-		const isRelationField = field.fieldMeta.many !== undefined
-		if (!isRelationField) return;
+    // @ts-expect-error Wrong types for relationship fields
+    if (!field.fieldMeta.many !== undefined) return;
 
-		return ({
-			field: key,
-			// @ts-expect-error Wrong types for relationship fields
-			relSearchFields: field.fieldMeta?.refSearchFields,
-			// @ts-expect-error Wrong types for relationship fields
-			many: field.fieldMeta?.many,
-	})}).filter(Boolean) as RelationsSearchFields[]
+    return {
+      field: key,
+      // @ts-expect-error Wrong types for relationship fields
+      refSearchFields: field.fieldMeta?.refSearchFields,
+      // @ts-expect-error Wrong types for relationship fields
+      many: field.fieldMeta?.many,
+    };
+  })
+  .filter(Boolean) as RelationsSearchFields[];
+
 
   const searchLabels = searchFields.map(key => list.fields[key].label)
 

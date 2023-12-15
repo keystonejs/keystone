@@ -59,7 +59,7 @@ function isBigInt (x: string) {
 
 export type RelationsSearchFields = {
 	field: string
-	relSearchFields: string[]
+	refSearchFields: string[]
 	many: boolean
 }
 
@@ -94,14 +94,14 @@ export function useFilter (search: string, list: ListMeta, searchFields: string[
       })
     }
 
-		for (const { field, relSearchFields, many } of relationsSearchFields) {
+		for (const { field, refSearchFields, many } of relationsSearchFields) {
 			conditions.push(
-				...relSearchFields.map((relSearchField) =>
+				...refSearchFields.map((refSearchField) =>
 					many
 						? {
 								[field]: {
 									some: {
-										[relSearchField]: {
+										[refSearchField]: {
 											contains: trimmedSearch,
 										},
 									},
@@ -109,7 +109,7 @@ export function useFilter (search: string, list: ListMeta, searchFields: string[
 							}
 						: {
 								[field]: {
-									[relSearchField]: {
+									[refSearchField]: {
 										contains: trimmedSearch,
 									},
 								},
