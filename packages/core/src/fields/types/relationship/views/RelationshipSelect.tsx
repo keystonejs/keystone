@@ -72,14 +72,19 @@ function isUuid (x: unknown) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
 }
 
-export function useFilter (value: string, list: ListMeta, searchFields: string[]) {
+export type RelationsSearchFields = {
+  field: string
+  refSearchFields: string[]
+  many: boolean
+}
+
+export function useFilter (value: string, list: ListMeta, searchFields: string[], relationsSearchFields: RelationsSearchFields[] = []) {
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
 
     const conditions: Record<string, any>[] = []
     const idField = list.fields.id.fieldMeta as { type: string, kind: string }
-    console.error({ idField, value, meta: list.fields.id.fieldMeta })
 
     if (idField.type === 'String') {
       // TODO: remove in breaking change?
@@ -106,6 +111,31 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
         },
       })
     }
+
+    for (const { field, refSearchFields, many } of relationsSearchFields) {
+      conditions.push(
+        ...refSearchFields.map((refSearchField) =>
+          many
+            ? {
+                [field]: {
+                  some: {
+                    [refSearchField]: {
+                      contains: trimmedSearch,
+                    },
+                  },
+                },
+              }
+            : {
+                [field]: {
+                  [refSearchField]: {
+                    contains: trimmedSearch,
+                  },
+                },
+              },
+        ),
+      )
+    }
+
 
     return { OR: conditions }
   }, [value, list, searchFields])
