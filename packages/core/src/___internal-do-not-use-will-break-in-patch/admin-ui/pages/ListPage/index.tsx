@@ -168,11 +168,24 @@ const ListPage = ({ listKey }: ListPageProps) => {
   const filters = useFilters(list, filterableFields)
 
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
+
+	const relationsSearchFields =  Object.keys(list.fields).map(key => {
+		const field = list.fields[key]
+
+		// @ts-expect-error Wrong types for relationship fields
+		const isRelationField = field.fieldMeta.many !== undefined
+		if (!isRelationField) return;
+
+		// @ts-expect-error Wrong types for relationship fields
+		const relSearchFields: string[] = field.fieldMeta.refSearchFields
+		return relSearchFields.map(str => `${key}.${str}`)
+	}).filter(Boolean).flat() as string[]
+
   const searchLabels = searchFields.map(key => list.fields[key].label)
 
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
-  const search = useFilter(searchParam, list, searchFields)
+  const search = useFilter(searchParam, list, searchFields, relationsSearchFields)
 
   const updateSearch = (value: string) => {
     const { search, ...queries } = query

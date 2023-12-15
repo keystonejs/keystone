@@ -57,7 +57,7 @@ function isBigInt (x: string) {
   }
 }
 
-export function useFilter (search: string, list: ListMeta, searchFields: string[]) {
+export function useFilter (search: string, list: ListMeta, searchFields: string[], relationsSearchFields: string[] = []) {
   return useMemo(() => {
     const trimmedSearch = search.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -85,6 +85,21 @@ export function useFilter (search: string, list: ListMeta, searchFields: string[
           contains: trimmedSearch,
           mode: field.search === 'insensitive' ? 'insensitive' : undefined,
         },
+      })
+    }
+
+		for (const fieldKey of relationsSearchFields) {
+      const [relation, relationsSearchField] = fieldKey.split('.')
+      const field = list.fields[relation]
+
+      conditions.push({
+        [field.path]: {
+          some:{
+            [relationsSearchField]: {
+              contains: trimmedSearch,
+            }
+          }
+        }
       })
     }
 
