@@ -23,6 +23,9 @@ import {
   useApolloClient,
   useQuery,
 } from '../../../../admin-ui/apollo'
+import {
+  useKeystone
+} from '../../../../admin-ui/context'
 
 function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObject<any>) {
   const cbRef = useRef(cb)
@@ -72,14 +75,20 @@ function isUuid (x: unknown) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
 }
 
-export function useFilter (value: string, list: ListMeta, searchFields: string[]) {
+export function useSearchFilter (
+  value: string,
+  list: ListMeta,
+  searchFields: string[],
+  lists: {
+    [list: string]: ListMeta
+  }
+) {
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
 
     const conditions: Record<string, any>[] = []
     const idField = list.fields.id.fieldMeta as { type: string, kind: string }
-    console.error({ idField, value, meta: list.fields.id.fieldMeta })
 
     if (idField.type === 'String') {
       // TODO: remove in breaking change?
@@ -99,6 +108,51 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
     for (const fieldKey of searchFields) {
       const field = list.fields[fieldKey]
+
+      // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+      if (field.fieldMeta?.refSearchFields) {
+        const {
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          refListKey,
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          refSearchFields,
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          many = false,
+        } = field.fieldMeta
+        const refList = lists[refListKey]
+
+        for (const refFieldKey of refSearchFields) {
+          const refField = refList.fields[refFieldKey]
+          if (!refField.search) continue // WARNING: we dont support depth > 2
+
+          if (many) {
+            conditions.push({
+              [fieldKey]: {
+                some: {
+                  [refFieldKey]: {
+                    contains: trimmedSearch,
+                    mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
+                  },
+                },
+              },
+            })
+
+            continue
+          }
+
+          conditions.push({
+            [fieldKey]: {
+              [refFieldKey]: {
+                contains: trimmedSearch,
+                mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
+              },
+            },
+          })
+        }
+
+        continue
+      }
+
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
@@ -122,7 +176,7 @@ const LoadingIndicatorContext = createContext<{
   ref: () => {},
 })
 
-export const RelationshipSelect = ({
+export function RelationshipSelect ({
   autoFocus,
   controlShouldRenderValue,
   isDisabled,
@@ -156,7 +210,8 @@ export const RelationshipSelect = ({
         onChange(value: { label: string, id: string, data: Record<string, any> } | null): void
       }
   extraSelection?: string
-}) => {
+}) {
+  const keystone = useKeystone()
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
   // because we want a re-render if the element changes
@@ -179,7 +234,7 @@ export const RelationshipSelect = ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useFilter(debouncedSearch, list, searchFields)
+  const where = useSearchFilter(debouncedSearch, list, searchFields, keystone.adminMeta.lists)
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies
@@ -262,14 +317,15 @@ export const RelationshipSelect = ({
           { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
           { where: Record<string, any>, take: number, skip: number }
         > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
-              }
-            `
+          query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
+            items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
+              ${labelFieldAlias}: ${labelField}
+              ${idFieldAlias}: id
+              ${extraSelection}
+            }
+          }
+        `
+
         setLastFetchMore({ extraSelection, list, skip, where })
         fetchMore({
           query: QUERY,

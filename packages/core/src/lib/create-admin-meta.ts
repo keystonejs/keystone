@@ -66,6 +66,7 @@ export type ListMetaRootVal = {
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
+  initialSearchFields: string[]
   initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
@@ -125,6 +126,11 @@ export function createAdminMeta (
       ].slice(0, 3)
     }
 
+    let initialSearchFields = listConfig.ui?.searchFields?.concat()
+    if (!initialSearchFields) {
+      initialSearchFields = [...list.ui.searchableFields.keys()]
+    }
+
     const maximumPageSize = Math.min(
       listConfig.ui?.listView?.pageSize ?? 50,
       (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
@@ -149,6 +155,7 @@ export function createAdminMeta (
 
       pageSize: maximumPageSize,
       initialColumns,
+      initialSearchFields,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
           | { field: string, direction: 'ASC' | 'DESC' }

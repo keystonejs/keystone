@@ -223,18 +223,11 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
     key: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    itemQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    listQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    ...contextFunctionField('hideCreate', graphql.Boolean),
-    ...contextFunctionField('hideDelete', graphql.Boolean),
     path: graphql.field({ type: graphql.nonNull(graphql.String) }),
     label: graphql.field({ type: graphql.nonNull(graphql.String) }),
     singular: graphql.field({ type: graphql.nonNull(graphql.String) }),
     plural: graphql.field({ type: graphql.nonNull(graphql.String) }),
     description: graphql.field({ type: graphql.String }),
-    initialColumns: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))),
-    }),
     pageSize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     labelField: graphql.field({ type: graphql.nonNull(graphql.String) }),
     fields: graphql.field({
@@ -244,9 +237,23 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))),
     }),
     graphql: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQL) }),
+
+    initialColumns: graphql.field({
+      type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))),
+    }),
+    initialSearchFields: graphql.field({
+      type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))),
+    }),
     initialSort: graphql.field({ type: KeystoneAdminUISort }),
-    ...contextFunctionField('isHidden', graphql.Boolean),
     isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+
+    ...contextFunctionField('hideCreate', graphql.Boolean),
+    ...contextFunctionField('hideDelete', graphql.Boolean),
+    ...contextFunctionField('isHidden', graphql.Boolean),
+
+    // TODO: remove in breaking change
+    itemQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    listQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
   },
 })
 

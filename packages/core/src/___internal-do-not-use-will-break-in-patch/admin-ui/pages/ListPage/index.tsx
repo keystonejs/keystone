@@ -23,10 +23,13 @@ import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
-import { useList } from '../../../../admin-ui/context'
+import {
+  useKeystone,
+  useList
+} from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
-import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { useSearchFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
@@ -84,7 +87,6 @@ const storeableQueries = ['sortBy', 'fields']
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
-
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
     router.replace({ pathname: router.pathname })
@@ -131,13 +133,13 @@ function useQueryParamsFromLocalStorage (listKey: string) {
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 function ListPage ({ listKey }: ListPageProps) {
+  const keystone = useKeystone()
   const list = useList(listKey)
-
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
@@ -158,12 +160,11 @@ function ListPage ({ listKey }: ListPageProps) {
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
 
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
-  const searchLabels = searchFields.map(key => list.fields[key].label)
-
+  const searchLabels = list.initialSearchFields.map(key => list.fields[key].label)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
-  const search = useFilter(searchParam, list, searchFields)
+  const search = useSearchFilter(searchParam, list, list.initialSearchFields, keystone.adminMeta.lists)
+
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
@@ -366,7 +367,7 @@ function ListPage ({ listKey }: ListPageProps) {
   )
 }
 
-const ListPageHeader = ({ listKey }: { listKey: string }) => {
+function ListPageHeader ({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   return (
     <Fragment>
@@ -384,8 +385,8 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
   )
 }
 
-const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
-  <p
+function ResultsSummaryContainer ({ children }: { children: ReactNode }) {
+  return <p
     css={{
       // TODO: don't do this
       // (this is to make it so things don't move when a user selects an item)
@@ -397,9 +398,9 @@ const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
   >
     {children}
   </p>
-)
+}
 
-const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
+function SortDirectionArrow ({ direction }: { direction: 'ASC' | 'DESC' }) {
   const size = '0.25em'
   return (
     <span
