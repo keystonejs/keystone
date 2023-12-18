@@ -84,7 +84,6 @@ const storeableQueries = ['sortBy', 'fields']
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
-
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
     router.replace({ pathname: router.pathname })
@@ -138,15 +137,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
 
-  const currentPage =
-    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1
-  const pageSize =
-    typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
-      ? parseInt(query.pageSize)
-      : list.pageSize
+  const currentPage = typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1
+  const pageSize = typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
+    ? parseInt(query.pageSize)
+    : list.pageSize
 
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
-
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
@@ -166,33 +162,29 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
-
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
-	const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields)
-  .map((key) => {
-    const field = list.fields[key];
+  const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields)
+    .map((key) => {
+      const field = list.fields[key]
 
-    // @ts-expect-error Wrong types for relationship fields
-    if (!field.fieldMeta.many !== undefined) return;
-
-    return {
-      field: key,
       // @ts-expect-error Wrong types for relationship fields
-      refSearchFields: field.fieldMeta?.refSearchFields,
-      // @ts-expect-error Wrong types for relationship fields
-      many: field.fieldMeta?.many,
-    };
-  })
-  .filter(Boolean) as RelationsSearchFields[];
+      if (!field.fieldMeta.many !== undefined) return
 
+      return {
+        field: key,
+        // @ts-expect-error Wrong types for relationship fields
+        refSearchFields: field.fieldMeta?.refSearchFields,
+        // @ts-expect-error Wrong types for relationship fields
+        many: field.fieldMeta?.many,
+      }
+    })
+    .filter(Boolean) as RelationsSearchFields[]
 
   const searchLabels = searchFields.map(key => list.fields[key].label)
-
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
   const search = useFilter(searchParam, list, searchFields, relationsSearchFields)
-
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
@@ -204,7 +196,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
   }
 
   const selectedFields = useSelectedFields(list, listViewFieldModesByField)
-
   const {
     data: newData,
     error: newError,
