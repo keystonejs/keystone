@@ -8,7 +8,7 @@
     "start": "keystone start",
     "build": "keystone build",
     "postinstall": "keystone postinstall",
-    "test": "node --loader tsx example-test.ts"
+    "test": "tsx example-test.ts"
   },
   "dependencies": {
     "@keystone-6/auth": "^7.0.0",
