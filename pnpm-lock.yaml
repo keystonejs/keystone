@@ -2015,8 +2015,8 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3
       file-type:
-        specifier: ^18.2.0
-        version: 18.7.0
+        specifier: ^19.0.0
+        version: 19.0.0
       fs-extra:
         specifier: ^11.0.0
         version: 11.2.0
@@ -12538,9 +12538,9 @@ packages:
       flat-cache: 3.2.0
     dev: true
 
-  /file-type@18.7.0:
-    resolution: {integrity: sha512-ihHtXRzXEziMrQ56VSgU7wkxh55iNchFkosu7Y9/S+tXHdKyrGjVK0ujbqNnsxzea+78MaLhN6PGmfYSAv1ACw==}
-    engines: {node: '>=14.16'}
+  /file-type@19.0.0:
+    resolution: {integrity: sha512-s7cxa7/leUWLiXO78DVVfBVse+milos9FitauDLG1pI7lNaJ2+5lzPnr2N24ym+84HVwJL6hVuGfgVE+ALvU8Q==}
+    engines: {node: '>=18'}
     dependencies:
       readable-web-to-node-stream: 3.0.2
       strtok3: 7.0.0
