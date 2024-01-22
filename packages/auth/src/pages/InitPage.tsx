@@ -88,7 +88,11 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       >
         <H1>Welcome</H1>
         <Stack across gap="small">
-          <IconTwitter title="Twitter Logo" />
+          <IconTwitter 
+            href="https://twitter.com/keystonejs"
+            target="_blank"
+            title="Twitter Logo"
+          />
           <IconGithub
             href="https://github.com/keystonejs/keystone"
             target="_blank"
