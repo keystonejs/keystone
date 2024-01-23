@@ -97,7 +97,7 @@ function editOnlyViewBy (f: ({ session }: { session?: Session }) => boolean) {
   return viewOnlyBy(f, 'edit')
 }
 
-export const lists: Lists<Session> = {
+export const lists = {
   Post: list({
     access: {
       operation: {
@@ -275,4 +275,4 @@ export const lists: Lists<Session> = {
       moderator: relationship({ ref: 'Moderator' }),
     },
   }),
-}
+} satisfies Lists<Session>

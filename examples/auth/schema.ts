@@ -7,7 +7,7 @@ import type { Lists } from '.keystone/types'
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-type Session = {
+export type Session = {
   itemId: string
   data: {
     isAdmin: boolean
@@ -55,7 +55,7 @@ function isAdmin ({ session }: { session?: Session }) {
   return false
 }
 
-export const lists: Lists<Session> = {
+export const lists = {
   User: list({
     access: {
       operation: {
@@ -153,4 +153,4 @@ export const lists: Lists<Session> = {
       }),
     },
   }),
-}
+} satisfies Lists<Session>

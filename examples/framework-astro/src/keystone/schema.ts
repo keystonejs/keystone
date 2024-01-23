@@ -18,7 +18,7 @@ import { text, select } from '@keystone-6/core/fields'
 // the generated types from '.keystone/types'
 import type { Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     // WARNING
     //   for this starter project, anyone can create, query, update and delete anything
@@ -54,4 +54,4 @@ export const lists: Lists = {
       }),
     },
   }),
-}
+} satisfies Lists

@@ -1,9 +1,10 @@
 import { list, graphql } from '@keystone-6/core'
 import { text, checkbox, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
+
 import type { Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
     fields: {
@@ -106,4 +107,4 @@ export const lists: Lists = {
       }),
     },
   }),
-}
+} satisfies Lists

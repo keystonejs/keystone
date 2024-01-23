@@ -1,9 +1,10 @@
 import { list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
+
 import { type Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   Author: list({
     access: allowAll,
     fields: {
@@ -12,7 +13,7 @@ export const lists: Lists = {
     },
     db: {
       extendPrismaSchema: schema => {
-        // add a bad example of a multi-column unique constraint
+        // add a (poor) example of a multi-column unique constraint
         return schema.replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}')
       },
     },
@@ -47,4 +48,4 @@ export const lists: Lists = {
       }),
     },
   }),
-}
+} satisfies Lists

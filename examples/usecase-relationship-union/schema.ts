@@ -14,7 +14,7 @@ function ifUnsetHideUI (field: string) {
   }
 }
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll,
     fields: {
@@ -127,4 +127,4 @@ export const lists: Lists = {
       },
     },
   }),
-}
+} satisfies Lists

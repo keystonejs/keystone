@@ -25,7 +25,7 @@ function isAssignedUserFilter ({ session }: { session?: Session }) {
   }
 }
 
-export const lists: Lists<Session> = {
+export const lists = {
   Task: list({
     access: {
       operation: allowAll,
@@ -56,4 +56,4 @@ export const lists: Lists<Session> = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
-}
+} satisfies Lists<Session>

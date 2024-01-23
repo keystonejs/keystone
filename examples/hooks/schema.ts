@@ -1,6 +1,7 @@
 import { list, group } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, text, timestamp } from '@keystone-6/core/fields'
+
 import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -32,7 +33,7 @@ const readOnly = {
   },
 }
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
     fields: {
@@ -168,4 +169,4 @@ export const lists: Lists = {
       },
     },
   }),
-}
+} satisfies Lists

@@ -13,7 +13,7 @@ import { document } from '@keystone-6/fields-document'
 // the generated types from '.keystone/types'
 import type { Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   Author: list({
     // WARNING
     //   for this example, anyone can create, query, update and delete anything
@@ -118,4 +118,4 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.tags', many: true }),
     },
   }),
-}
+} satisfies Lists
