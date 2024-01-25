@@ -90,4 +90,6 @@ export const start = async (
       }/)`
     )
   })
+
+  return { expressServer, httpServer }
 }
