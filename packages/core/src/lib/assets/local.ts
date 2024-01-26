@@ -26,6 +26,9 @@ export function localImageAssetsAPI (
         }
       }
     },
+    async download(filename, stream, headers) {
+      throw new Error("Not implemented yet")
+    }
   }
 }
 
@@ -66,5 +69,8 @@ export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'loca
         }
       }
     },
+    async download(filename, stream, headers) {
+      throw new Error("Not implemented yet")
+    }
   }
 }

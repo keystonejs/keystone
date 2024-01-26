@@ -4,17 +4,20 @@ import { Upload } from '@aws-sdk/lib-storage'
 
 import type { StorageConfig } from '../../types'
 import type { FileAdapter, ImageAdapter } from './types'
+import { Writable } from 'stream'
 
-export function s3ImageAssetsAPI (storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
+
+
+export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig)
   return {
-    async url (id, extension) {
+    async url(id, extension) {
       if (!storageConfig.signed) {
         return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${id}.${extension}`)
       }
       return generateUrl(await presign(`${id}.${extension}`))
     },
-    async upload (buffer, id, extension) {
+    async upload(buffer, id, extension) {
       const upload = new Upload({
         client: s3,
         params: {
@@ -26,32 +29,34 @@ export function s3ImageAssetsAPI (storageConfig: StorageConfig & { kind: 's3' })
             webp: 'image/webp',
             gif: 'image/gif',
             jpg: 'image/jpeg',
+            svg: 'image/svg+xml',
           }[extension],
           ACL: storageConfig.acl,
         },
       })
       await upload.done()
     },
-    async delete (id, extension) {
+    async delete(id, extension) {
       await s3.deleteObject({
         Bucket: storageConfig.bucketName,
         Key: `${storageConfig.pathPrefix || ''}${id}.${extension}`,
       })
     },
+    download: downloadFn(storageConfig)
   }
 }
 
-export function s3FileAssetsAPI (storageConfig: StorageConfig & { kind: 's3' }): FileAdapter {
+export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): FileAdapter {
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig)
 
   return {
-    async url (filename) {
+    async url(filename) {
       if (!storageConfig.signed) {
         return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${filename}`)
       }
       return generateUrl(await presign(filename))
     },
-    async upload (stream, filename) {
+    async upload(stream, filename) {
       let filesize = 0
       stream.on('data', data => {
         filesize += data.length
@@ -72,16 +77,17 @@ export function s3FileAssetsAPI (storageConfig: StorageConfig & { kind: 's3' }):
 
       return { filename, filesize }
     },
-    async delete (filename) {
+    async delete(filename) {
       await s3.deleteObject({
         Bucket: storageConfig.bucketName,
         Key: (storageConfig.pathPrefix || '') + filename,
       })
     },
+    download: downloadFn(storageConfig)
   }
 }
 
-export function getS3AssetsEndpoint (storageConfig: StorageConfig & { kind: 's3' }) {
+export function getS3AssetsEndpoint(storageConfig: StorageConfig & { kind: 's3' }) {
   let endpoint = storageConfig.endpoint
     ? new URL(storageConfig.endpoint)
     : new URL(`https://s3.${storageConfig.region}.amazonaws.com`)
@@ -96,14 +102,14 @@ export function getS3AssetsEndpoint (storageConfig: StorageConfig & { kind: 's3'
   return `${endpointString}/`
 }
 
-function s3AssetsCommon (storageConfig: StorageConfig & { kind: 's3' }) {
+export function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
   const s3 = new S3({
     credentials:
       storageConfig.accessKeyId && storageConfig.secretAccessKey
         ? {
-            accessKeyId: storageConfig.accessKeyId,
-            secretAccessKey: storageConfig.secretAccessKey,
-          }
+          accessKeyId: storageConfig.accessKeyId,
+          secretAccessKey: storageConfig.secretAccessKey,
+        }
         : undefined,
     region: storageConfig.region,
     endpoint: storageConfig.endpoint,
@@ -127,4 +133,24 @@ function s3AssetsCommon (storageConfig: StorageConfig & { kind: 's3' }) {
       })
     },
   }
+}
+
+const downloadFn = (storageConfig: StorageConfig & { kind: 's3' }) => {
+  return async (filename: string, stream: Writable, headers: (key: string, val: string) => void) => {
+    const { s3 } = s3AssetsCommon(storageConfig)
+    const command = new GetObjectCommand({
+      Bucket: storageConfig.bucketName,
+      Key: (storageConfig.pathPrefix || '') + filename,
+    })
+
+    const s3Response = await s3.send(command)
+    if (!s3Response.Body) {
+      throw new Error('No response body')
+    }
+
+    headers('Content-Type', s3Response.ContentType ?? '')
+    headers('Content-Length', s3Response.ContentLength?.toString() ?? '')
+
+    s3Response.Body.transformToWebStream().pipeTo(Writable.toWeb(stream))
+  };
 }
