@@ -6,10 +6,15 @@ import { type StorageConfig } from '../../types'
 import { type FileAdapter, type ImageAdapter } from './types'
 
 export function localImageAssetsAPI (
-  storageConfig: StorageConfig & { kind: 'local' }
+  storageConfig: StorageConfig & { kind: 'local' }, storageKey: string=''
 ): ImageAdapter {
   return {
     async url (id, extension) {
+
+      if(storageConfig.serverRoute) {
+        return storageConfig.generateUrl(`${storageConfig.serverRoute}/${storageKey}/${id}.${extension}`);
+      }
+
       return storageConfig.generateUrl(`/${id}.${extension}`)
     },
     async upload (buffer, id, extension) {
@@ -32,9 +37,14 @@ export function localImageAssetsAPI (
   }
 }
 
-export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
+export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }, storageKey: string=''): FileAdapter {
   return {
     async url (filename) {
+      
+      if(storageConfig.serverRoute) {
+        return storageConfig.generateUrl(`${storageConfig.serverRoute}/${storageKey}/${filename}`);
+      }
+
       return storageConfig.generateUrl(`/${filename}`)
     },
     async upload (stream, filename) {

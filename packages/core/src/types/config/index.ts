@@ -32,6 +32,17 @@ type FileOrImage =
     transformName?: (filename: string, extension: string) => MaybePromise<string>
   }
 
+export type LocalStorageAccessAllowedOptions = {
+    context: KeystoneContext, 
+    fileKey: string, 
+    headers: (headerKey: string) => string | number | string[] | undefined
+}
+
+export type StorageAccessAllowedOptions = LocalStorageAccessAllowedOptions & {
+  s3?: S3Client, 
+  s3Endpoint?: string, 
+}
+
 export type StorageConfig = (
   | {
     /** The kind of storage being configured */
@@ -52,9 +63,9 @@ export type StorageConfig = (
       path: string
     } | null,
     /** A function that is checked before serving the file or image to check for permissions. 
-     * This function will only be respected if the serverRoute is set
+     * This function will only be respected if the serverRoute is set\
     */
-    isAccessAllowed?: (context: KeystoneContext, fileKey: string, headers: (headerKey: string) => string | number | string[] | undefined) => boolean
+    isAccessAllowed?: (options: StorageAccessAllowedOptions) => boolean,
     /** Sets whether the assets should be preserved locally on removal from keystone's database */
     preserve?: boolean
     transformName?: (filename: string) => string
@@ -88,16 +99,16 @@ export type StorageConfig = (
     /** A function that is checked before serving the file or image to check for permissions. 
      * This function will only be respected if the serverRoute is set
     */
-    isAccessAllowed?: (context: KeystoneContext, s3: S3Client, s3Endpoint: string, fileKey: string, headers: (headerKey: string) => string | number | string[] | undefined) => boolean
+    isAccessAllowed?: (options: StorageAccessAllowedOptions) => boolean,
     /** A string that sets permissions for the uploaded assets. Default is 'private'.
      *
      * Amazon S3 supports a set of predefined grants, known as canned ACLs.
      * See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
      * for more details.
      * 
-     * In terms of access control, when using serverRoute with proxied: true, it only matters to protect 
-     * the assets from being accessed directly from the S3 bucket. To protect the assets with serverRoute: { proxied: true } you should instead 
-     * implement the isAccessAllowed function  
+     * In terms of access control, when using serverRoute (proxied through keystone) it only matters to protect 
+     * the assets from being accessed directly from the S3 bucket. To protect the assets with serverRoute: { path: '/some-path' } you should instead 
+     * implement the isAccessAllowed function 
      */
     acl?:
     | 'private'

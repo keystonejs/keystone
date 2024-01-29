@@ -10,7 +10,7 @@ export type ImageAdapter = {
 
 export type FileAdapter = {
   download(filename: string, stream: Writable, headers: (key: string, value: string) => void): void
-  upload(stream: Readable, filename: string): Promise<FileMetadata>
+   upload(stream: Readable, filename: string): Promise<FileMetadata>
   delete(id: string): Promise<void>
   url(filename: string): Promise<string>
 }

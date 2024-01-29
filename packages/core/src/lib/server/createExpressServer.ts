@@ -1,17 +1,17 @@
-import { createServer, type Server } from 'http'
-import cors, { type CorsOptions } from 'cors'
-import { json } from 'body-parser'
-import { expressMiddleware } from '@apollo/server/express4'
-import express from 'express'
-import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
+import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
+import { json } from 'body-parser'
+import cors, { type CorsOptions } from 'cors'
+import express from 'express'
+import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
+import { createServer, type Server } from 'http'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
-import { addHealthCheck } from './addHealthCheck'
+import type { GraphQLConfig, KeystoneConfig, KeystoneContext, StorageConfig } from '../../types'
 import { s3AssetsCommon, s3FileAssetsAPI, s3ImageAssetsAPI } from '../assets/s3'
+import { addHealthCheck } from './addHealthCheck'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -76,101 +76,11 @@ export const createExpressServer = async (
     config.server?.extendHttpServer(httpServer, context, graphQLSchema)
   }
 
+
   if (config.storage) {
-    for (const key of Object.keys(config.storage)) {
-      const storageConfig = config.storage[key];
-
-      /**we can only verify isAccessAllowed in the following cases: 
-      * 1. local storage: if serverRoute is defined 
-      * 2. s3 storage: if serverRoute is defined. 
-      * 
-      * Otherwise the generateUrl would generate a direct url to s3 supporting solution 
-      * like aws or minio or what not and as such, we wouldn't be able to intercept the 
-      * request properly. 
-      * 
-      * Actually we could by "redirection", sending the browser back to us 
-      * and checking before redirecting, but that would be a bit of a hack.
-      */
-
-      //verifying if isAccessAllowed would be supported in non-proxied mode and warning about it at development time
-      if (storageConfig.isAccessAllowed && (storageConfig.kind === 's3' && !storageConfig.serverRoute)) {
-        process.env.NODE_ENV === 'development' && console.warn("storage api isAccessAllowed is not supported in non-proxied mode for kind: s3. The isAccessAllowed function will not get executed");
-      }
-
-      /**
-       * Also, checking if generateUrl respects the proxied flag. If it doesn't, we warn about it at development time. 
-       */
-      if (storageConfig.generateUrl && storageConfig.serverRoute) {
-        process.env.NODE_ENV === 'development' && console.warn("generateUrl storage api config should respect the serverRoute flag. Some assumptions about the generateUrl function must be in place for serverRoute mode to work.")
-      }
-
-      if (storageConfig.serverRoute) {
-        //now we need 2 implementations 
-        //one for local storage, using express static middleware BUT with isAccessAllowed checked properly beforehand
-        //another for s3, which will issue a GET Object request to s3, and pipe the stream to the response
-        let expressMiddleware: express.RequestHandler;
-        if (storageConfig.kind === 'local') {
-
-          expressMiddleware = (request, response) => {
-
-            const { extraPath } = request.params
-
-            if (typeof storageConfig.isAccessAllowed === 'function' &&
-              !storageConfig.isAccessAllowed(context, extraPath, response.getHeader)) {
-              response.status(403).send('Forbidden')
-              return
-            }
-
-            express.static(storageConfig.storagePath, {
-              setHeaders(res) {
-                if (storageConfig.type === 'file') {
-                  res.setHeader('Content-Type', 'application/octet-stream')
-                }
-              },
-              index: false,
-              redirect: false,
-              lastModified: false,
-            })
-          }
-        }
-        else if (storageConfig.kind === 's3') {
-
-          const assetApi = storageConfig.type === 'image' ? s3ImageAssetsAPI(storageConfig) : s3FileAssetsAPI(storageConfig);
-
-          expressMiddleware = (request, response) => {
-            const { extraPath } = request.params
-
-            if (!extraPath) {
-              response.status(404).send('Not found')
-              return
-            }
-
-            const { s3, s3Endpoint } = s3AssetsCommon(storageConfig);
-
-            if (typeof storageConfig.isAccessAllowed === 'function' &&
-              !storageConfig.isAccessAllowed(context, s3, s3Endpoint, extraPath, response.getHeader)) {
-              response.status(403).send('Forbidden')
-              return
-            }
-
-            assetApi.download(extraPath, response, response.setHeader);
-          }
-
-        }
-        else {
-          expressMiddleware = (request, response) => {
-            process.env.NODE_ENV === 'development' && console.warn("storage api kind not supported");
-            response.status(404).send('Not found')
-          }
-        }
-
-
-        expressServer.use(
-          `${storageConfig.serverRoute.path}/:extraPath`,
-          expressMiddleware);
-      }
-
-    }
+    Object.entries(config.storage).forEach(([key, storageConfig]) => {
+      proxyStorageIfNeeded(key, storageConfig, expressServer, context);
+    });
   }
 
   const apolloConfig = config.graphql?.apolloConfig
@@ -207,4 +117,111 @@ export const createExpressServer = async (
   )
 
   return { expressServer, apolloServer, httpServer }
+}
+
+
+const proxyStorageIfNeeded = (storageConfigKey: string, storageConfig: StorageConfig, expressServer: express.Express, context: KeystoneContext) => {
+
+  /**we can only verify isAccessAllowed in the following cases: 
+     * 1. local storage: if serverRoute is defined 
+     * 2. s3 storage: if serverRoute is defined. 
+     * 
+     * Otherwise the generateUrl would generate a direct url to s3 supporting solution 
+     * like aws or minio or what not and as such, we wouldn't be able to intercept the 
+     * request properly. 
+     * 
+     * Actually we could by "redirection", sending the browser back to us 
+     * and checking before redirecting, but that would be a bit of a hack.
+     */
+
+  //verifying if isAccessAllowed would be supported in direct mode and warning about it at development time
+  if (storageConfig.isAccessAllowed && (storageConfig.kind === 's3' && !storageConfig.serverRoute)) {
+    process.env.NODE_ENV !== 'production' && console.warn("storage api isAccessAllowed is not supported in non-proxied mode for kind: s3. The isAccessAllowed function will not get executed");
+  }
+
+  /**
+   * Also, checking if generateUrl respects the serverRoute path. If it doesn't, we warn about it at development time. 
+   */
+  if (storageConfig.generateUrl && storageConfig.serverRoute) {
+    process.env.NODE_ENV !== 'production' && console.warn("generateUrl storage api config should respect the serverRoute flag. Some assumptions about the generateUrl function must be in place for serverRoute mode to work.")
+  }
+
+  if (storageConfig.serverRoute) {
+
+    const { isAccessAllowed } = storageConfig;
+
+    if (isAccessAllowed) {
+
+      const storageAccessControl: express.RequestHandler = async (request, response, next) => {
+        const fileKey = request.params[0];
+
+        if (!fileKey) {
+          response.status(404).send('Not found')
+          return
+        }
+
+        const opts = {
+          context,
+          fileKey,
+          headers: (key: string) => {
+            return request.header(key);
+          },
+          ...(storageConfig.kind === 's3' ? s3AssetsCommon(storageConfig) : {})
+        };
+
+        if (!isAccessAllowed(
+          opts)) {
+          response.status(403).send('Forbidden');
+          return;
+        }
+
+
+      };
+
+      const storageProxy: express.RequestHandler = async (request, response, next) => {
+        const fileKey = request.params[0];
+
+        //Leave the local storage to express.static as it was in the original code of Keystone 
+        if (storageConfig.kind === 'local') {
+          next();
+          return;
+        }
+
+        //S3 downloads are handled by the s3AssetsAPI
+        try {
+          const assetApi = storageConfig.type === 'image' ? s3ImageAssetsAPI(storageConfig) : s3FileAssetsAPI(storageConfig);
+          await assetApi.download(fileKey, response, (key: string, value: string) => {
+            response.header(key, value);
+          });
+        } catch (e) {
+          console.error(e);
+          response.status(500).send('Failed');
+
+        }
+
+        response.end();
+        return;
+      }
+
+      expressServer
+        .route(`${storageConfig.serverRoute.path}/${storageConfigKey}/*`)
+        .get(storageAccessControl)
+        .get(storageProxy);
+    }
+
+    if (storageConfig.kind === 'local') {
+      expressServer.use(`${storageConfig.serverRoute.path}/${storageConfigKey}`,
+        express.static(storageConfig.storagePath, {
+          setHeaders(res) {
+            if (storageConfig.type === 'file') {
+              res.setHeader('Content-Type', 'application/octet-stream')
+            }
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      );
+    }
+  }
 }

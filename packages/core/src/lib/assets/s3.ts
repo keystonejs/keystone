@@ -6,15 +6,18 @@ import type { StorageConfig } from '../../types'
 import type { FileAdapter, ImageAdapter } from './types'
 import { Writable } from 'stream'
 
-
-
-export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
+export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }, storageKey: string=''): ImageAdapter {
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig)
   return {
     async url(id, extension) {
+      if(storageConfig.serverRoute) {
+        return generateUrl(`${storageConfig.serverRoute}/${storageKey}/${storageConfig.pathPrefix || ''}${id}.${extension}`);
+      }
+
       if (!storageConfig.signed) {
         return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${id}.${extension}`)
       }
+
       return generateUrl(await presign(`${id}.${extension}`))
     },
     async upload(buffer, id, extension) {
@@ -28,8 +31,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
             png: 'image/png',
             webp: 'image/webp',
             gif: 'image/gif',
-            jpg: 'image/jpeg',
-            svg: 'image/svg+xml',
+            jpg: 'image/jpeg'
           }[extension],
           ACL: storageConfig.acl,
         },
@@ -46,11 +48,14 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
   }
 }
 
-export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): FileAdapter {
+export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }, storageKey: string=''): FileAdapter {
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig)
 
   return {
     async url(filename) {
+      if(storageConfig.serverRoute) {
+        return generateUrl(`${storageConfig.serverRoute}/${storageKey}/${storageConfig.pathPrefix || ''}${filename}`);
+      }
       if (!storageConfig.signed) {
         return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${filename}`)
       }
@@ -138,9 +143,10 @@ export function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
 const downloadFn = (storageConfig: StorageConfig & { kind: 's3' }) => {
   return async (filename: string, stream: Writable, headers: (key: string, val: string) => void) => {
     const { s3 } = s3AssetsCommon(storageConfig)
+    console.log({headers,stream});
     const command = new GetObjectCommand({
       Bucket: storageConfig.bucketName,
-      Key: (storageConfig.pathPrefix || '') + filename,
+      Key: filename,
     })
 
     const s3Response = await s3.send(command)
@@ -151,6 +157,6 @@ const downloadFn = (storageConfig: StorageConfig & { kind: 's3' }) => {
     headers('Content-Type', s3Response.ContentType ?? '')
     headers('Content-Length', s3Response.ContentLength?.toString() ?? '')
 
-    s3Response.Body.transformToWebStream().pipeTo(Writable.toWeb(stream))
+    await s3Response.Body.transformToWebStream().pipeTo(Writable.toWeb(stream))
   };
 }
