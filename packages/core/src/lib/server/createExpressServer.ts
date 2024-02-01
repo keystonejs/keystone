@@ -149,10 +149,13 @@ const proxyStorageIfNeeded = (storageConfigKey: string, storageConfig: StorageCo
   if (storageConfig.serverRoute) {
 
     const { isAccessAllowed } = storageConfig;
+    let storageAccessControl: express.RequestHandler = async (request, response, next) => {
+      next();
+    }
 
     if (isAccessAllowed) {
 
-      const storageAccessControl: express.RequestHandler = async (request, response, next) => {
+      storageAccessControl = async (request, response, next) => {
         const fileKey = request.params[0];
 
         if (!fileKey) {
@@ -174,40 +177,41 @@ const proxyStorageIfNeeded = (storageConfigKey: string, storageConfig: StorageCo
           response.status(403).send('Forbidden');
           return;
         }
-
+        next();
 
       };
 
-      const storageProxy: express.RequestHandler = async (request, response, next) => {
-        const fileKey = request.params[0];
+    }
 
-        //Leave the local storage to express.static as it was in the original code of Keystone 
-        if (storageConfig.kind === 'local') {
-          next();
-          return;
-        }
+    const storageProxy: express.RequestHandler = async (request, response, next) => {
+      const fileKey = request.params[0];
 
-        //S3 downloads are handled by the s3AssetsAPI
-        try {
-          const assetApi = storageConfig.type === 'image' ? s3ImageAssetsAPI(storageConfig) : s3FileAssetsAPI(storageConfig);
-          await assetApi.download(fileKey, response, (key: string, value: string) => {
-            response.header(key, value);
-          });
-        } catch (e) {
-          console.error(e);
-          response.status(500).send('Failed');
-
-        }
-
-        response.end();
+      //Leave the local storage to express.static as it was in the original code of Keystone 
+      if (storageConfig.kind === 'local') {
+        next();
         return;
       }
 
-      expressServer
-        .route(`${storageConfig.serverRoute.path}/${storageConfigKey}/*`)
-        .get(storageAccessControl)
-        .get(storageProxy);
+      //S3 downloads are handled by the s3AssetsAPI
+      try {
+        const assetApi = storageConfig.type === 'image' ? s3ImageAssetsAPI(storageConfig) : s3FileAssetsAPI(storageConfig);
+        await assetApi.download(fileKey, response, (key: string, value: string) => {
+          response.header(key, value);
+        });
+      } catch (e) {
+        console.error(e);
+        response.status(500).send('Failed');
+
+      }
+
+      response.end();
+      return;
     }
+
+    expressServer
+    .route(`${storageConfig.serverRoute.path}/${storageConfigKey}/*`)
+    .get(storageAccessControl)
+    .get(storageProxy);
 
     if (storageConfig.kind === 'local') {
       expressServer.use(`${storageConfig.serverRoute.path}/${storageConfigKey}`,

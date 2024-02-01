@@ -11,7 +11,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }, 
   return {
     async url(id, extension) {
       if(storageConfig.serverRoute) {
-        return generateUrl(`${storageConfig.serverRoute}/${storageKey}/${storageConfig.pathPrefix || ''}${id}.${extension}`);
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${storageConfig.pathPrefix || ''}${id}.${extension}`);
       }
 
       if (!storageConfig.signed) {
@@ -54,7 +54,7 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }, s
   return {
     async url(filename) {
       if(storageConfig.serverRoute) {
-        return generateUrl(`${storageConfig.serverRoute}/${storageKey}/${storageConfig.pathPrefix || ''}${filename}`);
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${storageConfig.pathPrefix || ''}${filename}`);
       }
       if (!storageConfig.signed) {
         return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${filename}`)

@@ -10,12 +10,13 @@ export function localImageAssetsAPI (
 ): ImageAdapter {
   return {
     async url (id, extension) {
+      const generateUrl = storageConfig.generateUrl ?? (url=>url);
 
       if(storageConfig.serverRoute) {
-        return storageConfig.generateUrl(`${storageConfig.serverRoute}/${storageKey}/${id}.${extension}`);
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${id}.${extension}`);
       }
 
-      return storageConfig.generateUrl(`/${id}.${extension}`)
+      return generateUrl(`/${id}.${extension}`)
     },
     async upload (buffer, id, extension) {
       await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer)
@@ -40,12 +41,14 @@ export function localImageAssetsAPI (
 export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }, storageKey: string=''): FileAdapter {
   return {
     async url (filename) {
-      
+      const generateUrl = storageConfig.generateUrl ?? (url=>url);
+
+
       if(storageConfig.serverRoute) {
-        return storageConfig.generateUrl(`${storageConfig.serverRoute}/${storageKey}/${filename}`);
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${filename}`);
       }
 
-      return storageConfig.generateUrl(`/${filename}`)
+      return generateUrl(`/${filename}`)
     },
     async upload (stream, filename) {
       const writeStream = fs.createWriteStream(path.join(storageConfig.storagePath, filename))
