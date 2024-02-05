@@ -6,7 +6,7 @@ import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms, type Editor } from 'slate'
 
 import { jsx } from '@keystone-ui/core'
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import { useList } from '@keystone-6/core/admin-ui/context'
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 
 import { ToolbarButton } from './primitives'
@@ -79,11 +79,10 @@ export function RelationshipElement ({
   children,
   element,
 }: RenderElementProps & { element: { type: 'relationship' } }) {
-  const keystone = useKeystone()
   const editor = useStaticEditor()
   const relationships = useContext(DocumentFieldRelationshipsContext)!
   const relationship = relationships[element.relationship]
-  const list = keystone.adminMeta.lists[relationship.listKey]
+  const list = useList(relationship.listKey)
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
   return (
