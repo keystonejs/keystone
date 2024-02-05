@@ -1874,13 +1874,13 @@ importers:
   packages/core:
     dependencies:
       '@apollo/cache-control-types':
-        specifier: ^1.0.2
+        specifier: ^1.0.3
         version: 1.0.3(graphql@16.8.1)
       '@apollo/client':
-        specifier: ^3.7.0
+        specifier: ^3.9.2
         version: 3.9.2(@types/react@18.2.52)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/server':
-        specifier: ^4.9.3
+        specifier: ^4.10.0
         version: 4.10.0(graphql@16.8.1)
       '@aws-sdk/client-s3':
         specifier: ^3.83.0
@@ -9634,7 +9634,7 @@ packages:
       '@babel/plugin-syntax-typescript': 7.23.3(@babel/core@7.23.9)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.4
       '@vanilla-extract/css': 1.14.1
-      esbuild: 0.17.6
+      esbuild: 0.19.12
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0
