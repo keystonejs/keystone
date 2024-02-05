@@ -4,11 +4,10 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "ts-gql:build": "ts-gql build",
-    "ts-gql:watch": "ts-gql watch",
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
+    "build:ts-gql": "ts-gql build",
     "postinstall": "keystone postinstall && ts-gql build"
   },
   "dependencies": {
