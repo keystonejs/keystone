@@ -56,13 +56,13 @@ function isSetText (isSet: null | undefined | boolean) {
   return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set'
 }
 
-export const Field = ({
+export function Field ({
   field,
   value,
   onChange,
   forceValidation,
   autoFocus,
-}: FieldProps<typeof controller>) => {
+}: FieldProps<typeof controller>) {
   const [showInputValue, setShowInputValue] = useState(false)
   const [touchedFirstInput, setTouchedFirstInput] = useState(false)
   const [touchedSecondInput, setTouchedSecondInput] = useState(false)

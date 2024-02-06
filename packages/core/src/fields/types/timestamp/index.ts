@@ -27,14 +27,13 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const timestamp =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    validation,
-    defaultValue,
-    ...config
-  }: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
+  isIndexed,
+  validation,
+  defaultValue,
+  ...config
+}: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.DateTime.graphQLType.parseValue(defaultValue)
@@ -46,15 +45,14 @@ export const timestamp =
         )
       }
     }
+
     const parsedDefaultValue =
       typeof defaultValue === 'string'
         ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue
-
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
 
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
-
     const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
@@ -132,3 +130,4 @@ export const timestamp =
       },
     })
   }
+}

@@ -67,7 +67,6 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   })
 
   const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
-
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
 
   useEffect(() => {

@@ -50,11 +50,8 @@ async function inputResolver (
   return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
-export const file =
-  <ListTypeInfo extends BaseListTypeInfo>(
-    config: FileFieldConfig<ListTypeInfo>
-  ): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
@@ -122,3 +119,4 @@ export const file =
       views: '@keystone-6/core/fields/types/file/views',
     })
   }
+}

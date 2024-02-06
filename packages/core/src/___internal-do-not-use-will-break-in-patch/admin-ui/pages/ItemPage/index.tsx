@@ -567,7 +567,7 @@ function ResetChangesButton (props: { onReset: () => void }) {
   )
 }
 
-const StickySidebar = (props: HTMLAttributes<HTMLDivElement>) => {
+function StickySidebar (props: HTMLAttributes<HTMLDivElement>) {
   const { spacing } = useTheme()
   return (
     <div

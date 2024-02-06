@@ -67,11 +67,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
       ),
     }),
     itemView: graphql.field({
-      args: {
-        id: graphql.arg({
-          type: graphql.ID,
-        }),
-      },
+      args: { id: graphql.arg({ type: graphql.ID, }) },
       resolve: ({ itemView, listKey }, { id }) => ({
         listKey,
         fieldMode: itemView.fieldMode,
@@ -266,9 +262,8 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
       lists.set(listKey, new Map())
     }
     const items = lists.get(listKey)!
-    if (items.has(id)) {
-      return items.get(id)!
-    }
+    if (items.has(id)) return items.get(id)!
+
     const promise = context.db[listKey].findOne({ where: { id } })
     items.set(id, promise)
     return promise
@@ -278,9 +273,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
 function extendContext<T> (cb: (context: KeystoneContext) => T) {
   const cache = new WeakMap<KeystoneContext, T>()
   return (context: KeystoneContext) => {
-    if (cache.has(context)) {
-      return cache.get(context)!
-    }
+    if (cache.has(context)) return cache.get(context)!
     const result = cb(context)
     cache.set(context, result)
     return result
@@ -289,11 +282,11 @@ function extendContext<T> (cb: (context: KeystoneContext) => T) {
 
 function assertInRuntimeContext (
   context: KeystoneContext | { isAdminUIBuildProcess: true },
-  info: GraphQLResolveInfo
+  { parentType, fieldName }: GraphQLResolveInfo
 ): asserts context is KeystoneContext {
   if ('isAdminUIBuildProcess' in context) {
     throw new Error(
-      `${info.parentType}.${info.fieldName} cannot be resolved during the build process`
+      `${parentType}.${fieldName} cannot be resolved during the build process`
     )
   }
 }

@@ -12,7 +12,9 @@ import type {
 } from '../../types'
 import { CellLink, CellContainer } from '../../admin-ui/components'
 
-export const Field = () => null
+export function Field () {
+  return null
+}
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + ''
@@ -29,9 +31,9 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<IdFieldConfig>
-): FieldController<void, string> => {
+): FieldController<void, string> {
   return {
     path: config.path,
     label: config.label,

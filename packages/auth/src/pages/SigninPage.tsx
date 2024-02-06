@@ -24,13 +24,13 @@ type SigninPageProps = {
 
 export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />
 
-export const SigninPage = ({
+export function SigninPage ({
   identityField,
   secretField,
   mutationName,
   successTypename,
   failureTypename,
-}: SigninPageProps) => {
+}: SigninPageProps) {
   const mutation = gql`
     mutation($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
