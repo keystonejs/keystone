@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import { useList } from '@keystone-6/core/admin-ui/context'
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 import { Button } from '@keystone-ui/button'
 import { jsx, Stack } from '@keystone-ui/core'
@@ -67,8 +67,7 @@ function RelationshipFieldPreview ({
   onChange,
   value,
 }: DefaultFieldProps<'relationship'>) {
-  const keystone = useKeystone()
-  const list = keystone.adminMeta.lists[schema.listKey]
+  const list = useList(schema.listKey)
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
   return (

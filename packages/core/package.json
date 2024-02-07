@@ -181,9 +181,9 @@
     "keystone": "bin/cli.js"
   },
   "dependencies": {
-    "@apollo/cache-control-types": "^1.0.2",
-    "@apollo/client": "^3.7.0",
-    "@apollo/server": "^4.9.3",
+    "@apollo/cache-control-types": "^1.0.3",
+    "@apollo/client": "^3.9.2",
+    "@apollo/server": "^4.10.0",
     "@aws-sdk/client-s3": "^3.83.0",
     "@aws-sdk/lib-storage": "^3.83.0",
     "@aws-sdk/s3-request-presigner": "^3.83.0",

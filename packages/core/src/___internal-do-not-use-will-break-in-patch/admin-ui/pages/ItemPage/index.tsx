@@ -75,7 +75,7 @@ function ItemForm ({
   itemGetter: DataGetter<ItemData>
   selectedFields: string
   fieldModes: Record<string, ItemViewFieldModes>
-  fieldPositions: Record<string, 'form' | 'sidebar'>
+  fieldPositions: Record<string, ItemViewFieldPositions>
   showDelete: boolean
   item: ItemData
 }) {

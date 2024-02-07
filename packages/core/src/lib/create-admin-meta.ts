@@ -7,7 +7,7 @@ import type {
   KeystoneContext,
   JSONValue,
   MaybeItemFunction,
-} from '../../types'
+} from '../types'
 import type { FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
