@@ -1852,8 +1852,8 @@ importers:
         specifier: ^18.0.9
         version: 18.2.52
       cloudinary:
-        specifier: ^1.27.1
-        version: 1.41.3
+        specifier: ^2.0.0
+        version: 2.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -11110,12 +11110,11 @@ packages:
       lodash: 4.17.21
     dev: false
 
-  /cloudinary@1.41.3:
-    resolution: {integrity: sha512-4o84y+E7dbif3lMns+p3UW6w6hLHEifbX/7zBJvaih1E9QNMZITENQ14GPYJC4JmhygYXsuuBb9bRA3xWEoOfg==}
-    engines: {node: '>=0.6'}
+  /cloudinary@2.0.0:
+    resolution: {integrity: sha512-NUbufckg2GiuJjB0DVGFBRNLt4jl+2nOA1KeZv1ub8FCduNFvkcdGF1t9JKeoVVM8Po9wYvjICcecMsjQVq1Jw==}
+    engines: {node: '>=9'}
     dependencies:
       cloudinary-core: 2.13.0(lodash@4.17.21)
-      core-js: 3.35.1
       lodash: 4.17.21
       q: 1.5.1
     dev: false
@@ -11340,6 +11339,7 @@ packages:
   /core-js@3.35.1:
     resolution: {integrity: sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==}
     requiresBuild: true
+    dev: true
 
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
