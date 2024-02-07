@@ -115,6 +115,7 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
+  authenticatedList(key: String!): KeystoneAdminUIListMeta
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
@@ -137,6 +138,7 @@ type KeystoneAdminUIListMeta {
   groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isAuthenticated: Boolean!
   isSingleton: Boolean!
 }
 

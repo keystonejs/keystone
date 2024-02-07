@@ -1,74 +1,24 @@
-import { useEffect, useMemo, useState } from 'react'
-import hashString from '@emotion/hash'
+import { useMemo } from 'react'
 import { type AdminMeta, type FieldViews, getGqlNames } from '../../types'
-import { useLazyQuery } from '../apollo'
-import { type StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql'
+import { useQuery } from '../apollo'
+import { type AdminMetaQuery, adminMetaQuery } from '../admin-meta-graphql'
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue'])
 
-const adminMetaLocalStorageKey = 'keystone.adminMeta'
+export function useAdminMeta (fieldViews: FieldViews) {
+  const { data, error } = useQuery<AdminMetaQuery>(adminMetaQuery)
+  const lists = data?.keystone?.adminMeta?.lists
 
-let _mustRenderServerResult = true
+  const result = useMemo(() => {
+    if (!lists) return undefined
+    if (error) return undefined
 
-function useMustRenderServerResult () {
-  let [, forceUpdate] = useState(0)
-  useEffect(() => {
-    _mustRenderServerResult = false
-    forceUpdate(1)
-  }, [])
-
-  if (typeof window === 'undefined') {
-    return true
-  }
-
-  return _mustRenderServerResult
-}
-
-export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
-  const adminMetaFromLocalStorage = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-    const item = localStorage.getItem(adminMetaLocalStorageKey)
-    if (item === null) {
-      return
-    }
-    try {
-      let parsed = JSON.parse(item)
-      if (parsed.hash === adminMetaHash) {
-        return parsed.meta as StaticAdminMetaQuery['keystone']['adminMeta']
-      }
-    } catch (err) {
-      return
-    }
-  }, [adminMetaHash])
-
-  // it seems like Apollo doesn't skip the first fetch when using skip: true so we're using useLazyQuery instead
-  const [fetchStaticAdminMeta, { data, error, called }] = useLazyQuery(staticAdminMetaQuery, {
-    fetchPolicy: 'no-cache', // TODO: something is bugged
-  })
-
-  const shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called
-
-  useEffect(() => {
-    if (shouldFetchAdminMeta) {
-      fetchStaticAdminMeta()
-    }
-  }, [shouldFetchAdminMeta, fetchStaticAdminMeta])
-
-  const runtimeAdminMeta = useMemo(() => {
-    if ((!data || error) && !adminMetaFromLocalStorage) {
-      return undefined
-    }
-    const adminMeta: StaticAdminMetaQuery['keystone']['adminMeta'] = adminMetaFromLocalStorage
-      ? adminMetaFromLocalStorage
-      : data.keystone.adminMeta
-    const runtimeAdminMeta: AdminMeta = {
+    const result: AdminMeta = {
       lists: {},
     }
 
-    for (const list of adminMeta.lists) {
-      runtimeAdminMeta.lists[list.key] = {
+    for (const list of lists) {
+      result.lists[list.key] = {
         ...list,
         groups: [],
         gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }), // TODO: replace with an object
@@ -110,11 +60,17 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
           })
         }
 
-        runtimeAdminMeta.lists[list.key].fields[field.path] = {
+        result.lists[list.key].fields[field.path] = {
           ...field,
+          createView: {
+            fieldMode: field.createView?.fieldMode ?? null,
+          },
           itemView: {
             fieldMode: field.itemView?.fieldMode ?? null,
             fieldPosition: field.itemView?.fieldPosition ?? null,
+          },
+          listView: {
+            fieldMode: field.listView?.fieldMode ?? null,
           },
           graphql: {
             isNonNull: field.isNonNull,
@@ -132,39 +88,22 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
       }
 
       for (const group of list.groups) {
-        runtimeAdminMeta.lists[list.key].groups.push({
+        result.lists[list.key].groups.push({
           label: group.label,
           description: group.description,
-          fields: group.fields.map(field => runtimeAdminMeta.lists[list.key].fields[field.path]),
+          fields: group.fields.map(field => result.lists[list.key].fields[field.path]),
         })
       }
     }
 
-    if (typeof window !== 'undefined' && !adminMetaFromLocalStorage) {
-      localStorage.setItem(
-        adminMetaLocalStorageKey,
-        JSON.stringify({ hash: hashString(JSON.stringify(adminMeta)), meta: adminMeta })
-      )
-    }
+    return result
+  }, [lists, error, fieldViews])
 
-    return runtimeAdminMeta
-  }, [data, error, adminMetaFromLocalStorage, fieldViews])
-
-  const mustRenderServerResult = useMustRenderServerResult()
-
-  if (mustRenderServerResult) {
-    return { state: 'loading' as const }
-  }
-  if (runtimeAdminMeta) {
-    return { state: 'loaded' as const, value: runtimeAdminMeta }
-  }
+  if (result) return { state: 'loaded' as const, value: result }
   if (error) {
     return {
       state: 'error' as const,
       error,
-      refetch: async () => {
-        await fetchStaticAdminMeta()
-      },
     }
   }
   return { state: 'loading' as const }

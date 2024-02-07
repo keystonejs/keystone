@@ -2,8 +2,15 @@
 /** @jsx jsx */
 
 import { Heading, jsx, useTheme } from '@keystone-ui/core'
+import { AlertDialog } from '@keystone-ui/modals'
+import { Button } from '@keystone-ui/button'
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
+import {
+  Fragment,
+  type HTMLAttributes,
+  type ReactNode,
+  useState
+} from 'react'
 import { Container } from '../../../../admin-ui/components/Container'
 import { Link } from '../../../../admin-ui/router'
 import { type ListMeta } from '../../../../types'
@@ -111,5 +118,47 @@ export function BaseToolbar (props: { children: ReactNode }) {
     >
       {props.children}
     </div>
+  )
+}
+
+export function ConfirmButton ({
+  title,
+  message,
+  onClick,
+  children,
+}: {
+  title: string,
+  message: string,
+  onClick: () => void,
+  children?: ReactNode
+}) {
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false)
+
+  return (
+    <Fragment>
+      <Button weight="none" onClick={() => setConfirmModalOpen(true)}>
+        {title}
+      </Button>
+      <AlertDialog
+        actions={{
+          confirm: {
+            action: () => {
+              setConfirmModalOpen(false)
+              onClick()
+            },
+            label: title,
+          },
+          cancel: {
+            action: () => setConfirmModalOpen(false),
+            label: 'Cancel',
+          },
+        }}
+        isOpen={isConfirmModalOpen}
+        title={message}
+        tone="negative"
+      >
+        {children}
+      </AlertDialog>
+    </Fragment>
   )
 }

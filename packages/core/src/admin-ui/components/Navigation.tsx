@@ -3,7 +3,7 @@
 
 import { type AllHTMLAttributes, type ReactNode, Fragment } from 'react'
 import { useRouter } from 'next/router'
-import { Stack, jsx, useTheme, Text } from '@keystone-ui/core'
+import { Stack, jsx, useTheme } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Popover } from '@keystone-ui/popover'
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
@@ -60,7 +60,7 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   )
 }
 
-const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
+function AuthenticatedItemDialog ({ item }: { item?: AuthenticatedItem }) {
   const { apiPath } = useKeystone()
   const { spacing, typography } = useTheme()
   return (
@@ -137,11 +137,9 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
   )
 }
 
-export type NavigationContainerProps = Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
+export function NavigationContainer ({ authenticatedItem, children }: Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
   children: ReactNode
-}
-
-export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
+}) {
   const { spacing } = useTheme()
   return (
     <div
@@ -184,7 +182,7 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
 
 type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] }
 
-export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
+export function ListNavItems ({ lists = [], include = [] }: NavItemsProps) {
   const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists
 
   return (
@@ -196,38 +194,18 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
   )
 }
 
-export const Navigation = () => {
-  const {
-    adminMeta: { lists },
-    adminConfig,
-    authenticatedItem,
-    visibleLists,
-  } = useKeystone()
+export function Navigation () {
+  const { adminMeta, adminConfig } = useKeystone()
+  const lists = Object.values(adminMeta?.lists ?? [])
 
-  if (visibleLists.state === 'loading') return null
-  // This visible lists error is critical and likely to result in a server restart
-  // if it happens, we'll show the error and not render the navigation component/s
-  if (visibleLists.state === 'error') {
-    return (
-      <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
-        {visibleLists.error instanceof Error
-          ? visibleLists.error.message
-          : visibleLists.error[0].message}
-      </Text>
-    )
-  }
-  const renderableLists = Object.keys(lists)
-    .map(key => {
-      if (!visibleLists.lists.has(key)) return null
-      return lists[key]
-    })
-    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+  const authenticatedItem = { id: '123', listKey: 'User', label: 'hello' } // TODO: FIXME
+  const visibleLists = lists // TODO: FIXME
 
   if (adminConfig?.components?.Navigation) {
     return (
       <adminConfig.components.Navigation
         authenticatedItem={authenticatedItem}
-        lists={renderableLists}
+        lists={visibleLists}
       />
     )
   }
@@ -235,7 +213,7 @@ export const Navigation = () => {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={renderableLists} />
+      <ListNavItems lists={visibleLists} />
     </NavigationContainer>
   )
 }

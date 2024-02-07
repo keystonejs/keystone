@@ -1,130 +1,95 @@
 import { useToasts } from '@keystone-ui/toast'
-import { type ComponentProps, useState, useMemo, useRef, useEffect, useCallback } from 'react'
+import { useMemo, useState, useRef, useCallback } from 'react'
 import isDeepEqual from 'fast-deep-equal'
-import { useMutation, gql, type ApolloError } from '../apollo'
-import { useKeystone } from '..'
-import type { ListMeta } from '../../types'
 import { usePreventNavigation } from './usePreventNavigation'
-import type { Fields, Value } from '.'
+import { useMutation, gql } from '../apollo'
+import { type ListMeta } from '../../types'
+import {
+  type ControllerValue,
+  type GraphQLValue,
+  controllerToGraphQLValue,
+  getDefaultControllerValue,
+  useInvalidFields,
+} from '@keystone-6/core/admin-ui/utils'
 
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
-
-type CreateItemHookResult = {
-  state: 'editing' | 'loading' | 'created'
-  shouldPreventNavigation: boolean
-  error?: ApolloError
-  props: ComponentProps<typeof Fields>
-  create: () => Promise<{ id: string, label: string | null } | undefined>
-}
-
-export function useCreateItem (list: ListMeta): CreateItemHookResult {
+export function useCreateItem (list: ListMeta) {
   const toasts = useToasts()
-  const { createViewFieldModes } = useKeystone()
-
-  const [createItem, { loading, error, data: returnedData }] = useMutation(
-    gql`mutation($data: ${list.gqlNames.createInputName}!) {
+  const [createItem, { loading: createLoading, error: createError, data: createData }] = useMutation<{ item: GraphQLValue }>(gql`
+    mutation CreateItem ($data: ${list.gqlNames.createInputName}!) {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
-        label: ${list.labelField}
-    }
-  }`
-  )
-
-  const [value, setValue] = useState(() => {
-    const value: ValueWithoutServerSideErrors = {}
-    Object.keys(list.fields).forEach(fieldPath => {
-      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue }
-    })
-    return value
-  })
-
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>()
-
-    Object.keys(value).forEach(fieldPath => {
-      const val = value[fieldPath].value
-
-      const validateFn = list.fields[fieldPath].controller.validate
-      if (validateFn) {
-        const result = validateFn(val)
-        if (result === false) {
-          invalidFields.add(fieldPath)
-        }
       }
-    })
-    return invalidFields
-  }, [list, value])
-
-  const [forceValidation, setForceValidation] = useState(false)
-
-  const data: Record<string, any> = {}
-  Object.keys(list.fields).forEach(fieldPath => {
-    const { controller } = list.fields[fieldPath]
-    const serialized = controller.serialize(value[fieldPath].value)
-    if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-      Object.assign(data, serialized)
     }
+  `, {
+    update: (cache, { data }) => {
+      if (!data?.item?.id) return
+      cache.evict({ id: cache.identify(data.item) })
+    },
   })
 
-  const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
-  const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
+  const defaultItemState = useMemo(() => getDefaultControllerValue(list.fields), [list.fields])
+  const [itemState, setItemState] = useState(defaultItemState)
+  const invalidFields = useInvalidFields(list.fields, itemState)
+  const forceValidation = invalidFields.size !== 0
+  const changed = !isDeepEqual(itemState, defaultItemState)
 
-  useEffect(() => {
-    shouldPreventNavigationRef.current = shouldPreventNavigation
-  }, [shouldPreventNavigation])
+  const shouldPreventNavigationRef = useRef(changed)
+  const onChange = useCallback((value: ControllerValue) => {
+    shouldPreventNavigationRef.current = true
+    setItemState(value)
+  }, [setItemState])
 
   usePreventNavigation(shouldPreventNavigationRef)
 
+  const label = list.isSingleton ? list.label : createData?.item?.[list.labelField]
+  const loading = createLoading
+  const error = createError
   return {
-    state: loading ? 'loading' : !returnedData?.item ? 'created' : 'editing',
-    shouldPreventNavigation,
+    loading,
     error,
-    props: {
-      fields: list.fields,
+    itemLabel: label,
+    changed,
+    fieldsProps: {
       groups: list.groups,
-      fieldModes:
-        createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
+      fields: list.fields,
       forceValidation,
       invalidFields,
-      value,
-      onChange: useCallback((getNewValue: (value: Value) => Value) => {
-        setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
-      }, []),
+      onChange,
+      value: itemState,
+      mode: 'create' as const
     },
-    async create (): Promise<{ id: string, label: string | null } | undefined> {
-      const newForceValidation = invalidFields.size !== 0
-      setForceValidation(newForceValidation)
+    async create () {
+      if (forceValidation) return
 
-      if (newForceValidation) return undefined
-
-      let outputData: { item: { id: string, label: string | null } }
       try {
-        outputData = await createItem({
+        const { data: createData, errors: createErrors } = await createItem({
           variables: {
-            data,
+            data: controllerToGraphQLValue(list.fields, itemState)
           },
-          update (cache, { data }) {
-            if (typeof data?.item?.id === 'string') {
-              cache.evict({
-                id: 'ROOT_QUERY',
-                fieldName: `${list.gqlNames.itemQueryName}(${JSON.stringify({
-                  where: { id: data.item.id },
-                })})`,
-              })
-            }
-          },
-        }).then(x => x.data)
-      } catch {
-        return undefined
+        })
+
+        shouldPreventNavigationRef.current = false
+        const error = createErrors?.find(x => x.path === undefined || x.path?.length === 1)
+        if (error) {
+          toasts.addToast({
+            title: 'Failed to create item',
+            tone: 'negative',
+            message: error.message,
+          })
+        } else {
+          toasts.addToast({
+            title: 'Created successfully',
+            tone: 'positive',
+          })
+        }
+        return createData?.item
+
+      } catch (e) {
+        console.error(e)
       }
-      shouldPreventNavigationRef.current = false
-      const label = outputData.item.label || outputData.item.id
-      toasts.addToast({
-        title: label,
-        message: 'Created Successfully',
-        tone: 'positive',
-      })
-      return outputData.item
+    },
+    async reset () {
+      setItemState(defaultItemState)
     },
   }
 }

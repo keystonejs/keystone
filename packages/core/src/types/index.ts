@@ -7,3 +7,15 @@ export * from './context'
 export * from './next-fields'
 export { jsonFieldTypePolyfilledForSQLite } from './json-field-type-polyfill-for-sqlite'
 export * from './type-info'
+
+import {
+  type JSONValue,
+} from './utils'
+
+export type GraphQLValue = {
+  [key: string]: JSONValue
+}
+
+export type ControllerValue = {
+  [key: string]: unknown
+}

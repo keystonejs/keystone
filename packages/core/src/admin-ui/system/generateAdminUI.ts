@@ -3,7 +3,6 @@ import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import resolve from 'resolve'
-import { type GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
 import {
   type AdminFileToWrite,
@@ -67,7 +66,7 @@ const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
 export async function generateAdminUI (
   config: __ResolvedKeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  graphQLSchema: unknown, // TODO: remove in breaking change
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,
   isLiveReload: boolean
@@ -114,7 +113,7 @@ export async function generateAdminUI (
     if (err.code !== 'ENOENT') throw err
   }
 
-  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
+  let adminFiles = writeAdminFiles(config, adminMeta, configFileExists)
   for (const { path } of userPagesEntries) {
     const outputFilename = Path.relative(adminConfigDir, path)
     const importPath = Path.relative(

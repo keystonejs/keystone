@@ -1,138 +1,123 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Stack, useTheme, Text } from '@keystone-ui/core'
-import { memo, type ReactNode, useContext, useId, useMemo } from 'react'
+import { memo, type ReactNode, useContext, useId, useCallback } from 'react'
 import { FieldDescription } from '@keystone-ui/fields'
 import { ButtonContext } from '@keystone-ui/button'
-import { type FieldGroupMeta, type FieldMeta } from '../../types'
-import { type Value } from '.'
+import {
+  type FieldGroupMeta,
+  type FieldMeta,
+  type ControllerValue
+} from '../../types'
 
-type RenderFieldProps = {
-  field: FieldMeta
-  value: unknown
-  itemValue: unknown
-  onChange?(value: (value: Value) => Value): void
-  autoFocus?: boolean
-  forceValidation?: boolean
-}
-
-const RenderField = memo(function RenderField ({
+const Field = memo(function Field_ ({
   field,
-  value,
-  itemValue,
   autoFocus,
   forceValidation,
   onChange,
-}: RenderFieldProps) {
-  return (
-    <field.views.Field
-      field={field.controller}
-      onChange={useMemo(() => {
-        if (onChange === undefined) return undefined
-        return value => {
-          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }))
-        }
-      }, [onChange, field.controller.path])}
-      value={value}
-      itemValue={itemValue}
-      autoFocus={autoFocus}
-      forceValidation={forceValidation}
-    />
-  )
+  value,
+  itemValue,
+  mode,
+  position
+}: {
+  field: FieldMeta
+  autoFocus?: boolean
+  forceValidation?: boolean
+  onChange: (value: ControllerValue) => void
+  value: unknown
+  itemValue: ControllerValue
+  mode: 'create' | 'item' | 'list',
+  position: 'form' | 'sidebar'
+}) {
+  const fieldMode = mode === 'create' ? field.createView.fieldMode : mode === 'item' ? field.itemView.fieldMode : field.listView.fieldMode ?? 'edit'
+  const fieldPosition = mode === 'item' ? field.itemView.fieldPosition : position
+  if (fieldMode === 'hidden') return null
+  if (fieldPosition !== position) return null
+
+  const onChange_ = useCallback((value: ControllerValue) => {
+    if (fieldMode !== 'edit') return
+    onChange({
+      ...itemValue,
+      [field.controller.path]: value
+    })
+  }, [itemValue, onChange, field.controller.path])
+
+  return <field.views.Field
+    field={field.controller}
+    autoFocus={autoFocus}
+    forceValidation={forceValidation}
+    onChange={onChange_}
+    value={value}
+    itemValue={itemValue}
+  />
 })
 
-type FieldsProps = {
-  fields: Record<string, FieldMeta>
-  groups?: FieldGroupMeta[]
-  value: Value
-  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
-  fieldPositions?: Record<string, 'form' | 'sidebar'> | null
-  forceValidation: boolean
-  position?: 'form' | 'sidebar'
-  invalidFields: ReadonlySet<string>
-  onChange(value: (value: Value) => Value): void
-}
-
 export function Fields ({
+  groups = [],
   fields,
-  value,
-  fieldModes = null,
-  fieldPositions = null,
   forceValidation,
   invalidFields,
-  position = 'form',
-  groups = [],
   onChange,
-}: FieldsProps) {
-  const renderedFields = Object.fromEntries(
-    Object.keys(fields).map((fieldKey, index) => {
-      const field = fields[fieldKey]
-      const val = value[fieldKey]
-      const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
-      if (fieldMode === 'hidden') return [fieldKey, null]
-      if (fieldPosition !== position) return [fieldKey, null]
-      if (val.kind === 'error') {
-        return [
-          fieldKey,
-          <div key={fieldKey}>
-            {field.label}: <span css={{ color: 'red' }}>{val.errors[0].message}</span>
-          </div>,
-        ]
-      }
-      return [
-        fieldKey,
-        <RenderField
-          key={fieldKey}
-          field={field}
-          value={val.value}
-          itemValue={value}
-          forceValidation={forceValidation && invalidFields.has(fieldKey)}
-          onChange={fieldMode === 'edit' ? onChange : undefined}
-          autoFocus={index === 0}
-        />,
-      ]
-    })
-  )
+  value: itemValue,
+  mode = 'item',
+  position = 'form',
+}: {
+  groups?: FieldGroupMeta[]
+  fields: Record<string, FieldMeta>
+  forceValidation: boolean
+  invalidFields: ReadonlySet<string>
+  onChange: (value: ControllerValue) => void
+  value: ControllerValue
+  mode?: 'create' | 'item' | 'list',
+  position?: 'form' | 'sidebar'
+}) {
   const rendered: ReactNode[] = []
-  const fieldGroups = new Map<string, { rendered: boolean, group: FieldGroupMeta }>()
-  for (const group of groups) {
-    const state = { group, rendered: false }
-    for (const field of group.fields) {
-      fieldGroups.set(field.path, state)
+  let count = 0
+
+  if (groups.length) {
+    for (const group of groups) {
+      rendered.push(<FieldGroup
+        key={rendered.length}
+        label={group.label}
+        description={group.description}>
+        {group.fields.map((field) => {
+          const fieldValue = itemValue[field.path]
+
+          return <Field
+            key={field.path}
+            field={field}
+            autoFocus={count++ === 0}
+            forceValidation={forceValidation && invalidFields.has(field.path)}
+            onChange={onChange}
+            value={fieldValue}
+            itemValue={itemValue}
+            mode={mode}
+            position={position}
+          />
+        })}
+      </FieldGroup>)
     }
-  }
-  for (const field of Object.values(fields)) {
-    const fieldKey = field.path
-    if (fieldGroups.has(fieldKey)) {
-      const groupState = fieldGroups.get(field.path)!
-      if (groupState.rendered) {
-        continue
-      }
-      groupState.rendered = true
-      const { group } = groupState
-      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
-      if (renderedFieldsInGroup.every(field => field === null)) {
-        continue
-      }
-      rendered.push(
-        <FieldGroup label={group.label} description={group.description}>
-          {renderedFieldsInGroup}
-        </FieldGroup>
-      )
-      continue
+  } else {
+    for (const field of Object.values(fields)) {
+      const fieldValue = itemValue[field.path]
+
+      rendered.push(<Field
+        key={field.path}
+        field={field}
+        autoFocus={count++ === 0}
+        forceValidation={forceValidation && invalidFields.has(field.path)}
+        onChange={onChange}
+        value={fieldValue}
+        itemValue={itemValue}
+        mode={mode}
+        position={position}
+      />)
     }
-    if (renderedFields[fieldKey] === null) {
-      continue
-    }
-    rendered.push(renderedFields[fieldKey])
   }
 
-  return (
-    <Stack gap="xlarge">
-      {rendered.length === 0 ? 'There are no fields that you can read or edit' : rendered}
-    </Stack>
-  )
+  return <Stack gap="xlarge">
+    {rendered.every(x => x === null) ? 'There are no fields that you can read or edit' : rendered}
+  </Stack>
 }
 
 function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {

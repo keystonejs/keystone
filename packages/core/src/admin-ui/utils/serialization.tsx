@@ -1,53 +1,60 @@
-import type { GraphQLError } from 'graphql'
-import type { JSONValue, FieldMeta } from '../../types'
-import type { DataGetter } from './dataGetter'
-import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController'
+import {
+  type ControllerValue,
+  type GraphQLValue,
+  type FieldMeta
+} from '../../types'
 
-export type ItemData = { id: string, [key: string]: any }
+export {
+  type ControllerValue,
+  type GraphQLValue
+} from '../../types'
 
-export type DeserializedValue = Record<
-  string,
-  | { kind: 'error', errors: readonly [GraphQLError, ...GraphQLError[]] }
-  | { kind: 'value', value: any }
->
-
-export function deserializeValue (
-  fields: Record<string, FieldMeta>,
-  itemGetter: DataGetter<ItemData>
-) {
-  const value: DeserializedValue = {}
-  Object.keys(fields).forEach(fieldKey => {
-    const field = fields[fieldKey]
-    const itemForField: Record<string, any> = {}
-    const errors = new Set<GraphQLError>()
-    for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
-      const fieldGetter = itemGetter.get(graphqlField)
-      if (fieldGetter.errors) {
-        fieldGetter.errors.forEach(error => {
-          errors.add(error)
-        })
-      }
-      itemForField[graphqlField] = fieldGetter.data
-    }
-    if (errors.size) {
-      value[fieldKey] = { kind: 'error', errors: [...errors] as any }
-    } else {
-      value[fieldKey] = { kind: 'value', value: field.controller.deserialize(itemForField) }
-    }
-  })
-  return value
+export function getDefaultControllerValue (fields: Record<string, FieldMeta>) {
+  const defaults: ControllerValue = {}
+  for (const field of Object.values(fields)) {
+    defaults[field.path] = field.controller.defaultValue
+  }
+  return defaults
 }
 
-export function serializeValueToObjByFieldKey (
+export function getInvalidFields (
   fields: Record<string, FieldMeta>,
-  value: DeserializedValue
-) {
-  const obj: Record<string, Record<string, JSONValue>> = {}
-  Object.keys(fields).map(fieldKey => {
-    const val = value[fieldKey]
-    if (val.kind === 'value') {
-      obj[fieldKey] = fields[fieldKey].controller.serialize(val.value)
+  value: ControllerValue
+): ReadonlySet<string> {
+  const invalidFields = new Set<string>()
+
+  for (const field of Object.values(fields)) {
+    const fieldValue = value[field.path]
+    if (field.controller.validate?.(fieldValue) === false) {
+      invalidFields.add(field.path)
     }
-  })
-  return obj
+  }
+
+  return invalidFields
+}
+
+// TODO: revert to deserializeValue naming?
+export function graphQLValueToController (
+  fields: Record<string, FieldMeta>,
+  value: GraphQLValue
+) {
+  const result: ControllerValue = {}
+  for (const field of Object.values(fields)) {
+    result[field.path] = field.controller.deserialize(value)
+    console.error(field.path, result[field.path], value[field.path])
+  }
+  return result
+}
+
+// TODO: revert to serializeValueToObjByFieldKey naming?
+export function controllerToGraphQLValue (
+  fields: Record<string, FieldMeta>,
+  state: ControllerValue
+) {
+  const result: GraphQLValue = {}
+  for (const field of Object.values(fields)) {
+    if (field.path === 'id') continue // cannot be used
+    result[field.path] = field.controller.serialize(state[field.path])?.[field.path]
+  }
+  return result
 }

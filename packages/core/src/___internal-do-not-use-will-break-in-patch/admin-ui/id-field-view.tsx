@@ -40,8 +40,8 @@ export function controller (
     description: config.description,
     graphqlSelection: config.path,
     defaultValue: undefined,
-    deserialize: () => {},
-    serialize: () => ({}),
+    deserialize: data => data[config.path],
+    serialize: value => ({ [config.path]: value }),
     filter: {
       Filter (props) {
         return (

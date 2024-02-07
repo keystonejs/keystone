@@ -9,9 +9,6 @@ import { Button } from '@keystone-ui/button'
 import { type ListMeta } from '../../../../../types'
 import {
   type ItemData,
-  makeDataGetter,
-  type DataGetter,
-  type Value,
   useInvalidFields,
   serializeValueToObjByFieldKey,
   Fields,

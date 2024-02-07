@@ -2,8 +2,8 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
-import { dbProvider } from './utils'
+import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
+import { testConfig, dbProvider } from './utils'
 
 const runner = setupTestRunner({
   config: {
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
 test(
   'non-sudo context does not bypass isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const res = await context.graphql.raw({ query: staticAdminMetaQuery })
+    const res = await context.graphql.raw({ query: adminMetaQuery })
     expect(res).toMatchInlineSnapshot(`
       {
         "data": null,
@@ -53,7 +53,7 @@ test(
 test(
   'sudo context bypasses isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const data = await context.sudo().graphql.run({ query: staticAdminMetaQuery })
+    const data = await context.sudo().graphql.run({ query: adminMetaQuery })
     expect(data).toEqual({
       keystone: {
         __typename: 'KeystoneMeta',

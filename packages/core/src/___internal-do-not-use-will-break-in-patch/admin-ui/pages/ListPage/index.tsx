@@ -4,10 +4,9 @@
 import { Fragment, type HTMLAttributes, type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@keystone-ui/button'
-import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core'
+import { Box, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core'
 import { CheckboxControl, TextInput } from '@keystone-ui/fields'
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon'
-import { LoadingDots } from '@keystone-ui/loading'
 import { AlertDialog } from '@keystone-ui/modals'
 import { useToasts } from '@keystone-ui/toast'
 
@@ -15,13 +14,9 @@ import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon'
 import { type ListMeta } from '../../../../types'
 import {
   getRootGraphQLFieldsFromFieldController,
-  type DataGetter,
-  type DeepNullable,
-  makeDataGetter,
 } from '../../../../admin-ui/utils'
-import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo'
-import { CellLink } from '../../../../admin-ui/components'
-import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
+import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
 import { useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
@@ -37,47 +32,6 @@ import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 
 type ListPageProps = { listKey: string }
-
-type FetchedFieldMeta = {
-  path: string
-  isOrderable: boolean
-  isFilterable: boolean
-  listView: { fieldMode: 'read' | 'hidden' }
-}
-
-let listMetaGraphqlQuery: TypedDocumentNode<
-  {
-    keystone: {
-      adminMeta: {
-        list: {
-          hideCreate: boolean
-          hideDelete: boolean
-          fields: FetchedFieldMeta[]
-        } | null
-      }
-    }
-  },
-  { listKey: string }
-> = gql`
-  query ($listKey: String!) {
-    keystone {
-      adminMeta {
-        list(key: $listKey) {
-          hideDelete
-          hideCreate
-          fields {
-            path
-            isOrderable
-            isFilterable
-            listView {
-              fieldMode
-            }
-          }
-        }
-      }
-    }
-  }
-`
 
 const storeableQueries = ['sortBy', 'fields']
 
@@ -132,18 +86,16 @@ export const getListPage = (props: ListPageProps) => () => <ListPage {...props} 
 
 function ListPage ({ listKey }: ListPageProps) {
   const list = useList(listKey)
-
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
     const filterableFields = new Set<string>()
-    for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
-      listViewFieldModesByField[field.path] = field.listView.fieldMode
+    for (const field of Object.values(list.fields)) {
+      listViewFieldModesByField[field.path] = field.listView.fieldMode!
       if (field.isOrderable) {
         orderableFields.add(field.path)
       }
@@ -153,7 +105,7 @@ function ListPage ({ listKey }: ListPageProps) {
     }
 
     return { listViewFieldModesByField, orderableFields, filterableFields }
-  }, [metaQuery.data?.keystone.adminMeta.list?.fields])
+  }, [list.fields])
 
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
@@ -175,193 +127,150 @@ function ListPage ({ listKey }: ListPageProps) {
   }
 
   const selectedFields = useSelectedFields(list, listViewFieldModesByField)
-  const {
-    data: newData,
-    error: newError,
-    refetch,
-  } = useQuery(
-    useMemo(() => {
-      const selectedGqlFields = [...selectedFields]
-        .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
-        .join('\n')
+  const itemQuery = useMemo(() => {
+    const selectedGqlFields = [...selectedFields]
+      .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
+      .join('\n')
 
-      // TODO: FIXME: this is bad
-      return gql`
-        query (
-          $where: ${list.gqlNames.whereInputName},
-          $take: Int!,
-          $skip: Int!,
-          $orderBy: [${list.gqlNames.listOrderName}!]
+    // TODO: FIXME: this is bad
+    return gql`
+      query getListItems (
+        $where: ${list.gqlNames.whereInputName},
+        $take: Int!,
+        $skip: Int!,
+        $orderBy: [${list.gqlNames.listOrderName}!]
+      ) {
+        items: ${list.gqlNames.listQueryName}(
+          where: $where,
+          take: $take,
+          skip: $skip,
+          orderBy: $orderBy
         ) {
-          items: ${list.gqlNames.listQueryName}(
-            where: $where,
-            take: $take,
-            skip: $skip,
-            orderBy: $orderBy
-          ) {
-            ${
-              // TODO: maybe namespace all the fields instead of doing this
-              selectedFields.has('id') ? '' : 'id'
-            }
-            ${selectedGqlFields}
+          ${
+            // TODO: maybe namespace all the fields instead of doing this
+            selectedFields.has('id') ? '' : 'id'
           }
-          count: ${list.gqlNames.listQueryCountName}(where: $where)
+          ${selectedGqlFields}
         }
-      `
-    }, [list, selectedFields]),
-    {
-      fetchPolicy: 'cache-and-network',
-      errorPolicy: 'all',
-      skip: !metaQuery.data,
-      variables: {
-        where: { ...filters.where, ...search },
-        take: pageSize,
-        skip: (currentPage - 1) * pageSize,
-        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
-      },
-    }
-  )
-
-  const [dataState, setDataState] = useState({ data: newData, error: newError })
-  if (newData && dataState.data !== newData) {
-    setDataState({ data: newData, error: newError })
-  }
-
-  const { data, error } = dataState
-  const dataGetter = makeDataGetter<
-    DeepNullable<{ count: number, items: { id: string, [key: string]: any }[] }>
-  >(data, error?.graphQLErrors)
-
-  const [selectedItemsState, setSelectedItems] = useState(() => ({
-    itemsFromServer: undefined as any,
-    selectedItems: new Set() as ReadonlySet<string>,
-  }))
-
-  // this removes the selected items which no longer exist when the data changes
-  // because someone goes to another page, changes filters or etc.
-  if (data && data.items && selectedItemsState.itemsFromServer !== data.items) {
-    const newSelectedItems = new Set<string>()
-    data.items.forEach((item: any) => {
-      if (selectedItemsState.selectedItems.has(item.id)) {
-        newSelectedItems.add(item.id)
+        count: ${list.gqlNames.listQueryCountName}(where: $where)
       }
-    })
-    setSelectedItems({ itemsFromServer: data.items, selectedItems: newSelectedItems })
-  }
+    `
+  }, [list, selectedFields])
 
+  const {
+    data,
+    error,
+    refetch,
+  } = useQuery(itemQuery, {
+    variables: {
+      where: { ...filters.where, ...search },
+      take: pageSize,
+      skip: (currentPage - 1) * pageSize,
+      orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
+    },
+  })
+
+  const [selectedItemsState, setSelectedItems] = useState(() => new Set<string>())
   const theme = useTheme()
-  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null
+  const showCreate = !(list.hideCreate ?? true) || null
 
+  if (!data) return null
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
       {error?.graphQLErrors.length || error?.networkError ? (
         <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
       ) : null}
-      {metaQuery.error ? 'Error...' : null}
-      {data && metaQuery.data ? (
-        <Fragment>
-          {list.description !== null && (
-            <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
-          )}
-          <Stack across gap="medium" align="center" marginTop="xlarge">
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                updateSearch(searchString)
-              }}
-            >
-              <Stack across>
-                <TextInput
-                  css={{ borderRadius: '4px 0px 0px 4px' }}
-                  autoFocus
-                  value={searchString}
-                  onChange={e => updateSearchString(e.target.value)}
-                  placeholder={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
-                />
-                <Button css={{ borderRadius: '0px 4px 4px 0px' }} type="submit">
-                  <SearchIcon />
-                </Button>
-              </Stack>
-            </form>
-            {showCreate && <CreateButtonLink list={list} />}
-            {data.count || filters.filters.length ? (
-              <FilterAdd listKey={listKey} filterableFields={filterableFields} />
-            ) : null}
-            {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(filters.filters.length || query.sortBy !== undefined || query.fields || query.search) && (
-              <Button size="small" onClick={resetToDefaults}>
-                Reset to defaults
+      <Fragment>
+        {list.description !== null && (
+          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
+        )}
+        <Stack across gap="medium" align="center" marginTop="xlarge">
+          <form onSubmit={e => {
+            e.preventDefault()
+            updateSearch(searchString)
+          }} >
+            <Stack across>
+              <TextInput
+                css={{ borderRadius: '4px 0px 0px 4px' }}
+                autoFocus
+                value={searchString}
+                onChange={e => updateSearchString(e.target.value)}
+                placeholder={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
+              />
+              <Button css={{ borderRadius: '0px 4px 4px 0px' }} type="submit">
+                <SearchIcon />
               </Button>
-            )}
-          </Stack>
-          {data.count ? (
-            <Fragment>
-              <ResultsSummaryContainer>
-                {(() => {
-                  const selectedItems = selectedItemsState.selectedItems
-                  const selectedItemsCount = selectedItems.size
-                  if (selectedItemsCount) {
-                    return (
-                      <Fragment>
-                        <span css={{ marginRight: theme.spacing.small }}>
-                          Selected {selectedItemsCount} of {data.items.length}
-                        </span>
-                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                          <DeleteManyButton
-                            list={list}
-                            selectedItems={selectedItems}
-                            refetch={refetch}
-                          />
-                        )}
-                      </Fragment>
-                    )
-                  }
+            </Stack>
+          </form>
+          {showCreate && <CreateButtonLink list={list} />}
+          {data.count || filters.filters.length ? (
+            <FilterAdd listKey={listKey} filterableFields={filterableFields} />
+          ) : null}
+          {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+          {Boolean(filters.filters.length || query.sortBy !== undefined || query.fields || query.search) && (
+            <Button size="small" onClick={resetToDefaults}>
+              Reset to defaults
+            </Button>
+          )}
+        </Stack>
+        {data.count ? (
+          <Fragment>
+            <ResultsSummaryContainer>
+              {(() => {
+                const selectedItems = selectedItemsState
+                const selectedItemsCount = selectedItems.size
+                if (selectedItemsCount) {
                   return (
                     <Fragment>
-                      <PaginationLabel
-                        currentPage={currentPage}
-                        pageSize={pageSize}
-                        plural={list.plural}
-                        singular={list.singular}
-                        total={data.count}
-                      />
-                      , sorted by <SortSelection list={list} orderableFields={orderableFields} />
-                      with{' '}
-                      <FieldSelection
+                      <span css={{ marginRight: theme.spacing.small }}>
+                        Selected {selectedItemsCount} of {data.items.length}
+                      </span>
+                      {list.hideDelete !== false ? <DeleteManyButton
                         list={list}
-                        fieldModesByFieldPath={listViewFieldModesByField}
-                      />{' '}
+                        selectedItems={selectedItems}
+                        refetch={refetch}
+                      /> : null}
                     </Fragment>
                   )
-                })()}
-              </ResultsSummaryContainer>
-              <ListTable
-                count={data.count}
-                currentPage={currentPage}
-                itemsGetter={dataGetter.get('items')}
-                listKey={listKey}
-                pageSize={pageSize}
-                selectedFields={selectedFields}
-                sort={sort}
-                selectedItems={selectedItemsState.selectedItems}
-                onSelectedItemsChange={selectedItems => {
-                  setSelectedItems({
-                    itemsFromServer: selectedItemsState.itemsFromServer,
-                    selectedItems,
-                  })
-                }}
-                orderableFields={orderableFields}
-              />
-            </Fragment>
-          ) : (
-            <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
-          )}
-        </Fragment>
-      ) : (
-        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <LoadingDots label="Loading item data" size="large" tone="passive" />
-        </Center>
-      )}
+                }
+                return (
+                  <Fragment>
+                    <PaginationLabel
+                      currentPage={currentPage}
+                      pageSize={pageSize}
+                      plural={list.plural}
+                      singular={list.singular}
+                      total={data.count}
+                    />
+                    , sorted by <SortSelection list={list} orderableFields={orderableFields} />
+                    with{' '}
+                    <FieldSelection
+                      list={list}
+                      fieldModesByFieldPath={listViewFieldModesByField}
+                    />{' '}
+                  </Fragment>
+                )
+              })()}
+            </ResultsSummaryContainer>
+            <ListTable
+              count={data.count}
+              items={data.items}
+              currentPage={currentPage}
+              listKey={listKey}
+              pageSize={pageSize}
+              selectedFields={selectedFields}
+              sort={sort}
+              selectedItems={selectedItemsState}
+              onSelectedItemsChange={selectedItems => {
+                setSelectedItems(new Set(...selectedItems))
+              }}
+              orderableFields={orderableFields}
+            />
+          </Fragment>
+        ) : (
+          <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
+        )}
+      </Fragment>
     </PageContainer>
   )
 }
@@ -554,7 +463,7 @@ function DeleteManyButton ({
 function ListTable ({
   selectedFields,
   listKey,
-  itemsGetter,
+  items,
   count,
   sort,
   currentPage,
@@ -565,7 +474,7 @@ function ListTable ({
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>
   listKey: string
-  itemsGetter: DataGetter<DeepNullable<{ id: string, [key: string]: any }[]>>
+  items: any[] // TODO: FIXME
   count: number
   sort: { field: string, direction: 'ASC' | 'DESC' } | null
   currentPage: number
@@ -601,12 +510,12 @@ function ListTable ({
             >
               <CheckboxControl
                 size="small"
-                checked={selectedItems.size === itemsGetter.data?.length}
+                checked={selectedItems.size === items.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
                   const newSelectedItems = new Set<string>()
-                  if (selectedItems.size !== itemsGetter.data?.length) {
-                    itemsGetter.data?.forEach(item => {
+                  if (selectedItems.size !== items.length) {
+                    items.forEach(item => {
                       if (item !== null && item.id !== null) {
                         newSelectedItems.add(item.id)
                       }
@@ -647,19 +556,8 @@ function ListTable ({
           })}
         </TableHeaderRow>
         <tbody>
-          {(itemsGetter.data ?? []).map((_, index) => {
-            const itemGetter = itemsGetter.get(index)
-            if (itemGetter.data === null || itemGetter.data.id === null) {
-              if (itemGetter.errors) {
-                return (
-                  <tr css={{ color: 'red' }} key={`index:${index}`}>
-                    {itemGetter.errors[0].message}
-                  </tr>
-                )
-              }
-              return null
-            }
-            const itemId = itemGetter.data.id
+          {items.map((item, index) => {
+            const itemId = item.id
             return (
               <tr key={itemId || `index:${index}`}>
                 <TableBodyCell>
@@ -711,25 +609,7 @@ function ListTable ({
                   for (const graphqlField of getRootGraphQLFieldsFromFieldController(
                     field.controller
                   )) {
-                    const fieldGetter = itemGetter.get(graphqlField)
-                    if (fieldGetter.errors) {
-                      const errorMessage = fieldGetter.errors[0].message
-                      return (
-                        <TableBodyCell css={{ color: 'red' }} key={path}>
-                          {i === 0 && Cell.supportsLinkTo ? (
-                            <CellLink
-                              href={`/${list.path}/[id]`}
-                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
-                            >
-                              {errorMessage}
-                            </CellLink>
-                          ) : (
-                            errorMessage
-                          )}
-                        </TableBodyCell>
-                      )
-                    }
-                    itemForField[graphqlField] = fieldGetter.data
+                    itemForField[graphqlField] = item[graphqlField]
                   }
 
                   return (
