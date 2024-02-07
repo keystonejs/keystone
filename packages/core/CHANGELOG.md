@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 5.7.2
+
+### Patch Changes
+
+- [#9003](https://github.com/keystonejs/keystone/pull/9003) [`fe280c5`](https://github.com/keystonejs/keystone/commit/fe280c54aa5c53e3ebe592ee3cfaf8806cdf8d11) Thanks [@dcousens](https://github.com/dcousens)! - Fix `@apollo/client` using invalid data from the cache [#9000](https://github.com/keystonejs/keystone/issues/9000)
+
 ## 5.7.1
 
 ### Patch Changes

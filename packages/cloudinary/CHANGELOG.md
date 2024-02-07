@@ -1,5 +1,11 @@
 # @keystone-6/cloudinary
 
+## 7.0.3
+
+### Patch Changes
+
+- [#9004](https://github.com/keystonejs/keystone/pull/9004) [`47cd7f8`](https://github.com/keystonejs/keystone/commit/47cd7f89d88ee07257be61ba0bb650aaa8ffb1d9) Thanks [@dcousens](https://github.com/dcousens)! - Upgrade `cloudinary` library to version 2
+
 ## 7.0.2
 
 ### Patch Changes
