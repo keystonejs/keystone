@@ -45,7 +45,7 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
 
   // it seems like Apollo doesn't skip the first fetch when using skip: true so we're using useLazyQuery instead
   const [fetchStaticAdminMeta, { data, error, called }] = useLazyQuery(staticAdminMetaQuery, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache', // TODO: something is bugged
   })
 
   const shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called

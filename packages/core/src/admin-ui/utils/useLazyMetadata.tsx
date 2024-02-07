@@ -12,7 +12,7 @@ export function useLazyMetadata (query: DocumentNode): {
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
 } {
-  const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' })
+  const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'no-cache' })
   return useMemo(() => {
     const refetch = async () => {
       await result.refetch()
