@@ -202,10 +202,14 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
                 return cloudinary.url(public_id, {
                   type: 'upload',
                   format,
-                  secure: true,
+                  secure: true, // the default as of version 2
                   url_suffix: prettyName,
                   transformation,
                   cloud_name: cloudinaryConfig.cloudName,
+
+                  // SDK analytics defaults to true in version 2 (ref https://github.com/cloudinary/cloudinary_npm/commit/d2510eb677e553a45bc7e363b35d2c20b4c4b144#diff-9aa82f0ed674e050695a7422b1cd56d43ce47e6953688a16a003bf49c3481622)
+                  //   we default to false for the least surprise, keeping this upgrade as a patch
+                  urlAnalytics: false,
                 })
               },
               ...val,
