@@ -7,7 +7,7 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    environment: release
+    environment: Release
     steps:
       - uses: actions/checkout@main
         with:
