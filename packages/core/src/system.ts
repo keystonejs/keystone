@@ -1,6 +1,6 @@
 import type express from 'express'
 import next from 'next'
-import type { KeystoneConfig, KeystoneContext } from '../types'
+import type { KeystoneConfig, KeystoneContext } from './types'
 import { createAdminUIMiddlewareWithNextApp } from './lib/server/createAdminUIMiddleware'
 
 /** @deprecated */

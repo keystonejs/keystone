@@ -1522,8 +1522,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.1(eslint@8.56.0)(graphql@16.8.1)(typescript@5.0.4)
       '@ts-gql/tag':
-        specifier: ^0.7.0
-        version: 0.7.2(graphql@16.8.1)
+        specifier: ^0.7.3
+        version: 0.7.3(graphql@16.8.1)
       eslint:
         specifier: ^8.0.0
         version: 8.56.0
@@ -8988,8 +8988,8 @@ packages:
       - typescript
     dev: true
 
-  /@ts-gql/tag@0.7.2(graphql@16.8.1):
-    resolution: {integrity: sha512-CwPfFJwRGC6RdxL99is9XUKbHUf6h2N285CrTrQL249b1PntLM08aHr5v7otH73coBpuwN4UobYLY41wiRD2rQ==}
+  /@ts-gql/tag@0.7.3(graphql@16.8.1):
+    resolution: {integrity: sha512-qWBoe5TGXs7l6lrdSfqAhsZP1aW9vEoZvjy5hPsiMwQ7VB8PyK2TFmLCijLmdeKSiY7BSzff20xZZrLIMB+IKQ==}
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || 14 || 15 || 16
     dependencies:
