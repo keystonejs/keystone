@@ -148,13 +148,15 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   )
 }
 
-type InitPageProps = {
+function InitPage ({
+  fieldPaths,
+  listKey,
+  enableWelcome
+}: {
   listKey: string
   fieldPaths: string[]
   enableWelcome: boolean
-}
-
-function InitPage ({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
+}) {
   const { adminMeta } = useKeystone()
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
@@ -271,4 +273,4 @@ function InitPage ({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   )
 }
 
-export const getInitPage = (props: InitPageProps) => () => <InitPage {...props} />
+export const getInitPage = (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />

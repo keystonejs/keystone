@@ -2,9 +2,10 @@ import { list, graphql } from '@keystone-6/core'
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { gql } from '@ts-gql/tag/no-transform'
-import { type Lists, type Context } from '.keystone/types'
 
-export const lists: Lists = {
+import type { Lists } from '.keystone/types'
+
+export const lists = {
   Post: list({
     access: allowAll,
     fields: {
@@ -82,8 +83,7 @@ export const lists: Lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve (item, args, _context) {
-            const context = _context as Context
+          async resolve (item, args, context) {
             const POST_AUTHOR_QUERY = gql`
               query POST_AUTHOR_QUERY($id: ID!) {
                 post(where: { id: $id }) {
@@ -117,8 +117,7 @@ export const lists: Lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve (item, args, _context) {
-              const context = _context as Context
+            async resolve (item, args, context) {
               const LATEST_POST_QUERY = gql`
                 query LATEST_POST_QUERY($id: ID!) {
                   author(where: { id: $id }) {
@@ -143,4 +142,4 @@ export const lists: Lists = {
       }),
     },
   }),
-}
+} satisfies Lists

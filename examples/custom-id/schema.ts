@@ -8,7 +8,7 @@ function makeCustomIdentifier (listKey: string) {
   return `${listKey.toUpperCase()}_${createId()}`
 }
 
-export const lists: Lists = {
+export const lists = {
   Task: list({
     access: allowAll,
     db: {
@@ -48,4 +48,4 @@ export const lists: Lists = {
       },
     },
   }),
-}
+} satisfies Lists

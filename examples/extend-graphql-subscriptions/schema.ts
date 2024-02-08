@@ -7,7 +7,7 @@ import { pubSub } from './websocket'
 
 import type { Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll,
     hooks: {
@@ -47,7 +47,7 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-}
+} satisfies Lists
 
 export const extendGraphqlSchema = (schema: GraphQLSchema) =>
   mergeSchemas({

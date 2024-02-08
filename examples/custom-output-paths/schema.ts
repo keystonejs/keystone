@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, timestamp } from '@keystone-6/core/fields'
 import type { Lists } from './my-types'
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll,
     fields: {
@@ -34,4 +34,4 @@ export const lists: Lists = {
       },
     },
   }),
-}
+} satisfies Lists

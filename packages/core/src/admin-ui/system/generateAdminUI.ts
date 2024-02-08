@@ -6,10 +6,19 @@ import type { GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
 import type { KeystoneConfig, AdminFileToWrite } from '../../types'
 import { writeAdminFiles } from '../templates'
-import { serializePathForImport } from '../utils/serializePathForImport'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
+
+function serializePathForImport (path: string) {
+  // JSON.stringify is important here because it will escape windows style paths(and any thing else that might potentially be in there)
+  return JSON.stringify(
+    path
+      // Next is unhappy about imports that include .ts/tsx in them because TypeScript is unhappy with them because when doing a TypeScript compilation with tsc, the imports won't be written so they would be wrong there
+      .replace(/\.tsx?$/, '')
+      .replace(new RegExp(`\\${Path.sep}`, 'g'), '/')
+  )
+}
 
 function getDoesAdminConfigExist () {
   try {

@@ -12,7 +12,7 @@ import {
 } from '../../../../types'
 import { CellContainer } from '../../../../admin-ui/components'
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
+export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const { fields, typography, spacing } = useTheme()
   return (
     <FieldContainer>

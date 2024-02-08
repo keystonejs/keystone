@@ -27,14 +27,13 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const timestamp =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    validation,
-    defaultValue,
-    ...config
-  }: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
+  isIndexed,
+  validation,
+  defaultValue,
+  ...config
+}: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.DateTime.graphQLType.parseValue(defaultValue)
@@ -46,15 +45,14 @@ export const timestamp =
         )
       }
     }
+
     const parsedDefaultValue =
       typeof defaultValue === 'string'
         ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue
-
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
 
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
-
     const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
@@ -89,8 +87,7 @@ export const timestamp =
         },
       },
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -103,14 +100,12 @@ export const timestamp =
           }),
           resolve (val) {
             if (val === undefined) {
-              if (parsedDefaultValue === undefined && config.db?.updatedAt) {
-                return undefined
-              }
+              if (parsedDefaultValue === undefined && config.db?.updatedAt) return undefined
               if (parsedDefaultValue instanceof Date || parsedDefaultValue === undefined) {
-                val = parsedDefaultValue ?? null
-              } else {
-                val = new Date()
+                return parsedDefaultValue ?? null
               }
+
+              return new Date()
             }
             return val
           },
@@ -118,9 +113,7 @@ export const timestamp =
         update: { arg: graphql.arg({ type: graphql.DateTime }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.DateTime,
-      }),
+      output: graphql.field({ type: graphql.DateTime }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
       getAdminMeta (): TimestampFieldMeta {
@@ -132,3 +125,4 @@ export const timestamp =
       },
     })
   }
+}

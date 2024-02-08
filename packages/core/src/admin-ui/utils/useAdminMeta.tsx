@@ -76,13 +76,14 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
       }
 
       for (const field of list.fields) {
-        expectedExports.forEach(exportName => {
+        for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             )
           }
-        })
+        }
+
         Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
@@ -90,11 +91,11 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
             )
           }
         })
+
         const views = { ...fieldViews[field.viewsIndex] }
         const customViews: Record<string, any> = {}
         if (field.customViewsIndex !== null) {
-          const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViewsIndex]
+          const customViewsSource: FieldViews[number] & Record<string, any> = fieldViews[field.customViewsIndex]
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews)
           Object.keys(customViewsSource).forEach(exportName => {
             if (allowedExportsOnCustomViews.has(exportName)) {

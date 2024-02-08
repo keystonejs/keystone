@@ -67,11 +67,8 @@ function isValidImageExtension (extension: string): extension is ImageExtension 
   return extensionsSet.has(extension)
 }
 
-export const image =
-  <ListTypeInfo extends BaseListTypeInfo>(
-    config: ImageFieldConfig<ListTypeInfo>
-  ): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
@@ -160,3 +157,4 @@ export const image =
       views: '@keystone-6/core/fields/types/image/views',
     })
   }
+}

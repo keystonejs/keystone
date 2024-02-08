@@ -33,7 +33,7 @@ function isSameUserFilter ({ session }: { session?: Session }) {
   }
 }
 
-export const lists: Lists = {
+export const lists = {
   User: list({
     access: {
       operation: hasSession,
@@ -85,4 +85,4 @@ export const lists: Lists = {
       },
     },
   }),
-}
+} satisfies Lists<Session>

@@ -19,12 +19,11 @@ export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const checkbox =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    defaultValue = false,
-    ...config
-  }: CheckboxFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function checkbox <ListTypeInfo extends BaseListTypeInfo>({
+  defaultValue = false,
+  ...config
+}: CheckboxFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type checkbox")
     }
@@ -48,28 +47,23 @@ export const checkbox =
             defaultValue: typeof defaultValue === 'boolean' ? defaultValue : undefined,
           }),
           resolve (val) {
-            if (val === null) {
-              throw userInputError('Checkbox fields cannot be set to null')
-            }
+            if (val === null) throw userInputError('Checkbox fields cannot be set to null')
             return val ?? defaultValue
           },
         },
         update: {
           arg: graphql.arg({ type: graphql.Boolean }),
           resolve (val) {
-            if (val === null) {
-              throw userInputError('Checkbox fields cannot be set to null')
-            }
+            if (val === null) throw userInputError('Checkbox fields cannot be set to null')
             return val
           },
         },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Boolean,
-      }),
+      output: graphql.field({ type: graphql.Boolean, }),
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),
     })
   }
+}

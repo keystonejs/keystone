@@ -19,7 +19,7 @@ import type { Lists } from '.keystone/types'
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists: Lists<Session> = {
+export const lists = {
   Todo: list({
     /*
       SPEC
@@ -248,4 +248,4 @@ export const lists: Lists<Session> = {
       }),
     },
   }),
-}
+} satisfies Lists<Session>

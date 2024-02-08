@@ -59,9 +59,9 @@ jest.mock('node-fetch', () => {
   return jest.fn().mockImplementation(async () => ({} as Response))
 })
 
-jest.mock('os', () => {
+jest.mock('node:os', () => {
   return {
-    ...jest.requireActual('os'),
+    ...jest.requireActual('node:os'),
     platform: () => 'keystone-os',
   }
 })

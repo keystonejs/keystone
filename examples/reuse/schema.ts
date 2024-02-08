@@ -3,6 +3,7 @@ import { list } from '@keystone-6/core'
 import type { FieldHooks } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, text, timestamp } from '@keystone-6/core/fields'
+
 import type { Lists, TypeInfo } from '.keystone/types'
 
 const readOnly = {
@@ -119,7 +120,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists> () {
   }
 }
 
-export const lists: Lists = {
+export const lists = {
   Invoice: list({
     access: allowAll,
     fields: {
@@ -144,4 +145,4 @@ export const lists: Lists = {
       name: text(),
     },
   }),
-}
+} satisfies Lists

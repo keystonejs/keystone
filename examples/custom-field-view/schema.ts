@@ -3,6 +3,8 @@ import { allowAll } from '@keystone-6/core/access'
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
 import { json, select } from '@keystone-6/core/fields'
 
+import type { Lists } from '.keystone/types'
+
 export const lists = {
   Task: list({
     access: allowAll,
@@ -37,4 +39,4 @@ export const lists = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
-}
+} satisfies Lists

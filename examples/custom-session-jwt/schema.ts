@@ -25,7 +25,7 @@ function isAdminOrOnlySameUser ({ session }: { session?: Session }) {
   }
 }
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: {
       operation: {
@@ -61,4 +61,4 @@ export const lists: Lists = {
       admin: checkbox(),
     },
   }),
-}
+} satisfies Lists<Session>

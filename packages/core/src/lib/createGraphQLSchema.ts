@@ -108,9 +108,7 @@ export function createGraphQLSchema (
             endSession: graphql.field({
               type: graphql.nonNull(graphql.Boolean),
               async resolve (rootVal, args, context) {
-                if (context.sessionStrategy) {
-                  await context.sessionStrategy.end({ context })
-                }
+                await context.sessionStrategy?.end({ context })
                 return true
               },
             }),

@@ -30,14 +30,13 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export const integer =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    defaultValue: _defaultValue,
-    validation,
-    ...config
-  }: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function integer <ListTypeInfo extends BaseListTypeInfo>({
+  isIndexed,
+  defaultValue: _defaultValue,
+  validation,
+  ...config
+}: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     const defaultValue = _defaultValue ?? null
     const hasAutoIncDefault =
       typeof defaultValue == 'object' &&
@@ -96,7 +95,6 @@ export const integer =
     assertReadIsNonNullAllowed(meta, config, isNullable)
 
     const mode = isNullable === false ? 'required' : 'optional'
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     return fieldType({
@@ -122,8 +120,7 @@ export const integer =
 
           if (
             (validation?.isRequired || isNullable === false) &&
-            (value === null ||
-              (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
+            (value === null || (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
           ) {
             args.addValidationError(`${fieldLabel} is required`)
           }
@@ -145,8 +142,7 @@ export const integer =
         },
       },
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -166,9 +162,7 @@ export const integer =
         update: { arg: graphql.arg({ type: graphql.Int }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Int,
-      }),
+      output: graphql.field({ type: graphql.Int, }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta () {
@@ -186,3 +180,4 @@ export const integer =
       },
     })
   }
+}

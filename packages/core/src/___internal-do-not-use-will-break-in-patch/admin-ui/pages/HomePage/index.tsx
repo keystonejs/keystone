@@ -13,7 +13,11 @@ import { gql, useQuery } from '../../../../admin-ui/apollo'
 import { useKeystone, useList } from '../../../../admin-ui/context'
 import { Link, type LinkProps } from '../../../../admin-ui/router'
 
-type ListCardProps = {
+function ListCard ({
+  listKey,
+  count,
+  hideCreate
+}: {
   listKey: string
   hideCreate: boolean
   count:
@@ -21,9 +25,7 @@ type ListCardProps = {
     | { type: 'no-access' }
     | { type: 'error', message: string }
     | { type: 'loading' }
-}
-
-const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
+}) {
   const { colors, palette, radii, spacing } = useTheme()
   const list = useList(listKey)
   return (
@@ -72,7 +74,7 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
   )
 }
 
-const CreateButton = (props: LinkProps) => {
+function CreateButton (props: LinkProps) {
   const theme = useTheme()
   return (
     <Link
@@ -102,7 +104,7 @@ const CreateButton = (props: LinkProps) => {
   )
 }
 
-export const HomePage = () => {
+export function HomePage () {
   const {
     adminMeta: { lists },
     visibleLists,

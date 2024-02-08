@@ -131,7 +131,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
-const ListPage = ({ listKey }: ListPageProps) => {
+function ListPage ({ listKey }: ListPageProps) {
   const list = useList(listKey)
 
   const { query, push } = useRouter()

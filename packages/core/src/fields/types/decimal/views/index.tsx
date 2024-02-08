@@ -15,13 +15,13 @@ import {
 import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'
 
-export const Field = ({
+export function Field ({
   field,
   value,
   onChange,
   autoFocus,
   forceValidation,
-}: FieldProps<typeof controller>) => {
+}: FieldProps<typeof controller>) {
   const [hasBlurred, setHasBlurred] = useState(false)
   const inputProps = useFormattedInput<Decimal | null>(
     {
@@ -113,7 +113,6 @@ type Validation = {
 }
 
 type InnerValue = string | Decimal | null
-
 type Value =
   | {
       kind: 'create'

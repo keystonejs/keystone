@@ -4,9 +4,10 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
 import * as nexus from 'nexus'
+
 import type { Lists } from './keystone-types'
 
-export const lists: Lists = {
+export const lists = {
   Post: list({
     access: allowAll,
     fields: {
@@ -30,7 +31,7 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-}
+} satisfies Lists
 
 export function extendGraphqlSchema (baseSchema: GraphQLSchema) {
   const NexusPostQuery = nexus.extendType({

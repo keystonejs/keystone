@@ -1,12 +1,19 @@
-import os from 'os'
+import { platform } from 'node:os'
 import ci from 'ci-info'
 import Conf from 'conf'
 import fetch from 'node-fetch'
 import chalk from 'chalk'
-import { type Configuration, type Telemetry, type Project, type Device, type PackageName } from '../types/telemetry'
+import {
+  type Configuration,
+  type Device,
+  type PackageName,
+  type Project,
+  type Telemetry,
+} from '../types/telemetry'
 import { type DatabaseProvider } from '../types'
-import { telemetryEndpoint as defaultTelemetryEndpoint } from './defaults'
 import type { InitialisedList } from './core/initialise-lists'
+
+const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com'
 
 const packageNames: PackageName[] = [
   '@keystone-6/core',
@@ -273,7 +280,7 @@ async function sendDeviceTelemetryEvent () {
 
   await sendEvent('device', {
     previous: lastSentDate,
-    os: os.platform(),
+    os: platform(),
     node: process.versions.node.split('.')[0],
   })
 

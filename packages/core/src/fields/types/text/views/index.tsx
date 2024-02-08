@@ -19,13 +19,13 @@ import {
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
-export const Field = ({
+export function Field ({
   field,
   value,
   onChange,
   autoFocus,
   forceValidation,
-}: FieldProps<typeof controller>) => {
+}: FieldProps<typeof controller>) {
   const { typography, fields } = useTheme()
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
   const validationMessages = validate(value, field.validation, field.label)
@@ -39,9 +39,15 @@ export const Field = ({
             <TextArea
               id={field.path}
               autoFocus={autoFocus}
-              onChange={event =>
-                onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
-              }
+              onChange={(event) => {
+                onChange({
+                  ...value,
+                  inner: {
+                    kind: 'value',
+                    value: event.target.value
+                  }
+                })
+              }}
               value={value.inner.kind === 'null' ? '' : value.inner.value}
               disabled={value.inner.kind === 'null'}
               onBlur={() => {
@@ -55,9 +61,15 @@ export const Field = ({
             <TextInput
               id={field.path}
               autoFocus={autoFocus}
-              onChange={event =>
-                onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
-              }
+              onChange={(event) => {
+                onChange({
+                  ...value,
+                  inner: {
+                    kind: 'value',
+                    value: event.target.value
+                  }
+                })
+              }}
               value={value.inner.kind === 'null' ? '' : value.inner.value}
               disabled={value.inner.kind === 'null'}
               onBlur={() => {
@@ -178,8 +190,8 @@ function validate (value: TextValue, validation: Validation, fieldLabel: string)
   }
   return messages
 }
-type InnerTextValue = { kind: 'null', prev: string } | { kind: 'value', value: string }
 
+type InnerTextValue = { kind: 'null', prev: string } | { kind: 'value', value: string }
 type TextValue =
   | { kind: 'create', inner: InnerTextValue }
   | { kind: 'update', inner: InnerTextValue, initial: InnerTextValue }

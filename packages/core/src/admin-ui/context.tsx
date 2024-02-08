@@ -83,7 +83,7 @@ function InternalKeystoneProvider ({
   )
 }
 
-export const KeystoneProvider = (props: KeystoneProviderProps) => {
+export function KeystoneProvider (props: KeystoneProviderProps) {
   const apolloClient = useMemo(
     () =>
       new ApolloClient({
