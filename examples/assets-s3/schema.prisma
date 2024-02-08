@@ -16,11 +16,11 @@ model Post {
   id                  String  @id @default(cuid())
   title               String  @default("")
   content             String  @default("")
+  banner_id           String?
   banner_filesize     Int?
-  banner_extension    String?
   banner_width        Int?
   banner_height       Int?
-  banner_id           String?
+  banner_extension    String?
   attachment_filesize Int?
   attachment_filename String?
 }
