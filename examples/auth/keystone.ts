@@ -15,7 +15,7 @@ const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
 // statelessSessions uses cookies for session tracking
 //   these cookies have an expiry, in seconds
 //   we use an expiry of one hour for this example
-const sessionMaxAge = 60 * 60 * 24
+const sessionMaxAge = 60 * 60
 
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({

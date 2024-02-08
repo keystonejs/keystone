@@ -152,7 +152,7 @@ const { withAuth } = createAuth({
 });
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+let sessionMaxAge = 60 * 60 * 24; // 24 hours
 
 const session = statelessSessions({
   maxAge: sessionMaxAge,
@@ -240,7 +240,7 @@ const { withAuth } = createAuth({
 });
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+let sessionMaxAge = 60 * 60 * 24; // 24 hours
 
 const session = statelessSessions({
   maxAge: sessionMaxAge,
@@ -272,7 +272,7 @@ const { withAuth } = createAuth({
 });
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+let sessionMaxAge = 60 * 60 * 24; // 24 hours
 
 const session = statelessSessions({
   maxAge: sessionMaxAge,
