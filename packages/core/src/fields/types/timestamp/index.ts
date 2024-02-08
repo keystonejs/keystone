@@ -87,8 +87,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
         },
       },
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -101,14 +100,12 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
           }),
           resolve (val) {
             if (val === undefined) {
-              if (parsedDefaultValue === undefined && config.db?.updatedAt) {
-                return undefined
-              }
+              if (parsedDefaultValue === undefined && config.db?.updatedAt) return undefined
               if (parsedDefaultValue instanceof Date || parsedDefaultValue === undefined) {
-                val = parsedDefaultValue ?? null
-              } else {
-                val = new Date()
+                return parsedDefaultValue ?? null
               }
+
+              return new Date()
             }
             return val
           },
@@ -116,9 +113,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
         update: { arg: graphql.arg({ type: graphql.DateTime }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.DateTime,
-      }),
+      output: graphql.field({ type: graphql.DateTime }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
       getAdminMeta (): TimestampFieldMeta {
