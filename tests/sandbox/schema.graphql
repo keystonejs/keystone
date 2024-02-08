@@ -26,6 +26,7 @@ type Thing {
   multiselect: [String!]
   json: JSON
   integer: Int
+  decimal: Decimal
   bigInt: BigInt
   float: Float
   image: ImageFieldOutput
@@ -64,6 +65,8 @@ type PasswordState {
 }
 
 scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+scalar Decimal
 
 scalar BigInt
 
@@ -138,6 +141,7 @@ input ThingWhereInput {
   selectOnSideItemViewOnly: StringNullableFilter
   selectSegmentedControl: StringNullableFilter
   integer: IntNullableFilter
+  decimal: DecimalNullableFilter
   bigInt: BigIntNullableFilter
   float: FloatNullableFilter
 }
@@ -164,7 +168,13 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringFilter {
@@ -229,6 +239,7 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: StringNullableFilter
 }
 
@@ -241,6 +252,17 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input DecimalNullableFilter {
+  equals: Decimal
+  in: [Decimal!]
+  notIn: [Decimal!]
+  lt: Decimal
+  lte: Decimal
+  gt: Decimal
+  gte: Decimal
+  not: DecimalNullableFilter
 }
 
 input BigIntNullableFilter {
@@ -276,6 +298,7 @@ input ThingOrderByInput {
   selectOnSideItemViewOnly: OrderDirection
   selectSegmentedControl: OrderDirection
   integer: OrderDirection
+  decimal: OrderDirection
   bigInt: OrderDirection
   float: OrderDirection
 }
@@ -306,6 +329,7 @@ input ThingUpdateInput {
   multiselect: [String!]
   json: JSON
   integer: Int
+  decimal: Decimal
   bigInt: BigInt
   float: Float
   image: ImageFieldInput
@@ -389,6 +413,7 @@ input ThingCreateInput {
   multiselect: [String!]
   json: JSON
   integer: Int
+  decimal: Decimal
   bigInt: BigInt
   float: Float
   image: ImageFieldInput
@@ -730,11 +755,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {
