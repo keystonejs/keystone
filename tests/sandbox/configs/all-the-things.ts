@@ -23,7 +23,7 @@ import { componentBlocks } from '../component-blocks'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
-import { dbConfig, localStorageConfig, trackingFields } from '../utils'
+import { localStorageConfig, trackingFields } from '../utils'
 //  import { type Lists } from '.keystone/types' // TODO
 
 const description =
