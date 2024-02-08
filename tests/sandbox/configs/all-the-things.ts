@@ -1,21 +1,22 @@
 import { list, graphql, config, group } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import {
-  checkbox,
-  password,
-  relationship,
-  text,
-  timestamp,
-  file,
-  virtual,
-  select,
-  json,
-  integer,
-  image,
-  float,
   bigInt,
   calendarDay,
+  checkbox,
+  decimal,
+  file,
+  float,
+  image,
+  integer,
+  json,
   multiselect,
+  password,
+  relationship,
+  select,
+  text,
+  timestamp,
+  virtual,
 } from '@keystone-6/core/fields'
 import { document, structure } from '@keystone-6/fields-document'
 import { componentBlocks } from '../component-blocks'
@@ -23,6 +24,7 @@ import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
 import { dbConfig, localStorageConfig, trackingFields } from '../utils'
+//  import { type Lists } from '.keystone/types' // TODO
 
 const description =
   'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
@@ -152,6 +154,11 @@ export const lists = {
       }),
       json: json({ ui: { description } }),
       integer: integer({ ui: { description } }),
+      decimal: decimal({
+        precision: 32,
+        scale: 8,
+        ui: { description }
+      }),
       bigInt: bigInt({ isIndexed: 'unique', ui: { description } }),
       float: float({ ui: { description } }),
       image: image({ ui: { description }, storage: 'images' }),
@@ -222,7 +229,10 @@ export const lists = {
 }
 
 export default config({
-  db: dbConfig,
+  db: {
+    provider: 'postgresql',
+    url: process.env.DATABASE_URL ?? ''
+  },
   storage: localStorageConfig,
   lists,
 })
