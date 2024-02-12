@@ -1,5 +1,5 @@
+import fs from 'node:fs/promises'
 import execa from 'execa'
-import * as fs from 'fs-extra'
 import {
   ExitError,
   basicKeystoneConfig,

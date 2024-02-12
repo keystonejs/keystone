@@ -1,7 +1,8 @@
-import path from 'path'
-import { createHash } from 'crypto'
-import os from 'os'
-import fs from 'fs-extra'
+import fs from 'node:fs'
+import fsp from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { createHash } from 'node:crypto'
 import fetch from 'node-fetch'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
@@ -15,7 +16,7 @@ import { testConfig } from '../utils'
 
 const fieldPath = path.resolve(__dirname, './', 'types/fixtures')
 
-export const prepareFile = (_filePath: string, kind: 'image' | 'file') => {
+export function prepareFile (_filePath: string, kind: 'image' | 'file') {
   const filePath = path.resolve(fieldPath, kind, 'test-files', _filePath)
   const upload = new Upload()
   upload.resolve({
@@ -44,14 +45,14 @@ const s3DefaultStorage = {
   forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
 } as const
 
-const getRunner = ({
+function getRunner ({
   storage,
   fields,
 }: {
   storage: Record<string, StorageConfig>
   fields: KeystoneConfig['lists'][string]['fields']
-}) =>
-  setupTestRunner({
+}) {
+  return setupTestRunner({
     config: testConfig({
       db: {},
       storage,
@@ -66,31 +67,29 @@ const getRunner = ({
       },
     }),
   })
-
-const getFileHash = async (
-  filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
-) => {
-  let contentFromURL
-
-  if (config.matrixValue === 's3') {
-    contentFromURL = await fetch(filename).then(x => x.buffer())
-  } else {
-    contentFromURL = await fs.readFile(path.join(config.folder, filename))
-  }
-
-  return createHash('sha1').update(contentFromURL).digest('hex')
 }
 
-const checkFile = async (
+function sha1 (x: Buffer) {
+  return createHash('sha1').update(x).digest('hex')
+}
+
+async function getFileHash (
+  url: string,
+  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
+) {
+  if (config.matrixValue === 's3') {
+    return sha1(await fetch(url).then(x => x.buffer()))
+  }
+
+  return sha1(await fsp.readFile(path.join(config.folder, url)))
+}
+
+async function checkFile (
   filename: string,
   config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
-) => {
-  if (config.matrixValue === 's3') {
-    return await fetch(filename).then(x => x.status === 200)
-  } else {
-    return fs.existsSync(path.join(config.folder, filename))
-  }
+) {
+  if (config.matrixValue === 's3') return await fetch(filename).then(x => x.status === 200)
+  return Boolean(await fsp.stat(path.join(config.folder, filename)).catch(() => null))
 }
 
 describe('File - Crud special tests', () => {
