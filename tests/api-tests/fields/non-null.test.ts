@@ -7,7 +7,10 @@ import { text } from '@keystone-6/core/fields'
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../utils'
+import {
+  dbProvider,
+  testConfig
+} from '../utils'
 
 type TextFieldConfig = Parameters<typeof text>[0]
 
@@ -19,10 +22,10 @@ testModules
   .map(require)
   .filter(
     ({ unSupportedAdapterList = [], name }) =>
-      name !== 'ID' && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+      name !== 'ID' && !unSupportedAdapterList.includes(dbProvider)
   )
   .forEach(mod => {
-    (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
+    (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
       describe(`${mod.name} - ${matrixValue} - graphql.isNonNull`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {

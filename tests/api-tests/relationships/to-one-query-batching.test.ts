@@ -3,7 +3,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner'
-import { testConfig, dbProvider, dbName } from '../utils'
+import { testConfig, dbProvider } from '../utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -83,6 +83,7 @@ test(
         [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
         [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
       ])
+
       const expectedSql = {
         sqlite: [
           'SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ? ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ?',
@@ -93,8 +94,8 @@ test(
           `SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE ("public"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "public"."User"."name"::text LIKE $11) OFFSET $12`,
         ],
         mysql: [
-          `SELECT \`${dbName}\`.\`Post\`.\`id\`, \`${dbName}\`.\`Post\`.\`title\`, \`${dbName}\`.\`Post\`.\`author\` FROM \`${dbName}\`.\`Post\` WHERE \`${dbName}\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`${dbName}\`.\`Post\`.\`title\` ASC`,
-          `SELECT \`${dbName}\`.\`User\`.\`id\`, \`${dbName}\`.\`User\`.\`name\` FROM \`${dbName}\`.\`User\` WHERE (\`${dbName}\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`${dbName}\`.\`User\`.\`name\` LIKE ?)`,
+          `SELECT \`test_db\`.\`Post\`.\`id\`, \`test_db\`.\`Post\`.\`title\`, \`test_db\`.\`Post\`.\`author\` FROM \`test_db\`.\`Post\` WHERE \`test_db\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`test_db\`.\`Post\`.\`title\` ASC`,
+          `SELECT \`test_db\`.\`User\`.\`id\`, \`test_db\`.\`User\`.\`name\` FROM \`test_db\`.\`User\` WHERE (\`test_db\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`test_db\`.\`User\`.\`name\` LIKE ?)`,
         ],
       }[dbProvider]
       const sql = logs.map(([, query]) => query)
