@@ -1,5 +1,5 @@
+import { type BaseItem, type KeystoneContext } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import type { BaseItem } from '@keystone-6/core/types'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
 
 import type { AuthGqlNames, InitFirstItemConfig } from '../types'
@@ -42,7 +42,7 @@ export function getInitFirstItemSchema ({
       [gqlNames.createInitialItem]: graphql.field({
         type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
-        async resolve (rootVal, { data }, context) {
+        async resolve (rootVal, { data }, context: KeystoneContext) {
           if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context')
           }
@@ -63,7 +63,13 @@ export function getInitFirstItemSchema ({
           const sessionToken = (await context.sessionStrategy.start({
             data: { listKey, itemId: item.id.toString() },
             context,
-          })) as string
+          }))
+
+          // return Failure if sessionStrategy.start() is incompatible
+          if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
+            throw new Error('Failed to start session')
+          }
+
           return { item, sessionToken }
         },
       }),
