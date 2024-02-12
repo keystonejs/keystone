@@ -97,6 +97,23 @@ function injectNewDefaults (prismaClient: any, lists: Record<string, Initialised
   return prismaClient
 }
 
+function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
+  if (url.startsWith('file:')) {
+    const parsed = new URL(url)
+    if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
+      // https://github.com/prisma/prisma/issues/9562
+      // https://github.com/prisma/prisma/issues/10403
+      // https://github.com/prisma/prisma/issues/11789
+      parsed.searchParams.set('connection_limit', '1')
+
+      const [uri] = url.split('?')
+      return `${uri}?${parsed.search}`
+    }
+  }
+
+  return url
+}
+
 export function createSystem (config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
@@ -108,7 +125,11 @@ export function createSystem (config: KeystoneConfig) {
     adminMeta,
     getKeystone: (prismaModule: PrismaModule) => {
       const prePrismaClient = new prismaModule.PrismaClient({
-        datasources: { [config.db.provider]: { url: config.db.url } },
+        datasources: {
+          [config.db.provider]: {
+            url: formatUrl(config.db.provider, config.db.url)
+          }
+        },
         log:
           config.db.enableLogging === true
             ? ['query']
