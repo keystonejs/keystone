@@ -6,25 +6,6 @@ export const userInputError = (msg: string) =>
 export const accessDeniedError = (msg: string) =>
   new GraphQLError(`Access denied: ${msg}`, { extensions: { code: 'KS_ACCESS_DENIED' } })
 
-export const prismaError = (err: Error) => {
-  if ((err as any).code === undefined) {
-    return new GraphQLError(`Prisma error`, {
-      extensions: {
-        code: 'KS_PRISMA_ERROR',
-        debug: {
-          message: err.message,
-        },
-      },
-    })
-  }
-  return new GraphQLError(`Prisma error: ${err.message.split('\n').slice(-1)[0].trim()}`, {
-    extensions: {
-      code: 'KS_PRISMA_ERROR',
-      prisma: { ...err },
-    },
-  })
-}
-
 export const validationFailureError = (messages: string[]) => {
   const s = messages.map(m => `  - ${m}`).join('\n')
   return new GraphQLError(`You provided invalid data for this operation.\n${s}`, {

@@ -2,7 +2,6 @@ import type { BaseItem, KeystoneContext } from '../../../types'
 import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors'
 import { mapUniqueWhereToWhere } from '../queries/resolvers'
 import type { InitialisedList } from '../initialise-lists'
-import { runWithPrisma } from '../utils'
 import { cannotForItem, cannotForItemFields } from '../access-control'
 import {
   type InputFilter,
@@ -30,7 +29,7 @@ async function getFilteredItem (
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
   }
 
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where }))
+  const item = await context.prisma[list.listKey].findFirst({ where })
   if (item !== null) return item
 
   throw accessDeniedError(cannotForItem(operation, list))

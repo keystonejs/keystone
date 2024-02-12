@@ -1,11 +1,8 @@
-import { type Limit } from 'p-limit'
 import pluralize from 'pluralize'
 import { type PrismaModule } from '../../artifacts'
 import type { BaseItem, KeystoneConfig, KeystoneContext } from '../../types'
 import { getGqlNames } from '../../types/utils'
 import { humanize } from '../utils'
-import { prismaError } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
 import type { PrismaFilter, UniquePrismaFilter } from './where-inputs'
 
 declare const prisma: unique symbol
@@ -75,20 +72,6 @@ export type PrismaClient = {
   $connect(): Promise<void>
   $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>
 } & Record<string, PrismaModel>
-
-// Run prisma operations as part of a resolver
-export async function runWithPrisma<T> (
-  context: KeystoneContext,
-  { prisma: { listKey } }: InitialisedList,
-  fn: (model: PrismaModel) => Promise<T>
-) {
-  const model = context.prisma[listKey]
-  try {
-    return await fn(model)
-  } catch (err: any) {
-    throw prismaError(err)
-  }
-}
 
 // this is wrong
 // all the things should be generic over the id type
@@ -165,26 +148,6 @@ const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
 export function getDBFieldKeyForFieldOnMultiField (fieldKey: string, subField: string) {
   return `${fieldKey}_${subField}`
-}
-
-// this whole thing exists because Prisma doesn't handle doing multiple writes on SQLite well
-// https://github.com/prisma/prisma/issues/2955
-// note this is keyed by the prisma client instance, not the context
-// because even across requests, we want to apply the limit on SQLite
-const writeLimits = new WeakMap<object, Limit>()
-
-export function setWriteLimit (prismaClient: object, limit: Limit) {
-  writeLimits.set(prismaClient, limit)
-}
-
-// this accepts the context instead of the prisma client because the prisma client on context is `any`
-// so by accepting the context, it'll be less likely the wrong thing will be passed.
-export function getWriteLimit (context: KeystoneContext) {
-  const limit = writeLimits.get(context.prisma)
-  if (limit === undefined) {
-    throw new Error('unexpected write limit not set for prisma client')
-  }
-  return limit
 }
 
 const prismaNamespaces = new WeakMap<object, PrismaModule['Prisma']>()

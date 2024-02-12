@@ -5,8 +5,6 @@ import {
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
   type IdType,
-  runWithPrisma,
-  getWriteLimit,
   getPrismaNamespace,
 } from '../utils'
 import { type InputFilter, resolveUniqueWhereInput, type UniqueInputFilter } from '../where-inputs'
@@ -46,13 +44,9 @@ async function createSingle (
     undefined
   )
 
-  const writeLimit = getWriteLimit(context)
-
-  const item = await writeLimit(() =>
-    runWithPrisma(context, list, model =>
-      model.create({ data: list.isSingleton ? { ...data, id: 1 } : data })
-    )
-  )
+  const item = await context.prisma[list.listKey].create({
+    data: list.isSingleton ? { ...data, id: 1 } : data
+  })
 
   return { item, afterOperation }
 }
@@ -143,11 +137,10 @@ async function updateSingle (
     item
   )
 
-  const writeLimit = getWriteLimit(context)
-
-  const updatedItem = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))
-  )
+  const updatedItem = await context.prisma[list.listKey].update({
+    where: { id: item.id },
+    data,
+  })
 
   // after operation
   await afterOperation(updatedItem)
