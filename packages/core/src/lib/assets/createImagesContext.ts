@@ -32,8 +32,8 @@ export function createImagesContext (config: KeystoneConfig): ImagesContext {
       imageAssetsAPIs.set(
         storageKey,
         storageConfig.kind === 'local'
-          ? localImageAssetsAPI(storageConfig)
-          : s3ImageAssetsAPI(storageConfig)
+          ? localImageAssetsAPI(storageConfig,storageKey)
+          : s3ImageAssetsAPI(storageConfig,storageKey)
       )
     }
   }

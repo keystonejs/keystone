@@ -28,8 +28,8 @@ export function createFilesContext (config: KeystoneConfig): FilesContext {
       adaptersMap.set(
         storageKey,
         storageConfig.kind === 'local'
-          ? localFileAssetsAPI(storageConfig)
-          : s3FileAssetsAPI(storageConfig)
+          ? localFileAssetsAPI(storageConfig,storageKey)
+          : s3FileAssetsAPI(storageConfig,storageKey)
       )
     }
   }

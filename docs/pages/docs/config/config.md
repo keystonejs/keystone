@@ -482,7 +482,7 @@ export default config({
       region,
       accessKeyId,
       secretAccessKey,
-      proxied: { baseUrl: '/images-proxy' },
+      serverRoute: { path: '/images-proxy' },
       signed: { expiry: 5000 }
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,

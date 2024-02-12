@@ -7,11 +7,17 @@ import { StorageConfig } from '../../types'
 import { FileAdapter, ImageAdapter } from './types'
 
 export function localImageAssetsAPI (
-  storageConfig: StorageConfig & { kind: 'local' }
+  storageConfig: StorageConfig & { kind: 'local' }, storageKey: string=''
 ): ImageAdapter {
   return {
     async url (id, extension) {
-      return storageConfig.generateUrl(`/${id}.${extension}`)
+      const generateUrl = storageConfig.generateUrl ?? (url=>url);
+
+      if(storageConfig.serverRoute) {
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${id}.${extension}`);
+      }
+
+      return generateUrl(`/${id}.${extension}`)
     },
     async upload (buffer, id, extension) {
       await fsp.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer)
@@ -27,13 +33,23 @@ export function localImageAssetsAPI (
         }
       }
     },
+    async download(filename, stream, headers) {
+      throw new Error("Not implemented yet")
+    }
   }
 }
 
-export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
+export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }, storageKey: string=''): FileAdapter {
   return {
     async url (filename) {
-      return storageConfig.generateUrl(`/${filename}`)
+      const generateUrl = storageConfig.generateUrl ?? (url=>url);
+
+
+      if(storageConfig.serverRoute) {
+        return generateUrl(`${storageConfig.serverRoute.path}/${storageKey}/${filename}`);
+      }
+
+      return generateUrl(`/${filename}`)
     },
     async upload (stream, filename) {
       const writeStream = fs.createWriteStream(path.join(storageConfig.storagePath, filename))
@@ -67,5 +83,8 @@ export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'loca
         }
       }
     },
+    async download(filename, stream, headers) {
+      throw new Error("Not implemented yet")
+    }
   }
 }

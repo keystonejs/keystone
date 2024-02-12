@@ -15,7 +15,7 @@ The `storage` object defines how and where the assets are stored and accessed by
 - The `type` of `field` the storage is being used for – `file` or `image`
 - A function to generate the URL (`generateUrl`) Keystone returns in the GraphQL API – pointing to the location or the storage where the assets can be accessed
 - The actual location where Keystone stores the assets – either a local `path` or the details of an `s3` bucket
-- The location Keystone will serve the assets from – either a `serverRoute` for `local` or a `proxied` connection for `s3`. Both of these options add a route to the Keystone backend which the files can be accessed from
+- The location Keystone will serve the assets from – the `serverRoute` for `local` or `s3`. It will add a route to the Keystone backend which the files can be accessed from. Please note that `generateUrl` should be carefully defined when using proxied mode.  
 
 ## Defining `storage` in Keystone config
 
