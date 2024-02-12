@@ -70,13 +70,13 @@ export async function createExpressServer (
     const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck
 
     expressServer.use(healthCheck.path ?? defaultHealthCheckPath, (req, res) => {
-      const data = (typeof healthCheck.data === 'function'
-        ? healthCheck.data()
-        : healthCheck.data) || {
+      if (typeof healthCheck.data === 'function') return res.json(healthCheck.data())
+      if (healthCheck.data) return res.json(healthCheck.data)
+
+      res.json({
         status: 'pass',
         timestamp: Date.now(),
-      }
-      res.json(data)
+      })
     })
   }
 
@@ -124,17 +124,17 @@ export async function createExpressServer (
             playgroundOption
               ? ApolloServerPluginLandingPageLocalDefault()
               : ApolloServerPluginLandingPageDisabled(),
-            ...(apolloConfig?.plugins || []),
+            ...(apolloConfig?.plugins ?? []),
           ],
   } as ApolloServerOptions<KeystoneContext>
 
   const apolloServer = new ApolloServer({ ...serverConfig })
 
-  const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE
+  const maxFileSize = config.server?.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
   expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(
-    config.graphql?.path || '/api/graphql',
+    config.graphql?.path ?? '/api/graphql',
     json(config.graphql?.bodyParser),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
