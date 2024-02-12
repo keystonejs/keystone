@@ -1,5 +1,6 @@
-import path from 'path'
-import fs from 'fs-extra'
+import path from 'node:path'
+import fs from 'node:fs'
+import fsp from 'node:fs/promises'
 import execa from 'execa'
 import { ExitError } from './utils'
 import {
@@ -83,7 +84,7 @@ async function getGeneratedMigration (
   const migrationName = migrations[0].migration_name
   expect(migrationName).toMatch(new RegExp(`\\d+_${expectedName}$`))
   const migrationFilepath = `${cwd}/migrations/${migrationName}/migration.sql`
-  const migration = await fs.readFile(migrationFilepath, 'utf8')
+  const migration = await fsp.readFile(migrationFilepath, 'utf8')
   return { migration, migrationFilepath, migrationName }
 }
 
@@ -158,7 +159,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]]
     const recording = recordConsole()
@@ -199,7 +200,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     })
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
@@ -261,10 +262,7 @@ describe('useMigrations: false', () => {
   })
 })
 
-const basicWithMigrations = fs.readFileSync(
-  `${__dirname}/fixtures/one-field-with-migrations.ts`,
-  'utf8'
-)
+const basicWithMigrations = fs.readFileSync(`${__dirname}/fixtures/one-field-with-migrations.ts`, 'utf8')
 
 async function setupInitialProjectWithMigrations () {
   const tmp = await testdir({
@@ -327,10 +325,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': await fs.readFile(
-        `${__dirname}/fixtures/two-fields-with-migrations.ts`,
-        'utf8'
-      ),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [
       ['Name of migration', 'add-is-complete'],
@@ -395,10 +390,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': await fs.readFile(
-        `${__dirname}/fixtures/no-fields-with-migrations.ts`,
-        'utf8'
-      ),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [
       ['Name of migration', 'remove all fields except id'],
@@ -471,8 +463,8 @@ describe('useMigrations: true', () => {
     // we copy the database, but the previous *_init.sql migration will be lost
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
-      'app.db': await fs.readFile(`${prevCwd}/app.db`),
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
+      'app.db': await fsp.readFile(`${prevCwd}/app.db`),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [
       ['Do you want to continue? All data will be lost', true],
@@ -543,18 +535,18 @@ describe('useMigrations: true', () => {
   })
   test("doesn't drop when prompt denied", async () => {
     const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations()
-    const dbBuffer = await fs.readFile(`${prevCwd}/app.db`)
+    const dbBuffer = await fsp.readFile(`${prevCwd}/app.db`)
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': dbBuffer,
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [['Do you want to continue? All data will be lost', false]]
     const recording = recordConsole()
 
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0))
 
-    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer)
+    expect(await fsp.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer)
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -585,7 +577,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...dbFiles,
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`),
+      'keystone.js': await fsp.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`, 'utf8'),
     })
     mockPromptResponseEntries = [
       ['Name of migration', 'add-is-complete'],
@@ -607,12 +599,10 @@ describe('useMigrations: true', () => {
       "
     `)
 
-    expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbFiles['app.db'])
+    expect(await fsp.readFile(`${prevCwd}/app.db`)).toEqual(dbFiles['app.db'])
 
-    const migrationName = (await fs.readdir(`${tmp}/migrations`)).find(x =>
-      x.endsWith('_add_is_complete')
-    )
-    expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
+    const migrationName = (await fsp.readdir(`${tmp}/migrations`, 'utf8')).find(x => x.endsWith('_add_is_complete'))
+    expect(await fsp.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
       .toMatchInlineSnapshot(`
       "-- RedefineTables
       PRAGMA foreign_keys=OFF;

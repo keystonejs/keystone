@@ -1,4 +1,4 @@
-import fs from 'fs/promises'
+import fs from 'node:fs/promises'
 import type { DMMF } from '@prisma/generator-helper'
 import { getDMMF } from '@prisma/internals'
 

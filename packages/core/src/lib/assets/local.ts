@@ -1,9 +1,10 @@
-import path from 'path'
-import { pipeline } from 'stream'
-import fs from 'fs-extra'
+import fsp from 'node:fs/promises'
+import fs from 'node:fs'
+import path from 'node:path'
+import { pipeline } from 'node:stream'
 
-import { type StorageConfig } from '../../types'
-import { type FileAdapter, type ImageAdapter } from './types'
+import { StorageConfig } from '../../types'
+import { FileAdapter, ImageAdapter } from './types'
 
 export function localImageAssetsAPI (
   storageConfig: StorageConfig & { kind: 'local' }
@@ -13,11 +14,11 @@ export function localImageAssetsAPI (
       return storageConfig.generateUrl(`/${id}.${extension}`)
     },
     async upload (buffer, id, extension) {
-      await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer)
+      await fsp.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer)
     },
     async delete (id, extension) {
       try {
-        await fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`))
+        await fsp.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`))
       } catch (e) {
         const error = e as NodeJS.ErrnoException
         // If the file doesn't exist, we don't care
@@ -48,16 +49,16 @@ export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'loca
 
       try {
         await pipeStreams
-        const { size: filesize } = await fs.stat(path.join(storageConfig.storagePath, filename))
+        const { size: filesize } = await fsp.stat(path.join(storageConfig.storagePath, filename))
         return { filesize, filename }
       } catch (e) {
-        await fs.remove(path.join(storageConfig.storagePath, filename))
+        await fsp.rm(path.join(storageConfig.storagePath, filename))
         throw e
       }
     },
     async delete (filename) {
       try {
-        await fs.unlink(path.join(storageConfig.storagePath, filename))
+        await fsp.unlink(path.join(storageConfig.storagePath, filename))
       } catch (e) {
         const error = e as NodeJS.ErrnoException
         // If the file doesn't exist, we don't care

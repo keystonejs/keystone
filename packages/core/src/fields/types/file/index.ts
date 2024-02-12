@@ -8,12 +8,13 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 
-export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  storage: string
-  db?: {
-    extendPrismaSchema?: (field: string) => string
+export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
+    storage: string
+    db?: {
+      extendPrismaSchema?: (field: string) => string
+    }
   }
-} & CommonFieldConfig<ListTypeInfo>
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -52,11 +53,12 @@ async function inputResolver (
 
 export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
+    const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
       )
     }
 
@@ -66,11 +68,11 @@ export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldCo
 
     return fieldType({
       kind: 'multi',
+      extendPrismaSchema: config.db?.extendPrismaSchema,
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
-      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: storage.preserve
@@ -80,15 +82,15 @@ export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldCo
             async beforeOperation (args) {
               await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
-                const filenameKey = `${meta.fieldKey}_filename`
+                const filenameKey = `${fieldKey}_filename`
                 const filename = args.item[filenameKey]
 
                 // This will occur on an update where a file already existed but has been
                 // changed, or on a delete, where there is no longer an item
                 if (
                   (args.operation === 'delete' ||
-                    typeof args.resolvedData[meta.fieldKey].filename === 'string' ||
-                    args.resolvedData[meta.fieldKey].filename === null) &&
+                    typeof args.resolvedData[fieldKey].filename === 'string' ||
+                    args.resolvedData[fieldKey].filename === null) &&
                   typeof filename === 'string'
                 ) {
                   await args.context.files(config.storage).deleteAtSource(filename)

@@ -9,7 +9,6 @@ import chalk from 'chalk'
 
 import { MigrateEngine } from '@prisma/migrate'
 import { uriToCredentials } from '@prisma/internals'
-import type { KeystoneConfig } from '@keystone-6/core/types'
 import { cli } from '@keystone-6/core/scripts/cli'
 
 // these tests spawn processes and it's all pretty slow
@@ -72,7 +71,6 @@ type Fixture = {
     | string
     | Buffer
     | { kind: 'symlink', path: string }
-    | { kind: 'config', config: KeystoneConfig }
 }
 
 export async function runCommand (cwd: string, args: string | string[]) {
@@ -104,17 +102,8 @@ export async function testdir (dir: Fixture): Promise<string> {
       const fullPath = path.join(temp, filename)
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
         await fse.outputFile(fullPath, output)
-      } else if (output.kind === 'config') {
-        // WARNING: this is *Sync to prevent conflicts
-        fse.outputFileSync(
-          fullPath,
-          `Object.defineProperty(exports, '__esModule', { value: true });exports.default = globalThis.keystoneConfig;`
-        )
-        // @ts-expect-error
-        globalThis.keystoneConfig = output.config
-        require(fullPath)
-        // @ts-expect-error
-        delete globalThis.keystoneConfig
+
+      // symlink
       } else {
         await fsp.mkdir(path.dirname(fullPath), { recursive: true })
         const targetPath = path.resolve(temp, output.path)

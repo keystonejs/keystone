@@ -1,7 +1,7 @@
-import path from 'path'
-import { createRequire } from 'module'
-import { printSchema, type GraphQLSchema } from 'graphql'
-import * as fs from 'fs-extra'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { createRequire } from 'node:module'
+import { printSchema, GraphQLSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import type { KeystoneConfig } from './types'
 import { printGeneratedTypes } from './lib/schema-type-printer'
@@ -165,10 +165,8 @@ export async function generatePrismaAndGraphQLSchemas (
   const paths = getSystemPaths(cwd, config)
   const artifacts = await getCommittedArtifacts(config, graphQLSchema)
 
-  await Promise.all([
-    fs.writeFile(paths.schema.graphql, artifacts.graphql),
-    fs.writeFile(paths.schema.prisma, artifacts.prisma),
-  ])
+  await fs.writeFile(paths.schema.graphql, artifacts.graphql)
+  await fs.writeFile(paths.schema.prisma, artifacts.prisma)
   return artifacts
 }
 
@@ -179,10 +177,10 @@ export async function generateTypescriptTypes (
 ) {
   const lists = initialiseLists(config)
   const paths = getSystemPaths(cwd, config)
-  await fs.outputFile(
-    paths.schema.types,
-    printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
-  )
+  const schema = printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
+
+  await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
+  await fs.writeFile(paths.schema.types, schema)
 }
 
 export async function generateTypescriptTypesAndPrisma (
@@ -230,5 +228,9 @@ export type PrismaModule = {
   PrismaClient: {
     new (args: unknown): any
   }
-  Prisma: { DbNull: unknown, JsonNull: unknown, [key: string]: unknown }
+  Prisma: {
+    DbNull: unknown
+    JsonNull: unknown
+    [key: string]: unknown
+  }
 }

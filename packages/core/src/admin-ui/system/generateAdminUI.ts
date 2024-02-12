@@ -1,12 +1,16 @@
-import Path from 'path'
-import { promisify } from 'util'
-import fs from 'fs-extra'
+import Path from 'node:path'
+import { promisify } from 'node:util'
+import fs from 'node:fs/promises'
+import fse from 'fs-extra'
 import resolve from 'resolve'
-import type { GraphQLSchema } from 'graphql'
+import { type GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
-import type { KeystoneConfig, AdminFileToWrite } from '../../types'
+import {
+  type AdminFileToWrite,
+  type KeystoneConfig
+} from '../../types'
 import { writeAdminFiles } from '../templates'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
@@ -41,7 +45,7 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
         `An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`
       )
     }
-    await fs.ensureDir(Path.dirname(outputFilename))
+    await fse.ensureDir(Path.dirname(outputFilename))
     // TODO: should we use copyFile or copy?
     await fs.copyFile(file.inputPath, outputFilename)
   }
@@ -54,20 +58,20 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
     }
   }
   if (file.mode === 'write' && content !== file.src) {
-    await fs.outputFile(outputFilename, file.src)
+    await fse.outputFile(outputFilename, file.src)
   }
   return Path.normalize(outputFilename)
 }
 
 const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
-export const generateAdminUI = async (
+export async function generateAdminUI (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,
   isLiveReload: boolean
-) => {
+) {
   // when we're not doing a live reload, we want to clear everything out except the .next directory (not the .next directory because it has caches)
   // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
   if (!isLiveReload) {
@@ -81,7 +85,7 @@ export const generateAdminUI = async (
     await Promise.all(
       dir.map(x => {
         if (x === '.next') return
-        return fs.remove(Path.join(projectAdminPath, x))
+        return fs.rm(Path.join(projectAdminPath, x), { recursive: true })
       })
     )
   }
@@ -155,6 +159,6 @@ export const generateAdminUI = async (
       entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
     })
 
-    await Promise.all(entries.map(entry => fs.remove(entry.path)))
+    await Promise.all(entries.map(entry => fs.rm(entry.path, { recursive: true })))
   }
 }
