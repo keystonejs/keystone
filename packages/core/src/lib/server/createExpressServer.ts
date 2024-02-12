@@ -43,7 +43,7 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
   }
 }
 
-export const createExpressServer = async (
+export async function createExpressServer (
   config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
   graphQLSchema: GraphQLSchema, // TODO: redundant, remove in breaking change
   context: KeystoneContext
@@ -51,7 +51,7 @@ export const createExpressServer = async (
   expressServer: express.Express
   apolloServer: ApolloServer<KeystoneContext>
   httpServer: Server
-}> => {
+}> {
   const expressServer = express()
   const httpServer = createServer(expressServer)
 
