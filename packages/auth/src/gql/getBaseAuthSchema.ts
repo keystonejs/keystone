@@ -1,4 +1,4 @@
-import type { BaseItem } from '@keystone-6/core/types'
+import { type BaseItem, type KeystoneContext } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import { type AuthGqlNames, type SecretFieldImpl } from '../types'
 
@@ -60,9 +60,9 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
         type: graphql.union({
           name: 'AuthenticatedItem',
           types: [base.object(listKey) as graphql.ObjectType<BaseItem>],
-          resolveType: (root, context) => context.session?.listKey,
+          resolveType: (root, context: KeystoneContext) => context.session?.listKey,
         }),
-        resolve (root, args, context) {
+        resolve (root, args, context: KeystoneContext) {
           const { session } = context
           if (!session) return null
           if (!session.itemId) return null
@@ -83,10 +83,8 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve (root, { [identityField]: identity, [secretField]: secret }, context) {
-          if (!context.sessionStrategy) {
-            throw new Error('No session implementation available on context')
-          }
+        async resolve (root, { [identityField]: identity, [secretField]: secret }, context: KeystoneContext) {
+          if (!context.sessionStrategy) throw new Error('No session implementation available on context')
 
           const dbItemAPI = context.sudo().db[listKey]
           const result = await validateSecret(
@@ -111,15 +109,19 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
             context,
           })
 
-          // return Failure if sessionStrategy.start() returns null
+          // return Failure if sessionStrategy.start() is incompatible
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
             return { code: 'FAILURE', message: 'Failed to start session.' }
           }
 
-          return { sessionToken, item: result.item }
+          return {
+            sessionToken,
+            item: result.item
+          }
         },
       }),
     },
   }
+
   return { extension, ItemAuthenticationWithPasswordSuccess }
 }

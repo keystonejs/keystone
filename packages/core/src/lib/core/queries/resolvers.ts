@@ -73,14 +73,10 @@ export async function findOne (
 ) {
   // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query')
-  if (!operationAccess) {
-    return null
-  }
+  if (!operationAccess) return null
 
   const accessFilters = await getAccessFilters(list, context, 'query')
-  if (accessFilters === false) {
-    return null
-  }
+  if (accessFilters === false) return null
 
   // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context)
@@ -116,14 +112,10 @@ export async function findMany (
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
   const operationAccess = await getOperationAccess(list, context, 'query')
-  if (!operationAccess) {
-    return []
-  }
+  if (!operationAccess) return []
 
   const accessFilters = await getAccessFilters(list, context, 'query')
-  if (accessFilters === false) {
-    return []
-  }
+  if (accessFilters === false) return []
 
   const resolvedWhere = await resolveWhereInput(where, list, context)
 
@@ -214,14 +206,10 @@ export async function count (
   extraFilter?: PrismaFilter
 ) {
   const operationAccess = await getOperationAccess(list, context, 'query')
-  if (!operationAccess) {
-    return 0
-  }
+  if (!operationAccess) return 0
 
   const accessFilters = await getAccessFilters(list, context, 'query')
-  if (accessFilters === false) {
-    return 0
-  }
+  if (accessFilters === false) return 0
 
   const resolvedWhere = await resolveWhereInput(where, list, context)
 

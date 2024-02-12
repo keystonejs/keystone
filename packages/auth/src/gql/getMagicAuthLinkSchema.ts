@@ -1,4 +1,4 @@
-import type { BaseItem } from '@keystone-6/core/types'
+import { type BaseItem, type KeystoneContext } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import type { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types'
 
@@ -60,7 +60,7 @@ export function getMagicAuthLinkSchema<I extends string> ({
       [gqlNames.sendItemMagicAuthLink]: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
-        async resolve (rootVal, { [identityField]: identity }, context) {
+        async resolve (rootVal, { [identityField]: identity }, context: KeystoneContext) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'magicAuth'
 
@@ -90,10 +90,9 @@ export function getMagicAuthLinkSchema<I extends string> ({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve (rootVal, { [identityField]: identity, token }, context) {
-          if (!context.sessionStrategy) {
-            throw new Error('No session implementation available on context')
-          }
+
+        async resolve (rootVal, { [identityField]: identity, token }, context: KeystoneContext) {
+          if (!context.sessionStrategy) throw new Error('No session implementation available on context')
 
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'magicAuth'
@@ -109,8 +108,12 @@ export function getMagicAuthLinkSchema<I extends string> ({
           )
 
           if (!result.success) {
-            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) }
+            return {
+              code: result.code,
+              message: getAuthTokenErrorMessage({ code: result.code })
+            }
           }
+
           // Update system state
           // Save the token and related info back to the item
           await dbItemAPI.updateOne({
@@ -124,8 +127,17 @@ export function getMagicAuthLinkSchema<I extends string> ({
               itemId: result.item.id.toString(),
             },
             context,
-          })) as string
-          return { token: sessionToken, item: result.item }
+          }))
+
+          // return Failure if sessionStrategy.start() is incompatible
+          if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
+            return { code: 'FAILURE', message: 'Failed to start session.' }
+          }
+
+          return {
+            token: sessionToken,
+            item: result.item
+          }
         },
       }),
     },

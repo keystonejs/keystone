@@ -3,14 +3,14 @@ import cors, { type CorsOptions } from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
-import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
+import { type GraphQLFormattedError, type GraphQLSchema } from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
-import { addHealthCheck } from './addHealthCheck'
+import { healthCheckPath as defaultHealthCheckPath } from '../defaults'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -22,7 +22,7 @@ so the CLI can bring up the dev server early to handle GraphQL requests.
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024 // 200 MiB
 
-const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
+function formatError (graphqlConfig: GraphQLConfig | undefined) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
     let debug = graphqlConfig?.debug
     if (debug === undefined) {
@@ -37,21 +37,21 @@ const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
 
     if (graphqlConfig?.apolloConfig?.formatError) {
       return graphqlConfig.apolloConfig.formatError(formattedError, error)
-    } else {
-      return formattedError
     }
+
+    return formattedError
   }
 }
 
-export const createExpressServer = async (
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+export async function createExpressServer (
+  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  graphQLSchema: GraphQLSchema, // TODO: redundant, remove in breaking change
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
   apolloServer: ApolloServer<KeystoneContext>
   httpServer: Server
-}> => {
+}> {
   const expressServer = express()
   const httpServer = createServer(expressServer)
 
@@ -65,7 +65,20 @@ export const createExpressServer = async (
     expressServer.use(cors(corsConfig))
   }
 
-  addHealthCheck({ config, server: expressServer })
+  /** @deprecated, TODO: remove in breaking change */
+  if (config.server?.healthCheck) {
+    const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck
+
+    expressServer.use(healthCheck.path ?? defaultHealthCheckPath, (req, res) => {
+      if (typeof healthCheck.data === 'function') return res.json(healthCheck.data())
+      if (healthCheck.data) return res.json(healthCheck.data)
+
+      res.json({
+        status: 'pass',
+        timestamp: Date.now(),
+      })
+    })
+  }
 
   if (config.server?.extendExpressApp) {
     await config.server.extendExpressApp(expressServer, context)
@@ -98,7 +111,10 @@ export const createExpressServer = async (
   const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production'
   const serverConfig = {
     formatError: formatError(config.graphql),
-    includeStacktraceInErrorResponses: config.graphql?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
+
+    // when undefined, use Apollo default of NODE_ENV !== 'production'
+    includeStacktraceInErrorResponses: config.graphql?.debug,
+
     ...apolloConfig,
     schema: graphQLSchema,
     plugins:
@@ -108,17 +124,17 @@ export const createExpressServer = async (
             playgroundOption
               ? ApolloServerPluginLandingPageLocalDefault()
               : ApolloServerPluginLandingPageDisabled(),
-            ...(apolloConfig?.plugins || []),
+            ...(apolloConfig?.plugins ?? []),
           ],
   } as ApolloServerOptions<KeystoneContext>
 
   const apolloServer = new ApolloServer({ ...serverConfig })
 
-  const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE
+  const maxFileSize = config.server?.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
   expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(
-    config.graphql?.path || '/api/graphql',
+    config.graphql?.path ?? '/api/graphql',
     json(config.graphql?.bodyParser),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {

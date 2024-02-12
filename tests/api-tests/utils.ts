@@ -115,10 +115,10 @@ function j (messages: string[]) {
   return messages.map(m => `  - ${m}`).join('\n')
 }
 
-export const expectInternalServerError = (
+export function expectInternalServerError (
   errors: readonly any[] | undefined,
   args: { path: any[], message: string }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
@@ -131,20 +131,20 @@ export const expectInternalServerError = (
   )
 }
 
-export const expectGraphQLValidationError = (
+export function expectGraphQLValidationError (
   errors: readonly any[] | undefined,
   args: { message: string }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ message }) => ({ extensions: { code: 'GRAPHQL_VALIDATION_FAILED' }, message }))
   )
 }
 
-export const expectAccessDenied = (
+export function expectAccessDenied (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[], msg: string }[]
-) => {
+) {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }))
@@ -157,10 +157,10 @@ export const expectAccessDenied = (
   )
 }
 
-export const expectValidationError = (
+export function expectValidationError (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[], messages: string[] }[]
-) => {
+) {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
   }))
@@ -173,10 +173,10 @@ export const expectValidationError = (
   )
 }
 
-export const expectBadUserInput = (
+export function expectBadUserInput (
   errors: readonly any[] | undefined,
   args: { path: any[], message: string }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
@@ -187,10 +187,10 @@ export const expectBadUserInput = (
   )
 }
 
-export const expectAccessReturnError = (
+export function expectAccessReturnError (
   errors: readonly any[] | undefined,
   args: { path: any[], errors: { tag: string, returned: string }[] }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, errors }) => {
@@ -202,20 +202,20 @@ export const expectAccessReturnError = (
   )
 }
 
-export const expectFilterDenied = (
+export function expectFilterDenied (
   errors: readonly any[] | undefined,
   args: { path: any[], message: string }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({ extensions: { code: 'KS_FILTER_DENIED' }, path, message }))
   )
 }
 
-export const expectResolverError = (
+export function expectResolverError (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[], messages: string[], debug: any[] }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages, debug }) => {
@@ -280,7 +280,7 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export const getPrismaSchema = async (_config: KeystoneConfig) => {
+export async function getPrismaSchema (_config: KeystoneConfig) {
   const config = initConfig(_config)
   const { graphQLSchema } = createSystem(config)
   const artifacts = await getCommittedArtifacts(config, graphQLSchema)

@@ -15,14 +15,14 @@ async function deleteSingle (
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
 ) {
-  // Validate and resolve the input filter
+  // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context)
 
-  // Check filter access
+  // check filter access
   const fieldKey = Object.keys(uniqueWhere)[0]
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
 
-  // Filter and Item access control. Will throw an accessDeniedError if not allowed.
+  // filter and item access control throw an AccessDeniedError if not allowed
   const item = await getAccessControlledItemForDelete(list, context, uniqueWhere, accessFilters)
 
   const hookArgs = {
@@ -34,10 +34,10 @@ async function deleteSingle (
     inputData: undefined,
   }
 
-  // Apply all validation checks
+  // hooks
   await validateDelete({ list, hookArgs })
 
-  // Before operation
+  // before operation
   await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
 
   const writeLimit = getWriteLimit(context)
@@ -46,6 +46,7 @@ async function deleteSingle (
     runWithPrisma(context, list, model => model.delete({ where: { id: item.id } }))
   )
 
+  // after operation
   await runSideEffectOnlyHook(list, 'afterOperation', {
     ...hookArgs,
     item: undefined,

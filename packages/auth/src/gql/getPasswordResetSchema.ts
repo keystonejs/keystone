@@ -1,3 +1,4 @@
+import { type KeystoneContext } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import type { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types'
 
@@ -36,16 +37,15 @@ export function getPasswordResetSchema<I extends string, S extends string> ({
         message: graphql.field({ type: graphql.nonNull(graphql.String) }),
       },
     })
-  const ValidateItemPasswordResetTokenResult = getResult(
-    gqlNames.ValidateItemPasswordResetTokenResult
-  )
+
+  const ValidateItemPasswordResetTokenResult = getResult(gqlNames.ValidateItemPasswordResetTokenResult)
   const RedeemItemPasswordResetTokenResult = getResult(gqlNames.RedeemItemPasswordResetTokenResult)
   return {
     mutation: {
       [gqlNames.sendItemPasswordResetLink]: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
-        async resolve (rootVal, { [identityField]: identity }, context) {
+        async resolve (rootVal, { [identityField]: identity }, context: KeystoneContext) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'passwordReset'
 
@@ -79,7 +79,7 @@ export function getPasswordResetSchema<I extends string, S extends string> ({
         async resolve (
           rootVal,
           { [identityField]: identity, token, [secretField]: secret },
-          context
+          context: KeystoneContext
         ) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'passwordReset'
@@ -125,13 +125,12 @@ export function getPasswordResetSchema<I extends string, S extends string> ({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve (rootVal, { [identityField]: identity, token }, context) {
+        async resolve (rootVal, { [identityField]: identity, token }, context: KeystoneContext) {
           const dbItemAPI = context.sudo().db[listKey]
-          const tokenType = 'passwordReset'
           const result = await validateAuthToken(
             listKey,
             passwordResetTokenSecretFieldImpl,
-            tokenType,
+            'passwordReset',
             identityField,
             identity,
             passwordResetLink.tokensValidForMins,
@@ -140,8 +139,12 @@ export function getPasswordResetSchema<I extends string, S extends string> ({
           )
 
           if (!result.success) {
-            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) }
+            return {
+              code: result.code,
+              message: getAuthTokenErrorMessage({ code: result.code })
+            }
           }
+
           return null
         },
       }),

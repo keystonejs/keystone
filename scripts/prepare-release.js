@@ -186,7 +186,7 @@ function groupPullsByUser (list) {
 async function generateGitHubReleaseText (previousTag) {
   if (!previousTag) throw new Error('Missing tag')
 
-  const date = new Date().toISOString().slice(0, 10).replace(/\-/g, '_')
+  const date = new Date().toISOString().slice(0, 10)
   const { packages, changes, contributors } = await fetchData(previousTag)
   //    writeFileSync(`./CHANGELOG-${date}.json`, JSON.stringify({ packages, changes, contributors }, null, 2))
   //    return process.exit(0)
@@ -252,6 +252,9 @@ async function generateGitHubReleaseText (previousTag) {
     )
     output.push(``)
   }
+
+  output,push(`#### :eyes: Review`)
+  output.push(`See https://github.com/keystonejs/keystone/compare/${previousTag}...${date} to compare with our previous release.`)
 
   writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2))
   writeFileSync(`./RELEASE-${date}.md`, output.join('\n'))
