@@ -3,7 +3,7 @@ import cors, { type CorsOptions } from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
-import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
+import { type GraphQLFormattedError, type GraphQLSchema } from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
@@ -22,7 +22,7 @@ so the CLI can bring up the dev server early to handle GraphQL requests.
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024 // 200 MiB
 
-const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
+function formatError (graphqlConfig: GraphQLConfig | undefined) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
     let debug = graphqlConfig?.debug
     if (debug === undefined) {
@@ -37,9 +37,9 @@ const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
 
     if (graphqlConfig?.apolloConfig?.formatError) {
       return graphqlConfig.apolloConfig.formatError(formattedError, error)
-    } else {
-      return formattedError
     }
+
+    return formattedError
   }
 }
 
@@ -111,7 +111,10 @@ export const createExpressServer = async (
   const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production'
   const serverConfig = {
     formatError: formatError(config.graphql),
-    includeStacktraceInErrorResponses: config.graphql?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
+
+    // when undefined, use Apollo default of NODE_ENV !== 'production'
+    includeStacktraceInErrorResponses: config.graphql?.debug,
+
     ...apolloConfig,
     schema: graphQLSchema,
     plugins:

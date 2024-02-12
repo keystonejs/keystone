@@ -36,7 +36,7 @@ describe(`Field access`, () => {
   })
 
   describe('read', () => {
-    fieldMatrix.forEach(access => {
+    for (const access of fieldMatrix) {
       test(`field allowed - singular: ${JSON.stringify(access)}`, async () => {
         const item = items[listKey][0]
         const fieldName = getFieldName(access)
@@ -80,11 +80,11 @@ describe(`Field access`, () => {
           expect(data![allQueryName]).toContainEqual({ id: item.id, [fieldName]: 'hello' })
         }
       })
-    })
+    }
   })
 
   describe('create', () => {
-    fieldMatrix.forEach(access => {
+    for (const access of fieldMatrix) {
       test(`field not allowed: ${JSON.stringify(access)}`, async () => {
         const listKey = nameFn[mode](listAccess)
         const createMutationName = `create${listKey}`
@@ -118,11 +118,11 @@ describe(`Field access`, () => {
           }
         }
       })
-    })
+    }
   })
 
   describe('update', () => {
-    fieldMatrix.forEach(access => {
+    for (const access of fieldMatrix) {
       test(`field not allowed: ${JSON.stringify(access)}`, async () => {
         const listKey = nameFn[mode](listAccess)
         const item = items[listKey][0]
@@ -147,6 +147,6 @@ describe(`Field access`, () => {
           }
         }
       })
-    })
+    }
   })
 })
