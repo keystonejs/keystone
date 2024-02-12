@@ -69,11 +69,12 @@ function isValidImageExtension (extension: string): extension is ImageExtension 
 
 export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
+    const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
       )
     }
 
@@ -100,17 +101,17 @@ export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageField
             async beforeOperation (args) {
               await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
-                const idKey = `${meta.fieldKey}_id`
+                const idKey = `${fieldKey}_id`
                 const id = args.item[idKey]
-                const extensionKey = `${meta.fieldKey}_extension`
+                const extensionKey = `${fieldKey}_extension`
                 const extension = args.item[extensionKey]
 
                 // This will occur on an update where an image already existed but has been
                 // changed, or on a delete, where there is no longer an item
                 if (
                   (args.operation === 'delete' ||
-                    typeof args.resolvedData[meta.fieldKey].id === 'string' ||
-                    args.resolvedData[meta.fieldKey].id === null) &&
+                    typeof args.resolvedData[fieldKey].id === 'string' ||
+                    args.resolvedData[fieldKey].id === null) &&
                   typeof id === 'string' &&
                   typeof extension === 'string' &&
                   isValidImageExtension(extension)
