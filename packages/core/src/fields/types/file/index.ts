@@ -1,10 +1,10 @@
 import {
-  fieldType,
   type FieldTypeFunc,
   type CommonFieldConfig,
   type BaseListTypeInfo,
   type KeystoneContext,
   type FileMetadata,
+  fieldType,
 } from '../../../types'
 import { graphql } from '../../..'
 
@@ -44,9 +44,7 @@ async function inputResolver (
   data: graphql.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
-  if (data === null || data === undefined) {
-    return { filename: data, filesize: data }
-  }
+  if (data === null || data === undefined) return { filename: data, filesize: data }
   const upload = await data.upload
   return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
@@ -111,10 +109,13 @@ export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldCo
       output: graphql.field({
         type: FileFieldOutput,
         resolve ({ value: { filesize, filename } }) {
-          if (filesize === null || filename === null) {
-            return null
+          if (filename === null) return null
+          if (filesize === null) return null
+          return {
+            filename,
+            filesize,
+            storage: config.storage
           }
-          return { filename, filesize, storage: config.storage }
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/file',

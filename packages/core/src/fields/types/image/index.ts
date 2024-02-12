@@ -1,11 +1,11 @@
 import {
   type BaseListTypeInfo,
-  fieldType,
   type FieldTypeFunc,
   type CommonFieldConfig,
   type ImageData,
   type ImageExtension,
   type KeystoneContext,
+  fieldType,
 } from '../../../types'
 import { graphql } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
@@ -55,8 +55,15 @@ async function inputResolver (
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, width: data }
+    return {
+      id: data,
+      filesize: data,
+      width: data,
+      height: data,
+      extension: data,
+    }
   }
+
   const upload = await data.upload
   return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
@@ -86,11 +93,11 @@ export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageField
       kind: 'multi',
       extendPrismaSchema: config.db?.extendPrismaSchema,
       fields: {
+        id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
@@ -133,23 +140,28 @@ export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageField
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve ({ value: { extension, filesize, height, id, width } }) {
-          if (
-            extension === null ||
-            !isValidImageExtension(extension) ||
-            filesize === null ||
-            height === null ||
-            width === null ||
-            id === null
-          ) {
-            return null
-          }
-          return {
-            extension,
-            filesize,
-            height,
-            width,
+        resolve ({
+          value: {
             id,
+            filesize,
+            width,
+            height,
+            extension,
+          }
+        }) {
+          if (id === null) return null
+          if (filesize === null) return null
+          if (width === null) return null
+          if (height === null) return null
+          if (extension === null) return null
+          if (!isValidImageExtension(extension)) return null
+
+          return {
+            id,
+            filesize,
+            width,
+            height,
+            extension,
             storage: config.storage,
           }
         },
