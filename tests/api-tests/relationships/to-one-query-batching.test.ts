@@ -104,10 +104,3 @@ test(
     }
   })
 )
-
-// TODO: remove this when it's added to TS's lib files
-declare global {
-  interface Array<T> {
-    findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number
-  }
-}
