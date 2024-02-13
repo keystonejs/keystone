@@ -14,7 +14,7 @@ function printIndex (fieldPath: string, index: undefined | 'index' | 'unique') {
     none: '',
     unique: '@unique',
     index: `\n@@index([${fieldPath}])`,
-  }[index || ('none' as const)]
+  }[index ?? ('none' as const)]
 }
 
 function printNativeType (nativeType: string | undefined, datasourceName: string) {
@@ -59,16 +59,16 @@ function printField (
     const defaultValue = field.default ? printScalarDefaultValue(field.default) : ''
     const map = field.map ? ` @map(${JSON.stringify(field.map)})` : ''
     const updatedAt = field.updatedAt ? ' @updatedAt' : ''
-    return `${fieldPath} ${field.scalar}${
-      modifiers[field.mode]
-    }${updatedAt}${nativeType}${defaultValue}${map}${index}`
+    return `${fieldPath} ${field.scalar}${modifiers[field.mode]}${updatedAt}${nativeType}${defaultValue}${map}${index}`
   }
+
   if (field.kind === 'enum') {
     const index = printIndex(fieldPath, field.index)
     const defaultValue = field.default ? ` @default(${field.default.value})` : ''
     const map = field.map ? ` @map(${JSON.stringify(field.map)})` : ''
     return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${map}${index}`
   }
+
   if (field.kind === 'multi') {
     return Object.entries(field.fields)
       .map(([subField, field]) =>
@@ -81,13 +81,11 @@ function printField (
       )
       .join('\n')
   }
+
   if (field.kind === 'relation') {
-    if (field.mode === 'many') {
-      return `${fieldPath} ${field.list}[] @relation("${field.relationName}")`
-    }
-    if (field.foreignIdField.kind === 'none') {
-      return `${fieldPath} ${field.list}? @relation("${field.relationName}")`
-    }
+    if (field.mode === 'many') return `${fieldPath} ${field.list}[] @relation("${field.relationName}")`
+    if (field.foreignIdField.kind === 'none') return `${fieldPath} ${field.list}? @relation("${field.relationName}")`
+
     const relationIdFieldPath = `${fieldPath}Id`
     const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}", fields: [${relationIdFieldPath}], references: [id])`
 
@@ -96,13 +94,10 @@ function printField (
 
     assertDbFieldIsValidForIdField(foreignList.listKey, foreignList.isSingleton, foreignIdField)
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName)
-    const index = printIndex(
-      relationIdFieldPath,
-      field.foreignIdField.kind === 'owned' ? 'index' : 'unique'
-    )
-    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar}? @map(${JSON.stringify(
-      field.foreignIdField.map
-    )}) ${nativeType}${index}`
+
+    const foreignIndex = field.foreignIdField.kind === 'owned' ? 'index' : 'unique'
+    const index = printIndex(relationIdFieldPath, foreignIndex)
+    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar}? @map(${JSON.stringify(field.foreignIdField.map)}) ${nativeType}${index}`
     return `${relationField}\n${relationIdField}`
   }
   // TypeScript's control flow analysis doesn't understand that this will never happen without the assertNever
