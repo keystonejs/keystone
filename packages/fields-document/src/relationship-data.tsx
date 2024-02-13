@@ -5,7 +5,6 @@ import weakMemoize from '@emotion/weak-memoize'
 import {
   type ComponentBlock,
   type ComponentSchema,
-  type RelationshipData,
   type RelationshipField,
 } from './DocumentEditor/component-blocks/api'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
@@ -111,7 +110,7 @@ async function fetchDataForOne (
   listKey: string,
   selection: string,
   data: any
-): Promise<RelationshipData | null> {
+) {
   // Single related item
   const id = data?.id
   if (id == null) return null
@@ -129,6 +128,7 @@ async function fetchDataForOne (
   })) as { item: Record<string, any> | null }
 
   if (val.item === null) {
+    // TODO: remove
     if (!process.env.TEST_ADAPTER) {
       // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
       // then simply return { id } and leave `label` and `data` undefined.
