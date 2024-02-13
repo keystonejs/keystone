@@ -32,7 +32,7 @@ We will cover each of these options below.
 The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-6/core/types`.
 This type definition should be considered the source of truth for the available configuration options.
 
-Note: It is important to pass a `TypeInfo` type argument to the config function as it ensures proper typing for the [Keystone Context](../context/overview.md). This type is automatically created in `.keystone/types`. You can customize the output path of the generated type by specifying it in the config object.
+Note: It is important to pass a `TypeInfo` type argument to the config function as it ensures proper typing for the [Keystone Context](../context/overview). This type is automatically created in `.keystone/types`. You can customize the output path of the generated type by specifying it in the config object.
 
 ```typescript
 import { TypeInfo } from ".keystone/types";
