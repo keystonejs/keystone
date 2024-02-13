@@ -5,8 +5,8 @@ import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from '../utils'
 
 type ListConfig = {
-  isFilterable?: false
-  isOrderable?: false
+  isFilterable?: boolean
+  isOrderable?: boolean
   omit?:
     | true
     | {
@@ -18,8 +18,8 @@ type ListConfig = {
 }
 
 type FieldConfig = {
-  isFilterable?: false
-  isOrderable?: false
+  isFilterable?: boolean
+  isOrderable?: boolean
   omit?:
     | true
     | {
