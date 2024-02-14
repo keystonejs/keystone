@@ -42,10 +42,9 @@ export function initConfig (config: KeystoneConfig) {
     server: {
       cors: false,
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
-
       extendExpressApp: async () => {},
       extendHttpServer: async () => {},
-      ...config?.server,
+      ...config.server,
     },
   }
 }
