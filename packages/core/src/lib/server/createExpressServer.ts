@@ -1,5 +1,5 @@
 import { createServer, type Server } from 'http'
-import cors, { type CorsOptions } from 'cors'
+import cors from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
@@ -19,8 +19,6 @@ GraphQL API, but does NOT add the Admin UI middleware.
 The Admin UI takes a while to build for dev, and is created separately
 so the CLI can bring up the dev server early to handle GraphQL requests.
 */
-
-const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024 // 200 MiB
 
 function formatError (graphqlConfig: GraphQLConfig | undefined) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
@@ -56,9 +54,7 @@ export async function createExpressServer (
   const httpServer = createServer(expressServer)
 
   if (config.server?.cors) {
-    // Setting config.server.cors = true will provide backwards compatible defaults
-    // Otherwise, the user can provide their own config object to use
-    const corsConfig: CorsOptions =
+    const corsConfig =
       typeof config.server.cors === 'boolean'
         ? { origin: true, credentials: true }
         : config.server.cors
@@ -80,13 +76,8 @@ export async function createExpressServer (
     })
   }
 
-  if (config.server?.extendExpressApp) {
-    await config.server.extendExpressApp(expressServer, context)
-  }
-
-  if (config.server?.extendHttpServer) {
-    config.server?.extendHttpServer(httpServer, context, graphQLSchema)
-  }
+  await config.server?.extendExpressApp?.(expressServer, context)
+  await config.server?.extendHttpServer?.(httpServer, context, graphQLSchema)
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {
@@ -129,8 +120,8 @@ export async function createExpressServer (
   } as ApolloServerOptions<KeystoneContext>
 
   const apolloServer = new ApolloServer({ ...serverConfig })
+  const maxFileSize = config.server?.maxFileSize
 
-  const maxFileSize = config.server?.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
   expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(

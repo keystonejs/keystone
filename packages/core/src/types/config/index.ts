@@ -193,8 +193,8 @@ export type AdminFileToWrite =
 
 // config.server
 export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
-  /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
-  cors?: CorsOptions | true
+  /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
+  cors?: boolean | CorsOptions
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number
 
@@ -210,14 +210,14 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   extendExpressApp?: (
     app: express.Express,
     context: KeystoneContext<TypeInfo>
-  ) => void | Promise<void>
+  ) => MaybePromise<void>
 
   /** extend the node:http server used by Keystone */
   extendHttpServer?: (
     server: Server,
     context: KeystoneContext<TypeInfo>,
     graphqlSchema: GraphQLSchema
-  ) => void
+  ) => MaybePromise<void>
 } & (
   | {
       /** Port number to start the server on. Defaults to process.env.PORT || 3000 */

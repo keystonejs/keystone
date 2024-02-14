@@ -25,10 +25,11 @@ export function initConfig (config: KeystoneConfig) {
   config.db.url ??= 'postgres://'
 
   return {
-    types: {
-      path: 'node_modules/.keystone/types.ts'
-    },
     ...config,
+    types: {
+      path: 'node_modules/.keystone/types.ts',
+      ...config.types,
+    },
     db: {
       prismaSchemaPath: 'schema.prisma',
       ...config.db,
@@ -38,6 +39,13 @@ export function initConfig (config: KeystoneConfig) {
       ...config.graphql,
     },
     lists: applyIdFieldDefaults(config),
+    server: {
+      cors: false,
+      maxFileSize: 200 * 1024 * 1024, // 200 MiB
+      extendExpressApp: async () => {},
+      extendHttpServer: async () => {},
+      ...config.server,
+    },
   }
 }
 
