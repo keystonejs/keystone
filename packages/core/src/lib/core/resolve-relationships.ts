@@ -9,9 +9,7 @@ type BaseResolvedRelationDBField = {
 }
 
 export type ResolvedRelationDBField =
-  | (BaseResolvedRelationDBField & {
-      mode: 'many'
-    })
+  | (BaseResolvedRelationDBField & { mode: 'many' })
   | (BaseResolvedRelationDBField & {
       mode: 'one'
       foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique', map: string }
@@ -181,8 +179,7 @@ export function resolveRelationships (
           continue
         }
         if (leftRel.field.mode === 'many' && rightRel.field.mode === 'many') {
-          const relationName =
-            leftRel.field.relationName ?? `${leftRel.listKey}_${leftRel.fieldPath}`
+          const relationName = leftRel.field.relationName ?? `${leftRel.listKey}_${leftRel.fieldPath}`
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
             mode: 'many',
@@ -229,9 +226,7 @@ export function resolveRelationships (
       }
       const foreignFieldPath = `from_${listKey}_${fieldPath}`
       if (foreignUnresolvedList.fields[foreignFieldPath]) {
-        throw new Error(
-          `The relationship field at ${listKey}.${fieldPath} points to the list ${field.list}, Keystone needs to a create a relationship field at ${field.list}.${foreignFieldPath} to support the relationship at ${listKey}.${fieldPath} but ${field.list} already has a field named ${foreignFieldPath}`
-        )
+        throw new Error(`The relationship field at ${listKey}.${fieldPath} points to the list ${field.list}, Keystone needs to a create a relationship field at ${field.list}.${foreignFieldPath} to support the relationship at ${listKey}.${fieldPath} but ${field.list} already has a field named ${foreignFieldPath}`)
       }
 
       if (field.mode === 'many') {

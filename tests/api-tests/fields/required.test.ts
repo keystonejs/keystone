@@ -1,13 +1,17 @@
-import fs from 'fs'
-import path from 'path'
-import os from 'os'
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { humanize } from '../../../packages/core/src/lib/utils'
-import { testConfig, expectValidationError } from '../utils'
+import {
+  dbProvider,
+  testConfig,
+  expectValidationError
+} from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -17,7 +21,7 @@ testModules
   .map(require)
   .filter(
     ({ skipRequiredTest, unSupportedAdapterList = [] }) =>
-      !skipRequiredTest && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+      !skipRequiredTest && !unSupportedAdapterList.includes(dbProvider)
   )
   .forEach(mod => {
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {

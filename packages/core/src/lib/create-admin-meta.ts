@@ -97,6 +97,8 @@ export function createAdminMeta (
 
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     const listConfig = lists[listKey]
+
+    // TODO: is this reasonable?
     if (list.graphql.isEnabled.query === false) {
       omittedLists.push(listKey)
       continue
@@ -104,10 +106,11 @@ export function createAdminMeta (
 
     let initialColumns: string[]
     if (listConfig.ui?.listView?.initialColumns) {
-      // If they've asked for a particular thing, give them that thing
+      // if they've asked for a particular thing, give them that thing
       initialColumns = listConfig.ui.listView.initialColumns as string[]
+
     } else {
-      // Otherwise, we'll start with the labelField on the left and then add
+      // otherwise, we'll start with the labelfield on the left and then add
       // 2 more fields to the right of that. We don't include the 'id' field
       // unless it happened to be the labelField
       initialColumns = [

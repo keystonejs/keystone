@@ -18,10 +18,10 @@ describe(dbProvider, () => {
     .filter(mod => !mod.skipUniqueTest)
     .filter(
       ({ supportsUnique, unSupportedAdapterList = [] }) =>
-        supportsUnique && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+        supportsUnique && !unSupportedAdapterList.includes(dbProvider)
     )
     .forEach(mod => {
-      (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
+      (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
         describe(`${mod.name} (${matrixValue}, isIndexed: 'unique')`, () => {
           beforeEach(() => {
             if (mod.beforeEach) {
@@ -147,10 +147,10 @@ describe(dbProvider, () => {
       ({ supportsUnique, unSupportedAdapterList = [] }) =>
         !supportsUnique &&
         supportsUnique !== null &&
-        !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+        !unSupportedAdapterList.includes(dbProvider)
     )
     .forEach(mod => {
-      (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
+      (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
         describe(`${mod.name} (${matrixValue}, isIndexed: 'unique')`, () => {
           test('Ensure non-supporting fields throw an error', async () => {
             // Try to create a thing and have it fail

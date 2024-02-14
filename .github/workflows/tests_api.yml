@@ -38,7 +38,6 @@ jobs:
       - name: Unit tests
         run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
-          TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
   graphql_api_tests_sqlite:
@@ -55,7 +54,7 @@ jobs:
       - name: Unit tests
         run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
-          TEST_ADAPTER: sqlite
+          DATABASE_URL: file:./file.db
 
   graphql_api_tests_mysql:
     name: API Tests MySQL
@@ -63,7 +62,6 @@ jobs:
     services:
       mysql:
         image: mariadb:11.2
-        # we use the root user because our tests create databases
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -79,7 +77,6 @@ jobs:
       - name: Unit tests
         run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
-          TEST_ADAPTER: mysql
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   field_crud_tests_postgresql:

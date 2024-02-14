@@ -51,7 +51,7 @@ testModules
   .map(require)
   .filter(
     ({ supportsDbMap, unSupportedAdapterList = [] }) =>
-      supportsDbMap && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+      supportsDbMap && !unSupportedAdapterList.includes(dbProvider)
   )
   .map(mod => {
     test(`db.map for the field ${mod.name} adds @map with the value to the Prisma schema`, async () => {

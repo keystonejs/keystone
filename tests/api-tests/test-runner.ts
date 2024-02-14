@@ -1,7 +1,7 @@
-import path from 'path'
-import fs from 'fs/promises'
-import { readdirSync } from 'fs'
-import os from 'os'
+import path from 'node:path'
+import fs from 'node:fs/promises'
+import { readdirSync } from 'node:fs'
+import os from 'node:os'
 import {
   createDatabase,
   getConfig,
@@ -20,7 +20,7 @@ import {
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import prismaClientPackageJson from '@prisma/client/package.json'
 import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'
-import { dbProvider, dbUrl, SQLITE_DATABASE_FILENAME } from './utils'
+import { dbProvider, dbUrl } from './utils'
 
 export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
   context: KeystoneContext<TypeInfo>
@@ -102,8 +102,10 @@ let hasCreatedDatabase = false
 
 async function pushSchemaToDatabase (schema: string) {
   if (dbProvider === 'sqlite') {
+    const dbFilePath = dbUrl.slice('file:'.length)
+
     // touch the file (or truncate it), easiest way to start from scratch
-    await fs.writeFile(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME), '')
+    await fs.writeFile(path.join(prismaSchemaDirectory, dbFilePath), '')
     await withMigrate(prismaSchemaPath, migrate =>
       runMigrateWithDbUrl(dbUrl, undefined, () =>
         migrate.engine.schemaPush({
@@ -114,9 +116,8 @@ async function pushSchemaToDatabase (schema: string) {
     )
     return
   }
-  let justCreatedDatabase = hasCreatedDatabase
-    ? false
-    : await createDatabase(dbUrl, prismaSchemaDirectory)
+
+  const justCreatedDatabase = hasCreatedDatabase ? false : await createDatabase(dbUrl, prismaSchemaDirectory)
   await withMigrate(prismaSchemaPath, async migrate => {
     if (!justCreatedDatabase) {
       await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.reset())

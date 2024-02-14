@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
-import pLimit from 'p-limit'
 import type { FieldData, KeystoneConfig } from '../types'
+import { GraphQLError } from 'graphql'
 
 import type { PrismaModule } from '../artifacts'
 import { allowAll } from '../access'
@@ -8,7 +8,7 @@ import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
-import { setPrismaNamespace, setWriteLimit } from './core/utils'
+import { setPrismaNamespace } from './core/utils'
 
 function getSudoGraphQLSchema (config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -94,7 +94,53 @@ function injectNewDefaults (prismaClient: any, lists: Record<string, Initialised
     }
   }
 
+  prismaClient = prismaClient.$extends({
+    query: {
+      async $allOperations({ model, operation, args, query }: any) {
+        try {
+          return await query(args)
+        } catch (e: any) {
+          if ((e as any).code === undefined) {
+            return new GraphQLError(`Prisma error`, {
+              extensions: {
+                code: 'KS_PRISMA_ERROR',
+                debug: {
+                  message: e.message,
+                },
+              },
+            })
+          }
+
+          // TODO: remove e.message unless debug
+          return new GraphQLError(`Prisma error: ${e.message.split('\n').slice(-1)[0].trim()}`, {
+            extensions: {
+              code: 'KS_PRISMA_ERROR',
+              prisma: { ...e },
+            },
+          })
+        }
+      }
+    }
+  })
+
   return prismaClient
+}
+
+function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
+  if (url.startsWith('file:')) {
+    const parsed = new URL(url)
+    if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
+      // https://github.com/prisma/prisma/issues/9562
+      // https://github.com/prisma/prisma/issues/10403
+      // https://github.com/prisma/prisma/issues/11789
+      parsed.searchParams.set('connection_limit', '1')
+
+      const [uri] = url.split('?')
+      return `${uri}?${parsed.search}`
+    }
+  }
+
+  return url
 }
 
 export function createSystem (config: KeystoneConfig) {
@@ -108,7 +154,11 @@ export function createSystem (config: KeystoneConfig) {
     adminMeta,
     getKeystone: (prismaModule: PrismaModule) => {
       const prePrismaClient = new prismaModule.PrismaClient({
-        datasources: { [config.db.provider]: { url: config.db.url } },
+        datasources: {
+          [config.db.provider]: {
+            url: formatUrl(config.db.provider, config.db.url)
+          }
+        },
         log:
           config.db.enableLogging === true
             ? ['query']
@@ -118,7 +168,6 @@ export function createSystem (config: KeystoneConfig) {
       })
 
       const prismaClient = injectNewDefaults(prePrismaClient, lists)
-      setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity))
       setPrismaNamespace(prismaClient, prismaModule.Prisma)
 
       const context = createContext({

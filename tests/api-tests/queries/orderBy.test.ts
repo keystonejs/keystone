@@ -44,7 +44,6 @@ const runner = setupTestRunner({
       DefaultOrderTrue: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-expect-error
         defaultIsOrderable: true,
       }),
       DefaultOrderFunctionFalse: list({

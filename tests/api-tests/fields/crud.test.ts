@@ -5,7 +5,12 @@ import { type KeystoneContext } from '@keystone-6/core/types'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { humanize } from '../../../packages/core/src/lib/utils'
-import { testConfig, expectSingleResolverError, expectValidationError } from '../utils'
+import {
+  dbProvider,
+  testConfig,
+  expectSingleResolverError,
+  expectValidationError
+} from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -15,10 +20,10 @@ testModules
   .map(require)
   .filter(
     ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-      !skipCrudTest && !unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+      !skipCrudTest && !unSupportedAdapterList.includes(dbProvider)
   )
   .forEach(mod => {
-    (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
+    (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
       const listKey = 'Test'
       const runner = setupTestRunner({
         config: testConfig({
@@ -43,7 +48,7 @@ testModules
           return testFn({
             context,
             listKey,
-            provider: process.env.TEST_ADAPTER,
+            provider: dbProvider,
             matrixValue,
             ...rest,
           })
