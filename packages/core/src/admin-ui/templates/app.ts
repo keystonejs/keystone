@@ -1,27 +1,27 @@
 import hashString from '@emotion/hash'
 import {
-  executeSync,
+  type ExecutionResult,
+  type FragmentDefinitionNode,
+  type GraphQLSchema,
+  type SelectionNode,
   GraphQLNonNull,
   GraphQLScalarType,
-  type GraphQLSchema,
   GraphQLUnionType,
-  parse,
-  type FragmentDefinitionNode,
-  type SelectionNode,
-  type ExecutionResult,
   Kind,
+  executeSync,
+  parse,
 } from 'graphql'
 import { staticAdminMetaQuery, type StaticAdminMetaQuery } from '../admin-meta-graphql'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 type AppTemplateOptions = { configFileExists: boolean }
 
-export const appTemplate = (
+export function appTemplate (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists }: AppTemplateOptions,
   apiPath: string
-) => {
+) {
   const result = executeSync({
     document: staticAdminMetaQuery,
     schema: graphQLSchema,

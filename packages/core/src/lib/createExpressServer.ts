@@ -5,7 +5,6 @@ import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
 import {
   type GraphQLFormattedError,
-  type GraphQLSchema
 } from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
@@ -49,7 +48,7 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
 
 export async function createExpressServer (
   config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
-  graphQLSchema: GraphQLSchema, // TODO: redundant, prefer context.graphql.schema, remove in breaking change
+  _: any, // TODO: uses context.graphql.schema now, remove in breaking change
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
@@ -85,7 +84,7 @@ export async function createExpressServer (
   }
 
   await config.server?.extendExpressApp?.(expressServer, context)
-  await config.server?.extendHttpServer?.(httpServer, context, graphQLSchema)
+  await config.server?.extendHttpServer?.(httpServer, context, context.graphql.schema)
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {
@@ -117,7 +116,7 @@ export async function createExpressServer (
     includeStacktraceInErrorResponses: config.graphql?.debug,
 
     ...apolloConfig,
-    schema: graphQLSchema,
+    schema: context.graphql.schema,
     plugins:
       playgroundOption === 'apollo'
         ? apolloConfig?.plugins
