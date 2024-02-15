@@ -21,6 +21,7 @@ export function createAdminUIMiddlewareWithNextApp (
 
   const {
     ui: {
+      // TODO: remove default in breaking change, prefer resolveDefaults
       isAccessAllowed = defaultIsAccessAllowed,
       pageMiddleware,
       publicPages = [],
