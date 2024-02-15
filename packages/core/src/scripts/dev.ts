@@ -164,14 +164,7 @@ export async function dev (
     initKeystonePromiseResolve()
 
     const initialisedLists = initialiseLists(config)
-    const originalPrismaSchema = printPrismaSchema(
-      initialisedLists,
-      config.db.prismaClientPath,
-      config.db.provider,
-      config.db.prismaPreviewFeatures,
-      config.db.additionalPrismaDatasourceProperties,
-      config.db.extendPrismaSchema
-    )
+    const originalPrismaSchema = printPrismaSchema(config, initialisedLists)
     let lastPrintedGraphQLSchema = printSchema(graphQLSchema)
     let lastApolloServer = apolloServer || null
 
@@ -193,14 +186,7 @@ export async function dev (
         const newConfigWithHttp = getBuiltKeystoneConfiguration(cwd)
         const newConfig = stripExtendHttpServer(newConfigWithHttp)
         if (prisma) {
-          const newPrismaSchema = printPrismaSchema(
-            initialiseLists(newConfig),
-            config.db.prismaClientPath,
-            newConfig.db.provider,
-            newConfig.db.prismaPreviewFeatures,
-            newConfig.db.additionalPrismaDatasourceProperties,
-            newConfig.db.extendPrismaSchema
-          )
+          const newPrismaSchema = printPrismaSchema(newConfig, initialiseLists(newConfig))
           if (originalPrismaSchema !== newPrismaSchema) {
             console.error('🔄 Your prisma schema has changed, please restart Keystone')
             return stop(null, true)

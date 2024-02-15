@@ -21,15 +21,7 @@ export function getFormattedGraphQLSchema (schema: string) {
 
 export async function getCommittedArtifacts (config: KeystoneConfig, graphQLSchema: GraphQLSchema) {
   const lists = initialiseLists(config)
-  const prismaSchema = printPrismaSchema(
-    lists,
-    config.db.prismaClientPath,
-    config.db.provider,
-    config.db.prismaPreviewFeatures,
-    config.db.additionalPrismaDatasourceProperties,
-    config.db.extendPrismaSchema
-  )
-
+  const prismaSchema = printPrismaSchema(config, lists)
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
     prisma: await formatPrismaSchema(prismaSchema),
@@ -88,9 +80,11 @@ function posixify (s: string) {
 }
 
 export function getSystemPaths (cwd: string, config: KeystoneConfig) {
-  const prismaClientPath = config.db.prismaClientPath
-    ? path.join(cwd, config.db.prismaClientPath)
-    : null
+  const prismaClientPath = config.db.prismaClientPath?.startsWith('@')
+    ? config.db.prismaClientPath
+    : config.db.prismaClientPath
+      ? path.join(cwd, config.db.prismaClientPath)
+      : null
 
   const builtTypesPath = config.types?.path
     ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
