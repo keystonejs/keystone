@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import type { ListenOptions } from 'node:net'
 import next from 'next'
-import { createSystem } from '../lib/createSystem'
+import { createSystem } from '../system'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import {
@@ -30,7 +30,7 @@ export async function start (
 
   const config = getBuiltKeystoneConfiguration(cwd)
   const paths = getSystemPaths(cwd, config)
-  const { getKeystone, graphQLSchema } = createSystem(config)
+  const { getKeystone } = createSystem(config)
   const prismaClient = require(paths.prisma)
   const keystone = getKeystone(prismaClient)
 
@@ -43,11 +43,7 @@ export async function start (
   await keystone.connect()
 
   console.log('✨ Creating server')
-  const { expressServer, httpServer } = await createExpressServer(
-    config,
-    graphQLSchema,
-    keystone.context
-  )
+  const { expressServer, httpServer } = await createExpressServer(config, null, keystone.context)
 
   console.log(`✅ GraphQL API ready`)
   if (!config.ui?.isDisabled && ui) {

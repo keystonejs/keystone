@@ -204,7 +204,7 @@ export async function dev (
           }
         }
 
-        const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig)
+        const { getKeystone, graphQLSchema, adminMeta } = createSystem(newConfig)
         // we're not using generateCommittedArtifacts or any of the similar functions
         // because we will never need to write a new prisma schema here
         // and formatting the prisma schema leaves some listeners on the process
@@ -222,16 +222,11 @@ export async function dev (
         await generateAdminUI(newConfig, graphQLSchema, adminMeta, paths.admin, true)
         if (prismaClientModule) {
           if (server && lastApolloServer) {
-            const keystone = getKeystone({
-              PrismaClient: function fakePrismaClientClass () {
-                return prismaClient
-              } as unknown as new (args: unknown) => any,
-              Prisma: prismaClientModule.Prisma,
-            })
-            const servers = await createExpressServer(newConfig, graphQLSchema, keystone.context)
+            const { context: newContext } = getKeystone(prismaClientModule)
+            const servers = await createExpressServer(newConfig, null, newContext)
             if (nextApp) {
               servers.expressServer.use(
-                createAdminUIMiddlewareWithNextApp(newConfig, keystone.context, nextApp)
+                createAdminUIMiddlewareWithNextApp(newConfig, newContext, nextApp)
               )
             }
             expressServer = servers.expressServer
