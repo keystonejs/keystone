@@ -12,8 +12,11 @@ import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/dis
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
-import { healthCheckPath as defaultHealthCheckPath } from '../defaults'
+import {
+  type GraphQLConfig,
+  type KeystoneConfig,
+  type KeystoneContext,
+} from '../types'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -57,10 +60,12 @@ export async function createExpressServer (
   const httpServer = createServer(expressServer)
 
   if (config.server?.cors) {
+    // TODO: remove default in breaking change, prefer resolveDefaults
     const corsConfig =
-      typeof config.server.cors === 'boolean'
+      config.server.cors === true
         ? { origin: true, credentials: true }
         : config.server.cors
+
     expressServer.use(cors(corsConfig))
   }
 
@@ -68,7 +73,7 @@ export async function createExpressServer (
   if (config.server?.healthCheck) {
     const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck
 
-    expressServer.use(healthCheck.path ?? defaultHealthCheckPath, (req, res) => {
+    expressServer.use(healthCheck.path ?? '/_healthcheck', (req, res) => {
       if (typeof healthCheck.data === 'function') return res.json(healthCheck.data())
       if (healthCheck.data) return res.json(healthCheck.data)
 
@@ -102,6 +107,8 @@ export async function createExpressServer (
   }
 
   const apolloConfig = config.graphql?.apolloConfig
+
+  // TODO: remove default in breaking change, prefer resolveDefaults
   const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production'
   const serverConfig = {
     formatError: formatError(config.graphql),
@@ -128,6 +135,7 @@ export async function createExpressServer (
   expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(
+    // TODO: remove default in breaking change, prefer resolveDefaults
     config.graphql?.path ?? '/api/graphql',
     json(config.graphql?.bodyParser),
     expressMiddleware(apolloServer, {

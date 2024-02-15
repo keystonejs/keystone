@@ -23,7 +23,7 @@ function printEnumTypeDefinition (type: GraphQLEnumType) {
     type
       .getValues()
       .map(x => `  | '${stringify(x.name)}'`)
-      .join('\n') + ';',
+      .join('\n'),
   ].join('\n')
 }
 
@@ -62,17 +62,17 @@ function printInputObjectTypeDefinition (
     `export type ${type.name} = {`,
     ...Object.values(type.getFields()).map(({ type, defaultValue, name }) => {
       const maybe = type instanceof GraphQLNonNull ? '' : '?'
-      return `  readonly ${name}${maybe}: ${printTypeReference(type, scalars)};`
+      return `  readonly ${name}${maybe}: ${printTypeReference(type, scalars)}`
     }),
-    '};',
+    '}',
   ].join('\n')
 }
 
 function printInputTypesFromSchema (schema: GraphQLSchema, scalars: Record<string, string>) {
   const output = [
     'type Scalars = {',
-    ...Object.keys(scalars).map(scalar => `  readonly ${scalar}: ${scalars[scalar]};`),
-    '};',
+    ...Object.keys(scalars).map(scalar => `  readonly ${scalar}: ${scalars[scalar]}`),
+    '}',
   ]
 
   for (const type of Object.values(schema.getTypeMap())) {
@@ -102,19 +102,19 @@ function printInterimType<L extends InitialisedList> (
   return [
     `type Resolved${typename} = {`,
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
-      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined;`
+      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined`
 
       // TODO: this could be elsewhere, maybe id-field.ts
       if (fieldKey === 'id') {
         // autoincrement doesn't support passing an identifier
         if ('default' in dbField) {
           if (dbField.default?.kind === 'autoincrement') {
-            return `  id?: undefined;`
+            return `  id?: undefined`
           }
         }
 
         // soft-block `id` updates for relationship safety
-        if (operation === 'Update') return `  id?: undefined;`
+        if (operation === 'Update') return `  id?: undefined`
       }
 
       if (dbField.kind === 'multi') {
@@ -122,20 +122,20 @@ function printInterimType<L extends InitialisedList> (
           `  ${fieldKey}: {`,
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
             // TODO: untrue if a db defaultValue is set
-            //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?';
+            //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?'
             const optional = '?'
-            return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}'];`
+            return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}']`
           }),
-          `  };`,
+          `  }`,
         ].join('\n')
       }
 
       // TODO: untrue if a db defaultValue is set
-      //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?';
+      //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?'
       const optional = '?'
-      return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}'];`
+      return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}']`
     }),
-    `};`,
+    `}`,
   ].join('\n')
 }
 
@@ -154,27 +154,27 @@ function printListTypeInfo<L extends InitialisedList> (
   const listTypeInfoName = `Lists.${listKey}.TypeInfo`
 
   return [
-    `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>>;`,
+    `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>>`,
     `namespace ${listKey} {`,
-    `  export type Item = import('${prismaClientPath}').${listKey};`,
+    `  export type Item = import('${prismaClientPath}').${listKey}`,
     `  export type TypeInfo<Session = any> = {`,
-    `    key: '${listKey}';`,
-    `    isSingleton: ${list.isSingleton};`,
+    `    key: '${listKey}'`,
+    `    isSingleton: ${list.isSingleton}`,
     `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
-    `    item: Item;`,
+    `    item: Item`,
     `    inputs: {`,
-    `      where: ${list.graphql.isEnabled.query ? whereInputName : 'never'};`,
-    `      uniqueWhere: ${list.graphql.isEnabled.query ? whereUniqueInputName : 'never'};`,
-    `      create: ${list.graphql.isEnabled.create ? createInputName : 'never'};`,
-    `      update: ${list.graphql.isEnabled.update ? updateInputName : 'never'};`,
-    `      orderBy: ${list.graphql.isEnabled.query ? listOrderName : 'never'};`,
-    `    };`,
+    `      where: ${list.graphql.isEnabled.query ? whereInputName : 'never'}`,
+    `      uniqueWhere: ${list.graphql.isEnabled.query ? whereUniqueInputName : 'never'}`,
+    `      create: ${list.graphql.isEnabled.create ? createInputName : 'never'}`,
+    `      update: ${list.graphql.isEnabled.update ? updateInputName : 'never'}`,
+    `      orderBy: ${list.graphql.isEnabled.query ? listOrderName : 'never'}`,
+    `    }`,
     `    prisma: {`,
-    `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'};`,
-    `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'};`,
-    `    };`,
-    `    all: __TypeInfo<Session>;`,
-    `  };`,
+    `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'}`,
+    `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'}`,
+    `    }`,
+    `    all: __TypeInfo<Session>`,
+    `  }`,
     `}`,
   ]
     .map(line => `  ${line}`)
@@ -218,7 +218,7 @@ export function printGeneratedTypes (
       )
     }
 
-    listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName};`)
+    listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName}`)
     listsNamespaces.push(printListTypeInfo(prismaClientPath, listKey, list))
   }
 
@@ -240,23 +240,23 @@ export function printGeneratedTypes (
     'export declare namespace Lists {',
     ...listsNamespaces,
     '}',
-    `export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>;`,
-    `export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>;`,
+    `export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>`,
+    `export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>`,
     '',
     'export type TypeInfo<Session = any> = {',
     `  lists: {`,
     ...listsTypeInfo,
-    `  };`,
-    `  prisma: import('${prismaClientPath}').PrismaClient;`,
-    `  session: Session;`,
-    `};`,
+    `  }`,
+    `  prisma: import('${prismaClientPath}').PrismaClient`,
+    `  session: Session`,
+    `}`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`
-    `type __TypeInfo<Session = any> = TypeInfo<Session>;`,
+    `type __TypeInfo<Session = any> = TypeInfo<Session>`,
     ``,
     `export type Lists<Session = any> = {`,
     `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>`,
-    `} & Record<string, import('@keystone-6/core').ListConfig<any>>;`,
+    `} & Record<string, import('@keystone-6/core').ListConfig<any>>`,
     ``,
     `export {}`,
     ``,

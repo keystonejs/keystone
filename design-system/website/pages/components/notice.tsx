@@ -5,7 +5,7 @@ import { jsx } from '@keystone-ui/core'
 import { Notice, noticeToneValues } from '@keystone-ui/notice'
 
 import { Page } from '../../components/Page'
-import { toLabel, aAn } from '../../utils'
+import { capitalise, aAn } from '../../utils'
 
 export default function ButtonPage () {
   const actions = {
@@ -20,7 +20,7 @@ export default function ButtonPage () {
       <div css={{ maxWidth: 860 }}>
         {noticeToneValues.map(tone => (
           <Notice
-            title={toLabel(tone)}
+            title={capitalise(tone)}
             key={tone}
             tone={tone}
             css={{ marginBottom: 20 }}

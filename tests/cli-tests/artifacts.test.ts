@@ -43,6 +43,7 @@ describe('postinstall', () => {
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch))
     expect(recording()).toMatchInlineSnapshot(`"? Generated GraphQL and Prisma schemas"`)
   })
+
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
@@ -55,6 +56,7 @@ describe('postinstall', () => {
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch))
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
+
   test('writes the correct node_modules files', async () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,

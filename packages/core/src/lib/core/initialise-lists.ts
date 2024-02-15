@@ -1,17 +1,17 @@
 import type { CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
 import { type getGqlNames, QueryMode } from '../../types'
-import type {
-  BaseItem,
-  BaseListTypeInfo,
-  CacheHintArgs,
-  FindManyArgs,
-  GraphQLTypesForList,
-  KeystoneConfig,
-  ListGraphQLTypes,
-  ListHooks,
-  MaybePromise,
-  NextFieldType,
+import {
+  type BaseItem,
+  type BaseListTypeInfo,
+  type CacheHintArgs,
+  type FindManyArgs,
+  type GraphQLTypesForList,
+  type ListGraphQLTypes,
+  type ListHooks,
+  type KeystoneConfig,
+  type MaybePromise,
+  type NextFieldType,
 } from '../../types'
 import { graphql } from '../..'
 import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks'

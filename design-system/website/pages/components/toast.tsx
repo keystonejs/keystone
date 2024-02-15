@@ -6,6 +6,7 @@ import { jsx, Stack } from '@keystone-ui/core'
 import { useToasts } from '@keystone-ui/toast'
 
 import { Page } from '../../components/Page'
+import { capitalise } from '../../utils'
 
 export default function OptionsPage () {
   const { addToast } = useToasts()
@@ -16,7 +17,7 @@ export default function OptionsPage () {
           return (
             <Button
               onClick={() => {
-                addToast({ title: `${titleCase(tone)} toast`, tone })
+                addToast({ title: `${capitalise(tone)} toast`, tone })
               }}
             >
               Add {tone} toast
@@ -38,8 +39,4 @@ export default function OptionsPage () {
       </Stack>
     </Page>
   )
-}
-
-function titleCase (str: string) {
-  return str.slice(0, 1).toUpperCase() + str.slice(1)
 }

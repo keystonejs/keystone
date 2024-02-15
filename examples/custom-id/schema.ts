@@ -38,12 +38,29 @@ export const lists = {
     fields: {
       description: text({ validation: { isRequired: true } }),
       assignedTo: relationship({ ref: 'Person', many: false }),
+      options: relationship({ ref: 'Option', many: true }),
       orderedAt: timestamp(),
     },
     hooks: {
       resolveInput: {
         create: async ({ listKey, operation, resolvedData }) => {
           return { ...resolvedData, id: makeCustomIdentifier(listKey) }
+        },
+      },
+    },
+  }),
+  Option: list({
+    access: allowAll,
+    db: {
+      idField: { kind: 'number', type: 'Int' },
+    },
+    fields: {
+      description: text({ validation: { isRequired: true } }),
+    },
+    hooks: {
+      resolveInput: {
+        create: async ({ listKey, operation, resolvedData }) => {
+          return { ...resolvedData, id: 3 }
         },
       },
     },

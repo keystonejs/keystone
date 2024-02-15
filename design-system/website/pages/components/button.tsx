@@ -5,16 +5,16 @@ import { jsx, Stack } from '@keystone-ui/core'
 import { Button, buttonToneValues, type ToneKey, buttonWeightValues } from '@keystone-ui/button'
 
 import { Page } from '../../components/Page'
-import { toLabel } from '../../utils'
+import { capitalise } from '../../utils'
 
-const Variants = ({ tone }: { tone: ToneKey }) => {
-  const toneLabel = toLabel(tone)
+function Variants ({ tone }: { tone: ToneKey }) {
+  const toneLabel = capitalise(tone)
   return (
     <div>
       <h3>{toneLabel} Tone</h3>
       <Stack across gap="medium" align="center">
         {buttonWeightValues.map(weight => {
-          const weightLabel = toLabel(weight)
+          const weightLabel = capitalise(weight)
           return (
             <Button tone={tone} weight={weight} key={weight}>
               {toneLabel} {weightLabel}
