@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import type { ListenOptions } from 'node:net'
 import next from 'next'
 import { createSystem } from '../lib/createSystem'
-import { createExpressServer } from '../lib/server/createExpressServer'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware'
+import { createExpressServer } from '../lib/createExpressServer'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import {
   getBuiltKeystoneConfigurationPath,
   getBuiltKeystoneConfiguration,

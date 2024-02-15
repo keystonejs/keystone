@@ -2,8 +2,11 @@ import url from 'url'
 import path from 'path'
 import type express from 'express'
 import type next from 'next'
-import type { KeystoneConfig, KeystoneContext } from '../../types'
-import { pkgDir } from '../../pkg-dir'
+import {
+  type KeystoneConfig,
+  type KeystoneContext
+} from '../types'
+import { pkgDir } from '../pkg-dir'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 

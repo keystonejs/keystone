@@ -5,7 +5,7 @@ import {
   type KeystoneConfig,
   type KeystoneContext
 } from './types'
-import { createAdminUIMiddlewareWithNextApp } from './lib/server/createAdminUIMiddleware'
+import { createAdminUIMiddlewareWithNextApp } from './lib/createAdminUIMiddleware'
 import {
   idFieldType
 } from './lib/id-field'
@@ -14,7 +14,7 @@ import {
 export { createSystem } from './lib/createSystem'
 
 /** @deprecated, TODO: remove in breaking change */
-export { createExpressServer } from './lib/server/createExpressServer'
+export { createExpressServer } from './lib/createExpressServer'
 
 function injectIdFields (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
   // some error checking

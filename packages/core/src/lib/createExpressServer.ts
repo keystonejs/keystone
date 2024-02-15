@@ -12,8 +12,11 @@ import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/dis
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
-import { healthCheckPath as defaultHealthCheckPath } from '../defaults'
+import {
+  type GraphQLConfig,
+  type KeystoneConfig,
+  type KeystoneContext,
+} from '../types'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -70,7 +73,7 @@ export async function createExpressServer (
   if (config.server?.healthCheck) {
     const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck
 
-    expressServer.use(healthCheck.path ?? defaultHealthCheckPath, (req, res) => {
+    expressServer.use(healthCheck.path ?? '/_healthcheck', (req, res) => {
       if (typeof healthCheck.data === 'function') return res.json(healthCheck.data())
       if (healthCheck.data) return res.json(healthCheck.data)
 
