@@ -126,24 +126,16 @@ function unpack (i: IdFieldConfig) {
       },
     } as const
   }
-  const { kind } = i
+  const { kind, type } = i
   if (kind === 'cuid') return { kind: 'cuid', type: 'String', default_: { kind } } as const
   if (kind === 'uuid') return { kind: 'uuid', type: 'String', default_: { kind } } as const
   if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const
-  if (kind === 'autoincrement') {
-    if (i.type === 'BigInt') {
-      return { kind: 'autoincrement', type: 'BigInt', default_: { kind } } as const
-    }
-    return { kind: 'autoincrement', type: 'Int', default_: { kind } } as const
-  }
-
+  if (kind === 'number') return { kind: 'number', type: type ?? 'Int', default_: undefined } as const
+  if (kind === 'autoincrement') return { kind: 'autoincrement', type: type ?? 'Int', default_: { kind } } as const
   throw new Error(`Unknown id type ${kind}`)
 }
 
-export function idFieldType (
-  config: IdFieldConfig,
-  isSingleton: boolean
-): FieldTypeFunc<BaseListTypeInfo> {
+export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> {
   const { kind, type: type_, default_ } = unpack(config)
   const parseTypeFn = {
     Int: isInt,
@@ -170,7 +162,7 @@ export function idFieldType (
       mode: 'required',
       scalar: type_,
       nativeType: NATIVE_TYPES[meta.provider]?.[kind],
-      default: isSingleton ? undefined : default_,
+      default: default_,
     })({
       ...config,
 

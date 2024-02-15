@@ -35,7 +35,7 @@ function injectIdFields (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
       listsWithIds[listKey] = {
         ...list,
         fields: {
-          id: idFieldType({ kind: 'autoincrement', type: 'Int' }),
+          id: idFieldType({ kind: 'number', type: 'Int' }),
           ...list.fields,
         },
       }
