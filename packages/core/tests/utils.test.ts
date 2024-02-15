@@ -1,4 +1,4 @@
-import { upcase, humanize } from '../src/lib/utils'
+import { humanize } from '../src/lib/utils'
 
 describe('utils', () => {
   test('humanize()', () => {
@@ -8,16 +8,10 @@ describe('utils', () => {
     expect(humanize('kebab-case')).toBe('Kebab Case')
     expect(humanize('multiple words here')).toBe('Multiple Words Here')
     expect(humanize('Multiple Words Here')).toBe('Multiple Words Here')
-  })
-
-  test('upcase', () => {
-    expect(upcase('Foo')).toEqual('Foo')
-    expect(upcase('foo')).toEqual('Foo')
-    expect(upcase('FooBar')).toEqual('FooBar')
-    expect(upcase('fooBar')).toEqual('FooBar')
-    expect(upcase('Foo bar')).toEqual('Foo bar')
-    expect(upcase('foo bar')).toEqual('Foo bar')
-    expect(upcase('Foo Bar')).toEqual('Foo Bar')
-    expect(upcase('foo Bar')).toEqual('Foo Bar')
+    expect(humanize('foo')).toBe('Foo')
+    expect(humanize('Foo')).toBe('Foo')
+    expect(humanize('fooBar')).toBe('Foo Bar')
+    expect(humanize('FooBar')).toBe('Foo Bar')
+    expect(humanize('Foo Bar')).toBe('Foo Bar')
   })
 })

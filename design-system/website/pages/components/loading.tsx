@@ -6,7 +6,7 @@ import { jsx, Box, Stack } from '@keystone-ui/core'
 import { LoadingDots, loadingToneValues } from '@keystone-ui/loading'
 
 import { Page } from '../../components/Page'
-import { toLabel } from '../../utils'
+import { capitalise } from '../../utils'
 
 export default function LoadingPage () {
   return (
@@ -19,19 +19,19 @@ export default function LoadingPage () {
           <h3>{tone}</h3>
           <Stack across gap="large">
             <LoadingDots
-              label={`${toLabel(tone)} is loading`}
+              label={`${capitalise(tone)} is loading`}
               key={tone}
               tone={tone}
               size="large"
             />
             <LoadingDots
-              label={`${toLabel(tone)} is loading`}
+              label={`${capitalise(tone)} is loading`}
               key={tone}
               tone={tone}
               size="medium"
             />
             <LoadingDots
-              label={`${toLabel(tone)} is loading`}
+              label={`${capitalise(tone)} is loading`}
               key={tone}
               tone={tone}
               size="small"

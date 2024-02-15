@@ -15,7 +15,7 @@ import { type ToastProps, type ToastPropsExact } from './types'
 // Provider
 // ------------------------------
 
-export const ToastProvider = ({ children }: { children: ReactNode }) => {
+export function ToastProvider ({ children }: { children: ReactNode }) {
   const [toastStack, setToastStack] = useState<ToastPropsExact[]>([])
 
   const context = useMemo(
