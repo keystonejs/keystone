@@ -3,7 +3,10 @@ import cors from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
-import { type GraphQLFormattedError, type GraphQLSchema } from 'graphql'
+import {
+  type GraphQLFormattedError,
+  type GraphQLSchema
+} from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
@@ -43,7 +46,7 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
 
 export async function createExpressServer (
   config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
-  graphQLSchema: GraphQLSchema, // TODO: redundant, remove in breaking change
+  graphQLSchema: GraphQLSchema, // TODO: redundant, prefer context.graphql.schema, remove in breaking change
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
