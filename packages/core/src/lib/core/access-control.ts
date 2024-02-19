@@ -157,7 +157,11 @@ export function parseFieldAccessControl (
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'function') {
-    return { read: access, create: access, update: access }
+    return {
+      read: access,
+      create: access,
+      update: access
+    }
   }
 
   return {
@@ -224,10 +228,10 @@ export function parseListAccessControl (
 
   return {
     operation: {
-      query: operation.query ?? allowAll,
-      create: operation.create ?? allowAll,
-      update: operation.update ?? allowAll,
-      delete: operation.delete ?? allowAll,
+      query: operation.query,
+      create: operation.create,
+      update: operation.update,
+      delete: operation.delete,
     },
     filter: {
       query: filter?.query ?? allowAll,
