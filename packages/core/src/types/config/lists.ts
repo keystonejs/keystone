@@ -220,7 +220,7 @@ export type ListGraphQLConfig = {
   //
   // Default: undefined
   omit?:
-    | true
+    | boolean
     | {
         query?: boolean
         create?: boolean

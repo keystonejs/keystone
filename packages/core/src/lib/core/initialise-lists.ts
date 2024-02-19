@@ -133,43 +133,41 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   )
 }
 
-function getIsEnabled (listsConfig: KeystoneConfig['lists']) {
-  const isEnabled: Record<string, IsEnabled> = {}
+function getIsEnabled (listKey: string, listConfig: KeystoneConfig['lists'][string]) {
+  const omit = listConfig.graphql?.omit ?? false
+  const {
+    defaultIsFilterable = true,
+    defaultIsOrderable = true
+  } = listConfig
 
-  for (const [listKey, listConfig] of Object.entries(listsConfig)) {
-    const omit = listConfig.graphql?.omit
-    const { defaultIsFilterable, defaultIsOrderable } = listConfig
-    if (!omit) {
-      // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
-      // when defining these values. We avoid duck-typing here as this is security related
-      // and we want to make it hard to write incorrect code.
-      throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
-      throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
-    }
-    if (omit === true) {
-      isEnabled[listKey] = {
-        type: false,
-        query: false,
-        create: false,
-        update: false,
-        delete: false,
-        filter: false,
-        orderBy: false,
-      }
-    } else {
-      isEnabled[listKey] = {
-        type: true,
-        query: !omit?.query,
-        create: !omit?.create,
-        update: !omit?.update,
-        delete: !omit?.delete,
-        filter: defaultIsFilterable ?? true,
-        orderBy: defaultIsOrderable ?? true,
-      }
+  // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
+  // when defining these values. We avoid duck-typing here as this is security related
+  // and we want to make it hard to write incorrect code.
+  throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
+  throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
+
+  if (typeof omit === 'boolean') {
+    const notOmit = !omit
+    return {
+      type: notOmit,
+      query: notOmit,
+      create: notOmit,
+      update: notOmit,
+      delete: notOmit,
+      filter: notOmit && defaultIsFilterable,
+      orderBy: notOmit && defaultIsOrderable,
     }
   }
 
-  return isEnabled
+  return {
+    type: true,
+    query: !omit.query,
+    create: !omit.create,
+    update: !omit.update,
+    delete: !omit.delete,
+    filter: defaultIsFilterable,
+    orderBy: defaultIsOrderable,
+  }
 }
 
 function defaultOperationHook () {}
@@ -316,18 +314,10 @@ function getListsWithInitialisedFields (
       throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable')
       throwIfNotAFilter(f.isOrderable, listKey, 'isOrderable')
 
-      const omit = f.graphql?.omit
-      const read = omit !== true && !omit?.read
-      const _isEnabled = {
-        read,
-        create: omit !== true && !omit?.create,
-        update: omit !== true && !omit?.update,
-        // Filter and orderBy can be defaulted at the list level, otherwise they
-        // default to `false` if no value was set at the list level.
-        filter: read && (f.isFilterable ?? intermediateList.graphql.isEnabled.filter),
-        orderBy: read && (f.isOrderable ?? intermediateList.graphql.isEnabled.orderBy),
-      }
-
+      const omit = f.graphql?.omit ?? false
+      const read = typeof omit === 'boolean' ? !omit : !omit.read
+      const create = typeof omit === 'boolean' ? !omit : !omit.create
+      const update = typeof omit === 'boolean' ? !omit : !omit.update
       const fieldModes = {
         create: f.ui?.createView?.fieldMode ?? list.ui?.createView?.defaultFieldMode ?? 'edit',
         item: f.ui?.itemView?.fieldMode ?? list.ui?.itemView?.defaultFieldMode ?? 'edit',
@@ -340,7 +330,15 @@ function getListsWithInitialisedFields (
         hooks: parseFieldHooks(f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
-          isEnabled: _isEnabled,
+          isEnabled: {
+            read,
+            create,
+            update,
+            // Filter and orderBy can be defaulted at the list level, otherwise they
+            // default to `false` if no value was set at the list level.
+            filter: read && (f.isFilterable ?? intermediateList.graphql.isEnabled.filter),
+            orderBy: read && (f.isOrderable ?? intermediateList.graphql.isEnabled.orderBy),
+          },
           isNonNull: {
             read: f.graphql?.isNonNull?.read ?? false,
             create: f.graphql?.isNonNull?.create ?? false,
@@ -352,20 +350,20 @@ function getListsWithInitialisedFields (
           description: f.ui?.description ?? null,
           views: f.ui?.views ?? null,
           createView: {
-            fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
+            fieldMode: create ? fieldModes.create : 'hidden',
           },
 
           itemView: {
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
-            fieldMode: _isEnabled.update
+            fieldMode: update
               ? fieldModes.item
-              : _isEnabled.read && fieldModes.item !== 'hidden'
+              : read && fieldModes.item !== 'hidden'
               ? 'read'
               : 'hidden',
           },
 
           listView: {
-            fieldMode: _isEnabled.read ? fieldModes.list : 'hidden',
+            fieldMode: read ? fieldModes.list : 'hidden',
           },
         },
 
@@ -774,9 +772,13 @@ export function initialiseLists (config: KeystoneConfig): Record<string, Initial
 
   let intermediateLists
   intermediateLists = Object.fromEntries(
-    Object.entries(getIsEnabled(listsConfig)).map(([key, isEnabled]) => [
+    Object.entries(listsConfig).map(([key, listConfig]) => [
       key,
-      { graphql: { isEnabled } },
+      {
+        graphql: {
+          isEnabled: getIsEnabled(key, listConfig)
+        }
+      },
     ])
   )
 

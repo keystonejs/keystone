@@ -10,6 +10,8 @@ function yesNo (x: boolean | undefined) {
   return 'U'
 }
 
+const UFT = [false, true] as const
+
 function makeFieldEntry ({
   isFilterable,
   isOrderable,
@@ -18,7 +20,7 @@ function makeFieldEntry ({
   isFilterable?: boolean
   isOrderable?: boolean
   omit?:
-    | true
+    | boolean
     | {
         read?: boolean
         create?: boolean
@@ -28,10 +30,9 @@ function makeFieldEntry ({
   const suffix = [
     `Filterable${yesNo(isFilterable)}`,
     `Orderable${yesNo(isOrderable)}`,
-    `Omit${
-      omit === undefined ? 'U'
-    : omit === true ? 'T'
-    : [omit.read, omit.create, omit.update].map(yesNo).join('')}`
+    `Omit${typeof omit !== 'object'
+      ? yesNo(omit)
+      : [omit.read, omit.create, omit.update].map(yesNo).join('')}`
   ].join('')
 
   return [`Field_${suffix}`, text({
@@ -49,7 +50,7 @@ function makeList ({
   isFilterable?: boolean
   isOrderable?: boolean
   omit?:
-    | true
+    | boolean
     | {
         query?: boolean
         create?: boolean
@@ -58,18 +59,15 @@ function makeList ({
       }
 }, fieldsMatrix: ReturnType<typeof makeFieldEntry>[]) {
   const prefix = `List_Filterable${yesNo(isFilterable)}_Orderable${yesNo(isOrderable)}` as const
-  const name =
-    omit === undefined
-      ? `${prefix}_OmitU`
-      : omit === true
-        ? `${prefix}_OmitT`
-        : `${prefix}_Omit${[omit.query, omit.create, omit.update, omit.delete].map(yesNo).join('')}`
+  const name = `${prefix}_Omit${
+    typeof omit !== 'object'
+      ? yesNo(omit)
+      : [omit.query, omit.create, omit.update, omit.delete].map(yesNo).join('')}`
 
   return {
     name,
     access: allowAll,
     fields: {
-      name: text(),
       ...Object.fromEntries(fieldsMatrix)
     },
     defaultIsFilterable: isFilterable,
@@ -83,14 +81,15 @@ function makeList ({
 
 const listsMatrix = [...function* () {
   const fieldsMatrix = [...function* () {
-    for (const isFilterable of [undefined, false]) {
-      for (const isOrderable of [undefined, false]) {
-        yield makeFieldEntry({ isFilterable, isOrderable, omit: undefined })
-        yield makeFieldEntry({ isFilterable, isOrderable, omit: true })
+    for (const isFilterable of UFT) {
+      for (const isOrderable of UFT) {
+        for (const omit of UFT) {
+          yield makeFieldEntry({ isFilterable, isOrderable, omit })
+        }
 
-        for (const read of [undefined, true]) {
-          for (const create of [undefined, true]) {
-            for (const update of [undefined, true]) {
+        for (const read of UFT) {
+          for (const create of UFT) {
+            for (const update of UFT) {
               yield makeFieldEntry({
                 isFilterable,
                 isOrderable,
@@ -107,15 +106,16 @@ const listsMatrix = [...function* () {
     }
   }()]
 
-  for (const isFilterable of [undefined, false]) {
-    for (const isOrderable of [undefined, false]) {
-      yield makeList({ isFilterable, isOrderable, omit: undefined }, fieldsMatrix)
-      yield makeList({ isFilterable, isOrderable, omit: true }, fieldsMatrix)
+  for (const isFilterable of UFT) {
+    for (const isOrderable of UFT) {
+      for (const omit of UFT) {
+        yield makeList({ isFilterable, isOrderable, omit }, fieldsMatrix)
+      }
 
-      for (const query of [undefined, true]) {
-        for (const create of [undefined, true]) {
-          for (const update of [undefined, true]) {
-            for (const delete_ of [undefined, true]) {
+      for (const query of UFT) {
+        for (const create of UFT) {
+          for (const update of UFT) {
+            for (const delete_ of UFT) {
               yield makeList({
                 isFilterable,
                 isOrderable,
@@ -140,7 +140,6 @@ if (dbProvider !== 'mysql') {
     name: 'RelatedToAll',
     access: allowAll,
     fields: {
-      name: text(),
       ...Object.fromEntries(function* () {
         for (const l of listsMatrix) {
           // WARNING: if names exceed some length, expect duplicate _AB_unique index errors
@@ -236,12 +235,25 @@ describe(`Omit (${dbProvider})`, () => {
 
     for (const l of listsMatrix) {
       const name = l.name.toLowerCase()
-      if (l.graphql.omit === true) {
-        expect(schemaTypes).not.toContain(name)
-        expect(adminMetaLists).not.toContain(name)
-        expect(mutations).not.toContain(`create${name}`)
-        expect(mutations).not.toContain(`update${name}`)
-        expect(mutations).not.toContain(`delete${name}`)
+      if (typeof l.graphql.omit === 'boolean') {
+        if (l.graphql.omit === true) {
+          expect(schemaTypes).not.toContain(name)
+          expect(adminMetaLists).not.toContain(name)
+          expect(queries).not.toContain(name)
+          expect(queries).not.toContain(name + 's')
+          expect(mutations).not.toContain(`create${name}`)
+          expect(mutations).not.toContain(`update${name}`)
+          expect(mutations).not.toContain(`delete${name}`)
+        } else {
+          expect(schemaTypes).toContain(name)
+          expect(adminMetaLists).toContain(name)
+          expect(queries).toContain(name)
+          expect(queries).toContain(name + 's')
+          expect(mutations).toContain(`create${name}`)
+          expect(mutations).toContain(`update${name}`)
+          expect(mutations).toContain(`delete${name}`)
+        }
+
         continue
       }
 
