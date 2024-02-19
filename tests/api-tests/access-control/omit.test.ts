@@ -223,8 +223,7 @@ function dropPostgresThings (data: any) {
   }
 }
 
-// TODO: dont use snapshots
-describe(`Schema (${dbProvider})`, () => {
+describe(`Omit (${dbProvider})`, () => {
   const config = testConfig({ lists })
 
   test('Public', async () => {
