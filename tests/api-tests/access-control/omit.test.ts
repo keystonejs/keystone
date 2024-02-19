@@ -1,4 +1,4 @@
-import { setupTestEnv } from '@keystone-6/api-tests/test-runner'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list, type ListSchemaConfig } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
@@ -226,8 +226,7 @@ function dropPostgresThings (data: any) {
 describe(`Omit (${dbProvider})`, () => {
   const config = testConfig({ lists })
 
-  test('Public', async () => {
-    const { testArgs: { context } } = await setupTestEnv({ config })
+  test('Common Schema', setupTestRunner({ config })(async ({ context }) => {
     const data = await context.graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
     dropPostgresThings(data)
 
@@ -277,10 +276,9 @@ describe(`Omit (${dbProvider})`, () => {
         expect(mutations).toContain(`delete${name}`)
       }
     }
-  })
+  }))
 
-  test('Sudo', async () => {
-    const { testArgs: { context } } = await setupTestEnv({ config })
+  test('Sudo Schema', setupTestRunner({ config })(async ({ context }) => {
     const data = await context.sudo().graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
     dropPostgresThings(data)
 
@@ -301,5 +299,5 @@ describe(`Omit (${dbProvider})`, () => {
       expect(mutations).toContain(`update${name}`)
       expect(mutations).toContain(`delete${name}`)
     }
-  })
+  }))
 })
