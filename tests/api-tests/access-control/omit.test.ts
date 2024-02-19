@@ -2,7 +2,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list, type ListSchemaConfig } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { dbProvider, testConfig } from '../utils'
+import { dbProvider } from '../utils'
 
 type ListConfig = {
   name: string
@@ -82,9 +82,6 @@ for (const isFilterable of [undefined, false]) {
     }
   }
 }
-
-const listMatrixSet = new Set([...listMatrix.map(x => x.name)])
-if (listMatrixSet.size !== listMatrix.length) throw new Error('oh oh')
 
 const fieldMatrix: FieldConfig[] = []
 for (const isFilterable of [undefined, false]) {
@@ -224,7 +221,7 @@ function dropPostgresThings (data: any) {
 }
 
 describe(`Omit (${dbProvider})`, () => {
-  const config = testConfig({ lists })
+  const config = { lists }
 
   test('Common Schema', setupTestRunner({ config })(async ({ context }) => {
     const data = await context.graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
