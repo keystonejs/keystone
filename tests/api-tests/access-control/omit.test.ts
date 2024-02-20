@@ -1,4 +1,4 @@
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuite } from '@keystone-6/api-tests/test-runner'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
@@ -221,11 +221,14 @@ type IntrospectionResult = {
 }
 
 describe(`Omit (${dbProvider})`, () => {
-  const config = {
-    lists: Object.fromEntries(listsMatrix.map(({ name, ...l }) => [name, list(l)]))
-  }
+  const suite = setupTestSuite({
+    config: {
+      lists: Object.fromEntries(listsMatrix.map(({ name, ...l }) => [name, list(l)]))
+    }
+  })
 
-  test('Common Schema', setupTestRunner({ config })(async ({ context }) => {
+  test('Common Schema', async () => {
+    const { context } = suite()
     const data = await context.graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
 
     const schemaTypes = data.__schema.types.map(x => x.name.toLowerCase())
@@ -287,9 +290,10 @@ describe(`Omit (${dbProvider})`, () => {
         expect(mutations).toContain(`delete${name}`)
       }
     }
-  }))
+  })
 
-  test('Sudo Schema', setupTestRunner({ config })(async ({ context }) => {
+  test('Sudo Schema', async () => {
+    const { context } = suite()
     const data = await context.sudo().graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
 
     const schemaTypes = data.__schema.types.map(x => x.name.toLowerCase())
@@ -309,5 +313,5 @@ describe(`Omit (${dbProvider})`, () => {
       expect(mutations).toContain(`update${name}`)
       expect(mutations).toContain(`delete${name}`)
     }
-  }))
+  })
 })

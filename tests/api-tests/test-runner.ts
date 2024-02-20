@@ -4,8 +4,7 @@ import { join } from 'node:path'
 import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { type Express } from 'express'
-import { type Server } from 'node:http'
+import supertest from 'supertest'
 import {
   getConfig,
   getDMMF,
@@ -24,8 +23,6 @@ import {
 } from '@keystone-6/core/system'
 import {
   type BaseKeystoneTypeInfo,
-  type KeystoneConfig,
-  type KeystoneContext
 } from '@keystone-6/core/types'
 import { generatePrismaAndGraphQLSchemas, type PrismaModule } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'
@@ -79,43 +76,42 @@ afterAll(async () => {
   }
 })
 
-export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
+export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
 }) {
-  return (testFn: (args: {
-    context: KeystoneContext<TypeInfo>
-    config: KeystoneConfig<TypeInfo>
-    express: Express | null
-    http: Server | null
-  }) => Promise<void>) => async () => {
-    const tmp = join(tmpdir(), `ks6-tests-${randomBytes(8).toString('base64url')}`)
-    await fs.mkdir(tmp)
+  const tmp = join(tmpdir(), `ks6-tests-${randomBytes(8).toString('base64url')}`)
+  await fs.mkdir(tmp)
 
-    const prismaSchemaPath = join(tmp, 'schema.prisma')
-    const config = initConfig({
-      db: {
-        provider: dbProvider,
-        url: dbUrl === 'file:./test.db' ? `file:${join(tmp, 'test.db')}` : dbUrl,
-        prismaClientPath: join(tmp, '.client'),
-        prismaSchemaPath,
-      },
-      types: {
-        path: join(tmp, 'test-types.ts')
-      },
-      lists: config_.lists,
-      graphql: {
-        schemaPath: join(tmp, 'schema.graphql'),
-      },
-      ui: {
-        isDisabled: true,
-      },
-    })
-    const { graphQLSchema, getKeystone } = createSystem(config)
-    const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+  const prismaSchemaPath = join(tmp, 'schema.prisma')
+  const config = initConfig({
+    db: {
+      provider: dbProvider,
+      url: dbUrl === 'file:./test.db' ? `file:${join(tmp, 'test.db')}` : dbUrl,
+      prismaClientPath: join(tmp, '.client'),
+      prismaSchemaPath,
+      ...config_.db,
+    },
+    types: {
+      path: join(tmp, 'test-types.ts')
+    },
+    lists: config_.lists,
+    graphql: {
+      schemaPath: join(tmp, 'schema.graphql'),
+      ...config_.graphql,
+    },
+    ui: {
+      isDisabled: true,
+      ...config_.ui,
+    },
+  })
+  const { graphQLSchema, getKeystone } = createSystem(config)
+  const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+
+  async function reset () {
     await withMigrate(prismaSchemaPath, async migrate => {
       await runMigrateWithDbUrl(config.db.url, undefined, () => migrate.reset())
 
@@ -126,37 +122,110 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
         })
       })
     })
+  }
 
+  await reset()
+  const {
+    context,
+    connect,
+    disconnect
+  } = getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
+
+  if (serve) {
     const {
-      context,
-      connect,
-      disconnect
-    } = getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
+      expressServer: express,
+      httpServer: http
+    } = await createExpressServer(config, context.graphql.schema, context)
 
-    if (serve) {
-      const {
-        expressServer: express,
-        httpServer: http
-      } = await createExpressServer(config, context.graphql.schema, context)
-
-      await connect()
-      try {
-        return await testFn({ context, config, http, express })
-      } finally {
-        await disconnect()
-      }
+    async function gql (...args: Parameters<typeof context.graphql.raw>) {
+      const { body } = await supertest(express)
+        .post(config.graphql?.path || '/api/graphql')
+        .send(...args)
+        .set('Accept', 'application/json')
+      return body
     }
+
+    return {
+      artifacts,
+      connect,
+      context,
+      config,
+      http,
+      gql,
+      express,
+      disconnect,
+      reset
+    }
+  }
+
+  async function gql (...args: Parameters<typeof context.graphql.raw>) {
+    return await context.graphql.raw(...args)
+  }
+
+  return {
+    artifacts,
+    connect,
+    context,
+    config,
+    http: null,
+    express: null,
+    gql,
+    disconnect,
+    reset
+  }
+}
+
+export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
+  config: config_,
+  serve = false,
+}: {
+  config: FloatingConfig<TypeInfo>
+  serve?: boolean
+}) {
+  return (testFn: (
+    args: Omit<Awaited<ReturnType<typeof setupTestEnv>>,
+      | 'artifacts'
+      | 'connect'
+      | 'disconnect'>
+  ) => Promise<void>) => async () => {
+    const { connect, context, config, http, express, gql, disconnect, reset } = await setupTestEnv({
+      config: config_,
+      serve
+    })
 
     await connect()
     try {
-      return await testFn({
-        context,
-        config,
-        http: null,
-        express: null,
-      })
+      return await testFn({ context, config, http, express, gql, reset })
     } finally {
       await disconnect()
     }
+  }
+}
+
+export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
+  config: config_,
+  serve = false,
+}: {
+  config: FloatingConfig<TypeInfo>
+  serve?: boolean
+}) {
+  let result: Awaited<ReturnType<typeof setupTestEnv>> | null
+
+  beforeAll(async () => {
+    result = await setupTestEnv({ config: config_, serve })
+    if (!result) throw new Error('setupTestEnv hasnt run')
+    await result.connect()
+  })
+
+  afterAll(async () => {
+    if (!result) throw new Error('setupTestEnv hasnt run')
+    await result.disconnect()
+  })
+
+  return () => {
+    if (!result) throw new Error('setupTestEnv hasnt run')
+
+    const { context, config, http, express, gql, gqlSuper, reset } = result
+    return { context, config, http, express, gql, gqlSuper, reset }
   }
 }
