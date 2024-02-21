@@ -1,23 +1,24 @@
 import { assertInputObjectType } from 'graphql'
-import type {
-  BaseListTypeInfo,
-  CreateListItemAccessControl,
-  FieldAccessControl,
-  IndividualFieldAccessControl,
-  ListAccessControl,
-  DeleteListItemAccessControl,
-  FieldCreateItemAccessArgs,
-  FieldReadItemAccessArgs,
-  FieldUpdateItemAccessArgs,
-  UpdateListItemAccessControl,
-  ListOperationAccessControl,
-  ListFilterAccessControl,
-  KeystoneContext,
+import {
+  type BaseItem,
+  type BaseListTypeInfo,
+  type CreateListItemAccessControl,
+  type DeleteListItemAccessControl,
+  type FieldAccessControl,
+  type FieldCreateItemAccessArgs,
+  type FieldReadItemAccessArgs,
+  type FieldUpdateItemAccessArgs,
+  type IndividualFieldAccessControl,
+  type KeystoneContext,
+  type ListAccessControl,
+  type ListFilterAccessControl,
+  type ListOperationAccessControl,
+  type UpdateListItemAccessControl,
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
 import { accessReturnError, extensionError } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
+import { type InitialisedList } from './initialise-lists'
 import { type InputFilter } from './where-inputs'
 
 export function cannotForItem (operation: string, list: InitialisedList) {
@@ -37,26 +38,64 @@ export function cannotForItemFields (
   } - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
 }
 
-export async function getOperationAccess (
+export async function getOperationFieldAccess (
+  item: BaseItem,
   list: InitialisedList,
+  fieldKey: string,
   context: KeystoneContext,
-  operation: 'query' | 'create' | 'update' | 'delete'
+  operation: 'read' | 'create' | 'update'
 ) {
-  const args = { operation, session: context.session, listKey: list.listKey, context }
-  const access = list.access.operation[operation]
+  const { listKey } = list
+  const access = list.fields[fieldKey].access[operation]
   let result
   try {
-    // @ts-expect-error
-    result = await access(args)
+    result = await access({
+      operation: 'read',
+      session: context.session,
+      listKey,
+      fieldKey,
+      context,
+      item,
+    } as never) // TODO: FIXME
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${list.listKey}.access.operation.${args.operation}` },
+      { error, tag: `${list.listKey}.${fieldKey}.access.${operation}` },
     ])
   }
 
   if (typeof result !== 'boolean') {
     throw accessReturnError([
-      { tag: `${args.listKey}.access.operation.${args.operation}`, returned: typeof result },
+      { tag: `${listKey}.access.operation.${operation}`, returned: typeof result },
+    ])
+  }
+
+  return result
+}
+
+export async function getOperationAccess (
+  list: InitialisedList,
+  context: KeystoneContext,
+  operation: 'query' | 'create' | 'update' | 'delete'
+) {
+  const { listKey } = list
+  const access = list.access.operation[operation]
+  let result
+  try {
+    result = await access({
+      operation,
+      session: context.session,
+      listKey,
+      context
+    } as never) // TODO: FIXME
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${listKey}.access.operation.${operation}` },
+    ])
+  }
+
+  if (typeof result !== 'boolean') {
+    throw accessReturnError([
+      { tag: `${listKey}.access.operation.${operation}`, returned: typeof result },
     ])
   }
 

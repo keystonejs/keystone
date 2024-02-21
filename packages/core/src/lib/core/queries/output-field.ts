@@ -12,11 +12,10 @@ import type {
   FieldReadItemAccessArgs,
 } from '../../../types'
 import { graphql } from '../../..'
-import { getOperationAccess, getAccessFilters } from '../access-control'
+import { getOperationFieldAccess, getOperationAccess, getAccessFilters } from '../access-control'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
 import type { InitialisedList } from '../initialise-lists'
 import { type IdType, getDBFieldKeyForFieldOnMultiField } from '../utils'
-import { accessReturnError, extensionError } from '../graphql-errors'
 import { accessControlledFilter } from './resolvers'
 import * as queries from './resolvers'
 
@@ -160,6 +159,8 @@ export function outputTypeField (
   fieldKey: string,
   lists: Record<string, InitialisedList>
 ) {
+  const list = lists[listKey]
+
   return graphql.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
@@ -167,39 +168,16 @@ export function outputTypeField (
     args: output.args,
     extensions: output.extensions,
     async resolve (rootVal: BaseItem, args, context, info) {
-      const id = (rootVal as any).id as IdType
+      const id = rootVal.id as IdType
+      const fieldAccess = await getOperationFieldAccess(rootVal, list, fieldKey, context, 'read')
+      if (!fieldAccess) return null
 
-      let canAccess
-      try {
-        canAccess = await access({
-          context,
-          fieldKey,
-          item: rootVal,
-          listKey,
-          operation: 'read',
-          session: context.session,
-        })
-      } catch (error: any) {
-        throw extensionError('Access control', [
-          { error, tag: `${listKey}.${fieldKey}.access.read` },
-        ])
-      }
-      if (typeof canAccess !== 'boolean') {
-        throw accessReturnError([
-          { tag: `${listKey}.${fieldKey}.access.read`, returned: typeof canAccess },
-        ])
-      }
-      if (!canAccess) {
-        return null
-      }
-
-      // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
+      // only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
       if (cacheHint && info) {
         maybeCacheControlFromInfo(info)?.setCacheHint(cacheHint)
       }
 
       const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info)
-
       if (output.resolve) {
         return output.resolve({ value, item: rootVal }, args, context, info)
       } else {
