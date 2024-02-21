@@ -239,6 +239,17 @@ describe(`Access (${dbProvider})`, () => {
     return id as string
   }
 
+  async function seedMany (listKey: string, context: any) {
+    const items = await context.sudo().db[listKey].createMany({
+      data: [
+        {},
+        {},
+        {},
+      ]
+    })
+    return items.map((x: any) => x.id) as string[]
+  }
+
   for (const l of lists) {
     describe(`${l.name}`, () => {
       test(`list.access.${l.expect.type}.query: ${l.expect.query}`, async () => {
@@ -253,6 +264,30 @@ describe(`Access (${dbProvider})`, () => {
           expect(item!.id).toBe(id)
         } else {
           expect(item).toBe(null)
+        }
+      })
+
+      test(`list.access.${l.expect.type}.query: ${l.expect.query} (many)`, async () => {
+        const { context } = suite()
+        const ids = await seedMany(l.name, context)
+
+        // query
+        const items = await context.query[l.name].findMany({
+          where: {
+            id: {
+              in: ids
+            }
+          }
+        })
+
+        expect(items).not.toBe(null)
+        if (l.expect.query) {
+          expect(items).toHaveLength(ids.length)
+          for (const id of ids) {
+            expect(items).toContainEqual(expect.objectContaining({ id }))
+          }
+        } else {
+          expect(items).toEqual([])
         }
       })
 
@@ -305,6 +340,38 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
+      test(`list.access.${l.expect.type}.create: ${l.expect.create} (many)`, async () => {
+        const { context } = suite()
+
+        // create
+        const createPromise = context.query[l.name].createMany({
+          data: [
+            {}, {}, {},
+          ],
+          query: `id ${l.fields.map(x => x.name).join(' ')}`
+        })
+
+        if (l.expect.create) {
+          const items = await createPromise
+          expect(items).not.toBe(null)
+          expect(items).toHaveLength(3)
+
+          for (const item of items) {
+            for (const f of l.fields) {
+              expect(item).toHaveProperty(f.name)
+              if (f.expect.read) {
+                expect(item![f.name]).toBe(f.defaultValue)
+              } else {
+                expect(item![f.name]).toBe(null)
+              }
+            }
+          }
+        } else {
+          const error = createPromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
+        }
+      })
+
       test(`list.access.${l.expect.type}.update: ${l.expect.update}`, async () => {
         const { context } = suite()
         const id = await seed(l.name, context)
@@ -327,6 +394,42 @@ describe(`Access (${dbProvider})`, () => {
               expect(item![f.name]).toBe(f.defaultValue)
             } else {
               expect(item![f.name]).toBe(null)
+            }
+          }
+        } else {
+          const error = updatePromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
+        }
+      })
+
+      test(`list.access.${l.expect.type}.update: ${l.expect.update} (many)`, async () => {
+        const { context } = suite()
+        const ids = await seedMany(l.name, context)
+
+        // update
+        const updatePromise = context.query[l.name].updateMany({
+          data: ids.map((id) => ({
+            where: {
+              id
+            },
+            data: {}
+          })),
+          query: `id ${l.fields.map(x => x.name).join(' ')}`
+        })
+
+        if (l.expect.update) {
+          const items = await updatePromise
+          expect(items).not.toBe(null)
+          expect(items).toHaveLength(ids.length)
+
+          for (const item of items) {
+            for (const f of l.fields) {
+              expect(item).toHaveProperty(f.name)
+              if (f.expect.read) {
+                expect(item![f.name]).toBe(f.defaultValue)
+              } else {
+                expect(item![f.name]).toBe(null)
+              }
             }
           }
         } else {
@@ -362,6 +465,39 @@ describe(`Access (${dbProvider})`, () => {
           // sudo required, as we might not have read
           const item_ = await context.sudo().db[l.name].findOne({ where: { id } })
           expect(item_).toBe(null)
+        } else {
+          const error = deletePromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
+        }
+      })
+
+      test(`list.access.${l.expect.type}.delete: ${l.expect.delete} (many)`, async () => {
+        const { context } = suite()
+        const ids = await seedMany(l.name, context)
+
+        // delete
+        const deletePromise = context.query[l.name].deleteMany({
+          where: ids.map((id) => ({
+            id
+          })),
+          query: `id ${l.fields.map(x => x.name).join(' ')}`
+        })
+
+        if (l.expect.delete) {
+          const items = await deletePromise
+          expect(items).not.toBe(null)
+          expect(items).toHaveLength(ids.length)
+
+          for (const item of items) {
+            for (const f of l.fields) {
+              expect(item).toHaveProperty(f.name)
+              if (f.expect.read) {
+                expect(item![f.name]).toBe(f.defaultValue)
+              } else {
+                expect(item![f.name]).toBe(null)
+              }
+            }
+          }
         } else {
           const error = deletePromise.catch(e => e.message)
           await expect(error).resolves.toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
