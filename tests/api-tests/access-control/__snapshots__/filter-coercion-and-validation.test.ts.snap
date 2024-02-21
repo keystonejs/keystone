@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Access control - Filter findMany - Bad function return value 1`] = `
-[
-  [GraphQLError: An error occurred while running "Access control".
-  - BadAccess.access.filter.query: Variable "$where" got invalid value "blah" at "where.name"; Expected type "StringFilter" to be an object.],
-]
-`;

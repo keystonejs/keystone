@@ -1,5 +1,38 @@
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text, password } from '@keystone-6/core/fields'
+import { createAuth } from '@keystone-6/auth'
+import { statelessSessions } from '@keystone-6/core/session'
+
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { config } from './utils'
+import { testConfig } from '../utils'
+
+const auth = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'id',
+})
+
+const lists = {
+  User: list({
+    fields: {
+      name: text(),
+      email: text({ isIndexed: 'unique' }),
+      password: password(),
+      noRead: text({ access: { read: () => false } }),
+      yesRead: text({ access: { read: () => true } }),
+    },
+    access: allowAll,
+  }),
+}
+
+const config = auth.withAuth(
+  testConfig({
+    lists,
+    session: statelessSessions(),
+  })
+)
 
 const runner = setupTestRunner({ config })
 
