@@ -45,15 +45,15 @@ export function createContext ({
   const files = createFilesContext(config)
   const construct = ({
     session,
-    sudo = false,
+    sudo,
     req,
     res,
   }: {
-    sudo?: Boolean
+    session?: unknown
+    sudo: Boolean
     req?: IncomingMessage
     res?: ServerResponse
-    session?: unknown
-  } = {}) => {
+  }) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query)
@@ -80,9 +80,7 @@ export function createContext ({
         req: newReq,
         res: newRes,
       })
-      return newContext.withSession(
-        config.session ? await config.session.get({ context: newContext }) : undefined
-      )
+      return newContext.withSession(await config.session?.get({ context: newContext }) ?? undefined)
     }
 
     const context: KeystoneContext = {
@@ -92,7 +90,9 @@ export function createContext ({
       prisma: prismaClient,
 
       sudo: () => construct({ session, sudo: true, req, res }),
-      exitSudo: () => construct({ session, sudo: false, req, res }), // TODO: remove, deprecated
+
+      // TODO: deprecated, remove in breaking change
+      exitSudo: () => construct({ session, sudo: false, req, res }),
 
       req,
       res,
@@ -107,9 +107,10 @@ export function createContext ({
       images,
       files,
 
-      // TODO: remove, deprecated
+      // TODO: deprecated, remove in breaking change
       gqlNames: (listKey: string) => lists[listKey].graphql.names,
 
+      // TODO: rename __internal ?
       ...(config.experimental?.contextInitialisedLists
         ? {
             experimental: { initialisedLists: lists },
@@ -128,5 +129,8 @@ export function createContext ({
     return context
   }
 
-  return construct()
+  return construct({
+    session: undefined,
+    sudo: false
+  })
 }
