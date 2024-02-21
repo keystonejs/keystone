@@ -137,11 +137,15 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       httpServer: http
     } = await createExpressServer(config, context.graphql.schema, context)
 
-    async function gql (...args: Parameters<typeof context.graphql.raw>) {
-      const { body } = await supertest(express)
-        .post(config.graphql?.path || '/api/graphql')
+    function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
+      return supertest(express)
+        .post(config.graphql?.path ?? '/api/graphql')
         .send(...args)
         .set('Accept', 'application/json')
+    }
+
+    async function gql (...args: Parameters<typeof context.graphql.raw>) {
+      const { body } = await gqlSuper(...args)
       return body
     }
 
@@ -152,6 +156,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       config,
       http,
       gql,
+      gqlSuper,
       express,
       disconnect,
       reset
@@ -170,6 +175,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     http: null,
     express: null,
     gql,
+    gqlSuper: null as any, // TODO: not amazing, but the error is easy
     disconnect,
     reset
   }
@@ -182,22 +188,14 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: FloatingConfig<TypeInfo>
   serve?: boolean
 }) {
-  return (testFn: (
-    args: Omit<Awaited<ReturnType<typeof setupTestEnv>>,
-      | 'artifacts'
-      | 'connect'
-      | 'disconnect'>
-  ) => Promise<void>) => async () => {
-    const { connect, context, config, http, express, gql, disconnect, reset } = await setupTestEnv({
-      config: config_,
-      serve
-    })
+  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
+    const result = await setupTestEnv({ config: config_, serve })
 
-    await connect()
+    await result.connect()
     try {
-      return await testFn({ context, config, http, express, gql, reset })
+      return await testFn(result)
     } finally {
-      await disconnect()
+      await result.disconnect()
     }
   }
 }

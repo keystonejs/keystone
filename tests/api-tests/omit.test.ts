@@ -2,7 +2,7 @@ import { setupTestSuite } from '@keystone-6/api-tests/test-runner'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { dbProvider } from '../utils'
+import { dbProvider } from './utils'
 
 function yesNo (x: boolean | undefined) {
   if (x === true) return 'T'
