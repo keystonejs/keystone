@@ -31,6 +31,22 @@ function makeFieldEntry ({
   }
 }
 
+function allowFilter () {
+  return {
+    id: {
+      not: null
+    }
+  }
+}
+
+function denyFilter () {
+  return {
+    id: {
+      equals: 'unknown'
+    }
+  }
+}
+
 function* makeList ({
   access,
   fields
@@ -106,9 +122,9 @@ function* makeList ({
 
   // filter duplicate tests
   if ([access.query, access.update, access.delete].includes(false)) {
-    const nameF = `List_Access_F${suffix}`
+    const nameFB = `List_Access_FB${suffix}`
     yield {
-      name: nameF,
+      name: nameFB,
       expect: { type: 'filter' as const, ...access },
       access: {
         operation: {
@@ -121,6 +137,34 @@ function* makeList ({
           query: access.query ? allowAll : denyAll,
           update: access.update ? allowAll : denyAll,
           delete: access.delete ? allowAll : denyAll,
+        },
+        item: {
+          create: allowAll,
+          update: allowAll,
+          delete: allowAll,
+        }
+      },
+      fields,
+      graphql: {
+        plural: nameFB + 's',
+      },
+    } as const
+
+    const nameF = `List_Access_F${suffix}`
+    yield {
+      name: nameF,
+      expect: { type: 'filter' as const, ...access },
+      access: {
+        operation: {
+          query: allowAll,
+          create: access.create ? allowAll : denyAll,
+          update: allowAll,
+          delete: allowAll,
+        },
+        filter: {
+          query: access.query ? allowFilter : denyFilter,
+          update: access.update ? allowFilter : denyFilter,
+          delete: access.delete ? allowFilter : denyFilter,
         },
         item: {
           create: allowAll,
