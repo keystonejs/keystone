@@ -256,6 +256,27 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
+      test(`list.access.${l.expect.type}.query: ${l.expect.query} for counting`, async () => {
+        const { context } = suite()
+        const id = await seed(l.name, context)
+
+        // query
+        const count = await context.query[l.name].count({
+          where: {
+            id: {
+              equals: id
+            }
+          }
+        })
+
+        if (l.expect.query) {
+          expect(count).not.toBe(null)
+          expect(count).toBe(1)
+        } else {
+          expect(count).toBe(0)
+        }
+      })
+
       test(`list.access.${l.expect.type}.create: ${l.expect.create}`, async () => {
         const { context } = suite()
 
@@ -279,7 +300,8 @@ describe(`Access (${dbProvider})`, () => {
             }
           }
         } else {
-          await expect(createPromise).rejects.toThrow(/Access denied: You cannot create that/)
+          const error = createPromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
         }
       })
 
@@ -308,7 +330,8 @@ describe(`Access (${dbProvider})`, () => {
             }
           }
         } else {
-          await expect(updatePromise).rejects.toThrow(/Access denied: You cannot update that/)
+          const error = updatePromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
         }
       })
 
@@ -340,7 +363,8 @@ describe(`Access (${dbProvider})`, () => {
           const item_ = await context.sudo().db[l.name].findOne({ where: { id } })
           expect(item_).toBe(null)
         } else {
-          await expect(deletePromise).rejects.toThrow(/Access denied: You cannot delete that/)
+          const error = deletePromise.catch(e => e.message)
+          await expect(error).resolves.toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
         }
       })
 
@@ -386,7 +410,8 @@ describe(`Access (${dbProvider})`, () => {
 
               // test field.access.create
               if (f.expect.create === false) {
-                await expect(createPromise).rejects.toThrow(/Access denied: You cannot create that/)
+                const error = createPromise.catch(e => e.message)
+                await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
                 return
               }
 
@@ -425,7 +450,8 @@ describe(`Access (${dbProvider})`, () => {
 
               // test field.access.update
               if (f.expect.update === false) {
-                await expect(updatePromise).rejects.toThrow(/Access denied: You cannot update that/)
+                const error = updatePromise.catch(e => e.message)
+                await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`)
                 return
               }
 
