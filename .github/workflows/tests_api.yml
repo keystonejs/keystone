@@ -36,7 +36,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
@@ -52,7 +52,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: file:./file.db
 
@@ -75,7 +75,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
@@ -99,7 +99,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -122,7 +122,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -152,7 +152,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -223,7 +223,7 @@ jobs:
         run: cd tests/examples-smoke-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
+        run: pnpm jest --ci tests/examples-smoke-tests/${{ matrix.test }}
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
@@ -253,4 +253,4 @@ jobs:
         run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
+        run: pnpm jest --ci tests/admin-ui-tests/${{ matrix.test }}
