@@ -30,7 +30,7 @@ describe('cursor pagination', () => {
   })
 
   beforeAll(async () => {
-    const { context } = suite()
+    const { context } = await suite()
     const result = await context.query.User.createOne({
       data: {
         name: 'Test',
@@ -48,7 +48,7 @@ describe('cursor pagination', () => {
 
   describe('basic tests', () => {
     test('cursor pagination test (graphql api)', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const { errors, data } = await context.graphql.raw({
         query: `query { posts(
             take: 6,\
@@ -66,7 +66,7 @@ describe('cursor pagination', () => {
     })
 
     test('cursor pagination test (query api)', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const result1 = await context.query.Post.findMany({
         take: 6,
         skip: 1,
@@ -81,7 +81,7 @@ describe('cursor pagination', () => {
     })
 
     test('cursor pagination test (db api)', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const result1 = await context.db.Post.findMany({
         take: 6,
         skip: 1,
@@ -95,7 +95,7 @@ describe('cursor pagination', () => {
     })
 
     test('cursor pagination through relation', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const { errors, data } = await context.graphql.raw({
         query: `query {\
           user(where: { id: "${userId}"}) {\
@@ -116,7 +116,7 @@ describe('cursor pagination', () => {
     })
 
     test('cursor pagination forward', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const result1 = await context.query.Post.findMany({
         take: 6,
         orderBy: { order: 'asc' },
@@ -150,7 +150,7 @@ describe('cursor pagination', () => {
     })
 
     test('cursor pagination backwards', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const result1 = await context.query.Post.findMany({
         take: -6,
         orderBy: { order: 'desc' },
@@ -188,7 +188,7 @@ describe('cursor pagination', () => {
 
   describe('stability', () => {
     test('insert rows in the middle of pagination and check stability', async () => {
-      const { context } = suite()
+      const { context } = await suite()
       const result1 = await context.query.Post.findMany({
         take: 3,
         skip: 1,

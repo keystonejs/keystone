@@ -252,8 +252,8 @@ describe(`Access (${dbProvider})`, () => {
 
   for (const l of lists) {
     describe(`${l.name}`, () => {
-      test(`list.access.${l.expect.type}.query: ${l.expect.query}`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.query: ${l.expect.query}`, async () => {
+        const { context } = await suite()
         const id = await seed(l.name, context)
 
         // test list.access.*.query
@@ -280,8 +280,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.query: ${l.expect.query} (findMany)`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.query: ${l.expect.query} (findMany)`, async () => {
+        const { context } = await suite()
         const ids = await seedMany(l.name, context)
 
         // test list.access.*.query
@@ -317,8 +317,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.query: ${l.expect.query} for counting`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.query: ${l.expect.query} for counting`, async () => {
+        const { context } = await suite()
         const id = await seed(l.name, context)
 
         // test list.access.*.query
@@ -338,8 +338,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.create: ${l.expect.create}`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.create: ${l.expect.create}`, async () => {
+        const { context } = await suite()
 
         // test list.access.*.create
         const createPromise = context.query[l.name].createOne({
@@ -348,7 +348,7 @@ describe(`Access (${dbProvider})`, () => {
         })
 
         if (!l.expect.create) {
-          const error = createPromise.catch(e => e.message)
+          const error = createPromise.catch((e: any) => e.message)
           await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
           return
         }
@@ -367,8 +367,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.create: ${l.expect.create} (createMany)`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.create: ${l.expect.create} (createMany)`, async () => {
+        const { context } = await suite()
 
         // test list.access.*.create
         const createPromise = context.query[l.name].createMany({
@@ -379,7 +379,7 @@ describe(`Access (${dbProvider})`, () => {
         })
 
         if (!l.expect.create) {
-          const error = createPromise.catch(e => e.message)
+          const error = createPromise.catch((e: any) => e.message)
           await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
           return
         }
@@ -400,8 +400,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.update: ${l.expect.update}`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.update: ${l.expect.update}`, async () => {
+        const { context } = await suite()
         const id = await seed(l.name, context)
 
         // test list.access.*.update
@@ -431,8 +431,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.update: ${l.expect.update} (updateMany)`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.update: ${l.expect.update} (updateMany)`, async () => {
+        const { context } = await suite()
         const ids = await seedMany(l.name, context)
 
         // test list.access.*.update
@@ -468,8 +468,8 @@ describe(`Access (${dbProvider})`, () => {
         }
       })
 
-      test(`list.access.${l.expect.type}.delete: ${l.expect.delete}`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.delete: ${l.expect.delete}`, async () => {
+        const { context } = await suite()
         const id = await seed(l.name, context)
 
         // test list.access.*.delete
@@ -502,8 +502,8 @@ describe(`Access (${dbProvider})`, () => {
         expect(item_).toBe(null)
       })
 
-      test(`list.access.${l.expect.type}.delete: ${l.expect.delete} (deleteMany)`, async () => {
-        const { context } = suite()
+      test.concurrent(`list.access.${l.expect.type}.delete: ${l.expect.delete} (deleteMany)`, async () => {
+        const { context } = await suite()
         const ids = await seedMany(l.name, context)
 
         // test list.access.*.delete
@@ -540,8 +540,8 @@ describe(`Access (${dbProvider})`, () => {
       for (const f of l.fields) {
         describe(`${f.name}`, () => {
           if (l.expect.query) {
-            test(`field.access.read: ${f.expect.read}`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.read: ${f.expect.read}`, async () => {
+              const { context } = await suite()
               const id = await seed(l.name, context)
 
               // test list.access.*.query
@@ -562,8 +562,8 @@ describe(`Access (${dbProvider})`, () => {
             })
           }
 
-          test(`field.access.read: ${f.expect.read} (findMany)`, async () => {
-            const { context } = suite()
+          test.concurrent(`field.access.read: ${f.expect.read} (findMany)`, async () => {
+            const { context } = await suite()
             const ids = await seedMany(l.name, context)
 
             // test list.access.*.query
@@ -599,8 +599,8 @@ describe(`Access (${dbProvider})`, () => {
           })
 
           if (l.expect.create) {
-            test(`field.access.create: ${f.expect.create}`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.create: ${f.expect.create}`, async () => {
+              const { context } = await suite()
 
               // test list.access.*.create
               const createPromise = context.query[l.name].createOne({
@@ -612,7 +612,7 @@ describe(`Access (${dbProvider})`, () => {
 
               // test field.access.create
               if (!f.expect.create) {
-                const error = createPromise.catch(e => e.message)
+                const error = createPromise.catch((e: any) => e.message)
                 await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
                 return
               }
@@ -635,8 +635,8 @@ describe(`Access (${dbProvider})`, () => {
               expect(item_![f.name]).toBe('foo')
             })
 
-            test(`field.access.create: ${f.expect.create} (createMany)`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.create: ${f.expect.create} (createMany)`, async () => {
+              const { context } = await suite()
 
               // test list.access.*.create
               const createPromise = context.query[l.name].createMany({
@@ -680,8 +680,8 @@ describe(`Access (${dbProvider})`, () => {
           }
 
           if (l.expect.update) {
-            test(`field.access.update: ${f.expect.update}`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.update: ${f.expect.update}`, async () => {
+              const { context } = await suite()
               const id = await seed(l.name, context)
 
               // test list.access.*.update
@@ -718,8 +718,8 @@ describe(`Access (${dbProvider})`, () => {
               expect(item_![f.name]).toBe('foo')
             })
 
-            test(`field.access.update: ${f.expect.update} (updateMany)`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.update: ${f.expect.update} (updateMany)`, async () => {
+              const { context } = await suite()
               const ids = await seedMany(l.name, context)
 
               // test list.access.*.update
@@ -760,8 +760,8 @@ describe(`Access (${dbProvider})`, () => {
           }
 
           if (l.expect.delete) {
-            test(`field.access.read: ${f.expect.read} (on delete)`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.read: ${f.expect.read} (on delete)`, async () => {
+              const { context } = await suite()
               const id = await seed(l.name, context)
 
               // test list.access.*.delete
@@ -781,8 +781,8 @@ describe(`Access (${dbProvider})`, () => {
               }
             })
 
-            test(`field.access.read: ${f.expect.read} (on deleteMany)`, async () => {
-              const { context } = suite()
+            test.concurrent(`field.access.read: ${f.expect.read} (on deleteMany)`, async () => {
+              const { context } = await suite()
               const ids = await seedMany(l.name, context)
 
               // test list.access.*.query

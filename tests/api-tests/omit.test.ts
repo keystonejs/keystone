@@ -227,8 +227,8 @@ describe(`Omit (${dbProvider})`, () => {
     }
   })
 
-  test('Common Schema', async () => {
-    const { context } = suite()
+  test.concurrent('Common Schema', async () => {
+    const { context } = await suite()
     const data = await context.graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
 
     const schemaTypes = data.__schema.types.map(x => x.name.toLowerCase())
@@ -292,8 +292,8 @@ describe(`Omit (${dbProvider})`, () => {
     }
   })
 
-  test('Sudo Schema', async () => {
-    const { context } = suite()
+  test.concurrent('Sudo Schema', async () => {
+    const { context } = await suite()
     const data = await context.sudo().graphql.run<IntrospectionResult, any>({ query: introspectionQuery })
 
     const schemaTypes = data.__schema.types.map(x => x.name.toLowerCase())

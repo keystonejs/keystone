@@ -26,7 +26,7 @@ import {
 } from '@keystone-6/core/types'
 import { generatePrismaAndGraphQLSchemas, type PrismaModule } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'
-import { dbProvider, dbUrl, type FloatingConfig } from './utils'
+import { dbProvider, type FloatingConfig } from './utils'
 
 // prisma checks
 {
@@ -83,15 +83,21 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: FloatingConfig<TypeInfo>
   serve?: boolean
 }) {
-  const tmp = join(tmpdir(), `ks6-tests-${randomBytes(8).toString('base64url')}`)
+  const random = randomBytes(8).toString('base64url')
+  const tmp = join(tmpdir(), `ks6-tests-${random}`)
   await fs.mkdir(tmp)
+
+  let dbUrl = process.env.DATABASE_URL ?? ''
+  if (dbUrl.startsWith('file:')) dbUrl = `file:${join(tmp, 'test.db')}`
+  // if (dbUrl.startsWith('postgres:'))
+  // if (dbUrl.startsWith('mysql:'))
 
   const prismaSchemaPath = join(tmp, 'schema.prisma')
   const config = initConfig({
     ...config_,
     db: {
       provider: dbProvider,
-      url: dbUrl === 'file:./test.db' ? `file:${join(tmp, 'test.db')}` : dbUrl,
+      url: dbUrl,
       prismaClientPath: join(tmp, '.client'),
       prismaSchemaPath,
       ...config_.db,
@@ -201,6 +207,7 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   }
 }
 
+// WARNING: no support for onConnect
 export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
@@ -208,23 +215,13 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: FloatingConfig<TypeInfo>
   serve?: boolean
 }) {
-  let result: Awaited<ReturnType<typeof setupTestEnv>> | null
-
-  beforeAll(async () => {
-    result = await setupTestEnv({ config: config_, serve })
-    if (!result) throw new Error('setupTestEnv hasnt run')
-    await result.connect()
-  })
+  const result = setupTestEnv({ config: config_, serve })
 
   afterAll(async () => {
-    if (!result) throw new Error('setupTestEnv hasnt run')
-    await result.disconnect()
+    await (await result).disconnect()
   })
 
-  return () => {
-    if (!result) throw new Error('setupTestEnv hasnt run')
-
-    const { context, config, http, express, gql, gqlSuper, reset } = result
-    return { context, config, http, express, gql, gqlSuper, reset }
+  return async () => {
+    return await result
   }
 }

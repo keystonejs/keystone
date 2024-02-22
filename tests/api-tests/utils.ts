@@ -7,12 +7,12 @@ import {
 } from '@keystone-6/core/types'
 import { type setupTestRunner } from './test-runner'
 
-export const { dbUrl, dbProvider } = function () {
+export const dbProvider = function () {
   const dbUrl = process.env.DATABASE_URL ?? ''
-  if (dbUrl.startsWith('file:')) return { dbUrl, dbProvider: 'sqlite' as const }
-  if (dbUrl.startsWith('postgres:')) return { dbUrl, dbProvider: 'postgresql' as const }
-  if (dbUrl.startsWith('mysql:')) return { dbUrl, dbProvider: 'mysql' as const }
-  throw new Error(`Unknown database type: ${dbUrl}`)
+  if (dbUrl.startsWith('file:')) return 'sqlite' as const
+  if (dbUrl.startsWith('postgres:')) return 'postgresql' as const
+  if (dbUrl.startsWith('mysql:')) return 'mysql' as const
+  throw new Error(`Unknown database type: for ${dbUrl}`)
 }()
 
 const workerId = process.env.JEST_WORKER_ID
