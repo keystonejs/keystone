@@ -15,7 +15,6 @@ const initialData = {
   ],
 }
 
-const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
 const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session
 
 function setup (options?: any) {
@@ -48,7 +47,7 @@ function setup (options?: any) {
               },
             }),
           },
-          session: statelessSessions({ secret: COOKIE_SECRET }),
+          session: statelessSessions(),
         })
       ),
     })
@@ -120,7 +119,7 @@ describe('Auth testing', () => {
               }),
             },
 
-            session: statelessSessions({ secret: COOKIE_SECRET }),
+            session: statelessSessions(),
           })
         ),
       })
