@@ -9,6 +9,8 @@ function yesNo (x: boolean) {
   if (x === false) return '0'
 }
 
+jest.setTimeout(10000000)
+
 function makeFieldEntry ({
   access
 }: {

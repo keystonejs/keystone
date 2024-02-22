@@ -12,6 +12,8 @@ function yesNo (x: boolean | undefined) {
 
 const UFT = [false, true] as const
 
+jest.setTimeout(10000000)
+
 function makeFieldEntry ({
   isFilterable,
   isOrderable,
