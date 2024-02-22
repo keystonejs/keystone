@@ -3,83 +3,67 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import supertest from 'supertest'
-import { testConfig } from './utils'
-import { withServer } from './with-server'
 
-const makeRunner = (healthCheck: any) =>
-  withServer(
-    setupTestRunner({
-      config: testConfig({
-        lists: {
-          User: list({
-            access: allowAll,
-            fields: {
-              name: text()
-            }
-          }),
-        },
-        server: { healthCheck },
-      }),
-    })
-  )
-
-test(
-  'No health check',
-  makeRunner(undefined)(async ({ app }) => {
-    await supertest(app).get('/_healthcheck').set('Accept', 'application/json').expect(404)
+function runner (healthCheck: any) {
+  return setupTestRunner({
+    serve: true,
+    config: {
+      lists: {
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          }
+        }),
+      },
+      server: { healthCheck },
+    },
   })
-)
+}
 
-test(
-  'Default health check',
-  makeRunner(true)(async ({ app }) => {
-    const { text } = await supertest(app)
-      .get('/_healthcheck')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-    expect(JSON.parse(text)).toEqual({
-      status: 'pass',
-      timestamp: expect.any(Number),
-    })
-  })
-)
+test('No health check', runner(undefined)(async ({ express }) => {
+  await supertest(express).get('/_healthcheck').set('Accept', 'expresslication/json').expect(404)
+}))
 
-test(
-  'Custom path',
-  makeRunner({ path: '/custom' })(async ({ app }) => {
-    const { text } = await supertest(app)
-      .get('/custom')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-    expect(JSON.parse(text)).toEqual({
-      status: 'pass',
-      timestamp: expect.any(Number),
-    })
-  })
-)
+test('Default health check', runner(true)(async ({ express }) => {
+  const { text } = await supertest(express)
+    .get('/_healthcheck')
+    .set('Accept', 'expresslication/json')
+    .expect('Content-Type', /json/)
+    .expect(200)
 
-test(
-  'Custom data: object',
-  makeRunner({ data: { foo: 'bar' } })(async ({ app }) => {
-    const { text } = await supertest(app)
-      .get('/_healthcheck')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-    expect(JSON.parse(text)).toEqual({ foo: 'bar' })
+  expect(JSON.parse(text)).toEqual({
+    status: 'pass',
+    timestamp: expect.any(Number),
   })
-)
+}))
 
-test(
-  'Custom data: function',
-  makeRunner({ data: () => ({ foo: 'bar' }) })(async ({ app }) => {
-    const { text } = await supertest(app)
-      .get('/_healthcheck')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-    expect(JSON.parse(text)).toEqual({ foo: 'bar' })
+test('Custom path', runner({ path: '/custom' })(async ({ express }) => {
+  const { text } = await supertest(express)
+    .get('/custom')
+    .set('Accept', 'expresslication/json')
+    .expect('Content-Type', /json/)
+    .expect(200)
+  expect(JSON.parse(text)).toEqual({
+    status: 'pass',
+    timestamp: expect.any(Number),
   })
-)
+}))
+
+test('Custom data: object', runner({ data: { foo: 'bar' } })(async ({ express }) => {
+  const { text } = await supertest(express)
+    .get('/_healthcheck')
+    .set('Accept', 'expresslication/json')
+    .expect('Content-Type', /json/)
+    .expect(200)
+  expect(JSON.parse(text)).toEqual({ foo: 'bar' })
+}))
+
+test('Custom data: function', runner({ data: () => ({ foo: 'bar' }) })(async ({ express }) => {
+  const { text } = await supertest(express)
+    .get('/_healthcheck')
+    .set('Accept', 'expresslication/json')
+    .expect('Content-Type', /json/)
+    .expect(200)
+  expect(JSON.parse(text)).toEqual({ foo: 'bar' })
+}))

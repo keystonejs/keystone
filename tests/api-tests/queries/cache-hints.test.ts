@@ -3,11 +3,11 @@ import { text, relationship, integer } from '@keystone-6/core/fields'
 import { list, graphql } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, type ContextFromRunner } from '../utils'
-import { withServer } from '../with-server'
+import { type ContextFromRunner } from '../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  serve: true,
+  config: {
     lists: {
       Post: list({
         access: allowAll,
@@ -72,7 +72,7 @@ const runner = setupTestRunner({
         },
       }
     }),
-  }),
+  },
 })
 
 const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
@@ -101,11 +101,11 @@ const addFixtures = async (context: ContextFromRunner<typeof runner>) => {
 describe('cache hints', () => {
   test(
     'users',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       await addFixtures(context)
 
       // Basic query
-      const { body, headers } = await graphQLRequest({
+      const { body, headers } = await gqlSuper({
         query: `
           query {
             users {
@@ -119,7 +119,7 @@ describe('cache hints', () => {
 
       // favNumber has the most restrictive hint
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
             query favNumbers {
               users {
@@ -135,7 +135,7 @@ describe('cache hints', () => {
       }
       // Count query
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `query { usersCount }`,
         })
 
@@ -144,7 +144,7 @@ describe('cache hints', () => {
       }
       // User post relationship
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             users {
@@ -161,7 +161,7 @@ describe('cache hints', () => {
       }
       // Operation name detected
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query complexQuery {
             users {
@@ -176,7 +176,7 @@ describe('cache hints', () => {
       }
       // Hint based on query results
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             users(where: { name: { equals: "nope" } })  {
@@ -194,13 +194,13 @@ describe('cache hints', () => {
 
   test(
     'posts',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       await addFixtures(context)
       // The Post list has a static cache hint
 
       // Basic query
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             posts {
@@ -216,7 +216,7 @@ describe('cache hints', () => {
 
       // Hints on post authors are more restrictive
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             posts {
@@ -235,7 +235,7 @@ describe('cache hints', () => {
 
       // Post author meta query
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             posts {
@@ -251,7 +251,7 @@ describe('cache hints', () => {
 
       // Author subquery detects operation name
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query complexQuery {
             posts {
@@ -268,7 +268,7 @@ describe('cache hints', () => {
       }
       // Post author query using cache hint dynamically caculated from results
       {
-        const { body, headers } = await graphQLRequest({
+        const { body, headers } = await gqlSuper({
           query: `
           query {
             posts {
@@ -288,14 +288,12 @@ describe('cache hints', () => {
 
   test(
     'mutations',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       const { posts } = await addFixtures(context)
 
       // Mutation responses shouldn't be cached.
       // Here's a smoke test to make sure they still work.
-
-      // Basic query
-      const { body } = await graphQLRequest({
+      const { body } = await gqlSuper({
         query: `
           mutation {
             deletePost(where: { id: "${posts[0].id}" }) {
@@ -311,11 +309,10 @@ describe('cache hints', () => {
 
   test(
     'extendGraphQLSchemaQueries',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       await addFixtures(context)
 
-      // Basic query
-      let { body, headers } = await graphQLRequest({
+      const { body, headers } = await gqlSuper({
         query: `
           query {
             double(x: 2) {
@@ -333,12 +330,12 @@ describe('cache hints', () => {
 
   test(
     'extendGraphQLSchemaMutations',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       await addFixtures(context)
 
       // Mutation responses shouldn't be cached.
       // Here's a smoke test to make sure they still work.
-      let { body } = await graphQLRequest({
+      const { body } = await gqlSuper({
         query: `
           mutation {
             triple(x: 3)

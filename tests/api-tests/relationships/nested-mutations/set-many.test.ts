@@ -4,16 +4,15 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 import {
-  testConfig,
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils'
-import { withServer } from '../../with-server'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
-  config: testConfig({
+  serve: true,
+  config: {
     lists: {
       Note: list({
         access: allowAll,
@@ -59,7 +58,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('no access control', () => {
@@ -161,8 +160,8 @@ describe('no access control', () => {
 
   test(
     'causes a validation error if used during create',
-    withServer(runner)(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ gqlSuper }) => {
+      const { body } = await gqlSuper({
         query: `
           mutation {
             createUser(data: { notes: { set: [] } }) {

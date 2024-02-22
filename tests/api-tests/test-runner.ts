@@ -88,6 +88,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
 
   const prismaSchemaPath = join(tmp, 'schema.prisma')
   const config = initConfig({
+    ...config_,
     db: {
       provider: dbProvider,
       url: dbUrl === 'file:./test.db' ? `file:${join(tmp, 'test.db')}` : dbUrl,
@@ -160,7 +161,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       express,
       disconnect,
       reset
-    }
+    } as const
   }
 
   async function gql (...args: Parameters<typeof context.graphql.raw>) {
@@ -172,13 +173,13 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     connect,
     context,
     config,
-    http: null,
-    express: null,
+    http: null as any, // TODO: FIXME
+    express: null as any, // TODO: FIXME
     gql,
-    gqlSuper: null as any, // TODO: not amazing, but the error is easy
+    gqlSuper: null as any, // TODO: FIXME
     disconnect,
     reset
-  }
+  } as const
 }
 
 export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
