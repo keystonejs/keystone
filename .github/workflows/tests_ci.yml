@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: core-tests-${{ github.ref }}
+  group: ci-tests-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
