@@ -259,6 +259,7 @@ Each operation is defined by a function which returns `true` if access is allowe
 
 Field-level access control rules are applied **after** the list level access rules have been applied.
 Access control rules are only applied to the fields that have an input value provided to the mutation.
+
 If any of the provided fields fail their access control check, the whole operation is aborted.
 The GraphQL API then returns `null` along with an access denied error.
 
@@ -270,6 +271,10 @@ No errors will be returned for `read` access denied.
 
 {% hint kind="tip" %}
 The `read` access control is applied to fields returned from both **queries** and **mutations**.
+{% /hint %}
+
+{% hint kind="warn" %}
+`read` field access control does not apply to `context.db.*` operations, as these operations do not resolve the underlying fields using GraphQL.
 {% /hint %}
 
 ```typescript
