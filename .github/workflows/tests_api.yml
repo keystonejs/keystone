@@ -178,7 +178,7 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup-examples
 
-      - name: Example Next in app direcroty build
+      - name: Example Next in app directory build
         run: cd examples/framework-nextjs-app-directory; pnpm build
 
   examples_smoke_tests:
@@ -241,7 +241,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers
         run: cd tests/admin-ui-tests && pnpm playwright install-deps chromium
@@ -250,4 +250,4 @@ jobs:
         run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci tests/admin-ui-tests/${{ matrix.test }}
+        run: pnpm jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
