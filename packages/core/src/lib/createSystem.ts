@@ -1,8 +1,11 @@
 import { randomBytes } from 'node:crypto'
-import type { FieldData, KeystoneConfig } from '../types'
+import {
+  type FieldData,
+  type KeystoneConfig
+} from '../types'
 import { GraphQLError } from 'graphql'
 
-import type { PrismaModule } from '../artifacts'
+import { type PrismaModule } from '../artifacts'
 import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'

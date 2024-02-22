@@ -25,7 +25,7 @@ import {
   type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
 import { generatePrismaAndGraphQLSchemas, type PrismaModule } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
-import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'
+import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
 import { dbProvider, type FloatingConfig } from './utils'
 
 // prisma checks
@@ -79,18 +79,34 @@ afterAll(async () => {
 export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
+  identifier,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
+  identifier?: string
 }) {
-  const random = randomBytes(8).toString('base64url')
+  const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
   const tmp = join(tmpdir(), `ks6-tests-${random}`)
   await fs.mkdir(tmp)
 
-  let dbUrl = process.env.DATABASE_URL ?? ''
-  if (dbUrl.startsWith('file:')) dbUrl = `file:${join(tmp, 'test.db')}`
-  // if (dbUrl.startsWith('postgres:'))
-  // if (dbUrl.startsWith('mysql:'))
+  let dbUrl = process.env.DATABASE_URL
+  if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
+
+  if (dbUrl.startsWith('file:')) {
+    dbUrl = `file:${join(tmp, 'test.db')}` // unique database files
+  }
+
+  if (dbUrl.startsWith('postgres:')) {
+    const parsed = new URL(dbUrl)
+    parsed.searchParams.set('schema', random) // unique schema names
+    dbUrl = parsed.toString()
+  }
+
+  if (dbUrl.startsWith('mysql:')) {
+    const parsed = new URL(dbUrl)
+    parsed.pathname = random // unique database names
+    dbUrl = parsed.toString()
+  }
 
   const prismaSchemaPath = join(tmp, 'schema.prisma')
   const config = initConfig({
@@ -117,21 +133,8 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   })
   const { graphQLSchema, getKeystone } = createSystem(config)
   const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+  await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
 
-  async function reset () {
-    await withMigrate(prismaSchemaPath, async migrate => {
-      await runMigrateWithDbUrl(config.db.url, undefined, () => migrate.reset())
-
-      return await runMigrateWithDbUrl(config.db.url, undefined, () => {
-        return migrate.engine.schemaPush({
-          force: true,
-          schema: artifacts.prisma,
-        })
-      })
-    })
-  }
-
-  await reset()
   const {
     context,
     connect,
@@ -166,7 +169,6 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       gqlSuper,
       express,
       disconnect,
-      reset
     } as const
   }
 
@@ -184,19 +186,20 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     gql,
     gqlSuper: null as any, // TODO: FIXME
     disconnect,
-    reset
   } as const
 }
 
 export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
+  identifier,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
+  identifier?: string
 }) {
   return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
-    const result = await setupTestEnv({ config: config_, serve })
+    const result = await setupTestEnv({ config: config_, serve, identifier })
 
     await result.connect()
     try {
@@ -211,17 +214,21 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
 export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
+  identifier,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
+  identifier?: string
 }) {
-  const result = setupTestEnv({ config: config_, serve })
+  const result = setupTestEnv({ config: config_, serve, identifier })
+  const connectPromise = result.then((x) => x.connect())
 
   afterAll(async () => {
     await (await result).disconnect()
   })
 
   return async () => {
+    await connectPromise
     return await result
   }
 }

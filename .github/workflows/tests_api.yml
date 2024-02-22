@@ -54,7 +54,7 @@ jobs:
       - name: Unit tests
         run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
-          DATABASE_URL: file:./file.db
+          DATABASE_URL: file:./test.db
 
   graphql_api_tests_mysql:
     name: API Tests MySQL
@@ -130,7 +130,7 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
-          DATABASE_URL: file:./dev.db
+          DATABASE_URL: file:./test.db
 
   field_crud_tests_mysql:
     name: Field CRUD Tests MySQL
@@ -185,7 +185,7 @@ jobs:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'file:./test.db'
+      DATABASE_URL: file:./test.db
     strategy:
       matrix:
         test:
@@ -226,7 +226,7 @@ jobs:
     name: Integration tests for Admin UI
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'file:./test.db'
+      DATABASE_URL: file:./test.db
     strategy:
       matrix:
         test:

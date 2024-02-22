@@ -30,7 +30,7 @@ export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: Floa
     ...config,
     db: {
       provider: dbProvider,
-      url: dbUrl,
+      url: '',
       ...config.db,
     },
     // default to a disabled UI

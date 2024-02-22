@@ -6,6 +6,7 @@ import { setupTestRunner } from '../test-runner'
 import { testConfig, dbProvider } from '../utils'
 
 const runner = setupTestRunner({
+  identifier: 'public',
   config: testConfig({
     db: { enableLogging: true },
     lists: {
