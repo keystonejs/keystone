@@ -5,7 +5,6 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 
 import { setupTestRunner } from './test-runner'
-import { testConfig } from './utils'
 
 const auth = createAuth({
   listKey: 'User',
@@ -15,7 +14,8 @@ const auth = createAuth({
 })
 
 const runner = setupTestRunner({
-  config: auth.withAuth(testConfig({
+  config: auth.withAuth(({
+    db: {} as any, // replaced by setupTestRunner
     lists: {
       User: list({
         fields: {

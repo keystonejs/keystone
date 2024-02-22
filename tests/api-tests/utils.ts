@@ -25,22 +25,6 @@ export type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<Keysto
   db?: Omit<KeystoneConfig<TypeInfo>['db'], 'provider' | 'url'>
 }
 
-export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>): KeystoneConfig {
-  return {
-    ...config,
-    db: {
-      provider: dbProvider,
-      url: '',
-      ...config.db,
-    },
-    // default to a disabled UI
-    ui: {
-      isDisabled: true,
-      ...config.ui
-    },
-  }
-}
-
 export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<
   infer TypeInfo
 >
@@ -230,8 +214,24 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export async function getPrismaSchema (_config: KeystoneConfig) {
-  const config = initConfig(_config)
+export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>): KeystoneConfig {
+  return {
+    ...config,
+    db: {
+      provider: dbProvider,
+      url: '',
+      ...config.db,
+    },
+    // default to a disabled UI
+    ui: {
+      isDisabled: true,
+      ...config.ui
+    },
+  }
+}
+
+export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (_config: FloatingConfig<TypeInfo>) {
+  const config = initConfig(testConfig(_config))
   const { graphQLSchema } = createSystem(config)
   const artifacts = await getCommittedArtifacts(config, graphQLSchema)
   return artifacts.prisma

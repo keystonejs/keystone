@@ -2,12 +2,12 @@ import { text, integer, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectGraphQLValidationError } from '../utils'
+import { expectGraphQLValidationError } from '../utils'
 import { depthLimit, definitionLimit, fieldLimit } from './validation'
 
 const runner = setupTestRunner({
   serve: true,
-  config: testConfig({
+  config: {
     lists: {
       Post: list({
         access: allowAll,
@@ -33,7 +33,7 @@ const runner = setupTestRunner({
         validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
       },
     },
-  }),
+  },
 })
 
 describe('graphql.maxTake', () => {

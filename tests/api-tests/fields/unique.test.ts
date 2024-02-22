@@ -6,7 +6,7 @@ import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, dbProvider } from '../utils'
+import { dbProvider } from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -44,7 +44,7 @@ describe(dbProvider, () => {
             }
           })
           const runner = setupTestRunner({
-            config: testConfig({
+            config: ({
               lists: {
                 Test: list({
                   access: allowAll,
@@ -157,7 +157,7 @@ describe(dbProvider, () => {
             let erroredOut = false
             try {
               await setupTestEnv({
-                config: testConfig({
+                config: ({
                   lists: {
                     Test: list({
                       access: allowAll,

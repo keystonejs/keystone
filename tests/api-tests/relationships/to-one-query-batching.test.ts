@@ -3,11 +3,11 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner'
-import { testConfig, dbProvider } from '../utils'
+import { dbProvider } from '../utils'
 
 const runner = setupTestRunner({
   identifier: 'public',
-  config: testConfig({
+  config: ({
     db: { enableLogging: true },
     lists: {
       Post: list({

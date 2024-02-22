@@ -4,7 +4,6 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { type ExecutionResult } from 'graphql'
 import {
-  testConfig,
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
@@ -14,7 +13,7 @@ import {
 
 const runner = setupTestRunner({
   serve: true,
-  config: testConfig({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -69,7 +68,7 @@ const runner = setupTestRunner({
         defaultIsOrderable: () => ({}),
       }),
     },
-  }),
+  },
 })
 
 const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {

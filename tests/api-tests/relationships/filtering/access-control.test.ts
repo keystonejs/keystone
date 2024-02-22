@@ -3,14 +3,13 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const postNames = ['Post 1', 'Post 2', 'Post 3']
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: ({
     lists: {
       UserToPostLimitedRead: list({
         access: {

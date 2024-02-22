@@ -2,11 +2,11 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { testConfig, dbProvider } from './utils'
+import { dbProvider } from './utils'
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
-    config: testConfig({
+    config: {
       db: { enableLogging },
       lists: {
         User: list({
@@ -16,7 +16,7 @@ const runner = (enableLogging: boolean) =>
           },
         }),
       },
-    }),
+    },
   })
 
 test(

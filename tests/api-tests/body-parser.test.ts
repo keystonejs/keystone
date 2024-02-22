@@ -7,7 +7,6 @@ import type { Options as BodyParserOptions } from 'body-parser'
 import supertest from 'supertest'
 
 import { setupTestRunner } from './test-runner'
-import { testConfig } from './utils'
 
 function makeQuery (size = 0) {
   const query = JSON.stringify({
@@ -39,7 +38,7 @@ async function tryRequest (app: express.Express, size: number) {
 function setup (options?: BodyParserOptions) {
   return setupTestRunner({
     serve: true,
-    config: testConfig({
+    config: {
       lists: {
         Thing: list({
           access: allowAll,
@@ -54,7 +53,7 @@ function setup (options?: BodyParserOptions) {
           ...options,
         },
       },
-    }),
+    },
   })
 }
 

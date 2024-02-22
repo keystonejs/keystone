@@ -5,11 +5,11 @@ import { component, fields } from '@keystone-6/fields-document/component-blocks'
 import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestEnv, setupTestRunner } from '../../test-runner'
-import { testConfig, type ContextFromRunner, expectInternalServerError } from '../../utils'
+import { type ContextFromRunner, expectInternalServerError } from '../../utils'
 
 const runner = setupTestRunner({
   serve: true,
-  config: testConfig({
+  config: ({
     lists: {
       Post: list({
         access: allowAll,
@@ -299,7 +299,7 @@ describe('Document field type', () => {
   test("an inline relationship to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: testConfig({
+        config: ({
           lists: {
             Post: list({
               access: allowAll,
@@ -325,7 +325,7 @@ describe('Document field type', () => {
   test("an relationship on a component block prop to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: testConfig({
+        config: ({
           lists: {
             Post: list({
               access: allowAll,

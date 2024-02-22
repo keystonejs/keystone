@@ -2,10 +2,10 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectSingleRelationshipError } from '../../utils'
+import { expectSingleRelationshipError } from '../../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     lists: {
       Group: list({
         access: allowAll,
@@ -21,7 +21,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('errors on incomplete data', () => {
@@ -31,11 +31,11 @@ describe('errors on incomplete data', () => {
       // Create an item that does the linking
       const { data, errors } = await context.graphql.raw({
         query: `
-              mutation {
-                createEvent(data: { group: {} }) {
-                  id
-                }
-              }`,
+          mutation {
+            createEvent(data: { group: {} }) {
+              id
+            }
+          }`,
       })
 
       expect(data).toEqual({ createEvent: null })

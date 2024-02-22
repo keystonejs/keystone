@@ -7,11 +7,10 @@ import { integer } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { type FieldTypeFunc, type BaseListTypeInfo } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../../utils'
 
 function filterTestRunner (field: FieldTypeFunc<BaseListTypeInfo>) {
   return setupTestRunner({
-    config: testConfig({
+    config: {
       lists: {
         Test: list({
           access: allowAll,
@@ -41,7 +40,7 @@ function filterTestRunner (field: FieldTypeFunc<BaseListTypeInfo>) {
           },
         },
       },
-    }),
+    },
   })
 }
 

@@ -2,11 +2,10 @@ import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
 import { type BaseFields, list, graphql } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../../utils'
 
 function makeRunner (fields: BaseFields<any>) {
   return setupTestRunner({
-    config: testConfig({
+    config: ({
       lists: {
         Post: list({
           access: allowAll,
@@ -68,7 +67,7 @@ describe('Virtual field type', () => {
   test(
     'referencing other list type',
     setupTestRunner({
-      config: testConfig({
+      config: ({
         lists: {
           Organisation: list({
             access: allowAll,
@@ -162,7 +161,7 @@ describe('Virtual field type', () => {
   test("errors when a non leaf type is used but the field isn't hidden in the Admin UI and ui.query isn't provided", async () => {
     await expect(
       setupTestEnv({
-        config: testConfig({
+        config: ({
           lists: {
             Post: list({
               access: allowAll,

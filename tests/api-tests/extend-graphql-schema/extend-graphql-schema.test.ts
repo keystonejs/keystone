@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
 import { setupTestRunner } from '../test-runner'
-import { testConfig, expectInternalServerError } from '../utils'
+import { expectInternalServerError } from '../utils'
 
 const falseFn: (...args: any) => boolean = () => false
 
@@ -25,7 +25,7 @@ function withAccessCheck <T, Args extends unknown[]>(
 
 const runner = setupTestRunner({
   serve: true,
-  config: testConfig({
+  config: ({
     lists: {
       User: list({
         access: allowAll,

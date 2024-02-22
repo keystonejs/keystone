@@ -3,11 +3,10 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { BaseFields } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../utils'
 
 const setupList = (fields: BaseFields<any>) =>
   setupTestRunner({
-    config: testConfig({
+    config: ({
       lists: {
         User: list({
           access: allowAll,

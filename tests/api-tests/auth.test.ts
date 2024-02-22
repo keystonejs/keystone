@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectInternalServerError, expectValidationError, seed } from './utils'
+import { expectInternalServerError, expectValidationError, seed } from './utils'
 
 const initialData = {
   User: [
@@ -44,21 +44,20 @@ const auth = createAuth({
 
 const runner = setupTestRunner({
   serve: true,
-  config: auth.withAuth(
-    testConfig({
-      lists: {
-        User: list({
-          access: allowAll,
-          fields: {
-            name: text(),
-            email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-            password: password(),
-          },
-        }),
-      },
-      session: statelessSessions(),
-    })
-  ),
+  config: auth.withAuth({
+    db: {} as any,
+    lists: {
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text(),
+          email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+          password: password(),
+        },
+      }),
+    },
+    session: statelessSessions(),
+  }),
 })
 
 async function authenticateWithPassword (

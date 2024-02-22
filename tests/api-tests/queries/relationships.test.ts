@@ -4,12 +4,12 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, type ListKeyFromRunner } from '../utils'
+import { type ListKeyFromRunner } from '../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: ({
     lists: {
       Post: list({
         access: allowAll,
