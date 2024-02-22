@@ -3,10 +3,10 @@ import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
-import { testConfig, dbProvider } from './utils'
+import { dbProvider } from './utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     ui: {
       isAccessAllowed: () => false,
     },
@@ -32,7 +32,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 test(
@@ -160,20 +160,21 @@ const names = {
 
 const gql = ([content]: TemplateStringsArray) => content
 
+const runner2 = setupTestRunner({
+  config: {
+    lists: {
+      Test: list({
+        access: allowAll,
+        fields: { name: text() },
+        ui: names,
+      }),
+    },
+  },
+})
+
 test(
   'ui.{label,plural,singular,path} are returned in the admin meta',
-
-  setupTestRunner({
-    config: testConfig({
-      lists: {
-        Test: list({
-          access: allowAll,
-          fields: { name: text() },
-          ui: names,
-        }),
-      },
-    }),
-  })(async ({ context }) => {
+  runner2(async ({ context }) => {
     const res = await context.sudo().graphql.raw({
       query: gql`
         query {

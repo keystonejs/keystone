@@ -30,13 +30,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
@@ -46,15 +46,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
-          DATABASE_URL: file:./file.db
+          DATABASE_URL: file:./test.db
 
   graphql_api_tests_mysql:
     name: API Tests MySQL
@@ -69,13 +69,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
@@ -99,7 +99,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -108,7 +108,6 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
-          TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
   field_crud_tests_sqlite:
@@ -122,7 +121,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -131,8 +130,7 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
-          TEST_ADAPTER: sqlite
-          DATABASE_URL: file:./dev.db
+          DATABASE_URL: file:./test.db
 
   field_crud_tests_mysql:
     name: Field CRUD Tests MySQL
@@ -152,7 +150,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/api-tests/fields/crud
+        run: pnpm jest --ci tests/api-tests/fields/crud
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -161,7 +159,6 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
-          TEST_ADAPTER: mysql
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   examples_tests:
@@ -169,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Example unit tests
         run: cd examples/testing; pnpm test
@@ -179,16 +176,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
-      - name: Example Next in app direcroty build
+      - name: Example Next in app directory build
         run: cd examples/framework-nextjs-app-directory; pnpm build
 
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'file:./test.db'
+      DATABASE_URL: file:./test.db
     strategy:
       matrix:
         test:
@@ -214,7 +211,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers
         run: cd tests/examples-smoke-tests && pnpm playwright install-deps chromium
@@ -223,13 +220,13 @@ jobs:
         run: cd tests/examples-smoke-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
+        run: pnpm jest --ci tests/examples-smoke-tests/${{ matrix.test }}
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'file:./test.db'
+      DATABASE_URL: file:./test.db
     strategy:
       matrix:
         test:
@@ -244,7 +241,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers
         run: cd tests/admin-ui-tests && pnpm playwright install-deps chromium

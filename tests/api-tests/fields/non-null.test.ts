@@ -1,16 +1,15 @@
-import fs from 'fs'
-import path from 'path'
-import os from 'os'
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-import { setupTestEnv } from '@keystone-6/api-tests/test-runner'
-import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql'
 import { allowAll } from '@keystone-6/core/access'
-import {
-  dbProvider,
-  testConfig
-} from '../utils'
+
+import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql'
+
+import { setupTestEnv } from '../test-runner'
+import { dbProvider } from '../utils'
 
 type TextFieldConfig = Parameters<typeof text>[0]
 
@@ -49,8 +48,8 @@ testModules
         })
 
         const getSchema = async (fieldConfig: TextFieldConfig) => {
-          const { testArgs } = await setupTestEnv({
-            config: testConfig({
+          const { context } = await setupTestEnv({
+            config: {
               lists: {
                 Test: list({
                   access: allowAll,
@@ -83,9 +82,9 @@ testModules
                   },
                 },
               },
-            }),
+            },
           })
-          return testArgs.context.graphql.schema
+          return context.graphql.schema
         }
 
         if (mod.supportsGraphQLIsNonNull) {

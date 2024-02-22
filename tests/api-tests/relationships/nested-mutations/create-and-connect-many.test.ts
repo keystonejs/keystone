@@ -3,14 +3,14 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
-import { testConfig, expectSingleRelationshipError } from '../../utils'
+import { expectSingleRelationshipError } from '../../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 type IdType = any
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: ({
     lists: {
       Note: list({
         access: allowAll,

@@ -13,7 +13,7 @@
     "test": "jest",
     "test:filters": "cd prisma-utils && pnpm verify",
     "test:types": "tsc",
-    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest",
     "test:admin-ui": "jest tests/admin-ui-tests",
     "build": "preconstruct build",
     "prepare": "preconstruct dev"

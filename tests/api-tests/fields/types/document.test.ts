@@ -1,14 +1,15 @@
 import { text } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 import { list } from '@keystone-6/core'
-import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, type ContextFromRunner, expectInternalServerError } from '../../utils'
-import { withServer } from '../../with-server'
+
+import { setupTestEnv, setupTestRunner } from '../../test-runner'
+import { type ContextFromRunner, expectInternalServerError } from '../../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  serve: true,
+  config: ({
     lists: {
       Post: list({
         access: allowAll,
@@ -257,7 +258,7 @@ describe('Document field type', () => {
 
   test(
     'hydrateRelationships: true - selection has bad fields',
-    withServer(runner)(async ({ context, graphQLRequest }) => {
+    runner(async ({ context, gqlSuper }) => {
       const { alice } = await initData({ context })
       const badBob = await context.query.Author.createOne({
         data: {
@@ -280,7 +281,7 @@ describe('Document field type', () => {
         },
       })
 
-      const { body } = await graphQLRequest({
+      const { body } = await gqlSuper({
         query:
           'query ($id: ID!){ author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
@@ -298,7 +299,7 @@ describe('Document field type', () => {
   test("an inline relationship to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: testConfig({
+        config: ({
           lists: {
             Post: list({
               access: allowAll,
@@ -324,7 +325,7 @@ describe('Document field type', () => {
   test("an relationship on a component block prop to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: testConfig({
+        config: ({
           lists: {
             Post: list({
               access: allowAll,

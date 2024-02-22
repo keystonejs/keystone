@@ -8,7 +8,7 @@ exports[`graphql.maxTake enforces the default 1`] = `
     },
     "locations": [
       {
-        "column": 13,
+        "column": 11,
         "line": 3,
       },
     ],

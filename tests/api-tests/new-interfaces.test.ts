@@ -2,14 +2,13 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { testConfig } from './utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     lists: {
       User: list({ access: allowAll, fields: { name: text() } }),
     },
-  }),
+  },
 })
 
 test(

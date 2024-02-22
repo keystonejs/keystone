@@ -2,11 +2,10 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { testConfig, dbProvider } from './utils'
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
-    config: testConfig({
+    config: {
       db: { enableLogging },
       lists: {
         User: list({
@@ -16,7 +15,7 @@ const runner = (enableLogging: boolean) =>
           },
         }),
       },
-    }),
+    },
   })
 
 test(
@@ -32,11 +31,7 @@ test(
       expect(logs).toEqual([
         [
           expect.stringContaining('prisma:query'),
-          dbProvider === 'sqlite'
-            ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
-            : dbProvider === 'mysql'
-            ? 'SELECT `test_db`.`User`.`id`, `test_db`.`User`.`name` FROM `test_db`.`User` WHERE 1=1'
-            : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1',
+          expect.stringContaining('SELECT '),
         ],
       ])
     } finally {

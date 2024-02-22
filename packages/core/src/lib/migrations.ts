@@ -63,10 +63,11 @@ export async function pushPrismaSchemaToDatabase (
   shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
-  resetDb: boolean
+  resetDb: boolean,
+  interactive: boolean = true
 ) {
   const created = await createDatabase(dbUrl, path.dirname(schemaPath))
-  if (created) {
+  if (interactive && created) {
     const credentials = uriToCredentials(dbUrl)
     console.log(
       `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
@@ -84,7 +85,7 @@ export async function pushPrismaSchemaToDatabase (
           schema,
         })
       )
-      console.log('✨ Your database has been reset')
+      if (interactive) console.log('✨ Your database has been reset')
       return migration
     }
     // what does force on migrate.engine.schemaPush mean?
@@ -102,6 +103,8 @@ export async function pushPrismaSchemaToDatabase (
     // there's no point in asking if they're okay with the warnings separately after asking if they're okay with
     // resetting their db since their db is already empty so they don't have any data to lose
     if (migration.unexecutable.length) {
+      if (!interactive) throw new ExitError(1)
+
       logUnexecutableSteps(migration.unexecutable)
       if (migration.warnings.length) {
         logWarnings(migration.warnings)
@@ -126,6 +129,8 @@ export async function pushPrismaSchemaToDatabase (
     }
 
     if (migration.warnings.length) {
+      if (!interactive) throw new ExitError(1)
+
       logWarnings(migration.warnings)
       if (
         !(await confirmPrompt(
@@ -147,6 +152,7 @@ export async function pushPrismaSchemaToDatabase (
     return migration
   })
 
+  if (!interactive) return
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
     console.info(`✨ The database is already in sync with the Prisma schema`)
   } else {

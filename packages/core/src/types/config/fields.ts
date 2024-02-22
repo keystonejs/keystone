@@ -43,7 +43,7 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
     }
 
     omit?:
-      | true
+      | boolean
       | {
           // should this field be omitted from the {List} GraphQL type?
           read?: boolean

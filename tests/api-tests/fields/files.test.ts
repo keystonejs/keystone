@@ -12,7 +12,6 @@ import { list } from '@keystone-6/core'
 import { type KeystoneConfig, type StorageConfig } from '@keystone-6/core/types'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig } from '../utils'
 
 const fieldPath = path.resolve(__dirname, './', 'types/fixtures')
 
@@ -53,7 +52,7 @@ function getRunner ({
   fields: KeystoneConfig['lists'][string]['fields']
 }) {
   return setupTestRunner({
-    config: testConfig({
+    config: {
       db: {},
       storage,
       lists: {
@@ -65,7 +64,7 @@ function getRunner ({
           },
         }),
       },
-    }),
+    },
   })
 }
 

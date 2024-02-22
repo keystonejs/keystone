@@ -1,17 +1,17 @@
 import { gen, sampleOne } from 'testcheck'
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allOperations, allowAll } from '@keystone-6/core/access'
+
+import { setupTestRunner } from '../../test-runner'
 import {
-  testConfig,
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils'
-import { withServer } from '../../with-server'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  serve: true,
+  config: {
     lists: {
       Group: list({
         access: allowAll,
@@ -121,7 +121,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('no access control', () => {
@@ -245,7 +245,7 @@ describe('with access control', () => {
       } else {
         test(
           'throws error when creating nested within create mutation',
-          withServer(runner)(async ({ context, graphQLRequest }) => {
+          runner(async ({ context, gqlSuper }) => {
             const alphaNumGenerator = gen.alphaNumString.notEmpty()
             const eventName = sampleOne(alphaNumGenerator)
             const groupName = sampleOne(alphaNumGenerator)
@@ -262,7 +262,7 @@ describe('with access control', () => {
               }`
 
             if (group.name === 'GroupNoCreateHard') {
-              const { body } = await graphQLRequest({ query })
+              const { body } = await gqlSuper({ query })
 
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
               expectGraphQLValidationError(body.errors, [
@@ -301,7 +301,7 @@ describe('with access control', () => {
 
         test(
           'throws error when creating nested within update mutation',
-          withServer(runner)(async ({ context, graphQLRequest }) => {
+          runner(async ({ context, gql, gqlSuper }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty())
 
             // Create an item to update
@@ -325,7 +325,7 @@ describe('with access control', () => {
 
             // Assert it throws an access denied error
             if (group.name === 'GroupNoCreateHard') {
-              const { body } = await graphQLRequest({ query })
+              const { body } = await gqlSuper({ query })
               // For { create: false } the mutation won't even exist, so we expect a different behaviour
 
               expectGraphQLValidationError(body.errors, [

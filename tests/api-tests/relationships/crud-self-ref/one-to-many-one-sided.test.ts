@@ -2,9 +2,9 @@ import { gen, sampleOne } from 'testcheck'
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import type { KeystoneContext } from '@keystone-6/core/types'
+import { type KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, type ContextFromRunner } from '../../utils'
+import { type ContextFromRunner } from '../../utils'
 
 type IdType = any
 
@@ -78,7 +78,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 }
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -88,7 +88,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-many relationships`, () => {
@@ -290,9 +290,9 @@ describe(`One-to-many relationships`, () => {
         const result = await getUserAndFriend(context, user.id, friend.id)
         expect(result.User).toBe(null)
       })
-    );
+    )
 
-    ['A', 'B', 'C', 'D', 'E'].forEach(name => {
+    for (const name of ['A', 'B', 'C', 'D', 'E']) {
       test(
         `delete company ${name}`,
         runner(async ({ context }) => {
@@ -347,9 +347,9 @@ describe(`One-to-many relationships`, () => {
           })()
         })
       )
-    });
+    }
 
-    ['A1', 'B1', 'C1', 'D1'].forEach(name => {
+    for (const name of ['A1', 'B1', 'C1', 'D1']) {
       test(
         `delete location ${name}`,
         runner(async ({ context }) => {
@@ -410,6 +410,6 @@ describe(`One-to-many relationships`, () => {
           })()
         })
       )
-    })
+    }
   })
 })

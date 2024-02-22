@@ -1,186 +1,234 @@
-import path from 'node:path'
 import fs from 'node:fs/promises'
+import path from 'node:path'
+import { join } from 'node:path'
+import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
-import os from 'node:os'
+import { tmpdir } from 'node:os'
+import supertest from 'supertest'
 import {
-  createDatabase,
   getConfig,
   getDMMF,
   parseEnvValue,
-  printConfigWarnings,
 } from '@prisma/internals'
 import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
-// @ts-expect-error
-import { externalToInternalDmmf } from '@prisma/client/generator-build'
-import { initConfig, createSystem } from '@keystone-6/core/system'
-import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '@keystone-6/core/types'
 import {
-  getCommittedArtifacts,
-  type PrismaModule,
-} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
-import prismaClientPackageJson from '@prisma/client/package.json'
-import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'
-import { dbProvider, dbUrl } from './utils'
+  externalToInternalDmmf
+// @ts-expect-error
+} from '@prisma/client/generator-build'
 
-export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
-  context: KeystoneContext<TypeInfo>
-  config: KeystoneConfig<TypeInfo>
+import {
+  createSystem,
+  createExpressServer,
+  initConfig,
+} from '@keystone-6/core/system'
+import {
+  type BaseKeystoneTypeInfo,
+} from '@keystone-6/core/types'
+import { generatePrismaAndGraphQLSchemas, type PrismaModule } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
+import { dbProvider, type FloatingConfig } from './utils'
+
+// prisma checks
+{
+  const prismaEnginesDir = path.dirname(require.resolve('@prisma/engines/package.json'))
+  const prismaEnginesDirEntries = readdirSync(prismaEnginesDir)
+  const queryEngineFilename = prismaEnginesDirEntries.find(dir => dir.startsWith('libquery_engine'))
+  if (!queryEngineFilename) throw new Error('Could not find query engine')
+  process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
 }
 
-export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo> = {
-  connect: () => Promise<void>
-  disconnect: () => Promise<void>
-  testArgs: TestArgs<TypeInfo>
-}
+// conceptually similar to https://github.com/prisma/prisma/blob/main/packages/client/src/utils/getTestClient.ts
+async function getTestPrismaModuleInner (prismaSchemaPath: string, datamodel: string) {
+  const config = await getConfig({ datamodel, ignoreEnvVarErrors: true })
+  const document = await getDMMF({ datamodel, previewFeatures: [] })
+  return {
+    PrismaClient: getPrismaClient({
+      document: externalToInternalDmmf(document),
+      generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
+      dirname: path.dirname(prismaSchemaPath),
+      relativePath: '',
 
-// you could call this a memory leak but it ends up being fine
-// because we're only going to run this on a reasonably small number of schemas and then exit
-const generatedPrismaModules = new Map<string, PrismaModule>()
+      clientVersion: '0.0.0',
+      engineVersion: '0000000000000000000000000000000000000000',
+      relativeEnvPaths: {},
 
-// a modified version of https://github.com/prisma/prisma/blob/bbdf1c23653a77b0b5bf7d62efd243dcebea018b/packages/client/src/utils/getTestClient.ts
-// yes, it's totally relying on implementation details
-// we're okay with that because otherwise the performance of our tests is very bad
-const tmpdir = os.tmpdir()
-
-const prismaSchemaDirectory = path.join(tmpdir, Math.random().toString(36).slice(2))
-
-const prismaSchemaPath = path.join(prismaSchemaDirectory, 'schema.prisma')
-
-const prismaEnginesDir = path.dirname(require.resolve('@prisma/engines/package.json'))
-
-const prismaEnginesDirEntries = readdirSync(prismaEnginesDir)
-
-const queryEngineFilename = prismaEnginesDirEntries.find(dir => dir.startsWith('libquery_engine'))
-
-if (!queryEngineFilename) {
-  throw new Error('Could not find query engine')
-}
-
-process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
-
-async function getTestPrismaModule (schema: string): Promise<PrismaModule> {
-  if (generatedPrismaModules.has(schema)) {
-    return generatedPrismaModules.get(schema)!
-  }
-  const config = await getConfig({ datamodel: schema, ignoreEnvVarErrors: true })
-  printConfigWarnings(config.warnings)
-
-  const generator = config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js')
-
-  const document = externalToInternalDmmf(
-    await getDMMF({ datamodel: schema, previewFeatures: [] })
-  )
-  const activeProvider = config.datasources[0].activeProvider
-  const options: Parameters<typeof getPrismaClient>[0] = {
-    document,
-    generator,
-    dirname: prismaSchemaDirectory,
-    relativePath: '',
-    clientVersion: prismaClientPackageJson.version,
-    engineVersion: 'engine-test-version',
-    relativeEnvPaths: {},
-    datasourceNames: config.datasources.map(d => d.name),
-    activeProvider,
-    dataProxy: false,
-  }
-  const prismaModule: PrismaModule = {
-    PrismaClient: getPrismaClient(options) as any,
+      datasourceNames: config.datasources.map(d => d.name),
+      activeProvider: config.datasources[0].activeProvider,
+      dataProxy: false,
+    }) as any,
     Prisma: {
       DbNull: objectEnumValues.instances.DbNull,
       JsonNull: objectEnumValues.instances.JsonNull,
     },
   }
-  generatedPrismaModules.set(schema, prismaModule)
-  return prismaModule
 }
 
+const prismaModuleCache = new Map<string, PrismaModule>()
+async function getTestPrismaModule (prismaSchemaPath: string, schema: string) {
+  if (prismaModuleCache.has(schema)) return prismaModuleCache.get(schema)!
+  return prismaModuleCache.set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema)).get(schema)!
+}
+
+const deferred: (() => Promise<void>)[] = []
 afterAll(async () => {
-  await fs.rm(prismaSchemaDirectory, { recursive: true, force: true })
+  for (const f of deferred) {
+    await f()
+  }
 })
 
-let hasCreatedDatabase = false
-
-async function pushSchemaToDatabase (schema: string) {
-  if (dbProvider === 'sqlite') {
-    const dbFilePath = dbUrl.slice('file:'.length)
-
-    // touch the file (or truncate it), easiest way to start from scratch
-    await fs.writeFile(path.join(prismaSchemaDirectory, dbFilePath), '')
-    await withMigrate(prismaSchemaPath, migrate =>
-      runMigrateWithDbUrl(dbUrl, undefined, () =>
-        migrate.engine.schemaPush({
-          force: true,
-          schema,
-        })
-      )
-    )
-    return
-  }
-
-  const justCreatedDatabase = hasCreatedDatabase ? false : await createDatabase(dbUrl, prismaSchemaDirectory)
-  await withMigrate(prismaSchemaPath, async migrate => {
-    if (!justCreatedDatabase) {
-      await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.reset())
-    }
-    await runMigrateWithDbUrl(dbUrl, undefined, () =>
-      migrate.engine.schemaPush({
-        force: true,
-        schema,
-      })
-    )
-  })
-  hasCreatedDatabase = true
-}
-
-let lastWrittenSchema = ''
-
-export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo> ({
-  config: _config,
+export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
+  config: config_,
+  serve = false,
+  identifier,
 }: {
-  config: KeystoneConfig<TypeInfo>
-}): Promise<TestEnv<TypeInfo>> {
-  // Force the UI to always be disabled.
-  const config = initConfig({
-    ..._config,
-    ui: { ..._config.ui, isDisabled: true },
-  })
+  config: FloatingConfig<TypeInfo>
+  serve?: boolean
+  identifier?: string
+}) {
+  const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
+  const tmp = join(tmpdir(), `ks6-tests-${random}`)
+  await fs.mkdir(tmp)
 
-  const { graphQLSchema, getKeystone } = createSystem(config)
-  const artifacts = await getCommittedArtifacts(config, graphQLSchema)
+  let dbUrl = process.env.DATABASE_URL
+  if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
 
-  if (lastWrittenSchema !== artifacts.prisma) {
-    if (!lastWrittenSchema) {
-      await fs.mkdir(prismaSchemaDirectory, { recursive: true })
-    }
-    await fs.writeFile(prismaSchemaPath, artifacts.prisma)
+  if (dbUrl.startsWith('file:')) {
+    dbUrl = `file:${join(tmp, 'test.db')}` // unique database files
   }
-  await pushSchemaToDatabase(artifacts.prisma)
 
-  const { connect, disconnect, context } = getKeystone(await getTestPrismaModule(artifacts.prisma))
-  return {
+  if (dbUrl.startsWith('postgres:')) {
+    const parsed = new URL(dbUrl)
+    parsed.searchParams.set('schema', random) // unique schema names
+    dbUrl = parsed.toString()
+  }
+
+  if (dbUrl.startsWith('mysql:')) {
+    const parsed = new URL(dbUrl)
+    parsed.pathname = random // unique database names
+    dbUrl = parsed.toString()
+  }
+
+  const prismaSchemaPath = join(tmp, 'schema.prisma')
+  const config = initConfig({
+    ...config_,
+    db: {
+      provider: dbProvider,
+      url: dbUrl,
+      prismaClientPath: join(tmp, '.client'),
+      prismaSchemaPath,
+      ...config_.db,
+    },
+    types: {
+      path: join(tmp, 'test-types.ts')
+    },
+    lists: config_.lists,
+    graphql: {
+      schemaPath: join(tmp, 'schema.graphql'),
+      ...config_.graphql,
+    },
+    ui: {
+      isDisabled: true,
+      ...config_.ui,
+    },
+  })
+  const { graphQLSchema, getKeystone } = createSystem(config)
+  const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+  await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
+
+  const {
+    context,
     connect,
-    disconnect,
-    testArgs: {
+    disconnect
+  } = getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
+
+  if (serve) {
+    const {
+      expressServer: express,
+      httpServer: http
+    } = await createExpressServer(config, context.graphql.schema, context)
+
+    function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
+      return supertest(express)
+        .post(config.graphql?.path ?? '/api/graphql')
+        .send(...args)
+        .set('Accept', 'application/json')
+    }
+
+    async function gql (...args: Parameters<typeof context.graphql.raw>) {
+      const { body } = await gqlSuper(...args)
+      return body
+    }
+
+    return {
+      artifacts,
+      connect,
       context,
       config,
-    },
+      http,
+      gql,
+      gqlSuper,
+      express,
+      disconnect,
+    } as const
+  }
+
+  async function gql (...args: Parameters<typeof context.graphql.raw>) {
+    return await context.graphql.raw(...args)
+  }
+
+  return {
+    artifacts,
+    connect,
+    context,
+    config,
+    http: null as any, // TODO: FIXME
+    express: null as any, // TODO: FIXME
+    gql,
+    gqlSuper: null as any, // TODO: FIXME
+    disconnect,
+  } as const
+}
+
+export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
+  config: config_,
+  serve = false,
+  identifier,
+}: {
+  config: FloatingConfig<TypeInfo>
+  serve?: boolean
+  identifier?: string
+}) {
+  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
+    const result = await setupTestEnv({ config: config_, serve, identifier })
+
+    await result.connect()
+    try {
+      return await testFn(result)
+    } finally {
+      await result.disconnect()
+    }
   }
 }
 
-export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo> ({
-  config,
+// WARNING: no support for onConnect
+export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
+  config: config_,
+  serve = false,
+  identifier,
 }: {
-  config: KeystoneConfig<TypeInfo>
+  config: FloatingConfig<TypeInfo>
+  serve?: boolean
+  identifier?: string
 }) {
-  return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
-    // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv({ config })
-    await connect()
+  const result = setupTestEnv({ config: config_, serve, identifier })
+  const connectPromise = result.then((x) => x.connect())
 
-    try {
-      return await testFn(testArgs)
-    } finally {
-      await disconnect()
-    }
+  afterAll(async () => {
+    await (await result).disconnect()
+  })
+
+  return async () => {
+    await connectPromise
+    return await result
   }
 }

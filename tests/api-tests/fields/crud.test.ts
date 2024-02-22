@@ -7,7 +7,6 @@ import { allowAll } from '@keystone-6/core/access'
 import { humanize } from '../../../packages/core/src/lib/utils'
 import {
   dbProvider,
-  testConfig,
   expectSingleResolverError,
   expectValidationError
 } from '../utils'
@@ -26,7 +25,7 @@ testModules
     (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
       const listKey = 'Test'
       const runner = setupTestRunner({
-        config: testConfig({
+        config: {
           lists: {
             [listKey]: list({
               access: allowAll,
@@ -37,11 +36,12 @@ testModules
             }),
           },
           ...mod.getRootConfig?.(matrixValue),
-        }),
+        },
       })
+
       const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
         runner(async ({ context, ...rest }) => {
-          // Populate the database before running the tests
+          // populate the database before running the tests
           for (const data of mod.initItems(matrixValue, context)) {
             await context.query[listKey].createOne({ data })
           }

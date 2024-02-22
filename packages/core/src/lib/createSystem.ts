@@ -1,8 +1,11 @@
 import { randomBytes } from 'node:crypto'
-import type { FieldData, KeystoneConfig } from '../types'
+import {
+  type FieldData,
+  type KeystoneConfig
+} from '../types'
 import { GraphQLError } from 'graphql'
 
-import type { PrismaModule } from '../artifacts'
+import { type PrismaModule } from '../artifacts'
 import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
@@ -35,7 +38,7 @@ function getSudoGraphQLSchema (config: KeystoneConfig) {
           {
             ...list,
             access: allowAll,
-            graphql: { ...(list.graphql || {}), omit: {} },
+            graphql: { ...(list.graphql || {}), omit: false },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
                 if (fieldKey.startsWith('__group')) return [fieldKey, field]
@@ -48,7 +51,7 @@ function getSudoGraphQLSchema (config: KeystoneConfig) {
                       access: allowAll,
                       isFilterable: true,
                       isOrderable: true,
-                      graphql: { ...(f.graphql || {}), omit: {} },
+                      graphql: { ...(f.graphql || {}), omit: false },
                     }
                   },
                 ]

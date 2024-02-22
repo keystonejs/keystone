@@ -3,17 +3,16 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import {
-  testConfig,
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
   expectFilterDenied,
-  type ContextFromRunner,
+  type ContextFromRunner
 } from '../utils'
-import { withServer } from '../with-server'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  serve: true,
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -76,7 +75,7 @@ const runner = setupTestRunner({
         defaultIsFilterable: () => ({} as any), // not actually allowed
       }),
     },
-  }),
+  },
 })
 
 const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
@@ -287,8 +286,8 @@ describe('searching by unique fields', () => {
 describe('isFilterable', () => {
   test(
     'isFilterable: false',
-    withServer(runner)(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ gqlSuper }) => {
+      const { body } = await gqlSuper({
         query: '{ users(where: { filterFalse: { equals: 10 } }) { id } }',
       })
       expectGraphQLValidationError(body.errors, [
@@ -408,8 +407,8 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: false',
-    withServer(runner)(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+    runner(async ({ gqlSuper }) => {
+      const { body } = await gqlSuper({
         query: '{ defaultFilterFalses(where: { a: { equals: 10 } }) { id } }',
       })
       expectGraphQLValidationError(body.errors, [

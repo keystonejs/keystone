@@ -1,14 +1,18 @@
 import { initConfig, createSystem } from '@keystone-6/core/system'
 import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
-import { type KeystoneConfig, type KeystoneContext } from '@keystone-6/core/types'
+import {
+  type BaseKeystoneTypeInfo,
+  type KeystoneConfig,
+  type KeystoneContext
+} from '@keystone-6/core/types'
 import { type setupTestRunner } from './test-runner'
 
-export const { dbUrl, dbProvider } = function () {
+export const dbProvider = function () {
   const dbUrl = process.env.DATABASE_URL ?? ''
-  if (dbUrl.startsWith('file:')) return { dbUrl, dbProvider: 'sqlite' as const }
-  if (dbUrl.startsWith('postgres:')) return { dbUrl, dbProvider: 'postgresql' as const }
-  if (dbUrl.startsWith('mysql:')) return { dbUrl, dbProvider: 'mysql' as const }
-  throw new Error(`Unknown database type: ${dbUrl}`)
+  if (dbUrl.startsWith('file:')) return 'sqlite' as const
+  if (dbUrl.startsWith('postgres:')) return 'postgresql' as const
+  if (dbUrl.startsWith('mysql:')) return 'mysql' as const
+  throw new Error(`Unknown database type: for ${dbUrl}`)
 }()
 
 const workerId = process.env.JEST_WORKER_ID
@@ -17,19 +21,8 @@ if (workerId === undefined) {
   throw new Error('expected JEST_WORKER_ID to be set')
 }
 
-export function testConfig (
-  config: Omit<KeystoneConfig, 'db'> & {
-    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>
-  }
-): KeystoneConfig {
-  return {
-    ...config,
-    db: {
-      provider: dbProvider,
-      url: dbUrl,
-      ...config.db,
-    },
-  }
+export type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfig<TypeInfo>, 'db'> & {
+  db?: Omit<KeystoneConfig<TypeInfo>['db'], 'provider' | 'url'>
 }
 
 export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<
@@ -221,8 +214,24 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export async function getPrismaSchema (_config: KeystoneConfig) {
-  const config = initConfig(_config)
+export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>): KeystoneConfig {
+  return {
+    ...config,
+    db: {
+      provider: dbProvider,
+      url: '',
+      ...config.db,
+    },
+    // default to a disabled UI
+    ui: {
+      isDisabled: true,
+      ...config.ui
+    },
+  }
+}
+
+export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (_config: FloatingConfig<TypeInfo>) {
+  const config = initConfig(testConfig(_config))
   const { graphQLSchema } = createSystem(config)
   const artifacts = await getCommittedArtifacts(config, graphQLSchema)
   return artifacts.prisma

@@ -3,10 +3,10 @@ import { list } from '@keystone-6/core'
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 import { setupTestRunner } from '../test-runner'
-import { testConfig, dbProvider } from '../utils'
+import { dbProvider } from '../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     lists: {
       Singular: list({
         isSingleton: true,
@@ -16,7 +16,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 async function initialise ({ context }: { context: KeystoneContext }) {

@@ -1,4 +1,4 @@
-name: 'CI setup'
+name: 'CI setup (w/ examples)'
 runs:
   using: 'composite'
   steps:
@@ -12,10 +12,8 @@ runs:
         registry-url: 'https://registry.npmjs.org'
         cache: pnpm
 
-    - run: rm --recursive --force examples/ tests/test-projects/
-      shell: bash
-
-    - run: pnpm install
+    # limited to 1 child process, preventing Prisma postinstall races in our examples
+    - run: pnpm install --child-concurrency 1
       shell: bash
       env:
         PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'

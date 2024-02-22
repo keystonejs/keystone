@@ -2,10 +2,10 @@ import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectValidationError } from '../utils'
+import { expectValidationError } from '../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -64,7 +64,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('List Hooks: #validateInput()', () => {

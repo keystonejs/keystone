@@ -4,8 +4,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectInternalServerError, expectValidationError, seed } from './utils'
-import { type GraphQLRequest, withServer } from './with-server'
+import { expectInternalServerError, expectValidationError, seed } from './utils'
 
 const initialData = {
   User: [
@@ -14,8 +13,6 @@ const initialData = {
     { name: 'Bad User', email: 'bad@keystonejs.com', password: 'incorrectbattery' },
   ],
 }
-
-const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
 
 let MAGIC_TOKEN: string
 
@@ -45,32 +42,30 @@ const auth = createAuth({
   },
 })
 
-const runner = withServer(
-  setupTestRunner({
-    config: auth.withAuth(
-      testConfig({
-        lists: {
-          User: list({
-            access: allowAll,
-            fields: {
-              name: text(),
-              email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-              password: password(),
-            },
-          }),
+const runner = setupTestRunner({
+  serve: true,
+  config: auth.withAuth({
+    db: {} as any,
+    lists: {
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text(),
+          email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+          password: password(),
         },
-        session: statelessSessions({ secret: COOKIE_SECRET }),
-      })
-    ),
-  })
-)
+      }),
+    },
+    session: statelessSessions(),
+  }),
+})
 
 async function authenticateWithPassword (
-  graphQLRequest: GraphQLRequest,
+  gql: any,
   email: string,
   password: string
 ) {
-  return graphQLRequest({
+  return gql({
     query: `
       mutation($email: String!, $password: String!) {
         authenticateUserWithPassword(email: $email, password: $password) {
@@ -92,10 +87,10 @@ describe('Auth testing', () => {
   describe('authenticateItemWithPassword', () => {
     test(
       'Success - set token in header and return value',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         const { User: users } = await seed(context, initialData)
         const { body, res } = (await authenticateWithPassword(
-          graphQLRequest,
+          gqlSuper,
           'boris@keystonejs.com',
           'correctbattery'
         )) as any
@@ -116,11 +111,11 @@ describe('Auth testing', () => {
 
     test(
       'Failure - bad password',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
         const { body, res } = (await authenticateWithPassword(
-          graphQLRequest,
+          gqlSuper,
           'boris@keystonejs.com',
           'incorrectbattery'
         )) as any
@@ -138,11 +133,11 @@ describe('Auth testing', () => {
 
     test(
       'Failure - bad identify value',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
         const { body, res } = (await authenticateWithPassword(
-          graphQLRequest,
+          gqlSuper,
           'bort@keystonejs.com',
           'correctbattery'
         )) as any
@@ -161,8 +156,8 @@ describe('Auth testing', () => {
   describe('createInitialItem', () => {
     test(
       'Success - set token in header and return value',
-      runner(async ({ graphQLRequest }) => {
-        const { body, res } = (await graphQLRequest({
+      runner(async ({ gqlSuper }) => {
+        const { body, res } = (await gqlSuper({
           query: `
           mutation($email: String!, $password: String!) {
             createInitialUser(data: { email: $email, password: $password }) {
@@ -189,10 +184,10 @@ describe('Auth testing', () => {
 
     test(
       'Failure - items already exist',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body, res } = (await graphQLRequest({
+        const { body, res } = (await gqlSuper({
           query: `
           mutation($email: String!, $password: String!) {
             createInitialUser(data: { email: $email, password: $password }) {
@@ -219,8 +214,8 @@ describe('Auth testing', () => {
 
     test(
       'Failure - no required field value',
-      runner(async ({ graphQLRequest }) => {
-        const { body, res } = (await graphQLRequest({
+      runner(async ({ gqlSuper }) => {
+        const { body, res } = (await gqlSuper({
           query: `
           mutation($password: String!) {
             createInitialUser(data: { password: $password }) {
@@ -249,10 +244,10 @@ describe('Auth testing', () => {
   describe('getMagicAuthLink', () => {
     test(
       'sendItemMagicAuthLink - Success',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -288,10 +283,10 @@ describe('Auth testing', () => {
     )
     test(
       'sendItemMagicAuthLink - Failure - missing user',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -305,10 +300,10 @@ describe('Auth testing', () => {
     )
     test(
       'sendItemMagicAuthLink - Failure - Error in sendToken',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -336,9 +331,9 @@ describe('Auth testing', () => {
 
     test(
       'redeemItemMagicAuthToken - Success',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -347,7 +342,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!) {
               redeemUserMagicAuthToken(email: $email, token: $token) {
@@ -383,9 +378,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemMagicAuthToken - Failure - bad token',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email) {
@@ -396,7 +391,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!) {
               redeemUserMagicAuthToken(email: $email, token: $token) {
@@ -423,9 +418,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemMagicAuthToken - Failure - non-existent user',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -434,7 +429,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!) {
               redeemUserMagicAuthToken(email: $email, token: $token) {
@@ -460,10 +455,10 @@ describe('Auth testing', () => {
       })
     )
     test(
-      'redeemItemMagicAuthToken - Failure - already redemmed',
-      runner(async ({ context, graphQLRequest }) => {
+      'redeemItemMagicAuthToken - Failure - already redeemed',
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -472,7 +467,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
         // Redeem once
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!, $token: String!) {
               redeemUserMagicAuthToken(email: $email, token: $token) {
@@ -488,7 +483,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         })
         // Redeem twice
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!) {
               redeemUserMagicAuthToken(email: $email, token: $token) {
@@ -516,9 +511,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemMagicAuthToken - Failure - Token expired',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -531,29 +526,31 @@ describe('Auth testing', () => {
           where: { email: 'boris@keystonejs.com' },
           data: { magicAuthIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString() },
         })
-        const { body } = await graphQLRequest({
-          query: `
-            mutation($email: String!, $token: String!) {
-              redeemUserMagicAuthToken(email: $email, token: $token) {
-                ... on RedeemUserMagicAuthTokenSuccess {
-                  token item { id }
-                }
-                ... on RedeemUserMagicAuthTokenFailure {
-                  code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              mutation($email: String!, $token: String!) {
+                redeemUserMagicAuthToken(email: $email, token: $token) {
+                  ... on RedeemUserMagicAuthTokenSuccess {
+                    token item { id }
+                  }
+                  ... on RedeemUserMagicAuthTokenFailure {
+                    code message
+                  }
                 }
               }
-            }
-          `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
-        })
+            `,
+            variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
+          })
 
-        expect(body.errors).toBe(undefined)
-        expect(body.data).toEqual({
-          redeemUserMagicAuthToken: { token: expect.any(String), item: { id: user.id } },
-        })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({
+            redeemUserMagicAuthToken: { token: expect.any(String), item: { id: user.id } },
+          })
+        }
 
         // Send another token
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
@@ -566,29 +563,31 @@ describe('Auth testing', () => {
           where: { email: 'boris@keystonejs.com' },
           data: { magicAuthIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString() },
         })
-        const result = await graphQLRequest({
-          query: `
-            mutation($email: String!, $token: String!) {
-              redeemUserMagicAuthToken(email: $email, token: $token) {
-                ... on RedeemUserMagicAuthTokenSuccess {
-                  token item { id }
-                }
-                ... on RedeemUserMagicAuthTokenFailure {
-                  code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              mutation($email: String!, $token: String!) {
+                redeemUserMagicAuthToken(email: $email, token: $token) {
+                  ... on RedeemUserMagicAuthTokenSuccess {
+                    token item { id }
+                  }
+                  ... on RedeemUserMagicAuthTokenFailure {
+                    code message
+                  }
                 }
               }
-            }
-          `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
-        })
+            `,
+            variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
+          })
 
-        expect(result.body.errors).toBe(undefined)
-        expect(result.body.data).toEqual({
-          redeemUserMagicAuthToken: {
-            code: 'TOKEN_EXPIRED',
-            message: 'The auth token provided has expired.',
-          },
-        })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({
+            redeemUserMagicAuthToken: {
+              code: 'TOKEN_EXPIRED',
+              message: 'The auth token provided has expired.',
+            },
+          })
+        }
       })
     )
   })
@@ -596,10 +595,10 @@ describe('Auth testing', () => {
   describe('getPasswordReset', () => {
     test(
       'sendItemPasswordResetLink - Success',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -636,10 +635,10 @@ describe('Auth testing', () => {
 
     test(
       'sendItemPasswordResetLink - Failure - missing user',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -653,10 +652,10 @@ describe('Auth testing', () => {
     )
     test(
       'sendItemPasswordResetLink - Failure - Error in sendToken',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -684,9 +683,9 @@ describe('Auth testing', () => {
 
     test(
       'redeemItemPasswordToken - Success',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -695,7 +694,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -730,9 +729,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemPasswordToken - Failure - bad token',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -741,7 +740,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -767,9 +766,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemPasswordToken - Failure - non-existent user',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -778,7 +777,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -803,10 +802,10 @@ describe('Auth testing', () => {
       })
     )
     test(
-      'redeemItemPasswordToken - Failure - already redemmed',
-      runner(async ({ context, graphQLRequest }) => {
+      'redeemItemPasswordToken - Failure - already redeemed',
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -815,7 +814,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
         // Redeem once
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -830,7 +829,7 @@ describe('Auth testing', () => {
           },
         })
         // Redeem twice
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -857,9 +856,9 @@ describe('Auth testing', () => {
     )
     test(
       'redeemItemPasswordToken - Failure - Token expired',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -874,26 +873,28 @@ describe('Auth testing', () => {
             passwordResetIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString(),
           },
         })
-        const { body } = await graphQLRequest({
-          query: `
-            mutation($email: String!, $token: String!, $password: String!) {
-              redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
-                code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              mutation($email: String!, $token: String!, $password: String!) {
+                redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
+                  code message
+                }
               }
-            }
-          `,
-          variables: {
-            email: 'boris@keystonejs.com',
-            token: MAGIC_TOKEN,
-            password: 'NEW PASSWORD',
-          },
-        })
+            `,
+            variables: {
+              email: 'boris@keystonejs.com',
+              token: MAGIC_TOKEN,
+              password: 'NEW PASSWORD',
+            },
+          })
 
-        expect(body.errors).toBe(undefined)
-        expect(body.data).toEqual({ redeemUserPasswordResetToken: null })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({ redeemUserPasswordResetToken: null })
+        }
 
         // Send another token
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -908,36 +909,38 @@ describe('Auth testing', () => {
             passwordResetIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString(),
           },
         })
-        const result = await graphQLRequest({
-          query: `
-            mutation($email: String!, $token: String!, $password: String!) {
-              redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
-                code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              mutation($email: String!, $token: String!, $password: String!) {
+                redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
+                  code message
+                }
               }
-            }
-          `,
-          variables: {
-            email: 'boris@keystonejs.com',
-            token: MAGIC_TOKEN,
-            password: 'NEW PASSWORD',
-          },
-        })
+            `,
+            variables: {
+              email: 'boris@keystonejs.com',
+              token: MAGIC_TOKEN,
+              password: 'NEW PASSWORD',
+            },
+          })
 
-        expect(result.body.errors).toBe(undefined)
-        expect(result.body.data).toEqual({
-          redeemUserPasswordResetToken: {
-            code: 'TOKEN_EXPIRED',
-            message: 'The auth token provided has expired.',
-          },
-        })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({
+            redeemUserPasswordResetToken: {
+              code: 'TOKEN_EXPIRED',
+              message: 'The auth token provided has expired.',
+            },
+          })
+        }
       })
     )
 
     test(
       'validateItemPasswordToken - Success',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -946,7 +949,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             query($email: String!, $token: String!) {
               validateUserPasswordResetToken(email: $email, token: $token) {
@@ -962,9 +965,9 @@ describe('Auth testing', () => {
     )
     test(
       'validateItemPasswordToken - Failure - bad token',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -973,7 +976,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             query($email: String!, $token: String!) {
               validateUserPasswordResetToken(email: $email, token: $token) {
@@ -995,9 +998,9 @@ describe('Auth testing', () => {
     )
     test(
       'validateItemPasswordToken - Failure - non-existent user',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -1006,7 +1009,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
 
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             query($email: String!, $token: String!) {
               validateUserPasswordResetToken(email: $email, token: $token) {
@@ -1027,10 +1030,10 @@ describe('Auth testing', () => {
       })
     )
     test(
-      'validateItemPasswordToken - Failure - already redemmed',
-      runner(async ({ context, graphQLRequest }) => {
+      'validateItemPasswordToken - Failure - already redeemed',
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -1039,7 +1042,7 @@ describe('Auth testing', () => {
           variables: { email: 'boris@keystonejs.com' },
         })
         // Redeem once
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!, $token: String!, $password: String!) {
               redeemUserPasswordResetToken(email: $email, token: $token, password: $password) {
@@ -1054,7 +1057,7 @@ describe('Auth testing', () => {
           },
         })
         // Redeem twice
-        const { body } = await graphQLRequest({
+        const { body } = await gqlSuper({
           query: `
             query($email: String!, $token: String!) {
               validateUserPasswordResetToken(email: $email, token: $token) {
@@ -1077,9 +1080,9 @@ describe('Auth testing', () => {
     )
     test(
       'validateItemPasswordToken - Failure - Token expired',
-      runner(async ({ context, graphQLRequest }) => {
+      runner(async ({ context, gql, gqlSuper }) => {
         await seed(context, initialData)
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -1094,22 +1097,24 @@ describe('Auth testing', () => {
             passwordResetIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString(),
           },
         })
-        const { body } = await graphQLRequest({
-          query: `
-            query($email: String!, $token: String!) {
-              validateUserPasswordResetToken(email: $email, token: $token) {
-                code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              query($email: String!, $token: String!) {
+                validateUserPasswordResetToken(email: $email, token: $token) {
+                  code message
+                }
               }
-            }
-          `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
-        })
+            `,
+            variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
+          })
 
-        expect(body.errors).toBe(undefined)
-        expect(body.data).toEqual({ validateUserPasswordResetToken: null })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({ validateUserPasswordResetToken: null })
+        }
 
         // Send another token
-        await graphQLRequest({
+        await gql({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
@@ -1124,24 +1129,26 @@ describe('Auth testing', () => {
             passwordResetIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString(),
           },
         })
-        const result = await graphQLRequest({
-          query: `
-            query($email: String!, $token: String!) {
-              validateUserPasswordResetToken(email: $email, token: $token) {
-                code message
+        {
+          const { body } = await gqlSuper({
+            query: `
+              query($email: String!, $token: String!) {
+                validateUserPasswordResetToken(email: $email, token: $token) {
+                  code message
+                }
               }
-            }
-          `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
-        })
+            `,
+            variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
+          })
 
-        expect(result.body.errors).toBe(undefined)
-        expect(result.body.data).toEqual({
-          validateUserPasswordResetToken: {
-            code: 'TOKEN_EXPIRED',
-            message: 'The auth token provided has expired.',
-          },
-        })
+          expect(body.errors).toBe(undefined)
+          expect(body.data).toEqual({
+            validateUserPasswordResetToken: {
+              code: 'TOKEN_EXPIRED',
+              message: 'The auth token provided has expired.',
+            },
+          })
+        }
       })
     )
   })

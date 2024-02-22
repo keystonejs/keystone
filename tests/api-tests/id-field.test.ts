@@ -4,7 +4,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { validate as isUuid } from 'uuid'
-import { testConfig, dbProvider, expectBadUserInput } from './utils'
+import { dbProvider, expectBadUserInput } from './utils'
 
 export function assertNever (arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg))
@@ -106,7 +106,7 @@ const fixtures = [
 for (const fixture of fixtures) {
   const { expect: expectFn, error, hooks = {}, ...idField } = fixture
   const runner = setupTestRunner({
-    config: testConfig({
+    config: {
       db: {
         idField,
       },
@@ -119,7 +119,7 @@ for (const fixture of fixtures) {
           hooks,
         }),
       },
-    }),
+    },
   })
 
   const { kind, type } = idField
@@ -214,12 +214,12 @@ for (const fixture of fixtures) {
 describe('case insensitive id filters', () => {
   {
     const runner = setupTestRunner({
-      config: testConfig({
+      config: {
         db: { idField: { kind: 'uuid' } },
         lists: {
           User: list({ access: allowAll, fields: { name: text() } }),
         },
-      }),
+      },
     })
     test(
       'searching for uppercased uuid works',

@@ -9,7 +9,6 @@ import { allowAll } from '@keystone-6/core/access'
 import { humanize } from '../../../packages/core/src/lib/utils'
 import {
   dbProvider,
-  testConfig,
   expectValidationError
 } from '../utils'
 
@@ -50,7 +49,7 @@ testModules
         const fieldConfig = mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}
 
         const runner = setupTestRunner({
-          config: testConfig({
+          config: {
             lists: {
               Test: list({
                 access: allowAll,
@@ -86,7 +85,7 @@ testModules
                 },
               },
             },
-          }),
+          },
         })
 
         const messages = [`Test.testField: ${humanize('testField')} is required`]

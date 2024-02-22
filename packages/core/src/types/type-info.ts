@@ -1,5 +1,5 @@
-import type { KeystoneContext } from './context'
-import type { BaseItem } from './next-fields'
+import { type KeystoneContext } from './context'
+import { type BaseItem } from './next-fields'
 
 type GraphQLInput = Record<string, any>
 

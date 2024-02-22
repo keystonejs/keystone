@@ -3,7 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, type ContextFromRunner } from '../../../utils'
+import { type ContextFromRunner } from '../../../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -12,7 +12,7 @@ type IdType = any
 const toStr = (items: any[]) => items.map(item => item.toString())
 
 const runner = setupTestRunner({
-  config: testConfig({
+  config: ({
     lists: {
       Student: list({
         access: allowAll,

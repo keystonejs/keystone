@@ -2,11 +2,9 @@ import { text, timestamp, password } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import type { KeystoneContext } from '@keystone-6/core/types'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, expectAccessDenied, seed } from './utils'
-import { type GraphQLRequest, withServer } from './with-server'
+import { expectAccessDenied, seed } from './utils'
 
 const initialData = {
   User: [
@@ -15,11 +13,8 @@ const initialData = {
   ],
 }
 
-const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
-const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session
-
 function setup (options?: any) {
-  const auth = createAuth({
+  const { withAuth } = createAuth({
     listKey: 'User',
     identityField: 'email',
     secretField: 'password',
@@ -27,40 +22,38 @@ function setup (options?: any) {
     ...options,
   })
 
-  return withServer(
-    setupTestRunner({
-      config: auth.withAuth(
-        testConfig({
-          lists: {
-            Post: list({
-              access: allowAll,
-              fields: {
-                title: text(),
-                postedAt: timestamp(),
-              },
-            }),
-            User: list({
-              access: defaultAccess,
-              fields: {
-                name: text(),
-                email: text({ isIndexed: 'unique' }),
-                password: password(),
-              },
-            }),
+  return setupTestRunner({
+    serve: true,
+    config: withAuth({
+      db: {} as any,
+      lists: {
+        Post: list({
+          access: allowAll,
+          fields: {
+            title: text(),
+            postedAt: timestamp(),
           },
-          session: statelessSessions({ secret: COOKIE_SECRET }),
-        })
-      ),
+        }),
+        User: list({
+          access: ({ session }) => !!session,
+          fields: {
+            name: text(),
+            email: text({ isIndexed: 'unique' }),
+            password: password(),
+          },
+        }),
+      },
+      session: statelessSessions(),
     })
-  )
+  })
 }
 
 async function login (
-  graphQLRequest: GraphQLRequest,
+  gqlSuper: any,
   email: string,
   password: string
 ): Promise<{ sessionToken: string, item: { id: any } }> {
-  const { body } = await graphQLRequest({
+  const { body } = await gqlSuper({
     query: `
       mutation($email: String!, $password: String!) {
         authenticateUserWithPassword(email: $email, password: $password) {
@@ -107,22 +100,21 @@ describe('Auth testing', () => {
     })
     await expect(
       setupTestEnv({
-        config: auth.withAuth(
-          testConfig({
-            lists: {
-              User: list({
-                access: allowAll,
-                fields: {
-                  name: text(),
-                  email: text(),
-                  password: password(),
-                },
-              }),
-            },
+        config: auth.withAuth({
+          db: {} as any,
+          lists: {
+            User: list({
+              access: allowAll,
+              fields: {
+                name: text(),
+                email: text(),
+                password: password(),
+              },
+            }),
+          },
 
-            session: statelessSessions({ secret: COOKIE_SECRET }),
-          })
-        ),
+          session: statelessSessions(),
+        }),
       })
     ).rejects.toMatchInlineSnapshot(
       `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique'\` to the field at User.email]`
@@ -132,16 +124,16 @@ describe('Auth testing', () => {
   describe('logged in', () => {
     test(
       'Allows access with bearer token',
-      setup()(async ({ context, graphQLRequest }) => {
+      setup()(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
         const { sessionToken } = await login(
-          graphQLRequest,
+          gqlSuper,
           initialData.User[0].email,
           initialData.User[0].password
         )
 
         expect(sessionToken).toBeTruthy()
-        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+        const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
           'Authorization',
           `Bearer ${sessionToken}`
         )
@@ -154,17 +146,17 @@ describe('Auth testing', () => {
 
     test(
       'Allows access with cookie',
-      setup()(async ({ context, graphQLRequest }) => {
+      setup()(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
         const { sessionToken } = await login(
-          graphQLRequest,
+          gqlSuper,
           initialData.User[0].email,
           initialData.User[0].password
         )
 
         expect(sessionToken).toBeTruthy()
 
-        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+        const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
           'Cookie',
           `keystonejs-session=${sessionToken}`
         )
@@ -177,9 +169,9 @@ describe('Auth testing', () => {
 
     test(
       'Invalid session receives nothing',
-      setup()(async ({ context, graphQLRequest }) => {
+      setup()(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
-        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+        const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
           'Cookie',
           `keystonejs-session=invalidfoo`
         )
@@ -193,16 +185,16 @@ describe('Auth testing', () => {
 
     test(
       'Session is dropped if user is removed',
-      setup()(async ({ context, graphQLRequest }) => {
+      setup()(async ({ context, gqlSuper }) => {
         const { User: users } = await seed(context, initialData)
         const { sessionToken } = await login(
-          graphQLRequest,
+          gqlSuper,
           initialData.User[0].email,
           initialData.User[0].password
         )
 
         {
-          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+          const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
             'Cookie',
             `keystonejs-session=${sessionToken}` // still valid
           )
@@ -214,13 +206,13 @@ describe('Auth testing', () => {
         }
 
         // delete the user we authenticated for
-        await graphQLRequest({
+        await gqlSuper({
           query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
           variables: { id: users[0]?.id },
         }).set('Cookie', `keystonejs-session=${sessionToken}`)
 
         {
-          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+          const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
             'Cookie',
             `keystonejs-session=${sessionToken}` // now invalid
           )

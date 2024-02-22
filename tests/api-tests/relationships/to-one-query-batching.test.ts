@@ -3,10 +3,11 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner'
-import { testConfig, dbProvider } from '../utils'
+import { dbProvider } from '../utils'
 
 const runner = setupTestRunner({
-  config: testConfig({
+  identifier: 'toqb',
+  config: ({
     db: { enableLogging: true },
     lists: {
       Post: list({
@@ -90,12 +91,12 @@ test(
           'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE (`main`.`User`.`id` IN (?,?,?,?,?,?,?,?,?,?) AND `main`.`User`.`name` LIKE ?) LIMIT ? OFFSET ?',
         ],
         postgresql: [
-          `SELECT "public"."Post"."id", "public"."Post"."title", "public"."Post"."author" FROM "public"."Post" WHERE "public"."Post"."title"::text NOT LIKE $1 ORDER BY "public"."Post"."title" ASC OFFSET $2`,
-          `SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE ("public"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "public"."User"."name"::text LIKE $11) OFFSET $12`,
+          `SELECT "toqb"."Post"."id", "toqb"."Post"."title", "toqb"."Post"."author" FROM "toqb"."Post" WHERE "toqb"."Post"."title"::text NOT LIKE $1 ORDER BY "toqb"."Post"."title" ASC OFFSET $2`,
+          `SELECT "toqb"."User"."id", "toqb"."User"."name" FROM "toqb"."User" WHERE ("toqb"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "toqb"."User"."name"::text LIKE $11) OFFSET $12`,
         ],
         mysql: [
-          `SELECT \`test_db\`.\`Post\`.\`id\`, \`test_db\`.\`Post\`.\`title\`, \`test_db\`.\`Post\`.\`author\` FROM \`test_db\`.\`Post\` WHERE \`test_db\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`test_db\`.\`Post\`.\`title\` ASC`,
-          `SELECT \`test_db\`.\`User\`.\`id\`, \`test_db\`.\`User\`.\`name\` FROM \`test_db\`.\`User\` WHERE (\`test_db\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`test_db\`.\`User\`.\`name\` LIKE ?)`,
+          `SELECT \`toqb\`.\`Post\`.\`id\`, \`toqb\`.\`Post\`.\`title\`, \`toqb\`.\`Post\`.\`author\` FROM \`toqb\`.\`Post\` WHERE \`toqb\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`toqb\`.\`Post\`.\`title\` ASC`,
+          `SELECT \`toqb\`.\`User\`.\`id\`, \`toqb\`.\`User\`.\`name\` FROM \`toqb\`.\`User\` WHERE (\`toqb\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`toqb\`.\`User\`.\`name\` LIKE ?)`,
         ],
       }[dbProvider]
       const sql = logs.map(([, query]) => query)

@@ -111,11 +111,9 @@ export async function createExpressServer (
   const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production'
   const serverConfig = {
     formatError: formatError(config.graphql),
-
-    // when undefined, use Apollo default of NODE_ENV !== 'production'
     includeStacktraceInErrorResponses: config.graphql?.debug,
-
     ...apolloConfig,
+
     schema: context.graphql.schema,
     plugins:
       playgroundOption === 'apollo'
