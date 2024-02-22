@@ -30,13 +30,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
@@ -46,13 +46,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: file:./file.db
 
@@ -69,13 +69,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Example unit tests
         run: cd examples/testing; pnpm test
@@ -176,7 +176,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Example Next in app direcroty build
         run: cd examples/framework-nextjs-app-directory; pnpm build
@@ -211,7 +211,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - name: Install Dependencies of Browsers
         run: cd tests/examples-smoke-tests && pnpm playwright install-deps chromium
