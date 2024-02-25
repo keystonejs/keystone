@@ -14,9 +14,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@keystone-6/auth": "workspace:^",
-    "@keystone-6/core": "workspace:^",
-    "@keystone-6/document-renderer": "workspace:^",
+    "@keystone-6/auth": "^7.0.2",
+    "@keystone-6/core": "^5.7.2",
+    "@keystone-6/document-renderer": "^1.1.0",
     "@keystone-6/fields-document": "workspace:^",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "^4.16.2",
