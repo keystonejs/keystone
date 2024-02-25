@@ -1,5 +1,5 @@
 import { Text, Editor } from 'slate'
-import { createDocumentEditor } from './DocumentEditor/editor-model'
+import { createDocumentEditor } from './DocumentEditor/editor-create-validation'
 import {
   type ComponentBlock,
   type ComponentSchema,

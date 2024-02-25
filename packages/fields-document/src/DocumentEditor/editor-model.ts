@@ -4,36 +4,15 @@ import {
   Editor,
   Node,
   Transforms,
-  createEditor,
   type NodeEntry,
   Element,
   Text,
   type Descendant,
   Path,
 } from 'slate'
-import { withReact } from 'slate-react'
-import { withHistory } from 'slate-history'
-
-import { type ComponentBlock } from './component-blocks/api-model'
-import { type DocumentFeatures } from '../views'
-import { withParagraphs } from './paragraphs'
-import { withLink, wrapLink } from './link-model'
-import { withLayouts } from './layouts-model'
+import { wrapLink } from './link-model'
 import { clearFormatting, type Mark } from './utils-model'
-import { withHeading } from './heading-model'
-import { nestList, unnestList, withList } from './lists-model'
-import { withComponentBlocks } from './component-blocks/with-component-blocks'
-import { withBlockquote } from './blockquote-model'
-import { type Relationships, withRelationship } from './relationship-model'
-import { withDivider } from './divider-model'
-import { withCodeBlock } from './code-block-model'
-import { withMarks } from './marks'
-import { withSoftBreaks } from './soft-breaks'
-import { withShortcuts } from './shortcuts'
-import { withDocumentFeaturesNormalization } from './document-features-normalization'
-import { withInsertMenu } from './insert-menu-model'
-import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts'
-import { withPasting } from './pasting'
+import { nestList, unnestList } from './lists-model'
 
 // the docs site needs access to Editor and importing slate would use the version from the content field
 // so we're exporting it from here (note that this is not at all visible in the published version)
@@ -102,61 +81,6 @@ export const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
       event.preventDefault()
     }
   }
-}
-
-export function createDocumentEditor(
-  documentFeatures: DocumentFeatures,
-  componentBlocks: Record<string, ComponentBlock>,
-  relationships: Relationships
-) {
-  return withPasting(
-    withSoftBreaks(
-      withBlocksSchema(
-        withLink(
-          documentFeatures,
-          componentBlocks,
-          withList(
-            withHeading(
-              withRelationship(
-                withInsertMenu(
-                  withComponentBlocks(
-                    componentBlocks,
-                    documentFeatures,
-                    relationships,
-                    withParagraphs(
-                      withShortcuts(
-                        withDivider(
-                          withLayouts(
-                            withMarks(
-                              documentFeatures,
-                              componentBlocks,
-                              withCodeBlock(
-                                withBlockMarkdownShortcuts(
-                                  documentFeatures,
-                                  componentBlocks,
-                                  withBlockquote(
-                                    withDocumentFeaturesNormalization(
-                                      documentFeatures,
-                                      relationships,
-                                      withHistory(withReact(createEditor()))
-                                    )
-                                  )
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  )
 }
 
 const orderedListStyles = ['lower-roman', 'decimal', 'lower-alpha']
@@ -306,7 +230,7 @@ export function isBlock(node: Descendant): node is Block {
   return blockTypes.has(node.type)
 }
 
-function withBlocksSchema(editor: Editor): Editor {
+export function withBlocksSchema(editor: Editor): Editor {
   const { normalizeNode } = editor
   editor.normalizeNode = ([node, path]) => {
     if (!Text.isText(node) && node.type !== 'link' && node.type !== 'relationship') {

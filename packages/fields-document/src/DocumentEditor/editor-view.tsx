@@ -15,7 +15,8 @@ import { ComponentBlockContext } from './component-blocks'
 import { getPlaceholderTextForPropPath } from './component-blocks/utils'
 import { renderLeaf } from './leaf'
 import { renderElement } from './render-element'
-import { createDocumentEditor, getKeyDownHandler, styles } from './editor-model'
+import { getKeyDownHandler, styles } from './editor-model'
+import { createDocumentEditor } from './editor-create-display'
 
 export function DocumentEditor({
   onChange,
