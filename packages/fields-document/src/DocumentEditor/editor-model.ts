@@ -31,7 +31,7 @@ import { withMarks } from './marks'
 import { withSoftBreaks } from './soft-breaks'
 import { withShortcuts } from './shortcuts'
 import { withDocumentFeaturesNormalization } from './document-features-normalization'
-import { withInsertMenu } from './insert-menu'
+import { withInsertMenu } from './insert-menu-model'
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts'
 import { withPasting } from './pasting'
 
