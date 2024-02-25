@@ -5,7 +5,7 @@ import { type ReactNode, forwardRef, useMemo } from 'react'
 import { jsx } from '@keystone-ui/core'
 import { ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
-import { toggleList } from './listsModel'
+import { toggleList } from './lists-model'
 
 export const ListButton = forwardRef<
   HTMLButtonElement,

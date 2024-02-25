@@ -1,2 +1,2 @@
-export * from './editorModel'
-export * from './editorView'
+export * from './editor-model'
+export * from './editor-view'

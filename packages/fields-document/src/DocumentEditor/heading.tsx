@@ -1,2 +1,2 @@
-export * from './headingModel'
-export * from './headingView'
+export * from './heading-model'
+export * from './heading-view'

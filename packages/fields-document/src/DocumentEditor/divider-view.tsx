@@ -5,7 +5,7 @@ import { Tooltip } from '@keystone-ui/tooltip'
 
 import { KeyboardInTooltip, ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
-import { insertDivider } from './dividerModel'
+import { insertDivider } from './divider-model'
 
 const minusIcon = <MinusIcon size="small" />
 

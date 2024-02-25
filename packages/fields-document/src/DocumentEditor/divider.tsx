@@ -1,2 +1,2 @@
-export * from './dividerModel'
-export * from './dividerView'
+export * from './divider-model'
+export * from './divider-view'

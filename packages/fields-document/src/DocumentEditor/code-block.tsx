@@ -1,2 +1,2 @@
-export * from './codeblockModel'
-export * from './codeblockView'
+export * from './code-block-model'
+export * from './code-block-view'

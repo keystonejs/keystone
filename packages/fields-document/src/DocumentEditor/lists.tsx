@@ -1,2 +1,2 @@
-export * from './listsModel'
-export * from './listsView'
+export * from './lists-model'
+export * from './lists-view'

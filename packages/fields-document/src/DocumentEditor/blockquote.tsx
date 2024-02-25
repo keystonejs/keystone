@@ -1,2 +1,2 @@
-export * from './blockquoteModel'
-export * from './blockquoteView'
+export * from './blockquote-model'
+export * from './blockquote-view'

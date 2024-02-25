@@ -10,7 +10,7 @@ import { Tooltip } from '@keystone-ui/tooltip'
 import { IconBase } from './Toolbar'
 import { KeyboardInTooltip, ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
-import { insertBlockquote } from './blockquoteModel'
+import { insertBlockquote } from './blockquote-model'
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme()
