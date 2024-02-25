@@ -1,6 +1,9 @@
 import { Text, Editor } from 'slate'
-import { createDocumentEditor } from './DocumentEditor'
-import { type ComponentBlock, type ComponentSchema } from './DocumentEditor/component-blocks/api'
+import { createDocumentEditor } from './DocumentEditor/editor-model'
+import {
+  type ComponentBlock,
+  type ComponentSchema,
+} from './DocumentEditor/component-blocks/api-model'
 import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 import { type Relationships } from './DocumentEditor/relationship'
 import {
