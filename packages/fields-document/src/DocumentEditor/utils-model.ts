@@ -10,7 +10,7 @@ import {
   type Location,
   type Point,
 } from 'slate'
-import { ReactEditor } from 'slate-react'
+// import { ReactEditor } from 'slate-react' // TODO
 import { type ElementFromValidation } from '../structure-validation'
 
 export type Mark =
@@ -87,7 +87,10 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
     Transforms.removeNodes(editor, { at: path })
     // even though the selection is in the right place after the removeNodes
     // for some reason the editor blurs so we need to focus it again
-    ReactEditor.focus(editor)
+
+    // TODO: this causes 'TypeError: ([...].createContext) is not a function' in SSR
+    // not sure how to reproduce state in which this is neccessary
+    // ReactEditor.focus(editor)
   }
 }
 
