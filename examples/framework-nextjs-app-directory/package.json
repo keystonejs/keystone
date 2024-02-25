@@ -14,16 +14,16 @@
     "start": "next start"
   },
   "dependencies": {
-    "@keystone-6/auth": "^7.0.0",
-    "@keystone-6/core": "^5.7.0",
-    "@keystone-6/document-renderer": "^1.1.0",
-    "@keystone-6/fields-document": "^8.0.0",
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
+    "@keystone-6/document-renderer": "workspace:^",
+    "@keystone-6/fields-document": "workspace:^",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "^4.16.2",
     "graphql": "^16.8.1",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
-    "next": "^13.3.0",
+    "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
