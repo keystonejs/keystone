@@ -203,7 +203,7 @@ type Session = {
 We can now set up **operation** access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
-const isAdmin = ({ session }: { session: Session }) => session?.data.isAdmin;
+const isAdmin = ({ session }: { session: Session }) => Boolean(session?.data.isAdmin);
 
 const Post = list({
   access: {
