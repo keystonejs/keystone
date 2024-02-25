@@ -1,4 +1,4 @@
-export { NotEditable, component, fields } from './DocumentEditor/component-blocks/api'
+export { NotEditable, fields } from './DocumentEditor/component-blocks/api-view'
 export type {
   ChildField,
   ComponentBlock,
@@ -11,4 +11,5 @@ export type {
   InferRenderersForComponentBlocks,
   ArrayField,
   ComponentSchemaForGraphQL,
-} from './DocumentEditor/component-blocks/api'
+} from './DocumentEditor/component-blocks/api-model'
+export { component } from './DocumentEditor/component-blocks/api-model'
