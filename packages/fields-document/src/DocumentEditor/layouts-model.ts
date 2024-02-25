@@ -1,6 +1,9 @@
 import { Editor, Element, Node, Transforms, Range, Point } from 'slate'
 import { paragraphElement } from './paragraphs'
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading, moveChildren } from './utils'
+import {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
+  moveChildren,
+} from './utils-model'
 
 export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [

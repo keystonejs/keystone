@@ -1,6 +1,6 @@
 import { Element, Editor, Node, Range, Transforms, Text } from 'slate'
 import { type DocumentFeatures } from '../views'
-import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils'
+import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils-model'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-model'
 import { type ComponentBlock } from './component-blocks/api-model'
 import { isInlineContainer } from './editor-model'

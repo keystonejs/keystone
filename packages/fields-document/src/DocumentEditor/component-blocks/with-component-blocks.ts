@@ -1,8 +1,8 @@
 import { Editor, Element, Transforms, Range, type NodeEntry, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import { type ChildField, type ComponentBlock, type ComponentSchema } from '../../component-blocks'
-import { assert, moveChildren } from '../utils'
+import { type ChildField, type ComponentBlock, type ComponentSchema } from './api-model'
+import { assert, moveChildren } from '../utils-model'
 import { type DocumentFeatures } from '../../views'
 import {
   areArraysEqual,
@@ -10,7 +10,7 @@ import {
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization'
-import { type Relationships } from '../relationship'
+import { type Relationships } from '../relationship-model'
 import {
   assertNever,
   type DocumentFeaturesForChildField,

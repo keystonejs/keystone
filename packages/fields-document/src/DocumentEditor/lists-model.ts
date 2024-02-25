@@ -1,5 +1,5 @@
 import { Editor, Element, Node, Path, Transforms, Range } from 'slate'
-import { isElementActive, moveChildren, nodeTypeMatcher } from './utils'
+import { isElementActive, moveChildren, nodeTypeMatcher } from './utils-model'
 import { getListTypeAbove } from './toolbar-state-model'
 
 export const isListType = (type: string | undefined) =>

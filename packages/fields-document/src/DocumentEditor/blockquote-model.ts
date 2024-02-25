@@ -1,5 +1,5 @@
 import { Editor, Node, Path, Range, Transforms } from 'slate'
-import { isElementActive } from './utils'
+import { isElementActive } from './utils-model'
 
 export const insertBlockquote = (editor: Editor) => {
   const isActive = isElementActive(editor, 'blockquote')

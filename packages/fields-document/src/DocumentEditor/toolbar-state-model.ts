@@ -1,13 +1,13 @@
 import { Element, Editor, Range, Text } from 'slate'
 import { type DocumentFeatures } from '../views'
-import { type ComponentBlock } from './component-blocks/api'
+import { type ComponentBlock } from './component-blocks/api-model'
 import {
   type DocumentFeaturesForChildField,
   getSchemaAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils'
 import { isListNode } from './lists-model'
-import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils'
+import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils-model'
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 

@@ -1,12 +1,12 @@
 import { Element, type Descendant, Editor, Transforms, Range } from 'slate'
 import { isValidURL } from '../isValidURL'
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils-model'
 import { deserializeHTML } from './html'
 import { deserializeMarkdown } from './markdown'
 
 const urlPattern = /https?:\/\//
 
-function insertFragmentButDifferent (editor: Editor, nodes: Descendant[]) {
+function insertFragmentButDifferent(editor: Editor, nodes: Descendant[]) {
   const firstNode = nodes[0]
   if (Element.isElement(firstNode) && Editor.isBlock(editor, firstNode)) {
     insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, nodes)
@@ -15,7 +15,7 @@ function insertFragmentButDifferent (editor: Editor, nodes: Descendant[]) {
   }
 }
 
-export function withPasting (editor: Editor): Editor {
+export function withPasting(editor: Editor): Editor {
   const { insertData, setFragmentData } = editor
 
   editor.setFragmentData = data => {

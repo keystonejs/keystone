@@ -2,7 +2,7 @@ import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from
 import { type DocumentFeatures } from '../views'
 import { type ComponentBlock } from './component-blocks/api-model'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-model'
-import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils'
+import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils-model'
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],
