@@ -230,7 +230,7 @@ export default config({
 
 {% hint kind="warn" %}
 Item-level access control is not available for `query` operations.
-Applying access control after fetching items would lead to inconsistent pagination behaviour and incorrect `count` results.
+Keystone has opted to disable `read` access control for `query` operations as applying _after_ queries will reuslt in inconsistent pagination behaviour and mismatched `count` results.
 {% /hint %}
 
 ### Function Arguments {% #list-level-function-arguments %}
@@ -271,6 +271,11 @@ No errors will be returned for `read` access denied.
 
 {% hint kind="tip" %}
 The `read` access control is applied to fields returned from both **queries** and **mutations**.
+{% /hint %}
+
+{% hint kind="tip" %}
+`read` access control is applied as part of GraphQL resolving the output types.
+If a mutation returns an item type that has field access control defined, field access control will apply.
 {% /hint %}
 
 {% hint kind="warn" %}
