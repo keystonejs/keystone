@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: always-tests-windows-${{ github.ref }}
+  group: ci-tests-windows-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
