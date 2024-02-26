@@ -234,8 +234,11 @@ function defaultFieldHooksResolveInput ({
 function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: parseListHooksResolveInput(hooks.resolveInput),
-    validateInput: hooks.validateInput ?? defaultOperationHook,
-    validateDelete: hooks.validateDelete ?? defaultOperationHook,
+    validate: {
+      create: hooks.validateInput ?? defaultOperationHook,
+      update: hooks.validateInput ?? defaultOperationHook,
+      delete: hooks.validateDelete ?? defaultOperationHook,
+    },
     beforeOperation: parseListHooksBeforeOperation(hooks.beforeOperation),
     afterOperation: parseListHooksAfterOperation(hooks.afterOperation),
   }
@@ -249,8 +252,11 @@ function parseFieldHooks (
       create: hooks.resolveInput ?? defaultFieldHooksResolveInput,
       update: hooks.resolveInput ?? defaultFieldHooksResolveInput,
     },
-    validateInput: hooks.validateInput ?? defaultOperationHook,
-    validateDelete: hooks.validateDelete ?? defaultOperationHook,
+    validate: {
+      create: hooks.validateInput ?? defaultOperationHook,
+      update: hooks.validateInput ?? defaultOperationHook,
+      delete: hooks.validateDelete ?? defaultOperationHook,
+    },
     beforeOperation: {
       create: hooks.beforeOperation ?? defaultOperationHook,
       update: hooks.beforeOperation ?? defaultOperationHook,

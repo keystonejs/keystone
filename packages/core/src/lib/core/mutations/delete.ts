@@ -5,8 +5,7 @@ import { accessDeniedError } from '../graphql-errors'
 import type { InitialisedList } from '../initialise-lists'
 import { type InputFilter, resolveUniqueWhereInput, type UniqueInputFilter } from '../where-inputs'
 import { getAccessControlledItemForDelete } from './access-control'
-import { runSideEffectOnlyHook } from './hooks'
-import { validateDelete } from './validation'
+import { runSideEffectOnlyHook, validate } from '../hooks'
 
 async function deleteSingle (
   uniqueInput: UniqueInputFilter,
@@ -34,7 +33,7 @@ async function deleteSingle (
   }
 
   // hooks
-  await validateDelete({ list, hookArgs })
+  await validate({ list, hookArgs })
 
   // before operation
   await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)

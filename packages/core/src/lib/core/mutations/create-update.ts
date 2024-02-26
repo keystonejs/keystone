@@ -36,8 +36,7 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
 import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from './access-control'
-import { runSideEffectOnlyHook } from './hooks'
-import { validateUpdateCreate } from './validation'
+import { runSideEffectOnlyHook, validate } from '../hooks'
 
 async function createSingle (
   { data: rawData }: { data: Record<string, any> },
@@ -215,15 +214,21 @@ async function getResolvedData (
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         const inputResolver = field.input?.[operation]?.resolve
-        let input = resolvedData[fieldKey]
+
         if (inputResolver && field.dbField.kind !== 'relation') {
           try {
-            input = await inputResolver(input, context, undefined)
+            return [
+              fieldKey,
+              await inputResolver(resolvedData[fieldKey], context, undefined)
+            ]
           } catch (error: any) {
             resolverErrors.push({ error, tag: `${list.listKey}.${fieldKey}` })
           }
         }
-        return [fieldKey, input] as const
+        return [
+          fieldKey,
+          resolvedData[fieldKey]
+        ] as const
       })
     )
   )
@@ -368,17 +373,17 @@ async function resolveInputForCreateOrUpdate (
   }
   const hookArgs =
     item === undefined
-      ? { ...baseHookArgs, operation: 'create' as const, item }
-      : { ...baseHookArgs, operation: 'update' as const, item }
+      ? { ...baseHookArgs, operation: 'create' as const, item, originalItem: undefined }
+      : { ...baseHookArgs, operation: 'update' as const, item, originalItem: item }
 
   // Take the original input and resolve all the fields down to what
   // will be saved into the database.
   hookArgs.resolvedData = await getResolvedData(list, hookArgs, nestedMutationState)
 
   // Apply all validation checks
-  await validateUpdateCreate({ list, hookArgs })
+  await validate({ list, hookArgs })
 
-  // Run beforeOperation hooks
+  // before operation
   await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
 
   // Return the full resolved input (ready for prisma level operation),
@@ -387,17 +392,12 @@ async function resolveInputForCreateOrUpdate (
     data: transformForPrismaClient(list.fields, hookArgs.resolvedData, context),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation()
-      await runSideEffectOnlyHook(
-        list,
-        'afterOperation',
-        // at runtime this conditional is pointless
-        // but TypeScript needs it because in each case, it will narrow
-        // `hookArgs` based on the `operation` which will make `hookArgs.item`
-        // be the right type for `originalItem` for the operation
-        hookArgs.operation === 'create'
-          ? { ...hookArgs, item: updatedItem, originalItem: undefined }
-          : { ...hookArgs, item: updatedItem, originalItem: hookArgs.item }
-      )
+
+      // after operation
+      await runSideEffectOnlyHook(list, 'afterOperation', {
+        ...hookArgs,
+        item: updatedItem,
+      })
     },
   }
 }
