@@ -488,6 +488,10 @@ You can provide field-level rules for:
 If you want to completely block users from setting a field's value, make sure you set both the `create` and `update` rules.
 {% /hint %}
 
+{% hint kind="warn" %}
+`read` field access control does not apply to `context.db.*` operations, as these operations do not resolve the underlying fields using GraphQL.
+{% /hint %}
+
 For more information about the arguments provided to field rules, see the [Access Control API Docs](../config/access-control#field-access-control)
 
 ### People Example
