@@ -3,9 +3,9 @@ import type { InitialisedList } from '../initialise-lists'
 
 type DistributiveOmit<T, K extends keyof T> = T extends any ? Omit<T, K> : never
 
-type UpdateCreateHookArgs = Parameters<
-  Exclude<InitialisedList['hooks']['validateInput'], undefined>
->[0]
+type UpdateCreateHookArgs = Parameters<Exclude<InitialisedList['hooks']['validateInput'], undefined>>[0]
+type DeleteHookArgs = Parameters<Exclude<InitialisedList['hooks']['validateDelete'], undefined>>[0]
+
 export async function validateUpdateCreate ({
   list,
   hookArgs,
@@ -14,9 +14,9 @@ export async function validateUpdateCreate ({
   hookArgs: DistributiveOmit<UpdateCreateHookArgs, 'addValidationError'>
 }) {
   const messages: string[] = []
-
   const fieldsErrors: { error: Error, tag: string }[] = []
-  // Field validation hooks
+
+  // field validation hooks
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       const addValidationError = (msg: string) =>
@@ -33,12 +33,14 @@ export async function validateUpdateCreate ({
     throw extensionError('validateInput', fieldsErrors)
   }
 
-  // List validation hooks
+  // list validation hooks
   const addValidationError = (msg: string) => messages.push(`${list.listKey}: ${msg}`)
   try {
     await list.hooks.validateInput({ ...hookArgs, addValidationError })
   } catch (error: any) {
-    throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }])
+    throw extensionError('validateInput', [
+      { error, tag: `${list.listKey}.hooks.validateInput` }
+    ])
   }
 
   if (messages.length) {
@@ -46,7 +48,6 @@ export async function validateUpdateCreate ({
   }
 }
 
-type DeleteHookArgs = Parameters<Exclude<InitialisedList['hooks']['validateDelete'], undefined>>[0]
 export async function validateDelete ({
   list,
   hookArgs,
@@ -56,7 +57,8 @@ export async function validateDelete ({
 }) {
   const messages: string[] = []
   const fieldsErrors: { error: Error, tag: string }[] = []
-  // Field validation
+
+  // field validation hooks
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       const addValidationError = (msg: string) =>
@@ -68,10 +70,12 @@ export async function validateDelete ({
       }
     })
   )
+
   if (fieldsErrors.length) {
     throw extensionError('validateDelete', fieldsErrors)
   }
-  // List validation
+
+  // list validation hooks
   const addValidationError = (msg: string) => messages.push(`${list.listKey}: ${msg}`)
   try {
     await list.hooks.validateDelete({ ...hookArgs, addValidationError })
@@ -80,6 +84,7 @@ export async function validateDelete ({
       { error, tag: `${list.listKey}.hooks.validateDelete` },
     ])
   }
+
   if (messages.length) {
     throw validationFailureError(messages)
   }
