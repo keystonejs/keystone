@@ -124,11 +124,10 @@ export function resolveRelationships (
         if (alreadyResolvedTwoSidedRelationships.has(localRef)) {
           continue
         }
+
         alreadyResolvedTwoSidedRelationships.add(foreignRef)
         const foreignField = foreignUnresolvedList.fields[field.field]?.dbField
-        if (!foreignField) {
-          throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`)
-        }
+        if (!foreignField) throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`)
 
         if (foreignField.kind !== 'relation') {
           throw new Error(
@@ -136,16 +135,14 @@ export function resolveRelationships (
           )
         }
 
-        const actualRef = foreignField.field
-          ? `${foreignField.list}.${foreignField.field}`
-          : foreignField.list
+        const actualRef = foreignField.field ? `${foreignField.list}.${foreignField.field}` : foreignField.list
         if (actualRef !== localRef) {
           throw new Error(
-            `${localRef} points to ${foreignRef}, ${foreignRef} points to ${actualRef}, expected ${foreignRef} to point to ${localRef}`
+            `${localRef} expects ${foreignRef} to be a two way relationship, but ${foreignRef} points to ${actualRef}`
           )
         }
 
-        let [leftRel, rightRel] = sortRelationships(
+        const [leftRel, rightRel] = sortRelationships(
           { listKey, fieldPath, field },
           { listKey: field.list, fieldPath: field.field, field: foreignField }
         )
