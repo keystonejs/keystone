@@ -7,7 +7,10 @@ import { allowAll } from '@keystone-6/core/access'
 
 const fieldKey = 'foo'
 
-function getSchema (field: { ref: string, many?: boolean }) {
+function getSchema(field: {
+  ref: string
+  many?: boolean
+}) {
   return createSystem(
     initConfig(
       config({
@@ -150,8 +153,8 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' }),
-          },
+            bar: relationship({ ref: 'Abc.def' })
+          }
         }),
       },
       error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
@@ -186,7 +189,7 @@ describe('Reference errors', () => {
           },
         }),
       },
-      error: `Foo.bar points to Abc.def, Abc.def points to Foo, expected Abc.def to point to Foo.bar`,
+      error: `Foo.bar expects Abc.def to be a two way relationship, but Abc.def points to Foo`,
     },
     '3-way / 2-way conflict': {
       lists: {
@@ -203,7 +206,7 @@ describe('Reference errors', () => {
           },
         }),
       },
-      error: `Foo.bar points to Abc.def, Abc.def points to Foo.bazzz, expected Abc.def to point to Foo.bar`,
+      error: `Foo.bar expects Abc.def to be a two way relationship, but Abc.def points to Foo.bazzz`,
     },
     'field wrong type': {
       lists: {

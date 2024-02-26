@@ -25,7 +25,7 @@ type CardsDisplayConfig = {
     /** Causes the default Card component to render as a link to navigate to the related item */
     linkToItem?: boolean
     /** Determines whether removing a related item in the UI will delete or unlink it */
-    removeMode?: 'disconnect' | 'none' // | 'delete';
+    removeMode?: 'disconnect' | 'none' // | 'delete'
     /** Configures inline create mode for cards (alternative to opening the create modal) */
     inlineCreate?: { fields: readonly string[] }
     /** Configures inline edit mode for cards */
@@ -91,9 +91,8 @@ export const relationship =
     const { many = false } = config
     const [foreignListKey, foreignFieldKey] = ref.split('.')
     const foreignList = lists[foreignListKey]
-    if (!foreignList) {
-      throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
-    }
+    if (!foreignList) throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
+
     const foreignListTypes = foreignList.types
 
     const commonConfig = {
