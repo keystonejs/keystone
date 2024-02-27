@@ -109,10 +109,11 @@ async function fetchRelatedItems (
     return toFetch.map(() => undefined)
   }
 
+  const toFetchUnique = Array.from(new Set(toFetch))
   const resolvedWhere = await accessControlledFilter(
     foreignList,
     context,
-    { [idFieldKey]: { in: toFetch } },
+    { [idFieldKey]: { in: toFetchUnique } },
     accessFilters
   )
 
