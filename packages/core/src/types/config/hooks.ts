@@ -59,23 +59,25 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
       }
 
   /**
-   * Used to **validate the input** for create and update operations
+   * Used to **validate** if a create, update or delete operation is OK
    */
-  validateInput?:
-    | ValidateHook<ListTypeInfo, 'create' | 'update'>
-//      | {
-//          create?: ValidateHook<ListTypeInfo, 'create'>
-//          update?: ValidateHook<ListTypeInfo, 'update'>
-//        }
+  validate?:
+    | ValidateHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: ValidateHook<ListTypeInfo, 'create'>
+        update?: ValidateHook<ListTypeInfo, 'update'>
+        delete?: ValidateHook<ListTypeInfo, 'delete'>
+      }
 
   /**
-   * Used to **validate** that a delete operation can occur
+   * @deprecated, replaced by validate^
    */
-  validateDelete?:
-    | ValidateHook<ListTypeInfo, 'delete'>
-//      | {
-//          delete?: ValidateHook<ListTypeInfo, 'delete'>
-//        }
+  validateInput?: ValidateHook<ListTypeInfo, 'create' | 'update'>
+
+  /**
+   * @deprecated, replaced by validate^
+   */
+  validateDelete?: ValidateHook<ListTypeInfo, 'delete'>
 
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved

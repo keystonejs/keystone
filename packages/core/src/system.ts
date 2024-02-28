@@ -16,7 +16,7 @@ export { createSystem } from './lib/createSystem'
 /** @deprecated, TODO: remove in breaking change */
 export { createExpressServer } from './lib/createExpressServer'
 
-function injectIdFields (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
+function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -28,31 +28,56 @@ function injectIdFields (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  const listsWithIds: KeystoneConfig['lists'] = {}
+  const updated: KeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
-      listsWithIds[listKey] = {
+      updated[listKey] = {
         ...list,
         fields: {
           id: idFieldType({ kind: 'number', type: 'Int' }),
           ...list.fields,
         },
+        hooks: {
+          ...list.hooks
+        }
       }
 
       continue
     }
 
-    listsWithIds[listKey] = {
+    updated[listKey] = {
       ...list,
       fields: {
         id: idFieldType(list.db?.idField ?? defaultIdField),
         ...list.fields,
       },
+      hooks: {
+        ...list.hooks
+      }
     }
   }
 
-  return listsWithIds
+  /** @deprecated, TODO: remove in breaking change */
+  for (const [listKey, list] of Object.entries(updated)) {
+    if (list.hooks === undefined) continue
+    if (list.hooks.validate !== undefined) {
+      if (list.hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${listKey}" list`)
+      if (list.hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${listKey}" list`)
+      continue
+    }
+
+    list.hooks.validate = {}
+    if (typeof list.hooks.validateInput === 'function') {
+      list.hooks.validate.create = list.hooks.validateInput
+      list.hooks.validate.update = list.hooks.validateInput
+    }
+    if (typeof list.hooks.validateDelete === 'function') {
+      list.hooks.validate.delete = list.hooks.validateDelete
+    }
+  }
+
+  return updated
 }
 
 function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
@@ -99,7 +124,7 @@ function resolveDefaults (config: KeystoneConfig) {
       schemaPath: 'schema.graphql',
       ...config.graphql,
     },
-    lists: injectIdFields(config, defaultIdField),
+    lists: injectDefaults(config, defaultIdField),
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: async () => {},
