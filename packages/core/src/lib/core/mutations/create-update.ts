@@ -81,8 +81,10 @@ export async function createOne (
   const operationAccess = await getOperationAccess(list, context, 'create')
   if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
+  // operation
   const { item, afterOperation } = await createSingle(createInput, list, context)
 
+  // after operation
   await afterOperation(item)
 
   return item
@@ -99,8 +101,12 @@ export async function createMany (
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
+    // operation
     const { item, afterOperation } = await createSingle({ data }, list, context)
+
+    // after operation
     await afterOperation(item)
+
     return item
   })
 }
@@ -136,6 +142,7 @@ async function updateSingle (
     item
   )
 
+  // operation
   const updatedItem = await context.prisma[list.listKey].update({
     where: { id: item.id },
     data,
@@ -143,6 +150,7 @@ async function updateSingle (
 
   // after operation
   await afterOperation(updatedItem)
+
   return updatedItem
 }
 
