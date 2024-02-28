@@ -408,18 +408,25 @@ function transformForPrismaClient (
   context: KeystoneContext
 ) {
   return Object.fromEntries(
-    Object.entries(data).flatMap(([fieldKey, value]) => {
-      const { dbField } = fields[fieldKey]
-      if (dbField.kind === 'multi') {
-        return Object.entries(value).map(([innerFieldKey, fieldValue]) => {
-          return [
-            getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
-            transformInnerDBField(dbField.fields[innerFieldKey], context, fieldValue),
-          ]
-        })
-      }
+    [...function* () {
+      for (const fieldKey in data) {
+        const value = data[fieldKey]
+        const { dbField } = fields[fieldKey]
 
-      return [[fieldKey, transformInnerDBField(dbField, context, value)]]
-    })
+        if (dbField.kind === 'multi') {
+          for (const innerFieldKey in value) {
+            const innerFieldValue = value[innerFieldKey]
+            yield [
+              getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
+              transformInnerDBField(dbField.fields[innerFieldKey], context, innerFieldValue),
+            ]
+          }
+
+          continue
+        }
+
+        yield [fieldKey, transformInnerDBField(dbField, context, value)]
+      }
+    }()]
   )
 }
