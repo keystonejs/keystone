@@ -87,8 +87,6 @@ export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulf
 export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
   arg.status === 'rejected'
 
-type Awaited<T> = T extends PromiseLike<infer U> ? U : T
-
 export async function promiseAllRejectWithAllErrors<T extends unknown[]> (
   promises: readonly [...T]
 ): Promise<{ [P in keyof T]: Awaited<T[P]> }> {
