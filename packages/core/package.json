@@ -222,7 +222,7 @@
     "cookie": "^0.6.0",
     "cors": "^2.8.5",
     "dataloader": "^2.1.0",
-    "date-fns": "^2.26.0",
+    "date-fns": "^3.0.0",
     "decimal.js": "^10.4.1",
     "dumb-passwords": "^0.2.1",
     "esbuild": "^0.20.0",
