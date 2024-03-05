@@ -2,7 +2,7 @@ import type { KeystoneContext, GraphQLTypesForList } from '../../../types'
 import { type graphql } from '../../..'
 import type { InitialisedList } from '../initialise-lists'
 import { userInputError } from '../graphql-errors'
-import type { NestedMutationState } from './create-update'
+import type { NestedMutationState } from './'
 import { checkUniqueItemExists } from './access-control'
 
 type _CreateValueType = Exclude<
