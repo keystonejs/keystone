@@ -22,10 +22,8 @@ import { type InitialisedList } from './initialise-lists'
 import { type InputFilter } from './where-inputs'
 
 export function cannotForItem (operation: string, list: InitialisedList) {
-  return (
-    `You cannot ${operation} that ${list.listKey}` +
-    (operation === 'create' ? '' : ' - it may not exist')
-  )
+  if (operation === 'create') return `You cannot ${operation} that ${list.listKey}`
+  return `You cannot ${operation} that ${list.listKey} - it may not exist`
 }
 
 export function cannotForItemFields (
