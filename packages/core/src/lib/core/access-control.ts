@@ -17,7 +17,11 @@ import {
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
-import { accessReturnError, extensionError } from './graphql-errors'
+import {
+  accessDeniedError,
+  accessReturnError,
+  extensionError
+} from './graphql-errors'
 import { type InitialisedList } from './initialise-lists'
 import { type InputFilter } from './where-inputs'
 
@@ -41,20 +45,19 @@ export async function getOperationFieldAccess (
   list: InitialisedList,
   fieldKey: string,
   context: KeystoneContext,
-  operation: 'read' | 'create' | 'update'
+  operation: 'read'
 ) {
   const { listKey } = list
-  const access = list.fields[fieldKey].access[operation]
   let result
   try {
-    result = await access({
+    result = await list.fields[fieldKey].access.read({
       operation: 'read',
       session: context.session,
       listKey,
       fieldKey,
       context,
       item,
-    } as never) // TODO: FIXME
+    })
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${list.listKey}.${fieldKey}.access.${operation}` },
@@ -76,15 +79,39 @@ export async function getOperationAccess (
   operation: 'query' | 'create' | 'update' | 'delete'
 ) {
   const { listKey } = list
-  const access = list.access.operation[operation]
   let result
   try {
-    result = await access({
-      operation,
-      session: context.session,
-      listKey,
-      context
-    } as never) // TODO: FIXME
+    if (operation === 'query') {
+      result = await list.access.operation.query({
+        operation,
+        session: context.session,
+        listKey,
+        context
+      })
+    } else if (operation === 'create') {
+      result = await list.access.operation.create({
+        operation,
+        session: context.session,
+        listKey,
+        context
+      })
+
+    } else if (operation === 'update') {
+      result = await list.access.operation.update({
+        operation,
+        session: context.session,
+        listKey,
+        context
+      })
+
+    } else if (operation === 'delete') {
+      result = await list.access.operation.delete({
+        operation,
+        session: context.session,
+        listKey,
+        context
+      })
+    }
   } catch (error: any) {
     throw extensionError('Access control', [
       { error, tag: `${listKey}.access.operation.${operation}` },
@@ -142,6 +169,136 @@ export async function getAccessFilters (
     throw extensionError('Access control', [
       { error, tag: `${list.listKey}.access.filter.${operation}` },
     ])
+  }
+}
+
+export async function enforceListLevelAccessControl (
+  context: KeystoneContext,
+  operation: 'create' | 'update' | 'delete',
+  list: InitialisedList,
+  inputData: Record<string, unknown>,
+  item: BaseItem | undefined,
+) {
+  let accepted: unknown // should be boolean, but dont trust, it might accidentally be a filter
+  try {
+    // apply access.item.* controls
+    if (operation === 'create') {
+      const itemAccessControl = list.access.item[operation]
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        inputData,
+      })
+    } else if (operation === 'update' && item !== undefined) {
+      const itemAccessControl = list.access.item[operation]
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        item,
+        inputData,
+      })
+    } else if (operation === 'delete' && item !== undefined) {
+      const itemAccessControl = list.access.item[operation]
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        item,
+      })
+    }
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${list.listKey}.access.item.${operation}` },
+    ])
+  }
+
+  // short circuit the safe path
+  if (accepted === true) return
+
+  if (typeof accepted !== 'boolean') {
+    throw accessReturnError([
+      {
+        tag: `${list.listKey}.access.item.${operation}`,
+        returned: typeof accepted,
+      },
+    ])
+  }
+
+  throw accessDeniedError(cannotForItem(operation, list))
+}
+
+export async function enforceFieldLevelAccessControl (
+  context: KeystoneContext,
+  operation: 'create' | 'update',
+  list: InitialisedList,
+  inputData: Record<string, unknown>,
+  item: BaseItem | undefined,
+) {
+  const nonBooleans: { tag: string, returned: string }[] = []
+  const fieldsDenied: string[] = []
+  const accessErrors: { error: Error, tag: string }[] = []
+
+  await Promise.allSettled(
+    Object.keys(inputData).map(async fieldKey => {
+      let accepted: unknown // should be boolean, but dont trust
+      try {
+        // apply fields.[fieldKey].access.* controls
+        if (operation === 'create') {
+          const fieldAccessControl = list.fields[fieldKey].access[operation]
+          accepted = await fieldAccessControl({
+            operation,
+            session: context.session,
+            listKey: list.listKey,
+            fieldKey,
+            context,
+            inputData: inputData as any, // FIXME
+          })
+        } else if (operation === 'update' && item !== undefined) {
+          const fieldAccessControl = list.fields[fieldKey].access[operation]
+          accepted = await fieldAccessControl({
+            operation,
+            session: context.session,
+            listKey: list.listKey,
+            fieldKey,
+            context,
+            item,
+            inputData,
+          })
+        }
+      } catch (error: any) {
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` })
+        return
+      }
+
+      // short circuit the safe path
+      if (accepted === true) return
+      fieldsDenied.push(fieldKey)
+
+      // wrong type?
+      if (typeof accepted !== 'boolean') {
+        nonBooleans.push({
+          tag: `${list.listKey}.${fieldKey}.access.${operation}`,
+          returned: typeof accepted,
+        })
+      }
+    })
+  )
+
+  if (nonBooleans.length) {
+    throw accessReturnError(nonBooleans)
+  }
+
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors)
+  }
+
+  if (fieldsDenied.length) {
+    throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied))
   }
 }
 

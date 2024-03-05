@@ -4,6 +4,9 @@ import {
   type KeystoneContext
 } from '../../../types'
 import {
+  type UniquePrismaFilter,
+} from '../../../types/prisma'
+import {
   type ResolvedDBField
 } from '../resolve-relationships'
 import {
@@ -18,6 +21,7 @@ import {
   type InputFilter,
   type UniqueInputFilter,
   resolveUniqueWhereInput,
+  resolveWhereInput,
 } from '../where-inputs'
 import {
   accessDeniedError,
@@ -25,15 +29,17 @@ import {
   relationshipError,
   resolverError,
 } from '../graphql-errors'
-import { cannotForItem, getOperationAccess, getAccessFilters } from '../access-control'
+import {
+  cannotForItem,
+  getOperationAccess,
+  getAccessFilters,
+  enforceListLevelAccessControl,
+  enforceFieldLevelAccessControl
+} from '../access-control'
 import { checkFilterOrderAccess } from '../filter-order-access'
 import { runSideEffectOnlyHook, validate } from '../hooks'
 
-import {
-  applyAccessControlForCreate,
-  getAccessControlledItemForDelete,
-  getAccessControlledItemForUpdate
-} from './access-control'
+import { mapUniqueWhereToWhere } from '../queries/resolvers'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -44,13 +50,51 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
 
+async function getFilteredItem (
+  list: InitialisedList,
+  context: KeystoneContext,
+  uniqueWhere: UniquePrismaFilter,
+  accessFilters: boolean | InputFilter,
+  operation: 'update' | 'delete'
+) {
+  // early exit if they want to exclude everything
+  if (accessFilters === false) {
+    throw accessDeniedError(cannotForItem(operation, list))
+  }
+
+  // merge the filter access control and try to get the item
+  let where = mapUniqueWhereToWhere(uniqueWhere)
+  if (typeof accessFilters === 'object') {
+    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
+  }
+
+  const item = await context.prisma[list.listKey].findFirst({ where })
+  if (item !== null) return item
+
+  throw accessDeniedError(cannotForItem(operation, list))
+}
+
 async function createSingle (
   { data: rawData }: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
   // throw an accessDeniedError if not allowed
-  await applyAccessControlForCreate(list, context, rawData)
+  await enforceListLevelAccessControl(
+    context,
+    'create',
+    list,
+    rawData,
+    undefined,
+  )
+
+  await enforceFieldLevelAccessControl(
+    context,
+    'create',
+    list,
+    rawData,
+    undefined,
+  )
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
@@ -127,8 +171,13 @@ export async function createMany (
   })
 }
 
+type UpdateInput = {
+  where: UniqueInputFilter,
+  data: Record<string, any>
+}
+
 async function updateSingle (
-  updateInput: { where: UniqueInputFilter, data: Record<string, any> },
+  updateInput: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
@@ -143,12 +192,23 @@ async function updateSingle (
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
 
   // filter and item access control - throws an AccessDeniedError if not allowed
-  const item = await getAccessControlledItemForUpdate(
-    list,
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
+
+  // throw an accessDeniedError if not allowed
+  await enforceListLevelAccessControl(
     context,
-    uniqueWhere,
-    accessFilters,
-    rawData
+    'update',
+    list,
+    updateInput.data,
+    item,
+  )
+
+  await enforceFieldLevelAccessControl(
+    context,
+    'update',
+    list,
+    updateInput.data,
+    item,
   )
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
@@ -168,11 +228,6 @@ async function updateSingle (
   await afterOperation(updatedItem)
 
   return updatedItem
-}
-
-type UpdateInput = {
-  where: UniqueInputFilter,
-  data: Record<string, any>
 }
 
 export async function updateOne (
@@ -221,7 +276,16 @@ async function deleteSingle (
   await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
 
   // filter and item access control throw an AccessDeniedError if not allowed
-  const item = await getAccessControlledItemForDelete(list, context, uniqueWhere, accessFilters)
+  // apply access.filter.* controls
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
+
+  await enforceListLevelAccessControl(
+    context,
+    'delete',
+    list,
+    {},
+    item,
+  )
 
   const hookArgs = {
     operation: 'delete' as const,
