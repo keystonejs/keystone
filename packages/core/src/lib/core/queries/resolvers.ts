@@ -6,6 +6,11 @@ import {
   type KeystoneContext,
   type OrderDirection
 } from '../../../types'
+import {
+  type PrismaFilter,
+  type UniquePrismaFilter,
+} from '../../../types/prisma'
+
 import { getOperationAccess, getAccessFilters } from '../access-control'
 import {
   type UniqueInputFilter,
@@ -13,10 +18,6 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs'
-import {
-  type PrismaFilter,
-  type UniquePrismaFilter,
-} from '../../../types/prisma'
 
 import { limitsExceededError, userInputError } from '../graphql-errors'
 import { type InitialisedList } from '../initialise-lists'
