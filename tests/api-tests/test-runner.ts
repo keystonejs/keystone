@@ -221,14 +221,16 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   identifier?: string
 }) {
   const result = setupTestEnv({ config: config_, serve, identifier })
-  const connectPromise = result.then((x) => x.connect())
+  const connectPromise = result.then((x) => {
+    x.connect()
+    return x
+  })
 
   afterAll(async () => {
     await (await result).disconnect()
   })
 
   return async () => {
-    await connectPromise
-    return await result
+    return await connectPromise
   }
 }
