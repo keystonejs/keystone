@@ -47,10 +47,10 @@ export function getInitFirstItemSchema ({
             throw new Error('No session implementation available on context')
           }
 
-          const dbItemAPI = context.sudo().db[listKey]
+          const sudoContext = context.sudo()
 
           // should approximate hasInitFirstItemConditions
-          const count = await dbItemAPI.count({})
+          const count = await sudoContext.db[listKey].count()
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list')
           }
@@ -59,7 +59,7 @@ export function getInitFirstItemSchema ({
           // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
           // (this is also mostly fine, the chance that people are using things where
           // the input value can't round-trip like the Upload scalar here is quite low)
-          const item = await dbItemAPI.createOne({ data: { ...data, ...itemData } })
+          const item = await sudoContext.db[listKey].createOne({ data: { ...data, ...itemData } })
           const sessionToken = (await context.sessionStrategy.start({
             data: { listKey, itemId: item.id.toString() },
             context,
