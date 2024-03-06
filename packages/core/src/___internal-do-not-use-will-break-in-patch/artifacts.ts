@@ -4,4 +4,3 @@ export {
   generatePrismaAndGraphQLSchemas,
   getCommittedArtifacts,
 } from '../artifacts'
-export type { PrismaModule } from '../artifacts'

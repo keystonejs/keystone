@@ -1,6 +1,5 @@
 import pluralize from 'pluralize'
-import { type PrismaModule } from '../../artifacts'
-import type { BaseItem, KeystoneConfig, KeystoneContext } from '../../types'
+import type { BaseItem, KeystoneConfig } from '../../types'
 import { getGqlNames } from '../../types/utils'
 import { humanize } from '../utils'
 import type { PrismaFilter, UniquePrismaFilter } from './where-inputs'
@@ -146,22 +145,6 @@ const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
 export function getDBFieldKeyForFieldOnMultiField (fieldKey: string, subField: string) {
   return `${fieldKey}_${subField}`
-}
-
-const prismaNamespaces = new WeakMap<object, PrismaModule['Prisma']>()
-
-export function setPrismaNamespace (prismaClient: object, prismaNamespace: PrismaModule['Prisma']) {
-  prismaNamespaces.set(prismaClient, prismaNamespace)
-}
-
-// this accepts the context instead of the prisma client because the prisma client on context is `any`
-// so by accepting the context, it'll be less likely the wrong thing will be passed.
-export function getPrismaNamespace (context: KeystoneContext) {
-  const limit = prismaNamespaces.get(context.prisma)
-  if (limit === undefined) {
-    throw new Error('unexpected prisma namespace not set for prisma client')
-  }
-  return limit
 }
 
 export function areArraysEqual (a: readonly unknown[], b: readonly unknown[]) {

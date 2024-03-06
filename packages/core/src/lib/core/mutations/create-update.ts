@@ -5,7 +5,6 @@ import {
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
   type IdType,
-  getPrismaNamespace,
 } from '../utils'
 import { type InputFilter, resolveUniqueWhereInput, type UniqueInputFilter } from '../where-inputs'
 import {
@@ -390,8 +389,7 @@ function transformInnerDBField (
   value: unknown
 ) {
   if (dbField.kind === 'scalar' && dbField.scalar === 'Json' && value === null) {
-    const Prisma = getPrismaNamespace(context)
-    return Prisma.DbNull
+    return context.__internal.prisma.DbNull
   }
   return value
 }

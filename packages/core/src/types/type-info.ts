@@ -15,8 +15,9 @@ export type BaseListTypeInfo<Session = any> = {
     uniqueWhere: { readonly id?: string | number | null } & GraphQLInput
     orderBy: Record<string, 'asc' | 'desc' | null>
   }
+
   /**
-   * WARNING: may be renamed in patch
+   * WARNING: may change in patch
    */
   prisma: {
     create: Record<string, any>
