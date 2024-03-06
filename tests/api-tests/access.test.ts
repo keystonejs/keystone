@@ -9,6 +9,10 @@ function yesNo (x: boolean) {
   if (x === false) return '0'
 }
 
+function random (n = 100) {
+  return 1 + (Math.random() * n | 0)
+}
+
 jest.setTimeout(10000000)
 
 function makeFieldEntry ({
@@ -62,7 +66,7 @@ function* makeList ({
   fields: ReturnType<typeof makeFieldEntry>[]
 }) {
   const suffix = [access.query, access.create, access.update, access.delete].map(yesNo).join('')
-  const name = `List_AccessO_${suffix}`
+  const name = `List_Access_O${suffix}`
 
   yield {
     name,
@@ -127,7 +131,7 @@ function* makeList ({
     const nameFB = `List_Access_FB${suffix}`
     yield {
       name: nameFB,
-      expect: { type: 'filter' as const, ...access },
+      expect: { type: 'filter(b)' as const, ...access },
       access: {
         operation: {
           query: allowAll,
@@ -242,17 +246,16 @@ describe(`Access (${dbProvider})`, () => {
   }
 
   async function seedMany (listKey: string, context: any) {
+    const count = random()
     const items = await context.sudo().db[listKey].createMany({
-      data: [
-        {},
-        {},
-        {},
-      ]
+      data: [...Array(count)].map(x => ({})),
     })
     return items.map((x: any) => x.id) as string[]
   }
 
   for (const l of lists) {
+    const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
+
     describe(`${l.name}`, () => {
       test.concurrent(`list.access.${l.expect.type}.query: ${l.expect.query}`, async () => {
         const { context } = await suite()
@@ -261,7 +264,7 @@ describe(`Access (${dbProvider})`, () => {
         // test list.access.*.query
         const item = await context.query[l.name].findOne({
           where: { id },
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.query) {
@@ -293,7 +296,7 @@ describe(`Access (${dbProvider})`, () => {
               in: ids
             }
           },
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         expect(items).not.toBe(null)
@@ -321,20 +324,20 @@ describe(`Access (${dbProvider})`, () => {
 
       test.concurrent(`list.access.${l.expect.type}.query: ${l.expect.query} for counting`, async () => {
         const { context } = await suite()
-        const id = await seed(l.name, context)
+        const ids = await seedMany(l.name, context)
 
         // test list.access.*.query
         const count = await context.query[l.name].count({
           where: {
             id: {
-              equals: id
+              in: ids
             }
           }
         })
 
         if (l.expect.query) {
           expect(count).not.toBe(null)
-          expect(count).toBe(1)
+          expect(count).toBe(ids.length)
         } else {
           expect(count).toBe(0)
         }
@@ -346,12 +349,12 @@ describe(`Access (${dbProvider})`, () => {
         // test list.access.*.create
         const createPromise = context.query[l.name].createOne({
           data: {},
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.create) {
           const error = createPromise.catch((e: any) => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
+          expect(await error).toBe(`Access denied: You cannot create that ${l.name}`)
           return
         }
 
@@ -371,24 +374,23 @@ describe(`Access (${dbProvider})`, () => {
 
       test.concurrent(`list.access.${l.expect.type}.create: ${l.expect.create} (createMany)`, async () => {
         const { context } = await suite()
+        const count = random()
 
         // test list.access.*.create
         const createPromise = context.query[l.name].createMany({
-          data: [
-            {}, {}, {},
-          ],
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          data: [...Array(count)].map(x => ({})),
+          query: itemQuery
         })
 
         if (!l.expect.create) {
           const error = createPromise.catch((e: any) => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name}`)
+          expect(await error).toBe(`Access denied: You cannot create that ${l.name}`)
           return
         }
 
         const items = await createPromise
         expect(items).not.toBe(null)
-        expect(items).toHaveLength(3)
+        expect(items).toHaveLength(count)
 
         for (const item of items) {
           for (const f of l.fields) {
@@ -410,12 +412,12 @@ describe(`Access (${dbProvider})`, () => {
         const updatePromise = context.query[l.name].updateOne({
           where: { id },
           data: {},
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.update) {
           const error = updatePromise.catch(e => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
+          expect(await error).toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
           return
         }
 
@@ -445,12 +447,12 @@ describe(`Access (${dbProvider})`, () => {
             },
             data: {}
           })),
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.update) {
           const error = updatePromise.catch(e => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
+          expect(await error).toBe(`Access denied: You cannot update that ${l.name} - it may not exist`)
           return
         }
 
@@ -477,12 +479,16 @@ describe(`Access (${dbProvider})`, () => {
         // test list.access.*.delete
         const deletePromise = context.query[l.name].deleteOne({
           where: { id },
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.delete) {
           const error = deletePromise.catch(e => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
+          expect(await error).toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
+
+          // sudo required, as we might not have query/read access
+          const count = await context.prisma[l.name].count({ where: { id } })
+          expect(count).toBe(1)
           return
         }
 
@@ -499,9 +505,9 @@ describe(`Access (${dbProvider})`, () => {
           }
         }
 
-        // sudo required, as we might not have read
-        const item_ = await context.sudo().db[l.name].findOne({ where: { id } })
-        expect(item_).toBe(null)
+        // sudo required, as we might not have query/read access
+        const count = await context.prisma[l.name].count({ where: { id } })
+        expect(count).toBe(0)
       })
 
       test.concurrent(`list.access.${l.expect.type}.delete: ${l.expect.delete} (deleteMany)`, async () => {
@@ -513,12 +519,15 @@ describe(`Access (${dbProvider})`, () => {
           where: ids.map((id) => ({
             id
           })),
-          query: `id ${l.fields.map(x => x.name).join(' ')}`
+          query: itemQuery
         })
 
         if (!l.expect.delete) {
           const error = deletePromise.catch(e => e.message)
-          await expect(error).resolves.toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
+          expect(await error).toBe(`Access denied: You cannot delete that ${l.name} - it may not exist`)
+
+          const count = await context.prisma[l.name].count({ where: { id: { in: ids } } })
+          expect(count).toBe(ids.length) // unchanged
           return
         }
 
@@ -536,6 +545,10 @@ describe(`Access (${dbProvider})`, () => {
             }
           }
         }
+
+        // sudo required, as we might not have query/read access
+        const count = await context.prisma[l.name].count({ where: { id: { in: ids } } })
+        expect(count).toBe(0) // changed
       })
 
       // field operations tests
@@ -615,11 +628,11 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.create
               if (!f.expect.create) {
                 const error = createPromise.catch((e: any) => e.message)
-                await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
+                expect(await error).toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
                 return
               }
 
-              await expect(createPromise).resolves.not.toBe(null)
+              expect(await createPromise).not.toBe(null)
               const item = await createPromise
               expect(item).not.toBe(null)
               expect(item.id).not.toBe(null)
@@ -632,38 +645,42 @@ describe(`Access (${dbProvider})`, () => {
                 expect(item![f.name]).toBe(null)
               }
 
-              // sudo required, as we might not have read
+              // sudo required, as we might not have query/read access
               const item_ = await context.sudo().db[l.name].findOne({ where: { id: item.id } })
               expect(item_![f.name]).toBe('foo')
             })
 
             test.concurrent(`field.access.create: ${f.expect.create} (createMany)`, async () => {
               const { context } = await suite()
+              const count = random()
 
               // test list.access.*.create
               const createPromise = context.query[l.name].createMany({
-                data: [
-                  {
-                    [f.name]: 'foo'
-                  }, {
-                    [f.name]: 'foo'
-                  }, {
-                    [f.name]: 'foo'
-                  },
-                ],
-                query: `id ${l.fields.map(x => x.name).join(' ')}`
+                data: [...Array(count)].map(x => ({
+                  [f.name]: 'foo'
+                })),
+                query: itemQuery
               })
 
               // test field.access.create
               if (!f.expect.create) {
                 const error = createPromise.catch(e => e.message)
-                await expect(error).resolves.toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
+                expect(await error).toBe(`Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`)
                 return
               }
 
               const items = await createPromise
               expect(items).not.toBe(null)
-              expect(items).toHaveLength(3)
+              expect(items).toHaveLength(count)
+
+              // sudo required, as we might not have query/read access
+              const items_ = await context.sudo().db[l.name].findMany({
+                where: {
+                  id: {
+                    in: items.map(x => x.id)
+                  }
+                }
+              })
 
               for (const item of items) {
                 // test field.access.read
@@ -672,11 +689,8 @@ describe(`Access (${dbProvider})`, () => {
                   expect(item![f.name]).toBe('foo')
                 } else {
                   expect(item![f.name]).toBe(null)
+                  expect(items_.find(x => x.id === item.id)![f.name]).toBe('foo')
                 }
-
-                // sudo required, as we might not have read
-                const item_ = await context.sudo().db[l.name].findOne({ where: { id: item.id } })
-                expect(item_![f.name]).toBe('foo')
               }
             })
           }
@@ -698,11 +712,11 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.update
               if (!f.expect.update) {
                 const error = updatePromise.catch(e => e.message)
-                await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`)
+                expect(await error).toBe(`Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`)
                 return
               }
 
-              await expect(updatePromise).resolves.not.toBe(null)
+              expect(await updatePromise).not.toBe(null)
               const item = await updatePromise
               expect(item).not.toBe(null)
               expect(item!.id).toBe(id)
@@ -738,7 +752,7 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.update
               if (!f.expect.update) {
                 const error = updatePromise.catch(e => e.message)
-                await expect(error).resolves.toBe(`Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`)
+                expect(await error).toBe(`Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`)
                 return
               }
 
