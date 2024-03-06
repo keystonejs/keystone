@@ -1,6 +1,13 @@
-import type { DBField, KeystoneContext } from '../../types'
+import {
+  type DBField,
+  type KeystoneContext,
+} from '../../types'
+import {
+  type PrismaFilter,
+  type UniquePrismaFilter,
+} from '../../types/prisma'
 import { userInputError } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
+import { type InitialisedList } from './initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from './utils'
 
 export type InputFilter = Record<string, any> & {
@@ -9,23 +16,8 @@ export type InputFilter = Record<string, any> & {
   OR?: InputFilter[]
   NOT?: InputFilter[]
 }
-export type PrismaFilter = Record<string, any> & {
-  _____?: 'prisma filter'
-  AND?: PrismaFilter[] | PrismaFilter
-  OR?: PrismaFilter[] | PrismaFilter
-  NOT?: PrismaFilter[] | PrismaFilter
-  // just so that if you pass an array to something expecting a PrismaFilter, you get an error
-  length?: undefined
-  // so that if you pass a promise, you get an error
-  then?: undefined
-}
 
 export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input filter' }
-export type UniquePrismaFilter = Record<string, any> & {
-  _____?: 'unique prisma filter'
-  // so that if you pass a promise, you get an error
-  then?: undefined
-}
 
 export async function resolveUniqueWhereInput (
   inputFilter: UniqueInputFilter,

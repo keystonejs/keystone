@@ -9,9 +9,9 @@ import {
   print
 } from 'graphql'
 import {
+  type KeystoneConfig,
   type KeystoneContext,
   type KeystoneGraphQLAPI,
-  type KeystoneConfig
 } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'

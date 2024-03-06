@@ -145,7 +145,7 @@ function getRootValGivenOutputType (originalType: OutputType, value: any): any {
   return value[rawField]
 }
 
-export function executeGraphQLFieldToRootVal (field: GraphQLField<any, any>) {
+export function executeGraphQLFieldToRootVal (field: GraphQLField<any, unknown>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,
@@ -174,7 +174,7 @@ export function executeGraphQLFieldToRootVal (field: GraphQLField<any, any>) {
 
   const type = getTypeForField(field.type)
 
-  const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<any, any>> = {
+  const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<unknown, unknown>> = {
     args: argsToArgsConfig(field.args),
     astNode: undefined,
     deprecationReason: field.deprecationReason,
@@ -195,7 +195,7 @@ export function executeGraphQLFieldToRootVal (field: GraphQLField<any, any>) {
   })
 
   return async (
-    args: Record<string, any>,
+    args: Record<string, unknown>,
     context: KeystoneContext,
     rootValue: Record<string, string> = {}
   ) => {
