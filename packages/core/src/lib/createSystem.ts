@@ -5,13 +5,11 @@ import {
 } from '../types'
 import { GraphQLError } from 'graphql'
 
-import { type PrismaModule } from '../artifacts'
 import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
-import { setPrismaNamespace } from './core/utils'
 
 function getSudoGraphQLSchema (config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -70,7 +68,7 @@ function getSudoGraphQLSchema (config: KeystoneConfig) {
   // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
-function injectNewDefaults (prismaClient: any, lists: Record<string, InitialisedList>) {
+function injectNewDefaults (prismaClient: unknown, lists: Record<string, InitialisedList>) {
   for (const listKey in lists) {
     const list = lists[listKey]
 
@@ -79,7 +77,8 @@ function injectNewDefaults (prismaClient: any, lists: Record<string, Initialised
 
     if ('default' in dbField && dbField.default?.kind === 'random') {
       const { bytes, encoding } = dbField.default
-      prismaClient = prismaClient.$extends({
+
+      prismaClient = (prismaClient as any).$extends({
         query: {
           [list.prisma.listKey]: {
             async create ({ model, args, query }: any) {
@@ -97,7 +96,7 @@ function injectNewDefaults (prismaClient: any, lists: Record<string, Initialised
     }
   }
 
-  prismaClient = prismaClient.$extends({
+  prismaClient = (prismaClient as any).$extends({
     query: {
       async $allOperations({ model, operation, args, query }: any) {
         try {
@@ -155,8 +154,8 @@ export function createSystem (config: KeystoneConfig) {
   return {
     graphQLSchema,
     adminMeta,
-    getKeystone: (prismaModule: PrismaModule) => {
-      const prePrismaClient = new prismaModule.PrismaClient({
+    getKeystone: (PM: any) => {
+      const prePrismaClient = new PM.PrismaClient({
         datasources: {
           [config.db.provider]: {
             url: formatUrl(config.db.provider, config.db.url)
@@ -171,25 +170,28 @@ export function createSystem (config: KeystoneConfig) {
       })
 
       const prismaClient = injectNewDefaults(prePrismaClient, lists)
-      setPrismaNamespace(prismaClient, prismaModule.Prisma)
 
       const context = createContext({
+        config,
+        lists,
         graphQLSchema,
         graphQLSchemaSudo,
-        config,
         prismaClient,
-        lists,
+        prismaTypes: {
+          DbNull: PM.Prisma.DbNull,
+          JsonNull: PM.Prisma.JsonNull,
+        },
       })
 
       return {
         // TODO: replace with server.onStart, remove in breaking change
         async connect () {
-          await prismaClient.$connect()
+          await (prismaClient as any).$connect()
           await config.db.onConnect?.(context)
         },
         // TODO: only used by tests, remove in breaking change
         async disconnect () {
-          await prismaClient.$disconnect()
+          await (prismaClient as any).$disconnect()
         },
         context,
       }

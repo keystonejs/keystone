@@ -8,13 +8,16 @@ import {
 } from '../../../types'
 import { getOperationAccess, getAccessFilters } from '../access-control'
 import {
-  type PrismaFilter,
-  type UniquePrismaFilter,
   type UniqueInputFilter,
   type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs'
+import {
+  type PrismaFilter,
+  type UniquePrismaFilter,
+} from '../../../types/prisma'
+
 import { limitsExceededError, userInputError } from '../graphql-errors'
 import { type InitialisedList } from '../initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils'
@@ -202,7 +205,7 @@ async function resolveOrderBy (
 }
 
 export async function count (
-  { where }: { where: Record<string, any> },
+  { where }: { where: Record<string, unknown> },
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,

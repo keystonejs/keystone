@@ -217,14 +217,3 @@ async function generatePrismaClient (prismaSchemaPath: string, dataProxy: boolea
     })
   )
 }
-
-export type PrismaModule = {
-  PrismaClient: {
-    new (args: unknown): any
-  }
-  Prisma: {
-    DbNull: unknown
-    JsonNull: unknown
-    [key: string]: unknown
-  }
-}

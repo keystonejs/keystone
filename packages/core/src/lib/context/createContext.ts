@@ -1,9 +1,20 @@
-import type { IncomingMessage, ServerResponse } from 'http'
-import { type ExecutionResult, graphql, type GraphQLSchema, print } from 'graphql'
-import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
+import {
+  type IncomingMessage,
+  type ServerResponse
+} from 'http'
+import {
+  type ExecutionResult,
+  type GraphQLSchema,
+  graphql,
+  print
+} from 'graphql'
+import {
+  type KeystoneConfig,
+  type KeystoneContext,
+  type KeystoneGraphQLAPI,
+} from '../../types'
 
-import type { PrismaClient } from '../core/utils'
-import type { InitialisedList } from '../core/initialise-lists'
+import { type InitialisedList } from '../core/initialise-lists'
 import { createImagesContext } from '../assets/createImagesContext'
 import { createFilesContext } from '../assets/createFilesContext'
 import { getDbFactory, getQueryFactory } from './api'
@@ -14,12 +25,17 @@ export function createContext ({
   graphQLSchema,
   graphQLSchemaSudo,
   prismaClient,
+  prismaTypes
 }: {
   config: KeystoneConfig
   lists: Record<string, InitialisedList>
   graphQLSchema: GraphQLSchema
   graphQLSchemaSudo: GraphQLSchema
-  prismaClient: PrismaClient
+  prismaClient: unknown
+  prismaTypes: {
+    DbNull: unknown,
+    JsonNull: unknown
+  }
 }) {
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
@@ -110,12 +126,18 @@ export function createContext ({
       // TODO: deprecated, remove in breaking change
       gqlNames: (listKey: string) => lists[listKey].graphql.names,
 
-      // TODO: rename __internal ?
+      // TODO: deprecated, remove in breaking change
       ...(config.experimental?.contextInitialisedLists
         ? {
             experimental: { initialisedLists: lists },
           }
         : {}),
+
+      __internal: {
+        prisma: {
+          ...prismaTypes
+        }
+      }
     }
 
     const _dbFactories = sudo ? dbFactoriesSudo : dbFactories

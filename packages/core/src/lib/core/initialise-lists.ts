@@ -154,8 +154,8 @@ function getIsEnabled (listKey: string, listConfig: KeystoneConfig['lists'][stri
       create: notOmit,
       update: notOmit,
       delete: notOmit,
-      filter: notOmit && defaultIsFilterable,
-      orderBy: notOmit && defaultIsOrderable,
+      filter: notOmit ? defaultIsFilterable : false,
+      orderBy: notOmit ? defaultIsOrderable : false,
     }
   }
 

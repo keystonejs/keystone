@@ -24,7 +24,7 @@ import {
 import {
   type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
-import { generatePrismaAndGraphQLSchemas, type PrismaModule } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { generatePrismaAndGraphQLSchemas } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
 import { dbProvider, type FloatingConfig } from './utils'
 
@@ -63,7 +63,7 @@ async function getTestPrismaModuleInner (prismaSchemaPath: string, datamodel: st
   }
 }
 
-const prismaModuleCache = new Map<string, PrismaModule>()
+const prismaModuleCache = new Map<string, unknown>()
 async function getTestPrismaModule (prismaSchemaPath: string, schema: string) {
   if (prismaModuleCache.has(schema)) return prismaModuleCache.get(schema)!
   return prismaModuleCache.set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema)).get(schema)!
@@ -221,14 +221,16 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   identifier?: string
 }) {
   const result = setupTestEnv({ config: config_, serve, identifier })
-  const connectPromise = result.then((x) => x.connect())
+  const connectPromise = result.then((x) => {
+    x.connect()
+    return x
+  })
 
   afterAll(async () => {
     await (await result).disconnect()
   })
 
   return async () => {
-    await connectPromise
-    return await result
+    return await connectPromise
   }
 }

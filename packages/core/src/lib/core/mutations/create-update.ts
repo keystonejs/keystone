@@ -1,13 +1,23 @@
-import type { KeystoneContext, BaseItem } from '../../../types'
-import type { ResolvedDBField } from '../resolve-relationships'
-import type { InitialisedList } from '../initialise-lists'
 import {
+  type BaseItem,
+  type KeystoneContext
+} from '../../../types'
+import {
+  type ResolvedDBField
+} from '../resolve-relationships'
+import {
+  type InitialisedList
+} from '../initialise-lists'
+import {
+  type IdType,
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
-  type IdType,
-  getPrismaNamespace,
 } from '../utils'
-import { type InputFilter, resolveUniqueWhereInput, type UniqueInputFilter } from '../where-inputs'
+import {
+  type InputFilter,
+  type UniqueInputFilter,
+  resolveUniqueWhereInput,
+} from '../where-inputs'
 import {
   accessDeniedError,
   extensionError,
@@ -82,8 +92,10 @@ export async function createOne (
   const operationAccess = await getOperationAccess(list, context, 'create')
   if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
+  // operation
   const { item, afterOperation } = await createSingle(createInput, list, context)
 
+  // after operation
   await afterOperation(item)
 
   return item
@@ -100,8 +112,12 @@ export async function createMany (
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
+    // operation
     const { item, afterOperation } = await createSingle({ data }, list, context)
+
+    // after operation
     await afterOperation(item)
+
     return item
   })
 }
@@ -137,6 +153,7 @@ async function updateSingle (
     item
   )
 
+  // operation
   const updatedItem = await context.prisma[list.listKey].update({
     where: { id: item.id },
     data,
@@ -144,6 +161,7 @@ async function updateSingle (
 
   // after operation
   await afterOperation(updatedItem)
+
   return updatedItem
 }
 
@@ -390,8 +408,7 @@ function transformInnerDBField (
   value: unknown
 ) {
   if (dbField.kind === 'scalar' && dbField.scalar === 'Json' && value === null) {
-    const Prisma = getPrismaNamespace(context)
-    return Prisma.DbNull
+    return context.__internal.prisma.DbNull
   }
   return value
 }
@@ -402,18 +419,25 @@ function transformForPrismaClient (
   context: KeystoneContext
 ) {
   return Object.fromEntries(
-    Object.entries(data).flatMap(([fieldKey, value]) => {
-      const { dbField } = fields[fieldKey]
-      if (dbField.kind === 'multi') {
-        return Object.entries(value).map(([innerFieldKey, fieldValue]) => {
-          return [
-            getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
-            transformInnerDBField(dbField.fields[innerFieldKey], context, fieldValue),
-          ]
-        })
-      }
+    [...function* () {
+      for (const fieldKey in data) {
+        const value = data[fieldKey]
+        const { dbField } = fields[fieldKey]
 
-      return [[fieldKey, transformInnerDBField(dbField, context, value)]]
-    })
+        if (dbField.kind === 'multi') {
+          for (const innerFieldKey in value) {
+            const innerFieldValue = value[innerFieldKey]
+            yield [
+              getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
+              transformInnerDBField(dbField.fields[innerFieldKey], context, innerFieldValue),
+            ]
+          }
+
+          continue
+        }
+
+        yield [fieldKey, transformInnerDBField(dbField, context, value)]
+      }
+    }()]
   )
 }

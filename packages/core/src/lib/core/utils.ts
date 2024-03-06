@@ -1,77 +1,7 @@
 import pluralize from 'pluralize'
-import { type PrismaModule } from '../../artifacts'
-import type { BaseItem, KeystoneConfig, KeystoneContext } from '../../types'
+import { type KeystoneConfig } from '../../types'
 import { getGqlNames } from '../../types/utils'
 import { humanize } from '../utils'
-import type { PrismaFilter, UniquePrismaFilter } from './where-inputs'
-
-declare const prisma: unique symbol
-
-// note prisma "promises" aren't really Promises, they have `then`, `catch` and `finally` but they don't start executation immediately
-// so if you don't call .then/catch/finally/use it in $transaction, the operation will never happen
-export type PrismaPromise<T> = Promise<T> & { [prisma]: true }
-
-type PrismaModel = {
-  count: (arg: {
-    where?: PrismaFilter
-    take?: number
-    skip?: number
-    // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
-    orderBy?: readonly Record<string, 'asc' | 'desc'>[]
-  }) => PrismaPromise<number>
-  findMany: (arg: {
-    where?: PrismaFilter
-    take?: number
-    skip?: number
-    cursor?: UniquePrismaFilter
-    // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
-    orderBy?: readonly Record<string, 'asc' | 'desc'>[]
-    include?: Record<string, boolean>
-    select?: Record<string, any>
-  }) => PrismaPromise<BaseItem[]>
-  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<BaseItem>
-  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<BaseItem>
-  findUnique: (args: {
-    where: UniquePrismaFilter
-    include?: Record<string, any>
-    select?: Record<string, any>
-  }) => PrismaPromise<BaseItem | null>
-  findFirst: (args: {
-    where: PrismaFilter
-    include?: Record<string, any>
-    select?: Record<string, any>
-  }) => PrismaPromise<BaseItem | null>
-  create: (args: {
-    data: Record<string, any>
-    include?: Record<string, any>
-    select?: Record<string, any>
-  }) => PrismaPromise<BaseItem>
-  update: (args: {
-    where: UniquePrismaFilter
-    data: Record<string, any>
-    include?: Record<string, any>
-    select?: Record<string, any>
-  }) => PrismaPromise<BaseItem>
-}
-
-export type UnwrapPromise<TPromise extends Promise<any>> = TPromise extends Promise<infer T>
-  ? T
-  : never
-
-export type UnwrapPromises<T extends Promise<any>[]> = {
-  // unsure about this conditional
-  [Key in keyof T]: Key extends number ? UnwrapPromise<T[Key]> : never;
-}
-
-// please do not make this type be the value of KeystoneContext['prisma']
-// this type is meant for generic usage, KeystoneContext should be generic over a PrismaClient
-// and we should generate a KeystoneContext type in node_modules/.keystone/types which passes in the user's PrismaClient type
-// so that users get right PrismaClient types specifically for their project
-export type PrismaClient = {
-  $disconnect(): Promise<void>
-  $connect(): Promise<void>
-  $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>
-} & Record<string, PrismaModel>
 
 // this is wrong
 // all the things should be generic over the id type
@@ -86,8 +16,6 @@ export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulf
   arg.status === 'fulfilled'
 export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
   arg.status === 'rejected'
-
-type Awaited<T> = T extends PromiseLike<infer U> ? U : T
 
 export async function promiseAllRejectWithAllErrors<T extends unknown[]> (
   promises: readonly [...T]
@@ -148,22 +76,6 @@ const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
 export function getDBFieldKeyForFieldOnMultiField (fieldKey: string, subField: string) {
   return `${fieldKey}_${subField}`
-}
-
-const prismaNamespaces = new WeakMap<object, PrismaModule['Prisma']>()
-
-export function setPrismaNamespace (prismaClient: object, prismaNamespace: PrismaModule['Prisma']) {
-  prismaNamespaces.set(prismaClient, prismaNamespace)
-}
-
-// this accepts the context instead of the prisma client because the prisma client on context is `any`
-// so by accepting the context, it'll be less likely the wrong thing will be passed.
-export function getPrismaNamespace (context: KeystoneContext) {
-  const limit = prismaNamespaces.get(context.prisma)
-  if (limit === undefined) {
-    throw new Error('unexpected prisma namespace not set for prisma client')
-  }
-  return limit
 }
 
 export function areArraysEqual (a: readonly unknown[], b: readonly unknown[]) {
