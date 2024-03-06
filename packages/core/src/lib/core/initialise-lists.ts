@@ -1,4 +1,4 @@
-import type { CacheHint } from '@apollo/cache-control-types'
+import { type CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
 import { type getGqlNames, QueryMode } from '../../types'
 import {
@@ -12,11 +12,21 @@ import {
   type KeystoneConfig,
   type MaybePromise,
   type NextFieldType,
+  type FieldTypeFunc,
 } from '../../types'
 import { graphql } from '../..'
-import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks'
-import type { FilterOrderArgs } from '../../types/config/fields'
-import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists'
+import {
+  type FieldHooks,
+  type ResolvedListHooks,
+  type ResolvedFieldHooks
+} from '../../types/config/hooks'
+import {
+  type FilterOrderArgs
+} from '../../types/config/fields'
+import {
+  type MaybeItemFunction,
+  type MaybeSessionFunction
+} from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
@@ -133,16 +143,19 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   )
 }
 
-function getIsEnabled (listKey: string, listConfig: KeystoneConfig['lists'][string]) {
+type ListConfigType = KeystoneConfig['lists'][string]
+type FieldConfigType = ReturnType<FieldTypeFunc<any>>
+type PartiallyInitialisedList1 = { graphql: { isEnabled: IsEnabled } }
+type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
+
+function getIsEnabled (listKey: string, listConfig: ListConfigType) {
   const omit = listConfig.graphql?.omit ?? false
   const {
     defaultIsFilterable = true,
     defaultIsOrderable = true
   } = listConfig
 
-  // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
-  // when defining these values. We avoid duck-typing here as this is security related
-  // and we want to make it hard to write incorrect code.
+  // TODO: check types in initConfig
   throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
   throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
 
@@ -167,6 +180,39 @@ function getIsEnabled (listKey: string, listConfig: KeystoneConfig['lists'][stri
     delete: !omit.delete,
     filter: defaultIsFilterable,
     orderBy: defaultIsOrderable,
+  }
+}
+
+function getIsEnabledField (f: FieldConfigType, listKey: string, listConfig: PartiallyInitialisedList1) {
+  const omit = f.graphql?.omit ?? false
+  const {
+    isFilterable = listConfig.graphql.isEnabled.filter,
+    isOrderable = listConfig.graphql.isEnabled.orderBy,
+  } = f
+
+  // TODO: check types in initConfig
+  throwIfNotAFilter(isFilterable, listKey, 'isFilterable')
+  throwIfNotAFilter(isOrderable, listKey, 'isOrderable')
+
+  if (typeof omit === 'boolean') {
+    const notOmit = !omit
+    return {
+      type: notOmit,
+      read: notOmit,
+      create: notOmit,
+      update: notOmit,
+      filter: notOmit ? isFilterable : false,
+      orderBy: notOmit ? isOrderable : false,
+    }
+  }
+
+  return {
+    type: true,
+    read: !omit.read,
+    create: !omit.create,
+    update: !omit.update,
+    filter: !omit.read ? isFilterable : false, // prevent filtering if read is false
+    orderBy: !omit.read ? isOrderable : false, // prevent ordering if read is false
   }
 }
 
@@ -264,14 +310,12 @@ function parseFieldHooks (
   }
 }
 
-type PartiallyInitialisedList = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
-
 function getListsWithInitialisedFields (
   { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
-  intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
+  intermediateLists: Record<string, PartiallyInitialisedList1>
 ) {
-  const result: Record<string, PartiallyInitialisedList> = {}
+  const result: Record<string, PartiallyInitialisedList2> = {}
 
   for (const [listKey, list] of Object.entries(listsConfig)) {
     const intermediateList = intermediateLists[listKey]
@@ -308,16 +352,7 @@ function getListsWithInitialisedFields (
         getStorage: storage => configStorage?.[storage],
       })
 
-      // We explicity check for boolean values here to ensure the dev hasn't made a mistake
-      // when defining these values. We avoid duck-typing here as this is security related
-      // and we want to make it hard to write incorrect code.
-      throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable')
-      throwIfNotAFilter(f.isOrderable, listKey, 'isOrderable')
-
-      const omit = f.graphql?.omit ?? false
-      const read = typeof omit === 'boolean' ? !omit : !omit.read
-      const create = typeof omit === 'boolean' ? !omit : !omit.create
-      const update = typeof omit === 'boolean' ? !omit : !omit.update
+      const isEnabledField = getIsEnabledField(f, listKey, intermediateList)
       const fieldModes = {
         create: f.ui?.createView?.fieldMode ?? list.ui?.createView?.defaultFieldMode ?? 'edit',
         item: f.ui?.itemView?.fieldMode ?? list.ui?.itemView?.defaultFieldMode ?? 'edit',
@@ -330,15 +365,7 @@ function getListsWithInitialisedFields (
         hooks: parseFieldHooks(f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
-          isEnabled: {
-            read,
-            create,
-            update,
-            // Filter and orderBy can be defaulted at the list level, otherwise they
-            // default to `false` if no value was set at the list level.
-            filter: read && (f.isFilterable ?? intermediateList.graphql.isEnabled.filter),
-            orderBy: read && (f.isOrderable ?? intermediateList.graphql.isEnabled.orderBy),
-          },
+          isEnabled: isEnabledField,
           isNonNull: {
             read: f.graphql?.isNonNull?.read ?? false,
             create: f.graphql?.isNonNull?.create ?? false,
@@ -350,20 +377,20 @@ function getListsWithInitialisedFields (
           description: f.ui?.description ?? null,
           views: f.ui?.views ?? null,
           createView: {
-            fieldMode: create ? fieldModes.create : 'hidden',
+            fieldMode: isEnabledField.create ? fieldModes.create : 'hidden',
           },
 
           itemView: {
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
-            fieldMode: update
+            fieldMode: isEnabledField.update
               ? fieldModes.item
-              : read && fieldModes.item !== 'hidden'
-              ? 'read'
-              : 'hidden',
+              : isEnabledField.read && fieldModes.item !== 'hidden'
+                ? 'read'
+                : 'hidden',
           },
 
           listView: {
-            fieldMode: read ? fieldModes.list : 'hidden',
+            fieldMode: isEnabledField.read ? fieldModes.list : 'hidden',
           },
         },
 
