@@ -75,7 +75,7 @@ async function getFilteredItem (
 }
 
 async function createSingle (
-  { data: rawData }: { data: Record<string, any> },
+  { data: rawData }: { data: Record<string, unknown> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -116,7 +116,7 @@ export class NestedMutationState {
   constructor (context: KeystoneContext) {
     this.#context = context
   }
-  async create (data: Record<string, any>, list: InitialisedList) {
+  async create (data: Record<string, unknown>, list: InitialisedList) {
     const context = this.#context
 
     const operationAccess = await getOperationAccess(list, context, 'create')
@@ -134,7 +134,7 @@ export class NestedMutationState {
 }
 
 export async function createOne (
-  createInput: { data: Record<string, any> },
+  createInput: { data: Record<string, unknown> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -151,7 +151,7 @@ export async function createOne (
 }
 
 export async function createMany (
-  createInputs: { data: Record<string, any>[] },
+  createInputs: { data: Record<string, unknown>[] },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -173,7 +173,7 @@ export async function createMany (
 
 type UpdateInput = {
   where: UniqueInputFilter,
-  data: Record<string, any>
+  data: Record<string, unknown>
 }
 
 async function updateSingle (
@@ -512,7 +512,7 @@ async function getResolvedData (
 async function resolveInputForCreateOrUpdate (
   list: InitialisedList,
   context: KeystoneContext,
-  inputData: Record<string, any>,
+  inputData: Record<string, unknown>,
   item: BaseItem | undefined
 ) {
   const nestedMutationState = new NestedMutationState(context)
