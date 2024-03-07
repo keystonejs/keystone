@@ -48,28 +48,37 @@ function makeList ({
     return resolvedData.basis + 'F'
   }
 
-  const R = hooks.resolveInput ? (hooks.field ? `FL` : `L`) : ''
   const N = 10
+  const __seeds = {
+    update1: { basis: `${__name}_update1S` },
+    updateM: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}S` })),
+    delete1: { basis: `${__name}_delete1S` },
+    deleteM: [...Array(N)].map((_, i) => ({ basis: `${__name}_delete${i + 2}S` })),
+  } as const
+
   const __inputs = {
-    create1I: { basis: `${__name}_create1` },
-    create1:  { basis: `${__name}_create1${R}` },
-    createMI: [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}` })),
-    createM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}${R}` })),
+    create1: { basis: `${__name}_create1` },
+    createM: [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}` })),
 
-    update1S: { basis: `${__name}_update1S` }, // seed
-    update1I: { basis: `${__name}_update1` },
-    update1:  { basis: `${__name}_update1${R}` },
-    updateMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}S` })), // seed
-    updateMI: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}` })),
-    updateM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}${R}` })),
+    update1: { basis: `${__name}_update1` },
+    updateM: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}` })),
+  } as const
 
-    delete1S: { basis: `${__name}_delete1S` }, // seed
-    deleteMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_delete${i + 2}S` })), // seed
+  const suffix = hooks.resolveInput ? (hooks.field ? `FL` : `L`) : ''
+  const __outputs = {
+    create1:  { basis: `${__name}_create1${suffix}` },
+    createM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}${suffix}` })),
+    update1:  { basis: `${__name}_update1${suffix}` },
+    updateM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}${suffix}` })),
+    delete1: __seeds.delete1, // resolveInput is not relevant
+    deleteM: __seeds.deleteM, // resolveInput is not relevant
   } as const
 
   return {
     __name,
+    __seeds,
     __inputs,
+    __outputs,
     __hooks: hooks,
     access: allowAll,
     fields: {
@@ -134,24 +143,24 @@ const listsMatrix = [...function* () {
 
 async function runOperations (context: KeystoneContext, list: ReturnType<typeof makeList>) {
   // we use context.prisma to bypass hooks
-  const uitems = await Promise.all(list.__inputs.updateMS.map(data => context.prisma[list.__name].create({ data })))
-  const ditems = await Promise.all(list.__inputs.deleteMS.map(data => context.prisma[list.__name].create({ data })))
-  const uitem = await context.prisma[list.__name].create({ data: list.__inputs.update1S })
-  const ditem = await context.prisma[list.__name].create({ data: list.__inputs.delete1S })
+  const uitems = await Promise.all(list.__seeds.updateM.map(data => context.prisma[list.__name].create({ data })))
+  const ditems = await Promise.all(list.__seeds.deleteM.map(data => context.prisma[list.__name].create({ data })))
+  const uitem = await context.prisma[list.__name].create({ data: list.__seeds.update1 })
+  const ditem = await context.prisma[list.__name].create({ data: list.__seeds.delete1 })
 
   const create = context.db[list.__name].createOne({
-    data: list.__inputs.create1I
+    data: list.__inputs.create1
   }).catch(e => e.message)
 
   const createMany = context.db[list.__name].createMany({
-    data: list.__inputs.createMI
+    data: list.__inputs.createM
   }).catch(e => e.message)
 
   const update = context.db[list.__name].updateOne({
     where: {
       id: uitem.id
     },
-    data: list.__inputs.update1I
+    data: list.__inputs.update1
   }).catch(e => e.message)
 
   const updateMany = context.db[list.__name].updateMany({
@@ -159,7 +168,7 @@ async function runOperations (context: KeystoneContext, list: ReturnType<typeof 
       where: {
         id: x.id
       },
-      data: list.__inputs.updateMI[i]
+      data: list.__inputs.updateM[i]
     })),
   }).catch(e => e.message)
 
@@ -208,9 +217,9 @@ describe(`Hooks`, () => {
         createM,
         update1,
         updateM,
-        delete1S: delete1, // resolveInput is not relevant
-        deleteMS: deleteM  // resolveInput is not relevant
-      } = list.__inputs
+        delete1,
+        deleteM
+      } = list.__outputs
 
       // field hooks have precedence
       const VI = list.__hooks.field ? 'FVI' : 'VI'
