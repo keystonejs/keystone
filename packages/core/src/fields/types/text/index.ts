@@ -142,7 +142,7 @@ export const text =
           }
 
           await config.hooks?.validateInput?.(args)
-        } : undefined,
+        } : config.hooks?.validateInput
       },
       input: {
         uniqueWhere:
