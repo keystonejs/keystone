@@ -9,8 +9,8 @@ function yn (x: boolean) {
 }
 
 function makeThrower (suffix: string) {
-  return () => {
-    throw new Error(`Throw_${suffix}`)
+  return ({ operation }: { operation: string }) => {
+    throw new Error(`Throw_${suffix}_${operation}`)
   }
 }
 
@@ -31,8 +31,8 @@ function makeList ({
       ? undefined
       : hooks.validate === 'throws'
         ? makeThrower(`${__name}_${context}`)
-        : ({ resolvedData, addValidationError }: any) => {
-          addValidationError(`Validate_${__name}_${context}`)
+        : ({ operation, resolvedData, addValidationError }: any) => {
+          addValidationError(`Validate_${__name}_${context}_${operation}`)
           // TODO: mixed results
         }
   }
@@ -86,9 +86,9 @@ function makeList ({
         hooks: {
           resolveInput: hooks.resolveInput ? replaceF : undefined,
           validate: {
-            create: makeValidate('FVI_create'),
-            update: makeValidate('FVI_update'),
-            delete: makeValidate('FVI_delete'),
+            create: makeValidate('FVI'),
+            update: makeValidate('FVI'),
+            delete: makeValidate('FVI'),
           },
           beforeOperation: hooks.beforeOperation ? makeThrower(`${__name}_FBO`) : undefined,
           afterOperation: hooks.afterOperation ? makeThrower(`${__name}_FAO`) : undefined
@@ -101,19 +101,19 @@ function makeList ({
         update: hooks.resolveInput ? replace : undefined,
       },
       validate: {
-        create: makeValidate('VI_create'),
-        update: makeValidate('VI_update'),
-        delete: makeValidate('VI_delete'),
+        create: makeValidate('VI'),
+        update: makeValidate('VI'),
+        delete: makeValidate('VI'),
       },
       beforeOperation: {
-        create: hooks.beforeOperation ? makeThrower(`${__name}_BO_create`) : undefined,
-        update: hooks.beforeOperation ? makeThrower(`${__name}_BO_update`) : undefined,
-        delete: hooks.beforeOperation ? makeThrower(`${__name}_BO_delete`) : undefined,
+        create: hooks.beforeOperation ? makeThrower(`${__name}_BO`) : undefined,
+        update: hooks.beforeOperation ? makeThrower(`${__name}_BO`) : undefined,
+        delete: hooks.beforeOperation ? makeThrower(`${__name}_BO`) : undefined,
       },
       afterOperation: {
-        create: hooks.afterOperation ? makeThrower(`${__name}_AO_create`) : undefined,
-        update: hooks.afterOperation ? makeThrower(`${__name}_AO_update`) : undefined,
-        delete: hooks.afterOperation ? makeThrower(`${__name}_AO_delete`) : undefined,
+        create: hooks.afterOperation ? makeThrower(`${__name}_AO`) : undefined,
+        update: hooks.afterOperation ? makeThrower(`${__name}_AO`) : undefined,
+        delete: hooks.afterOperation ? makeThrower(`${__name}_AO`) : undefined,
       }
     },
   }
@@ -225,37 +225,34 @@ describe(`Hooks`, () => {
       const VI = list.__hooks.field ? 'FVI' : 'VI'
       const BO = list.__hooks.field ? 'FBO' : 'BO'
       const AO = list.__hooks.field ? 'FAO' : 'AO'
-      const _create = list.__hooks.field ? '' : '_create' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
-      const _update = list.__hooks.field ? '' : '_update' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
-      const _delete = list.__hooks.field ? '' : '_delete' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
 
       const blocksOperation = list.__hooks.beforeOperation || list.__hooks.validate !== 'none'
       if (blocksOperation) {
         if (list.__hooks.validate !== 'none') {
           if (list.__hooks.validate === 'throws') {
-            test.concurrent('createOne throws an error in validate', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${VI}${_create}`))
-            test.concurrent('createMany throws an error in validate', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${VI}${_create}`))
-            test.concurrent('updateOne throws an error in validate', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${VI}${_update}`))
-            test.concurrent('updateMany throws an error in validate', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${VI}${_update}`))
-            test.concurrent('deleteOne throws an error in validate', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${VI}${_delete}`))
-            test.concurrent('deleteMany throws an error in validate', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${VI}${_delete}`))
+            test.concurrent('createOne throws an error in validate', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${VI}_create`))
+            test.concurrent('createMany throws an error in validate', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${VI}_create`))
+            test.concurrent('updateOne throws an error in validate', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${VI}_update`))
+            test.concurrent('updateMany throws an error in validate', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${VI}_update`))
+            test.concurrent('deleteOne throws an error in validate', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${VI}_delete`))
+            test.concurrent('deleteMany throws an error in validate', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${VI}_delete`))
 
           // validate errors
           } else {
-            test.concurrent('createOne throws a validation error', async () => expect(await (await d).create).toContain(`Validate_${list.__name}_${VI}${_create}`))
-            test.concurrent('createMany throws a validation error', async () => expect(await (await d).createMany).toContain(`Validate_${list.__name}_${VI}${_create}`))
-            test.concurrent('updateOne throws a validation error', async () => expect(await (await d).update).toContain(`Validate_${list.__name}_${VI}${_update}`))
-            test.concurrent('updateMany throws a validation error', async () => expect(await (await d).updateMany).toContain(`Validate_${list.__name}_${VI}${_update}`))
-            test.concurrent('deleteOne throws a validation error', async () => expect(await (await d).delete_).toContain(`Validate_${list.__name}_${VI}${_delete}`))
-            test.concurrent('deleteMany throws a validation error', async () => expect(await (await d).deleteMany).toContain(`Validate_${list.__name}_${VI}${_delete}`))
+            test.concurrent('createOne throws a validation error', async () => expect(await (await d).create).toContain(`Validate_${list.__name}_${VI}_create`))
+            test.concurrent('createMany throws a validation error', async () => expect(await (await d).createMany).toContain(`Validate_${list.__name}_${VI}_create`))
+            test.concurrent('updateOne throws a validation error', async () => expect(await (await d).update).toContain(`Validate_${list.__name}_${VI}_update`))
+            test.concurrent('updateMany throws a validation error', async () => expect(await (await d).updateMany).toContain(`Validate_${list.__name}_${VI}_update`))
+            test.concurrent('deleteOne throws a validation error', async () => expect(await (await d).delete_).toContain(`Validate_${list.__name}_${VI}_delete`))
+            test.concurrent('deleteMany throws a validation error', async () => expect(await (await d).deleteMany).toContain(`Validate_${list.__name}_${VI}_delete`))
           }
         } else {
-          test.concurrent('createOne throws an error in beforeOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${BO}${_create}`))
-          test.concurrent('createMany throws an error in beforeOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${BO}${_create}`))
-          test.concurrent('updateOne throws an error in beforeOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${BO}${_update}`))
-          test.concurrent('updateMany throws an error in beforeOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${BO}${_update}`))
-          test.concurrent('deleteOne throws an error in beforeOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${BO}${_delete}`))
-          test.concurrent('deleteMany throws an error in beforeOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${BO}${_delete}`))
+          test.concurrent('createOne throws an error in beforeOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${BO}_create`))
+          test.concurrent('createMany throws an error in beforeOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${BO}_create`))
+          test.concurrent('updateOne throws an error in beforeOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${BO}_update`))
+          test.concurrent('updateMany throws an error in beforeOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${BO}_update`))
+          test.concurrent('deleteOne throws an error in beforeOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${BO}_delete`))
+          test.concurrent('deleteMany throws an error in beforeOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${BO}_delete`))
         }
 
         // operation outcome was blocked
@@ -279,12 +276,12 @@ describe(`Hooks`, () => {
         }
       } else {
         if (list.__hooks.afterOperation) {
-          test.concurrent('createOne throws an error in afterOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${AO}${_create}`))
-          test.concurrent('createMany throws an error in afterOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${AO}${_create}`))
-          test.concurrent('updateOne throws an error in afterOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${AO}${_update}`))
-          test.concurrent('updateMany throws an error in afterOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${AO}${_update}`))
-          test.concurrent('deleteOne throws an error in afterOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${AO}${_delete}`))
-          test.concurrent('deleteMany throws an error in afterOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${AO}${_delete}`))
+          test.concurrent('createOne throws an error in afterOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${AO}_create`))
+          test.concurrent('createMany throws an error in afterOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${AO}_create`))
+          test.concurrent('updateOne throws an error in afterOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${AO}_update`))
+          test.concurrent('updateMany throws an error in afterOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${AO}_update`))
+          test.concurrent('deleteOne throws an error in afterOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${AO}_delete`))
+          test.concurrent('deleteMany throws an error in afterOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${AO}_delete`))
 
         } else {
           test.concurrent('createOne resolved the expected values', async () => expect(await (await d).create).toEqual(expect.objectContaining(create1)))
