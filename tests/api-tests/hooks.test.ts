@@ -37,34 +37,34 @@ function makeList ({
         }
   }
 
-  function replace ({ inputData }: { inputData: any }) {
-    if (inputData?.basis.match(/(_create|update)/)) {
-      return {
-        ...inputData,
-        basis: inputData.basis
-          .replace('_create', '_createR')
-          .replace('_update', '_updateR')
-      }
+  function replace ({ resolvedData }: { resolvedData: any }) {
+    return {
+      ...resolvedData,
+      basis: resolvedData.basis + 'L'
     }
-    throw new Error(`${inputData?.basis} not replaced`)
   }
 
+  function replaceF ({ resolvedData }: { resolvedData: any }) {
+    return resolvedData.basis + 'F'
+  }
+
+  const R = hooks.resolveInput ? (hooks.field ? `FL` : `L`) : ''
   const N = 10
   const __inputs = {
-    create1:  { basis: `${__name}_create1` },
-    create1R: { basis: `${__name}_createR1` },
-    createM: [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}` })),
-    createMR: [...Array(N)].map((_, i) => ({ basis: `${__name}_createR${i + 2}` })),
+    create1I: { basis: `${__name}_create1` },
+    create1:  { basis: `${__name}_create1${R}` },
+    createMI: [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}` })),
+    createM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_create${i + 2}${R}` })),
 
-    update1S: { basis: `${__name}_updateS1` }, // seed
-    update1: { basis: `${__name}_update1` },
-    update1R: { basis: `${__name}_updateR1` },
-    updateMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_updateS${i + 2}` })), // seed
-    updateM: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}` })),
-    updateMR: [...Array(N)].map((_, i) => ({ basis: `${__name}_updateR${i + 2}` })),
+    update1S: { basis: `${__name}_update1S` }, // seed
+    update1I: { basis: `${__name}_update1` },
+    update1:  { basis: `${__name}_update1${R}` },
+    updateMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}S` })), // seed
+    updateMI: [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}` })),
+    updateM:  [...Array(N)].map((_, i) => ({ basis: `${__name}_update${i + 2}${R}` })),
 
-    delete1S: { basis: `${__name}_deleteS1` }, // seed
-    deleteMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_deleteS${i + 2}` })), // seed
+    delete1S: { basis: `${__name}_delete1S` }, // seed
+    deleteMS: [...Array(N)].map((_, i) => ({ basis: `${__name}_delete${i + 2}S` })), // seed
   } as const
 
   return {
@@ -75,7 +75,7 @@ function makeList ({
     fields: {
       basis: text(hooks.field ? {
         hooks: {
-          resolveInput: hooks.resolveInput ? replace : undefined,
+          resolveInput: hooks.resolveInput ? replaceF : undefined,
           validate: {
             create: makeValidate('FVI_create'),
             update: makeValidate('FVI_update'),
@@ -134,24 +134,24 @@ const listsMatrix = [...function* () {
 
 async function runOperations (context: KeystoneContext, list: ReturnType<typeof makeList>) {
   // we use context.prisma to bypass hooks
-  const uitems = await Promise.all(list.__inputs.updateMS.map(u => context.prisma[list.__name].create({ data: u })))
-  const ditems = await Promise.all(list.__inputs.deleteMS.map(u => context.prisma[list.__name].create({ data: u })))
+  const uitems = await Promise.all(list.__inputs.updateMS.map(data => context.prisma[list.__name].create({ data })))
+  const ditems = await Promise.all(list.__inputs.deleteMS.map(data => context.prisma[list.__name].create({ data })))
   const uitem = await context.prisma[list.__name].create({ data: list.__inputs.update1S })
   const ditem = await context.prisma[list.__name].create({ data: list.__inputs.delete1S })
 
   const create = context.db[list.__name].createOne({
-    data: list.__inputs.create1
+    data: list.__inputs.create1I
   }).catch(e => e.message)
 
   const createMany = context.db[list.__name].createMany({
-    data: list.__inputs.createM
+    data: list.__inputs.createMI
   }).catch(e => e.message)
 
   const update = context.db[list.__name].updateOne({
     where: {
       id: uitem.id
     },
-    data: list.__inputs.update1
+    data: list.__inputs.update1I
   }).catch(e => e.message)
 
   const updateMany = context.db[list.__name].updateMany({
@@ -159,7 +159,7 @@ async function runOperations (context: KeystoneContext, list: ReturnType<typeof 
       where: {
         id: x.id
       },
-      data: list.__inputs.updateM[i]
+      data: list.__inputs.updateMI[i]
     })),
   }).catch(e => e.message)
 
@@ -203,111 +203,108 @@ describe(`Hooks`, () => {
   for (const list of listsMatrix) {
     describe(`${list.__name}`, () => {
       const d = suite().then(async ({ context }) => await runOperations(context, list))
-
-      const create1T = list.__hooks.resolveInput ? list.__inputs.create1R : list.__inputs.create1
-      const createMT = list.__hooks.resolveInput ? list.__inputs.createMR : list.__inputs.createM
-      const update1T = list.__hooks.resolveInput ? list.__inputs.update1R : list.__inputs.update1
-      const updateMT = list.__hooks.resolveInput ? list.__inputs.updateMR : list.__inputs.updateM
-      const delete1T = list.__inputs.delete1S // resolveInput is not relevant
-      const deleteMT = list.__inputs.deleteMS // resolveInput is not relevant
+      const {
+        create1,
+        createM,
+        update1,
+        updateM,
+        delete1S: delete1, // resolveInput is not relevant
+        deleteMS: deleteM  // resolveInput is not relevant
+      } = list.__inputs
 
       // field hooks have precedence
       const VI = list.__hooks.field ? 'FVI' : 'VI'
       const BO = list.__hooks.field ? 'FBO' : 'BO'
       const AO = list.__hooks.field ? 'FAO' : 'AO'
-      const _create = list.__hooks ? '' : '_create'
-      const _update = list.__hooks ? '' : '_update'
-      const _delete = list.__hooks ? '' : '_delete'
+      const _create = list.__hooks.field ? '' : '_create' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
+      const _update = list.__hooks.field ? '' : '_update' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
+      const _delete = list.__hooks.field ? '' : '_delete' // TODO: as of yet, we can't differentiate beforeOperation or afterOperation operation types for fields
 
       const blocksOperation = list.__hooks.beforeOperation || list.__hooks.validate !== 'none'
       if (blocksOperation) {
-        describe('operation is blocked when', () => {
-          if (list.__hooks.validate !== 'none') {
-            if (list.__hooks.validate === 'throws') {
-              test.concurrent('create1 throws an error in validate', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${VI}${_create}`))
-              test.concurrent('createMany throws an error in validate', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${VI}${_create}`))
-              test.concurrent('update1 throws an error in validate', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${VI}${_update}`))
-              test.concurrent('updateMany throws an error in validate', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${VI}${_update}`))
-              test.concurrent('delete1 throws an error in validate', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${VI}${_delete}`))
-              test.concurrent('deleteMany throws an error in validate', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${VI}${_delete}`))
+        if (list.__hooks.validate !== 'none') {
+          if (list.__hooks.validate === 'throws') {
+            test.concurrent('createOne throws an error in validate', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${VI}${_create}`))
+            test.concurrent('createMany throws an error in validate', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${VI}${_create}`))
+            test.concurrent('updateOne throws an error in validate', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${VI}${_update}`))
+            test.concurrent('updateMany throws an error in validate', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${VI}${_update}`))
+            test.concurrent('deleteOne throws an error in validate', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${VI}${_delete}`))
+            test.concurrent('deleteMany throws an error in validate', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${VI}${_delete}`))
 
-            // validate errors
-            } else {
-              test.concurrent('create1 throws a validation error', async () => expect(await (await d).create).toContain(`Validate_${list.__name}_${VI}${_create}`))
-              test.concurrent('createMany throws a validation error', async () => expect(await (await d).createMany).toContain(`Validate_${list.__name}_${VI}${_create}`))
-              test.concurrent('update1 throws a validation error', async () => expect(await (await d).update).toContain(`Validate_${list.__name}_${VI}${_update}`))
-              test.concurrent('updateMany throws a validation error', async () => expect(await (await d).updateMany).toContain(`Validate_${list.__name}_${VI}${_update}`))
-              test.concurrent('delete1 throws a validation error', async () => expect(await (await d).delete_).toContain(`Validate_${list.__name}_${VI}${_delete}`))
-              test.concurrent('deleteMany throws a validation error', async () => expect(await (await d).deleteMany).toContain(`Validate_${list.__name}_${VI}${_delete}`))
-            }
+          // validate errors
           } else {
-            test.concurrent('create1 throws an error in beforeOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${BO}${_create}`))
-            test.concurrent('createMany throws an error in beforeOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${BO}${_create}`))
-            test.concurrent('update1 throws an error in beforeOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${BO}${_update}`))
-            test.concurrent('updateMany throws an error in beforeOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${BO}${_update}`))
-            test.concurrent('delete1 throws an error in beforeOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${BO}${_delete}`))
-            test.concurrent('deleteMany throws an error in beforeOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${BO}${_delete}`))
+            test.concurrent('createOne throws a validation error', async () => expect(await (await d).create).toContain(`Validate_${list.__name}_${VI}${_create}`))
+            test.concurrent('createMany throws a validation error', async () => expect(await (await d).createMany).toContain(`Validate_${list.__name}_${VI}${_create}`))
+            test.concurrent('updateOne throws a validation error', async () => expect(await (await d).update).toContain(`Validate_${list.__name}_${VI}${_update}`))
+            test.concurrent('updateMany throws a validation error', async () => expect(await (await d).updateMany).toContain(`Validate_${list.__name}_${VI}${_update}`))
+            test.concurrent('deleteOne throws a validation error', async () => expect(await (await d).delete_).toContain(`Validate_${list.__name}_${VI}${_delete}`))
+            test.concurrent('deleteMany throws a validation error', async () => expect(await (await d).deleteMany).toContain(`Validate_${list.__name}_${VI}${_delete}`))
           }
+        } else {
+          test.concurrent('createOne throws an error in beforeOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${BO}${_create}`))
+          test.concurrent('createMany throws an error in beforeOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${BO}${_create}`))
+          test.concurrent('updateOne throws an error in beforeOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${BO}${_update}`))
+          test.concurrent('updateMany throws an error in beforeOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${BO}${_update}`))
+          test.concurrent('deleteOne throws an error in beforeOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${BO}${_delete}`))
+          test.concurrent('deleteMany throws an error in beforeOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${BO}${_delete}`))
+        }
 
-          // operation outcome was blocked
-          for (const [context, [where, expectedCount]] of Object.entries({
-            create1: [{ basis: { equals: create1T.basis } }, 0] as const,
-            createM: [{ basis: { in: createMT.map(x => x.basis) } }, 0] as const,
-            update1: [{ basis: { equals: update1T.basis } }, 0] as const,
-            updateM: [{ basis: { in: updateMT.map(x => x.basis) } }, 0] as const,
-            delete1: [{ basis: { equals: delete1T.basis } }, 1] as const,
-            deleteM: [{ basis: { in: deleteMT.map(x => x.basis) } }, deleteMT.length] as const
-          })) {
-            test.concurrent(`${context} was blocked`, async () => {
-              await (await d).everything
+        // operation outcome was blocked
+        for (const [context, [where, expectedCount]] of Object.entries({
+          createOne:  [{ basis: { equals: create1.basis } }, 0] as const,
+          createMany: [{ basis: { in: createM.map(x => x.basis) } }, 0] as const,
+          updateOne:  [{ basis: { equals: update1.basis } }, 0] as const,
+          updateMany: [{ basis: { in: updateM.map(x => x.basis) } }, 0] as const,
+          deleteOne:  [{ basis: { equals: delete1.basis } }, 1] as const,
+          deleteMany: [{ basis: { in: deleteM.map(x => x.basis) } }, deleteM.length] as const
+        })) {
+          test.concurrent(`${context} was blocked`, async () => {
+            await (await d).everything
 
-              const { context } = await suite()
-              const count = await context.db[list.__name].count({ where })
+            const { context } = await suite()
+            const count = await context.db[list.__name].count({ where })
 
-              // everything was created still
-              expect(count).toEqual(expectedCount)
-            })
-          }
-        })
+            // everything was created still
+            expect(count).toEqual(expectedCount)
+          })
+        }
       } else {
-        describe('operation is successful when', () => {
-          if (list.__hooks.afterOperation) {
-            test.concurrent('create1 throws an error in afterOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${AO}${_create}`))
-            test.concurrent('createMany throws an error in afterOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${AO}${_create}`))
-            test.concurrent('update1 throws an error in afterOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${AO}${_update}`))
-            test.concurrent('updateMany throws an error in afterOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${AO}${_update}`))
-            test.concurrent('delete1 throws an error in afterOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${AO}${_delete}`))
-            test.concurrent('deleteMany throws an error in afterOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${AO}${_delete}`))
+        if (list.__hooks.afterOperation) {
+          test.concurrent('createOne throws an error in afterOperation', async () => expect(await (await d).create).toContain(`Throw_${list.__name}_${AO}${_create}`))
+          test.concurrent('createMany throws an error in afterOperation', async () => expect(await (await d).createMany).toContain(`Throw_${list.__name}_${AO}${_create}`))
+          test.concurrent('updateOne throws an error in afterOperation', async () => expect(await (await d).update).toContain(`Throw_${list.__name}_${AO}${_update}`))
+          test.concurrent('updateMany throws an error in afterOperation', async () => expect(await (await d).updateMany).toContain(`Throw_${list.__name}_${AO}${_update}`))
+          test.concurrent('deleteOne throws an error in afterOperation', async () => expect(await (await d).delete_).toContain(`Throw_${list.__name}_${AO}${_delete}`))
+          test.concurrent('deleteMany throws an error in afterOperation', async () => expect(await (await d).deleteMany).toContain(`Throw_${list.__name}_${AO}${_delete}`))
 
-          } else {
-            test.concurrent('create1 resolved the expected values', async () => expect(await (await d).create).toEqual(expect.objectContaining(create1T)))
-            test.concurrent('createMany resolved the expected values', async () => expect(await (await d).createMany).toEqual(expect.arrayContaining(createMT.map(x => expect.objectContaining(x)))))
-            test.concurrent('update1 resolved the expected values', async () => expect(await (await d).update).toEqual(expect.objectContaining(update1T)))
-            test.concurrent('updateMany resolved the expected values', async () => expect(await (await d).updateMany).toEqual(expect.arrayContaining(updateMT.map(x => expect.objectContaining(x)))))
-            test.concurrent('delete1 resolved the expected values', async () => expect(await (await d).delete_).toEqual(expect.objectContaining(delete1T)))
-            test.concurrent('deleteMany resolved the expected values', async () => expect(await (await d).deleteMany).toEqual(expect.arrayContaining(deleteMT.map(x => expect.objectContaining(x)))))
-          }
+        } else {
+          test.concurrent('createOne resolved the expected values', async () => expect(await (await d).create).toEqual(expect.objectContaining(create1)))
+          test.concurrent('createMany resolved the expected values', async () => expect(await (await d).createMany).toEqual(expect.arrayContaining(createM.map(x => expect.objectContaining(x)))))
+          test.concurrent('updateOne resolved the expected values', async () => expect(await (await d).update).toEqual(expect.objectContaining(update1)))
+          test.concurrent('updateMany resolved the expected values', async () => expect(await (await d).updateMany).toEqual(expect.arrayContaining(updateM.map(x => expect.objectContaining(x)))))
+          test.concurrent('deleteOne resolved the expected values', async () => expect(await (await d).delete_).toEqual(expect.objectContaining(delete1)))
+          test.concurrent('deleteMany resolved the expected values', async () => expect(await (await d).deleteMany).toEqual(expect.arrayContaining(deleteM.map(x => expect.objectContaining(x)))))
+        }
 
-          // operation outcome was successful
-          for (const [context, [where, expectedCount]] of Object.entries({
-            create1: [{ basis: { equals: create1T.basis } }, 1] as const,
-            createM: [{ basis: { in: createMT.map(x => x.basis) } }, createMT.length] as const,
-            update1: [{ basis: { equals: update1T.basis } }, 1] as const,
-            updateM: [{ basis: { in: updateMT.map(x => x.basis) } }, updateMT.length] as const,
-            delete1: [{ basis: { equals: delete1T.basis } }, 0] as const,
-            deleteM: [{ basis: { in: deleteMT.map(x => x.basis) } }, 0] as const
-          })) {
-            test.concurrent(`${context} was successful`, async () => {
-              await (await d).everything
+        // operation outcome was successful
+        for (const [context, [where, expectedCount]] of Object.entries({
+          createOne:  [{ basis: { equals: create1.basis } }, 1] as const,
+          createMany: [{ basis: { in: createM.map(x => x.basis) } }, createM.length] as const,
+          updateOne:  [{ basis: { equals: update1.basis } }, 1] as const,
+          updateMany: [{ basis: { in: updateM.map(x => x.basis) } }, updateM.length] as const,
+          deleteOne:  [{ basis: { equals: delete1.basis } }, 0] as const,
+          deleteMany: [{ basis: { in: deleteM.map(x => x.basis) } }, 0] as const
+        })) {
+          test.concurrent(`${context} was successful`, async () => {
+            await (await d).everything
 
-              const { context } = await suite()
-              const count = await context.db[list.__name].count({ where })
+            const { context } = await suite()
+            const count = await context.db[list.__name].count({ where })
 
-              // everything was created still
-              expect(count).toEqual(expectedCount)
-            })
-          }
-        })
+            // everything was created still
+            expect(count).toEqual(expectedCount)
+          })
+        }
       }
     })
   }
