@@ -307,17 +307,35 @@ function defaultFieldHooksResolveInput ({
 }
 
 function parseFieldHooks (
-  hooks: FieldHooks<BaseListTypeInfo>
+  fieldKey: string,
+  hooks: FieldHooks<BaseListTypeInfo>,
 ): ResolvedFieldHooks<BaseListTypeInfo> {
+  /** @deprecated, TODO: remove in breaking change */
+  if (hooks.validate !== undefined) {
+    if (hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${fieldKey}" field`)
+    if (hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${fieldKey}" field`)
+
+    if (typeof hooks.validate === 'function') {
+      return parseFieldHooks(fieldKey, {
+        ...hooks,
+        validate: {
+          create: hooks.validate,
+          update: hooks.validate,
+          delete: hooks.validate,
+        }
+      })
+    }
+  }
+
   return {
     resolveInput: {
       create: hooks.resolveInput ?? defaultFieldHooksResolveInput,
       update: hooks.resolveInput ?? defaultFieldHooksResolveInput,
     },
     validate: {
-      create: hooks.validateInput ?? defaultOperationHook,
-      update: hooks.validateInput ?? defaultOperationHook,
-      delete: hooks.validateDelete ?? defaultOperationHook,
+      create: hooks.validate?.create ?? hooks.validateInput ?? defaultOperationHook,
+      update: hooks.validate?.update ?? hooks.validateInput ?? defaultOperationHook,
+      delete: hooks.validate?.delete ?? hooks.validateDelete ?? defaultOperationHook,
     },
     beforeOperation: {
       create: hooks.beforeOperation ?? defaultOperationHook,
@@ -384,7 +402,7 @@ function getListsWithInitialisedFields (
       resultFields[fieldKey] = {
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
-        hooks: parseFieldHooks(f.hooks ?? {}),
+        hooks: parseFieldHooks(fieldKey, f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
           isEnabled: isEnabledField,

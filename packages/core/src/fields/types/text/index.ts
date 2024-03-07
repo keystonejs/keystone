@@ -85,25 +85,22 @@ export const text =
       )
     }
 
-    const validation = {
+    const validation = _validation ? {
       ..._validation,
       length: {
         min: _validation?.isRequired ? _validation?.length?.min ?? 1 : _validation?.length?.min,
         max: _validation?.length?.max,
       },
-    }
+    } : undefined
 
     // defaulted to false as a zero length string is preferred to null
     const isNullable = config.db?.isNullable ?? false
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     assertReadIsNonNullAllowed(meta, config, isNullable)
-
     const mode = isNullable ? 'optional' : 'required'
+    const defaultValue = isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined
 
-    const defaultValue =
-      isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined
     return fieldType({
       kind: 'scalar',
       mode,
@@ -117,7 +114,7 @@ export const text =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput (args) {
+        validateInput: validation ? async (args) => {
           const val = args.resolvedData[meta.fieldKey]
           if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`)
@@ -145,7 +142,7 @@ export const text =
           }
 
           await config.hooks?.validateInput?.(args)
-        },
+        } : undefined,
       },
       input: {
         uniqueWhere:
