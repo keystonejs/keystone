@@ -253,7 +253,7 @@ async function generateGitHubReleaseText (previousTag) {
     output.push(``)
   }
 
-  output,push(`#### :eyes: Review`)
+  output.push(`#### :eyes: Review`)
   output.push(`See https://github.com/keystonejs/keystone/compare/${previousTag}...${date} to compare with our previous release.`)
 
   writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2))
