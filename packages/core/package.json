@@ -215,7 +215,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
     "bytes": "^3.1.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "ci-info": "^4.0.0",
     "clipboard-copy": "^4.0.1",
     "conf": "^10.2.0",
