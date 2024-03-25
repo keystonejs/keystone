@@ -83,6 +83,7 @@ function makeList ({
     access: allowAll,
     fields: {
       basis: text(hooks.field ? {
+        db: { isNullable: true }, // drops the implicit validation hook
         hooks: {
           resolveInput: hooks.resolveInput ? replaceF : undefined,
           validate: {
