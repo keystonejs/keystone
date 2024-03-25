@@ -2,8 +2,8 @@ import { userInputError } from '../../../lib/core/graphql-errors'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
-  fieldType,
   type FieldTypeFunc,
+  fieldType,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
@@ -19,13 +19,16 @@ export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function checkbox <ListTypeInfo extends BaseListTypeInfo>({
-  defaultValue = false,
-  ...config
-}: CheckboxFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  return meta => {
+export function checkbox <ListTypeInfo extends BaseListTypeInfo>(
+  config: CheckboxFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const {
+    defaultValue = false,
+  } = config
+
+  return (meta) => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type checkbox")
+      throw TypeError("isIndexed: 'unique' is not a supported option for field type checkbox")
     }
 
     assertReadIsNonNullAllowed(meta, config, false)

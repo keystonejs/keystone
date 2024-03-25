@@ -2,12 +2,15 @@ import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
+  type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
-  type FieldTypeFunc,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  resolveHasValidation,
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -53,43 +56,39 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const text =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function text <ListTypeInfo extends BaseListTypeInfo>(
+  config: TextFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const {
     isIndexed,
-    defaultValue: _defaultValue,
-    validation: _validation,
-    ...config
-  }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+    defaultValue: defaultValue_,
+    validation: validation_
+  } = config
+
+  return (meta) => {
     for (const type of ['min', 'max'] as const) {
-      const val = _validation?.length?.[type]
+      const val = validation_?.length?.[type]
       if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
-        throw new Error(
-          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`
-        )
+        throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`)
       }
-      if (_validation?.isRequired && val !== undefined && val === 0) {
-        throw new Error(
-          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
-        )
+      if (validation_?.isRequired && val !== undefined && val === 0) {
+        throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`)
       }
     }
 
     if (
-      _validation?.length?.min !== undefined &&
-      _validation?.length?.max !== undefined &&
-      _validation?.length?.min > _validation?.length?.max
+      validation_?.length?.min !== undefined &&
+      validation_?.length?.max !== undefined &&
+      validation_?.length?.min > validation_?.length?.max
     ) {
-      throw new Error(
-        `The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
-      )
+      throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
     }
 
-    const validation = _validation ? {
-      ..._validation,
+    const validation = validation_ ? {
+      ...validation_,
       length: {
-        min: _validation?.isRequired ? _validation?.length?.min ?? 1 : _validation?.length?.min,
-        max: _validation?.length?.max,
+        min: validation_?.isRequired ? validation_?.length?.min ?? 1 : validation_?.length?.min,
+        max: validation_?.length?.max,
       },
     } : undefined
 
@@ -99,7 +98,8 @@ export const text =
 
     assertReadIsNonNullAllowed(meta, config, isNullable)
     const mode = isNullable ? 'optional' : 'required'
-    const defaultValue = isNullable === false || _defaultValue !== undefined ? _defaultValue || '' : undefined
+    const defaultValue = isNullable === false || defaultValue_ !== undefined ? defaultValue_ || '' : undefined
+    const hasValidation = resolveHasValidation(config)
 
     return fieldType({
       kind: 'scalar',
@@ -114,7 +114,7 @@ export const text =
       ...config,
       hooks: {
         ...config.hooks,
-        validateInput: validation ? async (args) => {
+        validateInput: hasValidation ? async (args) => {
           const val = args.resolvedData[meta.fieldKey]
           if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`)
@@ -130,14 +130,10 @@ export const text =
               }
             }
             if (validation?.length?.max !== undefined && val.length > validation.length.max) {
-              args.addValidationError(
-                `${fieldLabel} must be no longer than ${validation.length.max} characters`
-              )
+              args.addValidationError(`${fieldLabel} must be no longer than ${validation.length.max} characters`)
             }
             if (validation?.match && !validation.match.regex.test(val)) {
-              args.addValidationError(
-                validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`
-              )
+              args.addValidationError(validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`)
             }
           }
 
@@ -196,6 +192,7 @@ export const text =
       },
     })
   }
+}
 
 export type TextFieldMeta = {
   displayMode: 'input' | 'textarea'

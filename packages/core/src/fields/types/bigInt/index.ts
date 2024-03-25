@@ -1,13 +1,17 @@
 import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
-  fieldType,
-  type FieldTypeFunc,
   type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+  resolveHasValidation,
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -30,14 +34,16 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
-export const bigInt =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function bigInt <ListTypeInfo extends BaseListTypeInfo>(
+  config: BigIntFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const {
     isIndexed,
     defaultValue: _defaultValue,
     validation: _validation,
-    ...config
-  }: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+
+  return (meta) => {
     const defaultValue = _defaultValue ?? null
     const hasAutoIncDefault =
       typeof defaultValue == 'object' &&
@@ -48,9 +54,7 @@ export const bigInt =
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(
-          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
-        )
+        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
       if (isNullable !== false) {
         throw new Error(
@@ -69,21 +73,18 @@ export const bigInt =
 
     for (const type of ['min', 'max'] as const) {
       if (validation[type] > MAX_INT || validation[type] < MIN_INT) {
-        throw new Error(
-          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`
-        )
+        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`)
       }
     }
     if (validation.min > validation.max) {
-      throw new Error(
-        `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      )
+      throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
     assertReadIsNonNullAllowed(meta, config, isNullable)
 
     const mode = isNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
+    const hasValidation = resolveHasValidation(config)
 
     return fieldType({
       kind: 'scalar',
@@ -103,7 +104,7 @@ export const bigInt =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput (args) {
+        validateInput: hasValidation ? async (args) => {
           const value = args.resolvedData[meta.fieldKey]
 
           if (
@@ -128,7 +129,7 @@ export const bigInt =
           }
 
           await config.hooks?.validateInput?.(args)
-        },
+        } : config.hooks?.validateInput
       },
       input: {
         uniqueWhere:
@@ -169,3 +170,4 @@ export const bigInt =
       },
     })
   }
+}
