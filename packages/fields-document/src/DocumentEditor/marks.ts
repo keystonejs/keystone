@@ -1,8 +1,8 @@
 import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from 'slate'
 import { type DocumentFeatures } from '../views'
-import { type ComponentBlock } from './component-blocks/api'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
-import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils'
+import { type ComponentBlock } from './component-blocks/api-model'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-model'
+import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils-model'
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],
@@ -11,7 +11,7 @@ export const allMarkdownShortcuts = {
   code: ['`'],
 }
 
-function applyMark (editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
+function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
   editor.writeHistory('undos', { operations: [], selectionBefore: null })
   const startPointRef = Editor.pointRef(editor, startOfStartPoint)
@@ -37,7 +37,7 @@ function applyMark (editor: Editor, mark: string, shortcutText: string, startOfS
   editor.removeMark(mark)
 }
 
-export function withMarks (
+export function withMarks(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor
@@ -73,8 +73,8 @@ export function withMarks (
   }
 
   const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {}
-  const enabledMarks = editorDocumentFeatures.formatting.inlineMarks;
-  (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
+  const enabledMarks = editorDocumentFeatures.formatting.inlineMarks
+  ;(Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
     if (enabledMarks[mark]) {
       selectedMarkdownShortcuts[mark] = allMarkdownShortcuts[mark]
     }
@@ -192,7 +192,7 @@ export function withMarks (
   return editor
 }
 
-function getStartOfBlock (editor: Editor) {
+function getStartOfBlock(editor: Editor) {
   return Editor.start(
     editor,
     Editor.above(editor, {

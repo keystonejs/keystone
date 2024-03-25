@@ -1,7 +1,9 @@
-'use client'
 import { Text, Editor } from 'slate'
-import { createDocumentEditor } from './DocumentEditor'
-import { type ComponentBlock, type ComponentSchema } from './DocumentEditor/component-blocks/api'
+import { createDocumentEditor } from './DocumentEditor/editor-create-validation'
+import {
+  type ComponentBlock,
+  type ComponentSchema,
+} from './DocumentEditor/component-blocks/api-model'
 import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 import { type Relationships } from './DocumentEditor/relationship'
 import {
@@ -14,13 +16,13 @@ import { type DocumentFeatures } from './views'
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath
-  constructor (message: string, path: ReadonlyPropPath) {
+  constructor(message: string, path: ReadonlyPropPath) {
     super(message)
     this.path = path
   }
 }
 
-function validateComponentBlockProps (
+function validateComponentBlockProps(
   schema: ComponentSchema,
   value: unknown,
   relationships: Relationships,
@@ -126,7 +128,7 @@ function validateComponentBlockProps (
   assertNever(schema)
 }
 
-function isText (node: ElementFromValidation): node is TextWithMarks {
+function isText(node: ElementFromValidation): node is TextWithMarks {
   return Text.isText(node)
 }
 
@@ -134,7 +136,7 @@ function isText (node: ElementFromValidation): node is TextWithMarks {
 // as internal server error from the graphql api in prod
 // this is fine because these cases are pretty much all about
 // malicious content being inserted, not valid content
-export function getValidatedNodeWithNormalizedComponentFormProps (
+export function getValidatedNodeWithNormalizedComponentFormProps(
   node: ElementFromValidation,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
@@ -176,7 +178,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps (
   }
 }
 
-export function validateAndNormalizeDocument (
+export function validateAndNormalizeDocument(
   value: unknown,
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
