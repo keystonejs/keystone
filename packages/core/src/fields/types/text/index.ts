@@ -27,7 +27,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       match?: { regex: RegExp, explanation?: string }
       length?: { min?: number, max?: number }
     }
-    defaultValue?: string
+    defaultValue?: string | null
     db?: {
       isNullable?: boolean
       map?: string
@@ -94,18 +94,18 @@ export function text <ListTypeInfo extends BaseListTypeInfo>(
 
     // defaulted to false as a zero length string is preferred to null
     const isNullable = config.db?.isNullable ?? false
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-
     assertReadIsNonNullAllowed(meta, config, isNullable)
+
+    const defaultValue = isNullable ? (defaultValue_ ?? null) : (defaultValue_ ?? '')
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const mode = isNullable ? 'optional' : 'required'
-    const defaultValue = isNullable === false || defaultValue_ !== undefined ? defaultValue_ || '' : undefined
-    const hasValidation = resolveHasValidation(config)
+    const hasValidation = resolveHasValidation(config) || !isNullable // we make an exception for Text
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'String',
-      default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
+      default: (defaultValue === null) ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
       nativeType: config.db?.nativeType,
@@ -124,9 +124,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo>(
               if (validation.length.min === 1) {
                 args.addValidationError(`${fieldLabel} must not be empty`)
               } else {
-                args.addValidationError(
-                  `${fieldLabel} must be at least ${validation.length.min} characters long`
-                )
+                args.addValidationError(`${fieldLabel} must be at least ${validation.length.min} characters long`)
               }
             }
             if (validation?.length?.max !== undefined && val.length > validation.length.max) {
