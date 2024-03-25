@@ -1,5 +1,3 @@
-// @markdoc/markdoc's declaration files depend on these global types
-import type {} from '@markdoc/markdoc/global'
 import fs from 'fs/promises'
 import isMatch from 'date-fns/isMatch'
 import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
