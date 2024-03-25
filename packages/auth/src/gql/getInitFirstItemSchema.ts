@@ -61,7 +61,10 @@ export function getInitFirstItemSchema ({
           // the input value can't round-trip like the Upload scalar here is quite low)
           const item = await sudoContext.db[listKey].createOne({ data: { ...data, ...itemData } })
           const sessionToken = (await context.sessionStrategy.start({
-            data: { listKey, itemId: item.id.toString() },
+            data: {
+              listKey,
+              itemId: item.id
+            },
             context,
           }))
 
