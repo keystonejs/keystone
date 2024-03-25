@@ -1,9 +1,9 @@
-import type {
-  BaseFields,
-  BaseListTypeInfo,
-  KeystoneConfig,
-  BaseKeystoneTypeInfo,
-  ListConfig,
+import {
+  type BaseFields,
+  type BaseKeystoneTypeInfo,
+  type BaseListTypeInfo,
+  type KeystoneConfig,
+  type ListConfig,
 } from './types'
 
 export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>) {

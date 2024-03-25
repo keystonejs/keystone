@@ -7,7 +7,11 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+  resolveHasValidation,
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
 import { type TimestampFieldMeta } from './views'
 
@@ -27,13 +31,16 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
-  isIndexed,
-  validation,
-  defaultValue,
-  ...config
-}: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  return meta => {
+export function timestamp <ListTypeInfo extends BaseListTypeInfo>(
+  config: TimestampFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const {
+    isIndexed,
+    defaultValue,
+    validation,
+  } = config
+
+  return (meta) => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.DateTime.graphQLType.parseValue(defaultValue)
@@ -55,6 +62,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
     const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
+    const hasValidation = resolveHasValidation(config)
 
     return fieldType({
       kind: 'scalar',
@@ -77,14 +85,14 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo>({
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput (args) {
+        validateInput: hasValidation ? async (args) => {
           const value = args.resolvedData[meta.fieldKey]
           if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`)
           }
 
           await config.hooks?.validateInput?.(args)
-        },
+        } : config.hooks?.validateInput,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,

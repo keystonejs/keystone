@@ -42,14 +42,16 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export const multiselect =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function multiselect <ListTypeInfo extends BaseListTypeInfo>(
+  config: MultiselectFieldConfig<ListTypeInfo>
+): FieldTypeFunc<ListTypeInfo> {
+  const {
     defaultValue = [],
-    ...config
-  }: MultiselectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+
+  return (meta) => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type multiselect")
+      throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     assertReadIsNonNullAllowed(meta, config, false)
@@ -92,8 +94,7 @@ export const multiselect =
         hooks: {
           ...config.hooks,
           async validateInput (args) {
-            const selectedValues: readonly (string | number)[] | undefined =
-              args.inputData[meta.fieldKey]
+            const selectedValues: readonly (string | number)[] | undefined = args.inputData[meta.fieldKey]
             if (selectedValues !== undefined) {
               for (const value of selectedValues) {
                 if (!possibleValues.has(value)) {
@@ -137,6 +138,7 @@ export const multiselect =
       }
     )
   }
+}
 
 function configToOptionsAndGraphQLType (
   config: MultiselectFieldConfig<BaseListTypeInfo>,

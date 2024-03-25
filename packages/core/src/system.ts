@@ -38,9 +38,6 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
           id: idFieldType({ kind: 'number', type: 'Int' }),
           ...list.fields,
         },
-        hooks: {
-          ...list.hooks
-        }
       }
 
       continue
@@ -52,9 +49,6 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
         id: idFieldType(list.db?.idField ?? defaultIdField),
         ...list.fields,
       },
-      hooks: {
-        ...list.hooks
-      }
     }
   }
 
@@ -67,13 +61,13 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
       continue
     }
 
-    list.hooks.validate = {}
-    if (typeof list.hooks.validateInput === 'function') {
-      list.hooks.validate.create = list.hooks.validateInput
-      list.hooks.validate.update = list.hooks.validateInput
-    }
-    if (typeof list.hooks.validateDelete === 'function') {
-      list.hooks.validate.delete = list.hooks.validateDelete
+    list.hooks = {
+      ...list.hooks,
+      validate: {
+        create: list.hooks.validateInput,
+        update: list.hooks.validateInput,
+        delete: list.hooks.validateDelete
+      }
     }
   }
 

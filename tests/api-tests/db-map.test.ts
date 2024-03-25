@@ -47,34 +47,32 @@ const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 })
 
-testModules
-  .map(require)
-  .filter(
-    ({ supportsDbMap, unSupportedAdapterList = [] }) =>
-      supportsDbMap && !unSupportedAdapterList.includes(dbProvider)
-  )
-  .map(mod => {
-    test(`db.map for the field ${mod.name} adds @map with the value to the Prisma schema`, async () => {
-      const prismaSchema = await getPrismaSchema(
-        ({
-          lists: {
-            SomeList: list({
-              access: allowAll,
-              fields: {
-                someField: mod.typeFunction({
-                  ...mod.fieldConfig?.(),
-                  db: {
-                    map: 'db_map_field',
-                  },
-                }),
-              },
-            }),
-          },
-        })
-      )
-      expect(prismaSchema).toContain(' @map("db_map_field")')
-    })
+for (const modulePath of testModules) {
+  const mod = require(modulePath)
+  if (mod.supportsDbMap) continue
+  if (mod.unSupportedAdapterList?.includes(dbProvider)) continue
+
+  test(`db.map for the field ${mod.name} adds @map with the value to the Prisma schema`, async () => {
+    const prismaSchema = await getPrismaSchema(
+      ({
+        lists: {
+          SomeList: list({
+            access: allowAll,
+            fields: {
+              someField: mod.typeFunction({
+                ...mod.fieldConfig?.(),
+                db: {
+                  map: 'db_map_field',
+                },
+              }),
+            },
+          }),
+        },
+      })
+    )
+    expect(prismaSchema).toContain(' @map("db_map_field")')
   })
+}
 
 // since we can only check whether the prisma schema contains the @map
 // for all the fields since they all generate different prisma schemas
