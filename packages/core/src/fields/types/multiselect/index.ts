@@ -51,7 +51,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo>(
 
   return (meta) => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type multiselect")
+      throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     assertReadIsNonNullAllowed(meta, config, false)
