@@ -1,19 +1,14 @@
 import { config } from '@keystone-6/core'
-import type { Request, Response } from 'express'
 
 import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
-import { getTasks } from './routes/tasks'
-import { type TypeInfo, type Context } from '.keystone/types'
+import {
+  type TypeInfo,
+} from '.keystone/types'
 
-function withContext<F extends (req: Request, res: Response, context: Context) => void>(
-  commonContext: Context,
-  f: F
-) {
-  return async (req: Request, res: Response) => {
-    return f(req, res, await commonContext.withRequest(req, res))
-  }
-}
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
 
 export default config<TypeInfo>({
   db: {
@@ -24,18 +19,64 @@ export default config<TypeInfo>({
     ...fixPrismaPath,
   },
   server: {
-    /*
-      This is the main part of this example. Here we include a function that
-      takes the express app Keystone created, and does two things:
-      - Adds a middleware function that will run on requests matching our REST
-        API routes, to get a keystone context on `req`. This means we don't
-        need to put our route handlers in a closure and repeat it for each.
-      - Adds a GET handler for tasks, which will query for tasks in the
-        Keystone schema and return the results as JSON
-    */
     extendExpressApp: (app, commonContext) => {
-      app.get('/rest/tasks', withContext(commonContext, getTasks))
-      // app.put('/rest/tasks', withContext(commonContext, putTask));
+      // this example HTTP GET handler retrieves any posts in the database for your context
+      //   with an optional request query parameter of `draft=1`
+      //   returning them as JSON
+      //
+      // e.g
+      //   http://localhost:3000/rest/posts
+      //   http://localhost:3000/rest/posts?draft=1
+      //
+      app.get('/rest/posts', async (req, res) => {
+        const context = await commonContext.withRequest(req, res)
+        // if (!context.session) return res.status(401).end()
+
+        const isDraft = req.query?.draft === '1'
+        const tasks = await context.query.Post.findMany({
+          where: {
+            draft: {
+              equals: isDraft
+            },
+          },
+          query: `
+            id
+            title
+            content
+          `,
+        })
+
+        res.json(tasks)
+      })
+    },
+
+    extendHttpServer: (server, commonContext) => {
+      // e.g
+      //   http://localhost:3000/rest/posts/clu7x6ch90002a89s6l63bjb5
+      //
+      server.on('request', async (req, res) => {
+        if (!req.url?.startsWith('/rest/posts/')) return
+
+        // this example HTTP GET handler retrieves a post in the database for your context
+        //   returning it as JSON
+        const context = await commonContext.withRequest(req, res)
+        // if (!context.session) return res.status(401).end()
+
+        const task = await context.query.Post.findOne({
+          where: {
+            id: req.url.slice('/rest/posts/'.length)
+          },
+          query: `
+            id
+            title
+            content
+            draft
+          `,
+        })
+
+        if (!task) return res.writeHead(404).end()
+        res.writeHead(200).end(JSON.stringify(task))
+      })
     },
   },
   lists,
