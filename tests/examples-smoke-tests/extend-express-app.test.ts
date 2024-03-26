@@ -11,11 +11,11 @@ exampleProjectTests('extend-express-app', browserType => {
     await loadIndex(page)
   })
   test('Load list', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')])
-    await page.waitForSelector('a:has-text("Create Person")')
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Posts")')])
+    await page.waitForSelector('a:has-text("Create Post")')
   })
-  test('Get Tasks', async () => {
-    const tasks = await fetch('http://localhost:3000/rest/tasks', {
+  test('Get Posts', async () => {
+    const tasks = await fetch('http://localhost:3000/rest/posts', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
