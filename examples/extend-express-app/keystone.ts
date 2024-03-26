@@ -23,6 +23,11 @@ export default config<TypeInfo>({
       // this example HTTP GET handler retrieves any posts in the database for your context
       //   with an optional request query parameter of `draft=1`
       //   returning them as JSON
+      //
+      // e.g
+      //   http://localhost:3000/rest/posts
+      //   http://localhost:3000/rest/posts?draft=1
+      //
       app.get('/rest/posts', async (req, res) => {
         const context = await commonContext.withRequest(req, res)
         // if (!context.session) return res.status(401).end()
@@ -46,6 +51,9 @@ export default config<TypeInfo>({
     },
 
     extendHttpServer: (server, commonContext) => {
+      // e.g
+      //   http://localhost:3000/rest/posts/clu7x6ch90002a89s6l63bjb5
+      //
       server.on('request', async (req, res) => {
         if (!req.url?.startsWith('/rest/posts/')) return
 
