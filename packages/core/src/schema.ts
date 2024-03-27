@@ -15,7 +15,7 @@ export function group<ListTypeInfo extends BaseListTypeInfo> (config: {
   label: string
   description?: string
   fields: BaseFields<ListTypeInfo>
-}): BaseFields<ListTypeInfo> {
+}) {
   const keys = Object.keys(config.fields)
   if (keys.some(key => key.startsWith('__group'))) {
     throw new Error('groups cannot be nested')
@@ -28,9 +28,9 @@ export function group<ListTypeInfo extends BaseListTypeInfo> (config: {
       description: config.description ?? null,
     },
     ...config.fields,
-  } as any // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
+  } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
-export function list<ListTypeInfo extends BaseListTypeInfo> (config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
+export function list<ListTypeInfo extends BaseListTypeInfo> (config: ListConfig<ListTypeInfo>) {
   return { ...config }
 }

@@ -71,16 +71,14 @@ export function createContext ({
     res?: ServerResponse
   }) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
-    const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
+    const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query)
-      return Promise.resolve(
-        graphql({
-          schema,
-          source,
-          contextValue: context,
-          variableValues: variables,
-        }) as ExecutionResult<any>
-      )
+      return await graphql({
+        schema,
+        source,
+        contextValue: context,
+        variableValues: variables,
+      }) as ExecutionResult<any>
     }
 
     const runGraphQL: KeystoneGraphQLAPI['run'] = async ({ query, variables }) => {
