@@ -194,14 +194,6 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number
 
-  /** @deprecated */
-  healthCheck?:
-    | true
-    | {
-        path?: string
-        data?: Record<string, any> | (() => Record<string, any>)
-      }
-
   /** extend the Express application used by Keystone */
   extendExpressApp?: (
     app: express.Express,
