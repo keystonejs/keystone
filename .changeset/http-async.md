@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Add `async` to `extendHttpServer`, for `await` on startup
+Add `async` to `extendHttpServer`, to support `await` on startup

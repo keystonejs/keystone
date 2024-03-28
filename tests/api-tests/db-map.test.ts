@@ -2,6 +2,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 import globby from 'globby'
+
 import { dbProvider, getPrismaSchema } from './utils'
 
 test('db.map at the list level adds @@map with the value to the Prisma schema', async () => {

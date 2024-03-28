@@ -10,7 +10,6 @@
   "devDependencies": {
     "@apollo/cache-control-types": "^1.0.2",
     "@hapi/iron": "^7.0.0",
-    "@keystone-6/api-tests": "workspace:*",
     "@keystone-6/auth": "workspace:*",
     "@keystone-6/core": "workspace:*",
     "@keystone-6/fields-document": "workspace:*",

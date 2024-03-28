@@ -1,9 +1,11 @@
 import { randomBytes } from 'node:crypto'
+
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { validate as isUuid } from 'uuid'
+
+import { setupTestRunner } from './test-runner'
 import { dbProvider, expectBadUserInput } from './utils'
 
 export function assertNever (arg: never) {

@@ -1,7 +1,8 @@
 import { text, relationship, integer } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+
+import { setupTestRunner } from '../test-runner'
 import {
   expectAccessReturnError,
   expectBadUserInput,
