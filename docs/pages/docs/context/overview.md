@@ -49,9 +49,6 @@ context = {
     getDataFromRef,
     getDataFromStream,
   },
-
-  // Deprecated
-  gqlNames,
 };
 ```
 
