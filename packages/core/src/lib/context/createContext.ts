@@ -9,9 +9,9 @@ import {
   print
 } from 'graphql'
 import {
-  type KeystoneConfig,
   type KeystoneContext,
   type KeystoneGraphQLAPI,
+  type __ResolvedKeystoneConfig,
 } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'
@@ -27,7 +27,7 @@ export function createContext ({
   prismaClient,
   prismaTypes
 }: {
-  config: KeystoneConfig
+  config: __ResolvedKeystoneConfig
   lists: Record<string, InitialisedList>
   graphQLSchema: GraphQLSchema
   graphQLSchemaSudo: GraphQLSchema

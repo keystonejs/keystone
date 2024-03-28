@@ -1,13 +1,11 @@
 import fs from 'node:fs/promises'
-import type { ListenOptions } from 'node:net'
 import next from 'next'
-import { createSystem } from '../system'
+import { createSystem } from '../lib/createSystem'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import {
   getBuiltKeystoneConfigurationPath,
   getBuiltKeystoneConfiguration,
-  getSystemPaths,
 } from '../artifacts'
 import { deployMigrations } from '../lib/migrations'
 import { ExitError } from './utils'
@@ -28,41 +26,33 @@ export async function start (
     throw new ExitError(1)
   }
 
-  const config = getBuiltKeystoneConfiguration(cwd)
-  const paths = getSystemPaths(cwd, config)
-  const { getKeystone } = createSystem(config)
+  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
+  const paths = system.getPaths(cwd)
   const prismaClient = require(paths.prisma)
-  const keystone = getKeystone(prismaClient)
+  const keystone = system.getKeystone(prismaClient)
 
   if (withMigrations) {
     console.log('✨ Applying database migrations')
-    await deployMigrations(paths.schema.prisma, config.db.url)
+    await deployMigrations(paths.schema.prisma, system.config.db.url)
   }
 
   console.log('✨ Connecting to the database')
   await keystone.connect()
 
   console.log('✨ Creating server')
-  const { expressServer, httpServer } = await createExpressServer(config, keystone.context)
+  const { expressServer, httpServer } = await createExpressServer(system.config, keystone.context)
 
   console.log(`✅ GraphQL API ready`)
-  if (!config.ui?.isDisabled && ui) {
+  if (!system.config.ui?.isDisabled && ui) {
     console.log('✨ Preparing Admin UI Next.js app')
     const nextApp = next({ dev: false, dir: paths.admin })
     await nextApp.prepare()
 
-    expressServer.use(await createAdminUIMiddlewareWithNextApp(config, keystone.context, nextApp))
+    expressServer.use(await createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp))
     console.log(`✅ Admin UI ready`)
   }
 
-  const httpOptions: ListenOptions = { port: 3000 }
-  if (config?.server && 'port' in config.server) {
-    httpOptions.port = config.server.port
-  }
-
-  if (config?.server && 'options' in config.server && config.server.options) {
-    Object.assign(httpOptions, config.server.options)
-  }
+  const httpOptions = system.config.server.options
 
   // prefer env.PORT
   if ('PORT' in process.env) {
@@ -74,16 +64,13 @@ export async function start (
     httpOptions.host = process.env.HOST || ''
   }
 
-  httpServer.listen(httpOptions, (err?: any) => {
+  httpServer.listen(system.config.server.options, (err?: any) => {
     if (err) throw err
 
     const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host)
       ? 'localhost'
       : httpOptions.host
-    console.log(
-      `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${
-        httpOptions.port
-      }/)`
-    )
+
+    console.log(`⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`)
   })
 }

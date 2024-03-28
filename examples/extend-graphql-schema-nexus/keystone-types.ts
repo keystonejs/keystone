@@ -220,7 +220,6 @@ type ResolvedPostCreateInput = {
   publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate']
   author?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['author']
 }
-
 type ResolvedPostUpdateInput = {
   id?: undefined
   title?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['title']
@@ -229,13 +228,11 @@ type ResolvedPostUpdateInput = {
   publishDate?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['publishDate']
   author?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['author']
 }
-
 type ResolvedAuthorCreateInput = {
   id?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['id']
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['name']
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['posts']
 }
-
 type ResolvedAuthorUpdateInput = {
   id?: undefined
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['name']

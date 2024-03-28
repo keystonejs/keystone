@@ -7,14 +7,13 @@ import type { GraphQLSchema } from 'graphql'
 import type { Options as BodyParserOptions } from 'body-parser'
 
 import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
-
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
-import type {
-  ListConfig,
-  MaybeSessionFunction,
-  MaybeItemFunction,
-  IdFieldConfig,
+import {
+  type IdFieldConfig,
+  type ListConfig,
+  type MaybeItemFunction,
+  type MaybeSessionFunction,
 } from './lists'
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
@@ -89,19 +88,128 @@ export type StorageConfig = (
         | 'bucket-owner-read'
         | 'bucket-owner-full-control'
     }
-) &
-  FileOrImage
+) & FileOrImage
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  db: DatabaseConfig<TypeInfo>
-  graphql?: GraphQLConfig<TypeInfo>
-  lists: Record<string, ListConfig<any>>
-  server?: ServerConfig<TypeInfo>
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>
   types?: {
-    path?: string
+    path: string
   }
 
+  db: {
+    provider: DatabaseProvider
+    url: string
+
+    shadowDatabaseUrl?: string
+    onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>
+    enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
+    idField?: IdFieldConfig
+    prismaClientPath?: string
+    prismaSchemaPath?: string
+
+    extendPrismaSchema?: (schema: string) => string
+
+    /** @deprecated TODO: remove in breaking change */
+    useMigrations?: boolean
+  }
+
+  graphql?: {
+    // The path of the GraphQL API endpoint. Default: '/api/graphql'.
+    path?: string
+    // The CORS configuration to use on the GraphQL API endpoint.
+    // Default: { origin: 'https://studio.apollographql.com', credentials: true }
+    cors?: CorsOptions
+    bodyParser?: BodyParserOptions
+    /**
+    * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
+    * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
+    * - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
+    * @default process.env.NODE_ENV !== 'production'
+    */
+    playground?: boolean | 'apollo'
+    /**
+    *  Additional options to pass into the ApolloServer constructor.
+    *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+    */
+    apolloConfig?: Partial<ApolloServerOptions<KeystoneContext<TypeInfo>>>
+    /**
+    * When an error is returned from the GraphQL API, Apollo can include a stacktrace
+    * indicating where the error occurred. When Keystone is processing mutations, it
+    * will sometimes captures more than one error at a time, and then group these into
+    * a single error returned from the GraphQL API. Each of these errors will include
+    * a stacktrace.
+    *
+    * In general both categories of stacktrace are useful for debugging while developing,
+    * but should not be exposed in production, and this is the default behaviour of Keystone.
+    *
+    * You can use the `debug` option to change this behaviour. A use case for this
+    * would be if you need to send the stacktraces to a log, but do not want to return them
+    * from the API. In this case you could set `debug: true` and use
+    * `apolloConfig.formatError` to log the stacktraces and then strip them out before
+    * returning the error.
+    *
+    * ```ts
+    * graphql: {
+    *   debug: true,
+    *   apolloConfig: {
+    *     formatError: err => {
+    *       console.error(err)
+    *       delete err.extensions?.errors
+    *       delete err.extensions?.exception?.errors
+    *       delete err.extensions?.exception?.stacktrace
+    *       return err
+    *     },
+    *   },
+    * }
+    * ```
+    *
+    * @default process.env.NODE_ENV !== 'production'
+    */
+    debug?: boolean
+
+    /**
+    * The path to GraphQL schema
+    * @default 'schema.graphql'
+    */
+    schemaPath?: string
+
+    /**
+    * A function that receives the Keystone GraphQL schema for the developer to extend
+    * @default 'schema.graphql'
+    */
+    extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
+  }
+
+  lists: Record<string, ListConfig<any>>
+  server?: {
+    /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
+    cors?: boolean | CorsOptions
+
+    /** Maximum upload file size allowed (in bytes) */
+    maxFileSize?: number
+
+    /** extend the Express application used by Keystone */
+    extendExpressApp?: (
+      app: express.Express,
+      context: KeystoneContext<TypeInfo>
+    ) => MaybePromise<void>
+
+    /** extend the node:http server used by Keystone */
+    extendHttpServer?: (
+      server: Server,
+      context: KeystoneContext<TypeInfo>,
+    ) => MaybePromise<void>
+  } & (
+    | {
+        /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
+        port?: number
+      }
+    | {
+        /** node http.Server options */
+        options?: ListenOptions
+      }
+  )
+
+  session?: SessionStrategy<TypeInfo['session'], TypeInfo>
   /** An object containing configuration about keystone's various external storages.
    *
    * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
@@ -110,17 +218,54 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
    * as the `storage` option for that field.
    */
   storage?: Record<string, StorageConfig>
+
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
 
-  ui?: AdminUIConfig<TypeInfo>
+  ui?: {
+    /** Completely disables the Admin UI */
+    isDisabled?: boolean
+
+    /** A function that can be run to validate that the current session should have access to the Admin UI */
+    isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>
+
+    /** An array of page routes that bypass the isAccessAllowed function */
+    publicPages?: readonly string[]
+
+    /** The Base Path for Keystones Admin UI */
+    basePath?: string
+
+    getAdditionalFiles?: readonly (() => MaybePromise<readonly AdminFileToWrite[]>)[]
+
+    /** An async middleware function that can optionally return a redirect */
+    pageMiddleware?: (args: {
+      context: KeystoneContext<TypeInfo>
+      wasAccessAllowed: boolean
+      basePath: string
+    }) => MaybePromise<{ kind: 'redirect', to: string } | void>
+  }
 }
 
-// config.lists
+export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+  types: KeystoneConfig<TypeInfo>['types']
+  db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
+    enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
+  }
+  graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
+    path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
+  },
+  lists: KeystoneConfig<TypeInfo>['lists']
+  server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
+    cors: CorsOptions | null
+    options: ListenOptions
+  }
+  session: KeystoneConfig<TypeInfo>['session']
+  storage: NonNullable<KeystoneConfig<TypeInfo>['storage']>
+  telemetry: boolean
+  ui: NonNullable<Required<KeystoneConfig<TypeInfo>['ui']>>
+}
 
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
-
-// config.db
 
 // Copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`,
 // because they are not exported by Prisma.
@@ -130,149 +275,9 @@ type PrismaLogDefinition = {
   emit: 'stdout' | 'event'
 }
 
-export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
-  provider: DatabaseProvider
-  url: string
-
-  shadowDatabaseUrl?: string
-  onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>
-  enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
-  idField?: IdFieldConfig
-  prismaClientPath?: string
-  prismaSchemaPath?: string
-
-  extendPrismaSchema?: (schema: string) => string
-
-  /** @deprecated */
-  useMigrations?: boolean
-}
-
-// config.ui
-
-export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
-  /** Completely disables the Admin UI */
-  isDisabled?: boolean
-
-  /** A function that can be run to validate that the current session should have access to the Admin UI */
-  isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>
-
-  /** An array of page routes that bypass the isAccessAllowed function */
-  publicPages?: readonly string[]
-
-  /** The Base Path for Keystones Admin UI */
-  basePath?: string
-
-  getAdditionalFiles?: readonly (() => MaybePromise<readonly AdminFileToWrite[]>)[]
-
-  /** An async middleware function that can optionally return a redirect */
-  pageMiddleware?: (args: {
-    context: KeystoneContext<TypeInfo>
-    wasAccessAllowed: boolean
-    basePath: string
-  }) => MaybePromise<{ kind: 'redirect', to: string } | void>
-}
-
 export type AdminFileToWrite =
   | { mode: 'write', src: string, outputPath: string }
   | { mode: 'copy', inputPath: string, outputPath: string }
-
-// config.server
-export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
-  /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
-  cors?: boolean | CorsOptions
-  /** Maximum upload file size allowed (in bytes) */
-  maxFileSize?: number
-
-  /** extend the Express application used by Keystone */
-  extendExpressApp?: (
-    app: express.Express,
-    context: KeystoneContext<TypeInfo>
-  ) => MaybePromise<void>
-
-  /** extend the node:http server used by Keystone */
-  extendHttpServer?: (
-    server: Server,
-    context: KeystoneContext<TypeInfo>,
-  ) => MaybePromise<void>
-} & (
-  | {
-      /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
-      port?: number
-    }
-  | {
-      /** node http.Server options */
-      options?: ListenOptions
-    }
-)
-
-// config.graphql
-
-export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  // The path of the GraphQL API endpoint. Default: '/api/graphql'.
-  path?: string
-  // The CORS configuration to use on the GraphQL API endpoint.
-  // Default: { origin: 'https://studio.apollographql.com', credentials: true }
-  cors?: CorsOptions
-  bodyParser?: BodyParserOptions
-  /**
-   * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
-   * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
-   * - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
-   * @default process.env.NODE_ENV !== 'production'
-   */
-  playground?: boolean | 'apollo'
-  /**
-   *  Additional options to pass into the ApolloServer constructor.
-   *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
-   */
-  apolloConfig?: Partial<ApolloServerOptions<KeystoneContext<TypeInfo>>>
-  /**
-   * When an error is returned from the GraphQL API, Apollo can include a stacktrace
-   * indicating where the error occurred. When Keystone is processing mutations, it
-   * will sometimes captures more than one error at a time, and then group these into
-   * a single error returned from the GraphQL API. Each of these errors will include
-   * a stacktrace.
-   *
-   * In general both categories of stacktrace are useful for debugging while developing,
-   * but should not be exposed in production, and this is the default behaviour of Keystone.
-   *
-   * You can use the `debug` option to change this behaviour. A use case for this
-   * would be if you need to send the stacktraces to a log, but do not want to return them
-   * from the API. In this case you could set `debug: true` and use
-   * `apolloConfig.formatError` to log the stacktraces and then strip them out before
-   * returning the error.
-   *
-   * ```ts
-   * graphql: {
-   *   debug: true,
-   *   apolloConfig: {
-   *     formatError: err => {
-   *       console.error(err)
-   *       delete err.extensions?.errors
-   *       delete err.extensions?.exception?.errors
-   *       delete err.extensions?.exception?.stacktrace
-   *       return err
-   *     },
-   *   },
-   * }
-   * ```
-   *
-   * @default process.env.NODE_ENV !== 'production'
-   */
-  debug?: boolean
-
-  /**
-   * The path to GraphQL schema
-   * @default 'schema.graphql'
-   */
-  schemaPath?: string
-
-  /**
-   * A function that receives the Keystone GraphQL schema for the developer to extend
-   * @default 'schema.graphql'
-   */
-  extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
-}
 
 export type FilesConfig = {
   upload: AssetMode
@@ -307,10 +312,7 @@ export type ImagesConfig = {
   }
 }
 
-// Exports from sibling packages
-
 export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }
-
 export type {
   FieldCreateItemAccessArgs,
   FieldReadItemAccessArgs,

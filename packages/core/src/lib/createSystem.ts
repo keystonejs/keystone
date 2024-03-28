@@ -1,17 +1,28 @@
 import { randomBytes } from 'node:crypto'
+import { dirname } from 'node:path'
+import fs from 'node:fs/promises'
 import {
+  type KeystoneConfig,
   type FieldData,
-  type KeystoneConfig
+  type __ResolvedKeystoneConfig
 } from '../types'
 import { GraphQLError } from 'graphql'
 
 import { allowAll } from '../access'
+import { resolveDefaults } from './defaults'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
+import { printGeneratedTypes } from './typescript-schema-printer'
+import {
+  getCommittedArtifacts,
+  getSystemPaths,
+  generatePrismaClient,
+  validatePrismaAndGraphQLSchemas,
+} from '../artifacts'
 
-function getSudoGraphQLSchema (config: KeystoneConfig) {
+function getSudoGraphQLSchema (config: __ResolvedKeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
   //  * All list level access control is disabled
@@ -23,7 +34,7 @@ function getSudoGraphQLSchema (config: KeystoneConfig) {
   // operations that can be run.
   //
   // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
-  const transformedConfig: KeystoneConfig = {
+  const transformedConfig: __ResolvedKeystoneConfig = {
     ...config,
     ui: {
       ...config.ui,
@@ -128,7 +139,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
   return prismaClient
 }
 
-function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
+function formatUrl (provider: __ResolvedKeystoneConfig['db']['provider'], url: string) {
   if (url.startsWith('file:')) {
     const parsed = new URL(url)
     if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
@@ -145,15 +156,53 @@ function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
   return url
 }
 
-export function createSystem (config: KeystoneConfig) {
+export function createSystem (config_: KeystoneConfig) {
+  const config = resolveDefaults(config_)
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)
   const graphQLSchemaSudo = getSudoGraphQLSchema(config)
 
   return {
+    config,
     graphQLSchema,
     adminMeta,
+    lists,
+
+    getArtifacts: async () => {
+      return await getCommittedArtifacts(config, graphQLSchema)
+    },
+
+    generateArtifacts: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const artifacts = await getCommittedArtifacts(config, graphQLSchema)
+
+      await fs.writeFile(paths.schema.graphql, artifacts.graphql)
+      await fs.writeFile(paths.schema.prisma, artifacts.prisma)
+      return artifacts
+    },
+
+    generatePrismaClient: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const dataProxy = config.db.url.startsWith('prisma:')
+      return await generatePrismaClient(paths.schema.prisma, dataProxy)
+    },
+
+    generateTypes: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const schema = printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
+      await fs.mkdir(dirname(paths.schema.types), { recursive: true })
+      await fs.writeFile(paths.schema.types, schema)
+    },
+
+    validateArtifacts: async (cwd: string) => {
+      return await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
+    },
+
+    getPaths: (cwd: string) => {
+      return getSystemPaths(cwd, config)
+    },
+
     getKeystone: (PM: any) => {
       const prePrismaClient = new PM.PrismaClient({
         datasources: {
@@ -161,16 +210,10 @@ export function createSystem (config: KeystoneConfig) {
             url: formatUrl(config.db.provider, config.db.url)
           }
         },
-        log:
-          config.db.enableLogging === true
-            ? ['query']
-            : config.db.enableLogging === false
-            ? undefined
-            : config.db.enableLogging,
+        log: config.db.enableLogging
       })
 
       const prismaClient = injectNewDefaults(prePrismaClient, lists)
-
       const context = createContext({
         config,
         lists,

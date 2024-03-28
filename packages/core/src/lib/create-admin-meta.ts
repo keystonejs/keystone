@@ -1,12 +1,12 @@
 import path from 'path'
 import type {
-  KeystoneConfig,
+  BaseListTypeInfo,
+  JSONValue,
+  KeystoneContext,
+  MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
-  BaseListTypeInfo,
-  KeystoneContext,
-  JSONValue,
-  MaybeItemFunction,
+  __ResolvedKeystoneConfig,
 } from '../types'
 import type { FilterOrderArgs } from '../types/config/fields'
 
@@ -82,7 +82,7 @@ export type AdminMetaRootVal = {
 }
 
 export function createAdminMeta (
-  config: KeystoneConfig,
+  config: __ResolvedKeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
   const { lists } = config

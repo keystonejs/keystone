@@ -106,9 +106,9 @@ export type ScalarDBField<
   kind: 'scalar'
   scalar: Scalar
   mode: Mode
-  default?: ScalarDBFieldDefault<Scalar, Mode>
+  default?: ScalarDBFieldDefault<Scalar, Mode> | undefined
   extendPrismaSchema?: (field: string) => string
-  index?: 'unique' | 'index'
+  index?: 'unique' | 'index' | undefined
 
   map?: string
   nativeType?: string

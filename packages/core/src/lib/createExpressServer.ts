@@ -12,9 +12,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import {
-  type GraphQLConfig,
-  type KeystoneConfig,
   type KeystoneContext,
+  type __ResolvedKeystoneConfig,
 } from '../types'
 
 /*
@@ -25,9 +24,9 @@ The Admin UI takes a while to build for dev, and is created separately
 so the CLI can bring up the dev server early to handle GraphQL requests.
 */
 
-function formatError (graphqlConfig: GraphQLConfig | undefined) {
+function formatError (graphqlConfig: __ResolvedKeystoneConfig['graphql']) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
-    let debug = graphqlConfig?.debug
+    let debug = graphqlConfig.debug
     if (debug === undefined) {
       debug = process.env.NODE_ENV !== 'production'
     }
@@ -38,7 +37,7 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
       delete formattedError.extensions.exception
     }
 
-    if (graphqlConfig?.apolloConfig?.formatError) {
+    if (graphqlConfig.apolloConfig?.formatError) {
       return graphqlConfig.apolloConfig.formatError(formattedError, error)
     }
 
@@ -47,7 +46,7 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
 }
 
 export async function createExpressServer (
-  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  config: Pick<__ResolvedKeystoneConfig, 'graphql' | 'server' | 'storage'>,
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
@@ -57,18 +56,12 @@ export async function createExpressServer (
   const expressServer = express()
   const httpServer = createServer(expressServer)
 
-  if (config.server?.cors) {
-    // TODO: remove default in breaking change, prefer resolveDefaults
-    const corsConfig =
-      config.server.cors === true
-        ? { origin: true, credentials: true }
-        : config.server.cors
-
-    expressServer.use(cors(corsConfig))
+  if (config.server.cors !== null) {
+    expressServer.use(cors(config.server.cors))
   }
 
-  await config.server?.extendExpressApp?.(expressServer, context)
-  await config.server?.extendHttpServer?.(httpServer, context)
+  await config.server.extendExpressApp(expressServer, context)
+  await config.server.extendHttpServer(httpServer, context)
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {
@@ -89,36 +82,32 @@ export async function createExpressServer (
     }
   }
 
-  const apolloConfig = config.graphql?.apolloConfig
-
-  // TODO: remove default in breaking change, prefer resolveDefaults
-  const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production'
+  const apolloConfig = config.graphql.apolloConfig
   const serverConfig = {
     formatError: formatError(config.graphql),
-    includeStacktraceInErrorResponses: config.graphql?.debug,
+    includeStacktraceInErrorResponses: config.graphql.debug,
     ...apolloConfig,
 
     schema: context.graphql.schema,
     plugins:
-      playgroundOption === 'apollo'
+      config.graphql.playground === 'apollo'
         ? apolloConfig?.plugins
         : [
-            playgroundOption
-              ? ApolloServerPluginLandingPageLocalDefault()
-              : ApolloServerPluginLandingPageDisabled(),
+           config.graphql.playground
+             ? ApolloServerPluginLandingPageLocalDefault()
+             : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins ?? []),
           ],
-  } as ApolloServerOptions<KeystoneContext>
+  } as ApolloServerOptions<KeystoneContext> // TODO: satisfies
 
   const apolloServer = new ApolloServer({ ...serverConfig })
-  const maxFileSize = config.server?.maxFileSize
+  const maxFileSize = config.server.maxFileSize
 
   expressServer.use(graphqlUploadExpress({ maxFileSize }))
   await apolloServer.start()
   expressServer.use(
-    // TODO: remove default in breaking change, prefer resolveDefaults
-    config.graphql?.path ?? '/api/graphql',
-    json(config.graphql?.bodyParser),
+    config.graphql.path,
+    json(config.graphql.bodyParser),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
         return await context.withRequest(req, res)

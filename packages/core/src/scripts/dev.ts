@@ -5,7 +5,7 @@ import url from 'node:url'
 import { createServer } from 'node:http'
 import next from 'next'
 import express from 'express'
-import { GraphQLSchema, printSchema } from 'graphql'
+import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations'
@@ -15,17 +15,11 @@ import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runTelemetry } from '../lib/telemetry'
 import {
-  generatePrismaAndGraphQLSchemas,
-  generateTypescriptTypesAndPrisma,
-  generateTypescriptTypes,
   getFormattedGraphQLSchema,
   getBuiltKeystoneConfiguration,
-  getSystemPaths,
 } from '../artifacts'
 import type { KeystoneConfig } from '../types'
-import { initialiseLists } from '../lib/core/initialise-lists'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
-import type { AdminMetaRootVal } from '../lib/create-admin-meta'
 import { pkgDir } from '../pkg-dir'
 import { ExitError } from './utils'
 import type { Flags } from './cli'
@@ -91,16 +85,6 @@ export async function dev (
 
   esbuildContext.watch()
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const app = server ? express() : null
-  const httpServer = app ? createServer(app) : null
-  let expressServer: express.Express | null = null
-  let hasAddedAdminUIMiddleware = false
-  const configWithExtendHttp = getBuiltKeystoneConfiguration(cwd)
-  const config = stripExtendHttpServer(configWithExtendHttp)
-  const paths = getSystemPaths(cwd, config)
-  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware)
-
   let prismaClient: any = null
   async function stop (aHttpServer: any, exit = false) {
     await esbuildContext.dispose()
@@ -131,22 +115,92 @@ export async function dev (
 
     if (exit) throw new ExitError(1)
   }
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const app = server ? express() : null
+  const httpServer = app ? createServer(app) : null
+  let expressServer: express.Express | null = null
+  let hasAddedAdminUIMiddleware = false
+  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware)
 
   const initKeystone = async () => {
-    await fsp.rm(paths.admin, { recursive: true, force: true })
+    const configWithExtendHttp = getBuiltKeystoneConfiguration(cwd)
     const {
-      adminMeta,
-      graphQLSchema,
+      system,
       context,
       prismaSchema,
       prismaClientModule,
       apolloServer,
       ...rest
-    } = await setupInitialKeystone(cwd, config, {
-      server,
-      prisma,
-      dbPush,
-    })
+    } = await (async function () {
+      const system = createSystem(stripExtendHttpServer(configWithExtendHttp))
+      const paths = system.getPaths(cwd)
+
+      // mkdir's for local storage
+      for (const val of Object.values(system.config.storage)) {
+        if (val.kind !== 'local') continue
+
+        await fsp.mkdir(val.storagePath, { recursive: true })
+        console.warn(`WARNING: 'mkdir -p ${val.storagePath}' won't happen in production`)
+      }
+
+      // Generate the Artifacts
+      if (prisma) {
+        console.log('✨ Generating GraphQL and Prisma schemas')
+        const prismaSchema = (await system.generateArtifacts(cwd)).prisma
+        await system.generateTypes(cwd)
+        await system.generatePrismaClient(cwd)
+
+        if (system.config.db.useMigrations) {
+          await devMigrations(
+            system.config.db.url,
+            system.config.db.shadowDatabaseUrl,
+            prismaSchema,
+            paths.schema.prisma,
+            false
+          )
+        } else if (dbPush) {
+          await pushPrismaSchemaToDatabase(
+            system.config.db.url,
+            system.config.db.shadowDatabaseUrl,
+            prismaSchema,
+            paths.schema.prisma,
+            false
+          )
+        } else {
+          console.warn('⚠️ Skipping database schema push')
+        }
+
+        const prismaClientModule = require(paths.prisma)
+        const keystone = system.getKeystone(prismaClientModule)
+
+        console.log('✨ Connecting to the database')
+        await keystone.connect() // TODO: remove, replace with server.onStart
+        if (!server) {
+          return {
+            system,
+            context: keystone.context,
+            prismaSchema,
+            prismaClientModule,
+          }
+        }
+
+        console.log('✨ Creating server')
+        const { apolloServer, expressServer } = await createExpressServer(system.config, keystone.context)
+        console.log(`✅ GraphQL API ready`)
+
+        return {
+          system,
+          context: keystone.context,
+          expressServer,
+          apolloServer,
+          prismaSchema,
+          prismaClientModule,
+        }
+      }
+      return {
+        system,
+      }
+    })()
 
     if (configWithExtendHttp?.server?.extendHttpServer && httpServer && context) {
       configWithExtendHttp.server.extendHttpServer(httpServer, context)
@@ -156,20 +210,34 @@ export async function dev (
     if (rest.expressServer) {
       ({ expressServer } = rest)
     }
-    const nextApp = await initAdminUI(cwd, config, graphQLSchema, adminMeta, ui)
+
+    let nextApp
+    if (!system.config.ui?.isDisabled && ui) {
+      const paths = system.getPaths(cwd)
+      await fsp.rm(paths.admin, { recursive: true, force: true })
+
+      console.log('✨ Generating Admin UI code')
+      await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
+
+      console.log('✨ Preparing Admin UI app')
+      nextApp = next({ dev: true, dir: paths.admin })
+      await nextApp.prepare()
+
+      console.log(`✅ Admin UI ready`)
+    }
+
     if (nextApp && expressServer && context) {
-      expressServer.use(createAdminUIMiddlewareWithNextApp(config, context, nextApp))
+      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
     }
     hasAddedAdminUIMiddleware = true
     initKeystonePromiseResolve()
 
-    const initialisedLists = initialiseLists(config)
-    const originalPrismaSchema = printPrismaSchema(config, initialisedLists)
-    let lastPrintedGraphQLSchema = printSchema(graphQLSchema)
+    const originalPrismaSchema = printPrismaSchema(system.config, system.lists)
+    let lastPrintedGraphQLSchema = printSchema(system.graphQLSchema)
     let lastApolloServer = apolloServer || null
 
-    if (config.telemetry !== false) {
-      runTelemetry(cwd, initialisedLists, config.db.provider)
+    if (system.config.telemetry !== false) {
+      runTelemetry(cwd, system.lists, system.config.db.provider)
     }
 
     for await (const buildResult of builds) {
@@ -177,6 +245,8 @@ export async function dev (
 
       console.log('compiled successfully')
       try {
+        const paths = system.getPaths(cwd)
+
         // wipe the require cache
         {
           const resolved = require.resolve(paths.config)
@@ -184,9 +254,10 @@ export async function dev (
         }
 
         const newConfigWithHttp = getBuiltKeystoneConfiguration(cwd)
-        const newConfig = stripExtendHttpServer(newConfigWithHttp)
+        const newSystem = createSystem(stripExtendHttpServer(newConfigWithHttp))
+
         if (prisma) {
-          const newPrismaSchema = printPrismaSchema(newConfig, initialiseLists(newConfig))
+          const newPrismaSchema = printPrismaSchema(newSystem.config, newSystem.lists)
           if (originalPrismaSchema !== newPrismaSchema) {
             console.error('🔄 Your prisma schema has changed, please restart Keystone')
             return stop(null, true)
@@ -194,22 +265,21 @@ export async function dev (
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            JSON.stringify(newConfig.db.enableLogging) !==
-              JSON.stringify(config.db.enableLogging) ||
-            newConfig.db.url !== config.db.url ||
-            newConfig.db.useMigrations !== config.db.useMigrations
+            JSON.stringify(newSystem.config.db.enableLogging) !==
+              JSON.stringify(system.config.db.enableLogging) ||
+            newSystem.config.db.url !== system.config.db.url ||
+            newSystem.config.db.useMigrations !== system.config.db.useMigrations
           ) {
             console.error('Your database configuration has changed, please restart Keystone')
             return stop(null, true)
           }
         }
 
-        const { getKeystone, graphQLSchema, adminMeta } = createSystem(newConfig)
         // we're not using generateCommittedArtifacts or any of the similar functions
         // because we will never need to write a new prisma schema here
         // and formatting the prisma schema leaves some listeners on the process
         // which means you get a "there's probably a memory leak" warning from node
-        const newPrintedGraphQLSchema = printSchema(graphQLSchema)
+        const newPrintedGraphQLSchema = printSchema(newSystem.graphQLSchema)
         if (newPrintedGraphQLSchema !== lastPrintedGraphQLSchema) {
           await fsp.writeFile(
             paths.schema.graphql,
@@ -218,16 +288,14 @@ export async function dev (
           lastPrintedGraphQLSchema = newPrintedGraphQLSchema
         }
 
-        await generateTypescriptTypes(cwd, newConfig, graphQLSchema)
-        await generateAdminUI(newConfig, graphQLSchema, adminMeta, paths.admin, true)
+        await newSystem.generateTypes(cwd)
+        await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, true)
         if (prismaClientModule) {
           if (server && lastApolloServer) {
-            const { context: newContext } = getKeystone(prismaClientModule)
-            const servers = await createExpressServer(newConfig, newContext)
+            const { context: newContext } = newSystem.getKeystone(prismaClientModule)
+            const servers = await createExpressServer(newSystem.config, newContext)
             if (nextApp) {
-              servers.expressServer.use(
-                createAdminUIMiddlewareWithNextApp(newConfig, newContext, nextApp)
-              )
+              servers.expressServer.use(createAdminUIMiddlewareWithNextApp(newSystem.config, newContext, nextApp))
             }
             expressServer = servers.expressServer
             let prevApolloServer = lastApolloServer
@@ -250,6 +318,8 @@ export async function dev (
   })
 
   if (app && httpServer) {
+    const config = getBuiltKeystoneConfiguration(cwd)
+
     app.use('/__keystone/dev/status', (req, res) => {
       res.status(isReady() ? 200 : 501).end()
     })
@@ -316,117 +386,4 @@ export async function dev (
     await initKeystone()
     return () => Promise.resolve()
   }
-}
-
-async function setupInitialKeystone (
-  cwd: string,
-  config: KeystoneConfig,
-  options: {
-    dbPush: boolean
-    prisma: boolean
-    server: boolean
-  }
-) {
-  const { dbPush, prisma, server } = options
-  const { graphQLSchema, adminMeta, getKeystone } = createSystem(config)
-
-  // mkdir's for local storage
-  for (const val of Object.values(config.storage || {})) {
-    if (val.kind !== 'local') continue
-
-    await fsp.mkdir(val.storagePath, { recursive: true })
-    console.warn(`WARNING: 'mkdir -p ${val.storagePath}' won't happen in production`)
-  }
-
-  const paths = getSystemPaths(cwd, config)
-
-  // Generate the Artifacts
-  if (prisma) {
-    console.log('✨ Generating GraphQL and Prisma schemas')
-    const prismaSchema = (await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)).prisma
-    const prismaClientGenerationPromise = generateTypescriptTypesAndPrisma(
-      cwd,
-      config,
-      graphQLSchema
-    )
-
-    if (config.db.useMigrations) {
-      await devMigrations(
-        config.db.url,
-        config.db.shadowDatabaseUrl,
-        prismaSchema,
-        paths.schema.prisma,
-        false
-      )
-    } else if (dbPush) {
-      await pushPrismaSchemaToDatabase(
-        config.db.url,
-        config.db.shadowDatabaseUrl,
-        prismaSchema,
-        paths.schema.prisma,
-        false
-      )
-    } else {
-      console.warn('⚠️ Skipping database schema push')
-    }
-
-    await prismaClientGenerationPromise
-    const prismaClientModule = require(paths.prisma)
-    const keystone = getKeystone(prismaClientModule)
-
-    console.log('✨ Connecting to the database')
-    await keystone.connect() // TODO: remove, replace with server.onStart
-    if (!server) {
-      return {
-        adminMeta,
-        graphQLSchema,
-        context: keystone.context,
-        prismaSchema,
-        prismaClientModule,
-      }
-    }
-
-    console.log('✨ Creating server')
-    const { apolloServer, expressServer } = await createExpressServer(
-      config,
-      keystone.context
-    )
-    console.log(`✅ GraphQL API ready`)
-
-    return {
-      adminMeta,
-      expressServer,
-      apolloServer,
-      graphQLSchema,
-      context: keystone.context,
-      prismaSchema,
-      prismaClientModule,
-    }
-  }
-  return {
-    adminMeta,
-    graphQLSchema,
-  }
-}
-
-async function initAdminUI (
-  cwd: string,
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
-  adminMeta: AdminMetaRootVal,
-  ui: boolean
-) {
-  if (config.ui?.isDisabled || !ui) return
-
-  const paths = getSystemPaths(cwd, config)
-
-  console.log('✨ Generating Admin UI code')
-  await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false)
-
-  console.log('✨ Preparing Admin UI app')
-  const nextApp = next({ dev: true, dir: paths.admin })
-  await nextApp.prepare()
-
-  console.log(`✅ Admin UI ready`)
-  return nextApp
 }
