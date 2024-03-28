@@ -1,41 +1,54 @@
-import { spawn } from 'node:child_process'
-import esbuild from 'esbuild'
-import { createSystem } from '../lib/createSystem'
+import { execFile } from 'node:child_process';
+import esbuild from 'esbuild';
+import { createSystem } from '../lib/createSystem';
 import {
   getBuiltKeystoneConfiguration,
   generateTypescriptTypesAndPrisma,
-  validatePrismaAndGraphQLSchemas,
-} from '../artifacts'
-import { getEsbuildConfig } from '../lib/esbuild'
-import { ExitError } from './utils'
+  generatePrismaAndGraphQLSchemas,
+  validatePrismaAndGraphQLSchemas
+} from '../artifacts';
+import { getEsbuildConfig } from '../lib/esbuild';
+import { ExitError } from './utils';
 
-export async function prisma (cwd: string, args: string[], frozen: boolean) {
+export async function prisma(cwd: string, args: string[], frozen: boolean) {
   if (frozen) {
-    args = args.filter(arg => arg !== '--frozen')
+    args = args.filter(arg => arg !== '--frozen');
   } else {
-    await esbuild.build(getEsbuildConfig(cwd))
+    await esbuild.build(getEsbuildConfig(cwd));
   }
 
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const config = getBuiltKeystoneConfiguration(cwd)
-  const { graphQLSchema } = createSystem(config)
-  await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
-  await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema)
+  const config = getBuiltKeystoneConfiguration(cwd);
+  const { graphQLSchema } = createSystem(config);
+
+  if (frozen) {
+    await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
+    console.log('✨ GraphQL and Prisma schemas are up to date');
+  } else {
+    await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema); // TODO: rename to generateSchemas (or similar)
+    console.log('✨ Generated GraphQL and Prisma schemas');
+    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema); // TODO: rename to generatePrismaClientAndTypes (or similar)
+  }
 
   return new Promise<void>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma'), ...args], {
-      cwd,
-      env: {
-        ...process.env,
-        DATABASE_URL: config.db.url,
-        PRISMA_HIDE_UPDATE_MESSAGE: '1',
+    const p = execFile(
+      'node',
+      [require.resolve('prisma'), ...args],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: config.db.url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
       },
-      stdio: 'inherit',
-    })
-    p.on('error', err => reject(err))
-    p.on('exit', code => {
-      if (code) return reject(new ExitError(code))
-      resolve()
-    })
-  })
+      err => {
+        if (err) return reject(new ExitError(Number(err?.code ?? -1)));
+        resolve();
+      }
+    );
+
+    p.stdout?.pipe(process.stdout);
+    p.stderr?.pipe(process.stderr);
+  });
 }

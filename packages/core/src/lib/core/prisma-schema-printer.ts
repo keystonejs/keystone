@@ -184,8 +184,6 @@ export function printPrismaSchema (
   const {
     prismaClientPath,
     provider,
-    prismaPreviewFeatures,
-    additionalPrismaDatasourceProperties,
     extendPrismaSchema: extendPrismaCompleteSchema
   } = config.db
 
@@ -197,19 +195,11 @@ export function printPrismaSchema (
     `  url = env("DATABASE_URL")`,
     `  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")`,
     `  provider = "${provider}"`,
-    ...function* () {
-      for (const [key, value] of Object.entries(additionalPrismaDatasourceProperties ?? {})) {
-        yield `  ${key} = "${value}"`
-      }
-    }(),
     `}`,
     ``,
     `generator client {`,
     `  provider = "prisma-client-js"`,
     ...(prismaClientPath === '@prisma/client' ? [] : [`  output = "${prismaClientPath}"`]),
-    ...(prismaPreviewFeatures?.length
-      ? [`  previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`]
-      : []),
     '}',
   ]
 

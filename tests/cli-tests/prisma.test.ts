@@ -15,7 +15,8 @@ test('keystone prisma exits with the same code as the prisma child process exits
     cwd: tmp,
   })
   expect(result.all!.replace(/[^ -~\n]/g, '?')).toMatchInlineSnapshot(`
-    "
+    "? Generated GraphQL and Prisma schemas
+
     ! Unknown command "bad-thing"
 
     ?  Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
@@ -33,7 +34,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
               studio   Browse your data with Prisma Studio
             validate   Validate your Prisma schema
               format   Format your Prisma schema
-    
+
     Flags
 
          --preview-feature   Run Preview Prisma commands
@@ -51,7 +52,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
 
       Create migrations from your Prisma schema, apply them to the database, generate artifacts (e.g. Prisma Client)
       $ prisma migrate dev
-      
+
       Pull the schema from an existing database, updating the Prisma schema
       $ prisma db pull
 
@@ -79,8 +80,9 @@ test('keystone prisma uses the db url in the keystone config', async () => {
     all: true,
     cwd: tmp,
   })
-  expect(result.all).toMatchInlineSnapshot(`
-    "Prisma schema loaded from schema.prisma
+  expect(result.all!.replace(/[^ -~\n]/g, '?')).toMatchInlineSnapshot(`
+    "? Generated GraphQL and Prisma schemas
+    Prisma schema loaded from schema.prisma
     Datasource "sqlite": SQLite database "app.db" at "file:./app.db"
     Error: P1003: Database app.db does not exist at ./app.db"
   `)

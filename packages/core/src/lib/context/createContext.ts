@@ -107,9 +107,6 @@ export function createContext ({
 
       sudo: () => construct({ session, sudo: true, req, res }),
 
-      // TODO: deprecated, remove in breaking change
-      exitSudo: () => construct({ session, sudo: false, req, res }),
-
       req,
       res,
       sessionStrategy: config.session,

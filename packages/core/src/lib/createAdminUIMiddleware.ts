@@ -3,20 +3,17 @@ import path from 'path'
 import type express from 'express'
 import type next from 'next'
 import {
-  type KeystoneConfig,
+  type ResolvedKeystoneConfig,
+} from '../system'
+import {
   type KeystoneContext
 } from '../types'
 import { pkgDir } from '../pkg-dir'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
-function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true
-  return session !== undefined
-}
-
 export function createAdminUIMiddlewareWithNextApp (
-  config: KeystoneConfig,
+  config: ResolvedKeystoneConfig,
   commonContext: KeystoneContext,
   nextApp: ReturnType<typeof next>
 ) {
@@ -24,8 +21,7 @@ export function createAdminUIMiddlewareWithNextApp (
 
   const {
     ui: {
-      // TODO: remove default in breaking change, prefer resolveDefaults
-      isAccessAllowed = defaultIsAccessAllowed,
+      isAccessAllowed,
       pageMiddleware,
       publicPages = [],
       basePath = '',

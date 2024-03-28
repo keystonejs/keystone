@@ -5,10 +5,10 @@ import { type BaseItem } from './next-fields'
 
 type GraphQLInput = Record<string, any>
 
-export type BaseListTypeInfo<Session = any> = {
+export type BaseListTypeInfo<Session = any, FieldKey extends string = keyof {}> = {
   key: string
   isSingleton: boolean
-  fields: string
+  fields: FieldKey
   item: BaseItem
   inputs: {
     create: GraphQLInput
@@ -22,8 +22,8 @@ export type BaseListTypeInfo<Session = any> = {
    * WARNING: may change in patch
    */
   prisma: {
-    create: Record<string, any>
-    update: Record<string, any>
+    create: Record<FieldKey, any>
+    update: Record<FieldKey, any>
   }
   all: BaseKeystoneTypeInfo<Session>
 }

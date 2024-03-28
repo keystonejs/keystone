@@ -9,22 +9,34 @@ import {
   testdir,
 } from './utils'
 
-describe.each(['postinstall', ['build', '--frozen'], ['prisma', 'migrate', 'status']])(
-  '%s',
-  command => {
-    test('logs an error and exits with 1 when the schemas do not exist', async () => {
-      const tmp = await testdir({
-        ...symlinkKeystoneDeps,
-        'keystone.js': basicKeystoneConfig,
-      })
-      const recording = recordConsole()
-      await expect(runCommand(tmp, command)).rejects.toEqual(new ExitError(1))
-      expect(recording()).toMatchInlineSnapshot(
-        `"Your Prisma and GraphQL schemas are not up to date"`
-      )
+describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
+  test('logs an error and exits with 1 when the schemas do not exist', async () => {
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'keystone.js': basicKeystoneConfig,
     })
-  }
-)
+
+    const recording = recordConsole()
+    await expect(runCommand(tmp, command)).rejects.toEqual(new ExitError(1))
+
+    expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
+  })
+})
+
+describe('prisma migrate status', () => {
+  test('logs an error and exits with 1 when the schemas do not exist', async () => {
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'keystone.js': basicKeystoneConfig,
+    })
+    await expect(runCommand(tmp, ['build', '--no-ui', '--frozen'])).rejects.toEqual(new ExitError(1))
+
+    const recording = recordConsole()
+    await expect(runCommand(tmp, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(new ExitError(1))
+
+    expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
+  })
+})
 
 const schemasMatch = ['schema.prisma', 'schema.graphql']
 
@@ -37,9 +49,11 @@ describe('postinstall', () => {
       ...symlinkKeystoneDeps,
       'keystone.js': basicKeystoneConfig,
     })
+
     const recording = recordConsole()
     await runCommand(tmp, ['postinstall', '--fix'])
     const files = await getFiles(tmp, schemasMatch)
+
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch))
     expect(recording()).toMatchInlineSnapshot(`"? Generated GraphQL and Prisma schemas"`)
   })
@@ -50,9 +64,11 @@ describe('postinstall', () => {
       ...schemas,
       'keystone.js': basicKeystoneConfig,
     })
+
     const recording = recordConsole()
     await runCommand(tmp, 'postinstall')
     const files = await getFiles(tmp, schemasMatch)
+
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch))
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
@@ -63,8 +79,10 @@ describe('postinstall', () => {
       ...schemas,
       'keystone.js': basicKeystoneConfig,
     })
+
     const recording = recordConsole()
     await runCommand(tmp, 'postinstall')
+
     expect(await getFiles(tmp, ['node_modules/.keystone/**/*'])).toMatchSnapshot()
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })

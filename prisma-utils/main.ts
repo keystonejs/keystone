@@ -124,7 +124,7 @@ function generateGQLType (scalar: Scalar, filter: DMMF.InputType, nesting: boole
 
 async function generate (provider: Provider) {
   const schema = getSchemaForProvider(provider)
-  const prismaFilterTypes = (await getDMMF({ datamodel: schema })).schema.inputObjectTypes.prisma
+  const prismaFilterTypes = (await getDMMF({ datamodel: schema })).schema.inputObjectTypes.prisma as DMMF.InputType[] // TODO: why...
 
   // for generation
   const filters = []

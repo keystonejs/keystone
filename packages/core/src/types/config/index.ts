@@ -96,7 +96,7 @@ export type StorageConfig = (
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>
   graphql?: GraphQLConfig<TypeInfo>
-  lists: ListSchemaConfig<TypeInfo['lists'][string]>
+  lists: Record<keyof TypeInfo['lists'], ListConfig<TypeInfo['lists'][keyof TypeInfo['lists']]>>
   ui?: AdminUIConfig<TypeInfo>
   server?: ServerConfig<TypeInfo>
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>
@@ -104,8 +104,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     path?: string
   }
 
-  // TODO: why isn't this within .graphql?
-  extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
   /** An object containing configuration about keystone's various external storages.
    *
    * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
@@ -154,10 +152,6 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 
   /** @deprecated */
   useMigrations?: boolean
-  /** @deprecated use extendPrismaSchema */
-  prismaPreviewFeatures?: readonly string[] // https://www.prisma.io/docs/concepts/components/preview-features
-  /** @deprecated use extendPrismaSchema */
-  additionalPrismaDatasourceProperties?: { [key: string]: string }
 }
 
 // config.ui
@@ -198,14 +192,6 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number
 
-  /** @deprecated */
-  healthCheck?:
-    | true
-    | {
-        path?: string
-        data?: Record<string, any> | (() => Record<string, any>)
-      }
-
   /** extend the Express application used by Keystone */
   extendExpressApp?: (
     app: express.Express,
@@ -216,8 +202,6 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   extendHttpServer?: (
     server: Server,
     context: KeystoneContext<TypeInfo>,
-    /** @deprecated, TODO: redundant, prefer context.graphql.schema, remove in breaking change */
-    graphqlSchema: GraphQLSchema
   ) => MaybePromise<void>
 } & (
   | {
@@ -272,11 +256,11 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    *   debug: true,
    *   apolloConfig: {
    *     formatError: err => {
-   *       console.error(err);
-   *       delete err.extensions?.errors;
-   *       delete err.extensions?.exception?.errors;
-   *       delete err.extensions?.exception?.stacktrace;
-   *       return err;
+   *       console.error(err)
+   *       delete err.extensions?.errors
+   *       delete err.extensions?.exception?.errors
+   *       delete err.extensions?.exception?.stacktrace
+   *       return err
    *     },
    *   },
    * }
@@ -291,10 +275,13 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    * @default 'schema.graphql'
    */
   schemaPath?: string
-}
 
-/** @deprecated */
-export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema
+  /**
+   * A function that receives the Keystone GraphQL schema for the developer to extend
+   * @default 'schema.graphql'
+   */
+  extendSchema?: (schema: GraphQLSchema) => GraphQLSchema
+}
 
 export type FilesConfig = {
   upload: AssetMode

@@ -37,7 +37,6 @@ context = {
 
   // New context creators
   sudo,
-  exitSudo,
   withSession,
   withRequest,
 
@@ -50,9 +49,6 @@ context = {
     getDataFromRef,
     getDataFromStream,
   },
-
-  // Deprecated
-  gqlNames,
 };
 ```
 

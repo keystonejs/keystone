@@ -1,5 +1,6 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
-import { createSystem, initConfig } from '@keystone-6/core/system'
+import { createSystem } from '../../../../packages/core/src/lib/createSystem'
+
 import type { ListSchemaConfig } from '@keystone-6/core/types'
 import { config, list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
@@ -12,20 +13,18 @@ function getSchema(field: {
   many?: boolean
 }) {
   return createSystem(
-    initConfig(
-      config({
-        db: { url: 'file:./thing.db', provider: 'sqlite' },
-        lists: {
-          Zip: list({ fields: { thing: text() }, access: allowAll }),
-          Test: list({
-            access: allowAll,
-            fields: {
-              [fieldKey]: relationship(field),
-            },
-          }),
-        },
-      })
-    )
+    config({
+      db: { url: 'file:./thing.db', provider: 'sqlite' },
+      lists: {
+        Zip: list({ fields: { thing: text() }, access: allowAll }),
+        Test: list({
+          access: allowAll,
+          fields: {
+            [fieldKey]: relationship(field),
+          },
+        }),
+      },
+    })
   ).graphQLSchema
 }
 
@@ -138,12 +137,10 @@ describe('Type Generation', () => {
 describe('Reference errors', () => {
   function tryf (lists: ListSchemaConfig) {
     return createSystem(
-      initConfig(
-        config({
-          db: { url: 'file:./thing.db', provider: 'sqlite' },
-          lists,
-        })
-      )
+      config({
+        db: { url: 'file:./thing.db', provider: 'sqlite' },
+        lists,
+      })
     ).graphQLSchema
   }
 

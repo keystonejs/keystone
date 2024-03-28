@@ -241,9 +241,9 @@ export type OrderByFieldInputArg<Val, TArg extends graphql.Arg<graphql.NullableI
   ) => MaybePromise<Val>
 >
 
-type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
+type FieldInputResolver<Input, Output, RelationshipInputResolver, ListTypeInfo extends BaseListTypeInfo> = (
   value: Input,
-  context: KeystoneContext,
+  context: KeystoneContext<ListTypeInfo['all']>,
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>
 
@@ -260,14 +260,15 @@ type DBFieldFilters<TDBField extends DBField> =
 
 export type WhereFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any>
+  TArg extends graphql.Arg<graphql.InputType, any>,
+  ListTypeInfo extends BaseListTypeInfo
 > = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
     Exclude<graphql.InferValueFromArg<TArg>, undefined>,
     DBFieldFilters<TDBField>,
-    any
+    any,
     // i think this is broken because variance?
     // TDBField extends RelationDBField<infer Mode>
     //   ? (
@@ -277,55 +278,64 @@ export type WhereFieldInputArg<
     //       }[Mode]
     //     ) => Promise<any>
     //   : undefined
+    ListTypeInfo
   >
 >
 
 export type UpdateFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any>
+  TArg extends graphql.Arg<graphql.InputType, any>,
+  ListTypeInfo extends BaseListTypeInfo
 > = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
     graphql.InferValueFromArg<TArg>,
     DBFieldToInputValue<TDBField>,
-    any
+    any,
     // i think this is broken because variance?
     // TDBField extends RelationDBField<infer Mode>
     //   ? (
     //       input: graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo'][Mode]['create']>>
     //     ) => Promise<any>
     //   : undefined
+    ListTypeInfo
   >
 >
 
-type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResolver<
+type CreateFieldInputResolver<
+  Input,
+  TDBField extends DBField,
+  ListTypeInfo extends BaseListTypeInfo
+> = FieldInputResolver<
   Input,
   DBFieldToInputValue<TDBField>,
-  any
+  any,
   // i think this is broken because variance?
   // TDBField extends RelationDBField<infer Mode>
   //   ? (
   //       input: graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo'][Mode]['create']>>
   //     ) => Promise<any>
   //   : undefined
+  ListTypeInfo
 >
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any> | undefined
+  TArg extends graphql.Arg<graphql.InputType, any> | undefined,
+  ListTypeInfo extends BaseListTypeInfo
 > = {
   arg: TArg
 } & (TArg extends graphql.Arg<graphql.InputType, any>
   ? graphql.InferValueFromArg<TArg> extends DBFieldToInputValue<TDBField>
     ? {
-        resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>
+        resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField, ListTypeInfo>
       }
     : {
-        resolve: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>
+        resolve: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField, ListTypeInfo>
       }
   : {
-      resolve: CreateFieldInputResolver<undefined, TDBField>
+      resolve: CreateFieldInputResolver<undefined, TDBField, ListTypeInfo>
     })
 
 type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T
@@ -381,9 +391,9 @@ export type FieldTypeWithoutDBField<
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>
-    where?: WhereFieldInputArg<TDBField, FilterArg>
-    create?: CreateFieldInputArg<TDBField, CreateArg>
-    update?: UpdateFieldInputArg<TDBField, UpdateArg>
+    where?: WhereFieldInputArg<TDBField, FilterArg, ListTypeInfo>
+    create?: CreateFieldInputArg<TDBField, CreateArg, ListTypeInfo>
+    update?: UpdateFieldInputArg<TDBField, UpdateArg, ListTypeInfo>
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>
   }
   output: FieldTypeOutputField<TDBField>

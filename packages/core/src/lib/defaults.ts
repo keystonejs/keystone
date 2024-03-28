@@ -1,20 +1,11 @@
-import type express from 'express'
-import next from 'next'
 import {
   type IdFieldConfig,
   type KeystoneConfig,
   type KeystoneContext
-} from './types'
-import { createAdminUIMiddlewareWithNextApp } from './lib/createAdminUIMiddleware'
+} from '../types'
 import {
   idFieldType
-} from './lib/id-field'
-
-/** @deprecated, TODO: remove in breaking change */
-export { createSystem } from './lib/createSystem'
-
-/** @deprecated, TODO: remove in breaking change */
-export { createExpressServer } from './lib/createExpressServer'
+} from '../lib/id-field'
 
 function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
   // some error checking
@@ -79,12 +70,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
   return session !== undefined
 }
 
-/** @deprecated, TODO: remove in breaking change */
-export function initConfig (config: KeystoneConfig): KeystoneConfig {
-  return resolveDefaults(config)
-}
-
-function resolveDefaults (config: KeystoneConfig) {
+export function resolveDefaults (config: KeystoneConfig) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -116,41 +102,29 @@ function resolveDefaults (config: KeystoneConfig) {
       path: '/api/graphql',
       playground: process.env.NODE_ENV !== 'production',
       schemaPath: 'schema.graphql',
+      extendSchema: config.graphql?.extendSchema ?? ((s) => s),
       ...config.graphql,
     },
     lists: injectDefaults(config, defaultIdField),
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
-      extendExpressApp: async () => {},
-      extendHttpServer: async () => {},
       ...config.server,
+      extendExpressApp: config?.server?.extendExpressApp ?? (async () => {}),
+      extendHttpServer: config?.server?.extendHttpServer ?? (async () => {}),
       cors,
     },
-    // TODO: remove in breaking change, move to .graphql.extendSchema
-    extendGraphqlSchema: config.extendGraphqlSchema ?? ((s) => s),
     storage: {
       ...config?.storage
     },
     telemetry: config?.telemetry ?? true,
     ui: {
-      isAccessAllowed: defaultIsAccessAllowed,
       pageMiddleware: async () => {},
       publicPages: [],
       basePath: '',
       ...config?.ui,
+      isAccessAllowed: config?.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
     },
-  } satisfies KeystoneConfig
+  }
 }
 
-/** @deprecated, TODO: remove in breaking change */
-export async function createAdminUIMiddleware (
-  config: KeystoneConfig,
-  context: KeystoneContext,
-  dev: boolean,
-  projectAdminPath: string
-  // TODO: return type required by pnpm
-): Promise<(req: express.Request, res: express.Response) => void> {
-  const nextApp = next({ dev, dir: projectAdminPath })
-  await nextApp.prepare()
-  return createAdminUIMiddlewareWithNextApp(config, context, nextApp)
-}
+export type ResolvedKeystoneConfig = ReturnType<typeof resolveDefaults>

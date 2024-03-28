@@ -3,12 +3,10 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { printSchema, GraphQLSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
-import type { KeystoneConfig } from './types'
-import { printGeneratedTypes } from './lib/typescript-schema-printer'
 import { ExitError } from './scripts/utils'
+import type { KeystoneConfig } from './types'
 import { initialiseLists } from './lib/core/initialise-lists'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
-import { initConfig } from './system'
 
 export function getFormattedGraphQLSchema (schema: string) {
   return (
@@ -72,7 +70,7 @@ export function getBuiltKeystoneConfigurationPath (cwd: string) {
 
 export function getBuiltKeystoneConfiguration (cwd: string) {
   const configPath = getBuiltKeystoneConfigurationPath(cwd)
-  return initConfig(require(configPath).default)
+  return require(configPath).default
 }
 
 function posixify (s: string) {
@@ -151,52 +149,10 @@ export async function validatePrismaAndGraphQLSchemas (
   throw new ExitError(1)
 }
 
-export async function generatePrismaAndGraphQLSchemas (
-  cwd: string,
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema
-) {
-  const paths = getSystemPaths(cwd, config)
-  const artifacts = await getCommittedArtifacts(config, graphQLSchema)
-
-  await fs.writeFile(paths.schema.graphql, artifacts.graphql)
-  await fs.writeFile(paths.schema.prisma, artifacts.prisma)
-  return artifacts
-}
-
-export async function generateTypescriptTypes (
-  cwd: string,
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema
-) {
-  const lists = initialiseLists(config)
-  const paths = getSystemPaths(cwd, config)
-  const schema = printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
-
-  await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
-  await fs.writeFile(paths.schema.types, schema)
-}
-
-export async function generateTypescriptTypesAndPrisma (
-  cwd: string,
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema
-) {
-  const paths = getSystemPaths(cwd, config)
-  const dataProxy = config.db.url.startsWith('prisma:')
-  if (dataProxy === true) {
-    console.log('✨ Generating Prisma Client (data proxy)')
-  }
-  await Promise.all([
-    generatePrismaClient(paths.schema.prisma, dataProxy),
-    generateTypescriptTypes(cwd, config, graphQLSchema),
-  ])
-}
-
-async function generatePrismaClient (prismaSchemaPath: string, dataProxy: boolean) {
+export async function generatePrismaClient (prismaSchemaPath: string, dataProxy: boolean) {
   const generators = await getGenerators({
     schemaPath: prismaSchemaPath,
-    dataProxy,
+//      dataProxy,
   })
 
   await Promise.all(

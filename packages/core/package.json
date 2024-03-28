@@ -14,10 +14,6 @@
       "module": "./access/dist/keystone-6-core-access.esm.js",
       "default": "./access/dist/keystone-6-core-access.cjs.js"
     },
-    "./system": {
-      "module": "./system/dist/keystone-6-core-system.esm.js",
-      "default": "./system/dist/keystone-6-core-system.cjs.js"
-    },
     "./context": {
       "module": "./context/dist/keystone-6-core-context.esm.js",
       "default": "./context/dist/keystone-6-core-context.cjs.js"
@@ -142,10 +138,6 @@
       "module": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.esm.js",
       "default": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/artifacts": {
-      "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
@@ -208,9 +200,10 @@
     "@keystone-ui/toast": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
     "@nodelib/fs.walk": "^2.0.0",
-    "@prisma/client": "4.16.2",
-    "@prisma/internals": "4.16.2",
-    "@prisma/migrate": "4.16.2",
+    "@prisma/client": "5.11.0",
+    "@prisma/internals": "5.11.0",
+    "@prisma/migrate": "5.11.0",
+    "@sindresorhus/slugify": "^1.1.2",
     "apollo-upload-client": "^17.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
@@ -238,7 +231,7 @@
     "meow": "^9.0.0",
     "next": "^13.3.0",
     "pluralize": "^8.0.0",
-    "prisma": "4.16.2",
+    "prisma": "5.1.1",
     "prompts": "^2.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -265,8 +258,6 @@
     "entrypoints": [
       "index.ts",
       "access.ts",
-      "system.ts",
-      "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",

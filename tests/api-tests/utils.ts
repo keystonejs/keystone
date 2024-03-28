@@ -1,5 +1,4 @@
-import { initConfig, createSystem } from '@keystone-6/core/system'
-import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { createSystem } from '../../packages/core/src/lib/createSystem'
 import {
   type BaseKeystoneTypeInfo,
   type KeystoneConfig,
@@ -230,9 +229,7 @@ export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: Floa
   }
 }
 
-export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (_config: FloatingConfig<TypeInfo>) {
-  const config = initConfig(testConfig(_config))
-  const { graphQLSchema } = createSystem(config)
-  const artifacts = await getCommittedArtifacts(config, graphQLSchema)
-  return artifacts.prisma
+export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>) {
+  const { getArtifacts } = createSystem(testConfig(config))
+  return (await getArtifacts()).prisma
 }
