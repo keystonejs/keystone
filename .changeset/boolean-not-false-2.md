@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ----
 
-Fix `config.server.cors` type blocking `false` values
+Fix `config.server.cors` type preventing value of `false`
