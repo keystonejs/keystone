@@ -11,7 +11,9 @@ export default config({
     ...fixPrismaPath,
   },
   lists,
-  extendGraphqlSchema,
+  graphql: {
+    extendGraphqlSchema
+  },
   ui: {
     getAdditionalFiles: [
       () => [

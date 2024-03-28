@@ -116,6 +116,7 @@ function resolveDefaults (config: KeystoneConfig) {
       path: '/api/graphql',
       playground: process.env.NODE_ENV !== 'production',
       schemaPath: 'schema.graphql',
+      extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
       ...config.graphql,
     },
     lists: injectDefaults(config, defaultIdField),
@@ -126,8 +127,6 @@ function resolveDefaults (config: KeystoneConfig) {
       ...config.server,
       cors,
     },
-    // TODO: remove in breaking change, move to .graphql.extendSchema
-    extendGraphqlSchema: config.extendGraphqlSchema ?? ((s) => s),
     storage: {
       ...config?.storage
     },

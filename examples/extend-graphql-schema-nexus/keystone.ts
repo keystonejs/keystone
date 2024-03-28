@@ -10,9 +10,10 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
   },
+  graphql: {
+    extendGraphqlSchema
+  },
   lists,
-  extendGraphqlSchema,
-
   // we use a custom types path for easy integration with nexus
   types: {
     path: 'keystone-types.ts',

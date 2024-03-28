@@ -32,29 +32,31 @@ const runner = setupTestRunner({
         fields: { name: text() },
       }),
     },
-    extendGraphqlSchema: graphql.extend(() => {
-      return {
-        mutation: {
-          triple: graphql.field({
-            type: graphql.Int,
-            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
-            resolve: withAccessCheck(true, (_, { x }: { x: number }) => 3 * x),
-          }),
-        },
-        query: {
-          double: graphql.field({
-            type: graphql.Int,
-            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
-            resolve: withAccessCheck(true, (_, { x }: { x: number }) => 2 * x),
-          }),
-          quads: graphql.field({
-            type: graphql.Int,
-            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
-            resolve: withAccessCheck(falseFn, (_, { x }: { x: number }) => 4 * x),
-          }),
-        },
-      }
-    })
+    graphql: {
+      extendGraphqlSchema: graphql.extend(() => {
+        return {
+          mutation: {
+            triple: graphql.field({
+              type: graphql.Int,
+              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              resolve: withAccessCheck(true, (_, { x }: { x: number }) => 3 * x),
+            }),
+          },
+          query: {
+            double: graphql.field({
+              type: graphql.Int,
+              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              resolve: withAccessCheck(true, (_, { x }: { x: number }) => 2 * x),
+            }),
+            quads: graphql.field({
+              type: graphql.Int,
+              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              resolve: withAccessCheck(falseFn, (_, { x }: { x: number }) => 4 * x),
+            }),
+          },
+        }
+      })
+    }
   }),
 })
 
