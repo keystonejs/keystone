@@ -1,5 +1,6 @@
-import { initConfig, createSystem } from '@keystone-6/core/system'
-import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { initConfig } from '../../packages/core/src/system'
+import { createSystem } from '../../packages/core/src/lib/createSystem'
+import { getCommittedArtifacts } from '../../packages/core/src/artifacts'
 import {
   type BaseKeystoneTypeInfo,
   type KeystoneConfig,

@@ -16,15 +16,13 @@ import {
 // @ts-expect-error
 } from '@prisma/client/generator-build'
 
-import {
-  createSystem,
-  createExpressServer,
-  initConfig,
-} from '@keystone-6/core/system'
+import { initConfig } from '../../packages/core/src/system'
+import { createSystem } from '../../packages/core/src/lib/createSystem'
+import { createExpressServer } from '../../packages/core/src/lib/createExpressServer'
 import {
   type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
-import { generatePrismaAndGraphQLSchemas } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { generatePrismaAndGraphQLSchemas } from '../../packages/core/src/artifacts'
 import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
 import { dbProvider, type FloatingConfig } from './utils'
 
