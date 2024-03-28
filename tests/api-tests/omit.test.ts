@@ -1,8 +1,9 @@
-import { setupTestSuite } from '@keystone-6/api-tests/test-runner'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { type KeystoneContext } from '@keystone-6/core/types'
+
+import { setupTestSuite } from './test-runner'
 import { dbProvider } from './utils'
 
 jest.setTimeout(10000000)

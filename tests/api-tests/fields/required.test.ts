@@ -4,8 +4,9 @@ import os from 'node:os'
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
+
+import { setupTestRunner } from '../test-runner'
 import { humanize } from '../../../packages/core/src/lib/utils'
 import {
   dbProvider,
