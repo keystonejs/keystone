@@ -138,10 +138,6 @@
       "module": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.esm.js",
       "default": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/artifacts": {
-      "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
@@ -262,7 +258,6 @@
     "entrypoints": [
       "index.ts",
       "access.ts",
-      "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",

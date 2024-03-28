@@ -70,7 +70,7 @@ export function getBuiltKeystoneConfigurationPath (cwd: string) {
 
 export function getBuiltKeystoneConfiguration (cwd: string) {
   const configPath = getBuiltKeystoneConfigurationPath(cwd)
-  return resolveDefaults(require(configPath).default)
+  return require(configPath).default
 }
 
 function posixify (s: string) {
