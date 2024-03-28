@@ -37,7 +37,6 @@ context = {
 
   // New context creators
   sudo,
-  exitSudo,
   withSession,
   withRequest,
 
