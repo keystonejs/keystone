@@ -96,7 +96,7 @@ export type StorageConfig = (
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>
   graphql?: GraphQLConfig<TypeInfo>
-  lists: ListSchemaConfig<TypeInfo['lists'][string]>
+  lists: Record<keyof TypeInfo['lists'], ListConfig<TypeInfo['lists'][keyof TypeInfo['lists']]>>
   ui?: AdminUIConfig<TypeInfo>
   server?: ServerConfig<TypeInfo>
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>

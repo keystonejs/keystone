@@ -108,9 +108,9 @@ export function resolveDefaults (config: KeystoneConfig) {
     lists: injectDefaults(config, defaultIdField),
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
-      extendExpressApp: async () => {},
-      extendHttpServer: async () => {},
       ...config.server,
+      extendExpressApp: config?.server?.extendExpressApp ?? (async () => {}),
+      extendHttpServer: config?.server?.extendHttpServer ?? (async () => {}),
       cors,
     },
     storage: {
@@ -118,11 +118,13 @@ export function resolveDefaults (config: KeystoneConfig) {
     },
     telemetry: config?.telemetry ?? true,
     ui: {
-      isAccessAllowed: defaultIsAccessAllowed,
       pageMiddleware: async () => {},
       publicPages: [],
       basePath: '',
       ...config?.ui,
+      isAccessAllowed: config?.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
     },
-  } satisfies KeystoneConfig
+  }
 }
+
+export type ResolvedKeystoneConfig = ReturnType<typeof resolveDefaults>
