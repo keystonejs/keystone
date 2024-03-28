@@ -1,4 +1,6 @@
 import { randomBytes } from 'node:crypto'
+import { dirname } from 'node:path'
+import fs from 'node:fs/promises'
 import {
   type FieldData,
   type KeystoneConfig
@@ -6,10 +8,18 @@ import {
 import { GraphQLError } from 'graphql'
 
 import { allowAll } from '../access'
+import { resolveDefaults } from './defaults'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
+import { printGeneratedTypes } from './typescript-schema-printer'
+import {
+  getCommittedArtifacts,
+  getSystemPaths,
+  generatePrismaClient,
+  validatePrismaAndGraphQLSchemas,
+} from '../artifacts'
 
 function getSudoGraphQLSchema (config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -147,7 +157,8 @@ function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
   return url
 }
 
-export function createSystem (config: KeystoneConfig) {
+export function createSystem (config_: KeystoneConfig) {
+  const config = resolveDefaults(config_)
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)
@@ -156,6 +167,37 @@ export function createSystem (config: KeystoneConfig) {
   return {
     graphQLSchema,
     adminMeta,
+
+    getArtifacts: async () => {
+      return await getCommittedArtifacts(config, graphQLSchema)
+    },
+
+    generateArtifacts: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const artifacts = await getCommittedArtifacts(config, graphQLSchema)
+
+      await fs.writeFile(paths.schema.graphql, artifacts.graphql)
+      await fs.writeFile(paths.schema.prisma, artifacts.prisma)
+      return artifacts
+    },
+
+    generatePrismaClient: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const dataProxy = config.db.url.startsWith('prisma:')
+      return await generatePrismaClient(paths.schema.prisma, dataProxy)
+    },
+
+    generateTypes: async (cwd: string) => {
+      const paths = getSystemPaths(cwd, config)
+      const schema = printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
+      await fs.mkdir(dirname(paths.schema.types), { recursive: true })
+      await fs.writeFile(paths.schema.types, schema)
+    },
+
+    validateArtifacts: async (cwd: string) => {
+      return await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
+    },
+
     getKeystone: (PM: any) => {
       const prePrismaClient = new PM.PrismaClient({
         datasourceUrl: formatUrl(config.db.provider, config.db.url),

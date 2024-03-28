@@ -43,7 +43,7 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
         },
       },
       err => {
-        if (err) return reject(new ExitError(err?.code ?? -1));
+        if (err) return reject(new ExitError(Number(err?.code ?? -1)));
         resolve();
       }
     );

@@ -16,15 +16,11 @@ import {
 // @ts-expect-error
 } from '@prisma/client/generator-build'
 
-import {
-  createSystem,
-  createExpressServer,
-  initConfig,
-} from '@keystone-6/core/system'
+import { createSystem } from '../../packages/core/src/lib/createSystem'
+import { createExpressServer } from '../../packages/core/src/lib/createExpressServer'
 import {
   type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
-import { generatePrismaAndGraphQLSchemas } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
 import { dbProvider, type FloatingConfig } from './utils'
 
@@ -109,7 +105,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   }
 
   const prismaSchemaPath = join(tmp, 'schema.prisma')
-  const config = initConfig({
+  const config = {
     ...config_,
     db: {
       provider: dbProvider,
@@ -130,9 +126,9 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       isDisabled: true,
       ...config_.ui,
     },
-  })
-  const { graphQLSchema, getKeystone } = createSystem(config)
-  const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+  }
+  const { generateArtifacts, getKeystone } = createSystem(config)
+  const artifacts = await generateArtifacts('')
   await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
 
   const {
