@@ -104,8 +104,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     path?: string
   }
 
-  // TODO: why isn't this within .graphql?
-  extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
   /** An object containing configuration about keystone's various external storages.
    *
    * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
@@ -291,6 +289,12 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    * @default 'schema.graphql'
    */
   schemaPath?: string
+
+  /**
+   * A function that receives the Keystone GraphQL schema for the developer to extend
+   * @default 'schema.graphql'
+   */
+  extendSchema?: (schema: GraphQLSchema) => GraphQLSchema
 }
 
 export type FilesConfig = {
