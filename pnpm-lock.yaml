@@ -1097,8 +1097,8 @@ importers:
         specifier: ^4.17.14
         version: 4.17.21
       express:
-        specifier: ^4.17.1
-        version: 4.18.3
+        specifier: ^4.19.2
+        version: 4.19.2
     devDependencies:
       prisma:
         specifier: ^4.16.2
@@ -2003,8 +2003,8 @@ importers:
         specifier: ^0.20.0
         version: 0.20.1
       express:
-        specifier: ^4.17.1
-        version: 4.18.3
+        specifier: ^4.19.2
+        version: 4.19.2
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -2271,8 +2271,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
       express:
-        specifier: ^4.17.1
-        version: 4.18.3
+        specifier: ^4.19.2
+        version: 4.19.2
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -2304,8 +2304,8 @@ importers:
         specifier: ^8.3.1
         version: 8.3.4
       express:
-        specifier: ^4.17.1
-        version: 4.18.3
+        specifier: ^4.19.2
+        version: 4.19.2
     devDependencies:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
@@ -2386,8 +2386,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.4
       express:
-        specifier: ^4.17.1
-        version: 4.18.3
+        specifier: ^4.19.2
+        version: 4.19.2
     devDependencies:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
@@ -2700,7 +2700,7 @@ packages:
       '@types/node-fetch': 2.6.11
       async-retry: 1.3.3
       cors: 2.8.5
-      express: 4.18.3
+      express: 4.19.2
       graphql: 16.8.1
       loglevel: 1.9.1
       lru-cache: 7.18.3
@@ -7849,7 +7849,7 @@ packages:
       esbuild-plugins-node-modules-polyfill: 1.6.3(esbuild@0.17.6)
       execa: 5.1.1
       exit-hook: 2.2.1
-      express: 4.18.3
+      express: 4.19.2
       fast-glob: 3.2.11
       fs-extra: 10.1.0
       get-port: 5.1.1
@@ -7898,14 +7898,14 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@remix-run/express@1.19.3(express@4.18.3):
+  /@remix-run/express@1.19.3(express@4.19.2):
     resolution: {integrity: sha512-jeWZ9xFyaarKSbpN/sQWx53QApGs16IiB8XC7CkOAEVDtLfOhXkJ9jOZNScOFUn6JXPx2oAwBBRRdbwOmryScQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       express: ^4.17.1
     dependencies:
       '@remix-run/node': 1.19.3
-      express: 4.18.3
+      express: 4.19.2
 
   /@remix-run/node@1.19.3:
     resolution: {integrity: sha512-z5qrVL65xLXIUpU4mkR4MKlMeKARLepgHAk4W5YY3IBXOreRqOGUC70POViYmY7x38c2Ia1NwqL80H+0h7jbMw==}
@@ -7943,10 +7943,10 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
-      '@remix-run/express': 1.19.3(express@4.18.3)
+      '@remix-run/express': 1.19.3(express@4.19.2)
       '@remix-run/node': 1.19.3
       compression: 1.7.4
-      express: 4.18.3
+      express: 4.19.2
       morgan: 1.10.0
       source-map-support: 0.5.21
     transitivePeerDependencies:
@@ -11293,11 +11293,11 @@ packages:
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
+    dev: false
 
   /cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
-    dev: false
 
   /cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
@@ -12623,8 +12623,8 @@ packages:
       jest-util: 29.7.0
     dev: true
 
-  /express@4.18.3:
-    resolution: {integrity: sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==}
+  /express@4.19.2:
+    resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
@@ -12632,7 +12632,7 @@ packages:
       body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.5.0
+      cookie: 0.6.0
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
