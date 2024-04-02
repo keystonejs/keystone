@@ -1,5 +1,5 @@
-----
+---
 '@keystone-6/core': patch
-----
+---
 
-Use `idField` type of `{ kind: 'number', kind: 'Int' | 'BigInt' }` internally for singletons
+Use `db.idField` of `{ kind: 'number', kind: 'Int' }` internally for singletons

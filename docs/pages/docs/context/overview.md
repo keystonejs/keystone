@@ -11,18 +11,22 @@ The APIs provided by the `Context` object can be used to write the business logi
 The `Context` object has the following properties, which are documented below.
 
 ```typescript
-import type { Context } from '.keystone/types';
+import type { Context } from '.keystone/types'
 
-context = {
+const context = {
+  // Query API
+  query,
+
+  // Database API
+  db,
+
   // HTTP request object
   req,
   res,
 
-  // Query API
-  query,
-
-  // Internal DB object API
-  db,
+  // Session API
+  session,
+  sessionStrategy
 
   // GraphQL helpers
   graphql: {
@@ -31,17 +35,12 @@ context = {
     raw,
   },
 
-  // Session API
-  session,
-  sessionStrategy
-
   // New context creators
   sudo,
-  exitSudo,
-  withSession,
   withRequest,
+  withSession,
 
-  // Database access
+  // Raw Prisma access
   prisma,
 
   // Images API
@@ -50,10 +49,7 @@ context = {
     getDataFromRef,
     getDataFromStream,
   },
-
-  // Deprecated
-  gqlNames,
-};
+}
 ```
 
 ### HTTP request object
@@ -136,13 +132,6 @@ type ImageData = {
 `async images.getDataFromRef(ref)`: Given a `ref` string, taken from the `id` field of an existing image, returns an `ImageData` object.
 
 `async images.getDataFromStream(stream)`: Given a readable data stream, returns an `ImageData` object. The `mode` will be taken from `config.images.mode`, and `id` will be a `uuid` value. The other values will be inferred from the data stream itself. The contents of the stream will be written to the filesystem at `config.images.local.storagePath`.
-
-### Deprecated
-
-The following properties are deprecated and should not be used.
-They will be removed in future releases.
-
-`gqlNames`: A function which takes a `listKey` and returns an object containing the GraphQL query, mutation and type names related to that list.
 
 ## Related resources
 
