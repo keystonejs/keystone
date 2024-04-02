@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Removes `config.server.healthCheck`, use `extendExpressApp` instead
+Remove the deprecated (#8721) `config.server.healthCheck`, use `extendExpressApp` instead

@@ -1,5 +1,5 @@
-----
+---
 '@keystone-6/core': major
-----
+---
 
-Removes the unused first type parameter from the `list` and `group` functions
+Remove the deprecated type parameters from the `list` and `group` functions
