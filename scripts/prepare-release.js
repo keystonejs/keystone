@@ -86,7 +86,7 @@ async function fetchData (tag) {
   const githubCommits = {}
   for (const commit of revs) {
     let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit })
-    pull = pull || gitCommitDescription(commit).match(/#([0-9]+)/)?.[1]
+    pull = gitCommitDescription(commit).match(/#([0-9]+)/)?.[1] ?? pull
 
     console.error(`commit ${commit}, user ${user}, pull #${pull}`)
     const first = !previousContributors.includes(user)
