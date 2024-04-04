@@ -91,7 +91,7 @@ export async function generateAdminUI (
   }
 
   // Write out the files configured by the user
-  const userFiles = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? []
+  const userFiles = config.ui?.getAdditionalFiles?.map(x => x()) ?? []
   const userFilesToWrite = (await Promise.all(userFiles)).flat()
   const savedFiles = await Promise.all(
     userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))

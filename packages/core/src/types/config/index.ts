@@ -112,6 +112,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   storage?: Record<string, StorageConfig>
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
+
   ui?: AdminUIConfig<TypeInfo>
 }
 
@@ -161,9 +162,7 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** The Base Path for Keystones Admin UI */
   basePath?: string
 
-  getAdditionalFiles?: readonly ((
-    config: KeystoneConfig<TypeInfo>
-  ) => MaybePromise<readonly AdminFileToWrite[]>)[]
+  getAdditionalFiles?: readonly (() => MaybePromise<readonly AdminFileToWrite[]>)[]
 
   /** An async middleware function that can optionally return a redirect */
   pageMiddleware?: (args: {
