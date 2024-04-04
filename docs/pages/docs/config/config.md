@@ -23,7 +23,6 @@ export default config({
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
   storage: { /* ... */ },
-  experimental: { /* ... */ },
 });
 ```
 

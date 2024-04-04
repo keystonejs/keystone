@@ -21,21 +21,12 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
 
-  /** @deprecated */
-  gqlNames: (listKey: string) => InitialisedList['graphql']['names']
-
-  /** @deprecated */
-  experimental?: {
-    /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true.
-     * This is not a stable API and may contain breaking changes in `patch` level releases.
-     */
-    initialisedLists: Record<string, InitialisedList>
-  }
 
   /**
    * WARNING: may change in patch
    */
   __internal: {
+    lists: Record<string, InitialisedList>
     prisma: {
       DbNull: unknown
       JsonNull: unknown

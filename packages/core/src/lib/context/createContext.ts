@@ -120,17 +120,8 @@ export function createContext ({
       images,
       files,
 
-      // TODO: deprecated, remove in breaking change
-      gqlNames: (listKey: string) => lists[listKey].graphql.names,
-
-      // TODO: deprecated, remove in breaking change
-      ...(config.experimental?.contextInitialisedLists
-        ? {
-            experimental: { initialisedLists: lists },
-          }
-        : {}),
-
       __internal: {
+        lists,
         prisma: {
           ...prismaTypes
         }

@@ -97,7 +97,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   db: DatabaseConfig<TypeInfo>
   graphql?: GraphQLConfig<TypeInfo>
   lists: ListSchemaConfig<TypeInfo['lists'][string]>
-  ui?: AdminUIConfig<TypeInfo>
   server?: ServerConfig<TypeInfo>
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>
   types?: {
@@ -116,13 +115,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   storage?: Record<string, StorageConfig>
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
-  /** Experimental config options */
-  experimental?: {
-    /** Adds the internal data structure `experimental.initialisedLists` to the context object.
-     * This is not a stable API and may contain breaking changes in `patch` level releases.
-     */
-    contextInitialisedLists?: boolean
-  }
+  ui?: AdminUIConfig<TypeInfo>
 }
 
 // config.lists
