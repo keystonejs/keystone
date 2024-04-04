@@ -6,12 +6,6 @@ import type { ListHooks } from './hooks'
 import type { ListAccessControl } from './access-control'
 import type { BaseFields, FilterOrderArgs } from './fields'
 
-// TODO: inline
-export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = Record<
-  string,
-  ListConfig<any>
->
-
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean
   fields: BaseFields<ListTypeInfo>

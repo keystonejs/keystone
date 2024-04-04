@@ -11,7 +11,6 @@ import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
 import type {
-  ListSchemaConfig,
   ListConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
@@ -96,7 +95,7 @@ export type StorageConfig = (
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>
   graphql?: GraphQLConfig<TypeInfo>
-  lists: ListSchemaConfig<TypeInfo['lists'][string]>
+  lists: Record<string, ListConfig<any>>
   server?: ServerConfig<TypeInfo>
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>
   types?: {
@@ -118,7 +117,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
 
 // config.lists
 
-export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
+export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 // config.db
 
