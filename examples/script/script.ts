@@ -5,7 +5,7 @@ import config from './keystone'
 import * as PrismaModule from '.myprisma/client'
 
 //   do this instead
-// import * as PrismaModule from '@prisma/client';
+// import * as PrismaModule from '@prisma/client'
 
 async function main () {
   const context = getContext(config, PrismaModule)

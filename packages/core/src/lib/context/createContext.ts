@@ -107,9 +107,6 @@ export function createContext ({
 
       sudo: () => construct({ session, sudo: true, req, res }),
 
-      // TODO: deprecated, remove in breaking change
-      exitSudo: () => construct({ session, sudo: false, req, res }),
-
       req,
       res,
       sessionStrategy: config.session,
@@ -123,17 +120,8 @@ export function createContext ({
       images,
       files,
 
-      // TODO: deprecated, remove in breaking change
-      gqlNames: (listKey: string) => lists[listKey].graphql.names,
-
-      // TODO: deprecated, remove in breaking change
-      ...(config.experimental?.contextInitialisedLists
-        ? {
-            experimental: { initialisedLists: lists },
-          }
-        : {}),
-
       __internal: {
+        lists,
         prisma: {
           ...prismaTypes
         }

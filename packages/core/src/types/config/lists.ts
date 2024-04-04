@@ -6,16 +6,7 @@ import type { ListHooks } from './hooks'
 import type { ListAccessControl } from './access-control'
 import type { BaseFields, FilterOrderArgs } from './fields'
 
-// TODO: inline
-export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = Record<
-  string,
-  ListConfig<any, BaseFields<BaseListTypeInfo>>
->
-
-export type ListConfig<
-  ListTypeInfo extends BaseListTypeInfo,
-  __Unused extends any = any // TODO: remove in breaking change
-> = {
+export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean
   fields: BaseFields<ListTypeInfo>
 
@@ -54,10 +45,7 @@ export type ListConfig<
   defaultIsOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
 }
 
-export type ListAdminUIConfig<
-  ListTypeInfo extends BaseListTypeInfo,
-  __Unused extends any = any // TODO: remove in breaking change
-> = {
+export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.

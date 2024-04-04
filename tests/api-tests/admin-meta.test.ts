@@ -38,7 +38,7 @@ const runner = setupTestRunner({
 test(
   'non-sudo context does not bypass isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery })
+    const res = await context.graphql.raw({ query: staticAdminMetaQuery })
     expect(res).toMatchInlineSnapshot(`
       {
         "data": null,

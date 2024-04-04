@@ -1,5 +1,5 @@
 import { timestamp } from '@keystone-6/core/fields'
-import { type BaseKeystoneTypeInfo, type DatabaseConfig, type StorageConfig } from '@keystone-6/core/types'
+import { type StorageConfig } from '@keystone-6/core/types'
 
 export const localStorageConfig: Record<string, StorageConfig> = {
   images: {
@@ -29,9 +29,9 @@ export const fixPrismaPath = {
   prismaClientPath: 'node_modules/.testprisma/client',
 }
 
-export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {
-  provider: 'sqlite',
-  url: process.env.DATABASE_URL || 'file:./dev.db',
+export const dbConfig = {
+  provider: 'sqlite' as const,
+  url: process.env.DATABASE_URL ?? 'file:./dev.db',
   ...fixPrismaPath,
 }
 

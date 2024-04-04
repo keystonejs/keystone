@@ -102,10 +102,6 @@ Add the `.keystone` directory to your `.gitignore` file. The contents of `.keyst
 
 To create and edit blog records in Keystone's Admin UI, add a `keystone.ts` [configuration file](/docs/config/config) to your project root with a simple `Post` [list](/docs/config/lists) containing fields for a Title, Slug, and some Content.
 
-{% hint kind="warn" %}
-**Note:** We're enabling experimental features to generate the APIs that make embedded mode work. These may change in future versions.
-{% /hint %}
-
 ```tsx
 // keystone.ts
 
@@ -125,9 +121,6 @@ const Post: Lists.Post = list({
 
 export default config({
   db: { provider: 'sqlite', url: 'file:./app.db' },
-  experimental: {
-    generateNextGraphqlAPI: true,
-  },
   lists: { Post },
 });
 ```

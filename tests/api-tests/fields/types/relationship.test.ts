@@ -1,6 +1,7 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
 import { createSystem, initConfig } from '@keystone-6/core/system'
-import type { ListSchemaConfig } from '@keystone-6/core/types'
+import { type KeystoneConfig } from '@keystone-6/core/types'
+
 import { config, list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
@@ -136,7 +137,7 @@ describe('Type Generation', () => {
 })
 
 describe('Reference errors', () => {
-  function tryf (lists: ListSchemaConfig) {
+  function tryf (lists: KeystoneConfig['lists']) {
     return createSystem(
       initConfig(
         config({

@@ -11,9 +11,11 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
   },
+  graphql: {
+    extendGraphqlSchema
+  },
   lists,
   server: {
     extendHttpServer,
   },
-  extendGraphqlSchema,
 })

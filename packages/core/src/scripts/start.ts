@@ -43,7 +43,7 @@ export async function start (
   await keystone.connect()
 
   console.log('✨ Creating server')
-  const { expressServer, httpServer } = await createExpressServer(config, null, keystone.context)
+  const { expressServer, httpServer } = await createExpressServer(config, keystone.context)
 
   console.log(`✅ GraphQL API ready`)
   if (!config.ui?.isDisabled && ui) {

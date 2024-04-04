@@ -460,7 +460,7 @@ async function handleCreateAndUpdate (
 async function resolveCreateMutation (value: any, context: KeystoneContext, foreignListKey: string) {
   const mutationType = context.graphql.schema.getMutationType()!
   const { id } = (await mutationType.getFields()[
-    context.gqlNames(foreignListKey).createMutationName
+    context.__internal.lists[foreignListKey].graphql.names.createMutationName
   ].resolve!(
     {},
     { data: value.create },

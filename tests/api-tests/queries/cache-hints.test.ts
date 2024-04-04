@@ -44,35 +44,37 @@ const runner = setupTestRunner({
         },
       }),
     },
-    extendGraphqlSchema: graphql.extend(() => {
-      const MyType = graphql.object<{ original: number }>()({
-        name: 'MyType',
-        fields: {
-          original: graphql.field({ type: graphql.Int }),
-          double: graphql.field({ type: graphql.Int, resolve: ({ original }) => original * 2 }),
-        },
-      })
-      return {
-        query: {
-          double: graphql.field({
-            type: MyType,
-            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
-            resolve: (_, { x }, context, info) => {
-              maybeCacheControlFromInfo(info)?.setCacheHint({ maxAge: 100, scope: 'PUBLIC' })
-              return { original: x, double: x * 2 }
-            },
-          }),
-        },
-        mutation: {
-          triple: graphql.field({
-            type: graphql.Int,
-            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
-            resolve: (_, { x }) => x * 3,
-          }),
-        },
-      }
-    }),
-  },
+    graphql: {
+      extendGraphqlSchema: graphql.extend(() => {
+        const MyType = graphql.object<{ original: number }>()({
+          name: 'MyType',
+          fields: {
+            original: graphql.field({ type: graphql.Int }),
+            double: graphql.field({ type: graphql.Int, resolve: ({ original }) => original * 2 }),
+          },
+        })
+        return {
+          query: {
+            double: graphql.field({
+              type: MyType,
+              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              resolve: (_, { x }, context, info) => {
+                maybeCacheControlFromInfo(info)?.setCacheHint({ maxAge: 100, scope: 'PUBLIC' })
+                return { original: x, double: x * 2 }
+              },
+            }),
+          },
+          mutation: {
+            triple: graphql.field({
+              type: graphql.Int,
+              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              resolve: (_, { x }) => x * 3,
+            }),
+          },
+        }
+      }),
+    }
+  }
 })
 
 const addFixtures = async (context: ContextFromRunner<typeof runner>) => {

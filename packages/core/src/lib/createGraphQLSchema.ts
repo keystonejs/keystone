@@ -127,9 +127,5 @@ export function createGraphQLSchema (
   )
 
   // merge in the user defined graphQL API
-  if (config.extendGraphqlSchema) {
-    return config.extendGraphqlSchema(graphQLSchema)
-  }
-
-  return graphQLSchema
+  return config.graphql?.extendGraphqlSchema?.(graphQLSchema) ?? graphQLSchema
 }

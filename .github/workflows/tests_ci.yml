@@ -198,7 +198,7 @@ jobs:
         run: cd examples/testing; pnpm test
 
   examples_next_app_build:
-    name: Ensure Nest in App directory builds
+    name: Ensure Next in App directory builds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
