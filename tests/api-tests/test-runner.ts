@@ -145,7 +145,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     const {
       expressServer: express,
       httpServer: http
-    } = await createExpressServer(config, context.graphql.schema, context)
+    } = await createExpressServer(config, context)
 
     function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
       return supertest(express)

@@ -48,7 +48,6 @@ function formatError (graphqlConfig: GraphQLConfig | undefined) {
 
 export async function createExpressServer (
   config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
-  _: any, // TODO: uses context.graphql.schema now, remove in breaking change
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
@@ -68,9 +67,8 @@ export async function createExpressServer (
     expressServer.use(cors(corsConfig))
   }
 
-
   await config.server?.extendExpressApp?.(expressServer, context)
-  await config.server?.extendHttpServer?.(httpServer, context, context.graphql.schema)
+  await config.server?.extendHttpServer?.(httpServer, context)
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {

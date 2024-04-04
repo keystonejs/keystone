@@ -193,8 +193,6 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   extendHttpServer?: (
     server: Server,
     context: KeystoneContext<TypeInfo>,
-    /** @deprecated, TODO: redundant, prefer context.graphql.schema, remove in breaking change */
-    graphqlSchema: GraphQLSchema
   ) => MaybePromise<void>
 } & (
   | {

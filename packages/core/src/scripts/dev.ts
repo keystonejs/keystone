@@ -149,7 +149,7 @@ export async function dev (
     })
 
     if (configWithExtendHttp?.server?.extendHttpServer && httpServer && context) {
-      configWithExtendHttp.server.extendHttpServer(httpServer, context, graphQLSchema)
+      configWithExtendHttp.server.extendHttpServer(httpServer, context)
     }
 
     prismaClient = context?.prisma
@@ -223,7 +223,7 @@ export async function dev (
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const { context: newContext } = getKeystone(prismaClientModule)
-            const servers = await createExpressServer(newConfig, null, newContext)
+            const servers = await createExpressServer(newConfig, newContext)
             if (nextApp) {
               servers.expressServer.use(
                 createAdminUIMiddlewareWithNextApp(newConfig, newContext, nextApp)
@@ -389,7 +389,6 @@ async function setupInitialKeystone (
     console.log('✨ Creating server')
     const { apolloServer, expressServer } = await createExpressServer(
       config,
-      graphQLSchema,
       keystone.context
     )
     console.log(`✅ GraphQL API ready`)
