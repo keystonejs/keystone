@@ -6,7 +6,7 @@ import type express from 'express'
 import type { GraphQLSchema } from 'graphql'
 import type { Options as BodyParserOptions } from 'body-parser'
 
-import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
+import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
 import {
@@ -89,6 +89,13 @@ export type StorageConfig = (
         | 'bucket-owner-full-control'
     }
 ) & FileOrImage
+
+// copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`, as we dont have them
+type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
+type PrismaLogDefinition = {
+  level: PrismaLogLevel
+  emit: 'stdout' | 'event'
+}
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types?: {
@@ -267,50 +274,9 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
 
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
-// Copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`,
-// because they are not exported by Prisma.
-type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
-type PrismaLogDefinition = {
-  level: PrismaLogLevel
-  emit: 'stdout' | 'event'
-}
-
 export type AdminFileToWrite =
   | { mode: 'write', src: string, outputPath: string }
   | { mode: 'copy', inputPath: string, outputPath: string }
-
-export type FilesConfig = {
-  upload: AssetMode
-  transformFilename?: (str: string) => string
-  local?: {
-    /**
-     * The path local files are uploaded to.
-     * @default 'public/files'
-     */
-    storagePath?: string
-    /**
-     * The base of the URL local files will be served from, outside of keystone.
-     * @default '/files'
-     */
-    baseUrl?: string
-  }
-}
-
-export type ImagesConfig = {
-  upload: AssetMode
-  local?: {
-    /**
-     * The path local images are uploaded to.
-     * @default 'public/images'
-     */
-    storagePath?: string
-    /**
-     * The base of the URL local images will be served from, outside of keystone.
-     * @default '/images'
-     */
-    baseUrl?: string
-  }
-}
 
 export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }
 export type {

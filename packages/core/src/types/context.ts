@@ -163,8 +163,6 @@ type GraphQLExecutionArguments<TData, TVariables> = {
 
 // Files API
 
-export type AssetMode = 'local' | 's3'
-
 export type FileMetadata = {
   filename: string
   filesize: number
