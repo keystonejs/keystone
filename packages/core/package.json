@@ -14,10 +14,6 @@
       "module": "./access/dist/keystone-6-core-access.esm.js",
       "default": "./access/dist/keystone-6-core-access.cjs.js"
     },
-    "./system": {
-      "module": "./system/dist/keystone-6-core-system.esm.js",
-      "default": "./system/dist/keystone-6-core-system.cjs.js"
-    },
     "./context": {
       "module": "./context/dist/keystone-6-core-context.esm.js",
       "default": "./context/dist/keystone-6-core-context.cjs.js"
@@ -265,7 +261,6 @@
     "entrypoints": [
       "index.ts",
       "access.ts",
-      "system.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",

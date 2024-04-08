@@ -1,10 +1,10 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
-import { createSystem, initConfig } from '@keystone-6/core/system'
 import { type KeystoneConfig } from '@keystone-6/core/types'
 
 import { config, list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
+import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 const fieldKey = 'foo'
 
@@ -13,20 +13,18 @@ function getSchema(field: {
   many?: boolean
 }) {
   return createSystem(
-    initConfig(
-      config({
-        db: { url: 'file:./thing.db', provider: 'sqlite' },
-        lists: {
-          Zip: list({ fields: { thing: text() }, access: allowAll }),
-          Test: list({
-            access: allowAll,
-            fields: {
-              [fieldKey]: relationship(field),
-            },
-          }),
-        },
-      })
-    )
+    config({
+      db: { url: 'file:./thing.db', provider: 'sqlite' },
+      lists: {
+        Zip: list({ fields: { thing: text() }, access: allowAll }),
+        Test: list({
+          access: allowAll,
+          fields: {
+            [fieldKey]: relationship(field),
+          },
+        }),
+      },
+    })
   ).graphQLSchema
 }
 
@@ -139,12 +137,10 @@ describe('Type Generation', () => {
 describe('Reference errors', () => {
   function tryf (lists: KeystoneConfig['lists']) {
     return createSystem(
-      initConfig(
-        config({
-          db: { url: 'file:./thing.db', provider: 'sqlite' },
-          lists,
-        })
-      )
+      config({
+        db: { url: 'file:./thing.db', provider: 'sqlite' },
+        lists,
+      })
     ).graphQLSchema
   }
 

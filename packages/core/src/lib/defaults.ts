@@ -1,20 +1,14 @@
-import type express from 'express'
-import next from 'next'
+import { type ListenOptions } from 'node:net'
 import {
+  type BaseKeystoneTypeInfo,
   type IdFieldConfig,
   type KeystoneConfig,
-  type KeystoneContext
-} from './types'
-import { createAdminUIMiddlewareWithNextApp } from './lib/createAdminUIMiddleware'
+  type KeystoneContext,
+  type __ResolvedKeystoneConfig,
+} from '../types'
 import {
   idFieldType
-} from './lib/id-field'
-
-/** @deprecated, TODO: remove in breaking change */
-export { createSystem } from './lib/createSystem'
-
-/** @deprecated, TODO: remove in breaking change */
-export { createExpressServer } from './lib/createExpressServer'
+} from '../lib/id-field'
 
 function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
   // some error checking
@@ -79,12 +73,9 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
   return session !== undefined
 }
 
-/** @deprecated, TODO: remove in breaking change */
-export function initConfig (config: KeystoneConfig): KeystoneConfig {
-  return resolveDefaults(config)
-}
+async function noop () {}
 
-function resolveDefaults (config: KeystoneConfig) {
+export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -96,60 +87,65 @@ function resolveDefaults (config: KeystoneConfig) {
   const cors =
     config.server?.cors === true
       ? { origin: true, credentials: true }
-      : config.server?.cors ?? false
+      : config.server?.cors === false
+        ? null
+        : config.server?.cors ?? null
+
+  const httpOptions: ListenOptions = { port: 3000 }
+  if (config?.server && 'port' in config.server) {
+    httpOptions.port = config.server.port
+  }
+
+  if (config?.server && 'options' in config.server && config.server.options) {
+    Object.assign(httpOptions, config.server.options)
+  }
 
   return {
-    ...config,
     types: {
-      path: 'node_modules/.keystone/types.ts',
       ...config.types,
+      path: config.types?.path ?? 'node_modules/.keystone/types.ts',
     },
     db: {
-      shadowDatabaseUrl: '', // TODO: is this ok
-      extendPrismaSchema: (schema: string) => schema,
-      prismaClientPath: '@prisma/client',
-      prismaSchemaPath: 'schema.prisma',
       ...config.db,
-      idField: defaultIdField,
+      shadowDatabaseUrl: config.db?.shadowDatabaseUrl ?? '',
+      extendPrismaSchema: config.db?.extendPrismaSchema ?? ((schema: string) => schema),
+      onConnect: config.db.onConnect ?? noop,
+      prismaClientPath: config.db?.prismaClientPath ?? '@prisma/client',
+      prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',
+      idField: config.db?.idField ?? defaultIdField,
+      enableLogging: config.db.enableLogging === true ? ['query']
+        : config.db.enableLogging === false ? []
+          : config.db.enableLogging ?? [],
+      useMigrations: config.db.useMigrations ?? false
     },
     graphql: {
-      path: '/api/graphql',
-      playground: process.env.NODE_ENV !== 'production',
-      schemaPath: 'schema.graphql',
-      extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
       ...config.graphql,
+      path: config.graphql?.path ?? '/api/graphql',
+      playground: config.graphql?.playground ?? process.env.NODE_ENV !== 'production',
+      schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
+      extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
     lists: injectDefaults(config, defaultIdField),
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
-      extendExpressApp: async () => {},
-      extendHttpServer: async () => {},
-      ...config.server,
+      extendExpressApp: config.server?.extendExpressApp ?? noop,
+      extendHttpServer: config.server?.extendHttpServer ?? noop,
       cors,
+      options: httpOptions,
     },
+    session: config.session,
     storage: {
-      ...config?.storage
+      ...config.storage
     },
-    telemetry: config?.telemetry ?? true,
+    telemetry: config.telemetry ?? true,
     ui: {
-      isAccessAllowed: defaultIsAccessAllowed,
-      pageMiddleware: async () => {},
-      publicPages: [],
-      basePath: '',
-      ...config?.ui,
+      ...config.ui,
+      basePath: config.ui?.basePath ?? '',
+      isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
+      isDisabled: config.ui?.isDisabled ?? false,
+      getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
+      pageMiddleware: config.ui?.pageMiddleware ?? noop,
+      publicPages:config.ui?.publicPages ?? [],
     },
-  } satisfies KeystoneConfig
-}
-
-/** @deprecated, TODO: remove in breaking change */
-export async function createAdminUIMiddleware (
-  config: KeystoneConfig,
-  context: KeystoneContext,
-  dev: boolean,
-  projectAdminPath: string
-  // TODO: return type required by pnpm
-): Promise<(req: express.Request, res: express.Response) => void> {
-  const nextApp = next({ dev, dir: projectAdminPath })
-  await nextApp.prepare()
-  return createAdminUIMiddlewareWithNextApp(config, context, nextApp)
+  }
 }

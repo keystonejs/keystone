@@ -7,7 +7,7 @@ import { type GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
 import {
   type AdminFileToWrite,
-  type KeystoneConfig
+  type __ResolvedKeystoneConfig
 } from '../../types'
 import { writeAdminFiles } from '../templates'
 import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
@@ -66,7 +66,7 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
 const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
 export async function generateAdminUI (
-  config: KeystoneConfig,
+  config: __ResolvedKeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,

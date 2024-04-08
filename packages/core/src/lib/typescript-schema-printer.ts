@@ -186,41 +186,7 @@ export function printGeneratedTypes (
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
 ) {
-  const interimCreateUpdateTypes = []
-  const listsTypeInfo = []
-  const listsNamespaces = []
   prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`)
-
-  for (const [listKey, list] of Object.entries(lists)) {
-    const listTypeInfoName = `Lists.${listKey}.TypeInfo<Session>`
-
-    if (list.graphql.isEnabled.create) {
-      interimCreateUpdateTypes.push(
-        printInterimType(
-          prismaClientPath,
-          list,
-          listKey,
-          list.graphql.names.createInputName,
-          'Create'
-        )
-      )
-    }
-
-    if (list.graphql.isEnabled.update) {
-      interimCreateUpdateTypes.push(
-        printInterimType(
-          prismaClientPath,
-          list,
-          listKey,
-          list.graphql.names.updateInputName,
-          'Update'
-        )
-      )
-    }
-
-    listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName}`)
-    listsNamespaces.push(printListTypeInfo(prismaClientPath, listKey, list))
-  }
 
   return [
     '/* eslint-disable */',
@@ -235,17 +201,47 @@ export function printGeneratedTypes (
       Decimal: `import('@keystone-6/core/types').Decimal | string`,
     }),
     '',
-    interimCreateUpdateTypes.join('\n\n'),
+    ...(function* () {
+      for (const [listKey, list] of Object.entries(lists)) {
+        if (list.graphql.isEnabled.create) {
+          yield printInterimType(
+            prismaClientPath,
+            list,
+            listKey,
+            list.graphql.names.createInputName,
+            'Create'
+          )
+        }
+
+        if (list.graphql.isEnabled.update) {
+          yield printInterimType(
+            prismaClientPath,
+            list,
+            listKey,
+            list.graphql.names.updateInputName,
+            'Update'
+          )
+        }
+      }
+    }()),
     '',
     'export declare namespace Lists {',
-    ...listsNamespaces,
+    ...(function* () {
+      for (const [listKey, list] of Object.entries(lists)) {
+        yield printListTypeInfo(prismaClientPath, listKey, list)
+      }
+    })(),
     '}',
     `export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>`,
     `export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>`,
     '',
     'export type TypeInfo<Session = any> = {',
     `  lists: {`,
-    ...listsTypeInfo,
+    ...(function* () {
+      for (const listKey in lists) {
+        yield `    readonly ${listKey}: Lists.${listKey}.TypeInfo<Session>`
+      }
+    })(),
     `  }`,
     `  prisma: import('${prismaClientPath}').PrismaClient`,
     `  session: Session`,

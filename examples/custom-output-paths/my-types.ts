@@ -138,7 +138,6 @@ type ResolvedPostCreateInput = {
   content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content']
   publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate']
 }
-
 type ResolvedPostUpdateInput = {
   id?: undefined
   title?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['title']

@@ -1,13 +1,15 @@
 import esbuild from 'esbuild'
 import nextBuild from 'next/dist/build'
 import { generateAdminUI } from '../admin-ui/system'
-import { createSystem } from '../lib/createSystem'
 import {
-  getBuiltKeystoneConfiguration,
-  getSystemPaths,
-  generatePrismaAndGraphQLSchemas,
-  generateTypescriptTypesAndPrisma,
-  validatePrismaAndGraphQLSchemas,
+  createSystem,
+  getBuiltKeystoneConfiguration
+} from '../lib/createSystem'
+import {
+  generateArtifacts,
+  generatePrismaClient,
+  generateTypes,
+  validateArtifacts,
 } from '../artifacts'
 import { getEsbuildConfig } from '../lib/esbuild'
 import type { Flags } from './cli'
@@ -19,26 +21,26 @@ export async function build (
   await esbuild.build(getEsbuildConfig(cwd))
 
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const config = getBuiltKeystoneConfiguration(cwd)
-  const { graphQLSchema, adminMeta } = createSystem(config)
+  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
 
-  const paths = getSystemPaths(cwd, config)
+  const paths = system.getPaths(cwd)
   if (prisma) {
     if (frozen) {
-      await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
+      await validateArtifacts(cwd, system)
       console.log('✨ GraphQL and Prisma schemas are up to date')
     } else {
-      await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
+      await generateArtifacts(cwd, system)
       console.log('✨ Generated GraphQL and Prisma schemas')
     }
 
-    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema)
+    await generateTypes(cwd, system)
+    await generatePrismaClient(cwd, system)
   }
 
-  if (config.ui?.isDisabled || !ui) return
+  if (system.config.ui?.isDisabled || !ui) return
 
   console.log('✨ Generating Admin UI code')
-  await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false)
+  await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
 
   console.log('✨ Building Admin UI')
   await nextBuild(

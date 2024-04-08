@@ -17,15 +17,15 @@ import {
 } from '@prisma/client/generator-build'
 
 import {
-  createSystem,
   createExpressServer,
-  initConfig,
-} from '@keystone-6/core/system'
+  createSystem,
+  generateArtifacts,
+  pushPrismaSchemaToDatabase
+} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+
 import {
   type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
-import { generatePrismaAndGraphQLSchemas } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
-import { pushPrismaSchemaToDatabase } from '../../packages/core/src/lib/migrations'
 import { dbProvider, type FloatingConfig } from './utils'
 
 // prisma checks
@@ -109,7 +109,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   }
 
   const prismaSchemaPath = join(tmp, 'schema.prisma')
-  const config = initConfig({
+  const system = createSystem({
     ...config_,
     db: {
       provider: dbProvider,
@@ -131,25 +131,24 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       ...config_.ui,
     },
   })
-  const { graphQLSchema, getKeystone } = createSystem(config)
-  const artifacts = await generatePrismaAndGraphQLSchemas('', config, graphQLSchema)
+  const artifacts = await generateArtifacts('', system)
   await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
 
   const {
     context,
     connect,
     disconnect
-  } = getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
+  } = system.getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
 
   if (serve) {
     const {
       expressServer: express,
       httpServer: http
-    } = await createExpressServer(config, context)
+    } = await createExpressServer(system.config, context)
 
     function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
       return supertest(express)
-        .post(config.graphql?.path ?? '/api/graphql')
+        .post(system.config.graphql?.path ?? '/api/graphql')
         .send(...args)
         .set('Accept', 'application/json')
     }
@@ -163,7 +162,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       artifacts,
       connect,
       context,
-      config,
+      system,
       http,
       gql,
       gqlSuper,
@@ -180,7 +179,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     artifacts,
     connect,
     context,
-    config,
+    system,
     http: null as any, // TODO: FIXME
     express: null as any, // TODO: FIXME
     gql,

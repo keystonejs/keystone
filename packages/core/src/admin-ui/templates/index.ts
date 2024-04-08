@@ -1,6 +1,9 @@
 import * as Path from 'path'
 import type { GraphQLSchema } from 'graphql'
-import type { KeystoneConfig, AdminFileToWrite } from '../../types'
+import {
+  type AdminFileToWrite,
+  type __ResolvedKeystoneConfig
+} from '../../types'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 import { appTemplate } from './app'
 import { homeTemplate } from './home'
@@ -13,7 +16,7 @@ import { nextConfigTemplate } from './next-config'
 const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'))
 
 export const writeAdminFiles = (
-  config: KeystoneConfig,
+  config: __ResolvedKeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean
