@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises'
 import next from 'next'
-import { createSystem } from '../lib/createSystem'
-import { createExpressServer } from '../lib/createExpressServer'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import {
+  createSystem,
   getBuiltKeystoneConfigurationPath,
   getBuiltKeystoneConfiguration,
-} from '../artifacts'
+} from '../lib/createSystem'
+import { createExpressServer } from '../lib/createExpressServer'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { deployMigrations } from '../lib/migrations'
 import { ExitError } from './utils'
 import type { Flags } from './cli'

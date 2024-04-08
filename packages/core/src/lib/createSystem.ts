@@ -1,6 +1,5 @@
+import path from 'node:path'
 import { randomBytes } from 'node:crypto'
-import { dirname } from 'node:path'
-import fs from 'node:fs/promises'
 import {
   type KeystoneConfig,
   type FieldData,
@@ -14,13 +13,57 @@ import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
-import { printGeneratedTypes } from './typescript-schema-printer'
-import {
-  getCommittedArtifacts,
-  getSystemPaths,
-  generatePrismaClient,
-  validatePrismaAndGraphQLSchemas,
-} from '../artifacts'
+
+// TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+export function getBuiltKeystoneConfigurationPath (cwd: string) {
+  return path.join(cwd, '.keystone/config.js')
+}
+
+export function getBuiltKeystoneConfiguration (cwd: string) {
+  return require(getBuiltKeystoneConfigurationPath(cwd)).default
+}
+
+function posixify (s: string) {
+  return s.split(path.sep).join('/')
+}
+
+export function getSystemPaths (cwd: string, config: KeystoneConfig | __ResolvedKeystoneConfig) {
+  const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
+    ? null
+    : config.db.prismaClientPath
+      ? path.join(cwd, config.db.prismaClientPath)
+      : null
+
+  const builtTypesPath = config.types?.path
+    ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
+    : path.join(cwd, 'node_modules/.keystone/types.ts')
+
+  const builtPrismaPath = config.db?.prismaSchemaPath
+    ? path.join(cwd, config.db.prismaSchemaPath) // TODO: enforce initConfig before getSystemPaths
+    : path.join(cwd, 'schema.prisma')
+
+  const relativePrismaPath = prismaClientPath
+    ? `./${posixify(path.relative(path.dirname(builtTypesPath), prismaClientPath))}`
+    : '@prisma/client'
+
+  const builtGraphqlPath = config.graphql?.schemaPath
+    ? path.join(cwd, config.graphql.schemaPath) // TODO: enforce initConfig before getSystemPaths
+    : path.join(cwd, 'schema.graphql')
+
+  return {
+    config: getBuiltKeystoneConfigurationPath(cwd),
+    admin: path.join(cwd, '.keystone/admin'),
+    prisma: prismaClientPath ?? '@prisma/client',
+    types: {
+      relativePrismaPath,
+    },
+    schema: {
+      types: builtTypesPath,
+      prisma: builtPrismaPath,
+      graphql: builtGraphqlPath,
+    },
+  }
+}
 
 function getSudoGraphQLSchema (config: __ResolvedKeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -169,36 +212,6 @@ export function createSystem (config_: KeystoneConfig) {
     adminMeta,
     lists,
 
-    getArtifacts: async () => {
-      return await getCommittedArtifacts(config, graphQLSchema)
-    },
-
-    generateArtifacts: async (cwd: string) => {
-      const paths = getSystemPaths(cwd, config)
-      const artifacts = await getCommittedArtifacts(config, graphQLSchema)
-
-      await fs.writeFile(paths.schema.graphql, artifacts.graphql)
-      await fs.writeFile(paths.schema.prisma, artifacts.prisma)
-      return artifacts
-    },
-
-    generatePrismaClient: async (cwd: string) => {
-      const paths = getSystemPaths(cwd, config)
-      const dataProxy = config.db.url.startsWith('prisma:')
-      return await generatePrismaClient(paths.schema.prisma, dataProxy)
-    },
-
-    generateTypes: async (cwd: string) => {
-      const paths = getSystemPaths(cwd, config)
-      const schema = printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
-      await fs.mkdir(dirname(paths.schema.types), { recursive: true })
-      await fs.writeFile(paths.schema.types, schema)
-    },
-
-    validateArtifacts: async (cwd: string) => {
-      return await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)
-    },
-
     getPaths: (cwd: string) => {
       return getSystemPaths(cwd, config)
     },
@@ -241,3 +254,5 @@ export function createSystem (config_: KeystoneConfig) {
     },
   }
 }
+
+export type System = ReturnType<typeof createSystem>

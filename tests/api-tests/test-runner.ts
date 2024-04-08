@@ -19,6 +19,7 @@ import {
 import {
   createExpressServer,
   createSystem,
+  generateArtifacts,
   pushPrismaSchemaToDatabase
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
@@ -130,7 +131,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       ...config_.ui,
     },
   })
-  const artifacts = await system.generateArtifacts('')
+  const artifacts = await generateArtifacts('', system)
   await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
 
   const {

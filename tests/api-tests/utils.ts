@@ -5,6 +5,7 @@ import {
 } from '@keystone-6/core/types'
 import {
   createSystem,
+  getArtifacts,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 import { type setupTestRunner } from './test-runner'
@@ -233,6 +234,6 @@ export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: Floa
 }
 
 export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>) {
-  const { getArtifacts } = createSystem(testConfig(config))
-  return (await getArtifacts()).prisma
+  const system = createSystem(testConfig(config))
+  return (await getArtifacts(system)).prisma
 }

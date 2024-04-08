@@ -1,8 +1,12 @@
 import { spawn } from 'node:child_process'
 import esbuild from 'esbuild'
-import { createSystem } from '../lib/createSystem'
 import {
-  getBuiltKeystoneConfiguration,
+  createSystem,
+  getBuiltKeystoneConfiguration
+} from '../lib/createSystem'
+import {
+  validateArtifacts,
+  generatePrismaClient
 } from '../artifacts'
 import { getEsbuildConfig } from '../lib/esbuild'
 import { ExitError } from './utils'
@@ -17,8 +21,8 @@ export async function prisma (cwd: string, args: string[], frozen: boolean) {
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const config = getBuiltKeystoneConfiguration(cwd)
   const system = createSystem(config)
-  await system.validateArtifacts(cwd)
-  await system.generatePrismaClient(cwd)
+  await validateArtifacts(cwd, system)
+  await generatePrismaClient(cwd, system)
 
   return new Promise<void>((resolve, reject) => {
     const p = spawn('node', [require.resolve('prisma'), ...args], {

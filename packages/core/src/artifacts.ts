@@ -1,15 +1,16 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { createRequire } from 'node:module'
 import { printSchema, GraphQLSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import { ExitError } from './scripts/utils'
-import {
-  type KeystoneConfig,
-  type __ResolvedKeystoneConfig
-} from './types'
+import { type __ResolvedKeystoneConfig } from './types'
 import { initialiseLists } from './lib/core/initialise-lists'
+import {
+  type System,
+  getSystemPaths
+} from './lib/createSystem'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
+import { printGeneratedTypes } from './lib/typescript-schema-printer'
 
 export function getFormattedGraphQLSchema (schema: string) {
   return (
@@ -18,41 +19,6 @@ export function getFormattedGraphQLSchema (schema: string) {
     schema +
     '\n'
   )
-}
-
-export async function getCommittedArtifacts (config: __ResolvedKeystoneConfig, graphQLSchema: GraphQLSchema) {
-  const lists = initialiseLists(config)
-  const prismaSchema = printPrismaSchema(config, lists)
-  return {
-    graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
-    prisma: await formatPrismaSchema(prismaSchema),
-  }
-}
-
-let hasEnsuredBinariesExist = false
-async function ensurePrismaBinariesExist () {
-  // ensureBinariesExist does a bunch of slightly expensive things
-  // so if we can avoid running it a bunch in tests, that's ideal
-  if (hasEnsuredBinariesExist) return
-  // we're resolving @prisma/engines from @prisma/internals
-  // because we don't want to depend on @prisma/engines
-  // since its version includes a commit hash from https://github.com/prisma/prisma-engines
-  // and we just want to use whatever version @prisma/internals is using
-  // also note we use an exact version of @prisma/internals
-  // so if @prisma/internals suddenly stops depending on @prisma/engines
-  // that won't break a released version of Keystone
-  // also, we're not just directly importing @prisma/engines
-  // since stricter package managers(e.g. pnpm, Yarn Berry)
-  // don't allow importing packages that aren't explicitly depended on
-  const requireFromPrismaSdk = createRequire(require.resolve('@prisma/internals'))
-  const prismaEngines = requireFromPrismaSdk('@prisma/engines')
-  await prismaEngines.ensureBinariesExist()
-  hasEnsuredBinariesExist = true
-}
-
-async function formatPrismaSchema (schema: string) {
-  await ensurePrismaBinariesExist()
-  return formatSchema({ schema })
 }
 
 async function readFileButReturnNothingIfDoesNotExist (path: string) {
@@ -66,58 +32,7 @@ async function readFileButReturnNothingIfDoesNotExist (path: string) {
   }
 }
 
-// TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-export function getBuiltKeystoneConfigurationPath (cwd: string) {
-  return path.join(cwd, '.keystone/config.js')
-}
-
-export function getBuiltKeystoneConfiguration (cwd: string) {
-  return require(getBuiltKeystoneConfigurationPath(cwd)).default
-}
-
-function posixify (s: string) {
-  return s.split(path.sep).join('/')
-}
-
-export function getSystemPaths (cwd: string, config: KeystoneConfig | __ResolvedKeystoneConfig) {
-  const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
-    ? null
-    : config.db.prismaClientPath
-      ? path.join(cwd, config.db.prismaClientPath)
-      : null
-
-  const builtTypesPath = config.types?.path
-    ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
-    : path.join(cwd, 'node_modules/.keystone/types.ts')
-
-  const builtPrismaPath = config.db?.prismaSchemaPath
-    ? path.join(cwd, config.db.prismaSchemaPath) // TODO: enforce initConfig before getSystemPaths
-    : path.join(cwd, 'schema.prisma')
-
-  const relativePrismaPath = prismaClientPath
-    ? `./${posixify(path.relative(path.dirname(builtTypesPath), prismaClientPath))}`
-    : '@prisma/client'
-
-  const builtGraphqlPath = config.graphql?.schemaPath
-    ? path.join(cwd, config.graphql.schemaPath) // TODO: enforce initConfig before getSystemPaths
-    : path.join(cwd, 'schema.graphql')
-
-  return {
-    config: getBuiltKeystoneConfigurationPath(cwd),
-    admin: path.join(cwd, '.keystone/admin'),
-    prisma: prismaClientPath ?? '@prisma/client',
-    types: {
-      relativePrismaPath,
-    },
-    schema: {
-      types: builtTypesPath,
-      prisma: builtPrismaPath,
-      graphql: builtGraphqlPath,
-    },
-  }
-}
-
-export async function validatePrismaAndGraphQLSchemas (
+async function validatePrismaAndGraphQLSchemas (
   cwd: string,
   config: __ResolvedKeystoneConfig,
   graphQLSchema: GraphQLSchema
@@ -151,9 +66,40 @@ export async function validatePrismaAndGraphQLSchemas (
   throw new ExitError(1)
 }
 
-export async function generatePrismaClient (prismaSchemaPath: string, dataProxy: boolean) {
+async function getCommittedArtifacts (config: __ResolvedKeystoneConfig, graphQLSchema: GraphQLSchema) {
+  const lists = initialiseLists(config)
+  const prismaSchema = printPrismaSchema(config, lists)
+  return {
+    graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
+    prisma: await formatSchema({ schema: prismaSchema }),
+  }
+}
+
+export async function getArtifacts (system: System) {
+  return await getCommittedArtifacts(system.config, system.graphQLSchema)
+}
+
+export async function generateArtifacts (cwd: string, system: System) {
+  const paths = getSystemPaths(cwd, system.config)
+  const artifacts = await getCommittedArtifacts(system.config, system.graphQLSchema)
+
+  await fs.writeFile(paths.schema.graphql, artifacts.graphql)
+  await fs.writeFile(paths.schema.prisma, artifacts.prisma)
+  return artifacts
+}
+
+export async function generateTypes (cwd: string, system: System) {
+  const paths = getSystemPaths(cwd, system.config)
+  const schema = printGeneratedTypes(paths.types.relativePrismaPath, system.graphQLSchema, system.lists)
+  await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
+  await fs.writeFile(paths.schema.types, schema)
+}
+
+export async function generatePrismaClient (cwd: string, system: System) {
+  const paths = getSystemPaths(cwd, system.config)
+  const dataProxy = system.config.db.url.startsWith('prisma:')
   const generators = await getGenerators({
-    schemaPath: prismaSchemaPath,
+    schemaPath: paths.schema.prisma,
     dataProxy,
   })
 
@@ -174,4 +120,8 @@ export async function generatePrismaClient (prismaSchemaPath: string, dataProxy:
       }
     })
   )
+}
+
+export async function validateArtifacts (cwd: string, system: System) {
+  return await validatePrismaAndGraphQLSchemas(cwd, system.config, system.graphQLSchema)
 }

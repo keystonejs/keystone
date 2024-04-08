@@ -8,6 +8,6 @@ export {
   pushPrismaSchemaToDatabase,
 } from '../lib/migrations'
 export {
-  getCommittedArtifacts,
-  validatePrismaAndGraphQLSchemas,
+  generateArtifacts,
+  getArtifacts,
 } from '../artifacts'

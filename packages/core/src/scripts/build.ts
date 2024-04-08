@@ -1,9 +1,15 @@
 import esbuild from 'esbuild'
 import nextBuild from 'next/dist/build'
 import { generateAdminUI } from '../admin-ui/system'
-import { createSystem } from '../lib/createSystem'
 import {
-  getBuiltKeystoneConfiguration,
+  createSystem,
+  getBuiltKeystoneConfiguration
+} from '../lib/createSystem'
+import {
+  generateArtifacts,
+  generatePrismaClient,
+  generateTypes,
+  validateArtifacts,
 } from '../artifacts'
 import { getEsbuildConfig } from '../lib/esbuild'
 import type { Flags } from './cli'
@@ -20,15 +26,15 @@ export async function build (
   const paths = system.getPaths(cwd)
   if (prisma) {
     if (frozen) {
-      await system.validateArtifacts(cwd)
+      await validateArtifacts(cwd, system)
       console.log('✨ GraphQL and Prisma schemas are up to date')
     } else {
-      await system.generateArtifacts(cwd)
+      await generateArtifacts(cwd, system)
       console.log('✨ Generated GraphQL and Prisma schemas')
     }
 
-    await system.generateTypes(cwd)
-    await system.generatePrismaClient(cwd)
+    await generateTypes(cwd, system)
+    await generatePrismaClient(cwd, system)
   }
 
   if (system.config.ui?.isDisabled || !ui) return

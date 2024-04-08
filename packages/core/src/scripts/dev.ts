@@ -9,14 +9,19 @@ import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations'
-import { createSystem } from '../lib/createSystem'
+import {
+  createSystem,
+  getBuiltKeystoneConfiguration,
+} from '../lib/createSystem'
 import { getEsbuildConfig } from '../lib/esbuild'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runTelemetry } from '../lib/telemetry'
 import {
   getFormattedGraphQLSchema,
-  getBuiltKeystoneConfiguration,
+  generateArtifacts,
+  generateTypes,
+  generatePrismaClient
 } from '../artifacts'
 import type { KeystoneConfig } from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
@@ -146,9 +151,9 @@ export async function dev (
       // Generate the Artifacts
       if (prisma) {
         console.log('✨ Generating GraphQL and Prisma schemas')
-        const prismaSchema = (await system.generateArtifacts(cwd)).prisma
-        await system.generateTypes(cwd)
-        await system.generatePrismaClient(cwd)
+        const prismaSchema = (await generateArtifacts(cwd, system)).prisma
+        await generateTypes(cwd, system)
+        await generatePrismaClient(cwd, system)
 
         if (system.config.db.useMigrations) {
           await devMigrations(
@@ -288,7 +293,7 @@ export async function dev (
           lastPrintedGraphQLSchema = newPrintedGraphQLSchema
         }
 
-        await newSystem.generateTypes(cwd)
+        await generateTypes(cwd, newSystem)
         await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, true)
         if (prismaClientModule) {
           if (server && lastApolloServer) {
