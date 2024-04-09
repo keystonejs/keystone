@@ -5,8 +5,10 @@ import {
   getBuiltKeystoneConfiguration
 } from '../lib/createSystem'
 import {
+  generateArtifacts,
+  generatePrismaClient,
+  generateTypes,
   validateArtifacts,
-  generatePrismaClient
 } from '../artifacts'
 import { getEsbuildConfig } from '../lib/esbuild'
 import { ExitError } from './utils'
@@ -21,8 +23,17 @@ export async function prisma (cwd: string, args: string[], frozen: boolean) {
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const config = getBuiltKeystoneConfiguration(cwd)
   const system = createSystem(config)
-  await validateArtifacts(cwd, system)
-  await generatePrismaClient(cwd, system)
+
+  if (frozen) {
+    await validateArtifacts(cwd,  system)
+    console.log('✨ GraphQL and Prisma schemas are up to date')
+  } else {
+    await generateArtifacts(cwd, system)
+    console.log('✨ Generated GraphQL and Prisma schemas')
+
+    await generatePrismaClient(cwd, system)
+    await generateTypes(cwd, system)
+  }
 
   return new Promise<void>((resolve, reject) => {
     const p = spawn('node', [require.resolve('prisma'), ...args], {
