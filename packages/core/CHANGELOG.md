@@ -1,5 +1,37 @@
 # @keystone-6/core
 
+## 5.8.0
+
+### Minor Changes
+
+- [#9057](https://github.com/keystonejs/keystone/pull/9057) [`1b55b41`](https://github.com/keystonejs/keystone/commit/1b55b41248ffcea0322d024a333169549ccf111c) Thanks [@dcousens](https://github.com/dcousens)! - Adds `{field}.hooks.validate.[create|update|delete]` hooks, deprecates `validateInput` and `validateDelete` (throws if incompatible)
+
+- [#9056](https://github.com/keystonejs/keystone/pull/9056) [`3d20b94`](https://github.com/keystonejs/keystone/commit/3d20b94f8791225bf832b4c8d83d9235b6cc103b) Thanks [@dcousens](https://github.com/dcousens)! - Adds `{list}.hooks.validate.[create|update|delete]` hooks, deprecates `validateInput` and `validateDelete`
+
+- [#9026](https://github.com/keystonejs/keystone/pull/9026) [`8147976`](https://github.com/keystonejs/keystone/commit/8147976e90998d3d6e96f177d7f3370feeadf8d1) Thanks [@dcousens](https://github.com/dcousens)! - Add `async` to `extendHttpServer`, to support `await` on startup
+
+### Patch Changes
+
+- [#9027](https://github.com/keystonejs/keystone/pull/9027) [`18eed93`](https://github.com/keystonejs/keystone/commit/18eed93868f8e769f84ec6c81025d7694252b98f) Thanks [@dcousens](https://github.com/dcousens)! - Use `db.idField` of `{ kind: 'number', kind: 'Int' }` internally for singletons
+
+- [#9042](https://github.com/keystonejs/keystone/pull/9042) [`ee1bdac`](https://github.com/keystonejs/keystone/commit/ee1bdaca34412d1b1fbea6dec3ce46e0f33d67f6) Thanks [@dcousens](https://github.com/dcousens)! - Fix static relationship resolution errors to conform to nominal error structure
+
+- [#9026](https://github.com/keystonejs/keystone/pull/9026) [`8147976`](https://github.com/keystonejs/keystone/commit/8147976e90998d3d6e96f177d7f3370feeadf8d1) Thanks [@dcousens](https://github.com/dcousens)! - Fix `config.server.cors` type preventing value of `false`
+
+- [#8809](https://github.com/keystonejs/keystone/pull/8809) [`c0dacbf`](https://github.com/keystonejs/keystone/commit/c0dacbf3426961e645a56fb9451415ac6b561b0e) Thanks [@dcousens](https://github.com/dcousens)! - Fix `defaultIsFilterable` and `defaultIsOrderable` types preventing value of `true`
+
+- [#9029](https://github.com/keystonejs/keystone/pull/9029) [`f125787`](https://github.com/keystonejs/keystone/commit/f125787946ed41ac5d7d097fa33608f27da14654) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `createExpressApp` to use `context.graphql.schema`, not the GraphQLSchema argument
+
+- [#9028](https://github.com/keystonejs/keystone/pull/9028) [`d828013`](https://github.com/keystonejs/keystone/commit/d828013079dbbe29ef5cbd10f580cc9a85548996) Thanks [@dcousens](https://github.com/dcousens)! - Deprecates `extendHttpServer`'s `graphqlSchema` argument, use `context.graphql.schema` instead
+
+- [#9029](https://github.com/keystonejs/keystone/pull/9029) [`f125787`](https://github.com/keystonejs/keystone/commit/f125787946ed41ac5d7d097fa33608f27da14654) Thanks [@dcousens](https://github.com/dcousens)! - Deprecates `ExtendGraphQLSchema` type, use type `(schema: GraphQLSchema) => GraphQLSchema` instead
+
+- [#8809](https://github.com/keystonejs/keystone/pull/8809) [`c0dacbf`](https://github.com/keystonejs/keystone/commit/c0dacbf3426961e645a56fb9451415ac6b561b0e) Thanks [@dcousens](https://github.com/dcousens)! - Fix global locking by dropping global `p-limit` on `context.query`/`context.db`
+
+- [#9017](https://github.com/keystonejs/keystone/pull/9017) [`3cb0cce`](https://github.com/keystonejs/keystone/commit/3cb0cceef7a0b55d0ea7998ca00654c7eb217bde) Thanks [@dcousens](https://github.com/dcousens)! - Fix `image` field type to use consistent sub-field ordering
+
+- [#9057](https://github.com/keystonejs/keystone/pull/9057) [`1b55b41`](https://github.com/keystonejs/keystone/commit/1b55b41248ffcea0322d024a333169549ccf111c) Thanks [@dcousens](https://github.com/dcousens)! - Fixes the `text` field type to accept a `defaultValue` of `null`
+
 ## 5.7.2
 
 ### Patch Changes
@@ -1659,8 +1691,8 @@
   config({
     server: {
       healthCheck: {
-        path: '/my-health-check',
-        data: { status: 'healthy' },
+        path: "/my-health-check",
+        data: { status: "healthy" },
       },
     },
   });
@@ -1672,9 +1704,9 @@
   config({
     server: {
       healthCheck: {
-        path: '/my-health-check',
+        path: "/my-health-check",
         data: () => ({
-          status: 'healthy',
+          status: "healthy",
           timestamp: Date.now(),
           uptime: process.uptime(),
         }),
@@ -2713,7 +2745,9 @@
   For example, to find the title and author name for all posts in our system we would run:
 
   ```js
-  const posts = await context.lists.Post.findMany({ resolveFields: 'id title author { id name }' });
+  const posts = await context.lists.Post.findMany({
+    resolveFields: "id title author { id name }",
+  });
   ```
 
   If `resolveFields: false` is provided, this indicates to the method that no field-resolving is desired.
@@ -2737,7 +2771,7 @@
           return context.lists.Post.findMany({
             where: { user: { id: userId } },
             first: 1,
-            sortBy: ['stars_DESC'],
+            sortBy: ["stars_DESC"],
             resolveFields: false,
           });
         },
