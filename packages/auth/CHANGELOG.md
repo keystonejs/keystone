@@ -1,5 +1,11 @@
 # @keystone-6/auth
 
+## 7.0.3
+
+### Patch Changes
+
+- [#9018](https://github.com/keystonejs/keystone/pull/9018) [`17ba589`](https://github.com/keystonejs/keystone/commit/17ba58970167fde082401d612db5a7acd8fc2184) Thanks [@dcousens](https://github.com/dcousens)! - Fix `createInitial*` and `send*MagicAuthLink` to throw if the expected type from `sessionStrategy.start` is not a string
+
 ## 7.0.2
 
 ### Patch Changes
