@@ -8,7 +8,7 @@ import express from 'express'
 import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
-import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations'
+import { pushPrismaSchemaToDatabase } from '../lib/migrations'
 import {
   createSystem,
   getBuiltKeystoneConfiguration,
@@ -155,15 +155,7 @@ export async function dev (
         await generateTypes(cwd, system)
         await generatePrismaClient(cwd, system)
 
-        if (system.config.db.useMigrations) {
-          await devMigrations(
-            system.config.db.url,
-            system.config.db.shadowDatabaseUrl,
-            prismaSchema,
-            paths.schema.prisma,
-            false
-          )
-        } else if (dbPush) {
+        if (dbPush) {
           await pushPrismaSchemaToDatabase(
             system.config.db.url,
             system.config.db.shadowDatabaseUrl,
@@ -270,10 +262,8 @@ export async function dev (
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            JSON.stringify(newSystem.config.db.enableLogging) !==
-              JSON.stringify(system.config.db.enableLogging) ||
-            newSystem.config.db.url !== system.config.db.url ||
-            newSystem.config.db.useMigrations !== system.config.db.useMigrations
+            JSON.stringify(newSystem.config.db.enableLogging) !== JSON.stringify(system.config.db.enableLogging)
+            || newSystem.config.db.url !== system.config.db.url
           ) {
             console.error('Your database configuration has changed, please restart Keystone')
             return stop(null, true)

@@ -114,9 +114,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     prismaSchemaPath?: string
 
     extendPrismaSchema?: (schema: string) => string
-
-    /** @deprecated TODO: remove in breaking change */
-    useMigrations?: boolean
   }
 
   graphql?: {

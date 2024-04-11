@@ -1,4 +1,5 @@
 // most of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
+import { spawn } from 'node:child_process';
 import path from 'node:path'
 import { format } from 'node:util'
 import fs from 'node:fs'
@@ -80,6 +81,20 @@ export async function runCommand (cwd: string, args: string | string[]) {
   if (typeof proc === 'function') {
     await proc()
   }
+}
+
+export async function spawnCommand (cwd: string, commands: string[]) {
+  let output = ''
+  return new Promise<string>((resolve, reject) => {
+    const p = spawn('node', [cliBinPath, ...commands], { cwd })
+    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
+    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.on('error', err => reject(err))
+    p.on('exit', code => {
+      if (code) return reject(new ExitError(code))
+      resolve(output)
+    })
+  })
 }
 
 let dirsToRemove: string[] = []
@@ -169,6 +184,10 @@ export async function introspectDb (cwd: string, url: string) {
 }`,
     })
     return datamodel
+  } catch (e: any) {
+    if (e.code === 'P4001') return null
+    throw e
+
   } finally {
     engine.stop()
   }

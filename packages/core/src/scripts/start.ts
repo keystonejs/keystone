@@ -7,13 +7,13 @@ import {
 } from '../lib/createSystem'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
-import { deployMigrations } from '../lib/migrations'
+import { withMigrate, runMigrateWithDbUrl } from '../lib/migrations'
 import { ExitError } from './utils'
 import type { Flags } from './cli'
 
 export async function start (
   cwd: string,
-  { ui, withMigrations }: Pick<Flags, 'ui' | 'withMigrations'>
+  { server, ui, withMigrations }: Pick<Flags, 'server' | 'ui' | 'withMigrations'>
 ) {
   console.log('✨ Starting Keystone')
 
@@ -32,10 +32,14 @@ export async function start (
   const keystone = system.getKeystone(prismaClient)
 
   if (withMigrations) {
-    console.log('✨ Applying database migrations')
-    await deployMigrations(paths.schema.prisma, system.config.db.url)
+    console.log('✨ Applying any database migrations')
+    await withMigrate(paths.schema.prisma, async migrate => {
+      const { appliedMigrationNames } = await runMigrateWithDbUrl(system.config.db.url, undefined, () => migrate.applyMigrations())
+      console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
+    })
   }
 
+  if (!server) return
   console.log('✨ Connecting to the database')
   await keystone.connect()
 
