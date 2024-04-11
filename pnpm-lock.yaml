@@ -820,8 +820,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1104,8 +1104,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1554,8 +1554,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1605,8 +1605,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1624,8 +1624,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1649,8 +1649,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1671,8 +1671,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1744,8 +1744,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -1763,8 +1763,8 @@ importers:
         specifier: ^5.0.0
         version: 5.12.1
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.7.1
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
@@ -2225,23 +2225,16 @@ importers:
         version: 0.100.0(slate@0.102.0)
 
   prisma-utils:
-    dependencies:
+    devDependencies:
       '@prisma/generator-helper':
         specifier: ^5.0.0
         version: 5.12.1
       '@prisma/internals':
         specifier: ^5.0.0
         version: 5.11.0
-      fs-extra:
-        specifier: ^11.0.0
-        version: 11.2.0
       tsx:
         specifier: ^4.0.0
         version: 4.7.1
-    devDependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.1
-        version: 11.0.4
 
   tests/admin-ui-tests:
     dependencies:
@@ -5409,6 +5402,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm64@0.19.12:
@@ -5451,6 +5445,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm@0.19.12:
@@ -5493,6 +5488,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-x64@0.19.12:
@@ -5535,6 +5531,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-arm64@0.19.12:
@@ -5577,6 +5574,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-x64@0.19.12:
@@ -5619,6 +5617,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-arm64@0.19.12:
@@ -5661,6 +5660,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-x64@0.19.12:
@@ -5703,6 +5703,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm64@0.19.12:
@@ -5745,6 +5746,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm@0.19.12:
@@ -5787,6 +5789,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ia32@0.19.12:
@@ -5829,6 +5832,7 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-loong64@0.19.12:
@@ -5871,6 +5875,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-mips64el@0.19.12:
@@ -5913,6 +5918,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ppc64@0.19.12:
@@ -5955,6 +5961,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-riscv64@0.19.12:
@@ -5997,6 +6004,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-s390x@0.19.12:
@@ -6039,6 +6047,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-x64@0.19.12:
@@ -6081,6 +6090,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/netbsd-x64@0.19.12:
@@ -6123,6 +6133,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/openbsd-x64@0.19.12:
@@ -6165,6 +6176,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/sunos-x64@0.19.12:
@@ -6207,6 +6219,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-arm64@0.19.12:
@@ -6249,6 +6262,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-ia32@0.19.12:
@@ -6291,6 +6305,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-x64@0.19.12:
@@ -7351,12 +7366,14 @@ packages:
 
   /@prisma/debug@5.11.0:
     resolution: {integrity: sha512-N6yYr3AbQqaiUg+OgjkdPp3KPW1vMTAgtKX6+BiB/qB2i1TjLYCrweKcUjzOoRM5BriA4idrkTej9A9QqTfl3A==}
+    dev: true
 
   /@prisma/debug@5.12.1:
     resolution: {integrity: sha512-kd/wNsR0klrv79o1ITsbWxYyh4QWuBidvxsXSParPsYSu0ircUmNk3q4ojsgNc3/81b0ozg76iastOG43tbf8A==}
 
   /@prisma/engines-version@5.11.0-15.efd2449663b3d73d637ea1fd226bafbcf45b3102:
     resolution: {integrity: sha512-WXCuyoymvrS4zLz4wQagSsc3/nE6CHy8znyiMv8RKazKymOMd5o9FP5RGwGHAtgoxd+aB/BWqxuP/Ckfu7/3MA==}
+    dev: true
 
   /@prisma/engines-version@5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab:
     resolution: {integrity: sha512-6yvO8s80Tym61aB4QNtYZfWVmE3pwqe807jEtzm8C5VDe7nw8O1FGX3TXUaXmWV0fQTIAfRbeL2Gwrndabp/0g==}
@@ -7369,6 +7386,7 @@ packages:
       '@prisma/engines-version': 5.11.0-15.efd2449663b3d73d637ea1fd226bafbcf45b3102
       '@prisma/fetch-engine': 5.11.0
       '@prisma/get-platform': 5.11.0
+    dev: true
 
   /@prisma/engines@5.12.1:
     resolution: {integrity: sha512-HQDdglLw2bZR/TXD2Y+YfDMvi5Q8H+acbswqOsWyq9pPjBLYJ6gzM+ptlTU/AV6tl0XSZLU1/7F4qaWa8bqpJA==}
@@ -7385,6 +7403,7 @@ packages:
       '@prisma/debug': 5.11.0
       '@prisma/engines-version': 5.11.0-15.efd2449663b3d73d637ea1fd226bafbcf45b3102
       '@prisma/get-platform': 5.11.0
+    dev: true
 
   /@prisma/fetch-engine@5.12.1:
     resolution: {integrity: sha512-qSs3KcX1HKcea1A+hlJVK/ljj0PNIUHDxAayGMvgJBqmaN32P9tCidlKz1EGv6WoRFICYnk3Dd/YFLBwnFIozA==}
@@ -7397,6 +7416,7 @@ packages:
     resolution: {integrity: sha512-oK25sTb2q2TPN7OipiU5xkCpDPNvdWvmFgU9UmmPr8uEt2CdwDjxiWonULgwd6YfqnCOLNpLq0wBIONjelaVMg==}
     dependencies:
       '@prisma/debug': 5.11.0
+    dev: true
 
   /@prisma/generator-helper@5.12.1:
     resolution: {integrity: sha512-TlaI4J6jDKO06P68ve5czz1SionzI5ciUIw2tWFO4FM4qPID5+7nrxTVlecFTUD7Nc+IaO1hYT1YBOPKLiUncQ==}
@@ -7407,6 +7427,7 @@ packages:
     resolution: {integrity: sha512-rxtHpMLxNTHxqWuGOLzR2QOyQi79rK1u1XYAVLZxDGTLz/A+uoDnjz9veBFlicrpWjwuieM4N6jcnjj/DDoidw==}
     dependencies:
       '@prisma/debug': 5.11.0
+    dev: true
 
   /@prisma/get-platform@5.12.1:
     resolution: {integrity: sha512-pgIR+pSvhYHiUcqXVEZS31NrFOTENC9yFUdEAcx7cdQBoZPmHVjtjN4Ss6NzVDMYPrKJJ51U14EhEoeuBlMioQ==}
@@ -7424,6 +7445,7 @@ packages:
       '@prisma/prisma-schema-wasm': 5.11.0-15.efd2449663b3d73d637ea1fd226bafbcf45b3102
       arg: 5.0.2
       prompts: 2.4.2
+    dev: true
 
   /@prisma/internals@5.12.1:
     resolution: {integrity: sha512-g6j9KebTSPVfGs3s9V6ImaDiTGBSAwVlde98wmvTFJzineVTclrCbmYmqnZKtPE9PLKUJXPsQVIDL/P9/dENbw==}
@@ -7468,6 +7490,7 @@ packages:
 
   /@prisma/prisma-schema-wasm@5.11.0-15.efd2449663b3d73d637ea1fd226bafbcf45b3102:
     resolution: {integrity: sha512-1VdfJ7fIM9X0opDyuNIrHLeynRdjIqI2waepLpi42ARiztPyD3getsgOtntiqMg3jGVwvnNdshUKuwHBFbv5Fg==}
+    dev: true
 
   /@prisma/prisma-schema-wasm@5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab:
     resolution: {integrity: sha512-93HT3McC6z6a+2mmHLZVjLz0M0YR4t0CZcsq4HnU0aMWwC9CottwDZvABIPacWqPSXb+5ZnTVybgpZ+Cj1i0rA==}
@@ -11842,6 +11865,7 @@ packages:
       '@esbuild/win32-arm64': 0.18.20
       '@esbuild/win32-ia32': 0.18.20
       '@esbuild/win32-x64': 0.18.20
+    dev: false
 
   /esbuild@0.19.12:
     resolution: {integrity: sha512-aARqgq8roFBj054KvQr5f1sFu0D65G+miZRCuJyJ0G13Zwx7vRar5Zhn2tkQNzIXcBrNVsv/8stehpj+GAjgbg==}
@@ -19246,17 +19270,6 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsx@3.14.0:
-    resolution: {integrity: sha512-xHtFaKtHxM9LOklMmJdI3BEnQq/D5F73Of2E1GDrITi9sgoVkvIsrQUTY1G8FlmGtA+awCI4EBlTRRYxkL2sRg==}
-    hasBin: true
-    dependencies:
-      esbuild: 0.18.20
-      get-tsconfig: 4.7.3
-      source-map-support: 0.5.21
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
   /tsx@4.7.1:
     resolution: {integrity: sha512-8d6VuibXHtlN5E3zFkgY8u4DX7Y3Z27zvvPKVmLon/D4AjuKzarkUBTLDBgj9iTQ0hg5xM7c/mYiRVM+HETf0g==}
     engines: {node: '>=18.0.0'}
@@ -19266,7 +19279,6 @@ packages:
       get-tsconfig: 4.7.3
     optionalDependencies:
       fsevents: 2.3.3
-    dev: false
 
   /tty-table@4.2.3:
     resolution: {integrity: sha512-Fs15mu0vGzCrj8fmJNP7Ynxt5J7praPXqFN0leZeZBXJwkMxv9cb2D454k1ltrtUSJbZ4yH4e0CynsHLxmUfFA==}
