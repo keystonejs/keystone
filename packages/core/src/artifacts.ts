@@ -97,10 +97,8 @@ export async function generateTypes (cwd: string, system: System) {
 
 export async function generatePrismaClient (cwd: string, system: System) {
   const paths = getSystemPaths(cwd, system.config)
-  const dataProxy = system.config.db.url.startsWith('prisma:')
   const generators = await getGenerators({
     schemaPath: paths.schema.prisma,
-    dataProxy,
   })
 
   await Promise.all(

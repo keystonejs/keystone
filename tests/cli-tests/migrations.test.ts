@@ -306,7 +306,6 @@ CREATE TABLE "Todo" (
 Prompt: Name of migration init
 ? A migration has been created at migrations/migration_name
 Prompt: Would you like to apply this migration? true
-Applying migration \`migration_name\`
 ? Connecting to the database
 ? Creating server
 ? GraphQL API ready`)
@@ -377,7 +376,6 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration add-is-complete
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
-      Applying migration \`migration_name\`
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -452,7 +450,6 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration remove all fields except id
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
-      Applying migration \`migration_name\`
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -528,7 +525,6 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration init2
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
-      Applying migration \`migration_name\`
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -666,7 +662,6 @@ describe('useMigrations: true', () => {
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
       ? sqlite database "app.db" created at file:./app.db
-      Applying migration \`migration_name\`
       ? The following migration(s) have been applied:
         - migration_name
       ? Your migrations are up to date, no new migrations need to be created

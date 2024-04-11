@@ -245,9 +245,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset())
       }
     }
-    const { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
-      migrate.applyMigrations()
-    )
+    const { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.applyMigrations())
 
     // inform user about applied migrations now
     if (appliedMigrationNames.length) {
