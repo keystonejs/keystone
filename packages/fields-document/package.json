@@ -81,7 +81,7 @@
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^15.0.0",
     "@types/is-hotkey": "^0.1.7",
     "jest-diff": "^29.0.0",
     "pretty-format": "^29.0.0",

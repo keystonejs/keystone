@@ -2209,8 +2209,8 @@ importers:
         specifier: workspace:^
         version: link:../core
       '@testing-library/react':
-        specifier: ^14.0.0
-        version: 14.2.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^15.0.0
+        version: 15.0.2(react-dom@18.2.0)(react@18.2.0)
       '@types/is-hotkey':
         specifier: ^0.1.7
         version: 0.1.10
@@ -8625,29 +8625,29 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@testing-library/dom@9.3.4:
-    resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
-    engines: {node: '>=14'}
+  /@testing-library/dom@10.0.0:
+    resolution: {integrity: sha512-PmJPnogldqoVFf+EwbHvbBJ98MmqASV8kLrBYgsDNxQcFMeIS7JFL48sfyXvuMtgmWO/wMhh25odr+8VhDmn4g==}
+    engines: {node: '>=18'}
     dependencies:
       '@babel/code-frame': 7.24.2
       '@babel/runtime': 7.24.1
       '@types/aria-query': 5.0.4
-      aria-query: 5.1.3
+      aria-query: 5.3.0
       chalk: 4.1.2
       dom-accessibility-api: 0.5.16
       lz-string: 1.5.0
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/react@14.2.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-SOUuM2ysCvjUWBXTNfQ/ztmnKDmqaiPV3SvoIuyxMUca45rbSWWAT/qB8CUs/JQ/ux/8JFs9DNdFQ3f6jH3crA==}
-    engines: {node: '>=14'}
+  /@testing-library/react@15.0.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-5mzIpuytB1ctpyywvyaY2TAAUQVCZIGqwiqFQf6u9lvj/SJQepGUzNV18Xpk+NLCaCE2j7CWrZE0tEf9xLZYiQ==}
+    engines: {node: '>=18'}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
       '@babel/runtime': 7.24.1
-      '@testing-library/dom': 9.3.4
+      '@testing-library/dom': 10.0.0
       '@types/react-dom': 18.2.23
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -9652,10 +9652,10 @@ packages:
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  /aria-query@5.1.3:
-    resolution: {integrity: sha512-R5iJ5lkuHybztUfuOAznmboyjWq8O6sqNqtK7CLOqdydi54VNbORp49mb14KbWgG1QD3JFO9hJdZ+y4KutfdOQ==}
+  /aria-query@5.3.0:
+    resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
     dependencies:
-      deep-equal: 2.2.3
+      dequal: 2.0.3
     dev: true
 
   /arr-diff@4.0.0:
@@ -11286,30 +11286,6 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  /deep-equal@2.2.3:
-    resolution: {integrity: sha512-ZIwpnevOurS8bpT4192sqAowWM76JDKSHYzMLty3BZGSswgq6pBaH3DhCSW5xVAZICZyKdOBPjwww5wfgT/6PA==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      array-buffer-byte-length: 1.0.1
-      call-bind: 1.0.7
-      es-get-iterator: 1.1.3
-      get-intrinsic: 1.2.4
-      is-arguments: 1.1.1
-      is-array-buffer: 3.0.4
-      is-date-object: 1.0.5
-      is-regex: 1.1.4
-      is-shared-array-buffer: 1.0.3
-      isarray: 2.0.5
-      object-is: 1.1.6
-      object-keys: 1.1.1
-      object.assign: 4.1.5
-      regexp.prototype.flags: 1.5.2
-      side-channel: 1.0.6
-      which-boxed-primitive: 1.0.2
-      which-collection: 1.0.2
-      which-typed-array: 1.1.15
-    dev: true
-
   /deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
     engines: {node: '>=4.0.0'}
@@ -11702,20 +11678,6 @@ packages:
   /es-errors@1.3.0:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
-
-  /es-get-iterator@1.1.3:
-    resolution: {integrity: sha512-sPZmqHBe6JIiTfN5q2pEi//TwxmAFHwj/XEuYjTuse78i8KxaqMTTzxPoFKuzRpDpTJ+0NAbpfenkmH2rePtuw==}
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
-      is-arguments: 1.1.1
-      is-map: 2.0.3
-      is-set: 2.0.3
-      is-string: 1.0.7
-      isarray: 2.0.5
-      stop-iteration-iterator: 1.0.0
-    dev: true
 
   /es-module-lexer@1.5.0:
     resolution: {integrity: sha512-pqrTKmwEIgafsYZAGw9kszYzmagcE/n4dbgwGWLEXg7J4QFJVQRBld8j3Q3GNez79jzxZshq0bcT962QHOghjw==}
@@ -13855,11 +13817,6 @@ packages:
       tslib: 2.4.1
     dev: true
 
-  /is-map@2.0.3:
-    resolution: {integrity: sha512-1Qed0/Hr2m+YqxnM09CjA2d/i6YZNfF6R2oRAOj36eUdS6qIV/huPJNSEpKbupewFs+ZsJlxsjjPbc0/afW6Lw==}
-    engines: {node: '>= 0.4'}
-    dev: true
-
   /is-module@1.0.0:
     resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
     dev: true
@@ -13957,11 +13914,6 @@ packages:
       is-unc-path: 1.0.0
     dev: true
 
-  /is-set@2.0.3:
-    resolution: {integrity: sha512-iPAjerrse27/ygGLxw+EBR9agv9Y6uLeYVJMu+QNCoouJ1/1ri0mGrcWpfCqFZuzzx3WjtwxG098X+n4OuRkPg==}
-    engines: {node: '>= 0.4'}
-    dev: true
-
   /is-shared-array-buffer@1.0.3:
     resolution: {integrity: sha512-nA2hv5XIhLR3uVzDDfCIknerhx8XUKnstuOERPNNIinXG7v9u+ohXF67vxm4TPTEPU6lm61ZkwP3c9PCB97rhg==}
     engines: {node: '>= 0.4'}
@@ -14037,23 +13989,10 @@ packages:
       tslib: 2.4.1
     dev: true
 
-  /is-weakmap@2.0.2:
-    resolution: {integrity: sha512-K5pXYOm9wqY1RgjpL3YTkF39tni1XajUIkawTLUo9EZEVUFga5gSQJF8nNS7ZwJQ02y+1YCNYcMh+HIf1ZqE+w==}
-    engines: {node: '>= 0.4'}
-    dev: true
-
   /is-weakref@1.0.2:
     resolution: {integrity: sha512-qctsuLZmIQ0+vSSMfoVvyFe2+GSEvnmZ2ezTup1SBse9+twCCeial6EEi3Nc2KFcf6+qz2FBPnjXsk8xhKSaPQ==}
     dependencies:
       call-bind: 1.0.7
-    dev: true
-
-  /is-weakset@2.0.3:
-    resolution: {integrity: sha512-LvIm3/KWzS9oRFHugab7d+M/GcBXuXX5xZkzPmN+NxihdQlZUQ4dWuSV1xR/sq6upL1TJEDrfBgRepHFdBtSNQ==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
     dev: true
 
   /is-windows@1.0.2:
@@ -16406,14 +16345,6 @@ packages:
   /object-inspect@1.13.1:
     resolution: {integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==}
 
-  /object-is@1.1.6:
-    resolution: {integrity: sha512-F8cZ+KfGlSGi09lJT7/Nd6KJZ9ygtvYC0/UYYLI9nmQKLMnydpB9yvbv9K1uSkEu7FU9vYPmVwLg328tX+ot3Q==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-    dev: true
-
   /object-keys@0.4.0:
     resolution: {integrity: sha512-ncrLw+X55z7bkl5PnUvHwFK9FcGuFYo9gtjws2XtSzL+aZ8tm830P60WJ0dSmFVaSalWieW5MD7kEdnXda9yJw==}
     dev: false
@@ -18686,13 +18617,6 @@ packages:
       bl: 5.1.0
     dev: false
 
-  /stop-iteration-iterator@1.0.0:
-    resolution: {integrity: sha512-iCGQj+0l0HOdZ2AEeBADlsRC+vsnDsZsbdSiH1yNSjcfKM7fdpCMfqAL/dwF5BLiw/XhRft/Wax6zQbhq2BcjQ==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      internal-slot: 1.0.7
-    dev: true
-
   /stream-browserify@3.0.0:
     resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
     dependencies:
@@ -20113,16 +20037,6 @@ packages:
       is-number-object: 1.0.7
       is-string: 1.0.7
       is-symbol: 1.0.4
-    dev: true
-
-  /which-collection@1.0.2:
-    resolution: {integrity: sha512-K4jVyjnBdgvc86Y6BkaLZEN933SwYOuBFkdmBu9ZfkcAbdVbpITnDmjvZ/aQjRXQrv5EPkTnD1s39GiiqbngCw==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      is-map: 2.0.3
-      is-set: 2.0.3
-      is-weakmap: 2.0.2
-      is-weakset: 2.0.3
     dev: true
 
   /which-module@2.0.1:
