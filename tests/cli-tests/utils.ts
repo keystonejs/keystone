@@ -90,10 +90,24 @@ export async function spawnCommand (cwd: string, commands: string[]) {
     p.stdout.on('data', (data) => (output += data.toString('utf-8')))
     p.stderr.on('data', (data) => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
-    p.on('exit', code => {
-      if (code) return reject(new ExitError(code))
+    p.on('exit', exitCode => {
+      if (typeof exitCode === 'number' && exitCode !== 0) return reject(new ExitError(exitCode))
       resolve(output)
     })
+  })
+}
+
+export async function spawnCommand2 (cwd: string, commands: string[]) {
+  let output = ''
+  return new Promise<{
+    exitCode: number | null,
+    output: string
+  }>((resolve, reject) => {
+    const p = spawn('node', [cliBinPath, ...commands], { cwd })
+    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
+    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.on('error', err => reject(err))
+    p.on('exit', exitCode => (resolve({ exitCode, output })))
   })
 }
 

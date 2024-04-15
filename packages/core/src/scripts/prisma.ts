@@ -16,7 +16,7 @@ export async function prisma (cwd: string, args: string[], frozen: boolean) {
 
   // this is the compiled version of the configuration which was generated during the build step
   if (!(await fs.stat(builtConfigPath).catch(() => null))) {
-    console.error('🚨 keystone build must be run before running keystone start')
+    console.error('🚨 keystone build must be run before running keystone prisma')
     throw new ExitError(1)
   }
 
