@@ -1,5 +1,55 @@
 # @keystone-6/core
 
+## 6.0.0
+
+### Major Changes
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Removes unused type parameters from types `ListConfig` and `ListAdminUIConfig`
+
+- [#9088](https://github.com/keystonejs/keystone/pull/9088) [`7bbc613`](https://github.com/keystonejs/keystone/commit/7bbc613f02f14d86d45b189ce06def2389356aa2) Thanks [@dcousens](https://github.com/dcousens)! - Upgrade `@prisma/*` packages to `5.12.1`
+
+- [#8776](https://github.com/keystonejs/keystone/pull/8776) [`e382f9e`](https://github.com/keystonejs/keystone/commit/e382f9ead3ad2b94a966651d516b8010b854e220) Thanks [@dcousens](https://github.com/dcousens)! - Change `keystone prisma` behaviour to first require `keystone build` (or `keystone dev`)
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove the deprecated type parameters from the `list` and `group` functions
+
+- [#9085](https://github.com/keystonejs/keystone/pull/9085) [`70ffa67`](https://github.com/keystonejs/keystone/commit/70ffa67e6a9d421c78616c72ddc97cb698c189ff) Thanks [@dcousens](https://github.com/dcousens)! - Removes `AdminUIConfig`, `DatabaseConfig`, `GraphQLConfig` and `ServerConfig` from `@keystone-6/core/types`, and some unused types - instead use `KeystoneConfig['ui']`, `KeystoneConfig['db']` and so on
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Removes `graphqlSchema` parameter from `extendHttpServer`, use `context.graphql.schema` instead
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Moves `config.extendGraphqlSchema` to `config.graphql.extendGraphqlSchema`, similar to `db.extendPrismaSchema`
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `KeystoneConfig` parameter from getAdditionalFiles function type
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove the deprecated `context.exitSudo` from `KeystoneContext`
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `context.experimental.initialisedLists`, use `context.__internal.lists` (may break in patch)
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `ExtendGraphqlSchema` type alias, use `(schema: GraphQLSchema) => GraphQLSchema` instead (with `import type { GraphQLSchema } from 'graphql'`).
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove the deprecated (#8721) `config.server.healthCheck`, use `extendExpressApp` instead
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Removes `ListSchemaConfig` type, use `KeystoneConfig['lists']` instead
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `db.additionalPrismaDatasourceProperties`, use `extendPrismaSchema` if needed
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `db.prismaPreviewFeatures`, use `extendPrismaSchema` if needed
+
+- [#9083](https://github.com/keystonejs/keystone/pull/9083) [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe) Thanks [@dcousens](https://github.com/dcousens)! - Remove `any` type parameter from `SessionStore`/`SessionStoreFunction` types
+
+- [#9085](https://github.com/keystonejs/keystone/pull/9085) [`70ffa67`](https://github.com/keystonejs/keystone/commit/70ffa67e6a9d421c78616c72ddc97cb698c189ff) Thanks [@dcousens](https://github.com/dcousens)! - Removes `@keystone-6/core/system` from exports
+
+- [#9090](https://github.com/keystonejs/keystone/pull/9090) [`e21c117`](https://github.com/keystonejs/keystone/commit/e21c117f9ed316f54b4baa1972489c997c73d7ad) Thanks [@dcousens](https://github.com/dcousens)! - Remove deprecated `config.db.useMigrations`, use `--with-migrations` process argument or `keystone prisma migrate [dev|deploy]` instead
+
+- [#9079](https://github.com/keystonejs/keystone/pull/9079) [`2e5b086`](https://github.com/keystonejs/keystone/commit/2e5b08625e5b8418d480b7054ea5d45eb19c02e4) Thanks [@dcousens](https://github.com/dcousens)! - Changes `file` and `image` to use random 128-bit `base64url` identifiers by default, not `uuid`
+
+### Minor Changes
+
+- [#8776](https://github.com/keystonejs/keystone/pull/8776) [`e382f9e`](https://github.com/keystonejs/keystone/commit/e382f9ead3ad2b94a966651d516b8010b854e220) Thanks [@dcousens](https://github.com/dcousens)! - `KS_PRISMA_ERRORS` are now logged with `console.error` on the server
+
+### Patch Changes
+
+- [#9090](https://github.com/keystonejs/keystone/pull/9090) [`e21c117`](https://github.com/keystonejs/keystone/commit/e21c117f9ed316f54b4baa1972489c997c73d7ad) Thanks [@dcousens](https://github.com/dcousens)! - Fix `--no-server` being ignored by `keystone start`
+
 ## 5.8.0
 
 ### Minor Changes
