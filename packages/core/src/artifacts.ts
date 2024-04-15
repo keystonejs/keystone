@@ -82,7 +82,6 @@ export async function getArtifacts (system: System) {
 export async function generateArtifacts (cwd: string, system: System) {
   const paths = getSystemPaths(cwd, system.config)
   const artifacts = await getCommittedArtifacts(system.config, system.graphQLSchema)
-
   await fs.writeFile(paths.schema.graphql, artifacts.graphql)
   await fs.writeFile(paths.schema.prisma, artifacts.prisma)
   return artifacts

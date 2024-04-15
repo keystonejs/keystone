@@ -116,7 +116,6 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       enableLogging: config.db.enableLogging === true ? ['query']
         : config.db.enableLogging === false ? []
           : config.db.enableLogging ?? [],
-      useMigrations: config.db.useMigrations ?? false
     },
     graphql: {
       ...config.graphql,

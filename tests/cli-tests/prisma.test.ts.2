@@ -1,8 +1,8 @@
 import {
   basicKeystoneConfig,
+  cliBinPath,
   schemas,
   spawnCommand,
-  spawnCommand2,
   symlinkKeystoneDeps,
   testdir
 } from './utils'
@@ -16,23 +16,22 @@ test('keystone prisma exits with the same code as the prisma child process exits
     'keystone.js': basicKeystoneConfig,
   })
 
-  await spawnCommand(cwd, ['build', '--no-ui'])
-  const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'bad-thing'])
-
-  expect(exitCode).toEqual(1)
-  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  const output = await spawnCommand(cwd, ['prisma', 'bad-thing'])
+  expect(result.all!.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  expect(result.exitCode).toBe(1)
 })
 
 test('keystone prisma uses the db url in the keystone config', async () => {
-  const cwd = await testdir({
+  const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.js': basicKeystoneConfig,
   })
-
-  await spawnCommand(cwd, ['build', '--no-ui'])
-  const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'migrate', 'status'])
-
-  expect(exitCode).toEqual(1)
-  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  const result = await execa('node', [cliBinPath, 'prisma', 'migrate', 'status'], {
+    reject: false,
+    all: true,
+    cwd: tmp,
+  })
+  expect(result.all!.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  expect(result.exitCode).toBe(1)
 })

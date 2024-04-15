@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`keystone prisma exits with the same code as the prisma child process exits with 1`] = `
-"? Generated GraphQL and Prisma schemas
+"? GraphQL and Prisma schemas are up to date
 
 ! Unknown command "bad-thing"
 
@@ -59,12 +59,14 @@ Examples
 
   Display Prisma debug info
   $ prisma debug
+
 "
 `;
 
 exports[`keystone prisma uses the db url in the keystone config 1`] = `
-"? Generated GraphQL and Prisma schemas
+"? GraphQL and Prisma schemas are up to date
 Prisma schema loaded from schema.prisma
 Datasource "sqlite": SQLite database "app.db" at "file:./app.db"
-Error: P1003: Database app.db does not exist at ./app.db"
+Error: P1003: Database app.db does not exist at ./app.db
+"
 `;

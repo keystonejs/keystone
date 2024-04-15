@@ -89,7 +89,7 @@ export async function cli (cwd: string, argv: string[]) {
   }
 
   if (command === 'start') {
-    return start(cwd, defaultFlags(flags, { ui: true, withMigrations: false }))
+    return start(cwd, defaultFlags(flags, { server: true, ui: true, withMigrations: false }))
   }
 
   if (command === 'prisma') {
