@@ -5,6 +5,7 @@ on:
 
 jobs:
   publish:
+    name: Publish
     runs-on: ubuntu-latest
     environment: Release
     steps:
@@ -14,16 +15,10 @@ jobs:
 
       - uses: ./.github/actions/ci-setup
 
-      - name: version packages
-        run: pnpm changeset version
-        env:
-          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
-
-      - name: git commit
+      - name: git config
         run: |
           git config --global user.name 'Keystonejs Release Bot'
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
-          git commit -a -m 'bump packages'
 
       - run: pnpm build
 
@@ -32,5 +27,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: git push
-        run: git push origin --tags
+      - run: git push origin --follow-tags

@@ -1,5 +1,12 @@
 # @keystone-6/fields-document
 
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`e21c117`](https://github.com/keystonejs/keystone/commit/e21c117f9ed316f54b4baa1972489c997c73d7ad), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`7bbc613`](https://github.com/keystonejs/keystone/commit/7bbc613f02f14d86d45b189ce06def2389356aa2), [`e382f9e`](https://github.com/keystonejs/keystone/commit/e382f9ead3ad2b94a966651d516b8010b854e220), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`70ffa67`](https://github.com/keystonejs/keystone/commit/70ffa67e6a9d421c78616c72ddc97cb698c189ff), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`e382f9e`](https://github.com/keystonejs/keystone/commit/e382f9ead3ad2b94a966651d516b8010b854e220), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`d609c6b`](https://github.com/keystonejs/keystone/commit/d609c6b052622658fe9e62d75c3c574611072efe), [`70ffa67`](https://github.com/keystonejs/keystone/commit/70ffa67e6a9d421c78616c72ddc97cb698c189ff), [`e21c117`](https://github.com/keystonejs/keystone/commit/e21c117f9ed316f54b4baa1972489c997c73d7ad), [`2e5b086`](https://github.com/keystonejs/keystone/commit/2e5b08625e5b8418d480b7054ea5d45eb19c02e4)]:
+  - @keystone-6/core@6.0.0
+
 ## 8.0.2
 
 ### Patch Changes
