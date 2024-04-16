@@ -32,7 +32,7 @@ export async function prisma (cwd: string, args: string[], frozen: boolean) {
       cwd,
       env: {
         ...process.env,
-        DATABASE_URL: config.db.url,
+        DATABASE_URL: system.config.db.url,
         PRISMA_HIDE_UPDATE_MESSAGE: '1',
       },
       stdio: 'inherit',
