@@ -74,6 +74,25 @@ export async function runMigrationsOnDatabase (cwd: string, system: System) {
   })
 }
 
+export async function runMigrationsOnDatabaseMaybeReset (cwd: string, system: System) {
+  const paths = system.getPaths(cwd)
+
+  return await withMigrate(paths.schema.prisma, async (migrate) => {
+    const diagnostic = await runMigrateWithDbUrl(system, () => migrate.devDiagnostic())
+
+    if (diagnostic.action.tag === 'reset') {
+      console.log(diagnostic.action.reason)
+      const consent = await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`)
+      if (!consent) throw new ExitError(1)
+
+      await runMigrateWithDbUrl(system, () => migrate.reset())
+    }
+
+    const { appliedMigrationNames } = await runMigrateWithDbUrl(system, () => migrate.applyMigrations())
+    return appliedMigrationNames
+  })
+}
+
 export async function resetDatabase (dbUrl: string, prismaSchemaPath: string) {
   await createDatabase(dbUrl, path.dirname(prismaSchemaPath))
   const config = {

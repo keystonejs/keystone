@@ -9,7 +9,7 @@ import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runMigrationsOnDatabase } from '../lib/migrations'
 import { ExitError } from './utils'
-import type { Flags } from './cli'
+import { type Flags } from './cli'
 
 export async function start (
   cwd: string,
