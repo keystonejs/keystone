@@ -23,7 +23,6 @@ export async function build (
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const system = createSystem(getBuiltKeystoneConfiguration(cwd))
 
-  const paths = system.getPaths(cwd)
   if (prisma) {
     if (frozen) {
       await validateArtifacts(cwd, system)
@@ -40,6 +39,7 @@ export async function build (
   if (system.config.ui?.isDisabled || !ui) return
 
   console.log('✨ Generating Admin UI code')
+  const paths = system.getPaths(cwd)
   await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
 
   console.log('✨ Building Admin UI')
