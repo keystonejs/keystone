@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-framework-nextjs-pages-directory",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -14,9 +14,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@keystone-6/auth": "^7.0.0",
-    "@keystone-6/core": "^5.7.0",
-    "@keystone-6/fields-document": "^8.0.0",
+    "@keystone-6/auth": "^8.0.0",
+    "@keystone-6/core": "^6.0.0",
+    "@keystone-6/fields-document": "^9.0.0",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "^5.0.0",
     "graphql": "^16.8.1",
