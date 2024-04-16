@@ -56,7 +56,7 @@ export async function cli (cwd: string, argv: string[]) {
       --fix (postinstall) @deprecated
         do build the graphql or prisma schemas, don't validate them
 
-      --frozen (build, prisma)
+      --frozen (build)
         don't build the graphql or prisma schemas, only validate them
 
       --no-db-push (dev)
@@ -65,7 +65,7 @@ export async function cli (cwd: string, argv: string[]) {
       --no-prisma (build, dev)
         don't build or validate the prisma schema
 
-      --no-server (dev)
+      --no-server (dev, start)
         don't start the express server
 
       --no-ui (build, dev, start)
