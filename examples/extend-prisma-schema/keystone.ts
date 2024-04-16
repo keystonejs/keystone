@@ -5,13 +5,16 @@ import { lists } from './schema'
 export default config({
   db: {
     provider: 'sqlite',
-    url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
 
-    extendPrismaSchema: (schema: any) => {
-      return schema.replace(
-        /(generator [^}]+)}/g,
-        ['$1binaryTargets = ["native", "linux-musl"]', '}'].join('\n')
-      )
+    extendPrismaSchema: (schema) => {
+      return schema
+        .replace(/(generator [^}]+)}/g, [
+          '$1',
+          '  binaryTargets = ["native", "linux-musl"]',
+          '  previewFeatures = ["metrics"]',
+          '}'
+        ].join('\n'))
     },
 
     // WARNING: this is only needed for our monorepo examples, dont do this

@@ -29,7 +29,7 @@ export const lists = {
         db: {
           extendPrismaSchema: field => {
             // change relationship to enforce NOT NULL
-            //   WARNING: this won't be easy to use, but this is nice if you know what you're doing
+            //   WARNING: this won't be easy to use, but if you know what you're doing...
             return field
               .replace(/tags Tag\?/g, 'tags Tag')
               .replace(/tagsId String\?/g, 'tagsId String')

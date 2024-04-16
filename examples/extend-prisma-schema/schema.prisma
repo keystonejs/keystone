@@ -8,9 +8,11 @@ datasource sqlite {
 }
 
 generator client {
-  provider      = "prisma-client-js"
-  output        = "node_modules/.myprisma/client"
-  binaryTargets = ["native", "linux-musl"]
+  provider = "prisma-client-js"
+  output   = "node_modules/.myprisma/client"
+
+  binaryTargets   = ["native", "linux-musl"]
+  previewFeatures = ["metrics"]
 }
 
 model Author {
