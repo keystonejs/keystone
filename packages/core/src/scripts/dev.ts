@@ -161,7 +161,7 @@ export async function dev (
             system.config.db.shadowDatabaseUrl,
             prismaSchema,
             paths.schema.prisma,
-            false
+            true // interactive
           )
         } else {
           console.warn('⚠️ Skipping database schema push')

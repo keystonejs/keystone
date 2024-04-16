@@ -1,7 +1,10 @@
-import path from 'path'
+import { type ChildProcess } from 'node:child_process'
+import path from 'node:path'
+
+import chalk from 'chalk'
 import { createDatabase, uriToCredentials, type DatabaseCredentials } from '@prisma/internals'
 import { Migrate } from '@prisma/migrate'
-import chalk from 'chalk'
+
 import { ExitError } from '../scripts/utils'
 import { confirmPrompt } from './prompts'
 
@@ -50,7 +53,7 @@ export async function withMigrate<T> (schemaPath: string, cb: (migrate: Migrate)
     return await cb(migrate)
   } finally {
     const closePromise = new Promise<void>(resolve => {
-      const child = (migrate.engine as any).child as import('child_process').ChildProcess
+      const child = (migrate.engine as any).child as ChildProcess
       child.once('exit', () => resolve())
     })
     migrate.stop()
@@ -63,90 +66,46 @@ export async function pushPrismaSchemaToDatabase (
   shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
-  resetDb: boolean,
-  interactive: boolean = true
+  interactive: boolean = false
 ) {
   const created = await createDatabase(dbUrl, path.dirname(schemaPath))
   if (interactive && created) {
     const credentials = uriToCredentials(dbUrl)
-    console.log(
-      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
-        credentials
-      )}`
-    )
+    console.log(`✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(credentials)}`)
   }
 
   const migration = await withMigrate(schemaPath, async migrate => {
-    if (resetDb) {
-      await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset())
-      let migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
-        migrate.engine.schemaPush({
-          force: true,
-          schema,
-        })
-      )
-      if (interactive) console.log('✨ Your database has been reset')
-      return migration
-    }
     // what does force on migrate.engine.schemaPush mean?
-    // - true: ignore warnings but will not run anything if there are unexecutable steps(so the database needs to be reset before)
-    // - false: if there are warnings or unexecutable steps, don't run the migration
-    // https://github.com/prisma/prisma-engines/blob/a2de6b71267b45669d25c3a27ad30998862a275c/migration-engine/core/src/commands/schema_push.rs
-    const migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
-      migrate.engine.schemaPush({
-        force: false,
-        schema,
-      })
-    )
+    // - true: ignore warnings, but unexecutable steps will block
+    // - false: warnings or unexecutable steps will block
+    const migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: false, schema, }))
 
-    // if there are unexecutable steps, we need to reset the database or the user can switch to using migrations
-    // there's no point in asking if they're okay with the warnings separately after asking if they're okay with
-    // resetting their db since their db is already empty so they don't have any data to lose
+    // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
     if (migration.unexecutable.length) {
       if (!interactive) throw new ExitError(1)
 
       logUnexecutableSteps(migration.unexecutable)
-      if (migration.warnings.length) {
-        logWarnings(migration.warnings)
-      }
+      if (migration.warnings.length) logWarnings(migration.warnings)
+
       console.log('\nTo apply this migration, we need to reset the database')
-      if (
-        !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('All data will be lost')}`,
-          false
-        ))
-      ) {
-        console.error('Reset cancelled')
+      if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`, false))) {
+        console.log('Reset cancelled')
         throw new ExitError(0)
       }
+
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset())
-      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
-        migrate.engine.schemaPush({
-          force: false,
-          schema,
-        })
-      )
+      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: false, schema, }))
     }
 
     if (migration.warnings.length) {
       if (!interactive) throw new ExitError(1)
 
       logWarnings(migration.warnings)
-      if (
-        !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('Some data will be lost')}`,
-          false
-        ))
-      ) {
-        console.error('Push cancelled')
+      if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}`, false))) {
+        console.log('Push cancelled')
         throw new ExitError(0)
       }
-      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
-        migrate.engine.schemaPush({
-          force: true,
-          schema,
-        })
-      )
+      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: true, schema, }))
     }
 
     return migration
@@ -154,9 +113,9 @@ export async function pushPrismaSchemaToDatabase (
 
   if (!interactive) return
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-    console.info(`✨ Database unchanged`)
+    console.log(`✨ Database unchanged`)
   } else {
-    console.info(`✨ Database synchronized with Prisma schema`)
+    console.log(`✨ Database synchronized with Prisma schema`)
   }
 }
 

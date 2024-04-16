@@ -32,13 +32,12 @@ async function readFileButReturnNothingIfDoesNotExist (path: string) {
   }
 }
 
-async function validatePrismaAndGraphQLSchemas (
+export async function validateArtifacts (
   cwd: string,
-  config: __ResolvedKeystoneConfig,
-  graphQLSchema: GraphQLSchema
+  system: System,
 ) {
-  const paths = getSystemPaths(cwd, config)
-  const artifacts = await getCommittedArtifacts(config, graphQLSchema)
+  const paths = system.getPaths(cwd)
+  const artifacts = await getCommittedArtifacts(system.config, system.graphQLSchema)
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
     readFileButReturnNothingIfDoesNotExist(paths.schema.graphql),
     readFileButReturnNothingIfDoesNotExist(paths.schema.prisma),
@@ -117,8 +116,4 @@ export async function generatePrismaClient (cwd: string, system: System) {
       }
     })
   )
-}
-
-export async function validateArtifacts (cwd: string, system: System) {
-  return await validatePrismaAndGraphQLSchemas(cwd, system.config, system.graphQLSchema)
 }

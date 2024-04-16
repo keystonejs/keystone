@@ -135,7 +135,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     },
   })
   const artifacts = await generateArtifacts('', system)
-  await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath, false, false)
+  await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath)
 
   const {
     context,
