@@ -108,7 +108,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
 
     shadowDatabaseUrl?: string
     onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>
-    enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
+    enableLogging?: boolean | Array<PrismaLogLevel | PrismaLogDefinition>
     idField?: IdFieldConfig
     prismaClientPath?: string
     prismaSchemaPath?: string
