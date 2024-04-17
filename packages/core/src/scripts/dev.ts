@@ -8,7 +8,9 @@ import express from 'express'
 import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
-import { pushPrismaSchemaToDatabase } from '../lib/migrations'
+import {
+  pushPrismaSchemaToDatabase,
+} from '../lib/migrations'
 import {
   createSystem,
   getBuiltKeystoneConfiguration,
@@ -23,11 +25,15 @@ import {
   generateTypes,
   generatePrismaClient
 } from '../artifacts'
-import type { KeystoneConfig } from '../types'
+import {
+  type KeystoneConfig
+} from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { pkgDir } from '../pkg-dir'
 import { ExitError } from './utils'
-import type { Flags } from './cli'
+import {
+  type Flags
+} from './cli'
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
@@ -132,13 +138,11 @@ export async function dev (
     const {
       system,
       context,
-      prismaSchema,
       prismaClientModule,
       apolloServer,
       ...rest
     } = await (async function () {
       const system = createSystem(stripExtendHttpServer(configWithExtendHttp))
-      const paths = system.getPaths(cwd)
 
       // mkdir's for local storage
       for (const val of Object.values(system.config.storage)) {
@@ -151,18 +155,13 @@ export async function dev (
       // Generate the Artifacts
       if (prisma) {
         console.log('✨ Generating GraphQL and Prisma schemas')
-        const prismaSchema = (await generateArtifacts(cwd, system)).prisma
+        const { prisma: generatedPrismaSchema } = await generateArtifacts(cwd, system)
         await generateTypes(cwd, system)
         await generatePrismaClient(cwd, system)
 
+        const paths = system.getPaths(cwd)
         if (dbPush) {
-          await pushPrismaSchemaToDatabase(
-            system.config.db.url,
-            system.config.db.shadowDatabaseUrl,
-            prismaSchema,
-            paths.schema.prisma,
-            true // interactive
-          )
+          await pushPrismaSchemaToDatabase(cwd, system, generatedPrismaSchema, true /* interactive */)
         } else {
           console.warn('⚠️ Skipping database schema push')
         }
@@ -176,7 +175,6 @@ export async function dev (
           return {
             system,
             context: keystone.context,
-            prismaSchema,
             prismaClientModule,
           }
         }
@@ -190,7 +188,6 @@ export async function dev (
           context: keystone.context,
           expressServer,
           apolloServer,
-          prismaSchema,
           prismaClientModule,
         }
       }
@@ -254,6 +251,8 @@ export async function dev (
         const newSystem = createSystem(stripExtendHttpServer(newConfigWithHttp))
 
         if (prisma) {
+          if (!originalPrismaSchema) throw new TypeError('Missing Prisma schema source')
+
           const newPrismaSchema = printPrismaSchema(newSystem.config, newSystem.lists)
           if (originalPrismaSchema !== newPrismaSchema) {
             console.error('🔄 Your prisma schema has changed, please restart Keystone')

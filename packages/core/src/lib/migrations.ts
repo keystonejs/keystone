@@ -5,6 +5,8 @@ import chalk from 'chalk'
 import { createDatabase, uriToCredentials, type DatabaseCredentials } from '@prisma/internals'
 import { Migrate } from '@prisma/migrate'
 
+import { type System } from './createSystem'
+
 import { ExitError } from '../scripts/utils'
 import { confirmPrompt } from './prompts'
 
@@ -19,17 +21,20 @@ import { confirmPrompt } from './prompts'
 // We also want to silence messages from Prisma about available updates, since the developer is
 // not in control of their Prisma version.
 // https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_hide_update_message
-export function runMigrateWithDbUrl<T> (
-  dbUrl: string,
-  shadowDbUrl: string | undefined,
+function runMigrateWithDbUrl<T> (
+  system: {
+    config: {
+      db: Pick<System['config']['db'], 'url' | 'shadowDatabaseUrl'>
+    }
+  },
   cb: () => T
 ): T {
   const prevDBURLFromEnv = process.env.DATABASE_URL
   const prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL
   const prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE
   try {
-    process.env.DATABASE_URL = dbUrl
-    setOrRemoveEnvVariable('SHADOW_DATABASE_URL', shadowDbUrl)
+    process.env.DATABASE_URL = system.config.db.url
+    setOrRemoveEnvVariable('SHADOW_DATABASE_URL', system.config.db.shadowDatabaseUrl)
     process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1'
     return cb()
   } finally {
@@ -47,7 +52,7 @@ function setOrRemoveEnvVariable (name: string, value: string | undefined) {
   }
 }
 
-export async function withMigrate<T> (schemaPath: string, cb: (migrate: Migrate) => Promise<T>) {
+async function withMigrate<T> (schemaPath: string, cb: (migrate: Migrate) => Promise<T>) {
   const migrate = new Migrate(schemaPath)
   try {
     return await cb(migrate)
@@ -61,24 +66,48 @@ export async function withMigrate<T> (schemaPath: string, cb: (migrate: Migrate)
   }
 }
 
+export async function runMigrationsOnDatabase (cwd: string, system: System) {
+  const paths = system.getPaths(cwd)
+  return await withMigrate(paths.schema.prisma, async (migrate) => {
+    const { appliedMigrationNames } = await runMigrateWithDbUrl(system, () => migrate.applyMigrations())
+    return appliedMigrationNames
+  })
+}
+
+export async function resetDatabase (dbUrl: string, prismaSchemaPath: string) {
+  await createDatabase(dbUrl, path.dirname(prismaSchemaPath))
+  const config = {
+    db: {
+      url: dbUrl,
+      shadowDatabaseUrl: ''
+    }
+  }
+
+  await withMigrate(prismaSchemaPath, async (migrate) => {
+    await runMigrateWithDbUrl({ config }, () => migrate.reset())
+    await runMigrateWithDbUrl({ config }, () => migrate.push({ force: true }))
+  })
+}
+
 export async function pushPrismaSchemaToDatabase (
-  dbUrl: string,
-  shadowDbUrl: string | undefined,
-  schema: string,
-  schemaPath: string,
+  cwd: string,
+  system: System,
+  prismaSchema: string, // already exists
   interactive: boolean = false
 ) {
-  const created = await createDatabase(dbUrl, path.dirname(schemaPath))
+  const paths = system.getPaths(cwd)
+
+  const created = await createDatabase(system.config.db.url, path.dirname(paths.schema.prisma))
   if (interactive && created) {
-    const credentials = uriToCredentials(dbUrl)
+    const credentials = uriToCredentials(system.config.db.url)
     console.log(`✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(credentials)}`)
   }
 
-  const migration = await withMigrate(schemaPath, async migrate => {
+  const migration = await withMigrate(paths.schema.prisma, async migrate => {
     // what does force on migrate.engine.schemaPush mean?
     // - true: ignore warnings, but unexecutable steps will block
     // - false: warnings or unexecutable steps will block
-    const migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: false, schema, }))
+    const migration = await runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: false, schema: prismaSchema }))
 
     // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
     if (migration.unexecutable.length) {
@@ -93,8 +122,8 @@ export async function pushPrismaSchemaToDatabase (
         throw new ExitError(0)
       }
 
-      await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset())
-      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: false, schema, }))
+      await runMigrateWithDbUrl(system, () => migrate.reset())
+      return runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: false, schema: prismaSchema }))
     }
 
     if (migration.warnings.length) {
@@ -105,7 +134,7 @@ export async function pushPrismaSchemaToDatabase (
         console.log('Push cancelled')
         throw new ExitError(0)
       }
-      return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.schemaPush({ force: true, schema, }))
+      return runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: true, schema: prismaSchema }))
     }
 
     return migration

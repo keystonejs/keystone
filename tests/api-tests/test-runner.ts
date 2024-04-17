@@ -89,14 +89,14 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
   identifier?: string
 }) {
   const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
-  const tmp = join(tmpdir(), `ks6-tests-${random}`)
-  await fs.mkdir(tmp)
+  const cwd = join(tmpdir(), `ks6-tests-${random}`)
+  await fs.mkdir(cwd)
 
   let dbUrl = process.env.DATABASE_URL
   if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
 
   if (dbUrl.startsWith('file:')) {
-    dbUrl = `file:${join(tmp, 'test.db')}` // unique database files
+    dbUrl = `file:${join(cwd, 'test.db')}` // unique database files
   }
 
   if (dbUrl.startsWith('postgres:')) {
@@ -111,22 +111,21 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     dbUrl = parsed.toString()
   }
 
-  const prismaSchemaPath = join(tmp, 'schema.prisma')
   const system = createSystem({
     ...config_,
     db: {
       provider: dbProvider,
       url: dbUrl,
-      prismaClientPath: join(tmp, '.client'),
-      prismaSchemaPath,
+      prismaClientPath: join(cwd, '.client'),
+      prismaSchemaPath: join(cwd, 'schema.prisma'),
       ...config_.db,
     },
     types: {
-      path: join(tmp, 'test-types.ts')
+      path: join(cwd, 'test-types.ts')
     },
     lists: config_.lists,
     graphql: {
-      schemaPath: join(tmp, 'schema.graphql'),
+      schemaPath: join(cwd, 'schema.graphql'),
       ...config_.graphql,
     },
     ui: {
@@ -134,14 +133,16 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       ...config_.ui,
     },
   })
-  const artifacts = await generateArtifacts('', system)
-  await pushPrismaSchemaToDatabase(dbUrl, undefined, artifacts.prisma, prismaSchemaPath)
 
+  const artifacts = await generateArtifacts(cwd, system)
+  await pushPrismaSchemaToDatabase(cwd, system, artifacts.prisma)
+
+  const paths = system.getPaths(cwd)
   const {
     context,
     connect,
     disconnect
-  } = system.getKeystone(await getTestPrismaModule(prismaSchemaPath, artifacts.prisma))
+  } = system.getKeystone(await getTestPrismaModule(paths.schema.prisma, artifacts.prisma))
 
   if (serve) {
     const {

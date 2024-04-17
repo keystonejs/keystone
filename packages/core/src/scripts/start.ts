@@ -7,7 +7,7 @@ import {
 } from '../lib/createSystem'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
-import { withMigrate, runMigrateWithDbUrl } from '../lib/migrations'
+import { runMigrationsOnDatabase } from '../lib/migrations'
 import { ExitError } from './utils'
 import type { Flags } from './cli'
 
@@ -31,10 +31,8 @@ export async function start (
 
   if (withMigrations) {
     console.log('✨ Applying any database migrations')
-    await withMigrate(paths.schema.prisma, async migrate => {
-      const { appliedMigrationNames } = await runMigrateWithDbUrl(system.config.db.url, undefined, () => migrate.applyMigrations())
-      console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
-    })
+    const migrations = await runMigrationsOnDatabase(cwd, system)
+    console.log(migrations.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
   }
 
   if (!server) return
