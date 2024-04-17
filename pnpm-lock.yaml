@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '9.0'
 
 settings:
   autoInstallPeers: true
@@ -64,7 +64,7 @@ importers:
         version: 0.5.0(esbuild@0.20.2)
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.12.7)
+        version: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
       jest-environment-jsdom:
         specifier: ^29.0.0
         version: 29.7.0
@@ -150,7 +150,7 @@ importers:
         version: 2.11.3(@types/react@18.2.79)(react@18.2.0)
       react-select:
         specifier: ^5.2.1
-        version: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+        version: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@types/react':
         specifier: ^18.0.9
@@ -170,10 +170,10 @@ importers:
         version: 8.1.0(typescript@5.4.5)
       '@svgr/plugin-jsx':
         specifier: ^8.0.0
-        version: 8.1.0(@svgr/core@8.1.0)
+        version: 8.1.0(@svgr/core@8.1.0(typescript@5.4.5))
       '@svgr/plugin-svgo':
         specifier: ^8.0.0
-        version: 8.1.0(@svgr/core@8.1.0)(typescript@5.4.5)
+        version: 8.1.0(@svgr/core@8.1.0(typescript@5.4.5))(typescript@5.4.5)
       '@types/react':
         specifier: ^18.0.9
         version: 18.2.79
@@ -231,7 +231,7 @@ importers:
         version: 2.5.9(@types/react@18.2.79)(react@18.2.0)
       react-transition-group:
         specifier: ^4.4.2
-        version: 4.4.5(react-dom@18.2.0)(react@18.2.0)
+        version: 4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@types/react':
         specifier: ^18.0.9
@@ -278,7 +278,7 @@ importers:
         version: link:../icons
       react-select:
         specifier: ^5.2.1
-        version: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+        version: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     devDependencies:
       react:
         specifier: ^18.2.0
@@ -319,7 +319,7 @@ importers:
         version: 7.5.4
       react-popper:
         specifier: ^2.2.5
-        version: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0)(react@18.2.0)
+        version: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     devDependencies:
       react:
         specifier: ^18.2.0
@@ -440,7 +440,7 @@ importers:
         version: 1.4.6
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -534,7 +534,7 @@ importers:
         version: 2.30.0
       dedent:
         specifier: ^1.0.0
-        version: 1.5.3
+        version: 1.5.3(babel-plugin-macros@3.1.0)
       emery:
         specifier: ^1.4.1
         version: 1.4.3
@@ -555,7 +555,7 @@ importers:
         version: 14.1.0
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-compose-plugins:
         specifier: ^2.2.1
         version: 2.2.1
@@ -586,7 +586,7 @@ importers:
         version: 0.0.32
       next-sitemap:
         specifier: ^4.0.0
-        version: 4.2.3(next@13.5.6)
+        version: 4.2.3(next@13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       start-server-and-test:
         specifier: ^2.0.0
         version: 2.0.3
@@ -598,7 +598,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -614,7 +614,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -633,10 +633,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -652,10 +652,10 @@ importers:
     dependencies:
       '@keystone-6/cloudinary':
         specifier: ^8.0.0
-        version: link:../../packages/cloudinary
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(react-dom@18.2.0(react@18.2.0))
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -674,16 +674,16 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-ui/core':
         specifier: ^5.0.1
-        version: link:../../design-system/packages/core
+        version: 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -702,7 +702,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -721,16 +721,16 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-ui/core':
         specifier: ^5.0.1
-        version: link:../../design-system/packages/core
+        version: 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -749,10 +749,10 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-ui/fields':
         specifier: ^7.1.1
-        version: link:../../design-system/packages/fields
+        version: 7.2.0(@types/react@18.2.79)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -771,25 +771,25 @@ importers:
         version: 11.11.2
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-ui/button':
         specifier: ^7.0.1
-        version: link:../../design-system/packages/button
+        version: 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
       '@keystone-ui/core':
         specifier: ^5.0.1
-        version: link:../../design-system/packages/core
+        version: 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-ui/fields':
         specifier: ^7.1.1
-        version: link:../../design-system/packages/fields
+        version: 7.2.0(@types/react@18.2.79)
       '@keystone-ui/icons':
         specifier: ^6.0.1
-        version: link:../../design-system/packages/icons
+        version: 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -808,7 +808,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
         version: 2.2.2
@@ -830,13 +830,13 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -855,10 +855,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -874,10 +874,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -893,10 +893,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -918,13 +918,13 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       next-auth:
         specifier: ^4.22.1
-        version: 4.24.7(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.24.7(next@13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     devDependencies:
       prisma:
         specifier: ^5.0.0
@@ -937,10 +937,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -959,7 +959,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -975,13 +975,13 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/document-renderer':
         specifier: ^1.1.0
-        version: link:../../packages/document-renderer
+        version: 1.1.2(react@18.2.0)
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -990,7 +990,7 @@ importers:
         version: 5.12.1(prisma@5.12.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1015,28 +1015,28 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@keystone-ui/button':
         specifier: ^7.0.1
-        version: link:../../../design-system/packages/button
+        version: 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
       '@keystone-ui/core':
         specifier: ^5.0.1
-        version: link:../../../design-system/packages/core
+        version: 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-ui/fields':
         specifier: ^7.2.0
-        version: link:../../../design-system/packages/fields
+        version: 7.2.0(@types/react@18.2.79)
       '@keystone-ui/icons':
         specifier: ^6.0.1
-        version: link:../../../design-system/packages/icons
+        version: 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-ui/tooltip':
         specifier: ^6.0.1
-        version: link:../../../design-system/packages/tooltip
+        version: 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1055,7 +1055,7 @@ importers:
     dependencies:
       '@keystone-6/document-renderer':
         specifier: ^1.1.0
-        version: link:../../../packages/document-renderer
+        version: 1.1.2(react@18.2.0)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1064,7 +1064,7 @@ importers:
         version: 16.8.1
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1089,7 +1089,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1117,7 +1117,7 @@ importers:
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1136,7 +1136,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1155,7 +1155,7 @@ importers:
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1174,7 +1174,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.0
-        version: 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0)(graphql@16.8.1)(react@18.2.0)
+        version: 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.11.2
@@ -1183,16 +1183,16 @@ importers:
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-ui/button':
         specifier: ^7.0.1
-        version: link:../../design-system/packages/button
+        version: 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
       '@keystone-ui/core':
         specifier: ^5.0.1
-        version: link:../../design-system/packages/core
+        version: 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-ui/fields':
         specifier: ^7.1.1
-        version: link:../../design-system/packages/fields
+        version: 7.2.0(@types/react@18.2.79)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1226,10 +1226,10 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1245,7 +1245,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1261,13 +1261,13 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
       astro:
         specifier: ^2.2.1
-        version: 2.10.15(@types/node@18.19.31)
+        version: 2.10.15(@types/node@18.19.31)(terser@5.30.3)
     devDependencies:
       '@types/node':
         specifier: ^18.11.14
@@ -1289,16 +1289,16 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/document-renderer':
         specifier: ^1.1.0
-        version: link:../../packages/document-renderer
+        version: 1.1.2(react@18.2.0)
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1316,7 +1316,7 @@ importers:
         version: 3.9.1(graphql@16.8.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1344,13 +1344,13 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1368,7 +1368,7 @@ importers:
         version: 3.9.1(graphql@16.8.1)
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1402,13 +1402,13 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1424,7 +1424,7 @@ importers:
     dependencies:
       '@keystone-6/document-renderer':
         specifier: ^1.1.0
-        version: link:../../../packages/document-renderer
+        version: 1.1.2(react@18.2.0)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1433,7 +1433,7 @@ importers:
         version: 16.8.1
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1458,7 +1458,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1467,7 +1467,7 @@ importers:
         version: 1.19.3
       '@remix-run/react':
         specifier: ^1.15.0
-        version: 1.19.3(react-dom@18.2.0)(react@18.2.0)
+        version: 1.19.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@remix-run/serve':
         specifier: ^1.15.0
         version: 1.19.3
@@ -1480,7 +1480,7 @@ importers:
     devDependencies:
       '@remix-run/dev':
         specifier: ^1.15.0
-        version: 1.19.3(@remix-run/serve@1.19.3)(@types/node@20.12.7)
+        version: 1.19.3(@remix-run/serve@1.19.3)(@types/node@20.12.7)(terser@5.30.3)
       '@types/react':
         specifier: ^18.0.25
         version: 18.2.79
@@ -1498,7 +1498,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1529,7 +1529,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1545,7 +1545,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1564,7 +1564,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1580,7 +1580,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1596,7 +1596,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1615,7 +1615,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1634,10 +1634,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1659,10 +1659,10 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@keystone-6/fields-document':
         specifier: ^9.0.0
-        version: link:../../packages/fields-document
+        version: 9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1681,10 +1681,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1700,7 +1700,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1716,10 +1716,10 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: ^8.0.0
-        version: link:../../packages/auth
+        version: 8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1735,7 +1735,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1754,7 +1754,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1773,7 +1773,7 @@ importers:
     dependencies:
       '@keystone-6/core':
         specifier: ^6.0.0
-        version: link:../../packages/core
+        version: 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.12.1(prisma@5.12.1)
@@ -1869,7 +1869,7 @@ importers:
         version: 1.0.3(graphql@16.8.1)
       '@apollo/client':
         specifier: ^3.9.2
-        version: 3.9.11(@types/react@18.2.79)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@apollo/server':
         specifier: ^4.10.0
         version: 4.10.3(graphql@16.8.1)
@@ -1893,7 +1893,7 @@ importers:
         version: 0.3.1
       '@graphql-ts/extend':
         specifier: ^1.0.0
-        version: 1.0.0(@graphql-ts/schema@0.6.0)(graphql@16.8.1)
+        version: 1.0.0(@graphql-ts/schema@0.6.0(graphql@16.8.1))(graphql@16.8.1)
       '@graphql-ts/schema':
         specifier: ^0.6.0
         version: 0.6.0(graphql@16.8.1)
@@ -1959,7 +1959,7 @@ importers:
         version: 1.1.2
       apollo-upload-client:
         specifier: ^17.0.0
-        version: 17.0.0(@apollo/client@3.9.11)(graphql@16.8.1)
+        version: 17.0.0(@apollo/client@3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(graphql@16.8.1)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2034,7 +2034,7 @@ importers:
         version: 9.0.0
       next:
         specifier: ^13.3.0
-        version: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       pluralize:
         specifier: ^8.0.0
         version: 8.0.0
@@ -2062,7 +2062,7 @@ importers:
         version: 'link:'
       '@types/apollo-upload-client':
         specifier: 17.0.5
-        version: 17.0.5(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+        version: 17.0.5(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/bcryptjs':
         specifier: ^2.4.2
         version: 2.4.6
@@ -2100,6 +2100,46 @@ importers:
         specifier: ^9.0.0
         version: 9.0.8
 
+  packages/create:
+    dependencies:
+      chalk:
+        specifier: ^4.1.2
+        version: 4.1.2
+      enquirer:
+        specifier: ^2.4.1
+        version: 2.4.1
+      execa:
+        specifier: ^5.1.1
+        version: 5.1.1
+      fs-extra:
+        specifier: ^11.0.0
+        version: 11.2.0
+      meow:
+        specifier: ^9.0.0
+        version: 9.0.0
+      ora:
+        specifier: ^8.0.1
+        version: 8.0.1
+      package-json:
+        specifier: ^10.0.0
+        version: 10.0.0
+      path:
+        specifier: ^0.12.7
+        version: 0.12.7
+      semver:
+        specifier: ^7.6.0
+        version: 7.6.0
+      terminal-link:
+        specifier: ^3.0.0
+        version: 3.0.0
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.0
+        version: 11.0.4
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+
   packages/document-renderer:
     devDependencies:
       react:
@@ -2116,13 +2156,13 @@ importers:
         version: 7.0.1
       '@dnd-kit/core':
         specifier: ^6.0.6
-        version: 6.1.0(react-dom@18.2.0)(react@18.2.0)
+        version: 6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@dnd-kit/modifiers':
         specifier: ^7.0.0
-        version: 7.0.0(@dnd-kit/core@6.1.0)(react@18.2.0)
+        version: 7.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@dnd-kit/sortable':
         specifier: ^8.0.0
-        version: 8.0.0(@dnd-kit/core@6.1.0)(react@18.2.0)
+        version: 8.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@emotion/weak-memoize':
         specifier: ^0.3.0
         version: 0.3.1
@@ -2203,14 +2243,14 @@ importers:
         version: 0.100.0(slate@0.102.0)
       slate-react:
         specifier: ^0.102.0
-        version: 0.102.0(react-dom@18.2.0)(react@18.2.0)(slate@0.102.0)
+        version: 0.102.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(slate@0.102.0)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../core
       '@testing-library/react':
         specifier: ^15.0.0
-        version: 15.0.2(react-dom@18.2.0)(react@18.2.0)
+        version: 15.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/is-hotkey':
         specifier: ^0.1.7
         version: 0.1.10
@@ -4657,6 +4697,89 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
+  '@keystone-6/auth@8.0.0':
+    resolution: {integrity: sha512-WUXkU2abNv1OLMJzkPJxKVa6T3INKtIpjIT2BSV1qWI53hu4PMyKEDX3CSD4LCr+XZdchQeuVfX0/uv3GkAcFw==}
+    peerDependencies:
+      '@keystone-6/core': ^6.0.0
+      react: ^18.2.0
+
+  '@keystone-6/cloudinary@8.0.0':
+    resolution: {integrity: sha512-hV2KzC+Eym1aGMFk/f7TmzbND1RaQehyoF4yGDH5SxgC5oBa7sUfg5bjUxpMn9X4nq5DhkoU+ECG/qFTpzgIPA==}
+    peerDependencies:
+      '@keystone-6/core': ^6.0.0
+
+  '@keystone-6/core@6.0.0':
+    resolution: {integrity: sha512-REOR3SbYQFVCzf+QOuOeCGG1yDMj92oUU/aq7BVGk397icHq4CQNTyFdCFbSW8ZALVLa+7/b9/9InppF3yOTrQ==}
+    hasBin: true
+
+  '@keystone-6/document-renderer@1.1.2':
+    resolution: {integrity: sha512-fxnQL6xYTK/2xSrZ0dzBTC1Qpa4VVeXmZ+7mMvaZOWquttgvDQzBRY57q9zScRa0dAALNWU1xzq14OL8Kc+eBw==}
+    peerDependencies:
+      react: ^16.14.0 || 17 || 18
+
+  '@keystone-6/fields-document@9.0.0':
+    resolution: {integrity: sha512-Q5DX5Xp/tJHJX+a0l83r8WI335WfHlMKaS3lkmUmZeCLmAp0U8r4jClbE5KD3ClYAsP9s1w21OTPmd4aTetJWA==}
+    peerDependencies:
+      '@keystone-6/core': ^6.0.0
+
+  '@keystone-ui/button@7.0.2':
+    resolution: {integrity: sha512-bFuT3WtLRFWXGP0lMPRIxYG22u2BEvjP9blSeGGXQSvl3hC5Zh2r/BlylHeYaWFChcaRYRU2G/2QSLoPAvyDGQ==}
+
+  '@keystone-ui/core@5.0.2':
+    resolution: {integrity: sha512-0/rh2nhuQDyio1I8HWfeHUhHP3Adf9+RcsrtpJfcv+U6W3NsJnL/hX68WOYOSF7vYhFgtnuCx8a57xrK1xTsEQ==}
+    peerDependencies:
+      react: ^18.1.0
+      react-dom: ^18.1.0
+
+  '@keystone-ui/fields@7.2.0':
+    resolution: {integrity: sha512-9SXKzuHeuyxwJeGhl01oC8f9IzF5SFOFTIHTDEATMgbM/HFAKC8ygR74ZcRcwyr8rlnmmCMB2nQx1CGDUuEBVQ==}
+
+  '@keystone-ui/icons@6.0.2':
+    resolution: {integrity: sha512-myJ8AoLxJrcLYAVgH3u+hO6wO/ZeidraLzlwxOyLMgLLBJsWwOOYVRZv2nHp6S/G/gIa6UaCQKC4VI8wjvieVg==}
+    peerDependencies:
+      react: ^18.1.0
+
+  '@keystone-ui/loading@6.0.2':
+    resolution: {integrity: sha512-s72z2AcMzyVobKlbZ39JbyhtNrf7JMX6WaBYU59612OOXcOCYlc9X6Mt/AKUFYbx2uCOS8E1Fitxc+BT0Xoxwg==}
+
+  '@keystone-ui/modals@6.0.3':
+    resolution: {integrity: sha512-0FgmwOjRfxfS5enXrpBrLnh4Aseq+EOyWIQIfpIAUgpsTjkW3nR/RUcJZ8fzebUTvspvTeN9gfIGp0k9b87ZXg==}
+
+  '@keystone-ui/notice@6.0.2':
+    resolution: {integrity: sha512-SodZehvF0a5GmMx3LGXJW4i3QtNDTD9tnrOV+5EUb21f352z6kUVL+UxS9439ZnGvgyWETPYw/ZsGu19lD/2Ag==}
+
+  '@keystone-ui/options@6.0.2':
+    resolution: {integrity: sha512-JH5+hI0JNDTF7bTdmDMzrGh9k5tFH89B9AtQlmakLb/rD1ZQ35ztPwNV8U/WH+pyZXC9M72POkEwHMI9paq1mA==}
+    peerDependencies:
+      react: ^18.1.0
+
+  '@keystone-ui/pill@7.0.2':
+    resolution: {integrity: sha512-s4V588PvZuJr02ppTE01IgzRTnRCrC47wvwv7u2PLgmyyvP5HPMBOoTuwEIxdY0J8CWAWOOT8HCu+ME68G++HQ==}
+    peerDependencies:
+      react: ^18.1.0
+
+  '@keystone-ui/popover@6.0.2':
+    resolution: {integrity: sha512-E0WBEkoe+e0rjSAOBAFNKNHDVvIhx9YqEcwFLaCUUj6q93O7/gUq6wNrkrTfDAhz5O9tMgLkXE6jAHdvYFk/IQ==}
+    peerDependencies:
+      react: ^18.1.0
+      react-dom: ^18.1.0
+
+  '@keystone-ui/segmented-control@7.0.3':
+    resolution: {integrity: sha512-3ty1Civv9tw2e0hLEOMUWgc+el2Jy85PigPn9BcudIF/WFcr9RS+Y8QrCqYSzulY6/G2nOYYAGWWL1fa6jOGcQ==}
+    peerDependencies:
+      react: ^18.2.0
+
+  '@keystone-ui/toast@6.0.2':
+    resolution: {integrity: sha512-Q/0UNO58SgnIwmDDsVVjDmPAuM+xWEvXJSx/46FPAKNgHbPZYNewhuW+AHn8iCcP5xScByAIcqql5FRXKBxidA==}
+    peerDependencies:
+      react: ^18.1.0
+
+  '@keystone-ui/tooltip@6.0.2':
+    resolution: {integrity: sha512-lB+1TCcXvM2R8wKg7Wd7VIY10RaKjQXR/BKUf+trozl9v/NuFEX3Ym5GvanDQXyQgwfUC6xvUX3IuHjdhCrJIw==}
+    peerDependencies:
+      react: ^18.1.0
+      react-dom: ^18.1.0
+
   '@manypkg/cli@0.21.4':
     resolution: {integrity: sha512-EACxxb+c/t6G0l1FrlyewZeBnyR5V1cLkXjnBfsay5TN1UgbilFpG6POglzn+lVJet9NqnEKe3RLHABzkIDZ0Q==}
     engines: {node: '>=14.18.0'}
@@ -5918,6 +6041,10 @@ packages:
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
     engines: {node: '>=8'}
+
+  ansi-escapes@5.0.0:
+    resolution: {integrity: sha512-5GFMVX8HqE/TB+FuBJGuO5XG0WrsA6ptUqoODaT/n9mmUaZFkqnBueB4leqGBCmrUHnCnC4PCZTCd0E7QQ83bA==}
+    engines: {node: '>=12'}
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -7528,6 +7655,10 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
+  get-east-asian-width@1.2.0:
+    resolution: {integrity: sha512-2nk+7SIVb14QrgXFHcm84tD4bKQz0RxPuMT8Ag5KPOq7J5fEmAg0UbXdTOSHqNuHSU28k55qnceesxXRZGzKWA==}
+    engines: {node: '>=18'}
+
   get-intrinsic@1.2.4:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
     engines: {node: '>= 0.4'}
@@ -7927,6 +8058,9 @@ packages:
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
 
+  inherits@2.0.3:
+    resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
+
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
@@ -8250,6 +8384,10 @@ packages:
   is-unicode-supported@1.3.0:
     resolution: {integrity: sha512-43r2mRvz+8JRIKnWJ+3j8JtjRKZ6GmjzfaE/qiBJnikNnYv/6bagRJ1kUhNk8R5EX/GkobD+r+sfxCPJsiKBLQ==}
     engines: {node: '>=12'}
+
+  is-unicode-supported@2.0.0:
+    resolution: {integrity: sha512-FRdAyx5lusK1iHG0TWpVtk9+1i+GjrzRffhDg4ovQ7mcidMQ6mj+MhKPmvh7Xwyv5gIS06ns49CA7Sqg7lC22Q==}
+    engines: {node: '>=18'}
 
   is-upper-case@2.0.2:
     resolution: {integrity: sha512-44pxmxAvnnAOwBg4tHPnkfvgjPwbc5QIsSstNU+YcJ1ovxVzCWpSGosPJOZh/a1tdl81fbgnLc9LLv+x2ywbPQ==}
@@ -8587,6 +8725,10 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
+  ky@1.2.3:
+    resolution: {integrity: sha512-2IM3VssHfG2zYz2FsHRUqIp8chhLc9uxDMcK2THxgFfv8pQhnMfN8L0ul+iW4RdBl5AglF8ooPIflRm3yNH0IA==}
+    engines: {node: '>=18'}
+
   lazy-ass@1.6.0:
     resolution: {integrity: sha512-cc8oEVoctTvsFZ/Oje/kGnHbpWHYBe8IAJe4C0QNc3t8uM/0Y8+erSz/7Y1ALuXTEZTMvxXwO6YbX1ey3ujiZw==}
     engines: {node: '> 0.8'}
@@ -8692,6 +8834,10 @@ packages:
   log-symbols@5.1.0:
     resolution: {integrity: sha512-l0x2DvrW294C9uDCoQe1VSU4gf529FkSZ6leBl4TiqZH/e+0R7hSfHQBNut2mNygDgHwvYHfFLn6Oxb3VWj2rA==}
     engines: {node: '>=12'}
+
+  log-symbols@6.0.0:
+    resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
+    engines: {node: '>=18'}
 
   loglevel@1.9.1:
     resolution: {integrity: sha512-hP3I3kCrDIMuRwAwHltphhDM1r8i55H33GgqjXbrisuJhF4kRhW1dNuxsRklp4bXl8DSdLaNLuiL4A/LWRfxvg==}
@@ -9424,6 +9570,10 @@ packages:
     resolution: {integrity: sha512-ERAyNnZOfqM+Ao3RAvIXkYh5joP220yf59gVe2X/cI6SiCxIdi4c9HZKZD8R6q/RDXEje1THBju6iExiSsgJaQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  ora@8.0.1:
+    resolution: {integrity: sha512-ANIvzobt1rls2BDny5fWZ3ZVKyD6nscLvfFRpQgfWsythlcsVUC9kL0zq6j2Z5z9wwp1kd7wpsD/T9qNPVLCaQ==}
+    engines: {node: '>=18'}
+
   os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
@@ -9493,6 +9643,10 @@ packages:
   pac-resolver@7.0.1:
     resolution: {integrity: sha512-5NPgf87AT2STgwa2ntRMr45jTKrYBGkVU36yT0ig/n/GMAa3oPqhZfIQ2kMEimReg0+t9kZViDVZ83qfVUlckg==}
     engines: {node: '>= 14'}
+
+  package-json@10.0.0:
+    resolution: {integrity: sha512-w34pqp733w35nElGG6eH1OnDnHEWud4uxruQ2nKzY/Uy0uOJmWFdjDcAC+xAD4goVuBZStwaAEBS21BANv83HQ==}
+    engines: {node: '>=18'}
 
   package-json@8.1.1:
     resolution: {integrity: sha512-cbH9IAIJHNj9uXi196JVsRlt7cHKak6u/e6AkL/bkRelZ7rlL3X1YKxsZwa36xipOEKAsdtmaG6aAJoM1fx2zA==}
@@ -9609,6 +9763,9 @@ packages:
   path-type@5.0.0:
     resolution: {integrity: sha512-5HviZNaZcfqP95rwpv+1HDgUamezbqdSYTyzjTvwtJSnIH+3vnbmWsItli8OFEndS984VT55M3jduxZbX351gg==}
     engines: {node: '>=12'}
+
+  path@0.12.7:
+    resolution: {integrity: sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==}
 
   pathe@1.1.2:
     resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
@@ -9801,6 +9958,10 @@ packages:
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
+
+  process@0.11.10:
+    resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
+    engines: {node: '>= 0.6.0'}
 
   promise-inflight@1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
@@ -10604,6 +10765,10 @@ packages:
     resolution: {integrity: sha512-xhV7w8S+bUwlPTb4bAOUQhv8/cSS5offJuX8GQGq32ONF0ZtDWKfkdomM3HMRA+LhX6um/FZ0COqlwsjD53LeQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  stdin-discarder@0.2.2:
+    resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
+    engines: {node: '>=18'}
+
   stream-browserify@3.0.0:
     resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
 
@@ -10637,6 +10802,10 @@ packages:
   string-width@5.1.2:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
+
+  string-width@7.1.0:
+    resolution: {integrity: sha512-SEIJCWiX7Kg4c129n48aDRwLbFb2LJmXXFrWBG4NGaRtMQ3myKPKbwrD1BKqQn74oCoNMBVrfDEr5M9YxCsrkw==}
+    engines: {node: '>=18'}
 
   string.prototype.codepointat@0.2.1:
     resolution: {integrity: sha512-2cBVCj6I4IOvEnjgO/hWqXjqBGsY+zwPmHl12Srk9IXSZ56Jwwmy+66XO5Iut/oQVR7t5ihYdLB0GMa4alEUcg==}
@@ -10760,6 +10929,10 @@ packages:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
 
+  supports-hyperlinks@2.3.0:
+    resolution: {integrity: sha512-RpsAZlpWcDwOPQA22aCH4J0t7L8JmAvsCxfOSEwm7cQs3LshN36QaTkwd70DnBOXDWGssw2eUoc8CaRWT0XunA==}
+    engines: {node: '>=8'}
+
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
@@ -10803,6 +10976,10 @@ packages:
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
+
+  terminal-link@3.0.0:
+    resolution: {integrity: sha512-flFL3m4wuixmf6IfhFJd1YPiLiMuxEc8uHRM1buzIeZPm22Au2pDqBJQgdo7n1WfPU1ONFGv7YDwpFBmHGF6lg==}
+    engines: {node: '>=12'}
 
   terser@5.30.3:
     resolution: {integrity: sha512-STdUgOUx8rLbMGO9IOwHLpCqolkDITFFQSMYYwKE1N2lY6MVSaeoi10z/EhWxRc6ybqoVmKSkhKYH/XUpl7vSA==}
@@ -10987,6 +11164,10 @@ packages:
   type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+
+  type-fest@1.4.0:
+    resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
+    engines: {node: '>=10'}
 
   type-fest@2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
@@ -11218,6 +11399,9 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  util@0.10.4:
+    resolution: {integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==}
 
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
@@ -11626,7 +11810,7 @@ snapshots:
     dependencies:
       graphql: 16.8.1
 
-  '@apollo/client@3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0)(graphql@16.8.1)(react@18.2.0)':
+  '@apollo/client@3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       '@wry/caches': 1.0.1
@@ -11634,39 +11818,19 @@ snapshots:
       '@wry/trie': 0.5.0
       graphql: 16.8.1
       graphql-tag: 2.12.6(graphql@16.8.1)
-      graphql-ws: 5.16.0(graphql@16.8.1)
       hoist-non-react-statics: 3.3.2
       optimism: 0.18.0
       prop-types: 15.8.1
-      react: 18.2.0
       rehackt: 0.0.6(@types/react@18.2.79)(react@18.2.0)
       response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.6.2
       zen-observable-ts: 1.2.5
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@apollo/client@3.9.11(@types/react@18.2.79)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
-      '@wry/caches': 1.0.1
-      '@wry/equality': 0.5.7
-      '@wry/trie': 0.5.0
-      graphql: 16.8.1
-      graphql-tag: 2.12.6(graphql@16.8.1)
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.18.0
-      prop-types: 15.8.1
+    optionalDependencies:
+      graphql-ws: 5.16.0(graphql@16.8.1)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      rehackt: 0.0.6(@types/react@18.2.79)(react@18.2.0)
-      response-iterator: 0.2.6
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.6.2
-      zen-observable-ts: 1.2.5
     transitivePeerDependencies:
       - '@types/react'
 
@@ -11822,10 +11986,10 @@ snapshots:
       vscode-languageserver-types: 3.17.5
       vscode-uri: 3.0.8
 
-  '@astrojs/markdown-remark@2.2.1(astro@2.10.15)':
+  '@astrojs/markdown-remark@2.2.1(astro@2.10.15(@types/node@18.19.31)(terser@5.30.3))':
     dependencies:
       '@astrojs/prism': 2.1.2
-      astro: 2.10.15(@types/node@18.19.31)
+      astro: 2.10.15(@types/node@18.19.31)(terser@5.30.3)
       github-slugger: 1.5.0
       import-meta-resolve: 2.2.2
       rehype-raw: 6.1.1
@@ -13404,7 +13568,7 @@ snapshots:
       react: 18.2.0
       tslib: 2.6.2
 
-  '@dnd-kit/core@6.1.0(react-dom@18.2.0)(react@18.2.0)':
+  '@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@dnd-kit/accessibility': 3.1.0(react@18.2.0)
       '@dnd-kit/utilities': 3.2.2(react@18.2.0)
@@ -13412,16 +13576,16 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.6.2
 
-  '@dnd-kit/modifiers@7.0.0(@dnd-kit/core@6.1.0)(react@18.2.0)':
+  '@dnd-kit/modifiers@7.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@dnd-kit/core': 6.1.0(react-dom@18.2.0)(react@18.2.0)
+      '@dnd-kit/core': 6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@dnd-kit/utilities': 3.2.2(react@18.2.0)
       react: 18.2.0
       tslib: 2.6.2
 
-  '@dnd-kit/sortable@8.0.0(@dnd-kit/core@6.1.0)(react@18.2.0)':
+  '@dnd-kit/sortable@8.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@dnd-kit/core': 6.1.0(react-dom@18.2.0)(react@18.2.0)
+      '@dnd-kit/core': 6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@dnd-kit/utilities': 3.2.2(react@18.2.0)
       react: 18.2.0
       tslib: 2.6.2
@@ -13484,9 +13648,10 @@ snapshots:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.79
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   '@emotion/serialize@1.1.4':
     dependencies:
@@ -13498,11 +13663,12 @@ snapshots:
 
   '@emotion/server@11.11.0(@emotion/css@11.11.2)':
     dependencies:
-      '@emotion/css': 11.11.2
       '@emotion/utils': 1.2.1
       html-tokenize: 2.0.1
       multipipe: 1.0.2
       through: 2.3.8
+    optionalDependencies:
+      '@emotion/css': 11.11.2
 
   '@emotion/sheet@1.2.2': {}
 
@@ -14024,7 +14190,7 @@ snapshots:
       graphql: 16.8.1
       tslib: 2.6.2
 
-  '@graphql-ts/extend@1.0.0(@graphql-ts/schema@0.6.0)(graphql@16.8.1)':
+  '@graphql-ts/extend@1.0.0(@graphql-ts/schema@0.6.0(graphql@16.8.1))(graphql@16.8.1)':
     dependencies:
       '@babel/runtime': 7.24.4
       '@graphql-ts/schema': 0.6.0(graphql@16.8.1)
@@ -14116,7 +14282,7 @@ snapshots:
       jest-util: 29.7.0
       slash: 3.0.0
 
-  '@jest/core@29.7.0':
+  '@jest/core@29.7.0(babel-plugin-macros@3.1.0)':
     dependencies:
       '@jest/console': 29.7.0
       '@jest/reporters': 29.7.0
@@ -14130,7 +14296,7 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.12.7)
+      jest-config: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -14325,6 +14491,305 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
+  '@keystone-6/auth@8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-6/core': 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/fields': 7.2.0(@types/react@18.2.79)
+      '@keystone-ui/loading': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/notice': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      cross-fetch: 4.0.0
+      fast-deep-equal: 3.1.3
+      graphql: 16.8.1
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - encoding
+      - react-dom
+
+  '@keystone-6/cloudinary@8.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(react-dom@18.2.0(react@18.2.0))':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-6/core': 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/fields': 7.2.0(@types/react@18.2.79)
+      '@keystone-ui/pill': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@types/react': 18.2.79
+      cloudinary: 2.1.0
+      react: 18.2.0
+    transitivePeerDependencies:
+      - react-dom
+
+  '@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))':
+    dependencies:
+      '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
+      '@apollo/client': 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@apollo/server': 4.10.3(graphql@16.8.1)
+      '@aws-sdk/client-s3': 3.554.0
+      '@aws-sdk/lib-storage': 3.554.0(@aws-sdk/client-s3@3.554.0)
+      '@aws-sdk/s3-request-presigner': 3.554.0
+      '@babel/runtime': 7.24.4
+      '@emotion/hash': 0.9.1
+      '@emotion/weak-memoize': 0.3.1
+      '@graphql-ts/extend': 1.0.0(@graphql-ts/schema@0.6.0(graphql@16.8.1))(graphql@16.8.1)
+      '@graphql-ts/schema': 0.6.0(graphql@16.8.1)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
+      '@hapi/iron': 7.0.1
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/fields': 7.2.0(@types/react@18.2.79)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/loading': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/modals': 6.0.3(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/notice': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/options': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/pill': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/popover': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/segmented-control': 7.0.3(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/toast': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/tooltip': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@nodelib/fs.walk': 2.0.0
+      '@prisma/client': 5.12.1(prisma@5.12.1)
+      '@prisma/internals': 5.12.1
+      '@prisma/migrate': 5.12.1(@prisma/generator-helper@5.12.1)(@prisma/internals@5.12.1)
+      '@sindresorhus/slugify': 1.1.2
+      apollo-upload-client: 17.0.0(@apollo/client@3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(graphql@16.8.1)
+      bcryptjs: 2.4.3
+      body-parser: 1.20.2
+      bytes: 3.1.2
+      chalk: 4.1.2
+      ci-info: 4.0.0
+      clipboard-copy: 4.0.1
+      conf: 10.2.0
+      cookie: 0.6.0
+      cors: 2.8.5
+      dataloader: 2.2.2
+      date-fns: 2.30.0
+      decimal.js: 10.4.3
+      dumb-passwords: 0.2.1
+      esbuild: 0.20.2
+      express: 4.19.2
+      fast-deep-equal: 3.1.3
+      file-type: 19.0.0
+      fs-extra: 11.2.0
+      graphql: 16.8.1
+      graphql-upload: 15.0.2(@types/express@4.17.21)(graphql@16.8.1)
+      image-size: 1.1.1
+      inflection: 3.0.0
+      intersection-observer: 0.12.2
+      meow: 9.0.0
+      next: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      pluralize: 8.0.0
+      prisma: 5.12.1
+      prompts: 2.4.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      resolve: 1.22.8
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@opentelemetry/api'
+      - '@prisma/generator-helper'
+      - '@types/express'
+      - '@types/koa'
+      - '@types/react'
+      - aws-crt
+      - babel-plugin-macros
+      - encoding
+      - graphql-ws
+      - sass
+      - subscriptions-transport-ws
+      - supports-color
+
+  '@keystone-6/document-renderer@1.1.2(react@18.2.0)':
+    dependencies:
+      react: 18.2.0
+
+  '@keystone-6/fields-document@9.0.0(@keystone-6/core@6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1)))(fp-ts@2.16.5)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@braintree/sanitize-url': 7.0.1
+      '@dnd-kit/core': 6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@dnd-kit/modifiers': 7.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+      '@dnd-kit/sortable': 8.0.0(@dnd-kit/core@6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+      '@emotion/weak-memoize': 0.3.1
+      '@keystone-6/core': 6.0.0(@babel/core@7.24.4)(@prisma/generator-helper@5.12.1)(@types/express@4.17.21)(@types/react@18.2.79)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.8.1))
+      '@keystone-6/document-renderer': 1.1.2(react@18.2.0)
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/fields': 7.2.0(@types/react@18.2.79)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/modals': 6.0.3(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/popover': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/tooltip': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@types/react': 18.2.79
+      apply-ref: 1.0.0
+      graphql: 16.8.1
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-excess: 1.0.1(fp-ts@2.16.5)
+      is-hotkey: 0.2.0
+      match-sorter: 6.3.4
+      mdast-util-from-markdown: 0.8.5
+      mdast-util-gfm-autolink-literal: 0.1.3
+      mdast-util-gfm-strikethrough: 0.2.3
+      micromark-extension-gfm-autolink-literal: 0.5.7
+      micromark-extension-gfm-strikethrough: 0.6.5
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      scroll-into-view-if-needed: 3.1.0
+      slate: 0.102.0
+      slate-history: 0.100.0(slate@0.102.0)
+      slate-react: 0.102.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(slate@0.102.0)
+    transitivePeerDependencies:
+      - fp-ts
+      - supports-color
+
+  '@keystone-ui/button@7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/loading': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/core@5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@emotion/react': 11.11.4(@types/react@18.2.79)(react@18.2.0)
+      '@types/facepaint': 1.2.5
+      facepaint: 1.2.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+
+  '@keystone-ui/fields@7.2.0(@types/react@18.2.79)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/popover': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      date-fns: 2.30.0
+      react: 18.2.0
+      react-day-picker: 8.10.1(date-fns@2.30.0)(react@18.2.0)
+      react-dom: 18.2.0(react@18.2.0)
+      react-focus-lock: 2.11.3(@types/react@18.2.79)(react@18.2.0)
+      react-select: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+
+  '@keystone-ui/icons@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/loading@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/modals@6.0.3(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-focus-lock: 2.11.3(@types/react@18.2.79)(react@18.2.0)
+      react-remove-scroll: 2.5.9(@types/react@18.2.79)(react@18.2.0)
+      react-transition-group: 4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/notice@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/button': 7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/options@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/fields': 7.2.0(@types/react@18.2.79)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-select: 5.8.0(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/pill@7.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/popover@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@popperjs/core': 2.11.8
+      focus-trap: 7.5.4
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-popper: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+
+  '@keystone-ui/segmented-control@7.0.3(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/toast@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/icons': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+
+  '@keystone-ui/tooltip@6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@keystone-ui/core': 5.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@keystone-ui/popover': 6.0.2(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      apply-ref: 1.0.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@manypkg/cli@0.21.4':
     dependencies:
       '@manypkg/get-packages': 2.2.1
@@ -14376,11 +14841,10 @@ snapshots:
       read-yaml-file: 1.1.0
 
   '@markdoc/markdoc@0.4.0(@types/react@18.2.79)(react@18.2.0)':
-    dependencies:
-      '@types/react': 18.2.79
-      react: 18.2.0
     optionalDependencies:
       '@types/markdown-it': 12.2.3
+      '@types/react': 18.2.79
+      react: 18.2.0
 
   '@next/env@13.5.6': {}
 
@@ -14546,7 +15010,7 @@ snapshots:
   '@preconstruct/next@4.0.0': {}
 
   '@prisma/client@5.12.1(prisma@5.12.1)':
-    dependencies:
+    optionalDependencies:
       prisma: 5.12.1
 
   '@prisma/debug@5.12.1': {}
@@ -14625,7 +15089,7 @@ snapshots:
       generic-pool: 3.9.0
       yallist: 4.0.0
 
-  '@remix-run/dev@1.19.3(@remix-run/serve@1.19.3)(@types/node@20.12.7)':
+  '@remix-run/dev@1.19.3(@remix-run/serve@1.19.3)(@types/node@20.12.7)(terser@5.30.3)':
     dependencies:
       '@babel/core': 7.24.4
       '@babel/generator': 7.24.4
@@ -14637,9 +15101,8 @@ snapshots:
       '@babel/traverse': 7.24.1
       '@babel/types': 7.24.0
       '@npmcli/package-json': 2.0.0
-      '@remix-run/serve': 1.19.3
       '@remix-run/server-runtime': 1.19.3
-      '@vanilla-extract/integration': 6.5.0(@types/node@20.12.7)
+      '@vanilla-extract/integration': 6.5.0(@types/node@20.12.7)(terser@5.30.3)
       arg: 5.0.2
       cacache: 15.3.0
       chalk: 4.1.2
@@ -14682,6 +15145,8 @@ snapshots:
       tsconfig-paths: 4.2.0
       ws: 7.5.9
       xdm: 2.1.0
+    optionalDependencies:
+      '@remix-run/serve': 1.19.3
     transitivePeerDependencies:
       - '@types/node'
       - bluebird
@@ -14714,12 +15179,12 @@ snapshots:
       source-map-support: 0.5.21
       stream-slice: 0.1.2
 
-  '@remix-run/react@1.19.3(react-dom@18.2.0)(react@18.2.0)':
+  '@remix-run/react@1.19.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@remix-run/router': 1.7.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-router-dom: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+      react-router-dom: 6.14.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
   '@remix-run/router@1.7.2': {}
 
@@ -15287,7 +15752,7 @@ snapshots:
       '@babel/types': 7.24.0
       entities: 4.5.0
 
-  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0)':
+  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.4.5))':
     dependencies:
       '@babel/core': 7.24.4
       '@svgr/babel-preset': 8.1.0(@babel/core@7.24.4)
@@ -15297,7 +15762,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0)(typescript@5.4.5)':
+  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.4.5))(typescript@5.4.5)':
     dependencies:
       '@svgr/core': 8.1.0(typescript@5.4.5)
       cosmiconfig: 8.3.6(typescript@5.4.5)
@@ -15329,7 +15794,7 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/react@15.0.2(react-dom@18.2.0)(react@18.2.0)':
+  '@testing-library/react@15.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.24.4
       '@testing-library/dom': 10.0.0
@@ -15404,9 +15869,9 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.5
 
-  '@types/apollo-upload-client@17.0.5(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)':
+  '@types/apollo-upload-client@17.0.5(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@apollo/client': 3.9.11(@types/react@18.2.79)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/client': 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/extract-files': 13.0.1
       graphql: 16.8.1
     transitivePeerDependencies:
@@ -15755,6 +16220,7 @@ snapshots:
       minimatch: 9.0.3
       semver: 7.6.0
       ts-api-utils: 1.3.0(typescript@5.0.4)
+    optionalDependencies:
       typescript: 5.0.4
     transitivePeerDependencies:
       - supports-color
@@ -15800,21 +16266,21 @@ snapshots:
       modern-ahocorasick: 1.0.1
       outdent: 0.8.0
 
-  '@vanilla-extract/integration@6.5.0(@types/node@20.12.7)':
+  '@vanilla-extract/integration@6.5.0(@types/node@20.12.7)(terser@5.30.3)':
     dependencies:
       '@babel/core': 7.24.4
       '@babel/plugin-syntax-typescript': 7.24.1(@babel/core@7.24.4)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.5
       '@vanilla-extract/css': 1.14.2
-      esbuild: 0.17.6
+      esbuild: 0.19.12
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0
       lodash: 4.17.21
       mlly: 1.6.1
       outdent: 0.8.0
-      vite: 5.2.8(@types/node@20.12.7)
-      vite-node: 1.5.0(@types/node@20.12.7)
+      vite: 5.2.8(@types/node@20.12.7)(terser@5.30.3)
+      vite-node: 1.5.0(@types/node@20.12.7)(terser@5.30.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -15935,7 +16401,7 @@ snapshots:
       indent-string: 4.0.0
 
   ajv-formats@2.1.1(ajv@8.12.0):
-    dependencies:
+    optionalDependencies:
       ajv: 8.12.0
 
   ajv@6.12.6:
@@ -15961,6 +16427,10 @@ snapshots:
   ansi-escapes@4.3.2:
     dependencies:
       type-fest: 0.21.3
+
+  ansi-escapes@5.0.0:
+    dependencies:
+      type-fest: 1.4.0
 
   ansi-regex@5.0.1: {}
 
@@ -15992,9 +16462,9 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apollo-upload-client@17.0.0(@apollo/client@3.9.11)(graphql@16.8.1):
+  apollo-upload-client@17.0.0(@apollo/client@3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(graphql@16.8.1):
     dependencies:
-      '@apollo/client': 3.9.11(@types/react@18.2.79)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/client': 3.9.11(@types/react@18.2.79)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       extract-files: 11.0.0
       graphql: 16.8.1
 
@@ -16073,12 +16543,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro@2.10.15(@types/node@18.19.31):
+  astro@2.10.15(@types/node@18.19.31)(terser@5.30.3):
     dependencies:
       '@astrojs/compiler': 1.8.2
       '@astrojs/internal-helpers': 0.1.2
       '@astrojs/language-server': 1.0.8
-      '@astrojs/markdown-remark': 2.2.1(astro@2.10.15)
+      '@astrojs/markdown-remark': 2.2.1(astro@2.10.15(@types/node@18.19.31)(terser@5.30.3))
       '@astrojs/telemetry': 2.1.1
       '@astrojs/webapi': 2.2.0
       '@babel/core': 7.24.4
@@ -16128,8 +16598,8 @@ snapshots:
       typescript: 5.0.4
       unist-util-visit: 4.1.2
       vfile: 5.3.7
-      vite: 4.5.3(@types/node@18.19.31)
-      vitefu: 0.2.5(vite@4.5.3)
+      vite: 4.5.3(@types/node@18.19.31)(terser@5.30.3)
+      vitefu: 0.2.5(vite@4.5.3(@types/node@18.19.31)(terser@5.30.3))
       which-pm: 2.1.1
       yargs-parser: 21.1.1
       zod: 3.22.4
@@ -16894,15 +17364,16 @@ snapshots:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
+    optionalDependencies:
       typescript: 5.4.5
 
-  create-jest@29.7.0(@types/node@20.12.7):
+  create-jest@29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0):
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.12.7)
+      jest-config: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -17077,7 +17548,9 @@ snapshots:
     dependencies:
       mimic-response: 3.1.0
 
-  dedent@1.5.3: {}
+  dedent@1.5.3(babel-plugin-macros@3.1.0):
+    optionalDependencies:
+      babel-plugin-macros: 3.1.0
 
   deep-extend@0.6.0: {}
 
@@ -17925,7 +18398,7 @@ snapshots:
       tabbable: 6.2.0
 
   follow-redirects@1.15.6(debug@4.3.4):
-    dependencies:
+    optionalDependencies:
       debug: 4.3.4
 
   for-each@0.3.3:
@@ -18036,6 +18509,8 @@ snapshots:
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
+
+  get-east-asian-width@1.2.0: {}
 
   get-intrinsic@1.2.4:
     dependencies:
@@ -18218,7 +18693,6 @@ snapshots:
   graphql-upload@15.0.2(@types/express@4.17.21)(graphql@16.8.1):
     dependencies:
       '@types/busboy': 1.5.3
-      '@types/express': 4.17.21
       '@types/node': 20.12.7
       '@types/object-path': 0.11.4
       busboy: 1.6.0
@@ -18226,6 +18700,8 @@ snapshots:
       graphql: 16.8.1
       http-errors: 2.0.0
       object-path: 0.11.8
+    optionalDependencies:
+      '@types/express': 4.17.21
 
   graphql-ws@5.16.0(graphql@16.8.1):
     dependencies:
@@ -18538,6 +19014,8 @@ snapshots:
       once: 1.4.0
       wrappy: 1.0.2
 
+  inherits@2.0.3: {}
+
   inherits@2.0.4: {}
 
   ini@1.3.8: {}
@@ -18820,6 +19298,8 @@ snapshots:
 
   is-unicode-supported@1.3.0: {}
 
+  is-unicode-supported@2.0.0: {}
+
   is-upper-case@2.0.2:
     dependencies:
       tslib: 2.4.1
@@ -18899,7 +19379,7 @@ snapshots:
       jest-util: 29.7.0
       p-limit: 3.1.0
 
-  jest-circus@29.7.0:
+  jest-circus@29.7.0(babel-plugin-macros@3.1.0):
     dependencies:
       '@jest/environment': 29.7.0
       '@jest/expect': 29.7.0
@@ -18908,7 +19388,7 @@ snapshots:
       '@types/node': 20.12.7
       chalk: 4.1.2
       co: 4.6.0
-      dedent: 1.5.3
+      dedent: 1.5.3(babel-plugin-macros@3.1.0)
       is-generator-fn: 2.1.0
       jest-each: 29.7.0
       jest-matcher-utils: 29.7.0
@@ -18925,16 +19405,16 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@29.7.0(@types/node@20.12.7):
+  jest-cli@29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0):
     dependencies:
-      '@jest/core': 29.7.0
+      '@jest/core': 29.7.0(babel-plugin-macros@3.1.0)
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.12.7)
+      create-jest: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
       exit: 0.1.2
       import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@20.12.7)
+      jest-config: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -18944,19 +19424,18 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@29.7.0(@types/node@20.12.7):
+  jest-config@29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0):
     dependencies:
       '@babel/core': 7.24.4
       '@jest/test-sequencer': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.7
       babel-jest: 29.7.0(@babel/core@7.24.4)
       chalk: 4.1.2
       ci-info: 3.9.0
       deepmerge: 4.3.1
       glob: 7.2.3
       graceful-fs: 4.2.11
-      jest-circus: 29.7.0
+      jest-circus: 29.7.0(babel-plugin-macros@3.1.0)
       jest-environment-node: 29.7.0
       jest-get-type: 29.6.3
       jest-regex-util: 29.6.3
@@ -18969,6 +19448,8 @@ snapshots:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 20.12.7
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -19085,7 +19566,7 @@ snapshots:
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
-    dependencies:
+    optionalDependencies:
       jest-resolve: 29.7.0
 
   jest-regex-util@26.0.0: {}
@@ -19245,12 +19726,12 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@29.7.0(@types/node@20.12.7):
+  jest@29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0):
     dependencies:
-      '@jest/core': 29.7.0
+      '@jest/core': 29.7.0(babel-plugin-macros@3.1.0)
       '@jest/types': 29.6.3
       import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@20.12.7)
+      jest-cli: 29.7.0(@types/node@20.12.7)(babel-plugin-macros@3.1.0)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -19391,6 +19872,8 @@ snapshots:
 
   kleur@4.1.5: {}
 
+  ky@1.2.3: {}
+
   lazy-ass@1.6.0: {}
 
   lazy-require.macro@0.1.0:
@@ -19484,6 +19967,11 @@ snapshots:
       is-unicode-supported: 0.1.0
 
   log-symbols@5.1.0:
+    dependencies:
+      chalk: 5.3.0
+      is-unicode-supported: 1.3.0
+
+  log-symbols@6.0.0:
     dependencies:
       chalk: 5.3.0
       is-unicode-supported: 1.3.0
@@ -20306,13 +20794,13 @@ snapshots:
     dependencies:
       typescript: 5.0.4
 
-  next-auth@4.24.7(next@13.5.6)(react-dom@18.2.0)(react@18.2.0):
+  next-auth@4.24.7(next@13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
       '@panva/hkdf': 1.1.1
       cookie: 0.5.0
       jose: 4.15.5
-      next: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+      next: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       oauth: 0.9.15
       openid-client: 5.6.5
       preact: 10.20.2
@@ -20323,15 +20811,15 @@ snapshots:
 
   next-compose-plugins@2.2.1: {}
 
-  next-sitemap@4.2.3(next@13.5.6):
+  next-sitemap@4.2.3(next@13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)):
     dependencies:
       '@corex/deepmerge': 4.0.43
       '@next/env': 13.5.6
       fast-glob: 3.3.2
       minimist: 1.2.8
-      next: 13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
+      next: 13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
-  next@13.5.6(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0):
+  next@13.5.6(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@next/env': 13.5.6
       '@swc/helpers': 0.5.2
@@ -20340,7 +20828,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.24.4)(react@18.2.0)
+      styled-jsx: 5.1.1(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react@18.2.0)
       watchpack: 2.4.0
     optionalDependencies:
       '@next/swc-darwin-arm64': 13.5.6
@@ -20549,6 +21037,18 @@ snapshots:
       strip-ansi: 7.1.0
       wcwidth: 1.0.1
 
+  ora@8.0.1:
+    dependencies:
+      chalk: 5.3.0
+      cli-cursor: 4.0.0
+      cli-spinners: 2.9.2
+      is-interactive: 2.0.0
+      is-unicode-supported: 2.0.0
+      log-symbols: 6.0.0
+      stdin-discarder: 0.2.2
+      string-width: 7.1.0
+      strip-ansi: 7.1.0
+
   os-tmpdir@1.0.2: {}
 
   outdent@0.5.0: {}
@@ -20614,6 +21114,13 @@ snapshots:
     dependencies:
       degenerator: 5.0.1
       netmask: 2.0.2
+
+  package-json@10.0.0:
+    dependencies:
+      ky: 1.2.3
+      registry-auth-token: 5.0.2
+      registry-url: 6.0.1
+      semver: 7.6.0
 
   package-json@8.1.1:
     dependencies:
@@ -20736,6 +21243,11 @@ snapshots:
 
   path-type@5.0.0: {}
 
+  path@0.12.7:
+    dependencies:
+      process: 0.11.10
+      util: 0.10.4
+
   pathe@1.1.2: {}
 
   pause-stream@0.0.11:
@@ -20801,8 +21313,9 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.4.38):
     dependencies:
       lilconfig: 3.1.1
-      postcss: 8.4.38
       yaml: 2.4.1
+    optionalDependencies:
+      postcss: 8.4.38
 
   postcss-modules-extract-imports@3.1.0(postcss@8.4.38):
     dependencies:
@@ -20914,6 +21427,8 @@ snapshots:
   private@0.1.8: {}
 
   process-nextick-args@2.0.1: {}
+
+  process@0.11.10: {}
 
   promise-inflight@1.0.1: {}
 
@@ -21053,13 +21568,14 @@ snapshots:
   react-focus-lock@2.11.3(@types/react@18.2.79)(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
-      '@types/react': 18.2.79
       focus-lock: 1.3.5
       prop-types: 15.8.1
       react: 18.2.0
       react-clientside-effect: 1.2.6(react@18.2.0)
       use-callback-ref: 1.3.2(@types/react@18.2.79)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.79)(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   react-is@16.13.1: {}
 
@@ -21067,7 +21583,7 @@ snapshots:
 
   react-is@18.2.0: {}
 
-  react-popper@2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0)(react@18.2.0):
+  react-popper@2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@popperjs/core': 2.11.8
       react: 18.2.0
@@ -21079,22 +21595,24 @@ snapshots:
 
   react-remove-scroll-bar@2.3.6(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       react: 18.2.0
       react-style-singleton: 2.2.1(@types/react@18.2.79)(react@18.2.0)
       tslib: 2.6.2
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   react-remove-scroll@2.5.9(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       react: 18.2.0
       react-remove-scroll-bar: 2.3.6(@types/react@18.2.79)(react@18.2.0)
       react-style-singleton: 2.2.1(@types/react@18.2.79)(react@18.2.0)
       tslib: 2.6.2
       use-callback-ref: 1.3.2(@types/react@18.2.79)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.79)(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.79
 
-  react-router-dom@6.14.2(react-dom@18.2.0)(react@18.2.0):
+  react-router-dom@6.14.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@remix-run/router': 1.7.2
       react: 18.2.0
@@ -21106,7 +21624,7 @@ snapshots:
       '@remix-run/router': 1.7.2
       react: 18.2.0
 
-  react-select@5.8.0(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
+  react-select@5.8.0(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
       '@emotion/cache': 11.11.0
@@ -21117,20 +21635,21 @@ snapshots:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
+      react-transition-group: 4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.79)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
 
   react-style-singleton@2.2.1(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.6.2
+    optionalDependencies:
+      '@types/react': 18.2.79
 
-  react-transition-group@4.4.5(react-dom@18.2.0)(react@18.2.0):
+  react-transition-group@4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.24.4
       dom-helpers: 5.2.1
@@ -21259,7 +21778,7 @@ snapshots:
       jsesc: 0.5.0
 
   rehackt@0.0.6(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
+    optionalDependencies:
       '@types/react': 18.2.79
       react: 18.2.0
 
@@ -21701,7 +22220,7 @@ snapshots:
       is-plain-object: 5.0.0
       slate: 0.102.0
 
-  slate-react@0.102.0(react-dom@18.2.0)(react@18.2.0)(slate@0.102.0):
+  slate-react@0.102.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(slate@0.102.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       '@types/is-hotkey': 0.1.10
@@ -21886,6 +22405,8 @@ snapshots:
     dependencies:
       bl: 5.1.0
 
+  stdin-discarder@0.2.2: {}
+
   stream-browserify@3.0.0:
     dependencies:
       inherits: 2.0.4
@@ -21922,6 +22443,12 @@ snapshots:
     dependencies:
       eastasianwidth: 0.2.0
       emoji-regex: 9.2.2
+      strip-ansi: 7.1.0
+
+  string-width@7.1.0:
+    dependencies:
+      emoji-regex: 10.3.0
+      get-east-asian-width: 1.2.0
       strip-ansi: 7.1.0
 
   string.prototype.codepointat@0.2.1: {}
@@ -21999,11 +22526,13 @@ snapshots:
     dependencies:
       inline-style-parser: 0.1.1
 
-  styled-jsx@5.1.1(@babel/core@7.24.4)(react@18.2.0):
+  styled-jsx@5.1.1(@babel/core@7.24.4)(babel-plugin-macros@3.1.0)(react@18.2.0):
     dependencies:
-      '@babel/core': 7.24.4
       client-only: 0.0.1
       react: 18.2.0
+    optionalDependencies:
+      '@babel/core': 7.24.4
+      babel-plugin-macros: 3.1.0
 
   stylis@4.2.0: {}
 
@@ -22046,6 +22575,11 @@ snapshots:
   supports-color@8.1.1:
     dependencies:
       has-flag: 4.0.0
+
+  supports-hyperlinks@2.3.0:
+    dependencies:
+      has-flag: 4.0.0
+      supports-color: 7.2.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -22101,6 +22635,11 @@ snapshots:
       yallist: 4.0.0
 
   term-size@2.2.1: {}
+
+  terminal-link@3.0.0:
+    dependencies:
+      ansi-escapes: 5.0.0
+      supports-hyperlinks: 2.3.0
 
   terser@5.30.3:
     dependencies:
@@ -22276,6 +22815,8 @@ snapshots:
   type-fest@0.6.0: {}
 
   type-fest@0.8.1: {}
+
+  type-fest@1.4.0: {}
 
   type-fest@2.19.0: {}
 
@@ -22505,25 +23046,32 @@ snapshots:
 
   use-callback-ref@1.3.2(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       react: 18.2.0
       tslib: 2.6.2
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   use-isomorphic-layout-effect@1.1.2(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       react: 18.2.0
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   use-sidecar@1.1.2(@types/react@18.2.79)(react@18.2.0):
     dependencies:
-      '@types/react': 18.2.79
       detect-node-es: 1.1.0
       react: 18.2.0
       tslib: 2.6.2
+    optionalDependencies:
+      '@types/react': 18.2.79
 
   use@3.1.1: {}
 
   util-deprecate@1.0.2: {}
+
+  util@0.10.4:
+    dependencies:
+      inherits: 2.0.3
 
   util@0.12.5:
     dependencies:
@@ -22584,13 +23132,13 @@ snapshots:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
-  vite-node@1.5.0(@types/node@20.12.7):
+  vite-node@1.5.0(@types/node@20.12.7)(terser@5.30.3):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.8(@types/node@20.12.7)
+      vite: 5.2.8(@types/node@20.12.7)(terser@5.30.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -22601,27 +23149,29 @@ snapshots:
       - supports-color
       - terser
 
-  vite@4.5.3(@types/node@18.19.31):
+  vite@4.5.3(@types/node@18.19.31)(terser@5.30.3):
     dependencies:
-      '@types/node': 18.19.31
       esbuild: 0.18.20
       postcss: 8.4.38
       rollup: 3.29.4
     optionalDependencies:
+      '@types/node': 18.19.31
       fsevents: 2.3.3
+      terser: 5.30.3
 
-  vite@5.2.8(@types/node@20.12.7):
+  vite@5.2.8(@types/node@20.12.7)(terser@5.30.3):
     dependencies:
-      '@types/node': 20.12.7
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.3
     optionalDependencies:
+      '@types/node': 20.12.7
       fsevents: 2.3.3
+      terser: 5.30.3
 
-  vitefu@0.2.5(vite@4.5.3):
-    dependencies:
-      vite: 4.5.3(@types/node@18.19.31)
+  vitefu@0.2.5(vite@4.5.3(@types/node@18.19.31)(terser@5.30.3)):
+    optionalDependencies:
+      vite: 4.5.3(@types/node@18.19.31)(terser@5.30.3)
 
   vscode-css-languageservice@6.2.13:
     dependencies:
