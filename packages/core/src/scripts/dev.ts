@@ -231,7 +231,7 @@ export async function dev (
 
     const originalPrismaSchema = printPrismaSchema(system.config, system.lists)
     let lastPrintedGraphQLSchema = printSchema(system.graphQLSchema)
-    let lastApolloServer = apolloServer || null
+    let lastApolloServer = apolloServer ?? null
 
     if (system.config.telemetry !== false) {
       runTelemetry(cwd, system.lists, system.config.db.provider)
@@ -276,10 +276,7 @@ export async function dev (
         // which means you get a "there's probably a memory leak" warning from node
         const newPrintedGraphQLSchema = printSchema(newSystem.graphQLSchema)
         if (newPrintedGraphQLSchema !== lastPrintedGraphQLSchema) {
-          await fsp.writeFile(
-            paths.schema.graphql,
-            getFormattedGraphQLSchema(newPrintedGraphQLSchema)
-          )
+          await fsp.writeFile(paths.schema.graphql, getFormattedGraphQLSchema(newPrintedGraphQLSchema))
           lastPrintedGraphQLSchema = newPrintedGraphQLSchema
         }
 

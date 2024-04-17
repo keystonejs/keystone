@@ -28,8 +28,6 @@ export async function start (
 
   const system = createSystem(getBuiltKeystoneConfiguration(cwd))
   const paths = system.getPaths(cwd)
-  const prismaClient = require(paths.prisma)
-  const keystone = system.getKeystone(prismaClient)
 
   if (withMigrations) {
     console.log('✨ Applying any database migrations')
@@ -40,6 +38,10 @@ export async function start (
   }
 
   if (!server) return
+
+  const prismaClient = require(paths.prisma)
+  const keystone = system.getKeystone(prismaClient)
+
   console.log('✨ Connecting to the database')
   await keystone.connect()
 

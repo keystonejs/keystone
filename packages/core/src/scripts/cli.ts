@@ -8,7 +8,7 @@ import { telemetry } from './telemetry'
 
 export type Flags = {
   dbPush: boolean
-  fix: boolean // TODO: remove, deprecated
+  fix: boolean // TODO: deprecated, remove in breaking change
   frozen: boolean
   prisma: boolean
   server: boolean
