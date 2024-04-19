@@ -142,9 +142,12 @@ export async function findMany (
   })
 
   if (list.cacheHint) {
-    maybeCacheControlFromInfo(info)?.setCacheHint(
-      list.cacheHint({ results, operationName: info.operation.name?.value, meta: false }) as any
-    )
+    maybeCacheControlFromInfo(info)
+      ?.setCacheHint(list.cacheHint({
+        results,
+        operationName: info.operation.name?.value,
+        meta: false
+      }))
   }
   return results
 }

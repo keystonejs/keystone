@@ -269,7 +269,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
           return isAccessAllowed(context)
         },
 
-        pageMiddleware: async args => {
+        pageMiddleware: async (args) => {
           const shouldRedirect = await authMiddleware(args)
           if (shouldRedirect) return shouldRedirect
           return pageMiddleware?.(args)
