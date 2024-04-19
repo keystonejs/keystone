@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/sandbox",
-  "version": "0.0.9",
+  "version": "0.0.0-rc-20240419043059",
   "private": true,
   "license": "MIT",
   "scripts": {

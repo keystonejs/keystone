@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20240419043059
+
+### Minor Changes
+
+- [#9103](https://github.com/keystonejs/keystone/pull/9103) [`e69def2`](https://github.com/keystonejs/keystone/commit/e69def247d76462c568695f6581ff4fda6ad2880) Thanks [@dcousens](https://github.com/dcousens)! - Adds `keystone migrate create` and `keystone migrate apply`
+
+- [`262a5bf`](https://github.com/keystonejs/keystone/commit/262a5bf11702190ed9045ab75736dbaca50afe8c) Thanks [@dcousens](https://github.com/dcousens)! - Adds `context.transaction` for interactive transactions when using a `context`
+
+### Patch Changes
+
+- [#9100](https://github.com/keystonejs/keystone/pull/9100) [`3b6ba78`](https://github.com/keystonejs/keystone/commit/3b6ba78f47e190553b7707875ca91e8d958225d5) Thanks [@dcousens](https://github.com/dcousens)! - Fix `config.db.enableLogging` types to align with Prisma 5
+
+- [#9099](https://github.com/keystonejs/keystone/pull/9099) [`deecc1b`](https://github.com/keystonejs/keystone/commit/deecc1bd938f949a7d32562031c77e8aec64f709) Thanks [@dcousens](https://github.com/dcousens)! - Fix `keystone` command help text to show where `--frozen` and `--no-server` are applicable
+
 ## 6.0.0
 
 ### Major Changes
