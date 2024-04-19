@@ -116,16 +116,16 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     db: {
       provider: dbProvider,
       url: dbUrl,
-      prismaClientPath: join(cwd, '.client'),
-      prismaSchemaPath: join(cwd, 'schema.prisma'),
+      prismaClientPath: '.prisma',
+      prismaSchemaPath: 'test-schema.prisma',
       ...config_.db,
     },
     types: {
-      path: join(cwd, 'test-types.ts')
+      path: 'test-types.ts'
     },
     lists: config_.lists,
     graphql: {
-      schemaPath: join(cwd, 'schema.graphql'),
+      schemaPath: 'test-schema.graphql',
       ...config_.graphql,
     },
     ui: {
