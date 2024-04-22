@@ -12,7 +12,7 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "git submodule update --init --recursive",
+  "postCreateCommand": "pnpm install",
 
   // Configure tool-specific properties.
   "customizations": {
