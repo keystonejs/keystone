@@ -19,8 +19,6 @@
     "vscode": {
       "settings": {},
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
         "prisma.prisma",
         "github.vscode-pull-request-github"
       ]
