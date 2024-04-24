@@ -21,7 +21,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
 
-
   /**
    * WARNING: may change in patch
    */
@@ -89,8 +88,8 @@ type ListAPI <ListTypeInfo extends BaseListTypeInfo> = {
   ): Promise<Record<string, any>[]>
 }
 
-export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: ListAPI<KeystoneListsTypeInfo[Key]>
+export type KeystoneListsAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
+  [Key in keyof ListsTypeInfo]: ListAPI<ListsTypeInfo[Key]>
 }
 
 type ResolveFields = {
@@ -140,8 +139,8 @@ type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
   }): Promise<ListTypeInfo['item'][]>
 }
 
-export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: DbAPI<KeystoneListsTypeInfo[Key]>
+export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
+  [Key in keyof ListsTypeInfo]: DbAPI<ListsTypeInfo[Key]>
 }
 
 // GraphQL API
