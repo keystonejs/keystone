@@ -2359,7 +2359,13 @@ importers:
         version: 4.16.2
 
   tests/admin-ui-tests:
-    dependencies:
+    devDependencies:
+      '@keystone-6/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@manypkg/find-root':
         specifier: ^1.1.0
         version: 1.1.0
@@ -2372,19 +2378,6 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.4.5
-      node-fetch:
-        specifier: ^2.6.7
-        version: 2.7.0
-      tree-kill:
-        specifier: ^1.2.2
-        version: 1.2.2
-    devDependencies:
-      '@keystone-6/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@keystone-6/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       execa:
         specifier: ^5.1.1
         version: 5.1.1
@@ -2394,6 +2387,9 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
+      node-fetch:
+        specifier: ^2.6.7
+        version: 2.7.0
       playwright:
         specifier: ^1.17.1
         version: 1.45.2
@@ -2554,7 +2550,7 @@ importers:
         version: 5.17.0
 
   tests/examples-smoke-tests:
-    dependencies:
+    devDependencies:
       '@types/async-retry':
         specifier: ^1.4.3
         version: 1.4.8
