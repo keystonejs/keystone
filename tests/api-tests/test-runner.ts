@@ -101,7 +101,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
 
   if (dbUrl.startsWith('postgres:')) {
     const parsed = new URL(dbUrl)
-    parsed.searchParams.set('schema', random) // unique schema names
+    parsed.searchParams.set('schema', random.replace(/^pg_/g, 'p__')) // unique schema names, ^pg_ is reserved by postgres
     dbUrl = parsed.toString()
   }
 
