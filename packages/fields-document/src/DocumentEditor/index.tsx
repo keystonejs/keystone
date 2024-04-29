@@ -43,7 +43,7 @@ import { withSoftBreaks } from './soft-breaks'
 import { withShortcuts } from './shortcuts'
 import { withDocumentFeaturesNormalization } from './document-features-normalization'
 import { ToolbarStateProvider } from './toolbar-state'
-import { withInsertMenu } from './insert-menu'
+import { withInsertMenu } from './insert-menu-shared'
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts'
 import { withPasting } from './pasting'
 
