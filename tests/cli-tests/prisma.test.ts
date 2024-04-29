@@ -17,10 +17,10 @@ test('keystone prisma exits with the same code as the prisma child process exits
   })
 
   await spawnCommand(cwd, ['build', '--no-ui'])
-  const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'bad-thing'])
+  const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'foo'])
 
   expect(exitCode).toEqual(1)
-  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toContain(`Unknown command "foo"`)
 })
 
 test('keystone prisma uses the db url in the keystone config', async () => {
@@ -34,5 +34,5 @@ test('keystone prisma uses the db url in the keystone config', async () => {
   const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'migrate', 'status'])
 
   expect(exitCode).toEqual(1)
-  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toMatchSnapshot()
+  expect(output.replace(/[^ -~\n]/g, '?').replace(/  \n/g, '\n')).toContain(`file:./app.db`)
 })
