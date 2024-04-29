@@ -2,11 +2,13 @@ import { type KeystoneContext } from '@keystone-6/core/types'
 import { type Descendant } from 'slate'
 import { type GraphQLSchema, executeSync, parse, type ExecutionResult } from 'graphql'
 import weakMemoize from '@emotion/weak-memoize'
+
 import {
   type ComponentBlock,
   type ComponentSchema,
   type RelationshipField,
-} from './DocumentEditor/component-blocks/api'
+} from './DocumentEditor/component-blocks/api-shared'
+
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 import { type Relationships } from './DocumentEditor/relationship'
 

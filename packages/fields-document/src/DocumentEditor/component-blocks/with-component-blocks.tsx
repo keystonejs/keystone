@@ -1,7 +1,12 @@
 import { Editor, Element, Transforms, Range, type NodeEntry, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import { type ChildField, type ComponentBlock, type ComponentSchema } from '../../component-blocks'
+import {
+  type ArrayField,
+  type ChildField,
+  type ComponentBlock,
+  type ComponentSchema
+} from './api-shared'
 import { assert, moveChildren } from '../utils'
 import { type DocumentFeatures } from '../../views'
 import {
@@ -23,7 +28,6 @@ import {
   traverseProps,
 } from './utils'
 import { getInitialPropsValue } from './initial-values'
-import { type ArrayField } from './api'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 
 function getAncestorComponentBlock (editor: Editor) {
@@ -51,10 +55,7 @@ function getAncestorComponentBlock (editor: Editor) {
   return { isInside: false } as const
 }
 
-const alreadyNormalizedThings: WeakMap<
-  DocumentFeaturesForChildField,
-  WeakSet<Node>
-> = new WeakMap()
+const alreadyNormalizedThings: WeakMap<DocumentFeaturesForChildField, WeakSet<Node>> = new WeakMap()
 
 function normalizeNodeWithinComponentProp (
   [node, path]: NodeEntry,

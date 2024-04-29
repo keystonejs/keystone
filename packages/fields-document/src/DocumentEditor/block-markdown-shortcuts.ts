@@ -1,6 +1,6 @@
 import { Element, Editor, Transforms, Range } from 'slate'
 import { type DocumentFeatures } from '../views'
-import { type ComponentBlock } from './component-blocks/api'
+import { type ComponentBlock } from './component-blocks/api-shared'
 import { insertDivider } from './divider'
 import { type DocumentFeaturesForNormalization } from './document-features-normalization'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'

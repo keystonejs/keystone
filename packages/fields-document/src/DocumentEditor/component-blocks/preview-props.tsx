@@ -9,7 +9,7 @@ import {
   type ObjectField,
   type RelationshipField,
   type GenericPreviewProps,
-} from './api'
+} from './api-shared'
 import { updateValue } from './initial-values'
 
 const arrayValuesToElementKeys = new WeakMap<readonly unknown[], readonly string[]>()

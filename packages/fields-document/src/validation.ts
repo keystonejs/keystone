@@ -1,7 +1,9 @@
-'use client'
 import { Text, Editor } from 'slate'
 import { createDocumentEditor } from './DocumentEditor'
-import { type ComponentBlock, type ComponentSchema } from './DocumentEditor/component-blocks/api'
+import {
+  type ComponentBlock,
+  type ComponentSchema
+} from './DocumentEditor/component-blocks/api-shared'
 import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 import { type Relationships } from './DocumentEditor/relationship'
 import {

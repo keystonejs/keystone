@@ -16,7 +16,7 @@ import { Editor, Transforms } from 'slate'
 import { jsx, useTheme } from '@keystone-ui/core'
 
 import { ToolbarButton } from '../primitives'
-import { type ComponentBlock } from '../../component-blocks'
+import { type ComponentBlock } from './api-shared'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
@@ -56,7 +56,7 @@ export function insertComponentBlock (
   }
 }
 
-export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
+export function BlockComponentsButtons ({ onClose }: { onClose: () => void }) {
   const editor = useStaticEditor()
   const blockComponents = useContext(ComponentBlockContext)!
   return (
@@ -77,11 +77,11 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
   )
 }
 
-export const ComponentBlocksElement = ({
+export function ComponentBlocksElement ({
   attributes,
   children,
   element: __elementToGetPath,
-}: RenderElementProps & { element: { type: 'component-block' } }) => {
+}: RenderElementProps & { element: { type: 'component-block' } }) {
   const editor = useStaticEditor()
   const focused = useFocused()
   const selected = useSelected()

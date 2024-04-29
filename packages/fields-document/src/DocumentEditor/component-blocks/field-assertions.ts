@@ -1,4 +1,4 @@
-import { type ComponentSchema } from './api'
+import { type ComponentSchema } from './api-shared'
 import { assertNever } from './utils'
 
 export function assertValidComponentSchema (schema: ComponentSchema, lists: ReadonlySet<string>) {
