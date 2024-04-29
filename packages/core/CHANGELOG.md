@@ -1,5 +1,21 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20240429035832
+
+### Minor Changes
+
+- [#9103](https://github.com/keystonejs/keystone/pull/9103) [`e69def2`](https://github.com/keystonejs/keystone/commit/e69def247d76462c568695f6581ff4fda6ad2880) Thanks [@dcousens](https://github.com/dcousens)! - Adds `keystone migrate create` and `keystone migrate apply`
+
+- [#9114](https://github.com/keystonejs/keystone/pull/9114) [`a9d1d22`](https://github.com/keystonejs/keystone/commit/a9d1d222657a1ee14cf3d03a0fdee64f046764bf) Thanks [@iamandrewluca](https://github.com/iamandrewluca)! - Add `config.db.extendPrismaClient` to support extending the `PrismaClient`
+
+- [#9112](https://github.com/keystonejs/keystone/pull/9112) [`002409c`](https://github.com/keystonejs/keystone/commit/002409ccd3ed1e06360935e2e94cd5d8393f6a7c) Thanks [@renovate](https://github.com/apps/renovate)! - Update `prisma` to `5.13.0`
+
+### Patch Changes
+
+- [#9100](https://github.com/keystonejs/keystone/pull/9100) [`3b6ba78`](https://github.com/keystonejs/keystone/commit/3b6ba78f47e190553b7707875ca91e8d958225d5) Thanks [@dcousens](https://github.com/dcousens)! - Fix `config.db.enableLogging` types to align with Prisma 5
+
+- [#9099](https://github.com/keystonejs/keystone/pull/9099) [`deecc1b`](https://github.com/keystonejs/keystone/commit/deecc1bd938f949a7d32562031c77e8aec64f709) Thanks [@dcousens](https://github.com/dcousens)! - Fix `keystone` command help text to show where `--frozen` and `--no-server` are applicable
+
 ## 6.0.0
 
 ### Major Changes
