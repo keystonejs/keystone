@@ -10,8 +10,8 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.0.0",
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
     "@prisma/client": "^5.0.0",
     "jsonwebtoken": "^9.0.0"
   },
