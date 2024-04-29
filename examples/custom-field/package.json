@@ -10,8 +10,8 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.0.0",
-    "@keystone-ui/fields": "^7.1.1",
+    "@keystone-6/core": "workspace:^",
+    "@keystone-ui/fields": "workspace:^",
     "@prisma/client": "^5.0.0"
   },
   "devDependencies": {

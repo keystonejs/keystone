@@ -11,8 +11,8 @@
     "seed-data": "tsx seed-data.ts"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.0.0",
-    "@keystone-6/fields-document": "^9.0.0",
+    "@keystone-6/core": "workspace:^",
+    "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
