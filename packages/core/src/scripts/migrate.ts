@@ -1,8 +1,7 @@
+import esbuild from 'esbuild'
 import fse from 'fs-extra'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
-
-import esbuild from 'esbuild'
 
 import {
   createSystem,
@@ -77,6 +76,9 @@ provider = ${system.config.db.provider}`)
   const paths = system.getPaths(cwd)
   const { output: summary, exitCode: prismaExitCode } = await spawnPrisma(cwd, system, [
     'migrate', 'diff',
+    ...(system.config.db.shadowDatabaseUrl ? [
+      '--shadow-database-url', system.config.db.shadowDatabaseUrl
+    ] : []),
     '--from-migrations', 'migrations/',
     '--to-schema-datamodel', paths.schema.prisma,
   ])
@@ -94,6 +96,9 @@ provider = ${system.config.db.provider}`)
   console.log(summary)
   const { output: sql, exitCode: prismaExitCode2 } = await spawnPrisma(cwd, system, [
     'migrate', 'diff',
+    ...(system.config.db.shadowDatabaseUrl ? [
+      '--shadow-database-url', system.config.db.shadowDatabaseUrl
+    ] : []),
     '--from-migrations', 'migrations/',
     '--to-schema-datamodel', paths.schema.prisma,
     '--script'
