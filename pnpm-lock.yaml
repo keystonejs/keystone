@@ -134,14 +134,14 @@ importers:
         specifier: workspace:^
         version: link:../popover
       date-fns:
-        specifier: ^2.26.0
-        version: 2.30.0
+        specifier: ^3.0.0
+        version: 3.6.0
       react:
         specifier: ^18.2.0
         version: 18.3.1
       react-day-picker:
         specifier: ^8.0.4
-        version: 8.10.1(date-fns@2.30.0)(react@18.3.1)
+        version: 8.10.1(date-fns@3.6.0)(react@18.3.1)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
@@ -530,8 +530,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       date-fns:
-        specifier: ^2.26.0
-        version: 2.30.0
+        specifier: ^3.0.0
+        version: 3.6.0
       dedent:
         specifier: ^1.0.0
         version: 1.5.3(babel-plugin-macros@3.1.0)
@@ -1991,8 +1991,8 @@ importers:
         specifier: ^2.1.0
         version: 2.2.2
       date-fns:
-        specifier: ^2.26.0
-        version: 2.30.0
+        specifier: ^3.0.0
+        version: 3.6.0
       decimal.js:
         specifier: ^10.4.1
         version: 10.4.3
@@ -6798,6 +6798,9 @@ packages:
   date-fns@2.30.0:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
+
+  date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
   deasync@0.1.29:
     resolution: {integrity: sha512-EBtfUhVX23CE9GR6m+F8WPeImEE4hR/FW9RkK0PMl9V1t283s0elqsTD8EZjaKX28SY1BW2rYfCgNsAYdpamUw==}
@@ -17147,6 +17150,8 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.4
 
+  date-fns@3.6.0: {}
+
   deasync@0.1.29:
     dependencies:
       bindings: 1.5.0
@@ -21158,6 +21163,11 @@ snapshots:
   react-day-picker@8.10.1(date-fns@2.30.0)(react@18.3.1):
     dependencies:
       date-fns: 2.30.0
+      react: 18.3.1
+
+  react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
+    dependencies:
+      date-fns: 3.6.0
       react: 18.3.1
 
   react-dom@18.3.1(react@18.3.1):
