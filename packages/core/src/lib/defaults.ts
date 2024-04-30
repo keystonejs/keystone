@@ -74,6 +74,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
 }
 
 async function noop () {}
+function identity<T> (x: T) { return x }
 
 export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
@@ -108,7 +109,8 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
     db: {
       ...config.db,
       shadowDatabaseUrl: config.db?.shadowDatabaseUrl ?? '',
-      extendPrismaSchema: config.db?.extendPrismaSchema ?? ((schema: string) => schema),
+      extendPrismaSchema: config.db?.extendPrismaSchema ?? identity,
+      extendPrismaClient: config.db?.extendPrismaClient ?? identity,
       onConnect: config.db.onConnect ?? noop,
       prismaClientPath: config.db?.prismaClientPath ?? '@prisma/client',
       prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',

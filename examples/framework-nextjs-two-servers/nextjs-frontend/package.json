@@ -10,7 +10,7 @@
     "start": "next start --port 8000"
   },
   "dependencies": {
-    "@keystone-6/document-renderer": "^1.1.0",
+    "@keystone-6/document-renderer": "workspace:^",
     "@preconstruct/next": "^4.0.0",
     "graphql": "^16.8.1",
     "next": "^13.3.0",

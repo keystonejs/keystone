@@ -60,11 +60,13 @@ export function createContext ({
   const images = createImagesContext(config)
   const files = createFilesContext(config)
   const construct = ({
+    prisma,
     session,
     sudo,
     req,
     res,
   }: {
+    prisma: any
     session?: unknown
     sudo: Boolean
     req?: IncomingMessage
@@ -87,32 +89,46 @@ export function createContext ({
       return result.data as any
     }
 
-    async function withRequest (newReq: IncomingMessage, newRes?: ServerResponse) {
-      const newContext = construct({
-        session,
-        sudo,
-        req: newReq,
-        res: newRes,
-      })
-      return newContext.withSession(await config.session?.get({ context: newContext }) ?? undefined)
-    }
-
     const context: KeystoneContext = {
+      prisma,
       db: {},
       query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      prisma: prismaClient,
 
-      sudo: () => construct({ session, sudo: true, req, res }),
+      sudo: () => construct({ prisma, session, sudo: true, req, res }),
+
+      transaction: async (f) => {
+        return await prisma.$transaction(async (prisma_: any) => {
+          const newContext = construct({
+            prisma: prisma_,
+            session,
+            sudo,
+            req,
+            res
+          })
+
+          return await f(newContext)
+        })
+      },
 
       req,
       res,
       sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
-      withRequest,
+      withRequest: async (newReq, newRes) => {
+        const newContext = construct({
+          prisma,
+          session,
+          sudo,
+          req: newReq,
+          res: newRes,
+        })
+        return newContext.withSession(await config.session?.get({ context: newContext }) ?? undefined)
+      },
+
       withSession: session => {
-        return construct({ session, sudo, req, res })
+        return construct({ prisma, session, sudo, req, res })
       },
 
       images,
@@ -138,6 +154,7 @@ export function createContext ({
   }
 
   return construct({
+    prisma: prismaClient,
     session: undefined,
     sudo: false
   })
