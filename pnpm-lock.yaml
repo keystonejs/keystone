@@ -1655,6 +1655,22 @@ importers:
         specifier: ~5.0.0
         version: 5.0.4
 
+  examples/transactions:
+    dependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^5.0.0
+        version: 5.13.0(prisma@5.13.0)
+    devDependencies:
+      prisma:
+        specifier: ^5.0.0
+        version: 5.13.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.4
+
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
@@ -15918,7 +15934,7 @@ snapshots:
       '@babel/plugin-syntax-typescript': 7.24.1(@babel/core@7.24.5)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.5
       '@vanilla-extract/css': 1.15.1(babel-plugin-macros@3.1.0)
-      esbuild: 0.17.6
+      esbuild: 0.19.12
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0

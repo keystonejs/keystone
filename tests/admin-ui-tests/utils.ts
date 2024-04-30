@@ -1,5 +1,5 @@
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import { promisify } from 'util'
 import fetch from 'node-fetch'
 import execa, { type ExecaChildProcess } from 'execa'
@@ -70,10 +70,10 @@ export async function deleteAllData (projectDir: string) {
   await prisma.$disconnect()
 }
 
-export const adminUITests = (
+export function adminUITests (
   pathToTest: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
-) => {
+) {
   const projectDir = path.join(projectRoot, pathToTest)
 
   dotenv.config()
