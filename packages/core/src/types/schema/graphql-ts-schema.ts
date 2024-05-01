@@ -1,7 +1,7 @@
 import type { ReadStream } from 'fs'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
