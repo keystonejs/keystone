@@ -1,0 +1,27 @@
+{
+  "name": "@keystone-6/example-custom-session-passport",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone build --no-ui --frozen"
+  },
+  "dependencies": {
+    "@keystone-6/core": "workspace:^",
+    "@prisma/client": "catalog:",
+    "dotenv": "^16.0.0",
+    "express": "catalog:",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "catalog:",
+    "@types/passport": "^1.0.16",
+    "@types/passport-github2": "^1.2.9",
+    "@types/passport-oauth2": "^1.4.16",
+    "prisma": "catalog:",
+    "typescript": "catalog:"
+  }
+}
