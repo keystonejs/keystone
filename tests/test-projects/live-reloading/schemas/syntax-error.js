@@ -1,13 +1,13 @@
-import { graphQLSchemaExtension, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { graphQLSchemaExtension, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
-expor const lists = {
+export const lists = {
   Something: list({
     fields: {
       text: text(),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: `
@@ -20,4 +20,4 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       someNumber: () => 1,
     },
   },
-});
+})
