@@ -16,8 +16,6 @@ import {
   type MaybeSessionFunction,
 } from './lists'
 import type { BaseFields } from './fields'
-import type { ListAccessControl, FieldAccessControl } from './access-control'
-import type { ListHooks, FieldHooks } from './hooks'
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
@@ -276,8 +274,9 @@ export type AdminFileToWrite =
   | { mode: 'write', src: string, outputPath: string }
   | { mode: 'copy', inputPath: string, outputPath: string }
 
-export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }
 export type {
+  ListAccessControl,
+  FieldAccessControl,
   FieldCreateItemAccessArgs,
   FieldReadItemAccessArgs,
   FieldUpdateItemAccessArgs,
@@ -290,3 +289,16 @@ export type {
 } from './access-control'
 export type { CommonFieldConfig } from './fields'
 export type { CacheHintArgs, IdFieldConfig } from './lists'
+export type {
+  ListHooks,
+  FieldHooks,
+  ResolveInputListHook,
+  ResolveInputFieldHook,
+  ValidateHook,
+  ValidateFieldHook,
+  BeforeOperationListHook,
+  BeforeOperationFieldHook,
+  AfterOperationListHook,
+  AfterOperationFieldHook,
+} from './hooks'
+

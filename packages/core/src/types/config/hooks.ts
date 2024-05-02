@@ -9,7 +9,7 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   listKey: ListTypeInfo['key']
 }
 
-type ResolveInputListHook<
+export type ResolveInputListHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update',
 > = (
@@ -126,12 +126,15 @@ export type FieldHooks<
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
+
   resolveInput?: ResolveInputFieldHook<ListTypeInfo, 'create' | 'update', FieldKey>
   // TODO: add in breaking change
-  //      | {
-  //          create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
-  //          update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
-  //        }
+  // resolveInput?:
+  //   | ResolveInputFieldHook<ListTypeInfo, 'create' | 'update', FieldKey>
+  //   | {
+  //       create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
+  //       update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
+  //     }
 
   /**
    * Used to **validate** if a create, update or delete operation is OK
@@ -192,7 +195,7 @@ export type ResolvedFieldHooks<
   }
 }
 
-type ResolveInputFieldHook<
+export type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update',
   FieldKey extends ListTypeInfo['fields'],
@@ -228,7 +231,7 @@ type ResolveInputFieldHook<
   ListTypeInfo['prisma']['create' | 'update'][FieldKey] | undefined // undefined represents 'don't do anything'
 >
 
-type ValidateHook<
+export type ValidateHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
 > = (
@@ -270,7 +273,7 @@ type ValidateHook<
     CommonArgs<ListTypeInfo>,
 ) => MaybePromise<void>
 
-type ValidateFieldHook<
+export type ValidateFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
   FieldKey extends ListTypeInfo['fields'],
@@ -313,7 +316,7 @@ type ValidateFieldHook<
     },
 ) => MaybePromise<void>
 
-type BeforeOperationListHook<
+export type BeforeOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
 > = (
@@ -358,7 +361,7 @@ type BeforeOperationListHook<
     CommonArgs<ListTypeInfo>,
 ) => MaybePromise<void>
 
-type BeforeOperationFieldHook<
+export type BeforeOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
   FieldKey extends ListTypeInfo['fields'],
@@ -404,7 +407,7 @@ type BeforeOperationFieldHook<
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey },
 ) => MaybePromise<void>
 
-type AfterOperationListHook<
+export type AfterOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
 > = (
@@ -452,7 +455,7 @@ type AfterOperationListHook<
     CommonArgs<ListTypeInfo>,
 ) => MaybePromise<void>
 
-type AfterOperationFieldHook<
+export type AfterOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
   FieldKey extends ListTypeInfo['fields'],
