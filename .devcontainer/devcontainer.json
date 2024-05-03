@@ -19,8 +19,10 @@
     "vscode": {
       "settings": {},
       "extensions": [
-        "prisma.prisma",
-        "github.vscode-pull-request-github"
+        "Prisma.prisma",
+        "GraphQL.vscode-graphql-syntax",
+        "github.vscode-pull-request-github",
+        "yy0931.vscode-sqlite3-editor"
       ]
     }
   }
