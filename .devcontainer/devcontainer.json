@@ -17,11 +17,10 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "settings": {},
-      "extensions": [
-        "prisma.prisma",
-        "github.vscode-pull-request-github"
-      ]
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "extensions": ["prisma.prisma", "github.vscode-pull-request-github", "esbenp.prettier-vscode"]
     }
   }
 
