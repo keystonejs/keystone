@@ -127,6 +127,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
     lists: injectDefaults(config, defaultIdField),
+    logger: config.logger ?? console,
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,

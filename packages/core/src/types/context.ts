@@ -16,13 +16,15 @@ import {
   type BaseListTypeInfo,
 } from './type-info'
 import { type MaybePromise } from '../../types'
+import { Logger } from './logger'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
   res?: ServerResponse
   db: KeystoneDbAPI<TypeInfo['lists']>
   query: KeystoneListsAPI<TypeInfo['lists']>
-  graphql: KeystoneGraphQLAPI
+  graphql: KeystoneGraphQLAPI,
+  logger: Logger,
   sudo: () => KeystoneContext<TypeInfo>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>

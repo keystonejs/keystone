@@ -18,6 +18,7 @@ import {
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
 import type { ListHooks, FieldHooks } from './hooks'
+import { Logger } from '../logger'
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
@@ -185,6 +186,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   }
 
   lists: Record<string, ListConfig<any>>
+  logger?: Logger
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
     cors?: boolean | CorsOptions
@@ -260,6 +262,7 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
     path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
   },
   lists: KeystoneConfig<TypeInfo>['lists']
+  logger: Logger
   server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
     options: ListenOptions

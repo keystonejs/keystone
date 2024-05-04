@@ -94,6 +94,7 @@ export function createContext ({
       db: {},
       query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
+      logger: config.logger,
 
       sudo: () => construct({ prisma, session, sudo: true, req, res }),
 
