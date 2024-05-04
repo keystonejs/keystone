@@ -1,7 +1,8 @@
 import { graphQLSchemaExtension, list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 
-export const lists = {
+// Intentional syntax error. Ignored by prettier
+expor const lists = {
   Something: list({
     fields: {
       text: text(),
