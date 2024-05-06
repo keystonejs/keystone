@@ -106,38 +106,42 @@ export const lists = {
         ui: { query: '{ id, title }' },
       }),
       tags: virtual({
-        field: graphql.field({
-          type: graphql.list(
-            graphql.object<{
-              id: string
-            }>()({
-              name: 'PostTagExplicit',
-              fields: {
-                id: graphql.field({ type: graphql.nonNull(graphql.String) }),
-              },
-            })
-          ),
-          async resolve(item, _, context) {
-            return await context.db.PostTag.findMany({
-              where: {
-                post: {
-                  id: {
-                    equals: item.id,
-                  }
+        field: (lists) => {
+          return graphql.field({
+            args: lists.Tag.types.findManyArgs,
+            type: graphql.list(graphql.nonNull(lists.Tag.types.output)),
+            async resolve(item, args, context) {
+              return (await context.query.PostTag.findMany({
+                where: {
+                  post: {
+                    id: {
+                      equals: item.id,
+                    }
+                  },
+                  tag: args.where
                 },
-              },
-              orderBy: { order: "asc" }
-            })
-          },
-        }),
+                orderBy: { order: "asc" },
+                query: `tag { ${Object.keys(context.__internal.lists.Tag.fields).join(" ")} }`
+              })).map(x => ({ ...x.tag }))
+            },
+          })
+        },
         ui: {
           views: "./fields/virtual/tags",
-          query: "{ id }",
+          query: "{ id title }"
         },
-        hooks:{
-          afterOperation: async ({inputData}) => {
-            if (inputData) {
-              console.log(inputData.tags)
+        hooks: {
+          afterOperation: async ({ context, inputData, item, operation }) => {
+            if (inputData && inputData.tags && Array.isArray(inputData.tags)) {
+              await context.prisma.postTag.deleteMany({
+                where: { postId: { equals: item.id } }
+              })
+              const PostTags = inputData.tags.map((t, order) => ({
+                post: { connect: { id: item.id } },
+                tag: { connect: { id: t.id.toString() } },
+                order
+              }))
+              await context.query.PostTag.createMany({ data: PostTags })
             }
           }
         }
@@ -185,6 +189,7 @@ export const lists = {
       extendPrismaSchema(schema) {
         return schema.replace(/\}/g, `
           @@unique([postId, tagId])
+          @@unique([postId, order])
         }`)
       },
     }

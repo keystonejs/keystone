@@ -35,6 +35,7 @@ model PostTag {
   order  Int?    @default(0)
 
   @@unique([postId, tagId])
+  @@unique([postId, order])
   @@index([postId])
   @@index([tagId])
 }

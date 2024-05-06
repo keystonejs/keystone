@@ -10,7 +10,7 @@ type Post {
   counts: PostCounts
   excerpt(length: Int! = 50): String
   related: [RelatedPosts]
-  tags: [PostTagExplicit]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
 }
 
 type PostCounts {
@@ -22,10 +22,6 @@ type PostCounts {
 type RelatedPosts {
   id: String
   title: String
-}
-
-type PostTagExplicit {
-  id: String!
 }
 
 input PostWhereUniqueInput {
