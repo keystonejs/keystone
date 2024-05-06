@@ -39,8 +39,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.4
       '@preconstruct/cli':
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.8.4
+        version: 2.8.4
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.12
@@ -4733,8 +4733,8 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@preconstruct/cli@2.8.3':
-    resolution: {integrity: sha512-4PNEPcp8REUdqZIjtpXF1fqECuHt+pIS6k0PluSRcgX0KwPtfSw407Y2B/ItndgtRD3rKHXI6cKkwh/6Mc4TXg==}
+  '@preconstruct/cli@2.8.4':
+    resolution: {integrity: sha512-PeNDyPmrTeqRd2g2DrBzOvu0+J/KJ5iW5zqp6RNq7lk3ZHizRRc2E73G8aShuIbn3PONEtuQvm05cllTlX2/Qw==}
     hasBin: true
 
   '@preconstruct/hook@0.4.0':
@@ -14405,7 +14405,7 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@preconstruct/cli@2.8.3':
+  '@preconstruct/cli@2.8.4':
     dependencies:
       '@babel/code-frame': 7.24.2
       '@babel/core': 7.24.5
@@ -15734,7 +15734,7 @@ snapshots:
       '@babel/plugin-syntax-typescript': 7.24.1(@babel/core@7.24.5)
       '@vanilla-extract/babel-plugin-debug-ids': 1.0.5
       '@vanilla-extract/css': 1.15.1(babel-plugin-macros@3.1.0)
-      esbuild: 0.17.6
+      esbuild: 0.18.20
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0
