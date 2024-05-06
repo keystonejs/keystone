@@ -134,6 +134,13 @@ export const lists = {
           views: "./fields/virtual/tags",
           query: "{ id }",
         },
+        hooks:{
+          afterOperation: async ({inputData}) => {
+            if (inputData) {
+              console.log(inputData.tags)
+            }
+          }
+        }
       }),
     },
     hooks: {
