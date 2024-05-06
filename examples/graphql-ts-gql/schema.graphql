@@ -116,9 +116,13 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   status: PostStatusType
+  isPublished: JSON
   content: String
+  counts: JSON
+  excerpt: JSON
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
+  authorName: JSON
 }
 
 input AuthorRelateToOneForUpdateInput {
@@ -135,9 +139,13 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   status: PostStatusType
+  isPublished: JSON
   content: String
+  counts: JSON
+  excerpt: JSON
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
+  authorName: JSON
 }
 
 input AuthorRelateToOneForCreateInput {
@@ -185,6 +193,7 @@ input AuthorUpdateInput {
   name: String
   email: String
   posts: PostRelateToManyForUpdateInput
+  latestPost: JSON
 }
 
 input PostRelateToManyForUpdateInput {
@@ -203,6 +212,7 @@ input AuthorCreateInput {
   name: String
   email: String
   posts: PostRelateToManyForCreateInput
+  latestPost: JSON
 }
 
 input PostRelateToManyForCreateInput {
