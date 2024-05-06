@@ -1,5 +1,5 @@
 import { list, graphql } from '@keystone-6/core'
-import { text, checkbox, virtual } from '@keystone-6/core/fields'
+import { checkbox, integer, relationship, text, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 
 import type { Lists } from '.keystone/types'
@@ -16,7 +16,7 @@ export const lists = {
       isActive: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve (item) {
+          resolve(item) {
             return item.title.length > 3 && item.content.length > 10 && item.listed === true
           },
         }),
@@ -37,7 +37,7 @@ export const lists = {
               paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
-          resolve (item) {
+          resolve(item) {
             const content = item.content ?? ''
             return {
               words: content.split(' ').length,
@@ -59,7 +59,7 @@ export const lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 50 }),
           },
-          resolve (item, { length }) {
+          resolve(item, { length }) {
             const { content = '' } = item
             if (content.length <= length) return content
             return content.slice(0, length) + '...'
@@ -84,7 +84,7 @@ export const lists = {
             })
           ),
 
-          async resolve (item, _, context) {
+          async resolve(item, _, context) {
             // TODO: this could probably be better
             const posts = await context.db.Post.findMany({
               where: {
@@ -105,6 +105,81 @@ export const lists = {
         }),
         ui: { query: '{ id, title }' },
       }),
+      tags: virtual({
+        field: graphql.field({
+          type: graphql.list(
+            graphql.object<{
+              id: string
+            }>()({
+              name: 'PostTagExplicit',
+              fields: {
+                id: graphql.field({ type: graphql.nonNull(graphql.String) }),
+              },
+            })
+          ),
+          async resolve(item, _, context) {
+            return await context.db.PostTag.findMany({
+              where: {
+                post: {
+                  id: {
+                    equals: item.id,
+                  }
+                },
+              },
+              orderBy: { order: "asc" }
+            })
+          },
+        }),
+        ui: {
+          views: "./fields/virtual/tags",
+          query: "{ id }",
+        },
+      }),
+    },
+    hooks: {
+      // delete all PostTag records related to the Post being deleted
+      beforeOperation: async ({ item, operation, context }) => {
+        if (operation === "delete") {
+          await context.prisma.postTag.deleteMany({
+            where: { postId: { equals: item.id } }
+          })
+        }
+      },
     },
   }),
+  Tag: list({
+    access: allowAll,
+    fields: {
+      title: text(),
+    },
+    hooks: {
+      beforeOperation: async ({ item, operation, context }) => {
+        // delete all PostTag records related to the Tag being deleted
+        if (operation === "delete") {
+          await context.prisma.postTag.deleteMany({
+            where: { tagId: { equals: item.id } }
+          })
+        }
+      },
+    },
+  }),
+  PostTag: list({
+    access: allowAll,
+    fields: {
+      post: relationship({ ref: "Post" }),
+      tag: relationship({ ref: "Tag" }),
+      order: integer({ defaultValue: 0 }),
+    },
+    ui: {
+      // isHidden: true
+    },
+    db: {
+      // Ensure a post can't bre related to the same tag multiple times
+      extendPrismaSchema(schema) {
+        return schema.replace(/\}/g, `
+          @@unique([postId, tagId])
+        }`)
+      },
+    }
+  })
 } satisfies Lists

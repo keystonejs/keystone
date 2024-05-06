@@ -1,6 +1,7 @@
 import { config } from '@keystone-6/core'
 import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
+import extendGraphqlSchema from './static-data'
 
 export default config({
   db: {
@@ -10,5 +11,6 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
   },
+  graphql: { extendGraphqlSchema },
   lists,
 })

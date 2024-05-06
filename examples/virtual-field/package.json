@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
+    "@keystone-ui/fields": "workspace:^",
+    "@keystone-ui/core": "workspace:^",
     "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
