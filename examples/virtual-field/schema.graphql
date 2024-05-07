@@ -171,10 +171,10 @@ input PostTagWhereInput {
   id: IDFilter
   post: PostWhereInput
   tag: TagWhereInput
-  order: IntNullableFilter
+  order: IntFilter
 }
 
-input IntNullableFilter {
+input IntFilter {
   equals: Int
   in: [Int!]
   notIn: [Int!]
@@ -182,7 +182,7 @@ input IntNullableFilter {
   lte: Int
   gt: Int
   gte: Int
-  not: IntNullableFilter
+  not: IntFilter
 }
 
 input PostTagOrderByInput {

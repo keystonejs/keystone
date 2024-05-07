@@ -210,10 +210,10 @@ export const lists = {
     fields: {
       post: relationship({ ref: 'Post' }), // Reference to a post
       tag: relationship({ ref: 'Tag' }), // Reference to a tag
-      order: integer({ defaultValue: 0 }), // Order of tags in a post, with default value
+      order: integer({ defaultValue: 0, validation: { isRequired: true } }), // Order of tags in a post, with default value
     },
     ui: {
-      // isHidden: true // Optionally hide this list from the UI
+      isHidden: true
     },
     db: {
       extendPrismaSchema(schema) {

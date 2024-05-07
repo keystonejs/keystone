@@ -32,7 +32,7 @@ model PostTag {
   postId String? @map("post")
   tag    Tag?    @relation("PostTag_tag", fields: [tagId], references: [id])
   tagId  String? @map("tag")
-  order  Int?    @default(0)
+  order  Int     @default(0)
 
   @@unique([postId, tagId])
   @@unique([postId, order])
