@@ -7,7 +7,7 @@ export const lists = {
   Post: list({
     access: allowAll,
     fields: {
-      title: text({ validation: { isRequired: true } }),
+      title: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       content: text({ validation: { isRequired: true } }),
       listed: checkbox({}),
 
@@ -66,36 +66,38 @@ export const lists = {
 
       // Virtual field to fetch related posts using Keystone's GraphQL context
       related: virtual({
-        field: graphql.field({
-          type: graphql.list(
-            graphql.object<{ id: string; title: string }>()({
-              name: 'RelatedPosts',
-              fields: {
-                id: graphql.field({ type: graphql.String }),
-                title: graphql.field({ type: graphql.String }),
-              },
-            })
-          ),
-          async resolve(item, _, context) {
-            // Find posts other than the current post and return up to 10
-            const posts = await context.db.Post.findMany({
-              where: {
-                id: {
-                  not: {
-                    equals: item.id,
+        field: (lists) => {
+          return graphql.field({
+            args: lists.Tag.types.findManyArgs,
+            type: graphql.list(graphql.nonNull(lists.Post.types.output)),
+            async resolve(item, args, context) {
+              // Fetch post with related tags using `PostTag` intermediate model
+              const seenValues = new Set<string>();
+              return (
+                await context.query.PostTag.findMany({
+                  where: {
+                    AND: [
+                      {
+                        tag: { title: { in: (item as any).tags?.map((t: any) => t.id) } },
+                        post: { id: { notIn: [item.id] } }
+                      },
+                      { post: args.where }
+                    ]
                   },
-                },
-              },
-              take: 10,
-            });
-            // Map the posts to only return the `id` and `title` fields
-            return posts.map((post) => ({
-              id: post.id,
-              title: post.title,
-            }));
-          },
-        }),
-        ui: { query: '{ id, title }' },
+                  query: `post { id title }`,
+                })
+              ).map((x) => ({ ...x.post })).filter(item => {
+                if (seenValues.has(item.id)) {
+                  return false;
+                } else {
+                  seenValues.add(item.id);
+                  return true;
+                }
+              });;
+            },
+          });
+        },
+        ui: { query: '{ id title }' },
       }),
 
       // Virtual field to fetch Tags linked to the Post through the PostTag intermediate model, allowing arguments from the Tag list schema
@@ -129,8 +131,31 @@ export const lists = {
         },
         hooks: {
           // Hook to handle the explicit relationship between Post and Tag via PostTag records
-          afterOperation: async ({ context, inputData, item, operation }) => {
+          afterOperation: async ({ context, inputData, item }) => {
             if (inputData && inputData.tags && Array.isArray(inputData.tags)) {
+              // Check for Tag records based on the supplied title when no id is provided
+              const found = await context.query.Tag.findMany({
+                where: { title: { in: inputData.tags.filter(t => !t.id).map(t => t.title) } },
+                query: "id title"
+              })
+              if (found) {
+                // When Tag records are found set the id value to the ordered list
+                inputData.tags.filter(t => !t.id).forEach(t => {
+                  t.id = found.find(c => c.title === t.title)?.id
+                })
+              }
+              // Create new Tag records when it doesn't already exist
+              const created = await context.query.Tag.createMany({
+                data: inputData.tags.filter(t => !t.id),
+                query: "id title"
+              })
+              if (created) {
+                // When Tag records are created set the id value to the ordered list
+                inputData.tags.filter(t => !t.id).forEach(t => {
+                  t.id = created.find(c => c.title === t.title)?.id
+                })
+              }
+
               // Clear all related PostTag records to prevent unique constraint collisions
               await context.prisma.postTag.deleteMany({
                 where: { postId: { equals: item.id } },
@@ -190,10 +215,7 @@ export const lists = {
     db: {
       extendPrismaSchema(schema) {
         // Add unique constraints to prevent duplicate tag relations
-        return schema.replace(/\}/g, `
-          @@unique([postId, tagId])
-          @@unique([postId, order])
-        }`);
+        return schema.replace(/(model [^}]+)}/g, '$1@@unique([postId, tagId])\n@@unique([postId, order])\n}')
       },
     },
   }),

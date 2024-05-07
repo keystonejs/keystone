@@ -9,7 +9,7 @@ type Post {
   isActive: Boolean
   counts: PostCounts
   excerpt(length: Int! = 50): String
-  related: [RelatedPosts]
+  related(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Post!]
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
 }
 
@@ -19,13 +19,9 @@ type PostCounts {
   paragraphs: Int
 }
 
-type RelatedPosts {
-  id: String
-  title: String
-}
-
 input PostWhereUniqueInput {
   id: ID
+  title: String
 }
 
 input PostWhereInput {

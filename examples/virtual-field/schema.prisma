@@ -14,7 +14,7 @@ generator client {
 
 model Post {
   id                String    @id @default(cuid())
-  title             String    @default("")
+  title             String    @unique @default("")
   content           String    @default("")
   listed            Boolean   @default(false)
   from_PostTag_post PostTag[] @relation("PostTag_post")

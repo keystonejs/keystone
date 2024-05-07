@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone dev",
+    "dev": "keystone dev --seed-database",
     "start": "keystone start",
     "build": "keystone build",
     "postinstall": "keystone postinstall"
