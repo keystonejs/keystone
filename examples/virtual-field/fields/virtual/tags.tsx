@@ -1,18 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core'; 
+import { jsx } from '@keystone-ui/core';
 import { FieldProps } from '@keystone-6/core/types';
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'; 
-import { controller } from '@keystone-6/core/fields/types/virtual/views'; 
-import useFieldForeignListKey from '../useFieldForeignListKey'; 
-import { useEffect, useState } from 'react'; 
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
+import { controller } from '@keystone-6/core/fields/types/virtual/views';
+import useFieldForeignListKey from '../useFieldForeignListKey';
+import { useEffect, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from '@hello-pangea/dnd';
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo';
+
+const SEARCH_TAGS = gql`
+  query Tags($where: TagWhereInput!) {
+    tags(where: $where) {
+      id
+      title
+    }
+  }
+`;
 
 export const Field = (props: FieldProps<typeof controller>) => {
   // Get metadata properties using a custom hook
@@ -50,6 +60,12 @@ export const Field = (props: FieldProps<typeof controller>) => {
     setItems(reorderedItems);
     props.onChange?.(reorderedItems);
   };
+  
+  const [inputValue, setInputValue] = useState('');
+  const { data, loading, error } = useQuery<{ tags: any[] }>(SEARCH_TAGS, {
+    variables: { where: { title: { startsWith: inputValue } } },
+    skip: !inputValue,  // Only run the query after the input has a value
+  });
 
   // Render the field with drag-and-drop support
   return (
@@ -58,7 +74,23 @@ export const Field = (props: FieldProps<typeof controller>) => {
       <FieldDescription id={`${props.field.path}-description`}>
         {props.field.description}
       </FieldDescription>
-
+      <div>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Type to search tags..."
+        />
+        {loading && <div>Loading...</div>}
+        {error && <div>Error loading tags!</div>}
+        {data && (
+          <ul>
+            {data.tags.map(tag => (
+              <li key={tag.id}>{tag.title}</li>
+            ))}
+          </ul>
+        )}
+      </div>
       {/* Set up the drag-and-drop context */}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable-list">
