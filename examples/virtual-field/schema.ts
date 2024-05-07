@@ -162,7 +162,7 @@ export const lists = {
   Tag: list({
     access: allowAll,
     fields: {
-      title: text(),
+      title: text({ isIndexed: "unique" }),
     },
     hooks: {
       // Hook to delete PostTag records related to a tag being deleted

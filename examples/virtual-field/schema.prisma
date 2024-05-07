@@ -22,7 +22,7 @@ model Post {
 
 model Tag {
   id               String    @id @default(cuid())
-  title            String    @default("")
+  title            String    @unique @default("")
   from_PostTag_tag PostTag[] @relation("PostTag_tag")
 }
 
