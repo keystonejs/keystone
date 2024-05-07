@@ -146,7 +146,10 @@ export const lists = {
               }
               // Create new Tag records when it doesn't already exist
               const created = await context.query.Tag.createMany({
-                data: inputData.tags.filter(t => !t.id),
+                data: inputData.tags.filter(t => !t.id).map((t) => {
+                  delete t.id
+                  return t
+                }),
                 query: "id title"
               })
               if (created) {
