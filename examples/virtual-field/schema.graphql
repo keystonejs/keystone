@@ -269,13 +269,13 @@ type Query {
   postTag(where: PostTagWhereUniqueInput!): PostTag
   postTagsCount(where: PostTagWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  FieldProps(listKey: String!, fieldPath: String!): FieldProps
+  FieldForeignListKey(listKey: String!, fieldPath: String!): FieldForeignListKey
 }
 
-type FieldProps {
+type FieldForeignListKey {
   listKey: String!
   fieldPath: String!
-  props: JSON!
+  foreignListKey: String!
 }
 
 type KeystoneMeta {

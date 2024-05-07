@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core'
-import { FieldProps } from '@keystone-6/core/types'
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
-import { controller } from '@keystone-6/core/fields/types/virtual/views'
-// import useFieldProps from '../useFieldProps'
-import { useState } from 'react';
+import { jsx } from '@keystone-ui/core'; 
+import { FieldProps } from '@keystone-6/core/types';
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'; 
+import { controller } from '@keystone-6/core/fields/types/virtual/views'; 
+import useFieldForeignListKey from '../useFieldForeignListKey'; 
+import { useEffect, useState } from 'react'; 
 import {
   DragDropContext,
   Draggable,
@@ -14,81 +14,92 @@ import {
   DropResult,
 } from '@hello-pangea/dnd';
 
-interface Item {
-  id: string;
-  title: string;
-}
-
 export const Field = (props: FieldProps<typeof controller>) => {
-  // const metaProps = useFieldProps(props.field.listKey, props.field.path)
-  const value = typeof props.value === "object" ? props.value : []
-  const [items, setItems] = useState<Item[]>(value);
+  // Get metadata properties using a custom hook
+  const metaProps = useFieldForeignListKey(props.field.listKey, props.field.path);
 
-  const reorder = (list: Item[], startIndex: number, endIndex: number): Item[] => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
+  // Effect hook to handle the foreign list key if available
+  useEffect(() => {
+    if (metaProps.foreignListKey) {
+      console.log(metaProps.foreignListKey); // Log foreign list key for debugging purposes
+    }
+  }, [metaProps]);
+
+  // Initialize state with the provided value, defaulting to an empty array
+  const value = typeof props.value === 'object' ? props.value : [];
+  const [items, setItems] = useState<any[]>(value);
+
+  // Reorder function to rearrange items in the list
+  const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
+    const result = Array.from(list); // Create a copy of the list
+    const [removed] = result.splice(startIndex, 1); // Remove item from startIndex
+    result.splice(endIndex, 0, removed); // Insert item at endIndex
+    return result; // Return the reordered list
   };
 
+  // Handler for drag-and-drop events
   const onDragEnd = (result: DropResult) => {
-    const { source, destination } = result;
-
-    // Dropped outside the list
+    const { source, destination } = result; // Get the source and destination indices
+    // If dropped outside the list, exit
     if (!destination) {
       return;
     }
-
+    // Reorder items based on the drag-and-drop operation
     const reorderedItems = reorder(items, source.index, destination.index);
+    // Update state with reordered items and trigger the change handler
     setItems(reorderedItems);
     props.onChange?.(reorderedItems);
   };
+
+  // Render the field with drag-and-drop support
   return (
     <FieldContainer>
       <FieldLabel>{props.field.label}</FieldLabel>
-      <FieldDescription id={`${props.field.path}-description`}>{props.field.description}</FieldDescription>
+      <FieldDescription id={`${props.field.path}-description`}>
+        {props.field.description}
+      </FieldDescription>
+
+      {/* Set up the drag-and-drop context */}
       <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable-list">
-        {(provided) => (
-          <div
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            style={{
-              background: 'lightgray',
-              padding: '10px',
-              borderRadius: '5px',
-            }}
-          >
-            {items.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={{
-                      userSelect: 'none',
-                      padding: '8px',
-                      margin: '0 0 8px 0',
-                      background: 'white',
-                      border: '1px solid #ccc',
-                      borderRadius: '3px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      ...provided.draggableProps.style,
-                    }}
-                  >
-                    {item.title}
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+        <Droppable droppableId="droppable-list">
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={{
+                background: 'lightgray',
+                padding: '1px 4px',
+                borderRadius: '5px',
+              }}
+            >
+              {/* Iterate through items to render each as draggable */}
+              {items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{
+                        padding: '4px',
+                        margin: '4px 0',
+                        background: 'white',
+                        display: 'flex',
+                        ...provided.draggableProps.style,
+                      }}
+                    >
+                      {/* Display the item's title */}
+                      {item.title}
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {/* Placeholder to ensure accurate list height */}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </FieldContainer>
-  )
-}
+  );
+};
