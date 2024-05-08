@@ -4,9 +4,10 @@ import { Strategy, StrategyOptions, Profile } from "passport-github2";
 import { statelessSessions } from "@keystone-6/core/session";
 import type { KeystoneContext } from "@keystone-6/core/types";
 import type { VerifyCallback } from "passport-oauth2";
+import { Author } from ".myprisma/client";
 import type { TypeInfo } from ".keystone/types";
 
-export type Session = Pick<Profile, "id" | "username" | "displayName">;
+export type Session = Author
 
 export const session = statelessSessions<Session>({
   maxAge: 60 * 60 * 24 * 30,
@@ -15,8 +16,8 @@ export const session = statelessSessions<Session>({
 
 declare global {
   namespace Express {
-    // Augment the global user added by Passport to be the same as the GitHub Profile
-    interface User extends Profile {}
+    // Augment the global user added by Passport to be the same as the Prisma Author
+    interface User extends Author {}
   }
 }
 
@@ -34,7 +35,15 @@ export function createAuthenticationMiddleware(
   const instance = new Passport();
   const strategy = new Strategy(
     options,
-    (_a: string, _r: string, p: Profile, done: VerifyCallback) => done(null, p)
+    async (_a: string, _r: string, p: Profile, done: VerifyCallback) => {
+      const author = await commonContext.prisma.author.upsert({
+        where: { authId: p.id },
+        update: { name: p.displayName },
+        create: { authId: p.id, name: p.displayName },
+      });
+
+      return done(null, author);
+    }
   );
 
   instance.use(strategy);
@@ -57,11 +66,7 @@ export function createAuthenticationMiddleware(
     // see: packages/auth/src/gql/getBaseAuthSchema.ts
     await context.sessionStrategy?.start({
       context,
-      data: {
-        id: req.user.id,
-        username: req.user.username,
-        displayName: req.user.displayName,
-      },
+      data: req.user,
     });
 
     res.redirect("/auth/session");
