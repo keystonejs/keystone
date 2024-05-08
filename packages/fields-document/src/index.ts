@@ -4,12 +4,12 @@ import {
   type CommonFieldConfig,
   type FieldData,
   type FieldTypeFunc,
-  jsonFieldTypePolyfilledForSQLite,
   type JSONValue,
+  jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import { type Relationships } from './DocumentEditor/relationship'
-import { type ComponentBlock } from './component-blocks'
+import { type ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { type DocumentFeatures } from './views'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'

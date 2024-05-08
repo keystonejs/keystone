@@ -9,11 +9,8 @@ import {
 } from '@keystone-6/fields-document/component-blocks'
 import { Global, jsx } from '@emotion/react'
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
-import {
-  createDocumentEditor,
-  DocumentEditor,
-  Editor,
-} from '../../../packages/fields-document/src/DocumentEditor'
+import { DocumentEditor, } from '../../../packages/fields-document/src/DocumentEditor'
+import { createDocumentEditor, Editor } from '../../../packages/fields-document/src/DocumentEditor/editor-shared'
 import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
 import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks'

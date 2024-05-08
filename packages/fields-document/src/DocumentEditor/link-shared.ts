@@ -7,7 +7,7 @@ import {
 } from './utils'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 import { type ComponentBlock } from './component-blocks/api'
-import { isInlineContainer } from '.'
+import { isInlineContainer } from './editor-shared'
 
 const isLinkActive = (editor: Editor) => {
   return isElementActive(editor, 'link')

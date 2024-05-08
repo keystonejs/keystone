@@ -6,7 +6,7 @@ import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-lite
 // @ts-expect-error
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown'
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough'
-import { type Block } from '..'
+import { type Block } from '../editor-shared'
 import {
   getInlineNodes,
   addMarkToChildren,
