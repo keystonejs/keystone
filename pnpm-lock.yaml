@@ -953,9 +953,6 @@ importers:
       passport-github2:
         specifier: ^0.1.12
         version: 0.1.12
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
     devDependencies:
       '@types/express':
         specifier: ^4.17.14
@@ -972,6 +969,9 @@ importers:
       prisma:
         specifier: ^5.13.0
         version: 5.13.0
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
   examples/custom-session-redis:
     dependencies:
