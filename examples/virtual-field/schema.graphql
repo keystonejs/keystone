@@ -273,6 +273,7 @@ type FieldForeignListKey {
   listKey: String!
   fieldPath: String!
   foreignListKey: String!
+  foreignLabelPath: String!
 }
 
 type KeystoneMeta {

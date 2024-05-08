@@ -17,7 +17,7 @@ type Props = {
 
 export const OrderableList = (props: Props) => {
   // Reorder function to rearrange items in the list
-  const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
+  const reorder = (list: OrderableItem[], startIndex: number, endIndex: number): OrderableItem[] => {
     const result = Array.from(list); // Create a copy of the list
     const [removed] = result.splice(startIndex, 1); // Remove item from startIndex
     result.splice(endIndex, 0, removed); // Insert item at endIndex

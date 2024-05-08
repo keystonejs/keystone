@@ -5,21 +5,8 @@ import { jsx } from '@keystone-ui/core';
 import { FieldProps } from '@keystone-6/core/types';
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
 import { controller } from '@keystone-6/core/fields/types/virtual/views';
-import { useState } from 'react';
-import { gql } from '@keystone-6/core/admin-ui/apollo';
 import { AutocompleteSelect, OrderableList, type Item } from '../../src/primatives'
 import useFieldForeignListKey from '../useFieldForeignListKey';
-
-const SEARCH_TAGS = gql`
-  query Tags {
-    tags {
-      id
-      title
-    }
-  }
-`;
-
-const labelName = "title"
 
 export const Field = (props: FieldProps<typeof controller>) => {
   // Get metadata properties using a custom hook
@@ -27,21 +14,6 @@ export const Field = (props: FieldProps<typeof controller>) => {
 
   // Initialize state with the provided value, defaulting to an empty array
   const value = typeof props.value === 'object' ? props.value : [];
-  const [items, setItems] = useState<{ id?: string, [labelName]: string }[]>(value);
-
-  /* Handlers */
-  // Adds items only if they do not already share a label
-  const addItem = (item: Item) => {
-    if (items.filter((v) => v[labelName] === item.label).length === 0) {
-      onChange([...items.map(i => ({ label: i[labelName], value: i.id })), item])
-    }
-  }
-  // Handles both the item state and the onChange
-  const onChange = (items: Item[]) => {
-    const reorderedItems = items.map(i => ({ [labelName]: i.label, id: i.value }))
-    setItems(reorderedItems)
-    props.onChange?.(reorderedItems)
-  }
 
   return (
     <FieldContainer>
@@ -50,14 +22,51 @@ export const Field = (props: FieldProps<typeof controller>) => {
         {props.field.description}
       </FieldDescription>
 
-      <AutocompleteSelect
-        gql={SEARCH_TAGS}
-        onChange={addItem}
-      />
-      <OrderableList
-        items={items.map(i => ({ key: i[labelName], label: i[labelName], value: i.id }))}
-        onChange={onChange}
-      />
+      {(props.onChange && metaProps.foreignListKey && metaProps.foreignLabelPath) ? (
+        <ComponentWrapper
+          foreignListKey={metaProps.foreignListKey}
+          foreignLabelPath={metaProps.foreignLabelPath}
+          onChange={props.onChange}
+          value={value}
+        />
+      ) : null}
     </FieldContainer>
   );
 };
+
+function ComponentWrapper(props: {
+  foreignListKey: string;
+  foreignLabelPath: string;
+  value: any[];
+  onChange: (values: any) => void;
+}) {
+  // Formatting the value to be typeof Item[]
+  const value: Item[] = props.value.map((v) => ({ label: v[props.foreignLabelPath], value: v.id }))
+
+  /* Handlers */
+  // Adds items only if they do not already share a label
+  const addItem = (item: Item) => {
+    if (value.filter((v) => v.label === item.label).length === 0) {
+      onChange([...value, item])
+    }
+  }
+  // Handles both the item state and the onChange
+  const onChange = (items: Item[]) => {
+    props.onChange(items.map(i => ({ [props.foreignLabelPath]: i.label, id: i.value })))
+  }
+
+  return (
+    <div>
+      <AutocompleteSelect
+        listKey={props.foreignListKey}
+        fieldPath={props.foreignLabelPath}
+        onChange={addItem}
+        ignoreValues={value.map((v) => v.label)}
+      />
+      <OrderableList
+        items={value.map(i => ({ ...i, key: i.label }))}
+        onChange={onChange}
+      />
+    </div>
+  )
+}

@@ -5,6 +5,7 @@ export type FieldForeignListKeyType = {
   listKey: string; // The name of the list containing the field
   fieldPath: string; // The path to the specific field
   foreignListKey: string; // The key of the foreign list linked to this field
+  foreignLabelPath: string; // The name of the field being used as the label
 };
 
 // Create the `FieldForeignListKey` GraphQL object type with its fields
@@ -17,6 +18,7 @@ const FieldForeignListKey = graphql.object<FieldForeignListKeyType>()({
     fieldPath: graphql.field({ type: graphql.nonNull(graphql.String) }),
     // Foreign list key field: string, required (non-null)
     foreignListKey: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    foreignLabelPath: graphql.field({ type: graphql.nonNull(graphql.String) }),
   },
 });
 
@@ -26,6 +28,7 @@ export const FieldForeignListKeyData: FieldForeignListKeyType[] = [
     listKey: "Post", // The name of the list containing this field
     fieldPath: "tags", // The path to the field within the "Post" list
     foreignListKey: "Tag", // The foreign list linked to this field
+    foreignLabelPath: "title", // The foreign list linked to this field
   },
 ];
 
