@@ -51,7 +51,13 @@ export const OrderableList = (props: Props) => {
             {props.items.map((item, index) => (
               <Draggable key={item.key} draggableId={item.key} index={index}>
                 {(provided) => (
-                  <Orderable provided={provided} item={item} onClick={() => props.onChange(props.items.filter((v: any) => v.key !== item.key))} />
+                  <Orderable
+                    provided={provided}
+                    item={item}
+                    onClick={() => props.onChange(
+                      props.items.filter((v: any) => v.key !== item.key)
+                    )}
+                  />
                 )}
               </Draggable>
             ))}
