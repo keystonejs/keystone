@@ -75,6 +75,7 @@ type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
 
 export const controller = (config: Config): FieldController<string, string> => {
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,

@@ -167,6 +167,7 @@ export const controller = (
     min: _validation.min === null ? null : new Decimal(_validation.min),
   }
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,

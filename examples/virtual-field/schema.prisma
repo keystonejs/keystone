@@ -13,8 +13,29 @@ generator client {
 }
 
 model Post {
-  id      String  @id @default(cuid())
-  title   String  @default("")
-  content String  @default("")
-  listed  Boolean @default(false)
+  id                String    @id @default(cuid())
+  title             String    @unique @default("")
+  content           String    @default("")
+  listed            Boolean   @default(false)
+  from_PostTag_post PostTag[] @relation("PostTag_post")
+}
+
+model Tag {
+  id               String    @id @default(cuid())
+  title            String    @unique @default("")
+  from_PostTag_tag PostTag[] @relation("PostTag_tag")
+}
+
+model PostTag {
+  id     String  @id @default(cuid())
+  post   Post?   @relation("PostTag_post", fields: [postId], references: [id])
+  postId String? @map("post")
+  tag    Tag?    @relation("PostTag_tag", fields: [tagId], references: [id])
+  tagId  String? @map("tag")
+  order  Int     @default(0)
+
+  @@unique([postId, tagId])
+  @@unique([postId, order])
+  @@index([postId])
+  @@index([tagId])
 }

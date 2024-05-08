@@ -11,7 +11,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 
-type VirtualFieldGraphQLField<
+type OutputVirtualFieldGraphQLField<
   Item extends BaseItem,
   Context extends KeystoneContext
 > = graphql.Field<Item, any, graphql.OutputType, string, Context>
@@ -19,10 +19,10 @@ type VirtualFieldGraphQLField<
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
+      | OutputVirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
       | ((
           lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+        ) => OutputVirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
     ui?: {
       /**
@@ -39,6 +39,7 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        * or an enum or you need to provide arguments to the field.
        */
       query?: string
+      
     }
   }
 
@@ -83,8 +84,18 @@ export const virtual =
           return usableField.resolve!(item as any, ...args)
         },
       }),
+      input: {
+        create: {
+          arg: graphql.arg({ type: graphql.JSON }), 
+          resolve: () => undefined
+        },
+        update: { 
+          arg: graphql.arg({ type: graphql.JSON }), 
+          resolve: () => undefined
+        },
+      },
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
-      getAdminMeta: () => ({ query: config.ui?.query || '' }),
+      getAdminMeta: () => ({ query: config.ui?.query || '',  }),
     })
   }

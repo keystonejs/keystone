@@ -231,6 +231,7 @@ export const controller = (
   config: FieldControllerConfig<TimestampFieldMeta>
 ): FieldController<Value, string> & { fieldMeta: TimestampFieldMeta } => {
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,
