@@ -3,7 +3,13 @@
 
 import { createContext, useContext, useMemo } from 'react'
 import { Editor, Element, Node, Transforms, Range, Point } from 'slate'
-import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
+import {
+  type RenderElementProps,
+  ReactEditor,
+  useFocused,
+  useSelected,
+  useSlateStatic as useStaticEditor
+} from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Tooltip } from '@keystone-ui/tooltip'
@@ -18,7 +24,6 @@ import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   isElementActive,
   moveChildren,
-  useStaticEditor,
 } from './utils'
 import { useToolbarState } from './toolbar-state'
 

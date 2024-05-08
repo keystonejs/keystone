@@ -19,7 +19,7 @@ import { createDocumentEditor, DocumentEditor } from './DocumentEditor'
 import { type ComponentBlock } from './component-blocks'
 import { type Relationships } from './DocumentEditor/relationship'
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
-import { ForceValidationProvider } from './DocumentEditor/utils'
+import { ForceValidationProvider } from './DocumentEditor/utils-hooks'
 import { isValidURL } from './DocumentEditor/isValidURL'
 
 export const Field = ({

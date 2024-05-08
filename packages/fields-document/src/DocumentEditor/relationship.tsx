@@ -4,13 +4,13 @@
 import { createContext, Fragment, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms, type Editor } from 'slate'
+import { useSlateStatic as useStaticEditor } from 'slate-react'
 
 import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 
 import { ToolbarButton } from './primitives'
-import { useStaticEditor } from './utils'
 import { useToolbarState } from './toolbar-state'
 
 export type Relationships = Record<

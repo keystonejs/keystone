@@ -1,5 +1,16 @@
-import { type ReactElement, createElement, type MutableRefObject, useState } from 'react'
-import { Editor, type Node, type Path, Text, Range } from 'slate'
+import {
+  type MutableRefObject,
+  type ReactElement,
+  createElement,
+  useState
+} from 'react'
+import {
+  type Node,
+  type Path,
+  Editor,
+  Range,
+  Text,
+} from 'slate'
 import { Slate } from 'slate-react'
 import React from 'react'
 import { act, render } from '@testing-library/react'

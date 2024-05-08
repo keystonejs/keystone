@@ -3,11 +3,11 @@ import { Node } from 'slate'
 import { type Block, isBlock } from '..'
 import { type Mark } from '../utils'
 import {
+  type InlineFromExternalPaste,
   addMarksToChildren,
   getInlineNodes,
   forceDisableMarkForChildren,
   setLinkForChildren,
-  type InlineFromExternalPaste,
 } from './utils'
 
 function getAlignmentFromElement (element: globalThis.Element): 'center' | 'end' | undefined {

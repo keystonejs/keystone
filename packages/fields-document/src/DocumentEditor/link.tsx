@@ -4,6 +4,7 @@
 import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 import { Transforms } from 'slate'
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react'
+import { useSlateStatic as useStaticEditor } from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { useControlledPopover } from '@keystone-ui/popover'
@@ -13,13 +14,12 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon'
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
+import { useToolbarState } from './toolbar-state'
 import {
   useElementWithSetNodes,
+  useEventCallback,
   useForceValidation,
-  useStaticEditor,
-} from './utils'
-import { useToolbarState } from './toolbar-state'
-import { useEventCallback } from './utils'
+} from './utils-hooks'
 import { isValidURL } from './isValidURL'
 import { wrapLink } from './link-shared'
 

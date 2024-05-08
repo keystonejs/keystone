@@ -35,7 +35,11 @@ import {
 } from './primitives'
 import { linkButton } from './link'
 import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks'
-import { clearFormatting, type Mark, modifierKeyText } from './utils'
+import {
+  type Mark,
+  clearFormatting,
+  modifierKeyText
+} from './utils'
 import { LayoutsButton } from './layouts'
 import { ListButton } from './lists'
 import { blockquoteButton } from './blockquote'

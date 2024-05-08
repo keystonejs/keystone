@@ -10,8 +10,14 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 import { Editor, Transforms } from 'slate'
+import {
+  type RenderElementProps,
+  ReactEditor,
+  useFocused,
+  useSelected,
+  useSlateStatic as useStaticEditor
+} from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 
@@ -19,10 +25,11 @@ import { ToolbarButton } from '../primitives'
 import { type ComponentBlock } from './api-shared'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
+} from '../utils'
+import {
   useElementWithSetNodes,
   useEventCallback,
-  useStaticEditor,
-} from '../utils'
+} from '../utils-hooks'
 import { getInitialValue } from './initial-values'
 import { createGetPreviewProps } from './preview-props'
 import { updateComponentBlockElementProps } from './update-element'
