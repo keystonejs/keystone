@@ -3,7 +3,7 @@ import { type DocumentFeatures } from '../views'
 import { type ComponentBlock } from './component-blocks/api-shared'
 import { insertDivider } from './divider-shared'
 import { type DocumentFeaturesForNormalization } from './document-features-normalization'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 
 export function withBlockMarkdownShortcuts (
   documentFeatures: DocumentFeatures,

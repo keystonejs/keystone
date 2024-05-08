@@ -2,7 +2,14 @@
 /** @jsx jsx */
 import { jsx, Portal } from '@keystone-ui/core'
 import { useControlledPopover } from '@keystone-ui/popover'
-import { Fragment, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import {
+  type ReactNode,
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import {
   type Text,
   Editor,
@@ -15,7 +22,8 @@ import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
 import { type ComponentBlock } from './component-blocks/api-shared'
 import { InlineDialog, ToolbarButton } from './primitives'
 import { type Relationships, useDocumentFieldRelationships } from './relationship'
-import { type ToolbarState, useToolbarState } from './toolbar-state'
+import { useToolbarState } from './toolbar-state'
+import { type ToolbarState, } from './toolbar-state-shared'
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils'
 import { insertLayout } from './layouts-shared'
 

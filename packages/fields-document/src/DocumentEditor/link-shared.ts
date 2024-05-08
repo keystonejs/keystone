@@ -5,7 +5,7 @@ import {
   EditorAfterButIgnoringingPointsWithNoContent,
   isElementActive,
 } from './utils'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 import { type ComponentBlock } from './component-blocks/api'
 import { isInlineContainer } from '.'
 

@@ -12,7 +12,8 @@ import { type DocumentFeatures } from '../../views'
 export { __jsx as jsx } from './jsx/namespace'
 import { validateDocumentStructure } from '../../structure-validation'
 import { type Relationships } from '../relationship'
-import { createToolbarState, ToolbarStateProvider } from '../toolbar-state'
+import { ToolbarStateProvider } from '../toolbar-state'
+import { createToolbarState } from '../toolbar-state-shared'
 import { validateAndNormalizeDocument } from '../../validation'
 
 let oldConsoleError = console.error

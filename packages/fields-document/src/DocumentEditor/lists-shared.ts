@@ -1,6 +1,6 @@
 import { Editor, Element, Node, Path, Transforms, Range } from 'slate'
 import { isElementActive, moveChildren, nodeTypeMatcher } from './utils'
-import { getListTypeAbove } from './toolbar-state'
+import { getListTypeAbove } from './toolbar-state-shared'
 
 export const isListType = (type: string | undefined) =>
   type === 'ordered-list' || type === 'unordered-list'
