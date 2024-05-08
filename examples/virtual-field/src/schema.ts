@@ -16,7 +16,7 @@ export const lists = {
         field: graphql.field({
           type: graphql.Boolean,
           resolve(item) {
-            return item.title.length > 3 && item.content.length > 10 && item.listed === true;
+            return item?.title?.length > 3 && item?.content?.length > 10 && item?.listed === true;
           },
         }),
       }),
@@ -35,9 +35,9 @@ export const lists = {
           resolve(item) {
             const content = item.content ?? '';
             return {
-              words: content.split(' ').length,
-              sentences: content.split('.').length,
-              paragraphs: content.split('\n\n').length,
+              words: content.trim().split(/\s+/).filter(Boolean).length,
+              sentences: (content.match(/[\w|\)][.?!](\s|$)/g) || []).length,
+              paragraphs: content.split(/\n+/).filter(Boolean).length,
             };
           },
         }),
@@ -57,8 +57,7 @@ export const lists = {
           },
           resolve(item, { length }) {
             const { content = '' } = item;
-            if (content.length <= length) return content;
-            return content.slice(0, length) + '...';
+            return content.length <= length ? content : `${content.slice(0, length)}...`
           },
         }),
         ui: { query: '(length: 10)' },
@@ -71,29 +70,28 @@ export const lists = {
             args: lists.Tag.types.findManyArgs,
             type: graphql.list(graphql.nonNull(lists.Post.types.output)),
             async resolve(item, args, context) {
+              const tagIds = (item as any).tags?.map((t: any) => t.id) || [];
+              if (tagIds.length === 0) return [];
               // Fetch post with related tags using `PostTag` intermediate model
-              const seenValues = new Set<string>();
-              return (
-                await context.query.PostTag.findMany({
-                  where: {
-                    AND: [
-                      {
-                        tag: { title: { in: (item as any).tags?.map((t: any) => t.id) } },
-                        post: { id: { notIn: [item.id] } }
-                      },
-                      { post: args.where }
-                    ]
-                  },
-                  query: `post { id title }`,
-                })
-              ).map((x) => ({ ...x.post })).filter(item => {
-                if (seenValues.has(item.id)) {
-                  return false;
-                } else {
-                  seenValues.add(item.id);
+              const postTags = await context.query.PostTag.findMany({
+                where: {
+                  AND: [
+                    { post: { id: { notIn: [item.id] } } },
+                    { tag: { id: { in: tagIds } } },
+                    { post: args.where }
+                  ],
+                },
+                query: 'post { id title }',
+              });
+              // Deduplicate posts using Set
+              const seen = new Set<string>();
+              return postTags
+                .map((x) => x.post)
+                .filter((post) => {
+                  if (seen.has(post.id)) return false;
+                  seen.add(post.id);
                   return true;
-                }
-              });;
+                });
             },
           });
         },
@@ -110,14 +108,7 @@ export const lists = {
               // Fetch tags linked to the post using `PostTag` intermediate model
               return (
                 await context.query.PostTag.findMany({
-                  where: {
-                    post: {
-                      id: {
-                        equals: item.id,
-                      },
-                    },
-                    tag: args.where,
-                  },
+                  where: { post: { id: { equals: item.id } }, tag: args.where },
                   orderBy: { order: 'asc' },
                   query: `tag { ${Object.keys(context.__internal.lists.Tag.fields).join(' ')} }`,
                 })
@@ -132,44 +123,39 @@ export const lists = {
         hooks: {
           // Hook to handle the explicit relationship between Post and Tag via PostTag records
           afterOperation: async ({ context, inputData, item }) => {
-            if (inputData && inputData.tags && Array.isArray(inputData.tags)) {
-              // Check for Tag records based on the supplied title when no id is provided
-              const found = await context.query.Tag.findMany({
-                where: { title: { in: inputData.tags.filter(t => !t.id).map(t => t.title) } },
-                query: "id title"
-              })
-              if (found) {
-                // When Tag records are found set the id value to the ordered list
-                inputData.tags.filter(t => !t.id).forEach(t => {
-                  t.id = found.find(c => c.title === t.title)?.id
-                })
-              }
-              // Create new Tag records when it doesn't already exist
-              const created = await context.query.Tag.createMany({
-                data: inputData.tags.filter(t => !t.id).map((t) => {
-                  delete t.id
-                  return t
+            if (inputData?.tags && Array.isArray(inputData.tags)) {
+              const tagTitles = inputData.tags.filter((t) => !t.id).map((t) => t.title);
+              const foundTags = await context.query.Tag.findMany({
+                where: { title: { in: tagTitles } },
+                query: 'id title',
+              });
+              // Update tags with found IDs
+              inputData.tags.filter((t) => !t.id).forEach((t) => {
+                t.id = foundTags.find((c) => c.title === t.title)?.id;
+              });
+              // Create new Tag records if not found
+              const createdTags = await context.query.Tag.createMany({
+                data: inputData.tags.filter((t) => !t.id).map((t) => {
+                  delete t.id;
+                  return t;
                 }),
-                query: "id title"
-              })
-              if (created) {
-                // When Tag records are created set the id value to the ordered list
-                inputData.tags.filter(t => !t.id).forEach(t => {
-                  t.id = created.find(c => c.title === t.title)?.id
-                })
-              }
-
+                query: 'id title',
+              });
+              // Set the IDs for the newly created tags
+              inputData.tags.filter((t) => !t.id).forEach((t) => {
+                t.id = createdTags.find((c) => c.title === t.title)?.id;
+              });
               // Clear all related PostTag records to prevent unique constraint collisions
               await context.prisma.postTag.deleteMany({
                 where: { postId: { equals: item.id } },
               });
               // Create new PostTags records to handle the explicit relationship
-              const PostTags = inputData.tags.map((t, order) => ({
+              const postTags = inputData.tags.map((t, order) => ({
                 post: { connect: { id: item.id } },
                 tag: { connect: { id: t.id.toString() } },
                 order,
               }));
-              await context.query.PostTag.createMany({ data: PostTags });
+              await context.query.PostTag.createMany({ data: postTags });
             }
           },
         },
@@ -190,7 +176,7 @@ export const lists = {
   Tag: list({
     access: allowAll,
     fields: {
-      title: text({ isIndexed: "unique" }),
+      title: text({ isIndexed: 'unique' }),
     },
     hooks: {
       // Hook to delete PostTag records related to a tag being deleted
