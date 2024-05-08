@@ -1,10 +1,21 @@
-import type { IncomingMessage, ServerResponse } from 'http'
-import type { Readable } from 'stream'
-import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql'
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import type { InitialisedList } from '../lib/core/initialise-lists'
-import type { SessionStrategy } from './session'
-import type { BaseListTypeInfo, BaseKeystoneTypeInfo } from './type-info'
+import {
+  type IncomingMessage,
+  type ServerResponse
+} from 'http'
+import { type Readable } from 'stream'
+import {
+  type DocumentNode,
+  type ExecutionResult,
+  type GraphQLSchema,
+} from 'graphql'
+import { type TypedDocumentNode } from '@graphql-typed-document-node/core'
+import { type InitialisedList } from '../lib/core/initialise-lists'
+import { type SessionStrategy } from './session'
+import {
+  type BaseKeystoneTypeInfo,
+  type BaseListTypeInfo,
+} from './type-info'
+import { type MaybePromise } from '../../types'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
@@ -16,11 +27,12 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
   prisma: TypeInfo['prisma']
+  transaction: <T>(f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>) => Promise<T>
+
   files: FilesContext
   images: ImagesContext
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
-
 
   /**
    * WARNING: may change in patch
@@ -89,8 +101,8 @@ type ListAPI <ListTypeInfo extends BaseListTypeInfo> = {
   ): Promise<Record<string, any>[]>
 }
 
-export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: ListAPI<KeystoneListsTypeInfo[Key]>
+export type KeystoneListsAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
+  [Key in keyof ListsTypeInfo]: ListAPI<ListsTypeInfo[Key]>
 }
 
 type ResolveFields = {
@@ -140,8 +152,8 @@ type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
   }): Promise<ListTypeInfo['item'][]>
 }
 
-export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
-  [Key in keyof KeystoneListsTypeInfo]: DbAPI<KeystoneListsTypeInfo[Key]>
+export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
+  [Key in keyof ListsTypeInfo]: DbAPI<ListsTypeInfo[Key]>
 }
 
 // GraphQL API

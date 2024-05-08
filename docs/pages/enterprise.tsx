@@ -155,7 +155,7 @@ export default function ForOrganisations () {
 
         <Quote
           name="Kevin Stafford"
-          img="https://thinkmill.com.au/_astro/kevin-stafford-rugby-au@1280w.24c4530d.webp"
+          img="/assets/kevin-stafford.jpg"
           title="CTO, Rugby Australia"
           grad="grad6"
           css={{

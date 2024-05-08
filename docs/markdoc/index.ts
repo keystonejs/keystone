@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import isMatch from 'date-fns/isMatch'
+import { isMatch } from 'date-fns'
 import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
 import { isNonEmptyArray } from 'emery/guards'
 import { assert } from 'emery/assertions'

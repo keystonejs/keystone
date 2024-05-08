@@ -1,5 +1,4 @@
-// most of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
-import { spawn } from 'node:child_process';
+import { spawn } from 'node:child_process'
 import path from 'node:path'
 import { format } from 'node:util'
 import fs from 'node:fs'
@@ -15,6 +14,7 @@ import { cli } from '@keystone-6/core/scripts/cli'
 // these tests spawn processes and it's all pretty slow
 jest.setTimeout(1000 * 20)
 
+// some of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 export class ExitError extends Error {
   code: number
   constructor (code: number) {

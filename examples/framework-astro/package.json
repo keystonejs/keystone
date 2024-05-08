@@ -12,7 +12,7 @@
     "start": "astro dev"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.0.0",
+    "@keystone-6/core": "workspace:^",
     "@prisma/client": "^5.0.0",
     "astro": "^2.2.1"
   },
