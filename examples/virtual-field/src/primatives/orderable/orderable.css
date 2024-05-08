@@ -1,0 +1,69 @@
+:root {
+  --invis: hsla(240, 15%, 90%, 0);
+  --light: hsl(240, 15%, 90%);
+  --hover: hsl(240, 15%, 95%);
+}
+
+.centered {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  border: 4px none var(--light);
+  border-left-style: solid;
+  padding-left: 16px;
+}
+
+.orderable {
+  align-items: center;
+  background-color: white;
+  border: 1px solid var(--light);
+  border-radius: 8px;
+  color: hsl(217, 19%, 40%);
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 8px 0px;
+  padding: 8px;
+}
+
+.icon {
+  height: 30px;
+  padding: 2px;
+  width: 30px;
+}
+
+/* Clickable */
+.clickable {
+  border: 1px solid var(--invis);
+  border-radius: 4px;
+}
+
+.clickable:hover {
+  background-color: var(--hover);
+  border-color: var(--hover);
+  cursor: pointer;
+}
+
+.clickable:active {
+  background-color: var(--light);
+  border-color: var(--light);
+  box-shadow: 0px 0px 2px hsl(240, 14%, 75%);
+}
+
+/* Specifics */
+.grab:hover {
+  cursor: grab;
+}
+
+.trash:hover {
+  background-color: hsl(0, 93%, 94%);
+}
+
+.text {
+  flex: 1;
+  padding: 4px;
+  text-align: start;
+}

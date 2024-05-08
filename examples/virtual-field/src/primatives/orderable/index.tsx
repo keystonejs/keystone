@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-
+import "./orderable.css";
 import { jsx } from '@keystone-ui/core';
 import {
   DragDropContext,
@@ -8,7 +8,8 @@ import {
   Droppable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { Item, OrderableItem } from '.';
+import { Item, OrderableItem } from '..';
+import { Trash2Icon } from "../../../../../design-system/packages/icons/src";
 
 type Props = {
   items: OrderableItem[];
@@ -44,37 +45,13 @@ export const OrderableList = (props: Props) => {
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            style={{
-              background: 'lightgray',
-              padding: '1px 4px',
-              borderRadius: '5px',
-            }}
+            className="container"
           >
             {/* Iterate through items to render each as draggable */}
             {props.items.map((item, index) => (
               <Draggable key={item.key} draggableId={item.key} index={index}>
                 {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={{
-                      padding: '4px',
-                      margin: '4px 0',
-                      background: 'white',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      ...provided.draggableProps.style,
-                    }}
-                  >
-                    {/* Display the item's title */}
-                    <div>
-                      {item.label}
-                    </div>
-                    <button onClick={() => props.onChange(props.items.filter((v) => v.key !== item.key))}>
-                      ❌
-                    </button>
-                  </div>
+                  <Orderable provided={provided} item={item} onClick={() => props.onChange(props.items.filter((v: any) => v.key !== item.key))} />
                 )}
               </Draggable>
             ))}
@@ -86,3 +63,35 @@ export const OrderableList = (props: Props) => {
     </DragDropContext>
   );
 }
+
+function Orderable(props: any) {
+  const { provided, item, onClick } = props
+
+  return (
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      className="orderable"
+      style={{ ...provided.draggableProps.style }}
+    >
+      {/* Drag handle */}
+      <div className="icon clickable centered grab" {...provided.dragHandleProps}>
+        {svg_handle}
+      </div>
+      {/* Display the item's title */}
+      <div className="text clickable">
+        {item.label}
+      </div>
+      {/* Delete button */}
+      <button onClick={onClick} className="icon clickable centered trash">
+        <Trash2Icon size="small" />
+      </button>
+    </div>
+  )
+}
+
+const svg_handle = (
+  <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 4h3v3H6V4Zm5 0h3v3h-3V4ZM9 9H6v3h3V9Zm2 0h3v3h-3V9Zm-2 5H6v3h3v-3Zm2 0h3v3h-3v-3Z" fill="currentColor"></path>
+  </svg>
+)
