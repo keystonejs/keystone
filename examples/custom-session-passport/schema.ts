@@ -35,7 +35,7 @@ export const lists = {
       },
     },
     fields: {
-      // this is the authentication identifier provided by our next-auth session
+      // this is the authentication identifier provided by passport session
       //   which we use to identify a user
       authId: text({ isIndexed: "unique" }),
 

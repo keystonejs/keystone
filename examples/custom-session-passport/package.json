@@ -1,5 +1,5 @@
 {
-  "name": "keystone-app",
+  "name": "@keystone-6/example-custom-session-passport",
   "version": "1.0.2",
   "private": true,
   "scripts": {

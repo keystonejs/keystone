@@ -933,6 +933,46 @@ importers:
         specifier: ~5.0.0
         version: 5.0.4
 
+  examples/custom-session-passport:
+    dependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^5.13.0
+        version: 5.13.0(prisma@5.13.0)
+      dotenv:
+        specifier: ^16.0.0
+        version: 16.4.5
+      express:
+        specifier: ^4.17.1
+        version: 4.19.2
+      passport:
+        specifier: ^0.7.0
+        version: 0.7.0
+      passport-github2:
+        specifier: ^0.1.12
+        version: 0.1.12
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.14
+        version: 4.17.21
+      '@types/passport':
+        specifier: ^1.0.16
+        version: 1.0.16
+      '@types/passport-github2':
+        specifier: ^1.2.9
+        version: 1.2.9
+      '@types/passport-oauth2':
+        specifier: ^1.4.16
+        version: 1.4.16
+      prisma:
+        specifier: ^5.13.0
+        version: 5.13.0
+
   examples/custom-session-redis:
     dependencies:
       '@keystone-6/auth':
@@ -1711,46 +1751,6 @@ importers:
       typescript:
         specifier: ~5.0.0
         version: 5.0.4
-
-  examples/usecase-passport:
-    dependencies:
-      '@keystone-6/core':
-        specifier: workspace:^
-        version: link:../../packages/core
-      '@prisma/client':
-        specifier: ^5.13.0
-        version: 5.13.0(prisma@5.13.0)
-      dotenv:
-        specifier: ^16.0.0
-        version: 16.4.5
-      express:
-        specifier: ^4.17.1
-        version: 4.19.2
-      passport:
-        specifier: ^0.7.0
-        version: 0.7.0
-      passport-github2:
-        specifier: ^0.1.12
-        version: 0.1.12
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-    devDependencies:
-      '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
-      '@types/passport':
-        specifier: ^1.0.16
-        version: 1.0.16
-      '@types/passport-github2':
-        specifier: ^1.2.9
-        version: 1.2.9
-      '@types/passport-oauth2':
-        specifier: ^1.4.16
-        version: 1.4.16
-      prisma:
-        specifier: ^5.13.0
-        version: 5.13.0
 
   examples/usecase-relationship-union:
     dependencies:
@@ -16354,7 +16354,7 @@ snapshots:
       kleur: 4.1.5
       magic-string: 0.30.10
       mime: 3.0.0
-      network-information-types: 0.1.1(typescript@5.0.4)
+      network-information-types: 0.1.1(typescript@5.4.5)
       ora: 6.3.1
       p-limit: 4.0.0
       path-to-regexp: 6.2.2
@@ -16367,7 +16367,7 @@ snapshots:
       string-width: 5.1.2
       strip-ansi: 7.1.0
       tsconfig-resolver: 3.0.1
-      typescript: 5.0.4
+      typescript: 5.4.5
       unist-util-visit: 4.1.2
       vfile: 5.3.7
       vite: 4.5.3(@types/node@18.19.31)(terser@5.31.0)
@@ -20562,9 +20562,9 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  network-information-types@0.1.1(typescript@5.0.4):
+  network-information-types@0.1.1(typescript@5.4.5):
     dependencies:
-      typescript: 5.0.4
+      typescript: 5.4.5
 
   next-auth@4.24.7(next@13.5.6(@babel/core@7.24.5)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
