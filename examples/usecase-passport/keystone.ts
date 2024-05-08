@@ -1,25 +1,27 @@
 import "dotenv/config";
 import { config } from "@keystone-6/core";
+import { TypeInfo } from '.keystone/types'
 import { lists } from "./schema";
-import { withAuth, session, createAuthenticationMiddleware } from "./auth";
+import { session, createAuthenticationMiddleware, Session } from "./auth";
 import { fixPrismaPath } from "../example-utils";
+import { KeystoneConfig } from "@keystone-6/core/types";
 
-export default withAuth(
-  config({
-    db: {
-      provider: "sqlite",
-      url: "file:./keystone.db",
+const keystoneConfig: KeystoneConfig<TypeInfo<Session>> = config<TypeInfo<Session>>({
+  db: {
+    provider: "sqlite",
+    url: "file:./keystone.db",
 
-      // WARNING: this is only needed for our monorepo examples, dont do this
-      ...fixPrismaPath,
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixPrismaPath,
+  },
+  lists,
+  session,
+
+  server: {
+    extendExpressApp(app, context) {
+      app.use(createAuthenticationMiddleware(context));
     },
-    lists,
-    session,
+  },
+})
 
-    server: {
-      extendExpressApp(app, context) {
-        app.use(createAuthenticationMiddleware(context));
-      },
-    },
-  })
-);
+export default keystoneConfig

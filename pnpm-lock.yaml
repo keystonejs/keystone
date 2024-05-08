@@ -1714,9 +1714,6 @@ importers:
 
   examples/usecase-passport:
     dependencies:
-      '@keystone-6/auth':
-        specifier: workspace:^
-        version: link:../../packages/auth
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core

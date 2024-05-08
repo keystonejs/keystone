@@ -5,12 +5,7 @@ type User {
   id: ID!
   name: String
   email: String
-  password: PasswordState
   createdAt: DateTime
-}
-
-type PasswordState {
-  isSet: Boolean!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -95,7 +90,6 @@ enum OrderDirection {
 input UserUpdateInput {
   name: String
   email: String
-  password: String
   createdAt: DateTime
 }
 
@@ -107,7 +101,6 @@ input UserUpdateArgs {
 input UserCreateInput {
   name: String
   email: String
-  password: String
   createdAt: DateTime
 }
 
@@ -124,18 +117,6 @@ type Mutation {
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   endSession: Boolean!
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
-}
-
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  message: String!
 }
 
 type Query {
@@ -143,10 +124,7 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
 }
-
-union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
