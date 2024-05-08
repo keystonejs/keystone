@@ -13,4 +13,4 @@ export const lists: Lists<Session> = {
       createdAt: timestamp({ defaultValue: { kind: "now" } }),
     },
   }),
-}
+};

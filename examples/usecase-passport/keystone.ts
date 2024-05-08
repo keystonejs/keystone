@@ -1,12 +1,14 @@
 import "dotenv/config";
 import { config } from "@keystone-6/core";
-import { TypeInfo } from '.keystone/types'
+import { KeystoneConfig } from "@keystone-6/core/types";
+import { TypeInfo } from ".keystone/types";
 import { lists } from "./schema";
 import { session, createAuthenticationMiddleware, Session } from "./auth";
 import { fixPrismaPath } from "../example-utils";
-import { KeystoneConfig } from "@keystone-6/core/types";
 
-const keystoneConfig: KeystoneConfig<TypeInfo<Session>> = config<TypeInfo<Session>>({
+const keystoneConfig: KeystoneConfig<TypeInfo<Session>> = config<
+  TypeInfo<Session>
+>({
   db: {
     provider: "sqlite",
     url: "file:./keystone.db",
@@ -22,6 +24,6 @@ const keystoneConfig: KeystoneConfig<TypeInfo<Session>> = config<TypeInfo<Sessio
       app.use(createAuthenticationMiddleware(context));
     },
   },
-})
+});
 
-export default keystoneConfig
+export default keystoneConfig;
