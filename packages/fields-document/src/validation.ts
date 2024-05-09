@@ -5,7 +5,7 @@ import {
 } from './DocumentEditor/component-blocks/api-shared'
 import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
-import { type Relationships } from './DocumentEditor/relationship'
+import { type Relationships } from './DocumentEditor/relationship-shared'
 import {
   type ElementFromValidation,
   type TextWithMarks,

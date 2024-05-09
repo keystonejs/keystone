@@ -25,7 +25,7 @@ import { withBlockquote } from './blockquote-shared'
 import {
   type Relationships,
   withRelationship
-} from './relationship'
+} from './relationship-shared'
 import { withDivider } from './divider-shared'
 import { withCodeBlock } from './code-block-shared'
 import { withMarks } from './marks'

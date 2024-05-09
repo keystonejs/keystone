@@ -15,7 +15,7 @@ import {
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization'
-import { type Relationships } from '../relationship'
+import { type Relationships } from '../relationship-shared'
 import {
   assertNever,
   type DocumentFeaturesForChildField,

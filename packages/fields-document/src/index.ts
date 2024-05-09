@@ -8,7 +8,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import { type Relationships } from './DocumentEditor/relationship'
+import { type Relationships } from './DocumentEditor/relationship-shared'
 import { type ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
