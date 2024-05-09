@@ -10,15 +10,16 @@ import { Tooltip } from '@keystone-ui/tooltip'
 import { applyRefs } from 'apply-ref'
 import { useState, type ComponentProps, useMemo } from 'react'
 import { Transforms } from 'slate'
-import { type DocumentFeatures } from '../views'
+
+import { type DocumentFeatures } from '../views-shared'
 import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives'
 import { useToolbarState } from './toolbar-state'
 
-export const TextAlignMenu = ({
+export function TextAlignMenu ({
   alignment,
 }: {
   alignment: DocumentFeatures['formatting']['alignment']
-}) => {
+}) {
   const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {

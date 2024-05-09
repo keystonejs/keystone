@@ -8,11 +8,11 @@ import { createDocumentEditor } from './DocumentEditor/editor-shared'
 import { type Relationships } from './DocumentEditor/relationship'
 import {
   type ElementFromValidation,
-  isRelationshipData,
   type TextWithMarks,
+  isRelationshipData,
   validateDocumentStructure,
 } from './structure-validation'
-import { type DocumentFeatures } from './views'
+import { type DocumentFeatures } from './views-shared'
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath

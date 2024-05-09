@@ -1,11 +1,13 @@
-import { type ComponentSchema } from '../../component-blocks'
-import { type DocumentFeatures } from '../../views'
+import { type DocumentFeatures } from '../../views-shared'
 import { type DocumentFeaturesForNormalization } from '../document-features-normalization'
 import {
   type Mark,
   assert,
 } from '../utils'
-import { type ChildField } from './api-shared'
+import {
+  type ComponentSchema,
+  type ChildField
+} from './api-shared'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath, options: ChildField['options'] }

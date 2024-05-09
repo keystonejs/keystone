@@ -8,7 +8,7 @@ import {
   type ComponentSchema
 } from './api-shared'
 import { assert, moveChildren } from '../utils'
-import { type DocumentFeatures } from '../../views'
+import { type DocumentFeatures } from '../../views-shared'
 import {
   areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,

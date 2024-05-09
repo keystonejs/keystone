@@ -17,7 +17,7 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon'
 import { useControlledPopover } from '@keystone-ui/popover'
-import { type DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views-shared'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import { paragraphElement } from './paragraphs'
 import {

@@ -1,5 +1,5 @@
 import { Text, Transforms, Element, type NodeEntry, Editor, Node } from 'slate'
-import { type DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views-shared'
 import { type Relationships } from './relationship'
 
 export function areArraysEqual (a: readonly unknown[], b: readonly unknown[]) {

@@ -1,6 +1,6 @@
 import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from 'slate'
-import { type DocumentFeatures } from '../views'
-import { type ComponentBlock } from './component-blocks/api'
+import { type DocumentFeatures } from '../views-shared'
+import { type ComponentBlock } from './component-blocks/api-shared'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 import {
   type Mark,
