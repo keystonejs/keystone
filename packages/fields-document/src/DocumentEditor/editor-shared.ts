@@ -19,7 +19,7 @@ import { withComponentBlocks } from './component-blocks/with-component-blocks'
 import { withParagraphs } from './paragraphs'
 import { withList } from './lists-shared'
 import { withLink } from './link-shared'
-import { withLayouts } from './layouts'
+import { withLayouts } from './layouts-shared'
 import { withHeading } from './heading-shared'
 import { withBlockquote } from './blockquote-shared'
 import {
