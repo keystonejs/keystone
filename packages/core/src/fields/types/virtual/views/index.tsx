@@ -41,6 +41,7 @@ export const controller = (
   config: FieldControllerConfig<{ query: string }>
 ): FieldController<any> => {
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,
@@ -49,6 +50,13 @@ export const controller = (
     deserialize: data => {
       return data[config.path]
     },
-    serialize: () => ({}),
+    serialize: value => {
+      if (!value) return { [config.path]: null }
+      try {
+        return { [config.path]: value }
+      } catch (e) {
+        return { [config.path]: undefined }
+      }
+    },
   }
 }

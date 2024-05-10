@@ -244,6 +244,7 @@ export const controller = (
           },
   }
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,

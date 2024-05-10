@@ -347,7 +347,6 @@ type RelationshipController = FieldController<
   string
 > & {
   display: 'count' | 'cards-or-select'
-  listKey: string
   refListKey: string
   refFieldKey?: string
   refLabelField: string

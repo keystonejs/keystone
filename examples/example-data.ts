@@ -149,6 +149,29 @@ export const tasks = [
   },
 ] as const
 
+export const tags = [
+  { "title": "Travel" },
+  { "title": "Food" },
+  { "title": "Technology" },
+  { "title": "Wellness" },
+  { "title": "Productivity" },
+  { "title": "DIY" },
+  { "title": "Lifestyle" },
+  { "title": "Fashion" },
+  { "title": "Fitness" },
+  { "title": "Finance" },
+  { "title": "Parenting" },
+  { "title": "Home Decor" },
+  { "title": "Self-Care" },
+  { "title": "Recipes" },
+  { "title": "Entrepreneurship" },
+  { "title": "Book Reviews" },
+  { "title": "Sustainable Living" },
+  { "title": "Photography" },
+  { "title": "Mental Health" },
+  { "title": "Relationships" }
+]
+
 export const products = [
   {
     name: 'Yeti Hondo',

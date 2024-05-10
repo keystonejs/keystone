@@ -230,6 +230,7 @@ input ProductUpdateInput {
   sku: String
   description: String
   value: Int
+  available: JSON
 }
 
 input ProductUpdateArgs {
@@ -241,6 +242,7 @@ input ProductCreateInput {
   sku: String
   description: String
   value: Int
+  available: JSON
 }
 
 """

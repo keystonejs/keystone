@@ -153,6 +153,7 @@ input MediaOrderByInput {
 }
 
 input MediaUpdateInput {
+  label: JSON
   description: String
   post: PostRelateToOneForUpdateInput
   link: LinkRelateToOneForUpdateInput
@@ -176,6 +177,7 @@ input MediaUpdateArgs {
 }
 
 input MediaCreateInput {
+  label: JSON
   description: String
   post: PostRelateToOneForCreateInput
   link: LinkRelateToOneForCreateInput

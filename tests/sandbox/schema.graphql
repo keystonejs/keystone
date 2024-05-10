@@ -322,6 +322,7 @@ input ThingUpdateInput {
   toOneRelationshipCard: UserRelateToOneForUpdateInput
   toManyRelationshipCard: TodoRelateToManyForUpdateInput
   calendarDay: CalendarDay
+  randomNumberVirtual: JSON
   select: String
   selectOnSide: String
   selectOnSideItemViewOnly: String
@@ -406,6 +407,7 @@ input ThingCreateInput {
   toOneRelationshipCard: UserRelateToOneForCreateInput
   toManyRelationshipCard: TodoRelateToManyForCreateInput
   calendarDay: CalendarDay
+  randomNumberVirtual: JSON
   select: String
   selectOnSide: String
   selectOnSideItemViewOnly: String

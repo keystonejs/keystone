@@ -9,7 +9,8 @@ type Post {
   isActive: Boolean
   counts: PostCounts
   excerpt(length: Int! = 50): String
-  related: [RelatedPosts]
+  related(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Post!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
 }
 
 type PostCounts {
@@ -18,13 +19,9 @@ type PostCounts {
   paragraphs: Int
 }
 
-type RelatedPosts {
-  id: String
-  title: String
-}
-
 input PostWhereUniqueInput {
   id: ID
+  title: String
 }
 
 input PostWhereInput {
@@ -97,6 +94,11 @@ input PostUpdateInput {
   title: String
   content: String
   listed: Boolean
+  isActive: JSON
+  counts: JSON
+  excerpt: JSON
+  related: JSON
+  tags: JSON
 }
 
 input PostUpdateArgs {
@@ -108,6 +110,123 @@ input PostCreateInput {
   title: String
   content: String
   listed: Boolean
+  isActive: JSON
+  counts: JSON
+  excerpt: JSON
+  related: JSON
+  tags: JSON
+}
+
+type Tag {
+  id: ID!
+  title: String
+}
+
+input TagWhereUniqueInput {
+  id: ID
+  title: String
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
+  NOT: [TagWhereInput!]
+  id: IDFilter
+  title: StringFilter
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+}
+
+input TagUpdateInput {
+  title: String
+}
+
+input TagUpdateArgs {
+  where: TagWhereUniqueInput!
+  data: TagUpdateInput!
+}
+
+input TagCreateInput {
+  title: String
+}
+
+type PostTag {
+  id: ID!
+  post: Post
+  tag: Tag
+  order: Int
+}
+
+input PostTagWhereUniqueInput {
+  id: ID
+}
+
+input PostTagWhereInput {
+  AND: [PostTagWhereInput!]
+  OR: [PostTagWhereInput!]
+  NOT: [PostTagWhereInput!]
+  id: IDFilter
+  post: PostWhereInput
+  tag: TagWhereInput
+  order: IntFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
+input PostTagOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+}
+
+input PostTagUpdateInput {
+  post: PostRelateToOneForUpdateInput
+  tag: TagRelateToOneForUpdateInput
+  order: Int
+}
+
+input PostRelateToOneForUpdateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PostTagUpdateArgs {
+  where: PostTagWhereUniqueInput!
+  data: PostTagUpdateInput!
+}
+
+input PostTagCreateInput {
+  post: PostRelateToOneForCreateInput
+  tag: TagRelateToOneForCreateInput
+  order: Int
+}
+
+input PostRelateToOneForCreateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 """
@@ -122,13 +241,39 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createTag(data: TagCreateInput!): Tag
+  createTags(data: [TagCreateInput!]!): [Tag]
+  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
+  updateTags(data: [TagUpdateArgs!]!): [Tag]
+  deleteTag(where: TagWhereUniqueInput!): Tag
+  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createPostTag(data: PostTagCreateInput!): PostTag
+  createPostTags(data: [PostTagCreateInput!]!): [PostTag]
+  updatePostTag(where: PostTagWhereUniqueInput!, data: PostTagUpdateInput!): PostTag
+  updatePostTags(data: [PostTagUpdateArgs!]!): [PostTag]
+  deletePostTag(where: PostTagWhereUniqueInput!): PostTag
+  deletePostTags(where: [PostTagWhereUniqueInput!]!): [PostTag]
 }
 
 type Query {
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tag(where: TagWhereUniqueInput!): Tag
+  tagsCount(where: TagWhereInput! = {}): Int
+  postTags(where: PostTagWhereInput! = {}, orderBy: [PostTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostTagWhereUniqueInput): [PostTag!]
+  postTag(where: PostTagWhereUniqueInput!): PostTag
+  postTagsCount(where: PostTagWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  FieldForeignListKey(listKey: String!, fieldPath: String!): FieldForeignListKey
+}
+
+type FieldForeignListKey {
+  listKey: String!
+  fieldPath: String!
+  foreignListKey: String!
+  foreignLabelPath: String!
 }
 
 type KeystoneMeta {
