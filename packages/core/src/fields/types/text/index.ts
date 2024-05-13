@@ -56,7 +56,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function text <ListTypeInfo extends BaseListTypeInfo>(
+export function text <ListTypeInfo extends BaseListTypeInfo> (
   config: TextFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   const {

@@ -8,6 +8,7 @@ import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/field
 import { Pill } from '@keystone-ui/pill'
 import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '@keystone-6/core/types'
+import { type controller } from '.'
 
 function useObjectURL (fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
@@ -28,7 +29,7 @@ export function Field ({
   field,
   value,
   onChange,
-}: FieldProps<typeof import('.').controller>) {
+}: FieldProps<typeof controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined
@@ -42,7 +43,6 @@ export function Field ({
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const inputKey = useMemo(() => Math.random(), [value])
 
   return (

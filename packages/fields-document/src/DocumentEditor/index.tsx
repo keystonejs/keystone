@@ -8,7 +8,7 @@ import { useCallback, useMemo } from 'react'
 import {
   Editor,
   Node,
-  Range,
+  type Range,
   Transforms,
   createEditor,
   type NodeEntry,
@@ -256,10 +256,6 @@ export function DocumentEditor ({
           {...props}
           readOnly={onChange === undefined}
         />
-        {
-          // for debugging
-          false && <Debugger />
-        }
       </DocumentEditorProvider>
     </div>
   )
@@ -282,7 +278,6 @@ export function DocumentEditorProvider ({
   relationships: Relationships
   documentFeatures: DocumentFeatures
 }) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const identity = useMemo(() => Math.random().toString(36), [editor])
   return (
     <Slate
@@ -371,6 +366,7 @@ export function DocumentEditorEditable (props: EditableProps) {
   )
 }
 
+/*
 function Debugger () {
   const editor = useSlate()
   return (
@@ -391,6 +387,7 @@ function Debugger () {
     </pre>
   )
 }
+*/
 
 const orderedListStyles = ['lower-roman', 'decimal', 'lower-alpha']
 const unorderedListStyles = ['square', 'disc', 'circle']

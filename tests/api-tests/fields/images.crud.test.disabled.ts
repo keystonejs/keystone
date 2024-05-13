@@ -76,7 +76,7 @@ function sha1 (x: Buffer) {
 
 async function getFileHash (
   url: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) {
   if (config.matrixValue === 's3') {
     return sha1(await fetch(url).then(x => x.buffer()))
@@ -87,7 +87,7 @@ async function getFileHash (
 
 async function checkFile (
   filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) {
   if (config.matrixValue === 's3') return await fetch(filename).then(x => x.status === 200)
   return Boolean(await fsp.stat(path.join(config.folder, filename)).catch(() => null))

@@ -9,6 +9,7 @@ import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 import { type ImageValue } from './index'
+import { type controller } from '.'
 
 function useObjectURL (fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
@@ -29,7 +30,7 @@ export function Field ({
   field,
   value,
   onChange,
-}: FieldProps<typeof import('.').controller>) {
+}: FieldProps<typeof controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const errorMessage = createErrorMessage(value)
@@ -49,7 +50,6 @@ export function Field ({
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const inputKey = useMemo(() => Math.random(), [value])
   const accept = useMemo(
     () => SUPPORTED_IMAGE_EXTENSIONS.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(', '),
@@ -104,7 +104,7 @@ function ImgView ({
   errorMessage?: string
   value: ImageValue
   onChange?: (value: ImageValue) => void
-  field: ReturnType<typeof import('.').controller>
+  field: ReturnType<typeof controller>
   inputRef: RefObject<HTMLInputElement>
 }) {
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 })

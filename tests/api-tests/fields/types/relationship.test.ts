@@ -8,7 +8,7 @@ import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break
 
 const fieldKey = 'foo'
 
-function getSchema(field: {
+function getSchema (field: {
   ref: string
   many?: boolean
 }) {

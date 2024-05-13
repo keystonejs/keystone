@@ -10,6 +10,7 @@ import {
 import { graphql } from '../../..'
 import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { type AdminSelectFieldMeta } from './views'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -72,7 +73,7 @@ export const select =
     ): CommonFieldConfig<ListTypeInfo> & {
       __ksTelemetryFieldTypeName: string
       views: string
-      getAdminMeta: () => import('./views').AdminSelectFieldMeta
+      getAdminMeta: () => AdminSelectFieldMeta
     } => {
       const values = new Set(options.map(x => x.value))
       if (values.size !== options.length) {

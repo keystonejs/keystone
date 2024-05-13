@@ -33,7 +33,7 @@ export function createContext ({
   graphQLSchemaSudo: GraphQLSchema
   prismaClient: unknown
   prismaTypes: {
-    DbNull: unknown,
+    DbNull: unknown
     JsonNull: unknown
   }
 }) {

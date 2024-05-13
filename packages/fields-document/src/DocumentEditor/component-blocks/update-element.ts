@@ -155,7 +155,7 @@ function findChildPropPathsWithPrevious (
       return []
     case 'child':
       return [{ path: newPath, prevPath, options: schema.options }]
-    case 'conditional':
+    case 'conditional': {
       const hasChangedDiscriminant = value.discriminant === prevValue.discriminant
       return findChildPropPathsWithPrevious(
         value.value,
@@ -167,6 +167,7 @@ function findChildPropPathsWithPrevious (
         hasChangedDiscriminant ? undefined : prevPath?.concat('value'),
         hasChangedDiscriminant ? undefined : pathWithKeys?.concat('value')
       )
+    }
     case 'object': {
       const paths: ChildPropPathWithPrevious[] = []
       for (const key of Object.keys(schema.fields)) {

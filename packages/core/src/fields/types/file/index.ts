@@ -49,7 +49,7 @@ async function inputResolver (
   return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
-export function file <ListTypeInfo extends BaseListTypeInfo>(config: FileFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)

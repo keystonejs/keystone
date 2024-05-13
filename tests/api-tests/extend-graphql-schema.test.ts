@@ -7,7 +7,7 @@ import { expectInternalServerError } from './utils'
 
 const falseFn: (...args: any) => boolean = () => false
 
-function withAccessCheck <T, Args extends unknown[]>(
+function withAccessCheck <T, Args extends unknown[]> (
   access: boolean | ((...args: Args) => boolean),
   resolver: (...args: Args) => T
 ): ((...args: Args) => T) {

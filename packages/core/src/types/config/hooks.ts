@@ -106,12 +106,12 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   resolveInput: {
     create: ResolveInputListHook<ListTypeInfo, 'create'>
     update: ResolveInputListHook<ListTypeInfo, 'update'>
-  },
+  }
   validate: {
     create: ValidateHook<ListTypeInfo, 'create'>
     update: ValidateHook<ListTypeInfo, 'update'>
     delete: ValidateHook<ListTypeInfo, 'delete'>
-  },
+  }
   beforeOperation: {
     create: BeforeOperationListHook<ListTypeInfo, 'create'>
     update: BeforeOperationListHook<ListTypeInfo, 'update'>
@@ -185,7 +185,7 @@ export type ResolvedFieldHooks<
     create: ValidateFieldHook<ListTypeInfo, 'create', FieldKey>
     update: ValidateFieldHook<ListTypeInfo, 'update', FieldKey>
     delete: ValidateFieldHook<ListTypeInfo, 'delete', FieldKey>
-  },
+  }
   beforeOperation: {
     create: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldKey>
     update: BeforeOperationFieldHook<ListTypeInfo, 'update', FieldKey>

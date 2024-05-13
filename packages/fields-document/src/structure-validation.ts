@@ -31,7 +31,7 @@ type Inline = TextWithMarks | Link | Relationship
 type Link = { type: 'link', href: string, children: Children }
 
 class URLType extends t.Type<string> {
-  readonly _tag: 'URLType' = 'URLType'
+  readonly _tag: 'URLType' = 'URLType' as const
   constructor () {
     super(
       'string',

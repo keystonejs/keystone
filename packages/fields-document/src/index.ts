@@ -14,6 +14,7 @@ import { type DocumentFeatures } from './views'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
+import { type controller } from './views'
 
 type RelationshipsConfig = Record<
   string,
@@ -159,7 +160,7 @@ export const document =
           },
         }),
         views: '@keystone-6/fields-document/views',
-        getAdminMeta (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+        getAdminMeta (): Parameters<typeof controller>[0]['fieldMeta'] {
           return {
             relationships,
             documentFeatures,
