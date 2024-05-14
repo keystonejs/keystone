@@ -1,6 +1,11 @@
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { type Descendant } from 'slate'
-import { type GraphQLSchema, executeSync, parse, type ExecutionResult } from 'graphql'
+import {
+  type ExecutionResult,
+  type GraphQLSchema,
+  executeSync,
+  parse,
+} from 'graphql'
 import weakMemoize from '@emotion/weak-memoize'
 
 import {
@@ -214,8 +219,6 @@ export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForList
   }) as ExecutionResult<{
     keystone: { adminMeta: { lists: { key: string, labelField: string }[] } }
   }>
-  if (errors?.length) {
-    throw errors[0]
-  }
+  if (errors?.length) throw errors[0]
   return Object.fromEntries(data!.keystone.adminMeta.lists.map(x => [x.key, x.labelField]))
 })

@@ -1,4 +1,13 @@
-import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from 'slate'
+import {
+  type Point,
+  Editor,
+  Element,
+  Node,
+  Path,
+  Range,
+  Text,
+  Transforms,
+} from 'slate'
 import { type DocumentFeatures } from '../views-shared'
 import { type ComponentBlock } from './component-blocks/api-shared'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'

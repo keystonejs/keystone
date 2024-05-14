@@ -13,12 +13,9 @@ const nodeListsWithoutInsertMenu = new WeakSet<Node[]>()
 const nodesWithoutInsertMenu = new WeakSet<Node>()
 
 function findPathWithInsertMenu (node: Node, path: Path): Path | undefined {
-  if (Text.isText(node)) {
-    return node.insertMenu ? path : undefined
-  }
-  if (nodeListsWithoutInsertMenu.has(node.children)) {
-    return
-  }
+  if (Text.isText(node)) return node.insertMenu ? path : undefined
+  if (nodeListsWithoutInsertMenu.has(node.children)) return
+
   for (const [index, child] of node.children.entries()) {
     if (nodesWithoutInsertMenu.has(child)) continue
     let maybePath = findPathWithInsertMenu(child, [...path, index])

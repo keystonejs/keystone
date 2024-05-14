@@ -8,10 +8,10 @@ import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough'
 import { type Block } from '../editor-shared'
 import {
-  getInlineNodes,
-  addMarkToChildren,
-  setLinkForChildren,
   type InlineFromExternalPaste,
+  addMarkToChildren,
+  getInlineNodes,
+  setLinkForChildren,
 } from './utils'
 
 const markdownConfig = {

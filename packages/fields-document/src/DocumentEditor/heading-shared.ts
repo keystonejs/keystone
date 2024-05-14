@@ -1,4 +1,13 @@
-import { Editor, Transforms, Range, Point, Path, Node, type Element, Text } from 'slate'
+import {
+  type Element,
+  Editor,
+  Transforms,
+  Range,
+  Point,
+  Path,
+  Node,
+  Text
+} from 'slate'
 
 export function withHeading (editor: Editor): Editor {
   const { insertBreak } = editor

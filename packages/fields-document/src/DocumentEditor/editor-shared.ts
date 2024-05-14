@@ -1,13 +1,13 @@
 import {
+  type Descendant,
+  type NodeEntry,
   Editor,
+  Element,
   Node,
+  Path,
+  Text,
   Transforms,
   createEditor,
-  type NodeEntry,
-  Element,
-  Text,
-  type Descendant,
-  Path,
 } from 'slate'
 import { withHistory } from 'slate-history'
 import { withReact } from 'slate-react'

@@ -3,7 +3,10 @@ import {
   type ComponentBlock,
   type ComponentSchema
 } from './DocumentEditor/component-blocks/api-shared'
-import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
+import {
+  type ReadonlyPropPath,
+  assertNever,
+} from './DocumentEditor/component-blocks/utils'
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
 import { type Relationships } from './DocumentEditor/relationship-shared'
 import {

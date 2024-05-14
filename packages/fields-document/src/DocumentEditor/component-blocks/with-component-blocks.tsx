@@ -17,13 +17,13 @@ import {
 } from '../document-features-normalization'
 import { type Relationships } from '../relationship-shared'
 import {
-  assertNever,
   type DocumentFeaturesForChildField,
+  type ReadonlyPropPath,
+  assertNever,
   findChildPropPaths,
   getAncestorSchemas,
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
-  type ReadonlyPropPath,
   replaceValueAtPropPath,
   traverseProps,
 } from './utils'
