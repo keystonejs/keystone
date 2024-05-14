@@ -1,4 +1,4 @@
-import { graphql } from '@keystone-6/core'
+import { type graphql } from '@keystone-6/core'
 import {
   type ReactElement,
   type ReactNode,

@@ -1,6 +1,6 @@
 import {
-  Editor,
-  Element,
+  type Editor,
+  type Element,
   Transforms,
 } from 'slate'
 import { ReactEditor } from 'slate-react'

@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { type ReactNode, forwardRef, useMemo } from 'react'
-import { Element, Node } from 'slate'
+import { type Element, type Node } from 'slate'
 import { jsx } from '@keystone-ui/core'
 
 import { ToolbarButton } from './primitives'
