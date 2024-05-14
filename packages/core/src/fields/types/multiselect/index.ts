@@ -42,7 +42,7 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function multiselect <ListTypeInfo extends BaseListTypeInfo>(
+export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
   config: MultiselectFieldConfig<ListTypeInfo>
 ): FieldTypeFunc<ListTypeInfo> {
   const {

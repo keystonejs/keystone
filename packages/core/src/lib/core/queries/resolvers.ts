@@ -1,5 +1,5 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
-import { GraphQLResolveInfo } from 'graphql'
+import { type GraphQLResolveInfo } from 'graphql'
 import {
   type BaseItem,
   type FindManyArgsValue,

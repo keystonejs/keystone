@@ -17,8 +17,8 @@ export function resolveHasValidation ({
   db,
   validation
 }: {
-  db?: { isNullable?: boolean },
-  validation?: unknown,
+  db?: { isNullable?: boolean }
+  validation?: unknown
 }) {
   if (db?.isNullable === false) return true
   if (validation !== undefined) return true

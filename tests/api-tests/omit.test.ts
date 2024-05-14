@@ -230,11 +230,11 @@ async function introspectSchema (context: KeystoneContext) {
 
 describe(`Omit (${dbProvider})`, () => {
   function testOmit (listName_: string, d: ReturnType<typeof introspectSchema>, expected: {
-    type: boolean,
-    meta: boolean,
-    query: boolean,
-    create: boolean,
-    update: boolean,
+    type: boolean
+    meta: boolean
+    query: boolean
+    create: boolean
+    update: boolean
     delete: boolean
   }) {
     const listName = listName_.toLowerCase()
@@ -293,11 +293,11 @@ describe(`Omit (${dbProvider})`, () => {
       testOmit(listName, data, {
         type: true,
         // TODO: see create-admin-meta.ts#L102
-        meta: !omit?.query ?? true,
-        query: !omit?.query ?? true,
-        create: !omit?.create ?? true,
-        update: !omit?.update ?? true,
-        delete: !omit?.delete ?? true,
+        meta: !omit.query,
+        query: !omit.query,
+        create: !omit.create,
+        update: !omit.update,
+        delete: !omit.delete,
       })
     })
 

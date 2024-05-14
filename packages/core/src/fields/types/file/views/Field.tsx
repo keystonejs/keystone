@@ -9,13 +9,14 @@ import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/field
 import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '../../../../types'
 import { type FileValue } from './index'
+import { type controller } from '.'
 
 export function Field ({
   autoFocus,
   field,
   value,
   onChange,
-}: FieldProps<typeof import('.').controller>) {
+}: FieldProps<typeof controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const errorMessage = createErrorMessage(value)
@@ -35,7 +36,6 @@ export function Field ({
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const inputKey = useMemo(() => Math.random(), [value])
 
   return (

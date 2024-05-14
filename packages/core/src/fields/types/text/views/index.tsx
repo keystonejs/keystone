@@ -18,6 +18,7 @@ import {
   type FieldProps,
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
+import { type TextFieldMeta } from '..'
 
 export function Field ({
   field,
@@ -140,7 +141,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-type Config = FieldControllerConfig<import('..').TextFieldMeta>
+type Config = FieldControllerConfig<TextFieldMeta>
 
 type Validation = {
   isRequired: boolean

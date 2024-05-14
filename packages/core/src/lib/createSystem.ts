@@ -152,7 +152,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
 
   prismaClient = (prismaClient as any).$extends({
     query: {
-      async $allOperations({ model, operation, args, query }: any) {
+      async $allOperations ({ model, operation, args, query }: any) {
         try {
           return await query(args)
         } catch (e: any) {

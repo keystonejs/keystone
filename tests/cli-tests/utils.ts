@@ -100,7 +100,7 @@ export async function spawnCommand (cwd: string, commands: string[]) {
 export async function spawnCommand2 (cwd: string, commands: string[]) {
   let output = ''
   return new Promise<{
-    exitCode: number | null,
+    exitCode: number | null
     output: string
   }>((resolve, reject) => {
     const p = spawn('node', [cliBinPath, ...commands], { cwd })

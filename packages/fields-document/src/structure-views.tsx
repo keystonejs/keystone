@@ -50,11 +50,11 @@ export const Field = ({
   )
 }
 
-export const Cell: CellComponent = ({}) => {
+export const Cell: CellComponent = () => {
   return null
 }
 
-export const CardValue: CardValueComponent = ({}) => {
+export const CardValue: CardValueComponent = () => {
   return null as any
 }
 
