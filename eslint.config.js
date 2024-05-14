@@ -46,7 +46,7 @@ module.exports = tseslint.config(
       'space-before-blocks': ['error', 'always'],
       'space-before-function-paren': ['error', 'always'],
       'space-in-parens': ['error', 'never'],
-      '@typescript-eslint/member-delimiter-style': [ // TODO
+      '@typescript-eslint/member-delimiter-style': [
         'error',
         {
           multiline: { delimiter: 'none' },
@@ -60,7 +60,7 @@ module.exports = tseslint.config(
       }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-      '@typescript-eslint/semi': ['error', 'never'], // TODO
+      '@typescript-eslint/semi': ['error', 'never'],
     }
   }
 )
