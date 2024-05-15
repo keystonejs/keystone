@@ -72,7 +72,7 @@ async function getCommittedArtifacts (config: __ResolvedKeystoneConfig, graphQLS
   const prismaSchema = printPrismaSchema(config, lists)
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
-    prisma: await formatSchema({ schema: prismaSchema }),
+    prisma: (await formatSchema({ schemas: [[config.db.prismaSchemaPath, prismaSchema]] }))[0][1],
   }
 }
 
