@@ -74,7 +74,7 @@ function isValidImageExtension (extension: string): extension is ImageExtension 
   return extensionsSet.has(extension)
 }
 
-export function image <ListTypeInfo extends BaseListTypeInfo>(config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)

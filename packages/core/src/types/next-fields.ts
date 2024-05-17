@@ -252,9 +252,9 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 type DBFieldFilters<TDBField extends DBField> =
   | ({
       AND?: DBFieldFiltersInner<TDBField>

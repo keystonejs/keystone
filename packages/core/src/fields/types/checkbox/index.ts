@@ -19,7 +19,7 @@ export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function checkbox <ListTypeInfo extends BaseListTypeInfo>(
+export function checkbox <ListTypeInfo extends BaseListTypeInfo> (
   config: CheckboxFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   const {

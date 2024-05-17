@@ -109,7 +109,6 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [localStorageKey, router.isReady]
   )
   useEffect(() => {

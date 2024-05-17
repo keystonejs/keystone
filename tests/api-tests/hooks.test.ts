@@ -18,9 +18,9 @@ function makeList ({
   hooks
 }: {
   hooks: {
-    resolveInput: boolean,
-    validate: 'none' | 'throws' | 'validate',
-    beforeOperation: boolean,
+    resolveInput: boolean
+    validate: 'none' | 'throws' | 'validate'
+    beforeOperation: boolean
     afterOperation: boolean
     field: boolean
   }

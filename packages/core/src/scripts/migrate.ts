@@ -29,7 +29,7 @@ export async function spawnPrisma (cwd: string, system: {
 }, commands: string[]) {
   let output = ''
   return new Promise<{
-    exitCode: number | null,
+    exitCode: number | null
     output: string
   }>((resolve, reject) => {
     const p = spawn('node', [require.resolve('prisma'), ...commands], {

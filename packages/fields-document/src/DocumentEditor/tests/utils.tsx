@@ -57,7 +57,7 @@ function formatEditor (editor: Node) {
 
 declare global {
   namespace jest {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     interface Matchers<R, T> {
       toEqualEditor(
         expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'

@@ -29,7 +29,7 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       map?: string
       extendPrismaSchema?: (field: string) => string
     }
-    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>
+    bcrypt?: Pick<typeof bcryptjs, 'compare' | 'hash'>
   }
 
 const PasswordState = graphql.object<{ isSet: boolean }>()({

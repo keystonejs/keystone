@@ -34,7 +34,7 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
-export function bigInt <ListTypeInfo extends BaseListTypeInfo>(
+export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
   config: BigIntFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   const {

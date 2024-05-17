@@ -79,7 +79,7 @@ export async function dev (
       ...(esbuildConfig.plugins ?? []),
       {
         name: 'esbuildWatchPlugin',
-        setup(build: any) {
+        setup (build: any) {
           // TODO: no any
           build.onEnd(addBuildResult)
         },

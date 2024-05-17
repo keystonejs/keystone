@@ -1,6 +1,7 @@
 import { type BaseListTypeInfo, type FieldTypeFunc, type CommonFieldConfig, fieldType } from '../../../types'
 import { graphql } from '../../..'
 import { getAdminMetaForRelationshipField } from '../../../lib/create-admin-meta'
+import { type controller } from './views'
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -99,7 +100,7 @@ export const relationship =
       ...config,
       __ksTelemetryFieldTypeName: '@keystone-6/relationship',
       views: '@keystone-6/core/fields/types/relationship/views',
-      getAdminMeta: (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => {
         const adminMetaRoot = getAdminMetaForRelationshipField()
         const localListMeta = adminMetaRoot.listsByKey[listKey]
         const foreignListMeta = adminMetaRoot.listsByKey[foreignListKey]

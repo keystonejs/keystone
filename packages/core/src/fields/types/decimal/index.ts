@@ -11,6 +11,7 @@ import {
 import { graphql } from '../../..'
 import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { type DecimalFieldMeta } from './views'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -179,7 +180,7 @@ export const decimal =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/decimal',
       views: '@keystone-6/core/fields/types/decimal/views',
-      getAdminMeta: (): import('./views').DecimalFieldMeta => ({
+      getAdminMeta: (): DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,
         precision,
         scale,

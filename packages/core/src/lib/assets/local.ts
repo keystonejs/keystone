@@ -3,8 +3,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream'
 
-import { StorageConfig } from '../../types'
-import { FileAdapter, ImageAdapter } from './types'
+import { type StorageConfig } from '../../types'
+import { type FileAdapter, type ImageAdapter } from './types'
 
 export function localImageAssetsAPI (
   storageConfig: StorageConfig & { kind: 'local' }

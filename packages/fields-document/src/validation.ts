@@ -143,7 +143,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps (
     return node
   }
   if (node.type === 'component-block') {
-    if (componentBlocks.hasOwnProperty(node.component)) {
+    if (Object.prototype.hasOwnProperty.call(componentBlocks, node.component)) {
       const componentBlock = componentBlocks[node.component]
       node = {
         ...node,

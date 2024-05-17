@@ -172,7 +172,7 @@ export async function createMany (
 }
 
 type UpdateInput = {
-  where: UniqueInputFilter,
+  where: UniqueInputFilter
   data: Record<string, unknown>
 }
 

@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { printSchema, GraphQLSchema } from 'graphql'
+import { type ChildProcess } from 'node:child_process'
+
+import { printSchema, type GraphQLSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import { ExitError } from './scripts/utils'
 import { type __ResolvedKeystoneConfig } from './types'
@@ -70,7 +72,7 @@ async function getCommittedArtifacts (config: __ResolvedKeystoneConfig, graphQLS
   const prismaSchema = printPrismaSchema(config, lists)
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
-    prisma: await formatSchema({ schema: prismaSchema }),
+    prisma: (await formatSchema({ schemas: [[config.db.prismaSchemaPath, prismaSchema]] }))[0][1],
   }
 }
 
@@ -105,8 +107,7 @@ export async function generatePrismaClient (cwd: string, system: System) {
         await generator.generate()
       } finally {
         const closePromise = new Promise<void>(resolve => {
-          const child = (generator as any).generatorProcess
-            .child as import('child_process').ChildProcess
+          const child = (generator as any).generatorProcess.child as ChildProcess
           child.once('exit', () => {
             resolve()
           })

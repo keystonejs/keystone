@@ -31,7 +31,7 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function timestamp <ListTypeInfo extends BaseListTypeInfo>(
+export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
   config: TimestampFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   const {
