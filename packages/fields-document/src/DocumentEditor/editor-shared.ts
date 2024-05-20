@@ -10,7 +10,6 @@ import {
   createEditor,
 } from 'slate'
 import { withHistory } from 'slate-history'
-import { withReact } from 'slate-react'
 
 import { type ComponentBlock } from './component-blocks/api-shared'
 import { type DocumentFeatures } from '../views-shared'
@@ -35,10 +34,6 @@ import { withDocumentFeaturesNormalization } from './document-features-normaliza
 import { withInsertMenu } from './insert-menu-shared'
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts'
 import { withPasting } from './pasting'
-
-// the docs site needs access to Editor and importing slate would use the version from the content field
-// so we're exporting it from here (note that this is not at all visible in the published version)
-export { Editor } from 'slate'
 
 export type Block = Exclude<Element, { type: 'relationship' | 'link' }>
 
@@ -139,7 +134,13 @@ export function isInlineContainer (node: Node): node is Block & { type: InlineCo
 export function createDocumentEditor (
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  relationships: Relationships
+  relationships: Relationships,
+  slate?: {
+    withReact: (editor: Editor) => any,
+    ReactEditor: {
+      focus: (editor: Editor) => void,
+    },
+  },
 ) {
   return withPasting(
     withSoftBreaks(
@@ -170,7 +171,7 @@ export function createDocumentEditor (
                                     withDocumentFeaturesNormalization(
                                       documentFeatures,
                                       relationships,
-                                      withHistory(withReact(createEditor()))
+                                      withHistory(slate?.withReact(createEditor()) ?? createEditor())
                                     )
                                   )
                                 )
@@ -289,9 +290,7 @@ function handleNodeInInvalidPosition (
   const childNodeInfo = editorSchema[nodeType]
   // the parent of a block will never be an inline so this casting is okay
   const parentNode = Node.get(editor, parentPath) as Block | Editor
-
   const parentNodeType = Editor.isEditor(parentNode) ? 'editor' : parentNode.type
-
   const parentNodeInfo = editorSchema[parentNodeType]
 
   if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {

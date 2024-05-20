@@ -15,7 +15,13 @@ import {
   Element,
   Text,
 } from 'slate'
-import { Editable, ReactEditor, Slate, useSlate } from 'slate-react'
+import {
+  Editable,
+  ReactEditor,
+  Slate,
+  withReact,
+  useSlate,
+} from 'slate-react'
 
 import { type EditableProps } from 'slate-react/dist/components/editable'
 import { type ComponentBlock } from '../component-blocks'
@@ -140,7 +146,10 @@ export function DocumentEditor ({
   const { radii, colors, spacing, fields } = useTheme()
   const [expanded, setExpanded] = useState(initialExpanded)
   const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, relationships),
+    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, {
+      ReactEditor,
+      withReact
+    }),
     [documentFeatures, componentBlocks, relationships]
   )
 

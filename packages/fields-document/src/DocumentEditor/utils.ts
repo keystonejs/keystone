@@ -10,7 +10,6 @@ import {
   Text,
   Transforms,
 } from 'slate'
-import { ReactEditor } from 'slate-react'
 import { type ElementFromValidation } from '../structure-validation'
 
 export type Mark =
@@ -77,7 +76,12 @@ export function moveChildren (
 
 export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading (
   editor: Editor,
-  nodes: Node | Node[]
+  nodes: Node | Node[],
+  slate?: {
+    ReactEditor: {
+      focus: (editor: Editor) => void,
+    },
+  },
 ) {
   let pathRefForEmptyNodeAtCursor: PathRef | undefined
   const entry = Editor.above(editor, {
@@ -92,7 +96,7 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading (
     Transforms.removeNodes(editor, { at: path })
     // even though the selection is in the right place after the removeNodes
     // for some reason the editor blurs so we need to focus it again
-    ReactEditor.focus(editor)
+    slate?.ReactEditor.focus(editor)
   }
 }
 
