@@ -760,7 +760,7 @@ function ListTable ({
           })}
         </tbody>
       </TableContainer>
-      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination singular={list.singular} plural={list.plural} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   )
 }
