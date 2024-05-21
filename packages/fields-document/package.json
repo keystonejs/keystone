@@ -77,7 +77,7 @@
     "scroll-into-view-if-needed": "^3.0.0",
     "slate": "^0.103.0",
     "slate-history": "^0.100.0",
-    "slate-react": "^0.102.0"
+    "slate-react": "^0.104.0"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
