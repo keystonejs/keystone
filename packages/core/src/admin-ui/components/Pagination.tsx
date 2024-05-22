@@ -6,7 +6,7 @@ import { Select } from '@keystone-ui/fields'
 import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons'
 import { Link, useRouter } from '../router'
 
-interface PaginationProps {
+type PaginationProps = {
   pageSize: number
   total: number
   currentPage: number
@@ -26,7 +26,7 @@ export function usePaginationParams({ defaultPageSize }: { defaultPageSize: numb
   return { currentPage, pageSize }
 }
 
-const getPaginationStats = ({ singular, plural, pageSize, currentPage, total }: PaginationProps) => {
+function getPaginationStats ({ singular, plural, pageSize, currentPage, total }: PaginationProps) {
   let stats = ''
   if (total > pageSize) {
     const start = pageSize * (currentPage - 1) + 1
