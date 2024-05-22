@@ -16,4 +16,4 @@ export type { NavigationProps } from '../../types'
 export { PageContainer } from './PageContainer'
 export { CreateItemDrawer } from './CreateItemDrawer'
 export { GraphQLErrorNotice } from './GraphQLErrorNotice'
-export { Pagination, PaginationLabel, usePaginationParams } from './Pagination';
+export { Pagination, PaginationLabel, usePaginationParams } from './Pagination'
