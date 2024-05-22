@@ -134,10 +134,8 @@ function ListPage ({ listKey }: ListPageProps) {
   const list = useList(listKey)
 
   const { query, push } = useRouter()
-
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
-  const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize });
-
+  const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
