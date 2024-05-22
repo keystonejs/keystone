@@ -2,7 +2,4 @@
 "@keystone-6/core": minor
 ---
 
-Export Pagination components for use in custom pages
-- `Pagination`
-- `PaginationLabel`
-- `usePaginationParams` hook
+Export pagination components `Pagination`, `PaginationLabel` and `usePaginationParams` for use in custom pages
