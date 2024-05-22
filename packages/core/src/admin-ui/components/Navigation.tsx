@@ -60,6 +60,20 @@ export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProp
   )
 }
 
+export const NavItemGroup = ({ children }: { children: ReactNode }) => (
+  <ul
+    css={{
+      margin: 0,
+      padding: 0,
+      li: {
+        listStyle: 'none',
+      },
+    }}
+  >
+    {children}
+  </ul>
+);
+
 const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
   const { apiPath } = useKeystone()
   const { spacing, typography } = useTheme()
@@ -154,17 +168,7 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
     >
       <AuthenticatedItemDialog item={authenticatedItem} />
       <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
-        <ul
-          css={{
-            padding: 0,
-            margin: 0,
-            li: {
-              listStyle: 'none',
-            },
-          }}
-        >
-          {children}
-        </ul>
+        {children}
       </nav>
     </div>
   )
@@ -234,8 +238,10 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={renderableLists} />
+      <NavItemGroup>
+        <NavItem href="/">Dashboard</NavItem>
+        <ListNavItems lists={renderableLists} />
+      </NavItemGroup>
     </NavigationContainer>
   )
 }
