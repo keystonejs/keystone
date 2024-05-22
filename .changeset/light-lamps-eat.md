@@ -3,3 +3,6 @@
 ---
 
 Export Pagination components for use in custom pages
+- `Pagination`
+- `PaginationLabel`
+- `usePaginationParams` hook
