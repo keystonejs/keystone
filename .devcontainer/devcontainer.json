@@ -3,7 +3,7 @@
 {
   "name": "Keystone",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
@@ -19,8 +19,10 @@
     "vscode": {
       "settings": {},
       "extensions": [
-        "prisma.prisma",
-        "github.vscode-pull-request-github"
+        "Prisma.prisma",
+        "GraphQL.vscode-graphql-syntax",
+        "github.vscode-pull-request-github",
+        "yy0931.vscode-sqlite3-editor"
       ]
     }
   }
