@@ -3,25 +3,18 @@
 
 import { createContext, Fragment, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
-import { Transforms, type Editor } from 'slate'
+import { Transforms } from 'slate'
+import { useSlateStatic as useStaticEditor } from 'slate-react'
 
 import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 
 import { ToolbarButton } from './primitives'
-import { useStaticEditor } from './utils'
 import { useToolbarState } from './toolbar-state'
 
-export type Relationships = Record<
-  string,
-  {
-    listKey: string
-    /** GraphQL fields to select when querying the field */
-    selection: string | null
-    label: string
-  }
->
+import { type Relationships } from './relationship-shared'
+export { type Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
 
@@ -30,17 +23,6 @@ export function useDocumentFieldRelationships () {
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
-
-export function withRelationship (editor: Editor): Editor {
-  const { isVoid, isInline } = editor
-  editor.isVoid = element => {
-    return element.type === 'relationship' || isVoid(element)
-  }
-  editor.isInline = element => {
-    return element.type === 'relationship' || isInline(element)
-  }
-  return editor
-}
 
 export function RelationshipButton ({ onClose }: { onClose: () => void }) {
   const {

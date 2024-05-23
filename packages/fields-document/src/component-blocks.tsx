@@ -1,14 +1,19 @@
-export { NotEditable, component, fields } from './DocumentEditor/component-blocks/api'
+'use client'
+export {
+  NotEditable,
+  component,
+  fields
+} from './DocumentEditor/component-blocks/api'
 export type {
+  ArrayField,
   ChildField,
   ComponentBlock,
   ComponentSchema,
+  ComponentSchemaForGraphQL,
   ConditionalField,
   FormField,
+  InferRenderersForComponentBlocks,
   ObjectField,
   RelationshipData,
   RelationshipField,
-  InferRenderersForComponentBlocks,
-  ArrayField,
-  ComponentSchemaForGraphQL,
-} from './DocumentEditor/component-blocks/api'
+} from './DocumentEditor/component-blocks/api-shared'

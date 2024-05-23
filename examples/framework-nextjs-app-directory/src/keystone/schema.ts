@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, timestamp } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 
-import type { Lists } from '.keystone/types'
+import { type Lists } from '.keystone/types'
 
 export const lists = {
   User: list({

@@ -75,7 +75,7 @@ export const defaultRenderers: Renderers = {
     },
     divider: 'hr',
     heading: ({ level, children, textAlign }) => {
-      let Heading = `h${level}` as 'h1'
+      const Heading = `h${level}` as 'h1'
       return <Heading style={{ textAlign }} children={children} />
     },
     code: 'pre',
@@ -204,7 +204,7 @@ function set (obj: Record<string, any>, propPath: (string | number)[], value: an
   if (propPath.length === 1) {
     obj[propPath[0]] = value
   } else {
-    let firstElement = propPath.shift()!
+    const firstElement = propPath.shift()!
     set(obj[firstElement], propPath, value)
   }
 }

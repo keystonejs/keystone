@@ -1,4 +1,7 @@
-import { type ComponentSchema, type ComponentBlock } from '../../component-blocks'
+import {
+  type ComponentSchema,
+  type ComponentBlock
+} from './api-shared'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 import { assertNever, findChildPropPaths } from './utils'
 

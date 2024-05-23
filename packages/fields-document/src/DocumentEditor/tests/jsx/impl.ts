@@ -1,5 +1,5 @@
 import { createHyperscript } from 'slate-hyperscript'
-import { editorSchema } from '../../index'
+import { editorSchema } from '../../editor-shared'
 
 const blockTypes: Record<string, { type: string }> = {}
 Object.keys(editorSchema).forEach(key => {

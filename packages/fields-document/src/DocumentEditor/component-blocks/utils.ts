@@ -1,8 +1,13 @@
-import { type ComponentSchema } from '../../component-blocks'
-import { type DocumentFeatures } from '../../views'
+import { type DocumentFeatures } from '../../views-shared'
 import { type DocumentFeaturesForNormalization } from '../document-features-normalization'
-import { assert, type Mark } from '../utils'
-import { type ChildField } from './api'
+import {
+  type Mark,
+  assert,
+} from '../utils'
+import {
+  type ComponentSchema,
+  type ChildField
+} from './api-shared'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath, options: ChildField['options'] }
@@ -14,10 +19,8 @@ export function findChildPropPathsForProp (
 ): PathToChildFieldWithOption[] {
   switch (schema.kind) {
     case 'form':
-    case 'relationship':
-      return []
-    case 'child':
-      return [{ path: path, options: schema.options }]
+    case 'relationship': return []
+    case 'child': return [{ path: path, options: schema.options }]
     case 'conditional':
       return findChildPropPathsForProp(
         value.value,
@@ -46,15 +49,14 @@ export function findChildPropPaths (
   props: Record<string, ComponentSchema>
 ): { path: ReadonlyPropPath | undefined, options: ChildField['options'] }[] {
   const propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, [])
-  if (!propPaths.length) {
-    return [
-      {
-        path: undefined,
-        options: { kind: 'inline', placeholder: '' },
-      },
-    ]
-  }
-  return propPaths
+  if (propPaths.length) return propPaths
+
+  return [
+    {
+      path: undefined,
+      options: { kind: 'inline', placeholder: '' },
+    },
+  ]
 }
 
 export function assertNever (arg: never): never {
@@ -156,17 +158,11 @@ function getSchemaAtPropPathInner (
 ): undefined | ComponentSchema {
   // because we're checking the length here
   // the non-null asserts on shift below are fine
-  if (path.length === 0) {
-    return schema
-  }
-  if (schema.kind === 'child' || schema.kind === 'form' || schema.kind === 'relationship') {
-    return
-  }
+  if (path.length === 0) return schema
+  if (schema.kind === 'child' || schema.kind === 'form' || schema.kind === 'relationship') return
   if (schema.kind === 'conditional') {
     const key = path.shift()
-    if (key === 'discriminant') {
-      return getSchemaAtPropPathInner(path, (value as any).discriminant, schema.discriminant)
-    }
+    if (key === 'discriminant') return getSchemaAtPropPathInner(path, (value as any).discriminant, schema.discriminant)
     if (key === 'value') {
       const propVal = schema.values[(value as any).discriminant]
       return getSchemaAtPropPathInner(path, (value as any).value, propVal)
@@ -198,31 +194,21 @@ export function getSchemaAtPropPath (
 export function clientSideValidateProp (schema: ComponentSchema, value: any): boolean {
   switch (schema.kind) {
     case 'child':
-    case 'relationship': {
-      return true
-    }
-    case 'form': {
-      return schema.validate(value)
-    }
+    case 'relationship': return true
+    case 'form': return schema.validate(value)
     case 'conditional': {
-      if (!schema.discriminant.validate(value.discriminant)) {
-        return false
-      }
+      if (!schema.discriminant.validate(value.discriminant)) return false
       return clientSideValidateProp(schema.values[value.discriminant], value.value)
     }
     case 'object': {
       for (const [key, childProp] of Object.entries(schema.fields)) {
-        if (!clientSideValidateProp(childProp, value[key])) {
-          return false
-        }
+        if (!clientSideValidateProp(childProp, value[key])) return false
       }
       return true
     }
     case 'array': {
       for (const innerVal of value) {
-        if (!clientSideValidateProp(schema.element, innerVal)) {
-          return false
-        }
+        if (!clientSideValidateProp(schema.element, innerVal)) return false
       }
       return true
     }
@@ -318,9 +304,7 @@ export function replaceValueAtPropPath (
   newValue: unknown,
   path: ReadonlyPropPath
 ): unknown {
-  if (path.length === 0) {
-    return newValue
-  }
+  if (path.length === 0) return newValue
 
   const [key, ...newPath] = path
 
@@ -368,8 +352,6 @@ export function getPlaceholderTextForPropPath (
   formProps: Record<string, any>
 ): string {
   const field = getSchemaAtPropPath(propPath, formProps, fields)
-  if (field?.kind === 'child') {
-    return field.options.placeholder
-  }
+  if (field?.kind === 'child') return field.options.placeholder
   return ''
 }

@@ -18,13 +18,13 @@ import { assertNever, clientSideValidateProp } from './DocumentEditor/component-
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
 
-export const Field = ({
+export function Field ({
   field,
   value,
   onChange,
   autoFocus,
   forceValidation,
-}: FieldProps<typeof controller>) => {
+}: FieldProps<typeof controller>) {
   const valueRef = useRef(value)
   useEffect(() => {
     valueRef.current = value
@@ -60,11 +60,11 @@ export const CardValue: CardValueComponent = () => {
 
 export const allowedExportsOnCustomViews = ['schema']
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig
 ): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
   schema: ComponentSchemaForGraphQL
-} => {
+} {
   if (!config.customViews.schema) {
     throw new Error(
       `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`

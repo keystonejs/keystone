@@ -1,9 +1,9 @@
 import { Element, Editor, Transforms, Range } from 'slate'
-import { type DocumentFeatures } from '../views'
-import { type ComponentBlock } from './component-blocks/api'
-import { insertDivider } from './divider'
+import { type DocumentFeatures } from '../views-shared'
+import { type ComponentBlock } from './component-blocks/api-shared'
+import { insertDivider } from './divider-shared'
 import { type DocumentFeaturesForNormalization } from './document-features-normalization'
-import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 
 export function withBlockMarkdownShortcuts (
   documentFeatures: DocumentFeatures,

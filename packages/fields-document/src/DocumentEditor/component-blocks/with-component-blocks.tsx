@@ -1,29 +1,33 @@
 import { Editor, Element, Transforms, Range, type NodeEntry, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import { type ChildField, type ComponentBlock, type ComponentSchema } from '../../component-blocks'
+import {
+  type ArrayField,
+  type ChildField,
+  type ComponentBlock,
+  type ComponentSchema
+} from './api-shared'
 import { assert, moveChildren } from '../utils'
-import { type DocumentFeatures } from '../../views'
+import { type DocumentFeatures } from '../../views-shared'
 import {
   areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization'
-import { type Relationships } from '../relationship'
+import { type Relationships } from '../relationship-shared'
 import {
-  assertNever,
   type DocumentFeaturesForChildField,
+  type ReadonlyPropPath,
+  assertNever,
   findChildPropPaths,
   getAncestorSchemas,
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
-  type ReadonlyPropPath,
   replaceValueAtPropPath,
   traverseProps,
 } from './utils'
 import { getInitialPropsValue } from './initial-values'
-import { type ArrayField } from './api'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 
 function getAncestorComponentBlock (editor: Editor) {
@@ -51,10 +55,7 @@ function getAncestorComponentBlock (editor: Editor) {
   return { isInside: false } as const
 }
 
-const alreadyNormalizedThings: WeakMap<
-  DocumentFeaturesForChildField,
-  WeakSet<Node>
-> = new WeakMap()
+const alreadyNormalizedThings: WeakMap<DocumentFeaturesForChildField, WeakSet<Node>> = new WeakMap()
 
 function normalizeNodeWithinComponentProp (
   [node, path]: NodeEntry,

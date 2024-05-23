@@ -10,19 +10,26 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 import { Editor, Transforms } from 'slate'
+import {
+  type RenderElementProps,
+  ReactEditor,
+  useFocused,
+  useSelected,
+  useSlateStatic as useStaticEditor
+} from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 
 import { ToolbarButton } from '../primitives'
-import { type ComponentBlock } from '../../component-blocks'
+import { type ComponentBlock } from './api-shared'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
+} from '../utils'
+import {
   useElementWithSetNodes,
   useEventCallback,
-  useStaticEditor,
-} from '../utils'
+} from '../utils-hooks'
 import { getInitialValue } from './initial-values'
 import { createGetPreviewProps } from './preview-props'
 import { updateComponentBlockElementProps } from './update-element'
@@ -56,7 +63,7 @@ export function insertComponentBlock (
   }
 }
 
-export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
+export function BlockComponentsButtons ({ onClose }: { onClose: () => void }) {
   const editor = useStaticEditor()
   const blockComponents = useContext(ComponentBlockContext)!
   return (
@@ -77,11 +84,11 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
   )
 }
 
-export const ComponentBlocksElement = ({
+export function ComponentBlocksElement ({
   attributes,
   children,
   element: __elementToGetPath,
-}: RenderElementProps & { element: { type: 'component-block' } }) => {
+}: RenderElementProps & { element: { type: 'component-block' } }) {
   const editor = useStaticEditor()
   const focused = useFocused()
   const selected = useSelected()

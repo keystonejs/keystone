@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { nestList, toggleList } from './lists'
+import { nestList, toggleList } from './lists-shared'
 import { jsx, makeEditor } from './tests/utils'
 
 test('ordered list shortcut', () => {

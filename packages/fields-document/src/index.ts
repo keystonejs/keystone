@@ -4,27 +4,26 @@ import {
   type CommonFieldConfig,
   type FieldData,
   type FieldTypeFunc,
-  jsonFieldTypePolyfilledForSQLite,
   type JSONValue,
+  jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import { type Relationships } from './DocumentEditor/relationship'
-import { type ComponentBlock } from './component-blocks'
-import { type DocumentFeatures } from './views'
+import { type Relationships } from './DocumentEditor/relationship-shared'
+import { type ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import { type controller } from './views'
+import {
+  type DocumentFeatures,
+  type controller,
+} from './views-shared'
 
-type RelationshipsConfig = Record<
-  string,
-  {
-    listKey: string
-    /** GraphQL fields to select when querying the field */
-    selection?: string
-    label: string
-  }
->
+type RelationshipsConfig = Record<string, {
+  listKey: string
+  /** GraphQL fields to select when querying the field */
+  selection?: string
+  label: string
+}>
 
 type FormattingConfig = {
   inlineMarks?:
@@ -72,17 +71,16 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: { map?: string, extendPrismaSchema?: (field: string) => string }
   }
 
-export const document =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    componentBlocks = {},
-    dividers,
-    formatting,
-    layouts,
-    relationships: configRelationships,
-    links,
-    ...config
-  }: DocumentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function document <ListTypeInfo extends BaseListTypeInfo>({
+  componentBlocks = {},
+  dividers,
+  formatting,
+  layouts,
+  relationships: configRelationships,
+  links,
+  ...config
+}: DocumentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     const documentFeatures = normaliseDocumentFeatures({
       dividers,
       formatting,
@@ -90,28 +88,23 @@ export const document =
       links,
     })
     const relationships = normaliseRelationships(configRelationships, meta)
-
     const inputResolver = (data: JSONValue | null | undefined): any => {
-      if (data === null) {
-        throw new GraphQLError('Input error: Document fields cannot be set to null')
-      }
-      if (data === undefined) {
-        return data
-      }
+      if (data === null) throw new GraphQLError('Input error: Document fields cannot be set to null')
+      if (data === undefined) return data
+
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships)
     }
 
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type document")
     }
+
     const lists = new Set(Object.keys(meta.lists))
     for (const [name, block] of Object.entries(componentBlocks)) {
       try {
         assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists)
       } catch (err) {
-        throw new Error(
-          `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
-        )
+        throw new Error(`Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`)
       }
     }
 
@@ -179,6 +172,7 @@ export const document =
       }
     )
   }
+}
 
 function normaliseRelationships (
   configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],

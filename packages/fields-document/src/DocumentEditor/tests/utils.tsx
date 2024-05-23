@@ -1,18 +1,36 @@
-import { type ReactElement, createElement, type MutableRefObject, useState } from 'react'
-import { Editor, type Node, type Path, Text, Range } from 'slate'
-import { Slate } from 'slate-react'
+import {
+  type MutableRefObject,
+  type ReactElement,
+  createElement,
+  useState
+} from 'react'
+import {
+  type Node,
+  type Path,
+  Editor,
+  Range,
+  Text,
+} from 'slate'
+import {
+  Slate,
+  ReactEditor,
+  withReact,
+} from 'slate-react'
+
 import React from 'react'
 import { act, render } from '@testing-library/react'
 import { diff } from 'jest-diff'
 import prettyFormat, { plugins, type Plugin } from 'pretty-format'
-import { createDocumentEditor, DocumentEditorEditable } from '..'
+import { DocumentEditorEditable } from '..'
+import { createDocumentEditor } from '../editor-shared'
 import { type ComponentBlock } from '../../component-blocks'
 import { type DocumentFeatures } from '../../views'
 
 export { __jsx as jsx } from './jsx/namespace'
 import { validateDocumentStructure } from '../../structure-validation'
 import { type Relationships } from '../relationship'
-import { createToolbarState, ToolbarStateProvider } from '../toolbar-state'
+import { ToolbarStateProvider } from '../toolbar-state'
+import { createToolbarState } from '../toolbar-state-shared'
 import { validateAndNormalizeDocument } from '../../validation'
 
 let oldConsoleError = console.error
@@ -57,7 +75,6 @@ function formatEditor (editor: Node) {
 
 declare global {
   namespace jest {
-     
     interface Matchers<R, T> {
       toEqualEditor(
         expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'
@@ -178,7 +195,7 @@ function EditorComp ({
   )
 }
 
-export const makeEditor = (
+export function makeEditor (
   node: Node,
   {
     documentFeatures = defaultDocumentFeatures,
@@ -194,15 +211,17 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>
     skipRenderingDOM?: boolean
   } = {}
-): Editor & { container?: HTMLElement } => {
+): Editor & { container?: HTMLElement } {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor')
   }
-  let editor = createDocumentEditor(documentFeatures, componentBlocks, relationships) as Editor & {
-    container?: HTMLElement
-  };
+  const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships, {
+    ReactEditor,
+    withReact
+  })
+
   // for validation
-  (editor as any).__config = {
+  ;(editor as any).__config = {
     documentFeatures,
     componentBlocks,
     relationships,
@@ -264,7 +283,8 @@ export const makeEditor = (
         relationships={relationships}
       />
     )
-    editor.container = container
+
+    ;(editor as any).container = container
   }
   return editor
 }

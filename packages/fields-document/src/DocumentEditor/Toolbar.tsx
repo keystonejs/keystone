@@ -2,11 +2,11 @@
 /** @jsx jsx */
 
 import {
-  Fragment,
   type ReactNode,
+  type HTMLAttributes,
+  Fragment,
   forwardRef,
   useState,
-  type HTMLAttributes,
   useMemo,
   useContext,
 } from 'react'
@@ -25,7 +25,7 @@ import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon'
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon'
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 
-import { type DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views-shared'
 import {
   InlineDialog,
   KeyboardInTooltip,
@@ -35,7 +35,11 @@ import {
 } from './primitives'
 import { linkButton } from './link'
 import { BlockComponentsButtons, ComponentBlockContext } from './component-blocks'
-import { clearFormatting, type Mark, modifierKeyText } from './utils'
+import {
+  type Mark,
+  clearFormatting,
+  modifierKeyText
+} from './utils'
 import { LayoutsButton } from './layouts'
 import { ListButton } from './lists'
 import { blockquoteButton } from './blockquote'

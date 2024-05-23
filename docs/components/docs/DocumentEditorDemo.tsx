@@ -4,16 +4,19 @@ import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 
 import { type DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
   type ComponentBlock,
-  fields,
   type InferRenderersForComponentBlocks,
+  fields,
 } from '@keystone-6/fields-document/component-blocks'
 import { Global, jsx } from '@emotion/react'
+
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
+import { DocumentEditor, } from '../../../packages/fields-document/src/DocumentEditor'
 import {
   createDocumentEditor,
-  DocumentEditor,
   Editor,
-} from '../../../packages/fields-document/src/DocumentEditor'
+  ReactEditor,
+  withReact
+} from '../../../packages/fields-document/src/DocumentEditor/demo'
 import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
 import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks'
@@ -279,7 +282,10 @@ export const DocumentEditorDemo = () => {
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
-    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj)
+    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj, {
+      ReactEditor: ReactEditor as any, // TODO: somehow incompatible
+      withReact
+    })
     editor.children = value
     Editor.normalize(editor, { force: true })
     setValue(editor.children)
