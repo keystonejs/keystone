@@ -14,7 +14,7 @@ type PaginationProps = {
   plural: string
 }
 
-export function usePaginationParams({ defaultPageSize }: { defaultPageSize: number }) {
+export function usePaginationParams ({ defaultPageSize }: { defaultPageSize: number }) {
   const { query } = useRouter()
   const currentPage = Math.max(
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1,
