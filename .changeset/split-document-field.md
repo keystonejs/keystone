@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': minor
 ---
 
-Update `@keystone-6/fields-document` package to support validation on server side
+Fix `@keystone-6/fields-document` package breaking when compiling in SSR environments (#8717)
