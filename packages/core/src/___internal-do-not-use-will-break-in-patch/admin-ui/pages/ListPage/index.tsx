@@ -22,7 +22,7 @@ import {
 import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
-import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination'
+import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
 import { useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
@@ -134,16 +134,8 @@ function ListPage ({ listKey }: ListPageProps) {
   const list = useList(listKey)
 
   const { query, push } = useRouter()
-
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
-
-  const currentPage =
-    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1
-  const pageSize =
-    typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
-      ? parseInt(query.pageSize)
-      : list.pageSize
-
+  const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
@@ -760,7 +752,7 @@ function ListTable ({
           })}
         </tbody>
       </TableContainer>
-      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination singular={list.singular} plural={list.plural} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   )
 }

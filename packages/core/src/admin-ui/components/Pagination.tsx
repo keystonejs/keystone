@@ -6,32 +6,45 @@ import { Select } from '@keystone-ui/fields'
 import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons'
 import { Link, useRouter } from '../router'
 
-interface PaginationProps {
+type PaginationProps = {
   pageSize: number
   total: number
   currentPage: number
-  list: Record<string, any>
+  singular: string
+  plural: string
 }
 
-const getPaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
+export function usePaginationParams ({ defaultPageSize }: { defaultPageSize: number }) {
+  const { query } = useRouter()
+  const currentPage = Math.max(
+    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1,
+    1
+  )
+  const pageSize = typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
+      ? parseInt(query.pageSize)
+      : defaultPageSize
+  return { currentPage, pageSize }
+}
+
+function getPaginationStats ({ singular, plural, pageSize, currentPage, total }: PaginationProps) {
   let stats = ''
   if (total > pageSize) {
     const start = pageSize * (currentPage - 1) + 1
     const end = Math.min(start + pageSize - 1, total)
-    stats = `${start} - ${end} of ${total} ${list.plural}`
+    stats = `${start} - ${end} of ${total} ${plural}`
   } else {
-    if (total > 1 && list.plural) {
-      stats = `${total} ${list.plural}`
-    } else if (total === 1 && list.singular) {
-      stats = `${total} ${list.singular}`
+    if (total > 1 && plural) {
+      stats = `${total} ${plural}`
+    } else if (total === 1 && singular) {
+      stats = `${total} ${singular}`
     }
   }
   return { stats }
 }
 
-export function Pagination ({ currentPage, total, pageSize, list }: PaginationProps) {
+export function Pagination ({ currentPage, total, pageSize, singular, plural }: PaginationProps) {
   const { query, pathname, push } = useRouter()
-  const { stats } = getPaginationStats({ list, currentPage, total, pageSize })
+  const { stats } = getPaginationStats({ singular, plural, currentPage, total, pageSize })
   const { opacity } = useTheme()
 
   const nextPage = currentPage + 1
@@ -59,7 +72,7 @@ export function Pagination ({ currentPage, total, pageSize, list }: PaginationPr
     }
   }, [total, pageSize, currentPage, pathname, query, push])
 
-  // Don't render the pagiantion component if the pageSize is greater than the total number of items in the list.
+  // Don't render the pagination component if the pageSize is greater than the total number of items in the list.
   if (total <= pageSize) return null
 
   const onChange = (selectedOption: { value: string, label: string }) => {
@@ -96,7 +109,7 @@ export function Pagination ({ currentPage, total, pageSize, list }: PaginationPr
       }}
     >
       <Stack across gap="xxlarge" align="center">
-        <span>{`${list.plural} per page: ${pageSize}`}</span>
+        <span>{`${plural} per page: ${pageSize}`}</span>
         <span>
           <strong>{stats}</strong>
         </span>
@@ -155,15 +168,10 @@ export function PaginationLabel ({
   plural,
   singular,
   total,
-}: {
-  currentPage: number
-  pageSize: number
-  plural: string
-  singular: string
-  total: number
-}) {
+}: PaginationProps) {
   const { stats } = getPaginationStats({
-    list: { plural, singular },
+    plural,
+    singular,
     currentPage,
     total,
     pageSize,
