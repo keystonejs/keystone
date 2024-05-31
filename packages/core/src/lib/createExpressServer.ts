@@ -10,7 +10,7 @@ import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 import {
   type KeystoneContext,
   type __ResolvedKeystoneConfig,
