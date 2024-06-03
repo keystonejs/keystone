@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:11.3
+        image: mariadb:11.4
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -163,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:11.3
+        image: mariadb:11.4
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
