@@ -8,8 +8,13 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+  resolveHasValidation
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -78,6 +83,34 @@ export const float =
 
     const mode = isNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
+    const hasValidation = resolveHasValidation(config.db, validation)
+
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = ({ resolvedData, addValidationError, operation }) => {
+        if (operation === 'delete') return
+
+        const value = resolvedData[meta.fieldKey]
+
+        if ((validation?.isRequired || isNullable === false) && value === null) {
+          addValidationError(`${fieldLabel} is required`)
+        }
+
+        if (typeof value === 'number') {
+          if (validation?.max !== undefined && value > validation.max) {
+            addValidationError(
+              `${fieldLabel} must be less than or equal to ${validation.max}`
+            )
+          }
+
+          if (validation?.min !== undefined && value < validation.min) {
+            addValidationError(
+              `${fieldLabel} must be greater than or equal to ${validation.min}`
+            )
+          }
+        }
+      }
+    }
 
     return fieldType({
       kind: 'scalar',
@@ -90,32 +123,7 @@ export const float =
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        async validateInput (args) {
-          const value = args.resolvedData[meta.fieldKey]
-
-          if ((validation?.isRequired || isNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-
-          if (typeof value === 'number') {
-            if (validation?.max !== undefined && value > validation.max) {
-              args.addValidationError(
-                `${fieldLabel} must be less than or equal to ${validation.max}`
-              )
-            }
-
-            if (validation?.min !== undefined && value < validation.min) {
-              args.addValidationError(
-                `${fieldLabel} must be greater than or equal to ${validation.min}`
-              )
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        },
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,

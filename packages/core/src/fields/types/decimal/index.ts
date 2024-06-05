@@ -9,9 +9,14 @@ import {
   type FieldData,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+  resolveHasValidation,
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
 import { type DecimalFieldMeta } from './views'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -104,6 +109,7 @@ export const decimal =
         : parseDecimalValueOption(meta, defaultValue, 'defaultValue')
 
     const isNullable = getResolvedIsNullable(validation, config.db)
+    const hasValidation = resolveHasValidation(config.db, validation)
 
     assertReadIsNonNullAllowed(meta, config, isNullable)
 
@@ -120,29 +126,32 @@ export const decimal =
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     } as const
+
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = ({ resolvedData, addValidationError, operation }) => {
+        if (operation === 'delete') return
+
+        const val: Decimal | null | undefined = resolvedData[meta.fieldKey]
+
+        if (val === null && (validation?.isRequired || isNullable === false)) {
+          addValidationError(`${fieldLabel} is required`)
+        }
+        if (val != null) {
+          if (min !== undefined && val.lessThan(min)) {
+            addValidationError(`${fieldLabel} must be greater than or equal to ${min}`)
+          }
+
+          if (max !== undefined && val.greaterThan(max)) {
+            addValidationError(`${fieldLabel} must be less than or equal to ${max}`)
+          }
+        }
+      }
+    }
+
     return fieldType(dbField)({
       ...config,
-      hooks: {
-        ...config.hooks,
-        async validateInput (args) {
-          const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey]
-
-          if (val === null && (validation?.isRequired || isNullable === false)) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (val != null) {
-            if (min !== undefined && val.lessThan(min)) {
-              args.addValidationError(`${fieldLabel} must be greater than or equal to ${min}`)
-            }
-
-            if (max !== undefined && val.greaterThan(max)) {
-              args.addValidationError(`${fieldLabel} must be less than or equal to ${max}`)
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        },
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,

@@ -12,6 +12,7 @@ import {
   resolveHasValidation,
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -99,7 +100,34 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
     const defaultValue = isNullable ? (defaultValue_ ?? null) : (defaultValue_ ?? '')
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const mode = isNullable ? 'optional' : 'required'
-    const hasValidation = resolveHasValidation(config) || !isNullable // we make an exception for Text
+    const hasValidation = resolveHasValidation(config.db, validation) || !isNullable // we make an exception for Text
+
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
+        if (operation === 'delete') return
+
+        const val = resolvedData[meta.fieldKey]
+        if (val === null && (validation?.isRequired || isNullable === false)) {
+          addValidationError(`${fieldLabel} is required`)
+        }
+        if (val != null) {
+          if (validation?.length?.min !== undefined && val.length < validation.length.min) {
+            if (validation.length.min === 1) {
+              addValidationError(`${fieldLabel} must not be empty`)
+            } else {
+              addValidationError(`${fieldLabel} must be at least ${validation.length.min} characters long`)
+            }
+          }
+          if (validation?.length?.max !== undefined && val.length > validation.length.max) {
+            addValidationError(`${fieldLabel} must be no longer than ${validation.length.max} characters`)
+          }
+          if (validation?.match && !validation.match.regex.test(val)) {
+            addValidationError(validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`)
+          }
+        }
+      }
+    }
 
     return fieldType({
       kind: 'scalar',
@@ -112,32 +140,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        validateInput: hasValidation ? async (args) => {
-          const val = args.resolvedData[meta.fieldKey]
-          if (val === null && (validation?.isRequired || isNullable === false)) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (val != null) {
-            if (validation?.length?.min !== undefined && val.length < validation.length.min) {
-              if (validation.length.min === 1) {
-                args.addValidationError(`${fieldLabel} must not be empty`)
-              } else {
-                args.addValidationError(`${fieldLabel} must be at least ${validation.length.min} characters long`)
-              }
-            }
-            if (validation?.length?.max !== undefined && val.length > validation.length.max) {
-              args.addValidationError(`${fieldLabel} must be no longer than ${validation.length.max} characters`)
-            }
-            if (validation?.match && !validation.match.regex.test(val)) {
-              args.addValidationError(validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`)
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        } : config.hooks?.validateInput
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,

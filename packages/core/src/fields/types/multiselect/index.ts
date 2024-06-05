@@ -10,6 +10,7 @@ import {
 import { graphql } from '../../..'
 import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
 import { userInputError } from '../../../lib/core/graphql-errors'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -86,30 +87,31 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       )
     }
 
+    const hooks: InternalFieldHooks<ListTypeInfo> = {
+      validate: (args) => {
+        if (args.operation === 'delete') return
+
+        const selectedValues: readonly (string | number)[] | undefined = args.inputData[meta.fieldKey]
+        if (selectedValues !== undefined) {
+          for (const value of selectedValues) {
+            if (!possibleValues.has(value)) {
+              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
+            }
+          }
+          const uniqueValues = new Set(selectedValues)
+          if (uniqueValues.size !== selectedValues.length) {
+            args.addValidationError(`${fieldLabel} must have a unique set of options selected`)
+          }
+        }
+      }
+    }
+
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
-        hooks: {
-          ...config.hooks,
-          async validateInput (args) {
-            const selectedValues: readonly (string | number)[] | undefined = args.inputData[meta.fieldKey]
-            if (selectedValues !== undefined) {
-              for (const value of selectedValues) {
-                if (!possibleValues.has(value)) {
-                  args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
-                }
-              }
-              const uniqueValues = new Set(selectedValues)
-              if (uniqueValues.size !== selectedValues.length) {
-                args.addValidationError(`${fieldLabel} must have a unique set of options selected`)
-              }
-            }
-
-            await config.hooks?.validateInput?.(args)
-          },
-        },
+        hooks: mergeFieldHooks(hooks, config.hooks),
         views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,

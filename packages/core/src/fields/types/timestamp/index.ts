@@ -13,6 +13,7 @@ import {
   resolveHasValidation,
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 import { type TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -62,7 +63,19 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
     const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config)
+    const hasValidation = resolveHasValidation(config.db, validation)
+    
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
+        if (operation === 'delete') return
+
+        const value = resolvedData[meta.fieldKey]
+        if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
+          addValidationError(`${fieldLabel} is required`)
+        }
+      }
+    }
 
     return fieldType({
       kind: 'scalar',
@@ -83,17 +96,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        validateInput: hasValidation ? async (args) => {
-          const value = args.resolvedData[meta.fieldKey]
-          if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-
-          await config.hooks?.validateInput?.(args)
-        } : config.hooks?.validateInput,
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
         where: {
