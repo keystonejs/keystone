@@ -51,7 +51,6 @@ export async function build (
     undefined,
     undefined,
     undefined,
-    undefined,
     'default'
   )
 }
