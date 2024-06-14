@@ -1,0 +1,27 @@
+{
+  "name": "@keystone-6/example-document-field",
+  "version": "0.1.3",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "dev:site": "next dev -p 3001",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^6.0.0",
+    "@keystone-6/document-renderer": "^1.1.0",
+    "@keystone-6/fields-query-builder": "workspace:^",
+    "@preconstruct/next": "^4.0.0",
+    "@prisma/client": "^5.0.0",
+    "next": "^13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.0.0",
+    "typescript": "~5.0.0"
+  }
+}
