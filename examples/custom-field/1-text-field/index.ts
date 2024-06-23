@@ -26,7 +26,6 @@ export function text<ListTypeInfo extends BaseListTypeInfo> ({
       input: {
         create: {
           arg: graphql.arg({ type: graphql.String }),
-           
           resolve (value, context) {
             return value
           },
@@ -36,7 +35,6 @@ export function text<ListTypeInfo extends BaseListTypeInfo> ({
       },
       output: graphql.field({
         type: graphql.String,
-         
         resolve ({ value, item }, args, context, info) {
           return value
         },
