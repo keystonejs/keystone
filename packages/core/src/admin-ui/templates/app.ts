@@ -46,13 +46,13 @@ export function adminConfigTemplate (
     return JSON.stringify(viewRelativeToAppFile)
   })
   // -- TEMPLATE START
-  return `${allViews
-    .map((views, i) => `import * as view${i} from ${views};`)
+  return `/* eslint-disable */\n${adminMetaRootVal.views
+    .map((views, i) => `import * as view${i} from '${views}'`)
     .join('\n')}
 
 ${configFileExists
-      ? 'import * as adminConfig from "../config";'
-      : 'const adminConfig = {};'
+      ? 'import * as adminConfig from \'../config\''
+      : 'const adminConfig = {}'
     }
 
 export const config = {
@@ -60,9 +60,9 @@ export const config = {
       getLazyMetadataQuery(graphQLSchema, adminMeta)
     )},
   fieldViews: [${allViews.map((_, i) => `view${i}`)}],
-  adminMetaHash: "${adminMetaQueryResultHash}",
+  adminMetaHash: '${adminMetaQueryResultHash}',
   adminConfig,
-  apiPath: "${apiPath}",
+  apiPath: '${apiPath}',
   listsKeyByPath: ${JSON.stringify(
       adminMetaRootVal.lists.reduce<Record<string, string>>((acc, list) => {
         acc[list.path.split('/').pop()!] = list.key
@@ -77,12 +77,12 @@ export const config = {
 export function adminLayoutTemplate () {
 
   // -- TEMPLATE START
-  return `'use client';
-import { Layout } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';
+  return `'use client'
+import { Layout } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
 import { config } from './.admin'
 
 
-export default function AdminLayout({
+export default function AdminLayout ({
   children,
 }: {
   children: React.ReactNode
@@ -91,7 +91,7 @@ export default function AdminLayout({
     <Layout config={config as any}>
       {children}
     </Layout>
-  );
+  )
 }`
   // -- TEMPLATE END
 }
