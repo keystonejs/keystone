@@ -14,7 +14,6 @@ function parseHex (hex: string) {
   return result
 }
 
- 
 export function hexToTriplet (dirtyHex: string, alpha?: number) {
   const cleanHex = parseHex(dirtyHex)
 
