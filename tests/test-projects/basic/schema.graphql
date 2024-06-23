@@ -283,8 +283,13 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
+  config: config!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
+}
+
+type config {
+  adminPath: String!
 }
 
 type KeystoneAdminUIListMeta {
