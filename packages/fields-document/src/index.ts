@@ -71,7 +71,7 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: { map?: string, extendPrismaSchema?: (field: string) => string }
   }
 
-export function document <ListTypeInfo extends BaseListTypeInfo>({
+export function document <ListTypeInfo extends BaseListTypeInfo> ({
   componentBlocks = {},
   dividers,
   formatting,

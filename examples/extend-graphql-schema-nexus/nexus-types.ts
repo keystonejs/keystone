@@ -4,7 +4,7 @@
  */
 
 
-import type { Context } from "./keystone-types"
+import type { Context } from './keystone-types'
 
 
 
@@ -164,15 +164,15 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  KeystoneAdminUIFieldMetaCreateViewFieldMode: "edit" | "hidden"
-  KeystoneAdminUIFieldMetaIsNonNull: "create" | "read" | "update"
-  KeystoneAdminUIFieldMetaItemViewFieldMode: "edit" | "hidden" | "read"
-  KeystoneAdminUIFieldMetaItemViewFieldPosition: "form" | "sidebar"
-  KeystoneAdminUIFieldMetaListViewFieldMode: "hidden" | "read"
-  KeystoneAdminUISortDirection: "ASC" | "DESC"
-  OrderDirection: "asc" | "desc"
-  PostStatusType: "draft" | "published"
-  QueryMode: "default" | "insensitive"
+  KeystoneAdminUIFieldMetaCreateViewFieldMode: 'edit' | 'hidden'
+  KeystoneAdminUIFieldMetaIsNonNull: 'create' | 'read' | 'update'
+  KeystoneAdminUIFieldMetaItemViewFieldMode: 'edit' | 'hidden' | 'read'
+  KeystoneAdminUIFieldMetaItemViewFieldPosition: 'form' | 'sidebar'
+  KeystoneAdminUIFieldMetaListViewFieldMode: 'hidden' | 'read'
+  KeystoneAdminUISortDirection: 'ASC' | 'DESC'
+  OrderDirection: 'asc' | 'desc'
+  PostStatusType: 'draft' | 'published'
+  QueryMode: 'default' | 'insensitive'
 }
 
 export interface NexusGenScalars {

@@ -52,7 +52,7 @@ export const stars =
           // this field type doesn't need to do anything special
           // but field types can specify resolvers for inputs like they can for their output GraphQL field
           // this function can be omitted, it is here purely to show how you could change it
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+           
           resolve (val, context) {
             // if it's null, then the value will be set to null in the database
             if (val === null) {
@@ -77,7 +77,7 @@ export const stars =
         type: graphql.Int,
         // like the input resolvers, providing the resolver is unnecessary if you're just returning the value
         // it is shown here to show what you could do
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         resolve ({ value, item }, args, context, info) {
           return value
         },

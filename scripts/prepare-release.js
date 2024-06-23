@@ -1,8 +1,6 @@
 const { spawnSync } = require('child_process')
 const { readFileSync, writeFileSync } = require('fs')
-//  eslint-disable-next-line import/no-extraneous-dependencies
 const { default: getReleasePlan } = require('@changesets/get-release-plan')
-//  eslint-disable-next-line import/no-extraneous-dependencies
 const { getInfo } = require('@changesets/get-github-info')
 
 // TODO: move this to CI linting

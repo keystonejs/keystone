@@ -18,4 +18,4 @@ module.exports = {
     '@babel/preset-typescript',
   ],
   plugins: ['@babel/plugin-transform-runtime'],
-};
+}

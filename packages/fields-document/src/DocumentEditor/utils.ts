@@ -79,8 +79,8 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading (
   nodes: Node | Node[],
   slate?: {
     ReactEditor: {
-      focus: (editor: Editor) => void,
-    },
+      focus: (editor: Editor) => void
+    }
   },
 ) {
   let pathRefForEmptyNodeAtCursor: PathRef | undefined

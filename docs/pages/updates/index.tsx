@@ -560,9 +560,9 @@ export default function WhatsNew () {
         </Box> */}
         <Timeline date="16th September 2021" />
         <Box heading="create-keystone-app now uses SQLite">
-          Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to
+          Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to
           spend time on DB config when trying out new ideas. We also updated the{' '}
-          <Link href="/docs/getting-started">getting started walkthrough</Link> to reflect this
+          <Link href="/docs/getting-started">getting started walkthrough</Link> to reflect this
           improvement.
         </Box>
         <Timeline date="15th September 2021" />

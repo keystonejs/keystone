@@ -25,7 +25,7 @@ const KEYSTONE_4 = [
   //   destination: 'https://v4.keystonejs.com/getting-started',
   //   permanent: true,
   // },
-];
+]
 
 /* URLs from v5.keystonejs.com */
 const KEYSTONE_5 = [
@@ -56,7 +56,7 @@ const KEYSTONE_5 = [
     destination: '/docs',
     permanent: false,
   },
-];
+]
 
 /* URLs from the original next.keystonejs.com website */
 const ORIGINAL_NEXT = [
@@ -95,7 +95,7 @@ const ORIGINAL_NEXT = [
   },
   { source: '/roadmap', destination: '/updates/roadmap', permanent: true },
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
-];
+]
 
 /* Splitbee Proxy */
 const SPLITBEE = [
@@ -109,7 +109,7 @@ const SPLITBEE = [
     destination: 'https://hive.splitbee.io/:slug',
     permanent: false,
   },
-];
+]
 
 /* Current website redirections */
 const CURRENT = [
@@ -274,14 +274,14 @@ const CURRENT = [
     destination: '/blog/embedded-mode-with-sqlite-nextjs',
     permanent: true,
   },
-];
+]
 
-export default async function redirects() {
+export default async function redirects () {
   return [
     ...SPLITBEE,
     ...CURRENT,
     ...ORIGINAL_NEXT,
     ...KEYSTONE_5,
     ...KEYSTONE_4
-  ];
+  ]
 }

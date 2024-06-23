@@ -1,7 +1,6 @@
 import { getContext } from '@keystone-6/core/context'
 // Using myprisma/client as vite does not like .
 // This should be @prisma/client in a project outside of the Keystone monorepo
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as PrismaModule from 'myprisma/client'
 import config from '../../keystone'
 import type { Context } from '.keystone/types'

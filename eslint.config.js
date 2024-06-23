@@ -9,7 +9,8 @@ module.exports = tseslint.config(
       '**/.keystone/',
       '**/dist/',
       '**/node_modules/',
-      '**/syntax-error.js'
+      '**/syntax-error.js',
+      '**/public/'
     ],
   },
   eslint.configs.recommended,
@@ -19,6 +20,7 @@ module.exports = tseslint.config(
     rules: {
       // TODO: remove
       'no-empty': 'off',
+      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
       'no-extra-boolean-cast': 'off',
       'no-async-promise-executor': 'off',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
@@ -37,6 +39,7 @@ module.exports = tseslint.config(
       // TODO: remove
 
       semi: ['error', 'never'],
+      quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
       'block-spacing': ['error', 'always'],
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],
       'comma-spacing': ['error', { before: false, after: true }],

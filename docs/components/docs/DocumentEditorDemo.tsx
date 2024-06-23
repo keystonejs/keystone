@@ -90,6 +90,7 @@ const componentBlocks = {
   carousel: componentBlocksInSandboxProject.carousel,
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0]
 
 function documentFeaturesCodeExample (config: DocumentFieldConfig | DocumentFeatures) {
@@ -292,7 +293,6 @@ export const DocumentEditorDemo = () => {
     // slate looks like it's a controlled component but it actually isn't
     // so we need to re-mount it so that it looks at the updated value
     setKey(x => x + 1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentFeatures])
 
   return (

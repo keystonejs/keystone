@@ -1,6 +1,6 @@
 // you don't need this if you're building something outside of the Keystone repo
-import withPreconstruct from '@preconstruct/next';
-import redirects from './redirects.mjs';
+import withPreconstruct from '@preconstruct/next'
+import redirects from './redirects.mjs'
 
 export default withPreconstruct({
   env: {
@@ -15,4 +15,4 @@ export default withPreconstruct({
     ignoreBuildErrors: true,
   },
   redirects,
-});
+})
