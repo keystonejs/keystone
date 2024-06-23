@@ -7,6 +7,7 @@ import {
   type InferRenderersForComponentBlocks,
   fields,
 } from '@keystone-6/fields-document/component-blocks'
+import { type document } from '@keystone-6/fields-document'
 import { Global, jsx } from '@emotion/react'
 
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
@@ -90,8 +91,7 @@ const componentBlocks = {
   carousel: componentBlocksInSandboxProject.carousel,
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0]
+type DocumentFieldConfig = Parameters<typeof document>[0]
 
 function documentFeaturesCodeExample (config: DocumentFieldConfig | DocumentFeatures) {
   return `import { config, list } from '@keystone-6/core';
@@ -275,7 +275,7 @@ export function DocumentFeaturesFormAndCode () {
   )
 }
 
-export const DocumentEditorDemo = () => {
+export function DocumentEditorDemo () {
   const [value, setValue] = useState(initialContent as any)
   const [key, setKey] = useState(0)
   const { documentFeatures, formValue } = useContext(DocumentFeaturesContext)
