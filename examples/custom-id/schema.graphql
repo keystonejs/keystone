@@ -178,6 +178,8 @@ type Order {
   assignedTo: Person
   options(where: OptionWhereInput! = {}, orderBy: [OptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OptionWhereUniqueInput): [Option!]
   optionsCount(where: OptionWhereInput! = {}): Int
+  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
+  productsCount(where: ProductWhereInput! = {}): Int
   orderedAt: DateTime
 }
 
@@ -193,6 +195,7 @@ input OrderWhereInput {
   description: StringFilter
   assignedTo: PersonWhereInput
   options: OptionManyRelationFilter
+  products: ProductManyRelationFilter
   orderedAt: DateTimeNullableFilter
 }
 
@@ -200,6 +203,12 @@ input OptionManyRelationFilter {
   every: OptionWhereInput
   some: OptionWhereInput
   none: OptionWhereInput
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
 }
 
 input OrderOrderByInput {
@@ -212,6 +221,7 @@ input OrderUpdateInput {
   description: String
   assignedTo: PersonRelateToOneForUpdateInput
   options: OptionRelateToManyForUpdateInput
+  products: ProductRelateToManyForUpdateInput
   orderedAt: DateTime
 }
 
@@ -220,6 +230,13 @@ input OptionRelateToManyForUpdateInput {
   set: [OptionWhereUniqueInput!]
   create: [OptionCreateInput!]
   connect: [OptionWhereUniqueInput!]
+}
+
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 input OrderUpdateArgs {
@@ -231,12 +248,18 @@ input OrderCreateInput {
   description: String
   assignedTo: PersonRelateToOneForCreateInput
   options: OptionRelateToManyForCreateInput
+  products: ProductRelateToManyForCreateInput
   orderedAt: DateTime
 }
 
 input OptionRelateToManyForCreateInput {
   create: [OptionCreateInput!]
   connect: [OptionWhereUniqueInput!]
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 type Option {
@@ -274,6 +297,42 @@ input OptionCreateInput {
   description: String
 }
 
+type Product {
+  id: ID!
+  sku: String
+}
+
+input ProductWhereUniqueInput {
+  id: ID
+  sku: String
+}
+
+input ProductWhereInput {
+  AND: [ProductWhereInput!]
+  OR: [ProductWhereInput!]
+  NOT: [ProductWhereInput!]
+  id: IDFilter
+  sku: StringFilter
+}
+
+input ProductOrderByInput {
+  id: OrderDirection
+  sku: OrderDirection
+}
+
+input ProductUpdateInput {
+  sku: String
+}
+
+input ProductUpdateArgs {
+  where: ProductWhereUniqueInput!
+  data: ProductUpdateInput!
+}
+
+input ProductCreateInput {
+  sku: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -304,6 +363,12 @@ type Mutation {
   updateOptions(data: [OptionUpdateArgs!]!): [Option]
   deleteOption(where: OptionWhereUniqueInput!): Option
   deleteOptions(where: [OptionWhereUniqueInput!]!): [Option]
+  createProduct(data: ProductCreateInput!): Product
+  createProducts(data: [ProductCreateInput!]!): [Product]
+  updateProduct(where: ProductWhereUniqueInput!, data: ProductUpdateInput!): Product
+  updateProducts(data: [ProductUpdateArgs!]!): [Product]
+  deleteProduct(where: ProductWhereUniqueInput!): Product
+  deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
 }
 
 type Query {
@@ -319,6 +384,9 @@ type Query {
   options(where: OptionWhereInput! = {}, orderBy: [OptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OptionWhereUniqueInput): [Option!]
   option(where: OptionWhereUniqueInput!): Option
   optionsCount(where: OptionWhereInput! = {}): Int
+  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
+  product(where: ProductWhereUniqueInput!): Product
+  productsCount(where: ProductWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
