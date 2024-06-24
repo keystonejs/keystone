@@ -164,7 +164,6 @@ function ListPage ({ listKey }: ListPageProps) {
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
   const search = useFilter(searchParam, list, searchFields)
-
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
@@ -176,7 +175,6 @@ function ListPage ({ listKey }: ListPageProps) {
   }
 
   const selectedFields = useSelectedFields(list, listViewFieldModesByField)
-
   const {
     data: newData,
     error: newError,
@@ -184,28 +182,32 @@ function ListPage ({ listKey }: ListPageProps) {
   } = useQuery(
     useMemo(() => {
       const selectedGqlFields = [...selectedFields]
-        .map(fieldPath => {
-          return list.fields[fieldPath].controller.graphqlSelection
-        })
+        .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
         .join('\n')
 
       // TODO: FIXME: this is bad
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $take: Int!, $skip: Int!, $orderBy: [${
-        list.gqlNames.listOrderName
-      }!]) {
-        items: ${
-          list.gqlNames.listQueryName
-        }(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-          ${
-            // TODO: maybe namespace all the fields instead of doing this
-            selectedFields.has('id') ? '' : 'id'
+        query (
+          $where: ${list.gqlNames.whereInputName},
+          $take: Int!,
+          $skip: Int!,
+          $orderBy: [${list.gqlNames.listOrderName}!]
+        ) {
+          items: ${list.gqlNames.listQueryName}(
+            where: $where,
+            take: $take,
+            skip: $skip,
+            orderBy: $orderBy
+          ) {
+            ${
+              // TODO: maybe namespace all the fields instead of doing this
+              selectedFields.has('id') ? '' : 'id'
+            }
+            ${selectedGqlFields}
           }
-          ${selectedGqlFields}
+          count: ${list.gqlNames.listQueryCountName}(where: $where)
         }
-        count: ${list.gqlNames.listQueryCountName}(where: $where)
-      }
-    `
+      `
     }, [list, selectedFields]),
     {
       fetchPolicy: 'cache-and-network',

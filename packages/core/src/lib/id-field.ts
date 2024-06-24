@@ -32,7 +32,7 @@ function isString (x: IDType) {
   return x
 }
 
-// TODO: this should be on the user, remove in breaking change
+// TODO: this should be on the user, remove in breaking change?
 function isUuid (x: IDType) {
   if (typeof x !== 'string') return
   if (x === '') return
