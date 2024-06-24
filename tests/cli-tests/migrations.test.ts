@@ -93,7 +93,6 @@ function getPrismaClient (cwd: string) {
   })
 }
 
-// TODO: when we can make fields non-nullable, we should have tests for unexecutable migrations
 describe('dev', () => {
   async function setupInitialProject () {
     const tmp = await testdir({

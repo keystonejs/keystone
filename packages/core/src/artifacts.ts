@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type ChildProcess } from 'node:child_process'
 
-import { printSchema, type GraphQLSchema } from 'graphql'
+import { printSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import { ExitError } from './scripts/utils'
 import { type __ResolvedKeystoneConfig } from './types'
@@ -39,7 +39,7 @@ export async function validateArtifacts (
   system: System,
 ) {
   const paths = system.getPaths(cwd)
-  const artifacts = await getCommittedArtifacts(system.config, system.graphQLSchema)
+  const artifacts = await getArtifacts(system)
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
     readFileButReturnNothingIfDoesNotExist(paths.schema.graphql),
     readFileButReturnNothingIfDoesNotExist(paths.schema.prisma),
@@ -67,22 +67,23 @@ export async function validateArtifacts (
   throw new ExitError(1)
 }
 
-async function getCommittedArtifacts (config: __ResolvedKeystoneConfig, graphQLSchema: GraphQLSchema) {
-  const lists = initialiseLists(config)
-  const prismaSchema = printPrismaSchema(config, lists)
-  return {
-    graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
-    prisma: (await formatSchema({ schemas: [[config.db.prismaSchemaPath, prismaSchema]] }))[0][1],
-  }
-}
-
 export async function getArtifacts (system: System) {
-  return await getCommittedArtifacts(system.config, system.graphQLSchema)
+  const lists = initialiseLists(system.config)
+  const prismaSchema = await formatSchema({
+    schemas: [
+      [system.config.db.prismaSchemaPath, printPrismaSchema(system.config, lists)]
+    ]
+  })
+
+  return {
+    graphql: getFormattedGraphQLSchema(printSchema(system.graphQLSchema)),
+    prisma: prismaSchema[0][1],
+  }
 }
 
 export async function generateArtifacts (cwd: string, system: System) {
   const paths = getSystemPaths(cwd, system.config)
-  const artifacts = await getCommittedArtifacts(system.config, system.graphQLSchema)
+  const artifacts = await getArtifacts(system)
   await fs.writeFile(paths.schema.graphql, artifacts.graphql)
   await fs.writeFile(paths.schema.prisma, artifacts.prisma)
   return artifacts
