@@ -7,8 +7,6 @@ import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
 
-import { SchemaEngine } from '@prisma/migrate'
-import { uriToCredentials } from '@prisma/internals'
 import { cli } from '@keystone-6/core/scripts/cli'
 
 // these tests spawn processes and it's all pretty slow
@@ -160,43 +158,42 @@ expect.addSnapshotSerializer({
 
 const dirPrintingSymbol = Symbol('dir printing symbol')
 
-// from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
+// derived from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 export async function getFiles (
   dir: string,
   glob: string[] = ['**', '!node_modules/**'],
   encoding: 'utf8' | null = 'utf8'
 ) {
   const files = await fastGlob(glob, { cwd: dir })
-  const filesObj: Record<string, string | Buffer> = {
+  const result: Record<string, string | Buffer> = {
     [dirPrintingSymbol]: true,
   }
   await Promise.all(
-    files.map(async filename => {
-      filesObj[filename] = await fsp.readFile(path.join(dir, filename), encoding)
+    files.sort().map(async (fileName: string) => {
+      result[fileName] = await fsp.readFile(path.join(dir, fileName), encoding)
     })
   )
-  const result: Record<string, string | Buffer> = { [dirPrintingSymbol]: true }
-  files.sort().forEach(filename => {
-    result[filename] = filesObj[filename]
-  })
   return result
 }
 
-export async function introspectDb (cwd: string, url: string) {
-  const engine = new SchemaEngine({ projectDir: cwd })
-  try {
-    const { datamodel } = await engine.introspect({
-      schema: `datasource db {
-  url = ${JSON.stringify(url)}
-  provider = ${JSON.stringify(uriToCredentials(url).type)}
-}`,
+export async function introspectDatabase (cwd: string, url: string) {
+  let output = ''
+  return new Promise<string>((resolve, reject) => {
+    const p = spawn('node', [require.resolve('prisma'), 'db', 'pull', '--print'], {
+      cwd,
+      env: {
+        ...process.env,
+        DATABASE_URL: url,
+        PRISMA_HIDE_UPDATE_MESSAGE: '1',
+      },
     })
-    return datamodel
-  } catch (e: any) {
-    if (e.code === 'P4001') return null
-    throw e
-
-  } finally {
-    engine.stop()
-  }
+    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
+    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.on('error', err => reject(err))
+    p.on('exit', exitCode => {
+      if (output.includes('P4001')) return resolve('') // empty database
+      if (typeof exitCode === 'number' && exitCode !== 0) return reject(`Introspect process returned ${exitCode}`)
+      resolve(output)
+    })
+  })
 }
