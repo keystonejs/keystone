@@ -112,10 +112,9 @@ export async function pushPrismaSchemaToDatabase (
   cwd: string,
   system: System,
   prismaSchema: string, // already exists
-  interactive: boolean = false
+  interactive: boolean
 ) {
   const paths = system.getPaths(cwd)
-
   const created = await createDatabase(system.config.db.url, path.dirname(paths.schema.prisma))
   if (interactive && created) {
     const credentials = uriToCredentials(system.config.db.url)
