@@ -2,7 +2,12 @@ import { type ChildProcess } from 'node:child_process'
 import path from 'node:path'
 
 import chalk from 'chalk'
-import { createDatabase, uriToCredentials, type DatabaseCredentials } from '@prisma/internals'
+import {
+  type DatabaseCredentials,
+  createDatabase,
+  uriToCredentials,
+  toSchemasContainer,
+} from '@prisma/internals'
 import { Migrate } from '@prisma/migrate'
 
 import { type System } from './createSystem'
@@ -111,7 +116,7 @@ export async function resetDatabase (dbUrl: string, prismaSchemaPath: string) {
 export async function pushPrismaSchemaToDatabase (
   cwd: string,
   system: System,
-  prismaSchema: string, // already exists
+  systemPrismaSchema: string,
   interactive: boolean
 ) {
   const paths = system.getPaths(cwd)
@@ -121,18 +126,33 @@ export async function pushPrismaSchemaToDatabase (
     console.log(`✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(credentials)}`)
   }
 
+  const schema = toSchemasContainer([
+    [paths.schema.prisma, systemPrismaSchema]
+  ])
+
   const migration = await withMigrate(paths.schema.prisma, async migrate => {
     // what does force on migrate.engine.schemaPush mean?
     // - true: ignore warnings, but unexecutable steps will block
     // - false: warnings or unexecutable steps will block
-    const migration = await runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: false, schema: prismaSchema }))
+    const migration = await runMigrateWithDbUrl(system, () => {
+      return migrate.engine.schemaPush({ force: false, schema })
+    })
 
     // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
     if (migration.unexecutable.length) {
       if (!interactive) throw new ExitError(1)
 
-      logUnexecutableSteps(migration.unexecutable)
-      if (migration.warnings.length) logWarnings(migration.warnings)
+      console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`)
+      for (const item of migration.unexecutable) {
+        console.log(`  • ${item}`)
+      }
+
+      if (migration.warnings.length) {
+        console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+        for (const warning of migration.warnings) {
+          console.warn(`  • ${warning}`)
+        }
+      }
 
       console.log('\nTo apply this migration, we need to reset the database')
       if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`, false))) {
@@ -141,18 +161,31 @@ export async function pushPrismaSchemaToDatabase (
       }
 
       await runMigrateWithDbUrl(system, () => migrate.reset())
-      return runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: false, schema: prismaSchema }))
+      return runMigrateWithDbUrl(
+        system,
+        () => migrate.engine.schemaPush({
+          force: false,
+          schema
+        })
+      )
     }
 
     if (migration.warnings.length) {
       if (!interactive) throw new ExitError(1)
 
-      logWarnings(migration.warnings)
+      if (migration.warnings.length) {
+        console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+        for (const warning of migration.warnings) {
+          console.warn(`  • ${warning}`)
+        }
+      }
+
       if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}`, false))) {
         console.log('Push cancelled')
         throw new ExitError(0)
       }
-      return runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: true, schema: prismaSchema }))
+
+      return runMigrateWithDbUrl(system, () => migrate.engine.schemaPush({ force: true, schema }))
     }
 
     return migration
@@ -163,20 +196,6 @@ export async function pushPrismaSchemaToDatabase (
     console.log(`✨ Database unchanged`)
   } else {
     console.log(`✨ Database synchronized with Prisma schema`)
-  }
-}
-
-function logUnexecutableSteps (unexecutableSteps: string[]) {
-  console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`)
-  for (const item of unexecutableSteps) {
-    console.log(`  • ${item}`)
-  }
-}
-
-function logWarnings (warnings: string[]) {
-  console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
-  for (const warning of warnings) {
-    console.warn(`  • ${warning}`)
   }
 }
 
