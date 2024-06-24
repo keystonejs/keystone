@@ -1,5 +1,4 @@
 import {
-  ExitError,
   basicKeystoneConfig,
   getFiles,
   recordConsole,
@@ -17,7 +16,7 @@ describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
     })
 
     const recording = recordConsole()
-    await expect(runCommand(tmp, command)).rejects.toEqual(new ExitError(1))
+    await expect(runCommand(tmp, command)).rejects.toEqual({ code: 1 })
 
     expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
   })
@@ -29,10 +28,10 @@ describe('prisma migrate status', () => {
       ...symlinkKeystoneDeps,
       'keystone.js': basicKeystoneConfig,
     })
-    await expect(runCommand(tmp, ['build', '--no-ui', '--frozen'])).rejects.toEqual(new ExitError(1))
+    await expect(runCommand(tmp, ['build', '--no-ui', '--frozen'])).rejects.toEqual({ code: 1 })
 
     const recording = recordConsole()
-    await expect(runCommand(tmp, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(new ExitError(1))
+    await expect(runCommand(tmp, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual({ code: 1 })
 
     expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
   })

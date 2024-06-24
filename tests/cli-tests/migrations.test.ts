@@ -1,7 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import { ExitError } from './utils'
 import {
   getFiles,
   introspectDb,
@@ -41,6 +40,8 @@ model Todo {
 `
 
 let mockPromptResponseEntries: [string, string | boolean][] = []
+
+jest.setTimeout(60 * 1000) // these tests are slow
 
 jest.mock('prompts', () => {
   return function (
@@ -193,7 +194,7 @@ describe('dev', () => {
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
     const recording = recordConsole()
-    await expect(runCommand(cwd, 'dev')).rejects.toEqual(new ExitError(0))
+    await expect(runCommand(cwd, 'dev')).rejects.toEqual(expect.objectContaining({ code: 0 }))
 
     expect(await introspectDb(cwd, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -238,6 +239,7 @@ describe('prisma', () => {
     {
       const prismaClient = getPrismaClient(cwd)
       await prismaClient.todo.create({ data: { title: 'something' } })
+      expect(await prismaClient.todo.findMany()).toHaveLength(1)
       await prismaClient.$disconnect()
     }
 

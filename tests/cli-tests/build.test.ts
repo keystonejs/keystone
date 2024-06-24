@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises'
 import execa from 'execa'
 import {
-  ExitError,
   basicKeystoneConfig,
   cliBinPath,
   recordConsole,
@@ -18,7 +17,7 @@ test("start errors when a build hasn't happened", async () => {
     'keystone.js': basicKeystoneConfig,
   })
   const recording = recordConsole()
-  await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1))
+  await expect(runCommand(tmp, 'start')).rejects.toEqual({ code: 1 })
   expect(recording()).toMatchInlineSnapshot(`
     "? Starting Keystone
     ? keystone build must be run before running keystone start"

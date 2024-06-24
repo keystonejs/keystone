@@ -14,15 +14,6 @@ import { cli } from '@keystone-6/core/scripts/cli'
 // these tests spawn processes and it's all pretty slow
 jest.setTimeout(1000 * 20)
 
-// some of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
-export class ExitError extends Error {
-  code: number
-  constructor (code: number) {
-    super(`The process should exit with ${code}`)
-    this.code = code
-  }
-}
-
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
 export const basicKeystoneConfig = fs.readFileSync(
@@ -91,7 +82,7 @@ export async function spawnCommand (cwd: string, commands: string[]) {
     p.stderr.on('data', (data) => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
-      if (typeof exitCode === 'number' && exitCode !== 0) return reject(new ExitError(exitCode))
+      if (typeof exitCode === 'number' && exitCode !== 0) return reject(exitCode)
       resolve(output)
     })
   })
@@ -122,6 +113,7 @@ afterAll(async () => {
   dirsToRemove = []
 })
 
+// from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 export async function testdir (dir: Fixture) {
   const temp = await fsp.mkdtemp(__dirname)
   dirsToRemove.push(temp)
@@ -144,6 +136,7 @@ export async function testdir (dir: Fixture) {
   return temp
 }
 
+// from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 expect.addSnapshotSerializer({
   print (_val) {
     const val = _val as Record<string, string>
@@ -167,6 +160,7 @@ expect.addSnapshotSerializer({
 
 const dirPrintingSymbol = Symbol('dir printing symbol')
 
+// from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 export async function getFiles (
   dir: string,
   glob: string[] = ['**', '!node_modules/**'],
