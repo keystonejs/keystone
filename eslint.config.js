@@ -10,7 +10,8 @@ module.exports = tseslint.config(
       '**/dist/',
       '**/node_modules/',
       '**/syntax-error.js',
-      '**/public/'
+      '**/public/',
+      'examples/extend-graphql-schema-nexus/nexus-types.ts'
     ],
   },
   eslint.configs.recommended,
