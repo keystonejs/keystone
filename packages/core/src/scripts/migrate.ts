@@ -1,15 +1,20 @@
-import esbuild from 'esbuild'
-import fse from 'fs-extra'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
+
+import chalk from 'chalk'
+import esbuild from 'esbuild'
+import fse from 'fs-extra'
 
 import {
   createSystem,
   getBuiltKeystoneConfiguration
 } from '../lib/createSystem'
 import { getEsbuildConfig } from '../lib/esbuild'
-import { runMigrationsOnDatabaseMaybeReset } from '../lib/migrations'
-import { textPrompt } from '../lib/prompts'
+import { withMigrate } from '../lib/migrations'
+import {
+  confirmPrompt,
+  textPrompt
+} from '../lib/prompts'
 
 import {
   generateArtifacts,
@@ -141,6 +146,21 @@ export async function migrateApply (
   await generatePrismaClient(cwd, system)
 
   console.log('✨ Applying any database migrations')
-  const migrations = await runMigrationsOnDatabaseMaybeReset(cwd, system)
+  const paths = system.getPaths(cwd)
+  const migrations = await withMigrate(paths.schema.prisma, system, async (m) => {
+    const diagnostic = await m.diagnostic()
+
+    if (diagnostic.action.tag === 'reset') {
+      console.log(diagnostic.action.reason)
+      const consent = await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`)
+      if (!consent) throw new ExitError(1)
+
+      await m.reset()
+    }
+
+    const { appliedMigrationNames } = await m.apply()
+    return appliedMigrationNames
+  })
+
   console.log(migrations.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
 }

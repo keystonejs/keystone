@@ -5,7 +5,7 @@ export {
   createSystem,
 } from '../lib/createSystem'
 export {
-  pushPrismaSchemaToDatabase,
+  withMigrate
 } from '../lib/migrations'
 export {
   generateArtifacts,

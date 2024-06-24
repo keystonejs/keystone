@@ -3,14 +3,17 @@ import path from 'node:path'
 import type { ListenOptions } from 'node:net'
 import url from 'node:url'
 import { createServer } from 'node:http'
+
+import chalk from 'chalk'
 import next from 'next'
 import express from 'express'
 import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
+import { createDatabase } from '@prisma/internals'
+
 import { generateAdminUI } from '../admin-ui/system'
-import {
-  pushPrismaSchemaToDatabase,
-} from '../lib/migrations'
+import { withMigrate } from '../lib/migrations'
+import { confirmPrompt } from '../lib/prompts'
 import {
   createSystem,
   getBuiltKeystoneConfiguration,
@@ -161,7 +164,64 @@ export async function dev (
 
         const paths = system.getPaths(cwd)
         if (dbPush) {
-          await pushPrismaSchemaToDatabase(cwd, system, generatedPrismaSchema, true /* interactive */)
+          const created = await createDatabase(system.config.db.url, path.dirname(paths.schema.prisma))
+          if (created) console.log(`✨ database created`)
+
+          const migration = await withMigrate(paths.schema.prisma, system, async (m) => {
+            // what does force on migrate.engine.schemaPush mean?
+            // - true: ignore warnings, but unexecutable steps will block
+            // - false: warnings or unexecutable steps will block
+            const migration_ = await m.schema(generatedPrismaSchema, false)
+
+            // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
+            if (migration_.unexecutable.length) {
+              console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`)
+              for (const item of migration_.unexecutable) {
+                console.log(`  • ${item}`)
+              }
+
+              if (migration_.warnings.length) {
+                console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+                for (const warning of migration_.warnings) {
+                  console.warn(`  • ${warning}`)
+                }
+              }
+
+              console.log('\nTo apply this migration, we need to reset the database')
+              if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`, false))) {
+                console.log('Reset cancelled')
+                throw new ExitError(0)
+              }
+
+              await m.reset()
+              return m.schema(generatedPrismaSchema, false)
+            }
+
+            if (migration_.warnings.length) {
+              if (migration_.warnings.length) {
+                console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+                for (const warning of migration_.warnings) {
+                  console.warn(`  • ${warning}`)
+                }
+              }
+
+              if (!(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}`, false))) {
+                console.log('Push cancelled')
+                throw new ExitError(0)
+              }
+
+              return m.schema(generatedPrismaSchema, true)
+            }
+
+            return migration_
+          })
+
+          if (migration.warnings.length === 0 && migration.executedSteps === 0) {
+            console.log(`✨ Database unchanged`)
+          } else {
+            console.log(`✨ Database synchronized with Prisma schema`)
+          }
+
         } else {
           console.warn('⚠️ Skipping database schema push')
         }
