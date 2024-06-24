@@ -52,5 +52,8 @@ export async function prisma (cwd: string, args: string[], frozen: boolean) {
   await validateArtifacts(cwd, system)
   console.log('✨ GraphQL and Prisma schemas are up to date')
 
-  await spawnPrisma3(cwd, system, args)
+  const { exitCode } = await spawnPrisma3(cwd, system, args)
+  if (typeof exitCode === 'number' && exitCode !== 0) {
+    throw new ExitError(exitCode)
+  }
 }
