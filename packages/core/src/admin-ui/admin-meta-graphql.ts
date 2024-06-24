@@ -7,6 +7,9 @@ export const staticAdminMetaQuery = gql`
       __typename
       adminMeta {
         __typename
+        config {
+          adminPath
+        }
         lists {
           __typename
           key
@@ -59,6 +62,9 @@ export type StaticAdminMetaQuery = {
     __typename: 'KeystoneMeta'
     adminMeta: {
       __typename: 'KeystoneAdminMeta'
+      config: {
+        adminPath: string
+      }
       lists: Array<{
         __typename: 'KeystoneAdminUIListMeta'
         key: string

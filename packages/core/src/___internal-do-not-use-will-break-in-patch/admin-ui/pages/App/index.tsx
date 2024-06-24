@@ -1,10 +1,14 @@
 import React from 'react'
 import { Core } from '@keystone-ui/core'
-import { type AppProps } from 'next/app'
 import { type DocumentNode } from 'graphql'
 import { type AdminConfig, type FieldViews } from '../../../../types'
 import { ErrorBoundary } from '../../../../admin-ui/components'
 import { KeystoneProvider } from '../../../../admin-ui/context'
+
+type AdminProps = {
+  children: React.ReactNode
+  config: AppConfig
+}
 
 type AppConfig = {
   adminConfig: AdminConfig
@@ -14,14 +18,12 @@ type AppConfig = {
   apiPath: string
 }
 
-export const getApp =
-  (props: AppConfig) =>
-  ({ Component, pageProps }: AppProps) => {
-    return (
+export function Layout ({ children, config }: AdminProps) {
+  return (
       <Core>
-        <KeystoneProvider {...props}>
+        <KeystoneProvider {...config}>
           <ErrorBoundary>
-            <Component {...pageProps} />
+           {children}
           </ErrorBoundary>
         </KeystoneProvider>
       </Core>

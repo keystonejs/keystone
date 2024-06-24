@@ -16,10 +16,12 @@ import { Link, type LinkProps } from '../../../../admin-ui/router'
 function ListCard ({
   listKey,
   count,
-  hideCreate
+  hideCreate,
+  basePath,
 }: {
   listKey: string
   hideCreate: boolean
+  basePath: string
   count:
     | { type: 'success', count: number }
     | { type: 'no-access' }
@@ -31,7 +33,7 @@ function ListCard ({
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+        href={`${basePath ?? ''}/${list.path}${list.isSingleton ? '/1' : ''}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -65,7 +67,7 @@ function ListCard ({
         )}
       </Link>
       {hideCreate === false && !list.isSingleton && (
-        <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
+        <CreateButton title={`Create ${list.singular}`} href={`${basePath ?? ''}/${list.path}/create`}>
           <PlusIcon size="large" />
           <VisuallyHidden>Create {list.singular}</VisuallyHidden>
         </CreateButton>
@@ -106,7 +108,7 @@ function CreateButton (props: LinkProps) {
 
 export function HomePage () {
   const {
-    adminMeta: { lists },
+    adminMeta: { lists, config },
     visibleLists,
   } = useKeystone()
   const query = useMemo(
@@ -114,6 +116,9 @@ export function HomePage () {
     query {
       keystone {
         adminMeta {
+          config {
+            adminPath
+          }
           lists {
             key
             hideCreate
@@ -158,10 +163,11 @@ export function HomePage () {
               )
             }
             return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
+              const list = lists[key]
+              if (!visibleLists.lists.has(list.key)) {
                 return null
               }
-              const result = dataGetter.get(key)
+              const result = dataGetter.get(list.key)
               return (
                 <ListCard
                   count={
@@ -177,6 +183,7 @@ export function HomePage () {
                   }
                   key={key}
                   listKey={key}
+                  basePath={data?.keystone.adminMeta.config.adminPath}
                 />
               )
             })

@@ -124,6 +124,7 @@ export type ListMeta = {
 }
 
 export type AdminMeta = {
+  config: { adminPath: string }
   lists: { [list: string]: ListMeta }
 }
 
