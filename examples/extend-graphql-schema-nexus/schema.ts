@@ -95,6 +95,7 @@ export function extendGraphqlSchema (baseSchema: GraphQLSchema) {
 
     // Typescript output settings, probably something you might commit in dev
     //   TODO: remove false ??, it is not part of the example, but we are having monorepo issues
+    // eslint-disable-next-line no-constant-binary-expression
     shouldGenerateArtifacts: false ?? process.env.NODE_ENV !== 'production',
     outputs: {
       typegen: path.join(process.cwd(), 'nexus-types.ts'),

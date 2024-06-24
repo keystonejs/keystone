@@ -47,7 +47,6 @@ export const useDrawerManager = (uniqueKey: string) => {
     return () => {
       modalState.popFromDrawerStack()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // the last key in the array is the "top" modal visually, so the depth is the inverse index
   // be careful not to mutate the stack

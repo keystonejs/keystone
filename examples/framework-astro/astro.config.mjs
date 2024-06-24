@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,4 +9,4 @@ export default defineConfig({
       external: ['@keystone-6/core/context', '@keystone-6/core', '@keystone-6/core/fields'],
     },
   },
-});
+})

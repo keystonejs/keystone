@@ -136,10 +136,10 @@ export function createDocumentEditor (
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships,
   slate?: {
-    withReact: (editor: Editor) => any,
+    withReact: (editor: Editor) => any
     ReactEditor: {
-      focus: (editor: Editor) => void,
-    },
+      focus: (editor: Editor) => void
+    }
   },
 ) {
   return withPasting(

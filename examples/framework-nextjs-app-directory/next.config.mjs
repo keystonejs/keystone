@@ -1,5 +1,5 @@
 // you don't need this if you're building something outside of the Keystone repo
-import withPreconstruct from '@preconstruct/next';
+import withPreconstruct from '@preconstruct/next'
 
 export default withPreconstruct({
   experimental: {
@@ -12,4 +12,4 @@ export default withPreconstruct({
   typescript: {
     ignoreBuildErrors: true,
   },
-});
+})
