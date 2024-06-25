@@ -147,7 +147,7 @@ export async function migrateApply (
 
   console.log('✨ Applying any database migrations')
   const paths = system.getPaths(cwd)
-  const migrations = await withMigrate(paths.schema.prisma, system, async (m) => {
+  const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, async (m) => {
     const diagnostic = await m.diagnostic()
 
     if (diagnostic.action.tag === 'reset') {
@@ -158,9 +158,8 @@ export async function migrateApply (
       await m.reset()
     }
 
-    const { appliedMigrationNames } = await m.apply()
-    return appliedMigrationNames
+    return await m.apply()
   })
 
-  console.log(migrations.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
+  console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
 }
