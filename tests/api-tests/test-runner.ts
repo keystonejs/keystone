@@ -4,8 +4,10 @@ import { join } from 'node:path'
 import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
+
 import supertest from 'supertest'
 import {
+  createDatabase,
   getConfig,
   getDMMF,
   parseEnvValue,
@@ -136,6 +138,8 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
 
   const artifacts = await generateArtifacts(cwd, system)
   const paths = system.getPaths(cwd)
+
+  await createDatabase(system.config.db.url, cwd)
   await withMigrate(paths.schema.prisma, system, async (m) => {
     await m.reset()
     await m.schema(artifacts.prisma, false)

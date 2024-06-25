@@ -1,7 +1,5 @@
 import path from 'node:path'
-import {
-  createDatabase,
-} from '@prisma/internals'
+import { createDatabase, } from '@prisma/internals'
 
 import { withMigrate } from './lib/migrations'
 
