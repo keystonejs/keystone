@@ -1,15 +1,11 @@
-import fs from 'node:fs/promises'
 import { spawn } from 'node:child_process'
 
+import { createSystem } from '../lib/createSystem'
+import { validateArtifacts } from '../artifacts'
 import {
-  createSystem,
-  getBuiltKeystoneConfigurationPath,
-  getBuiltKeystoneConfiguration,
-} from '../lib/createSystem'
-import {
-  validateArtifacts,
-} from '../artifacts'
-import { ExitError } from './utils'
+  ExitError,
+  importBuiltKeystoneConfiguration,
+} from './utils'
 
 async function spawnPrisma3 (cwd: string, system: {
   config: {
@@ -36,18 +32,9 @@ async function spawnPrisma3 (cwd: string, system: {
 }
 
 export async function prisma (cwd: string, args: string[], frozen: boolean) {
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
+  // TODO: should build unless --frozen?
 
-  // this is the compiled version of the configuration which was generated during the build step
-  if (!(await fs.stat(builtConfigPath).catch(() => null))) {
-    console.error('🚨 keystone build must be run before running keystone prisma')
-    throw new ExitError(1)
-  }
-
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const config = getBuiltKeystoneConfiguration(cwd)
-  const system = createSystem(config)
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
 
   await validateArtifacts(cwd, system)
   console.log('✨ GraphQL and Prisma schemas are up to date')

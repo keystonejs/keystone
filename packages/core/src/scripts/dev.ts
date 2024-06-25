@@ -1,42 +1,38 @@
 import fsp from 'node:fs/promises'
 import path from 'node:path'
-import type { ListenOptions } from 'node:net'
 import url from 'node:url'
 import { createServer } from 'node:http'
+import { type ListenOptions } from 'node:net'
 
 import chalk from 'chalk'
-import next from 'next'
-import express from 'express'
-import { printSchema } from 'graphql'
 import esbuild, { type BuildResult } from 'esbuild'
+import express from 'express'
+import next from 'next'
+import { printSchema } from 'graphql'
 import { createDatabase } from '@prisma/internals'
 
 import { generateAdminUI } from '../admin-ui/system'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt } from '../lib/prompts'
-import {
-  createSystem,
-  getBuiltKeystoneConfiguration,
-} from '../lib/createSystem'
+import { createSystem, } from '../lib/createSystem'
 import { getEsbuildConfig } from '../lib/esbuild'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runTelemetry } from '../lib/telemetry'
 import {
-  getFormattedGraphQLSchema,
   generateArtifacts,
+  generatePrismaClient,
   generateTypes,
-  generatePrismaClient
+  getFormattedGraphQLSchema,
 } from '../artifacts'
-import {
-  type KeystoneConfig
-} from '../types'
+import { type KeystoneConfig } from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { pkgDir } from '../pkg-dir'
-import { ExitError } from './utils'
 import {
-  type Flags
-} from './cli'
+  ExitError,
+  importBuiltKeystoneConfiguration,
+} from './utils'
+import { type Flags } from './cli'
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
@@ -129,7 +125,7 @@ export async function dev (
 
     if (exit) throw new ExitError(1)
   }
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+
   const app = server ? express() : null
   const httpServer = app ? createServer(app) : null
   let expressServer: express.Express | null = null
@@ -137,7 +133,7 @@ export async function dev (
   const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware)
 
   const initKeystone = async () => {
-    const configWithExtendHttp = getBuiltKeystoneConfiguration(cwd)
+    const configWithExtendHttp = await importBuiltKeystoneConfiguration(cwd)
     const {
       system,
       context,
@@ -307,7 +303,7 @@ export async function dev (
           delete require.cache[resolved]
         }
 
-        const newConfigWithHttp = getBuiltKeystoneConfiguration(cwd)
+        const newConfigWithHttp = await importBuiltKeystoneConfiguration(cwd)
         const newSystem = createSystem(stripExtendHttpServer(newConfigWithHttp))
 
         if (prisma) {
@@ -369,7 +365,7 @@ export async function dev (
   })
 
   if (app && httpServer) {
-    const config = getBuiltKeystoneConfiguration(cwd)
+    const config = await importBuiltKeystoneConfiguration(cwd)
 
     app.use('/__keystone/dev/status', (req, res) => {
       res.status(isReady() ? 200 : 501).end()

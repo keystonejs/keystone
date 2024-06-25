@@ -5,10 +5,7 @@ import chalk from 'chalk'
 import esbuild from 'esbuild'
 import fse from 'fs-extra'
 
-import {
-  createSystem,
-  getBuiltKeystoneConfiguration
-} from '../lib/createSystem'
+import { createSystem } from '../lib/createSystem'
 import { getEsbuildConfig } from '../lib/esbuild'
 import { withMigrate } from '../lib/migrations'
 import {
@@ -23,7 +20,10 @@ import {
   validateArtifacts,
 } from '../artifacts'
 import { type Flags } from './cli'
-import { ExitError } from './utils'
+import {
+  ExitError,
+  importBuiltKeystoneConfiguration,
+} from './utils'
 
 export async function spawnPrisma (cwd: string, system: {
   config: {
@@ -58,9 +58,7 @@ export async function migrateCreate (
 ) {
   await esbuild.build(getEsbuildConfig(cwd))
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
-
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
     console.log('✨ GraphQL and Prisma schemas are up to date')
@@ -129,11 +127,10 @@ export async function migrateApply (
   cwd: string,
   { frozen }: Pick<Flags, 'frozen'>
 ) {
+  // TODO: should this happen if frozen?
   await esbuild.build(getEsbuildConfig(cwd))
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
-
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
     console.log('✨ GraphQL and Prisma schemas are up to date')
