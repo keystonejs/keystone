@@ -80,7 +80,7 @@ export async function spawnCommand (cwd: string, commands: string[]) {
     p.stderr.on('data', (data) => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
-      if (typeof exitCode === 'number' && exitCode !== 0) return reject(exitCode)
+      if (typeof exitCode === 'number' && exitCode !== 0) return reject(`${commands.join(' ')} returned ${exitCode}`)
       resolve(output)
     })
   })

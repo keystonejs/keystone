@@ -10,6 +10,8 @@ import {
   testdir,
 } from './utils'
 
+import { ExitError } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+
 test("start errors when a build hasn't happened", async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
@@ -17,7 +19,7 @@ test("start errors when a build hasn't happened", async () => {
     'keystone.js': basicKeystoneConfig,
   })
   const recording = recordConsole()
-  await expect(runCommand(tmp, 'start')).rejects.toEqual({ code: 1 })
+  await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1))
   expect(recording()).toMatchInlineSnapshot(`
     "? Starting Keystone
     ? keystone build must be run before running keystone start"
