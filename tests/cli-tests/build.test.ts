@@ -4,7 +4,7 @@ import {
   basicKeystoneConfig,
   cliBinPath,
   recordConsole,
-  runCommand,
+  cliMock,
   schemas,
   symlinkKeystoneDeps,
   testdir,
@@ -13,13 +13,13 @@ import {
 import { ExitError } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 test("start errors when a build hasn't happened", async () => {
-  const tmp = await testdir({
+  const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.js': basicKeystoneConfig,
   })
   const recording = recordConsole()
-  await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1))
+  await expect(cliMock(cwd, 'start')).rejects.toEqual(new ExitError(1))
   expect(recording()).toMatchInlineSnapshot(`
     "? Starting Keystone
     ? keystone build must be run before running keystone start"
@@ -29,7 +29,7 @@ test("start errors when a build hasn't happened", async () => {
 jest.setTimeout(1000000)
 
 test('build works with typescript without the user defining a babel config', async () => {
-  const tmp = await testdir({
+  const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': await fs.readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
@@ -37,7 +37,7 @@ test('build works with typescript without the user defining a babel config', asy
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
     all: true,
-    cwd: tmp,
+    cwd,
     env: {
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
@@ -49,7 +49,7 @@ test('build works with typescript without the user defining a babel config', asy
 })
 
 test('process.env.NODE_ENV is production in production', async () => {
-  const tmp = await testdir({
+  const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': await fs.readFile(`${__dirname}/fixtures/log-node-env.ts`, 'utf8'),
@@ -57,7 +57,7 @@ test('process.env.NODE_ENV is production in production', async () => {
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
     all: true,
-    cwd: tmp,
+    cwd,
     buffer: true,
     env: {
       NEXT_TELEMETRY_DISABLED: '1',
@@ -67,7 +67,7 @@ test('process.env.NODE_ENV is production in production', async () => {
   const startResult = execa('node', [cliBinPath, 'start'], {
     reject: false,
     all: true,
-    cwd: tmp,
+    cwd,
     env: {
       NODE_ENV: 'production',
       NEXT_TELEMETRY_DISABLED: '1',

@@ -5,7 +5,7 @@ import {
   getFiles,
   introspectDatabase,
   recordConsole,
-  runCommand,
+  cliMock,
   spawnCommand,
   symlinkKeystoneDeps,
   testdir,
@@ -112,14 +112,14 @@ function getPrismaClient (cwd: string) {
 
 describe('dev', () => {
   async function setupInitialProject () {
-    const tmp = await testdir({
+    const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,
     })
     const stopRecording = recordConsole()
 
-    await runCommand(tmp, 'dev')
-    expect(await introspectDatabase(tmp, dbUrl)).toEqual(schema1)
+    await cliMock(cwd, 'dev')
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
     expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
@@ -131,7 +131,7 @@ describe('dev', () => {
       ? Creating server
       ? GraphQL API ready"
     `)
-    return tmp
+    return cwd
   }
 
   test('creates database and pushes schema from empty', async () => {
@@ -139,9 +139,9 @@ describe('dev', () => {
   })
 
   test('logs correctly when things are already up to date', async () => {
-    const tmp = await setupInitialProject()
+    const cwd = await setupInitialProject()
     const stopRecording = recordConsole()
-    await runCommand(tmp, 'dev')
+    await cliMock(cwd, 'dev')
 
     expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -169,7 +169,7 @@ describe('dev', () => {
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]]
     const stopRecording = recordConsole()
-    await runCommand(cwd, 'dev')
+    await cliMock(cwd, 'dev')
 
     expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
@@ -221,7 +221,7 @@ describe('dev', () => {
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
     const stopRecording = recordConsole()
-    await expect(runCommand(cwd, 'dev')).rejects.toEqual(expect.objectContaining({ code: 0 }))
+    await expect(cliMock(cwd, 'dev')).rejects.toEqual(expect.objectContaining({ code: 0 }))
 
     expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
     expect(stopRecording()).toMatchInlineSnapshot(`

@@ -63,7 +63,7 @@ type Fixture = {
     | { kind: 'symlink', path: string }
 }
 
-export async function runCommand (cwd: string, args: string | string[]) {
+export async function cliMock (cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args
   chalk.level = 0 // disable ANSI colouring for this
   const proc = await cli(cwd, argv)
