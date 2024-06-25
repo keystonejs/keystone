@@ -1,12 +1,11 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import { ExitError } from './utils'
 import {
   getFiles,
-  introspectDb,
+  introspectDatabase,
   recordConsole,
-  runCommand,
+  cliMock,
   spawnCommand,
   symlinkKeystoneDeps,
   testdir,
@@ -17,30 +16,48 @@ const config0 = fs.readFileSync(`${__dirname}/fixtures/no-fields.ts`, 'utf8')
 const config1 = fs.readFileSync(`${__dirname}/fixtures/one-field.ts`, 'utf8')
 const config2 = fs.readFileSync(`${__dirname}/fixtures/two-fields.ts`, 'utf8')
 
-const schema1 = `datasource db {
-  provider = "sqlite"
-  url      = "file:./app.db"
+const schema1 = `generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.testprisma/client"
+}
+
+datasource sqlite {
+  provider          = "sqlite"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Todo {
-  id    String @id
+  id    String @id @default(cuid())
   title String @default("")
 }
+
+
 `
 
-const schema2 = `datasource db {
-  provider = "sqlite"
-  url      = "file:./app.db"
+const schema2 = `generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.testprisma/client"
+}
+
+datasource sqlite {
+  provider          = "sqlite"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Todo {
-  id         String  @id
+  id         String  @id @default(cuid())
   title      String  @default("")
   isComplete Boolean @default(false)
 }
+
+
 `
 
 let mockPromptResponseEntries: [string, string | boolean][] = []
+
+jest.setTimeout(60 * 1000) // these tests are slow
 
 jest.mock('prompts', () => {
   return function (
@@ -93,29 +110,28 @@ function getPrismaClient (cwd: string) {
   })
 }
 
-// TODO: when we can make fields non-nullable, we should have tests for unexecutable migrations
 describe('dev', () => {
   async function setupInitialProject () {
-    const tmp = await testdir({
+    const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,
     })
-    const recording = recordConsole()
+    const stopRecording = recordConsole()
 
-    await runCommand(tmp, 'dev')
-    expect(await introspectDb(tmp, dbUrl)).toEqual(schema1)
-    expect(recording()).toMatchInlineSnapshot(`
+    await cliMock(cwd, 'dev')
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
+    expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
-      ? sqlite database "app.db" created at file:./app.db
+      ? database created
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
     `)
-    return tmp
+    return cwd
   }
 
   test('creates database and pushes schema from empty', async () => {
@@ -123,11 +139,11 @@ describe('dev', () => {
   })
 
   test('logs correctly when things are already up to date', async () => {
-    const tmp = await setupInitialProject()
-    const recording = recordConsole()
-    await runCommand(tmp, 'dev')
+    const cwd = await setupInitialProject()
+    const stopRecording = recordConsole()
+    await cliMock(cwd, 'dev')
 
-    expect(recording()).toMatchInlineSnapshot(`
+    expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
@@ -144,27 +160,18 @@ describe('dev', () => {
     const prismaClient = getPrismaClient(prevCwd)
     await prismaClient.todo.create({ data: { title: 'todo' } })
     await prismaClient.$disconnect()
+
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': config0,
     })
+
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]]
-    const recording = recordConsole()
-    await runCommand(cwd, 'dev')
+    const stopRecording = recordConsole()
+    await cliMock(cwd, 'dev')
 
-    expect(await introspectDb(cwd, dbUrl)).toMatchInlineSnapshot(`
-      "datasource db {
-        provider = "sqlite"
-        url      = "file:./app.db"
-      }
-
-      model Todo {
-        id String @id
-      }
-      "
-    `)
-    expect(recording()).toMatchInlineSnapshot(`
+    expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
@@ -178,6 +185,26 @@ describe('dev', () => {
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
+    `)
+
+    expect(await introspectDatabase(cwd, dbUrl)).toMatchInlineSnapshot(`
+      "generator client {
+        provider = "prisma-client-js"
+        output   = "node_modules/.testprisma/client"
+      }
+
+      datasource sqlite {
+        provider          = "sqlite"
+        url               = env("DATABASE_URL")
+        shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+      }
+
+      model Todo {
+        id String @id @default(cuid())
+      }
+
+
+      "
     `)
   })
 
@@ -193,22 +220,11 @@ describe('dev', () => {
     })
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
-    const recording = recordConsole()
-    await expect(runCommand(cwd, 'dev')).rejects.toEqual(new ExitError(0))
+    const stopRecording = recordConsole()
+    await expect(cliMock(cwd, 'dev')).rejects.toEqual(expect.objectContaining({ code: 0 }))
 
-    expect(await introspectDb(cwd, dbUrl)).toMatchInlineSnapshot(`
-      "datasource db {
-        provider = "sqlite"
-        url      = "file:./app.db"
-      }
-
-      model Todo {
-        id    String @id
-        title String @default("")
-      }
-      "
-    `)
-    expect(recording()).toMatchInlineSnapshot(`
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
+    expect(stopRecording()).toMatchInlineSnapshot(`
       "? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
@@ -239,6 +255,7 @@ describe('prisma', () => {
     {
       const prismaClient = getPrismaClient(cwd)
       await prismaClient.todo.create({ data: { title: 'something' } })
+      expect(await prismaClient.todo.findMany()).toHaveLength(1)
       await prismaClient.$disconnect()
     }
 
@@ -269,10 +286,10 @@ describe('start --with-migrations', () => {
 
     await spawnCommand(cwd, ['build', '--no-ui'])
     await spawnCommand(cwd, ['prisma', 'migrate', 'dev', '--name', 'init', '--create-only'])
-    expect(await introspectDb(cwd, dbUrl)).toEqual(null) // empty
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual('') // empty
 
     const output = await spawnCommand(cwd, ['start', '--no-server', '--no-ui', '--with-migrations'])
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema1) // migrated
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1) // migrated
 
     expect(
       output
@@ -298,16 +315,16 @@ describe('start --with-migrations', () => {
     await spawnCommand(cwd, ['build', '--no-ui'])
     await spawnCommand(cwd, ['prisma', 'migrate', 'dev', '--name', 'init', '--create-only'])
     await spawnCommand(cwd, ['prisma', 'migrate', 'deploy'])
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema1)
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
 
     // step 2, add a field
     await fsp.writeFile(`${cwd}/keystone.ts`, config2)
     await spawnCommand(cwd, ['build', '--no-ui'])
     await spawnCommand(cwd, ['prisma', 'migrate', 'dev', '--name', 'add', '--create-only'])
 
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema1) // unchanged
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1) // unchanged
     const output = await spawnCommand(cwd, ['start', '--no-server', '--no-ui', '--with-migrations'])
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema2) // migrated
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema2) // migrated
 
     expect(
       output
@@ -332,9 +349,9 @@ describe('start --with-migrations', () => {
     await spawnCommand(cwd, ['prisma', 'migrate', 'dev', '--name', 'init', '--create-only'])
     await spawnCommand(cwd, ['prisma', 'migrate', 'deploy'])
 
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema1) // unchanged
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1) // unchanged
     const output = await spawnCommand(cwd, ['start', '--no-server', '--no-ui', '--with-migrations'])
-    expect(await introspectDb(cwd, dbUrl)).toEqual(schema1) // unchanged
+    expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1) // unchanged
 
     expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
       "? Starting Keystone

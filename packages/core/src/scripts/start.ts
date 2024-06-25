@@ -1,14 +1,10 @@
-import fs from 'node:fs/promises'
 import next from 'next'
-import {
-  createSystem,
-  getBuiltKeystoneConfigurationPath,
-  getBuiltKeystoneConfiguration,
-} from '../lib/createSystem'
+
+import { createSystem } from '../lib/createSystem'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
-import { runMigrationsOnDatabase } from '../lib/migrations'
-import { ExitError } from './utils'
+import { withMigrate } from '../lib/migrations'
+import { importBuiltKeystoneConfiguration } from './utils'
 import { type Flags } from './cli'
 
 export async function start (
@@ -17,22 +13,13 @@ export async function start (
 ) {
   console.log('✨ Starting Keystone')
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
-
-  // this is the compiled version of the configuration which was generated during the build step
-  if (!(await fs.stat(builtConfigPath).catch(() => null))) {
-    console.error('🚨 keystone build must be run before running keystone start')
-    throw new ExitError(1)
-  }
-
-  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   const paths = system.getPaths(cwd)
 
   if (withMigrations) {
     console.log('✨ Applying any database migrations')
-    const migrations = await runMigrationsOnDatabase(cwd, system)
-    console.log(migrations.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
+    const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, (m) => m.apply())
+    console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
   }
 
   if (!server) return

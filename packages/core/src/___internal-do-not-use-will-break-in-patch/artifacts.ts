@@ -5,9 +5,12 @@ export {
   createSystem,
 } from '../lib/createSystem'
 export {
-  pushPrismaSchemaToDatabase,
+  withMigrate
 } from '../lib/migrations'
 export {
   generateArtifacts,
   getArtifacts,
 } from '../artifacts'
+export {
+  ExitError
+} from '../scripts/utils'

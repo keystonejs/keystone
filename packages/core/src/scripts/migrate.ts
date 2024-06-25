@@ -1,15 +1,17 @@
-import esbuild from 'esbuild'
-import fse from 'fs-extra'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
 
-import {
-  createSystem,
-  getBuiltKeystoneConfiguration
-} from '../lib/createSystem'
+import chalk from 'chalk'
+import esbuild from 'esbuild'
+import fse from 'fs-extra'
+
+import { createSystem } from '../lib/createSystem'
 import { getEsbuildConfig } from '../lib/esbuild'
-import { runMigrationsOnDatabaseMaybeReset } from '../lib/migrations'
-import { textPrompt } from '../lib/prompts'
+import { withMigrate } from '../lib/migrations'
+import {
+  confirmPrompt,
+  textPrompt
+} from '../lib/prompts'
 
 import {
   generateArtifacts,
@@ -18,7 +20,10 @@ import {
   validateArtifacts,
 } from '../artifacts'
 import { type Flags } from './cli'
-import { ExitError } from './utils'
+import {
+  ExitError,
+  importBuiltKeystoneConfiguration,
+} from './utils'
 
 export async function spawnPrisma (cwd: string, system: {
   config: {
@@ -53,9 +58,7 @@ export async function migrateCreate (
 ) {
   await esbuild.build(getEsbuildConfig(cwd))
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
-
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
     console.log('✨ GraphQL and Prisma schemas are up to date')
@@ -124,11 +127,10 @@ export async function migrateApply (
   cwd: string,
   { frozen }: Pick<Flags, 'frozen'>
 ) {
+  // TODO: should this happen if frozen?
   await esbuild.build(getEsbuildConfig(cwd))
 
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const system = createSystem(getBuiltKeystoneConfiguration(cwd))
-
+  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
     console.log('✨ GraphQL and Prisma schemas are up to date')
@@ -141,6 +143,20 @@ export async function migrateApply (
   await generatePrismaClient(cwd, system)
 
   console.log('✨ Applying any database migrations')
-  const migrations = await runMigrationsOnDatabaseMaybeReset(cwd, system)
-  console.log(migrations.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
+  const paths = system.getPaths(cwd)
+  const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, async (m) => {
+    const diagnostic = await m.diagnostic()
+
+    if (diagnostic.action.tag === 'reset') {
+      console.log(diagnostic.action.reason)
+      const consent = await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}`)
+      if (!consent) throw new ExitError(1)
+
+      await m.reset()
+    }
+
+    return await m.apply()
+  })
+
+  console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
 }

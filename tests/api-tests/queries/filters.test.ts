@@ -3,11 +3,11 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import {
+  type ContextFromRunner,
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
   expectFilterDenied,
-  type ContextFromRunner
 } from '../utils'
 
 const runner = setupTestRunner({
@@ -78,7 +78,7 @@ const runner = setupTestRunner({
   },
 })
 
-const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
+async function initialiseData ({ context }: { context: ContextFromRunner<typeof runner> }) {
   // Use shuffled data to ensure that ordering is actually happening.
   for (const listKey of Object.keys(context.query) as Array<keyof (typeof context)['query']>) {
     if (listKey === 'User' || listKey === 'SecondaryList') continue

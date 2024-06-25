@@ -12,15 +12,14 @@ import { resolveDefaults } from './defaults'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
-import { initialiseLists, type InitialisedList } from './core/initialise-lists'
+import {
+  type InitialisedList,
+  initialiseLists,
+} from './core/initialise-lists'
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath (cwd: string) {
   return path.join(cwd, '.keystone/config.js')
-}
-
-export function getBuiltKeystoneConfiguration (cwd: string) {
-  return require(getBuiltKeystoneConfigurationPath(cwd)).default
 }
 
 function posixify (s: string) {
