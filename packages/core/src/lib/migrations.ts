@@ -1,5 +1,7 @@
 import { type ChildProcess } from 'node:child_process'
 import { toSchemasContainer } from '@prisma/internals'
+
+// @ts-expect-error
 import { Migrate } from '@prisma/migrate'
 
 import { type System } from './createSystem'
