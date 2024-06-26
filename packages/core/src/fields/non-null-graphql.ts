@@ -13,13 +13,10 @@ export function getResolvedIsNullable (
   return true
 }
 
-export function resolveHasValidation ({
-  db,
-  validation
-}: {
-  db?: { isNullable?: boolean }
+export function resolveHasValidation (
+  db?: { isNullable?: boolean },
   validation?: unknown
-}) {
+) {
   if (db?.isNullable === false) return true
   if (validation !== undefined) return true
   return false

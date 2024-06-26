@@ -5,8 +5,9 @@ import { userInputError } from '../../../lib/core/graphql-errors'
 import { humanize } from '../../../lib/utils'
 import { type BaseListTypeInfo, fieldType, type FieldTypeFunc, type CommonFieldConfig } from '../../../types'
 import { graphql } from '../../..'
-import { getResolvedIsNullable } from '../../non-null-graphql'
+import { getResolvedIsNullable, resolveHasValidation } from '../../non-null-graphql'
 import { type PasswordFieldMeta } from './views'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -109,6 +110,44 @@ export const password =
       return bcrypt.hash(val, workFactor)
     }
 
+    const hasValidation = resolveHasValidation(config.db, validation)
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = (args) => {
+        if (args.operation === 'delete') return
+
+        const val = args.inputData[meta.fieldKey]
+        if (
+          args.resolvedData[meta.fieldKey] === null &&
+          (validation?.isRequired || isNullable === false)
+        ) {
+          args.addValidationError(`${fieldLabel} is required`)
+        }
+        if (val != null) {
+          if (val.length < validation.length.min) {
+            if (validation.length.min === 1) {
+              args.addValidationError(`${fieldLabel} must not be empty`)
+            } else {
+              args.addValidationError(
+                `${fieldLabel} must be at least ${validation.length.min} characters long`
+              )
+            }
+          }
+          if (validation.length.max !== null && val.length > validation.length.max) {
+            args.addValidationError(
+              `${fieldLabel} must be no longer than ${validation.length.max} characters`
+            )
+          }
+          if (validation.match && !validation.match.regex.test(val)) {
+            args.addValidationError(validation.match.explanation)
+          }
+          if (validation.rejectCommon && dumbPasswords.check(val)) {
+            args.addValidationError(`${fieldLabel} is too common and is not allowed`)
+          }
+        }
+      }
+    }
+    
     return fieldType({
       kind: 'scalar',
       scalar: 'String',
@@ -117,42 +156,7 @@ export const password =
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        async validateInput (args) {
-          const val = args.inputData[meta.fieldKey]
-          if (
-            args.resolvedData[meta.fieldKey] === null &&
-            (validation?.isRequired || isNullable === false)
-          ) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (val != null) {
-            if (val.length < validation.length.min) {
-              if (validation.length.min === 1) {
-                args.addValidationError(`${fieldLabel} must not be empty`)
-              } else {
-                args.addValidationError(
-                  `${fieldLabel} must be at least ${validation.length.min} characters long`
-                )
-              }
-            }
-            if (validation.length.max !== null && val.length > validation.length.max) {
-              args.addValidationError(
-                `${fieldLabel} must be no longer than ${validation.length.max} characters`
-              )
-            }
-            if (validation.match && !validation.match.regex.test(val)) {
-              args.addValidationError(validation.match.explanation)
-            }
-            if (validation.rejectCommon && dumbPasswords.check(val)) {
-              args.addValidationError(`${fieldLabel} is too common and is not allowed`)
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        },
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         where:
           isNullable === false

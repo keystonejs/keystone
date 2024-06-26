@@ -13,6 +13,7 @@ import {
   resolveHasValidation,
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -84,7 +85,37 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
 
     const mode = isNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config)
+    const hasValidation = resolveHasValidation(config.db, validation)
+
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (hasValidation) {
+      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
+        if (operation === 'delete') return
+
+        const value = resolvedData[meta.fieldKey]
+
+        if (
+          (validation?.isRequired || isNullable === false) &&
+          (value === null ||
+            (operation === 'create' && value === undefined && !hasAutoIncDefault))
+        ) {
+          addValidationError(`${fieldLabel} is required`)
+        }
+        if (typeof value === 'number') {
+          if (validation?.min !== undefined && value < validation.min) {
+            addValidationError(
+              `${fieldLabel} must be greater than or equal to ${validation.min}`
+            )
+          }
+
+          if (validation?.max !== undefined && value > validation.max) {
+            addValidationError(
+              `${fieldLabel} must be less than or equal to ${validation.max}`
+            )
+          }
+        }
+      }
+    }
 
     return fieldType({
       kind: 'scalar',
@@ -102,35 +133,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        validateInput: hasValidation ? async (args) => {
-          const value = args.resolvedData[meta.fieldKey]
-
-          if (
-            (validation?.isRequired || isNullable === false) &&
-            (value === null ||
-              (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
-          ) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (typeof value === 'number') {
-            if (validation?.min !== undefined && value < validation.min) {
-              args.addValidationError(
-                `${fieldLabel} must be greater than or equal to ${validation.min}`
-              )
-            }
-
-            if (validation?.max !== undefined && value > validation.max) {
-              args.addValidationError(
-                `${fieldLabel} must be less than or equal to ${validation.max}`
-              )
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        } : config.hooks?.validateInput
-      },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,

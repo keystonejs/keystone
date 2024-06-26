@@ -8,8 +8,13 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import {
+  assertReadIsNonNullAllowed,
+  getResolvedIsNullable,
+  resolveHasValidation,
+} from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 import { type AdminSelectFieldMeta } from './views'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -68,6 +73,8 @@ export const select =
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
 
+    const hasValidation = resolveHasValidation(config.db, validation)
+
     const commonConfig = (
       options: readonly { value: string | number, label: string }[]
     ): CommonFieldConfig<ListTypeInfo> & {
@@ -81,25 +88,29 @@ export const select =
           `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
         )
       }
+    
+      const hooks: InternalFieldHooks<ListTypeInfo> = {}
+      if (hasValidation) {
+        hooks.validate = ({ resolvedData, operation, addValidationError }) => {
+          if (operation === 'delete') return
+
+          const value = resolvedData[meta.fieldKey]
+          if (value != null && !values.has(value)) {
+            addValidationError(`${value} is not a possible value for ${fieldLabel}`)
+          }
+          if (
+            (validation?.isRequired || resolvedIsNullable === false) &&
+            (value === null || (value === undefined && operation === 'create'))
+          ) {
+            addValidationError(`${fieldLabel} is required`)
+          }
+        }
+      }
+
       return {
         ...config,
         ui,
-        hooks: {
-          ...config.hooks,
-          async validateInput (args) {
-            const value = args.resolvedData[meta.fieldKey]
-            if (value != null && !values.has(value)) {
-              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
-            }
-            if (
-              (validation?.isRequired || resolvedIsNullable === false) &&
-              (value === null || (value === undefined && args.operation === 'create'))
-            ) {
-              args.addValidationError(`${fieldLabel} is required`)
-            }
-            await config.hooks?.validateInput?.(args)
-          },
-        },
+        hooks: mergeFieldHooks(hooks, config.hooks),
         __ksTelemetryFieldTypeName: '@keystone-6/select',
         views: '@keystone-6/core/fields/types/select/views',
         getAdminMeta: () => ({
