@@ -3,12 +3,12 @@ import { createDatabase, } from '@prisma/internals'
 
 import { withMigrate } from './lib/migrations'
 
-export async function resetDatabase (dbUrl: string, prismaSchemaPath: string) {
-  await createDatabase(dbUrl, path.dirname(prismaSchemaPath))
+export async function resetDatabase (url: string, prismaSchemaPath: string) {
+  await createDatabase(url, path.dirname(prismaSchemaPath))
   await withMigrate(prismaSchemaPath, {
     config: {
       db: {
-        url: dbUrl,
+        url,
         shadowDatabaseUrl: ''
       }
     },
