@@ -30,7 +30,7 @@ export async function withMigrate<T> (
   }) => Promise<T>
 ) {
   const migrate = new Migrate(prismaSchemaPath)
-  function run <T> (f: () => T): T {
+  async function run <T> (f: () => T): Promise<T> {
     // only required once - on child process start - but easiest to do this always
     const prevDBURLFromEnv = process.env.DATABASE_URL
     const prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL
@@ -39,7 +39,7 @@ export async function withMigrate<T> (
       process.env.DATABASE_URL = system.config.db.url
       setOrRemoveEnvVariable('SHADOW_DATABASE_URL', system.config.db.shadowDatabaseUrl)
       process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1' // temporarily silence
-      return f()
+      return await f()
     } finally {
       setOrRemoveEnvVariable('DATABASE_URL', prevDBURLFromEnv)
       setOrRemoveEnvVariable('SHADOW_DATABASE_URL', prevShadowDBURLFromEnv)
