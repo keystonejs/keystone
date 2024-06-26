@@ -30,7 +30,7 @@ export async function withMigrate<T> (
   }) => Promise<T>
 ) {
   const migrate = new Migrate(prismaSchemaPath)
-  async function run <T> (f: () => T): Promise<T> {
+  async function run <T> (f: () => T) {
     // only required once - on child process start - but easiest to do this always
     const prevDBURLFromEnv = process.env.DATABASE_URL
     const prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL
