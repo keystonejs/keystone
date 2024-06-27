@@ -73,8 +73,20 @@ const jwtSessionStrategy = {
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start () {},
-  async end () {},
+  async start({
+    context,
+    data,
+  }: {
+    context: Context;
+    data: { listKey: string; itemId: string };
+  }) {
+     // this is required for authentication (authenticateUserWithPassword) mutation to work
+    // const token = await jwtSign({ id: data.itemId });
+    // return token;
+  },
+  async end ({ context }: { context: Context }) {
+    //grab session token and implement any token revokation strategy of choice
+  },
 }
 
 export default config<TypeInfo>({
