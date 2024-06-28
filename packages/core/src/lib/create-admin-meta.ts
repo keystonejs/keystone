@@ -75,7 +75,6 @@ export type ListMetaRootVal = {
 }
 
 export type AdminMetaRootVal = {
-  routePrefix: string
   lists: ListMetaRootVal[]
   listsByKey: Record<string, ListMetaRootVal>
   views: string[]
@@ -88,7 +87,6 @@ export function createAdminMeta (
 ) {
   const { lists } = config
   const adminMetaRoot: AdminMetaRootVal = {
-    routePrefix: config.ui?.basePath?.replace(/^\//, '') ?? '/admin',
     listsByKey: {},
     lists: [],
     views: [],

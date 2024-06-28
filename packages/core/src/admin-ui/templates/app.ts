@@ -20,7 +20,8 @@ export function adminConfigTemplate (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists }: AppTemplateOptions,
-  apiPath: string
+  apiPath: string,
+  adminPath: string
 ) {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -63,6 +64,7 @@ export const config = {
   adminMetaHash: '${adminMetaQueryResultHash}',
   adminConfig,
   apiPath: '${apiPath}',
+  adminPath: '${adminPath}',
 };
 `
   // -- TEMPLATE END
@@ -98,7 +100,6 @@ function getLazyMetadataQuery (
     parse(`fragment x on y {
     keystone {
       adminMeta {
-        routePrefix
         lists {
           key
           isHidden

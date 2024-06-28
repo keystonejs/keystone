@@ -216,7 +216,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   }): Promise<{ kind: 'redirect', to: string } | void> {
     const { req } = context
     const { pathname } = new URL(req!.url!, 'http://_')
-
     // redirect to init if initFirstItem conditions are met
     if (pathname !== `${basePath}/init` && (await hasInitFirstItemConditions(context))) {
       return { kind: 'redirect', to: `${basePath}/init` }
@@ -271,7 +270,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
         },
 
         pageMiddleware: async (args) => {
+          console.log('wasAccessAllowed', args.wasAccessAllowed)
           const shouldRedirect = await authMiddleware(args)
+          console.log('wasAccessAllowed', args.wasAccessAllowed, shouldRedirect)
           if (shouldRedirect) return shouldRedirect
           return pageMiddleware?.(args)
         },

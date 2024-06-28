@@ -388,7 +388,6 @@ export function ItemPage ({ params }: ItemPageProps) {
       item: ItemData
       keystone: {
         adminMeta: {
-          routePrefix: string
           list: {
             fields: {
               path: string

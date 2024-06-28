@@ -49,7 +49,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
-        routePrefix: string
         list: {
           hideCreate: boolean
           hideDelete: boolean
@@ -63,7 +62,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   query ($listKey: String!) {
     keystone {
       adminMeta {
-        routePrefix
         list(key: $listKey) {
           hideDelete
           hideCreate

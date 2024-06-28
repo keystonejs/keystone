@@ -16,7 +16,7 @@ import { useRouter } from '../../../../admin-ui/router'
 function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
-  const { adminMeta: { routePrefix } } = useKeystone()
+  const { adminPath } = useKeystone()
   return (
     <Box paddingTop="xlarge">
       {createItem.error && (
@@ -35,7 +35,7 @@ function CreatePageForm (props: { list: ListMeta }) {
           onClick={async () => {
             const item = await createItem.create()
             if (item) {
-              router.push(`${routePrefix}/${props.list.path}/${item.id}`)
+              router.push(`${adminPath}/${props.list.path}/${item.id}`)
             }
           }}
         >

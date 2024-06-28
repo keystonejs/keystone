@@ -76,7 +76,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
 async function noop () {}
 function identity<T> (x: T) { return x }
 
-export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
+export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>, inject = false): __ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -100,7 +100,6 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
   if (config?.server && 'options' in config.server && config.server.options) {
     Object.assign(httpOptions, config.server.options)
   }
-
   return {
     types: {
       ...config.types,
@@ -126,7 +125,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
-    lists: injectDefaults(config, defaultIdField),
+    lists: inject ? injectDefaults(config, defaultIdField) : config.lists,
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,
@@ -141,7 +140,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
     telemetry: config.telemetry ?? true,
     ui: {
       ...config.ui,
-      basePath: config.ui?.basePath ?? '/admin',
+      basePath: config.ui?.basePath?.replace(/\/$/, '') ?? '/admin',
       isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],

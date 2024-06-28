@@ -207,7 +207,7 @@ function formatUrl (provider: __ResolvedKeystoneConfig['db']['provider'], url: s
 }
 
 export function createSystem (config_: KeystoneConfig) {
-  const config = resolveDefaults(config_)
+  const config = resolveDefaults(config_, true)
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)

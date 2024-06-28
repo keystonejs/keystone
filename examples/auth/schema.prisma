@@ -18,3 +18,54 @@ model User {
   password String
   isAdmin  Boolean @default(false)
 }
+
+model Project {
+  id        String    @id @default(cuid())
+  slug      String    @unique @default("")
+  name      String    @default("")
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
+  deletedAt DateTime?
+  taskRuns  TaskRun[] @relation("TaskRun_project")
+}
+
+model TaskRun {
+  id             String           @id @default(cuid())
+  number         Int?             @default(0)
+  friendlyId     String           @default("")
+  status         String?          @default("pending")
+  taskIdentifier String           @default("")
+  isTest         Boolean          @default(false)
+  payload        String           @default("")
+  payloadType    String           @default("application/json")
+  context        String?
+  traceId        String           @default("")
+  spanId         String           @default("")
+  project        Project?         @relation("TaskRun_project", fields: [projectId], references: [id])
+  projectId      String?          @map("project")
+  createdAt      DateTime?        @default(now())
+  updatedAt      DateTime?        @default(now()) @updatedAt
+  attempts       TaskRunAttempt[] @relation("TaskRunAttempt_taskRun")
+  startedAt      DateTime?
+  completedAt    DateTime?
+
+  @@index([projectId])
+}
+
+model TaskRunAttempt {
+  id          String    @id @default(cuid())
+  number      Int?      @default(0)
+  friendlyId  String    @default("")
+  taskRun     TaskRun?  @relation("TaskRunAttempt_taskRun", fields: [taskRunId], references: [id])
+  taskRunId   String?   @map("taskRun")
+  status      String?   @default("pending")
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @default(now()) @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+  error       String?
+  output      String    @default("")
+  outputType  String    @default("application/json")
+
+  @@index([taskRunId])
+}

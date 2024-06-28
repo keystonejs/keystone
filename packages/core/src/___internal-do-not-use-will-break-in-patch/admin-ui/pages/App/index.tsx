@@ -16,6 +16,7 @@ type AppConfig = {
   fieldViews: FieldViews
   lazyMetadataQuery: DocumentNode
   apiPath: string
+  adminPath: string
 }
 
 export function Layout ({ children, config }: AdminProps) {

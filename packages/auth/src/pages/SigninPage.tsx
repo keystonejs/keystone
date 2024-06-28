@@ -9,10 +9,9 @@ import { TextInput } from '@keystone-ui/fields'
 import { Notice } from '@keystone-ui/notice'
 
 import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
-import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
+import { useKeystone, useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { SigninContainer } from '../components/SigninContainer'
-import { useRedirect } from '../lib/useFromRedirect'
 
 type SigninPageProps = {
   identityField: string
@@ -59,15 +58,14 @@ export function SigninPage ({
   const reinitContext = useReinitContext()
   const router = useRouter()
   const rawKeystone = useRawKeystone()
-  const redirect = useRedirect()
-
+  const { adminPath } = useRawKeystone()
   // if we are signed in, redirect immediately
   useEffect(() => {
     if (submitted) return
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(redirect)
+      router.push(adminPath)
     }
-  }, [rawKeystone.authenticatedItem, router, redirect, submitted])
+  }, [rawKeystone.authenticatedItem, router, adminPath, submitted])
 
   useEffect(() => {
     if (!submitted) return
@@ -79,8 +77,8 @@ export function SigninPage ({
       return
     }
 
-    router.push(redirect)
-  }, [rawKeystone.adminMeta, router, redirect, submitted])
+    router.push(adminPath)
+  }, [rawKeystone.adminMeta, router, adminPath, submitted])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

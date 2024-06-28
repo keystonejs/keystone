@@ -124,7 +124,6 @@ export type ListMeta = {
 }
 
 export type AdminMeta = {
-  routePrefix: string
   lists: { [list: string]: ListMeta }
 }
 

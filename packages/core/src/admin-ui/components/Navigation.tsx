@@ -172,11 +172,11 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
 
 export const ListNavItem = ({ list }: { list: ListMeta }) => {
   const pathname = usePathname()
-  const { adminMeta: { routePrefix } } = useKeystone()
+  const { adminPath } = useKeystone()
   return (
     <NavItem
       isSelected={pathname.endsWith(`/${list.path}`)}
-      href={`${routePrefix}/${list.path}${list.isSingleton ? '/1' : ''}`}
+      href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
     >
       {list.label}
     </NavItem>
@@ -199,10 +199,11 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
 
 export const Navigation = () => {
   const {
-    adminMeta: { lists, routePrefix },
+    adminMeta: { lists },
     adminConfig,
     authenticatedItem,
     visibleLists,
+    adminPath,
   } = useKeystone()
 
   if (visibleLists.state === 'loading') return null
@@ -235,7 +236,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href={routePrefix || '/'}>Dashboard</NavItem>
+      <NavItem href={adminPath || '/'}>Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   )

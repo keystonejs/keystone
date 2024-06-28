@@ -25,6 +25,7 @@ type KeystoneContextType = {
   createViewFieldModes: CreateViewFieldModes
   reinitContext: () => Promise<void>
   apiPath: string
+  adminPath: string
 }
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined)
@@ -36,6 +37,7 @@ type KeystoneProviderProps = {
   fieldViews: FieldViews
   lazyMetadataQuery: DocumentNode
   apiPath: string
+  adminPath: string
 }
 
 function InternalKeystoneProvider ({
@@ -45,6 +47,7 @@ function InternalKeystoneProvider ({
   children,
   lazyMetadataQuery,
   apiPath,
+  adminPath
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews)
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
@@ -74,6 +77,7 @@ function InternalKeystoneProvider ({
             visibleLists,
             createViewFieldModes,
             apiPath,
+            adminPath,
           }}
         >
           {children}
@@ -110,6 +114,7 @@ export const useKeystone = (): {
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
   apiPath: string
+  adminPath: string
   listsKeyByPath: Record<string, string>
 } => {
   const value = useContext(KeystoneContext)
@@ -131,6 +136,7 @@ export const useKeystone = (): {
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
     apiPath: value.apiPath,
+    adminPath: value.adminPath,
     listsKeyByPath,
   }
 }

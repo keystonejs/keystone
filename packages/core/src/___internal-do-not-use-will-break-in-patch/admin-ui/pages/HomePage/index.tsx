@@ -110,13 +110,13 @@ export function HomePage () {
   const {
     adminMeta: { lists },
     visibleLists,
+    adminPath,
   } = useKeystone()
   const query = useMemo(
     () => gql`
     query {
       keystone {
         adminMeta {
-          routePrefix
           lists {
             key
             hideCreate
@@ -181,7 +181,7 @@ export function HomePage () {
                   }
                   key={key}
                   listKey={key}
-                  basePath={data?.keystone.adminMeta.routePrefix}
+                  basePath={adminPath}
                 />
               )
             })
