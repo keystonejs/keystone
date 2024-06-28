@@ -147,6 +147,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
       publicPages:config.ui?.publicPages ?? [],
+      tsx: config.ui?.tsx ?? true,
     },
   }
 }

@@ -64,6 +64,7 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
       ? adminMetaFromLocalStorage
       : data.keystone.adminMeta
     const runtimeAdminMeta: AdminMeta = {
+      routePrefix: adminMeta.routePrefix,
       lists: {},
     }
 

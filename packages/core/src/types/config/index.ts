@@ -248,7 +248,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
       wasAccessAllowed: boolean
       basePath: string
     }) => MaybePromise<{ kind: 'redirect', to: string } | void>
-
+    /** Generate .tsx files instead of .js */
     tsx: boolean
   }
 }

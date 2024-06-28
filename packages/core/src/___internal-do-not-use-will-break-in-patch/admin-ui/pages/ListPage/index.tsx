@@ -24,7 +24,7 @@ import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link } from '../../../../admin-ui/router'
 import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
@@ -50,9 +50,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
-        config: {
-          adminPath: string
-        }
+        routePrefix: string
         list: {
           hideCreate: boolean
           hideDelete: boolean
@@ -66,9 +64,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   query ($listKey: String!) {
     keystone {
       adminMeta {
-        config {
-          adminPath
-        }
+        routePrefix
         list(key: $listKey) {
           hideDelete
           hideCreate
@@ -144,7 +140,9 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   return { resetToDefaults }
 }
 
-export function ListPage ({ params: { listKey } }: ListPageProps) {
+export function ListPage ({ params }: ListPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
 
   const { push } = useRouter()

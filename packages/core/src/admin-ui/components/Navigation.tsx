@@ -172,10 +172,11 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
 
 export const ListNavItem = ({ list }: { list: ListMeta }) => {
   const pathname = usePathname()
+  const { adminMeta: { routePrefix } } = useKeystone()
   return (
     <NavItem
-      isSelected={pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
-      href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+      isSelected={pathname.endsWith(`/${list.path}`)}
+      href={`${routePrefix}/${list.path}${list.isSingleton ? '/1' : ''}`}
     >
       {list.label}
     </NavItem>
@@ -198,7 +199,7 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
 
 export const Navigation = () => {
   const {
-    adminMeta: { lists },
+    adminMeta: { lists, routePrefix },
     adminConfig,
     authenticatedItem,
     visibleLists,
@@ -234,7 +235,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
+      <NavItem href={routePrefix}>Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   )

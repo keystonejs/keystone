@@ -25,7 +25,6 @@ type KeystoneContextType = {
   createViewFieldModes: CreateViewFieldModes
   reinitContext: () => Promise<void>
   apiPath: string
-  listsKeyByPath: Record<string, string>
 }
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined)
@@ -47,7 +46,6 @@ function InternalKeystoneProvider ({
   children,
   lazyMetadataQuery,
   apiPath,
-  listsKeyByPath,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews)
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
@@ -77,7 +75,6 @@ function InternalKeystoneProvider ({
             visibleLists,
             createViewFieldModes,
             apiPath,
-            listsKeyByPath,
           }}
         >
           {children}
@@ -123,6 +120,11 @@ export const useKeystone = (): {
   if (value.adminMeta.state === 'error') {
     throw new Error('An error occurred when loading Admin Metadata')
   }
+  const listsKeyByPath = Object.values(value.adminMeta.value.lists).reduce((acc, list) => {
+    acc[list.path] = list.key
+    return acc
+  }, {} as Record<string, string>)
+
   return {
     adminConfig: value.adminConfig,
     adminMeta: value.adminMeta.value,
@@ -130,7 +132,7 @@ export const useKeystone = (): {
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
     apiPath: value.apiPath,
-    listsKeyByPath: value.listsKeyByPath,
+    listsKeyByPath,
   }
 }
 
@@ -153,12 +155,9 @@ export const useRawKeystone = () => {
 export const useList = (key: string) => {
   const {
     adminMeta: { lists },
-    listsKeyByPath
   } = useKeystone()
   if (lists[key]) {
     return lists[key]
-  } if (listsKeyByPath[key] && lists[listsKeyByPath[key]]) {
-    return lists[listsKeyByPath[key]]
   } else {
     throw new Error(`Invalid list key provided to useList: ${key}`)
   }

@@ -37,7 +37,7 @@ import {
 } from '../../../../admin-ui/utils'
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation'
@@ -334,8 +334,9 @@ function DeleteButton ({
 }
 
 export function ItemPage ({ params }: ItemPageProps) {
-  const list = useList(params?.listKey)
-  const id = params?.id as string
+  const { listsKeyByPath } = useKeystone()
+  const list = useList(listsKeyByPath[params.listKey])
+  const id = params.id as string
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
@@ -386,9 +387,7 @@ export function ItemPage ({ params }: ItemPageProps) {
       item: ItemData
       keystone: {
         adminMeta: {
-          config: {
-            adminPath: string
-          }
+          routePrefix: string
           list: {
             fields: {
               path: string

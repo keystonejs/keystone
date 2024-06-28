@@ -104,9 +104,7 @@ function getLazyMetadataQuery (
     parse(`fragment x on y {
     keystone {
       adminMeta {
-        config {
-          adminPath
-        }
+        routePrefix
         lists {
           key
           isHidden

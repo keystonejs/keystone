@@ -16,6 +16,7 @@ import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
+  const { adminMeta: { routePrefix } } = useKeystone()
   return (
     <Box paddingTop="xlarge">
       {createItem.error && (
@@ -34,7 +35,7 @@ function CreatePageForm (props: { list: ListMeta }) {
           onClick={async () => {
             const item = await createItem.create()
             if (item) {
-              router.push(`/${props.list.path}/${item.id}`)
+              router.push(`${routePrefix}/${props.list.path}/${item.id}`)
             }
           }}
         >
@@ -48,8 +49,8 @@ function CreatePageForm (props: { list: ListMeta }) {
 type CreateItemPageProps = { params: { listKey: string } }
 
 export function CreateItemPage ({ params }: CreateItemPageProps) {
-  const list = useList(params.listKey)
-  const { createViewFieldModes } = useKeystone()
+  const { createViewFieldModes, listsKeyByPath } = useKeystone()
+  const list = useList(listsKeyByPath[params.listKey])
 
   return (
     <PageContainer

@@ -108,7 +108,7 @@ function CreateButton (props: LinkProps) {
 
 export function HomePage () {
   const {
-    adminMeta: { lists, config },
+    adminMeta: { lists },
     visibleLists,
   } = useKeystone()
   const query = useMemo(
@@ -116,9 +116,7 @@ export function HomePage () {
     query {
       keystone {
         adminMeta {
-          config {
-            adminPath
-          }
+          routePrefix
           lists {
             key
             hideCreate
@@ -183,7 +181,7 @@ export function HomePage () {
                   }
                   key={key}
                   listKey={key}
-                  basePath={data?.keystone.adminMeta.config.adminPath}
+                  basePath={data?.keystone.adminMeta.routePrefix}
                 />
               )
             })
