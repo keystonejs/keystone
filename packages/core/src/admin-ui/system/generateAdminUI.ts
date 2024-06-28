@@ -24,9 +24,9 @@ function serializePathForImport (path: string) {
   )
 }
 
-function getDoesAdminConfigExist () {
+function getDoesAdminConfigExist (adminPath: string) {
   try {
-    const configPath = Path.join(process.cwd(), 'admin', 'config')
+    const configPath = Path.join(adminPath, 'config')
     resolve.sync(configPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false })
     return true
   } catch (err: any) {
@@ -46,8 +46,10 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
       )
     }
     await fse.ensureDir(Path.dirname(outputFilename))
-    // TODO: should we use copyFile or copy?
-    await fs.copyFile(file.inputPath, outputFilename)
+    if (file.overwrite && !(await fse.exists(outputFilename))) {
+      // TODO: should we use copyFile or copy?
+      await fs.copyFile(file.inputPath, outputFilename)
+    }
   }
   let content: undefined | string
   try {
@@ -72,24 +74,6 @@ export async function generateAdminUI (
   projectAdminPath: string,
   isLiveReload: boolean
 ) {
-  // when we're not doing a live reload, we want to clear everything out except the .next directory (not the .next directory because it has caches)
-  // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
-  if (!isLiveReload) {
-    const dir = await fs.readdir(projectAdminPath).catch(err => {
-      if (err.code === 'ENOENT') {
-        return []
-      }
-      throw err
-    })
-
-    await Promise.all(
-      dir.map(x => {
-        if (x === '.next') return
-        return fs.rm(Path.join(projectAdminPath, x), { recursive: true })
-      })
-    )
-  }
-
   // Write out the files configured by the user
   const userFiles = config.ui?.getAdditionalFiles?.map(x => x()) ?? []
   const userFilesToWrite = (await Promise.all(userFiles)).flat()
@@ -99,37 +83,8 @@ export async function generateAdminUI (
   const uniqueFiles = new Set(savedFiles)
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
-  const configFileExists = getDoesAdminConfigExist()
+  const configFileExists = getDoesAdminConfigExist(projectAdminPath)
   let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
-
-  // Add files to pages/ which point to any files which exist in admin/pages
-  const adminConfigDir = Path.join(process.cwd(), 'admin')
-  const userPagesDir = Path.join(adminConfigDir, 'pages')
-
-  let userPagesEntries: Entry[] = []
-  try {
-    userPagesEntries = await walk(userPagesDir, {
-      entryFilter: entry => entry.dirent.isFile() && pageExtensions.has(Path.extname(entry.name)),
-    })
-  } catch (err: any) {
-    if (err.code !== 'ENOENT') {
-      throw err
-    }
-  }
-
-  for (const { path } of userPagesEntries) {
-    const outputFilename = Path.relative(adminConfigDir, path)
-    const importPath = Path.relative(
-      Path.dirname(Path.join(projectAdminPath, outputFilename)),
-      path
-    )
-    const serializedImportPath = serializePathForImport(importPath)
-    adminFiles.push({
-      mode: 'write',
-      outputPath: outputFilename,
-      src: `export { default } from ${serializedImportPath}`,
-    })
-  }
 
   adminFiles = adminFiles.filter(
     x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))

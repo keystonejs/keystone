@@ -45,7 +45,10 @@ import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLi
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
 
 type ItemPageProps = {
-  listKey: string
+  params: { 
+    id: string 
+    listKey: string
+  }
 }
 
 function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
@@ -330,11 +333,9 @@ function DeleteButton ({
   )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
-
-function ItemPage ({ listKey }: ItemPageProps) {
-  const list = useList(listKey)
-  const id = useRouter().query.id as string
+export function ItemPage ({ params }: ItemPageProps) {
+  const list = useList(params?.listKey)
+  const id = params?.id as string
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
@@ -385,6 +386,9 @@ function ItemPage ({ listKey }: ItemPageProps) {
       item: ItemData
       keystone: {
         adminMeta: {
+          config: {
+            adminPath: string
+          }
           list: {
             fields: {
               path: string

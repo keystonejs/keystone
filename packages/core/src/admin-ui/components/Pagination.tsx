@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import { Select } from '@keystone-ui/fields'
 import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons'
-import { Link, useRouter } from '../router'
+import { Link } from '../router'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type PaginationProps = {
   pageSize: number
@@ -15,7 +16,13 @@ type PaginationProps = {
 }
 
 export function usePaginationParams ({ defaultPageSize }: { defaultPageSize: number }) {
-  const { query } = useRouter()
+  const { push } = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const query = {}
+  for (let [key, value] of searchParams.entries()) {
+    query[key] = value
+  }
   const currentPage = Math.max(
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1,
     1
@@ -43,7 +50,14 @@ function getPaginationStats ({ singular, plural, pageSize, currentPage, total }:
 }
 
 export function Pagination ({ currentPage, total, pageSize, singular, plural }: PaginationProps) {
-  const { query, pathname, push } = useRouter()
+  const { push } = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const query = {}
+  for (let [key, value] of searchParams.entries()) {
+    query[key] = value
+  }
+
   const { stats } = getPaginationStats({ singular, plural, currentPage, total, pageSize })
   const { opacity } = useTheme()
 

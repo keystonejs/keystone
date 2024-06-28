@@ -10,5 +10,9 @@ export default config({
     // WARNING: this is only needed for examples, dont do this
     ...fixPrismaPath,
   },
+  ui: {
+    basePath: '/admin',
+    tsx: true,
+  },
   lists,
 })

@@ -29,6 +29,9 @@ export function useLazyMetadata (query: DocumentNode): {
           | { __typename: string }
         keystone: {
           adminMeta: {
+            config: {
+              adminPath: string
+            }
             lists: {
               key: string
               isHidden: boolean

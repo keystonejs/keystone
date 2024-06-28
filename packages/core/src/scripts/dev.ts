@@ -270,7 +270,7 @@ export async function dev (
       await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
 
       console.log('✨ Preparing Admin UI app')
-      nextApp = next({ dev: true, dir: paths.admin })
+      nextApp = next({ dev: true, dir: cwd })
       await nextApp.prepare()
 
       console.log(`✅ Admin UI ready`)

@@ -212,6 +212,21 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
 const adminMeta = graphql.object<AdminMetaRootVal>()({
   name: 'KeystoneAdminMeta',
   fields: {
+    config: graphql.field({
+      type: graphql.nonNull(
+        graphql.object<FieldMetaRootVal['listView']>()({
+          name: 'config',
+          fields: {
+            adminPath: graphql.field({ 
+              type: graphql.nonNull(graphql.String),
+              resolve (rootVal) {
+                return rootVal.adminPath
+              },
+            })
+          },
+        })
+      ),
+    }),
     lists: graphql.field({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListMeta))),
     }),

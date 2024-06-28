@@ -4,7 +4,7 @@
 import { Box, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
 import { Button } from '@keystone-ui/button'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Fields } from '../../../../admin-ui/utils'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui'
@@ -45,13 +45,10 @@ function CreatePageForm (props: { list: ListMeta }) {
   )
 }
 
-type CreateItemPageProps = { listKey: string }
+type CreateItemPageProps = { params: { listKey: string } }
 
-export const getCreateItemPage = (props: CreateItemPageProps) => () =>
-  <CreateItemPage {...props} />
-
-function CreateItemPage (props: CreateItemPageProps) {
-  const list = useList(props.listKey)
+export function CreateItemPage ({ params }: CreateItemPageProps) {
+  const list = useList(params.listKey)
   const { createViewFieldModes } = useKeystone()
 
   return (
