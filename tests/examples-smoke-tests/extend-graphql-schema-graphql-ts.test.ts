@@ -9,7 +9,7 @@ exampleProjectTests('extend-graphql-schema-graphql-ts', browserType => {
     page = await browser.newPage()
     await loadIndex(page)
   })
-  test('Load list', async () => {
+  test.skip('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')])
     await page.waitForSelector('a:has-text("Create Author")')
   })

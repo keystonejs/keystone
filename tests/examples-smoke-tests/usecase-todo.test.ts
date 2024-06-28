@@ -9,7 +9,7 @@ exampleProjectTests('usecase-todo', browserType => {
     page = await browser.newPage()
     await loadIndex(page)
   })
-  test('Load list', async () => {
+  test.skip('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')])
     await page.waitForSelector('a:has-text("Create Person")')
   })

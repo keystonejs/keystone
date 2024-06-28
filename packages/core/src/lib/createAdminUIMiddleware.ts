@@ -22,11 +22,11 @@ export function createAdminUIMiddlewareWithNextApp (
       isAccessAllowed,
       pageMiddleware,
       publicPages,
-      basePath,
     },
   } = config
 
-  if (basePath !== '/' && basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
+  const basePath = config.ui?.basePath?.replace(/\/$/, '') || ''
+  if (basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
 
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url)

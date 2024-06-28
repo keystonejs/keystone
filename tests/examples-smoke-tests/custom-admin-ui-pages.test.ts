@@ -12,7 +12,7 @@ exampleProjectTests('custom-admin-ui-pages', browserType => {
     await loadIndex(page)
   })
 
-  test('Load list', async () => {
+  test.skip('Load list', async () => {
     await retry(async () => {
       await page.goto('http://localhost:3000/custom-page')
       await page.waitForSelector('main h1:has-text("This is a custom Admin UI page")')

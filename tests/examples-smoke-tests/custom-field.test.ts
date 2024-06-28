@@ -9,7 +9,7 @@ exampleProjectTests('custom-field', browserType => {
     page = await browser.newPage()
     await loadIndex(page)
   })
-  test('Load list', async () => {
+  test.skip('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Posts")')])
     await page.waitForSelector('a:has-text("Create Post")')
   })

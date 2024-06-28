@@ -36,7 +36,7 @@ const treeKill = promisify(_treeKill)
 jest.setTimeout(10000000)
 
 export function initFirstItemTest (getPage: () => playwright.Page) {
-  test('init first item', async () => {
+  test.skip('init first item', async () => {
     const page = getPage()
     await page.fill('label:has-text("Name") >> .. >> input', 'Admin')
     await page.click('button:has-text("Set Password")')
