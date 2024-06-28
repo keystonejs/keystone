@@ -129,6 +129,7 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
+  routePrefix: String!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
