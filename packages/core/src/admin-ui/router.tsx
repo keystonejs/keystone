@@ -1,3 +1,4 @@
+'use client'
 /**
  * This file is exposed by the /router entrypoint, and helps ensure that other
  * packages import the same instance of next's router.
@@ -10,9 +11,10 @@
 // which means that the property isn't enumerable but Next uses Babel's loose mode and Babel's loose mode for the CJS transform
 // uses exports.__esModule = true instead of defineProperty so the property is enumerable
 export { Router, withRouter } from 'next/router'
+import { useRouter as _useRouter, usePathname, useSearchParams } from 'next/navigation'
 
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
-import type { AnchorHTMLAttributes } from 'react'
+import { useCallback, type AnchorHTMLAttributes } from 'react'
 
 export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>
 
@@ -21,3 +23,39 @@ export const Link = NextLink
 import NextHead from 'next/head'
 
 export const Head = NextHead
+
+export function useRouter () {
+  const _router = _useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const query: Record<string, string> = {}
+  for (let [key, value] of searchParams.entries()) {
+    query[key] = value
+  }
+  
+  const router = {
+    push: (...params: any[]) => {
+      if(typeof params[0] === 'string') {        
+        return _router.push(params[0])
+      }
+      if(typeof params[0] === 'object') {
+        const {pathname: _path, query } = params[0] as any
+        return _router.push((_path ?? pathname) + query ? `?${new URLSearchParams(query).toString()}` : '')
+      }
+    },
+    replace: (...params: any[]) => {
+      if(typeof params[0] === 'string') {        
+        return _router.replace(params[0])
+      }
+      if(typeof params[0] === 'object') {
+        const {pathname: _path, query } = params[0] as any
+        return _router.replace((_path ?? pathname) + query ? `?${new URLSearchParams(query).toString()}` : '')
+      }
+    },
+    query,
+    pathname,
+  }
+
+  return router
+}

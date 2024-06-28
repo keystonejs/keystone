@@ -4,7 +4,6 @@
 import { Box, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
 import { Button } from '@keystone-ui/button'
-import { useRouter } from 'next/navigation'
 import { Fields } from '../../../../admin-ui/utils'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui'
@@ -12,6 +11,7 @@ import { GraphQLErrorNotice } from '../../../../admin-ui/components'
 import { type ListMeta } from '../../../../types'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
+import { useRouter } from '../../../../admin-ui/router'
 
 function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)

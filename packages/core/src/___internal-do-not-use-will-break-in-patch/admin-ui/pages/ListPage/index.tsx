@@ -2,7 +2,6 @@
 /** @jsx jsx */
 
 import { Fragment, type HTMLAttributes, type ReactNode, useEffect, useMemo, useState } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import { Button } from '@keystone-ui/button'
 import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core'
@@ -26,7 +25,7 @@ import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/Pa
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
 import { useKeystone, useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
-import { Link } from '../../../../admin-ui/router'
+import { Link, useRouter } from '../../../../admin-ui/router'
 import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
@@ -86,15 +85,6 @@ const storeableQueries = ['sortBy', 'fields']
 
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
-
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  // Create a query object that behaves like the old query object
-  const query = {}
-  for (let [key, value] of searchParams.entries()) {
-    query[key] = value
-  }
-
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
 
   const resetToDefaults = () => {
@@ -106,28 +96,28 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(
     () => {
-      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(query).some(x => {
+      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
         return x.startsWith('!') || storeableQueries.includes(x)
       })
 
-      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+      if (!hasSomeQueryParamsWhichAreAboutListPage) {
         const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
         let parsed
         try {
           parsed = JSON.parse(queryParamsFromLocalStorage!)
         } catch (err) {}
         if (parsed) {
-          router.replace({ query: { ...query, ...parsed } })
+          router.replace({ query: { ...router.query, ...parsed } })
         }
       }
     },
-    [localStorageKey, router.isReady]
+    [localStorageKey]
   )
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {}
-    Object.keys(query).forEach(key => {
+    Object.keys(router.query).forEach(key => {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
-        queryParamsToSerialize[key] = query[key] as string
+        queryParamsToSerialize[key] = router.query[key] as string
       }
     })
     if (Object.keys(queryParamsToSerialize).length) {
@@ -145,14 +135,7 @@ export function ListPage ({ params }: ListPageProps) {
   const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
 
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
-
-  // Create a query object that behaves like the old query object
-  const query = {}
-  for (let [key, value] of searchParams.entries()) {
-    query[key] = value
-  }
+  const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })

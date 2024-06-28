@@ -6,8 +6,8 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
 import { Options } from '@keystone-ui/options'
 import { PopoverDialog, usePopover } from '@keystone-ui/popover'
 import { Fragment } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { type ListMeta } from '../../../../types'
+import { useRouter } from '../../../../admin-ui/router'
 import { fieldSelectionOptionsComponents } from './FieldSelection'
 import { useSort } from './useSort'
 
@@ -80,13 +80,6 @@ function SortSelectionPopoverContent ({
 }) {
   const sort = useSort(list, orderableFields)
   const router = useRouter()
-  const searchParams = useSearchParams()
-
-  // Create a query object that behaves like the old query object
-  const query = {}
-  for (let [key, value] of searchParams.entries()) {
-    query[key] = value
-  }
 
   return (
     <Stack padding="medium" css={{ minWidth: 320 }} gap="small">
@@ -107,7 +100,7 @@ function SortSelectionPopoverContent ({
             if (list.initialSort) {
               router.push({
                 query: {
-                  ...query,
+                  ...router.query,
                   sortBy: ''
                 }
               })
@@ -117,7 +110,7 @@ function SortSelectionPopoverContent ({
           } else {
             router.push({
               query: {
-                ...query,
+                ...router.query,
                 sortBy:
                   sort?.field === fieldPath && sort.direction === 'ASC'
                     ? `-${sort.field}`

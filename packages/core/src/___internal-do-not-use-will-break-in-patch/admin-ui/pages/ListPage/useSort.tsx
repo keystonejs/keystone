@@ -1,15 +1,9 @@
 import { useMemo } from 'react'
 import { type ListMeta } from '../../../../types'
-import { useSearchParams } from 'next/navigation'
+import { useRouter } from '../../../../admin-ui/router'
 
 export function useSort (list: ListMeta, orderableFields: Set<string>) {
-  const searchParams = useSearchParams()
-
-  // Create a query object that behaves like the old query object
-  const query = {}
-  for (let [key, value] of searchParams.entries()) {
-    query[key] = value
-  }
+  const { query } = useRouter()
   let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
 
   return useMemo(() => {

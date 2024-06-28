@@ -1,18 +1,12 @@
 import { useMemo } from 'react'
 import { type ListMeta } from '../../../../types'
-import { useSearchParams } from 'next/navigation'
+import { useRouter } from '../../../../admin-ui/router'
 
 export function useSelectedFields (
   list: ListMeta,
   fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
 ): ReadonlySet<string> {
-  const searchParams = useSearchParams()
-
-  // Create a query object that behaves like the old query object
-  const query = {}
-  for (let [key, value] of searchParams.entries()) {
-    query[key] = value
-  }
+  const { query } = useRouter()
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : ''
   return useMemo(() => {
     let selectedFieldsArray = selectedFieldsFromUrl
