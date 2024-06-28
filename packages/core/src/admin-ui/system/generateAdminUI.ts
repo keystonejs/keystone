@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import resolve from 'resolve'
 import { type GraphQLSchema } from 'graphql'
-import { type Entry, walk as _walk } from '@nodelib/fs.walk'
+import { walk as _walk } from '@nodelib/fs.walk'
 import {
   type AdminFileToWrite,
   type __ResolvedKeystoneConfig
@@ -13,16 +13,6 @@ import { writeAdminFiles } from '../templates'
 import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
-
-function serializePathForImport (path: string) {
-  // JSON.stringify is important here because it will escape windows style paths(and any thing else that might potentially be in there)
-  return JSON.stringify(
-    path
-      // Next is unhappy about imports that include .ts/tsx in them because TypeScript is unhappy with them because when doing a TypeScript compilation with tsc, the imports won't be written so they would be wrong there
-      .replace(/\.tsx?$/, '')
-      .replace(new RegExp(`\\${Path.sep}`, 'g'), '/')
-  )
-}
 
 function getDoesAdminConfigExist (adminPath: string) {
   try {
@@ -64,8 +54,6 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
   }
   return Path.normalize(outputFilename)
 }
-
-const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
 export async function generateAdminUI (
   config: __ResolvedKeystoneConfig,

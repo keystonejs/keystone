@@ -1,12 +1,12 @@
-import { usePathname, useSearchParams } from 'next/navigation'
+import { type ReadonlyURLSearchParams, usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
-export function usePreventNavigation (shouldPreventNavigationRef) {
+export function usePreventNavigation (shouldPreventNavigationRef: { current: boolean }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const prevPathnameRef = useRef()
-  const prevSearchParamsRef = useRef()
+  const prevPathnameRef = useRef<string>()
+  const prevSearchParamsRef = useRef<ReadonlyURLSearchParams>()
 
   useEffect(() => {
     prevPathnameRef.current = pathname
@@ -29,7 +29,7 @@ export function usePreventNavigation (shouldPreventNavigationRef) {
     prevSearchParamsRef.current = searchParams
   }, [pathname, searchParams, shouldPreventNavigationRef])
 
-  const beforeUnloadHandler = event => {
+  const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
     if (shouldPreventNavigationRef.current) {
       event.preventDefault()
     }

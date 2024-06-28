@@ -1,4 +1,3 @@
-import * as Path from 'path'
 import type { GraphQLSchema } from 'graphql'
 import {
   type AdminFileToWrite,
@@ -21,7 +20,7 @@ export const writeAdminFiles = (
   const ext = config.ui?.tsx ? 'tsx' : 'js'
   return [
     { mode: 'write', src: noAccessTemplate(config.session), outputPath: `no-access/page.${ext}` },
-    { mode: 'write', src: adminLayoutTemplate(), overwrite: true, outputPath: `layout.${ext}` },
+    { mode: 'write', src: adminLayoutTemplate(), outputPath: `layout.${ext}` },
     {
       mode: 'write',
       src: adminConfigTemplate(
@@ -33,7 +32,7 @@ export const writeAdminFiles = (
       overwrite: true,
       outputPath: `.admin/index.${ext}`,
     },
-    { mode: 'write', src: homeTemplate, overwrite: true, outputPath: `page.${ext}` },
+    { mode: 'write', src: homeTemplate, outputPath: `page.${ext}` },
     { mode: 'write', src: listTemplate, outputPath: `[listKey]/page.${ext}` },
     { mode: 'write', src: itemTemplate, outputPath: `[listKey]/[id]/page.${ext}` },
     { mode: 'write', src: createItemTemplate, outputPath: `[listKey]/create/page.${ext}` },

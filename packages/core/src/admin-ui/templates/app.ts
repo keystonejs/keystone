@@ -63,12 +63,6 @@ export const config = {
   adminMetaHash: '${adminMetaQueryResultHash}',
   adminConfig,
   apiPath: '${apiPath}',
-  listsKeyByPath: ${JSON.stringify(
-      adminMetaRootVal.lists.reduce<Record<string, string>>((acc, list) => {
-        acc[list.path.split('/').pop()!] = list.key
-        return acc
-      }, {})
-    )},
 };
 `
   // -- TEMPLATE END

@@ -36,7 +36,6 @@ type KeystoneProviderProps = {
   fieldViews: FieldViews
   lazyMetadataQuery: DocumentNode
   apiPath: string
-  listsKeyByPath: Record<string, string>
 }
 
 function InternalKeystoneProvider ({

@@ -14,5 +14,4 @@ export const config = {
   adminMetaHash: '1vq0nzc',
   adminConfig,
   apiPath: '/api/graphql',
-  listsKeyByPath: {"tasks":"Task","people":"Person","secret-plans":"SecretPlan"},
 };

@@ -335,7 +335,8 @@ function DeleteButton ({
 
 export function ItemPage ({ params }: ItemPageProps) {
   const { listsKeyByPath } = useKeystone()
-  const list = useList(listsKeyByPath[params.listKey])
+  const listKey = listsKeyByPath[params.listKey]
+  const list = useList(listKey)
   const id = params.id as string
 
   const { query, selectedFields } = useMemo(() => {

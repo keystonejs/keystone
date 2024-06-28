@@ -14,7 +14,7 @@ export { Router, withRouter } from 'next/router'
 import { useRouter as _useRouter, usePathname, useSearchParams } from 'next/navigation'
 
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
-import { useCallback, type AnchorHTMLAttributes } from 'react'
+import { type AnchorHTMLAttributes } from 'react'
 
 export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>
 
