@@ -10,7 +10,9 @@ export const signinTemplate = ({
   secretField: string
 }) => {
   // -- TEMPLATE START
-  return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
+  return `'use client'
+/* eslint-disable */
+import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
 
 export default getSigninPage(${JSON.stringify({
     identityField: identityField,
@@ -18,7 +20,7 @@ export default getSigninPage(${JSON.stringify({
     mutationName: gqlNames.authenticateItemWithPassword,
     successTypename: gqlNames.ItemAuthenticationWithPasswordSuccess,
     failureTypename: gqlNames.ItemAuthenticationWithPasswordFailure,
-  })});
+  })})
 `
   // -- TEMPLATE END
 }

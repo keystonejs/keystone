@@ -88,7 +88,7 @@ export function createAdminMeta (
 ) {
   const { lists } = config
   const adminMetaRoot: AdminMetaRootVal = {
-    routePrefix: config.ui?.basePath ?? '/admin',
+    routePrefix: config.ui?.basePath?.replace(/^\//, '') ?? '/admin',
     listsByKey: {},
     lists: [],
     views: [],

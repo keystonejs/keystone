@@ -26,7 +26,7 @@ export function createAdminUIMiddlewareWithNextApp (
     },
   } = config
 
-  if (basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
+  if (basePath !== '/' && basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
 
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url)

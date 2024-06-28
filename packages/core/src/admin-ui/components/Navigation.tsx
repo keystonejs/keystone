@@ -235,7 +235,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href={routePrefix}>Dashboard</NavItem>
+      <NavItem href={routePrefix || '/'}>Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   )

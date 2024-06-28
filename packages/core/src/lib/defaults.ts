@@ -141,7 +141,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
     telemetry: config.telemetry ?? true,
     ui: {
       ...config.ui,
-      basePath: config.ui?.basePath ?? '',
+      basePath: config.ui?.basePath ?? '/admin',
       isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],

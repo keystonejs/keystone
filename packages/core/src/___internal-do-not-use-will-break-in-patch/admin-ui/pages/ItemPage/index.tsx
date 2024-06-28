@@ -2,7 +2,6 @@
 /** @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy'
-import { useRouter } from 'next/router'
 import {
   Fragment,
   type HTMLAttributes,
@@ -43,6 +42,7 @@ import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLError
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
+import { useRouter } from '../../../../admin-ui/router'
 
 type ItemPageProps = {
   params: { 
