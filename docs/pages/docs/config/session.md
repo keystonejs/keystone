@@ -37,7 +37,7 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions, storedSessions } from '@keystone-6/core/session';
+import { statelessSessions, storedSessions } from '@keystone-6/core/session'
 
 export default config({
   // Stateless

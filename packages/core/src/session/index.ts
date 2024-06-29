@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
-import type { SessionStrategy, SessionStoreFunction } from '../types'
+import type { SessionStrategy } from '../types'
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -120,39 +120,6 @@ export function statelessSessions<Session> ({
       )
 
       return sealedData
-    },
-  }
-}
-
-/** @deprecated */
-export function storedSessions<Session> ({
-  store: storeFn,
-  maxAge = 60 * 60 * 8, // 8 hours
-  ...statelessSessionsOptions
-}: {
-  store: SessionStoreFunction<Session>
-} & StatelessSessionsOptions): SessionStrategy<Session, any> {
-  const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge })
-  const store = storeFn({ maxAge })
-
-  return {
-    async get ({ context }) {
-      const sessionId = await stateless.get({ context })
-      if (!sessionId) return
-
-      return store.get(sessionId)
-    },
-    async start ({ context, data }) {
-      const sessionId = randomBytes(24).toString('base64url') // 192-bit
-      await store.set(sessionId, data)
-      return stateless.start({ context, data: sessionId }) || ''
-    },
-    async end ({ context }) {
-      const sessionId = await stateless.get({ context })
-      if (!sessionId) return
-
-      await store.delete(sessionId)
-      await stateless.end({ context })
     },
   }
 }
