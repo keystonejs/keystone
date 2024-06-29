@@ -1,10 +1,9 @@
 import { config } from '@keystone-6/core'
-import { storedSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import { createClient } from '@redis/client'
 import { fixPrismaPath } from '../example-utils'
 import { lists, type Session } from './schema'
 import type { TypeInfo } from '.keystone/types'
+import { redis, redisSessionStrategy } from './session'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -31,31 +30,6 @@ const { withAuth } = createAuth({
     fields: ['name', 'password'],
   },
 })
-
-const redis = createClient()
-
-function redisSessionStrategy () {
-  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  return storedSessions<Session>({
-    store: ({ maxAge }) => ({
-      async get (sessionId) {
-        const result = await redis.get(sessionId)
-        if (!result) return
-
-        return JSON.parse(result) as Session
-      },
-
-      async set (sessionId, data) {
-        // we use redis for our Session data, in JSON
-        await redis.setEx(sessionId, maxAge, JSON.stringify(data))
-      },
-
-      async delete (sessionId) {
-        await redis.del(sessionId)
-      },
-    }),
-  })
-}
 
 export default withAuth(
   config<TypeInfo<Session>>({
