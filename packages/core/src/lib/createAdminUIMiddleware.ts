@@ -4,14 +4,14 @@ import type express from 'express'
 import type next from 'next'
 import {
   type KeystoneContext,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
 } from '../types'
 import { pkgDir } from '../pkg-dir'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
 export function createAdminUIMiddlewareWithNextApp (
-  config: __ResolvedKeystoneConfig,
+  config: ResolvedKeystoneConfig,
   commonContext: KeystoneContext,
   nextApp: ReturnType<typeof next>
 ) {

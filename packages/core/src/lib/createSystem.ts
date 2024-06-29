@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto'
 import {
   type KeystoneConfig,
   type FieldData,
-  type __ResolvedKeystoneConfig
+  type ResolvedKeystoneConfig
 } from '../types'
 import { GraphQLError } from 'graphql'
 
@@ -26,7 +26,7 @@ function posixify (s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths (cwd: string, config: KeystoneConfig | __ResolvedKeystoneConfig) {
+export function getSystemPaths (cwd: string, config: KeystoneConfig | ResolvedKeystoneConfig) {
   const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
     ? null
     : config.db.prismaClientPath
@@ -64,7 +64,7 @@ export function getSystemPaths (cwd: string, config: KeystoneConfig | __Resolved
   }
 }
 
-function getSudoGraphQLSchema (config: __ResolvedKeystoneConfig) {
+function getSudoGraphQLSchema (config: ResolvedKeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
   //  * All list level access control is disabled
@@ -76,7 +76,7 @@ function getSudoGraphQLSchema (config: __ResolvedKeystoneConfig) {
   // operations that can be run.
   //
   // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
-  const transformedConfig: __ResolvedKeystoneConfig = {
+  const transformedConfig: ResolvedKeystoneConfig = {
     ...config,
     ui: {
       ...config.ui,
@@ -183,7 +183,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
   return prismaClient
 }
 
-function formatUrl (provider: __ResolvedKeystoneConfig['db']['provider'], url: string) {
+function formatUrl (provider: ResolvedKeystoneConfig['db']['provider'], url: string) {
   if (url.startsWith('file:')) {
     const parsed = new URL(url)
     if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
@@ -200,8 +200,8 @@ function formatUrl (provider: __ResolvedKeystoneConfig['db']['provider'], url: s
   return url
 }
 
-export function createSystem (config_: KeystoneConfig) {
-  const config = resolveDefaults(config_)
+export function createSystem (config_: KeystoneConfig | ResolvedKeystoneConfig) {
+  const config = resolveDefaults(config_ as KeystoneConfig)
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)

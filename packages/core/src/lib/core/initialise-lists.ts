@@ -9,7 +9,7 @@ import {
   type GraphQLTypesForList,
   type ListGraphQLTypes,
   type ListHooks,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
   type MaybePromise,
   type NextFieldType,
   type FieldTypeFunc,
@@ -143,7 +143,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   )
 }
 
-type ListConfigType = __ResolvedKeystoneConfig['lists'][string]
+type ListConfigType = ResolvedKeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: IsEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
@@ -351,7 +351,7 @@ function parseFieldHooks (
 }
 
 function getListsWithInitialisedFields (
-  { storage: configStorage, lists: listsConfig, db: { provider } }: __ResolvedKeystoneConfig,
+  { storage: configStorage, lists: listsConfig, db: { provider } }: ResolvedKeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
   intermediateLists: Record<string, PartiallyInitialisedList1>
 ) {
@@ -569,7 +569,7 @@ function graphqlForOutputField (field: InitialisedField) {
 }
 
 function getListGraphqlTypes (
-  listsConfig: __ResolvedKeystoneConfig['lists'],
+  listsConfig: ResolvedKeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ): Record<string, ListGraphQLTypes> {
@@ -834,7 +834,7 @@ function getListGraphqlTypes (
  * 5. Handle relationships - ensure correct linking between two sides of all relationships (including one-sided relationships)
  * 6.
  */
-export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: ResolvedKeystoneConfig): Record<string, InitialisedList> {
   const listsConfig = config.lists
 
   let intermediateLists
