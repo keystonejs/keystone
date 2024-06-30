@@ -68,6 +68,7 @@ export function getSystemPaths (cwd: string, config: KeystoneConfig | __Resolved
       prisma: builtPrismaPath,
       graphql: builtGraphqlPath,
     },
+    hasSrc,
   }
 }
 

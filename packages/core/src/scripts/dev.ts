@@ -269,7 +269,7 @@ export async function dev (
       }
 
       console.log('✨ Generating Admin UI code')
-      await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
+      await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, paths.hasSrc, false)
 
       console.log('✨ Preparing Admin UI app')
       nextApp = next({ dev: true, dir: cwd })
@@ -338,7 +338,7 @@ export async function dev (
         }
 
         await generateTypes(cwd, newSystem)
-        await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, true)
+        await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, paths.hasSrc, true)
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const { context: newContext } = newSystem.getKeystone(prismaClientModule)

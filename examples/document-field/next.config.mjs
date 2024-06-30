@@ -1,5 +1,4 @@
-export const nextConfigTemplate = () =>
-  `export default {
+export default {
   experimental: {
     // Experimental ESM Externals
     // https://nextjs.org/docs/messages/import-esm-externals
@@ -15,4 +14,3 @@ export const nextConfigTemplate = () =>
     ignoreDuringBuilds: true,
   },
 }
-`

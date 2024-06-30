@@ -64,6 +64,7 @@ export async function generateAdminUI (
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,
+  hasSrc: boolean,
   isLiveReload: boolean
 ) {
   // Write out the files configured by the user
@@ -76,7 +77,7 @@ export async function generateAdminUI (
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist(projectAdminPath)
-  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
+  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists, hasSrc)
 
   adminFiles = adminFiles.filter(
     x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))

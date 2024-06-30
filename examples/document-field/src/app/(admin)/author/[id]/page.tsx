@@ -41,16 +41,17 @@ const author = data?.author
   )
 }
 
-export async function getStaticPaths (): Promise<GetStaticPathsResult> {
-  const data = await fetchGraphQL(gql`
-    query {
-      authors {
-        id
-      }
-    }
-  `)
-  return {
-    paths: data.authors.map((post: any) => ({ params: { id: post.id } })),
-    fallback: 'blocking',
-  }
-}
+// TODO - CAN NOT use this in app router properly
+// export async function getStaticPaths (): Promise<GetStaticPathsResult> {
+//   const data = await fetchGraphQL(gql`
+//     query {
+//       authors {
+//         id
+//       }
+//     }
+//   `)
+//   return {
+//     paths: data.authors.map((post: any) => ({ params: { id: post.id } })),
+//     fallback: 'blocking',
+//   }
+// }

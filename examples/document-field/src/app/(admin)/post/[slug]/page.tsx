@@ -79,16 +79,17 @@ export default async function Post ({ params }: { params: any }) {
   )
 }
 
-export async function getStaticPaths (): Promise<GetStaticPathsResult> {
-  const data = await fetchGraphQL(gql`
-    query {
-      posts {
-        slug
-      }
-    }
-  `)
-  return {
-    paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
-    fallback: 'blocking',
-  }
-}
+// TODO - CAN NOT use this in app router properly
+// export async function getStaticPaths (): Promise<GetStaticPathsResult> {
+//   const data = await fetchGraphQL(gql`
+//     query {
+//       posts {
+//         slug
+//       }
+//     }
+//   `)
+//   return {
+//     paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
+//     fallback: 'blocking',
+//   }
+// }

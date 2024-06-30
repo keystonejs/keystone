@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import React, { type ReactNode, createContext, useContext, useMemo } from 'react'
 import { Center } from '@keystone-ui/core'
 import { ToastProvider } from '@keystone-ui/toast'
@@ -164,6 +165,6 @@ export const useList = (key: string) => {
   if (lists[key]) {
     return lists[key]
   } else {
-    throw new Error(`Invalid list key provided to useList: ${key}`)
+    return notFound()
   }
 }
