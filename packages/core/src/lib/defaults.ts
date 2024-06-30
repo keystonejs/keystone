@@ -100,6 +100,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
   if (config?.server && 'options' in config.server && config.server.options) {
     Object.assign(httpOptions, config.server.options)
   }
+
   return {
     types: {
       ...config.types,
@@ -140,7 +141,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
     telemetry: config.telemetry ?? true,
     ui: {
       ...config.ui,
-      basePath: config.ui?.basePath?.replace(/\/$/, '') ?? '/admin',
+      basePath: config.ui?.basePath ?? '',
       isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],

@@ -109,7 +109,6 @@ export function HomePage () {
   const {
     adminMeta: { lists },
     visibleLists,
-    adminPath,
   } = useKeystone()
   const query = useMemo(
     () => gql`

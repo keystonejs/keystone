@@ -52,6 +52,7 @@ export function getSystemPaths (cwd: string, config: KeystoneConfig | __Resolved
 
   const srcPath = path.join(cwd, 'src')
   const hasSrc = fs.existsSync(srcPath)
+  // remove leading `/` if present
   const basePath = config.ui?.basePath?.replace(/^\//, '') ?? ''
   const adminPath = path.join(cwd, hasSrc ? 'src' : '', `app/${basePath || '(admin)'}`)
 

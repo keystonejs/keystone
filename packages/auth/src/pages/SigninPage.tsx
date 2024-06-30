@@ -9,7 +9,7 @@ import { TextInput } from '@keystone-ui/fields'
 import { Notice } from '@keystone-ui/notice'
 
 import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
-import { useKeystone, useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
+import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { SigninContainer } from '../components/SigninContainer'
 

@@ -28,7 +28,7 @@ export const writeAdminFiles = (
         graphQLSchema,
         { configFileExists },
         config.graphql?.path || '/api/graphql',
-        config.ui?.basePath?.replace(/\/$/, '') || ''
+        config.ui?.basePath || ''
       ),
       overwrite: true,
       outputPath: `.admin/index.${ext}`,

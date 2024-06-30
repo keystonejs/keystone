@@ -59,7 +59,6 @@ export default withAuth<TypeInfo<Session>>(
     },
     lists,
     ui: {
-      basePath: '/',
       // only admins can view the AdminUI
       isAccessAllowed: (context) => {
         return context.session?.data?.isAdmin ?? false
