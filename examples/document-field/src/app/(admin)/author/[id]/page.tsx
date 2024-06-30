@@ -2,9 +2,28 @@ import { type GetStaticPathsResult, type GetStaticPropsContext } from 'next'
 import Link from 'next/link'
 import React from 'react'
 import { DocumentRenderer } from '@keystone-6/document-renderer'
-import { fetchGraphQL, gql } from '../../utils'
+import { fetchGraphQL, gql } from '../../../../utils'
 
-export default function Post ({ author }: { author: any }) {
+export default async function Post ({ params }: any) {
+const data = await fetchGraphQL(
+  gql`
+    query ($id: ID!) {
+      author(where: { id: $id }) {
+        name
+        bio {
+          document
+        }
+        posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
+          id
+          title
+          slug
+        }
+      }
+    }
+  `,
+  { id: params!.id }
+)
+const author = data?.author
   return (
     <article>
       <h1>{author.name}</h1>
@@ -34,26 +53,4 @@ export async function getStaticPaths (): Promise<GetStaticPathsResult> {
     paths: data.authors.map((post: any) => ({ params: { id: post.id } })),
     fallback: 'blocking',
   }
-}
-
-export async function getStaticProps ({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL(
-    gql`
-      query ($id: ID!) {
-        author(where: { id: $id }) {
-          name
-          bio {
-            document
-          }
-          posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
-            id
-            title
-            slug
-          }
-        }
-      }
-    `,
-    { id: params!.id }
-  )
-  return { props: { author: data.author }, revalidate: 60 }
 }

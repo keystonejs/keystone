@@ -2,7 +2,7 @@ import { type GetStaticPathsResult, type GetStaticPropsContext } from 'next'
 import Link from 'next/link'
 import React from 'react'
 import { DocumentRenderer, type DocumentRendererProps } from '@keystone-6/document-renderer'
-import { fetchGraphQL, gql } from '../../utils'
+import { fetchGraphQL, gql } from '../../../../utils'
 
 // By default the DocumentRenderer will render unstyled html elements.
 // We're customising how headings are rendered here but you can customise
@@ -39,7 +39,26 @@ const renderers: DocumentRendererProps['renderers'] = {
   },
 }
 
-export default function Post ({ post }: { post: any }) {
+export default async function Post ({ params }: { params: any }) {
+  const data = await fetchGraphQL(
+    gql`
+      query ($slug: String!) {
+        post(where: { slug: $slug }) {
+          title
+          content {
+            document(hydrateRelationships: true)
+          }
+          publishDate
+          author {
+            id
+            name
+          }
+        }
+      }
+    `,
+    { slug: params!.slug }
+  )
+  const post = data?.post
   return (
     <article>
       <h1>{post.title}</h1>
@@ -72,28 +91,4 @@ export async function getStaticPaths (): Promise<GetStaticPathsResult> {
     paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
     fallback: 'blocking',
   }
-}
-
-export async function getStaticProps ({ params }: GetStaticPropsContext) {
-  // We use (hydrateRelationships: true) to ensure we have the data we need
-  // to render the inline relationships.
-  const data = await fetchGraphQL(
-    gql`
-      query ($slug: String!) {
-        post(where: { slug: $slug }) {
-          title
-          content {
-            document(hydrateRelationships: true)
-          }
-          publishDate
-          author {
-            id
-            name
-          }
-        }
-      }
-    `,
-    { slug: params!.slug }
-  )
-  return { props: { post: data.post }, revalidate: 60 }
 }

@@ -228,11 +228,11 @@ function InitPage ({
     await reinitContext()
 
     if (enableWelcome) return setMode('welcome')
-    router.push(adminPath)
+    router.push(adminPath || '/')
   }
 
   const onComplete = () => {
-    router.push(adminPath)
+    router.push(adminPath || '/')
   }
 
   return mode === 'init' ? (

@@ -4,7 +4,23 @@ import { fetchGraphQL, gql } from '../utils'
 
 type Author = { id: string, name: string, posts: { id: string, slug: string, title: string }[] }
 
-export default function Index ({ authors }: { authors: Author[] }) {
+export default async function Index () {
+  const data = await fetchGraphQL(gql`
+    query {
+      authors {
+        id
+        name
+        posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
+          id
+          slug
+          title
+        }
+      }
+    }
+  `)
+
+  const authors: Author[] = data?.authors || []
+
   return (
     <>
       <h1>Keystone Blog Project - Home</h1>
@@ -26,21 +42,4 @@ export default function Index ({ authors }: { authors: Author[] }) {
       </ul>
     </>
   )
-}
-
-export async function getStaticProps () {
-  const data = await fetchGraphQL(gql`
-    query {
-      authors {
-        id
-        name
-        posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
-          id
-          slug
-          title
-        }
-      }
-    }
-  `)
-  return { props: { authors: data.authors }, revalidate: 30 }
 }

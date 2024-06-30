@@ -47,8 +47,8 @@ export function adminConfigTemplate (
     return JSON.stringify(viewRelativeToAppFile)
   })
   // -- TEMPLATE START
-  return `/* eslint-disable */\n${adminMetaRootVal.views
-    .map((views, i) => `import * as view${i} from '${views}'`)
+  return `/* eslint-disable */\n${allViews
+    .map((views, i) => `import * as view${i} from ${views}`)
     .join('\n')}
 
 ${configFileExists
@@ -87,6 +87,23 @@ export default function AdminLayout ({
     <Layout config={config as any}>
       {children}
     </Layout>
+  )
+}`
+  // -- TEMPLATE END
+}
+
+export function adminRootLayoutTemplate () {
+
+  // -- TEMPLATE START
+  return `export default function RootLayout ({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   )
 }`
   // -- TEMPLATE END

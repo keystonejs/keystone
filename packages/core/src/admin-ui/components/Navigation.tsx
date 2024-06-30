@@ -175,7 +175,7 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
   const { adminPath } = useKeystone()
   return (
     <NavItem
-      isSelected={pathname.endsWith(`/${list.path}`)}
+      isSelected={pathname.replace(adminPath, '').split('/')[1] === `/${list.path}`.split('/')[1]}
       href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
     >
       {list.label}
