@@ -22,7 +22,7 @@ test("start errors when a build hasn't happened", async () => {
   await expect(cliMock(cwd, 'start')).rejects.toEqual(new ExitError(1))
   expect(recording()).toMatchInlineSnapshot(`
     "? Starting Keystone
-    ? keystone build must be run before running keystone start"
+    ? keystone build has not been run"
   `)
 })
 

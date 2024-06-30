@@ -4,8 +4,10 @@ import { Button } from '@keystone-ui/button'
 import { jsx } from '@keystone-ui/core'
 import type { ListMeta } from '../../types'
 import { Link } from '../router'
+import { useKeystone } from '../context'
 
 export function CreateButtonLink (props: { list: ListMeta }) {
+  const { adminPath } = useKeystone()
   return (
     <Button
       css={{
@@ -15,7 +17,7 @@ export function CreateButtonLink (props: { list: ListMeta }) {
         },
       }}
       as={Link}
-      href={`/${props.list.path}/create`}
+      href={`${adminPath}/${props.list.path}/create`}
       tone="active"
       size="small"
       weight="bold"

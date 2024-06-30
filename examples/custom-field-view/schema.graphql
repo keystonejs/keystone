@@ -9,6 +9,7 @@ type Task {
   assignedTo: Person
   finishBy: DateTime
   relatedLinks: JSON
+  moreLinks: JSON
 }
 
 enum TaskPriorityType {
@@ -117,6 +118,7 @@ input TaskUpdateInput {
   assignedTo: PersonRelateToOneForUpdateInput
   finishBy: DateTime
   relatedLinks: JSON
+  moreLinks: JSON
 }
 
 input PersonRelateToOneForUpdateInput {
@@ -137,6 +139,7 @@ input TaskCreateInput {
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: DateTime
   relatedLinks: JSON
+  moreLinks: JSON
 }
 
 input PersonRelateToOneForCreateInput {
