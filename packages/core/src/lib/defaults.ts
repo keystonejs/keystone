@@ -4,7 +4,7 @@ import {
   type IdFieldConfig,
   type KeystoneConfig,
   type KeystoneContext,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
 } from '../types'
 import {
   idFieldType
@@ -73,10 +73,10 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
   return session !== undefined
 }
 
-async function noop () {}
+export async function noop () {}
 function identity<T> (x: T) { return x }
 
-export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
+export function resolveDefaults<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>, injectIdField = false): ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -126,7 +126,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
-    lists: injectDefaults(config, defaultIdField),
+    lists: injectIdField ? injectDefaults(config, defaultIdField) : config.lists,
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,

@@ -4,9 +4,7 @@ import {
 } from '../../types'
 import { type ResolvedDBField } from './resolve-relationships'
 import { type InitialisedList } from './initialise-lists'
-import {
-  type __ResolvedKeystoneConfig
-} from '../../types'
+import { type ResolvedKeystoneConfig } from '../../types'
 import { areArraysEqual, getDBFieldKeyForFieldOnMultiField } from './utils'
 
 const modifiers = {
@@ -183,7 +181,7 @@ function assertDbFieldIsValidForIdField (
 }
 
 export function printPrismaSchema (
-  config: __ResolvedKeystoneConfig,
+  config: ResolvedKeystoneConfig,
   lists: Record<string, InitialisedList>,
 ) {
   const {

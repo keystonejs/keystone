@@ -251,7 +251,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   }
 }
 
-export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+export type ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types: KeystoneConfig<TypeInfo>['types']
   db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
     enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
