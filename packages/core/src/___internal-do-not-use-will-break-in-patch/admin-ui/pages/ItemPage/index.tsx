@@ -270,6 +270,7 @@ function DeleteButton ({
   itemId: string
   list: ListMeta
 }) {
+  const { adminPath } = useKeystone()
   const toasts = useToasts()
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
@@ -310,7 +311,7 @@ function DeleteButton ({
                   tone: 'negative',
                 })
               }
-              router.push(list.isSingleton ? '/' : `/${list.path}`)
+              router.push(`${adminPath}/${list.isSingleton ? '' : `${list.path}`}`)
               return toasts.addToast({
                 title: itemLabel,
                 message: `Deleted ${list.singular} item successfully`,

@@ -72,5 +72,5 @@ export default withAuth<TypeInfo<Session>>(
       // the session secret is used to encrypt cookie data
       secret: sessionSecret,
     }),
-  })
+  }) as any
 )

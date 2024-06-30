@@ -17,11 +17,9 @@ function ListCard ({
   listKey,
   count,
   hideCreate,
-  basePath,
 }: {
   listKey: string
   hideCreate: boolean
-  basePath: string
   count:
     | { type: 'success', count: number }
     | { type: 'no-access' }
@@ -30,10 +28,11 @@ function ListCard ({
 }) {
   const { colors, palette, radii, spacing } = useTheme()
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={`${basePath ?? ''}/${list.path}${list.isSingleton ? '/1' : ''}`}
+        href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -67,7 +66,7 @@ function ListCard ({
         )}
       </Link>
       {hideCreate === false && !list.isSingleton && (
-        <CreateButton title={`Create ${list.singular}`} href={`${basePath ?? ''}/${list.path}/create`}>
+        <CreateButton title={`Create ${list.singular}`} href={`${adminPath}/${list.path}/create`}>
           <PlusIcon size="large" />
           <VisuallyHidden>Create {list.singular}</VisuallyHidden>
         </CreateButton>
@@ -181,7 +180,6 @@ export function HomePage () {
                   }
                   key={key}
                   listKey={key}
-                  basePath={adminPath}
                 />
               )
             })

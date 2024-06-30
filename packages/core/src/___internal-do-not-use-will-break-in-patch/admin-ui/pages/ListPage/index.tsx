@@ -575,6 +575,7 @@ function ListTable ({
   orderableFields: Set<string>
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const { query } = useRouter()
   const shouldShowLinkIcon =
     !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo
@@ -697,8 +698,8 @@ function ListTable ({
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
-                      href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                      href={`${adminPath}/${list.path}/[id]`}
+                      as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
@@ -718,8 +719,8 @@ function ListTable ({
                         <TableBodyCell css={{ color: 'red' }} key={path}>
                           {i === 0 && Cell.supportsLinkTo ? (
                             <CellLink
-                              href={`/${list.path}/[id]`}
-                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                              href={`${adminPath}/${list.path}/[id]`}
+                              as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                             >
                               {errorMessage}
                             </CellLink>
@@ -740,8 +741,8 @@ function ListTable ({
                         linkTo={
                           i === 0 && Cell.supportsLinkTo
                             ? {
-                                href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
+                                href: `${adminPath}/${list.path}/[id]`,
+                                as: `${adminPath}/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }

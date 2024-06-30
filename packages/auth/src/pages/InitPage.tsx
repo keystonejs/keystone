@@ -30,6 +30,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   const [email, setEmail] = useState<string>(guessEmailFromValue(value))
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const { adminPath } = useKeystone()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -137,7 +138,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
             {error ? 'Try again' : 'Continue'}
           </Button>
           {error && (
-            <Button as={Link} href={'/'} tone="active">
+            <Button as={Link} href={adminPath || '/'} tone="active">
               Continue
             </Button>
           )}
