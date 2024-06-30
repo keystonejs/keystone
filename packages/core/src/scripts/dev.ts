@@ -56,7 +56,7 @@ function resolvablePromise<T> () {
 
 export async function dev (
   cwd: string,
-  { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
+  { dbPush, prisma, server, ui, resetAdmin }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui' | 'resetAdmin'>
 ) {
   console.log('✨ Starting Keystone')
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>()
@@ -264,7 +264,9 @@ export async function dev (
     let nextApp
     if (!system.config.ui?.isDisabled && ui) {
       const paths = system.getPaths(cwd)
-      await fsp.rm(paths.admin, { recursive: true, force: true })
+      if (resetAdmin) {
+        await fsp.rm(paths.admin, { recursive: true, force: true })
+      }
 
       console.log('✨ Generating Admin UI code')
       await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)

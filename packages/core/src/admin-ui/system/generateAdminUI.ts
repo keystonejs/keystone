@@ -1,10 +1,10 @@
 import Path from 'node:path'
-import { promisify } from 'node:util'
+// import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import resolve from 'resolve'
 import { type GraphQLSchema } from 'graphql'
-import { walk as _walk } from '@nodelib/fs.walk'
+// import { walk as _walk } from '@nodelib/fs.walk'
 import {
   type AdminFileToWrite,
   type __ResolvedKeystoneConfig
@@ -12,7 +12,7 @@ import {
 import { writeAdminFiles } from '../templates'
 import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 
-const walk = promisify(_walk)
+// const walk = promisify(_walk)
 
 function getDoesAdminConfigExist (adminPath: string) {
   try {
@@ -29,6 +29,12 @@ function getDoesAdminConfigExist (adminPath: string) {
 
 export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath)
+  const overwrite = file.overwrite || !(await fse.exists(outputFilename))
+
+  if (!overwrite) {
+    return Path.normalize(outputFilename)
+  }
+
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
       throw new Error(
@@ -36,10 +42,8 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
       )
     }
     await fse.ensureDir(Path.dirname(outputFilename))
-    if (file.overwrite && !(await fse.exists(outputFilename))) {
-      // TODO: should we use copyFile or copy?
-      await fs.copyFile(file.inputPath, outputFilename)
-    }
+    // TODO: should we use copyFile or copy?
+    await fs.copyFile(file.inputPath, outputFilename)
   }
   let content: undefined | string
   try {
@@ -86,22 +90,22 @@ export async function generateAdminUI (
   // this won't clear out empty directories, this is fine since:
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
-  if (isLiveReload) {
-    const ignoredDir = Path.resolve(projectAdminPath, '.next')
-    const ignoredFiles = new Set(
-      [
-        ...adminFiles.map(x => x.outputPath),
-        ...uniqueFiles,
-        'next-env.d.ts',
-        'pages/api/__keystone_api_build.js',
-      ].map(x => Path.resolve(projectAdminPath, x))
-    )
+  // if (isLiveReload) {
+  //   const ignoredDir = Path.resolve(projectAdminPath, '.next')
+  //   const ignoredFiles = new Set(
+  //     [
+  //       ...adminFiles.map(x => x.outputPath),
+  //       ...uniqueFiles,
+  //       'next-env.d.ts',
+  //       'pages/api/__keystone_api_build.js',
+  //     ].map(x => Path.resolve(projectAdminPath, x))
+  //   )
 
-    const entries = await walk(projectAdminPath, {
-      deepFilter: entry => entry.path !== ignoredDir,
-      entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
-    })
+  //   const entries = await walk(projectAdminPath, {
+  //     deepFilter: entry => entry.path !== ignoredDir,
+  //     entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
+  //   })
 
-    await Promise.all(entries.map(entry => fs.rm(entry.path, { recursive: true })))
-  }
+  //   await Promise.all(entries.map(entry => fs.rm(entry.path, { recursive: true })))
+  // }
 }
