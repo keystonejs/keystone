@@ -62,7 +62,7 @@ For more information on the props, please see the [Navigation Props](#navigation
 Next we'll want to import some components that Keystone provides to help us build our custom Navigation.
 
 ```tsx
-import { NavigationContainer, NavItem, ListNavItems } from '@keystone-6/core/admin-ui/components';
+import { NavigationContainer, NavItem, NavItemGroup, ListNavItems } from '@keystone-6/core/admin-ui/components';
 ```
 
 The `NavigationContainer` component provides a container around your navigation links, as well as the different states of the `authenticatedItem` prop. We'll need this to:
@@ -71,7 +71,7 @@ The `NavigationContainer` component provides a container around your navigation 
 - Render out the hamburger menu with additional options should a user session be in progress via the `authenticatedItem` prop.
 
 ```tsx
-import { NavigationContainer, NavItem, ListNavItems } from '@keystone-6/core/admin-ui/components';
+import { NavigationContainer, NavItem, NavItemGroup, ListNavItems } from '@keystone-6/core/admin-ui/components';
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
 
 export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
@@ -91,15 +91,22 @@ For more information on the `NavigationContainer` see the [NavigationContainer](
 
 The `ListNavItems` component takes the provided Array of `lists` and renders a list of NavItems. We'll use this component to help us easily create NavItems from Keystone lists.
 
+{% hint kind="tip" %}
+It's important to wrap all links in a `NavItemGroup` component. This is the `ul` to the `li` produced by `NavItem`.
+{% /hint %}
+
+
 ```tsx
-import { NavigationContainer, NavItem, ListNavItems } from '@keystone-6/core/admin-ui/components';
+import { NavigationContainer, NavItem, NavItemGroup, ListNavItems } from '@keystone-6/core/admin-ui/components';
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
 
 export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <ListNavItems lists={lists}/>
-      {/* ... */}
+      <NavItemGroup>
+        <ListNavItems lists={lists}/>
+        {/* ... */}
+      </NavItemGroup>
     </NavigationContainer>
   )
 }
@@ -120,11 +127,13 @@ import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
 export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={lists}/>
-      <NavItem href="https://keystonejs.com/">
-        Keystone Docs
-      </NavItem>
+      <NavItemGroup>
+        <NavItem href="/">Dashboard</NavItem>
+        <ListNavItems lists={lists}/>
+        <NavItem href="https://keystonejs.com/">
+          Keystone Docs
+        </NavItem>
+      </NavItemGroup>
     </NavigationContainer>
   )
 }
@@ -144,17 +153,19 @@ With all that done, your Custom Navigation component should be good to go, and y
 
 ```tsx
 // admin/components/CustomNavigation.tsx
-import { NavigationContainer, NavItem, ListNavItems } from '@keystone-6/core/admin-ui/components';
+import { NavigationContainer, NavItem, NavItemGroup, ListNavItems } from '@keystone-6/core/admin-ui/components';
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
 
 export function CustomNavigation({ authenticatedItem, lists }: NavigationProps) {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={lists}/>
-      <NavItem href="https://keystonejs.com/">
-        Keystone Docs
-      </NavItem>
+      <NavItemGroup>
+        <NavItem href="/">Dashboard</NavItem>
+        <ListNavItems lists={lists}/>
+        <NavItem href="https://keystonejs.com/">
+          Keystone Docs
+        </NavItem>
+      </NavItemGroup>
     </NavigationContainer>
   )
 }
@@ -230,7 +241,9 @@ Keystone exposes a variety of helper components to make building out your custom
 
 - [NavigationContainer](#navigation-container)
 - [ListNavItems](#list-nav-items)
+- [ListNavItem](#list-nav-item)
 - [NavItem](#nav-item)
+- [NavItemGroup](#nav-item-group)
 
 ### NavigationContainer
 
@@ -280,7 +293,9 @@ If an `include` prop is supplied, the component will only render out lists that 
 ```tsx
 const CustomNavigation = ({ lists }) => (
   <NavigationContainer>
-    <ListNavItems lists={lists} include={["Task"]} />
+    <NavItemGroup>
+      <ListNavItems lists={lists} include={["Task"]} />
+    </NavItemGroup>
   </NavigationContainer>
 )
 ```
@@ -292,12 +307,49 @@ Otherwise, all lists will be added.
 ```tsx
 const CustomNavigation = ({ lists }) => (
   <NavigationContainer>
-    <ListNavItems lists={lists} />
+    <NavItemGroup>
+      <ListNavItems lists={lists} />
+    </NavItemGroup>
   </NavigationContainer>
 )
 ```
 
 ![example of navigation without include prop values](/assets/guides/custom-admin-ui-navigation/listNavItems-without-include.png)
+
+### ListNavItem
+
+This component will render a single `NavItem` for the given list.
+
+```tsx
+import { ListNavItem } from '@keystone-6/core/admin-ui/components'
+```
+
+In this example we create groups for our lists.
+
+```tsx
+const listGroups = [
+  [
+    { name: 'People', lists: ['User', 'Bio', 'Role']},
+    { name: 'Posts', lists: ['Post', 'Category', 'Tag']},
+  ]
+];
+
+const CustomNavigation = ({ lists }) => (
+  <NavigationContainer>
+    {listGroups.map(group => (
+      <Box key={group.name}>
+        <H5 paddingX="xlarge">{group.name}</H5>
+        <NavItemGroup>
+          {group.lists.map((key) => {
+            const list = lists.find((l) => l.key === key);
+            return list ? <ListNavItem key={key} list={list} /> : null;
+          })}
+        </NavItemGroup>
+      </Box>
+    ))}
+  </NavigationContainer>
+)
+```
 
 ### NavItem
 
@@ -322,6 +374,29 @@ type NavItemProps = {
 
 By default the `isSelected` value will be evaluated by the condition `router.pathname === href`.
 Pass in `isSelected` if you have a custom condition or would like more granular control over the "selected" state of Navigation items.
+
+### NavItemGroup
+
+This component is a styled unordered list `<ul>` which should be used to wrap `NavItem`, `ListNavItem` and `comp
+
+```tsx
+import { NavItemGroup } from '@keystone-6/core/admin-ui/components'
+```
+
+{% hint kind="warn" %}
+Versions of `@keystone-6/core` before `1.2.0` wrapped all children of `NavigationContainer` with the `NavItemGroup` component.
+{% /hint %}
+
+```tsx
+const CustomNavigation = ({ lists }) => (
+  <NavigationContainer>
+    <NavItemGroup>
+      <ListNavItems lists={lists} />
+    </NavItemGroup>
+  </NavigationContainer>
+)
+```
+
 
 ## Related resources
 
