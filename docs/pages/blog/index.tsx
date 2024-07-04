@@ -1,8 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import path from 'path'
-import fs from 'fs/promises'
-import { globby } from 'globby'
 import { type InferGetStaticPropsType, type GetStaticPropsResult } from 'next'
 import Link from 'next/link'
 import { parse, format } from 'date-fns'
@@ -13,8 +10,10 @@ import { Page } from '../../components/Page'
 import { Type } from '../../components/primitives/Type'
 import { Highlight } from '../../components/primitives/Highlight'
 import { useMediaQuery } from '../../lib/media'
-import { type BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc'
 import { siteBaseUrl } from '../../lib/og-util'
+import { reader } from '../../lib/keystatic-reader'
+import { type Entry } from '@keystatic/core/reader'
+import type keystaticConfig from '../../keystatic.config'
 
 const today = new Date()
 export default function Docs (props: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -163,28 +162,15 @@ export async function getStaticProps (): Promise<
   GetStaticPropsResult<{
     posts: {
       slug: string
-      frontmatter: BlogFrontmatter
+      frontmatter: Omit<Entry<typeof keystaticConfig['collections']['posts']>, 'content'>
     }[]
   }>
 > {
-  const files = await globby('*.md', {
-    cwd: path.join(process.cwd(), 'pages/blog'),
-  })
+  const keystaticPosts = await reader.collections.posts.all()
 
-  return {
-    props: {
-      posts: await Promise.all(
-        files.map(async filename => {
-          const contents = await fs.readFile(
-            path.join(process.cwd(), 'pages/blog', filename),
-            'utf8'
-          )
-          return {
-            slug: filename.replace(/\.md$/, ''),
-            frontmatter: extractBlogFrontmatter(contents),
-          }
-        })
-      ),
-    },
-  }
+  const postMeta = keystaticPosts.map(post => ({
+    slug: post.slug,
+    frontmatter: { ...post.entry, content: null },
+  }))
+  return { props: { posts: postMeta } }
 }
