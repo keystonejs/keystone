@@ -2,7 +2,7 @@
 import { config, fields, collection } from '@keystatic/core'
 import { superscriptIcon } from '@keystar/ui/icon/icons/superscriptIcon'
 
-import { mark, wrapper } from '@keystatic/core/content-components'
+import { inline, mark, wrapper } from '@keystatic/core/content-components'
 // import { WellPreview } from './keystatic/admin-previews'
 
 export default config({
@@ -86,6 +86,13 @@ export default config({
             }),
             'related-content': wrapper({ label: 'Related Content', schema: {} }),
             sup: mark({ label: 'Superscript', schema: {}, icon: superscriptIcon, tag: 'sup' }),
+            emoji: inline({
+              label: 'Emoji',
+              schema: {
+                symbol: fields.text({ label: 'Symbol' }),
+                alt: fields.text({ label: 'Alt' }),
+              },
+            }),
           },
         }),
       },
