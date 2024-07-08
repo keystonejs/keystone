@@ -16,5 +16,5 @@
     "target": "esnext"
   },
   "include": ["**/*"],
-  "exclude": ["**/node_modules/**/*"]
+  "exclude": ["docs/", "**/node_modules/**/*"]
 }
