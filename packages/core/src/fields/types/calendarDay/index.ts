@@ -1,20 +1,15 @@
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
-  fieldType,
-  type FieldTypeFunc,
   type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
-import {
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-  resolveHasValidation,
-} from '../../non-null-graphql'
-import { filters } from '../../filters'
 import { type CalendarDayFieldMeta } from './views'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { graphql } from '../../..'
+import { filters } from '../../filters'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -48,13 +43,7 @@ export const calendarDay =
       }
     }
 
-    const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
-    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
-
-    const mode = resolvedIsNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql'
-    const hasValidation = resolveHasValidation(config.db, validation)
 
     function resolveInput (value: string | null | undefined) {
       if (meta.provider === 'sqlite' || value == null) {
@@ -63,19 +52,11 @@ export const calendarDay =
       return dateStringToDateObjectInUTC(value)
     }
 
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config)
     const commonResolveFilter = mode === 'optional' ? filters.resolveCommon : <T>(x: T) => x
-
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = ({ resolvedData, addValidationError, operation }) => {
-        if (operation === 'delete') return
-
-        const value = resolvedData[meta.fieldKey]
-        if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
-          addValidationError(`${fieldLabel} is required`)
-        }
-      }
-    }
 
     return fieldType({
       kind: 'scalar',
@@ -94,7 +75,7 @@ export const calendarDay =
       nativeType: usesNativeDateType ? 'Date' : undefined,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique'

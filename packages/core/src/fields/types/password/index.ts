@@ -3,11 +3,16 @@ import bcryptjs from 'bcryptjs'
 import dumbPasswords from 'dumb-passwords'
 import { userInputError } from '../../../lib/core/graphql-errors'
 import { humanize } from '../../../lib/utils'
-import { type BaseListTypeInfo, fieldType, type FieldTypeFunc, type CommonFieldConfig } from '../../../types'
+import {
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
+} from '../../../types'
 import { graphql } from '../../..'
-import { getResolvedIsNullable, resolveHasValidation } from '../../non-null-graphql'
 import { type PasswordFieldMeta } from './views'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { getResolvedIsNullable, makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -61,17 +66,13 @@ export const password =
       throw Error("isIndexed: 'unique' is not a supported option for field type password")
     }
 
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-
     const validation = {
       isRequired: _validation?.isRequired ?? false,
       rejectCommon: _validation?.rejectCommon ?? false,
       match: _validation?.match
         ? {
             regex: _validation.match.regex,
-            explanation:
-              _validation.match.explanation ??
-              `${fieldLabel} must match ${_validation.match.regex}`,
+            explanation: _validation.match.explanation ?? `value must match ${_validation.match.regex}`,
           }
         : null,
       length: {
@@ -85,22 +86,16 @@ export const password =
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type]
       if (val !== null && (!Number.isInteger(val) || val < 1)) {
-        throw new Error(
-          `The password field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
-        )
+        throw new Error(`${meta.listKey}.${meta.fieldKey}: validation.length.${type} must be a positive integer >= 1`)
       }
     }
 
     if (validation.length.max !== null && validation.length.min > validation.length.max) {
-      throw new Error(
-        `The password field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey}: validation.length.max cannot be less than validation.length.min`)
     }
 
     if (workFactor < 6 || workFactor > 31 || !Number.isInteger(workFactor)) {
-      throw new Error(
-        `The password field at ${meta.listKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey}: workFactor must be an integer between 6 and 31`)
     }
 
     function inputResolver (val: string | null | undefined) {
@@ -110,53 +105,42 @@ export const password =
       return bcrypt.hash(val, workFactor)
     }
 
-    const hasValidation = resolveHasValidation(config.db, validation)
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = (args) => {
-        if (args.operation === 'delete') return
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-        const val = args.inputData[meta.fieldKey]
-        if (
-          args.resolvedData[meta.fieldKey] === null &&
-          (validation?.isRequired || isNullable === false)
-        ) {
-          args.addValidationError(`${fieldLabel} is required`)
+      const value = resolvedData[meta.fieldKey]
+      if (value != null) {
+        if (value.length < validation.length.min) {
+          if (validation.length.min === 1) {
+            addValidationError(`value must not be empty`)
+          } else {
+            addValidationError(`value must be at least ${validation.length.min} characters long`)
+          }
         }
-        if (val != null) {
-          if (val.length < validation.length.min) {
-            if (validation.length.min === 1) {
-              args.addValidationError(`${fieldLabel} must not be empty`)
-            } else {
-              args.addValidationError(
-                `${fieldLabel} must be at least ${validation.length.min} characters long`
-              )
-            }
-          }
-          if (validation.length.max !== null && val.length > validation.length.max) {
-            args.addValidationError(
-              `${fieldLabel} must be no longer than ${validation.length.max} characters`
-            )
-          }
-          if (validation.match && !validation.match.regex.test(val)) {
-            args.addValidationError(validation.match.explanation)
-          }
-          if (validation.rejectCommon && dumbPasswords.check(val)) {
-            args.addValidationError(`${fieldLabel} is too common and is not allowed`)
-          }
+        if (validation.length.max !== null && value.length > validation.length.max) {
+          addValidationError(`Value must be no longer than ${validation.length.max} characters`)
+        }
+        if (validation.match && !validation.match.regex.test(value)) {
+          addValidationError(validation.match.explanation)
+        }
+        if (validation.rejectCommon && dumbPasswords.check(value)) {
+          addValidationError(`Value is too common and is not allowed`)
         }
       }
-    }
-    
+    })
+
     return fieldType({
       kind: 'scalar',
       scalar: 'String',
-      mode: isNullable === false ? 'required' : 'optional',
+      mode,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         where:
           isNullable === false

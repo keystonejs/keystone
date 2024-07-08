@@ -1,5 +1,4 @@
 // Float in GQL: A signed double-precision floating-point value.
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -8,13 +7,9 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import {
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-  resolveHasValidation
-} from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -62,9 +57,7 @@ export const float =
       validation?.max !== undefined &&
       (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
     ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
-      )
+      throw new Error(`The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`)
     }
 
     if (
@@ -77,53 +70,36 @@ export const float =
       )
     }
 
-    const isNullable = getResolvedIsNullable(validation, config.db)
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    assertReadIsNonNullAllowed(meta, config, isNullable)
-
-    const mode = isNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config.db, validation)
-
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = ({ resolvedData, addValidationError, operation }) => {
-        if (operation === 'delete') return
-
-        const value = resolvedData[meta.fieldKey]
-
-        if ((validation?.isRequired || isNullable === false) && value === null) {
-          addValidationError(`${fieldLabel} is required`)
+      const value = resolvedData[meta.fieldKey]
+      if (typeof value === 'number') {
+        if (validation?.max !== undefined && value > validation.max) {
+          addValidationError(`value must be less than or equal to ${validation.max}`
+          )
         }
 
-        if (typeof value === 'number') {
-          if (validation?.max !== undefined && value > validation.max) {
-            addValidationError(
-              `${fieldLabel} must be less than or equal to ${validation.max}`
-            )
-          }
-
-          if (validation?.min !== undefined && value < validation.min) {
-            addValidationError(
-              `${fieldLabel} must be greater than or equal to ${validation.min}`
-            )
-          }
+        if (validation?.min !== undefined && value < validation.min) {
+          addValidationError(`value must be greater than or equal to ${validation.min}`)
         }
       }
-    }
+    })
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'Float',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
-      default:
-        typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
+      default: typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,

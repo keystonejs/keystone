@@ -1,19 +1,17 @@
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
-  fieldType,
-  type FieldTypeFunc,
   type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import {
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-  resolveHasValidation
-} from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import {
+  getResolvedIsNullable,
+  makeValidateHook
+} from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -97,40 +95,23 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> ({
       )
     }
 
-    assertReadIsNonNullAllowed(meta, config, isNullable)
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    const mode = isNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config.db, validation)
-
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
-        if (operation === 'delete') return
-
-        const value = resolvedData[meta.fieldKey]
-
-        if (
-          (validation?.isRequired || isNullable === false) &&
-          (value === null || (operation === 'create' && value === undefined && !hasAutoIncDefault))
-        ) {
-          addValidationError(`${fieldLabel} is required`)
+      const value = resolvedData[meta.fieldKey]
+      if (typeof value === 'number') {
+        if (validation?.min !== undefined && value < validation.min) {
+          addValidationError(`value must be greater than or equal to ${validation.min}`)
         }
-        if (typeof value === 'number') {
-          if (validation?.min !== undefined && value < validation.min) {
-            addValidationError(
-              `${fieldLabel} must be greater than or equal to ${validation.min}`
-            )
-          }
 
-          if (validation?.max !== undefined && value > validation.max) {
-            addValidationError(
-              `${fieldLabel} must be less than or equal to ${validation.max}`
-            )
-          }
+        if (validation?.max !== undefined && value > validation.max) {
+          addValidationError(`value must be less than or equal to ${validation.max}`)
         }
       }
-    }
+    })
 
     return fieldType({
       kind: 'scalar',
@@ -148,7 +129,7 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> ({
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
         where: {

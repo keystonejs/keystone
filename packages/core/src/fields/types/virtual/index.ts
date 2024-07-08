@@ -1,12 +1,12 @@
 import { getNamedType, isLeafType } from 'graphql'
 import {
-  type BaseListTypeInfo,
   type BaseItem,
+  type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
-  fieldType,
   type KeystoneContext,
   type ListGraphQLTypes,
+  fieldType,
   getGqlNames,
 } from '../../../types'
 import { graphql } from '../../..'

@@ -1,4 +1,3 @@
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -7,12 +6,9 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import {
-  assertReadIsNonNullAllowed,
-  resolveHasValidation,
-} from '../../non-null-graphql'
+import { makeValidateHook } from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -66,6 +62,9 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
     validation: validation_
   } = config
 
+  config.db ??= {}
+  config.db.isNullable ??= false // TODO: sigh, remove in breaking change?
+
   return (meta) => {
     for (const type of ['min', 'max'] as const) {
       const val = validation_?.length?.[type]
@@ -95,38 +94,31 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
 
     // defaulted to false as a zero length string is preferred to null
     const isNullable = config.db?.isNullable ?? false
-    assertReadIsNonNullAllowed(meta, config, isNullable)
-
     const defaultValue = isNullable ? (defaultValue_ ?? null) : (defaultValue_ ?? '')
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const mode = isNullable ? 'optional' : 'required'
-    const hasValidation = resolveHasValidation(config.db, validation) || !isNullable // we make an exception for Text
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
-        if (operation === 'delete') return
 
-        const val = resolvedData[meta.fieldKey]
-        if (val === null && (validation?.isRequired || isNullable === false)) {
-          addValidationError(`${fieldLabel} is required`)
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
+
+      const value = resolvedData[meta.fieldKey]
+      if (value != null) {
+        if (validation?.length?.min !== undefined && value.length < validation.length.min) {
+          if (validation.length.min === 1) {
+            addValidationError(`value must not be empty`)
+          } else {
+            addValidationError(`value must be at least ${validation.length.min} characters long`)
+          }
         }
-        if (val != null) {
-          if (validation?.length?.min !== undefined && val.length < validation.length.min) {
-            if (validation.length.min === 1) {
-              addValidationError(`${fieldLabel} must not be empty`)
-            } else {
-              addValidationError(`${fieldLabel} must be at least ${validation.length.min} characters long`)
-            }
-          }
-          if (validation?.length?.max !== undefined && val.length > validation.length.max) {
-            addValidationError(`${fieldLabel} must be no longer than ${validation.length.max} characters`)
-          }
-          if (validation?.match && !validation.match.regex.test(val)) {
-            addValidationError(validation.match.explanation || `${fieldLabel} must match ${validation.match.regex}`)
-          }
+        if (validation?.length?.max !== undefined && value.length > validation.length.max) {
+          addValidationError(`value must be no longer than ${validation.length.max} characters`)
+        }
+        if (validation?.match && !validation.match.regex.test(value)) {
+          addValidationError(validation.match.explanation || `value must match ${validation.match.regex}`)
         }
       }
-    }
+    })
 
     return fieldType({
       kind: 'scalar',
@@ -139,7 +131,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,

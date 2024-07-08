@@ -72,7 +72,7 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
           const filenameKey = `${fieldKey}_filename`
           const filename = args.item[filenameKey]
 
-          // This will occur on an update where a file already existed but has been
+          // this will occur on an update where a file already existed but has been
           // changed, or on a delete, where there is no longer an item
           if (
             (args.operation === 'delete' ||

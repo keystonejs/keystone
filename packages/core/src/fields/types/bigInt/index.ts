@@ -1,4 +1,3 @@
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -8,15 +7,11 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import {
-  assertReadIsNonNullAllowed,
   getResolvedIsNullable,
-  resolveHasValidation,
+  makeValidateHook
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
-import {
-  type InternalFieldHooks,
-  mergeFieldHooks,
-} from '../../resolve-hooks'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -84,41 +79,23 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
-    assertReadIsNonNullAllowed(meta, config, isNullable)
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    const mode = isNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config.db, validation)
-
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (hasValidation) {
-      hooks.validate = ({ resolvedData, operation, addValidationError }) => {
-        if (operation === 'delete') return
-
-        const value = resolvedData[meta.fieldKey]
-
-        if (
-          (validation?.isRequired || isNullable === false) &&
-          (value === null ||
-            (operation === 'create' && value === undefined && !hasAutoIncDefault))
-        ) {
-          addValidationError(`${fieldLabel} is required`)
+      const value = resolvedData[meta.fieldKey]
+      if (typeof value === 'number') {
+        if (validation?.min !== undefined && value < validation.min) {
+          addValidationError(`value must be greater than or equal to ${validation.min}`)
         }
-        if (typeof value === 'number') {
-          if (validation?.min !== undefined && value < validation.min) {
-            addValidationError(
-              `${fieldLabel} must be greater than or equal to ${validation.min}`
-            )
-          }
 
-          if (validation?.max !== undefined && value > validation.max) {
-            addValidationError(
-              `${fieldLabel} must be less than or equal to ${validation.max}`
-            )
-          }
+        if (validation?.max !== undefined && value > validation.max) {
+          addValidationError(`value must be less than or equal to ${validation.max}`)
         }
       }
-    }
+    })
 
     return fieldType({
       kind: 'scalar',
@@ -136,10 +113,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].BigInt[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,

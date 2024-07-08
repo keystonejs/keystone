@@ -8,9 +8,9 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
 import { userInputError } from '../../../lib/core/graphql-errors'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -34,6 +34,7 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
         }
     ) & {
       db?: {
+        isNullable?: boolean
         map?: string
         extendPrismaSchema?: (field: string) => string
       }
@@ -50,12 +51,13 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
     defaultValue = [],
   } = config
 
+  config.db ??= {}
+  config.db.isNullable ??= false // TODO: deprecated, remove in breaking change
+
   return (meta) => {
     if ((config as any).isIndexed === 'unique') {
       throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    assertReadIsNonNullAllowed(meta, config, false)
 
     const output = <T extends graphql.NullableOutputType>(type: T) => nonNullList(type)
     const create = <T extends graphql.NullableInputType>(type: T) => {
@@ -69,6 +71,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       }
       return resolved
     }
+
     const resolveUpdate = <T extends string | number>(
       val: T[] | null | undefined
     ): T[] | undefined => {
@@ -80,38 +83,38 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
 
     const transformedConfig = configToOptionsAndGraphQLType(config, meta)
 
-    const possibleValues = new Set(transformedConfig.options.map(x => x.value))
-    if (possibleValues.size !== transformedConfig.options.length) {
+    const accepted = new Set(transformedConfig.options.map(x => x.value))
+    if (accepted.size !== transformedConfig.options.length) {
       throw new Error(
         `The multiselect field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
       )
     }
 
-    const hooks: InternalFieldHooks<ListTypeInfo> = {
-      validate: (args) => {
-        if (args.operation === 'delete') return
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-        const selectedValues: readonly (string | number)[] | undefined = args.inputData[meta.fieldKey]
-        if (selectedValues !== undefined) {
-          for (const value of selectedValues) {
-            if (!possibleValues.has(value)) {
-              args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
-            }
-          }
-          const uniqueValues = new Set(selectedValues)
-          if (uniqueValues.size !== selectedValues.length) {
-            args.addValidationError(`${fieldLabel} must have a unique set of options selected`)
+      const values: readonly (string | number)[] | undefined = resolvedData[meta.fieldKey]
+      if (values !== undefined) {
+        for (const value of values) {
+          if (!accepted.has(value)) {
+            addValidationError(`value is not an accepted option`)
           }
         }
+        if (new Set(values).size !== values.length) {
+          addValidationError(`non-unique set of options selected`)
+        }
       }
-    }
+    })
 
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
-        hooks: mergeFieldHooks(hooks, config.hooks),
+        hooks: mergeFieldHooks({ validate }, config.hooks),
         views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,
@@ -133,7 +136,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
         }),
       },
       {
-        mode: 'required',
+        mode,
         map: config?.db?.map,
         extendPrismaSchema: config.db?.extendPrismaSchema,
         default: { kind: 'literal', value: JSON.stringify(defaultValue) },
