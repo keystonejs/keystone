@@ -18,7 +18,7 @@
     "react": "catalog:"
   },
   "dependencies": {
-    "@babel/runtime": "catalog:",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/icons": "workspace:^"
   },

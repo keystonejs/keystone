@@ -20,7 +20,7 @@
     "react-dom": "catalog:"
   },
   "dependencies": {
-    "@babel/runtime": "catalog:",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^",
     "@popperjs/core": "^2.10.2",
     "focus-trap": "^7.0.0",

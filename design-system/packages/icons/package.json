@@ -1169,7 +1169,7 @@
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "catalog:",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^"
   },
   "peerDependencies": {

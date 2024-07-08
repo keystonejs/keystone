@@ -19,11 +19,11 @@
     "prepare": "preconstruct dev"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/plugin-transform-runtime": "^7.21.0",
-    "@babel/preset-env": "^7.20.0",
-    "@babel/preset-react": "^7.18.0",
-    "@babel/preset-typescript": "^7.21.0",
+    "@babel/core": "^7.24.7",
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.18.0",
     "@changesets/get-github-info": "^0.6.0",

@@ -21,7 +21,7 @@
     "react-dom": "catalog:"
   },
   "dependencies": {
-    "@babel/runtime": "catalog:",
+    "@babel/runtime": "^7.24.7",
     "@emotion/react": "^11.7.1",
     "@types/facepaint": "^1.2.2",
     "facepaint": "^1.2.1"

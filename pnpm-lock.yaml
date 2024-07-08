@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@babel/runtime':
-      specifier: ^7.21.0
-      version: 7.24.7
     '@prisma/client':
       specifier: 5.16.1
       version: 5.16.1
@@ -57,19 +54,19 @@ importers:
   .:
     devDependencies:
       '@babel/core':
-        specifier: ^7.21.0
+        specifier: ^7.24.7
         version: 7.24.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.21.0
+        specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
       '@babel/preset-env':
-        specifier: ^7.20.0
+        specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
       '@babel/preset-react':
-        specifier: ^7.18.0
+        specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
       '@babel/preset-typescript':
-        specifier: ^7.21.0
+        specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
       '@changesets/changelog-github':
         specifier: ^0.5.0
@@ -129,7 +126,7 @@ importers:
   design-system/packages/button:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -151,7 +148,7 @@ importers:
   design-system/packages/core:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@emotion/react':
         specifier: ^11.7.1
@@ -176,7 +173,7 @@ importers:
   design-system/packages/fields:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -213,7 +210,7 @@ importers:
   design-system/packages/icons:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -247,7 +244,7 @@ importers:
   design-system/packages/loading:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -263,7 +260,7 @@ importers:
   design-system/packages/modals:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/button':
         specifier: workspace:^
@@ -297,7 +294,7 @@ importers:
   design-system/packages/notice:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/button':
         specifier: workspace:^
@@ -319,7 +316,7 @@ importers:
   design-system/packages/options:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -344,7 +341,7 @@ importers:
   design-system/packages/pill:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -360,7 +357,7 @@ importers:
   design-system/packages/popover:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -385,7 +382,7 @@ importers:
   design-system/packages/segmented-control:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -401,7 +398,7 @@ importers:
   design-system/packages/toast:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -420,7 +417,7 @@ importers:
   design-system/packages/tooltip:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/core':
         specifier: workspace:^
@@ -442,7 +439,7 @@ importers:
   design-system/website:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/button':
         specifier: workspace:^
@@ -512,7 +509,7 @@ importers:
   docs:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@codemod/core':
         specifier: ^2.0.1
@@ -1846,7 +1843,7 @@ importers:
   packages/auth:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/button':
         specifier: workspace:^
@@ -1883,7 +1880,7 @@ importers:
   packages/cloudinary:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@keystone-ui/button':
         specifier: workspace:^
@@ -1941,7 +1938,7 @@ importers:
         specifier: ^3.83.0
         version: 3.609.0
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@emotion/hash':
         specifier: ^0.9.0
@@ -2167,7 +2164,7 @@ importers:
   packages/fields-document:
     dependencies:
       '@babel/runtime':
-        specifier: 'catalog:'
+        specifier: ^7.24.7
         version: 7.24.7
       '@braintree/sanitize-url':
         specifier: ^7.0.0

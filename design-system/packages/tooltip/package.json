@@ -20,7 +20,7 @@
     "react-dom": "catalog:"
   },
   "dependencies": {
-    "@babel/runtime": "catalog:",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
     "apply-ref": "^1.0.0"
