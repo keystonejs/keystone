@@ -10,19 +10,19 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "catalog:",
     "@remix-run/node": "^1.15.0",
     "@remix-run/react": "^1.15.0",
     "@remix-run/serve": "^1.15.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.15.0",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.8",
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   },
   "version": null
 }

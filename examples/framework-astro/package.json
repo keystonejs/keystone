@@ -13,14 +13,14 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "catalog:",
     "astro": "^2.2.1"
   },
   "devDependencies": {
-    "@types/node": "^18.11.14",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "@types/node": "catalog:",
+    "react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

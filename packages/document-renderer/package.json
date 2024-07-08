@@ -16,7 +16,7 @@
     "react": "^16.14.0 || 17 || 18"
   },
   "devDependencies": {
-    "react": "^18.2.0"
+    "react": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/document-renderer"
 }

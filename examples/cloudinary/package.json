@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "@keystone-6/cloudinary": "workspace:^",
+    "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "catalog:",
     "dotenv": "^16.0.0"
   },
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

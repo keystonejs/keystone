@@ -17,12 +17,12 @@
     "@keystone-ui/fields": "workspace:*",
     "@keystone-ui/icons": "workspace:*",
     "@keystone-ui/tooltip": "workspace:*",
-    "@prisma/client": "^5.0.0",
-    "react": "^18.2.0"
+    "@prisma/client": "catalog:",
+    "react": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

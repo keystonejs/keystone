@@ -17,16 +17,16 @@
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/fields": "workspace:^",
-    "@prisma/client": "^5.0.0",
-    "graphql": "^16.8.1",
+    "@prisma/client": "catalog:",
+    "graphql": "catalog:",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.1",
-    "react": "^18.2.0",
+    "react": "catalog:",
     "ws": "^8.8.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.3",
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }
