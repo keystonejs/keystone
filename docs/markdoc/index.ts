@@ -1,8 +1,6 @@
 import fs from 'fs/promises'
 import { isMatch } from 'date-fns'
 import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
-import { isNonEmptyArray } from 'emery/guards'
-import { assert } from 'emery/assertions'
 import { load } from 'js-yaml'
 import { baseMarkdocConfig } from './config'
 import { showNextReleaseWithoutReplacement } from './show-next-release'
@@ -65,12 +63,12 @@ const markdocConfig: Config = {
 export function transformContent (errorReportingFilepath: string, content: string): Tag {
   const node = Markdoc.parse(content, errorReportingFilepath)
   const errors = Markdoc.validate(node, markdocConfig)
-  if (isNonEmptyArray(errors)) {
-    throw new MarkdocValidationFailure(errors, errorReportingFilepath)
+  if (errors.length >= 1) {
+    throw new MarkdocValidationFailure(errors as any, errorReportingFilepath)
   }
   const renderableNode = Markdoc.transform(node, markdocConfig)
 
-  assert(isTag(renderableNode))
+  if (!isTag(renderableNode)) throw new TypeError('Expected renderable node')
 
   // Next is annoying about not plain objects
   return JSON.parse(JSON.stringify(renderableNode)) as Tag
