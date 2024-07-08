@@ -85,9 +85,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
 
     const accepted = new Set(transformedConfig.options.map(x => x.value))
     if (accepted.size !== transformedConfig.options.length) {
-      throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`)
     }
 
     const {
@@ -155,9 +153,7 @@ function configToOptionsAndGraphQLType (
         ({ value }) => !Number.isInteger(value) || value > MAX_INT || value < MIN_INT
       )
     ) {
-      throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32-bit signed integer`)
     }
     return {
       type: 'integer' as const,

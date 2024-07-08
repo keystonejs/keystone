@@ -131,9 +131,7 @@ export function select <ListTypeInfo extends BaseListTypeInfo>(config: SelectFie
           ({ value }) => !Number.isInteger(value) || value > MAX_INT || value < MIN_INT
         )
       ) {
-        throw new Error(
-          `The select field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
-        )
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32-bit signed integer`)
       }
       return fieldType({
         kind: 'scalar',

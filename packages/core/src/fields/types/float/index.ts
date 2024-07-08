@@ -39,25 +39,21 @@ export const float =
       defaultValue !== undefined &&
       (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
     ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
 
     if (
       validation?.min !== undefined &&
       (typeof validation.min !== 'number' || !Number.isFinite(validation.min))
     ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`)
     }
 
     if (
       validation?.max !== undefined &&
       (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
     ) {
-      throw new Error(`The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`)
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`)
     }
 
     if (
@@ -65,9 +61,7 @@ export const float =
       validation?.max !== undefined &&
       validation.min > validation.max
     ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
     const {

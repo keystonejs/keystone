@@ -89,7 +89,7 @@ export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo
   if (!config.graphql?.isNonNull?.read) return
 
   throw new Error(
-    `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.isNonNull.read: true, but not validation.isRequired: true, or db.isNullable: false\n` +
+    `${meta.listKey}.${meta.fieldKey} sets graphql.isNonNull.read: true, but not validation.isRequired: true (or db.isNullable: false)\n` +
       `Set validation.isRequired: true, or db.isNullable: false, or graphql.isNonNull.read: false`
   )
 }

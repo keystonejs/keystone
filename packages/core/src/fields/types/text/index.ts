@@ -69,10 +69,10 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
     for (const type of ['min', 'max'] as const) {
       const val = validation_?.length?.[type]
       if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
-        throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`)
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`)
       }
       if (validation_?.isRequired && val !== undefined && val === 0) {
-        throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`)
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`)
       }
     }
 
@@ -81,7 +81,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       validation_?.length?.max !== undefined &&
       validation_?.length?.min > validation_?.length?.max
     ) {
-      throw new Error(`The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
     }
 
     const validation = validation_ ? {

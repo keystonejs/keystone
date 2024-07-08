@@ -53,11 +53,11 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
       if (isNullable !== false) {
         throw new Error(
-          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
+          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
         )
@@ -72,11 +72,11 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
 
     for (const type of ['min', 'max'] as const) {
       if (validation[type] > MAX_INT || validation[type] < MIN_INT) {
-        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`)
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`)
       }
     }
     if (validation.min > validation.max) {
-      throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
     const {
