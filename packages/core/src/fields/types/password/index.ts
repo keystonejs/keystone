@@ -10,7 +10,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import { type PasswordFieldMeta } from './views'
-import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -53,14 +53,14 @@ const PasswordFilter = graphql.inputObject({
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/
 
-export const password =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function password <ListTypeInfo extends BaseListTypeInfo>(config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     bcrypt = bcryptjs,
     workFactor = 10,
     validation: _validation,
-    ...config
-  }: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+
+  return (meta) => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type password")
     }
@@ -80,8 +80,6 @@ export const password =
       },
     }
 
-    const isNullable = resolveDbNullable(validation, config.db)
-
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type]
       if (val !== null && (!Number.isInteger(val) || val < 1)) {
@@ -98,9 +96,7 @@ export const password =
     }
 
     function inputResolver (val: string | null | undefined) {
-      if (val == null) {
-        return val
-      }
+      if (val == null) return val
       return bcrypt.hash(val, workFactor)
     }
 
@@ -142,7 +138,7 @@ export const password =
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         where:
-          isNullable === false
+          mode === 'required'
             ? undefined
             : {
                 arg: graphql.arg({ type: PasswordFilter }),
@@ -175,7 +171,7 @@ export const password =
       __ksTelemetryFieldTypeName: '@keystone-6/password',
       views: '@keystone-6/core/fields/types/password/views',
       getAdminMeta: (): PasswordFieldMeta => ({
-        isNullable,
+        isNullable: mode === 'optional',
         validation: {
           ...validation,
           match: validation.match
@@ -207,3 +203,4 @@ export const password =
       }),
     })
   }
+}
