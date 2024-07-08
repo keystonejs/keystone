@@ -13,7 +13,10 @@ import {
   resolveHasValidation,
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import {
+  type InternalFieldHooks,
+  mergeFieldHooks,
+} from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

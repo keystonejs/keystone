@@ -101,7 +101,6 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const mode = isNullable ? 'optional' : 'required'
     const hasValidation = resolveHasValidation(config.db, validation) || !isNullable // we make an exception for Text
-
     const hooks: InternalFieldHooks<ListTypeInfo> = {}
     if (hasValidation) {
       hooks.validate = ({ resolvedData, operation, addValidationError }) => {

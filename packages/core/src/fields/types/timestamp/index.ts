@@ -1,9 +1,9 @@
 import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
-  fieldType,
   type FieldTypeFunc,
   type CommonFieldConfig,
+  fieldType,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
@@ -13,7 +13,10 @@ import {
   resolveHasValidation,
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import {
+  type InternalFieldHooks,
+  mergeFieldHooks,
+} from '../../resolve-hooks'
 import { type TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -64,7 +67,6 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
     const mode = resolvedIsNullable === false ? 'required' : 'optional'
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const hasValidation = resolveHasValidation(config.db, validation)
-    
     const hooks: InternalFieldHooks<ListTypeInfo> = {}
     if (hasValidation) {
       hooks.validate = ({ resolvedData, operation, addValidationError }) => {
