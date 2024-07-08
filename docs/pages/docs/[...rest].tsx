@@ -1,4 +1,3 @@
-import path from 'path'
 import React from 'react'
 import {
   type GetStaticPathsResult,
@@ -7,11 +6,13 @@ import {
   type InferGetStaticPropsType,
 } from 'next'
 import { useRouter } from 'next/router'
-import { globby } from 'globby'
-import { type DocsContent, readDocsContent } from '../../markdoc'
+import { type DocsContent } from '../../markdoc'
 import { extractHeadings, Markdoc } from '../../components/Markdoc'
 import { DocsPage } from '../../components/Page'
 import { Heading } from '../../components/docs/Heading'
+import { reader } from '../../lib/keystatic-reader'
+import { transform } from '@markdoc/markdoc'
+import { baseMarkdocConfig } from '../../markdoc/config'
 
 export default function DocPage (props: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter()
@@ -37,11 +38,9 @@ export default function DocPage (props: InferGetStaticPropsType<typeof getStatic
 }
 
 export async function getStaticPaths (): Promise<GetStaticPathsResult> {
-  const files = await globby('**/*.md', {
-    cwd: path.join(process.cwd(), 'pages/docs'),
-  })
+  const pages = await reader.collections.docs.list()
   return {
-    paths: files.map(file => ({ params: { rest: file.replace(/\.md$/, '').split('/') } })),
+    paths: pages.map(page => ({ params: { rest: page.split('/') } })),
     fallback: false,
   }
 }
@@ -49,5 +48,13 @@ export async function getStaticPaths (): Promise<GetStaticPathsResult> {
 export async function getStaticProps (
   args: GetStaticPropsContext<{ rest: string[] }>
 ): Promise<GetStaticPropsResult<DocsContent>> {
-  return { props: await readDocsContent(`pages/docs/${args.params!.rest.join('/')}.md`) }
+  const doc = await reader.collections.docs.read(args.params!.rest.join('/'), {
+    resolveLinkedFiles: true,
+  })
+
+  if (!doc) throw new Error(`Doc page not found: ${args.params!.rest.join('/')}`)
+
+  const transformedContent = transform(doc.content.node, baseMarkdocConfig)
+
+  return { props: { ...doc, content: JSON.parse(JSON.stringify(transformedContent)) } }
 }

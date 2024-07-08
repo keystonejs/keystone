@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import path from 'path'
 import { jsx } from '@emotion/react'
+import { transform } from '@markdoc/markdoc'
 import {
   type GetStaticPathsResult,
   type GetStaticPropsContext,
@@ -11,13 +11,14 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { parse, format } from 'date-fns'
-import { globby } from 'globby'
-import { type BlogContent, readBlogContent } from '../../markdoc'
+import { type BlogContent } from '../../markdoc'
 import { extractHeadings, Markdoc } from '../../components/Markdoc'
 import { BlogPage } from '../../components/Page'
 import { Heading } from '../../components/docs/Heading'
 import { Type } from '../../components/primitives/Type'
 import { getOgAbsoluteUrl } from '../../lib/og-util'
+import { reader } from '../../lib/keystatic-reader'
+import { baseMarkdocConfig } from '../../markdoc/config'
 
 export default function Page (props: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter()
@@ -25,6 +26,7 @@ export default function Page (props: InferGetStaticPropsType<typeof getStaticPro
     { id: 'title', depth: 1, label: props.title },
     ...extractHeadings(props.content),
   ]
+
   const publishedDate = props.publishDate
   const parsedDate = parse(publishedDate, 'yyyy-M-d', new Date())
   const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
@@ -81,17 +83,28 @@ export default function Page (props: InferGetStaticPropsType<typeof getStaticPro
 }
 
 export async function getStaticPaths (): Promise<GetStaticPathsResult> {
-  const files = await globby('**/*.md', {
-    cwd: path.join(process.cwd(), 'pages/blog'),
-  })
+  const posts = await reader.collections.posts.list()
   return {
-    paths: files.map(file => ({ params: { post: file.replace(/\.md$/, '') } })),
+    paths: posts.map(post => ({ params: { post } })),
     fallback: false,
   }
 }
 
+type KeystaticPostsContent = Omit<BlogContent, 'authorHandle' | 'metaImageUrl'> & {
+  authorHandle: string | null
+  metaImageUrl: string | null
+}
+
 export async function getStaticProps (
   args: GetStaticPropsContext<{ post: string }>
-): Promise<GetStaticPropsResult<BlogContent>> {
-  return { props: await readBlogContent(`pages/blog/${args.params!.post}.md`) }
+): Promise<GetStaticPropsResult<KeystaticPostsContent>> {
+  const keystaticPost = await reader.collections.posts.read(args.params!.post, {
+    resolveLinkedFiles: true,
+  })
+
+  if (!keystaticPost) throw new Error(`Post not found: ${args.params!.post}`)
+
+  const transformedContent = transform(keystaticPost.content.node, baseMarkdocConfig)
+
+  return { props: { ...keystaticPost, content: JSON.parse(JSON.stringify(transformedContent)) } }
 }
