@@ -29,7 +29,7 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-// These are the max and min values available to a 64 bit signed integer
+// these are the lowest and highest values for a signed 64-bit integer
 const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
@@ -39,7 +39,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
   const {
     isIndexed,
     defaultValue: _defaultValue,
-    validation: _validation,
+    validation: validation_,
   } = config
 
   return (meta) => {
@@ -49,7 +49,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = resolveDbNullable(_validation, config.db)
+    const isNullable = resolveDbNullable(validation_, config.db)
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
@@ -65,9 +65,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
     }
 
     const validation = {
-      isRequired: _validation?.isRequired ?? false,
-      min: _validation?.min ?? MIN_INT,
-      max: _validation?.max ?? MAX_INT,
+      isRequired: validation_?.isRequired ?? false,
+      min: validation_?.min ?? MIN_INT,
+      max: validation_?.max ?? MAX_INT,
     }
 
     for (const type of ['min', 'max'] as const) {

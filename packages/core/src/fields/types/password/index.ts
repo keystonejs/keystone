@@ -2,7 +2,6 @@ import bcryptjs from 'bcryptjs'
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
 import { userInputError } from '../../../lib/core/graphql-errors'
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
