@@ -46,11 +46,11 @@ export const lists = {
       title: text({ validation: { isRequired: true } }),
       // we use this field to arbitrarily restrict Posts to only be viewed on a particular browser (using Post.access.filter)
       browser: select({
+        validation: { isRequired: true },
         options: [
           { label: 'Chrome', value: 'chrome' },
           { label: 'Firefox', value: 'firefox' },
         ],
-        validation: { isRequired: true },
       }),
     },
   }),

@@ -8,7 +8,7 @@ import {
 import { graphql } from '../../..'
 import { filters } from '../../filters'
 import {
-  getResolvedIsNullable,
+  resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -46,7 +46,7 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> ({
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = getResolvedIsNullable(validation, config.db)
+    const isNullable = resolveDbNullable(validation, config.db)
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {

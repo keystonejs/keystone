@@ -11,7 +11,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import { type PasswordFieldMeta } from './views'
-import { getResolvedIsNullable, makeValidateHook } from '../../non-null-graphql'
+import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -81,7 +81,7 @@ export const password =
       },
     }
 
-    const isNullable = getResolvedIsNullable(validation, config.db)
+    const isNullable = resolveDbNullable(validation, config.db)
 
     for (const type of ['min', 'max'] as const) {
       const val = validation.length[type]

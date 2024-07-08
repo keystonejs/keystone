@@ -7,7 +7,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import {
-  getResolvedIsNullable,
+  resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
 import { filters } from '../../filters'
@@ -49,7 +49,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = getResolvedIsNullable(_validation, config.db)
+    const isNullable = resolveDbNullable(_validation, config.db)
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {

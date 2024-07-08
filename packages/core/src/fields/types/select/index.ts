@@ -51,17 +51,18 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       }
     }
 
-// These are the max and min values available to a 32 bit signed integer
+// these are the lowest and highest values for a signed 32-bit integer
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function select <ListTypeInfo extends BaseListTypeInfo>({
-  isIndexed,
-  ui: { displayMode = 'select', ...ui } = {},
-  defaultValue,
-  validation,
-  ...config
-}: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function select <ListTypeInfo extends BaseListTypeInfo>(config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  const {
+    isIndexed,
+    ui: { displayMode = 'select', ...ui } = {},
+    defaultValue,
+    validation,
+  } = config
+
   return (meta) => {
     const options = config.options.map(option => {
       if (typeof option === 'string') {

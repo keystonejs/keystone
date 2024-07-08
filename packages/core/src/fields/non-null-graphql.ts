@@ -6,7 +6,7 @@ import {
   type ValidateFieldHook
 } from '../types/config/hooks'
 
-export function getResolvedIsNullable (
+export function resolveDbNullable (
   validation: undefined | { isRequired?: boolean },
   db: undefined | { isNullable?: boolean }
 ): boolean {
@@ -17,7 +17,7 @@ export function getResolvedIsNullable (
   return true
 }
 
-function resolveHasValidation (
+function shouldAddValidation (
   db?: { isNullable?: boolean },
   validation?: unknown
 ) {
@@ -44,17 +44,17 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
   },
   f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', ListTypeInfo['fields']>
 ) {
-  const resolvedIsNullable = getResolvedIsNullable(config.validation, config.db)
-  const mode = resolvedIsNullable === false ? ('required' as const) : ('optional' as const)
+  const dbNullable = resolveDbNullable(config.validation, config.db)
+  const mode = dbNullable ? ('optional' as const) : ('required' as const)
 
-  assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
-  const hasValidation = resolveHasValidation(config.db, config.validation)
-  if (hasValidation) {
+  assertReadIsNonNullAllowed(meta, config, dbNullable)
+  const addValidation = shouldAddValidation(config.db, config.validation)
+  if (addValidation) {
     const validate = async function (args) {
       const { operation, addValidationError, resolvedData } = args
       if (operation !== 'delete') {
         const value = resolvedData[meta.fieldKey]
-        if ((config.validation?.isRequired || resolvedIsNullable === false) && value === null) {
+        if ((config.validation?.isRequired || dbNullable === false) && value === null) {
           addValidationError(`Missing value`)
         }
       }
@@ -83,9 +83,9 @@ export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo
       }
     }
   },
-  resolvedIsNullable: boolean
+  dbNullable: boolean
 ) {
-  if (!resolvedIsNullable) return
+  if (!dbNullable) return
   if (!config.graphql?.isNonNull?.read) return
 
   throw new Error(
