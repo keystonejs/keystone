@@ -29,31 +29,35 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-// These are the max and min values available to a 32 bit signed integer
+// these are the lowest and highest values for a signed 32-bit integer
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function integer <ListTypeInfo extends BaseListTypeInfo> ({
-  isIndexed,
-  defaultValue: _defaultValue,
-  validation,
-  ...config
-}: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  return meta => {
+export function integer <ListTypeInfo extends BaseListTypeInfo> (config: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
+    defaultValue: _defaultValue,
+    isIndexed,
+    validation = {},
+  } = config
+
+  const {
+    isRequired = false,
+    min,
+    max
+  } = validation
+
+  return (meta) => {
     const defaultValue = _defaultValue ?? null
     const hasAutoIncDefault =
       typeof defaultValue == 'object' &&
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = resolveDbNullable(validation, config.db)
-
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(
-          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
-        )
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
+      const isNullable = resolveDbNullable(validation, config.db)
       if (isNullable !== false) {
         throw new Error(
           `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
@@ -62,52 +66,50 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> ({
         )
       }
     }
-
-    if (validation?.min !== undefined && !Number.isInteger(validation.min)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be an integer`)
+    if (min !== undefined && !Number.isInteger(min)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
     }
-    if (validation?.max !== undefined && !Number.isInteger(validation.max)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be an integer`)
+    if (max !== undefined && !Number.isInteger(max)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`)
     }
-
-    if (validation?.min !== undefined && (validation?.min > MAX_INT || validation?.min < MIN_INT)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} which is outside of the range of a 32bit signed integer (${MIN_INT} - ${MAX_INT}) which is not allowed`)
+    if (min !== undefined && (min > MAX_INT || min < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} which is outside of the range of a 32-bit signed integer`)
     }
-    if (validation?.max !== undefined && (validation?.max > MAX_INT || validation?.max < MIN_INT)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} which is outside of the range of a 32bit signed integer (${MIN_INT} - ${MAX_INT}) which is not allowed`)
+    if (max !== undefined && (max > MAX_INT || max < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} which is outside of the range of a 32-bit signed integer`)
     }
-
     if (
-      validation?.min !== undefined &&
-      validation?.max !== undefined &&
-      validation.min > validation.max
+      min !== undefined &&
+      max !== undefined &&
+      min > max
     ) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
+    const hasAdditionalValidation = min !== undefined || max !== undefined
     const {
       mode,
       validate,
-    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
       const value = resolvedData[meta.fieldKey]
       if (typeof value === 'number') {
-        if (validation?.min !== undefined && value < validation.min) {
-          addValidationError(`value must be greater than or equal to ${validation.min}`)
+        if (min !== undefined && value < min) {
+          addValidationError(`value must be greater than or equal to ${min}`)
         }
 
-        if (validation?.max !== undefined && value > validation.max) {
-          addValidationError(`value must be less than or equal to ${validation.max}`)
+        if (max !== undefined && value > max) {
+          addValidationError(`value must be less than or equal to ${max}`)
         }
       }
-    })
+    } : undefined)
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'Int',
-      // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
+      // this will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'number'
@@ -147,9 +149,9 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> ({
       getAdminMeta () {
         return {
           validation: {
-            min: validation?.min ?? MIN_INT,
-            max: validation?.max ?? MAX_INT,
-            isRequired: validation?.isRequired ?? false,
+            min: min ?? MIN_INT,
+            max: max ?? MAX_INT,
+            isRequired,
           },
           defaultValue:
             defaultValue === null || typeof defaultValue === 'number'

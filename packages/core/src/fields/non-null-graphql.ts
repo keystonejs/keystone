@@ -17,15 +17,6 @@ export function resolveDbNullable (
   return true
 }
 
-function shouldAddValidation (
-  db?: { isNullable?: boolean },
-  validation?: unknown
-) {
-  if (db?.isNullable === false) return true
-  if (validation !== undefined) return true
-  return false
-}
-
 export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
   meta: FieldData,
   config: {
@@ -40,22 +31,28 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
     },
     validation?: {
       isRequired?: boolean
+      [key: string]: unknown
     },
   },
   f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', ListTypeInfo['fields']>
 ) {
   const dbNullable = resolveDbNullable(config.validation, config.db)
   const mode = dbNullable ? ('optional' as const) : ('required' as const)
+  const valueRequired = config.validation?.isRequired || !dbNullable
 
   assertReadIsNonNullAllowed(meta, config, dbNullable)
-  const addValidation = shouldAddValidation(config.db, config.validation)
+  const addValidation = config.db?.isNullable === false || config.validation?.isRequired
   if (addValidation) {
     const validate = async function (args) {
       const { operation, addValidationError, resolvedData } = args
-      if (operation !== 'delete') {
-        const value = resolvedData[meta.fieldKey]
-        if ((config.validation?.isRequired || dbNullable === false) && value === null) {
-          addValidationError(`Missing value`)
+
+      if (valueRequired) {
+        const value = resolvedData?.[meta.fieldKey]
+        if (
+            (operation === 'create' && value === undefined)
+        || ((operation === 'create' || operation === 'update') && (value === null))
+        ) {
+          addValidationError(`missing value`)
         }
       }
 
@@ -70,7 +67,7 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
 
   return {
     mode,
-    validate: undefined
+    validate: f
   }
 }
 

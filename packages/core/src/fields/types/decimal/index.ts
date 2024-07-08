@@ -48,16 +48,16 @@ function parseDecimalValueOption (meta: FieldData, value: string, name: string) 
   return decimal
 }
 
-export const decimal =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     isIndexed,
     precision = 18,
     scale = 4,
     validation,
     defaultValue,
-    ...config
-  }: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+
+  return (meta) => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite')
     }
@@ -107,13 +107,13 @@ export const decimal =
     } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
-      const val: Decimal | null | undefined = resolvedData[meta.fieldKey]
-      if (val != null) {
-        if (min !== undefined && val.lessThan(min)) {
+      const value: Decimal | null | undefined = resolvedData[meta.fieldKey]
+      if (value != null) {
+        if (min !== undefined && value.lessThan(min)) {
           addValidationError(`value must be greater than or equal to ${min}`)
         }
 
-        if (max !== undefined && val.greaterThan(max)) {
+        if (max !== undefined && value.greaterThan(max)) {
           addValidationError(`value must be less than or equal to ${max}`)
         }
       }
@@ -184,3 +184,4 @@ export const decimal =
       }),
     })
   }
+}

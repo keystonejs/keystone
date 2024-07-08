@@ -27,14 +27,13 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const float =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    validation,
+export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     defaultValue,
-    ...config
-  }: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+    isIndexed,
+    validation: v = {},
+  } = config
+  return (meta) => {
     if (
       defaultValue !== undefined &&
       (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
@@ -43,45 +42,46 @@ export const float =
     }
 
     if (
-      validation?.min !== undefined &&
-      (typeof validation.min !== 'number' || !Number.isFinite(validation.min))
+      v.min !== undefined &&
+      (typeof v.min !== 'number' || !Number.isFinite(v.min))
     ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`)
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${v.min} but it must be a valid finite number`)
     }
 
     if (
-      validation?.max !== undefined &&
-      (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
+      v.max !== undefined &&
+      (typeof v.max !== 'number' || !Number.isFinite(v.max))
     ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`)
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${v.max} but it must be a valid finite number`)
     }
 
     if (
-      validation?.min !== undefined &&
-      validation?.max !== undefined &&
-      validation.min > validation.max
+      v.min !== undefined &&
+      v.max !== undefined &&
+      v.min > v.max
     ) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
+    const hasAdditionalValidation = v.min !== undefined || v.max !== undefined
     const {
       mode,
       validate,
-    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
       const value = resolvedData[meta.fieldKey]
       if (typeof value === 'number') {
-        if (validation?.max !== undefined && value > validation.max) {
-          addValidationError(`value must be less than or equal to ${validation.max}`
+        if (v.max !== undefined && value > v.max) {
+          addValidationError(`value must be less than or equal to ${v.max}`
           )
         }
 
-        if (validation?.min !== undefined && value < validation.min) {
-          addValidationError(`value must be greater than or equal to ${validation.min}`)
+        if (v.min !== undefined && value < v.min) {
+          addValidationError(`value must be greater than or equal to ${v.min}`)
         }
       }
-    })
+    } : undefined)
 
     return fieldType({
       kind: 'scalar',
@@ -95,8 +95,7 @@ export const float =
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Float[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -124,12 +123,13 @@ export const float =
       getAdminMeta () {
         return {
           validation: {
-            min: validation?.min || null,
-            max: validation?.max || null,
-            isRequired: validation?.isRequired ?? false,
+            isRequired: v.isRequired ?? false,
+            min: v.min ?? null,
+            max: v.max ?? null,
           },
           defaultValue: defaultValue ?? null,
         }
       },
     })
   }
+}

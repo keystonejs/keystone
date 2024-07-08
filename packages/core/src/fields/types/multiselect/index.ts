@@ -40,7 +40,7 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       }
     }
 
-// These are the max and min values available to a 32 bit signed integer
+// these are the lowest and highest values for a signed 32-bit integer
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
@@ -91,14 +91,14 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
     const {
       mode,
       validate,
-    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+    } = makeValidateHook(meta, config, ({ inputData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
-      const values: readonly (string | number)[] | undefined = resolvedData[meta.fieldKey]
+      const values: readonly (string | number)[] | undefined = inputData[meta.fieldKey] // resolvedData is JSON
       if (values !== undefined) {
         for (const value of values) {
           if (!accepted.has(value)) {
-            addValidationError(`value is not an accepted option`)
+            addValidationError(`'${value}' is not an accepted option`)
           }
         }
         if (new Set(values).size !== values.length) {

@@ -25,14 +25,13 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const calendarDay =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function calendarDay <ListTypeInfo extends BaseListTypeInfo>(config: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     isIndexed,
     validation,
     defaultValue,
-    ...config
-  }: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+  return (meta) => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.CalendarDay.graphQLType.parseValue(defaultValue)
@@ -126,6 +125,7 @@ export const calendarDay =
       },
     })
   }
+}
 
 function dateStringToDateObjectInUTC (value: string) {
   return new Date(`${value}T00:00Z`)

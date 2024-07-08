@@ -233,7 +233,7 @@ describe('Auth testing', () => {
         expectValidationError(body.errors, [
           {
             path: ['createUser'], // I don't like this!
-            messages: ['User.email: Email must not be empty'],
+            messages: ['User.email: value must not be empty'],
           },
         ])
         expect(body.data).toEqual(null)

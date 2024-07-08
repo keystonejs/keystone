@@ -41,9 +41,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       try {
         graphql.DateTime.graphQLType.parseValue(defaultValue)
       } catch (err) {
-        throw new Error(
-          `${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`
-        )
+        throw new Error(`${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`)
       }
     }
 

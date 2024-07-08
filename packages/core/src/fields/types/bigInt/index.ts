@@ -6,11 +6,11 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
+import { filters } from '../../filters'
 import {
   resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
-import { filters } from '../../filters'
 import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -33,14 +33,18 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
-export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
-  config: BigIntFieldConfig<ListTypeInfo> = {}
-): FieldTypeFunc<ListTypeInfo> {
+export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    isIndexed,
     defaultValue: _defaultValue,
-    validation: validation_,
+    isIndexed,
+    validation = {},
   } = config
+
+  const {
+    isRequired = false,
+    min,
+    max
+  } = validation
 
   return (meta) => {
     const defaultValue = _defaultValue ?? null
@@ -49,12 +53,11 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = resolveDbNullable(validation_, config.db)
-
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
+      const isNullable = resolveDbNullable(validation, config.db)
       if (isNullable !== false) {
         throw new Error(
           `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
@@ -63,45 +66,50 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
         )
       }
     }
-
-    const validation = {
-      isRequired: validation_?.isRequired ?? false,
-      min: validation_?.min ?? MIN_INT,
-      max: validation_?.max ?? MAX_INT,
+    if (min !== undefined && !Number.isInteger(min)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
     }
-
-    for (const type of ['min', 'max'] as const) {
-      if (validation[type] > MAX_INT || validation[type] < MIN_INT) {
-        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`)
-      }
+    if (max !== undefined && !Number.isInteger(max)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`)
     }
-    if (validation.min > validation.max) {
+    if (min !== undefined && (min > MAX_INT || min < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} which is outside of the range of a 64-bit signed integer`)
+    }
+    if (max !== undefined && (max > MAX_INT || max < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} which is outside of the range of a 64-bit signed integer`)
+    }
+    if (
+      min !== undefined &&
+      max !== undefined &&
+      min > max
+    ) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
+    const hasAdditionalValidation = min !== undefined || max !== undefined
     const {
       mode,
       validate,
-    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
       const value = resolvedData[meta.fieldKey]
       if (typeof value === 'number') {
-        if (validation?.min !== undefined && value < validation.min) {
-          addValidationError(`value must be greater than or equal to ${validation.min}`)
+        if (min !== undefined && value < min) {
+          addValidationError(`value must be greater than or equal to ${min}`)
         }
 
-        if (validation?.max !== undefined && value > validation.max) {
-          addValidationError(`value must be less than or equal to ${validation.max}`)
+        if (max !== undefined && value > max) {
+          addValidationError(`value must be less than or equal to ${max}`)
         }
       }
-    })
+    } : undefined)
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'BigInt',
-      // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
+      // this will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'bigint'
@@ -135,19 +143,20 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
         update: { arg: graphql.arg({ type: graphql.BigInt }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.BigInt,
-      }),
+      output: graphql.field({ type: graphql.BigInt, }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta () {
         return {
           validation: {
-            min: validation.min.toString(),
-            max: validation.max.toString(),
-            isRequired: validation.isRequired,
+            min: min?.toString() ?? `${MIN_INT}`,
+            max: max?.toString() ?? `${MAX_INT}`,
+            isRequired,
           },
-          defaultValue: typeof defaultValue === 'bigint' ? defaultValue.toString() : defaultValue,
+          defaultValue:
+            typeof defaultValue === 'bigint'
+              ? defaultValue.toString()
+              : defaultValue,
         }
       },
     })
