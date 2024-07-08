@@ -15,13 +15,13 @@
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "^5.0.0",
-    "next": "^14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@prisma/client": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

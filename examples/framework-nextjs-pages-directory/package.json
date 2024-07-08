@@ -18,19 +18,19 @@
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "^5.0.0",
-    "graphql": "^16.8.1",
+    "@prisma/client": "catalog:",
+    "graphql": "catalog:",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
-    "next": "^14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^18.11.14",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "@types/node": "catalog:",
+    "react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

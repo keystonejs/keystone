@@ -11,7 +11,7 @@
     "@keystone-6/auth": "workspace:*",
     "@keystone-6/core": "workspace:*",
     "execa": "^5.1.1",
-    "express": "^4.17.1",
+    "express": "catalog:",
     "graphql": "^16.8.1",
     "playwright": "^1.17.1",
     "treekill": "^1.0.0"

@@ -12,15 +12,15 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@types/react": "^18.0.9",
+    "@types/react": "catalog:",
     "@types/react-transition-group": "4.4.10"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-focus-lock": "^2.7.1",
     "react-remove-scroll": "^2.4.3",
     "react-transition-group": "^4.4.2"

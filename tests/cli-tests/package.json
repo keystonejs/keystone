@@ -13,7 +13,7 @@
     "@keystone-6/auth": "workspace:*",
     "@keystone-6/core": "workspace:*",
     "@keystone-6/fields-document": "workspace:*",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "catalog:",
     "@prisma/migrate": "^5.0.0",
     "@prisma/internals": "^5.0.0",
     "chalk": "^4.1.2",
@@ -22,10 +22,10 @@
     "fs-extra": "^11.0.0",
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",
-    "prisma": "^5.0.0"
+    "prisma": "catalog:"
   },
   "dependencies": {
     "@types/fs-extra": "^11.0.0",
-    "express": "^4.17.1"
+    "express": "catalog:"
   }
 }

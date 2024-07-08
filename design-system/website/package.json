@@ -7,7 +7,7 @@
     "dev": "next -p 8080"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/fields": "workspace:^",
@@ -21,16 +21,16 @@
     "@keystone-ui/toast": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@types/tinycolor2": "^1.4.3",
     "next": "^14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "tinycolor2": "^1.4.2"
   },
   "devDependencies": {
-    "typescript": "~5.5.0"
+    "typescript": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/website"
 }

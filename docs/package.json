@@ -14,7 +14,7 @@
     "remove-conditionals": "tsx scripts/replace-show-next-release/index.ts"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.24.7",
     "@codemod/core": "^2.0.1",
     "@emotion/cache": "11.11.0",
     "@emotion/css": "^11.7.1",
@@ -39,27 +39,26 @@
     "globby": "^14.0.0",
     "js-yaml": "^4.1.0",
     "lodash.debounce": "^4.0.8",
-    "next": "^14.2.0",
+    "next": "catalog:",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^2.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-focus-lock": "^2.7.1",
     "rss": "^1.2.2",
-    "tsx": "^4.0.0"
+    "tsx": "catalog:"
   },
   "devDependencies": {
     "@types/babel__core": "7.20.5",
     "@types/facepaint": "^1.2.2",
     "@types/gtag.js": "^0.0.20",
     "@types/js-yaml": "^4.0.5",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@types/lodash.debounce": "^4.0.6",
     "@types/rss": "^0.0.32",
     "next-sitemap": "^4.0.0",
-    "start-server-and-test": "^2.0.0",
-    "typescript": "~5.5.0"
+    "typescript": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/docs"
 }

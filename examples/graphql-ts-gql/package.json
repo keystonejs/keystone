@@ -12,16 +12,16 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "^5.0.0",
-    "graphql": "^16.8.1"
+    "@prisma/client": "catalog:",
+    "graphql": "catalog:"
   },
   "devDependencies": {
     "@ts-gql/compiler": "^0.15.3",
     "@ts-gql/eslint-plugin": "^0.9.0",
     "@ts-gql/tag": "^0.7.3",
     "eslint": "^8.0.0",
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   },
   "ts-gql": {
     "schema": "schema.graphql",

@@ -13,11 +13,11 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@paralleldrive/cuid2": "^2.2.1",
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "catalog:"
   },
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }

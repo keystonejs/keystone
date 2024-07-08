@@ -12,10 +12,10 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "catalog:"
   },
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "typescript": "~5.0.0"
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

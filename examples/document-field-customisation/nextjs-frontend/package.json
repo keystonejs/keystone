@@ -12,15 +12,15 @@
   "dependencies": {
     "@keystone-6/document-renderer": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "graphql": "^16.8.1",
-    "next": "^14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "graphql": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^18.11.14",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
-    "typescript": "~5.0.0"
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
   }
 }

@@ -1162,18 +1162,18 @@
     "@svgr/core": "^8.0.0",
     "@svgr/plugin-jsx": "^8.0.0",
     "@svgr/plugin-svgo": "^8.0.0",
-    "@types/react": "^18.0.9",
+    "@types/react": "catalog:",
     "feather-icons": "^4.28.0",
     "globby": "^14.0.0",
-    "react": "^18.2.0",
+    "react": "catalog:",
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "catalog:"
   },
   "preconstruct": {
     "entrypoints": [
