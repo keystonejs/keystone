@@ -2257,8 +2257,8 @@ importers:
         specifier: ^0.100.0
         version: 0.100.0(slate@0.103.0)
       slate-react:
-        specifier: ^0.106.0
-        version: 0.106.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0)
+        specifier: ^0.107.0
+        version: 0.107.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -11183,8 +11183,8 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-react@0.106.0:
-    resolution: {integrity: sha512-Z29AgdxuLhg9HMBE4iV4kECUJBBYSVCbMq1E6X0ZwswxtgMHCySFByaqNyd6bpXr00untEpuBLcRzXZHQDZK0w==}
+  slate-react@0.107.0:
+    resolution: {integrity: sha512-cOuYibnbbf+dP4Q112DCWosw5ebJtY+NOQKl4pVHPkPEGdbGKfyVDDYBl8YgFMzL3uEJqftlFkKnpUM+IjUiSw==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
@@ -24004,7 +24004,7 @@ snapshots:
       is-plain-object: 5.0.0
       slate: 0.103.0
 
-  slate-react@0.106.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0):
+  slate-react@0.107.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       '@types/is-hotkey': 0.1.10
