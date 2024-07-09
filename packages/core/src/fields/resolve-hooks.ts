@@ -58,7 +58,9 @@ export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
   const hooksValidate = resolveValidateHooks(hooks)
   return {
     ...hooks,
-    beforeOperation: merge(builtin.beforeOperation, hooks.beforeOperation),
+    // WARNING: beforeOperation is _after_ a user beforeOperation hook, TODO: this is align with user expectations about when "operations" happen
+    //   our *Operation hooks are built-in, and should happen nearest to the database
+    beforeOperation: merge(hooks.beforeOperation, builtin.beforeOperation),
     afterOperation: merge(builtin.afterOperation, hooks.afterOperation),
     validate: (builtinValidate || hooksValidate) ? {
       create: merge(builtinValidate?.create, hooksValidate?.create),

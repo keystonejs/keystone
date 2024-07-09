@@ -81,9 +81,7 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
-      throw new Error(
-        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      )
+      throw new Error(`${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`)
     }
 
     if ('isIndexed' in config) {
