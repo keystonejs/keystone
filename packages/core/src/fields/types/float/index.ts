@@ -31,39 +31,34 @@ export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatField
   const {
     defaultValue,
     isIndexed,
-    validation: v = {},
+    validation = {},
   } = config
+
+  const {
+    isRequired = false,
+    min,
+    max
+  } = validation
+
   return (meta) => {
-    if (
-      defaultValue !== undefined &&
-      (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
-    ) {
+    if (defaultValue !== undefined && (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
-
-    if (
-      v.min !== undefined &&
-      (typeof v.min !== 'number' || !Number.isFinite(v.min))
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${v.min} but it must be a valid finite number`)
+    if (min !== undefined && (typeof min !== 'number' || !Number.isFinite(min))) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`)
     }
-
-    if (
-      v.max !== undefined &&
-      (typeof v.max !== 'number' || !Number.isFinite(v.max))
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${v.max} but it must be a valid finite number`)
+    if (max !== undefined && (typeof max !== 'number' || !Number.isFinite(max))) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`)
     }
-
     if (
-      v.min !== undefined &&
-      v.max !== undefined &&
-      v.min > v.max
+      min !== undefined &&
+      max !== undefined &&
+      min > max
     ) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
-    const hasAdditionalValidation = v.min !== undefined || v.max !== undefined
+    const hasAdditionalValidation = min !== undefined || max !== undefined
     const {
       mode,
       validate,
@@ -72,13 +67,12 @@ export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatField
 
       const value = resolvedData[meta.fieldKey]
       if (typeof value === 'number') {
-        if (v.max !== undefined && value > v.max) {
-          addValidationError(`value must be less than or equal to ${v.max}`
-          )
+        if (min !== undefined && value < min) {
+          addValidationError(`value must be greater than or equal to ${min}`)
         }
 
-        if (v.min !== undefined && value < v.min) {
-          addValidationError(`value must be greater than or equal to ${v.min}`)
+        if (max !== undefined && value > max) {
+          addValidationError(`value must be less than or equal to ${max}`)
         }
       }
     } : undefined)
@@ -123,9 +117,9 @@ export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatField
       getAdminMeta () {
         return {
           validation: {
-            isRequired: v.isRequired ?? false,
-            min: v.min ?? null,
-            max: v.max ?? null,
+            isRequired,
+            min: min ?? null,
+            max: max ?? null,
           },
           defaultValue: defaultValue ?? null,
         }
