@@ -86,25 +86,27 @@ for (const modulePath of testModules) {
 
       const messages = [`Test.testField: missing value`]
 
-      test(
-        'Create an object without the required field',
-        runner(async ({ context }) => {
-          const { data, errors } = await context.graphql.raw({
-            query: `
-              mutation {
-                createTest(data: { name: "test entry" } ) { id }
-              }`,
+      if (!mod.hasDefaultDefault) {
+        test(
+          'Create an object without the required field',
+          runner(async ({ context }) => {
+            const { data, errors } = await context.graphql.raw({
+              query: `
+                mutation {
+                  createTest(data: { name: "test entry" } ) { id }
+                }`,
+            })
+            expect(data).toEqual({ createTest: null })
+            expectValidationError(errors, [
+              {
+                path: ['createTest'],
+                messages:
+                  mod.name === 'Text' ? ['Test.testField: value must not be empty'] : messages,
+              },
+            ])
           })
-          expect(data).toEqual({ createTest: null })
-          expectValidationError(errors, [
-            {
-              path: ['createTest'],
-              messages:
-                mod.name === 'Text' ? ['Test.testField: value must not be empty'] : messages,
-            },
-          ])
-        })
-      )
+        )
+      }
 
       test(
         'Create an object with an explicit null value',

@@ -8,7 +8,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { graphql } from '../../..'
-import { userInputError } from '../../../lib/core/graphql-errors'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
 
@@ -25,12 +24,12 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
           type?: 'string' | 'enum'
-          defaultValue?: readonly string[]
+          defaultValue?: readonly string[] | null
         }
       | {
           options: readonly { label: string, value: number }[]
           type: 'integer'
-          defaultValue?: readonly number[]
+          defaultValue?: readonly number[] | null
         }
     ) & {
       db?: {
@@ -48,7 +47,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
   config: MultiselectFieldConfig<ListTypeInfo>
 ): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue = [],
+    defaultValue = [], // TODO: deprecated, remove in breaking change
   } = config
 
   config.db ??= {}
@@ -64,7 +63,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       return graphql.arg({ type: nonNullList(type) })
     }
 
-    const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] => {
+    const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] | null => {
       const resolved = resolveUpdate(val)
       if (resolved === undefined) {
         return defaultValue as T[]
@@ -74,15 +73,11 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
 
     const resolveUpdate = <T extends string | number>(
       val: T[] | null | undefined
-    ): T[] | undefined => {
-      if (val === null) {
-        throw userInputError('multiselect fields cannot be set to null')
-      }
+    ): T[] | null | undefined => {
       return val
     }
 
     const transformedConfig = configToOptionsAndGraphQLType(config, meta)
-
     const accepted = new Set(transformedConfig.options.map(x => x.value))
     if (accepted.size !== transformedConfig.options.length) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`)
@@ -94,8 +89,8 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
     } = makeValidateHook(meta, config, ({ inputData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
-      const values: readonly (string | number)[] | undefined = inputData[meta.fieldKey] // resolvedData is JSON
-      if (values !== undefined) {
+      const values: readonly (string | number)[] | null | undefined = inputData[meta.fieldKey] // resolvedData is JSON
+      if (values != null) {
         for (const value of values) {
           if (!accepted.has(value)) {
             addValidationError(`'${value}' is not an accepted option`)
@@ -137,7 +132,10 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
         mode,
         map: config?.db?.map,
         extendPrismaSchema: config.db?.extendPrismaSchema,
-        default: { kind: 'literal', value: JSON.stringify(defaultValue) },
+        default: {
+          kind: 'literal',
+          value: JSON.stringify(defaultValue ?? null)
+        },
       }
     )
   }
@@ -191,5 +189,4 @@ function configToOptionsAndGraphQLType (
   }
 }
 
-const nonNullList = <T extends graphql.NullableType>(type: T) =>
-  graphql.list(graphql.nonNull(type))
+const nonNullList = <T extends graphql.NullableType>(type: T) => graphql.list(graphql.nonNull(type))
