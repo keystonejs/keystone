@@ -17,7 +17,7 @@ export const exampleValue2 = (matrixValue: MatrixValue) =>
     ? ['a string', '1number']
     : [2, 4]
 export const supportsNullInput = false
-export const hasDefaultDefault = true
+export const nonNullableDefault = true
 export const neverNull = false
 export const supportsUnique = false
 export const supportsDbMap = true

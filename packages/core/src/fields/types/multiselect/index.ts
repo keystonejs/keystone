@@ -47,11 +47,12 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
   config: MultiselectFieldConfig<ListTypeInfo>
 ): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue = [], // TODO: deprecated, remove in breaking change
+    defaultValue: defaultValue_,
   } = config
 
   config.db ??= {}
   config.db.isNullable ??= false // TODO: deprecated, remove in breaking change
+  const defaultValue = config.db.isNullable ? defaultValue_ : (defaultValue_ ?? []) // TODO: deprecated, remove in breaking change?
 
   return (meta) => {
     if ((config as any).isIndexed === 'unique') {
