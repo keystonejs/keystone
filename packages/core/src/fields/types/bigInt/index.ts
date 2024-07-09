@@ -65,6 +65,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
             `https://github.com/prisma/prisma/issues/8663`
         )
       }
+      if (isRequired) {
+        throw new Error(`${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`)
+      }
     }
     if (min !== undefined && !Number.isInteger(min)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
