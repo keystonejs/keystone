@@ -48,9 +48,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
           data: { password: '123' },
         })
       ).rejects.toMatchInlineSnapshot(`
-              [GraphQLError: You provided invalid data for this operation.
-                - Test.password: Password must be at least 4 characters long]
-            `)
+        [GraphQLError: You provided invalid data for this operation.
+          - Test.password: value must be at least 4 characters long]
+      `)
     })
   )
   test(
@@ -61,9 +61,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
           data: { passwordRejectCommon: 'password' },
         })
       ).rejects.toMatchInlineSnapshot(`
-              [GraphQLError: You provided invalid data for this operation.
-                - Test.passwordRejectCommon: Password Reject Common is too common and is not allowed]
-            `)
+        [GraphQLError: You provided invalid data for this operation.
+          - Test.passwordRejectCommon: value is too common and is not allowed]
+      `)
       const data = await context.query.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,

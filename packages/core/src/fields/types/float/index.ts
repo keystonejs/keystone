@@ -1,5 +1,4 @@
 // Float in GQL: A signed double-precision floating-point value.
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -8,8 +7,9 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -27,98 +27,69 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const float =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    validation,
+export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     defaultValue,
-    ...config
-  }: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+    isIndexed,
+    validation = {},
+  } = config
+
+  const {
+    isRequired = false,
+    min,
+    max
+  } = validation
+
+  return (meta) => {
+    if (defaultValue !== undefined && (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
+    }
+    if (min !== undefined && (typeof min !== 'number' || !Number.isFinite(min))) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`)
+    }
+    if (max !== undefined && (typeof max !== 'number' || !Number.isFinite(max))) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`)
+    }
     if (
-      defaultValue !== undefined &&
-      (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
+      min !== undefined &&
+      max !== undefined &&
+      min > max
     ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
-    if (
-      validation?.min !== undefined &&
-      (typeof validation.min !== 'number' || !Number.isFinite(validation.min))
-    ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
-      )
-    }
+    const hasAdditionalValidation = min !== undefined || max !== undefined
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    if (
-      validation?.max !== undefined &&
-      (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
-    ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
-      )
-    }
+      const value = resolvedData[meta.fieldKey]
+      if (typeof value === 'number') {
+        if (min !== undefined && value < min) {
+          addValidationError(`value must be greater than or equal to ${min}`)
+        }
 
-    if (
-      validation?.min !== undefined &&
-      validation?.max !== undefined &&
-      validation.min > validation.max
-    ) {
-      throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
-      )
-    }
-
-    const isNullable = getResolvedIsNullable(validation, config.db)
-
-    assertReadIsNonNullAllowed(meta, config, isNullable)
-
-    const mode = isNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
+        if (max !== undefined && value > max) {
+          addValidationError(`value must be less than or equal to ${max}`)
+        }
+      }
+    } : undefined)
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'Float',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
-      default:
-        typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
+      default: typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        async validateInput (args) {
-          const value = args.resolvedData[meta.fieldKey]
-
-          if ((validation?.isRequired || isNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-
-          if (typeof value === 'number') {
-            if (validation?.max !== undefined && value > validation.max) {
-              args.addValidationError(
-                `${fieldLabel} must be less than or equal to ${validation.max}`
-              )
-            }
-
-            if (validation?.min !== undefined && value < validation.min) {
-              args.addValidationError(
-                `${fieldLabel} must be greater than or equal to ${validation.min}`
-              )
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        },
-      },
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Float[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -146,12 +117,13 @@ export const float =
       getAdminMeta () {
         return {
           validation: {
-            min: validation?.min || null,
-            max: validation?.max || null,
-            isRequired: validation?.isRequired ?? false,
+            isRequired,
+            min: min ?? null,
+            max: max ?? null,
           },
           defaultValue: defaultValue ?? null,
         }
       },
     })
   }
+}

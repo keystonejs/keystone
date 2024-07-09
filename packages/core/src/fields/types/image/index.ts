@@ -9,6 +9,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
+import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -80,13 +81,36 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
-      throw new Error(
-        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      )
+      throw new Error(`${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`)
     }
 
     if ('isIndexed' in config) {
       throw Error("isIndexed: 'unique' is not a supported option for field type image")
+    }
+
+    const hooks: InternalFieldHooks<ListTypeInfo> = {}
+    if (!storage.preserve) {
+      hooks.beforeOperation = async (args) => {
+        if (args.operation === 'update' || args.operation === 'delete') {
+          const idKey = `${fieldKey}_id`
+          const id = args.item[idKey]
+          const extensionKey = `${fieldKey}_extension`
+          const extension = args.item[extensionKey]
+
+          // This will occur on an update where an image already existed but has been
+          // changed, or on a delete, where there is no longer an item
+          if (
+            (args.operation === 'delete' ||
+              typeof args.resolvedData[fieldKey].id === 'string' ||
+              args.resolvedData[fieldKey].id === null) &&
+            typeof id === 'string' &&
+            typeof extension === 'string' &&
+            isValidImageExtension(extension)
+          ) {
+            await args.context.images(config.storage).deleteAtSource(id, extension)
+          }
+        }
+      }
     }
 
     return fieldType({
@@ -101,33 +125,7 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
       },
     })({
       ...config,
-      hooks: storage.preserve
-        ? config.hooks
-        : {
-            ...config.hooks,
-            async beforeOperation (args) {
-              await config.hooks?.beforeOperation?.(args)
-              if (args.operation === 'update' || args.operation === 'delete') {
-                const idKey = `${fieldKey}_id`
-                const id = args.item[idKey]
-                const extensionKey = `${fieldKey}_extension`
-                const extension = args.item[extensionKey]
-
-                // This will occur on an update where an image already existed but has been
-                // changed, or on a delete, where there is no longer an item
-                if (
-                  (args.operation === 'delete' ||
-                    typeof args.resolvedData[fieldKey].id === 'string' ||
-                    args.resolvedData[fieldKey].id === null) &&
-                  typeof id === 'string' &&
-                  typeof extension === 'string' &&
-                  isValidImageExtension(extension)
-                ) {
-                  await args.context.images(config.storage).deleteAtSource(id, extension)
-                }
-              }
-            },
-          },
+      hooks: mergeFieldHooks(hooks, config.hooks),
       input: {
         create: {
           arg: inputArg,

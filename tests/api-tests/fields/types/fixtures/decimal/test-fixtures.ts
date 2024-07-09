@@ -55,7 +55,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       expect(result.errors).toHaveLength(1)
       expect(result.errors![0].message).toMatchInlineSnapshot(`
         "You provided invalid data for this operation.
-          - Test.price: Price must be greater than or equal to -300"
+          - Test.price: value must be greater than or equal to -300"
       `)
     })
   )
@@ -76,7 +76,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       expect(result.errors).toHaveLength(1)
       expect(result.errors![0].message).toMatchInlineSnapshot(`
         "You provided invalid data for this operation.
-          - Test.price: Price must be less than or equal to 50000000"
+          - Test.price: value must be less than or equal to 50000000"
       `)
     })
   )

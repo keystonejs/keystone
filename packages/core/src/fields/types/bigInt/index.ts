@@ -1,4 +1,3 @@
-import { humanize } from '../../../lib/utils'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -7,12 +6,12 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'
-import {
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-  resolveHasValidation,
-} from '../../non-null-graphql'
 import { filters } from '../../filters'
+import {
+  resolveDbNullable,
+  makeValidateHook
+} from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -30,18 +29,22 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-// These are the max and min values available to a 64 bit signed integer
+// these are the lowest and highest values for a signed 64-bit integer
 const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
-export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
-  config: BigIntFieldConfig<ListTypeInfo> = {}
-): FieldTypeFunc<ListTypeInfo> {
+export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    isIndexed,
     defaultValue: _defaultValue,
-    validation: _validation,
+    isIndexed,
+    validation = {},
   } = config
+
+  const {
+    isRequired = false,
+    min,
+    max
+  } = validation
 
   return (meta) => {
     const defaultValue = _defaultValue ?? null
@@ -50,47 +53,66 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement'
 
-    const isNullable = getResolvedIsNullable(_validation, config.db)
-
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
+        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
+      const isNullable = resolveDbNullable(validation, config.db)
       if (isNullable !== false) {
         throw new Error(
-          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
+          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
         )
       }
-    }
-
-    const validation = {
-      isRequired: _validation?.isRequired ?? false,
-      min: _validation?.min ?? MIN_INT,
-      max: _validation?.max ?? MAX_INT,
-    }
-
-    for (const type of ['min', 'max'] as const) {
-      if (validation[type] > MAX_INT || validation[type] < MIN_INT) {
-        throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`)
+      if (isRequired) {
+        throw new Error(`${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`)
       }
     }
-    if (validation.min > validation.max) {
-      throw new Error(`The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
+    if (min !== undefined && !Number.isInteger(min)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
+    }
+    if (max !== undefined && !Number.isInteger(max)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`)
+    }
+    if (min !== undefined && (min > MAX_INT || min < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} which is outside of the range of a 64-bit signed integer`)
+    }
+    if (max !== undefined && (max > MAX_INT || max < MIN_INT)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} which is outside of the range of a 64-bit signed integer`)
+    }
+    if (
+      min !== undefined &&
+      max !== undefined &&
+      min > max
+    ) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
     }
 
-    assertReadIsNonNullAllowed(meta, config, isNullable)
+    const hasAdditionalValidation = min !== undefined || max !== undefined
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    const mode = isNullable === false ? 'required' : 'optional'
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    const hasValidation = resolveHasValidation(config)
+      const value = resolvedData[meta.fieldKey]
+      if (typeof value === 'number') {
+        if (min !== undefined && value < min) {
+          addValidationError(`value must be greater than or equal to ${min}`)
+        }
+
+        if (max !== undefined && value > max) {
+          addValidationError(`value must be less than or equal to ${max}`)
+        }
+      }
+    } : undefined)
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'BigInt',
-      // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
+      // this will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'bigint'
@@ -102,38 +124,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: {
-        ...config.hooks,
-        validateInput: hasValidation ? async (args) => {
-          const value = args.resolvedData[meta.fieldKey]
-
-          if (
-            (validation?.isRequired || isNullable === false) &&
-            (value === null ||
-              (args.operation === 'create' && value === undefined && !hasAutoIncDefault))
-          ) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (typeof value === 'number') {
-            if (validation?.min !== undefined && value < validation.min) {
-              args.addValidationError(
-                `${fieldLabel} must be greater than or equal to ${validation.min}`
-              )
-            }
-
-            if (validation?.max !== undefined && value > validation.max) {
-              args.addValidationError(
-                `${fieldLabel} must be less than or equal to ${validation.max}`
-              )
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        } : config.hooks?.validateInput
-      },
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].BigInt[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
@@ -153,19 +146,20 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (
         update: { arg: graphql.arg({ type: graphql.BigInt }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.BigInt,
-      }),
+      output: graphql.field({ type: graphql.BigInt, }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta () {
         return {
           validation: {
-            min: validation.min.toString(),
-            max: validation.max.toString(),
-            isRequired: validation.isRequired,
+            min: min?.toString() ?? `${MIN_INT}`,
+            max: max?.toString() ?? `${MAX_INT}`,
+            isRequired,
           },
-          defaultValue: typeof defaultValue === 'bigint' ? defaultValue.toString() : defaultValue,
+          defaultValue:
+            typeof defaultValue === 'bigint'
+              ? defaultValue.toString()
+              : defaultValue,
         }
       },
     })

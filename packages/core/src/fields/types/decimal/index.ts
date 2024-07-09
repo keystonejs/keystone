@@ -1,17 +1,17 @@
-import { humanize } from '../../../lib/utils'
 import {
-  fieldType,
-  type FieldTypeFunc,
   type BaseListTypeInfo,
   type CommonFieldConfig,
+  type FieldData,
+  type FieldTypeFunc,
+  fieldType,
   orderDirectionEnum,
   Decimal,
-  type FieldData,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
 import { filters } from '../../filters'
 import { type DecimalFieldMeta } from './views'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -48,16 +48,16 @@ function parseDecimalValueOption (meta: FieldData, value: string, name: string) 
   return decimal
 }
 
-export const decimal =
-  <ListTypeInfo extends BaseListTypeInfo>({
+export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const {
     isIndexed,
     precision = 18,
     scale = 4,
     validation,
     defaultValue,
-    ...config
-  }: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  } = config
+
+  return (meta) => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite')
     }
@@ -81,8 +81,6 @@ export const decimal =
       )
     }
 
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-
     const max =
       validation?.max === undefined
         ? undefined
@@ -103,11 +101,24 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, defaultValue, 'defaultValue')
 
-    const isNullable = getResolvedIsNullable(validation, config.db)
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
+      if (operation === 'delete') return
 
-    assertReadIsNonNullAllowed(meta, config, isNullable)
+      const value: Decimal | null | undefined = resolvedData[meta.fieldKey]
+      if (value != null) {
+        if (min !== undefined && value.lessThan(min)) {
+          addValidationError(`value must be greater than or equal to ${min}`)
+        }
 
-    const mode = isNullable === false ? 'required' : 'optional'
+        if (max !== undefined && value.greaterThan(max)) {
+          addValidationError(`value must be less than or equal to ${max}`)
+        }
+      }
+    })
+
     const index = isIndexed === true ? 'index' : isIndexed || undefined
     const dbField = {
       kind: 'scalar',
@@ -120,29 +131,10 @@ export const decimal =
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     } as const
+
     return fieldType(dbField)({
       ...config,
-      hooks: {
-        ...config.hooks,
-        async validateInput (args) {
-          const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey]
-
-          if (val === null && (validation?.isRequired || isNullable === false)) {
-            args.addValidationError(`${fieldLabel} is required`)
-          }
-          if (val != null) {
-            if (min !== undefined && val.lessThan(min)) {
-              args.addValidationError(`${fieldLabel} must be greater than or equal to ${min}`)
-            }
-
-            if (max !== undefined && val.greaterThan(max)) {
-              args.addValidationError(`${fieldLabel} must be less than or equal to ${max}`)
-            }
-          }
-
-          await config.hooks?.validateInput?.(args)
-        },
-      },
+      hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,
@@ -192,3 +184,4 @@ export const decimal =
       }),
     })
   }
+}

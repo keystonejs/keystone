@@ -157,7 +157,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
         } catch (e: any) {
           console.error(e)
 
-          if ((e as any).code === undefined) {
+          if (e.code === undefined) {
             return new GraphQLError(`Prisma error`, {
               extensions: {
                 code: 'KS_PRISMA_ERROR',
@@ -169,7 +169,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
           }
 
           // TODO: remove e.message unless debug
-          return new GraphQLError(`Prisma error: ${e.message.split('\n').slice(-1)[0].trim()}`, {
+          return new GraphQLError(`Prisma error: ${e.message.split('\n').pop()?.trim()}`, {
             extensions: {
               code: 'KS_PRISMA_ERROR',
               prisma: { ...e },

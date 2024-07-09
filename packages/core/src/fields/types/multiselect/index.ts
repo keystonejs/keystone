@@ -8,8 +8,8 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { graphql } from '../../..'
-import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
-import { userInputError } from '../../../lib/core/graphql-errors'
+import { makeValidateHook } from '../../non-null-graphql'
+import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -24,21 +24,22 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
           type?: 'string' | 'enum'
-          defaultValue?: readonly string[]
+          defaultValue?: readonly string[] | null
         }
       | {
           options: readonly { label: string, value: number }[]
           type: 'integer'
-          defaultValue?: readonly number[]
+          defaultValue?: readonly number[] | null
         }
     ) & {
       db?: {
+        isNullable?: boolean
         map?: string
         extendPrismaSchema?: (field: string) => string
       }
     }
 
-// These are the max and min values available to a 32 bit signed integer
+// these are the lowest and highest values for a signed 32-bit integer
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
@@ -46,70 +47,68 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
   config: MultiselectFieldConfig<ListTypeInfo>
 ): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue = [],
+    defaultValue: defaultValue_,
   } = config
+
+  config.db ??= {}
+  config.db.isNullable ??= false // TODO: deprecated, remove in breaking change
+  const defaultValue = config.db.isNullable ? defaultValue_ : (defaultValue_ ?? []) // TODO: deprecated, remove in breaking change?
 
   return (meta) => {
     if ((config as any).isIndexed === 'unique') {
       throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
-    const fieldLabel = config.label ?? humanize(meta.fieldKey)
-    assertReadIsNonNullAllowed(meta, config, false)
 
     const output = <T extends graphql.NullableOutputType>(type: T) => nonNullList(type)
     const create = <T extends graphql.NullableInputType>(type: T) => {
       return graphql.arg({ type: nonNullList(type) })
     }
 
-    const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] => {
+    const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] | null => {
       const resolved = resolveUpdate(val)
       if (resolved === undefined) {
         return defaultValue as T[]
       }
       return resolved
     }
+
     const resolveUpdate = <T extends string | number>(
       val: T[] | null | undefined
-    ): T[] | undefined => {
-      if (val === null) {
-        throw userInputError('multiselect fields cannot be set to null')
-      }
+    ): T[] | null | undefined => {
       return val
     }
 
     const transformedConfig = configToOptionsAndGraphQLType(config, meta)
-
-    const possibleValues = new Set(transformedConfig.options.map(x => x.value))
-    if (possibleValues.size !== transformedConfig.options.length) {
-      throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
-      )
+    const accepted = new Set(transformedConfig.options.map(x => x.value))
+    if (accepted.size !== transformedConfig.options.length) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`)
     }
+
+    const {
+      mode,
+      validate,
+    } = makeValidateHook(meta, config, ({ inputData, operation, addValidationError }) => {
+      if (operation === 'delete') return
+
+      const values: readonly (string | number)[] | null | undefined = inputData[meta.fieldKey] // resolvedData is JSON
+      if (values != null) {
+        for (const value of values) {
+          if (!accepted.has(value)) {
+            addValidationError(`'${value}' is not an accepted option`)
+          }
+        }
+        if (new Set(values).size !== values.length) {
+          addValidationError(`non-unique set of options selected`)
+        }
+      }
+    })
 
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
-        hooks: {
-          ...config.hooks,
-          async validateInput (args) {
-            const selectedValues: readonly (string | number)[] | undefined = args.inputData[meta.fieldKey]
-            if (selectedValues !== undefined) {
-              for (const value of selectedValues) {
-                if (!possibleValues.has(value)) {
-                  args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)
-                }
-              }
-              const uniqueValues = new Set(selectedValues)
-              if (uniqueValues.size !== selectedValues.length) {
-                args.addValidationError(`${fieldLabel} must have a unique set of options selected`)
-              }
-            }
-
-            await config.hooks?.validateInput?.(args)
-          },
-        },
+        hooks: mergeFieldHooks({ validate }, config.hooks),
         views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,
@@ -131,10 +130,13 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
         }),
       },
       {
-        mode: 'required',
+        mode,
         map: config?.db?.map,
         extendPrismaSchema: config.db?.extendPrismaSchema,
-        default: { kind: 'literal', value: JSON.stringify(defaultValue) },
+        default: {
+          kind: 'literal',
+          value: JSON.stringify(defaultValue ?? null)
+        },
       }
     )
   }
@@ -150,9 +152,7 @@ function configToOptionsAndGraphQLType (
         ({ value }) => !Number.isInteger(value) || value > MAX_INT || value < MIN_INT
       )
     ) {
-      throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32-bit signed integer`)
     }
     return {
       type: 'integer' as const,
@@ -190,5 +190,4 @@ function configToOptionsAndGraphQLType (
   }
 }
 
-const nonNullList = <T extends graphql.NullableType>(type: T) =>
-  graphql.list(graphql.nonNull(type))
+const nonNullList = <T extends graphql.NullableType>(type: T) => graphql.list(graphql.nonNull(type))
