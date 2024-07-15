@@ -124,7 +124,6 @@ export function statelessSessions<Session> ({
   }
 }
 
-/** @deprecated */
 export function storedSessions<Session> ({
   store: storeFn,
   maxAge = 60 * 60 * 8, // 8 hours
