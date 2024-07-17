@@ -152,6 +152,7 @@ export function createAdminMeta (
       // TODO: probably remove this
       itemQueryName: listKey,
       listQueryName: list.graphql.namePlural, // TODO: remove
+
       hideCreate: normalizeMaybeSessionFunction(listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create),
       hideDelete: normalizeMaybeSessionFunction(listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete),
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
@@ -163,9 +164,8 @@ export function createAdminMeta (
   let uniqueViewCount = -1
   const stringViewsToIndex: Record<string, number> = {}
   function getViewId (view: string) {
-    if (stringViewsToIndex[view] !== undefined) {
-      return stringViewsToIndex[view]
-    }
+    if (stringViewsToIndex[view] !== undefined) return stringViewsToIndex[view]
+
     uniqueViewCount++
     stringViewsToIndex[view] = uniqueViewCount
     adminMetaRoot.views.push(view)
@@ -177,20 +177,13 @@ export function createAdminMeta (
     if (omittedLists.includes(listKey)) continue
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
-      // If the field is a relationship field and is related to an omitted list, skip.
+      // if the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
       if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
-
-      assertValidView(
-        field.views,
-        `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
-      )
+      assertValidView(field.views, `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`)
 
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
-      const isNonNull = (['read', 'create', 'update'] as const).filter(
-        operation => field.graphql.isNonNull[operation]
-      )
-
+      const isNonNull = (['read', 'create', 'update'] as const).filter(operation => field.graphql.isNonNull[operation])
       const fieldMeta = {
         key: fieldKey,
         label: field.ui.label ?? humanize(fieldKey),
@@ -247,11 +240,10 @@ export function createAdminMeta (
   for (const [key, list] of Object.entries(initialisedLists)) {
     if (list.graphql.isEnabled.query === false) continue
     for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
+      // if the field is a relationship field and is related to an omitted list, skip.
       const dbField = list.fields[fieldMetaRootVal.path].dbField
-      // If the field is a relationship field and is related to an omitted list, skip.
-      if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) {
-        continue
-      }
+      if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) continue
+
       currentAdminMeta = adminMetaRoot
       try {
         fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null

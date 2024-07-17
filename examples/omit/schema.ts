@@ -18,7 +18,7 @@ export const lists = {
       person: relationship({ ref: 'Person' }),
     },
 
-    // this list is partially omitted, it will partly be in the public GraphQL schema
+    // this list is partially omitted -> it will partially be in the public GraphQL schema
     graphql: {
       omit: {
         // query: false, // default allowed
@@ -33,7 +33,7 @@ export const lists = {
       person: relationship({ ref: 'Person' }),
     },
 
-    // this list is completely omitted, it won't be in the public GraphQL schema
+    // this list is completely omitted -> it won't be in the public GraphQL schema
     graphql: {
       omit: true,
     },

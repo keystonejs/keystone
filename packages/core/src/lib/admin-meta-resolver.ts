@@ -1,13 +1,23 @@
-import type { GraphQLResolveInfo } from 'graphql'
-import type { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema'
-import type { KeystoneContext, BaseItem, MaybePromise } from '../types'
+import {
+  type GraphQLResolveInfo
+} from 'graphql'
+import {
+  type EnumType,
+  type EnumValue,
+  type ScalarType,
+} from '@graphql-ts/schema'
+import {
+  type BaseItem,
+  type KeystoneContext,
+  type MaybePromise
+} from '../types'
 import { QueryMode } from '../types'
 import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
-import type {
-  FieldMetaRootVal,
-  ListMetaRootVal,
-  AdminMetaRootVal,
-  FieldGroupMeta,
+import {
+  type AdminMetaRootVal,
+  type FieldGroupMeta,
+  type FieldMetaRootVal,
+  type ListMetaRootVal,
 } from './create-admin-meta'
 
 type Context = KeystoneContext | { isAdminUIBuildProcess: true }
@@ -88,26 +98,17 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
             resolve ({ fieldMode, itemId, listKey }, args, context, info) {
-              if (itemId !== null) {
-                assertInRuntimeContext(context, info)
-              }
-
-              if (typeof fieldMode === 'string') {
-                return fieldMode
-              }
-
-              if (itemId === null) {
-                return null
-              }
+              if (itemId !== null) assertInRuntimeContext(context, info)
+              if (typeof fieldMode === 'string') return fieldMode
+              if (itemId === null) return null
 
               // we need to re-assert this because typescript doesn't understand the relation between
               // rootVal.itemId !== null and the context being a runtime context
               assertInRuntimeContext(context, info)
 
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
-                if (item === null) {
-                  return 'hidden' as const
-                }
+                if (item === null) return 'hidden' as const
+
                 return fieldMode({
                   session: context.session,
                   context,
@@ -122,15 +123,10 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               values: graphql.enumValues(['form', 'sidebar']),
             }),
             resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
-              if (itemId !== null) {
-                assertInRuntimeContext(context, info)
-              }
-              if (typeof fieldPosition === 'string') {
-                return fieldPosition
-              }
-              if (itemId === null) {
-                return null
-              }
+              if (itemId !== null) assertInRuntimeContext(context, info)
+              if (typeof fieldPosition === 'string') return fieldPosition
+              if (itemId === null) return null
+
               assertInRuntimeContext(context, info)
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
                 if (item === null) {
