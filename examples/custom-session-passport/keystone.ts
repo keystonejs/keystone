@@ -6,7 +6,7 @@ import { lists } from './schema'
 import {
   type Session,
   session,
-  createAuthenticationMiddleware
+  passportMiddleware
 } from './auth'
 import { fixPrismaPath } from '../example-utils'
 
@@ -23,7 +23,7 @@ export default config<TypeInfo<Session>>({
 
   server: {
     extendExpressApp(app, context) {
-      app.use(createAuthenticationMiddleware(context))
+      app.use(passportMiddleware(context))
     },
   },
 })

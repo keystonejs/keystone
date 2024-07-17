@@ -30,7 +30,7 @@ const options: StrategyOptions = {
   callbackURL: 'http://localhost:3000/auth/github/callback',
 }
 
-export function createAuthenticationMiddleware(
+export function passportMiddleware (
   commonContext: KeystoneContext<TypeInfo<Session>>
 ): Router {
   const router = Router()
@@ -64,8 +64,7 @@ export function createAuthenticationMiddleware(
 
     const context = await commonContext.withRequest(req, res)
 
-    // Start the session in the same way authenticateItemWithPassword does
-    // see: packages/auth/src/gql/getBaseAuthSchema.ts
+    // starts the session, and sets the cookie on context.res
     await context.sessionStrategy?.start({
       context,
       data: req.user,
@@ -74,10 +73,12 @@ export function createAuthenticationMiddleware(
     res.redirect('/auth/session')
   })
 
-  // This URL will show current session object
+  // show the current session object
+  //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
     const context = await commonContext.withRequest(req, res)
     const session = await context.sessionStrategy?.get({ context })
+
     res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify(session))
     res.end()

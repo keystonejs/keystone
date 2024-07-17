@@ -9,7 +9,7 @@ import { type Session } from './auth'
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-function hasSession({ session }: { session?: Session }) {
+function hasSession ({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
