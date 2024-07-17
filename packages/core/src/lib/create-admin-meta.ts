@@ -152,12 +152,8 @@ export function createAdminMeta (
       // TODO: probably remove this
       itemQueryName: listKey,
       listQueryName: list.graphql.namePlural, // TODO: remove
-      hideCreate: normalizeMaybeSessionFunction(
-        list.graphql.isEnabled.create ? listConfig.ui?.hideCreate ?? false : false
-      ),
-      hideDelete: normalizeMaybeSessionFunction(
-        list.graphql.isEnabled.delete ? listConfig.ui?.hideDelete ?? false : false
-      ),
+      hideCreate: normalizeMaybeSessionFunction(listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create),
+      hideDelete: normalizeMaybeSessionFunction(listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete),
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
     }
 
