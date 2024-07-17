@@ -3,7 +3,7 @@ import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
 import type { SessionStrategy, SessionStoreFunction } from '../types'
 
-// should we also accept httpOnly?
+// TODO: should we also accept httpOnly?
 type StatelessSessionsOptions = {
   /**
    * Secret used by https://github.com/hapijs/iron for encapsulating data. Must be at least 32 characters long
