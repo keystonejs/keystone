@@ -285,30 +285,23 @@ function assertInRuntimeContext (
   { parentType, fieldName }: GraphQLResolveInfo
 ): asserts context is KeystoneContext {
   if ('isAdminUIBuildProcess' in context) {
-    throw new Error(
-      `${parentType}.${fieldName} cannot be resolved during the build process`
-    )
+    throw new Error(`${parentType}.${fieldName} cannot be resolved during the build process`)
   }
-}
-
-// TypeScript doesn't infer a mapped type when using a computed property that's a type parameter
-function objectFromKeyVal<Key extends string, Val> (key: Key, val: Val): { [_ in Key]: Val } {
-  return { [key]: val } as { [_ in Key]: Val }
 }
 
 function contextFunctionField<Key extends string, Type extends string | boolean> (
   key: Key,
   type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
 ) {
-  type Source = { [_ in Key]: (context: KeystoneContext) => MaybePromise<Type> }
-  return objectFromKeyVal(
-    key,
-    graphql.field({
+  return {
+    [key]: graphql.field({
       type: graphql.nonNull(type),
-      resolve (source: Source, args, context, info) {
+      resolve (source: {
+        [_ in Key]: (context: KeystoneContext) => MaybePromise<Type>
+      }, args, context, info) {
         assertInRuntimeContext(context, info)
         return source[key](context)
       },
     })
-  )
+  }
 }
