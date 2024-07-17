@@ -24,7 +24,7 @@ declare global {
 }
 
 const options: StrategyOptions = {
-  // https://github.com/settings/applications/new
+  // see https://github.com/settings/applications/new
   clientID: process.env.GITHUB_CLIENT_ID!,
   clientSecret: process.env.GITHUB_CLIENT_SECRET!,
   callbackURL: 'http://localhost:3000/auth/github/callback',
@@ -37,11 +37,11 @@ export function passportMiddleware (
   const instance = new Passport()
   const strategy = new Strategy(
     options,
-    async (_a: string, _r: string, p: Profile, done: VerifyCallback) => {
+    async (_a: string, _r: string, profile: Profile, done: VerifyCallback) => {
       const author = await commonContext.prisma.author.upsert({
-        where: { authId: p.id },
-        update: { name: p.displayName },
-        create: { authId: p.id, name: p.displayName },
+        where: { authId: profile.id },
+        update: { name: profile.displayName },
+        create: { authId: profile.id, name: profile.displayName },
       })
 
       return done(null, author)
@@ -49,10 +49,8 @@ export function passportMiddleware (
   )
 
   instance.use(strategy)
-
   const middleware = instance.authenticate('github', {
-    // No need to use express-session internally
-    session: false,
+    session: false, // dont use express-session
   })
 
   router.get('/auth/github', middleware)
