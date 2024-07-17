@@ -23,13 +23,11 @@ export function getFormattedGraphQLSchema (schema: string) {
   )
 }
 
-async function readFileButReturnNothingIfDoesNotExist (path: string) {
+async function readFileOrUndefined (path: string) {
   try {
     return await fs.readFile(path, 'utf8')
   } catch (err: any) {
-    if (err.code === 'ENOENT') {
-      return
-    }
+    if (err.code === 'ENOENT') return
     throw err
   }
 }
@@ -41,30 +39,24 @@ export async function validateArtifacts (
   const paths = system.getPaths(cwd)
   const artifacts = await getArtifacts(system)
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
-    readFileButReturnNothingIfDoesNotExist(paths.schema.graphql),
-    readFileButReturnNothingIfDoesNotExist(paths.schema.prisma),
+    readFileOrUndefined(paths.schema.graphql),
+    readFileOrUndefined(paths.schema.prisma),
   ])
-  const outOfDateSchemas = (() => {
-    if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
-      return 'both'
-    }
-    if (writtenGraphQLSchema !== artifacts.graphql) {
-      return 'graphql'
-    }
-    if (writtenPrismaSchema !== artifacts.prisma) {
-      return 'prisma'
-    }
-  })()
-  if (!outOfDateSchemas) return
 
-  const message = {
-    both: 'Your Prisma and GraphQL schemas are not up to date',
-    graphql: 'Your GraphQL schema is not up to date',
-    prisma: 'Your Prisma schema is not up to date',
-  }[outOfDateSchemas]
-  console.error(message)
+  if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
+    console.error('Your Prisma and GraphQL schemas are not up to date')
+    throw new ExitError(1)
+  }
 
-  throw new ExitError(1)
+  if (writtenGraphQLSchema !== artifacts.graphql) {
+    console.error('Your GraphQL schema is not up to date')
+    throw new ExitError(1)
+  }
+
+  if (writtenPrismaSchema !== artifacts.prisma) {
+    console.error('Your Prisma schema is not up to date')
+    throw new ExitError(1)
+  }
 }
 
 export async function getArtifacts (system: System) {

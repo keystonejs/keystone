@@ -1,10 +1,9 @@
 import * as Path from 'path'
-import type { GraphQLSchema } from 'graphql'
+import { type GraphQLSchema } from 'graphql'
 import {
-  type AdminFileToWrite,
   type __ResolvedKeystoneConfig
 } from '../../types'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 import { appTemplate } from './app'
 import { homeTemplate } from './home'
 import { listTemplate } from './list'
@@ -15,26 +14,25 @@ import { nextConfigTemplate } from './next-config'
 
 const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'))
 
-export const writeAdminFiles = (
-  config: __ResolvedKeystoneConfig,
+export function writeAdminFiles (config: __ResolvedKeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean
-): AdminFileToWrite[] => {
+) {
   return [
     {
-      mode: 'write',
+      mode: 'write' as const,
       src: nextConfigTemplate(config.ui?.basePath),
       outputPath: 'next.config.js',
     },
     {
-      mode: 'copy',
+      mode: 'copy' as const,
       inputPath: Path.join(pkgDir, 'static', 'favicon.ico'),
       outputPath: 'public/favicon.ico',
     },
-    { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
+    { mode: 'write' as const, src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
     {
-      mode: 'write',
+      mode: 'write' as const,
       src: appTemplate(
         adminMeta,
         graphQLSchema,
@@ -43,11 +41,11 @@ export const writeAdminFiles = (
       ),
       outputPath: 'pages/_app.js',
     },
-    { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
-    ...adminMeta.lists.flatMap(({ path, key }): AdminFileToWrite[] => [
-      { mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` },
-      { mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
-      { mode: 'write', src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
+    { mode: 'write' as const, src: homeTemplate, outputPath: 'pages/index.js' },
+    ...adminMeta.lists.flatMap(({ path, key }) => [
+      { mode: 'write' as const, src: listTemplate(key), outputPath: `pages/${path}/index.js` },
+      { mode: 'write' as const, src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
+      { mode: 'write' as const, src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
     ]),
   ]
 }

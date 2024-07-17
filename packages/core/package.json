@@ -18,6 +18,10 @@
       "module": "./context/dist/keystone-6-core-context.esm.js",
       "default": "./context/dist/keystone-6-core-context.cjs.js"
     },
+    "./session": {
+      "module": "./session/dist/keystone-6-core-session.esm.js",
+      "default": "./session/dist/keystone-6-core-session.cjs.js"
+    },
     "./testing": {
       "module": "./testing/dist/keystone-6-core-testing.esm.js",
       "default": "./testing/dist/keystone-6-core-testing.cjs.js"
@@ -37,10 +41,6 @@
     "./scripts": {
       "module": "./scripts/dist/keystone-6-core-scripts.esm.js",
       "default": "./scripts/dist/keystone-6-core-scripts.cjs.js"
-    },
-    "./session": {
-      "module": "./session/dist/keystone-6-core-session.esm.js",
-      "default": "./session/dist/keystone-6-core-session.cjs.js"
     },
     "./admin-ui/image": {
       "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
@@ -267,7 +267,7 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",
       "testing.ts",
-      "session/index.ts",
+      "session.ts",
       "scripts/index.ts",
       "scripts/cli.ts",
       "admin-ui/components/index.ts",

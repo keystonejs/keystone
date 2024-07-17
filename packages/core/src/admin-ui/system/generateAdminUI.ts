@@ -100,7 +100,6 @@ export async function generateAdminUI (
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist()
-  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const adminConfigDir = Path.join(process.cwd(), 'admin')
@@ -112,11 +111,10 @@ export async function generateAdminUI (
       entryFilter: entry => entry.dirent.isFile() && pageExtensions.has(Path.extname(entry.name)),
     })
   } catch (err: any) {
-    if (err.code !== 'ENOENT') {
-      throw err
-    }
+    if (err.code !== 'ENOENT') throw err
   }
 
+  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
   for (const { path } of userPagesEntries) {
     const outputFilename = Path.relative(adminConfigDir, path)
     const importPath = Path.relative(
@@ -145,14 +143,12 @@ export async function generateAdminUI (
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
     const ignoredDir = Path.resolve(projectAdminPath, '.next')
-    const ignoredFiles = new Set(
-      [
-        ...adminFiles.map(x => x.outputPath),
-        ...uniqueFiles,
-        'next-env.d.ts',
-        'pages/api/__keystone_api_build.js',
-      ].map(x => Path.resolve(projectAdminPath, x))
-    )
+    const ignoredFiles = new Set([
+      ...adminFiles.map(x => x.outputPath),
+      ...uniqueFiles,
+      'next-env.d.ts',
+      'pages/api/__keystone_api_build.js',
+    ].map(x => Path.resolve(projectAdminPath, x)))
 
     const entries = await walk(projectAdminPath, {
       deepFilter: entry => entry.path !== ignoredDir,
