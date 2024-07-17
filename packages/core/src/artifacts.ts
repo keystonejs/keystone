@@ -27,9 +27,7 @@ async function readFileButReturnNothingIfDoesNotExist (path: string) {
   try {
     return await fs.readFile(path, 'utf8')
   } catch (err: any) {
-    if (err.code === 'ENOENT') {
-      return
-    }
+    if (err.code === 'ENOENT') return
     throw err
   }
 }

@@ -12,8 +12,11 @@ export class ExitError extends Error {
 export async function importBuiltKeystoneConfiguration (cwd: string) {
   try {
     return require(getBuiltKeystoneConfigurationPath(cwd)).default
-  } catch (e) {
-    console.error('🚨 keystone build has not been run')
-    throw new ExitError(1)
+  } catch (err: any) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      console.error('🚨 keystone build has not been run')
+      throw new ExitError(1)
+    }
+    throw err
   }
 }
