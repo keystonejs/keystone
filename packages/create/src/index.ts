@@ -7,30 +7,24 @@ import execa from 'execa'
 import ora from 'ora'
 import c from 'chalk'
 import terminalLink from 'terminal-link'
-import getPackageJson from 'package-json';
+import getPackageJson from 'package-json'
 import { fileURLToPath } from 'url'
-import * as semver from 'semver';
+import * as semver from 'semver'
 
-import currentPkgJson from '../package.json';
+import currentPkgJson from '../package.json'
 
 async function checkVersion() {
   try {
-    const { version } = await getPackageJson('create-keystone-app');
+    const { version } = await getPackageJson('create-keystone-app')
     if (typeof version !== 'string') {
-      throw new Error(
-        'version from package metadata was expected to be a string but was not'
-      );
+      throw new Error('version from package metadata was expected to be a string but was not')
     }
     if (semver.lt(currentPkgJson.version, version)) {
-      console.error(
-        `⚠️  You're running an old version of create-keystone-app, please update to ${version}`
-      );
+      console.error(`⚠️  You're running an old version of create-keystone-app, please update to ${version}`)
     }
   } catch (err) {
-    console.error(
-      'A problem occurred fetching the latest version of create-keystone-app'
-    );
-    console.error(err);
+    console.error('A problem occurred fetching the latest version of create-keystone-app')
+    console.error(err)
   }
 }
 
@@ -39,37 +33,28 @@ class UserError extends Error {}
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const starterDir = path.normalize(`${__dirname}/../starter`)
 
-const cli = meow(
-  `
+const cli = meow(`
 Usage
   $ create-keystone-app [directory]
-`
-)
-
-type Args = {
-  directory: string
-}
+`)
 
 const versionInfo = () => {
   process.stdout.write('\n')
-  console.log(`✨ You're about to generate a project using ${c.bold(
-    'Keystone 6'
-  )} packages.
-`)
+  console.log(`✨ You're about to generate a project using ${c.bold('Keystone 6')} packages.`)
 }
 
-async function normalizeArgs(): Promise<Args> {
+async function normalizeArgs () {
   let directory = cli.input[0]
   if (!directory) {
     ({ directory } = await enquirer.prompt({
       type: 'input',
       name: 'directory',
-      message:
-        'What directory should create-keystone-app generate your app into?',
+      message: 'What directory should create-keystone-app generate your app into?',
       validate: (x) => !!x,
     }))
     process.stdout.write('\n')
   }
+
   return {
     directory: path.resolve(directory),
   }
@@ -77,9 +62,7 @@ async function normalizeArgs(): Promise<Args> {
 
 async function installDeps (cwd: string) {
   const pkgManager = (process.env.npm_config_user_agent ?? 'npm').split('/').shift()
-  const spinner = ora(
-    `Installing dependencies with ${pkgManager}. This may take a few minutes.`
-  ).start()
+  const spinner = ora(`Installing dependencies with ${pkgManager}. This may take a few minutes.`).start()
   try {
     await execa(pkgManager, ['install'], { cwd })
     spinner.succeed(`Installed dependencies with ${pkgManager}.`)
@@ -96,32 +79,25 @@ async function installDeps (cwd: string) {
   const normalizedArgs = await normalizeArgs()
   await fs.mkdir(normalizedArgs.directory)
   await Promise.all([
-    ...[
-      '_gitignore',
-      'schema.ts',
-      'package.json',
-      'tsconfig.json',
-      'schema.graphql',
-      'schema.prisma',
-      'keystone.ts',
-      'auth.ts',
-      'README.md',
-    ].map((filename) =>
-      fs.copyFile(
-        path.join(starterDir, filename),
-        path.join(normalizedArgs.directory, filename.replace(/^_/, '.'))
-      )
-    ),
-  ])
+    '_gitignore',
+    'schema.ts',
+    'package.json',
+    'tsconfig.json',
+    'schema.graphql',
+    'schema.prisma',
+    'keystone.ts',
+    'auth.ts',
+    'README.md',
+  ].map((filename) =>
+    fs.copyFile(
+      path.join(starterDir, filename),
+      path.join(normalizedArgs.directory, filename.replace(/^_/, '.'))
+    )
+  ))
   const packageManager = await installDeps(normalizedArgs.directory)
-  const relativeProjectDir = path.relative(
-    process.cwd(),
-    normalizedArgs.directory
-  )
+  const relativeProjectDir = path.relative(process.cwd(), normalizedArgs.directory)
   process.stdout.write('\n')
-  console.log(`🎉  Keystone created a starter project in: ${c.bold(
-    relativeProjectDir
-  )}
+  console.log(`🎉  Keystone created a starter project in: ${c.bold(relativeProjectDir)}
 
   ${c.bold('To launch your app, run:')}
 
