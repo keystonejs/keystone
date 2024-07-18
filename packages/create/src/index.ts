@@ -49,15 +49,8 @@ async function normalizeArgs(): Promise<Args> {
   };
 }
 
-function pkgManagerFromUserAgent(userAgent: string | undefined) {
-  if (!userAgent) return 'npm';
-  const pkgSpec = userAgent.split(' ')[0];
-  const [name, _version] = pkgSpec.split('/');
-  return name ?? 'npm';
-}
-
-const installDeps = async (cwd: string): Promise<string> => {
-  const pkgManager = pkgManagerFromUserAgent(process.env.npm_config_user_agent);
+async function installDeps (cwd: string) {
+  const pkgManager = (process.env.npm_config_user_agent ?? 'npm').split('/').shift()
   const spinner = ora(
     `Installing dependencies with ${pkgManager}. This may take a few minutes.`
   ).start();
@@ -69,7 +62,7 @@ const installDeps = async (cwd: string): Promise<string> => {
     spinner.fail(`Failed to install with ${pkgManager}.`);
     throw err;
   }
-};
+}
 
 (async () => {
   versionInfo();
