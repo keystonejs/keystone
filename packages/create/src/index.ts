@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 
 import fs from 'node:fs/promises'
 import meow from 'meow'
@@ -6,26 +6,16 @@ import enquirer from 'enquirer'
 import execa from 'execa'
 import ora from 'ora'
 import c from 'chalk'
-import terminalLink from 'terminal-link'
 import getPackageJson from 'package-json'
 import { fileURLToPath } from 'url'
-import * as semver from 'semver'
 
-import currentPkgJson from '../package.json'
+import thisPackage from '../package.json'
 
-async function checkVersion() {
-  try {
-    const { version } = await getPackageJson('create-keystone-app')
-    if (typeof version !== 'string') {
-      throw new Error('version from package metadata was expected to be a string but was not')
-    }
-    if (semver.lt(currentPkgJson.version, version)) {
-      console.error(`⚠️  You're running an old version of create-keystone-app, please update to ${version}`)
-    }
-  } catch (err) {
-    console.error('A problem occurred fetching the latest version of create-keystone-app')
-    console.error(err)
-  }
+async function checkVersion () {
+  const { version: upstream } = await getPackageJson('create-keystone-app')
+  if (upstream === thisPackage.version) return
+
+  console.error(`⚠️  You're running an old version of create-keystone-app, please update to ${upstream}`)
 }
 
 class UserError extends Error {}
@@ -37,11 +27,6 @@ const cli = meow(`
 Usage
   $ create-keystone-app [directory]
 `)
-
-const versionInfo = () => {
-  process.stdout.write('\n')
-  console.log(`✨ You're about to generate a project using ${c.bold('Keystone 6')} packages.`)
-}
 
 async function normalizeArgs () {
   let directory = cli.input[0]
@@ -60,24 +45,15 @@ async function normalizeArgs () {
   }
 }
 
-async function installDeps (cwd: string) {
-  const pkgManager = (process.env.npm_config_user_agent ?? 'npm').split('/').shift()
-  const spinner = ora(`Installing dependencies with ${pkgManager}. This may take a few minutes.`).start()
-  try {
-    await execa(pkgManager, ['install'], { cwd })
-    spinner.succeed(`Installed dependencies with ${pkgManager}.`)
-    return pkgManager
-  } catch (err) {
-    spinner.fail(`Failed to install with ${pkgManager}.`)
-    throw err
-  }
-}
-
 (async () => {
-  versionInfo()
+  process.stdout.write('\n')
+  console.log(`✨ You're about to generate a project using ${c.bold('Keystone 6')} packages.`)
+
   await checkVersion()
   const normalizedArgs = await normalizeArgs()
-  await fs.mkdir(normalizedArgs.directory)
+  const nextCwd = normalizedArgs.directory
+
+  await fs.mkdir(nextCwd)
   await Promise.all([
     '_gitignore',
     'schema.ts',
@@ -94,7 +70,17 @@ async function installDeps (cwd: string) {
       path.join(normalizedArgs.directory, filename.replace(/^_/, '.'))
     )
   ))
-  const packageManager = await installDeps(normalizedArgs.directory)
+
+  const packageManager = process.env.npm_config_user_agent?.split('/').shift() ?? 'npm'
+  const spinner = ora(`Installing dependencies with ${packageManager}. This may take a few minutes.`).start()
+  try {
+    await execa(packageManager, ['install'], { cwd: nextCwd })
+    spinner.succeed(`Installed dependencies with ${packageManager}.`)
+  } catch (err) {
+    spinner.fail(`Failed to install with ${packageManager}.`)
+    throw err
+  }
+
   const relativeProjectDir = path.relative(process.cwd(), normalizedArgs.directory)
   process.stdout.write('\n')
   console.log(`🎉  Keystone created a starter project in: ${c.bold(relativeProjectDir)}
@@ -112,12 +98,7 @@ async function installDeps (cwd: string) {
   - Edit ${c.bold(
     `${relativeProjectDir}${path.sep}keystone.ts`
   )} to customize your app.
-  - ${terminalLink('Open the Admin UI', 'http://localhost:3000')}
-  - ${terminalLink('Open the Graphql API', 'http://localhost:3000/api/graphql')}
-  - ${terminalLink('Read the docs', 'https://keystonejs.com')}
-  - ${terminalLink(
-    'Star Keystone on GitHub',
-    'https://github.com/keystonejs/keystone'
+  - Star Keystone on GitHub (https://github.com/keystonejs/keystone)
   )}
 `)
 })().catch((err) => {

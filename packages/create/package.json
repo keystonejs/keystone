@@ -25,13 +25,7 @@
     "execa": "^5.1.1",
     "meow": "^9.0.0",
     "ora": "^8.0.1",
-    "package-json": "^10.0.0",
-    "path": "^0.12.7",
-    "semver": "^7.6.0",
-    "terminal-link": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/semver": "^7.5.8"
+    "package-json": "^10.0.0"
   },
   "files": [
     "dist",
