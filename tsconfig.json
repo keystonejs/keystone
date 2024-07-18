@@ -16,5 +16,5 @@
     "target": "esnext"
   },
   "include": ["**/*"],
-  "exclude": ["docs/", "**/node_modules/**/*"]
+  "exclude": ["docs/", "**/node_modules/**/*", "packages/create/starter"]
 }
