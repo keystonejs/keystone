@@ -2212,9 +2212,6 @@ importers:
       execa:
         specifier: ^5.1.1
         version: 5.1.1
-      fs-extra:
-        specifier: ^11.0.0
-        version: 11.2.0
       meow:
         specifier: ^9.0.0
         version: 9.0.0
@@ -2234,9 +2231,6 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
     devDependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.0
-        version: 11.0.4
       '@types/semver':
         specifier: ^7.5.8
         version: 7.5.8

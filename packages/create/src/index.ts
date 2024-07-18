@@ -1,6 +1,6 @@
 import path from 'path'
 
-import fs from 'fs-extra'
+import fs from 'node:fs/promises'
 import meow from 'meow'
 import enquirer from 'enquirer'
 import execa from 'execa'
