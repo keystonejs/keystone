@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import c from 'chalk'
 import enquirer from 'enquirer'
@@ -7,7 +8,6 @@ import execa from 'execa'
 import getPackageJson from 'package-json'
 import meow from 'meow'
 import ora from 'ora'
-import { fileURLToPath } from 'url'
 
 import thisPackage from '../package.json'
 
