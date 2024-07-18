@@ -71,7 +71,7 @@ async function normalizeArgs () {
     )
   ))
 
-  const packageManager = process.env.npm_config_user_agent?.split('/').shift() ?? 'npm'
+  const [packageManager] = process.env.npm_config_user_agent?.split('/', 1) ?? ['npm']
   const spinner = ora(`Installing dependencies with ${packageManager}. This may take a few minutes.`).start()
   try {
     await execa(packageManager, ['install'], { cwd: nextCwd })
