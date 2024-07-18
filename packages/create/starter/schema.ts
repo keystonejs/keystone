@@ -24,9 +24,9 @@ import { document } from '@keystone-6/fields-document'
 
 // when using Typescript, you can refine your types to a stricter subset by importing
 // the generated types from '.keystone/types'
-import type { Lists } from '.keystone/types'
+import { type Lists } from '.keystone/types'
 
-export const lists: Lists = {
+export const lists = {
   User: list({
     // WARNING
     //   for this starter project, anyone can create, query, update and delete anything
@@ -146,4 +146,4 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.tags', many: true }),
     },
   }),
-}
+} satisfies Lists
