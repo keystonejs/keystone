@@ -2221,13 +2221,6 @@ importers:
       package-json:
         specifier: ^10.0.0
         version: 10.0.1
-      semver:
-        specifier: ^7.6.0
-        version: 7.6.3
-    devDependencies:
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
 
   packages/document-renderer:
     devDependencies:
