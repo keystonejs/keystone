@@ -1,5 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import {
   createContext,
   useContext,
@@ -10,8 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
-import { useRouter } from 'next/router'
-import { jsx } from '@emotion/react'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import debounce from 'lodash.debounce'
 
@@ -75,8 +76,8 @@ function Logo () {
 }
 
 function useCurrentSection () {
-  const { pathname } = useRouter()
-  const check = (candidate: string) => pathname.startsWith(candidate)
+  const pathname = usePathname()
+  const check = (candidate: string) => pathname?.startsWith(candidate)
   if (['/updates', '/releases'].some(check)) return '/updates'
   if (['/why-keystone', '/for-'].some(check)) return '/why-keystone'
   if (['/docs'].some(check)) return '/docs'
@@ -133,7 +134,7 @@ function FlatMenu ({
   const [showContent, setShowContent] = useState(false)
 
   const onClickHandler = useCallback(() => {
-    setShowContent(b => !b)
+    setShowContent((b) => !b)
   }, [setShowContent])
 
   const closeMenu = useCallback(() => {
@@ -224,6 +225,7 @@ function FlatMenu ({
 export function Header () {
   const mq = useMediaQuery()
   const router = useRouter()
+  const pathname = usePathname()
 
   const menuRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLElement>(null)
@@ -295,7 +297,7 @@ export function Header () {
     loadSearch(searchAttempt)
     // search - keyboard shortcut
     let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
-    document.body.addEventListener('keydown', event => {
+    document.body.addEventListener('keydown', (event) => {
       // If we're typing in an input, don't ever focus the search input
       if (
         document.activeElement &&
@@ -310,7 +312,7 @@ export function Header () {
         document.getElementById('search-field')?.focus()
       }
     })
-    document.body.addEventListener('keyup', event => {
+    document.body.addEventListener('keyup', (event) => {
       delete keysPressed[event.key]
     })
   }, [])
@@ -328,11 +330,8 @@ export function Header () {
   }, [])
 
   useEffect(() => {
-    router.events.on('routeChangeComplete', handleClose)
-    return () => {
-      router.events.off('routeChangeComplete', handleClose)
-    }
-  }, [router.events, handleClose])
+    handleClose()
+  }, [pathname])
 
   return (
     <header ref={headerRef}>

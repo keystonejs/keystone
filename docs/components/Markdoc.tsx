@@ -1,3 +1,5 @@
+'use client'
+
 import React, { type ElementType, type ReactNode } from 'react'
 import type { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc'
 import { isTag } from '../markdoc/isTag'
@@ -12,7 +14,7 @@ import { ComingSoon } from './docs/ComingSoon'
 const renderers: Record<string, ElementType> = {
   code: InlineCode,
   CodeBlock (props: { content: string, language: string }) {
-    return (
+  return (
       <pre>
         <Code className={`language-${props.language}`}>{props.content}</Code>
       </pre>

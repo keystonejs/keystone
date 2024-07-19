@@ -1,7 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
-
 import { Gradients, type IconProps } from './util'
 
 export function Tick ({ grad, ...props }: IconProps) {

@@ -1,19 +1,11 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
 import { Fragment, useState, useEffect, type HTMLAttributes } from 'react'
-import { jsx } from '@emotion/react'
 
 import { type COLORS } from '../lib/TOKENS'
 import { LightMode } from './icons/LightMode'
 import { DarkMode } from './icons/DarkMode'
-
-function ModeIcon ({ theme }: { theme: 'light' | 'dark' }) {
-  if (theme === 'dark') {
-    return <LightMode css={{ height: 'var(--space-xlarge)' }} />
-  }
-
-  return <DarkMode css={{ height: 'var(--space-xlarge)' }} />
-}
+import { useThemeContext } from '../app/(site)/layout-client'
 
 export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
   /*
@@ -22,29 +14,14 @@ export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
     even if the theme is dark mode based on system preference.
     So we render the toggle only on the client
   */
-  const [theme, setTheme] = useState<keyof typeof COLORS | null>(null)
 
-  useEffect(() => {
-    const currentTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark'
-    setTheme(currentTheme)
-  }, [setTheme])
-
-  const handleThemeChange = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark'
-    if (newTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark')
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light')
-    }
-    setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-  }
-
+  const theme = useThemeContext()
   return (
     <Fragment>
       <button
-        key={theme}
-        onClick={handleThemeChange}
+        onClick={() => {
+          theme.setTheme(theme.theme === 'dark' ? 'light' : 'dark')
+        }}
         css={{
           display: 'inline-flex',
           appearance: 'none',
@@ -64,7 +41,18 @@ export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
         }}
         {...props}
       >
-        {theme === null ? <span css={{ width: 24 }} /> : <ModeIcon theme={theme} />}
+        <LightMode
+          css={{
+            height: 'var(--space-xlarge)',
+            '[data-theme="light"] &': { display: 'none' }
+          }}
+        />
+        <DarkMode
+          css={{
+            height: 'var(--space-xlarge)',
+            '[data-theme="dark"] &': { display: 'none' }
+          }}
+        />
       </button>
     </Fragment>
   )

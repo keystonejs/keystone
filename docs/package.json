@@ -53,9 +53,9 @@
     "@types/facepaint": "^1.2.2",
     "@types/gtag.js": "^0.0.20",
     "@types/js-yaml": "^4.0.5",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/lodash.debounce": "^4.0.6",
     "@types/rss": "^0.0.32",
     "next-sitemap": "^4.0.0",
     "typescript": "catalog:"

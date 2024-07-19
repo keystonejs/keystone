@@ -1,6 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import { useState, useEffect, type HTMLAttributes } from 'react'
 
 import { Loading } from './Loading'

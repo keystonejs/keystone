@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
 import { type SVGAttributes } from 'react'
 
 export type IconGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6' | 'logo'

@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
 import Link from 'next/link'
 // import { useRouter } from 'next/router';
 import { Fragment, useEffect, type ReactNode, type MouseEvent } from 'react'

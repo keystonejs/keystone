@@ -166,8 +166,7 @@ export default config<TypeInfo>({
         {
           mode: 'write',
           src: `
-            /** @jsxRuntime classic */
-/** @jsx jsx */
+            
             import { jsx } from '@keystone-ui/core';
             export default function Welcome() {
               return (<h1>Welcome to my Keystone system</h1>);

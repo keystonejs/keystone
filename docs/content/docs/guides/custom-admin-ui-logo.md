@@ -27,8 +27,7 @@ If you have styling constraints, we recommend using the jsx export from the `@ke
 
 ```tsx
 // admin/config.tsx
-/** @jsxRuntime classic */
-/** @jsx jsx */
+
 import { jsx } from '@keystone-ui/core';
 
 function CustomLogo () {
