@@ -521,8 +521,8 @@ importers:
         specifier: ^2.0.1
         version: 2.2.0
       '@emotion/cache':
-        specifier: 11.11.0
-        version: 11.11.0
+        specifier: 11.13.0
+        version: 11.13.0
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.11.2
@@ -533,8 +533,8 @@ importers:
         specifier: 11.11.0
         version: 11.11.0(@emotion/css@11.11.2)
       '@emotion/weak-memoize':
-        specifier: ^0.3.0
-        version: 0.3.1
+        specifier: ^0.4.0
+        version: 0.4.0
       '@keystar/ui':
         specifier: ^0.7.6
         version: 0.7.8(next@14.2.5(@babel/core@7.24.9)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1990,8 +1990,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.1
       '@emotion/weak-memoize':
-        specifier: ^0.3.0
-        version: 0.3.1
+        specifier: ^0.4.0
+        version: 0.4.0
       '@graphql-ts/extend':
         specifier: ^1.0.0
         version: 1.0.0(@graphql-ts/schema@0.6.0(graphql@16.9.0))(graphql@16.9.0)
@@ -2246,8 +2246,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0(@dnd-kit/core@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@emotion/weak-memoize':
-        specifier: ^0.3.0
-        version: 0.3.1
+        specifier: ^0.4.0
+        version: 0.4.0
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
@@ -3787,6 +3787,9 @@ packages:
   '@emotion/cache@11.11.0':
     resolution: {integrity: sha512-P34z9ssTCBi3e9EI1ZsWpNHcfY1r09ZO0rZbRO2ob3ZQMnFI35jB536qoXbkdesr5EUhYi22anuEJuyxifaqAQ==}
 
+  '@emotion/cache@11.13.0':
+    resolution: {integrity: sha512-hPV345J/tH0Cwk2wnU/3PBzORQ9HeX+kQSbwI+jslzpRCHE6fSGTohswksA/Ensr8znPzwfzKZCmAM9Lmlhp7g==}
+
   '@emotion/css@11.11.2':
     resolution: {integrity: sha512-VJxe1ucoMYMS7DkiMdC2T7PWNbrEI0a39YRiyDvK2qq4lXwjRbVP/z4lpG+odCsRzadlR+1ywwrTzhdm5HNdew==}
 
@@ -3795,6 +3798,9 @@ packages:
 
   '@emotion/memoize@0.8.1':
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
+
+  '@emotion/memoize@0.9.0':
+    resolution: {integrity: sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==}
 
   '@emotion/react@11.11.4':
     resolution: {integrity: sha512-t8AjMlF0gHpvvxk5mAtCqR4vmxiGHCeJBaQO6gncUSdklELOgtwjerNY2yuJNfwnc6vi16U/+uMF+afIawJ9iw==}
@@ -3819,6 +3825,9 @@ packages:
   '@emotion/sheet@1.2.2':
     resolution: {integrity: sha512-0QBtGvaqtWi+nx6doRwDdBIzhNdZrXUppvTM4dtZZWEGTXL/XE/yJxLMGlDT1Gt+UHH5IX1n+jkXyytE/av7OA==}
 
+  '@emotion/sheet@1.4.0':
+    resolution: {integrity: sha512-fTBW9/8r2w3dXWYM4HCB1Rdp8NLibOw2+XELH5m5+AkWiL/KqYX6dc0kKYlaYyKjrQ6ds33MCdMPEwgs2z1rqg==}
+
   '@emotion/unitless@0.8.1':
     resolution: {integrity: sha512-KOEGMu6dmJZtpadb476IsZBclKvILjopjUii3V+7MnXIQCYh8W3NgNcgwo21n9LXZX6EDIKvqfjYxXebDwxKmQ==}
 
@@ -3830,8 +3839,14 @@ packages:
   '@emotion/utils@1.2.1':
     resolution: {integrity: sha512-Y2tGf3I+XVnajdItskUCn6LX+VUDmP6lTL4fcqsXAv43dnlbZiuW4MWQW38rW/BVWSE7Q/7+XQocmpnRYILUmg==}
 
+  '@emotion/utils@1.4.0':
+    resolution: {integrity: sha512-spEnrA1b6hDR/C68lC2M7m6ALPUHZC0lIY7jAS/B/9DuuO1ZP04eov8SMv/6fwRd8pzmsn2AuJEznRREWlQrlQ==}
+
   '@emotion/weak-memoize@0.3.1':
     resolution: {integrity: sha512-EsBwpc7hBUJWAsNPBmJy4hxWx12v6bshQsldrVmjxJoc3isbxhOrF2IcCpaXxfvq03NwkI7sbsOLXbYuqF/8Ww==}
+
+  '@emotion/weak-memoize@0.4.0':
+    resolution: {integrity: sha512-snKqtPW01tN0ui7yu9rGv69aJXr/a/Ywvl11sUjNtEcRc+ng/mQriFL0wLXMef74iHa/EkftbDzU9F8iFbH+zg==}
 
   '@envelop/core@3.0.6':
     resolution: {integrity: sha512-06t1xCPXq6QFN7W1JUEf68aCwYN0OUDNAIoJe7bAqhaoa2vn7NCcuX1VHkJ/OWpmElUgCsRO6RiBbIru1in0Ig==}
@@ -14430,10 +14445,18 @@ snapshots:
       '@emotion/weak-memoize': 0.3.1
       stylis: 4.2.0
 
+  '@emotion/cache@11.13.0':
+    dependencies:
+      '@emotion/memoize': 0.9.0
+      '@emotion/sheet': 1.4.0
+      '@emotion/utils': 1.4.0
+      '@emotion/weak-memoize': 0.4.0
+      stylis: 4.2.0
+
   '@emotion/css@11.11.2':
     dependencies:
       '@emotion/babel-plugin': 11.11.0
-      '@emotion/cache': 11.11.0
+      '@emotion/cache': 11.13.0
       '@emotion/serialize': 1.1.4
       '@emotion/sheet': 1.2.2
       '@emotion/utils': 1.2.1
@@ -14443,6 +14466,8 @@ snapshots:
   '@emotion/hash@0.9.1': {}
 
   '@emotion/memoize@0.8.1': {}
+
+  '@emotion/memoize@0.9.0': {}
 
   '@emotion/react@11.11.4(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
@@ -14479,6 +14504,8 @@ snapshots:
 
   '@emotion/sheet@1.2.2': {}
 
+  '@emotion/sheet@1.4.0': {}
+
   '@emotion/unitless@0.8.1': {}
 
   '@emotion/use-insertion-effect-with-fallbacks@1.0.1(react@18.3.1)':
@@ -14487,7 +14514,11 @@ snapshots:
 
   '@emotion/utils@1.2.1': {}
 
+  '@emotion/utils@1.4.0': {}
+
   '@emotion/weak-memoize@0.3.1': {}
+
+  '@emotion/weak-memoize@0.4.0': {}
 
   '@envelop/core@3.0.6':
     dependencies:
