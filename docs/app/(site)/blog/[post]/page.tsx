@@ -62,10 +62,7 @@ export async function generateMetadata ({ params }): Promise<Metadata> {
 }
 
 // Static HTML page generation for each document page
-export async function generateStaticPaths () {
+export async function generateStaticParams () {
   const posts = await reader.collections.posts.list()
-  return {
-    paths: posts.map((post) => ({ params: { post } })),
-    fallback: false,
-  }
+  return posts.map((post) => ({ post }))
 }
