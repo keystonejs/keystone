@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+
+/** @jsxImportSource @emotion/react */
 
 import { Well } from '../primitives/Well'
 import { useMediaQuery } from '../../lib/media'

@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+
+/** @jsxImportSource @emotion/react */
 
 import { Wrapper } from '../primitives/Wrapper'
 import { Emoji } from '../primitives/Emoji'

@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
 
 import { useMediaQuery } from '../../lib/media'
 import { DocsNavigation, UpdatesNavigation } from './Navigation'

@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+
 import { jsx } from '@emotion/react'
 
 import { type IconProps } from './util'

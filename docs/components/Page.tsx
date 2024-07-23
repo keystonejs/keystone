@@ -1,9 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import { useRef, Fragment, type ReactNode } from 'react'
-import { useRouter } from 'next/router'
-import { jsx } from '@emotion/react'
-import Head from 'next/head'
+import { usePathname } from 'next/navigation'
 
 import { useMediaQuery } from '../lib/media'
 import { TableOfContents } from './docs/TableOfContents'
@@ -16,45 +16,13 @@ import { Header } from './Header'
 import { Footer, DocsFooter } from './Footer'
 import { type HeadingType } from './Markdoc'
 
-function OpenGraph ({
-  title,
-  description,
-  ogImage,
-}: {
-  title: string
-  description: string
-  ogImage?: string
-}) {
-  const siteUrl = process.env.siteUrl
-  if (!ogImage) {
-    ogImage = `${siteUrl}/og-image-landscape.png`
-  }
-  return (
-    <Head>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta key="og:site_name" property="og:site_name" content={title} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={`${ogImage}`} />
-      <meta property="og:image:width" content="761" />
-      <meta property="og:image:height" content="410" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${ogImage}`} />
-    </Head>
-  )
-}
-
 const pagesWithUpdatesSidebar = ['/updates']
+
 export function DocsPage ({
   children,
   headings = [],
   noProse,
   noRightNav,
-  title,
-  description,
-  ogImage,
   isIndexPage,
   editPath,
 }: {
@@ -62,85 +30,77 @@ export function DocsPage ({
   headings?: HeadingType[]
   noProse?: boolean
   noRightNav?: boolean
-  title: string
-  description: string
-  ogImage?: string
   isIndexPage?: boolean
   editPath?: string
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const mq = useMediaQuery()
-  const { pathname } = useRouter()
-  const isUpdatesPage = pagesWithUpdatesSidebar.some(p => pathname.startsWith(p))
-
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`
+  const pathname = usePathname()
+  const isUpdatesPage = pagesWithUpdatesSidebar.some((p) => pathname?.startsWith(p))
 
   return (
-    <Fragment>
-      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      <div
-        css={{
-          gridArea: 'main',
-          position: 'relative',
-          display: 'grid',
-          gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
-        }}
+    <div
+      css={{
+        gridArea: 'main',
+        position: 'relative',
+        display: 'grid',
+        gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
+      }}
+    >
+      <Header />
+      <Wrapper
+        css={mq({
+          borderTop: '1px solid var(--border)',
+          overflowY: 'auto',
+          display: ['block', null, 'grid'],
+          marginTop: '0rem',
+          gridTemplateColumns: '15rem minmax(0, 1fr)',
+          gridTemplateRows: '1fr auto',
+          gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
+        })}
       >
-        <Header />
-        <Wrapper
+        <Sidebar isUpdatesPage={isUpdatesPage} />
+        <div
+          id="content-and-toc"
           css={mq({
-            borderTop: '1px solid var(--border)',
-            overflowY: 'auto',
+            gridColumn: '2 / 3',
+            gridRow: '1 / 2',
             display: ['block', null, 'grid'],
-            marginTop: '0rem',
-            gridTemplateColumns: '15rem minmax(0, 1fr)',
-            gridTemplateRows: '1fr auto',
+            gridTemplateColumns: noRightNav
+              ? 'minmax(0, 1fr)'
+              : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
             gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
-          <Sidebar isUpdatesPage={isUpdatesPage} />
-          <div
-            id="content-and-toc"
-            css={mq({
-              gridColumn: '2 / 3',
-              gridRow: '1 / 2',
-              display: ['block', null, 'grid'],
-              gridTemplateColumns: noRightNav
-                ? 'minmax(0, 1fr)'
-                : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
-              gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
-            })}
+          <main
+            id="skip-link-content"
+            tabIndex={0}
+            ref={contentRef}
+            className={noProse ? '' : 'prose'}
+            css={{
+              paddingTop: '2rem',
+            }}
           >
-            <main
-              id="skip-link-content"
-              tabIndex={0}
-              ref={contentRef}
-              className={noProse ? '' : 'prose'}
-              css={{
-                paddingTop: '2rem',
-              }}
+            <Stack
+              orientation="horizontal"
+              block
+              css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
             >
-              <Stack
-                orientation="horizontal"
-                block
-                css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
-              >
-                <Breadcrumbs />
+              <Breadcrumbs />
 
-                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
-              </Stack>
-              <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
-                {children}
-              </div>
-            </main>
-            {!!headings.length && !noRightNav && (
-              <TableOfContents container={contentRef} headings={headings} />
-            )}
-          </div>
-          <DocsFooter />
-        </Wrapper>
-      </div>
-    </Fragment>
+              <EditButton pathName={pathname || ''} isIndexPage={isIndexPage} editPath={editPath} />
+            </Stack>
+            <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
+              {children}
+            </div>
+          </main>
+          {!!headings.length && !noRightNav && (
+            <TableOfContents container={contentRef} headings={headings} />
+          )}
+        </div>
+        <DocsFooter />
+      </Wrapper>
+    </div>
   )
 }
 
@@ -148,111 +108,88 @@ export function BlogPage ({
   children,
   headings = [],
   noRightNav,
-  title,
-  description,
-  ogImage,
   isIndexPage,
   editPath,
 }: {
   children: ReactNode
   headings?: HeadingType[]
   noRightNav?: boolean
-  title: string
-  description: string
-  ogImage?: string
   isIndexPage?: boolean
   editPath?: string
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const mq = useMediaQuery()
-  const { pathname } = useRouter()
-
-  const metaTitle = title ? `${title} | Keystone Blog` : `Keystone Blog`
+  const pathname = usePathname()
 
   return (
-    <Fragment>
-      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
-      <div
-        css={{
-          gridArea: 'main',
-          position: 'relative',
-          display: 'grid',
-          gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
-        }}
+    <div
+      css={{
+        gridArea: 'main',
+        position: 'relative',
+        display: 'grid',
+        gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
+      }}
+    >
+      <Header />
+      <Wrapper
+        css={mq({
+          borderTop: '1px solid var(--border)',
+          overflowY: 'auto',
+          display: ['block', null, 'grid'],
+          margin: '0 auto 0',
+          paddingLeft: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
+          paddingRight: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
+          gridTemplateRows: '1fr auto',
+          gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
+        })}
       >
-        <Header />
-        <Wrapper
+        <div
+          id="content-and-toc"
           css={mq({
-            borderTop: '1px solid var(--border)',
-            overflowY: 'auto',
+            gridColumn: '2 / 3',
+            gridRow: '1 / 2',
             display: ['block', null, 'grid'],
-            margin: '0 auto 0',
-            paddingLeft: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
-            paddingRight: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
-            gridTemplateRows: '1fr auto',
+            gridTemplateColumns: noRightNav
+              ? 'minmax(0, 1fr)'
+              : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
             gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
-          <div
-            id="content-and-toc"
-            css={mq({
-              gridColumn: '2 / 3',
-              gridRow: '1 / 2',
-              display: ['block', null, 'grid'],
-              gridTemplateColumns: noRightNav
-                ? 'minmax(0, 1fr)'
-                : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
-              gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
-            })}
+          <main
+            id="skip-link-content"
+            tabIndex={0}
+            ref={contentRef}
+            className={'prose'}
+            css={{
+              paddingTop: '2rem',
+            }}
           >
-            <main
-              id="skip-link-content"
-              tabIndex={0}
-              ref={contentRef}
-              className={'prose'}
-              css={{
-                paddingTop: '2rem',
-              }}
+            <Stack
+              orientation="horizontal"
+              block
+              css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
             >
-              <Stack
-                orientation="horizontal"
-                block
-                css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
-              >
-                <Breadcrumbs />
+              <Breadcrumbs />
 
-                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
-              </Stack>
-              <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
-                {children}
-              </div>
-            </main>
-            {!!headings.length && !noRightNav && (
-              <TableOfContents container={contentRef} headings={headings} />
-            )}
-          </div>
-          <Footer />
-        </Wrapper>
-      </div>
-    </Fragment>
+              <EditButton pathName={pathname || ''} isIndexPage={isIndexPage} editPath={editPath} />
+            </Stack>
+            <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
+              {children}
+            </div>
+          </main>
+          {!!headings.length && !noRightNav && (
+            <TableOfContents container={contentRef} headings={headings} />
+          )}
+        </div>
+        <Footer />
+      </Wrapper>
+    </div>
   )
 }
 
-export function Page ({
-  children,
-  title,
-  description,
-  ogImage,
-}: {
-  children: ReactNode
-  title: string
-  description: string
-  ogImage?: string
-}) {
-  const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`
+export function Page ({ children }: { children: ReactNode }) {
   return (
     <Fragment>
-      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
       <div
         css={{
           gridArea: 'main',

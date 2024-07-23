@@ -10,8 +10,8 @@
     "esModuleInterop": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "jsx": "preserve",
+    "isolatedModules": true,
     "plugins": [
       {
         "name": "next"

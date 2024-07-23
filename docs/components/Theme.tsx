@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Global } from '@emotion/react'
+import {  Global } from '@emotion/react'
 
 import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS'
 

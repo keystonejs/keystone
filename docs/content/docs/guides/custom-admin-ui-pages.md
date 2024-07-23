@@ -154,8 +154,7 @@ The snippet below uses the emotion `jsx` runtime exported from `@keystone-ui/cor
 ```tsx
 // admin/pages/custom-page.tsx
 /** @jsxRuntime classic */
-/** @jsxRuntime classic */
-/** @jsx jsx */
+
 
 import Link from 'next/link';
 import { jsx } from '@keystone-ui/core';

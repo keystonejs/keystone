@@ -1,6 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, keyframes } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
+import { keyframes } from '@emotion/react'
 import { useRef, useState, useEffect, type HTMLAttributes, type ReactNode } from 'react'
 
 const fadeInTop = keyframes`
