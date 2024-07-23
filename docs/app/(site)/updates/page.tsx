@@ -6,5 +6,5 @@ export const metadata = {
 }
 
 export default function WhatsNew () {
-return <PageClient />
+  return <PageClient />
 }
