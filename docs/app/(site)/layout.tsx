@@ -1,10 +1,6 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import RootLayoutClient, { Html } from './layout-client'
 import { siteBaseUrl } from '../../lib/og-util'
-
-export const viewport: Viewport = {
-  themeColor: '#ffffff',
-}
 
 const defaultTitle = 'KeystoneJS: The superpowered Node.js Headless CMS for developers'
 const defaultDescription =
