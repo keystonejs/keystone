@@ -44,8 +44,10 @@ export async function generateMetadata ({ params }) {
   }
 }
 
-// Static HTML page generation for each document page
-export async function generateStaticParams () {
+export async function generateStaticPaths () {
   const pages = await reader.collections.docs.list()
-  return pages.map((page) => ({ rest: page.split('/') }))
+  return {
+    paths: pages.map((page) => ({ params: { rest: page.split('/') } })),
+    fallback: false,
+  }
 }
