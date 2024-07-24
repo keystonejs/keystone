@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: 'Keystone Blog',
   description: 'Blog posts from the team maintaining Keystone.',
   openGraph: {
-    images: `${siteBaseUrl}/assets/blog/the-keystone-blog-cover.png` 
+    images: '/assets/blog/the-keystone-blog-cover.png' 
   }
 }
 
