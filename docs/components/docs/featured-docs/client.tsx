@@ -39,7 +39,13 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
       {/* Remaining items of the first group */}
       <SplitCardContainer>
         {restItems.map((item, i) => (
-          <FeaturedCard key={`${item.label}-${i}`} gradient={firstGroup.gradient} item={item} />
+          <FeaturedCard
+            key={`${item.label}-${i}`}
+            label={item.label}
+            href={item.href}
+            description={item.description}
+            gradient={firstGroup.gradient}
+          />
         ))}
       </SplitCardContainer>
 
@@ -58,7 +64,13 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
 
             <SplitCardContainer>
               {group.items.map((item, j) => (
-                <FeaturedCard key={j} gradient={group.gradient} item={item} />
+                <FeaturedCard
+                  key={`${item.label}-${j}`}
+                  label={item.label}
+                  href={item.href}
+                  description={item.description}
+                  gradient={group.gradient}
+                />
               ))}
             </SplitCardContainer>
           </div>

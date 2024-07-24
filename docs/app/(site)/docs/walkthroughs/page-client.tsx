@@ -4,7 +4,11 @@
 
 import { Type } from '../../../../components/primitives/Type'
 import { type FeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map'
-import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../../../../components/docs/FeaturedCard'
+import {
+  FeaturedCard,
+  FullWidthCardContainer,
+  SplitCardContainer,
+} from '../../../../components/docs/FeaturedCard'
 
 export default function Docs ({
   quickstart,
@@ -33,7 +37,11 @@ export default function Docs ({
       </Type>
 
       <FullWidthCardContainer>
-        <FeaturedCard item={quickstart} />
+        <FeaturedCard
+          label={quickstart.label}
+          href={quickstart.href}
+          description={quickstart.description}
+        />
       </FullWidthCardContainer>
 
       <Type as="h3" look="heading24" margin="2rem 0 1rem 0" id="learn-keystone">
@@ -45,9 +53,13 @@ export default function Docs ({
         from an empty folder, and gain insights into Keystone’s core concepts along the way.
       </Type>
 
-     <SplitCardContainer>
+      <SplitCardContainer>
         {walkthroughs.map((item) => (
-          <FeaturedCard key={item.label} item={item} />
+          <FeaturedCard
+          label={item.label}
+          href={item.href}
+          description={item.description}
+        />
         ))}
       </SplitCardContainer>
     </>

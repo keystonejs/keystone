@@ -16,7 +16,7 @@ export function FeaturedCard ({
   gradient = 'grad1',
 }: {
   label: string
-  description: Tag
+  description: Tag | null
   href: string
   gradient?: Gradient
 }) {
