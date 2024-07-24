@@ -1,13 +1,11 @@
-/** @jsxImportSource @emotion/react */
-
 'use client'
 
 import { Well } from '../../primitives/Well'
-import { useMediaQuery } from '../../../lib/media'
 import { Type } from '../../primitives/Type'
-import { type FeaturedDocsMap } from '.'
+
 import { Markdoc } from '../../Markdoc'
-import { useId } from 'react'
+import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../FeaturedCard'
+import { type FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map'
 
 export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: FeaturedDocsMap }) {
   if (!featuredDocsMap) return null
@@ -30,20 +28,20 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
 
       {/* Featured Item */}
       {!!featuredItem.description && (
-        <FullWidthContainer>
+        <FullWidthCardContainer>
           <Well heading={featuredItem.label} href={featuredItem.href}>
             {featuredItem.description.children.map((child, i) => (
               <Markdoc key={i} content={child} />
             ))}
           </Well>
-        </FullWidthContainer>
+        </FullWidthCardContainer>
       )}
       {/* Remaining items of the first group */}
-      <SplitContainer>
+      <SplitCardContainer>
         {restItems.map((item, i) => (
-          <DocWell key={`${item.label}-${i}`} group={firstGroup} item={item} />
+          <FeaturedCard key={`${item.label}-${i}`} gradient={firstGroup.gradient} item={item} />
         ))}
-      </SplitContainer>
+      </SplitCardContainer>
 
       {/* Remaining groups */}
       {!!restGroups &&
@@ -58,55 +56,13 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
               ))}
             </Type>
 
-            <SplitContainer>
+            <SplitCardContainer>
               {group.items.map((item, j) => (
-                <DocWell key={j} group={group} item={item} />
+                <FeaturedCard key={j} gradient={group.gradient} item={item} />
               ))}
-            </SplitContainer>
+            </SplitCardContainer>
           </div>
         ))}
     </>
-  )
-}
-
-function FullWidthContainer ({ children }: { children: React.ReactNode }) {
-  const mq = useMediaQuery()
-  return (
-    <div
-      css={mq({
-        display: 'grid',
-        gridTemplateColumns: ['1fr'],
-        gap: 'var(--space-xlarge)',
-        margin: '0 0 var(--space-xlarge) 0',
-      })}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SplitContainer ({ children }: { children: React.ReactNode }) {
-  const mq = useMediaQuery()
-  return (
-    <div
-      css={mq({
-        display: 'grid',
-        gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
-        gap: 'var(--space-xlarge)',
-      })}
-    >
-      {children}
-    </div>
-  )
-}
-
-function DocWell ({ group, item }) {
-  const id = useId()
-  return (
-    <Well heading={item.label} href={item.href} grad={group.gradient}>
-      {item.description?.children.map((child, i) => (
-        <Markdoc key={`${id}-${i}`} content={child} />
-      ))}
-    </Well>
   )
 }

@@ -1,4 +1,4 @@
-import { reader } from './keystatic-reader'
+import { reader } from './reader'
 
 export type NavigationMap = Awaited<ReturnType<typeof getNavigationMap>>
 

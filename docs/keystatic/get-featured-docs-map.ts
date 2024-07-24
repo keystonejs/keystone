@@ -1,23 +1,17 @@
 import { type Tag, transform } from '@markdoc/markdoc'
-import { reader } from './keystatic-reader'
+import { reader } from './reader'
 import { baseMarkdocConfig } from '../markdoc/config'
 
 export type FeaturedDocsMap = Awaited<ReturnType<typeof getFeaturedDocsMap>>
 
 export async function getFeaturedDocsMap () {
-  const featured = await reader.singletons.featuredDocs.read({ resolveLinkedFiles: true })
+  const featuredDocs = await reader.singletons.featuredDocs.read({ resolveLinkedFiles: true })
+  if (!featuredDocs) return null
 
-  if (!featured) throw new Error('No featured list found')
-
-  // We need the docs and examples data as well
-  const [docs, examples] = await Promise.all([
-    reader.collections.docs.all(),
-    reader.collections.examples.all(),
-  ])
-
-  //  Individual doc and example accessors
+  // We need the docs data as well...
+  const docs = await reader.collections.docs.all()
+  //  Individual doc accessor
   const docsBySlug = new Map(docs.map((doc) => [doc.slug, doc]))
-  const examplesBySlug = new Map(examples.map((example) => [example.slug, example]))
 
   // Each `item` will need to be processed differently based on the `link` discriminant
   async function processItem ({ label, link, wide, gradient }) {
@@ -38,21 +32,6 @@ export async function getFeaturedDocsMap () {
         href = docPage.slug ? `/docs/${docPage.slug}` : '#'
         break
       }
-      case 'example': {
-        const example = value.example ? examplesBySlug.get(value.example) : null
-        const hasDescriptionOverride = !!value.descriptionOverride.discriminant
-        let descNode
-        if (hasDescriptionOverride) {
-          descNode = value.descriptionOverride.value.node
-        } else {
-          if (!example) throw new Error(`No example found for slug: ${value.example}`)
-          const awaited = await example.entry.description()
-          descNode = awaited.node
-        }
-        description = transform(descNode, baseMarkdocConfig) as Tag
-        href = example?.entry.url || '#'
-        break
-      }
     }
 
     return { label, description, href, wide, gradient }
@@ -60,7 +39,7 @@ export async function getFeaturedDocsMap () {
 
   // Processing all groups...
   const processedGroups = await Promise.all(
-    featured.navGroups.map(async ({ groupName, groupDescription, gradient, items }) => {
+    featuredDocs.groups.map(async ({ groupName, groupDescription, gradient, items }) => {
       const transformedGroupDescription = transform(groupDescription.node, baseMarkdocConfig) as Tag
       const processedItems = await Promise.all(items.map(processItem))
 
@@ -72,5 +51,6 @@ export async function getFeaturedDocsMap () {
       }
     })
   )
+
   return processedGroups
 }

@@ -1,7 +1,7 @@
 import ClientComponent from './client'
 
 import { type Tag, transform } from '@markdoc/markdoc'
-import { reader } from '../../../lib/keystatic-reader'
+import { reader } from '../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../markdoc/config'
 
 

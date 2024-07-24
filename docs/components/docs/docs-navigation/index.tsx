@@ -1,4 +1,4 @@
-import { reader } from '../../../lib/keystatic-reader'
+import { reader } from '../../../keystatic/reader'
 import { DocsNavigationClient } from './client'
 
 export type NavigationMap = Awaited<ReturnType<typeof getNavigationMap>>
