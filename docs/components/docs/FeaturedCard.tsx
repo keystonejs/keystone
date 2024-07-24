@@ -7,19 +7,23 @@ import { Well } from '../primitives/Well'
 import { Markdoc } from '../Markdoc'
 import { useMediaQuery } from '../../lib/media'
 import { type Gradient } from '../../keystatic/gradient-selector'
-import { type FeaturedDocsMap } from '../../keystatic/get-featured-docs-map'
+import { RenderableTreeNode, type Tag } from '@markdoc/markdoc'
 
 export function FeaturedCard ({
-  item,
+  label,
+  description,
+  href,
   gradient = 'grad1',
 }: {
-  item: NonNullable<FeaturedDocsMap>[number]['items'][number]
+  label: string
+  description: Tag
+  href: string
   gradient?: Gradient
 }) {
   const id = useId()
   return (
-    <Well heading={item.label} href={item.href} grad={gradient}>
-      {item.description?.children.map((child, i) => (
+    <Well heading={label} href={href} grad={gradient}>
+      {description?.children.map((child, i) => (
         <Markdoc key={`${id}-${i}`} content={child} />
       ))}
     </Well>
