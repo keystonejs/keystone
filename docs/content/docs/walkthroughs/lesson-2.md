@@ -1,8 +1,7 @@
 ---
-title: "Lesson 2: Creating relationships"
-description: "Learn Keystone: Lesson 2"
+title: 'Lesson 2: Creating relationships'
+description: 'Learn Keystone: Lesson 2'
 ---
-
 Learn how to connect two content types to each other and configure how you make those connections in Admin UI.
 
 ## Where we left off
@@ -267,8 +266,10 @@ export default config({
 
 {% related-content %}
 {% well
-heading="Lesson 3: Publishing workflows"
-href="/docs/walkthroughs/lesson-3" %}
+   heading="Lesson 3: Publishing workflows"
+   grad="grad1"
+   href="/docs/walkthroughs/lesson-3"
+   target="" %}
 Support publishing needs with Keystone's `select` and
 `timestamp` fields
 {% /well %}

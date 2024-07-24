@@ -4,7 +4,6 @@
 
 import { GitHubExamplesCTA } from '../../../../components/docs/GitHubExamplesCTA'
 import { Type } from '../../../../components/primitives/Type'
-import { DocsPage } from '../../../../components/Page'
 import { Well } from '../../../../components/primitives/Well'
 import { useMediaQuery } from '../../../../lib/media'
 import { InlineCode } from '../../../../components/primitives/Code'
@@ -13,11 +12,7 @@ export default function Docs () {
   const mq = useMediaQuery()
 
   return (
-    <DocsPage
-      noRightNav
-      noProse
-      editPath={'docs/examples.tsx'}
-    >
+    <>
       <Type as="h1" look="heading64">
         Examples
       </Type>
@@ -307,6 +302,6 @@ export default function Docs () {
           project. <strong>One-click deployment</strong> included.
         </Well>
       </div>
-    </DocsPage>
+    </>
   )
 }

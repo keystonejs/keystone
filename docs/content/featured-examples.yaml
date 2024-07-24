@@ -1,0 +1,23 @@
+label: Example Projects
+description: >
+  A growing collection of projects you can run locally to learn more about
+  Keystone features. Use these as a reference for best practice, and a jumping
+  off point when adding features to your own Keystone project. [View on Github
+  →](https://github.com/keystonejs/keystone/tree/main/examples)
+gradient: grad3
+items:
+  - blog
+  - task-manager
+  - extend-graphql-schema
+  - default-values
+  - virtual-field
+  - document-field
+  - testing
+  - auth
+  - json-field
+  - custom-field-view
+  - custom-field-type
+  - custom-admin-ui-pages
+  - custom-admin-ui-logo
+  - custom-admin-ui-navigation
+  - document-field-customisation

@@ -1,3 +1,4 @@
+import { DocsLayout } from '../../../../../components/docs/DocsLayout'
 import PageClient from './page-client'
 
 export const metadata = {
@@ -7,5 +8,9 @@ export const metadata = {
 }
 
 export default function Docs () {
-  return <PageClient />
+  return (
+    <DocsLayout noRightNav noProse isIndexPage editPath="docs/guides/overview.tsx">
+      <PageClient />
+    </DocsLayout>
+  )
 }

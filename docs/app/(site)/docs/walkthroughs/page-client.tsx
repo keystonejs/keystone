@@ -3,7 +3,6 @@
 'use client'
 
 import { Type } from '../../../../components/primitives/Type'
-import { DocsPage } from '../../../../components/Page'
 import { Well } from '../../../../components/primitives/Well'
 import { useMediaQuery } from '../../../../lib/media'
 import { InlineCode } from '../../../../components/primitives/Code'
@@ -71,12 +70,7 @@ export function Foundations () {
 
 export default function Docs () {
   return (
-    <DocsPage
-      noRightNav
-      noProse
-      isIndexPage
-      editPath="docs/walkthroughs/index.tsx"
-    >
+    <>
       <Type as="h1" look="heading64">
         Walkthroughs
       </Type>
@@ -106,6 +100,6 @@ export default function Docs () {
       </Type>
 
       <Foundations />
-    </DocsPage>
+    </>
   )
 }

@@ -6,6 +6,8 @@ import { baseMarkdocConfig } from '../../../../markdoc/config'
 import PageClient from './page-client'
 import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
+import { DocsLayout } from '../../../../components/docs/DocsLayout'
+import { extractHeadings } from '../../../../components/Markdoc'
 
 export type Document = NonNullable<
   Pick<
@@ -22,16 +24,20 @@ export default async function DocPage ({ params }) {
   })
   if (!doc) return notFound()
 
+  const transformedDoc: Document = {
+    ...doc,
+    content: transform(doc.content.node, baseMarkdocConfig) as Tag,
+  }
+
+  const headings = [
+    { id: 'title', depth: 1, label: transformedDoc.title },
+    // ...extractHeadings(transformedDoc.content),
+  ]
+
   return (
-    <PageClient
-      document={JSON.parse(
-        JSON.stringify({
-          ...doc,
-          // Prepare content for Markdoc renderer
-          content: transform(doc.content.node, baseMarkdocConfig),
-        })
-      )}
-    />
+    <DocsLayout headings={headings} editPath={`docs/${(params?.rest as string[]).join('/')}.md`}>
+      <PageClient document={JSON.parse(JSON.stringify(transformedDoc))} />
+    </DocsLayout>
   )
 }
 

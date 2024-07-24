@@ -1,3 +1,4 @@
+import { DocsLayout } from '../../../../components/docs/DocsLayout'
 import PageClient from './page-client'
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 }
 
 export default function Roadmap () {
-  return <PageClient />
+  return (
+    <DocsLayout noRightNav noProse>
+      <PageClient />
+    </DocsLayout>
+  )
 }

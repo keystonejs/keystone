@@ -11,7 +11,7 @@ import { Gradient } from '../../../../components/primitives/Gradient'
 import { Alert } from '../../../../components/primitives/Alert'
 import { Emoji } from '../../../../components/primitives/Emoji'
 import { Type } from '../../../../components/primitives/Type'
-import { DocsPage } from '../../../../components/Page'
+
 import { useMediaQuery } from '../../../../lib/media'
 
 function TimelineItem ({ children }: { children: ReactNode }) {
@@ -194,10 +194,7 @@ export default function Roadmap () {
   const mq = useMediaQuery()
 
   return (
-    <DocsPage
-      noRightNav
-      noProse
-    >
+    <>
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
@@ -484,6 +481,6 @@ export default function Roadmap () {
           .
         </Type>
       </Alert>
-    </DocsPage>
+    </>
   )
 }

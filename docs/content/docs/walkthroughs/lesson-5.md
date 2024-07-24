@@ -1,8 +1,7 @@
 ---
-title: "Lesson 5: Document field"
-description: "Learn Keystone: Lesson 5"
+title: 'Lesson 5: Document field'
+description: 'Learn Keystone: Lesson 5'
 ---
-
 Learn how to implement a powerful and customisable Rich Text editing experience with Keystone’s `document` field.
 
 ## Where we left off
@@ -261,10 +260,15 @@ Congratulations! You've now built a Keystone app from an empty folder and have t
 This lesson marks the end of this learning series. To dive deeper into Keystone's capabilities take a look at the following:
 
 {% related-content %}
-{% well  heading="Examples" href="/docs/examples" %}
+{% well heading="Examples" grad="grad1" href="/docs/examples" target="" %}
 A growing collection of projects you can run locally to learn more about Keystone’s capabilities
 {% /well %}
-{% well  heading="Guides" href="/docs/guides/overview" %}
+
+{% well
+   heading="Guides"
+   grad="grad1"
+   href="/docs/guides/overview"
+   target="" %}
 Practical explanations of Keystone's fundamental building blocks
 {% /well %}
 {% /related-content %}

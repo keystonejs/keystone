@@ -1,0 +1,5 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/virtual-field
+title: Virtual fields
+kind: standalone
+description: >
+  Implements virtual fields in a Keystone list.

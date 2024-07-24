@@ -1,0 +1,5 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/usecase-blog
+title: Document Field Customisation
+kind: end-to-end
+description: >
+  Example to demonstrate customisation of Keystone's document field and document renderer.
