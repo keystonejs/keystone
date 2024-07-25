@@ -1,9 +1,12 @@
+import {
+  type ChildProcessWithoutNullStreams,
+  spawn,
+} from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
-import { promisify } from 'util'
 import fetch from 'node-fetch'
-import execa, { type ExecaChildProcess } from 'execa'
-import _treeKill from 'tree-kill'
+
+import { type ExecaChildProcess } from 'execa'
 import * as playwright from 'playwright'
 import dotenv from 'dotenv'
 
@@ -20,30 +23,19 @@ export async function loadIndex (page: playwright.Page) {
   }
 }
 
-const treeKill = promisify(_treeKill)
-
 // this'll take a while
 jest.setTimeout(10000000)
 
 const projectRoot = path.resolve(__dirname, '..', '..')
 
-// Light wrapper around node-fetch for making graphql requests to the graphql api of the test instance.
-export const makeGqlRequest = async (query: string, variables?: Record<string, any>) => {
+export async function makeGqlRequest (query: string, variables?: Record<string, any>) {
   const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
+    headers: { 'Content-Type': 'application/json', },
+    body: JSON.stringify({ query, variables, }),
   }).then(res => res.json())
 
-  if (errors) {
-    throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`)
-  }
-
+  if (errors) throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`)
   return data
 }
 
@@ -75,88 +67,72 @@ export function adminUITests (
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) {
   const projectDir = path.join(projectRoot, pathToTest)
-
   dotenv.config()
-  describe.each(['dev', 'prod'] as const)('%s', mode => {
-    let cleanupKeystoneProcess = () => {}
 
-    afterAll(async () => {
-      await cleanupKeystoneProcess()
+  describe('development', () => {
+    let exit: (() => Promise<void>) | undefined = undefined
+    test('prepare keystone', async () => {
+      ;({ exit } = await spawnCommand3(projectDir, ['dev'], 'Admin UI ready'))
     })
 
-    async function startKeystone (command: 'start' | 'dev') {
-      cleanupKeystoneProcess = (await generalStartKeystone(projectDir, command)).exit
-    }
+    describe('browser tests', () => tests(playwright.chromium))
+    afterAll(async () => await exit?.())
+  })
 
-    if (mode === 'dev') {
-      test('start keystone in dev', async () => {
-        await startKeystone('dev')
-      })
-    }
-
-    if (mode === 'prod') {
-      test('build keystone', async () => {
-        const ksProcess = execa('pnpm', ['build'], {
-          cwd: projectDir,
-          env: process.env,
-        })
-
-        if (process.env.VERBOSE) {
-          ksProcess.stdout!.pipe(process.stdout)
-          ksProcess.stderr!.pipe(process.stdout)
-        }
-
-        await ksProcess
-      })
-      test('start keystone in prod', async () => {
-        await startKeystone('start')
-      })
-    }
-
-    describe('browser tests', () => {
-      beforeAll(async () => {
-        await deleteAllData(projectDir)
-      })
-      tests(playwright.chromium)
+  describe('production browser tests', () => {
+    let exit: (() => Promise<void>) | undefined = undefined
+    test('prepare keystone', async () => {
+      await (await spawnCommand3(projectDir, ['build'])).exited
+      ;({ exit } = await spawnCommand3(projectDir, ['start'], 'Admin UI ready'))
     })
+
+    describe('browser tests', () => tests(playwright.chromium))
+    afterAll(async () => await exit?.())
   })
 }
 
-export async function waitForIO (ksProcess: ExecaChildProcess, content: string) {
-  return await new Promise(resolve => {
+export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullStreams, content: string) {
+  return await new Promise<string>((resolve, reject) => {
     let output = ''
     function listener (chunk: Buffer) {
       output += chunk.toString('utf8')
       if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
 
-      ksProcess.stdout!.off('data', listener)
-      ksProcess.stderr!.off('data', listener)
-      return resolve(output)
+      p.stdout!.off('data', listener)
+      p.stderr!.off('data', listener)
+      resolve(output)
     }
 
-    ksProcess.stdout!.on('data', listener)
-    ksProcess.stderr!.on('data', listener)
+    p.stdout!.on('data', listener)
+    p.stderr!.on('data', listener)
+    p.on('error', err => reject(err))
   })
 }
 
-export async function generalStartKeystone (projectDir: string, command: 'start' | 'dev') {
-  if (!fs.existsSync(projectDir)) {
-    throw new Error(`No such file or directory ${projectDir}`)
+const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
+
+export async function spawnCommand3 (cwd: string, commands: string[], waitOn: string | null = null) {
+  if (!fs.existsSync(cwd)) throw new Error(`No such file or directory ${cwd}`)
+
+  const p = spawn('node', [cliBinPath, ...commands], { cwd })
+  if (waitOn) {
+    await waitForIO(p, waitOn)
   }
 
-  const keystoneProcess = execa('pnpm', ['keystone', command], {
-    cwd: projectDir,
-    env: process.env,
+  const exitPromise = new Promise<void>((resolve, reject) => {
+    p.on('exit', exitCode => {
+      if (typeof exitCode === 'number' && exitCode !== 0) return reject(new Error(`Error ${exitCode}`))
+      resolve()
+    })
   })
 
-  await waitForIO(keystoneProcess, 'Admin UI ready')
   return {
-    process: keystoneProcess,
+    process: p,
     exit: async () => {
-      // childProcess.kill will only kill the direct child process
-      // so we use tree-kill to kill the process and it's children
-      await treeKill(keystoneProcess.pid!)
+      p.kill('SIGHUP')
+      await exitPromise
     },
+    exited: exitPromise
   }
 }
