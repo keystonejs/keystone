@@ -25,10 +25,10 @@ export async function build (
   if (prisma) {
     if (frozen) {
       await validateArtifacts(cwd, system)
-      console.log('✨ GraphQL and Prisma schemas are up to date')
+      console.log('✨ GraphQL and Prisma schemas are up to date') // TODO: validating?
     } else {
       await generateArtifacts(cwd, system)
-      console.log('✨ Generated GraphQL and Prisma schemas')
+      console.log('✨ Generated GraphQL and Prisma schemas') // TODO: generating?
     }
 
     await generateTypes(cwd, system)

@@ -7,6 +7,7 @@ const defaultDescription =
   'Build faster and scale further with the programmable open source GraphQL API back-end for structured content projects.'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteBaseUrl),
   title: defaultTitle,
   description: defaultDescription,
   icons: {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     locale: 'en',
     images: [
       {
-        url: `${siteBaseUrl}/og-image-landscape.png`,
+        url: '/og-image-landscape.png',
         width: 761,
         height: 410,
         alt: defaultDescription,
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: [
       {
-        url: `${siteBaseUrl}/og-image-landscape.png`,
+        url: '/og-image-landscape.png',
         width: 761,
         height: 410,
         alt: defaultTitle,

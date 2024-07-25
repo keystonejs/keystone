@@ -1,7 +1,6 @@
 import { parse, format } from 'date-fns'
 
 import { reader } from '../../../keystatic/reader'
-import { siteBaseUrl } from '../../../lib/og-util'
 import ClientPage from './page-client'
 import { type Metadata } from 'next'
 
@@ -11,8 +10,8 @@ export const metadata: Metadata = {
   title: 'Keystone Blog',
   description: 'Blog posts from the team maintaining Keystone.',
   openGraph: {
-    images: `${siteBaseUrl}/assets/blog/the-keystone-blog-cover.png`,
-  },
+    images: '/assets/blog/the-keystone-blog-cover.png' 
+  }
 }
 
 export default async function Docs () {
