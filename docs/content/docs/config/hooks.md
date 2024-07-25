@@ -90,7 +90,7 @@ The result of `resolveInput` hooks is accessible as the argument `resolvedData` 
 | `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                             |
 | `inputData`    | The value of `data` passed into the mutation.                                                                                                                                         |
 | `item`         | The currently stored item (`undefined` for `create` operations). This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, field resolvers, and hooks have been applied.                |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, field resolvers, and `resolveInput` hooks have been applied. |
 | `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                             |
 
 ```typescript
@@ -194,7 +194,7 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        validateInput: {
+        validate: {
           create: async ({
             listKey,
             operation,
@@ -224,7 +224,7 @@ export default config({
       fields: {
         someFieldName: text({
           hooks: {
-            validateInput: {
+            validate: {
               create: async ({
                 listKey,
                 fieldKey,
@@ -260,6 +260,7 @@ export default config({
   },
 });
 ```
+
 ### beforeOperation
 
 The `beforeOperation` hook is used to perform side effects just before the data is saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
