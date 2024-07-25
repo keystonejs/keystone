@@ -71,7 +71,7 @@ const session = statelessSessions({
 });
 ```
 
-Keystone also comes with a Redis session adapter, which uses a cookie to store a session ID that is looked up in a Redis database; or you can use your own session adapter (for example, if you are using OAuth sessions).
+You can use your own session strategy if for example, if you want to use use OAuth sessions.
 
 {% hint kind="tip" %}
 Read more about [Session Stores in the Session API Docs](../config/session#session-stores).
