@@ -231,8 +231,12 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     /** Completely disables the Admin UI */
     isDisabled?: boolean
 
+<<<<<<< HEAD
     /** A function that can be run to validate that the current session should have access to the Admin UI */
     isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>
+=======
+export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
+>>>>>>> ba733c1ac (removes deprecated types and ListSchemaConfig (breaking))
 
     /** An array of page routes that bypass the isAccessAllowed function */
     publicPages?: readonly string[]
