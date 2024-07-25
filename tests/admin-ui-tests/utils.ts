@@ -73,7 +73,7 @@ export function adminUITests (
     let exit: (() => Promise<void>) | undefined = undefined
 
     test('start keystone in dev', async () => {
-      exit = await spawnCommand3(projectDir, ['dev'], 'Admin UI ready')
+      ;({ exit } = await spawnCommand3(projectDir, ['dev'], 'Admin UI ready'))
     })
 
     describe('browser tests', () => {
@@ -93,7 +93,7 @@ export function adminUITests (
     })
 
     test('start keystone in prod', async () => {
-      exit = await spawnCommand3(projectDir, ['start'], 'Admin UI ready')
+      ;({ exit } = await spawnCommand3(projectDir, ['start'], 'Admin UI ready'))
     })
 
     describe('browser tests', () => {
@@ -127,12 +127,14 @@ export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullS
 
 const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
-async function spawnCommand3 (cwd: string, commands: string[], waitOn: string) {
+export async function spawnCommand3 (cwd: string, commands: string[], waitOn: string | null = null) {
   if (!fs.existsSync(cwd)) throw new Error(`No such file or directory ${cwd}`)
 
   const p = spawn('node', [cliBinPath, ...commands], { cwd })
+  if (waitOn) {
+    await waitForIO(p, waitOn)
+  }
 
-  await waitForIO(p, waitOn)
   const exitPromise = new Promise<void>((resolve, reject) => {
     p.on('exit', exitCode => {
       if (typeof exitCode === 'number' && exitCode !== 0) return reject(new Error(`Error ${exitCode}`))
@@ -140,8 +142,11 @@ async function spawnCommand3 (cwd: string, commands: string[], waitOn: string) {
     })
   })
 
-  return async () => {
-    p.kill('SIGHUP')
-    await exitPromise
+  return {
+    process: p,
+    exit: async () => {
+      p.kill('SIGHUP')
+      await exitPromise
+    }
   }
 }
