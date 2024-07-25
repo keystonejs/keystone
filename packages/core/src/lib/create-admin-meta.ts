@@ -6,7 +6,7 @@ import type {
   MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
-  __ResolvedKeystoneConfig,
+  ResolvedKeystoneConfig,
 } from '../types'
 import type { FilterOrderArgs } from '../types/config/fields'
 
@@ -82,7 +82,7 @@ export type AdminMetaRootVal = {
 }
 
 export function createAdminMeta (
-  config: __ResolvedKeystoneConfig,
+  config: ResolvedKeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
   const { lists } = config

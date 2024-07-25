@@ -2,6 +2,7 @@ import { group, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'
 import { integer, text } from '@keystone-6/core/fields'
+import { type ResolvedKeystoneConfig } from '@keystone-6/core/types'
 
 test('errors with nested field groups', () => {
   expect(() =>
@@ -29,7 +30,7 @@ test('errors with nested field groups', () => {
           },
         }),
       },
-    }, {})
+    } as unknown as ResolvedKeystoneConfig, {})
   ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`)
 })
 
@@ -53,6 +54,6 @@ test('errors if you write a group manually differently to the group function', (
           },
         }),
       }
-    }, {})
+    } as unknown as ResolvedKeystoneConfig, {})
   ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`)
 })

@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js'
-import { graphql } from '..'
+import { graphql } from './schema'
 import { type BaseListTypeInfo } from './type-info'
 import { type CommonFieldConfig } from './config'
 import { type DatabaseProvider } from './core'
