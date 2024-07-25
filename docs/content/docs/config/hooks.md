@@ -9,7 +9,7 @@ The differences will be explicitly called out below.
 
 For each hook, the fields hooks are applied to **all fields first** in parallel, followed by the list hooks.
 
-All hook functions are async and, with the exception of `resolveInput`, do not return a value.
+Hook functions support `async` and, with the exception of `resolveInput`, do not need a return value.
 
 When operating on multiple values the hooks are called individually for each item being updated, created or deleted.
 
@@ -265,7 +265,7 @@ export default config({
 
 The `beforeOperation` hook is used to perform side effects just before the data is saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
-It is invoked after all `validate` hooks have been run, but before the database is updated.
+It is invoked after the `resolveInput` and `validate` hooks, but before the database is updated by Prisma.
 
 | Argument       | Description                                                                                                                                                                                            |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
