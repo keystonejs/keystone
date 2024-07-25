@@ -75,13 +75,13 @@ export default config({
 
 ### resolveInput
 
-The `resolveInput` hook is used to modify or augment the `data` values passed in to a `create` or `update` operation functions.
+The `resolveInput` hook is a transform for mutating the input `data` value prior to calling any other successive hooks, as part of the operation.
 
 This hook is the final stage in the [data resolving process](#resolved-data-stages), and is invoked after access control has been applied.
 
 For field hooks, the return value should be an updated value for that specific field.
 For list hooks, the return value should be a [`resolved data`](#resolved-data-stages) object.
-The result of `resolveInput` hooks will be passed as `resolvedData` into the next stages of the operation.
+The result of `resolveInput` hooks is accessible as the argument `resolvedData` in the hooks that follow, for the remainder of the operation.
 
 | Argument       | Description                                                                                                                                                                           |
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -90,7 +90,7 @@ The result of `resolveInput` hooks will be passed as `resolvedData` into the nex
 | `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                             |
 | `inputData`    | The value of `data` passed into the mutation.                                                                                                                                         |
 | `item`         | The currently stored item (`undefined` for `create` operations). This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, and field resolvers have been applied.                       |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, field resolvers, and hooks have been applied.                |
 | `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                             |
 
 ```typescript
