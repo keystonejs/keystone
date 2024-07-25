@@ -27,19 +27,44 @@ export default config({
           create: async args => { /* ... */ },
           update: async args => { /* ... */ },
         },
-        validateInput: async args => { /* ... */ },
-        validateDelete: async args => { /* ... */ },
-        beforeOperation: async args => { /* ... */ },
-        afterOperation: async args => { /* ... */ },
+        validate: {
+          create: async args => { /* ... */ },
+          update: async args => { /* ... */ },
+          delete: async args => { /* ... */ },
+        },
+        beforeOperation: {
+          create: async args => { /* ... */ },
+          update: async args => { /* ... */ },
+          delete: async args => { /* ... */ },
+        },
+        afterOperation: {
+          create: async args => { /* ... */ },
+          update: async args => { /* ... */ },
+          delete: async args => { /* ... */ },
+        }
       },
       fields: {
         someFieldName: text({
           hooks: {
-            resolveInput: async args => { /* ... */ },
-            validateInput: async args => { /* ... */ },
-            validateDelete: async args => { /* ... */ },
-            beforeOperation: async args => { /* ... */ },
-            afterOperation: async args => { /* ... */ },
+            resolveInput: {
+              create: async args => { /* ... */ },
+              update: async args => { /* ... */ },
+            },
+            validate: {
+              create: async args => { /* ... */ },
+              update: async args => { /* ... */ },
+              delete: async args => { /* ... */ },
+            },
+            beforeOperation: {
+              create: async args => { /* ... */ },
+              update: async args => { /* ... */ },
+              delete: async args => { /* ... */ },
+            },
+            afterOperation: {
+              create: async args => { /* ... */ },
+              update: async args => { /* ... */ },
+              delete: async args => { /* ... */ },
+            }
           },
         }),
       },
@@ -50,13 +75,13 @@ export default config({
 
 ### resolveInput
 
-The `resolveInput` function is used to modify or augment the `data` values passed in to a `create` or `update` operation.
+The `resolveInput` hook is used to modify or augment the `data` values passed in to a `create` or `update` operation functions.
 
 This hook is the final stage in the [data resolving process](#resolved-data-stages), and is invoked after access control has been applied.
 
 For field hooks, the return value should be an updated value for that specific field.
 For list hooks, the return value should be a [`resolved data`](#resolved-data-stages) object.
-The result of `resolveInput` will be passed as `resolvedData` into the next stages of the operation.
+The result of `resolveInput` hooks will be passed as `resolvedData` into the next stages of the operation.
 
 | Argument       | Description                                                                                                                                                                           |
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -76,32 +101,59 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        resolveInput: async ({
-          listKey,
-          operation,
-          inputData,
-          item,
-          resolvedData,
-          context,
-        }) => {
-          /* ... */
-          return resolvedData;
+        resolveInput: {
+          create: async ({
+            listKey,
+            operation, // always 'create'
+            inputData,
+            item,
+            resolvedData,
+            context,
+          }) => {
+            /* ... */
+            return resolvedData;
+          },
+          update: async ({
+            listKey,
+            operation, // always 'update'
+            inputData,
+            item,
+            resolvedData,
+            context,
+          }) => {
+            /* ... */
+            return resolvedData;
+          },
         },
       },
       fields: {
         someFieldName: text({
           hooks: {
-            resolveInput: async ({
-              listKey,
-              fieldKey,
-              operation,
-              inputData,
-              item,
-              resolvedData,
-              context,
-            }) => {
-              /* ... */
-              return resolvedData[fieldKey];
+            resolveInput: {
+              create: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                item,
+                resolvedData,
+                context,
+              }) => {
+                /* ... */
+                return resolvedData[fieldKey];
+              },
+              update: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                item,
+                resolvedData,
+                context,
+              }) => {
+                /* ... */
+                return resolvedData[fieldKey];
+              },
             },
           },
         }),
@@ -111,9 +163,9 @@ export default config({
 });
 ```
 
-### validateInput
+### validate
 
-The `validateInput` function is used to validate the [`resolvedData`](#resolved-data-stages) that will be saved during a `create` or `update` operation.
+The `validate` hooks are used to validate the [`resolvedData`](#resolved-data-stages) that will be saved during a `create` or `update` operation, or validate that deleting the selected item will not cause an issue in your system during `delete` operation.
 
 It is invoked after the `resolveInput` hooks have been run.
 
@@ -124,10 +176,10 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`                 | The key of the list being operated on.                                                                                                                                                                  |
 | `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                              |
-| `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                               |
-| `inputData`               | The value of `data` passed into the mutation.                                                                                                                                                           |
+| `operation`               | The operation being performed (`'create'`, `'update'` or `'delete'`).                                                                                                                                   |
+| `inputData`               | The value of `data` passed into the mutation (`undefined` for `delete` operations).                                                                                                                     |
 | `item`                    | The current value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData`            | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                          |
+| `resolvedData`            | A [`resolved data`](#resolved-data-stages) object (`undefined` for `delete` operations). The resolved data value after all data resolver stages have been completed.                                    |
 | `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                               |
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                         |
 
@@ -139,29 +191,65 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        validateInput: async ({
-          listKey,
-          operation,
-          inputData,
-          item,
-          resolvedData,
-          context,
-          addValidationError,
-        }) => { /* ... */ },
+        validateInput: {
+          create: async ({
+            listKey,
+            operation,
+            inputData,
+            resolvedData,
+            context,
+            addValidationError,
+          }) => { /* ... */ },
+          update: async ({
+            listKey,
+            operation,
+            inputData,
+            item,
+            resolvedData,
+            context,
+            addValidationError,
+          }) => { /* ... */ },
+          delete: async ({
+            listKey,
+            operation,
+            item,
+            context,
+            addValidationError,
+          }) => { /* ... */ },
+        },
       },
       fields: {
         someFieldName: text({
           hooks: {
-            validateInput: async ({
-              listKey,
-              fieldKey,
-              operation,
-              inputData,
-              item,
-              resolvedData,
-              context,
-              addValidationError,
-            }) => { /* ... */ },
+            validateInput: {
+              create: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                resolvedData,
+                context,
+                addValidationError,
+              }) => { /* ... */ },
+              update: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                item,
+                resolvedData,
+                context,
+                addValidationError,
+              }) => { /* ... */ },
+              delete: async ({
+                listKey,
+                fieldKey,
+                operation,
+                item,
+                context,
+                addValidationError,
+              }) => { /* ... */ },
+            },
           },
         }),
       },
@@ -169,65 +257,11 @@ export default config({
   },
 });
 ```
-
-### validateDelete
-
-The `validateDelete` function is used during a `delete` operation to validate that deleting the selected item will not cause an issue in your system.
-
-It is invoked after access control has been applied.
-
-If the delete operation is invalid then the function should report validation errors with `addValidationError(msg)`.
-These error messages will be returned as a `ValidationFailureError` from the GraphQL API.
-
-| Argument                  | Description                                                                                                                                               |
-| :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`                 | The key of the list being operated on.                                                                                                                    |
-| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                |
-| `operation`               | The operation being performed (`'delete'`).                                                                                                               |
-| `item`                    | The value of the item to be deleted. This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                 |
-| `addValidationError(msg)` | Used to set a validation error.                                                                                                                           |
-
-```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
-
-export default config({
-  lists: {
-    SomeListName: list({
-      hooks: {
-        validateDelete: async ({
-          listKey,
-          operation,
-          item,
-          context,
-          addValidationError,
-        }) => { /* ... */ },
-      },
-      fields: {
-        someFieldName: text({
-          hooks: {
-            validateDelete: async ({
-              listKey,
-              fieldKey,
-              operation,
-              item,
-              context,
-              addValidationError,
-            }) => { /* ... */ },
-          },
-        }),
-      },
-    }),
-  },
-});
-```
-
 ### beforeOperation
 
-The `beforeOperation` function is used to perform side effects just before the data is saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
+The `beforeOperation` hook is used to perform side effects just before the data is saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
-It is invoked after all `validateInput`/`validateDelete` hooks have been run, but before the database is updated.
+It is invoked after all `validate` hooks have been run, but before the database is updated.
 
 | Argument       | Description                                                                                                                                                                                            |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -247,27 +281,59 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        beforeOperation: async ({
-          listKey,
-          operation,
-          inputData,
-          item,
-          resolvedData,
-          context,
-        }) => { /* ... */ },
+        beforeOperation: {
+          create: async ({
+            listKey,
+            operation,
+            inputData,
+            resolvedData,
+            context,
+          }) => { /* ... */ },
+          update: async ({
+            listKey,
+            operation,
+            inputData,
+            item,
+            resolvedData,
+            context,
+          }) => { /* ... */ },
+          delete: async ({
+            listKey,
+            operation,
+            item,
+            context,
+          }) => { /* ... */ },
+        },
       },
       fields: {
         someFieldName: text({
           hooks: {
-            beforeOperation: async ({
-              listKey,
-              fieldKey,
-              operation,
-              inputData,
-              item,
-              resolvedData,
-              context,
-            }) => { /* ... */ },
+            beforeOperation: {
+              create: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                resolvedData,
+                context,
+              }) => { /* ... */ },
+              update: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                item,
+                resolvedData,
+                context,
+              }) => { /* ... */ },
+              delete: async ({
+                listKey,
+                fieldKey,
+                operation,
+                item,
+                context,
+              }) => { /* ... */ },
+            },
           },
         }),
       },
@@ -278,7 +344,7 @@ export default config({
 
 ### afterOperation
 
-The `afterOperation` function is used to perform side effects after the data has been saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
+The `afterOperation` hook is used to perform side effects after the data has been saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
 | Argument       | Description                                                                                                                                                                                                        |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -299,29 +365,63 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        afterOperation: async ({
-          listKey,
-          operation,
-          inputData,
-          originalItem,
-          item,
-          resolvedData,
-          context,
-        }) => { /* ... */ },
+        afterOperation: {
+          create: async ({
+            listKey,
+            operation,
+            inputData,
+            item,
+            resolvedData,
+            context,
+          }) => { /* ... */ },
+          update: async ({
+            listKey,
+            operation,
+            inputData,
+            originalItem,
+            item,
+            resolvedData,
+            context,
+          }) => { /* ... */ },
+          delete: async ({
+            listKey,
+            operation,
+            originalItem,
+            context,
+          }) => { /* ... */ },
+        },
       },
       fields: {
         someFieldName: text({
           hooks: {
-            afterOperation: async ({
-              listKey,
-              fieldKey,
-              operation,
-              inputData,
-              originalItem,
-              item,
-              resolvedData,
-              context,
-            }) => { /* ... */ },
+            afterOperation: {
+              create: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                item,
+                resolvedData,
+                context,
+              }) => { /* ... */ },
+              update: async ({
+                listKey,
+                fieldKey,
+                operation,
+                inputData,
+                originalItem,
+                item,
+                resolvedData,
+                context,
+              }) => { /* ... */ },
+              delete: async ({
+                listKey,
+                fieldKey,
+                operation,
+                originalItem,
+                context,
+              }) => { /* ... */ },
+            },
           },
         }),
       },
