@@ -67,42 +67,27 @@ export function adminUITests (
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) {
   const projectDir = path.join(projectRoot, pathToTest)
-
   dotenv.config()
+
   describe('development', () => {
     let exit: (() => Promise<void>) | undefined = undefined
-
-    test('start keystone in dev', async () => {
+    test('prepare keystone', async () => {
       ;({ exit } = await spawnCommand3(projectDir, ['dev'], 'Admin UI ready'))
     })
 
-    describe('browser tests', () => {
-      tests(playwright.chromium)
-    })
-
-    afterAll(async () => {
-      await exit?.()
-    })
+    describe('browser tests', () => tests(playwright.chromium))
+    afterAll(async () => await exit?.())
   })
 
   describe('production browser tests', () => {
     let exit: (() => Promise<void>) | undefined = undefined
-
-    test('build keystone', async () => {
-      await spawnCommand3(projectDir, ['build'])
-    })
-
-    test('start keystone in prod', async () => {
+    test('prepare keystone', async () => {
+      await (await spawnCommand3(projectDir, ['build'])).exited
       ;({ exit } = await spawnCommand3(projectDir, ['start'], 'Admin UI ready'))
     })
 
-    describe('browser tests', () => {
-      tests(playwright.chromium)
-    })
-
-    afterAll(async () => {
-      await exit?.()
-    })
+    describe('browser tests', () => tests(playwright.chromium))
+    afterAll(async () => await exit?.())
   })
 }
 
@@ -147,6 +132,7 @@ export async function spawnCommand3 (cwd: string, commands: string[], waitOn: st
     exit: async () => {
       p.kill('SIGHUP')
       await exitPromise
-    }
+    },
+    exited: exitPromise
   }
 }
