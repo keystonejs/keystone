@@ -28,6 +28,7 @@ Here's an example:
 
 ```ts
 const Person = list({
+  access: allowAll,
   fields: {
     name: text(),
     email: text({ isIndexed: 'unique' }),
@@ -79,7 +80,7 @@ Read more about [Session Stores in the Session API Docs](../config/session#sessi
 
 ### Putting it all together
 
-Your entire Keystone config should now look like this:
+Your Keystone config should now look like this:
 
 ```ts
 import { config, list } from '@keystone-6/core';
@@ -104,6 +105,7 @@ const session = statelessSessions({
 
 const lists = {
   Person: list({
+    access: allowAll,
     fields: {
       name: text(),
       email: text({ isIndexed: 'unique' }),
