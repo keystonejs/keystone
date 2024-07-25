@@ -27,11 +27,12 @@ export const lists = {
           },
         },
         hooks: {
-          resolveInput: async ({ resolvedData, operation, item }) => {
-            if (operation === 'create') return resolvedData.version
-            if (resolvedData.version !== item.version) throw new Error('Out of sync')
-
-            return item.version + 1
+          resolveInput: {
+            update: async ({ resolvedData, operation, item }) => {
+              if (resolvedData.version !== item.version) throw new Error('Out of sync')
+  
+              return item.version + 1
+            },
           },
         },
       }),

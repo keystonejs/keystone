@@ -80,31 +80,34 @@ export const lists = {
     },
 
     hooks: {
-      validateInput: async ({ operation, inputData, addValidationError }) => {
-        if (operation === 'create') {
-          const { post, link } = inputData
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length === 0) {
-            return addValidationError('A relationship is required')
+      validate: {
+        create: async ({ operation, inputData, addValidationError }) => {
+          if (operation === 'create') {
+            const { post, link } = inputData
+            const values = [post, link].filter(x => x?.connect ?? x?.create)
+            if (values.length === 0) {
+              return addValidationError('A relationship is required')
+            }
+            if (values.length > 1) {
+              return addValidationError('Only one relationship at a time')
+            }
           }
-          if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
+        },
+        update: async ({ operation, inputData, addValidationError }) => {
+          if (operation === 'update') {
+            const { post, link } = inputData
+            if ([post, link].some(x => x?.disconnect)) {
+              return addValidationError('Cannot change relationship type')
+            }
+  
+            const values = [post, link].filter(x => x?.connect ?? x?.create)
+            if (values.length > 1) {
+              return addValidationError('Only one relationship at a time')
+            }
+  
+            // TODO: prevent item from changing types with implicit disconnect
           }
-        }
-
-        if (operation === 'update') {
-          const { post, link } = inputData
-          if ([post, link].some(x => x?.disconnect)) {
-            return addValidationError('Cannot change relationship type')
-          }
-
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
-          }
-
-          // TODO: prevent item from changing types with implicit disconnect
-        }
+        },
       },
       resolveInput: {
         update: async ({ context, operation, resolvedData }) => {
