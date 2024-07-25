@@ -89,7 +89,7 @@ export function adminUITests (
     let exit: (() => Promise<void>) | undefined = undefined
 
     test('build keystone', async () => {
-      await spawnCommand3(projectDir, ['build'], 'Admin UI ready')
+      await spawnCommand3(projectDir, ['build'])
     })
 
     test('start keystone in prod', async () => {

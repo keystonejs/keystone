@@ -263,22 +263,20 @@ export async function dev (
 
     let nextApp
     if (!system.config.ui?.isDisabled && ui) {
-      const paths = system.getPaths(cwd)
-      await fsp.rm(paths.admin, { recursive: true, force: true })
+      if (!expressServer || !context) throw new TypeError('Error trying to prepare the Admin UI')
 
       console.log('✨ Generating Admin UI code')
+      const paths = system.getPaths(cwd)
+      await fsp.rm(paths.admin, { recursive: true, force: true })
       await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
 
-      console.log('✨ Preparing Admin UI app')
+      console.log('✨ Preparing Admin UI')
       nextApp = next({ dev: true, dir: paths.admin })
       await nextApp.prepare()
-
+      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
       console.log(`✅ Admin UI ready`)
     }
 
-    if (nextApp && expressServer && context) {
-      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
-    }
     hasAddedAdminUIMiddleware = true
     initKeystonePromiseResolve()
 
