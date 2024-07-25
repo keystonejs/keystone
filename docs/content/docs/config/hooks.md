@@ -165,11 +165,14 @@ export default config({
 
 ### validate
 
-The `validate` hooks are used to validate the [`resolvedData`](#resolved-data-stages) that will be saved during a `create` or `update` operation, or validate that deleting the selected item will not cause an issue in your system during `delete` operation.
+The `validate` hooks can be used to validate your [`resolvedData`](#resolved-data-stages) before a `create` or `update` operation completes, ensuring your expectations are met.
+This hook can additionally be used to check your expectations as part of a `delete` operation.
 
-It is invoked after the `resolveInput` hooks have been run.
+For `create` and `update` operations, this hook is invoked after the respective `resolveInput` hooks has been run.
 
-If the `resolvedData` is invalid then the function should report validation errors with `addValidationError(msg)`.
+This hook should report any validation errors using the `addValidationError(message)` function, which is provided as a parameter.
+This is preferred to throwing to easily support more than one error message, if required.
+
 These error messages will be returned as a `ValidationFailureError` from the GraphQL API, and the operation will not be completed.
 
 | Argument                  | Description                                                                                                                                                                                             |
