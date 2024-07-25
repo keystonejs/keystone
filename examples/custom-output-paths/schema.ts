@@ -13,25 +13,46 @@ export const lists = {
     },
 
     hooks: {
-      afterOperation: async ({ context }) => {
-        const posts = (await context.db.Post.findMany({
-          where: {
-            title: { equals: 'Home' },
-          },
+      afterOperation: {
+        create: async ({ context }) => {
+          const posts = (await context.db.Post.findMany({
+            where: {
+              title: { equals: 'Home' },
+            },
 
-          // we use Typescript's satisfies here as way to ensure that
-          //   this is the contextualised type - you don't need this
-          //
-          //   it is helpful for us to check that the example is not
-          //   broken by code changes
-          //
+            // we use Typescript's satisfies here as way to ensure that
+            //   this is the contextualised type - you don't need this
+            //
+            //   it is helpful for us to check that the example is not
+            //   broken by code changes
+            //
 
-          // TODO: FIXME, babel and pnpm issues
-        })) as readonly { title: string, content: string }[]
-        // })) satisfies readonly { title: string; content: string }[];
+            // TODO: FIXME, babel and pnpm issues
+          })) as readonly { title: string, content: string }[]
+          // })) satisfies readonly { title: string; content: string }[];
 
-        console.log(posts)
-      },
+          console.log(posts)
+        },
+        update: async ({ context }) => {
+          const posts = (await context.db.Post.findMany({
+            where: {
+              title: { equals: 'Home' },
+            },
+
+            // we use Typescript's satisfies here as way to ensure that
+            //   this is the contextualised type - you don't need this
+            //
+            //   it is helpful for us to check that the example is not
+            //   broken by code changes
+            //
+
+            // TODO: FIXME, babel and pnpm issues
+          })) as readonly { title: string, content: string }[]
+          // })) satisfies readonly { title: string; content: string }[];
+
+          console.log(posts)
+        },
+      }
     },
   }),
 } satisfies Lists

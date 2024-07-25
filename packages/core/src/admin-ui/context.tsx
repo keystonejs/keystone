@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import React, { type ReactNode, createContext, useContext, useMemo } from 'react'
 import { Center } from '@keystone-ui/core'
 import { ToastProvider } from '@keystone-ui/toast'
@@ -25,6 +26,7 @@ type KeystoneContextType = {
   createViewFieldModes: CreateViewFieldModes
   reinitContext: () => Promise<void>
   apiPath: string
+  adminPath: string
 }
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined)
@@ -36,6 +38,7 @@ type KeystoneProviderProps = {
   fieldViews: FieldViews
   lazyMetadataQuery: DocumentNode
   apiPath: string
+  adminPath: string
 }
 
 function InternalKeystoneProvider ({
@@ -45,6 +48,7 @@ function InternalKeystoneProvider ({
   children,
   lazyMetadataQuery,
   apiPath,
+  adminPath
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews)
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
@@ -74,6 +78,7 @@ function InternalKeystoneProvider ({
             visibleLists,
             createViewFieldModes,
             apiPath,
+            adminPath,
           }}
         >
           {children}
@@ -110,6 +115,8 @@ export const useKeystone = (): {
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
   apiPath: string
+  adminPath: string
+  listsKeyByPath: Record<string, string>
 } => {
   const value = useContext(KeystoneContext)
   if (!value) {
@@ -118,6 +125,11 @@ export const useKeystone = (): {
   if (value.adminMeta.state === 'error') {
     throw new Error('An error occurred when loading Admin Metadata')
   }
+  const listsKeyByPath = Object.values(value.adminMeta.value.lists).reduce((acc, list) => {
+    acc[list.path] = list.key
+    return acc
+  }, {} as Record<string, string>)
+
   return {
     adminConfig: value.adminConfig,
     adminMeta: value.adminMeta.value,
@@ -125,6 +137,8 @@ export const useKeystone = (): {
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
     apiPath: value.apiPath,
+    adminPath: value.adminPath,
+    listsKeyByPath,
   }
 }
 
@@ -151,6 +165,6 @@ export const useList = (key: string) => {
   if (lists[key]) {
     return lists[key]
   } else {
-    throw new Error(`Invalid list key provided to useList: ${key}`)
+    return notFound()
   }
 }

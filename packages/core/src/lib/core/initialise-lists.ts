@@ -9,7 +9,7 @@ import {
   type GraphQLTypesForList,
   type ListGraphQLTypes,
   type ListHooks,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
   type MaybePromise,
   type NextFieldType,
   type FieldTypeFunc,
@@ -143,7 +143,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   )
 }
 
-type ListConfigType = __ResolvedKeystoneConfig['lists'][string]
+type ListConfigType = ResolvedKeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: IsEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
@@ -221,78 +221,27 @@ function defaultListHooksResolveInput ({ resolvedData }: { resolvedData: any }) 
   return resolvedData
 }
 
-function parseListHooksResolveInput (f: ListHooks<BaseListTypeInfo>['resolveInput']) {
-  if (typeof f === 'function') {
-    return {
-      create: f,
-      update: f,
-    }
-  }
-
-  const {
-    create = defaultListHooksResolveInput,
-    update = defaultListHooksResolveInput
-  } = f ?? {}
-  return { create, update }
-}
-
-function parseListHooksValidate (f: ListHooks<BaseListTypeInfo>['validate']) {
-  if (typeof f === 'function') {
-    return {
-      create: f,
-      update: f,
-      delete: f,
-    }
-  }
-
-  const {
-    create = defaultOperationHook,
-    update = defaultOperationHook,
-    delete: delete_ = defaultOperationHook,
-  } = f ?? {}
-  return { create, update, delete: delete_ }
-}
-
-function parseListHooksBeforeOperation (f: ListHooks<BaseListTypeInfo>['beforeOperation']) {
-  if (typeof f === 'function') {
-    return {
-      create: f,
-      update: f,
-      delete: f,
-    }
-  }
-
-  const {
-    create = defaultOperationHook,
-    update = defaultOperationHook,
-    delete: _delete = defaultOperationHook,
-  } = f ?? {}
-  return { create, update, delete: _delete }
-}
-
-function parseListHooksAfterOperation (f: ListHooks<BaseListTypeInfo>['afterOperation']) {
-  if (typeof f === 'function') {
-    return {
-      create: f,
-      update: f,
-      delete: f,
-    }
-  }
-
-  const {
-    create = defaultOperationHook,
-    update = defaultOperationHook,
-    delete: _delete = defaultOperationHook,
-  } = f ?? {}
-  return { create, update, delete: _delete }
-}
-
 function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
-    resolveInput: parseListHooksResolveInput(hooks.resolveInput),
-    validate: parseListHooksValidate(hooks.validate),
-    beforeOperation: parseListHooksBeforeOperation(hooks.beforeOperation),
-    afterOperation: parseListHooksAfterOperation(hooks.afterOperation),
+    resolveInput: {
+      create: hooks.resolveInput?.create ?? defaultListHooksResolveInput,
+      update: hooks.resolveInput?.update ?? defaultListHooksResolveInput,
+    },
+    validate: {
+      create: hooks.validate?.create ?? defaultOperationHook,
+      update: hooks.validate?.update ?? defaultOperationHook,
+      delete: hooks.validate?.delete ?? defaultOperationHook,
+    },
+    beforeOperation: {
+      create: hooks.beforeOperation?.create ?? defaultOperationHook,
+      update: hooks.beforeOperation?.update ?? defaultOperationHook,
+      delete: hooks.beforeOperation?.delete ?? defaultOperationHook,
+    },
+    afterOperation: {
+      create: hooks.afterOperation?.create ?? defaultOperationHook,
+      update: hooks.afterOperation?.update ?? defaultOperationHook,
+      delete: hooks.afterOperation?.delete ?? defaultOperationHook,
+    },
   }
 }
 
@@ -307,51 +256,33 @@ function defaultFieldHooksResolveInput ({
 }
 
 function parseFieldHooks (
-  fieldKey: string,
   hooks: FieldHooks<BaseListTypeInfo>,
 ): ResolvedFieldHooks<BaseListTypeInfo> {
-  /** @deprecated, TODO: remove in breaking change */
-  if (hooks.validate !== undefined) {
-    if (hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${fieldKey}" field`)
-    if (hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${fieldKey}" field`)
-
-    if (typeof hooks.validate === 'function') {
-      return parseFieldHooks(fieldKey, {
-        ...hooks,
-        validate: {
-          create: hooks.validate,
-          update: hooks.validate,
-          delete: hooks.validate,
-        }
-      })
-    }
-  }
-
   return {
     resolveInput: {
-      create: hooks.resolveInput ?? defaultFieldHooksResolveInput,
-      update: hooks.resolveInput ?? defaultFieldHooksResolveInput,
+      create: hooks.resolveInput?.create ?? defaultFieldHooksResolveInput,
+      update: hooks.resolveInput?.update ?? defaultFieldHooksResolveInput,
     },
     validate: {
-      create: hooks.validate?.create ?? hooks.validateInput ?? defaultOperationHook,
-      update: hooks.validate?.update ?? hooks.validateInput ?? defaultOperationHook,
-      delete: hooks.validate?.delete ?? hooks.validateDelete ?? defaultOperationHook,
+      create: hooks.validate?.create ?? defaultOperationHook,
+      update: hooks.validate?.update ?? defaultOperationHook,
+      delete: hooks.validate?.delete ?? defaultOperationHook,
     },
     beforeOperation: {
-      create: hooks.beforeOperation ?? defaultOperationHook,
-      update: hooks.beforeOperation ?? defaultOperationHook,
-      delete: hooks.beforeOperation ?? defaultOperationHook,
+      create: hooks.beforeOperation?.create ?? defaultOperationHook,
+      update: hooks.beforeOperation?.update ?? defaultOperationHook,
+      delete: hooks.beforeOperation?.delete ?? defaultOperationHook,
     },
     afterOperation: {
-      create: hooks.afterOperation ?? defaultOperationHook,
-      update: hooks.afterOperation ?? defaultOperationHook,
-      delete: hooks.afterOperation ?? defaultOperationHook,
+      create: hooks.afterOperation?.create ?? defaultOperationHook,
+      update: hooks.afterOperation?.update ?? defaultOperationHook,
+      delete: hooks.afterOperation?.delete ?? defaultOperationHook,
     },
   }
 }
 
 function getListsWithInitialisedFields (
-  { storage: configStorage, lists: listsConfig, db: { provider } }: __ResolvedKeystoneConfig,
+  { storage: configStorage, lists: listsConfig, db: { provider } }: ResolvedKeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
   intermediateLists: Record<string, PartiallyInitialisedList1>
 ) {
@@ -402,7 +333,7 @@ function getListsWithInitialisedFields (
       resultFields[fieldKey] = {
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
-        hooks: parseFieldHooks(fieldKey, f.hooks ?? {}),
+        hooks: parseFieldHooks(f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
           isEnabled: isEnabledField,
@@ -569,7 +500,7 @@ function graphqlForOutputField (field: InitialisedField) {
 }
 
 function getListGraphqlTypes (
-  listsConfig: __ResolvedKeystoneConfig['lists'],
+  listsConfig: ResolvedKeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ): Record<string, ListGraphQLTypes> {
@@ -834,7 +765,7 @@ function getListGraphqlTypes (
  * 5. Handle relationships - ensure correct linking between two sides of all relationships (including one-sided relationships)
  * 6.
  */
-export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: ResolvedKeystoneConfig): Record<string, InitialisedList> {
   const listsConfig = config.lists
 
   let intermediateLists

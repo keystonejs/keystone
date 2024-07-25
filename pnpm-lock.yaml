@@ -691,6 +691,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 5.17.0(prisma@5.17.0)
+      next:
+        specifier: ^14.2.0
+        version: 14.2.5(@babel/core@7.24.9)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -10798,7 +10801,6 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qs@6.11.0:
@@ -15069,14 +15071,14 @@ snapshots:
   '@graphql-tools/optimize@1.4.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   '@graphql-tools/relay-operation-optimizer@6.5.18(graphql@16.9.0)':
     dependencies:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.9.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.6.3
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -15092,7 +15094,7 @@ snapshots:
   '@graphql-tools/utils@8.13.1(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   '@graphql-tools/utils@9.2.1(graphql@16.9.0)':
     dependencies:
@@ -18871,7 +18873,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   camelcase-keys@6.2.2:
     dependencies:
@@ -18890,7 +18892,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
       upper-case-first: 2.0.2
 
   capture-exit@2.0.0:
@@ -18953,7 +18955,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   char-regex@1.0.2: {}
 
@@ -19149,7 +19151,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
       upper-case: 2.0.2
 
   content-disposition@0.5.4:
@@ -20641,7 +20643,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   hex-rgb@4.3.0: {}
 
@@ -20960,7 +20962,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   is-module@1.0.0: {}
 
@@ -21030,7 +21032,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   is-windows@1.0.2: {}
 
@@ -21702,11 +21704,11 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   lowercase-keys@2.0.0: {}
 
@@ -23218,7 +23220,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   parent-module@1.0.1:
     dependencies:
@@ -23292,7 +23294,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   pascalcase@0.1.1: {}
 
@@ -23319,7 +23321,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   path-exists@3.0.0: {}
 
@@ -24236,7 +24238,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.3
       upper-case-first: 2.0.2
 
   serve-static@1.15.0:
@@ -24489,7 +24491,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   sprintf-js@1.0.3: {}
 
@@ -24676,7 +24678,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   symbol-observable@4.0.0: {}
 
@@ -24756,7 +24758,7 @@ snapshots:
 
   title-case@3.0.3:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   tmp@0.0.33:
     dependencies:
@@ -25072,11 +25074,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.3
 
   uri-js@4.4.1:
     dependencies:

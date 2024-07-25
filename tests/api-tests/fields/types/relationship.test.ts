@@ -24,7 +24,7 @@ function getSchema (field: {
           },
         }),
       },
-    })
+    }) as any
   ).graphQLSchema
 }
 
@@ -140,7 +140,7 @@ describe('Reference errors', () => {
       config({
         db: { url: 'file:./thing.db', provider: 'sqlite' },
         lists,
-      })
+      }) as any
     ).graphQLSchema
   }
 

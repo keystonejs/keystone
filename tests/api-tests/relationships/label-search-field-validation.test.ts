@@ -2,6 +2,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'
 import { integer, relationship, text } from '@keystone-6/core/fields'
+import { type ResolvedKeystoneConfig } from '@keystone-6/core/types'
 
 const Thing = list({
   access: allowAll,
@@ -34,7 +35,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
           }),
           Thing,
         },
-      }),
+      }) as unknown as ResolvedKeystoneConfig,
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
@@ -66,7 +67,7 @@ test("labelField that doesn't exist is rejected with displayMode: cards", () => 
           }),
           Thing,
         },
-      }),
+      } as unknown as ResolvedKeystoneConfig),
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
@@ -96,7 +97,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
           }),
           Thing,
         },
-      }),
+      } as unknown as ResolvedKeystoneConfig),
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
@@ -128,7 +129,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
           }),
           Thing,
         },
-      }),
+      } as unknown as ResolvedKeystoneConfig),
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
@@ -158,7 +159,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
           }),
           Thing,
         },
-      }),
+      } as unknown as ResolvedKeystoneConfig),
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
@@ -190,7 +191,7 @@ test("searchFields that aren't searchable are rejected with displayMode: cards",
           }),
           Thing,
         },
-      }),
+      } as unknown as ResolvedKeystoneConfig),
       {} as any
     )
   ).toThrowErrorMatchingInlineSnapshot(
