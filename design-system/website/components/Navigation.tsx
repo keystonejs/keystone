@@ -4,7 +4,7 @@
 import { Fragment, type ReactNode } from 'react'
 import { jsx, useTheme } from '@keystone-ui/core'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 
 const Brand = () => {
   const { palette } = useTheme()
@@ -37,8 +37,8 @@ const Section = ({ label, children }: SectionProps) => {
 type NavItemProps = { href: string, children: ReactNode }
 const NavItem = ({ href, children }: NavItemProps) => {
   const { palette, radii, spacing } = useTheme()
-  const router = useRouter()
-  const isSelected = router.pathname === href
+  const pathname = usePathname()
+  const isSelected = pathname === href
   return (
     <li
       css={{

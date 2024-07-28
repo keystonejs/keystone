@@ -36,7 +36,7 @@ export async function start (
   console.log(`✅ GraphQL API ready`)
   if (!system.config.ui?.isDisabled && ui) {
     console.log('✨ Preparing Admin UI Next.js app')
-    const nextApp = next({ dev: false, dir: paths.admin })
+    const nextApp = next({ dev: false, dir: cwd })
     await nextApp.prepare()
 
     expressServer.use(await createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp))

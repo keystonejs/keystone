@@ -12,7 +12,8 @@
   "dependencies": {
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@prisma/client": "catalog:",
+    "next": "^14.2.0"
   },
   "devDependencies": {
     "prisma": "catalog:",
