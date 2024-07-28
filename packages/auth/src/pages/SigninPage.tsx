@@ -63,7 +63,7 @@ export function SigninPage ({
   useEffect(() => {
     if (submitted) return
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(adminPath)
+      router.push(adminPath || '/')
     }
   }, [rawKeystone.authenticatedItem, router, adminPath, submitted])
 
@@ -77,7 +77,7 @@ export function SigninPage ({
       return
     }
 
-    router.push(adminPath)
+    router.push(adminPath || '/')
   }, [rawKeystone.adminMeta, router, adminPath, submitted])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
