@@ -71,7 +71,7 @@ export async function dev (
     prev.resolve({ value: build, done: false })
   }
 
-  const esbuildConfig = getEsbuildConfig(cwd)
+  const esbuildConfig = await getEsbuildConfig(cwd)
   const esbuildContext = await esbuild.context({
     ...esbuildConfig,
     plugins: [

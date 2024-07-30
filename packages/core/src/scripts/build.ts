@@ -19,7 +19,7 @@ export async function build (
   { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
 ) {
   // TODO: should this happen if frozen?
-  await esbuild.build(getEsbuildConfig(cwd))
+  await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (prisma) {

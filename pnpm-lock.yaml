@@ -796,6 +796,22 @@ importers:
         specifier: 'catalog:'
         version: 5.5.3
 
+  examples/custom-esbuild:
+    dependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 'catalog:'
+        version: 5.17.0(prisma@5.17.0)
+    devDependencies:
+      prisma:
+        specifier: 'catalog:'
+        version: 5.17.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.5.3
+
   examples/custom-field:
     dependencies:
       '@keystone-6/core':

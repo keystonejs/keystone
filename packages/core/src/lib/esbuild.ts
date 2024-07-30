@@ -3,11 +3,13 @@ import { type BuildOptions } from 'esbuild'
 
 function identity (x: BuildOptions) { return x }
 
-export function getEsbuildConfig (cwd: string): BuildOptions {
+export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
   let esbuildFn: typeof identity | undefined
   try {
     esbuildFn = require(require.resolve(`${cwd}/esbuild.keystone.js`))
-  } catch (e) {}
+  } catch (e) {
+    console.error({ e })
+  }
   esbuildFn ??= identity
 
   return esbuildFn({
