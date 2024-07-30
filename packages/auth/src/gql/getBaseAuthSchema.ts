@@ -8,8 +8,6 @@ import type {
   SecretFieldImpl,
 } from '../types'
 
-import { validateSecret } from '../lib/validateSecret'
-
 export function getBaseAuthSchema<I extends string, S extends string> ({
   listKey,
   identityField,
@@ -24,7 +22,6 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
   gqlNames: AuthGqlNames
   secretFieldImpl: SecretFieldImpl
   base: graphql.BaseSchemaMeta
-
   // TODO: return type required by pnpm :(
 }): {
   extension: graphql.Extension
@@ -91,24 +88,22 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
         async resolve (root, { [identityField]: identity, [secretField]: secret }, context: KeystoneContext) {
           if (!context.sessionStrategy) throw new Error('No session implementation available on context')
 
-          const dbItemAPI = context.sudo().db[listKey]
-          const result = await validateSecret(
-            secretFieldImpl,
-            identityField,
-            identity,
-            secretField,
-            secret,
-            dbItemAPI
-          )
+          const item = await context.sudo().db[listKey].findOne({
+            where: { [identityField]: identity }
+          })
 
-          if (!result.success) {
+          if ((typeof item?.[secretField] !== 'string')) {
+            await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack')
             return { code: 'FAILURE', message: 'Authentication failed.' }
           }
+
+          const equal = await secretFieldImpl.compare(secret, item[secretField])
+          if (!equal) return { code: 'FAILURE', message: 'Authentication failed.' }
 
           // Update system state
           const sessionToken = await context.sessionStrategy.start({
             data: {
-              itemId: result.item.id,
+              itemId: item.id,
             },
             context,
           })
@@ -120,12 +115,15 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 
           return {
             sessionToken,
-            item: result.item
+            item
           }
         },
       }),
     },
   }
 
-  return { extension, ItemAuthenticationWithPasswordSuccess }
+  return {
+    extension,
+    ItemAuthenticationWithPasswordSuccess
+  }
 }

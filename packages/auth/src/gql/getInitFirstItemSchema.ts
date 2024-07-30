@@ -1,8 +1,13 @@
-import { type BaseItem, type KeystoneContext } from '@keystone-6/core/types'
+import {
+  type BaseItem,
+  type KeystoneContext,
+} from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
-
-import type { AuthGqlNames, InitFirstItemConfig } from '../types'
+import {
+  type AuthGqlNames,
+  type InitFirstItemConfig,
+} from '../types'
 
 export function getInitFirstItemSchema ({
   listKey,
