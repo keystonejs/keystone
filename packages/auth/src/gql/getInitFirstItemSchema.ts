@@ -14,14 +14,14 @@ const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 export function getInitFirstItemSchema ({
   listKey,
   fields,
-  itemData: defaultItemData,
+  defaultItemData,
   gqlNames,
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
 }: {
   listKey: string
   fields: InitFirstItemConfig<any>['fields']
-  itemData: InitFirstItemConfig<any>['itemData']
+  defaultItemData: InitFirstItemConfig<any>['itemData']
   gqlNames: AuthGqlNames
   graphQLSchema: GraphQLSchema
   ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
@@ -37,9 +37,7 @@ export function getInitFirstItemSchema ({
   const initialCreateInput = graphql.wrap.inputObject(
     new GraphQLInputObjectType({
       ...createInputConfig,
-      fields: Object.fromEntries(
-        Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
-      ),
+      fields: Object.fromEntries(Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))),
       name: gqlNames.CreateInitialInput,
     })
   )

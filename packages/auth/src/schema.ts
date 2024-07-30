@@ -61,9 +61,7 @@ export const getSchemaExtension = ({
   sessionData: string
 }) =>
   graphql.extend(base => {
-    const uniqueWhereInputType = assertInputObjectType(
-      base.schema.getType(`${listKey}WhereUniqueInput`)
-    )
+    const uniqueWhereInputType = assertInputObjectType(base.schema.getType(`${listKey}WhereUniqueInput`))
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (
       base.schema.extensions.sudo &&
@@ -111,7 +109,7 @@ export const getSchemaExtension = ({
         getInitFirstItemSchema({
           listKey,
           fields: initFirstItem.fields,
-          itemData: initFirstItem.itemData,
+          defaultItemData: initFirstItem.itemData,
           gqlNames,
           graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
