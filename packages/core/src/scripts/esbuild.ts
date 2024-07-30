@@ -6,7 +6,6 @@ function identity (x: BuildOptions) { return x }
 export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
   let esbuildFn: typeof identity | undefined
 
-  // WARNING: experimental
   try {
     try {
       await esbuild.build({
