@@ -17,6 +17,7 @@ export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
         outfile: '.keystone/esbuild.js',
         format: 'cjs',
         platform: 'node',
+        logLevel: 'silent'
       })
     } catch (e: any) {
       if (!e.errors?.some((err: any) => err.text.includes('Could not resolve'))) throw e
