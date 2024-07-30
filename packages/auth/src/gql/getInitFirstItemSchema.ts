@@ -9,10 +9,12 @@ import {
   type InitFirstItemConfig,
 } from '../types'
 
+const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
+
 export function getInitFirstItemSchema ({
   listKey,
   fields,
-  itemData,
+  itemData: defaultItemData,
   gqlNames,
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
@@ -48,34 +50,41 @@ export function getInitFirstItemSchema ({
         type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
         async resolve (rootVal, { data }, context: KeystoneContext) {
-          if (!context.sessionStrategy) {
-            throw new Error('No session implementation available on context')
-          }
+          if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
           const sudoContext = context.sudo()
 
           // should approximate hasInitFirstItemConditions
           const count = await sudoContext.db[listKey].count()
-          if (count !== 0) {
-            throw new Error('Initial items can only be created when no items exist in that list')
-          }
+          if (count !== 0) throw AUTHENTICATION_FAILURE
 
           // Update system state
           // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
           // (this is also mostly fine, the chance that people are using things where
           // the input value can't round-trip like the Upload scalar here is quite low)
-          const item = await sudoContext.db[listKey].createOne({ data: { ...data, ...itemData } })
-          const sessionToken = (await context.sessionStrategy.start({
-            data: { listKey, itemId: item.id.toString() },
-            context,
-          }))
+          const item = await sudoContext.db[listKey].createOne({
+            data: {
+              ...defaultItemData,
+              ...data
+            }
+          })
 
-          // return Failure if sessionStrategy.start() is incompatible
+          const sessionToken = await context.sessionStrategy.start({
+            data: {
+              listKey,
+              itemId: item.id,
+            },
+            context,
+          })
+
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
-            throw new Error('Failed to start session')
+            throw AUTHENTICATION_FAILURE
           }
 
-          return { item, sessionToken }
+          return {
+            sessionToken,
+            item
+          }
         },
       }),
     },

@@ -8,6 +8,11 @@ import type {
   SecretFieldImpl,
 } from '../types'
 
+const AUTHENTICATION_FAILURE = {
+  code: 'FAILURE',
+  message: 'Authentication failed.'
+} as const
+
 export function getBaseAuthSchema<I extends string, S extends string> ({
   listKey,
   identityField,
@@ -85,8 +90,11 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve (root, { [identityField]: identity, [secretField]: secret }, context: KeystoneContext) {
-          if (!context.sessionStrategy) throw new Error('No session implementation available on context')
+        async resolve (root, {
+          [identityField]: identity,
+          [secretField]: secret
+        }, context: KeystoneContext) {
+          if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
           const item = await context.sudo().db[listKey].findOne({
             where: { [identityField]: identity }
@@ -94,13 +102,12 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 
           if ((typeof item?.[secretField] !== 'string')) {
             await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack')
-            return { code: 'FAILURE', message: 'Authentication failed.' }
+            return AUTHENTICATION_FAILURE
           }
 
           const equal = await secretFieldImpl.compare(secret, item[secretField])
-          if (!equal) return { code: 'FAILURE', message: 'Authentication failed.' }
+          if (!equal) return AUTHENTICATION_FAILURE
 
-          // Update system state
           const sessionToken = await context.sessionStrategy.start({
             data: {
               itemId: item.id,
@@ -108,9 +115,8 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
             context,
           })
 
-          // return Failure if sessionStrategy.start() is incompatible
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
-            return { code: 'FAILURE', message: 'Failed to start session.' }
+            return AUTHENTICATION_FAILURE
           }
 
           return {
