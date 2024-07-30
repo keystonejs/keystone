@@ -1,13 +1,16 @@
 // WARNING: be careful not to import `esbuild` within next
 import { type BuildOptions } from 'esbuild'
 
-export function getEsbuildConfig (cwd: string): BuildOptions {
-  try {
-    return require(require.resolve(`${cwd}/esbuild.keystone.js`))
-  } catch (e) {}
+function identity (x: BuildOptions) { return x }
 
-  // default fallback
-  return {
+export function getEsbuildConfig (cwd: string): BuildOptions {
+  let esbuildFn: typeof identity | undefined
+  try {
+    esbuildFn = require(require.resolve(`${cwd}/esbuild.keystone.js`))
+  } catch (e) {}
+  esbuildFn ??= identity
+
+  return esbuildFn({
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
     bundle: true,
@@ -20,18 +23,15 @@ export function getEsbuildConfig (cwd: string): BuildOptions {
       {
         name: 'external-node_modules',
         setup (build) {
-          build.onResolve(
-            {
-              // don't bundle anything that is NOT a relative import
-              //   WARNING: we can't use a negative lookahead/lookbehind because esbuild uses Go
-              filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
-            },
-            ({ path }) => {
-              return { external: true, path }
-            }
-          )
+          build.onResolve({
+            // don't bundle anything that is NOT a relative import
+            //   WARNING: we can't use a negative lookahead/lookbehind because esbuild uses Go
+            filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
+          }, ({ path }) => {
+            return { external: true, path }
+          })
         },
       },
     ],
-  }
+  } satisfies BuildOptions)
 }
