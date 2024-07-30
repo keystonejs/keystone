@@ -1,14 +1,29 @@
-// WARNING: be careful not to import `esbuild` within next
-import { type BuildOptions } from 'esbuild'
+// WARNING: be careful not to import this file within next
+import esbuild, { type BuildOptions } from 'esbuild'
 
 function identity (x: BuildOptions) { return x }
 
 export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
   let esbuildFn: typeof identity | undefined
+
+  // WARNING: experimental
   try {
-    esbuildFn = require(require.resolve(`${cwd}/esbuild.keystone.js`))
-  } catch (e) {
-    console.error({ e })
+    try {
+      await esbuild.build({
+        entryPoints: ['./esbuild.keystone'],
+        absWorkingDir: cwd,
+        bundle: true,
+        sourcemap: true,
+        outfile: '.keystone/esbuild.js',
+        format: 'cjs',
+        platform: 'node',
+      })
+    } catch (e: any) {
+      if (!e.errors?.some((err: any) => err.text.includes('Could not resolve'))) throw e
+    }
+    esbuildFn = require(require.resolve(`${cwd}/.keystone/esbuild.js`)).default
+  } catch (err: any) {
+    if (err.code !== 'MODULE_NOT_FOUND') throw err
   }
   esbuildFn ??= identity
 

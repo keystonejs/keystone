@@ -6,7 +6,7 @@ import esbuild from 'esbuild'
 import fse from 'fs-extra'
 
 import { createSystem } from '../lib/createSystem'
-import { getEsbuildConfig } from '../lib/esbuild'
+import { getEsbuildConfig } from './esbuild'
 import { withMigrate } from '../lib/migrations'
 import {
   confirmPrompt,

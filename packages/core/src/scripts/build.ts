@@ -10,7 +10,7 @@ import {
   generateTypes,
   validateArtifacts,
 } from '../artifacts'
-import { getEsbuildConfig } from '../lib/esbuild'
+import { getEsbuildConfig } from './esbuild'
 import type { Flags } from './cli'
 import { importBuiltKeystoneConfiguration } from './utils'
 
