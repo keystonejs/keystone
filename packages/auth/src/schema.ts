@@ -1,8 +1,6 @@
-import { getGqlNames } from '@keystone-6/core/types'
-
 import {
-  assertObjectType,
   type GraphQLSchema,
+  assertObjectType,
   assertInputObjectType,
   GraphQLString,
   GraphQLID,
@@ -10,16 +8,16 @@ import {
   validate,
 } from 'graphql'
 import { graphql } from '@keystone-6/core'
-import type {
-  AuthGqlNames,
-  AuthTokenTypeConfig,
-  InitFirstItemConfig,
-  SecretFieldImpl,
+import { getGqlNames } from '@keystone-6/core/types'
+
+import {
+  type AuthGqlNames,
+  type AuthTokenTypeConfig,
+  type InitFirstItemConfig,
+  type SecretFieldImpl,
 } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema'
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema'
 
 function assertSecretFieldImpl (
   impl: any,
@@ -51,8 +49,6 @@ export const getSchemaExtension = ({
   secretField,
   gqlNames,
   initFirstItem,
-  passwordResetLink,
-  magicAuthLink,
   sessionData,
 }: {
   identityField: string
@@ -119,28 +115,6 @@ export const getSchemaExtension = ({
           gqlNames,
           graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
-        }),
-      passwordResetLink &&
-        getPasswordResetSchema({
-          identityField,
-          listKey,
-          secretField,
-          passwordResetLink,
-          gqlNames,
-          passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
-            base.schema,
-            listKey,
-            'passwordResetToken'
-          ),
-        }),
-      magicAuthLink &&
-        getMagicAuthLinkSchema({
-          identityField,
-          listKey,
-          magicAuthLink,
-          gqlNames,
-          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
-          base,
         }),
     ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined)
   })
