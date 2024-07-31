@@ -223,10 +223,7 @@ export function createSystem (config_: KeystoneConfig) {
         log: config.db.enableLogging
       })
 
-      const prismaClient = config.db.extendPrismaClient(
-        injectNewDefaults(prePrismaClient, lists)
-      )
-
+      const prismaClient = config.db.extendPrismaClient(injectNewDefaults(prePrismaClient, lists))
       const context = createContext({
         config,
         lists,

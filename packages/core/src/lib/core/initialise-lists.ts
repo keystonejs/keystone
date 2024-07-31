@@ -34,7 +34,10 @@ import {
   parseFieldAccessControl,
 } from './access-control'
 import { areArraysEqual, getNamesFromList } from './utils'
-import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
+import {
+  type ResolvedDBField,
+  resolveRelationships
+} from './resolve-relationships'
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 
@@ -84,6 +87,8 @@ export type InitialisedField = {
 >
 
 export type InitialisedList = {
+  listKey: string
+
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
@@ -99,14 +104,11 @@ export type InitialisedList = {
   resolvedDbFields: Record<string, ResolvedDBField>
   lists: Record<string, InitialisedList>
 
-  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
-  listKey: string
-
   graphql: {
     types: GraphQLTypesForList
     names: ReturnType<typeof getGqlNames>
     namePlural: string // TODO: remove
-    isEnabled: IsEnabled
+    isEnabled: IsListEnabled
   }
 
   prisma: {
@@ -123,9 +125,10 @@ export type InitialisedList = {
   }
 
   isSingleton: boolean
+  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
 }
 
-type IsEnabled = {
+type IsListEnabled = {
   type: boolean
   query: boolean
   create: boolean
@@ -137,15 +140,12 @@ type IsEnabled = {
 
 function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return
-
-  throw new Error(
-    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`
-  )
+  throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
 }
 
 type ListConfigType = __ResolvedKeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
-type PartiallyInitialisedList1 = { graphql: { isEnabled: IsEnabled } }
+type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
 function getIsEnabled (listKey: string, listConfig: ListConfigType) {
@@ -183,11 +183,11 @@ function getIsEnabled (listKey: string, listConfig: ListConfigType) {
   }
 }
 
-function getIsEnabledField (f: FieldConfigType, listKey: string, listConfig: PartiallyInitialisedList1) {
+function getIsEnabledField (f: FieldConfigType, listKey: string, list: PartiallyInitialisedList1) {
   const omit = f.graphql?.omit ?? false
   const {
-    isFilterable = listConfig.graphql.isEnabled.filter,
-    isOrderable = listConfig.graphql.isEnabled.orderBy,
+    isFilterable = list.graphql.isEnabled.filter,
+    isOrderable = list.graphql.isEnabled.orderBy,
   } = f
 
   // TODO: check types in initConfig
@@ -440,8 +440,7 @@ function getListsWithInitialisedFields (
         getAdminMeta: f.getAdminMeta,
         input: { ...f.input },
         output: { ...f.output },
-        unreferencedConcreteInterfaceImplementations:
-          f.unreferencedConcreteInterfaceImplementations,
+        unreferencedConcreteInterfaceImplementations: f.unreferencedConcreteInterfaceImplementations,
         views: f.views,
       }
     }
@@ -493,10 +492,9 @@ function getListsWithInitialisedFields (
       listKey,
       cacheHint: (() => {
         const cacheHint = list.graphql?.cacheHint
-        if (cacheHint === undefined) {
-          return undefined
-        }
-        return typeof cacheHint === 'function' ? cacheHint : () => cacheHint
+        if (typeof cacheHint === 'function') return cacheHint
+        if (cacheHint !== undefined) return () => cacheHint
+        return undefined
       })(),
       isSingleton: list.isSingleton ?? false,
     }
@@ -512,9 +510,7 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
     } = list
 
     if (searchFields.has('id')) {
-      throw new Error(
-        `The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
-      )
+      throw new Error(`The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`)
     }
 
     const whereInputFields = list.graphql.types.where.graphQLType.getFields()
@@ -826,14 +822,6 @@ function getListGraphqlTypes (
   return graphQLTypes
 }
 
-/**
- * 1. Get the `isEnabled` config object from the listConfig - the returned object will be modified later
- * 2. Instantiate `lists` object - it is done here as the object will be added to the listGraphqlTypes
- * 3. Get graphqlTypes
- * 4. Initialise fields - field functions are called
- * 5. Handle relationships - ensure correct linking between two sides of all relationships (including one-sided relationships)
- * 6.
- */
 export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
   const listsConfig = config.lists
 
@@ -849,12 +837,6 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
     ])
   )
 
-  /**
-   * Lists is instantiated here so that it can be passed into the `getListGraphqlTypes` function
-   * This function binds the listsRef object to the various graphql functions
-   *
-   * The object will be populated at the end of this function, and the reference will be maintained
-   */
   const listsRef: Record<string, InitialisedList> = {}
 
   {
@@ -926,7 +908,7 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
     }
   }
 
-  // Do some introspection
+  // do some introspection
   introspectGraphQLTypes(listsRef)
 
   return listsRef

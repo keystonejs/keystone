@@ -75,9 +75,7 @@ function collectTypes (
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-          collectedTypes.push(
-            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-          )
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType))
         }
       }
       collectedTypes.push(list.graphql.types.where.graphQLType)
