@@ -50,30 +50,29 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
       </SplitCardContainer>
 
       {/* Remaining groups */}
-      {!!restGroups &&
-        restGroups.map((group, i) => (
-          <div key={i}>
-            <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
-              {group.groupName}
-            </Type>
-            <Type as="div" look="body18" margin="0 0 1.5rem 0">
-              {group.groupDescription.children.map((child, j) => (
-                <Markdoc key={j} content={child} />
-              ))}
-            </Type>
+      {restGroups.map((group, i) => (
+        <div key={i}>
+          <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
+            {group.groupName}
+          </Type>
+          <Type as="div" look="body18" margin="0 0 1.5rem 0">
+            {group.groupDescription.children.map((child, j) => (
+              <Markdoc key={j} content={child} />
+            ))}
+          </Type>
 
-            <SplitCardContainer>
-              {group.items.map((item, j) => (
-                <FeaturedCard
-                  key={`${item.label}-${j}`}
-                  label={item.label}
-                  href={item.href}
-                  description={item.description}
-                  gradient={group.gradient}
-                />
-              ))}
-            </SplitCardContainer>
-          </div>
+          <SplitCardContainer>
+            {group.items.map((item, j) => (
+              <FeaturedCard
+                key={`${item.label}-${j}`}
+                label={item.label}
+                href={item.href}
+                description={item.description}
+                gradient={group.gradient}
+              />
+            ))}
+          </SplitCardContainer>
+        </div>
         ))}
     </>
   )
