@@ -42,6 +42,8 @@ import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 
 export type InitialisedField = {
+  fieldKey: string
+
   access: ResolvedFieldAccessControl
   dbField: ResolvedDBField
   hooks: ResolvedFieldHooks<BaseListTypeInfo>
@@ -400,6 +402,8 @@ function getListsWithInitialisedFields (
       }
 
       resultFields[fieldKey] = {
+        fieldKey,
+
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
         hooks: parseFieldHooks(fieldKey, f.hooks ?? {}),
