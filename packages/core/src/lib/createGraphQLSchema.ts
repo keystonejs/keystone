@@ -4,7 +4,7 @@ import { graphql } from '../types/schema'
 import {
   type __ResolvedKeystoneConfig
 } from '../types'
-import { KeystoneMeta } from './admin-meta-resolver'
+import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 

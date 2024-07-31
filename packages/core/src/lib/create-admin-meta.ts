@@ -1,17 +1,20 @@
-import path from 'path'
-import type {
-  BaseListTypeInfo,
-  JSONValue,
-  KeystoneContext,
-  MaybeItemFunction,
-  MaybePromise,
-  MaybeSessionFunction,
-  __ResolvedKeystoneConfig,
+import path from 'node:path'
+import {
+  type BaseListTypeInfo,
+  type JSONValue,
+  type KeystoneContext,
+  type MaybeItemFunction,
+  type MaybePromise,
+  type MaybeSessionFunction,
+  type __ResolvedKeystoneConfig,
 } from '../types'
-import type { FilterOrderArgs } from '../types/config/fields'
+import {
+  type GraphQLNames
+} from '../types/utils'
+import { type FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
-import type { InitialisedList } from './core/initialise-lists'
+import { type InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
@@ -60,7 +63,7 @@ export type ListMetaRootVal = {
   fields: FieldMetaRootVal[]
   fieldsByKey: Record<string, FieldMetaRootVal>
   groups: Array<FieldGroupMeta>
-
+  graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
   initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
@@ -140,6 +143,9 @@ export function createAdminMeta (
       fields: [],
       fieldsByKey: {},
       groups: [],
+      graphql: {
+        names: list.graphql.names,
+      },
 
       pageSize: maximumPageSize,
       initialColumns,

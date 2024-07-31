@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import hashString from '@emotion/hash'
 import {
   type AdminMeta,
-  type FieldViews,
-  getGqlNames
+  type FieldViews
 } from '../../types'
 import { useLazyQuery } from '../apollo'
 import {
@@ -72,8 +71,8 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
     for (const list of adminMeta.lists) {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
+        gqlNames: list.graphql.names,
         groups: [],
-        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }), // TODO: replace with an object
         fields: {},
       }
 

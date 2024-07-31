@@ -1,4 +1,7 @@
-import type { JSONValue } from '../types'
+import {
+  type GraphQLNames,
+  type JSONValue,
+} from '../types/utils'
 import { gql } from './apollo'
 
 export const staticAdminMetaQuery = gql`
@@ -32,6 +35,34 @@ export const staticAdminMetaQuery = gql`
             description
             fields {
               path
+            }
+          }
+          graphql {
+            names {
+              outputTypeName
+              whereInputName
+              whereUniqueInputName
+
+              createInputName
+              createMutationName
+              createManyMutationName
+              relateToOneForCreateInputName
+              relateToManyForCreateInputName
+
+              itemQueryName
+              listQueryName
+              listQueryCountName
+              listOrderName
+
+              updateInputName
+              updateMutationName
+              updateManyInputName
+              updateManyMutationName
+              relateToOneForUpdateInputName
+              relateToManyForUpdateInputName
+
+              deleteMutationName
+              deleteManyMutationName
             }
           }
           fields {
@@ -95,6 +126,9 @@ export type StaticAdminMetaQuery = {
             path: string
           }>
         }>
+        graphql: {
+          names: GraphQLNames
+        },
 
         pageSize: number
         initialColumns: Array<string>
