@@ -69,7 +69,7 @@ async function getFilteredItem (
 }
 
 async function createSingle (
-  { data: rawData }: { data: Record<string, unknown> },
+  inputData: Record<string, unknown>,
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -78,7 +78,7 @@ async function createSingle (
     context,
     'create',
     list,
-    rawData,
+    inputData,
     undefined,
   )
 
@@ -86,14 +86,14 @@ async function createSingle (
     context,
     'create',
     list,
-    rawData,
+    inputData,
     undefined,
   )
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
     context,
-    rawData,
+    inputData,
     undefined
   )
 
@@ -116,7 +116,7 @@ export class NestedMutationState {
     const operationAccess = await getOperationAccess(list, context, 'create')
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
-    const { item, afterOperation } = await createSingle({ data }, list, context)
+    const { item, afterOperation } = await createSingle(data, list, context)
 
     this.#afterOperations.push(() => afterOperation(item))
     return { id: item.id as IdType }
@@ -127,8 +127,10 @@ export class NestedMutationState {
   }
 }
 
+type InputData = Record<string, unknown> | null
+
 export async function createOne (
-  createInput: { data: Record<string, unknown> },
+  inputData: InputData,
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -136,7 +138,7 @@ export async function createOne (
   if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
   // operation
-  const { item, afterOperation } = await createSingle(createInput, list, context)
+  const { item, afterOperation } = await createSingle(inputData ?? {}, list, context)
 
   // after operation
   await afterOperation(item)
@@ -145,18 +147,18 @@ export async function createOne (
 }
 
 export async function createMany (
-  createInputs: { data: Record<string, unknown>[] },
+  inputDatas: InputData[],
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const operationAccess = await getOperationAccess(list, context, 'create')
 
-  return createInputs.data.map(async data => {
+  return inputDatas.map(async inputData => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
     // operation
-    const { item, afterOperation } = await createSingle({ data }, list, context)
+    const { item, afterOperation } = await createSingle(inputData ?? {}, list, context)
 
     // after operation
     await afterOperation(item)
@@ -167,19 +169,20 @@ export async function createMany (
 
 type UpdateInput = {
   where: UniqueInputFilter
-  data: Record<string, unknown>
+  data: InputData
 }
 
 async function updateSingle (
-  updateInput: UpdateInput,
+  {
+    where,
+    data: inputData
+  }: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
 ) {
-  const { where: uniqueInput, data: rawData } = updateInput
-
   // validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context)
+  const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
   // check filter access
   const fieldKey = Object.keys(uniqueWhere)[0]
@@ -193,7 +196,7 @@ async function updateSingle (
     context,
     'update',
     list,
-    updateInput.data,
+    inputData ?? {},
     item,
   )
 
@@ -201,14 +204,14 @@ async function updateSingle (
     context,
     'update',
     list,
-    updateInput.data,
+    inputData ?? {},
     item,
   )
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
     context,
-    rawData,
+    inputData ?? {},
     item
   )
 
@@ -257,13 +260,13 @@ export async function updateMany (
 }
 
 async function deleteSingle (
-  uniqueInput: UniqueInputFilter,
+  where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
 ) {
   // validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context)
+  const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
   // check filter access
   const fieldKey = Object.keys(uniqueWhere)[0]
@@ -310,7 +313,7 @@ async function deleteSingle (
 }
 
 export async function deleteOne (
-  deleteInput: UniqueInputFilter,
+  where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -320,11 +323,11 @@ export async function deleteOne (
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'delete')
 
-  return deleteSingle(deleteInput, list, context, accessFilters)
+  return deleteSingle(where, list, context, accessFilters)
 }
 
 export async function deleteMany (
-  deleteManyInput: UniqueInputFilter[],
+  wheres: UniqueInputFilter[],
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -333,11 +336,11 @@ export async function deleteMany (
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'delete')
 
-  return deleteManyInput.map(async deleteInput => {
+  return wheres.map(async where => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
 
-    return deleteSingle(deleteInput, list, context, accessFilters)
+    return deleteSingle(where, list, context, accessFilters)
   })
 }
 
@@ -612,7 +615,7 @@ export function getMutationsForList (list: InitialisedList) {
       data: graphql.arg({ type: graphql.nonNull(list.graphql.types.create) }),
     },
     resolve (_rootVal, { data }, context) {
-      return createOne({ data }, list, context)
+      return createOne(data, list, context)
     },
   })
 
@@ -623,10 +626,8 @@ export function getMutationsForList (list: InitialisedList) {
         type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.create))),
       }),
     },
-    async resolve (_rootVal, args, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(
-        await createMany(args, list, context)
-      )
+    async resolve (_rootVal, { data }, context) {
+      return promisesButSettledWhenAllSettledAndInOrder(await createMany(data, list, context))
     },
   })
 
@@ -639,8 +640,8 @@ export function getMutationsForList (list: InitialisedList) {
       }),
       data: graphql.arg({ type: graphql.nonNull(list.graphql.types.update) }),
     },
-    resolve (_rootVal, args, context) {
-      return updateOne(args, list, context)
+    resolve (_rootVal, { where, data }, context) {
+      return updateOne({ where, data }, list, context)
     },
   })
 
