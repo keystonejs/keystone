@@ -357,10 +357,283 @@ function parseFieldHooks (
 }
 
 function getListsWithInitialisedFields (
-  { storage: configStorage, lists: listsConfig, db: { provider } }: __ResolvedKeystoneConfig,
-  listGraphqlTypes: Record<string, ListGraphQLTypes>,
-  intermediateLists: Record<string, PartiallyInitialisedList1>
+  config: __ResolvedKeystoneConfig,
+  listsRef: Record<string, InitialisedList>,
 ) {
+  const { storage: configStorage, lists: listsConfig, db: { provider } } = config
+  const intermediateLists = Object.fromEntries(Object.values(config.lists).map((listConfig) => [
+    listConfig.listKey,
+    {
+      graphql: {
+        isEnabled: getIsEnabled(listConfig.listKey, listConfig)
+      }
+    },
+  ]))
+
+  const listGraphqlTypes: Record<string, ListGraphQLTypes> = {}
+
+  for (const listConfig of Object.values(listsConfig)) {
+    const { listKey } = listConfig
+    const {
+      graphql: { names },
+    } = __getNames(listKey, listConfig)
+
+    const output = graphql.object<BaseItem>()({
+      name: names.outputTypeName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        return {
+          ...Object.fromEntries(
+            Object.entries(fields).flatMap(([fieldPath, field]) => {
+              if (
+                !field.output ||
+                !field.graphql.isEnabled.read ||
+                (field.dbField.kind === 'relation' &&
+                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
+              ) {
+                return []
+              }
+
+              const outputFieldRoot = graphqlForOutputField(field)
+              return [
+                [fieldPath, outputFieldRoot] as const,
+                ...Object.entries(field.extraOutputFields || {}),
+              ].map(([outputTypeFieldName, outputField]) => {
+                return [
+                  outputTypeFieldName,
+                  outputTypeField(
+                    outputField,
+                    field.dbField,
+                    field.graphql?.cacheHint,
+                    field.access.read,
+                    listKey,
+                    fieldPath,
+                    listsRef
+                  ),
+                ]
+              })
+            })
+          ),
+        }
+      },
+    })
+
+    const uniqueWhere = graphql.inputObject({
+      name: names.whereUniqueInputName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        return {
+          ...Object.fromEntries(
+            Object.entries(fields).flatMap(([key, field]) => {
+              if (
+                !field.input?.uniqueWhere?.arg ||
+                !field.graphql.isEnabled.read ||
+                !field.graphql.isEnabled.filter
+              ) {
+                return []
+              }
+              return [[key, field.input.uniqueWhere.arg]] as const
+            })
+          ),
+          // this is exactly what the id field will add
+          // but this does it more explicitly so that typescript understands
+          id: graphql.arg({ type: graphql.ID }),
+        }
+      },
+    })
+
+    const where: GraphQLTypesForList['where'] = graphql.inputObject({
+      name: names.whereInputName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        return Object.assign(
+          {
+            AND: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            OR: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            NOT: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+          },
+          ...Object.entries(fields).map(
+            ([fieldKey, field]) =>
+              field.input?.where?.arg &&
+              field.graphql.isEnabled.read &&
+              field.graphql.isEnabled.filter && { [fieldKey]: field.input?.where?.arg }
+          )
+        )
+      },
+    })
+
+    const create = graphql.inputObject({
+      name: names.createInputName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
+
+        for (const key in fields) {
+          const arg = graphqlArgForInputField(fields[key], 'create')
+          if (!arg) continue
+          ret[key] = arg
+        }
+
+        return ret
+      },
+    })
+
+    const update = graphql.inputObject({
+      name: names.updateInputName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
+
+        for (const key in fields) {
+          const arg = graphqlArgForInputField(fields[key], 'update')
+          if (!arg) continue
+          ret[key] = arg
+        }
+
+        return ret
+      },
+    })
+
+    const orderBy = graphql.inputObject({
+      name: names.listOrderName,
+      fields: () => {
+        const { fields } = listsRef[listKey]
+        return Object.fromEntries(
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (
+              !field.input?.orderBy?.arg ||
+              !field.graphql.isEnabled.read ||
+              !field.graphql.isEnabled.orderBy
+            ) {
+              return []
+            }
+            return [[key, field.input.orderBy.arg]] as const
+          })
+        )
+      },
+    })
+
+    let take: any = graphql.arg({ type: graphql.Int })
+    if (listConfig.graphql?.maxTake !== undefined) {
+      take = graphql.arg({
+        type: graphql.nonNull(graphql.Int),
+        // WARNING: used by queries/resolvers.ts to enforce the limit
+        defaultValue: listConfig.graphql.maxTake,
+      })
+    }
+
+    const findManyArgs: FindManyArgs = {
+      where: graphql.arg({
+        type: graphql.nonNull(where),
+        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
+      }),
+      orderBy: graphql.arg({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
+        defaultValue: [],
+      }),
+      take,
+      skip: graphql.arg({
+        type: graphql.nonNull(graphql.Int),
+        defaultValue: 0
+      }),
+      cursor: graphql.arg({ type: uniqueWhere }),
+    }
+
+    const relateToManyForCreate = graphql.inputObject({
+      name: names.relateToManyForCreateInputName,
+      fields: () => {
+        const listRef = listsRef[listKey]
+        return {
+          ...(listRef.graphql.isEnabled.create && {
+            create: graphql.arg({
+              type: graphql.list(graphql.nonNull(listRef.graphql.types.create))
+            }),
+          }),
+          connect: graphql.arg({
+            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          }),
+        }
+      },
+    })
+
+    const relateToManyForUpdate = graphql.inputObject({
+      name: names.relateToManyForUpdateInputName,
+      fields: () => {
+        const listRef = listsRef[listKey]
+        return {
+          // WARNING: the order of these fields reflects the order of mutations
+          disconnect: graphql.arg({
+            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          }),
+          set: graphql.arg({
+            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          }),
+          ...(listRef.graphql.isEnabled.create && {
+            create: graphql.arg({ type: graphql.list(graphql.nonNull(listRef.graphql.types.create)) }),
+          }),
+          connect: graphql.arg({ type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere)) }),
+        }
+      },
+    })
+
+    const relateToOneForCreate = graphql.inputObject({
+      name: names.relateToOneForCreateInputName,
+      fields: () => {
+        const listRef = listsRef[listKey]
+        return {
+          ...(listRef.graphql.isEnabled.create && {
+            create: graphql.arg({ type: listRef.graphql.types.create })
+          }),
+          connect: graphql.arg({ type: listRef.graphql.types.uniqueWhere }),
+        }
+      },
+    })
+
+    const relateToOneForUpdate = graphql.inputObject({
+      name: names.relateToOneForUpdateInputName,
+      fields: () => {
+        const listRef = listsRef[listKey]
+        return {
+          ...(listRef.graphql.isEnabled.create && {
+            create: graphql.arg({ type: listRef.graphql.types.create })
+          }),
+          connect: graphql.arg({ type: listRef.graphql.types.uniqueWhere }),
+          disconnect: graphql.arg({ type: graphql.Boolean }),
+        }
+      },
+    })
+
+    listGraphqlTypes[listKey] = {
+      types: {
+        output,
+        uniqueWhere,
+        where,
+        create,
+        orderBy,
+        update,
+        findManyArgs,
+        relateTo: {
+          one: {
+            create: relateToOneForCreate,
+            update: relateToOneForUpdate
+          },
+          many: {
+            where: graphql.inputObject({
+              name: `${listKey}ManyRelationFilter`,
+              fields: {
+                every: graphql.arg({ type: where }),
+                some: graphql.arg({ type: where }),
+                none: graphql.arg({ type: where }),
+              },
+            }),
+            create: relateToManyForCreate,
+            update: relateToManyForUpdate,
+          },
+        },
+      },
+    }
+  }
+
   const result: Record<string, PartiallyInitialisedList2> = {}
 
   for (const listConfig of Object.values(listsConfig)) {
@@ -573,311 +846,36 @@ function graphqlForOutputField (field: InitialisedField) {
   })
 }
 
-function getListGraphqlTypes (
-  listsConfig: __ResolvedKeystoneConfig['lists'],
-  lists: Record<string, InitialisedList>,
-  intermediateLists: Record<string, { graphql: { isEnabled: IsListEnabled } }>
-): Record<string, ListGraphQLTypes> {
-  const graphQLTypes: Record<string, ListGraphQLTypes> = {}
-
-  for (const listConfig of Object.values(listsConfig)) {
-    const { listKey } = listConfig
-    const {
-      graphql: { names },
-    } = __getNames(listKey, listConfig)
-
-    const output = graphql.object<BaseItem>()({
-      name: names.outputTypeName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        return {
-          ...Object.fromEntries(
-            Object.entries(fields).flatMap(([fieldPath, field]) => {
-              if (
-                !field.output ||
-                !field.graphql.isEnabled.read ||
-                (field.dbField.kind === 'relation' &&
-                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
-              ) {
-                return []
-              }
-
-              const outputFieldRoot = graphqlForOutputField(field)
-              return [
-                [fieldPath, outputFieldRoot] as const,
-                ...Object.entries(field.extraOutputFields || {}),
-              ].map(([outputTypeFieldName, outputField]) => {
-                return [
-                  outputTypeFieldName,
-                  outputTypeField(
-                    outputField,
-                    field.dbField,
-                    field.graphql?.cacheHint,
-                    field.access.read,
-                    listKey,
-                    fieldPath,
-                    lists
-                  ),
-                ]
-              })
-            })
-          ),
-        }
-      },
-    })
-
-    const uniqueWhere = graphql.inputObject({
-      name: names.whereUniqueInputName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        return {
-          ...Object.fromEntries(
-            Object.entries(fields).flatMap(([key, field]) => {
-              if (
-                !field.input?.uniqueWhere?.arg ||
-                !field.graphql.isEnabled.read ||
-                !field.graphql.isEnabled.filter
-              ) {
-                return []
-              }
-              return [[key, field.input.uniqueWhere.arg]] as const
-            })
-          ),
-          // this is exactly what the id field will add
-          // but this does it more explicitly so that typescript understands
-          id: graphql.arg({ type: graphql.ID }),
-        }
-      },
-    })
-
-    const where: GraphQLTypesForList['where'] = graphql.inputObject({
-      name: names.whereInputName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        return Object.assign(
-          {
-            AND: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
-            OR: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
-            NOT: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
-          },
-          ...Object.entries(fields).map(
-            ([fieldKey, field]) =>
-              field.input?.where?.arg &&
-              field.graphql.isEnabled.read &&
-              field.graphql.isEnabled.filter && { [fieldKey]: field.input?.where?.arg }
-          )
-        )
-      },
-    })
-
-    const create = graphql.inputObject({
-      name: names.createInputName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
-
-        for (const key in fields) {
-          const arg = graphqlArgForInputField(fields[key], 'create')
-          if (!arg) continue
-          ret[key] = arg
-        }
-
-        return ret
-      },
-    })
-
-    const update = graphql.inputObject({
-      name: names.updateInputName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
-
-        for (const key in fields) {
-          const arg = graphqlArgForInputField(fields[key], 'update')
-          if (!arg) continue
-          ret[key] = arg
-        }
-
-        return ret
-      },
-    })
-
-    const orderBy = graphql.inputObject({
-      name: names.listOrderName,
-      fields: () => {
-        const { fields } = lists[listKey]
-        return Object.fromEntries(
-          Object.entries(fields).flatMap(([key, field]) => {
-            if (
-              !field.input?.orderBy?.arg ||
-              !field.graphql.isEnabled.read ||
-              !field.graphql.isEnabled.orderBy
-            ) {
-              return []
-            }
-            return [[key, field.input.orderBy.arg]] as const
-          })
-        )
-      },
-    })
-
-    let take: any = graphql.arg({ type: graphql.Int })
-    if (listConfig.graphql?.maxTake !== undefined) {
-      take = graphql.arg({
-        type: graphql.nonNull(graphql.Int),
-        // warning: this is used by queries/resolvers.ts to enforce the limit
-        defaultValue: listConfig.graphql.maxTake,
-      })
-    }
-
-    const findManyArgs: FindManyArgs = {
-      where: graphql.arg({
-        type: graphql.nonNull(where),
-        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
-      }),
-      orderBy: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
-        defaultValue: [],
-      }),
-      take,
-      skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
-      cursor: graphql.arg({ type: uniqueWhere }),
-    }
-
-    const isEnabled = intermediateLists[listKey].graphql.isEnabled
-    let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate
-    if (isEnabled.type) {
-      relateToManyForCreate = graphql.inputObject({
-        name: names.relateToManyForCreateInputName,
-        fields: () => {
-          return {
-            // Create via a relationship is only supported if this list allows create
-            ...(isEnabled.create && {
-              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-            }),
-            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          }
-        },
-      })
-
-      relateToManyForUpdate = graphql.inputObject({
-        name: names.relateToManyForUpdateInputName,
-        fields: () => {
-          return {
-            // The order of these fields reflects the order in which they are applied
-            // in the mutation.
-            disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-            // Create via a relationship is only supported if this list allows create
-            ...(isEnabled.create && {
-              create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
-            }),
-            connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
-          }
-        },
-      })
-
-      relateToOneForCreate = graphql.inputObject({
-        name: names.relateToOneForCreateInputName,
-        fields: () => {
-          return {
-            // Create via a relationship is only supported if this list allows create
-            ...(isEnabled.create && { create: graphql.arg({ type: create }) }),
-            connect: graphql.arg({ type: uniqueWhere }),
-          }
-        },
-      })
-
-      relateToOneForUpdate = graphql.inputObject({
-        name: names.relateToOneForUpdateInputName,
-        fields: () => {
-          return {
-            // Create via a relationship is only supported if this list allows create
-            ...(isEnabled.create && { create: graphql.arg({ type: create }) }),
-            connect: graphql.arg({ type: uniqueWhere }),
-            disconnect: graphql.arg({ type: graphql.Boolean }),
-          }
-        },
-      })
-    }
-
-    graphQLTypes[listKey] = {
-      types: {
-        output,
-        uniqueWhere,
-        where,
-        create,
-        orderBy,
-        update,
-        findManyArgs,
-        relateTo: {
-          many: {
-            where: graphql.inputObject({
-              name: `${listKey}ManyRelationFilter`,
-              fields: {
-                every: graphql.arg({ type: where }),
-                some: graphql.arg({ type: where }),
-                none: graphql.arg({ type: where }),
-              },
-            }),
-            create: relateToManyForCreate,
-            update: relateToManyForUpdate,
-          },
-          one: { create: relateToOneForCreate, update: relateToOneForUpdate },
-        },
-      },
-    }
-  }
-
-  return graphQLTypes
-}
-
 export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
-  let intermediateLists
-  intermediateLists = Object.fromEntries(
-    Object.values(config.lists).map((listConfig) => [
-      listConfig.listKey,
-      {
-        graphql: {
-          isEnabled: getIsEnabled(listConfig.listKey, listConfig)
-        }
-      },
-    ])
-  )
-
   const listsRef: Record<string, InitialisedList> = {}
-  {
-    const listGraphqlTypes = getListGraphqlTypes(config.lists, listsRef, intermediateLists)
-    intermediateLists = getListsWithInitialisedFields(config, listGraphqlTypes, intermediateLists)
-  }
+  let intermediateLists
 
-  {
-    const resolvedDBFieldsForLists = resolveRelationships(intermediateLists)
-    intermediateLists = Object.fromEntries(
-      Object.values(intermediateLists).map((list) => [
-        list.listKey,
-        {
-          ...list,
-          resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
-        },
-      ])
-    )
-  }
+  // step 1
+  intermediateLists = getListsWithInitialisedFields(config, listsRef)
 
-  intermediateLists = Object.fromEntries(
-    Object.values(intermediateLists).map((list) => {
-      const fields: Record<string, InitialisedField> = {}
+  // step 2
+  const resolvedDBFieldsForLists = resolveRelationships(intermediateLists)
+  intermediateLists = Object.fromEntries(Object.values(intermediateLists).map((list) => [
+    list.listKey,
+    {
+      ...list,
+      resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
+    },
+  ]))
 
-      for (const [fieldKey, field] of Object.entries(list.fields)) {
-        fields[fieldKey] = {
-          ...field,
-          dbField: list.resolvedDbFields[fieldKey],
-        }
+  // step 3
+  intermediateLists = Object.fromEntries(Object.values(intermediateLists).map((list) => {
+    const fields: Record<string, InitialisedField> = {}
+
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
+      fields[fieldKey] = {
+        ...field,
+        dbField: list.resolvedDbFields[fieldKey],
       }
+    }
 
-      return [list.listKey, { ...list, fields }]
-    })
-  )
+    return [list.listKey, { ...list, fields }]
+  }))
 
   for (const list of Object.values(intermediateLists)) {
     let hasAnEnabledCreateField = false
