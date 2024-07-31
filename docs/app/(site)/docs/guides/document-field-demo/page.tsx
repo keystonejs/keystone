@@ -1,3 +1,4 @@
+import { DocsLayout } from '../../../../../components/docs/DocsLayout'
 import PageClient from './page-client'
 
 export const metadata = {
@@ -7,5 +8,29 @@ export const metadata = {
 }
 
 export default function DocumentFieldDemo () {
-  return <PageClient />
+  return (
+    <DocsLayout
+      noProse
+      headings={[
+        {
+          label: 'Document Fields Demo',
+          id: 'title',
+          depth: 1,
+        },
+        {
+          label: 'Configure the demo',
+          id: 'configure-the-demo',
+          depth: 2,
+        },
+        {
+          label: 'Related resources',
+          depth: 2,
+          id: 'related-resources',
+        },
+      ]}
+      editPath="docs/guides/document-field-demo.tsx"
+    >
+      <PageClient />
+    </DocsLayout>
+  )
 }

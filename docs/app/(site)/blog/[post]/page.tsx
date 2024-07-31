@@ -2,7 +2,7 @@ import { type Tag, transform } from '@markdoc/markdoc'
 import { notFound } from 'next/navigation'
 
 import { getOgAbsoluteUrl } from '../../../../lib/og-util'
-import { reader } from '../../../../lib/keystatic-reader'
+import { reader } from '../../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../../markdoc/config'
 import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'

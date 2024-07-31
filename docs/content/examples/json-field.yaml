@@ -1,0 +1,6 @@
+title: JSON Field
+kind: standalone
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/json
+description: >
+  Illustrates how to use the `json` field type. Builds on the Task Manager
+  starter project.

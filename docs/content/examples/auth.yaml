@@ -1,0 +1,5 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/auth
+title: Authentication
+kind: standalone
+description: >
+  Adds password-based authentication to the Task Manager starter project.

@@ -1,8 +1,8 @@
 ---
-title: "Lesson 4: Auth & Sessions"
-description: "Learn Keystone: Lesson 4"
----
+title: 'Lesson 4: Auth & Sessions'
+description: 'Learn Keystone: Lesson 4'
 
+---
 Learn how to add passwords, session data and authentication to your Keystone app.
 
 ## Where we left off
@@ -332,7 +332,11 @@ export default config(
 ## Next lesson
 
 {% related-content %}
-{% well  heading="Lesson 5: Rich Text" href="/docs/walkthroughs/lesson-5" %}
+{% well
+   heading="Lesson 5: Rich Text"
+   grad="grad1"
+   href="/docs/walkthroughs/lesson-5"
+   target="" %}
 Add a powerful `document` field to your app and learn how to
 configure it to meet your needs
 {% /well %}

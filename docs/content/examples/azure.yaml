@@ -1,0 +1,5 @@
+url: https://github.com/aaronpowell/keystone-6-azure-example"
+title: Microsoft Azure
+kind: deployment
+description: >
+  Deploys a Keystone app backend to Microsoft Azure. Based on the `with-auth` project. **One-click deployment** included.

@@ -1,0 +1,5 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/custom-admin-ui-logo
+title: Custom Admin UI Logo
+kind: standalone
+description: >
+  Adds a custom logo component in the Admin UI.

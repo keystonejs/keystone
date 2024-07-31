@@ -1,8 +1,7 @@
 ---
-title: "Lesson 1: Installing Keystone"
-description: "Learn Keystone: Lesson 1"
+title: 'Lesson 1: Installing Keystone'
+description: 'Learn Keystone: Lesson 1'
 ---
-
 Learn how to install Keystone, create your first content type, and get an app up and running with an intuitive editing environment.
 
 ## Introduction
@@ -146,11 +145,11 @@ We now have everything we need to start Keystone, so let’s do just that:
 yarn keystone dev
 ```
 
-In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at <http://localhost:3000>
+In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)
 
 ![Terminal dialog showing successful Keystone startup](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/keystone-startup.png)
 
-Head on over to <http://localhost:3000/users> where you can create your first user with a `name` and `email`:
+Head on over to [http://localhost:3000/users](http://localhost:3000/users) where you can create your first user with a `name` and `email`:
 
 ![Adding a user record in Keystone Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/first-user-creation.gif)
 
@@ -161,7 +160,11 @@ Next up, we’ll level-up our blog starter with a `post` list and connect it to 
 ## Next lesson
 
 {% related-content %}
-{% well  heading="Lesson 2: Relating things" href="/docs/walkthroughs/lesson-2" %}
+{% well
+   heading="Lesson 2: Relating things"
+   grad="grad1"
+   href="/docs/walkthroughs/lesson-2"
+   target="" %}
 Connect two content types and learn how to configure the appearance of field inputs
 {% /well %}
 {% /related-content %}

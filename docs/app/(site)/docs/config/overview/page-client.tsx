@@ -5,19 +5,13 @@
 import { CommunitySlackCTA } from '../../../../../components/docs/CommunitySlackCTA'
 import { Type } from '../../../../../components/primitives/Type'
 import { Well } from '../../../../../components/primitives/Well'
-import { DocsPage } from '../../../../../components/Page'
 import { useMediaQuery } from '../../../../../lib/media'
 
 export default function Docs () {
   const mq = useMediaQuery()
 
   return (
-    <DocsPage
-      noRightNav
-      noProse
-      isIndexPage
-      editPath="docs/config/overview.tsx"
-    >
+    <>
       <Type as="h1" look="heading64">
         Configuration Overview
       </Type>
@@ -60,6 +54,6 @@ export default function Docs () {
           and one-time authentication tokens.
         </Well>
       </div>
-    </DocsPage>
+    </>
   )
 }

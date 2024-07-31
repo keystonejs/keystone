@@ -4,7 +4,7 @@
 import React from 'react'
 
 import { H1, H2 } from '../../../../../components/docs/Heading'
-import { DocsPage } from '../../../../../components/Page'
+
 import {
   DocumentEditorDemo,
   DocumentFeaturesProvider,
@@ -16,27 +16,7 @@ import { InlineCode } from '../../../../../components/primitives/Code'
 export default function DocumentFieldDemo () {
   const title = 'Document Fields Demo'
   return (
-    <DocsPage
-      noProse
-      headings={[
-        {
-          label: 'Document Fields Demo',
-          id: 'title',
-          depth: 1,
-        },
-        {
-          label: 'Configure the demo',
-          id: 'configure-the-demo',
-          depth: 2,
-        },
-        {
-          label: 'Related resources',
-          depth: 2,
-          id: 'related-resources',
-        },
-      ]}
-      editPath="docs/guides/document-field-demo.tsx"
-    >
+    <>
       <DocumentFeaturesProvider>
         <div className="prose">
           <H1 id="title">{title}</H1>
@@ -85,6 +65,6 @@ export default function DocumentFieldDemo () {
           </RelatedContent>
         </div>
       </DocumentFeaturesProvider>
-    </DocsPage>
+    </>
   )
 }

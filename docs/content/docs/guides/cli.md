@@ -1,8 +1,9 @@
 ---
-title: "Command Line"
-description: "Learn how to use Keystone's command line interface (CLI) to develop, build, and deploy your Keystone projects."
+title: Command Line
+description: >-
+  Learn how to use Keystone's command line interface (CLI) to develop, build,
+  and deploy your Keystone projects.
 ---
-
 Keystone's command line interface (CLI) has been designed to help you develop, build, and deploy your Keystone project.
 
 Using the `keystone` command you can start the dev process, build and run your app in production, and control how you migrate the structure of your database as your schema changes.
@@ -125,6 +126,7 @@ This is typically useful early in a project's development lifecycle, when you wa
 ```bash
 $ keystone postinstall
 ```
+
 {% hint kind="tip" %}
 Note: `postinstall` is an alias for `keystone build --no-ui --frozen` we recommend switching to this `build` command
 {% /hint %}
@@ -142,6 +144,7 @@ While the recommended way to fix this problem is to start your app using `keysto
 ```bash
 $ keystone postinstall --fix
 ```
+
 {% hint kind="tip" %}
 Note: `postinstall --fix` is an alias for `keystone build --no-ui` we recommend switching to this `build` command
 {% /hint %}
@@ -155,7 +158,9 @@ $ keystone build
 This command generates the files needed for Keystone to start in **production** mode. You should run it during the build phase of your production deployment.
 
 It will also validate that the generated files you should have committed to source control are in sync with your Keystone Schema.
+
 ### build flags
+
 - `--frozen` - Don't update the graphql or prisma schemas, only validate them, exits with error if the schemas don't match what keystone would generate.
 - `--no-prisma` - Don't build or validate the prisma schema
 - `--no-ui` - Don't build the AdminUI
@@ -169,7 +174,9 @@ $ keystone start
 This command starts Keystone in **production** mode. It requires a build to have been generated (see `build` above).
 
 It will not generate or apply any database migrations - these should be run during the **build** or **release** phase of your production deployment.
+
 ### start flags
+
 - `--with-migrations` - Trigger prisma to run migrations as part of startup
 - `--no-ui` - Don't serve the AdminUI
 
@@ -234,6 +241,7 @@ Start Keystone in production mode:
 ```bash
 yarn keystone start
 ```
+
 {% hint kind="tip" %}
 Note: To run migrations before you start Keystone use `keystone start --with-migrations`
 {% /hint %}
@@ -249,8 +257,10 @@ Note: To run migrations before you start Keystone use `keystone start --with-mig
 
 {% related-content %}
 {% well
-heading="Getting Started with create-keystone-app"
-href="/docs/getting-started" %}
+   heading="Getting Started with create-keystone-app"
+   grad="grad1"
+   href="/docs/getting-started"
+   target="" %}
 How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
 {% /well %}
 {% /related-content %}

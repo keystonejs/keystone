@@ -1,7 +1,6 @@
 import { parse, format } from 'date-fns'
 
-import { reader } from '../../../lib/keystatic-reader'
-import { siteBaseUrl } from '../../../lib/og-util'
+import { reader } from '../../../keystatic/reader'
 import ClientPage from './page-client'
 import { type Metadata } from 'next'
 

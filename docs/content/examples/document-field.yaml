@@ -1,0 +1,6 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/document-field
+title: Document field
+kind: standalone
+description: >
+  Illustrates how to configure `document` fields in your
+  Keystone system and render their data in a frontend application.

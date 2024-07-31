@@ -5,9 +5,10 @@ import { DocsNavigation, UpdatesNavigation } from './Navigation'
 
 type SidebarProps = {
   isUpdatesPage?: boolean
+  docsNavigation?: React.ReactNode
 }
 
-export function Sidebar ({ isUpdatesPage }: SidebarProps) {
+export function Sidebar ({ isUpdatesPage, docsNavigation }: SidebarProps) {
   const mq = useMediaQuery()
   const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation
 
@@ -40,7 +41,7 @@ export function Sidebar ({ isUpdatesPage }: SidebarProps) {
             paddingBottom: '2rem',
           }}
         >
-          <Navigation />
+          <Navigation docsNavigation={docsNavigation} />
         </div>
       </div>
     </aside>

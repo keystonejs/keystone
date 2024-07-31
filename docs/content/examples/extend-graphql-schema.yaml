@@ -1,0 +1,6 @@
+title: Extend GraphQL Schema
+kind: standalone
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/extend-graphql-schema
+description: >
+  Shows you how to extend the Keystone GraphQL API with custom queries and
+  mutations. Builds upon the Blog starter project.

@@ -9,7 +9,6 @@ import { InlineCode } from '../../../components/primitives/Code'
 import { Button } from '../../../components/primitives/Button'
 import { Alert } from '../../../components/primitives/Alert'
 import { Type } from '../../../components/primitives/Type'
-import { DocsPage } from '../../../components/Page'
 import { ArrowR } from '../../../components/icons/ArrowR'
 import { Emoji } from '../../../components/primitives/Emoji'
 import { useMediaQuery } from '../../../lib/media'
@@ -126,11 +125,7 @@ export default function WhatsNew () {
   const mq = useMediaQuery()
 
   return (
-    <DocsPage
-      noRightNav
-      noProse
-      isIndexPage
-    >
+    <>
       <Type as="h1" look="heading64">
         Latest News
       </Type>
@@ -912,6 +907,6 @@ export default function WhatsNew () {
           Community Slack <ArrowR />
         </Button>
       </Alert>
-    </DocsPage>
+    </>
   )
 }

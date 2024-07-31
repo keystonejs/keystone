@@ -5,19 +5,13 @@
 import { CommunitySlackCTA } from '../../../../../components/docs/CommunitySlackCTA'
 import { Type } from '../../../../../components/primitives/Type'
 import { Well } from '../../../../../components/primitives/Well'
-import { DocsPage } from '../../../../../components/Page'
 import { useMediaQuery } from '../../../../../lib/media'
 
 export default function Docs () {
   const mq = useMediaQuery()
 
   return (
-    <DocsPage
-      noRightNav
-      noProse
-      isIndexPage
-      editPath="docs/guides/overview.tsx"
-    >
+    <>
       <Type as="h1" look="heading64">
         Keystone Guides
       </Type>
@@ -109,6 +103,6 @@ export default function Docs () {
           Learn how to add your own custom pages to Keystone’s Admin UI.
         </Well>
       </div>
-    </DocsPage>
+    </>
   )
 }

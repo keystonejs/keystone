@@ -1,0 +1,5 @@
+url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/framework-nextjs-app-directory
+title: Next.js + Keystone
+kind: end-to-end
+description: >
+  Shows you how to use Keystone as a data engine within Next.js applications.

@@ -1,0 +1,285 @@
+navGroups:
+  - groupName: Start
+    items:
+      - label: Docs Home
+        link:
+          discriminant: url
+          value: /docs
+        status: default
+      - label: Walkthroughs
+        link:
+          discriminant: url
+          value: /docs/walkthroughs
+        status: default
+      - label: Examples
+        link:
+          discriminant: url
+          value: /docs/examples
+        status: default
+  - groupName: Guides
+    items:
+      - label: Overview
+        link:
+          discriminant: url
+          value: /docs/guides/overview
+        status: default
+      - label: Command Line
+        link:
+          discriminant: page
+          value: guides/cli
+        status: default
+      - label: Relationships
+        link:
+          discriminant: page
+          value: guides/relationships
+        status: default
+      - label: Choosing a Database
+        link:
+          discriminant: page
+          value: guides/choosing-a-database
+        status: default
+      - label: Database Migration
+        link:
+          discriminant: page
+          value: guides/database-migration
+        status: new
+      - label: Query Filters
+        link:
+          discriminant: page
+          value: guides/filters
+        status: updated
+      - label: Hooks
+        link:
+          discriminant: page
+          value: guides/hooks
+        status: updated
+      - label: Auth & Access Control
+        link:
+          discriminant: page
+          value: guides/auth-and-access-control
+        status: new
+      - label: Images & Files
+        link:
+          discriminant: page
+          value: guides/images-and-files
+        status: new
+      - label: GraphQL Schema Extension
+        link:
+          discriminant: page
+          value: guides/schema-extension
+        status: new
+      - label: Testing
+        link:
+          discriminant: page
+          value: guides/testing
+        status: default
+      - label: Document Fields
+        link:
+          discriminant: page
+          value: guides/document-fields
+        status: default
+      - label: Document Fields Demo
+        link:
+          discriminant: url
+          value: /docs/guides/document-field-demo
+        status: default
+      - label: Virtual Fields
+        link:
+          discriminant: page
+          value: guides/virtual-fields
+        status: default
+      - label: Custom Fields
+        link:
+          discriminant: page
+          value: guides/custom-fields
+        status: default
+      - label: Custom Admin UI Logo
+        link:
+          discriminant: page
+          value: guides/custom-admin-ui-logo
+        status: default
+      - label: Custom Admin UI Pages
+        link:
+          discriminant: page
+          value: guides/custom-admin-ui-pages
+        status: default
+      - label: Custom Admin UI Navigation
+        link:
+          discriminant: page
+          value: guides/custom-admin-ui-navigation
+        status: default
+  - groupName: Configuration
+    items:
+      - label: Overview
+        link:
+          discriminant: url
+          value: /docs/config/overview
+        status: default
+      - label: Config
+        link:
+          discriminant: url
+          value: /docs/config/config
+        status: default
+      - label: Lists
+        link:
+          discriminant: page
+          value: config/lists
+        status: default
+      - label: Authentication
+        link:
+          discriminant: page
+          value: config/auth
+        status: default
+      - label: Access Control
+        link:
+          discriminant: page
+          value: config/access-control
+        status: updated
+      - label: Hooks
+        link:
+          discriminant: page
+          value: config/hooks
+        status: updated
+      - label: Session
+        link:
+          discriminant: page
+          value: config/session
+        status: default
+  - groupName: Fields
+    items:
+      - label: Overview
+        link:
+          discriminant: page
+          value: fields/overview
+        status: default
+      - label: BigInt
+        link:
+          discriminant: page
+          value: fields/bigint
+        status: default
+      - label: Calendar Day
+        link:
+          discriminant: page
+          value: fields/calendarday
+        status: default
+      - label: Checkbox
+        link:
+          discriminant: page
+          value: fields/checkbox
+        status: default
+      - label: Cloudinary Image
+        link:
+          discriminant: page
+          value: fields/cloudinaryimage
+        status: default
+      - label: Decimal
+        link:
+          discriminant: page
+          value: fields/decimal
+        status: default
+      - label: Document
+        link:
+          discriminant: page
+          value: fields/document
+        status: default
+      - label: File
+        link:
+          discriminant: page
+          value: fields/file
+        status: default
+      - label: Float
+        link:
+          discriminant: page
+          value: fields/float
+        status: default
+      - label: Image
+        link:
+          discriminant: page
+          value: fields/image
+        status: default
+      - label: Integer
+        link:
+          discriminant: page
+          value: fields/integer
+        status: default
+      - label: JSON
+        link:
+          discriminant: page
+          value: fields/json
+        status: default
+      - label: Multiselect
+        link:
+          discriminant: page
+          value: fields/multiselect
+        status: default
+      - label: Password
+        link:
+          discriminant: page
+          value: fields/password
+        status: default
+      - label: Relationship
+        link:
+          discriminant: page
+          value: fields/relationship
+        status: default
+      - label: Select
+        link:
+          discriminant: page
+          value: fields/select
+        status: default
+      - label: Text
+        link:
+          discriminant: page
+          value: fields/text
+        status: default
+      - label: Timestamp
+        link:
+          discriminant: page
+          value: fields/timestamp
+        status: default
+      - label: Virtual
+        link:
+          discriminant: page
+          value: fields/virtual
+        status: default
+  - groupName: Context
+    items:
+      - label: Overview
+        link:
+          discriminant: page
+          value: context/overview
+        status: default
+      - label: getContext
+        link:
+          discriminant: page
+          value: context/get-context
+        status: default
+      - label: Query
+        link:
+          discriminant: page
+          value: context/query
+        status: default
+      - label: DB
+        link:
+          discriminant: page
+          value: context/db-items
+        status: default
+  - groupName: GraphQL
+    items:
+      - label: Overview
+        link:
+          discriminant: page
+          value: graphql/overview
+        status: updated
+      - label: Query Filters
+        link:
+          discriminant: page
+          value: graphql/filters
+        status: updated
+  - groupName: Reference
+    items:
+      - label: Telemetry
+        link:
+          discriminant: page
+          value: reference/telemetry
+        status: default

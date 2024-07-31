@@ -67,7 +67,7 @@ type NavSectionProps = {
   children: ReactNode
 }
 
-function NavSection ({ title, children }: NavSectionProps) {
+export function NavSection ({ title, children }: NavSectionProps) {
   const { isSectionCollapsed, collapseSection, expandSection } = useNavContext()
   const isCollapsed = isSectionCollapsed(title)
   return (
@@ -190,111 +190,10 @@ export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {
   )
 }
 
-export function DocsNavigation () {
+export function DocsNavigation ({ docsNavigation }: { docsNavigation?: React.ReactNode }) {
   return (
     <NavContextProvider>
-      <nav
-        css={{
-          fontWeight: 500,
-        }}
-      >
-        <NavItem href="/docs">Docs Home</NavItem>
-        <NavItem href="/docs/getting-started">Getting Started</NavItem>
-        <NavItem href="/docs/walkthroughs">Walkthroughs</NavItem>
-        <NavItem href="/docs/examples">Examples</NavItem>
-        <NavSection title="Guides">
-          <NavItem href="/docs/guides/overview">Overview</NavItem>
-          <NavItem href="/docs/guides/cli">Command Line</NavItem>
-          <NavItem href="/docs/guides/relationships">Relationships</NavItem>
-          <NavItem href="/docs/guides/choosing-a-database">Choosing a Database</NavItem>
-          <NavItem href="/docs/guides/database-migration">
-            Database Migration <Badge look="success">New</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/filters">
-            Query Filters <Badge look="success">Updated</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/hooks">
-            Hooks <Badge look="success">Updated</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/auth-and-access-control">
-            Auth & Access Control <Badge look="success">New</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/images-and-files">
-            Images & Files <Badge look="success">New</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/schema-extension">
-            GraphQL Schema Extension<Badge look="success">New</Badge>
-          </NavItem>
-          <NavItem href="/docs/guides/testing">Testing</NavItem>
-          <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
-          <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
-          <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
-          <NavItem href="/docs/guides/custom-fields">Custom Fields</NavItem>
-          {/* Disable placeholder for now */}
-          {/* <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
-          Custom Field Views
-        </NavItem> */}
-          <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
-          <NavItem href="/docs/guides/custom-admin-ui-pages">Custom Admin UI Pages</NavItem>
-          <NavItem href="/docs/guides/custom-admin-ui-navigation">
-            Custom Admin UI Navigation
-          </NavItem>
-        </NavSection>
-        <NavSection title="Configuration">
-          <NavItem href="/docs/config/overview">Overview</NavItem>
-          <NavItem href="/docs/config/config">Config</NavItem>
-          <NavItem href="/docs/config/lists">Lists</NavItem>
-          <NavItem href="/docs/config/auth">Authentication</NavItem>
-          <NavItem href="/docs/config/access-control">
-            Access Control <Badge look="success">Updated</Badge>
-          </NavItem>
-          <NavItem href="/docs/config/hooks">
-            Hooks <Badge look="success">Updated</Badge>
-          </NavItem>
-          <NavItem href="/docs/config/session">Session</NavItem>
-        </NavSection>
-
-        <NavSection title="Fields">
-          <NavItem href="/docs/fields/overview">Overview</NavItem>
-          <NavItem href="/docs/fields/bigint">BigInt</NavItem>
-          <NavItem href="/docs/fields/calendarday">Calendar Day</NavItem>
-          <NavItem href="/docs/fields/checkbox">Checkbox</NavItem>
-          <NavItem href="/docs/fields/cloudinaryimage">Cloudinary Image</NavItem>
-          <NavItem href="/docs/fields/decimal">Decimal</NavItem>
-          <NavItem href="/docs/fields/document">Document</NavItem>
-          <NavItem href="/docs/fields/file">File</NavItem>
-          <NavItem href="/docs/fields/float">Float</NavItem>
-          <NavItem href="/docs/fields/image">Image</NavItem>
-          <NavItem href="/docs/fields/integer">Integer</NavItem>
-          <NavItem href="/docs/fields/json">JSON</NavItem>
-          <NavItem href="/docs/fields/multiselect">Multiselect</NavItem>
-          <NavItem href="/docs/fields/password">Password</NavItem>
-          <NavItem href="/docs/fields/relationship">Relationship</NavItem>
-          <NavItem href="/docs/fields/select">Select</NavItem>
-          <NavItem href="/docs/fields/text">Text</NavItem>
-          <NavItem href="/docs/fields/timestamp">Timestamp</NavItem>
-          <NavItem href="/docs/fields/virtual">Virtual</NavItem>
-        </NavSection>
-
-        <NavSection title="Context">
-          <NavItem href="/docs/context/overview">Overview</NavItem>
-          <NavItem href="/docs/context/get-context">getContext</NavItem>
-          <NavItem href="/docs/context/query">Query</NavItem>
-          <NavItem href="/docs/context/db-items">DB</NavItem>
-        </NavSection>
-
-        <NavSection title="GraphQL">
-          <NavItem href="/docs/graphql/overview">
-            Overview <Badge look="success">Updated</Badge>
-          </NavItem>
-          <NavItem href="/docs/graphql/filters">
-            Query Filters <Badge look="success">Updated</Badge>
-          </NavItem>
-        </NavSection>
-        <NavSection title="Reference">
-          <NavItem href="/docs/reference/telemetry">Telemetry</NavItem>
-        </NavSection>
-      </nav>
+      {docsNavigation}
     </NavContextProvider>
   )
 }
