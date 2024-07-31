@@ -20,6 +20,5 @@ model Post {
 
 model Group {
   id               String @id @default(cuid())
-  temporary        String @default("")
   from_Post_groups Post[] @relation("Post_groups")
 }

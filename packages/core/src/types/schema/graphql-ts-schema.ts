@@ -298,6 +298,21 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   })
 )
 
+export const Null = graphqlTsSchema.graphql.scalar<null>(
+  new GraphQLScalarType({
+    name: 'Null',
+    serialize (value) {
+      return null
+    },
+    parseLiteral (value) {
+      return null
+    },
+    parseValue (value) {
+      return null
+    },
+  })
+)
+
 export type NullableType<Context extends KeystoneContext = KeystoneContext> =
   graphqlTsSchema.NullableType<Context>
 export type Type<Context extends KeystoneContext = KeystoneContext> = graphqlTsSchema.Type<Context>

@@ -25,6 +25,9 @@ import {
   type ResolvedFieldHooks
 } from '../../types/config/hooks'
 import {
+  Null,
+} from '../../types/schema/graphql-ts-schema'
+import {
   type FilterOrderArgs
 } from '../../types/config/fields'
 import {
@@ -603,6 +606,7 @@ function getListsWithInitialisedFields (
       },
     })
 
+    const hasType = intermediateLists[listKey].graphql.isEnabled.type
     listGraphqlTypes[listKey] = {
       types: {
         output,
@@ -614,8 +618,8 @@ function getListsWithInitialisedFields (
         findManyArgs,
         relateTo: {
           one: {
-            create: relateToOneForCreate,
-            update: relateToOneForUpdate
+            create: hasType ? relateToOneForCreate : undefined,
+            update: hasType ? relateToOneForUpdate : undefined
           },
           many: {
             where: graphql.inputObject({
@@ -626,8 +630,8 @@ function getListsWithInitialisedFields (
                 none: graphql.arg({ type: where }),
               },
             }),
-            create: relateToManyForCreate,
-            update: relateToManyForUpdate,
+            create: hasType ? relateToManyForCreate : undefined,
+            update: hasType ? relateToManyForUpdate : undefined,
           },
         },
       },
@@ -890,13 +894,14 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
       }
     }
 
-    // you can't have empty GraphQL types
-    //   if empty, omit the type completely
     if (!hasAnEnabledCreateField) {
-//        list.graphql.isEnabled.create = false
+      list.graphql.types.create = Null
+      list.graphql.names.createInputName = 'Null'
     }
+
     if (!hasAnEnabledUpdateField) {
-//        list.graphql.isEnabled.update = false
+      list.graphql.types.update = Null
+      list.graphql.names.updateInputName = 'Null'
     }
   }
 

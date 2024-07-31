@@ -14,7 +14,6 @@ export const lists = {
   Group: list({
     access: allowAll,
     fields: {
-      temporary: text()
     },
   }),
 } satisfies Lists

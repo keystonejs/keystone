@@ -84,9 +84,11 @@ input PostUpdateInput {
 input GroupRelateToManyForUpdateInput {
   disconnect: [GroupWhereUniqueInput!]
   set: [GroupWhereUniqueInput!]
-  create: [GroupCreateInput!]
+  create: [Null!]
   connect: [GroupWhereUniqueInput!]
 }
+
+scalar Null
 
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
@@ -99,13 +101,12 @@ input PostCreateInput {
 }
 
 input GroupRelateToManyForCreateInput {
-  create: [GroupCreateInput!]
+  create: [Null!]
   connect: [GroupWhereUniqueInput!]
 }
 
 type Group {
   id: ID!
-  temporary: String
 }
 
 input GroupWhereUniqueInput {
@@ -117,25 +118,15 @@ input GroupWhereInput {
   OR: [GroupWhereInput!]
   NOT: [GroupWhereInput!]
   id: IDFilter
-  temporary: StringFilter
 }
 
 input GroupOrderByInput {
   id: OrderDirection
-  temporary: OrderDirection
-}
-
-input GroupUpdateInput {
-  temporary: String
 }
 
 input GroupUpdateArgs {
   where: GroupWhereUniqueInput!
-  data: GroupUpdateInput!
-}
-
-input GroupCreateInput {
-  temporary: String
+  data: Null
 }
 
 """
@@ -150,9 +141,9 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createGroup(data: GroupCreateInput!): Group
-  createGroups(data: [GroupCreateInput!]!): [Group]
-  updateGroup(where: GroupWhereUniqueInput!, data: GroupUpdateInput!): Group
+  createGroup(data: Null): Group
+  createGroups(data: [Null]!): [Group]
+  updateGroup(where: GroupWhereUniqueInput!, data: Null): Group
   updateGroups(data: [GroupUpdateArgs!]!): [Group]
   deleteGroup(where: GroupWhereUniqueInput!): Group
   deleteGroups(where: [GroupWhereUniqueInput!]!): [Group]

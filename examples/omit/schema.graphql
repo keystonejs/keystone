@@ -123,6 +123,13 @@ input NaughtyOrderByInput {
   reason: OrderDirection
 }
 
+input NaughtyUpdateArgs {
+  where: NaughtyWhereUniqueInput!
+  data: Null
+}
+
+scalar Null
+
 input NaughtyCreateInput {
   reason: String
   hiddenReason: String
@@ -144,6 +151,8 @@ type Mutation {
   deletePriorities(where: [PriorityWhereUniqueInput!]!): [Priority]
   createNaughty(data: NaughtyCreateInput!): Naughty
   createNaughties(data: [NaughtyCreateInput!]!): [Naughty]
+  updateNaughty(where: NaughtyWhereUniqueInput!, data: Null): Naughty
+  updateNaughties(data: [NaughtyUpdateArgs!]!): [Naughty]
   deleteNaughty(where: NaughtyWhereUniqueInput!): Naughty
   deleteNaughties(where: [NaughtyWhereUniqueInput!]!): [Naughty]
 }

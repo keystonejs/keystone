@@ -402,8 +402,8 @@ export type FieldTypeWithoutDBField<
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>
 
 export type GraphQLTypesForList = {
-  update: AnyInputObj
-  create: AnyInputObj
+  create: graphql.NullableInputType
+  update: graphql.NullableInputType
   uniqueWhere: graphql.InputObjectType<{
     id: graphql.Arg<typeof graphql.ID>
     [key: string]: graphql.Arg<graphql.NullableInputType>
