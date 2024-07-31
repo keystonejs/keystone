@@ -1,6 +1,5 @@
 import { type CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
-import { type getGqlNames, QueryMode } from '../../types'
 import {
   type BaseItem,
   type BaseListTypeInfo,
@@ -13,7 +12,12 @@ import {
   type MaybePromise,
   type NextFieldType,
   type FieldTypeFunc,
+  QueryMode
 } from '../../types'
+import {
+  type GraphQLNames,
+  __getNames,
+} from '../../types/utils'
 import { graphql } from '../..'
 import {
   type FieldHooks,
@@ -33,7 +37,7 @@ import {
   parseListAccessControl,
   parseFieldAccessControl,
 } from './access-control'
-import { areArraysEqual, getNamesFromList } from './utils'
+import { areArraysEqual } from './utils'
 import {
   type ResolvedDBField,
   resolveRelationships
@@ -108,7 +112,7 @@ export type InitialisedList = {
 
   graphql: {
     types: GraphQLTypesForList
-    names: ReturnType<typeof getGqlNames>
+    names: GraphQLNames
     namePlural: string // TODO: remove
     isEnabled: IsListEnabled
   }
@@ -466,7 +470,7 @@ function getListsWithInitialisedFields (
       throw new Error(`${listKey}.ui.searchFields cannot include 'id'`)
     }
 
-    const names = getNamesFromList(listKey, listConfig)
+    const names = __getNames(listKey, listConfig)
     result[listKey] = {
       access: parseListAccessControl(listConfig.access),
 
@@ -572,7 +576,7 @@ function graphqlForOutputField (field: InitialisedField) {
 function getListGraphqlTypes (
   listsConfig: __ResolvedKeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
-  intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
+  intermediateLists: Record<string, { graphql: { isEnabled: IsListEnabled } }>
 ): Record<string, ListGraphQLTypes> {
   const graphQLTypes: Record<string, ListGraphQLTypes> = {}
 
@@ -580,7 +584,7 @@ function getListGraphqlTypes (
     const { listKey } = listConfig
     const {
       graphql: { names },
-    } = getNamesFromList(listKey, listConfig)
+    } = __getNames(listKey, listConfig)
 
     const output = graphql.object<BaseItem>()({
       name: names.outputTypeName,
