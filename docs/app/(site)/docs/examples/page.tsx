@@ -6,15 +6,13 @@ import { baseMarkdocConfig } from '../../../../markdoc/config'
 
 export const metadata = {
   title: 'Examples',
-  description:
-    'A growing collection of projects you can run locally to learn more about Keystone’s many features. Use them as a reference for best practice, and springboard when adding features to your own project.',
+  description: 'A growing collection of projects you can run locally to learn more about Keystone’s many features. Use them as a reference for best practice, and springboard when adding features to your own project.',
 }
 
 export type GroupedExamples = Awaited<ReturnType<typeof getGroupedExamples>>
 
 async function getGroupedExamples () {
   const examples = await reader.collections.examples.all({resolveLinkedFiles: true})
-
   const transformedExamples = await Promise.all(examples.map(async example => {
     return {
       ...example,
@@ -37,7 +35,7 @@ async function getGroupedExamples () {
 }
 
 export default async function Docs () {
-const pageData = await getGroupedExamples()
+  const pageData = await getGroupedExamples()
   return (
     <DocsLayout noRightNav noProse editPath={'docs/examples.tsx'}>
       <PageClient {...JSON.parse(JSON.stringify(pageData))} />
