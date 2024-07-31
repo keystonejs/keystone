@@ -407,9 +407,9 @@ function getListsWithInitialisedFields (
           cacheHint: f.graphql?.cacheHint,
           isEnabled: isEnabledField,
           isNonNull: {
-            read: f.graphql?.isNonNull?.read ?? false,
-            create: f.graphql?.isNonNull?.create ?? false,
-            update: f.graphql?.isNonNull?.update ?? false,
+            read: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.read ?? false,
+            create: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.create ?? false,
+            update: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.update ?? false,
           },
         },
         ui: {

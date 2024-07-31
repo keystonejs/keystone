@@ -33,25 +33,27 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   }
   graphql?: {
     cacheHint?: CacheHint
-    isNonNull?: {
-      // should this field be non-nullable on the {List} GraphQL type?
-      read?: boolean
-      // should this field be non-nullable on the {List}CreateInput GraphQL type?
-      create?: boolean
-      // should this field be non-nullable on the {List}UpdateInput GraphQL type?
-      update?: boolean
-    }
+    isNonNull?:
+      | boolean
+      | {
+        // whether this field is non-nullable on the {List} GraphQL type
+        read?: boolean
+        // whether this field is non-nullable on the {List}CreateInput GraphQL type
+        create?: boolean
+        // whether this field is non-nullable on the {List}UpdateInput GraphQL type
+        update?: boolean
+      }
 
     omit?:
       | boolean
       | {
-          // should this field be omitted from the {List} GraphQL type?
-          read?: boolean
-          // should this field be omitted from the {List}CreateInput GraphQL type?
-          create?: boolean
-          // should this field be omitted from the {List}UpdateInput GraphQL type?
-          update?: boolean
-        }
+        // whether this field is omitted from the {List} GraphQL type
+        read?: boolean
+        // whether this field is omitted from the {List}CreateInput GraphQL type
+        create?: boolean
+        // whether this field is omitted from the {List}UpdateInput GraphQL type
+        update?: boolean
+      }
   }
   isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
   isOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)

@@ -95,13 +95,18 @@ function printInterimType<L extends InitialisedList> (
   list: L,
   listKey: string,
   typename: string,
-  operation: 'Create' | 'Update'
+  operation: 'create' | 'update'
 ) {
-  const prismaType = `import('${prismaClientPath}').Prisma.${listKey}${operation}Input`
+  const operationName = {
+    'create': 'Create',
+    'update': 'Update'
+  }[operation]
+  const prismaType = `import('${prismaClientPath}').Prisma.${listKey}${operationName}Input`
 
   return [
     `type Resolved${typename} = {`,
-    ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
+    ...Object.entries(list.fields).map(([fieldKey, field]) => {
+      const { dbField } = field
       if (dbField.kind === 'none') return `  ${fieldKey}?: undefined`
 
       // TODO: this could be elsewhere, maybe id-field.ts
@@ -114,7 +119,7 @@ function printInterimType<L extends InitialisedList> (
         }
 
         // soft-block `id` updates for relationship safety
-        if (operation === 'Update') return `  id?: undefined`
+        if (operation === 'update') return `  id?: undefined`
       }
 
       if (dbField.kind === 'multi') {
@@ -122,7 +127,7 @@ function printInterimType<L extends InitialisedList> (
           `  ${fieldKey}: {`,
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
             // TODO: untrue if a db defaultValue is set
-            //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?'
+            //              const optional = operation === 'create' && subDbField.mode === 'required' ? '' : '?'
             const optional = '?'
             return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}']`
           }),
@@ -131,8 +136,8 @@ function printInterimType<L extends InitialisedList> (
       }
 
       // TODO: untrue if a db defaultValue is set
-      //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?'
-      const optional = '?'
+      //        const optional = operation === 'create' && dbField.mode === 'required' ? '' : '?'
+      const optional = field.graphql.isNonNull[operation] ? '' : '?'
       return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}']`
     }),
     `}`,
@@ -209,7 +214,7 @@ export function printGeneratedTypes (
             list,
             listKey,
             list.graphql.names.createInputName,
-            'Create'
+            'create'
           )
         }
 
@@ -219,7 +224,7 @@ export function printGeneratedTypes (
             list,
             listKey,
             list.graphql.names.updateInputName,
-            'Update'
+            'update'
           )
         }
       }
