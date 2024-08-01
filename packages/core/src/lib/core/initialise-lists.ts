@@ -359,13 +359,14 @@ function getListsWithInitialisedFields (
 ) {
   const result: Record<string, PartiallyInitialisedList2> = {}
 
-  for (const [listKey, list] of Object.entries(listsConfig)) {
+  for (const listConfig of Object.values(listsConfig)) {
+    const { listKey } = listConfig
     const intermediateList = intermediateLists[listKey]
     const resultFields: Record<string, InitialisedField> = {}
     const groups = []
-    const fieldKeys = Object.keys(list.fields)
+    const fieldKeys = Object.keys(listConfig.fields)
 
-    for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
+    for (const [idx, [fieldKey, fieldFunc]] of Object.entries(listConfig.fields).entries()) {
       if (fieldKey.startsWith('__group')) {
         const group = fieldFunc as any
         if (
@@ -396,9 +397,9 @@ function getListsWithInitialisedFields (
 
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList)
       const fieldModes = {
-        create: f.ui?.createView?.fieldMode ?? list.ui?.createView?.defaultFieldMode ?? 'edit',
-        item: f.ui?.itemView?.fieldMode ?? list.ui?.itemView?.defaultFieldMode ?? 'edit',
-        list: f.ui?.listView?.fieldMode ?? list.ui?.listView?.defaultFieldMode ?? 'read',
+        create: f.ui?.createView?.fieldMode ?? listConfig.ui?.createView?.defaultFieldMode ?? 'edit',
+        item: f.ui?.itemView?.fieldMode ?? listConfig.ui?.itemView?.defaultFieldMode ?? 'edit',
+        list: f.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read',
       }
 
       resultFields[fieldKey] = {
@@ -451,24 +452,23 @@ function getListsWithInitialisedFields (
 
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
-      list.ui?.labelField ??
-      (list.fields.label
+      listConfig.ui?.labelField ??
+      (listConfig.fields.label
         ? 'label'
-        : list.fields.name
+        : listConfig.fields.name
         ? 'name'
-        : list.fields.title
+        : listConfig.fields.title
         ? 'title'
         : 'id')
 
-    const searchFields = new Set(list.ui?.searchFields ?? [])
+    const searchFields = new Set(listConfig.ui?.searchFields ?? [])
     if (searchFields.has('id')) {
       throw new Error(`${listKey}.ui.searchFields cannot include 'id'`)
     }
 
-    const names = getNamesFromList(listKey, list)
-
+    const names = getNamesFromList(listKey, listConfig)
     result[listKey] = {
-      access: parseListAccessControl(list.access),
+      access: parseListAccessControl(listConfig.access),
 
       fields: resultFields,
       groups,
@@ -482,8 +482,8 @@ function getListsWithInitialisedFields (
 
       prisma: {
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
-        mapping: list.db?.map,
-        extendPrismaSchema: list.db?.extendPrismaSchema,
+        mapping: listConfig.db?.map,
+        extendPrismaSchema: listConfig.db?.extendPrismaSchema,
       },
 
       ui: {
@@ -492,15 +492,15 @@ function getListsWithInitialisedFields (
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
       },
-      hooks: parseListHooks(list.hooks ?? {}),
+      hooks: parseListHooks(listConfig.hooks ?? {}),
       listKey,
       cacheHint: (() => {
-        const cacheHint = list.graphql?.cacheHint
+        const cacheHint = listConfig.graphql?.cacheHint
         if (typeof cacheHint === 'function') return cacheHint
         if (cacheHint !== undefined) return () => cacheHint
         return undefined
       })(),
-      isSingleton: list.isSingleton ?? false,
+      isSingleton: listConfig.isSingleton ?? false,
     }
   }
 
@@ -508,8 +508,9 @@ function getListsWithInitialisedFields (
 }
 
 function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
-  for (const [listKey, list] of Object.entries(lists)) {
+  for (const list of Object.values(lists)) {
     const {
+      listKey,
       ui: { searchFields, searchableFields },
     } = list
 
@@ -575,7 +576,8 @@ function getListGraphqlTypes (
 ): Record<string, ListGraphQLTypes> {
   const graphQLTypes: Record<string, ListGraphQLTypes> = {}
 
-  for (const [listKey, listConfig] of Object.entries(listsConfig)) {
+  for (const listConfig of Object.values(listsConfig)) {
+    const { listKey } = listConfig
     const {
       graphql: { names },
     } = getNamesFromList(listKey, listConfig)
@@ -827,42 +829,39 @@ function getListGraphqlTypes (
 }
 
 export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
-  const listsConfig = config.lists
-
   let intermediateLists
   intermediateLists = Object.fromEntries(
-    Object.entries(listsConfig).map(([key, listConfig]) => [
-      key,
+    Object.values(config.lists).map((listConfig) => [
+      listConfig.listKey,
       {
         graphql: {
-          isEnabled: getIsEnabled(key, listConfig)
+          isEnabled: getIsEnabled(listConfig.listKey, listConfig)
         }
       },
     ])
   )
 
   const listsRef: Record<string, InitialisedList> = {}
-
   {
-    const listGraphqlTypes = getListGraphqlTypes(listsConfig, listsRef, intermediateLists)
+    const listGraphqlTypes = getListGraphqlTypes(config.lists, listsRef, intermediateLists)
     intermediateLists = getListsWithInitialisedFields(config, listGraphqlTypes, intermediateLists)
   }
 
   {
     const resolvedDBFieldsForLists = resolveRelationships(intermediateLists)
     intermediateLists = Object.fromEntries(
-      Object.entries(intermediateLists).map(([listKey, list]) => [
-        listKey,
+      Object.values(intermediateLists).map((list) => [
+        list.listKey,
         {
           ...list,
-          resolvedDbFields: resolvedDBFieldsForLists[listKey],
+          resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
         },
       ])
     )
   }
 
   intermediateLists = Object.fromEntries(
-    Object.entries(intermediateLists).map(([listKey, list]) => {
+    Object.values(intermediateLists).map((list) => {
       const fields: Record<string, InitialisedField> = {}
 
       for (const [fieldKey, field] of Object.entries(list.fields)) {
@@ -872,7 +871,7 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
         }
       }
 
-      return [listKey, { ...list, fields }]
+      return [list.listKey, { ...list, fields }]
     })
   )
 
@@ -900,14 +899,14 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
   }
 
   // error checking
-  for (const [listKey, { fields }] of Object.entries(intermediateLists)) {
-    assertFieldsValid({ listKey, fields })
+  for (const list of Object.values(intermediateLists)) {
+    assertFieldsValid(list)
   }
 
   // fixup the GraphQL refs
-  for (const [listKey, intermediateList] of Object.entries(intermediateLists)) {
-    listsRef[listKey] = {
-      ...intermediateList,
+  for (const list of Object.values(intermediateLists)) {
+    listsRef[list.listKey] = {
+      ...list,
       lists: listsRef,
     }
   }
