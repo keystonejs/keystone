@@ -7,8 +7,9 @@
 
 import { config } from '@keystone-6/core'
 import { lists } from './src/keystone/schema'
+import type { TypeInfo } from '.keystone/types'
 
-export default config({
+export default config<TypeInfo>({
   db: {
     // we're using sqlite for the fastest startup experience
     //   for more information on what database might be appropriate for you
@@ -18,7 +19,7 @@ export default config({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     //   we use using myprisma, not .myprisma, because vite
-    prismaClientPath: 'node_modules/myprisma/client',
+    prismaClientPath: 'node_modules/myprisma',
   },
   server: {
     // We're using a custom port for this example so Astro and Keystone can run at the same time

@@ -12,15 +12,16 @@
     "start": "astro dev"
   },
   "dependencies": {
+    "@astrojs/node": "^8.3.2",
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "astro": "^2.2.1"
+    "astro": "^4.12.3"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "react": "catalog:",
     "@types/react-dom": "catalog:",
     "prisma": "catalog:",
+    "react": "catalog:",
     "typescript": "catalog:"
   }
 }
