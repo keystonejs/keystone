@@ -893,10 +893,10 @@ export function initialiseLists (config: __ResolvedKeystoneConfig): Record<strin
     // you can't have empty GraphQL types
     //   if empty, omit the type completely
     if (!hasAnEnabledCreateField) {
-      list.graphql.isEnabled.create = false
+//        list.graphql.isEnabled.create = false
     }
     if (!hasAnEnabledUpdateField) {
-      list.graphql.isEnabled.update = false
+//        list.graphql.isEnabled.update = false
     }
   }
 
