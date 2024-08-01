@@ -8,7 +8,7 @@ import { type Context } from '.keystone/types'
 
 // Setup pubsub as a Global variable in dev so it survives Hot Reloads.
 declare global {
-  let graphqlSubscriptionPubSub: PubSub
+  var graphqlSubscriptionPubSub: PubSub
 }
 
 // The 'graphql-subscriptions' pubsub library is not recommended for production use, but can be useful as an example
