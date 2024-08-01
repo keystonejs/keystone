@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
+    "@keystone-ui/core": "workspace:^",
     "@prisma/client": "catalog:",
     "next": "catalog:",
     "react": "catalog:",

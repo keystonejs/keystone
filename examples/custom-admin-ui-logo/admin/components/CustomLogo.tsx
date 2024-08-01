@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { jsx, H3 } from '@keystone-ui/core'
 
-export const CustomLogo = () => {
+export function CustomLogo () {
   return (
     <H3>
       <Link

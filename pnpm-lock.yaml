@@ -729,6 +729,9 @@ importers:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@keystone-ui/core':
+        specifier: workspace:^
+        version: link:../../design-system/packages/core
       '@prisma/client':
         specifier: 'catalog:'
         version: 5.17.0(prisma@5.17.0)
