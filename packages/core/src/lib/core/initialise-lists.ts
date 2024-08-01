@@ -388,8 +388,7 @@ function getListsWithInitialisedFields (
               if (
                 !field.output ||
                 !field.graphql.isEnabled.read ||
-                (field.dbField.kind === 'relation' &&
-                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
+                (field.dbField.kind === 'relation' && !intermediateLists[field.dbField.list].graphql.isEnabled.query)
               ) {
                 return []
               }
@@ -603,6 +602,7 @@ function getListsWithInitialisedFields (
       },
     })
 
+    const hasType = intermediateLists[listKey].graphql.isEnabled.type
     listGraphqlTypes[listKey] = {
       types: {
         output,
@@ -614,8 +614,8 @@ function getListsWithInitialisedFields (
         findManyArgs,
         relateTo: {
           one: {
-            create: relateToOneForCreate,
-            update: relateToOneForUpdate
+            create: hasType ? relateToOneForCreate : undefined,
+            update: hasType ? relateToOneForUpdate : undefined,
           },
           many: {
             where: graphql.inputObject({
@@ -626,8 +626,8 @@ function getListsWithInitialisedFields (
                 none: graphql.arg({ type: where }),
               },
             }),
-            create: relateToManyForCreate,
-            update: relateToManyForUpdate,
+            create: hasType ? relateToManyForCreate : undefined,
+            update: hasType ? relateToManyForUpdate : undefined,
           },
         },
       },
