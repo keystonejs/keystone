@@ -199,12 +199,25 @@ export default function Roadmap () {
         Roadmap
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
-        After a year of intensive development Keystone 6 has achieved a{' '}
-        <Link href="/blog/general-availability">General Availability release</Link>! We've graduated
+        Keystone 6 is officially in{' '}
+        <Link href="/blog/general-availability">General Availability release</Link>. We've graduated
         to the
         <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you
         can confidently build on <Emoji symbol="🚀" alt="Rocket" />
       </Type>
+
+      <Alert look="tip" css={{ margin: '1rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0.5rem 0.8rem 0.5rem 0',
+          }}
+        >
+          To see what we've recently shipped, checkout our <Link href="/updates">updates</Link> and{' '}
+          <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
+        </span>
+      </Alert>
+
       <div
         css={mq({
           marginTop: '4em',
@@ -251,10 +264,14 @@ export default function Roadmap () {
         <Link href="/for-developers">developers</Link>,{' '}
         <Link href="/for-organisations">project owners</Link>, and{' '}
         <Link href="/for-content-management">editors</Link> into more productive ways of working
-        together. Our key areas of focus for 2022 are:
+        together. Our key areas of focus are:
       </Type>
       <div className="prose" css={{ li: { fontSize: '1.125rem' } }}>
         <ul>
+          <li>
+            <strong>Schema-driven auth</strong> that streamlines how users authenticate with
+            Keystone applications
+          </li>
           <li>
             <strong>A next-gen Admin UI</strong> that unifies developer and editor collaborations in
             new and exciting ways
@@ -263,23 +280,32 @@ export default function Roadmap () {
             <strong>Maturing the DX</strong> with better Types and capabilities for self-hosting and
             media management
           </li>
-          <li>
-            <strong>Enabling community</strong> with more pathways for you to learn and grow with
-            Keystone
-          </li>
         </ul>
       </div>
+      <Type as="h3" look="heading20bold" margin="1rem 0">
+        Schema-driven authentication
+      </Type>
+      <Type as="p" look="body18">
+        Keystone operates on the schema-driven principle. Right now, authentication in Keystone is
+        left up to the developers to implement. This leads to every Keystone project having auth
+        handled in a slightly different way.
+      </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        We want to change that and offer a predictable, schema-driven first-party authentication
+        solution for Keystone.
+      </Type>
       <Type as="h3" look="heading20bold" margin="2rem 0 1rem">
         Next-gen Admin UI
       </Type>
       <Type as="p" look="body18">
-        Our design team spent much of the second half of 2021 defining a new vision for Admin UI
-        that gives you more capabilities to support content editors in ways that matter most to
-        them. We've already shipped quick wins for customisable{' '}
-        <Link href="/docs/guides/custom-admin-ui-logo">logos</Link>,{' '}
-        <Link href="/docs/guides/custom-admin-ui-pages">pages</Link>, and{' '}
-        <Link href="/docs/guides/custom-admin-ui-navigation">navigation</Link>, but the really
-        transformative features (that rely on more extensive customisation) are still in the works.
+        Our design and labs teams have re-imagined a state-of-the-art Admin UI. One that is
+        responsive, accessible and functional. The fruit of this work led to{' '}
+        <a href="https://github.com/Thinkmill/keystatic/tree/main/design-system">Keystar UI</a>, an
+        internal design system we've been battle-testing with{' '}
+        <a href="https://keystatic.com">Keystatic</a>.
+      </Type>
+
+      <Type as="p" look="body18" margin="1rem 0">
         This body of work will elevate the experience of authoring content in Keystone to the same
         high standards we have for authoring with Keystone's core APIs.
       </Type>
@@ -287,21 +313,6 @@ export default function Roadmap () {
         Maturing the Developer Experience
       </Type>
       <Type as="p" look="body18">
-        We'll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
-        API on the web. Going all-in on Typescript has made the DX so sweet, but we want to take it{' '}
-        <em>further</em> so that Keystone's the best Typescript &gt; GraphQL developer experience in
-        the ecosystem. <Emoji symbol="✨" alt="Sparkles" />
-      </Type>
-      <Type as="p" look="body18" margin="1rem 0">
-        We'll also focus on making better pathways for you to integrate Keystone with the deployment
-        services you use most, so you can get the most out of where the modern web is going. Image
-        and file management is an area we're actively iterating on, and we'll have more to share
-        soon.
-      </Type>
-      <Type as="h3" look="heading20bold" margin="1rem 0">
-        Enabling the community
-      </Type>
-      <Type as="p" look="body18" margin="1rem 0">
         At{' '}
         <a href="https://thinkmill.com.au" target="_blank" rel="noreferrer">
           Thinkmill
@@ -314,45 +325,48 @@ export default function Roadmap () {
         <a href="https://github.com/JedWatson/classnames" target="_blank" rel="noreferrer">
           classnames
         </a>
-        , and of course Keystone <Emoji symbol="🙂" alt="Smile" />. Now that Keystone 6 is stable
-        enough to develop features and integrations around, we'll put better processes in place for
-        you to collaborate around the Keystone project and showcase your awesome work with others in
-        the community.
+        ,{' '}
+        <a href="https://keystatic.com" target="_blank" rel="noreferrer">
+          Keystatic
+        </a>
+        , and of course Keystone.
       </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        We'll continue to iterate on this knowledge and learning loop to make Keystone the easiest
+        way to design and standup a GraphQL API on the web. Going all-in on Typescript has made the
+        DX so sweet, but we want to take it <em>further</em> so that Keystone's the best Typescript
+        &gt; GraphQL developer experience in the ecosystem. <Emoji symbol="✨" alt="Sparkles" />
+      </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        We'll also focus on making better pathways for you to integrate Keystone with the deployment
+        services you use most, so you can get the most out of where the modern web is going. Image
+        and file management is an area we're actively iterating on, and we'll have more to share
+        soon.
+      </Type>
+
       <Type as="h2" look="heading36" css={{ margin: '2rem 0 0' }}>
         Feature Roadmap
       </Type>
-      <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
-        <span
-          css={{
-            display: 'inline-block',
-            margin: '0.5rem 0.8rem 0.5rem 0',
-          }}
-        >
-          To see what we've recently shipped, checkout our <Link href="/updates">updates</Link> and{' '}
-          <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
-        </span>
-      </Alert>
+
+      <Type as="p" look="body18" margin="1rem 0">
+        Here's what we're working on right now, and what's coming next.
+      </Type>
+
       <Type as="h3" look="heading30">
         Current focus
       </Type>
       <RoadmapList>
-        <RoadmapItem title="Singletons" section="fields and schema">
-          <Fragment>
-            A way to define a single object in schema that's editable in Admin UI and accessible in
-            the GraphQL API. Handy for storing website & social settings, API keys, and more.
-          </Fragment>
-        </RoadmapItem>
         <RoadmapItem title="Conditional fields" section="fields and schema">
           <Fragment>
             Dynamically showing fields based on the value of other fields is a great way to improve
             editing flow and content integrity.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Field Groups" section="admin ui">
+        <RoadmapItem title="Next-gen Admin UI" section="admin ui">
           <Fragment>
-            It's often easier to work with content when the form is grouped into different sections
-            of related fields.
+            Make the Admin UI responsive, accessible and i18n compliant with the battle-tested{' '}
+            <a href="https://github.com/Thinkmill/keystatic/tree/main/design-system">Keystar UI</a>{' '}
+            design system.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
@@ -366,12 +380,6 @@ export default function Roadmap () {
             Sometimes you need to manage data in structures that are nested and/or repeating. We're
             working on a way to define these in schema and have them stored as JSON field in the
             database.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Back-end APIs for Node.js apps" section="core">
-          <Fragment>
-            Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
-            hybrid use-cases.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Sortable lists" section="core">
@@ -392,23 +400,6 @@ export default function Roadmap () {
         Further afield
       </Type>
       <RoadmapList>
-        <RoadmapItem title="Localisation" section="admin ui">
-          <Fragment>
-            When an English-language UI doesn't work for your team there'll be a way for you to add
-            translations to all the strings in Admin UI.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Responsive Layout" section="admin ui">
-          <Fragment>
-            An editing interface that's available for you to use no matter what device you're on.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="A11y compliance" section="admin ui">
-          <Fragment>
-            Solving accessibility in a customisable editing interface is a hard problem. We're up
-            for the challenge.
-          </Fragment>
-        </RoadmapItem>
         <RoadmapItem title="Content preview" section="admin ui">
           <Fragment>
             Built-in tooling for you to give editors a sense of how their content will be consumed
