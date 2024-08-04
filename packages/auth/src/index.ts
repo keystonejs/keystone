@@ -1,14 +1,15 @@
-import type {
-  AdminFileToWrite,
-  BaseListTypeInfo,
-  KeystoneConfig,
-  KeystoneContext,
-  SessionStrategy,
-  BaseKeystoneTypeInfo,
+import {
+  type BaseListTypeInfo,
+  type KeystoneConfig,
+  type KeystoneContext,
+  type SessionStrategy,
+  type BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types'
-import { password, timestamp } from '@keystone-6/core/fields'
+import {
+  type AuthConfig,
+  type AuthGqlNames
+} from './types'
 
-import type { AuthConfig, AuthGqlNames } from './types'
 import { getSchemaExtension } from './schema'
 import { signinTemplate } from './templates/signin'
 import { initTemplate } from './templates/init'
@@ -30,8 +31,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   secretField,
   initFirstItem,
   identityField,
-  magicAuthLink,
-  passwordResetLink,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
@@ -43,52 +42,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     // Initial data
     CreateInitialInput: `CreateInitial${listKey}Input`,
     createInitialItem: `createInitial${listKey}`,
-    // Password reset
-    sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
-    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
-    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
-    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
-    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
-    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
-    // Magic auth
-    sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
-    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
-    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
-    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
-  }
-
-  /**
-   * fields
-   *
-   * Fields added to the auth list.
-   */
-  const fieldConfig = {
-    access: () => false,
-    ui: {
-      createView: { fieldMode: 'hidden' },
-      itemView: { fieldMode: 'hidden' },
-      listView: { fieldMode: 'hidden' },
-    },
-  } as const
-
-  const authFields = {
-    ...(passwordResetLink
-      ? {
-          passwordResetToken: password({ ...fieldConfig }),
-          passwordResetIssuedAt: timestamp({ ...fieldConfig }),
-          passwordResetRedeemedAt: timestamp({ ...fieldConfig }),
-        }
-      : null),
-
-    ...(magicAuthLink
-      ? {
-          magicAuthToken: password({ ...fieldConfig }),
-          magicAuthIssuedAt: timestamp({ ...fieldConfig }),
-          magicAuthRedeemedAt: timestamp({ ...fieldConfig }),
-        }
-      : null),
   }
 
   /**
@@ -100,21 +53,20 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
   const authGetAdditionalFiles = () => {
-    const filesToWrite: AdminFileToWrite[] = [
+    return [
       {
-        mode: 'write',
+        mode: 'write' as const,
         src: signinTemplate({ gqlNames, identityField, secretField }),
         outputPath: 'pages/signin.js',
       },
+      ...(initFirstItem ? [
+        {
+          mode: 'write' as const,
+          src: initTemplate({ listKey, initFirstItem }),
+          outputPath: 'pages/init.js',
+        }
+      ] : [])
     ]
-    if (initFirstItem) {
-      filesToWrite.push({
-        mode: 'write',
-        src: initTemplate({ listKey, initFirstItem }),
-        outputPath: 'pages/init.js',
-      })
-    }
-    return filesToWrite
   }
 
   /**
@@ -128,8 +80,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     secretField,
     gqlNames,
     initFirstItem,
-    passwordResetLink,
-    magicAuthLink,
     sessionData,
   })
 
@@ -299,7 +249,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
           ...authListConfig,
           fields: {
             ...authListConfig.fields,
-            ...authFields,
           },
         },
       },

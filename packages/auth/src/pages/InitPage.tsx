@@ -19,16 +19,20 @@ import {
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-6/core/admin-ui/utils'
-import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
 import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
 
-function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
+function extractEmail (value: string | undefined) {
+  if (value?.includes('@')) return value
+  return ''
+}
+
+function Welcome ({ value, onContinue }: { value: { username?: string }, onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState(false)
-  const [email, setEmail] = useState<string>(guessEmailFromValue(value))
+  const [email, setEmail] = useState<string>(extractEmail(value?.username))
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -40,7 +44,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
     if (subscribe) {
       setLoading(true)
 
-      if (!validEmail(email)) {
+      if (email.length < 3 || !email.includes('@')) {
         setError('Email is invalid')
         return
       }
@@ -51,7 +55,6 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: value.username,
           email,
           source: '@keystone-6/auth InitPage',
         }),
@@ -88,7 +91,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       >
         <H1>Welcome</H1>
         <Stack across gap="small">
-          <IconTwitter 
+          <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
             title="Twitter Logo"

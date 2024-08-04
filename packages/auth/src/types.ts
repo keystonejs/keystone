@@ -7,18 +7,6 @@ export type AuthGqlNames = {
   ItemAuthenticationWithPasswordResult: string
   ItemAuthenticationWithPasswordSuccess: string
   ItemAuthenticationWithPasswordFailure: string
-  sendItemPasswordResetLink: string
-  SendItemPasswordResetLinkResult: string
-  validateItemPasswordResetToken: string
-  ValidateItemPasswordResetTokenResult: string
-  redeemItemPasswordResetToken: string
-  RedeemItemPasswordResetTokenResult: string
-  sendItemMagicAuthLink: string
-  SendItemMagicAuthLinkResult: string
-  redeemItemMagicAuthToken: string
-  RedeemItemMagicAuthTokenResult: string
-  RedeemItemMagicAuthTokenSuccess: string
-  RedeemItemMagicAuthTokenFailure: string
 }
 
 export type SendTokenFn = (args: {
@@ -44,10 +32,6 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   secretField: ListTypeInfo['fields']
   /** The initial user/db seeding functionality */
   initFirstItem?: InitFirstItemConfig<ListTypeInfo>
-  /** Password reset link functionality */
-  passwordResetLink?: AuthTokenTypeConfig
-  /** "Magic link" functionality */
-  magicAuthLink?: AuthTokenTypeConfig
   /** Session data population */
   sessionData?: string
 }

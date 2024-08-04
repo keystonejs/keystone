@@ -1,6 +1,6 @@
 import { type AuthGqlNames } from '../types'
 
-export const signinTemplate = ({
+export function signinTemplate ({
   gqlNames,
   identityField,
   secretField,
@@ -8,7 +8,7 @@ export const signinTemplate = ({
   gqlNames: AuthGqlNames
   identityField: string
   secretField: string
-}) => {
+}) {
   // -- TEMPLATE START
   return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
 

@@ -6,7 +6,7 @@ type InitTemplateArgs = {
   initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>
 }
 
-export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
+export function initTemplate ({ listKey, initFirstItem }: InitTemplateArgs) {
   // -- TEMPLATE START
   return `import { getInitPage } from '@keystone-6/auth/pages/InitPage';
 
