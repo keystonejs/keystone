@@ -55,8 +55,8 @@ const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[./A-Za-z0-9]{53}$/
 
 export function password <ListTypeInfo extends BaseListTypeInfo> (config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    bcrypt = bcryptjs,
-    workFactor = 10,
+    bcrypt = bcryptjs, // TODO: rename to kdf in breaking change
+    workFactor = 10, // TODO: remove in breaking change, use a custom KDF
     validation = {},
   } = config
   const {
@@ -145,23 +145,15 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
             : {
                 arg: graphql.arg({ type: PasswordFilter }),
                 resolve (val) {
-                  if (val === null) {
-                    throw userInputError('Password filters cannot be set to null')
-                  }
-                  if (val.isSet) {
-                    return {
-                      not: null,
-                    }
-                  }
+                  if (val === null) throw userInputError('Password filters cannot be set to null')
+                  if (val.isSet) return { not: null }
                   return null
                 },
               },
         create: {
           arg: graphql.arg({ type: graphql.String }),
           resolve (val) {
-            if (val === undefined) {
-              return null
-            }
+            if (val === undefined) return null
             return inputResolver(val)
           },
         },

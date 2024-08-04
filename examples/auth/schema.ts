@@ -39,7 +39,7 @@ function isAdminOrSameUserFilter ({ session }: { session?: Session }) {
   // admins can see everything
   if (session.data?.isAdmin) return {}
 
-  // the authenticated user can only see themselves
+  // only yourself
   return {
     id: {
       equals: session.itemId,
@@ -65,11 +65,11 @@ export const lists = {
         create: allowAll,
         query: allowAll,
 
-        // only allow users to update _anything_, but what they can update is limited by
+        // what a user can update is limited by
         //   the access.filter.* and access.item.* access controls
         update: hasSession,
 
-        // only allow admins to delete users
+        // only admins can delete users
         delete: isAdmin,
       },
       filter: {
@@ -94,7 +94,7 @@ export const lists = {
       //   should not be publicly visible
       //
       //   we use isIndexed to enforce names are unique
-      //     that may not suitable for your application
+      //     that may not be suitable for your application
       name: text({
         access: {
           // only the respective user, or an admin can read this field

@@ -274,6 +274,25 @@ importers:
         specifier: ^5.5.0
         version: 5.7.3
 
+  examples/auth-magic-link:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: ^8.1.0
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: ^6.3.1
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
+    devDependencies:
+      prisma:
+        specifier: 5.19.0
+        version: 5.19.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.7.3
+
   examples/better-list-search:
     dependencies:
       '@keystone-6/core':

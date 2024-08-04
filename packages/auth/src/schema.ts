@@ -10,11 +10,11 @@ import {
 import { graphql } from '@keystone-6/core'
 import { getGqlNames } from '@keystone-6/core/types'
 
-import {
-  type AuthGqlNames,
-  type AuthTokenTypeConfig,
-  type InitFirstItemConfig,
-  type SecretFieldImpl,
+import type {
+  AuthGqlNames,
+  AuthTokenTypeConfig,
+  InitFirstItemConfig,
+  SecretFieldImpl,
 } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'

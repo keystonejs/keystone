@@ -6,7 +6,7 @@ import { checkbox, text, timestamp } from '@keystone-6/core/fields'
 
 import type { Lists, TypeInfo } from '.keystone/types'
 
-const readOnly = {
+const readOnlyField = {
   access: {
     read: allowAll,
     create: denyAll,
@@ -94,25 +94,25 @@ function trackingAtHooks<
 function trackingFields<ListTypeInfo extends CompatibleLists> () {
   return {
     createdBy: text<ListTypeInfo>({
-      ...readOnly,
+      ...readOnlyField,
       hooks: {
         ...trackingByHooks<ListTypeInfo>(true),
       },
     }),
     createdAt: timestamp<ListTypeInfo>({
-      ...readOnly,
+      ...readOnlyField,
       hooks: {
         ...trackingAtHooks<ListTypeInfo>(true),
       },
     }),
     updatedBy: text<ListTypeInfo>({
-      ...readOnly,
+      ...readOnlyField,
       hooks: {
         ...trackingByHooks<ListTypeInfo>(),
       },
     }),
     updatedAt: timestamp<ListTypeInfo>({
-      ...readOnly,
+      ...readOnlyField,
       hooks: {
         ...trackingAtHooks<ListTypeInfo>(),
       },
