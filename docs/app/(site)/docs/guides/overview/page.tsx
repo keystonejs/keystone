@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function Docs () {
   return (
-    <DocsLayout noRightNav noProse isIndexPage editPath="docs/guides/overview.tsx">
+    <DocsLayout noRightNav noProse isIndexPage>
       <PageClient />
     </DocsLayout>
   )
