@@ -203,7 +203,6 @@ export default function Roadmap () {
   return (
     <Page>
       <MWrapper>
-        <Pill grad="grad1">Roadmap</Pill>
         <IntroWrapper>
           <IntroHeading>
             The Keystone <Highlight look="grad1">Roadmap</Highlight>
