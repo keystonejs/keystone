@@ -11,6 +11,9 @@ import {
   type KeystoneContext,
   type MaybePromise
 } from '../types'
+import {
+  type GraphQLNames,
+} from '../types/utils'
 import { QueryMode } from '../types'
 import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
 import {
@@ -175,6 +178,47 @@ const KeystoneAdminUISort = graphql.object<NonNullable<ListMetaRootVal['initialS
   },
 })
 
+const KeystoneAdminUIGraphQLNames = graphql.object<GraphQLNames>()({
+  name: 'KeystoneAdminUIGraphQLNames',
+  fields: {
+    outputTypeName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    whereInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    whereUniqueInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+
+    // create
+    createInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    createMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    createManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    relateToOneForCreateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    relateToManyForCreateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+
+    // read
+    itemQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    listOrderName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    listQueryCountName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    listQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+
+    // update
+    updateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    updateMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    updateManyInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    updateManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    relateToOneForUpdateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    relateToManyForUpdateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+
+    // delete
+    deleteMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    deleteManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+  }
+})
+
+const KeystoneAdminUIGraphQL = graphql.object<any>()({
+  name: 'KeystoneAdminUIGraphQL',
+  fields: {
+    names: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQLNames) }),
+  }
+})
+
 const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
@@ -199,6 +243,7 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
     groups: graphql.field({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))),
     }),
+    graphql: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQL) }),
     initialSort: graphql.field({ type: KeystoneAdminUISort }),
     ...contextFunctionField('isHidden', graphql.Boolean),
     isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),

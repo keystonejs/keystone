@@ -252,9 +252,9 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>
 
- 
+
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>
- 
+
 type DBFieldFilters<TDBField extends DBField> =
   | ({
       AND?: DBFieldFiltersInner<TDBField>

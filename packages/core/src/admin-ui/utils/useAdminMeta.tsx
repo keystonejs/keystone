@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import hashString from '@emotion/hash'
-import { type AdminMeta, type FieldViews, getGqlNames } from '../../types'
+import {
+  type AdminMeta,
+  type FieldViews
+} from '../../types'
 import { useLazyQuery } from '../apollo'
-import { type StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql'
+import {
+  type StaticAdminMetaQuery,
+  staticAdminMetaQuery
+} from '../admin-meta-graphql'
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue'])
-
 const adminMetaLocalStorageKey = 'keystone.adminMeta'
 
 let _mustRenderServerResult = true
@@ -17,22 +22,18 @@ function useMustRenderServerResult () {
     forceUpdate(1)
   }, [])
 
-  if (typeof window === 'undefined') {
-    return true
-  }
+  if (typeof window === 'undefined') return true
 
   return _mustRenderServerResult
 }
 
 export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
   const adminMetaFromLocalStorage = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
+    if (typeof window === 'undefined') return
+
     const item = localStorage.getItem(adminMetaLocalStorageKey)
-    if (item === null) {
-      return
-    }
+    if (item === null) return
+
     try {
       let parsed = JSON.parse(item)
       if (parsed.hash === adminMetaHash) {
@@ -57,12 +58,12 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
   }, [shouldFetchAdminMeta, fetchStaticAdminMeta])
 
   const runtimeAdminMeta = useMemo(() => {
-    if ((!data || error) && !adminMetaFromLocalStorage) {
-      return undefined
-    }
+    if ((!data || error) && !adminMetaFromLocalStorage) return undefined
+
     const adminMeta: StaticAdminMetaQuery['keystone']['adminMeta'] = adminMetaFromLocalStorage
       ? adminMetaFromLocalStorage
       : data.keystone.adminMeta
+
     const runtimeAdminMeta: AdminMeta = {
       lists: {},
     }
@@ -70,8 +71,8 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
     for (const list of adminMeta.lists) {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
+        gqlNames: list.graphql.names,
         groups: [],
-        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }), // TODO: replace with an object
         fields: {},
       }
 

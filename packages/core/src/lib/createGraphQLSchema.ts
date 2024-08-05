@@ -4,7 +4,7 @@ import { graphql } from '../types/schema'
 import {
   type __ResolvedKeystoneConfig
 } from '../types'
-import { KeystoneMeta } from './admin-meta-resolver'
+import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 
@@ -75,9 +75,7 @@ function collectTypes (
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-          collectedTypes.push(
-            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-          )
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType))
         }
       }
       collectedTypes.push(list.graphql.types.where.graphQLType)
