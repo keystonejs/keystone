@@ -149,14 +149,14 @@ type Mutation {
 }
 
 type Query {
-  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   person(where: PersonWhereUniqueInput!): Person
+  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   peopleCount(where: PersonWhereInput! = {}): Int
-  priorities(where: PriorityWhereInput! = {}, orderBy: [PriorityOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PriorityWhereUniqueInput): [Priority!]
   priority(where: PriorityWhereUniqueInput!): Priority
+  priorities(where: PriorityWhereInput! = {}, orderBy: [PriorityOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PriorityWhereUniqueInput): [Priority!]
   prioritiesCount(where: PriorityWhereInput! = {}): Int
-  naughties(where: NaughtyWhereInput! = {}, orderBy: [NaughtyOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NaughtyWhereUniqueInput): [Naughty!]
   naughty(where: NaughtyWhereUniqueInput!): Naughty
+  naughties(where: NaughtyWhereInput! = {}, orderBy: [NaughtyOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NaughtyWhereUniqueInput): [Naughty!]
   naughtiesCount(where: NaughtyWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

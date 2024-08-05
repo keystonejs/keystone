@@ -328,17 +328,17 @@ type Mutation {
 }
 
 type Query {
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  contributors(where: ContributorWhereInput! = {}, orderBy: [ContributorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContributorWhereUniqueInput): [Contributor!]
   contributor(where: ContributorWhereUniqueInput!): Contributor
+  contributors(where: ContributorWhereInput! = {}, orderBy: [ContributorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContributorWhereUniqueInput): [Contributor!]
   contributorsCount(where: ContributorWhereInput! = {}): Int
-  moderators(where: ModeratorWhereInput! = {}, orderBy: [ModeratorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ModeratorWhereUniqueInput): [Moderator!]
   moderator(where: ModeratorWhereUniqueInput!): Moderator
+  moderators(where: ModeratorWhereInput! = {}, orderBy: [ModeratorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ModeratorWhereUniqueInput): [Moderator!]
   moderatorsCount(where: ModeratorWhereInput! = {}): Int
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

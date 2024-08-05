@@ -8,14 +8,14 @@ import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 
-import { getMutationsForList } from './core/mutations'
 import { getQueriesForList } from './core/queries'
+import { getMutationsForList } from './core/mutations'
 
 function getGraphQLSchema (
   lists: Record<string, InitialisedList>,
   extraFields: {
-    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
     query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
+    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
   },
   sudo: boolean
 ) {
@@ -29,7 +29,6 @@ function getGraphQLSchema (
   })
 
   const updateManyByList: Record<string, graphql.InputObjectType<any>> = {}
-
   const mutation = graphql.object()({
     name: 'Mutation',
     fields: Object.assign(

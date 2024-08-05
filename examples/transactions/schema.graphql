@@ -271,14 +271,14 @@ type Mutation {
 }
 
 type Query {
-  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   order(where: OrderWhereUniqueInput!): Order
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
-  items(where: ItemWhereInput! = {}, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
   item(where: ItemWhereUniqueInput!): Item
+  items(where: ItemWhereInput! = {}, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
   itemsCount(where: ItemWhereInput! = {}): Int
-  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
   product(where: ProductWhereUniqueInput!): Product
+  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
