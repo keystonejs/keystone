@@ -208,7 +208,7 @@ export default function Roadmap () {
             The Keystone <Highlight look="grad1">Roadmap</Highlight>
           </IntroHeading>
           <IntroLead>
-            Keystone 6 is officially in General Availability release. We've graduated to
+            Keystone 6 is actively maintained and constantly improving. We've graduated to
             the <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you can confidently
             build on 🚀
           </IntroLead>
