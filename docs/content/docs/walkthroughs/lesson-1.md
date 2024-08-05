@@ -28,17 +28,17 @@ Let’s start by setting up a workspace for a new Keystone project. Make a new f
 ```bash
 mkdir keystone-learning
 cd keystone-learning
-yarn init
+npm init
 ```
 
 {% hint kind="tip" %}
-We’ll be using `yarn` for installing packages, but you can use `npm` or any other package manager you prefer.
+We’ll be using `npm` for installing packages, but you can use any other package manager you prefer.
 {% /hint %}
 
 Now add the Keystone package:
 
 ```bash
-yarn add @keystone-6/core
+npm install @keystone-6/core
 ```
 
 ## Configure Keystone
@@ -53,7 +53,7 @@ export default {};
 And add TypeScript as a dependency:
 
 ```bash
-yarn add typescript
+npm install typescript
 ```
 
 {% hint kind="tip" %}
@@ -64,10 +64,10 @@ Your folder structure should now look like this:
 
 ```sh
 .
-├── node_modules   # Dependencies
-├── keystone.ts    # Keystone config
-├── package.json   # With Keystone and TypeScript as dependencies
-└── yarn.lock      # Your yarn lock file
+├── node_modules        # Dependencies
+├── keystone.ts         # Keystone config
+├── package.json        # With Keystone and TypeScript as dependencies
+└── package-lock.json   # Your npm lock file
 ```
 
 We now need to configure `keystone.ts` with two parts to get our project running:
@@ -142,7 +142,7 @@ are required, and declared that emails must be unique, so there can only be one 
 We now have everything we need to start Keystone, so let’s do just that:
 
 ```bash
-yarn keystone dev
+npx keystone dev
 ```
 
 In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)

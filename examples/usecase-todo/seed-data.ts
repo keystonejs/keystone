@@ -54,7 +54,7 @@ export async function main () {
   }
 
   console.log(`✅ Seed data inserted`)
-  console.log(`👋 Please start the process with \`yarn dev\` or \`npm run dev\``)
+  console.log(`👋 Please start the process with \`npm run dev\``)
 }
 
 main()

@@ -105,7 +105,7 @@ That's all we need to store secure passwords in our database!
 Authentication isn't built directly in to Keystone - it's an enhancement you can add on top. To use it in our app we need to add Keystone’s [auth package](https://github.com/keystonejs/keystone/tree/main/packages/auth):
 
 ```sh
-yarn add @keystone-6/auth
+npm install @keystone-6/auth
 ```
 
 Now that we have the package, let’s create a new file in the root of our project to write our auth config in:

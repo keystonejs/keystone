@@ -50,7 +50,7 @@ Here's what we're going to do:
 Create a basic Next.js project with the `--typescript` option in an empty directory.
 
 ```bash
-yarn create next-app --typescript my-project
+npm create next-app --typescript my-project
 cd my-project
 ```
 
@@ -71,7 +71,7 @@ It is recommended that you use the same major version of `next` as used internal
 
 ### Start your local server
 
-Run `yarn dev` at the root of your project.
+Run `npm run dev` at the root of your project.
 
 Next.js will start a local server for you at <http://localhost:3000>
 
@@ -86,7 +86,7 @@ Now that we have the Next.js starter with static files, let‘s embed Keystone i
 Add the following Keystone dependency to your project:
 
 ```bash
-yarn add @keystone-6/core
+npm install @keystone-6/core
 ```
 
 ### Update .gitignore
@@ -167,7 +167,7 @@ Finally, make a small change to the `scripts` object in `package.json` to includ
 
 ## Start all the things
 
-Running `yarn dev` again will do the following:
+Running `npm run dev` again will do the following:
 
 - Provision a GraphQL schema based on the configuration of `keystone.ts`
 - Build a [Prisma.io](https://www.prisma.io/) schema (which Keystone uses to manage the database)
@@ -288,7 +288,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
 }
 ```
 
-Run `yarn dev` again.
+Run `npm run dev` again.
 
 **Congratulations!** 🙌   You now have:
 

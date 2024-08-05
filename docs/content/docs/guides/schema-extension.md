@@ -65,7 +65,7 @@ As `extendGraphqlSchema` expects a function that returns a valid GraphQL schema 
 Start by installing `@graphql-tools/schema`
 
 ```bash
-yarn add @graphql-tools/schema
+npm install @graphql-tools/schema
 ```
 
 Then import into your Keystone configuration
