@@ -53,12 +53,12 @@ export default function PageClient () {
           </IntroHeading>
           <IntroLead>
             Keystone helps you build faster and scale further than any other CMS or App Framework.
-            Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for
+            Describe your schema, and you get a powerful GraphQL API & beautiful Management UI for
             content and data.
           </IntroLead>
           <IntroLead>
-            No boilerplate or bootstrapping – just elegant APIs to help you ship the code that
-            matters without sacrificing the flexibility or power of a bespoke back-end.
+            No boilerplate or bootstrapping – only elegant APIs to help you ship the code that
+            matters, without sacrificing the flexibility or power of a bespoke back-end.
           </IntroLead>
         </IntroWrapper>
 
@@ -139,7 +139,7 @@ export default function PageClient () {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad1">160+</Highlight>
+                  <Highlight look="grad1">250+</Highlight>
                 </Type>
                 <Type as="p" look="body18">
                   Contributors
