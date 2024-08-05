@@ -139,7 +139,7 @@ export default function PageClient () {
               </li>
               <li>
                 <Type as="h3" look="heading48">
-                  <Highlight look="grad1">160+</Highlight>
+                  <Highlight look="grad1">250+</Highlight>
                 </Type>
                 <Type as="p" look="body18">
                   Contributors
