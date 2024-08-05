@@ -132,6 +132,11 @@ export function printGeneratedTypes (
           ].join('\n')
           continue
         }
+
+        if (type.name === 'Empty') {
+          yield `export type Empty = {}`
+          continue
+        }
       }
     })()].join('\n\n'),
     '',

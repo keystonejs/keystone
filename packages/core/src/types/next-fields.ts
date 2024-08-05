@@ -402,8 +402,8 @@ export type FieldTypeWithoutDBField<
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>
 
 export type GraphQLTypesForList = {
-  update: AnyInputObj
-  create: AnyInputObj
+  create: graphql.NullableInputType
+  update: graphql.NullableInputType
   uniqueWhere: graphql.InputObjectType<{
     id: graphql.Arg<typeof graphql.ID>
     [key: string]: graphql.Arg<graphql.NullableInputType>
@@ -414,11 +414,11 @@ export type GraphQLTypesForList = {
   findManyArgs: FindManyArgs
   relateTo: {
     one: {
-      create?: graphql.InputObjectType<{
+      create: graphql.InputObjectType<{
         create?: graphql.Arg<GraphQLTypesForList['create']>
         connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
       }>
-      update?: graphql.InputObjectType<{
+      update: graphql.InputObjectType<{
         create?: graphql.Arg<GraphQLTypesForList['create']>
         connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
         disconnect: graphql.Arg<typeof graphql.Boolean>
@@ -430,21 +430,15 @@ export type GraphQLTypesForList = {
         some: graphql.Arg<AnyInputObj>
         none: graphql.Arg<AnyInputObj>
       }>
-      create?: graphql.InputObjectType<{
-        connect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
-        >
+      create: graphql.InputObjectType<{
         create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>
+        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
       }>
-      update?: graphql.InputObjectType<{
-        disconnect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
-        >
-        set: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
-        connect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
-        >
+      update: graphql.InputObjectType<{
+        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
         create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>
+        disconnect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+        set: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
       }>
     }
   }
