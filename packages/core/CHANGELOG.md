@@ -918,7 +918,7 @@
   }),
   ```
 
-  When updating to this change, and running `yarn dev`, Keystone will prompt you to update your schema.
+  When updating to this change, and running `npm run dev`, Keystone will prompt you to update your schema.
 
   - If you are using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration. **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION** - unless you want to `DROP` your data.
 

@@ -227,7 +227,7 @@ Most application hosting platforms allow you to specify a `build` script (for ne
 Install the project dependencies, generate the build and deploy migrations:
 
 ```bash
-yarn && yarn keystone build && yarn keystone prisma migrate deploy
+npm i && npx keystone build && npx keystone prisma migrate deploy
 ```
 
 {% hint kind="error" %}
@@ -239,7 +239,7 @@ Note: it is only safe to run migrations in the build step if deploys are built s
 Start Keystone in production mode:
 
 ```bash
-yarn keystone start
+npx keystone start
 ```
 
 {% hint kind="tip" %}

@@ -64,7 +64,7 @@ Keystone’s [document](https://keystonejs.com/docs/fields/document) field is a 
 To implement the document field we start by adding the package to our project:
 
 ```sh
-yarn add @keystone-6/fields-document
+npm install @keystone-6/fields-document
 ```
 
 Next, we add the document field to our `post` list:

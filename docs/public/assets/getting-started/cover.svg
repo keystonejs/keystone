@@ -13,8 +13,8 @@
 		</g>
 		<text id="λ-yarn-create-keysto" font-family="'Source Code Pro', monospace" font-size="200" font-weight="normal">
 			<tspan x="226" y="729" fill="#80B1FF">λ</tspan>
-			<tspan x="346.410156" y="729" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> yarn create keystone-app</tspan>
-			<tspan x="226" y="979" font-family="'Source Code Pro', monospace" fill="#FFFFFF">yarn create v1.22.10</tspan>
+			<tspan x="346.410156" y="729" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> npm create keystone-app</tspan>
+			
 			<tspan x="226" y="1229" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[1/4]</tspan>
 			<tspan x="826.097656" y="1229" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
 			<tspan x="946.117188" y="1229" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🔍</tspan>
@@ -46,7 +46,7 @@
 			<tspan x="226" y="4294" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  To launch your app, run:</tspan>
 			<tspan x="226" y="4544" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="4794" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - cd my-app</tspan>
-			<tspan x="226" y="5044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - yarn dev</tspan>
+			<tspan x="226" y="5044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - npm run dev</tspan>
 			<tspan x="226" y="5294" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="5544" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Next steps:</tspan>
 			<tspan x="226" y="5794" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>

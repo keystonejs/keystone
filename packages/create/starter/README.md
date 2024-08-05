@@ -5,7 +5,7 @@ Welcome to Keystone!
 Run
 
 ```
-yarn dev
+npm run dev
 ```
 
 To view the config for your new app, look at [./keystone.ts](./keystone.ts)
