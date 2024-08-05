@@ -15,7 +15,7 @@ import { generateAdminUI } from '../admin-ui/system'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt } from '../lib/prompts'
 import { createSystem, } from '../lib/createSystem'
-import { getEsbuildConfig } from '../lib/esbuild'
+import { getEsbuildConfig } from './esbuild'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runTelemetry } from '../lib/telemetry'
@@ -71,7 +71,7 @@ export async function dev (
     prev.resolve({ value: build, done: false })
   }
 
-  const esbuildConfig = getEsbuildConfig(cwd)
+  const esbuildConfig = await getEsbuildConfig(cwd)
   const esbuildContext = await esbuild.context({
     ...esbuildConfig,
     plugins: [

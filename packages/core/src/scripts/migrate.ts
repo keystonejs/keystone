@@ -6,7 +6,7 @@ import esbuild from 'esbuild'
 import fse from 'fs-extra'
 
 import { createSystem } from '../lib/createSystem'
-import { getEsbuildConfig } from '../lib/esbuild'
+import { getEsbuildConfig } from './esbuild'
 import { withMigrate } from '../lib/migrations'
 import {
   confirmPrompt,
@@ -56,7 +56,7 @@ export async function migrateCreate (
   cwd: string,
   { frozen }: Pick<Flags, 'frozen'>
 ) {
-  await esbuild.build(getEsbuildConfig(cwd))
+  await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
@@ -128,7 +128,7 @@ export async function migrateApply (
   { frozen }: Pick<Flags, 'frozen'>
 ) {
   // TODO: should this happen if frozen?
-  await esbuild.build(getEsbuildConfig(cwd))
+  await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
