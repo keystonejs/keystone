@@ -210,7 +210,7 @@ export default function Roadmap () {
           </IntroHeading>
           <IntroLead>
             Keystone 6 is officially in General Availability release. We've graduated to
-            the@keystone-6 namespace on npm and have a stable set of APIs that you can confidently
+            the <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you can confidently
             build on 🚀
           </IntroLead>
         </IntroWrapper>
