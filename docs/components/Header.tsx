@@ -385,7 +385,7 @@ export function Header () {
               { label: 'For Developers', href: '/for-developers' },
               { label: 'For Organisations', href: '/for-organisations' },
               { label: 'For Content Management', href: '/for-content-management' },
-              { label: 'Our Roadmap', href: '/updates/roadmap' },
+              { label: 'Our Roadmap', href: '/roadmap' },
               { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
               { label: 'Enterprise', href: '/enterprise' },
             ]}

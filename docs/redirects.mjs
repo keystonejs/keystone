@@ -47,7 +47,7 @@ const KEYSTONE_5 = [
   // Old roadmap URL just redirects to the new roadmap
   {
     source: '/guides/road-map',
-    destination: '/updates/roadmap',
+    destination: '/roadmap',
     permanent: true,
   },
   // Linked to from google results (2021-06-28) and possibly elsewhere?
@@ -93,7 +93,8 @@ const ORIGINAL_NEXT = [
     destination: 'https://github.com/keystonejs/keystone/releases',
     permanent: true,
   },
-  { source: '/roadmap', destination: '/updates/roadmap', permanent: true },
+  { source: '/updates', destination: '/blog', permanent: true },
+  { source: '/updates/roadmap', destination: '/roadmap', permanent: true },
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ]
 

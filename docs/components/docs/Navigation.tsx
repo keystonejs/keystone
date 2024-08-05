@@ -197,18 +197,3 @@ export function DocsNavigation ({ docsNavigation }: { docsNavigation?: React.Rea
     </NavContextProvider>
   )
 }
-
-export function UpdatesNavigation () {
-  return (
-    <NavContextProvider>
-      <nav
-        css={{
-          fontWeight: 500,
-        }}
-      >
-        <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
-        <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-      </nav>
-    </NavContextProvider>
-  )
-}

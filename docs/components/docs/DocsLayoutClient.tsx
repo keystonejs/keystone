@@ -16,8 +16,6 @@ import { TableOfContents } from './TableOfContents'
 import { useMediaQuery } from '../../lib/media'
 import { DocsFooter } from '../Footer'
 
-const pagesWithUpdatesSidebar = ['/updates']
-
 export function DocsLayoutClient ({
  children,
  headings = [],
@@ -38,9 +36,6 @@ export function DocsLayoutClient ({
  const contentRef = useRef<HTMLDivElement | null>(null)
  const mq = useMediaQuery()
  const pathname = usePathname()
-
-
- const isUpdatesPage = pagesWithUpdatesSidebar.some((p) => pathname?.startsWith(p))
 
  return (
    <div
@@ -63,7 +58,7 @@ export function DocsLayoutClient ({
           gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
         })}
       >
-       <Sidebar isUpdatesPage={isUpdatesPage} docsNavigation={docsNavigation} />
+       <Sidebar docsNavigation={docsNavigation} />
        <div
          id="content-and-toc"
          css={mq({

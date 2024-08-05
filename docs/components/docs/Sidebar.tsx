@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
 import { useMediaQuery } from '../../lib/media'
-import { DocsNavigation, UpdatesNavigation } from './Navigation'
+import { DocsNavigation } from './Navigation'
 
 type SidebarProps = {
-  isUpdatesPage?: boolean
   docsNavigation?: React.ReactNode
 }
 
-export function Sidebar ({ isUpdatesPage, docsNavigation }: SidebarProps) {
+export function Sidebar ({ docsNavigation }: SidebarProps) {
   const mq = useMediaQuery()
-  const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation
 
   return (
     <aside
@@ -41,7 +39,7 @@ export function Sidebar ({ isUpdatesPage, docsNavigation }: SidebarProps) {
             paddingBottom: '2rem',
           }}
         >
-          <Navigation docsNavigation={docsNavigation} />
+          <DocsNavigation docsNavigation={docsNavigation} />
         </div>
       </div>
     </aside>
