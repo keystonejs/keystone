@@ -21,7 +21,7 @@ export default function Page ({ post }: { post: BlogPost }) {
   const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
 
   return (
-    <BlogPage headings={headings} editPath={`docs/${params?.post}.md`}>
+    <BlogPage headings={headings} editPath={`blog/${params?.post}.md`}>
       <Heading level={1} id="title" css={{ marginBottom: 0 }}>
         {post.title}
       </Heading>

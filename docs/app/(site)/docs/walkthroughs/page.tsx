@@ -16,7 +16,7 @@ export default async function Docs () {
   const [quickstart, ...walkthroughs] = featuredDocs.items
 
   return (
-    <DocsLayout noRightNav noProse isIndexPage editPath="docs/walkthroughs/index.tsx">
+    <DocsLayout noRightNav noProse isIndexPage>
       <PageClient
         quickstart={JSON.parse(JSON.stringify(quickstart))}
         walkthroughs={JSON.parse(JSON.stringify(walkthroughs))}

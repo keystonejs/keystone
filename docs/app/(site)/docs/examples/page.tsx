@@ -37,7 +37,7 @@ async function getGroupedExamples () {
 export default async function Docs () {
   const pageData = await getGroupedExamples()
   return (
-    <DocsLayout noRightNav noProse editPath={'docs/examples.tsx'}>
+    <DocsLayout noRightNav noProse isIndexPage>
       <PageClient {...JSON.parse(JSON.stringify(pageData))} />
     </DocsLayout>
   )
