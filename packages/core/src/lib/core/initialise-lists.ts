@@ -118,6 +118,7 @@ export type InitialisedList = {
   }
 
   prisma: {
+    types: GraphQLNames, // TODO: not completely appropriate, but what is used for now
     listKey: string
     mapping: string | undefined
     extendPrismaSchema: ((schema: string) => string) | undefined
@@ -751,13 +752,20 @@ function getListsWithInitialisedFields (
       groups,
 
       graphql: {
-        types: listGraphqlTypes[listKey].types,
-        names: names.graphql.names,
+        types: {
+          ...listGraphqlTypes[listKey].types,
+        },
+        names: {
+          ...names.graphql.names,
+        },
         namePlural: names.graphql.namePlural, // TODO: remove
         ...intermediateList.graphql,
       },
 
       prisma: {
+        types: {
+          ...names.graphql.names,
+        },
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
         mapping: listConfig.db?.map,
         extendPrismaSchema: listConfig.db?.extendPrismaSchema,
