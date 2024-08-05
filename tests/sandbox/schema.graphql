@@ -656,17 +656,17 @@ type Mutation {
 }
 
 type Query {
-  things(where: ThingWhereInput! = {}, orderBy: [ThingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ThingWhereUniqueInput): [Thing!]
   thing(where: ThingWhereUniqueInput!): Thing
+  things(where: ThingWhereInput! = {}, orderBy: [ThingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ThingWhereUniqueInput): [Thing!]
   thingsCount(where: ThingWhereInput! = {}): Int
-  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todo(where: TodoWhereUniqueInput!): Todo
+  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todosCount(where: TodoWhereInput! = {}): Int
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
-  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
   settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
   manySettingsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
   keystone: KeystoneMeta!
 }

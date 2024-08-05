@@ -95,8 +95,8 @@ type Mutation {
 }
 
 type Query {
-  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todo(where: TodoWhereUniqueInput!): Todo
+  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todosCount(where: TodoWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }

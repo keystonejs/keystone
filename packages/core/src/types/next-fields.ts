@@ -413,6 +413,17 @@ export type GraphQLTypesForList = {
   output: graphql.ObjectType<BaseItem>
   findManyArgs: FindManyArgs
   relateTo: {
+    one: {
+      create?: graphql.InputObjectType<{
+        create?: graphql.Arg<GraphQLTypesForList['create']>
+        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
+      }>
+      update?: graphql.InputObjectType<{
+        create?: graphql.Arg<GraphQLTypesForList['create']>
+        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
+        disconnect: graphql.Arg<typeof graphql.Boolean>
+      }>
+    }
     many: {
       where: graphql.InputObjectType<{
         every: graphql.Arg<AnyInputObj>
@@ -434,17 +445,6 @@ export type GraphQLTypesForList = {
           graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
         >
         create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>
-      }>
-    }
-    one: {
-      create?: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
-      }>
-      update?: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
-        disconnect: graphql.Arg<typeof graphql.Boolean>
       }>
     }
   }

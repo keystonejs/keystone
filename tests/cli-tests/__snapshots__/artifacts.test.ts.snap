@@ -4,18 +4,8 @@ exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 /* eslint-disable */
 
-type Scalars = {
-  readonly ID: string
-  readonly Boolean: boolean
-  readonly String: string
-  readonly Int: number
-  readonly Float: number
-  readonly JSON: import('@keystone-6/core/types').JSONValue
-  readonly Decimal: import('@keystone-6/core/types').Decimal | string
-}
-
 export type TodoWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null
+  readonly id?: string | null
 }
 
 export type TodoWhereInput = {
@@ -27,41 +17,41 @@ export type TodoWhereInput = {
 }
 
 export type IDFilter = {
-  readonly equals?: Scalars['ID'] | null
-  readonly in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly notIn?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly lt?: Scalars['ID'] | null
-  readonly lte?: Scalars['ID'] | null
-  readonly gt?: Scalars['ID'] | null
-  readonly gte?: Scalars['ID'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
   readonly not?: IDFilter | null
 }
 
 export type StringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
 export type NestedStringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
@@ -75,7 +65,7 @@ export type OrderDirection =
   | 'desc'
 
 export type TodoUpdateInput = {
-  readonly title?: Scalars['String'] | null
+  readonly title?: string | null
 }
 
 export type TodoUpdateArgs = {
@@ -84,7 +74,7 @@ export type TodoUpdateArgs = {
 }
 
 export type TodoCreateInput = {
-  readonly title?: Scalars['String'] | null
+  readonly title?: string | null
 }
 
 export type KeystoneAdminUIFieldMetaIsNonNull =

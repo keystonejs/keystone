@@ -1,21 +1,11 @@
 /* eslint-disable */
 
-type Scalars = {
-  readonly ID: string
-  readonly Boolean: boolean
-  readonly String: string
-  readonly Int: number
-  readonly Float: number
-  readonly JSON: import('@keystone-6/core/types').JSONValue
-  readonly Decimal: import('@keystone-6/core/types').Decimal | string
-}
-
 export type PostStatusType =
   | 'draft'
   | 'published'
 
 export type PostWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null
+  readonly id?: string | null
 }
 
 export type PostWhereInput = {
@@ -31,41 +21,41 @@ export type PostWhereInput = {
 }
 
 export type IDFilter = {
-  readonly equals?: Scalars['ID'] | null
-  readonly in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly notIn?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly lt?: Scalars['ID'] | null
-  readonly lte?: Scalars['ID'] | null
-  readonly gt?: Scalars['ID'] | null
-  readonly gte?: Scalars['ID'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
   readonly not?: IDFilter | null
 }
 
 export type StringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
 export type NestedStringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
@@ -100,9 +90,9 @@ export type OrderDirection =
   | 'desc'
 
 export type PostUpdateInput = {
-  readonly title?: Scalars['String'] | null
+  readonly title?: string | null
   readonly status?: PostStatusType | null
-  readonly content?: Scalars['String'] | null
+  readonly content?: string | null
   readonly publishDate?: any | null
   readonly author?: AuthorRelateToOneForUpdateInput | null
 }
@@ -110,7 +100,7 @@ export type PostUpdateInput = {
 export type AuthorRelateToOneForUpdateInput = {
   readonly create?: AuthorCreateInput | null
   readonly connect?: AuthorWhereUniqueInput | null
-  readonly disconnect?: Scalars['Boolean'] | null
+  readonly disconnect?: boolean | null
 }
 
 export type PostUpdateArgs = {
@@ -119,9 +109,9 @@ export type PostUpdateArgs = {
 }
 
 export type PostCreateInput = {
-  readonly title?: Scalars['String'] | null
+  readonly title?: string | null
   readonly status?: PostStatusType | null
-  readonly content?: Scalars['String'] | null
+  readonly content?: string | null
   readonly publishDate?: any | null
   readonly author?: AuthorRelateToOneForCreateInput | null
 }
@@ -132,7 +122,7 @@ export type AuthorRelateToOneForCreateInput = {
 }
 
 export type AuthorWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null
+  readonly id?: string | null
 }
 
 export type AuthorWhereInput = {
@@ -156,7 +146,7 @@ export type AuthorOrderByInput = {
 }
 
 export type AuthorUpdateInput = {
-  readonly name?: Scalars['String'] | null
+  readonly name?: string | null
   readonly posts?: PostRelateToManyForUpdateInput | null
 }
 
@@ -173,7 +163,7 @@ export type AuthorUpdateArgs = {
 }
 
 export type AuthorCreateInput = {
-  readonly name?: Scalars['String'] | null
+  readonly name?: string | null
   readonly posts?: PostRelateToManyForCreateInput | null
 }
 
