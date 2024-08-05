@@ -2,27 +2,15 @@
 
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { useMediaQuery } from '../../../lib/media'
 import { IntroWrapper, IntroHeading, IntroLead } from '../../../components/content/Intro'
 import { Highlight } from '../../../components/primitives/Highlight'
 import { MWrapper } from '../../../components/content/MWrapper'
-import { Section, SideBySideSection } from '../../../components/content/Section'
-import { Button } from '../../../components/primitives/Button'
-import { Quote } from '../../../components/content/Quote'
 import { Type } from '../../../components/primitives/Type'
-import { ArrowR } from '../../../components/icons/ArrowR'
 import { Pill } from '../../../components/content/Pill'
-import { Tick } from '../../../components/icons/Tick'
 import { Page } from '../../../components/Page'
-
-import dsGeneration from '../../../public/assets/ds-generation.png'
-import contentManagement1 from '../../../public/assets/content-management-1.png'
-import contentManagement2 from '../../../public/assets/content-management-2.png'
-import contentManagement3 from '../../../public/assets/content-management-3.png'
-import contentManagement4 from '../../../public/assets/content-management-4.png'
 import { EndCta } from '../../../components/content/EndCta'
 import { Alert } from '../../../components/primitives/Alert'
 import { Emoji } from '../../../components/primitives/Emoji'
@@ -240,7 +228,7 @@ export default function Roadmap () {
 
         <div
           css={mq({
-            marginTop: '8em',
+            marginTop: ['3rem', '3rem', '5rem', '8em'],
             display: 'grid',
             gridTemplateColumns: ['1fr', null, null, '1fr 1fr 1fr 1fr'],
             gap: '1rem',
