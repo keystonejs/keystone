@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function Roadmap () {
   return (
-    <DocsLayout noRightNav noProse>
+    <DocsLayout noRightNav noProse isIndexPage>
       <PageClient />
     </DocsLayout>
   )
