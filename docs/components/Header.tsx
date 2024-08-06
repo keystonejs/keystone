@@ -197,7 +197,7 @@ function FlatMenu ({
           border: '1px solid var(--border)',
           borderRadius: '0.25rem',
           background: 'var(--app-bg)',
-          gap: '1.25rem',
+          gap: '.25rem',
         }}
       >
         {items.map(({ href, label }) => {
@@ -209,7 +209,7 @@ function FlatMenu ({
                   alwaysVisible
                   href={href}
                   css={{
-                    padding: '0 !important',
+                    padding: '0.5rem 0 !important',
                   }}
                 >
                   {label}

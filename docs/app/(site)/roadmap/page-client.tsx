@@ -9,7 +9,6 @@ import { IntroWrapper, IntroHeading, IntroLead } from '../../../components/conte
 import { Highlight } from '../../../components/primitives/Highlight'
 import { MWrapper } from '../../../components/content/MWrapper'
 import { Type } from '../../../components/primitives/Type'
-import { Pill } from '../../../components/content/Pill'
 import { Page } from '../../../components/Page'
 import { EndCta } from '../../../components/content/EndCta'
 import { Alert } from '../../../components/primitives/Alert'
@@ -17,6 +16,7 @@ import { Emoji } from '../../../components/primitives/Emoji'
 import { Fragment, type ComponentProps, type ReactNode } from 'react'
 import { Gradient } from '../../../components/primitives/Gradient'
 import { InlineCode } from '../../../components/primitives/Code'
+import { Tick } from '../../../components/icons'
 
 function TimelineItem ({ children }: { children: ReactNode }) {
   return (
@@ -166,13 +166,26 @@ const roadmapItemSection = {
 type RoadmapItemProps = {
   title: ReactNode
   section?: keyof typeof roadmapItemSection
+  isReleased?: boolean
   children: ReactNode
 }
 
-function RoadmapItem ({ title, section, children }: RoadmapItemProps) {
+function RoadmapItem ({ title, section, isReleased = false, children }: RoadmapItemProps) {
   const Section = section ? roadmapItemSection[section] : null
   return (
-    <li>
+    <li css={{ position: 'relative' }}>
+      {isReleased && (
+        <Tick
+          grad="grad2"
+          css={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '2rem',
+            height: '2rem',
+          }}
+        />
+      )}
       {Section && <Section />}
       <Type as="h3" look="heading20bold" margin="0">
         {title}
@@ -208,9 +221,9 @@ export default function Roadmap () {
             The Keystone <Highlight look="grad1">Roadmap</Highlight>
           </IntroHeading>
           <IntroLead>
-            Keystone 6 is actively maintained and steadily improving. We've graduated to
-            the <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you can confidently
-            build on 🚀
+            Keystone 6 is actively maintained and steadily improving. We've graduated to the{' '}
+            <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that
+            you can confidently build on 🚀
           </IntroLead>
         </IntroWrapper>
         <Alert look="tip" css={{ marginTop: '2rem' }}>
@@ -358,10 +371,36 @@ export default function Roadmap () {
         </Type>
 
         <Type as="p" look="body18" margin="1rem 0">
-          Here's what we're working on right now, and what's coming next.
+          Here's what we've been working on, and what's coming next.
         </Type>
 
-        <Type as="h3" look="heading30" css={{marginTop: '2rem'}}>
+        <Type as="h3" look="heading30" css={{ marginTop: '2rem' }}>
+          Recently released
+        </Type>
+        <RoadmapList>
+          <RoadmapItem title="Singletons" section="fields and schema" isReleased>
+            <Fragment>
+              A way to define a single object in schema that's editable in Admin UI and accessible
+              in the GraphQL API. Handy for storing website & social settings, API keys, and{' '}
+              <Link href="/blog/singleton">more</Link>.
+            </Fragment>
+          </RoadmapItem>
+          <RoadmapItem title="Field Groups" section="admin ui" isReleased>
+            <Fragment>
+              It's often easier to work with content when the form is grouped into different
+              sections of related fields. <Link href="/docs/fields/overview#groups">Learn more</Link>
+            </Fragment>
+          </RoadmapItem>
+          <RoadmapItem title="Back-end APIs for Node.js apps" section="core" isReleased>
+            <Fragment>
+              Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
+              hybrid use-cases.
+            </Fragment>
+          </RoadmapItem>
+        </RoadmapList>
+        <Divider />
+
+        <Type as="h3" look="heading30" css={{ marginTop: '2rem' }}>
           Current focus
         </Type>
         <RoadmapList>
