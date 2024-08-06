@@ -197,7 +197,7 @@ function FlatMenu ({
           border: '1px solid var(--border)',
           borderRadius: '0.25rem',
           background: 'var(--app-bg)',
-          gap: '1.25rem',
+          gap: '.25rem',
         }}
       >
         {items.map(({ href, label }) => {
@@ -209,7 +209,7 @@ function FlatMenu ({
                   alwaysVisible
                   href={href}
                   css={{
-                    padding: '0 !important',
+                    padding: '0.5rem 0 !important',
                   }}
                 >
                   {label}
@@ -385,7 +385,7 @@ export function Header () {
               { label: 'For Developers', href: '/for-developers' },
               { label: 'For Organisations', href: '/for-organisations' },
               { label: 'For Content Management', href: '/for-content-management' },
-              { label: 'Our Roadmap', href: '/updates/roadmap' },
+              { label: 'Our Roadmap', href: '/roadmap' },
               { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
               { label: 'Enterprise', href: '/enterprise' },
             ]}

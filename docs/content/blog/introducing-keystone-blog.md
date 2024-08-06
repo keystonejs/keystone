@@ -7,7 +7,7 @@ authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
 ---
 
-We're happy to introduce the **Keystone Blog**, a buzzing corner for all the latest news and announcements about Keystone, brought to you by the Keystone team.
+We're happy to introduce the **Keystone Blog**, brought to you by the Keystone team.
 
 Our _Updates_ page is going away and we are not one to let good content slip away. So some of the useful and important content in _Updates_ have been repurposed into blog posts. Woot!
 
