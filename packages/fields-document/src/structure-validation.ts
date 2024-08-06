@@ -71,8 +71,8 @@ const zLayout = z.object({
 
 const zRelationshipData = z.object({
   id: z.string(),
-  label: z.union([z.undefined(), z.string()]),
-  data: z.union([z.undefined(), z.record(z.string(), z.any())]),
+  label: z.string().optional(),
+  data: z.record(z.string(), z.any()).optional(),
 }).strict()
 
 const zRelationship = z.object({
@@ -92,7 +92,7 @@ const zComponentProp = z.object({
     z.literal('component-block-prop'),
     z.literal('component-inline-prop'),
   ]),
-  propPath: z.union([z.array(z.union([z.string(), z.number()])), z.undefined()]),
+  propPath: z.array(z.union([z.string(), z.number()])).optional(),
 }).strict()
 
 type Children =

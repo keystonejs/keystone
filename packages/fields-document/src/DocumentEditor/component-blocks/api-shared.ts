@@ -304,8 +304,8 @@ export type HydratedRelationshipData = {
 
 export type RelationshipData = {
   id: string
-  label: string | undefined
-  data: Record<string, any> | undefined
+  label?: string
+  data?: Record<string, any>
 }
 
 type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =

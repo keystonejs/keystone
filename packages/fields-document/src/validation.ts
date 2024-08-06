@@ -1,5 +1,4 @@
 import {
-  type Descendant,
   Text,
   Editor
 } from 'slate'
@@ -193,7 +192,7 @@ export function validateAndNormalizeDocument (
   validateDocumentStructure(value)
   const children = value.map(x => getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships))
   const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships)
-  editor.children = (children as Descendant[])
+  editor.children = children
   Editor.normalize(editor, { force: true })
   return editor.children
 }
