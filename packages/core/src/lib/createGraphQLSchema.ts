@@ -81,11 +81,15 @@ function collectTypes (
       collectedTypes.push(list.graphql.types.orderBy.graphQLType)
     }
     if (isEnabled.update) {
-      collectedTypes.push(list.graphql.types.update.graphQLType)
+      if (list.graphql.types.update.kind === 'input') {
+        collectedTypes.push(list.graphql.types.update.graphQLType)
+      }
       collectedTypes.push(updateManyByList[list.listKey].graphQLType)
     }
     if (isEnabled.create) {
-      collectedTypes.push(list.graphql.types.create.graphQLType)
+      if (list.graphql.types.create.kind === 'input') {
+        collectedTypes.push(list.graphql.types.create.graphQLType)
+      }
     }
   }
   // this is not necessary, just about ordering

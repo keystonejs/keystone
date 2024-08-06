@@ -199,9 +199,7 @@ export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
     },
     parseValue (value) {
       if (typeof value === 'bigint') return value
-      if (typeof value !== 'string') {
-        throw new GraphQLError('BigInt only accepts values as strings')
-      }
+      if (typeof value !== 'string') throw new GraphQLError('BigInt only accepts values as strings')
       return globalThis.BigInt(value)
     },
   })
@@ -281,6 +279,15 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
       validateCalendarDay(value)
       return value
     },
+  })
+)
+
+export const Empty = graphqlTsSchema.graphql.scalar<{}>(
+  new GraphQLScalarType({
+    name: 'Empty',
+    serialize (value) { return null },
+    parseLiteral (value) { return {} },
+    parseValue (value) { return {} },
   })
 )
 

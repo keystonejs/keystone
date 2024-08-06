@@ -813,7 +813,7 @@ importers:
         version: 5.17.0
       typescript:
         specifier: 'catalog:'
-        version: 5.5.3
+        version: 5.5.4
 
   examples/custom-field:
     dependencies:
@@ -1191,6 +1191,22 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 18.3.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.5.4
+
+  examples/empty-lists:
+    dependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 'catalog:'
+        version: 5.17.0(prisma@5.17.0)
+    devDependencies:
+      prisma:
+        specifier: 'catalog:'
+        version: 5.17.0
       typescript:
         specifier: 'catalog:'
         version: 5.5.4

@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/example-empty-lists",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "workspace:^",
+    "@prisma/client": "catalog:"
+  },
+  "devDependencies": {
+    "prisma": "catalog:",
+    "typescript": "catalog:"
+  }
+}
