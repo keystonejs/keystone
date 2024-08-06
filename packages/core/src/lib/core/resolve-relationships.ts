@@ -40,25 +40,20 @@ type RelWithoutForeignKeyAndName = Omit<Rel, 'field'> & {
 function sortRelationships (left: Rel, right: Rel): readonly [Rel, RelWithoutForeignKeyAndName] {
   if (left.field.mode === 'one' && right.field.mode === 'one') {
     if (left.field.foreignKey !== undefined && right.field.foreignKey !== undefined) {
-      throw new Error(
-        `You can only set db.foreignKey on one side of a one to one relationship, but foreignKey is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`
-      )
+      throw new Error(`You can only set db.foreignKey on one side of a one to one relationship, but foreignKey is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`)
     }
-    if (left.field.foreignKey || right.field.foreignKey) {
-      // return the field that specifies the foreignKey first
-      return left.field.foreignKey ? [left, right] : [right, left]
-    }
+
+    // return the field that specifies the foreignKey first
+    if (left.field.foreignKey) return [left, right]
+    if (right.field.foreignKey) return [right, left]
+
   } else if (left.field.mode === 'one' || right.field.mode === 'one') {
     // many relationships will never have a foreign key, so return the one relationship first
     const rels = left.field.mode === 'one' ? ([left, right] as const) : ([right, left] as const)
     // we're only doing this for rels[1] because:
     // - rels[1] is the many side
     // - for the one side, TypeScript will already disallow relationName
-    if (rels[1].field.relationName !== undefined) {
-      throw new Error(
-        `You can only set db.relationName on one side of a many to many relationship, but db.relationName is set on ${rels[1].listKey}.${rels[1].fieldPath} which is the many side of a many to one relationship with ${rels[0].listKey}.${rels[0].fieldPath}`
-      )
-    }
+    if (rels[1].field.relationName !== undefined) throw new Error(`You can only set db.relationName on one side of a many to many relationship, but db.relationName is set on ${rels[1].listKey}.${rels[1].fieldPath} which is the many side of a many to one relationship with ${rels[0].listKey}.${rels[0].fieldPath}`)
     return rels
   }
   if (
@@ -67,22 +62,21 @@ function sortRelationships (left: Rel, right: Rel): readonly [Rel, RelWithoutFor
     (left.field.relationName !== undefined || right.field.relationName !== undefined)
   ) {
     if (left.field.relationName !== undefined && right.field.relationName !== undefined) {
-      throw new Error(
-        `You can only set db.relationName on one side of a many to many relationship, but db.relationName is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`
-      )
+      throw new Error(`You can only set db.relationName on one side of a many to many relationship, but db.relationName is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`)
     }
     return left.field.relationName !== undefined ? [left, right] : [right, left]
   }
+
   const order = left.listKey.localeCompare(right.listKey)
-  if (order > 0) {
-    // left comes after right, so swap them.
-    return [right, left]
-  } else if (order === 0) {
+
+  if (order > 0) return [right, left] // left comes after right, so swap them
+  if (order === 0) {
     // self referential list, so check the paths.
     if (left.fieldPath.localeCompare(right.fieldPath) > 0) {
       return [right, left]
     }
   }
+
   return [left, right]
 }
 
@@ -97,9 +91,7 @@ export function resolveRelationships (
   lists: Record<string, { fields: Record<string, { dbField: DBField }>, isSingleton: boolean }>
 ): ListsWithResolvedRelations {
   const alreadyResolvedTwoSidedRelationships = new Set<string>()
-  const resolvedLists: Record<string, Record<string, ResolvedDBField>> = Object.fromEntries(
-    Object.keys(lists).map(listKey => [listKey, {}])
-  )
+  const resolvedLists: Record<string, Record<string, ResolvedDBField>> = Object.fromEntries(Object.keys(lists).map(listKey => [listKey, {}]))
   for (const [listKey, fields] of Object.entries(lists)) {
     const resolvedList = resolvedLists[listKey]
     for (const [fieldPath, { dbField: field }] of Object.entries(fields.fields)) {
@@ -109,37 +101,27 @@ export function resolveRelationships (
       }
       const foreignUnresolvedList = lists[field.list]
       if (!foreignUnresolvedList) {
-        throw new Error(
-          `The relationship field at ${listKey}.${fieldPath} points to the list ${listKey} which does not exist`
-        )
+        throw new Error(`The relationship field at ${listKey}.${fieldPath} points to the list ${listKey} which does not exist`)
       }
       if (foreignUnresolvedList.isSingleton) {
-        throw new Error(
-          `The relationship field at ${listKey}.${fieldPath} points to a singleton list, ${listKey}, which is not allowed`
-        )
+        throw new Error(`The relationship field at ${listKey}.${fieldPath} points to a singleton list, ${listKey}, which is not allowed`)
       }
       if (field.field) {
         const localRef = `${listKey}.${fieldPath}`
         const foreignRef = `${field.list}.${field.field}`
-        if (alreadyResolvedTwoSidedRelationships.has(localRef)) {
-          continue
-        }
+        if (alreadyResolvedTwoSidedRelationships.has(localRef)) continue
 
         alreadyResolvedTwoSidedRelationships.add(foreignRef)
         const foreignField = foreignUnresolvedList.fields[field.field]?.dbField
         if (!foreignField) throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`)
 
         if (foreignField.kind !== 'relation') {
-          throw new Error(
-            `${localRef} points to ${foreignRef}, but ${foreignRef} is not a relationship field`
-          )
+          throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} is not a relationship field`)
         }
 
         const actualRef = foreignField.field ? `${foreignField.list}.${foreignField.field}` : foreignField.list
         if (actualRef !== localRef) {
-          throw new Error(
-            `${localRef} expects ${foreignRef} to be a two way relationship, but ${foreignRef} points to ${actualRef}`
-          )
+          throw new Error(`${localRef} expects ${foreignRef} to be a two way relationship, but ${foreignRef} points to ${actualRef}`)
         }
 
         const [leftRel, rightRel] = sortRelationships(
@@ -175,6 +157,7 @@ export function resolveRelationships (
           }
           continue
         }
+
         if (leftRel.field.mode === 'many' && rightRel.field.mode === 'many') {
           const relationName = leftRel.field.relationName ?? `${leftRel.listKey}_${leftRel.fieldPath}`
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
@@ -195,6 +178,7 @@ export function resolveRelationships (
           }
           continue
         }
+
         const relationName = `${leftRel.listKey}_${leftRel.fieldPath}`
         resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
           kind: 'relation',
@@ -211,6 +195,7 @@ export function resolveRelationships (
           },
           relationName,
         }
+
         resolvedLists[rightRel.listKey][rightRel.fieldPath] = {
           kind: 'relation',
           mode: 'many',
@@ -221,6 +206,7 @@ export function resolveRelationships (
         }
         continue
       }
+
       const foreignFieldPath = `from_${listKey}_${fieldPath}`
       if (foreignUnresolvedList.fields[foreignFieldPath]) {
         throw new Error(`The relationship field at ${listKey}.${fieldPath} points to the list ${field.list}, Keystone needs to a create a relationship field at ${field.list}.${foreignFieldPath} to support the relationship at ${listKey}.${fieldPath} but ${field.list} already has a field named ${foreignFieldPath}`)
@@ -269,6 +255,7 @@ export function resolveRelationships (
       }
     }
   }
+
   // the way we resolve the relationships means that the relationships will be in a
   // different order than the order the user specified in their config
   // doesn't really change the behaviour of anything but it means that the order of the fields in the prisma schema will be
