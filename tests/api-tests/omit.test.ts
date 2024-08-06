@@ -27,8 +27,8 @@ function makeField ({
       }
 }) {
   const suffix = [
-    `Filterable${yn(isFilterable)}`,
-    `Orderable${yn(isOrderable)}`,
+    `Filt${yn(isFilterable)}`,
+    `Ord${yn(isOrderable)}`,
     `Omit${typeof omit !== 'object'
       ? yn(omit)
       : [omit.read, omit.create, omit.update].map(yn).join('')}`
@@ -85,7 +85,7 @@ function makeList ({
         delete: boolean
       }
 }) {
-  const prefix = `List_F${fields.length}_Filterable${yn(isFilterable)}_Orderable${yn(isOrderable)}` as const
+  const prefix = `List${fields.length}_Filt${yn(isFilterable)}_Ord${yn(isOrderable)}` as const
   const __name = `${prefix}_Omit${
     typeof omit !== 'object'
       ? yn(omit)
@@ -151,22 +151,20 @@ if (dbProvider !== 'mysql') {
   listsMatrix.push({
     __name: 'RelatedToAll',
     access: allowAll,
-    fields: {
-      ...Object.fromEntries(function* () {
-        for (const l of listsMatrix) {
-          // WARNING: if names exceed some length, expect duplicate _AB_unique index errors
-          yield [`R${l.__name}_one`, relationship({
-            ref: l.__name,
-            many: false,
-          })] as const
+    fields: Object.fromEntries(function* () {
+      for (const l of listsMatrix) {
+        // WARNING: if names exceed some length, expect duplicate _AB_unique index errors
+        yield [`R${l.__name}_one`, relationship({
+          ref: l.__name,
+          many: false,
+        })] as const
 
-          yield [`R${l.__name}_many`, relationship({
-            ref: l.__name,
-            many: true,
-          })] as const
-        }
-      }()),
-    },
+        yield [`R${l.__name}_many`, relationship({
+          ref: l.__name,
+          many: true,
+        })] as const
+      }
+    }()),
     defaultIsFilterable: true,
     defaultIsOrderable: true,
     graphql: {
