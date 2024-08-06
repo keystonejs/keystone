@@ -813,7 +813,7 @@ importers:
         version: 5.17.0
       typescript:
         specifier: 'catalog:'
-        version: 5.5.3
+        version: 5.5.4
 
   examples/custom-field:
     dependencies:
