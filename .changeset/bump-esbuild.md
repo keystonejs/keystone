@@ -1,5 +1,5 @@
 ---
-'@keystone-6/core': patch
+'@keystone-6/core': minor
 ---
 
-Updates `esbuild` to ^0.23.0
+Update `esbuild` to ^0.23.0

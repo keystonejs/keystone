@@ -1,5 +1,5 @@
 ---
-'@keystone-6/core': patch
+'@keystone-6/core': minor
 ---
 
-Updates `prisma` monorepo to version 5.17.0
+Update `prisma` monorepo to version 5.17.0

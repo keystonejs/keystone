@@ -1,5 +1,5 @@
 ---
-'@keystone-6/core': patch
+'@keystone-6/core': minor
 ---
 
-Updates `nextjs` to version 14
+Update `nextjs` to version 14
