@@ -2303,6 +2303,9 @@ importers:
       apply-ref:
         specifier: ^1.0.0
         version: 1.0.0
+      fp-ts:
+        specifier: ^2.5.0
+        version: 2.16.9
       graphql:
         specifier: 'catalog:'
         version: 16.9.0

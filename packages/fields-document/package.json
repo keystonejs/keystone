@@ -88,6 +88,7 @@
     "slate-hyperscript": "^0.100.0"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^6.0.0"
+    "@keystone-6/core": "^6.0.0",
+    "fp-ts": "^2.5.0"
   }
 }
