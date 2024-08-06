@@ -52,7 +52,7 @@ const componentBlocks: Record<string, ComponentBlock> = {
   }),
 }
 
-const validate = (val: unknown) => {
+function validate (val: unknown) {
   try {
     const node = validateAndNormalizeDocument(
       val,

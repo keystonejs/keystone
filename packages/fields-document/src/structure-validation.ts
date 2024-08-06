@@ -1,232 +1,146 @@
-import * as t from 'io-ts'
-import excess from 'io-ts-excess'
+import { z } from 'zod'
 import { type RelationshipData } from './DocumentEditor/component-blocks/api-shared'
-import { type Mark } from './DocumentEditor/utils'
 import { isValidURL } from './DocumentEditor/isValidURL'
-// note that this validation isn't about ensuring that a document has nodes in the right positions and things
-// it's just about validating that it's a valid slate structure
-// we'll then run normalize on it which will enforce more things
-const markValue = t.union([t.undefined, t.literal(true)])
 
-const text: t.Type<TextWithMarks> = excess(
-  t.type({
-    text: t.string,
-    bold: markValue,
-    italic: markValue,
-    underline: markValue,
-    strikethrough: markValue,
-    code: markValue,
-    superscript: markValue,
-    subscript: markValue,
-    keyboard: markValue,
-    insertMenu: markValue,
-  })
-)
-export type TextWithMarks = { type?: never, text: string } & {
-  [Key in Mark | 'insertMenu']: true | undefined;
-}
+// leaf types
+const zMarkValue = z.union([
+  z.literal(true),
+  z.undefined(),
+])
 
-type Inline = TextWithMarks | Link | Relationship
+const zText = z.object({
+  text: z.string(),
+  bold: zMarkValue,
+  italic: zMarkValue,
+  underline: zMarkValue,
+  strikethrough: zMarkValue,
+  code: zMarkValue,
+  superscript: zMarkValue,
+  subscript: zMarkValue,
+  keyboard: zMarkValue,
+  insertMenu: zMarkValue,
+}).strict()
 
-type Link = { type: 'link', href: string, children: Children }
+const zTextAlign = z.union([
+  z.undefined(),
+  z.literal('center'),
+  z.literal('end')
+])
 
-class URLType extends t.Type<string> {
-  readonly _tag: 'URLType' = 'URLType' as const
-  constructor () {
-    super(
-      'string',
-      (u): u is string => typeof u === 'string' && isValidURL(u),
-      (u, c) => (this.is(u) ? t.success(u) : t.failure(u, c)),
-      t.identity
-    )
-  }
-}
+// recursive types
+const zLink = z.object({
+  type: z.literal('link'),
+  href: z.string().refine(isValidURL),
+}).strict()
 
-const urlType = new URLType()
+const zHeading = z.object({
+  type: z.literal('heading'),
+  textAlign: zTextAlign,
+  level: z.union([
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+    z.literal(6),
+  ]),
+}).strict()
 
-const link: t.Type<Link> = t.recursion('Link', () =>
-  excess(
-    t.type({
-      type: t.literal('link'),
-      href: urlType,
-      children,
-    })
-  )
-)
+const zParagraph = z.object({
+  type: z.literal('paragraph'),
+  textAlign: zTextAlign,
+}).strict()
 
-type Relationship = {
-  type: 'relationship'
-  relationship: string
-  data: RelationshipData | null
-  children: Children
-}
+const zElements = z.object({
+  type: z.union([
+    z.literal('blockquote'),
+    z.literal('layout-area'),
+    z.literal('code'),
+    z.literal('divider'),
+    z.literal('list-item'),
+    z.literal('list-item-content'),
+    z.literal('ordered-list'),
+    z.literal('unordered-list'),
+  ]),
+}).strict()
 
-const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
-  excess(
-    t.type({
-      type: t.literal('relationship'),
-      relationship: t.string,
-      data: t.union([t.null, relationshipData]),
-      children,
-    })
-  )
-)
+const zLayout = z.object({
+  type: z.literal('layout'),
+  layout: z.array(z.number()),
+}).strict()
 
-const inline = t.union([text, link, relationship])
+const zRelationshipData = z.object({
+  id: z.string(),
+  label: z.string().optional(),
+  data: z.record(z.string(), z.any()).optional(),
+}).strict()
 
-type Children = (Block | Inline)[]
+const zRelationship = z.object({
+  type: z.literal('relationship'),
+  relationship: z.string(),
+  data: z.union([zRelationshipData, z.null()]),
+}).strict()
 
-const layoutArea: t.Type<Layout> = t.recursion('Layout', () =>
-  excess(
-    t.type({
-      type: t.literal('layout'),
-      layout: t.array(t.number),
-      children,
-    })
-  )
-)
+const zComponentBlock = z.object({
+  type: z.literal('component-block'),
+  component: z.string(),
+  props: z.record(z.string(), z.any()),
+}).strict()
 
-type Layout = {
-  type: 'layout'
-  layout: number[]
-  children: Children
-}
+const zComponentProp = z.object({
+  type: z.union([
+    z.literal('component-block-prop'),
+    z.literal('component-inline-prop'),
+  ]),
+  propPath: z.array(z.union([z.string(), z.number()])).optional(),
+}).strict()
 
-const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChildrenElements', () =>
-  excess(
-    t.type({
-      type: t.union([
-        t.literal('blockquote'),
-        t.literal('layout-area'),
-        t.literal('code'),
-        t.literal('divider'),
-        t.literal('list-item'),
-        t.literal('list-item-content'),
-        t.literal('ordered-list'),
-        t.literal('unordered-list'),
-      ]),
-      children,
-    })
-  )
-)
+type Children =
+  // inline
+  | (z.infer<typeof zText>)
+  | (z.infer<typeof zLink> & { children: Children[] })
+  | (z.infer<typeof zRelationship> & { children: Children[] })
+  // block
+  | (z.infer<typeof zComponentBlock> & { children: Children[] })
+  | (z.infer<typeof zComponentProp> & { children: Children[] })
+  | (z.infer<typeof zElements> & { children: Children[] })
+  | (z.infer<typeof zHeading> & { children: Children[] })
+  | (z.infer<typeof zLayout> & { children: Children[] })
+  | (z.infer<typeof zParagraph> & { children: Children[] })
 
-type OnlyChildrenElements = {
-  type:
-    | 'blockquote'
-    | 'layout-area'
-    | 'code'
-    | 'divider'
-    | 'list-item'
-    | 'list-item-content'
-    | 'ordered-list'
-    | 'unordered-list'
-  children: Children
-}
+const zBlock: z.ZodType<Children> = z.union([
+  zComponentBlock.extend({ children: z.lazy(() => zChildren) }),
+  zComponentProp.extend({ children: z.lazy(() => zChildren) }),
+  zElements.extend({ children: z.lazy(() => zChildren) }),
+  zHeading.extend({ children: z.lazy(() => zChildren) }),
+  zLayout.extend({ children: z.lazy(() => zChildren) }),
+  zParagraph.extend({ children: z.lazy(() => zChildren) }),
+])
 
-const textAlign = t.union([t.undefined, t.literal('center'), t.literal('end')])
+const zInline: z.ZodType<Children> = z.union([
+  zText,
+  zLink.extend({ children: z.lazy(() => zChildren) }),
+  zRelationship.extend({ children: z.lazy(() => zChildren) }),
+])
 
-const heading: t.Type<Heading> = t.recursion('Heading', () =>
-  excess(
-    t.type({
-      type: t.literal('heading'),
-      textAlign,
-      level: t.union([
-        t.literal(1),
-        t.literal(2),
-        t.literal(3),
-        t.literal(4),
-        t.literal(5),
-        t.literal(6),
-      ]),
-      children,
-    })
-  )
-)
+const zChildren: z.ZodType<Children[]> = z.array(z.union([
+  zBlock,
+  zInline,
+]))
 
-type Heading = {
-  type: 'heading'
-  level: 1 | 2 | 3 | 4 | 5 | 6
-  textAlign: 'center' | 'end' | undefined
-  children: Children
-}
+const zEditorCodec = z.array(zBlock)
 
-type Paragraph = {
-  type: 'paragraph'
-  textAlign: 'center' | 'end' | undefined
-  children: Children
-}
-
-const paragraph: t.Type<Paragraph> = t.recursion('Paragraph', () =>
-  excess(
-    t.type({
-      type: t.literal('paragraph'),
-      textAlign,
-      children,
-    })
-  )
-)
-
-const relationshipData: t.Type<RelationshipData> = excess(
-  t.type({
-    id: t.string,
-    label: t.union([t.undefined, t.string]),
-    data: t.union([t.undefined, t.record(t.string, t.any)]),
-  })
-)
-
-type ComponentBlock = {
-  type: 'component-block'
-  component: string
-  props: Record<string, any>
-  children: Children
-}
-
-const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () =>
-  excess(
-    t.type({
-      type: t.literal('component-block'),
-      component: t.string,
-      props: t.record(t.string, t.any),
-      children,
-    })
-  )
-)
-
-type ComponentProp = {
-  type: 'component-inline-prop' | 'component-block-prop'
-  propPath: (string | number)[] | undefined
-  children: Children
-}
-
-const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>
-  excess(
-    t.type({
-      type: t.union([t.literal('component-inline-prop'), t.literal('component-block-prop')]),
-      propPath: t.union([t.array(t.union([t.string, t.number])), t.undefined]),
-      children,
-    })
-  )
-)
-
-type Block = Layout | OnlyChildrenElements | Heading | ComponentBlock | ComponentProp | Paragraph
-
-const block: t.Type<Block> = t.recursion('Element', () =>
-  t.union([layoutArea, onlyChildrenElements, heading, componentBlock, componentProp, paragraph])
-)
-
-export type ElementFromValidation = Block | Inline
-
-const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union([block, inline])))
-
-export const editorCodec = t.array(block)
+// exports
+export type TextWithMarks = z.infer<typeof zText>
+export type ElementFromValidation = Children
 
 export function isRelationshipData (val: unknown): val is RelationshipData {
-  return relationshipData.validate(val, [])._tag === 'Right'
+  return zRelationshipData.safeParse(val).success
 }
 
 export function validateDocumentStructure (val: unknown): asserts val is ElementFromValidation[] {
-  const result = editorCodec.validate(val, [])
-  if (result._tag === 'Left') {
+  const result = zEditorCodec.safeParse(val)
+  if (!result.success) {
     throw new Error('Invalid document structure')
   }
 }

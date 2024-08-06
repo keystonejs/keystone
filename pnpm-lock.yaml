@@ -2322,12 +2322,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.9.0
-      io-ts:
-        specifier: ^2.2.16
-        version: 2.2.21(fp-ts@2.16.9)
-      io-ts-excess:
-        specifier: ^1.0.1
-        version: 1.0.1(fp-ts@2.16.9)
       is-hotkey:
         specifier: ^0.2.0
         version: 0.2.0
@@ -2367,6 +2361,9 @@ importers:
       slate-react:
         specifier: ^0.107.0
         version: 0.107.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -8098,9 +8095,6 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
-  fp-ts@2.16.9:
-    resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
-
   fragment-cache@0.2.1:
     resolution: {integrity: sha512-GMBAbW9antB8iZRHLoGw0b3HANt57diZYFO/HL1JGIC1MjKrdmhxvrJbupnVvpys0zsz7yBApXdQyfepKly2kA==}
     engines: {node: '>=0.10.0'}
@@ -8606,16 +8600,6 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
-
-  io-ts-excess@1.0.1:
-    resolution: {integrity: sha512-yJQ+pGztBMIQmfsKfSAeQ1w7UJywvj37NIFriMAZ2tMLTpp1IngUvtxqI+QlW+RlXDn7cthMxrpJ0CnOx6Dn+w==}
-    peerDependencies:
-      fp-ts: ^2.0.0
-
-  io-ts@2.2.21:
-    resolution: {integrity: sha512-zz2Z69v9ZIC3mMLYWIeoUcwWD6f+O7yP92FMVVaXEOSZH1jnVBmET/urd/uoarD1WGBY4rCj8TAyMPzsGNzMFQ==}
-    peerDependencies:
-      fp-ts: ^2.5.0
 
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
@@ -19872,8 +19856,6 @@ snapshots:
 
   forwarded@0.2.0: {}
 
-  fp-ts@2.16.9: {}
-
   fragment-cache@0.2.1:
     dependencies:
       map-cache: 0.2.2
@@ -20492,15 +20474,6 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
-
-  io-ts-excess@1.0.1(fp-ts@2.16.9):
-    dependencies:
-      fp-ts: 2.16.9
-      io-ts: 2.2.21(fp-ts@2.16.9)
-
-  io-ts@2.2.21(fp-ts@2.16.9):
-    dependencies:
-      fp-ts: 2.16.9
 
   ip-address@9.0.5:
     dependencies:
