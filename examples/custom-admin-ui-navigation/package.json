@@ -10,12 +10,12 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:",
-    "react": "catalog:"
+    "@keystone-6/core": "^6.1.0",
+    "@prisma/client": "5.17.0",
+    "react": "^18.3.1"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "typescript": "^5.5.0"
   }
 }

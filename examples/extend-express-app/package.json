@@ -10,14 +10,14 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:",
-    "@types/express": "catalog:",
-    "express": "catalog:"
+    "@keystone-6/core": "^6.1.0",
+    "@prisma/client": "5.17.0",
+    "@types/express": "^4.17.14",
+    "express": "^4.19.2"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "tsx": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
   }
 }
