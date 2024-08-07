@@ -4,6 +4,26 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@keystone-6/core': workspace:^
+  '@keystone-6/auth': workspace:^
+  '@keystone-6/cloudinary': workspace:^
+  '@keystone-6/document-renderer': workspace:^
+  '@keystone-6/fields-document': workspace:^
+  '@keystone-ui/core': workspace:^
+  '@keystone-ui/button': workspace:^
+  '@keystone-ui/fields': workspace:^
+  '@keystone-ui/icons': workspace:^
+  '@keystone-ui/loading': workspace:^
+  '@keystone-ui/modals': workspace:^
+  '@keystone-ui/notice': workspace:^
+  '@keystone-ui/options': workspace:^
+  '@keystone-ui/pill': workspace:^
+  '@keystone-ui/popover': workspace:^
+  '@keystone-ui/segmented-control': workspace:^
+  '@keystone-ui/toast': workspace:^
+  '@keystone-ui/tooltip': workspace:^
+
 importers:
 
   .:
@@ -597,8 +617,8 @@ importers:
   examples/assets-local:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -613,8 +633,8 @@ importers:
   examples/assets-s3:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -632,11 +652,11 @@ importers:
   examples/auth:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -651,14 +671,14 @@ importers:
   examples/cloudinary:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/cloudinary':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0))(react-dom@18.3.1(react@18.3.1))
+        specifier: workspace:^
+        version: link:../../packages/cloudinary
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -676,11 +696,11 @@ importers:
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../design-system/packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -704,8 +724,8 @@ importers:
   examples/custom-admin-ui-navigation:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -723,11 +743,11 @@ importers:
   examples/custom-admin-ui-pages:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../design-system/packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -751,8 +771,8 @@ importers:
   examples/custom-esbuild:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -767,11 +787,11 @@ importers:
   examples/custom-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: 7.2.0(@types/react@18.3.3)
+        specifier: workspace:^
+        version: link:../../design-system/packages/fields
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -789,20 +809,20 @@ importers:
         specifier: ^11.7.1
         version: 11.13.0
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-ui/button':
-        specifier: ^7.0.2
-        version: 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
+        specifier: workspace:^
+        version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: 7.2.0(@types/react@18.3.3)
+        specifier: workspace:^
+        version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: ^6.0.2
-        version: 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../design-system/packages/icons
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -826,8 +846,8 @@ importers:
   examples/custom-id:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
         version: 2.2.2
@@ -848,8 +868,8 @@ importers:
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -873,11 +893,11 @@ importers:
   examples/custom-session:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -892,11 +912,11 @@ importers:
   examples/custom-session-invalidation:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -911,11 +931,11 @@ importers:
   examples/custom-session-jwt:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -936,8 +956,8 @@ importers:
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -955,8 +975,8 @@ importers:
   examples/custom-session-passport:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -995,11 +1015,11 @@ importers:
   examples/custom-session-redis:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1017,8 +1037,8 @@ importers:
   examples/default-values:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1033,14 +1053,14 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
-        version: 1.1.2(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1073,29 +1093,29 @@ importers:
   examples/document-field-customisation/keystone-server:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../../packages/fields-document
       '@keystone-ui/button':
-        specifier: ^7.0.1
-        version: 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
+        specifier: workspace:^
+        version: link:../../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.1
-        version: 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: 7.2.0(@types/react@18.3.3)
+        specifier: workspace:^
+        version: link:../../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: ^6.0.1
-        version: 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../design-system/packages/icons
       '@keystone-ui/tooltip':
-        specifier: ^6.0.1
-        version: 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../design-system/packages/tooltip
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1113,8 +1133,8 @@ importers:
   examples/document-field-customisation/nextjs-frontend:
     dependencies:
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
-        version: 1.1.2(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../packages/document-renderer
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1147,8 +1167,8 @@ importers:
   examples/empty-lists:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1163,8 +1183,8 @@ importers:
   examples/extend-express-app:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1191,8 +1211,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1210,8 +1230,8 @@ importers:
   examples/extend-graphql-schema-graphql-ts:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1229,8 +1249,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1249,7 +1269,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.0
-        version: 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.13.0
@@ -1257,17 +1277,17 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-ui/button':
-        specifier: ^7.0.2
-        version: 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
+        specifier: workspace:^
+        version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: 7.2.0(@types/react@18.3.3)
+        specifier: workspace:^
+        version: link:../../design-system/packages/fields
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1300,11 +1320,11 @@ importers:
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1319,8 +1339,8 @@ importers:
   examples/field-groups:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1338,8 +1358,8 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2(astro@4.13.1(@types/node@20.14.14)(terser@5.31.3)(typescript@5.5.4))
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1366,17 +1386,17 @@ importers:
   examples/framework-nextjs-app-directory:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
-        version: 1.1.2(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1418,14 +1438,14 @@ importers:
   examples/framework-nextjs-pages-directory:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1473,14 +1493,14 @@ importers:
   examples/framework-nextjs-two-servers/keystone-server:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1495,8 +1515,8 @@ importers:
   examples/framework-nextjs-two-servers/nextjs-frontend:
     dependencies:
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
-        version: 1.1.2(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../../packages/document-renderer
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -1529,8 +1549,8 @@ importers:
   examples/framework-remix:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1572,8 +1592,8 @@ importers:
   examples/graphql-ts-gql:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1603,8 +1623,8 @@ importers:
   examples/hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1619,8 +1639,8 @@ importers:
   examples/limits:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1638,8 +1658,8 @@ importers:
   examples/omit:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1654,8 +1674,8 @@ importers:
   examples/reuse:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1670,8 +1690,8 @@ importers:
   examples/script:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1689,8 +1709,8 @@ importers:
   examples/singleton:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1708,11 +1728,11 @@ importers:
   examples/testing:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1733,8 +1753,8 @@ importers:
   examples/transactions:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1749,11 +1769,11 @@ importers:
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
-        version: 9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)
+        specifier: workspace:^
+        version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1771,11 +1791,11 @@ importers:
   examples/usecase-blog-moderated:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1790,8 +1810,8 @@ importers:
   examples/usecase-relationship-union:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1806,11 +1826,11 @@ importers:
   examples/usecase-roles:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.0.0
-        version: 8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: workspace:^
+        version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1825,8 +1845,8 @@ importers:
   examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1844,8 +1864,8 @@ importers:
   examples/usecase-versioning:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1863,8 +1883,8 @@ importers:
   examples/virtual-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
         version: 5.17.0(prisma@5.17.0)
@@ -1938,8 +1958,8 @@ importers:
         version: 18.3.1
     devDependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
-        version: 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
+        specifier: workspace:^
+        version: link:../core
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.21
@@ -1960,7 +1980,7 @@ importers:
         version: 1.0.3(graphql@16.9.0)
       '@apollo/client':
         specifier: ^3.9.2
-        version: 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@apollo/server':
         specifier: ^4.10.0
         version: 4.10.5(graphql@16.9.0)
@@ -2050,7 +2070,7 @@ importers:
         version: 1.1.2
       apollo-upload-client:
         specifier: ^17.0.0
-        version: 17.0.0(@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)
+        version: 17.0.0(@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2348,10 +2368,10 @@ importers:
   tests/admin-ui-tests:
     devDependencies:
       '@keystone-6/auth':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       '@manypkg/find-root':
         specifier: ^1.1.0
@@ -2418,13 +2438,13 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@keystone-6/auth':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
@@ -2472,7 +2492,7 @@ importers:
   tests/benchmarks:
     dependencies:
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       cookie-signature:
         specifier: ^1.1.0
@@ -2497,13 +2517,13 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
       '@keystone-6/auth':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
@@ -2563,28 +2583,28 @@ importers:
   tests/sandbox:
     dependencies:
       '@keystone-6/auth':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@keystone-ui/button':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../design-system/packages/icons
       '@keystone-ui/tooltip':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../design-system/packages/tooltip
       '@prisma/client':
         specifier: 5.17.0
@@ -2603,7 +2623,7 @@ importers:
   tests/test-projects/basic:
     dependencies:
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -2619,7 +2639,7 @@ importers:
   tests/test-projects/crud-notifications:
     dependencies:
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -2635,7 +2655,7 @@ importers:
   tests/test-projects/live-reloading:
     dependencies:
       '@keystone-6/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -3817,12 +3837,6 @@ packages:
       '@envelop/core': ^3.0.6
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
 
-  '@esbuild/aix-ppc64@0.20.2':
-    resolution: {integrity: sha512-D+EBOJHXdNZcLJRBkhENNG8Wji2kgc9AZ9KiPr1JuZjsNtyHzrsfLRrY0tk2H2aoFu6RANO1y1iPPUCDYWkb5g==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
-    os: [aix]
-
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
     engines: {node: '>=12'}
@@ -3837,12 +3851,6 @@ packages:
 
   '@esbuild/android-arm64@0.17.6':
     resolution: {integrity: sha512-YnYSCceN/dUzUr5kdtUzB+wZprCafuD89Hs0Aqv9QSdwhYQybhXTaSTcrl6X/aWThn1a/j0eEpUBGOE7269REg==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [android]
-
-  '@esbuild/android-arm64@0.20.2':
-    resolution: {integrity: sha512-mRzjLacRtl/tWU0SvD8lUEwb61yP9cqQo6noDZP/O8VkwafSYwZ4yWy24kan8jE/IMERpYncRt2dw438LP3Xmg==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
@@ -3865,12 +3873,6 @@ packages:
     cpu: [arm]
     os: [android]
 
-  '@esbuild/android-arm@0.20.2':
-    resolution: {integrity: sha512-t98Ra6pw2VaDhqNWO2Oph2LXbz/EJcnLmKLGBJwEwXX/JAN83Fym1rU8l0JUWK6HkIbWONCSSatf4sf2NBRx/w==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [android]
-
   '@esbuild/android-arm@0.21.5':
     resolution: {integrity: sha512-vCPvzSjpPHEi1siZdlvAlsPxXl7WbOVUBBAowWug4rJHb68Ox8KualB+1ocNvT5fjv6wpkX6o/iEpbDrf68zcg==}
     engines: {node: '>=12'}
@@ -3885,12 +3887,6 @@ packages:
 
   '@esbuild/android-x64@0.17.6':
     resolution: {integrity: sha512-MVcYcgSO7pfu/x34uX9u2QIZHmXAB7dEiLQC5bBl5Ryqtpj9lT2sg3gNDEsrPEmimSJW2FXIaxqSQ501YLDsZQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [android]
-
-  '@esbuild/android-x64@0.20.2':
-    resolution: {integrity: sha512-btzExgV+/lMGDDa194CcUQm53ncxzeBrWJcncOBxuC6ndBkKxnHdFJn86mCIgTELsooUmwUm9FkhSp5HYu00Rg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [android]
@@ -3913,12 +3909,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@esbuild/darwin-arm64@0.20.2':
-    resolution: {integrity: sha512-4J6IRT+10J3aJH3l1yzEg9y3wkTDgDk7TSDFX+wKFiWjqWp/iCfLIYzGyasx9l0SAFPT1HwSCR+0w/h1ES/MjA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@esbuild/darwin-arm64@0.21.5':
     resolution: {integrity: sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==}
     engines: {node: '>=12'}
@@ -3933,12 +3923,6 @@ packages:
 
   '@esbuild/darwin-x64@0.17.6':
     resolution: {integrity: sha512-xh2A5oPrYRfMFz74QXIQTQo8uA+hYzGWJFoeTE8EvoZGHb+idyV4ATaukaUvnnxJiauhs/fPx3vYhU4wiGfosg==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@esbuild/darwin-x64@0.20.2':
-    resolution: {integrity: sha512-tBcXp9KNphnNH0dfhv8KYkZhjc+H3XBkF5DKtswJblV7KlT9EI2+jeA8DgBjp908WEuYll6pF+UStUCfEpdysA==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [darwin]
@@ -3961,12 +3945,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
 
-  '@esbuild/freebsd-arm64@0.20.2':
-    resolution: {integrity: sha512-d3qI41G4SuLiCGCFGUrKsSeTXyWG6yem1KcGZVS+3FYlYhtNoNgYrWcvkOoaqMhwXSMrZRl69ArHsGJ9mYdbbw==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [freebsd]
-
   '@esbuild/freebsd-arm64@0.21.5':
     resolution: {integrity: sha512-5JcRxxRDUJLX8JXp/wcBCy3pENnCgBR9bN6JsY4OmhfUtIHe3ZW0mawA7+RDAcMLrMIZaf03NlQiX9DGyB8h4g==}
     engines: {node: '>=12'}
@@ -3981,12 +3959,6 @@ packages:
 
   '@esbuild/freebsd-x64@0.17.6':
     resolution: {integrity: sha512-Uh3HLWGzH6FwpviUcLMKPCbZUAFzv67Wj5MTwK6jn89b576SR2IbEp+tqUHTr8DIl0iDmBAf51MVaP7pw6PY5Q==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [freebsd]
-
-  '@esbuild/freebsd-x64@0.20.2':
-    resolution: {integrity: sha512-d+DipyvHRuqEeM5zDivKV1KuXn9WeRX6vqSqIDgwIfPQtwMP4jaDsQsDncjTDDsExT4lR/91OLjRo8bmC1e+Cw==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [freebsd]
@@ -4009,12 +3981,6 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@esbuild/linux-arm64@0.20.2':
-    resolution: {integrity: sha512-9pb6rBjGvTFNira2FLIWqDk/uaf42sSyLE8j1rnUpuzsODBq7FvpwHYZxQ/It/8b+QOS1RYfqgGFNLRI+qlq2A==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [linux]
-
   '@esbuild/linux-arm64@0.21.5':
     resolution: {integrity: sha512-ibKvmyYzKsBeX8d8I7MH/TMfWDXBF3db4qM6sy+7re0YXya+K1cem3on9XgdT2EQGMu4hQyZhan7TeQ8XkGp4Q==}
     engines: {node: '>=12'}
@@ -4029,12 +3995,6 @@ packages:
 
   '@esbuild/linux-arm@0.17.6':
     resolution: {integrity: sha512-7YdGiurNt7lqO0Bf/U9/arrPWPqdPqcV6JCZda4LZgEn+PTQ5SMEI4MGR52Bfn3+d6bNEGcWFzlIxiQdS48YUw==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
-
-  '@esbuild/linux-arm@0.20.2':
-    resolution: {integrity: sha512-VhLPeR8HTMPccbuWWcEUD1Az68TqaTYyj6nfE4QByZIQEQVWBB8vup8PpR7y1QHL3CpcF6xd5WVBU/+SBEvGTg==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [linux]
@@ -4057,12 +4017,6 @@ packages:
     cpu: [ia32]
     os: [linux]
 
-  '@esbuild/linux-ia32@0.20.2':
-    resolution: {integrity: sha512-o10utieEkNPFDZFQm9CoP7Tvb33UutoJqg3qKf1PWVeeJhJw0Q347PxMvBgVVFgouYLGIhFYG0UGdBumROyiig==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [linux]
-
   '@esbuild/linux-ia32@0.21.5':
     resolution: {integrity: sha512-YvjXDqLRqPDl2dvRODYmmhz4rPeVKYvppfGYKSNGdyZkA01046pLWyRKKI3ax8fbJoK5QbxblURkwK/MWY18Tg==}
     engines: {node: '>=12'}
@@ -4077,12 +4031,6 @@ packages:
 
   '@esbuild/linux-loong64@0.17.6':
     resolution: {integrity: sha512-y2NX1+X/Nt+izj9bLoiaYB9YXT/LoaQFYvCkVD77G/4F+/yuVXYCWz4SE9yr5CBMbOxOfBcy/xFL4LlOeNlzYQ==}
-    engines: {node: '>=12'}
-    cpu: [loong64]
-    os: [linux]
-
-  '@esbuild/linux-loong64@0.20.2':
-    resolution: {integrity: sha512-PR7sp6R/UC4CFVomVINKJ80pMFlfDfMQMYynX7t1tNTeivQ6XdX5r2XovMmha/VjR1YN/HgHWsVcTRIMkymrgQ==}
     engines: {node: '>=12'}
     cpu: [loong64]
     os: [linux]
@@ -4105,12 +4053,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
 
-  '@esbuild/linux-mips64el@0.20.2':
-    resolution: {integrity: sha512-4BlTqeutE/KnOiTG5Y6Sb/Hw6hsBOZapOVF6njAESHInhlQAghVVZL1ZpIctBOoTFbQyGW+LsVYZ8lSSB3wkjA==}
-    engines: {node: '>=12'}
-    cpu: [mips64el]
-    os: [linux]
-
   '@esbuild/linux-mips64el@0.21.5':
     resolution: {integrity: sha512-IajOmO+KJK23bj52dFSNCMsz1QP1DqM6cwLUv3W1QwyxkyIWecfafnI555fvSGqEKwjMXVLokcV5ygHW5b3Jbg==}
     engines: {node: '>=12'}
@@ -4125,12 +4067,6 @@ packages:
 
   '@esbuild/linux-ppc64@0.17.6':
     resolution: {integrity: sha512-AmLhMzkM8JuqTIOhxnX4ubh0XWJIznEynRnZAVdA2mMKE6FAfwT2TWKTwdqMG+qEaeyDPtfNoZRpJbD4ZBv0Tg==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
-    os: [linux]
-
-  '@esbuild/linux-ppc64@0.20.2':
-    resolution: {integrity: sha512-rD3KsaDprDcfajSKdn25ooz5J5/fWBylaaXkuotBDGnMnDP1Uv5DLAN/45qfnf3JDYyJv/ytGHQaziHUdyzaAg==}
     engines: {node: '>=12'}
     cpu: [ppc64]
     os: [linux]
@@ -4153,12 +4089,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
-  '@esbuild/linux-riscv64@0.20.2':
-    resolution: {integrity: sha512-snwmBKacKmwTMmhLlz/3aH1Q9T8v45bKYGE3j26TsaOVtjIag4wLfWSiZykXzXuE1kbCE+zJRmwp+ZbIHinnVg==}
-    engines: {node: '>=12'}
-    cpu: [riscv64]
-    os: [linux]
-
   '@esbuild/linux-riscv64@0.21.5':
     resolution: {integrity: sha512-2HdXDMd9GMgTGrPWnJzP2ALSokE/0O5HhTUvWIbD3YdjME8JwvSCnNGBnTThKGEB91OZhzrJ4qIIxk/SBmyDDA==}
     engines: {node: '>=12'}
@@ -4173,12 +4103,6 @@ packages:
 
   '@esbuild/linux-s390x@0.17.6':
     resolution: {integrity: sha512-SPUiz4fDbnNEm3JSdUW8pBJ/vkop3M1YwZAVwvdwlFLoJwKEZ9L98l3tzeyMzq27CyepDQ3Qgoba44StgbiN5Q==}
-    engines: {node: '>=12'}
-    cpu: [s390x]
-    os: [linux]
-
-  '@esbuild/linux-s390x@0.20.2':
-    resolution: {integrity: sha512-wcWISOobRWNm3cezm5HOZcYz1sKoHLd8VL1dl309DiixxVFoFe/o8HnwuIwn6sXre88Nwj+VwZUvJf4AFxkyrQ==}
     engines: {node: '>=12'}
     cpu: [s390x]
     os: [linux]
@@ -4201,12 +4125,6 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@esbuild/linux-x64@0.20.2':
-    resolution: {integrity: sha512-1MdwI6OOTsfQfek8sLwgyjOXAu+wKhLEoaOLTjbijk6E2WONYpH9ZU2mNtR+lZ2B4uwr+usqGuVfFT9tMtGvGw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [linux]
-
   '@esbuild/linux-x64@0.21.5':
     resolution: {integrity: sha512-1rYdTpyv03iycF1+BhzrzQJCdOuAOtaqHTWJZCWvijKD2N5Xu0TtVC8/+1faWqcP9iBCWOmjmhoH94dH82BxPQ==}
     engines: {node: '>=12'}
@@ -4221,12 +4139,6 @@ packages:
 
   '@esbuild/netbsd-x64@0.17.6':
     resolution: {integrity: sha512-EanJqcU/4uZIBreTrnbnre2DXgXSa+Gjap7ifRfllpmyAU7YMvaXmljdArptTHmjrkkKm9BK6GH5D5Yo+p6y5A==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [netbsd]
-
-  '@esbuild/netbsd-x64@0.20.2':
-    resolution: {integrity: sha512-K8/DhBxcVQkzYc43yJXDSyjlFeHQJBiowJ0uVL6Tor3jGQfSGHNNJcWxNbOI8v5k82prYqzPuwkzHt3J1T1iZQ==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [netbsd]
@@ -4255,12 +4167,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
 
-  '@esbuild/openbsd-x64@0.20.2':
-    resolution: {integrity: sha512-eMpKlV0SThJmmJgiVyN9jTPJ2VBPquf6Kt/nAoo6DgHAoN57K15ZghiHaMvqjCye/uU4X5u3YSMgVBI1h3vKrQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [openbsd]
-
   '@esbuild/openbsd-x64@0.21.5':
     resolution: {integrity: sha512-HLNNw99xsvx12lFBUwoT8EVCsSvRNDVxNpjZ7bPn947b8gJPzeHWyNVhFsaerc0n3TsbOINvRP2byTZ5LKezow==}
     engines: {node: '>=12'}
@@ -4275,12 +4181,6 @@ packages:
 
   '@esbuild/sunos-x64@0.17.6':
     resolution: {integrity: sha512-gnMnMPg5pfMkZvhHee21KbKdc6W3GR8/JuE0Da1kjwpK6oiFU3nqfHuVPgUX2rsOx9N2SadSQTIYV1CIjYG+xw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [sunos]
-
-  '@esbuild/sunos-x64@0.20.2':
-    resolution: {integrity: sha512-2UyFtRC6cXLyejf/YEld4Hajo7UHILetzE1vsRcGL3earZEW77JxrFjH4Ez2qaTiEfMgAXxfAZCm1fvM/G/o8w==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [sunos]
@@ -4303,12 +4203,6 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@esbuild/win32-arm64@0.20.2':
-    resolution: {integrity: sha512-GRibxoawM9ZCnDxnP3usoUDO9vUkpAxIIZ6GQI+IlVmr5kP3zUq+l17xELTHMWTWzjxa2guPNyrpq1GWmPvcGQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
-
   '@esbuild/win32-arm64@0.21.5':
     resolution: {integrity: sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==}
     engines: {node: '>=12'}
@@ -4327,12 +4221,6 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@esbuild/win32-ia32@0.20.2':
-    resolution: {integrity: sha512-HfLOfn9YWmkSKRQqovpnITazdtquEW8/SoHW7pWpuEeguaZI4QnCRW6b+oZTztdBnZOS2hqJ6im/D5cPzBTTlQ==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [win32]
-
   '@esbuild/win32-ia32@0.21.5':
     resolution: {integrity: sha512-SWXFF1CL2RVNMaVs+BBClwtfZSvDgtL//G/smwAc5oVK/UPu2Gu9tIaRgFmYFFKrmg3SyAjSrElf0TiJ1v8fYA==}
     engines: {node: '>=12'}
@@ -4347,12 +4235,6 @@ packages:
 
   '@esbuild/win32-x64@0.17.6':
     resolution: {integrity: sha512-n6d8MOyUrNp6G4VSpRcgjs5xj4A91svJSaiwLIDWVWEsZtpN5FA9NlBbZHDmAJc2e8e6SF4tkBD3HAvPF+7igA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [win32]
-
-  '@esbuild/win32-x64@0.20.2':
-    resolution: {integrity: sha512-N49X4lJX27+l9jbLKSqZ6bKNjzQvHaT8IIFUy+YIqmXQdjYCToGWwOItDrfby14c78aDd5NHQl29xingXfCdLQ==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
@@ -4826,89 +4708,6 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
 
-  '@keystone-6/auth@8.0.0':
-    resolution: {integrity: sha512-WUXkU2abNv1OLMJzkPJxKVa6T3INKtIpjIT2BSV1qWI53hu4PMyKEDX3CSD4LCr+XZdchQeuVfX0/uv3GkAcFw==}
-    peerDependencies:
-      '@keystone-6/core': ^6.0.0
-      react: ^18.2.0
-
-  '@keystone-6/cloudinary@8.0.0':
-    resolution: {integrity: sha512-hV2KzC+Eym1aGMFk/f7TmzbND1RaQehyoF4yGDH5SxgC5oBa7sUfg5bjUxpMn9X4nq5DhkoU+ECG/qFTpzgIPA==}
-    peerDependencies:
-      '@keystone-6/core': ^6.0.0
-
-  '@keystone-6/core@6.1.0':
-    resolution: {integrity: sha512-g49oiaIyOHjGOC203dIRT/Qf33a6E7gwlpk2wdIewlH4zH+tTQbJFsogiSkhv7PjY/LTL7As+8Smfo+veWah4w==}
-    hasBin: true
-
-  '@keystone-6/document-renderer@1.1.2':
-    resolution: {integrity: sha512-fxnQL6xYTK/2xSrZ0dzBTC1Qpa4VVeXmZ+7mMvaZOWquttgvDQzBRY57q9zScRa0dAALNWU1xzq14OL8Kc+eBw==}
-    peerDependencies:
-      react: ^16.14.0 || 17 || 18
-
-  '@keystone-6/fields-document@9.0.0':
-    resolution: {integrity: sha512-Q5DX5Xp/tJHJX+a0l83r8WI335WfHlMKaS3lkmUmZeCLmAp0U8r4jClbE5KD3ClYAsP9s1w21OTPmd4aTetJWA==}
-    peerDependencies:
-      '@keystone-6/core': ^6.0.0
-
-  '@keystone-ui/button@7.0.2':
-    resolution: {integrity: sha512-bFuT3WtLRFWXGP0lMPRIxYG22u2BEvjP9blSeGGXQSvl3hC5Zh2r/BlylHeYaWFChcaRYRU2G/2QSLoPAvyDGQ==}
-
-  '@keystone-ui/core@5.0.2':
-    resolution: {integrity: sha512-0/rh2nhuQDyio1I8HWfeHUhHP3Adf9+RcsrtpJfcv+U6W3NsJnL/hX68WOYOSF7vYhFgtnuCx8a57xrK1xTsEQ==}
-    peerDependencies:
-      react: ^18.1.0
-      react-dom: ^18.1.0
-
-  '@keystone-ui/fields@7.2.0':
-    resolution: {integrity: sha512-9SXKzuHeuyxwJeGhl01oC8f9IzF5SFOFTIHTDEATMgbM/HFAKC8ygR74ZcRcwyr8rlnmmCMB2nQx1CGDUuEBVQ==}
-
-  '@keystone-ui/icons@6.0.2':
-    resolution: {integrity: sha512-myJ8AoLxJrcLYAVgH3u+hO6wO/ZeidraLzlwxOyLMgLLBJsWwOOYVRZv2nHp6S/G/gIa6UaCQKC4VI8wjvieVg==}
-    peerDependencies:
-      react: ^18.1.0
-
-  '@keystone-ui/loading@6.0.2':
-    resolution: {integrity: sha512-s72z2AcMzyVobKlbZ39JbyhtNrf7JMX6WaBYU59612OOXcOCYlc9X6Mt/AKUFYbx2uCOS8E1Fitxc+BT0Xoxwg==}
-
-  '@keystone-ui/modals@6.0.3':
-    resolution: {integrity: sha512-0FgmwOjRfxfS5enXrpBrLnh4Aseq+EOyWIQIfpIAUgpsTjkW3nR/RUcJZ8fzebUTvspvTeN9gfIGp0k9b87ZXg==}
-
-  '@keystone-ui/notice@6.0.2':
-    resolution: {integrity: sha512-SodZehvF0a5GmMx3LGXJW4i3QtNDTD9tnrOV+5EUb21f352z6kUVL+UxS9439ZnGvgyWETPYw/ZsGu19lD/2Ag==}
-
-  '@keystone-ui/options@6.0.2':
-    resolution: {integrity: sha512-JH5+hI0JNDTF7bTdmDMzrGh9k5tFH89B9AtQlmakLb/rD1ZQ35ztPwNV8U/WH+pyZXC9M72POkEwHMI9paq1mA==}
-    peerDependencies:
-      react: ^18.1.0
-
-  '@keystone-ui/pill@7.0.2':
-    resolution: {integrity: sha512-s4V588PvZuJr02ppTE01IgzRTnRCrC47wvwv7u2PLgmyyvP5HPMBOoTuwEIxdY0J8CWAWOOT8HCu+ME68G++HQ==}
-    peerDependencies:
-      react: ^18.1.0
-
-  '@keystone-ui/popover@6.0.2':
-    resolution: {integrity: sha512-E0WBEkoe+e0rjSAOBAFNKNHDVvIhx9YqEcwFLaCUUj6q93O7/gUq6wNrkrTfDAhz5O9tMgLkXE6jAHdvYFk/IQ==}
-    peerDependencies:
-      react: ^18.1.0
-      react-dom: ^18.1.0
-
-  '@keystone-ui/segmented-control@7.0.3':
-    resolution: {integrity: sha512-3ty1Civv9tw2e0hLEOMUWgc+el2Jy85PigPn9BcudIF/WFcr9RS+Y8QrCqYSzulY6/G2nOYYAGWWL1fa6jOGcQ==}
-    peerDependencies:
-      react: ^18.2.0
-
-  '@keystone-ui/toast@6.0.2':
-    resolution: {integrity: sha512-Q/0UNO58SgnIwmDDsVVjDmPAuM+xWEvXJSx/46FPAKNgHbPZYNewhuW+AHn8iCcP5xScByAIcqql5FRXKBxidA==}
-    peerDependencies:
-      react: ^18.1.0
-
-  '@keystone-ui/tooltip@6.0.2':
-    resolution: {integrity: sha512-lB+1TCcXvM2R8wKg7Wd7VIY10RaKjQXR/BKUf+trozl9v/NuFEX3Ym5GvanDQXyQgwfUC6xvUX3IuHjdhCrJIw==}
-    peerDependencies:
-      react: ^18.1.0
-      react-dom: ^18.1.0
-
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
 
@@ -4933,22 +4732,10 @@ packages:
   '@next/env@14.2.5':
     resolution: {integrity: sha512-/zZGkrTOsraVfYjGP8uM0p6r0BDT6xWpkjdVbcz66PJVSpwXX3yNiRycxAuDfBKGWBrZBXRuK/YVlkNgxHGwmA==}
 
-  '@next/swc-darwin-arm64@13.5.6':
-    resolution: {integrity: sha512-5nvXMzKtZfvcu4BhtV0KH1oGv4XEW+B+jOfmBdpFI3C7FrB/MfujRpWYSBBO64+qbW8pkZiSyQv9eiwnn5VIQA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@next/swc-darwin-arm64@14.2.5':
     resolution: {integrity: sha512-/9zVxJ+K9lrzSGli1///ujyRfon/ZneeZ+v4ptpiPoOU+GKZnm8Wj8ELWU1Pm7GHltYRBklmXMTUqM/DqQ99FQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@next/swc-darwin-x64@13.5.6':
-    resolution: {integrity: sha512-6cgBfxg98oOCSr4BckWjLLgiVwlL3vlLj8hXg2b+nDgm4bC/qVXXLfpLB9FHdoDu4057hzywbxKvmYGmi7yUzA==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [darwin]
 
   '@next/swc-darwin-x64@14.2.5':
@@ -4957,20 +4744,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@13.5.6':
-    resolution: {integrity: sha512-txagBbj1e1w47YQjcKgSU4rRVQ7uF29YpnlHV5xuVUsgCUf2FmyfJ3CPjZUvpIeXCJAoMCFAoGnbtX86BK7+sg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
   '@next/swc-linux-arm64-gnu@14.2.5':
     resolution: {integrity: sha512-vlhB8wI+lj8q1ExFW8lbWutA4M2ZazQNvMWuEDqZcuJJc78iUnLdPPunBPX8rC4IgT6lIx/adB+Cwrl99MzNaA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@next/swc-linux-arm64-musl@13.5.6':
-    resolution: {integrity: sha512-cGd+H8amifT86ZldVJtAKDxUqeFyLWW+v2NlBULnLAdWsiuuN8TuhVBt8ZNpCqcAuoruoSWynvMWixTFcroq+Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -4981,20 +4756,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@13.5.6':
-    resolution: {integrity: sha512-Mc2b4xiIWKXIhBy2NBTwOxGD3nHLmq4keFk+d4/WL5fMsB8XdJRdtUlL87SqVCTSaf1BRuQQf1HvXZcy+rq3Nw==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
   '@next/swc-linux-x64-gnu@14.2.5':
     resolution: {integrity: sha512-8XFikMSxWleYNryWIjiCX+gU201YS+erTUidKdyOVYi5qUQo/gRxv/3N1oZFCgqpesN6FPeqGM72Zve+nReVXQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@next/swc-linux-x64-musl@13.5.6':
-    resolution: {integrity: sha512-CFHvP9Qz98NruJiUnCe61O6GveKKHpJLloXbDSWRhqhkJdZD2zU5hG+gtVJR//tyW897izuHpM6Gtf6+sNgJPQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -5005,34 +4768,16 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@13.5.6':
-    resolution: {integrity: sha512-aFv1ejfkbS7PUa1qVPwzDHjQWQtknzAZWGTKYIAaS4NMtBlk3VyA6AYn593pqNanlicewqyl2jUhQAaFV/qXsg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-
   '@next/swc-win32-arm64-msvc@14.2.5':
     resolution: {integrity: sha512-1GpG2VhbspO+aYoMOQPQiqc/tG3LzmsdBH0LhnDS3JrtDx2QmzXe0B6mSZZiN3Bq7IOMXxv1nlsjzoS1+9mzZw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-ia32-msvc@13.5.6':
-    resolution: {integrity: sha512-XqqpHgEIlBHvzwG8sp/JXMFkLAfGLqkbVsyN+/Ih1mR8INb6YCc2x/Mbwi6hsAgUnqQztz8cvEbHJUbSl7RHDg==}
-    engines: {node: '>= 10'}
-    cpu: [ia32]
-    os: [win32]
-
   '@next/swc-win32-ia32-msvc@14.2.5':
     resolution: {integrity: sha512-Igh9ZlxwvCDsu6438FXlQTHlRno4gFpJzqPjSIBZooD22tKeI4fE/YMRoHVJHmrQ2P5YL1DoZ0qaOKkbeFWeMg==}
     engines: {node: '>= 10'}
     cpu: [ia32]
-    os: [win32]
-
-  '@next/swc-win32-x64-msvc@13.5.6':
-    resolution: {integrity: sha512-Cqfe1YmOS7k+5mGu92nl5ULkzpKuxJrP3+4AEuPmrpFZ3BHxTY3TnHmU1On3bFmFFs6FbTcdF58CCUProGpIGQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [win32]
 
   '@next/swc-win32-x64-msvc@14.2.5':
@@ -5123,15 +4868,6 @@ packages:
   '@preconstruct/next@4.0.0':
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
 
-  '@prisma/client@5.13.0':
-    resolution: {integrity: sha512-uYdfpPncbZ/syJyiYBwGZS8Gt1PTNoErNYMuqHDa2r30rNSFtgTA/LXsSk55R7pdRTMi5pHkeP9B14K6nHmwkg==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-
   '@prisma/client@5.17.0':
     resolution: {integrity: sha512-N2tnyKayT0Zf7mHjwEyE8iG7FwTmXDHFZ1GnNhQp0pJUObsuel4ZZ1XwfuAYkq5mRIiC/Kot0kt0tGCfLJ70Jw==}
     engines: {node: '>=16.13'}
@@ -5141,53 +4877,26 @@ packages:
       prisma:
         optional: true
 
-  '@prisma/debug@5.13.0':
-    resolution: {integrity: sha512-699iqlEvzyCj9ETrXhs8o8wQc/eVW+FigSsHpiskSFydhjVuwTJEfj/nIYqTaWFYuxiWQRfm3r01meuW97SZaQ==}
-
   '@prisma/debug@5.17.0':
     resolution: {integrity: sha512-l7+AteR3P8FXiYyo496zkuoiJ5r9jLQEdUuxIxNCN1ud8rdbH3GTxm+f+dCyaSv9l9WY+29L9czaVRXz9mULfg==}
-
-  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b':
-    resolution: {integrity: sha512-AyUuhahTINGn8auyqYdmxsN+qn0mw3eg+uhkp8zwknXYIqoT3bChG4RqNY/nfDkPvzWAPBa9mrDyBeOnWSgO6A==}
 
   '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053':
     resolution: {integrity: sha512-tUuxZZysZDcrk5oaNOdrBnnkoTtmNQPkzINFDjz7eG6vcs9AVDmA/F6K5Plsb2aQc/l5M2EnFqn3htng9FA4hg==}
 
-  '@prisma/engines@5.13.0':
-    resolution: {integrity: sha512-hIFLm4H1boj6CBZx55P4xKby9jgDTeDG0Jj3iXtwaaHmlD5JmiDkZhh8+DYWkTGchu+rRF36AVROLnk0oaqhHw==}
-
   '@prisma/engines@5.17.0':
     resolution: {integrity: sha512-+r+Nf+JP210Jur+/X8SIPLtz+uW9YA4QO5IXA+KcSOBe/shT47bCcRMTYCbOESw3FFYFTwe7vU6KTWHKPiwvtg==}
-
-  '@prisma/fetch-engine@5.13.0':
-    resolution: {integrity: sha512-Yh4W+t6YKyqgcSEB3odBXt7QyVSm0OQlBSldQF2SNXtmOgMX8D7PF/fvH6E6qBCpjB/yeJLy/FfwfFijoHI6sA==}
 
   '@prisma/fetch-engine@5.17.0':
     resolution: {integrity: sha512-ESxiOaHuC488ilLPnrv/tM2KrPhQB5TRris/IeIV4ZvUuKeaicCl4Xj/JCQeG9IlxqOgf1cCg5h5vAzlewN91Q==}
 
-  '@prisma/generator-helper@5.13.0':
-    resolution: {integrity: sha512-i+53beJ0dxkDrkHdsXxmeMf+eVhyhOIpL0SdBga8vwe0qHPrAIJ/lpuT/Hj0y5awTmq40qiUEmhXwCEuM/Z17w==}
-
   '@prisma/generator-helper@5.17.0':
     resolution: {integrity: sha512-UcYpNjjQNVHAjIxgjfXnF4fcKU7B2vuzG1L27xIV81xQoGSbxg7v670URBhd0/ZoE8v2Itj2bbuyezY1ViHVaA==}
-
-  '@prisma/get-platform@5.13.0':
-    resolution: {integrity: sha512-B/WrQwYTzwr7qCLifQzYOmQhZcFmIFhR81xC45gweInSUn2hTEbfKUPd2keAog+y5WI5xLAFNJ3wkXplvSVkSw==}
 
   '@prisma/get-platform@5.17.0':
     resolution: {integrity: sha512-UlDgbRozCP1rfJ5Tlkf3Cnftb6srGrEQ4Nm3og+1Se2gWmCZ0hmPIi+tQikGDUVLlvOWx3Gyi9LzgRP+HTXV9w==}
 
-  '@prisma/internals@5.13.0':
-    resolution: {integrity: sha512-OPMzS+IBPzCLT4s+IfGUbOhGFY51CFbokIFMZuoSeLKWE8UvDlitiXZ3OlVqDPUc0AlH++ysQHzDISHbZD+ZUg==}
-
   '@prisma/internals@5.17.0':
     resolution: {integrity: sha512-lWRniOVLgGckRlBI6U/zqfnuAXo3FbOl4WcU+nPxJWe9nFeJj9TN4vjaerufB9suZLQ+8b2FMeKz3KTdX/CGow==}
-
-  '@prisma/migrate@5.13.0':
-    resolution: {integrity: sha512-cFIYfX92yVyOGp/tYGGMShXVptlER23Yg05HoGdzjPBzy6jDQEBBs9VhlRA9I39I8zGFxNFOql+5pIGxktkGyw==}
-    peerDependencies:
-      '@prisma/generator-helper': '*'
-      '@prisma/internals': '*'
 
   '@prisma/migrate@5.17.0':
     resolution: {integrity: sha512-vZeTfMfmkPIW7MWfPrNVJbjrPhYpPXvL84SeA62WaBwRYwashGRM0SqT+Q5ZDF1mgIdzOnBtAvM4/GvGhj/2QQ==}
@@ -5195,14 +4904,8 @@ packages:
       '@prisma/generator-helper': '*'
       '@prisma/internals': '*'
 
-  '@prisma/prisma-schema-wasm@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b':
-    resolution: {integrity: sha512-+IhHvuE1wKlyOpJgwAhGop1oqEt+1eixrCeikBIshRhdX6LwjmtRxVxVMlP5nS1yyughmpfkysIW4jZTa+Zjuw==}
-
   '@prisma/prisma-schema-wasm@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053':
     resolution: {integrity: sha512-mlmuu0/IPSjMlMKsqdaVVAbGTJwp5sDMFd3ZFQxl4/K8FvH7tb2uy/lTHF0KyAJbveTiV+1yW9MBWspltXZZtg==}
-
-  '@prisma/schema-files-loader@5.13.0':
-    resolution: {integrity: sha512-6sVMoqobkWKsmzb98LfLiIt/aFRucWfkzSUBsqk7sc+h99xjynJt6aKtM2SSkyndFdWpRU0OiCHfQ9UlYUEJIw==}
 
   '@prisma/schema-files-loader@5.17.0':
     resolution: {integrity: sha512-rmbJZEvY9nOlLduVQww4fGmYM3aU7BYAw/st0K9QNq9dQoLONgQP7t8dhcOVZbBLyNNQu2k2gJdVXSHSY96b4A==}
@@ -6233,9 +5936,6 @@ packages:
 
   '@swc/helpers@0.5.12':
     resolution: {integrity: sha512-KMZNXiGibsW9kvZAO1Pam2JPTDBm+KSHMMHWdsyI/1DbIZjT2A6Gy3hblVXUMEDvUAKq+e0vL0X0o54owWji7g==}
-
-  '@swc/helpers@0.5.2':
-    resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
 
   '@swc/helpers@0.5.5':
     resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
@@ -7950,11 +7650,6 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  esbuild@0.20.2:
-    resolution: {integrity: sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==}
-    engines: {node: '>=12'}
-    hasBin: true
-
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
     engines: {node: '>=12'}
@@ -8337,9 +8032,6 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
-  fp-ts@2.16.9:
-    resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
-
   fragment-cache@0.2.1:
     resolution: {integrity: sha512-GMBAbW9antB8iZRHLoGw0b3HANt57diZYFO/HL1JGIC1MjKrdmhxvrJbupnVvpys0zsz7yBApXdQyfepKly2kA==}
     engines: {node: '>=0.10.0'}
@@ -8485,9 +8177,6 @@ packages:
   glob-parent@6.0.2:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
-
-  glob-to-regexp@0.4.1:
-    resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
@@ -8848,16 +8537,6 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
-
-  io-ts-excess@1.0.1:
-    resolution: {integrity: sha512-yJQ+pGztBMIQmfsKfSAeQ1w7UJywvj37NIFriMAZ2tMLTpp1IngUvtxqI+QlW+RlXDn7cthMxrpJ0CnOx6Dn+w==}
-    peerDependencies:
-      fp-ts: ^2.0.0
-
-  io-ts@2.2.21:
-    resolution: {integrity: sha512-zz2Z69v9ZIC3mMLYWIeoUcwWD6f+O7yP92FMVVaXEOSZH1jnVBmET/urd/uoarD1WGBY4rCj8TAyMPzsGNzMFQ==}
-    peerDependencies:
-      fp-ts: ^2.5.0
 
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
@@ -10190,21 +9869,6 @@ packages:
     peerDependencies:
       next: '*'
 
-  next@13.5.6:
-    resolution: {integrity: sha512-Y2wTcTbO4WwEsVb4A8VSnOsG1I9ok+h74q0ZdxkwM3EODqrs4pasq7O0iUxbcS9VtWMicG7f3+HAj0r1+NtKSw==}
-    engines: {node: '>=16.14.0'}
-    hasBin: true
-    peerDependencies:
-      '@opentelemetry/api': ^1.1.0
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      sass: ^1.3.0
-    peerDependenciesMeta:
-      '@opentelemetry/api':
-        optional: true
-      sass:
-        optional: true
-
   next@14.2.5:
     resolution: {integrity: sha512-0f8aRfBVL+mpzfBjYfQuLWh2WyAwtJXCRfkPF4UJ5qd2YwrHczsrSzXU4tRMV0OAxR8ZJZWPFn6uhSC56UTsLA==}
     engines: {node: '>=18.17.0'}
@@ -10770,11 +10434,6 @@ packages:
     resolution: {integrity: sha512-Rdf+HzBLR7KYjzpJ1rSoxT9ioO85nZngQEoFIhL07XhtJHlCU3SOz0GJ6+qvMyQe0Se+BV3qpe6Yd/NmQF5Juw==}
     peerDependencies:
       react: '>=16.0.0'
-
-  prisma@5.13.0:
-    resolution: {integrity: sha512-kGtcJaElNRAdAGsCNykFSZ7dBKpL14Cbs+VaQ8cECxQlRPDjBlMHNFYeYt0SKovAVy2Y65JXQwB3A5+zIQwnTg==}
-    engines: {node: '>=16.13'}
-    hasBin: true
 
   prisma@5.17.0:
     resolution: {integrity: sha512-m4UWkN5lBE6yevqeOxEvmepnL5cNPEjzMw2IqDB59AcEV6w7D8vGljDLd1gPFH+W6gUxw9x7/RmN5dCS/WTPxA==}
@@ -11462,13 +11121,6 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-react@0.102.0:
-    resolution: {integrity: sha512-SAcFsK5qaOxXjm0hr/t2pvIxfRv6HJGzmWkG58TdH4LdJCsgKS1n6hQOakHPlRVCwPgwvngB6R+t3pPjv8MqwA==}
-    peerDependencies:
-      react: '>=18.2.0'
-      react-dom: '>=18.2.0'
-      slate: '>=0.99.0'
-
   slate-react@0.107.1:
     resolution: {integrity: sha512-CDIFzeSkTqwOaFHIxRg4MnOsv0Ml8/PoaWiM5zL5hvDYFqVXQUEhMNQqpPEFTWJ5xVLzEv/rd9N3WloiCyEWYQ==}
     peerDependencies:
@@ -11482,9 +11134,6 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
       slate: '>=0.65.3'
-
-  slate@0.102.0:
-    resolution: {integrity: sha512-RT+tHgqOyZVB1oFV9Pv99ajwh4OUCN9p28QWdnDTIzaN/kZxMsHeQN39UNAgtkZTVVVygFqeg7/R2jiptCvfyA==}
 
   slate@0.103.0:
     resolution: {integrity: sha512-eCUOVqUpADYMZ59O37QQvUdnFG+8rin0OGQAXNHvHbQeVJ67Bu0spQbcy621vtf8GQUXTEQBlk6OP9atwwob4w==}
@@ -12339,10 +11988,6 @@ packages:
   warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
-  watchpack@2.4.0:
-    resolution: {integrity: sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg==}
-    engines: {node: '>=10.13.0'}
-
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
@@ -12603,7 +12248,7 @@ snapshots:
     dependencies:
       graphql: 16.9.0
 
-  '@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@wry/caches': 1.0.1
@@ -14553,9 +14198,6 @@ snapshots:
       lru-cache: 6.0.0
       tslib: 2.6.3
 
-  '@esbuild/aix-ppc64@0.20.2':
-    optional: true
-
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -14563,9 +14205,6 @@ snapshots:
     optional: true
 
   '@esbuild/android-arm64@0.17.6':
-    optional: true
-
-  '@esbuild/android-arm64@0.20.2':
     optional: true
 
   '@esbuild/android-arm64@0.21.5':
@@ -14577,9 +14216,6 @@ snapshots:
   '@esbuild/android-arm@0.17.6':
     optional: true
 
-  '@esbuild/android-arm@0.20.2':
-    optional: true
-
   '@esbuild/android-arm@0.21.5':
     optional: true
 
@@ -14587,9 +14223,6 @@ snapshots:
     optional: true
 
   '@esbuild/android-x64@0.17.6':
-    optional: true
-
-  '@esbuild/android-x64@0.20.2':
     optional: true
 
   '@esbuild/android-x64@0.21.5':
@@ -14601,9 +14234,6 @@ snapshots:
   '@esbuild/darwin-arm64@0.17.6':
     optional: true
 
-  '@esbuild/darwin-arm64@0.20.2':
-    optional: true
-
   '@esbuild/darwin-arm64@0.21.5':
     optional: true
 
@@ -14611,9 +14241,6 @@ snapshots:
     optional: true
 
   '@esbuild/darwin-x64@0.17.6':
-    optional: true
-
-  '@esbuild/darwin-x64@0.20.2':
     optional: true
 
   '@esbuild/darwin-x64@0.21.5':
@@ -14625,9 +14252,6 @@ snapshots:
   '@esbuild/freebsd-arm64@0.17.6':
     optional: true
 
-  '@esbuild/freebsd-arm64@0.20.2':
-    optional: true
-
   '@esbuild/freebsd-arm64@0.21.5':
     optional: true
 
@@ -14635,9 +14259,6 @@ snapshots:
     optional: true
 
   '@esbuild/freebsd-x64@0.17.6':
-    optional: true
-
-  '@esbuild/freebsd-x64@0.20.2':
     optional: true
 
   '@esbuild/freebsd-x64@0.21.5':
@@ -14649,9 +14270,6 @@ snapshots:
   '@esbuild/linux-arm64@0.17.6':
     optional: true
 
-  '@esbuild/linux-arm64@0.20.2':
-    optional: true
-
   '@esbuild/linux-arm64@0.21.5':
     optional: true
 
@@ -14659,9 +14277,6 @@ snapshots:
     optional: true
 
   '@esbuild/linux-arm@0.17.6':
-    optional: true
-
-  '@esbuild/linux-arm@0.20.2':
     optional: true
 
   '@esbuild/linux-arm@0.21.5':
@@ -14673,9 +14288,6 @@ snapshots:
   '@esbuild/linux-ia32@0.17.6':
     optional: true
 
-  '@esbuild/linux-ia32@0.20.2':
-    optional: true
-
   '@esbuild/linux-ia32@0.21.5':
     optional: true
 
@@ -14683,9 +14295,6 @@ snapshots:
     optional: true
 
   '@esbuild/linux-loong64@0.17.6':
-    optional: true
-
-  '@esbuild/linux-loong64@0.20.2':
     optional: true
 
   '@esbuild/linux-loong64@0.21.5':
@@ -14697,9 +14306,6 @@ snapshots:
   '@esbuild/linux-mips64el@0.17.6':
     optional: true
 
-  '@esbuild/linux-mips64el@0.20.2':
-    optional: true
-
   '@esbuild/linux-mips64el@0.21.5':
     optional: true
 
@@ -14707,9 +14313,6 @@ snapshots:
     optional: true
 
   '@esbuild/linux-ppc64@0.17.6':
-    optional: true
-
-  '@esbuild/linux-ppc64@0.20.2':
     optional: true
 
   '@esbuild/linux-ppc64@0.21.5':
@@ -14721,9 +14324,6 @@ snapshots:
   '@esbuild/linux-riscv64@0.17.6':
     optional: true
 
-  '@esbuild/linux-riscv64@0.20.2':
-    optional: true
-
   '@esbuild/linux-riscv64@0.21.5':
     optional: true
 
@@ -14731,9 +14331,6 @@ snapshots:
     optional: true
 
   '@esbuild/linux-s390x@0.17.6':
-    optional: true
-
-  '@esbuild/linux-s390x@0.20.2':
     optional: true
 
   '@esbuild/linux-s390x@0.21.5':
@@ -14745,9 +14342,6 @@ snapshots:
   '@esbuild/linux-x64@0.17.6':
     optional: true
 
-  '@esbuild/linux-x64@0.20.2':
-    optional: true
-
   '@esbuild/linux-x64@0.21.5':
     optional: true
 
@@ -14755,9 +14349,6 @@ snapshots:
     optional: true
 
   '@esbuild/netbsd-x64@0.17.6':
-    optional: true
-
-  '@esbuild/netbsd-x64@0.20.2':
     optional: true
 
   '@esbuild/netbsd-x64@0.21.5':
@@ -14772,9 +14363,6 @@ snapshots:
   '@esbuild/openbsd-x64@0.17.6':
     optional: true
 
-  '@esbuild/openbsd-x64@0.20.2':
-    optional: true
-
   '@esbuild/openbsd-x64@0.21.5':
     optional: true
 
@@ -14782,9 +14370,6 @@ snapshots:
     optional: true
 
   '@esbuild/sunos-x64@0.17.6':
-    optional: true
-
-  '@esbuild/sunos-x64@0.20.2':
     optional: true
 
   '@esbuild/sunos-x64@0.21.5':
@@ -14796,9 +14381,6 @@ snapshots:
   '@esbuild/win32-arm64@0.17.6':
     optional: true
 
-  '@esbuild/win32-arm64@0.20.2':
-    optional: true
-
   '@esbuild/win32-arm64@0.21.5':
     optional: true
 
@@ -14808,9 +14390,6 @@ snapshots:
   '@esbuild/win32-ia32@0.17.6':
     optional: true
 
-  '@esbuild/win32-ia32@0.20.2':
-    optional: true
-
   '@esbuild/win32-ia32@0.21.5':
     optional: true
 
@@ -14818,9 +14397,6 @@ snapshots:
     optional: true
 
   '@esbuild/win32-x64@0.17.6':
-    optional: true
-
-  '@esbuild/win32-x64@0.20.2':
     optional: true
 
   '@esbuild/win32-x64@0.21.5':
@@ -15622,320 +15198,6 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       server-only: 0.0.1
 
-  '@keystone-6/auth@8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-6/core': 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/fields': 7.2.0(@types/react@18.3.3)
-      '@keystone-ui/loading': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/notice': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      cross-fetch: 4.0.0
-      fast-deep-equal: 3.1.3
-      graphql: 16.9.0
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - encoding
-      - react-dom
-      - supports-color
-
-  '@keystone-6/cloudinary@8.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0))(react-dom@18.3.1(react@18.3.1))':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-6/core': 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/fields': 7.2.0(@types/react@18.3.3)
-      '@keystone-ui/pill': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/react': 18.3.3
-      cloudinary: 2.4.0
-      react: 18.3.1
-    transitivePeerDependencies:
-      - react-dom
-      - supports-color
-
-  '@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)':
-    dependencies:
-      '@apollo/cache-control-types': 1.0.3(graphql@16.9.0)
-      '@apollo/client': 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@apollo/server': 4.10.5(graphql@16.9.0)
-      '@aws-sdk/client-s3': 3.623.0
-      '@aws-sdk/lib-storage': 3.623.0(@aws-sdk/client-s3@3.623.0)
-      '@aws-sdk/s3-request-presigner': 3.623.0
-      '@babel/runtime': 7.25.0
-      '@emotion/hash': 0.9.2
-      '@emotion/weak-memoize': 0.3.1
-      '@graphql-ts/extend': 1.0.0(@graphql-ts/schema@0.6.0(graphql@16.9.0))(graphql@16.9.0)
-      '@graphql-ts/schema': 0.6.0(graphql@16.9.0)
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
-      '@hapi/iron': 7.0.1
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/fields': 7.2.0(@types/react@18.3.3)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/loading': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/modals': 6.0.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/notice': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/options': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/pill': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/popover': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/segmented-control': 7.0.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/toast': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/tooltip': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@nodelib/fs.walk': 2.0.0
-      '@prisma/client': 5.13.0(prisma@5.13.0)
-      '@prisma/internals': 5.13.0
-      '@prisma/migrate': 5.13.0(@prisma/generator-helper@5.17.0)(@prisma/internals@5.13.0)
-      '@sindresorhus/slugify': 1.1.2
-      apollo-upload-client: 17.0.0(@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)
-      bcryptjs: 2.4.3
-      body-parser: 1.20.2
-      bytes: 3.1.2
-      chalk: 4.1.2
-      ci-info: 4.0.0
-      clipboard-copy: 4.0.1
-      conf: 10.2.0
-      cookie: 0.6.0
-      cors: 2.8.5
-      dataloader: 2.2.2
-      date-fns: 3.6.0
-      decimal.js: 10.4.3
-      dumb-passwords: 0.2.1
-      esbuild: 0.20.2
-      express: 4.19.2
-      fast-deep-equal: 3.1.3
-      file-type: 19.4.0
-      fs-extra: 11.2.0
-      graphql: 16.9.0
-      graphql-upload: 15.0.2(@types/express@4.17.21)(graphql@16.9.0)
-      image-size: 1.1.1
-      inflection: 3.0.0
-      intersection-observer: 0.12.2
-      meow: 9.0.0
-      next: 13.5.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      pluralize: 8.0.0
-      prisma: 5.13.0
-      prompts: 2.4.2
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      resolve: 1.22.8
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@opentelemetry/api'
-      - '@prisma/generator-helper'
-      - '@types/express'
-      - '@types/koa'
-      - '@types/react'
-      - aws-crt
-      - babel-plugin-macros
-      - encoding
-      - graphql-ws
-      - sass
-      - subscriptions-transport-ws
-      - supports-color
-
-  '@keystone-6/document-renderer@1.1.2(react@18.3.1)':
-    dependencies:
-      react: 18.3.1
-
-  '@keystone-6/fields-document@9.0.0(@keystone-6/core@6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0(graphql@16.9.0)))(fp-ts@2.16.9)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@braintree/sanitize-url': 7.0.4
-      '@dnd-kit/core': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@dnd-kit/modifiers': 7.0.0(@dnd-kit/core@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@dnd-kit/sortable': 8.0.0(@dnd-kit/core@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@emotion/weak-memoize': 0.3.1
-      '@keystone-6/core': 6.1.0(@babel/core@7.25.2)(@prisma/generator-helper@5.17.0)(@types/express@4.17.21)(@types/react@18.3.3)(babel-plugin-macros@3.1.0)(graphql-ws@5.16.0)
-      '@keystone-6/document-renderer': 1.1.2(react@18.3.1)
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/fields': 7.2.0(@types/react@18.3.3)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/modals': 6.0.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/popover': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/tooltip': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/react': 18.3.3
-      apply-ref: 1.0.0
-      graphql: 16.9.0
-      io-ts: 2.2.21(fp-ts@2.16.9)
-      io-ts-excess: 1.0.1(fp-ts@2.16.9)
-      is-hotkey: 0.2.0
-      match-sorter: 6.3.4
-      mdast-util-from-markdown: 0.8.5
-      mdast-util-gfm-autolink-literal: 0.1.3
-      mdast-util-gfm-strikethrough: 0.2.3
-      micromark-extension-gfm-autolink-literal: 0.5.7
-      micromark-extension-gfm-strikethrough: 0.6.5
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      scroll-into-view-if-needed: 3.1.0
-      slate: 0.102.0
-      slate-history: 0.100.0(slate@0.102.0)
-      slate-react: 0.102.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.102.0)
-    transitivePeerDependencies:
-      - fp-ts
-      - supports-color
-
-  '@keystone-ui/button@7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/loading': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/core@5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@emotion/react': 11.13.0(@types/react@18.3.3)(react@18.3.1)
-      '@types/facepaint': 1.2.5
-      facepaint: 1.2.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
-  '@keystone-ui/fields@7.2.0(@types/react@18.3.3)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/popover': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      date-fns: 2.30.0
-      react: 18.3.1
-      react-day-picker: 8.10.1(date-fns@2.30.0)(react@18.3.1)
-      react-dom: 18.3.1(react@18.3.1)
-      react-focus-lock: 2.12.1(@types/react@18.3.3)(react@18.3.1)
-      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
-  '@keystone-ui/icons@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/loading@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/modals@6.0.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-focus-lock: 2.12.1(@types/react@18.3.3)(react@18.3.1)
-      react-remove-scroll: 2.5.10(@types/react@18.3.3)(react@18.3.1)
-      react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/notice@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/button': 7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/options@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/fields': 7.2.0(@types/react@18.3.3)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/pill@7.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/popover@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@popperjs/core': 2.11.8
-      focus-trap: 7.5.4
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-popper: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
-  '@keystone-ui/segmented-control@7.0.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/toast@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/icons': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - react-dom
-      - supports-color
-
-  '@keystone-ui/tooltip@6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.25.0
-      '@keystone-ui/core': 5.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@keystone-ui/popover': 6.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      apply-ref: 1.0.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
   '@manypkg/find-root@1.1.0':
     dependencies:
       '@babel/runtime': 7.25.0
@@ -15962,55 +15224,28 @@ snapshots:
 
   '@next/env@14.2.5': {}
 
-  '@next/swc-darwin-arm64@13.5.6':
-    optional: true
-
   '@next/swc-darwin-arm64@14.2.5':
-    optional: true
-
-  '@next/swc-darwin-x64@13.5.6':
     optional: true
 
   '@next/swc-darwin-x64@14.2.5':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@13.5.6':
-    optional: true
-
   '@next/swc-linux-arm64-gnu@14.2.5':
-    optional: true
-
-  '@next/swc-linux-arm64-musl@13.5.6':
     optional: true
 
   '@next/swc-linux-arm64-musl@14.2.5':
     optional: true
 
-  '@next/swc-linux-x64-gnu@13.5.6':
-    optional: true
-
   '@next/swc-linux-x64-gnu@14.2.5':
-    optional: true
-
-  '@next/swc-linux-x64-musl@13.5.6':
     optional: true
 
   '@next/swc-linux-x64-musl@14.2.5':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@13.5.6':
-    optional: true
-
   '@next/swc-win32-arm64-msvc@14.2.5':
     optional: true
 
-  '@next/swc-win32-ia32-msvc@13.5.6':
-    optional: true
-
   '@next/swc-win32-ia32-msvc@14.2.5':
-    optional: true
-
-  '@next/swc-win32-x64-msvc@13.5.6':
     optional: true
 
   '@next/swc-win32-x64-msvc@14.2.5':
@@ -16148,28 +15383,13 @@ snapshots:
 
   '@preconstruct/next@4.0.0': {}
 
-  '@prisma/client@5.13.0(prisma@5.13.0)':
-    optionalDependencies:
-      prisma: 5.13.0
-
   '@prisma/client@5.17.0(prisma@5.17.0)':
     optionalDependencies:
       prisma: 5.17.0
 
-  '@prisma/debug@5.13.0': {}
-
   '@prisma/debug@5.17.0': {}
 
-  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b': {}
-
   '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053': {}
-
-  '@prisma/engines@5.13.0':
-    dependencies:
-      '@prisma/debug': 5.13.0
-      '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
-      '@prisma/fetch-engine': 5.13.0
-      '@prisma/get-platform': 5.13.0
 
   '@prisma/engines@5.17.0':
     dependencies:
@@ -16178,45 +15398,19 @@ snapshots:
       '@prisma/fetch-engine': 5.17.0
       '@prisma/get-platform': 5.17.0
 
-  '@prisma/fetch-engine@5.13.0':
-    dependencies:
-      '@prisma/debug': 5.13.0
-      '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
-      '@prisma/get-platform': 5.13.0
-
   '@prisma/fetch-engine@5.17.0':
     dependencies:
       '@prisma/debug': 5.17.0
       '@prisma/engines-version': 5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053
       '@prisma/get-platform': 5.17.0
 
-  '@prisma/generator-helper@5.13.0':
-    dependencies:
-      '@prisma/debug': 5.13.0
-
   '@prisma/generator-helper@5.17.0':
     dependencies:
       '@prisma/debug': 5.17.0
 
-  '@prisma/get-platform@5.13.0':
-    dependencies:
-      '@prisma/debug': 5.13.0
-
   '@prisma/get-platform@5.17.0':
     dependencies:
       '@prisma/debug': 5.17.0
-
-  '@prisma/internals@5.13.0':
-    dependencies:
-      '@prisma/debug': 5.13.0
-      '@prisma/engines': 5.13.0
-      '@prisma/fetch-engine': 5.13.0
-      '@prisma/generator-helper': 5.13.0
-      '@prisma/get-platform': 5.13.0
-      '@prisma/prisma-schema-wasm': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
-      '@prisma/schema-files-loader': 5.13.0
-      arg: 5.0.2
-      prompts: 2.4.2
 
   '@prisma/internals@5.17.0':
     dependencies:
@@ -16230,15 +15424,6 @@ snapshots:
       arg: 5.0.2
       prompts: 2.4.2
 
-  '@prisma/migrate@5.13.0(@prisma/generator-helper@5.17.0)(@prisma/internals@5.13.0)':
-    dependencies:
-      '@prisma/debug': 5.13.0
-      '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
-      '@prisma/generator-helper': 5.17.0
-      '@prisma/get-platform': 5.13.0
-      '@prisma/internals': 5.13.0
-      prompts: 2.4.2
-
   '@prisma/migrate@5.17.0(@prisma/generator-helper@5.17.0)(@prisma/internals@5.17.0)':
     dependencies:
       '@prisma/debug': 5.17.0
@@ -16248,13 +15433,7 @@ snapshots:
       '@prisma/internals': 5.17.0
       prompts: 2.4.2
 
-  '@prisma/prisma-schema-wasm@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b': {}
-
   '@prisma/prisma-schema-wasm@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053': {}
-
-  '@prisma/schema-files-loader@5.13.0':
-    dependencies:
-      fs-extra: 11.1.1
 
   '@prisma/schema-files-loader@5.17.0':
     dependencies:
@@ -17864,10 +17043,6 @@ snapshots:
     dependencies:
       tslib: 2.6.3
 
-  '@swc/helpers@0.5.2':
-    dependencies:
-      tslib: 2.6.3
-
   '@swc/helpers@0.5.5':
     dependencies:
       '@swc/counter': 0.1.3
@@ -17974,7 +17149,7 @@ snapshots:
 
   '@types/apollo-upload-client@17.0.5(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@apollo/client': 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@apollo/client': 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/extract-files': 13.0.1
       graphql: 16.9.0
     transitivePeerDependencies:
@@ -18677,9 +17852,9 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apollo-upload-client@17.0.0(@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0):
+  apollo-upload-client@17.0.0(@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0):
     dependencies:
-      '@apollo/client': 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@apollo/client': 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       extract-files: 11.0.0
       graphql: 16.9.0
 
@@ -19948,32 +19123,6 @@ snapshots:
       '@esbuild/win32-ia32': 0.17.6
       '@esbuild/win32-x64': 0.17.6
 
-  esbuild@0.20.2:
-    optionalDependencies:
-      '@esbuild/aix-ppc64': 0.20.2
-      '@esbuild/android-arm': 0.20.2
-      '@esbuild/android-arm64': 0.20.2
-      '@esbuild/android-x64': 0.20.2
-      '@esbuild/darwin-arm64': 0.20.2
-      '@esbuild/darwin-x64': 0.20.2
-      '@esbuild/freebsd-arm64': 0.20.2
-      '@esbuild/freebsd-x64': 0.20.2
-      '@esbuild/linux-arm': 0.20.2
-      '@esbuild/linux-arm64': 0.20.2
-      '@esbuild/linux-ia32': 0.20.2
-      '@esbuild/linux-loong64': 0.20.2
-      '@esbuild/linux-mips64el': 0.20.2
-      '@esbuild/linux-ppc64': 0.20.2
-      '@esbuild/linux-riscv64': 0.20.2
-      '@esbuild/linux-s390x': 0.20.2
-      '@esbuild/linux-x64': 0.20.2
-      '@esbuild/netbsd-x64': 0.20.2
-      '@esbuild/openbsd-x64': 0.20.2
-      '@esbuild/sunos-x64': 0.20.2
-      '@esbuild/win32-arm64': 0.20.2
-      '@esbuild/win32-ia32': 0.20.2
-      '@esbuild/win32-x64': 0.20.2
-
   esbuild@0.21.5:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.21.5
@@ -20559,8 +19708,6 @@ snapshots:
 
   forwarded@0.2.0: {}
 
-  fp-ts@2.16.9: {}
-
   fragment-cache@0.2.1:
     dependencies:
       map-cache: 0.2.2
@@ -20700,8 +19847,6 @@ snapshots:
   glob-parent@6.0.2:
     dependencies:
       is-glob: 4.0.3
-
-  glob-to-regexp@0.4.1: {}
 
   glob@7.2.3:
     dependencies:
@@ -21181,15 +20326,6 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
-
-  io-ts-excess@1.0.1(fp-ts@2.16.9):
-    dependencies:
-      fp-ts: 2.16.9
-      io-ts: 2.2.21(fp-ts@2.16.9)
-
-  io-ts@2.2.21(fp-ts@2.16.9):
-    dependencies:
-      fp-ts: 2.16.9
 
   ip-address@9.0.5:
     dependencies:
@@ -23174,31 +22310,6 @@ snapshots:
       minimist: 1.2.8
       next: 14.2.5(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  next@13.5.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@next/env': 13.5.6
-      '@swc/helpers': 0.5.2
-      busboy: 1.6.0
-      caniuse-lite: 1.0.30001647
-      postcss: 8.4.31
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.1(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react@18.3.1)
-      watchpack: 2.4.0
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 13.5.6
-      '@next/swc-darwin-x64': 13.5.6
-      '@next/swc-linux-arm64-gnu': 13.5.6
-      '@next/swc-linux-arm64-musl': 13.5.6
-      '@next/swc-linux-x64-gnu': 13.5.6
-      '@next/swc-linux-x64-musl': 13.5.6
-      '@next/swc-win32-arm64-msvc': 13.5.6
-      '@next/swc-win32-ia32-msvc': 13.5.6
-      '@next/swc-win32-x64-msvc': 13.5.6
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-
   next@14.2.5(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 14.2.5
@@ -23792,10 +22903,6 @@ snapshots:
       clsx: 2.1.1
       react: 18.3.1
 
-  prisma@5.13.0:
-    dependencies:
-      '@prisma/engines': 5.13.0
-
   prisma@5.17.0:
     dependencies:
       '@prisma/engines': 5.17.0
@@ -23966,11 +23073,6 @@ snapshots:
   react-clientside-effect@1.2.6(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.25.0
-      react: 18.3.1
-
-  react-day-picker@8.10.1(date-fns@2.30.0)(react@18.3.1):
-    dependencies:
-      date-fns: 2.30.0
       react: 18.3.1
 
   react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
@@ -24636,11 +23738,6 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slate-history@0.100.0(slate@0.102.0):
-    dependencies:
-      is-plain-object: 5.0.0
-      slate: 0.102.0
-
   slate-history@0.100.0(slate@0.103.0):
     dependencies:
       is-plain-object: 5.0.0
@@ -24655,21 +23752,6 @@ snapshots:
     dependencies:
       is-plain-object: 5.0.0
       slate: 0.103.0
-
-  slate-react@0.102.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.102.0):
-    dependencies:
-      '@juggle/resize-observer': 3.4.0
-      '@types/is-hotkey': 0.1.10
-      '@types/lodash': 4.17.7
-      direction: 1.0.4
-      is-hotkey: 0.2.0
-      is-plain-object: 5.0.0
-      lodash: 4.17.21
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      scroll-into-view-if-needed: 3.1.0
-      slate: 0.102.0
-      tiny-invariant: 1.3.1
 
   slate-react@0.107.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0):
     dependencies:
@@ -24700,12 +23782,6 @@ snapshots:
       scroll-into-view-if-needed: 2.2.31
       slate: 0.91.4
       tiny-invariant: 1.0.6
-
-  slate@0.102.0:
-    dependencies:
-      immer: 10.1.1
-      is-plain-object: 5.0.0
-      tiny-warning: 1.0.3
 
   slate@0.103.0:
     dependencies:
@@ -25576,11 +24652,6 @@ snapshots:
   warning@4.0.3:
     dependencies:
       loose-envify: 1.4.0
-
-  watchpack@2.4.0:
-    dependencies:
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
 
   wcwidth@1.0.1:
     dependencies:
