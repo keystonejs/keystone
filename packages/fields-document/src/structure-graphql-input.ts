@@ -340,7 +340,7 @@ export async function resolveRelateToManyForUpdateInput (
   value: _UpdateValueManyType,
   context: KeystoneContext,
   foreignListKey: string,
-  prevVal: { id: string }[]
+  prevVal: BaseItem[]
 ) {
   if (
     !Array.isArray(value.connect) &&
@@ -442,7 +442,7 @@ export async function checkUniqueItemExists (
     throw missingItem(operation, uniqueInput)
   }
 
-  return { id: item.id.toString() }
+  return { id: item.id }
 }
 
 async function handleCreateAndUpdate (
@@ -470,7 +470,7 @@ async function resolveCreateMutation (value: any, context: KeystoneContext, fore
     // it could change in the future
     {} as GraphQLResolveInfo
   )) as BaseItem
-  return { id: id.toString() }
+  return { id }
 }
 
 export function resolveRelateToOneForCreateInput (

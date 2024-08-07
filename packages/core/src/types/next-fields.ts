@@ -12,7 +12,10 @@ import {
 
 export { Decimal }
 
-export type BaseItem = { id: { toString(): string }, [key: string]: unknown }
+export type BaseItem = {
+  id: unknown,
+  [key: string]: unknown
+}
 
 export type ListGraphQLTypes = { types: GraphQLTypesForList }
 
