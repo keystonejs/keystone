@@ -233,8 +233,7 @@ export default function Roadmap () {
               margin: '0.5rem 0.8rem 0.5rem 0',
             }}
           >
-            To see what we've recently shipped, checkout our <Link href="/updates">updates</Link>{' '}
-            and <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
+            To see what we've recently shipped, checkout our <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
           </span>
         </Alert>
 
