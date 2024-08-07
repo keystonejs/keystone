@@ -1,7 +1,10 @@
 import { config, fields, collection, singleton } from '@keystatic/core'
 import { superscriptIcon } from '@keystar/ui/icon/icons/superscriptIcon'
-import { inline, mark, wrapper } from '@keystatic/core/content-components'
+import { mark, wrapper } from '@keystatic/core/content-components'
+import { cableIcon } from '@keystar/ui/icon/icons/cableIcon'
+import { creditCardIcon } from '@keystar/ui/icon/icons/creditCardIcon'
 
+import { emoji, hint } from './keystatic/content-components'
 import { gradientSelector } from './keystatic/gradient-selector'
 
 export default config({
@@ -46,6 +49,7 @@ export default config({
             heading: wrapper({ label: 'Heading', schema: { id: fields.text({ label: 'ID' }) } }),
             well: wrapper({
               label: 'Well',
+              icon: creditCardIcon,
               schema: {
                 heading: fields.text({ label: 'Heading' }),
                 grad: fields.select({
@@ -77,29 +81,10 @@ export default config({
 
               // ContentView: (data) => <WellPreview {...data} />,
             }),
-            hint: wrapper({
-              label: 'Hint',
-              schema: {
-                kind: fields.select({
-                  label: 'Kind',
-                  options: [
-                    { label: 'Tip', value: 'tip' },
-                    { label: 'Warning', value: 'warn' },
-                    { label: 'Error', value: 'error' },
-                  ],
-                  defaultValue: 'tip',
-                }),
-              },
-            }),
-            'related-content': wrapper({ label: 'Related Content', schema: {} }),
+            hint: hint(),
+            'related-content': wrapper({ label: 'Related Content', icon: cableIcon, schema: {} }),
             sup: mark({ label: 'Superscript', schema: {}, icon: superscriptIcon, tag: 'sup' }),
-            emoji: inline({
-              label: 'Emoji',
-              schema: {
-                symbol: fields.text({ label: 'Symbol' }),
-                alt: fields.text({ label: 'Alt' }),
-              },
-            }),
+            emoji: emoji(),
           },
         }),
       },
@@ -121,7 +106,14 @@ export default config({
         authorName: fields.text({ label: 'Author Name', validation: { isRequired: true } }),
         authorHandle: fields.url({ label: 'Author Handle' }),
         metaImageUrl: fields.url({ label: 'Meta Image URL' }),
-        content: fields.markdoc({ label: 'Content', extension: 'md' }),
+        content: fields.markdoc({
+          label: 'Content',
+          extension: 'md',
+          components: {
+            hint: hint('Callout'),
+            emoji: emoji(),
+          },
+        }),
       },
     }),
 
