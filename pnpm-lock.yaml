@@ -2435,7 +2435,7 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
       '@keystone-6/api-tests':
-        specifier: workspace:*
+        specifier: workspace:^
         version: 'link:'
       '@keystone-6/auth':
         specifier: workspace:^

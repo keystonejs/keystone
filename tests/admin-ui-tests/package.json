@@ -8,8 +8,8 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/admin-ui-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
-    "@keystone-6/auth": "workspace:*",
-    "@keystone-6/core": "workspace:*",
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
     "@manypkg/find-root": "^1.1.0",
     "@types/async-retry": "^1.4.3",
     "async-retry": "^1.3.3",
