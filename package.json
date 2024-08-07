@@ -53,28 +53,6 @@
       "keepDynamicImportAsDynamicImportInCommonJS": true
     }
   },
-  "pnpm": {
-    "overrides": {
-      "@keystone-6/core": "workspace:^",
-      "@keystone-6/auth": "workspace:^",
-      "@keystone-6/cloudinary": "workspace:^",
-      "@keystone-6/document-renderer": "workspace:^",
-      "@keystone-6/fields-document": "workspace:^",
-      "@keystone-ui/core": "workspace:^",
-      "@keystone-ui/button": "workspace:^",
-      "@keystone-ui/fields": "workspace:^",
-      "@keystone-ui/icons": "workspace:^",
-      "@keystone-ui/loading": "workspace:^",
-      "@keystone-ui/modals": "workspace:^",
-      "@keystone-ui/notice": "workspace:^",
-      "@keystone-ui/options": "workspace:^",
-      "@keystone-ui/pill": "workspace:^",
-      "@keystone-ui/popover": "workspace:^",
-      "@keystone-ui/segmented-control": "workspace:^",
-      "@keystone-ui/toast": "workspace:^",
-      "@keystone-ui/tooltip": "workspace:^"
-    }
-  },
   "jest": {
     "testEnvironment": "node",
     "collectCoverageFrom": [
