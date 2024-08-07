@@ -1,5 +1,6 @@
 {
   "name": "@keystone-6/example-hooks",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -15,6 +16,5 @@
   "devDependencies": {
     "prisma": "5.17.0",
     "typescript": "^5.5.0"
-  },
-  "version": null
+  }
 }

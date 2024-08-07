@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-auth",
-  "version": "0.1.2",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

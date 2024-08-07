@@ -1,6 +1,8 @@
 {
   "name": "@keystone-6/example-framework-remix",
+  "version": null,
   "private": true,
+  "license": "MIT",
   "sideEffects": false,
   "scripts": {
     "build": "remix build",

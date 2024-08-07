@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-graphql-ts-gql",
-  "version": "0.0.7",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

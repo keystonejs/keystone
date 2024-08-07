@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-custom-session-invalidation",
-  "version": "0.0.6",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

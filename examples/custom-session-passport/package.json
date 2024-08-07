@@ -1,7 +1,8 @@
 {
   "name": "@keystone-6/example-custom-session-passport",
-  "version": "1.0.0",
+  "version": null,
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",

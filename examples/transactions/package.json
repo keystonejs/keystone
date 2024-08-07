@@ -1,5 +1,6 @@
 {
   "name": "@keystone-6/example-transactions",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

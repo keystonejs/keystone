@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-script",
-  "version": "0.0.5",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

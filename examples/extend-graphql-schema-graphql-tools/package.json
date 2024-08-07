@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-schema-graphql-tools",
-  "version": "0.0.8",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {

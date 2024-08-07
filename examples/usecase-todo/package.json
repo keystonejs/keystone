@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-usecase-todo",
-  "version": "0.0.7",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {
