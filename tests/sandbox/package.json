@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/sandbox",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,20 +9,20 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/auth": "workspace:*",
-    "@keystone-6/core": "workspace:*",
-    "@keystone-6/fields-document": "workspace:*",
-    "@keystone-ui/button": "workspace:*",
-    "@keystone-ui/core": "workspace:*",
-    "@keystone-ui/fields": "workspace:*",
-    "@keystone-ui/icons": "workspace:*",
-    "@keystone-ui/tooltip": "workspace:*",
-    "@prisma/client": "catalog:",
-    "react": "catalog:"
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
+    "@keystone-6/fields-document": "workspace:^",
+    "@keystone-ui/button": "workspace:^",
+    "@keystone-ui/core": "workspace:^",
+    "@keystone-ui/fields": "workspace:^",
+    "@keystone-ui/icons": "workspace:^",
+    "@keystone-ui/tooltip": "workspace:^",
+    "@prisma/client": "5.17.0",
+    "react": "^18.3.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {
-    "prisma": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "typescript": "^5.5.0"
   }
 }

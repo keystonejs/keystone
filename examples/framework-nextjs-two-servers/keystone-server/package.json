@@ -10,13 +10,13 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/auth": "workspace:^",
-    "@keystone-6/core": "workspace:^",
-    "@keystone-6/fields-document": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@keystone-6/auth": "^8.0.0",
+    "@keystone-6/core": "^6.1.0",
+    "@keystone-6/fields-document": "^9.0.0",
+    "@prisma/client": "5.17.0"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "typescript": "^5.5.0"
   }
 }

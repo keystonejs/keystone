@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/example-document-field-customisation-keystone-server",
   "description": "Keystone example demonstrating document field customisation",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "keystone dev --seed-database",
@@ -10,19 +10,19 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/auth": "workspace:^",
-    "@keystone-6/core": "workspace:^",
-    "@keystone-6/fields-document": "workspace:^",
+    "@keystone-6/auth": "^8.0.0",
+    "@keystone-6/core": "^6.1.0",
+    "@keystone-6/fields-document": "^9.0.0",
     "@keystone-ui/button": "^7.0.1",
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/fields": "^7.2.0",
     "@keystone-ui/icons": "^6.0.1",
     "@keystone-ui/tooltip": "^6.0.1",
-    "@prisma/client": "catalog:",
-    "react": "catalog:",
-    "typescript": "catalog:"
+    "@prisma/client": "5.17.0",
+    "react": "^18.3.1",
+    "typescript": "^5.5.0"
   },
   "devDependencies": {
-    "prisma": "catalog:"
+    "prisma": "5.17.0"
   }
 }

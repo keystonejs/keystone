@@ -12,7 +12,7 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@types/react": "catalog:"
+    "@types/react": "^18.3.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
@@ -20,9 +20,9 @@
     "@keystone-ui/icons": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
     "date-fns": "^3.0.0",
-    "react": "catalog:",
+    "react": "^18.3.1",
     "react-day-picker": "^8.0.4",
-    "react-dom": "catalog:",
+    "react-dom": "^18.3.1",
     "react-focus-lock": "^2.7.1",
     "react-select": "^5.2.1"
   },

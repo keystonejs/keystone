@@ -1,9 +1,8 @@
 {
   "name": "@keystone-6/monorepo-example-framework-nextjs-two-servers",
-  "description": "An example of a frontend nextjs server and backend API server",
-  "version": "0.0.1",
+  "version": null,
   "private": true,
-  "author": "Dinesh Pandiyan <flexdinesh@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "concurrently \"cd keystone-server && pnpm dev\" \"cd nextjs-frontend && pnpm dev\""
   },

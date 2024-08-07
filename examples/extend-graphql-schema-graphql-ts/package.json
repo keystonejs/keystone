@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-schema-graphql-ts",
-  "version": "0.0.8",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,11 +10,11 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@keystone-6/core": "^6.1.0",
+    "@prisma/client": "5.17.0"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "typescript": "^5.5.0"
   }
 }

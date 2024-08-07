@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-custom-id",
-  "version": "0.0.2",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -11,13 +11,13 @@
     "seed-data": "tsx seed-data.tsx"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
+    "@keystone-6/core": "^6.1.0",
     "@paralleldrive/cuid2": "^2.2.1",
-    "@prisma/client": "catalog:"
+    "@prisma/client": "5.17.0"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "tsx": "catalog:",
-    "typescript": "catalog:"
+    "prisma": "5.17.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
   }
 }
