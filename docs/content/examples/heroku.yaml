@@ -1,7 +1,6 @@
-url: https://github.com/keystonejs/keystone-6-heroku-example"
 title: Heroku
 kind: deployment
+url: https://github.com/keystonejs/keystone-6-heroku-example
 description: >
-  Based on the `with-auth` project, this example deploys a
-  simple app backend to Heroku. Includes a **one-click deployment** for Heroku
-  account holders.
+  Based on the `with-auth` project, this example deploys a simple app backend to
+  Heroku. Includes a **one-click deployment** for Heroku account holders.

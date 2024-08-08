@@ -1,7 +1,6 @@
-url: https://github.com/keystonejs/keystone-6-railway-example"
 title: Railway
 kind: deployment
+url: https://github.com/keystonejs/keystone-6-railway-example
 description: >
-  Deploys a Keystone app backend to Railway. Based on the
-  `with-auth` project.
+  Deploys a Keystone app backend to Railway. Based on the `with-auth` project.
   **One-click deployment** included.
