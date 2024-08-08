@@ -1,4 +1,4 @@
-url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/extend-express-app
+url: https://github.com/keystonejs/keystone/tree/main/examples/extend-express-app
 title: REST API endpoint
 kind: standalone
 description: >

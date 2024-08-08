@@ -1,6 +1,6 @@
 title: Default Values
 kind: standalone
-url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/default-values
+url: https://github.com/keystonejs/keystone/tree/main/examples/default-values
 description: >
   Demonstrates how to use default values for fields. Builds upon the Task
   Manager starter
