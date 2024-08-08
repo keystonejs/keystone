@@ -1,6 +1,0 @@
-title: JSON Field
-kind: standalone
-url: https://github.com/keystonejs/keystone/tree/main/examples/json
-description: >
-  Illustrates how to use the `json` field type. Builds on the Task Manager
-  starter project.
