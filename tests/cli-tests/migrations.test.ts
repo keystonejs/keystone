@@ -125,7 +125,7 @@ describe('dev', () => {
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
-      ? database created
+      ? Database created
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server
