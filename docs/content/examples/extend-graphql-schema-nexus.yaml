@@ -1,4 +1,4 @@
-url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/extend-graphql-schema-nexus
+url: https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus
 title: Extend GraphQL API with Nexus
 kind: standalone
 description: >

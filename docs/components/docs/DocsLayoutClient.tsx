@@ -3,7 +3,6 @@
 'use client'
 
 import { type ReactNode, useRef } from 'react'
-import { type HeadingType } from '../Markdoc'
 import { usePathname } from 'next/navigation'
 import { Header } from '../Header'
 import { Wrapper } from '../primitives/Wrapper'
@@ -15,6 +14,7 @@ import { TableOfContents } from './TableOfContents'
 
 import { useMediaQuery } from '../../lib/media'
 import { DocsFooter } from '../Footer'
+import { type HeadingType } from '../../markdoc/headings'
 
 export function DocsLayoutClient ({
  children,

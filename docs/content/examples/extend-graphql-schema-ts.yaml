@@ -1,4 +1,4 @@
-url: https://keystonejs.com/docs/guides/custom-admin-ui-navigation/extend-graphql-schema-graphql-ts
+url: https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-ts
 title: Extend GraphQL Schema with GraphQL TS
 kind: standalone
 description: >
