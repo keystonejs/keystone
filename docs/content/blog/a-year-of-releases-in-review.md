@@ -26,9 +26,9 @@ New migration commands like `keystone migrate create` and `keystone migrate appl
 
 ### Validation and Hooks
 
-A significant update was the addition of new validation hooks: `{field}.hooks.validate.[create|update|delete]`.
+A significant update was the overhaul of validation hooks for fields and lists.
 
-These hooks provide developers with more granular control over data validation, enhancing data integrity and application reliability.
+Hooks like`{field|list}.hooks.validate.[create|update|delete]` provide developers with more granular control over data validation, enhancing data integrity and application reliability.
 
 ## Breaking Changes and Cleanups
 
@@ -70,6 +70,14 @@ Keystone JS addressed numerous bugs throughout the year, improving stability and
 - Fixing default values and ordering for various field types.
 - Addressing Prisma migration errors in non-interactive environments.
 - Correcting access and overflow issues in the AdminUI.
+
+## Keystatic-powered docs & blog
+
+A growing portion of the Keystone documentation (as well as this blog!) is now content-editable via [Keystatic](https://keystatic.com), another [Thinkmill](https://thinkmill.com.au) product.
+
+Keystatic shares common DNA with Keystone, but operates without a database. Instead, it stores content in Markdown/YAML/JSON/Markdoc/MDX on the local file system, and syncs it with the GitHub API.
+
+The content can be edited via a world-class Admin UI (powered by [Keystar UI](https://github.com/Thinkmill/keystatic/tree/main/design-system) and coming to Keystone soon!), but also directly from the [codebase's content files](https://github.com/keystonejs/keystone/tree/main/docs/content).
 
 ## Community Contributions
 
