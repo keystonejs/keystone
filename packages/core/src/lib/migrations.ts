@@ -1,4 +1,3 @@
-import { type ChildProcess } from 'node:child_process'
 import { toSchemasContainer } from '@prisma/internals'
 
 // @ts-expect-error
@@ -62,9 +61,9 @@ export async function withMigrate<T> (
       }
     })
   } finally {
+    await migrate.engine.initPromise
     const closePromise = new Promise<void>(resolve => {
-      const { child } = migrate.engine as { child: ChildProcess }
-      child.once('exit', () => resolve())
+      migrate.engine.child.once('exit', resolve)
     })
     migrate.stop()
     await closePromise
