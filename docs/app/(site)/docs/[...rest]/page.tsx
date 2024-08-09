@@ -3,11 +3,11 @@ import { type Tag, transform } from '@markdoc/markdoc'
 
 import { reader } from '../../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../../markdoc/config'
+import { extractHeadings } from '../../../../markdoc/headings'
 import PageClient from './page-client'
 import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
 import { DocsLayout } from '../../../../components/docs/DocsLayout'
-import { extractHeadings } from '../../../../components/Markdoc'
 
 export type Document = NonNullable<
   Pick<
@@ -31,7 +31,7 @@ export default async function DocPage ({ params }) {
 
   const headings = [
     { id: 'title', depth: 1, label: transformedDoc.title },
-    // ...extractHeadings(transformedDoc.content),
+    ...extractHeadings(transformedDoc.content),
   ]
 
   return (
