@@ -597,7 +597,7 @@ importers:
   examples/assets-local:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -613,7 +613,7 @@ importers:
   examples/assets-s3:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -635,7 +635,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -657,7 +657,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/cloudinary
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -676,7 +676,7 @@ importers:
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.2
@@ -704,7 +704,7 @@ importers:
   examples/custom-admin-ui-navigation:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -723,7 +723,7 @@ importers:
   examples/custom-admin-ui-pages:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.2
@@ -767,7 +767,7 @@ importers:
   examples/custom-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-ui/fields':
         specifier: ^7.2.0
@@ -789,7 +789,7 @@ importers:
         specifier: ^11.7.1
         version: 11.13.0
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.2
@@ -826,7 +826,7 @@ importers:
   examples/custom-id:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
@@ -848,7 +848,7 @@ importers:
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -876,7 +876,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -895,7 +895,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -914,7 +914,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -936,7 +936,7 @@ importers:
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -955,7 +955,7 @@ importers:
   examples/custom-session-passport:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -998,7 +998,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1017,7 +1017,7 @@ importers:
   examples/default-values:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1033,13 +1033,13 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -1076,10 +1076,10 @@ importers:
         specifier: ^8.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../../packages/fields-document
       '@keystone-ui/button':
         specifier: ^7.0.1
@@ -1147,7 +1147,7 @@ importers:
   examples/empty-lists:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1163,7 +1163,7 @@ importers:
   examples/extend-express-app:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1191,7 +1191,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1210,7 +1210,7 @@ importers:
   examples/extend-graphql-schema-graphql-ts:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1229,7 +1229,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1257,7 +1257,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.2
@@ -1300,10 +1300,10 @@ importers:
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
@@ -1319,7 +1319,7 @@ importers:
   examples/field-groups:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1338,7 +1338,7 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2(astro@4.13.1(@types/node@20.14.14)(terser@5.31.3)(typescript@5.5.4))
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1369,13 +1369,13 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -1421,10 +1421,10 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -1476,10 +1476,10 @@ importers:
         specifier: ^8.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
@@ -1529,7 +1529,7 @@ importers:
   examples/framework-remix:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1572,7 +1572,7 @@ importers:
   examples/graphql-ts-gql:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1603,7 +1603,7 @@ importers:
   examples/hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1619,7 +1619,7 @@ importers:
   examples/limits:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1638,7 +1638,7 @@ importers:
   examples/omit:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1654,7 +1654,7 @@ importers:
   examples/reuse:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1670,7 +1670,7 @@ importers:
   examples/script:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1689,7 +1689,7 @@ importers:
   examples/singleton:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1711,7 +1711,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1733,7 +1733,7 @@ importers:
   examples/transactions:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1749,10 +1749,10 @@ importers:
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 5.17.0
@@ -1774,7 +1774,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1790,7 +1790,7 @@ importers:
   examples/usecase-relationship-union:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1809,7 +1809,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1825,7 +1825,7 @@ importers:
   examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1844,7 +1844,7 @@ importers:
   examples/usecase-versioning:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0
@@ -1863,7 +1863,7 @@ importers:
   examples/virtual-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 5.17.0

@@ -11,7 +11,7 @@
     "postinstall": "keystone postinstall && ts-gql build"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.1.0",
+    "@keystone-6/core": "^6.2.0",
     "@prisma/client": "5.17.0",
     "graphql": "^16.8.1"
   },
