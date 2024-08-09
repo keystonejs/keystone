@@ -54,7 +54,7 @@ export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
   if (hooks === undefined) return builtin
   if (builtin === undefined) return hooks
 
-  const builtinValidate = resolveValidateHooks(builtin)
+  const builtinValidate = resolveValidateHooks(builtin) 
   const hooksValidate = resolveValidateHooks(hooks)
   return {
     ...hooks,
@@ -67,5 +67,11 @@ export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
       update: merge(builtinValidate?.update, hooksValidate?.update),
       delete: merge(builtinValidate?.delete, hooksValidate?.delete)
     } : undefined,
+
+    // @deprecated, TODO: remove in breaking change 
+    // set deprecated hooks to undefined so they don't get passed through from
+    // user-defined hooks
+    validateInput: undefined,
+    validateDelete: undefined,
   } satisfies FieldHooks<ListTypeInfo>
 }
