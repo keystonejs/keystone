@@ -161,7 +161,7 @@ export async function dev (
         const paths = system.getPaths(cwd)
         if (dbPush) {
           const created = await createDatabase(system.config.db.url, path.dirname(paths.schema.prisma))
-          if (created) console.log(`✨ database created`)
+          if (created) console.log(`✨ Database created`)
 
           const migration = await withMigrate(paths.schema.prisma, system, async (m) => {
             // what does force on migrate.engine.schemaPush mean?
