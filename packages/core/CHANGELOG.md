@@ -1,5 +1,37 @@
 # @keystone-6/core
 
+## 6.2.0
+
+### Minor Changes
+
+- [#9235](https://github.com/keystonejs/keystone/pull/9235) [`ab1b44c`](https://github.com/keystonejs/keystone/commit/ab1b44cebdf3dd34fb68bb466a5d5b3a42c87b80) Thanks [@dcousens](https://github.com/dcousens)! - Add support for developers to add `esbuild.keystone.ts` to the working directory to mutate the default esbuild configuration
+
+- [#9254](https://github.com/keystonejs/keystone/pull/9254) [`27207a1`](https://github.com/keystonejs/keystone/commit/27207a1a0d77619100386c64c4186a11c25091b6) Thanks [@dcousens](https://github.com/dcousens)! - Add support for lists with no fields in GraphQL
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Add `db.isNullable` support for multiselect field type, defaulting to false
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`fa63c76`](https://github.com/keystonejs/keystone/commit/fa63c7651b037aef41a67aaa7309a19f9792aa9a) Thanks [@dcousens](https://github.com/dcousens)! - Add exports for internal AdminUI pagination components `Pagination`, `PaginationLabel` and `usePaginationParams` for use in custom pages
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `esbuild` to ^0.23.0
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `nextjs` to version 14
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `prisma` monorepo to version 5.17.0
+
+- [#9273](https://github.com/keystonejs/keystone/pull/9273) [`d80748e`](https://github.com/keystonejs/keystone/commit/d80748ea5084bed25e1c2973d66774a66c1bdf89) Thanks [@dcousens](https://github.com/dcousens)! - Fix Prisma errors not showing when a Prisma migration errors internally
+
+### Patch Changes
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Fix bigInt field type to throw if `defaultValue: { kind: 'autoincrement' }` and `validation.isRequired` is set
+
+- [#9217](https://github.com/keystonejs/keystone/pull/9217) [`5ee45ae`](https://github.com/keystonejs/keystone/commit/5ee45ae5ebc0cfe43ff51a185ac55737c49e0df5) Thanks [@dcousens](https://github.com/dcousens)! - Fix `list.ui.hide*` defaulting to false when GraphQL is omitted
+
+- [#9164](https://github.com/keystonejs/keystone/pull/9164) [`4262e50`](https://github.com/keystonejs/keystone/commit/4262e50c35d69847242b541db49afd2fda9cb50c) Thanks [@renovate](https://github.com/apps/renovate)! - Fix `keystone prisma ...` not returning the same error code as the Prisma engine
+
+- [#9155](https://github.com/keystonejs/keystone/pull/9155) [`0aa7317`](https://github.com/keystonejs/keystone/commit/0aa7317303e4cadec2051ca04c7ce1a3cefba952) Thanks [@dcousens](https://github.com/dcousens)! - Fix malformed uuid's from breaking relationship filters when using POSTGRESQL
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Update built-in fields to use newer validate hook syntax
+
 ## 6.1.0
 
 ### Minor Changes
