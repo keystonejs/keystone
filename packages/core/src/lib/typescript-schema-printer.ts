@@ -201,6 +201,7 @@ export function printGeneratedTypes (
     })(),
     `  }`,
     `  prisma: import('${prismaClientPath}').PrismaClient`,
+    `  prismaTypes: import('${prismaClientPath}').Prisma`,
     `  session: Session`,
     `}`,
     ``,

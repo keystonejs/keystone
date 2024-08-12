@@ -97,7 +97,7 @@ export function createContext ({
 
       sudo: () => construct({ prisma, session, sudo: true, req, res }),
 
-      transaction: async (f) => {
+      transaction: async (f, opts) => {
         return await prisma.$transaction(async (prisma_: any) => {
           const newContext = construct({
             prisma: prisma_,
@@ -108,7 +108,7 @@ export function createContext ({
           })
 
           return await f(newContext)
-        })
+        }, opts)
       },
 
       req,
