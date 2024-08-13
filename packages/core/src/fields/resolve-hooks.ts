@@ -9,32 +9,6 @@ import {
 export type InternalFieldHooks<ListTypeInfo extends BaseListTypeInfo> =
   Omit<FieldHooks<ListTypeInfo>, 'validateInput' | 'validateDelete' | 'resolveInput'>
 
-/** @deprecated, TODO: remove in breaking change */
-function resolveValidateHooks <ListTypeInfo extends BaseListTypeInfo> ({
-  validate,
-  validateInput,
-  validateDelete
-}: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>["validate"], Function> | undefined {
-  if (validateInput || validateDelete) {
-    return {
-      create: validateInput,
-      update: validateInput,
-      delete: validateDelete,
-    }
-  }
-
-  if (!validate) return
-  if (typeof validate === 'function') {
-    return {
-      create: validate,
-      update: validate,
-      delete: validate
-    }
-  }
-
-  return validate
-}
-
 function merge <
   R,
   A extends (r: R) => MaybePromise<void>,
@@ -44,6 +18,23 @@ function merge <
   return async (args: R) => {
     await a?.(args)
     await b?.(args)
+  }
+}
+
+/** @deprecated, TODO: remove in breaking change */
+function resolveValidateHooks <ListTypeInfo extends BaseListTypeInfo> ({
+  validate,
+  validateInput,
+  validateDelete
+}: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>["validate"], Function> | undefined {
+  if (!validate && !validateInput && !validateDelete) return
+
+  const isFnValidate = typeof validate === 'function'
+
+  return {
+    create: merge(validateInput, isFnValidate ? validate : validate?.create),
+    update: merge(validateInput, isFnValidate ? validate : validate?.update),
+    delete: merge(validateDelete, isFnValidate ? validate : validate?.delete),
   }
 }
 
