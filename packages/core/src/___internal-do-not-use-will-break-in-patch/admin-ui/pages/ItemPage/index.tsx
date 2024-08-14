@@ -7,20 +7,16 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import copyToClipboard from 'clipboard-copy'
 import { useRouter } from 'next/router'
 
-import { ActionButton, Button } from '@keystar/ui/button'
+import { Button } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { fileWarningIcon } from '@keystar/ui/icon/icons/fileWarningIcon'
-import { clipboardIcon } from '@keystar/ui/icon/icons/clipboardIcon'
 import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
-import { Box, Grid, VStack } from '@keystar/ui/layout'
+import { Box, VStack } from '@keystar/ui/layout'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { SlotProvider } from '@keystar/ui/slots'
-import { TextField } from '@keystar/ui/text-field'
 import { toastQueue } from '@keystar/ui/toast'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import type { ListMeta } from '../../../../types'
@@ -86,7 +82,6 @@ function ItemForm ({
     return deserializeItemToValue(list.fields, item)
   })
 
-  console.log('ip', { item, value })
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
   const onSave = useEventCallback(async (e) => {
@@ -142,26 +137,26 @@ function ItemForm ({
             ]}
           />
           <Fields
-            groups={list.groups}
+            view='itemView'
+            position="form"
             fields={list.fields}
+            groups={list.groups}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
-            position="form"
             onChange={useCallback(value => setValue(value), [setValue])}
             value={value}
           />
         </VStack>
 
         <StickySidebar>
-          <IdField itemId={itemId.toString()} />
-
           <Box marginTop="xlarge">
             <Fields
-              groups={list.groups}
+              view='itemView'
+              position="sidebar"
               fields={list.fields}
+              groups={list.groups}
               forceValidation={forceValidation}
               invalidFields={invalidFields}
-              position="sidebar"
               onChange={useCallback(value => setValue(value), [setValue])}
               value={value}
             />
@@ -198,54 +193,6 @@ function ItemForm ({
         {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
       </DialogContainer>
     </Fragment>
-  )
-}
-
-const COPY_TOOLTIP_CONTENT = {
-  neutral: 'Copy ID',
-  positive: 'Copied to clipboard',
-  critical: 'Unable to copy',
-}
-type TooltipState = { isOpen?: boolean, tone: keyof typeof COPY_TOOLTIP_CONTENT }
-function IdField ({ itemId }: { itemId: string }) {
-  const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
-
-  const onCopy = useCallback(async () => {
-    try {
-      await copyToClipboard(itemId)
-      setTooltipState({ isOpen: true, tone: 'positive' })
-    } catch (err: any) {
-      setTooltipState({ isOpen: true, tone: 'critical' })
-    }
-
-    // close, then reset the tooltip state after a delay
-    setTimeout(() => {
-      setTooltipState(state => ({ ...state, isOpen: false }))
-    }, 2000)
-    setTimeout(() => {
-      setTooltipState({ isOpen: undefined, tone: 'neutral' })
-    }, 2300)
-  }, [itemId])
-
-  return (
-    <Grid gap="regular" columns="1fr auto" alignItems="end">
-      <TextField
-        label="Item ID"
-        value={itemId}
-        isReadOnly
-        onFocus={({ target }) => {
-          if (target instanceof HTMLInputElement) target.select()
-        }}
-      />
-      <TooltipTrigger isOpen={tooltipState.isOpen} placement='top end'>
-        <ActionButton aria-label="copy id" onPress={onCopy}>
-          <Icon src={clipboardIcon} />
-        </ActionButton>
-        <Tooltip tone={tooltipState.tone}>
-          {COPY_TOOLTIP_CONTENT[tooltipState.tone]}
-        </Tooltip>
-      </TooltipTrigger>
-    </Grid>
   )
 }
 

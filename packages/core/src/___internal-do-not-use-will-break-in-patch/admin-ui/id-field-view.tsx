@@ -1,26 +1,87 @@
-import React from 'react'
+import React, {
+  useCallback,
+  useState,
+} from 'react'
+import copyToClipboard from 'clipboard-copy'
 
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { clipboardIcon } from '@keystar/ui/icon/icons/clipboardIcon'
+import { Grid, } from '@keystar/ui/layout'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { TextField } from '@keystar/ui/text-field'
 
 import type {
   FieldController,
   FieldControllerConfig,
+  FieldProps,
   IdFieldConfig,
 } from '../../types'
 
-export function Field () {
-  return null
+const COPY_TOOLTIP_CONTENT = {
+  neutral: 'Copy ID',
+  positive: 'Copied to clipboard',
+  critical: 'Unable to copy',
+}
+type TooltipState = { isOpen?: boolean, tone: keyof typeof COPY_TOOLTIP_CONTENT }
+
+export function Field ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) {
+  const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
+
+  const onCopy = useCallback(async () => {
+    try {
+      if (value) await copyToClipboard(value)
+      setTooltipState({ isOpen: true, tone: 'positive' })
+    } catch (err: any) {
+      setTooltipState({ isOpen: true, tone: 'critical' })
+    }
+
+    // close, then reset the tooltip state after a delay
+    setTimeout(() => {
+      setTooltipState(state => ({ ...state, isOpen: false }))
+    }, 2000)
+    setTimeout(() => {
+      setTooltipState({ isOpen: undefined, tone: 'neutral' })
+    }, 2300)
+  }, [value])
+
+  return (
+    <Grid gap="regular" columns="1fr auto" alignItems="end">
+      <TextField
+        label="Item ID"
+        value={value ?? ''}
+        isReadOnly
+        onFocus={({ target }) => {
+          if (target instanceof HTMLInputElement) target.select()
+        }}
+      />
+      <TooltipTrigger isOpen={tooltipState.isOpen} placement='top end'>
+        <ActionButton aria-label="copy id" onPress={onCopy}>
+          <Icon src={clipboardIcon} />
+        </ActionButton>
+        <Tooltip tone={tooltipState.tone}>
+          {COPY_TOOLTIP_CONTENT[tooltipState.tone]}
+        </Tooltip>
+      </TooltipTrigger>
+    </Grid>
+  )
 }
 
 export function controller (
   config: FieldControllerConfig<IdFieldConfig>
-): FieldController<void, string> {
+): FieldController<string | null, string> {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: config.path,
-    defaultValue: undefined,
+    defaultValue: null,
     deserialize: data => data[config.path],
     serialize: value => ({ [config.path]: value }),
     filter: {
