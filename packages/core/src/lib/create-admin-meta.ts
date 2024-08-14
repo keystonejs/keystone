@@ -216,6 +216,7 @@ export function createAdminMeta (
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
     }
+
     for (const group of list.groups) {
       adminMetaRoot.listsByKey[listKey].groups.push({
         label: group.label,
@@ -249,30 +250,24 @@ export function createAdminMeta (
 let currentAdminMeta: undefined | AdminMetaRootVal
 
 export function getAdminMetaForRelationshipField () {
-  if (currentAdminMeta === undefined) throw new Error('Unexpected call to getAdminMetaInRelationshipField')
-  return currentAdminMeta
+  if (currentAdminMeta) return currentAdminMeta
+  throw new Error('unexpected call to getAdminMetaInRelationshipField')
 }
 
 function assertValidView (view: string, location: string) {
   if (view.includes('\\')) {
-    throw new Error(
-      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
+    throw new Error(`${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
   }
 
   if (path.isAbsolute(view)) {
-    throw new Error(
-      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
+    throw new Error(`${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
   }
 }
 
 function normalizeMaybeSessionFunction<Return extends string | boolean> (
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): ContextFunction<Return> {
-  if (typeof input !== 'function') {
-    return () => input
-  }
+  if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session })
 }
 
@@ -282,8 +277,6 @@ function normalizeIsOrderFilter (
   input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
   baseOrderFilterArgs: BaseOrderFilterArgs
 ): ContextFunction<boolean> {
-  if (typeof input !== 'function') {
-    return () => input
-  }
+  if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session, ...baseOrderFilterArgs })
 }
