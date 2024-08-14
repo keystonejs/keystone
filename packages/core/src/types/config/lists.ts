@@ -177,7 +177,7 @@ export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session']
-      item: ListTypeInfo['item']
+      item: ListTypeInfo['item'] | null
     }) => MaybePromise<T>)
 
 export type ListGraphQLConfig = {
