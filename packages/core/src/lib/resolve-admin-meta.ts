@@ -95,17 +95,14 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
-            resolve ({ fieldMode, itemId, listKey }, args, context, info) {
-              if (!itemId) return null
-              return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
-                if (item === null) return 'hidden' as const
-                if (typeof fieldMode !== 'function') return fieldMode
+            async resolve ({ fieldMode, itemId, listKey }, args, context, info) {
+              if (typeof fieldMode !== 'function') return fieldMode
 
-                return fieldMode({
-                  session: context.session,
-                  context,
-                  item,
-                })
+              const item = itemId ? (await fetchItemForItemViewFieldMode(context)(listKey, itemId)) : null
+              return fieldMode({
+                session: context.session,
+                context,
+                item,
               })
             },
           }),
@@ -114,17 +111,14 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
               values: graphql.enumValues(['form', 'sidebar']),
             }),
-            resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
-              if (!itemId) return null
-              return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
-                if (item === null) return 'form' as const
-                if (typeof fieldPosition !== 'function') return fieldPosition
+            async resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
+              if (typeof fieldPosition !== 'function') return fieldPosition
 
-                return fieldPosition({
-                  session: context.session,
-                  context,
-                  item,
-                })
+              const item = itemId ? (await fetchItemForItemViewFieldMode(context)(listKey, itemId)) : null
+              return fieldPosition({
+                session: context.session,
+                context,
+                item,
               })
             },
           }),

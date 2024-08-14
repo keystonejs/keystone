@@ -5,7 +5,6 @@ import React, {
 } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
-import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
 import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
 import { Icon } from '@keystar/ui/icon'
 import { HStack, VStack } from '@keystar/ui/layout'
@@ -16,10 +15,9 @@ import type {
   FieldGroupMeta,
   FieldMeta,
 } from '../../types'
-import { EmptyState } from '../components/EmptyState'
 
 export function Fields ({
-  view = 'itemView',
+  view,
   position = 'form',
   fields,
   groups = [],
@@ -28,7 +26,7 @@ export function Fields ({
   onChange,
   value: itemValue,
 }: {
-  view?: 'createView' | 'itemView'
+  view: 'createView' | 'itemView'
   position?: 'form' | 'sidebar'
   fields: Record<string, FieldMeta>
   forceValidation: boolean
@@ -37,94 +35,73 @@ export function Fields ({
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
 }) {
+  const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false
-  const renderedFields = Object.fromEntries(
-    Object.keys(fields).map((fieldKey) => {
-      const field = fields[fieldKey]
-      if (view === 'itemView' && field.itemView.fieldPosition !== position) return [fieldKey, null]
+  for (const fieldKey in fields) {
+    const field = fields[fieldKey]
+    fieldDomByKey[fieldKey] = null // default
 
-      const { fieldMode } = field[view]
-      if (fieldMode === 'hidden') return [fieldKey, null]
+    if (view === 'itemView' && field.itemView.fieldPosition !== position) continue
 
-      const fieldValue = itemValue[fieldKey]
-      const autoFocus = focused === false // not great, but focuses the first field
-      focused = true
+    const { fieldMode } = field[view]
+    if (fieldMode === 'hidden') continue
 
-      return [
-        fieldKey,
-        <field.views.Field
-          key={fieldKey}
-          autoFocus={autoFocus}
-          forceValidation={forceValidation && invalidFields.has(fieldKey)}
-          field={field.controller}
-          onChange={(newFieldValue) => {
-            if (fieldMode !== 'edit') return
-            if (onChange === undefined) return
-            onChange({
-              ...itemValue,
-              [field.controller.path]: newFieldValue,
-            })
-          }}
-          value={fieldValue}
-          itemValue={itemValue}
-        />
-      ]
-    })
-  )
-  const rendered: ReactNode[] = []
-  const fieldGroups = new Map<
-    string,
-    {
-      rendered: boolean
-      group: FieldGroupMeta
-    }
-  >()
-  for (const group of groups) {
-    const state = { group, rendered: false }
-    for (const field of group.fields) {
-      fieldGroups.set(field.path, state)
-    }
-  }
+    const fieldValue = itemValue[fieldKey]
+    const autoFocus = focused === false // not great, but focuses the first field
+    focused = true
 
-  for (const field of Object.values(fields)) {
-    const fieldKey = field.path
-
-    if (fieldGroups.has(fieldKey)) {
-      const groupState = fieldGroups.get(field.path)!
-      if (groupState.rendered) continue
-      groupState.rendered = true
-
-      const { group } = groupState
-      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
-      if (renderedFieldsInGroup.every(field => field === null)) continue
-      rendered.push(
-        <FieldGroup key={group.label} label={group.label} description={group.description}>
-          {renderedFieldsInGroup}
-        </FieldGroup>
-      )
-      continue
-    }
-
-    if (renderedFields[fieldKey] === null) continue
-    rendered.push(renderedFields[fieldKey])
-  }
-
-  // TODO: not sure what to do about the sidebar case. i think it's fine to
-  // just render nothing for now, but we should revisit this.
-  if (rendered.length === 0 && position === 'form') {
-    return (
-      <EmptyState
-        icon={textCursorInputIcon}
-        title="No fields"
-        message="There are no fields matching access."
+    fieldDomByKey[fieldKey] =
+      <field.views.Field
+        key={fieldKey}
+        autoFocus={autoFocus}
+        forceValidation={forceValidation && invalidFields.has(fieldKey)}
+        field={field.controller}
+        onChange={(newFieldValue) => {
+          if (fieldMode !== 'edit') return
+          if (onChange === undefined) return
+          onChange({
+            ...itemValue,
+            [field.controller.path]: newFieldValue,
+          })
+        }}
+        value={fieldValue}
+        itemValue={itemValue}
       />
-    )
   }
 
-  // the "inline" container allows fields to react to the width of their column
+  const groupByFieldKey: Record<string, FieldGroupMeta> = {}
+  for (const group of groups) {
+    for (const { path: fieldKey } of group.fields) {
+      groupByFieldKey[fieldKey] = group
+    }
+  }
+
   return (
+    // the "inline" container allows fields to react to the width of their column
     <VStack gap="xlarge" UNSAFE_style={{ containerType: 'inline-size' }}>
-      {rendered}
+    {[...function* () {
+      const rendered: Record<string, true> = {}
+      for (const fieldKey in fields) {
+        if (fieldKey in rendered) continue
+
+        const group = groupByFieldKey[fieldKey]
+        if (group) {
+          yield <FieldGroup key={group.label} label={group.label} description={group.description}>
+            {[...function* () {
+              for (const { path: fieldKey } of group.fields) {
+                if (fieldKey in rendered) continue
+                yield fieldDomByKey[fieldKey]
+                rendered[fieldKey] = true
+              }
+            }()]}
+          </FieldGroup>
+          continue
+        }
+
+        yield fieldDomByKey[fieldKey]
+        rendered[fieldKey] = true
+      }
+    }()]}
     </VStack>
   )
 }
