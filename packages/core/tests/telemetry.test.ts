@@ -129,7 +129,7 @@ describe('Telemetry tests', () => {
   }
 
   function expectDidSend (lastSentDate: string | null) {
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/project`, {
+    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/2/event/project`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ describe('Telemetry tests', () => {
       })
     )
 
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/device`, {
+    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/2/event/device`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -173,12 +173,12 @@ describe('Telemetry tests', () => {
     expect(Object.keys(mockTelemetryConfig?.projects).length).toBe(0)
   })
 
-  test('Telemetry is sent on second run', async () => {
+  test('Telemetry is sent after inform', async () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
 
     expectDidSend(null)
-    expect(https.request).toHaveBeenCalledTimes(2)
+    expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
     expect(mockTelemetryConfig).toBeDefined()
     expect(mockTelemetryConfig?.device.lastSentDate).toBe(today)
     expect(mockTelemetryConfig?.projects).toBeDefined()
@@ -215,7 +215,7 @@ describe('Telemetry tests', () => {
     expect(mockTelemetryConfig).toBe(false)
   })
 
-  test(`Telemetry is not sent if telemetry is disabled`, async () => {
+  test(`Telemetry is not sent if telemetry configuration is disabled`, async () => {
     mockTelemetryConfig = false
 
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
