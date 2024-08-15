@@ -11,7 +11,7 @@ export async function telemetry (cwd: string, command?: string) {
     Usage
       $ keystone telemetry [command]
     Commands
-      disable     opt-out of telemetry, disabled for this system user
+      disable     opt-out of telemetry, disabling telemetry for this system user
       enable      opt-in to telemetry
       reset       resets your telemetry configuration (if any)
       status      show if telemetry is enabled, disabled or uninitialised
