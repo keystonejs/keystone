@@ -11,7 +11,7 @@ export type TelemetryVersion1 =
       }
     }
 
-export type TelemetryVersion2and3 =
+export type TelemetryVersion2 =
   | undefined
   | false
   | {
@@ -25,10 +25,6 @@ export type TelemetryVersion2and3 =
       }
     }>
   }
-
-export type Configuration = {
-  telemetry?: undefined | false | TelemetryVersion2and3
-}
 
 export type Device = {
   previous: string | null // new Date().toISOString().slice(0, 10)

@@ -1,4 +1,5 @@
 import https from 'node:https'
+import Conf from 'conf'
 
 import path from 'path'
 import type { InitialisedList } from '../src/lib/core/initialise-lists'
@@ -43,11 +44,18 @@ jest.mock(
 )
 
 let mockTelemetryConfig: any = undefined
+
 jest.mock('conf', () => {
+  const getMockTelemetryConfig = jest.fn(() => {
+    if (mockTelemetryConfig === 'THROW') throw new Error('JSON.parse error')
+    return mockTelemetryConfig
+  })
+
   return function Conf () {
     return {
-      get: () => mockTelemetryConfig,
-      set: (_name: string, newState: any) => {
+      get: getMockTelemetryConfig,
+      set: (key: string, newState: any) => {
+        if (key !== 'telemetry') throw new Error(`Unexpected conf key ${key}`)
         mockTelemetryConfig = newState
       },
       delete: () => {
@@ -166,6 +174,7 @@ describe('Telemetry tests', () => {
   test('Telemetry writes out an empty configuration, and sends nothing on first run', async () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
 
+    expect(new Conf().get).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(0)
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
@@ -179,6 +188,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
 
     expectDidSend(null)
+    expect(new Conf().get).toHaveBeenCalledTimes(2)
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
@@ -195,6 +205,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, same day
 
     expectDidSend(null)
+    expect(new Conf().get).toHaveBeenCalledTimes(3)
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
   })
 
@@ -204,6 +215,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, different day
 
     expectDidSend(mockYesterday)
+    expect(new Conf().get).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(2)
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${mockYesterday}`)),
@@ -227,8 +239,20 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, same day
 
+    expect(new Conf().get).toHaveBeenCalledTimes(3)
     expect(https.request).toHaveBeenCalledTimes(0)
     expect(mockTelemetryConfig).toBe(false)
+  })
+
+  test(`Telemetry is unchanged if configuration is malformed`, async () => {
+    mockTelemetryConfig = 'THROW'
+
+    await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
+    await runTelemetry(mockProjectDir, lists, 'sqlite') // send
+
+    expect(new Conf().get).toHaveBeenCalledTimes(2)
+    expect(https.request).toHaveBeenCalledTimes(0)
+    expect(mockTelemetryConfig).toStrictEqual('THROW') // nothing changes
   })
 
   // easy opt-out tests
@@ -247,24 +271,25 @@ describe('Telemetry tests', () => {
         process.env[key] = envBefore
       })
 
-      test(`when initialised, nothing is sent`, async () => {
+      test(`when telemetry initialised, we do nothing`, async () => {
         mockTelemetryConfig = mockTelemetryConfigInitialised
 
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send again
 
+        expect(new Conf().get).toHaveBeenCalledTimes(0)
         expect(https.request).toHaveBeenCalledTimes(0)
         expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
       })
 
-      test(`if not initialised, we do nothing`, async () => {
+      test(`when telemetry uninitialised, we do nothing`, async () => {
         expect(mockTelemetryConfig).toBe(undefined)
-        expect(https.request).toHaveBeenCalledTimes(0)
 
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try inform
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send
 
+        expect(new Conf().get).toHaveBeenCalledTimes(0)
         expect(https.request).toHaveBeenCalledTimes(0)
-        expect(mockTelemetryConfig).toBe(undefined) // nothing changed
+        expect(mockTelemetryConfig).toBe(undefined) // unchanged
       })
     })
   }
@@ -272,6 +297,7 @@ describe('Telemetry tests', () => {
   describe('when something throws internally', () => {
     let runTelemetryThrows: any
     beforeEach(() => {
+      // this is a nightmare, don't touch it
       jest.resetAllMocks()
       jest.resetModules()
       jest.mock('node-fetch', () => {
@@ -287,6 +313,7 @@ describe('Telemetry tests', () => {
 
       await runTelemetryThrows(mockProjectDir, lists, 'sqlite') // send
 
+      // expect(new Conf().get).toHaveBeenCalledTimes(1) // nightmare
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
     })
@@ -309,17 +336,18 @@ describe('Telemetry tests', () => {
 
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try send again
 
+      expect(new Conf().get).toHaveBeenCalledTimes(0)
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
     })
 
     test(`if not initialised, we do nothing`, async () => {
-      expect(mockTelemetryConfig).toBe(undefined)
-      expect(https.request).toHaveBeenCalledTimes(0)
+      mockTelemetryConfig = undefined
 
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try inform
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try send
 
+      expect(new Conf().get).toHaveBeenCalledTimes(0)
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(undefined) // nothing changed
     })
