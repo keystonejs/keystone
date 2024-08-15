@@ -49,7 +49,7 @@ export type Project = {
   // - `@keystone-6`
   // - `@opensaas`
   // - ...
-  versions: Partial<Record<PackageName, string>>
+  packages: Partial<Record<PackageName, string>>
   lists: number
   database: DatabaseProvider
   // uses a new `field.__ksTelemetryFieldTypeName` for the key, defaults to `unknown`

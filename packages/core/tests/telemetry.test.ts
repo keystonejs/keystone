@@ -151,7 +151,7 @@ describe('Telemetry tests', () => {
           id: 5,
         },
         lists: 2,
-        versions: mockPackageVersions,
+        packages: mockPackageVersions,
         database: 'sqlite',
       })
     )

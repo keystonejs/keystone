@@ -89,7 +89,7 @@ A device telemetry report is formatted as JSON and currently looks like:
 The type of information contained within a project telemetry report is currently:
 
 - The last date you used `keystone dev` for this project, and
-- The resolved versions of any `@keystone-6` packages used by this project, and
+- The resolved package versions of any `@keystone-6` packages used by this project, and
 - The number of lists for this project, and
 - The name and number of field types that you are using
 
@@ -98,7 +98,7 @@ A project telemetry report is formatted as JSON and currently looks like:
 ```json
 {
   "previous": "2022-11-23",
-  "versions": {
+  "packages": {
     "@keystone-6/auth": "5.0.1",
     "@keystone-6/core": "3.1.2",
     "@keystone-6/document-renderer": "1.1.2",
@@ -185,8 +185,8 @@ If you wish to see how telemetry is currently configured for your device or proj
 
 ## What if I have a complaint or question
 
-If you have any questions or concerns about the information that is gathered please contact us by logging a GitHub Issue [https://github.com/keystonejs/keystone](https://github.com/keystonejs/keystone). 
+If you have any questions or concerns about the information that is gathered please contact us by logging a GitHub Issue [https://github.com/keystonejs/keystone](https://github.com/keystonejs/keystone).
 
-Alternatively please contact our Privacy Officer by email to [privacy@keystonejs.com](mailto:privacy@keystonejs.com), or by mail to Level 10, 191 Clarence Street, Sydney NSW 2000. 
+Alternatively please contact our Privacy Officer by email to [privacy@keystonejs.com](mailto:privacy@keystonejs.com), or by mail to Level 10, 191 Clarence Street, Sydney NSW 2000.
 
 For further information about Keystone’s security policy please see [https://github.com/keystonejs/keystone/security/policy](https://github.com/keystonejs/keystone/security/policy)

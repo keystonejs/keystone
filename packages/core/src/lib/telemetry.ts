@@ -137,20 +137,20 @@ function collectFieldCount (lists: Record<string, InitialisedList>) {
 }
 
 function collectPackageVersions () {
-  const versions: Project['versions'] = {
+  const packages: Project['packages'] = {
     '@keystone-6/core': '0.0.0', // effectively unknown
   }
 
   for (const packageName of packageNames) {
     try {
       const packageJson = require(`${packageName}/package.json`)
-      versions[packageName] = packageJson.version
+      packages[packageName] = packageJson.version
     } catch {
       // do nothing, most likely because the package is not installed
     }
   }
 
-  return versions
+  return packages
 }
 
 function printAbout () {
@@ -236,7 +236,7 @@ async function sendProjectTelemetryEvent (
     previous: lastSentDate,
     fields: collectFieldCount(lists),
     lists: Object.keys(lists).length,
-    versions: collectPackageVersions(),
+    packages: collectPackageVersions(),
     database: dbProviderName,
   })
 
