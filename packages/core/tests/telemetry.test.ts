@@ -167,10 +167,11 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
 
     expect(https.request).toHaveBeenCalledTimes(0)
-    expect(mockTelemetryConfig).toBeDefined()
-    expect(mockTelemetryConfig?.device.lastSentDate).toBe(null)
-    expect(mockTelemetryConfig?.projects).toBeDefined()
-    expect(Object.keys(mockTelemetryConfig?.projects).length).toBe(0)
+    expect(mockTelemetryConfig).toStrictEqual({
+      informedAt: expect.stringMatching(new RegExp(`^${today}`)),
+      device: { lastSentDate: null },
+      projects: {}
+    })
   })
 
   test('Telemetry is sent after inform', async () => {
@@ -179,11 +180,13 @@ describe('Telemetry tests', () => {
 
     expectDidSend(null)
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
-    expect(mockTelemetryConfig).toBeDefined()
-    expect(mockTelemetryConfig?.device.lastSentDate).toBe(today)
-    expect(mockTelemetryConfig?.projects).toBeDefined()
-    expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined()
-    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBe(today)
+    expect(mockTelemetryConfig).toStrictEqual({
+      informedAt: expect.stringMatching(new RegExp(`^${today}`)),
+      device: { lastSentDate: today },
+      projects: {
+        [mockProjectDir]: { lastSentDate: today }
+      }
+    })
   })
 
   test('Telemetry is not sent twice in one day', async () => {
@@ -195,18 +198,20 @@ describe('Telemetry tests', () => {
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
   })
 
-  test('Telemetry sends a lastSentDate on the third run, second day', async () => {
+  test('Telemetry sends a lastSentDate on the next run, a different day', async () => {
     mockTelemetryConfig = mockTelemetryConfigInitialised
 
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, different day
 
     expectDidSend(mockYesterday)
     expect(https.request).toHaveBeenCalledTimes(2)
-    expect(mockTelemetryConfig).toBeDefined()
-    expect(mockTelemetryConfig?.device.lastSentDate).toBe(today)
-    expect(mockTelemetryConfig?.projects).toBeDefined()
-    expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined()
-    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBe(today)
+    expect(mockTelemetryConfig).toStrictEqual({
+      informedAt: expect.stringMatching(new RegExp(`^${mockYesterday}`)),
+      device: { lastSentDate: today },
+      projects: {
+        [mockProjectDir]: { lastSentDate: today }
+      }
+    })
   })
 
   test(`Telemetry is reset when using "keystone telemetry disable"`, () => {
