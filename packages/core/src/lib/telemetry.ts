@@ -14,7 +14,8 @@ import {
   type Device,
   type PackageName,
   type Project,
-  type Telemetry,
+  type TelemetryVersion1,
+  type TelemetryVersion2and3,
 } from '../types/telemetry'
 import { type DatabaseProvider } from '../types'
 import { type InitialisedList } from './core/initialise-lists'
@@ -30,17 +31,6 @@ const packageNames: PackageName[] = [
   '@opensaas/keystone-nextjs-auth',
 ]
 
-type TelemetryVersion1 =
-  | undefined
-  | false
-  | {
-      device: { lastSentDate?: string, informedAt: string }
-      projects: {
-        default: { lastSentDate?: string, informedAt: string }
-        [projectPath: string]: { lastSentDate?: string, informedAt: string }
-      }
-    }
-
 function log (message: unknown) {
   if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
     console.log(`${message}`)
@@ -51,37 +41,45 @@ function getTelemetryConfig () {
   const userConfig = new Conf<Configuration>({
     projectName: 'keystonejs',
     projectSuffix: '',
-    projectVersion: '2.0.0',
+    projectVersion: '3.0.0',
     migrations: {
-      '^2.0.0': (store: Conf<Configuration>) => {
-        const existing = store.get('telemetry') as unknown as TelemetryVersion1
-        if (!existing) return
+      '^2.0.0': (store) => {
+        const existing = store.get('telemetry') as TelemetryVersion1
+        if (!existing) return // skip non-configured or known opt-outs
 
-        const replacement: Telemetry = {
-          // every informedAt was a copy of device.informedAt, it was copied everywhere
-          informedAt: existing.device.informedAt,
+        const replacement: TelemetryVersion2and3 = {
+          informedAt: null, // re-inform
           device: {
             lastSentDate: existing.device.lastSentDate ?? null,
           },
-          projects: {}, // manually copying this below
+          projects: {}, // see below
         }
 
         // copy existing project lastSentDate's
         for (const [projectPath, project] of Object.entries(existing.projects)) {
-          if (projectPath === 'default') continue // informedAt moved to root
+          if (projectPath === 'default') continue // informedAt moved to device.lastSentDate
 
           // dont copy garbage
           if (typeof project !== 'object') continue
           if (typeof project.lastSentDate !== 'string') continue
           if (new Date(project.lastSentDate).toString() === 'Invalid Date') continue
 
-          // only lastSentDate is retained
+          // retain lastSentDate
           replacement.projects[projectPath] = {
             lastSentDate: project.lastSentDate,
           }
         }
 
         store.set('telemetry', replacement)
+      },
+      '^3.0.0': (store) => {
+        const existing = store.get('telemetry') as TelemetryVersion2and3
+        if (!existing) return // skip non-configured or known opt-outs
+
+        store.set('telemetry', {
+          ...existing,
+          informedAt: null, // re-inform
+        } satisfies TelemetryVersion2and3)
       },
     },
   })
@@ -102,8 +100,8 @@ function getDefaultedTelemetryConfig () {
         device: {
           lastSentDate: null,
         },
-        projects: {} as Telemetry['projects'], // help Typescript infer the type
-      },
+        projects: {},
+      } as TelemetryVersion2and3, // help Typescript infer the type
       userConfig,
     }
   }
@@ -189,8 +187,8 @@ export function printTelemetryStatus () {
 function inform () {
   const { telemetry, userConfig } = getDefaultedTelemetryConfig()
 
-  // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (telemetry === false) return
+  // no telemetry? somehow our earlier missed something, do nothing
+  if (!telemetry) return
 
   console.log() // gap to help visiblity
   console.log(`${bold('Keystone Telemetry')}`)
@@ -225,8 +223,8 @@ async function sendProjectTelemetryEvent (
 ) {
   const { telemetry, userConfig } = getDefaultedTelemetryConfig()
 
-  // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (telemetry === false) return
+  // no telemetry? somehow our earlier missed something, do nothing
+  if (!telemetry) return
 
   const project = telemetry.projects[cwd] ?? { lastSentDate: null }
   const { lastSentDate } = project
@@ -251,8 +249,8 @@ async function sendProjectTelemetryEvent (
 async function sendDeviceTelemetryEvent () {
   const { telemetry, userConfig } = getDefaultedTelemetryConfig()
 
-  // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (telemetry === false) return
+  // no telemetry? somehow our earlier missed something, do nothing
+  if (!telemetry) return
 
   const { lastSentDate } = telemetry.device
   if (lastSentDate && lastSentDate >= todaysDate) {
@@ -288,7 +286,8 @@ export async function runTelemetry (
     const { telemetry } = getDefaultedTelemetryConfig()
 
     // don't run if the user has opted out
-    if (telemetry === false) return
+    //   or if somehow our defaults are problematic, do nothing
+    if (!telemetry) return
 
     // don't send telemetry before we inform the user, allowing opt-out
     if (!telemetry.informedAt) return inform()
