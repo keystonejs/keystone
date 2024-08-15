@@ -3,7 +3,12 @@ import https from 'node:https'
 
 import ci from 'ci-info'
 import Conf from 'conf'
-import chalk from 'chalk'
+import {
+  bold,
+  yellow as y,
+  red as r,
+  green as g
+} from 'chalk'
 import {
   type Configuration,
   type Device,
@@ -147,52 +152,38 @@ function collectPackageVersions () {
 }
 
 function printAbout () {
-  console.log(
-    `${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green(
-      '"keystone dev"'
-    )}`
-  )
+  console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
   console.log()
-  console.log(
-    `For more information, including how to opt-out see https://keystonejs.com/telemetry`
-  )
+  console.log(`For more information, including how to opt-out see https://keystonejs.com/telemetry`)
 }
 
 export function printTelemetryStatus () {
   const { telemetry } = getTelemetryConfig()
 
   if (telemetry === undefined) {
-    console.log(`Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}`)
+    console.log(`Keystone telemetry has been reset to ${y`uninitialized`}`)
     console.log()
-    console.log(
-      `Telemetry will be sent the next time you run ${chalk.green(
-        '"keystone dev"'
-      )}, unless you opt-out`
-    )
-  } else if (telemetry === false) {
-    console.log(`Keystone telemetry is ${chalk.red('disabled')}`)
-    console.log()
-    console.log(`Telemetry will ${chalk.red('not')} be sent by this system user`)
-  } else if (typeof telemetry === 'object') {
-    console.log(`Keystone telemetry is ${chalk.green('enabled')}`)
-    console.log()
-
-    console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`)
-    for (const [projectPath, project] of Object.entries(telemetry.projects)) {
-      console.log(
-        `  Project telemetry for "${chalk.yellow(projectPath)}" was last sent on ${
-          project?.lastSentDate
-        }`
-      )
-    }
-
-    console.log()
-    console.log(
-      `Telemetry will be sent the next time you run ${chalk.green(
-        '"keystone dev"'
-      )}, unless you opt-out`
-    )
+    console.log(`Telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
+    return
   }
+
+  if (telemetry === false) {
+    console.log(`Keystone telemetry is ${r`disabled`}`)
+    console.log()
+    console.log(`Telemetry will ${r`not`} be sent by this system user`)
+    return
+  }
+
+  console.log(`Keystone telemetry is ${g`enabled`}`)
+  console.log()
+
+  console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`)
+  for (const [projectPath, project] of Object.entries(telemetry.projects)) {
+    console.log(`  Project telemetry for "${y(projectPath)}" was last sent on ${project?.lastSentDate}`)
+  }
+
+  console.log()
+  console.log(`Telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
 }
 
 function inform () {
@@ -202,19 +193,11 @@ function inform () {
   if (telemetry === false) return
 
   console.log() // gap to help visiblity
-  console.log(`${chalk.bold('Keystone Telemetry')}`)
+  console.log(`${bold('Keystone Telemetry')}`)
   printAbout()
-  console.log(
-    `You can use ${chalk.green(
-      '"keystone telemetry --help"'
-    )} to update your preferences at any time`
-  )
+  console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
   console.log()
-  console.log(
-    `No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
-      '"keystone dev"'
-    )}, unless you opt-out`
-  )
+  console.log(`No telemetry data has been sent, but telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
   console.log() // gap to help visiblity
 
   // update the informedAt
