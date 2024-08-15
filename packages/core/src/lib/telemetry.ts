@@ -215,14 +215,20 @@ async function sendEvent (eventType: 'project', eventData: Project): Promise<voi
 async function sendEvent (eventType: 'device', eventData: Device): Promise<void>
 async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
-  const req = https.request(`${endpoint}/2/event/${eventType}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  await new Promise<void>((resolve) => {
+    const req = https.request(`${endpoint}/2/event/${eventType}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }, () => {
+      resolve()
+    })
+
+    req.once('error', () => resolve())
+    req.end(JSON.stringify(eventData))
   })
 
-  req.end(JSON.stringify(eventData))
   log(`sent ${eventType} report`)
 }
 
