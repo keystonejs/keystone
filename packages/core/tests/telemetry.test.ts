@@ -129,7 +129,7 @@ describe('Telemetry tests', () => {
   }
 
   function expectDidSend (lastSentDate: string | null) {
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/project`, {
+    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/2/event/project`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ describe('Telemetry tests', () => {
       })
     )
 
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/device`, {
+    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/2/event/device`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

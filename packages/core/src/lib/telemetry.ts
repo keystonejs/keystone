@@ -207,7 +207,7 @@ function inform () {
 
 async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
-  const req = https.request(`${endpoint}/v1/event/${eventType}`, {
+  const req = https.request(`${endpoint}/2/event/${eventType}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
