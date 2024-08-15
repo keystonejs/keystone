@@ -195,7 +195,7 @@ function inform () {
   printAbout()
   console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
   console.log()
-  console.log(`No telemetry data has been sent, but telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
+  console.log(`No telemetry data has been sent now, but telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
   console.log() // gap to help visiblity
 
   // update the informedAt
