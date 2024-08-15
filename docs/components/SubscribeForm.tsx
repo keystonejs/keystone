@@ -102,7 +102,7 @@ export function SubscribeForm ({ autoFocus, stacked, children, ...props }: Subsc
               <label css={{ fontSize: '0.9rem' }} htmlFor="mailing-list-thinkmill">
                 Thinkmill news (
                 <a
-                  href="https://www.thinkmill.com.au/newsletter"
+                  href="https://www.thinkmill.com.au/newsletter/tailwind-for-designers-multi-brand-design-systems-and-a-search-tool-for-public-domain-content"
                   target="_blank"
                   aria-label="Thinkmill (Opens in new tab)"
                 >
