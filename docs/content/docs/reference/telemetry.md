@@ -63,6 +63,7 @@ Keystone collects telemetry information in the form of two different types of da
 We refer to these two different reports, as “device telemetry” and “project telemetry” respectively.
 
 These reports are forwarded to [https://telemetry.keystonejs.com/](https://telemetry.keystonejs.com/), and are reported separately to minimize any correlation between them insofar as the timing and grouping of that data, that an otherwise combined report may have. We are collecting these two reports for different reasons, and thus have no need to associate them.
+We may record and differentiate reports using the `
 
 We additionally record a timestamp of the time that the report is received by the server at [https://telemetry.keystonejs.com](https://telemetry.keystonejs.com/).
 

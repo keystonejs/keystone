@@ -5,9 +5,11 @@ import ci from 'ci-info'
 import Conf from 'conf'
 import {
   bold,
+  blue as b,
   yellow as y,
   red as r,
-  green as g
+  green as g,
+  grey,
 } from 'chalk'
 import {
   type Device,
@@ -95,22 +97,15 @@ function getTelemetryConfig () {
   }
 }
 
-function getDefaulted () {
-  const { telemetry, userConfig } = getTelemetryConfig()
-  if (telemetry === undefined) {
-    return {
-      telemetry: {
-        informedAt: null,
-        device: {
-          lastSentDate: null,
-        },
-        projects: {},
-      } satisfies Telemetry, // help Typescript infer the type
-      userConfig
-    }
-  }
-
-  return { telemetry, userConfig }
+function getDefault (telemetry: Telemetry) {
+  if (telemetry) return telemetry
+  return {
+    informedAt: null,
+    device: {
+      lastSentDate: null,
+    },
+    projects: {},
+  } satisfies Telemetry // help Typescript infer the type
 }
 
 const todaysDate = new Date().toISOString().slice(0, 10)
@@ -156,21 +151,30 @@ function collectPackageVersions () {
 function printAbout () {
   console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
   console.log()
-  console.log(`For more information, including how to opt-out see https://keystonejs.com/telemetry`)
 }
 
-function printTelemetryStatus (telemetry: Telemetry) {
+function printNext (telemetry: Telemetry) {
+  if (!telemetry) {
+    console.log(`Telemetry data will ${r`not`} be sent by this system user`)
+    return
+  }
+  console.log(`Telemetry data will be sent the next time you run ${g`"keystone dev"`}`)
+}
+
+function printTelemetryStatus () {
+  const { telemetry } = getTelemetryConfig()
+
   if (telemetry === undefined) {
     console.log(`Keystone telemetry has been reset to ${y`uninitialized`}`)
     console.log()
-    console.log(`Telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
+    printNext(telemetry)
     return
   }
 
   if (telemetry === false) {
     console.log(`Keystone telemetry is ${r`disabled`}`)
     console.log()
-    console.log(`Telemetry will ${r`not`} be sent by this system user`)
+    printNext(telemetry)
     return
   }
 
@@ -183,7 +187,7 @@ function printTelemetryStatus (telemetry: Telemetry) {
   }
 
   console.log()
-  console.log(`Telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
+  printNext(telemetry)
 }
 
 function inform (
@@ -195,8 +199,12 @@ function inform (
   printAbout()
   console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
   console.log()
-  console.log(`No telemetry data has been sent now, but telemetry will be sent the next time you run ${g`"keystone dev"`}, unless you opt-out`)
+  if (telemetry.informedAt === null) {
+    console.log(`No telemetry data has been sent as part of this notice`)
+  }
+  printNext(telemetry)
   console.log() // gap to help visiblity
+  console.log(`For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-15`})`)
 
   // update the informedAt
   telemetry.informedAt = new Date().toJSON()
@@ -280,43 +288,48 @@ export async function runTelemetry (
       return
     }
 
-    const { telemetry, userConfig } = getDefaulted()
+    const { telemetry, userConfig } = getTelemetryConfig()
 
     // don't run if the user has opted out
     //   or if somehow our defaults are problematic, do nothing
     if (telemetry === false) return
 
     // don't send telemetry before we inform the user, allowing opt-out
-    if (!telemetry.informedAt) return inform(telemetry, userConfig)
+    const telemetryDefaulted = getDefault(telemetry)
+    if (!telemetryDefaulted.informedAt) return inform(telemetryDefaulted, userConfig)
 
-    await sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetry, userConfig)
-    await sendDeviceTelemetryEvent(telemetry, userConfig)
+    await sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetryDefaulted, userConfig)
+    await sendDeviceTelemetryEvent(telemetryDefaulted, userConfig)
   } catch (err) {
     log(err)
   }
 }
 
 export function statusTelemetry () {
-  const { telemetry } = getTelemetryConfig()
-  printTelemetryStatus(telemetry)
+  printTelemetryStatus()
+}
+
+export function informTelemetry () {
+  const { userConfig } = getTelemetryConfig()
+  inform(getDefault(false), userConfig)
 }
 
 export function enableTelemetry () {
   const { telemetry, userConfig } = getTelemetryConfig()
   if (!telemetry) {
-    userConfig.set('telemetry', getDefaulted().telemetry)
+    userConfig.set('telemetry', getDefault(telemetry))
   }
-  printTelemetryStatus(telemetry)
+  printTelemetryStatus()
 }
 
 export function disableTelemetry () {
-  const { telemetry, userConfig } = getTelemetryConfig()
+  const { userConfig } = getTelemetryConfig()
   userConfig.set('telemetry', false)
-  printTelemetryStatus(telemetry)
+  printTelemetryStatus()
 }
 
 export function resetTelemetry () {
-  const { telemetry, userConfig } = getTelemetryConfig()
+  const { userConfig } = getTelemetryConfig()
   userConfig.delete('telemetry')
-  printTelemetryStatus(telemetry)
+  printTelemetryStatus()
 }
