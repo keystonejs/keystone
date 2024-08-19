@@ -215,7 +215,6 @@ async function sendEvent (eventType: 'project' | 'device', eventData: Project | 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'keystonejs'
       },
     }, () => {
       resolve()
