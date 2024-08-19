@@ -158,9 +158,7 @@ function printNext (telemetry: Telemetry) {
   console.log(`Telemetry data will be sent the next time you run ${g`"keystone dev"`}`)
 }
 
-function printTelemetryStatus () {
-  const { telemetry } = getTelemetryConfig()
-
+function printTelemetryStatus (telemetry: Telemetry) {
   if (telemetry === undefined) {
     console.log(`Keystone telemetry has been reset to ${y`uninitialized`}`)
     console.log()
@@ -217,12 +215,16 @@ async function sendEvent (eventType: 'project' | 'device', eventData: Project | 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'keystonejs'
       },
     }, () => {
       resolve()
     })
 
-    req.once('error', () => resolve())
+    req.once('error', (err) => {
+      log(err?.message ?? err)
+      resolve()
+    })
     req.end(JSON.stringify(eventData))
   })
 
@@ -238,7 +240,7 @@ async function sendProjectTelemetryEvent (
 ) {
   const project = telemetry.projects[cwd] ?? { lastSentDate: null }
   const { lastSentDate } = project
-  if (lastSentDate && lastSentDate >= todaysDate) {
+  if (lastSentDate && lastSentDate === todaysDate) {
     log('project telemetry already sent today')
     return
   }
@@ -261,7 +263,7 @@ async function sendDeviceTelemetryEvent (
   userConfig: Configuration
 ) {
   const { lastSentDate } = telemetry.device
-  if (lastSentDate && lastSentDate >= todaysDate) {
+  if (lastSentDate && lastSentDate === todaysDate) {
     log('device telemetry already sent today')
     return
   }
@@ -303,13 +305,14 @@ export async function runTelemetry (
 
     await sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetryDefaulted, userConfig)
     await sendDeviceTelemetryEvent(telemetryDefaulted, userConfig)
-  } catch (err) {
-    log(err)
+  } catch (err: any) {
+    log(err?.message ?? err)
   }
 }
 
 export function statusTelemetry () {
-  printTelemetryStatus()
+  const { telemetry } = getTelemetryConfig()
+  printTelemetryStatus(telemetry)
 }
 
 export function informTelemetry () {
@@ -322,17 +325,17 @@ export function enableTelemetry () {
   if (!telemetry) {
     userConfig.set('telemetry', getDefault(telemetry))
   }
-  printTelemetryStatus()
+  statusTelemetry()
 }
 
 export function disableTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.set('telemetry', false)
-  printTelemetryStatus()
+  statusTelemetry()
 }
 
 export function resetTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.delete('telemetry')
-  printTelemetryStatus()
+  statusTelemetry()
 }
