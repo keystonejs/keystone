@@ -199,7 +199,7 @@ function inform (
   }
   printNext(telemetry)
   console.log() // gap to help visiblity
-  console.log(`For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-15`})`)
+  console.log(`For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-20`})`)
 
   // update the informedAt
   telemetry.informedAt = new Date().toJSON()
