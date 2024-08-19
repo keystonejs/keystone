@@ -20,7 +20,7 @@ import {
 import { type DatabaseProvider } from '../types'
 import { type InitialisedList } from './core/initialise-lists'
 
-const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com'
+const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com/3/'
 
 function log (message: unknown) {
   if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
@@ -211,7 +211,7 @@ async function sendEvent (eventType: 'device', eventData: Device): Promise<void>
 async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
   await new Promise<void>((resolve) => {
-    const req = https.request(`${endpoint}/2/${eventType}`, {
+    const req = https.request(`${endpoint}${eventType}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
