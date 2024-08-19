@@ -123,22 +123,22 @@ export type KeystoneAdminUISortDirection =
   | 'DESC'
 
 type ResolvedPostCreateInput = {
-  id?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['id']
-  title?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['title']
-  content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content']
-  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate']
+  id?: import('./node_modules/myprisma').Prisma.PostCreateInput['id']
+  title?: import('./node_modules/myprisma').Prisma.PostCreateInput['title']
+  content?: import('./node_modules/myprisma').Prisma.PostCreateInput['content']
+  publishDate?: import('./node_modules/myprisma').Prisma.PostCreateInput['publishDate']
 }
 type ResolvedPostUpdateInput = {
   id?: undefined
-  title?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['title']
-  content?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['content']
-  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['publishDate']
+  title?: import('./node_modules/myprisma').Prisma.PostUpdateInput['title']
+  content?: import('./node_modules/myprisma').Prisma.PostUpdateInput['content']
+  publishDate?: import('./node_modules/myprisma').Prisma.PostUpdateInput['publishDate']
 }
 
 export declare namespace Lists {
   export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>>
   namespace Post {
-    export type Item = import('./node_modules/.myprisma/client').Post
+    export type Item = import('./node_modules/myprisma').Post
     export type TypeInfo<Session = any> = {
       key: 'Post'
       isSingleton: false
@@ -166,8 +166,8 @@ export type TypeInfo<Session = any> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo<Session>
   }
-  prisma: import('./node_modules/.myprisma/client').PrismaClient
-  prismaTypes: import('./node_modules/.myprisma/client').Prisma
+  prisma: import('./node_modules/myprisma').PrismaClient
+  prismaTypes: import('./node_modules/myprisma').Prisma
   session: Session
 }
 
