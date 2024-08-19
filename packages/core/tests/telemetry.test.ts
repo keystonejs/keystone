@@ -8,10 +8,10 @@ import { runTelemetry, disableTelemetry } from '../src/lib/telemetry'
 const mockProjectRoot = path.resolve(__dirname, '..', '..', '..')
 const mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic')
 const mockPackageVersions = {
-  '@keystone-6/core': '3.1.0',
-  '@keystone-6/auth': '5.0.1',
-  '@keystone-6/fields-document': '5.0.2',
-  '@keystone-6/cloudinary': '5.0.1',
+  '@keystone-6/core': '14.1.0',
+  '@keystone-6/auth': '9.0.1',
+  '@keystone-6/fields-document': '18.0.2',
+  '@keystone-6/cloudinary': '0.0.1',
 }
 
 jest.mock(
@@ -145,14 +145,14 @@ describe('Telemetry tests', () => {
     })
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
-        previous: lastSentDate,
+        lastSentDate,
+        packages: mockPackageVersions,
+        database: 'sqlite',
+        lists: 2,
         fields: {
           unknown: 0,
           id: 5,
         },
-        lists: 2,
-        packages: mockPackageVersions,
-        database: 'sqlite',
       })
     )
 
@@ -164,7 +164,7 @@ describe('Telemetry tests', () => {
     })
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
-        previous: lastSentDate,
+        lastSentDate,
         os: 'keystone-os',
         node: process.versions.node.split('.')[0],
       })

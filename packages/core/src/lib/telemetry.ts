@@ -13,7 +13,6 @@ import {
 } from 'chalk'
 import {
   type Device,
-  type PackageName,
   type Project,
   type TelemetryVersion1,
   type TelemetryVersion2,
@@ -22,15 +21,6 @@ import { type DatabaseProvider } from '../types'
 import { type InitialisedList } from './core/initialise-lists'
 
 const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com'
-
-const packageNames: PackageName[] = [
-  '@keystone-6/core',
-  '@keystone-6/auth',
-  '@keystone-6/fields-document',
-  '@keystone-6/cloudinary',
-  '@keystone-6/session-store-redis',
-  '@opensaas/keystone-nextjs-auth',
-]
 
 function log (message: unknown) {
   if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
@@ -131,17 +121,24 @@ function collectFieldCount (lists: Record<string, InitialisedList>) {
   return fields
 }
 
-function collectPackageVersions () {
+async function collectPackageVersions () {
   const packages: Project['packages'] = {
-    '@keystone-6/core': '0.0.0', // effectively unknown
+    '@keystone-6/core': '0.0.0', // "unknown"
   }
 
-  for (const packageName of packageNames) {
+  for (const packageName of [
+    '@keystone-6/core',
+    '@keystone-6/auth',
+    '@keystone-6/fields-document',
+    '@keystone-6/cloudinary',
+    '@keystone-6/session-store-redis',
+    '@opensaas/keystone-nextjs-auth',
+  ]) {
     try {
-      const packageJson = require(`${packageName}/package.json`)
+      const packageJson = await import(`${packageName}/package.json`)
       packages[packageName] = packageJson.version
     } catch {
-      // do nothing, most likely because the package is not installed
+      // do nothing, the package is probably not installed
     }
   }
 
@@ -216,7 +213,7 @@ async function sendEvent (eventType: 'device', eventData: Device): Promise<void>
 async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
   await new Promise<void>((resolve) => {
-    const req = https.request(`${endpoint}/2/event/${eventType}`, {
+    const req = https.request(`${endpoint}/2/${eventType}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -247,11 +244,11 @@ async function sendProjectTelemetryEvent (
   }
 
   await sendEvent('project', {
-    previous: lastSentDate,
-    fields: collectFieldCount(lists),
-    lists: Object.keys(lists).length,
-    packages: collectPackageVersions(),
+    lastSentDate,
+    packages: await collectPackageVersions(),
     database: dbProviderName,
+    lists: Object.keys(lists).length,
+    fields: collectFieldCount(lists),
   })
 
   // update the project lastSentDate
@@ -270,7 +267,7 @@ async function sendDeviceTelemetryEvent (
   }
 
   await sendEvent('device', {
-    previous: lastSentDate,
+    lastSentDate,
     os: platform(),
     node: process.versions.node.split('.')[0],
   })

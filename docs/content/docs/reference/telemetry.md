@@ -79,9 +79,9 @@ A device telemetry report is formatted as JSON and currently looks like:
 
 ```json
 {
-  "previous": "2022-11-23",
+  "lastSentDate": "2024-11-23",
   "os": "darwin",
-  "node": "18"
+  "node": "20"
 }
 ```
 
@@ -91,6 +91,7 @@ The type of information contained within a project telemetry report is currently
 
 - The last date you used `keystone dev` for this project, and
 - The resolved package versions of any `@keystone-6` packages used by this project, and
+- The database type used by the project,
 - The number of lists for this project, and
 - The name and number of field types that you are using
 
@@ -98,19 +99,20 @@ A project telemetry report is formatted as JSON and currently looks like:
 
 ```json
 {
-  "previous": "2022-11-23",
+  "lastSentDate": "2024-11-23",
   "packages": {
-    "@keystone-6/auth": "5.0.1",
-    "@keystone-6/core": "3.1.2",
+    "@keystone-6/auth": "8.0.1",
+    "@keystone-6/core": "6.1.0",
     "@keystone-6/document-renderer": "1.1.2",
     "@keystone-6/fields-document": "5.0.2"
   },
+  "database": "postgresql",
   "lists": 3,
   "fields": {
     "unknown": 1,
     "@keystone-6/text": 5,
-    "@keystone-6/image": 1,
-    "@keystone-6/file": 1
+    "@keystone-6/timestamp": 2,
+    "@keystone-6/checkbox": 1
   }
 }
 ```

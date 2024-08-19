@@ -8,7 +8,7 @@ export default config({
 
     // when working in a monorepo environment you may want to output the prisma client elsewhere
     //   you can use .db.prismaClientPath to configure where that is
-    prismaClientPath: 'node_modules/.myprisma/client',
+    prismaClientPath: 'node_modules/myprisma',
     prismaSchemaPath: 'my-prisma.prisma',
   },
   lists,
