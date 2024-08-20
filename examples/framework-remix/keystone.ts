@@ -12,7 +12,6 @@ export default config<TypeInfo>({
     url: `file:${process.cwd()}/keystone.db`,
 
     // WARNING: this is only needed for our monorepo examples, dont do this
-    //   we use using myprisma, not .myprisma, because vite
     prismaClientPath: 'node_modules/myprisma',
   },
   server: {

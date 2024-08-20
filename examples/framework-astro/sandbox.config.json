@@ -2,6 +2,6 @@
   "template": "node",
   "container": {
     "startScript": "keystone dev && npm run dev",
-    "node": "16"
+    "node": "20"
   }
 }
