@@ -194,10 +194,11 @@ function inform (
   console.log(`${bold('Keystone Telemetry')}`)
   printAbout()
   console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
-  console.log()
   if (telemetry.informedAt === null) {
+    console.log()
     console.log(`No telemetry data has been sent as part of this notice`)
   }
+  console.log()
   printNext(telemetry)
   console.log() // gap to help visiblity
   console.log(`For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-20`})`)
