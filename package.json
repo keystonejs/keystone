@@ -15,6 +15,7 @@
     "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest",
     "test:admin-ui": "jest tests/admin-ui-tests",
+    "test:examples-snapshot-tests": "pnpm -F './examples/**' run test:monorepo-snapshot-test",
     "build": "preconstruct build",
     "prepare": "preconstruct dev"
   },
