@@ -28,13 +28,10 @@ function resolveValidateHooks <ListTypeInfo extends BaseListTypeInfo> ({
   validateDelete
 }: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>["validate"], Function> | undefined {
   if (!validate && !validateInput && !validateDelete) return
-
-  const isFnValidate = typeof validate === 'function'
-
   return {
-    create: merge(validateInput, isFnValidate ? validate : validate?.create),
-    update: merge(validateInput, isFnValidate ? validate : validate?.update),
-    delete: merge(validateDelete, isFnValidate ? validate : validate?.delete),
+    create: merge(validateInput,  typeof validate === 'function' ? validate : validate?.create),
+    update: merge(validateInput,  typeof validate === 'function' ? validate : validate?.update),
+    delete: merge(validateDelete, typeof validate === 'function' ? validate : validate?.delete),
   }
 }
 
@@ -45,7 +42,7 @@ export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
   if (hooks === undefined) return builtin
   if (builtin === undefined) return hooks
 
-  const builtinValidate = resolveValidateHooks(builtin) 
+  const builtinValidate = resolveValidateHooks(builtin)
   const hooksValidate = resolveValidateHooks(hooks)
   return {
     ...hooks,
@@ -59,10 +56,8 @@ export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
       delete: merge(builtinValidate?.delete, hooksValidate?.delete)
     } : undefined,
 
-    // @deprecated, TODO: remove in breaking change 
-    // set deprecated hooks to undefined so they don't get passed through from
-    // user-defined hooks
-    validateInput: undefined,
-    validateDelete: undefined,
+    // TODO: remove in breaking change
+    validateInput: undefined, // prevent continuation
+    validateDelete: undefined, // prevent continuation
   } satisfies FieldHooks<ListTypeInfo>
 }
