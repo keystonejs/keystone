@@ -18,7 +18,7 @@ export async function loadIndex (page: playwright.Page) {
 }
 
 async function deleteAllData (projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.myprisma/client'))
+  const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
   const prisma = new PrismaClient()
 
   await prisma.$transaction(

@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context'
 import { posts } from '../example-data'
 import config from './keystone'
-import * as PrismaModule from '.myprisma/client'
+import * as PrismaModule from 'myprisma'
 
 type PostProps = {
   title: string
