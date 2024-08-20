@@ -51,6 +51,16 @@ jobs:
       - name: Unit tests
         run: DATABASE_URL=file:./test.db pnpm jest --ci --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
 
+  examples_snapshot_tests:
+    name: Examples Snapshot Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup-examples
+
+      - name: Snapshot tests
+        run: pnpm run test:examples-snapshot-tests
+
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
     runs-on: ubuntu-latest

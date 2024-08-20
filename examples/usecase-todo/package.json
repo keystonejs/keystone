@@ -8,7 +8,7 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "monorepo:snapshot-test": "keystone build --no-ui --frozen",
+    "test:monorepo-snapshot-test": "keystone build --no-ui --frozen",
     "seed-data": "tsx seed-data.ts"
   },
   "dependencies": {
