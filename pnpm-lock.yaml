@@ -1828,14 +1828,14 @@ importers:
         specifier: ^6.2.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: '*'
+        version: 5.18.0(prisma@5.18.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: '*'
+        version: 5.18.0
       tsx:
-        specifier: ^4.0.0
+        specifier: ^4.16.0
         version: 4.17.0
       typescript:
         specifier: ^5.5.0
