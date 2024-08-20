@@ -167,7 +167,6 @@ export type TypeInfo<Session = any> = {
     readonly Post: Lists.Post.TypeInfo<Session>
   }
   prisma: import('./node_modules/myprisma').PrismaClient
-  prismaTypes: import('./node_modules/myprisma').Prisma
   session: Session
 }
 

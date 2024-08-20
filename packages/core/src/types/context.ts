@@ -32,7 +32,9 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     options?: {
       maxWait?: number
       timeout?: number
-      isolationLevel?: TypeInfo['prismaTypes']['TransactionIsolationLevel']
+      isolationLevel?: {
+        Serializable: 'Serializable'
+      }
     }
   ) => Promise<T>
 
