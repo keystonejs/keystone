@@ -23,7 +23,7 @@ async function getKeystoneContext () {
     // We use the prisma client from the .myprisma folder in order to support multiple Prisma Clients in our examples
     // your project will only have one Prisma Client, so you can use the following instead:
     // await import('@prisma/client')
-    await import('.myprisma/client')
+    await import('myprisma')
   )
   if (process.env.NODE_ENV !== 'production') {
     (globalThis as any)._keystoneContext = _keystoneContext
