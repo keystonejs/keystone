@@ -63,6 +63,7 @@ Keystone collects telemetry information in the form of two different types of da
 We refer to these two different reports, as “device telemetry” and “project telemetry” respectively.
 
 These reports are forwarded to [https://telemetry.keystonejs.com/](https://telemetry.keystonejs.com/), and are reported separately to minimize any correlation between them insofar as the timing and grouping of that data, that an otherwise combined report may have. We are collecting these two reports for different reasons, and thus have no need to associate them.
+We differentiate and record the type and version of reports from the URL used by Keystone.
 
 We additionally record a timestamp of the time that the report is received by the server at [https://telemetry.keystonejs.com](https://telemetry.keystonejs.com/).
 
@@ -78,9 +79,9 @@ A device telemetry report is formatted as JSON and currently looks like:
 
 ```json
 {
-  "previous": "2022-11-23",
+  "lastSentDate": "2024-11-23",
   "os": "darwin",
-  "node": "18"
+  "node": "20"
 }
 ```
 
@@ -89,7 +90,8 @@ A device telemetry report is formatted as JSON and currently looks like:
 The type of information contained within a project telemetry report is currently:
 
 - The last date you used `keystone dev` for this project, and
-- The resolved versions of any `@keystone-6` packages used by this project, and
+- The resolved package versions of any `@keystone-6` packages used by this project, and
+- The database type used by the project,
 - The number of lists for this project, and
 - The name and number of field types that you are using
 
@@ -97,19 +99,20 @@ A project telemetry report is formatted as JSON and currently looks like:
 
 ```json
 {
-  "previous": "2022-11-23",
-  "versions": {
-    "@keystone-6/auth": "5.0.1",
-    "@keystone-6/core": "3.1.2",
+  "lastSentDate": "2024-11-23",
+  "packages": {
+    "@keystone-6/auth": "8.0.1",
+    "@keystone-6/core": "6.1.0",
     "@keystone-6/document-renderer": "1.1.2",
     "@keystone-6/fields-document": "5.0.2"
   },
+  "database": "postgresql",
   "lists": 3,
   "fields": {
     "unknown": 1,
     "@keystone-6/text": 5,
-    "@keystone-6/image": 1,
-    "@keystone-6/file": 1
+    "@keystone-6/timestamp": 2,
+    "@keystone-6/checkbox": 1
   }
 }
 ```
@@ -185,8 +188,8 @@ If you wish to see how telemetry is currently configured for your device or proj
 
 ## What if I have a complaint or question
 
-If you have any questions or concerns about the information that is gathered please contact us by logging a GitHub Issue [https://github.com/keystonejs/keystone](https://github.com/keystonejs/keystone). 
+If you have any questions or concerns about the information that is gathered please contact us by logging a GitHub Issue [https://github.com/keystonejs/keystone](https://github.com/keystonejs/keystone).
 
-Alternatively please contact our Privacy Officer by email to [privacy@keystonejs.com](mailto:privacy@keystonejs.com), or by mail to Level 10, 191 Clarence Street, Sydney NSW 2000. 
+Alternatively please contact our Privacy Officer by email to [privacy@keystonejs.com](mailto:privacy@keystonejs.com), or by mail to Level 10, 191 Clarence Street, Sydney NSW 2000.
 
 For further information about Keystone’s security policy please see [https://github.com/keystonejs/keystone/security/policy](https://github.com/keystonejs/keystone/security/policy)
