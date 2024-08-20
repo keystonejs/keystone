@@ -146,11 +146,6 @@ async function collectPackageVersions () {
   return packages
 }
 
-function printAbout () {
-  console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
-  console.log()
-}
-
 function printNext (telemetry: Telemetry) {
   if (!telemetry) {
     console.log(`Telemetry data will ${r`not`} be sent by this system user`)
@@ -192,7 +187,7 @@ function inform (
 ) {
   console.log() // gap to help visiblity
   console.log(`${bold('Keystone Telemetry')}`)
-  printAbout()
+  console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
   console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
   if (telemetry.informedAt === null) {
     console.log()
