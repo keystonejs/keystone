@@ -12,19 +12,20 @@ To run this project, clone the Keystone repository locally, run `pnpm install` a
 pnpm dev
 ```
 
-This will start Keystone’s Admin UI at [localhost:3000](http://localhost:3000), where you can add items to an empty database.
+This will start Keystone’s Admin UI at [localhost:3000](http://localhost:3000), where you will see Keystone with minimal sample data.
 
 You can also access Keystone’s GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql) to explore the GraphQL API, and run [queries](https://keystonejs.com/docs/guides/filters) and [mutations](https://keystonejs.com/docs/graphql/overview#mutations) on your data.
 
 Congratulations, you’re now up and running with Keystone! 🚀
 
-### Optional: add sample data
+### Sample data
 
-This example includes sample data. To add it to your database:
+This example includes sample data in `example.db` - deleting this file and restarting the dev server will leave you with an empty database.
 
-1. Ensure you’ve initialised your project with `pnpm dev` at least once.
-2. Run `pnpm seed-data`. This will populate your database with sample content.
-3. Run `pnpm dev` again to startup Admin UI with sample data in place.
+To re-seed the sample data:
+1. Stop the server
+2. Run `pnpm seed-data`
+3. Restart the server with `pnpm dev` 
 
 ## Try it out in CodeSandbox 🧪
 
