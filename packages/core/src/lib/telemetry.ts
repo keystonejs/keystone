@@ -154,22 +154,24 @@ function printNext (telemetry: Telemetry) {
   console.log(`Telemetry data will be sent the next time you run ${g`"keystone dev"`}`)
 }
 
-function printTelemetryStatus (telemetry: Telemetry) {
+function printTelemetryStatus (telemetry: Telemetry, updated = false) {
+  const auxverb = updated ? 'has been' : 'is'
+
   if (telemetry === undefined) {
-    console.log(`Keystone telemetry has been reset to ${y`uninitialized`}`)
+    console.log(`Keystone telemetry ${auxverb} ${y`uninitialized`}`)
     console.log()
     printNext(telemetry)
     return
   }
 
   if (telemetry === false) {
-    console.log(`Keystone telemetry is ${r`disabled`}`)
+    console.log(`Keystone telemetry ${auxverb} ${r`disabled`}`)
     console.log()
     printNext(telemetry)
     return
   }
 
-  console.log(`Keystone telemetry is ${g`enabled`}`)
+  console.log(`Keystone telemetry ${auxverb} ${g`enabled`}`)
   console.log()
 
   console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`)
@@ -304,9 +306,9 @@ export async function runTelemetry (
   }
 }
 
-export function statusTelemetry () {
+export function statusTelemetry (updated = false) {
   const { telemetry } = getTelemetryConfig()
-  printTelemetryStatus(telemetry)
+  printTelemetryStatus(telemetry, updated)
 }
 
 export function informTelemetry () {
@@ -319,17 +321,17 @@ export function enableTelemetry () {
   if (!telemetry) {
     userConfig.set('telemetry', getDefault(telemetry))
   }
-  statusTelemetry()
+  statusTelemetry(true)
 }
 
 export function disableTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.set('telemetry', false)
-  statusTelemetry()
+  statusTelemetry(true)
 }
 
 export function resetTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.delete('telemetry')
-  statusTelemetry()
+  statusTelemetry(true)
 }
