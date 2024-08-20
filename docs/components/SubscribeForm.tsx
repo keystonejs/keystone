@@ -1,18 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
-import { Fragment, useState, type ReactNode, type SyntheticEvent, type HTMLAttributes } from 'react'
+import { Fragment, useState, type ReactNode, type HTMLAttributes, useTransition } from 'react'
+
+import { subscribeToButtondown } from '../app/actions'
 
 import { useMediaQuery } from '../lib/media'
 import { Button } from './primitives/Button'
 import { Field } from './primitives/Field'
 import { Stack } from './primitives/Stack'
-
-const validEmail = (email: string) =>
-  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
-    email
-  )
-
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
+import { usePathname } from 'next/navigation'
 
 type SubscriptFormProps = {
   autoFocus?: boolean
@@ -21,89 +17,112 @@ type SubscriptFormProps = {
 } & HTMLAttributes<HTMLFormElement>
 
 export function SubscribeForm ({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
+  const pathname = usePathname()
+  const mq = useMediaQuery()
+  const [isPending, startTransition] = useTransition()
+
   const [error, setError] = useState<string | null>(null)
   const [formSubmitted, setFormSubmitted] = useState(false)
-  const mq = useMediaQuery()
 
-  const onSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
-    setError(null)
-    // Check if user wants to subscribe.
-    // and there's a valid email address.
-    // Basic validation check on the email?
-    setLoading(true)
-    if (validEmail(email)) {
-      // if good add email to mailing list
-      // and redirect to dashboard.
-      return fetch(signupURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          source: '@keystone-6/website',
-        }),
-      })
-        .then(res => {
-          if (res.status !== 200) {
-            // We explicitly set the status in our endpoint
-            // any status that isn't 200 we assume is a failure
-            // which we want to surface to the user
-            res.json().then(({ error }) => {
-              setError(error)
-              setLoading(false)
-            })
-          } else {
-            setFormSubmitted(true)
-          }
-        })
-        .catch(err => {
-          // network errors or failed parse
-          setError(err.toString())
-          setLoading(false)
-        })
-    } else {
-      setLoading(false)
-      // if email fails validation set error message
-      setError('Please enter a valid email')
-      return
-    }
+  // Augment the server action with the pathname
+  const subscribeToButtondownWithPathname = subscribeToButtondown.bind(null, pathname)
+
+  async function submitAction (formData: FormData) {
+    startTransition(async () => {
+      const response = await subscribeToButtondownWithPathname(formData)
+      if (response.error) return setError(response.error)
+      if (response.success) return setFormSubmitted(true)
+    })
   }
 
   return !formSubmitted ? (
     <Fragment>
       {children}
-      <form onSubmit={onSubmit} {...props}>
+      <form action={submitAction} {...props}>
         <Stack
           orientation={stacked ? 'vertical' : 'horizontal'}
           block={stacked}
+          gap={5}
           css={{
             justifyItems: stacked ? 'baseline' : undefined,
           }}
         >
+          <label
+            htmlFor="email"
+            css={{
+              position: 'absolute',
+              width: '1px',
+              height: '1px',
+              padding: 0,
+              margin: '-1px',
+              overflow: 'hidden',
+              clip: 'rect(0, 0, 0, 0)',
+              whiteSpace: 'nowrap',
+              borderWidth: '0',
+            }}
+          >
+            Email address
+          </label>
           <Field
             type="email"
             autoComplete="off"
             autoFocus={autoFocus}
             placeholder="Your email address"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
             css={mq({
               maxWidth: '25rem',
               margin: ['0 auto', 0],
             })}
+            name="email"
+            id="email"
+            required
           />
-          <Button look="secondary" size="small" loading={loading} type={'submit'}>
+
+          <div css={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem 0.75rem' }}>
+            <div css={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <input
+                type="checkbox"
+                name="tags"
+                id="mailing-list-keystone"
+                css={{ height: '1rem', width: '1rem' }}
+                value="keystone_list"
+                defaultChecked
+              />
+              <label css={{ fontSize: '0.9rem' }} htmlFor="mailing-list-keystone">
+                Keystone news
+              </label>
+            </div>
+            <div css={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <input
+                type="checkbox"
+                name="tags"
+                id="mailing-list-thinkmill"
+                css={{ height: '1rem', width: '1rem' }}
+                value="thinkmill_list"
+              />
+              <label css={{ fontSize: '0.9rem' }} htmlFor="mailing-list-thinkmill">
+                Thinkmill news (
+                <a
+                  href="https://www.thinkmill.com.au/newsletter/tailwind-for-designers-multi-brand-design-systems-and-a-search-tool-for-public-domain-content"
+                  target="_blank"
+                  aria-label="Thinkmill (Opens in new tab)"
+                >
+                  example
+                </a>
+                )
+              </label>
+            </div>
+          </div>
+
+          <Button look="secondary" size="small" loading={isPending} type="submit">
             {error ? 'Try again' : 'Subscribe'}
           </Button>
         </Stack>
-        {error ? <p css={{ margin: '0.5rem, 0', color: 'red' }}>{error}</p> : null}
+        {error ? (
+          <p css={{ marginTop: '0.5rem', color: 'red', fontSize: '0.85rem' }}>{error}</p>
+        ) : null}
       </form>
     </Fragment>
   ) : (
-    <p>❤️ Thank you for subscribing!</p>
+    <p>❤️ Thank you! Please check your email to confirm your subscription.</p>
   )
 }
