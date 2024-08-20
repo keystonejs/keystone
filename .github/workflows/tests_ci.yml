@@ -31,6 +31,16 @@ jobs:
       - name: Prisma Filters
         run: pnpm test:filters
 
+  linting-examples:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup-examples
+
+      - name: TypeScript
+        run: pnpm test:types
+
   unit_tests:
     name: Package Unit Tests
     runs-on: ubuntu-latest

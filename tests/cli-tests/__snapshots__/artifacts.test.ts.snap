@@ -148,7 +148,6 @@ export type TypeInfo<Session = any> = {
     readonly Todo: Lists.Todo.TypeInfo<Session>
   }
   prisma: import('@prisma/client').PrismaClient
-  prismaTypes: import('@prisma/client').Prisma
   session: Session
 }
 

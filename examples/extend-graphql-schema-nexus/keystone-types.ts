@@ -284,7 +284,6 @@ export type TypeInfo<Session = any> = {
     readonly Author: Lists.Author.TypeInfo<Session>
   }
   prisma: import('./node_modules/myprisma').PrismaClient
-  prismaTypes: import('./node_modules/myprisma').Prisma
   session: Session
 }
 

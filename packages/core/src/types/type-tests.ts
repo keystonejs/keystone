@@ -8,7 +8,6 @@ const someContext: KeystoneContext<{
     ListOrSingleton: BaseListTypeInfo
   }
   prisma: any
-  prismaTypes: any
   session: any
 }> = undefined!
 
