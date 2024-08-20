@@ -66,12 +66,16 @@ jest.mock('conf', () => {
 })
 
 jest.mock('node:https', () => {
+  const once = jest.fn()
   const end = jest.fn()
-  const request = jest.fn().mockImplementation(() => ({ end })) as any
-  request.end = end
-  return {
-    request
-  }
+  const request = jest.fn().mockImplementation((_, __, f) => {
+    setTimeout(() => f(), 100)
+    return { once, end }
+  })
+  // added for reach by toHaveBeenCalledWith
+  ;(request as any).once = once
+  ;(request as any).end = end
+  return { request }
 })
 
 jest.mock('node:os', () => {
@@ -86,7 +90,6 @@ jest.mock('ci-info', () => {
   return { isCI: false }
 })
 
-///////////////////////
 const lists: Record<string, InitialisedList> = {
   Thing: {
     fields: {
@@ -142,7 +145,7 @@ describe('Telemetry tests', () => {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    }, expect.any(Function))
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
         lastSentDate,
@@ -161,7 +164,7 @@ describe('Telemetry tests', () => {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    }, expect.any(Function))
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
         lastSentDate,

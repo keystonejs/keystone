@@ -135,9 +135,10 @@ async function collectPackageVersions () {
     '@opensaas/keystone-nextjs-auth',
   ]) {
     try {
-      const packageJson = await import(`${packageName}/package.json`)
+      const packageJson = require(`${packageName}/package.json`)
+      // const packageJson = await import(`${packageName}/package.json`, { assert: { type: 'json' } }) // TODO: broken in jest
       packages[packageName] = packageJson.version
-    } catch {
+    } catch (err) {
       // do nothing, the package is probably not installed
     }
   }
@@ -216,9 +217,7 @@ async function sendEvent (eventType: 'project' | 'device', eventData: Project | 
       headers: {
         'Content-Type': 'application/json',
       },
-    }, () => {
-      resolve()
-    })
+    }, () => resolve())
 
     req.once('error', (err) => {
       log(err?.message ?? err)
