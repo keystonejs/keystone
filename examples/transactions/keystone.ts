@@ -1,5 +1,4 @@
 import { config } from '@keystone-6/core'
-import { fixPrismaPath } from '../example-utils'
 import { lists, extendGraphqlSchema } from './schema'
 
 export default config({
@@ -9,7 +8,7 @@ export default config({
     enableLogging: ['query', 'info', 'warn', 'error'],
 
     // WARNING: this is only needed for our monorepo examples, don't do this
-    ...fixPrismaPath,
+    prismaClientPath: 'node_modules/myprisma',
   },
   lists,
   graphql: {

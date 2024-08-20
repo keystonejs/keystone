@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core'
 import type { KeystoneConfig } from '@keystone-6/core/types'
-import { fixPrismaPath } from '../../example-utils'
 import { seedDatabase } from './src/seed'
 import { lists } from './src/schema'
 import { type Context, type TypeInfo } from '.keystone/types'
@@ -15,7 +14,7 @@ const db: KeystoneConfig<TypeInfo>['db'] = {
   },
 
   // WARNING: this is only needed for our monorepo examples, dont do this
-  ...fixPrismaPath,
+  prismaClientPath: 'node_modules/myprisma',
 }
 
 export default config({

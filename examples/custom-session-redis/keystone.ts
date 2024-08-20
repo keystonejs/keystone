@@ -2,7 +2,6 @@ import { config } from '@keystone-6/core'
 import { storedSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
-import { fixPrismaPath } from '../example-utils'
 import { lists, type Session } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
@@ -67,7 +66,7 @@ export default withAuth(
       },
 
       // WARNING: this is only needed for our monorepo examples, dont do this
-      ...fixPrismaPath,
+      prismaClientPath: 'node_modules/myprisma',
     },
     lists,
     session: redisSessionStrategy(),

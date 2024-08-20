@@ -1,7 +1,6 @@
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import { fixPrismaPath } from '../example-utils'
 import { type Session, lists } from './schema'
 import { type TypeInfo } from '.keystone/types'
 
@@ -55,7 +54,7 @@ export default withAuth<TypeInfo<Session>>(
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
       // WARNING: this is only needed for our monorepo examples, dont do this
-      ...fixPrismaPath,
+      prismaClientPath: 'node_modules/myprisma',
     },
     lists,
     ui: {
