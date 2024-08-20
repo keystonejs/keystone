@@ -20,10 +20,10 @@ async function getKeystoneContext () {
   // TODO: this could probably be better
   _keystoneContext = getContext(
     (await import('./keystone')).default,
-    // We use the prisma client from the .myprisma folder in order to support multiple Prisma Clients in our examples
-    // your project will only have one Prisma Client, so you can use the following instead:
-    // await import('@prisma/client')
+
+    // WARNING: this is only needed for our monorepo examples, dont do this
     await import('myprisma')
+    // await import('@prisma/client') // <-- do this
   )
   if (process.env.NODE_ENV !== 'production') {
     (globalThis as any)._keystoneContext = _keystoneContext
