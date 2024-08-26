@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "pnpm@9.7.1",
+  "packageManager": "pnpm@9.9.0",
   "scripts": {
     "coverage": "jest --coverage",
     "test": "jest",
