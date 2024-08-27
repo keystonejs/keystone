@@ -29,7 +29,7 @@ const runner = setupTestRunner({
       }),
     },
     session: statelessSessions(),
-  }))
+  }) as any) as any
 })
 
 test(

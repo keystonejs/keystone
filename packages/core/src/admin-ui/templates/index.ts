@@ -1,8 +1,6 @@
 import { type GraphQLSchema } from 'graphql'
-import {
-  type __ResolvedKeystoneConfig
-} from '../../types'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import { type ResolvedKeystoneConfig } from '../../types'
+import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 import { adminConfigTemplate, adminLayoutTemplate, adminRootLayoutTemplate } from './app'
 import { homeTemplate } from './home'
 import { listTemplate } from './list'
@@ -11,7 +9,8 @@ import { noAccessTemplate } from './no-access'
 import { createItemTemplate } from './create-item'
 import { nextConfigTemplate } from './next-config'
 
-export function writeAdminFiles (config: __ResolvedKeystoneConfig,
+export function writeAdminFiles (
+  config: ResolvedKeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean,

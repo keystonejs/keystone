@@ -8,7 +8,7 @@ import {
   type GraphQLTypesForList,
   type ListGraphQLTypes,
   type ListHooks,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
   type MaybePromise,
   type NextFieldType,
   type FieldTypeFunc,
@@ -153,7 +153,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
 }
 
-type ListConfigType = __ResolvedKeystoneConfig['lists'][string]
+type ListConfigType = ResolvedKeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
@@ -305,7 +305,7 @@ function parseFieldHooks (
 }
 
 function getListsWithInitialisedFields (
-  config: __ResolvedKeystoneConfig,
+  config: ResolvedKeystoneConfig,
   listsRef: Record<string, InitialisedList>,
 ) {
   const { storage: configStorage, lists: listsConfig, db: { provider } } = config
@@ -803,7 +803,7 @@ function graphqlForOutputField (field: InitialisedField) {
   })
 }
 
-export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: ResolvedKeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
 

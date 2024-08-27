@@ -1,8 +1,6 @@
 import pluralize from 'pluralize'
 import { humanize } from '../lib/utils'
-import {
-  type __ResolvedKeystoneConfig
-} from '../types'
+import { type ResolvedKeystoneConfig } from '../types'
 
 export type JSONValue =
   | string
@@ -62,7 +60,7 @@ const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase()
 const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
 // WARNING: may break in patch
-export function __getNames (listKey: string, list: __ResolvedKeystoneConfig['lists'][string]) {
+export function __getNames (listKey: string, list: ResolvedKeystoneConfig['lists'][string]) {
   const { graphql, ui, isSingleton } = list
   if (ui?.path !== undefined && !/^[a-z-_][a-z0-9-_]*$/.test(ui.path)) {
     throw new Error(`ui.path for ${listKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`)

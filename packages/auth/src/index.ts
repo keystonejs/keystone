@@ -1,10 +1,10 @@
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,
-  KeystoneConfig,
   KeystoneContext,
   SessionStrategy,
   BaseKeystoneTypeInfo,
+  ResolvedKeystoneConfig,
 } from '@keystone-6/core/types'
 import { password, timestamp } from '@keystone-6/core/fields'
 
@@ -135,7 +135,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   })
 
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo> (
-    config: KeystoneConfig<TypeInfo>
+    config: ResolvedKeystoneConfig<TypeInfo>
   ) {
     if (!(listKey in config.lists)) {
       throw new Error(`withAuth cannot find the list "${listKey}"`)
@@ -247,8 +247,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
    * Automatically extends your configuration with a prescriptive implementation.
    */
   function withAuth<TypeInfo extends BaseKeystoneTypeInfo> (
-    config: KeystoneConfig<TypeInfo>
-  ): KeystoneConfig<TypeInfo> {
+    config: ResolvedKeystoneConfig<TypeInfo>
+  ): ResolvedKeystoneConfig<TypeInfo> {
     throwIfInvalidConfig(config)
     let { ui } = config
     if (!ui?.isDisabled) {
