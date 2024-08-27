@@ -5,9 +5,9 @@ import { Box, jsx } from '@keystone-ui/core'
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
 import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options'
 import { Popover } from '@keystone-ui/popover'
-import { useRouter } from 'next/router'
 import { type ListMeta } from '../../../../types'
 import { useSelectedFields } from './useSelectedFields'
+import { useRouter } from '../../../../admin-ui/router'
 
 function isArrayEqual (arrA: string[], arrB: string[]) {
   if (arrA.length !== arrB.length) return false

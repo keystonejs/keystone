@@ -67,6 +67,380 @@ input UserCreateInput {
   isAdmin: Boolean
 }
 
+type Project {
+  id: ID!
+  slug: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  taskRuns(where: TaskRunWhereInput! = {}, orderBy: [TaskRunOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskRunWhereUniqueInput): [TaskRun!]
+  taskRunsCount(where: TaskRunWhereInput! = {}): Int
+}
+
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+input ProjectWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ProjectWhereInput {
+  AND: [ProjectWhereInput!]
+  OR: [ProjectWhereInput!]
+  NOT: [ProjectWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  deletedAt: DateTimeNullableFilter
+  taskRuns: TaskRunManyRelationFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
+input TaskRunManyRelationFilter {
+  every: TaskRunWhereInput
+  some: TaskRunWhereInput
+  none: TaskRunWhereInput
+}
+
+input ProjectOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+  deletedAt: OrderDirection
+}
+
+input ProjectUpdateInput {
+  slug: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  taskRuns: TaskRunRelateToManyForUpdateInput
+}
+
+input TaskRunRelateToManyForUpdateInput {
+  disconnect: [TaskRunWhereUniqueInput!]
+  set: [TaskRunWhereUniqueInput!]
+  create: [TaskRunCreateInput!]
+  connect: [TaskRunWhereUniqueInput!]
+}
+
+input ProjectUpdateArgs {
+  where: ProjectWhereUniqueInput!
+  data: ProjectUpdateInput!
+}
+
+input ProjectCreateInput {
+  slug: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  taskRuns: TaskRunRelateToManyForCreateInput
+}
+
+input TaskRunRelateToManyForCreateInput {
+  create: [TaskRunCreateInput!]
+  connect: [TaskRunWhereUniqueInput!]
+}
+
+type TaskRun {
+  id: ID!
+  number: Int
+  friendlyId: String
+  status: String
+  taskIdentifier: String
+  isTest: Boolean
+  payload: String
+  payloadType: String
+  context: JSON
+  traceId: String
+  spanId: String
+  project: Project
+  createdAt: DateTime
+  updatedAt: DateTime
+  attempts(where: TaskRunAttemptWhereInput! = {}, orderBy: [TaskRunAttemptOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskRunAttemptWhereUniqueInput): [TaskRunAttempt!]
+  attemptsCount(where: TaskRunAttemptWhereInput! = {}): Int
+  startedAt: DateTime
+  completedAt: DateTime
+}
+
+input TaskRunWhereUniqueInput {
+  id: ID
+}
+
+input TaskRunWhereInput {
+  AND: [TaskRunWhereInput!]
+  OR: [TaskRunWhereInput!]
+  NOT: [TaskRunWhereInput!]
+  id: IDFilter
+  number: IntNullableFilter
+  friendlyId: StringFilter
+  status: StringNullableFilter
+  taskIdentifier: StringFilter
+  isTest: BooleanFilter
+  payload: StringFilter
+  payloadType: StringFilter
+  traceId: StringFilter
+  spanId: StringFilter
+  project: ProjectWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  attempts: TaskRunAttemptManyRelationFilter
+  startedAt: DateTimeNullableFilter
+  completedAt: DateTimeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: StringNullableFilter
+}
+
+input TaskRunAttemptManyRelationFilter {
+  every: TaskRunAttemptWhereInput
+  some: TaskRunAttemptWhereInput
+  none: TaskRunAttemptWhereInput
+}
+
+input TaskRunOrderByInput {
+  id: OrderDirection
+  number: OrderDirection
+  friendlyId: OrderDirection
+  status: OrderDirection
+  taskIdentifier: OrderDirection
+  isTest: OrderDirection
+  payload: OrderDirection
+  payloadType: OrderDirection
+  traceId: OrderDirection
+  spanId: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+  startedAt: OrderDirection
+  completedAt: OrderDirection
+}
+
+input TaskRunUpdateInput {
+  number: Int
+  friendlyId: String
+  status: String
+  taskIdentifier: String
+  isTest: Boolean
+  payload: String
+  payloadType: String
+  context: JSON
+  traceId: String
+  spanId: String
+  project: ProjectRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  attempts: TaskRunAttemptRelateToManyForUpdateInput
+  startedAt: DateTime
+  completedAt: DateTime
+}
+
+input ProjectRelateToOneForUpdateInput {
+  create: ProjectCreateInput
+  connect: ProjectWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TaskRunAttemptRelateToManyForUpdateInput {
+  disconnect: [TaskRunAttemptWhereUniqueInput!]
+  set: [TaskRunAttemptWhereUniqueInput!]
+  create: [TaskRunAttemptCreateInput!]
+  connect: [TaskRunAttemptWhereUniqueInput!]
+}
+
+input TaskRunUpdateArgs {
+  where: TaskRunWhereUniqueInput!
+  data: TaskRunUpdateInput!
+}
+
+input TaskRunCreateInput {
+  number: Int
+  friendlyId: String
+  status: String
+  taskIdentifier: String
+  isTest: Boolean
+  payload: String
+  payloadType: String
+  context: JSON
+  traceId: String
+  spanId: String
+  project: ProjectRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  attempts: TaskRunAttemptRelateToManyForCreateInput
+  startedAt: DateTime
+  completedAt: DateTime
+}
+
+input ProjectRelateToOneForCreateInput {
+  create: ProjectCreateInput
+  connect: ProjectWhereUniqueInput
+}
+
+input TaskRunAttemptRelateToManyForCreateInput {
+  create: [TaskRunAttemptCreateInput!]
+  connect: [TaskRunAttemptWhereUniqueInput!]
+}
+
+type TaskRunAttempt {
+  id: ID!
+  number: Int
+  friendlyId: String
+  taskRun: TaskRun
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  startedAt: DateTime
+  completedAt: DateTime
+  error: JSON
+  output: String
+  outputType: String
+}
+
+input TaskRunAttemptWhereUniqueInput {
+  id: ID
+}
+
+input TaskRunAttemptWhereInput {
+  AND: [TaskRunAttemptWhereInput!]
+  OR: [TaskRunAttemptWhereInput!]
+  NOT: [TaskRunAttemptWhereInput!]
+  id: IDFilter
+  number: IntNullableFilter
+  friendlyId: StringFilter
+  taskRun: TaskRunWhereInput
+  status: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  startedAt: DateTimeNullableFilter
+  completedAt: DateTimeNullableFilter
+  output: StringFilter
+  outputType: StringFilter
+}
+
+input TaskRunAttemptOrderByInput {
+  id: OrderDirection
+  number: OrderDirection
+  friendlyId: OrderDirection
+  status: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+  startedAt: OrderDirection
+  completedAt: OrderDirection
+  output: OrderDirection
+  outputType: OrderDirection
+}
+
+input TaskRunAttemptUpdateInput {
+  number: Int
+  friendlyId: String
+  taskRun: TaskRunRelateToOneForUpdateInput
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  startedAt: DateTime
+  completedAt: DateTime
+  error: JSON
+  output: String
+  outputType: String
+}
+
+input TaskRunRelateToOneForUpdateInput {
+  create: TaskRunCreateInput
+  connect: TaskRunWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TaskRunAttemptUpdateArgs {
+  where: TaskRunAttemptWhereUniqueInput!
+  data: TaskRunAttemptUpdateInput!
+}
+
+input TaskRunAttemptCreateInput {
+  number: Int
+  friendlyId: String
+  taskRun: TaskRunRelateToOneForCreateInput
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  startedAt: DateTime
+  completedAt: DateTime
+  error: JSON
+  output: String
+  outputType: String
+}
+
+input TaskRunRelateToOneForCreateInput {
+  create: TaskRunCreateInput
+  connect: TaskRunWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -79,6 +453,24 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createProject(data: ProjectCreateInput!): Project
+  createProjects(data: [ProjectCreateInput!]!): [Project]
+  updateProject(where: ProjectWhereUniqueInput!, data: ProjectUpdateInput!): Project
+  updateProjects(data: [ProjectUpdateArgs!]!): [Project]
+  deleteProject(where: ProjectWhereUniqueInput!): Project
+  deleteProjects(where: [ProjectWhereUniqueInput!]!): [Project]
+  createTaskRun(data: TaskRunCreateInput!): TaskRun
+  createTaskRuns(data: [TaskRunCreateInput!]!): [TaskRun]
+  updateTaskRun(where: TaskRunWhereUniqueInput!, data: TaskRunUpdateInput!): TaskRun
+  updateTaskRuns(data: [TaskRunUpdateArgs!]!): [TaskRun]
+  deleteTaskRun(where: TaskRunWhereUniqueInput!): TaskRun
+  deleteTaskRuns(where: [TaskRunWhereUniqueInput!]!): [TaskRun]
+  createTaskRunAttempt(data: TaskRunAttemptCreateInput!): TaskRunAttempt
+  createTaskRunAttempts(data: [TaskRunAttemptCreateInput!]!): [TaskRunAttempt]
+  updateTaskRunAttempt(where: TaskRunAttemptWhereUniqueInput!, data: TaskRunAttemptUpdateInput!): TaskRunAttempt
+  updateTaskRunAttempts(data: [TaskRunAttemptUpdateArgs!]!): [TaskRunAttempt]
+  deleteTaskRunAttempt(where: TaskRunAttemptWhereUniqueInput!): TaskRunAttempt
+  deleteTaskRunAttempts(where: [TaskRunAttemptWhereUniqueInput!]!): [TaskRunAttempt]
   endSession: Boolean!
   authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -104,6 +496,15 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  projects(where: ProjectWhereInput! = {}, orderBy: [ProjectOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectWhereUniqueInput): [Project!]
+  project(where: ProjectWhereUniqueInput!): Project
+  projectsCount(where: ProjectWhereInput! = {}): Int
+  taskRuns(where: TaskRunWhereInput! = {}, orderBy: [TaskRunOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskRunWhereUniqueInput): [TaskRun!]
+  taskRun(where: TaskRunWhereUniqueInput!): TaskRun
+  taskRunsCount(where: TaskRunWhereInput! = {}): Int
+  taskRunAttempts(where: TaskRunAttemptWhereInput! = {}, orderBy: [TaskRunAttemptOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskRunAttemptWhereUniqueInput): [TaskRunAttempt!]
+  taskRunAttempt(where: TaskRunAttemptWhereUniqueInput!): TaskRunAttempt
+  taskRunAttemptsCount(where: TaskRunAttemptWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

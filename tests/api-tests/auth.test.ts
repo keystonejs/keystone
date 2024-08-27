@@ -57,7 +57,7 @@ const runner = setupTestRunner({
       }),
     },
     session: statelessSessions(),
-  }),
+  } as any) as any,
 })
 
 async function authenticateWithPassword (

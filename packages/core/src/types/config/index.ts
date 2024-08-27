@@ -248,10 +248,12 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
       wasAccessAllowed: boolean
       basePath: string
     }) => MaybePromise<{ kind: 'redirect', to: string } | void>
+    /** Generate .tsx files instead of .js */
+    tsx?: boolean
   }
 }
 
-export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+export type ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types: KeystoneConfig<TypeInfo>['types']
   db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
     enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
@@ -277,8 +279,8 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 export type AdminFileToWrite =
-  | { mode: 'write', src: string, outputPath: string }
-  | { mode: 'copy', inputPath: string, outputPath: string }
+  | { mode: 'write', src: string, outputPath: string, overwrite?: boolean}
+  | { mode: 'copy', inputPath: string, outputPath: string, overwrite?: boolean }
 
 export type {
   ListHooks,

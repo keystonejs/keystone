@@ -9,12 +9,12 @@ import { telemetry } from './telemetry'
 
 export type Flags = {
   dbPush: boolean
-  fix: boolean // TODO: deprecated, remove in breaking change
   frozen: boolean
   prisma: boolean
   server: boolean
   ui: boolean
   withMigrations: boolean
+  resetAdmin: boolean
 }
 
 function defaultFlags (flags: Partial<Flags>, defaults: Partial<Flags>) {
@@ -58,14 +58,14 @@ export async function cli (cwd: string, argv: string[]) {
         prisma          use prisma commands in a Keystone context
 
     Options
-      --fix (postinstall) @deprecated
-        do build the graphql or prisma schemas, don't validate them
-
       --frozen (build, migrate)
         don't build the graphql or prisma schemas, only validate them
 
       --no-db-push (dev)
         don't push any updates of your Prisma schema to your database
+      
+      --reset-admin (dev)
+        reset generated admin files
 
       --no-prisma (build, dev)
         don't build or validate the prisma schema
@@ -87,7 +87,7 @@ export async function cli (cwd: string, argv: string[]) {
   const command = input.join(' ') || 'dev'
 
   if (command === 'dev') {
-    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true, resetAdmin: false }))
   }
 
   if (command === 'migrate create') {
@@ -116,11 +116,7 @@ export async function cli (cwd: string, argv: string[]) {
 
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
-    return build(cwd, {
-      frozen: !defaultFlags(flags, { fix: false }).fix,
-      prisma: true,
-      ui: false,
-    })
+    return build(cwd, { frozen: true, prisma: true, ui: false })
   }
 
   console.log(`${command} is an unknown command`)

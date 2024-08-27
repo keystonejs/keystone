@@ -4,7 +4,7 @@ import {
   type IdFieldConfig,
   type KeystoneConfig,
   type KeystoneContext,
-  type __ResolvedKeystoneConfig,
+  type ResolvedKeystoneConfig,
 } from '../types'
 import {
   idFieldType
@@ -22,7 +22,7 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  const updated: __ResolvedKeystoneConfig['lists'] = {}
+  const updated: ResolvedKeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
@@ -48,25 +48,6 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  /** @deprecated, TODO: remove in breaking change */
-  for (const [listKey, list] of Object.entries(updated)) {
-    if (list.hooks === undefined) continue
-    if (list.hooks.validate !== undefined) {
-      if (list.hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${listKey}" list`)
-      if (list.hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${listKey}" list`)
-      continue
-    }
-
-    list.hooks = {
-      ...list.hooks,
-      validate: {
-        create: list.hooks.validateInput,
-        update: list.hooks.validateInput,
-        delete: list.hooks.validateDelete
-      }
-    }
-  }
-
   return updated
 }
 
@@ -75,10 +56,10 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
   return session !== undefined
 }
 
-async function noop () {}
+export async function noop () {}
 function identity<T> (x: T) { return x }
 
-export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
+export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>, injectIdField = false): ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -128,7 +109,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
-    lists: injectDefaults(config, defaultIdField),
+    lists: injectIdField ? injectDefaults(config, defaultIdField) : config.lists as ResolvedKeystoneConfig['lists'],
     server: {
       maxFileSize: 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,
@@ -149,6 +130,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
       publicPages:config.ui?.publicPages ?? [],
+      tsx: config.ui?.tsx ?? true,
     },
   }
 }
