@@ -2359,6 +2359,9 @@ importers:
       '@types/async-retry':
         specifier: ^1.4.3
         version: 1.4.8
+      '@types/ms':
+        specifier: ^0.7.34
+        version: 0.7.34
       async-retry:
         specifier: ^1.3.3
         version: 1.3.3
@@ -2374,6 +2377,9 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
@@ -2435,6 +2441,9 @@ importers:
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.21
+      '@types/ms':
+        specifier: ^0.7.34
+        version: 0.7.34
       cookie-signature:
         specifier: ^1.1.0
         version: 1.2.1
@@ -2453,6 +2462,9 @@ importers:
       mime:
         specifier: ^3.0.0
         version: 3.0.0
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
@@ -2514,6 +2526,9 @@ importers:
       '@prisma/migrate':
         specifier: ^5.0.0
         version: 5.18.0(@prisma/generator-helper@5.19.0)(@prisma/internals@5.18.0)
+      '@types/ms':
+        specifier: ^0.7.34
+        version: 0.7.34
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -2529,6 +2544,9 @@ importers:
       mime:
         specifier: ^3.0.0
         version: 3.0.0
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
@@ -2541,6 +2559,9 @@ importers:
       '@types/async-retry':
         specifier: ^1.4.3
         version: 1.4.8
+      '@types/ms':
+        specifier: ^0.7.34
+        version: 0.7.34
       '@types/tough-cookie':
         specifier: ^4.0.1
         version: 4.0.5
@@ -2550,6 +2571,9 @@ importers:
       execa:
         specifier: ^5.1.1
         version: 5.1.1
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0

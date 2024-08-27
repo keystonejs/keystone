@@ -4,8 +4,9 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { dbProvider } from './utils'
+import ms from 'ms'
 
-jest.setTimeout(10000000)
+jest.setTimeout(ms('20 minutes'))
 
 function yn (x: boolean) {
   return x ? '1' : '0'

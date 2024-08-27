@@ -9,8 +9,11 @@ import {
   symlinkKeystoneDeps,
   testdir,
 } from './utils'
+import ms from 'ms'
 
 import { ExitError } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+
+jest.setTimeout(ms('20 minutes'))
 
 test("start errors when a build hasn't happened", async () => {
   const cwd = await testdir({
@@ -25,8 +28,6 @@ test("start errors when a build hasn't happened", async () => {
     ? keystone build has not been run"
   `)
 })
-
-jest.setTimeout(1000000)
 
 test('build works with typescript without the user defining a babel config', async () => {
   const cwd = await testdir({
