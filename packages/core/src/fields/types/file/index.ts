@@ -7,7 +7,7 @@ import {
   fieldType,
 } from '../../../types'
 import { graphql } from '../../..'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -63,23 +63,20 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
       throw Error("isIndexed: 'unique' is not a supported option for field type file")
     }
 
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (!storage.preserve) {
-      hooks.beforeOperation = async function (args) {
-        if (args.operation === 'update' || args.operation === 'delete') {
-          const filenameKey = `${fieldKey}_filename`
-          const filename = args.item[filenameKey]
+    async function beforeOperationResolver (args: any) {      
+      if (args.operation === 'update' || args.operation === 'delete') {
+        const filenameKey = `${fieldKey}_filename`
+        const filename = args.item[filenameKey]
 
-          // this will occur on an update where a file already existed but has been
-          // changed, or on a delete, where there is no longer an item
-          if (
-            (args.operation === 'delete' ||
-              typeof args.resolvedData[fieldKey].filename === 'string' ||
-              args.resolvedData[fieldKey].filename === null) &&
-            typeof filename === 'string'
-          ) {
-            await args.context.files(config.storage).deleteAtSource(filename)
-          }
+        // this will occur on an update where a file already existed but has been
+        // changed, or on a delete, where there is no longer an item
+        if (
+          (args.operation === 'delete' ||
+            typeof args.resolvedData[fieldKey].filename === 'string' ||
+            args.resolvedData[fieldKey].filename === null) &&
+          typeof filename === 'string'
+        ) {
+          await args.context.files(config.storage).deleteAtSource(filename)
         }
       }
     }
@@ -93,7 +90,16 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
       },
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: storage.preserve
+        ? config.hooks
+        : {
+            ...config.hooks,
+            beforeOperation: {
+              ...config.hooks?.beforeOperation,
+              update: merge(config.hooks?.beforeOperation?.update, beforeOperationResolver),
+              delete: merge(config.hooks?.beforeOperation?.delete, beforeOperationResolver),              
+            },            
+          },
       input: {
         create: {
           arg: inputArg,

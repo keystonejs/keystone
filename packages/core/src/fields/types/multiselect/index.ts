@@ -9,7 +9,7 @@ import {
 } from '../../../types'
 import { graphql } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -108,7 +108,14 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       {
         ...config,
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
-        hooks: mergeFieldHooks({ validate }, config.hooks),
+        hooks: {
+          ...config.hooks,
+          validate: {
+            ...config.hooks?.validate,
+            create: merge(validate, config.hooks?.validate?.create),
+            update: merge(validate, config.hooks?.validate?.update),
+          },
+        },
         views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,
