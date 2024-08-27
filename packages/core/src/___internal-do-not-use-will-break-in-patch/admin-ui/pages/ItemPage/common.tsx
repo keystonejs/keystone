@@ -7,10 +7,11 @@ import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
 import { Container } from '../../../../admin-ui/components/Container'
 import { Link } from '../../../../admin-ui/router'
 import { type ListMeta } from '../../../../types'
+import { useKeystone } from '../../../../admin-ui'
 
 export function ItemPageHeader (props: { list: ListMeta, label: string }) {
   const { palette, spacing } = useTheme()
-
+  const { adminPath } = useKeystone()
   return (
     <Container
       css={{
@@ -33,7 +34,7 @@ export function ItemPageHeader (props: { list: ListMeta, label: string }) {
         ) : (
           <Fragment>
             <Heading type="h3">
-              <Link href={`/${props.list.path}`} css={{ textDecoration: 'none' }}>
+              <Link href={`${adminPath}/${props.list.path}`} css={{ textDecoration: 'none' }}>
                 {props.list.label}
               </Link>
             </Heading>

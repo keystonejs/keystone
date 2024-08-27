@@ -4,7 +4,6 @@
 import { Box, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
 import { Button } from '@keystone-ui/button'
-import { useRouter } from 'next/router'
 import { Fields } from '../../../../admin-ui/utils'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui'
@@ -12,10 +11,12 @@ import { GraphQLErrorNotice } from '../../../../admin-ui/components'
 import { type ListMeta } from '../../../../types'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
+import { useRouter } from '../../../../admin-ui/router'
 
 function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
+  const { adminPath } = useKeystone()
   return (
     <Box paddingTop="xlarge">
       {createItem.error && (
@@ -34,7 +35,7 @@ function CreatePageForm (props: { list: ListMeta }) {
           onClick={async () => {
             const item = await createItem.create()
             if (item) {
-              router.push(`/${props.list.path}/${item.id}`)
+              router.push(`${adminPath}/${props.list.path}/${item.id}`)
             }
           }}
         >
@@ -45,14 +46,11 @@ function CreatePageForm (props: { list: ListMeta }) {
   )
 }
 
-type CreateItemPageProps = { listKey: string }
+type CreateItemPageProps = { params: { listKey: string } }
 
-export const getCreateItemPage = (props: CreateItemPageProps) => () =>
-  <CreateItemPage {...props} />
-
-function CreateItemPage (props: CreateItemPageProps) {
-  const list = useList(props.listKey)
-  const { createViewFieldModes } = useKeystone()
+export function CreateItemPage ({ params }: CreateItemPageProps) {
+  const { createViewFieldModes, listsKeyByPath } = useKeystone()
+  const list = useList(listsKeyByPath[params.listKey])
 
   return (
     <PageContainer

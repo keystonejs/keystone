@@ -16,7 +16,7 @@ import { Link, type LinkProps } from '../../../../admin-ui/router'
 function ListCard ({
   listKey,
   count,
-  hideCreate
+  hideCreate,
 }: {
   listKey: string
   hideCreate: boolean
@@ -28,10 +28,11 @@ function ListCard ({
 }) {
   const { colors, palette, radii, spacing } = useTheme()
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+        href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -65,7 +66,7 @@ function ListCard ({
         )}
       </Link>
       {hideCreate === false && !list.isSingleton && (
-        <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
+        <CreateButton title={`Create ${list.singular}`} href={`${adminPath}/${list.path}/create`}>
           <PlusIcon size="large" />
           <VisuallyHidden>Create {list.singular}</VisuallyHidden>
         </CreateButton>
@@ -158,10 +159,11 @@ export function HomePage () {
               )
             }
             return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
+              const list = lists[key]
+              if (!visibleLists.lists.has(list.key)) {
                 return null
               }
-              const result = dataGetter.get(key)
+              const result = dataGetter.get(list.key)
               return (
                 <ListCard
                   count={

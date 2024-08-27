@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { text, checkbox, password } from '@keystone-6/core/fields'
+import { text, checkbox, password, timestamp, relationship, json, select, integer } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -153,4 +153,76 @@ export const lists = {
       }),
     },
   }),
+  Project: list({
+    access: allowAll,
+
+    fields: {
+      slug: text({ isIndexed: 'unique' }),
+      name: text({ validation: { isRequired: true } }),
+      createdAt: timestamp({ defaultValue: { kind: 'now' } }),
+      updatedAt: timestamp({ defaultValue: { kind: 'now' }, db: { updatedAt: true } }),
+      deletedAt: timestamp({}),
+      taskRuns: relationship({ ref: 'TaskRun.project', many: true }),
+    }
+  }),
+  TaskRun: list({
+    access: allowAll,
+
+    fields: {
+      number: integer({ defaultValue: 0 }),
+      friendlyId: text({}),
+      status: select({
+        options: [
+          { label: 'Pending', value: 'pending' },
+          { label: 'Executing', value: 'executing' },
+          { label: 'Paused', value: 'paused' },
+          { label: 'Canceled', value: 'canceled' },
+          { label: 'Interrupted', value: 'interrupted' },
+          { label: 'Completed Successfully', value: 'completed_successfully' },
+          { label: 'Completed With Errors', value: 'completed_with_errors' },
+          { label: 'System Failure', value: 'system_failure' },
+          { label: 'Crashed', value: 'crashed' }],
+        defaultValue: 'pending'
+      }),
+      taskIdentifier: text({}),
+      isTest: checkbox({ defaultValue: false }),
+      payload: text({}),
+      payloadType: text({ defaultValue: 'application/json' }),
+      context: json({}),
+      traceId: text({}),
+      spanId: text({}),
+      project: relationship({ ref: 'Project.taskRuns' }),
+      createdAt: timestamp({ defaultValue: { kind: 'now' } }),
+      updatedAt: timestamp({ defaultValue: { kind: 'now' }, db: { updatedAt: true } }),
+      attempts: relationship({ ref: 'TaskRunAttempt.taskRun', many: true }),
+      startedAt: timestamp({}),
+      completedAt: timestamp({}),
+    }
+  }),
+  TaskRunAttempt: list({
+    access: allowAll,
+
+    fields: {
+      number: integer({ defaultValue: 0 }),
+      friendlyId: text({}),
+      taskRun: relationship({ ref: 'TaskRun.attempts' }),
+      status: select({
+        options: [
+          { label: 'Pending', value: 'pending' },
+          { label: 'Executing', value: 'executing' },
+          { label: 'Paused', value: 'paused' },
+          { label: 'Failed', value: 'failed' },
+          { label: 'Canceled', value: 'canceled' },
+          { label: 'Completed', value: 'completed' }],
+        defaultValue: 'pending'
+      }),
+      createdAt: timestamp({ defaultValue: { kind: 'now' } }),
+      updatedAt: timestamp({ defaultValue: { kind: 'now' }, db: { updatedAt: true } }),
+      startedAt: timestamp({}),
+      completedAt: timestamp({}),
+      error: json({}),
+      output: text({}),
+      outputType: text({ defaultValue: 'application/json' }),
+    }
+  })
 } satisfies Lists<Session>
