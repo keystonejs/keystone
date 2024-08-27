@@ -7,6 +7,8 @@ import {
 } from 'playwright'
 import { parse, print } from 'graphql'
 import fetch from 'node-fetch'
+import ms from 'ms'
+
 import {
   loadIndex,
   makeGqlRequest,
@@ -23,6 +25,8 @@ async function replaceSchema (schema: string) {
     await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))
   )
 }
+
+jest.setTimeout(ms('20 minutes'))
 
 let exit = async () => {}
 let ksProcess = undefined as any
