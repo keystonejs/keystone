@@ -10,7 +10,7 @@ import {
 import { graphql } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -55,7 +55,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function select <ListTypeInfo extends BaseListTypeInfo>(config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   const {
     isIndexed,
     ui: { displayMode = 'select', ...ui } = {},
@@ -95,7 +95,14 @@ export function select <ListTypeInfo extends BaseListTypeInfo>(config: SelectFie
       ...config,
       mode,
       ui,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate: {
+          ...config.hooks?.validate,
+          create: merge(validate, config.hooks?.validate?.create),
+          update: merge(validate, config.hooks?.validate?.update),
+        },
+      },
       __ksTelemetryFieldTypeName: '@keystone-6/select',
       views: '@keystone-6/core/fields/types/select/views',
       getAdminMeta: () => ({

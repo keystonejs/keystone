@@ -69,9 +69,14 @@ const runner2 = setupTestRunner({
           content: text(),
         },
         hooks: {
-          afterOperation () {
-            afterOperationWasCalled = true
-          },
+          afterOperation: {
+            create () {
+              afterOperationWasCalled = true
+            },
+            update () {
+              afterOperationWasCalled = true
+            },
+          }
         },
         access: allowAll,
       }),

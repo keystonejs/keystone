@@ -32,8 +32,8 @@ function makeList ({
       : hooks.validate === 'throws'
         ? makeThrower(`${__name}_${context}`)
         : ({ operation, resolvedData, addValidationError }: any) => {
-          addValidationError(`Validate_${__name}_${context}_${operation}`)
-          // TODO: mixed results
+            addValidationError(`Validate_${__name}_${context}_${operation}`)
+            // TODO: mixed results
         }
   }
 
@@ -85,14 +85,25 @@ function makeList ({
       basis: text(hooks.field ? {
         db: { isNullable: true }, // drops the implicit validation hook
         hooks: {
-          resolveInput: hooks.resolveInput ? replaceF : undefined,
+          resolveInput: hooks.resolveInput ? {
+            create: replaceF,
+            update: replaceF,
+          } : undefined,
           validate: {
             create: makeValidate('FVI'),
             update: makeValidate('FVI'),
             delete: makeValidate('FVI'),
           },
-          beforeOperation: hooks.beforeOperation ? makeThrower(`${__name}_FBO`) : undefined,
-          afterOperation: hooks.afterOperation ? makeThrower(`${__name}_FAO`) : undefined
+          beforeOperation: hooks.beforeOperation ? {
+            create: makeThrower(`${__name}_FBO`),
+            update: makeThrower(`${__name}_FBO`),
+            delete: makeThrower(`${__name}_FBO`),
+          } : undefined,
+          afterOperation: hooks.afterOperation ? {
+            create: makeThrower(`${__name}_FAO`),
+            update: makeThrower(`${__name}_FAO`),
+            delete: makeThrower(`${__name}_FAO`),
+          } : undefined
         }
       } : {}),
     },
