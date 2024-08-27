@@ -6,7 +6,8 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../types'
-import { graphql } from '..'
+import { graphql } from '../types/schema'
+
 import { userInputError } from './core/graphql-errors'
 
 type IDType = string | number | null

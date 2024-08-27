@@ -15,6 +15,7 @@ export type Flags = {
   server: boolean
   ui: boolean
   withMigrations: boolean
+  resetAdmin: boolean
 }
 
 function defaultFlags (flags: Partial<Flags>, defaults: Partial<Flags>) {
@@ -66,6 +67,9 @@ export async function cli (cwd: string, argv: string[]) {
 
       --no-db-push (dev)
         don't push any updates of your Prisma schema to your database
+      
+      --reset-admin (dev)
+        reset generated admin files
 
       --no-prisma (build, dev)
         don't build or validate the prisma schema
@@ -87,7 +91,7 @@ export async function cli (cwd: string, argv: string[]) {
   const command = input.join(' ') || 'dev'
 
   if (command === 'dev') {
-    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true, resetAdmin: false }))
   }
 
   if (command === 'migrate create') {

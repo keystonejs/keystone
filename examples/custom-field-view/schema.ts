@@ -30,6 +30,14 @@ export const lists = {
           itemView: { fieldMode: 'edit' },
         },
       }),
+      moreLinks: json({
+        ui: {
+          views: '@/fields/related-links/components',
+          createView: { fieldMode: 'edit' },
+          listView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'edit' },
+        },
+      }),
     },
   }),
   Person: list({

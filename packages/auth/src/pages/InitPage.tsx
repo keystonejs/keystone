@@ -22,7 +22,6 @@ import {
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
 import { SigninContainer } from '../components/SigninContainer'
-import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
 
@@ -31,6 +30,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   const [email, setEmail] = useState<string>(guessEmailFromValue(value))
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const { adminPath } = useKeystone()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -138,7 +138,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
             {error ? 'Try again' : 'Continue'}
           </Button>
           {error && (
-            <Button as={Link} href={'/'} tone="active">
+            <Button as={Link} href={adminPath || '/'} tone="active">
               Continue
             </Button>
           )}
@@ -157,7 +157,7 @@ function InitPage ({
   fieldPaths: string[]
   enableWelcome: boolean
 }) {
-  const { adminMeta } = useKeystone()
+  const { adminMeta, adminPath } = useKeystone()
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
     fieldPaths.forEach(fieldPath => {
@@ -190,7 +190,6 @@ function InitPage ({
   }`)
   const reinitContext = useReinitContext()
   const router = useRouter()
-  const redirect = useRedirect()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -229,11 +228,11 @@ function InitPage ({
     await reinitContext()
 
     if (enableWelcome) return setMode('welcome')
-    router.push(redirect)
+    router.push(adminPath || '/')
   }
 
   const onComplete = () => {
-    router.push(redirect)
+    router.push(adminPath || '/')
   }
 
   return mode === 'init' ? (

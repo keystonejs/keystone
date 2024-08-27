@@ -8,7 +8,7 @@ import { useKeystone } from '../context'
 
 export const Logo = () => {
   const { spacing } = useTheme()
-  const { adminConfig } = useKeystone()
+  const { adminConfig, adminPath } = useKeystone()
 
   if (adminConfig.components?.Logo) {
     return <adminConfig.components.Logo />
@@ -17,7 +17,7 @@ export const Logo = () => {
   return (
     <H3>
       <Link
-        href="/"
+        href={adminPath || '/'}
         css={{
           // TODO: we dont' have colors in our design-system for this.
           backgroundImage: `linear-gradient(to right, #0ea5e9, #6366f1)`,

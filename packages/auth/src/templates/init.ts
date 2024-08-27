@@ -8,15 +8,17 @@ type InitTemplateArgs = {
 
 export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
   // -- TEMPLATE START
-  return `import { getInitPage } from '@keystone-6/auth/pages/InitPage';
+  return `'use client'
+/* eslint-disable */
+import { getInitPage } from '@keystone-6/auth/pages/InitPage'
 
-const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
+const fieldPaths = ${JSON.stringify(initFirstItem.fields)}
 
 export default getInitPage(${JSON.stringify({
     listKey,
     fieldPaths: initFirstItem.fields,
     enableWelcome: !initFirstItem.skipKeystoneWelcome,
-  })});
+  })})
 `
   // -- TEMPLATE END
 }

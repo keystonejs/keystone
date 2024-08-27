@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { type AllHTMLAttributes, type ReactNode, Fragment } from 'react'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { Stack, jsx, useTheme, Text } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Popover } from '@keystone-ui/popover'
@@ -22,9 +22,9 @@ type NavItemProps = {
 
 export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProps) => {
   const { colors, palette, spacing, radii, typography } = useTheme()
-  const router = useRouter()
+  const pathname = usePathname()
 
-  const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href
+  const isSelected = _isSelected !== undefined ? _isSelected : pathname === href
   return (
     <li>
       <Link
@@ -171,11 +171,12 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
 }
 
 export const ListNavItem = ({ list }: { list: ListMeta }) => {
-  const router = useRouter()
+  const pathname = usePathname()
+  const { adminPath } = useKeystone()
   return (
     <NavItem
-      isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
-      href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+      isSelected={pathname.replace(adminPath, '').split('/')[1] === `/${list.path}`.split('/')[1]}
+      href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
     >
       {list.label}
     </NavItem>
@@ -202,6 +203,7 @@ export const Navigation = () => {
     adminConfig,
     authenticatedItem,
     visibleLists,
+    adminPath,
   } = useKeystone()
 
   if (visibleLists.state === 'loading') return null
@@ -234,7 +236,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
+      <NavItem href={adminPath || '/'}>Dashboard</NavItem>
       <ListNavItems lists={renderableLists} />
     </NavigationContainer>
   )
