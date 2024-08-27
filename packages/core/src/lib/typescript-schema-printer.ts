@@ -190,7 +190,7 @@ export function printGeneratedTypes (
     })(),
     '}',
     `export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>`,
-    `export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>`,
+    `export type Config<Session = any> = import('@keystone-6/core/types').ResolvedKeystoneConfig<TypeInfo<Session>>`,
     '',
     'export type TypeInfo<Session = any> = {',
     `  lists: {`,
