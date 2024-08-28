@@ -3,6 +3,9 @@ import { promisify } from 'util'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
+import ms from 'ms'
+
+jest.setTimeout(ms('20 minutes'))
 
 export async function loadIndex (page: playwright.Page) {
   await page.goto('http://localhost:3000')
@@ -31,9 +34,6 @@ async function deleteAllData (projectDir: string) {
 }
 
 const treeKill = promisify(_treeKill)
-
-// this'll take a while
-jest.setTimeout(10000000)
 
 export function initFirstItemTest (getPage: () => playwright.Page) {
   test('init first item', async () => {

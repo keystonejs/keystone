@@ -9,6 +9,9 @@ import fetch from 'node-fetch'
 import { type ExecaChildProcess } from 'execa'
 import * as playwright from 'playwright'
 import dotenv from 'dotenv'
+import ms from 'ms'
+
+jest.setTimeout(ms('20 minutes'))
 
 export async function loadIndex (page: playwright.Page) {
   await page.goto('http://localhost:3000')
@@ -22,9 +25,6 @@ export async function loadIndex (page: playwright.Page) {
     await page.goto('http://localhost:3000')
   }
 }
-
-// this'll take a while
-jest.setTimeout(10000000)
 
 const projectRoot = path.resolve(__dirname, '..', '..')
 
