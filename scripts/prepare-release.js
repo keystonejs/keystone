@@ -13,6 +13,7 @@ const publicPackages = [
   '@keystone-6/core',
   '@keystone-6/document-renderer',
   '@keystone-6/fields-document',
+  'create-keystone-app',
 ]
 
 const cves = [

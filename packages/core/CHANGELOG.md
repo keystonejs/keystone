@@ -1,5 +1,23 @@
 # @keystone-6/core
 
+## 6.3.0
+
+### Minor Changes
+
+- [#9292](https://github.com/keystonejs/keystone/pull/9292) [`19a734c`](https://github.com/keystonejs/keystone/commit/19a734cffad82ee34452013e76182f72abbfa431) Thanks [@dcousens](https://github.com/dcousens)! - Adds `keystone telemetry inform` command to show an informed consent notice
+
+- [#9310](https://github.com/keystonejs/keystone/pull/9310) [`c61ac79`](https://github.com/keystonejs/keystone/commit/c61ac794e77a9516863e0ab92914882b04a8f1c9) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrade prisma to `5.19.0`
+
+- [#9280](https://github.com/keystonejs/keystone/pull/9280) [`6bdf320`](https://github.com/keystonejs/keystone/commit/6bdf3209a2df833fdfd8e7dc5953ec08b785b72d) Thanks [@acburdine](https://github.com/acburdine)! - Adds context.transaction passthrough for prisma $transaction options
+
+### Patch Changes
+
+- [#9278](https://github.com/keystonejs/keystone/pull/9278) [`dc3802a`](https://github.com/keystonejs/keystone/commit/dc3802a579306b6e6fa5fd2e65a73142dc5f3e86) Thanks [@acburdine](https://github.com/acburdine)! - Fix blended usage of `{field}.hooks.validateInput` and `{field}.validate.*` resulting in an error
+
+- [`830d46d`](https://github.com/keystonejs/keystone/commit/830d46dcb5041d2b7ee52b7670c177139f7691cc) Thanks [@DavidMulder0](https://github.com/DavidMulder0)! - Fixes the `keystone telemetry disable` command for opting out of telemetry
+
+- [#9292](https://github.com/keystonejs/keystone/pull/9292) [`19a734c`](https://github.com/keystonejs/keystone/commit/19a734cffad82ee34452013e76182f72abbfa431) Thanks [@dcousens](https://github.com/dcousens)! - Update https://keystonejs.com/docs/reference/telemetry to show that `database` type is collected as part of telemetry
+
 ## 6.2.0
 
 ### Minor Changes
