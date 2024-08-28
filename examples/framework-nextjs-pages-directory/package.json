@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.2.0",
+    "@keystone-6/core": "^6.3.0",
     "@keystone-6/fields-document": "^9.1.0",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "5.17.0",

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^8.3.2",
-    "@keystone-6/core": "^6.2.0",
+    "@keystone-6/core": "^6.3.0",
     "@prisma/client": "5.17.0",
     "astro": "^4.12.3"
   },
