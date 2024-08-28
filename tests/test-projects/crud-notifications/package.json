@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "5.17.0"
+    "@prisma/client": "5.19.0"
   },
   "devDependencies": {
-    "prisma": "5.17.0",
+    "prisma": "5.19.0",
     "typescript": "^5.5.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/test-projects/crud-notifications"

@@ -597,15 +597,15 @@ importers:
   examples/assets-local:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -613,18 +613,18 @@ importers:
   examples/assets-s3:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       dotenv:
         specifier: ^16.0.0
         version: 16.4.5
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -635,15 +635,15 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -657,18 +657,18 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/cloudinary
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       dotenv:
         specifier: ^16.0.0
         version: 16.4.5
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -676,14 +676,14 @@ importers:
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.2
         version: link:../../design-system/packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next:
         specifier: ^14.2.0
         version: 14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -695,8 +695,8 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -704,18 +704,18 @@ importers:
   examples/custom-admin-ui-navigation:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -723,14 +723,14 @@ importers:
   examples/custom-admin-ui-pages:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.2
         version: link:../../design-system/packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next:
         specifier: ^14.2.0
         version: 14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -742,8 +742,8 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -751,15 +751,15 @@ importers:
   examples/custom-esbuild:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -767,18 +767,18 @@ importers:
   examples/custom-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-ui/fields':
         specifier: ^7.2.0
         version: link:../../design-system/packages/fields
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -789,7 +789,7 @@ importers:
         specifier: ^11.7.1
         version: 11.13.0
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.2
@@ -804,8 +804,8 @@ importers:
         specifier: ^6.0.2
         version: link:../../design-system/packages/icons
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next:
         specifier: ^14.2.0
         version: 14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -817,8 +817,8 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -826,18 +826,18 @@ importers:
   examples/custom-id:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
         version: 2.2.2
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -848,11 +848,11 @@ importers:
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next:
         specifier: ^14.2.0
         version: 14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -864,8 +864,8 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -876,15 +876,15 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -895,15 +895,15 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -914,11 +914,11 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -927,8 +927,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.6
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -936,18 +936,18 @@ importers:
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next-auth:
         specifier: ^4.22.1
         version: 4.24.7(next@14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -955,11 +955,11 @@ importers:
   examples/custom-session-passport:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       dotenv:
         specifier: ^16.0.0
         version: 16.4.5
@@ -986,8 +986,8 @@ importers:
         specifier: ^1.4.16
         version: 1.4.17
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -998,18 +998,18 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       '@redis/client':
         specifier: ^1.3.0
         version: 1.6.0
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1017,15 +1017,15 @@ importers:
   examples/default-values:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1033,7 +1033,7 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
@@ -1045,8 +1045,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       next:
         specifier: ^14.2.0
         version: 14.2.6(@babel/core@7.25.2)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1058,8 +1058,8 @@ importers:
         version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1076,7 +1076,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.0
@@ -1097,8 +1097,8 @@ importers:
         specifier: ^6.0.1
         version: link:../../../design-system/packages/tooltip
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1107,8 +1107,8 @@ importers:
         version: 5.5.4
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
 
   examples/document-field-customisation/nextjs-frontend:
     dependencies:
@@ -1147,15 +1147,15 @@ importers:
   examples/empty-lists:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1163,11 +1163,11 @@ importers:
   examples/extend-express-app:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.21
@@ -1176,8 +1176,8 @@ importers:
         version: 4.19.2
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1191,18 +1191,18 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1210,15 +1210,15 @@ importers:
   examples/extend-graphql-schema-graphql-ts:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1229,11 +1229,11 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -1242,8 +1242,8 @@ importers:
         version: 1.3.0(graphql@16.9.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
 
   examples/extend-graphql-subscriptions:
     dependencies:
@@ -1257,7 +1257,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.2
@@ -1269,8 +1269,8 @@ importers:
         specifier: ^7.2.0
         version: link:../../design-system/packages/fields
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -1291,8 +1291,8 @@ importers:
         specifier: ^8.5.3
         version: 8.5.12
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1300,18 +1300,18 @@ importers:
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1319,15 +1319,15 @@ importers:
   examples/field-groups:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1338,11 +1338,11 @@ importers:
         specifier: ^8.3.2
         version: 8.3.3(astro@4.14.5(@types/node@20.16.1)(rollup@4.21.1)(terser@5.31.6)(typescript@5.5.4))
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       astro:
         specifier: ^4.12.3
         version: 4.14.5(@types/node@20.16.1)(rollup@4.21.1)(terser@5.31.6)(typescript@5.5.4)
@@ -1354,8 +1354,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1369,7 +1369,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
@@ -1381,8 +1381,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -1409,8 +1409,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1421,7 +1421,7 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.0
@@ -1430,8 +1430,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -1458,8 +1458,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1476,18 +1476,18 @@ importers:
         specifier: ^8.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.0
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1529,11 +1529,11 @@ importers:
   examples/framework-remix:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       '@remix-run/node':
         specifier: ^1.18.0
         version: 1.19.3
@@ -1563,8 +1563,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1572,11 +1572,11 @@ importers:
   examples/graphql-ts-gql:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -1594,8 +1594,8 @@ importers:
         specifier: ^8.0.0
         version: 8.57.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1603,15 +1603,15 @@ importers:
   examples/hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1619,15 +1619,15 @@ importers:
   examples/limits:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1638,15 +1638,15 @@ importers:
   examples/omit:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1654,15 +1654,15 @@ importers:
   examples/reuse:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1670,15 +1670,15 @@ importers:
   examples/script:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1689,15 +1689,15 @@ importers:
   examples/singleton:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1711,18 +1711,18 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       '@types/node':
         specifier: ^20.14.10
         version: 20.16.1
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1733,15 +1733,15 @@ importers:
   examples/transactions:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1749,18 +1749,18 @@ importers:
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.0
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1774,15 +1774,15 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1790,15 +1790,15 @@ importers:
   examples/usecase-relationship-union:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1809,15 +1809,15 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -1825,15 +1825,15 @@ importers:
   examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1844,15 +1844,15 @@ importers:
   examples/usecase-versioning:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       tsx:
         specifier: ^4.0.0
         version: 4.18.0
@@ -1863,15 +1863,15 @@ importers:
   examples/virtual-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.2.0
+        specifier: ^6.3.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -2433,8 +2433,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       '@prisma/internals':
         specifier: ^5.0.0
         version: 5.18.0
@@ -2469,8 +2469,8 @@ importers:
         specifier: ^2.6.7
         version: 2.7.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       supertest:
         specifier: ^6.1.6
         version: 6.3.4
@@ -2518,8 +2518,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       '@prisma/internals':
         specifier: ^5.0.0
         version: 5.18.0
@@ -2551,8 +2551,8 @@ importers:
         specifier: ^2.6.7
         version: 2.7.0
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
 
   tests/examples-smoke-tests:
     devDependencies:
@@ -2611,15 +2611,15 @@ importers:
         specifier: workspace:^
         version: link:../../design-system/packages/tooltip
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -2630,12 +2630,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -2646,12 +2646,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -2662,12 +2662,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 5.17.0
-        version: 5.17.0(prisma@5.17.0)
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
     devDependencies:
       prisma:
-        specifier: 5.17.0
-        version: 5.17.0
+        specifier: 5.19.0
+        version: 5.19.0
       typescript:
         specifier: ^5.5.0
         version: 5.5.4
@@ -4863,15 +4863,6 @@ packages:
   '@preconstruct/next@4.0.0':
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
 
-  '@prisma/client@5.17.0':
-    resolution: {integrity: sha512-N2tnyKayT0Zf7mHjwEyE8iG7FwTmXDHFZ1GnNhQp0pJUObsuel4ZZ1XwfuAYkq5mRIiC/Kot0kt0tGCfLJ70Jw==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-
   '@prisma/client@5.19.0':
     resolution: {integrity: sha512-CzOpau+q1kEWQyoQMvlnXIHqPvwmWbh48xZ4n8KWbAql0p8PC0BIgSTYW5ncxXa4JSEff0tcoxSZB874wDstdg==}
     engines: {node: '>=16.13'}
@@ -4881,17 +4872,11 @@ packages:
       prisma:
         optional: true
 
-  '@prisma/debug@5.17.0':
-    resolution: {integrity: sha512-l7+AteR3P8FXiYyo496zkuoiJ5r9jLQEdUuxIxNCN1ud8rdbH3GTxm+f+dCyaSv9l9WY+29L9czaVRXz9mULfg==}
-
   '@prisma/debug@5.18.0':
     resolution: {integrity: sha512-f+ZvpTLidSo3LMJxQPVgAxdAjzv5OpzAo/eF8qZqbwvgi2F5cTOI9XCpdRzJYA0iGfajjwjOKKrVq64vkxEfUw==}
 
   '@prisma/debug@5.19.0':
     resolution: {integrity: sha512-+b/G0ubAZlrS+JSiDhXnYV5DF/aTJ3pinktkiV/L4TtLRLZO6SVGyFELgxBsicCTWJ2ZMu5vEV/jTtYCdjFTRA==}
-
-  '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053':
-    resolution: {integrity: sha512-tUuxZZysZDcrk5oaNOdrBnnkoTtmNQPkzINFDjz7eG6vcs9AVDmA/F6K5Plsb2aQc/l5M2EnFqn3htng9FA4hg==}
 
   '@prisma/engines-version@5.18.0-25.4c784e32044a8a016d99474bd02a3b6123742169':
     resolution: {integrity: sha512-a/+LpJj8vYU3nmtkg+N3X51ddbt35yYrRe8wqHTJtYQt7l1f8kjIBcCs6sHJvodW/EK5XGvboOiwm47fmNrbgg==}
@@ -4899,17 +4884,11 @@ packages:
   '@prisma/engines-version@5.19.0-31.5fe21811a6ba0b952a3bc71400666511fe3b902f':
     resolution: {integrity: sha512-GimI9aZIFy/yvvR11KfXRn3pliFn1QAkdebVlsXlnoh5uk0YhLblVmeYiHfsu+wDA7BeKqYT4sFfzg8mutzuWw==}
 
-  '@prisma/engines@5.17.0':
-    resolution: {integrity: sha512-+r+Nf+JP210Jur+/X8SIPLtz+uW9YA4QO5IXA+KcSOBe/shT47bCcRMTYCbOESw3FFYFTwe7vU6KTWHKPiwvtg==}
-
   '@prisma/engines@5.18.0':
     resolution: {integrity: sha512-ofmpGLeJ2q2P0wa/XaEgTnX/IsLnvSp/gZts0zjgLNdBhfuj2lowOOPmDcfKljLQUXMvAek3lw5T01kHmCG8rg==}
 
   '@prisma/engines@5.19.0':
     resolution: {integrity: sha512-UtW+0m4HYoRSSR3LoDGKF3Ud4BSMWYlLEt4slTnuP1mI+vrV3zaDoiAPmejdAT76vCN5UqnWURbkXxf66nSylQ==}
-
-  '@prisma/fetch-engine@5.17.0':
-    resolution: {integrity: sha512-ESxiOaHuC488ilLPnrv/tM2KrPhQB5TRris/IeIV4ZvUuKeaicCl4Xj/JCQeG9IlxqOgf1cCg5h5vAzlewN91Q==}
 
   '@prisma/fetch-engine@5.18.0':
     resolution: {integrity: sha512-I/3u0x2n31rGaAuBRx2YK4eB7R/1zCuayo2DGwSpGyrJWsZesrV7QVw7ND0/Suxeo/vLkJ5OwuBqHoCxvTHpOg==}
@@ -4922,9 +4901,6 @@ packages:
 
   '@prisma/generator-helper@5.19.0':
     resolution: {integrity: sha512-qZDgnq/dHVHYUNRG8ETuIvoiZzWxwKHhG9Jb4WWoQFXXuTY+1km0L5QAPOJ0U7Qo8ookUf25B88n1Z9Az7l/UQ==}
-
-  '@prisma/get-platform@5.17.0':
-    resolution: {integrity: sha512-UlDgbRozCP1rfJ5Tlkf3Cnftb6srGrEQ4Nm3og+1Se2gWmCZ0hmPIi+tQikGDUVLlvOWx3Gyi9LzgRP+HTXV9w==}
 
   '@prisma/get-platform@5.18.0':
     resolution: {integrity: sha512-Tk+m7+uhqcKDgnMnFN0lRiH7Ewea0OEsZZs9pqXa7i3+7svS3FSCqDBCaM9x5fmhhkufiG0BtunJVDka+46DlA==}
@@ -10512,11 +10488,6 @@ packages:
     peerDependencies:
       react: '>=16.0.0'
 
-  prisma@5.17.0:
-    resolution: {integrity: sha512-m4UWkN5lBE6yevqeOxEvmepnL5cNPEjzMw2IqDB59AcEV6w7D8vGljDLd1gPFH+W6gUxw9x7/RmN5dCS/WTPxA==}
-    engines: {node: '>=16.13'}
-    hasBin: true
-
   prisma@5.19.0:
     resolution: {integrity: sha512-Pu7lUKpVyTx8cVwM26dYh8NdvMOkMnJXzE8L6cikFuR4JwyMU5NKofQkWyxJKlTT4fNjmcnibTvklV8oVMrn+g==}
     engines: {node: '>=16.13'}
@@ -15472,32 +15443,17 @@ snapshots:
 
   '@preconstruct/next@4.0.0': {}
 
-  '@prisma/client@5.17.0(prisma@5.17.0)':
-    optionalDependencies:
-      prisma: 5.17.0
-
   '@prisma/client@5.19.0(prisma@5.19.0)':
     optionalDependencies:
       prisma: 5.19.0
-
-  '@prisma/debug@5.17.0': {}
 
   '@prisma/debug@5.18.0': {}
 
   '@prisma/debug@5.19.0': {}
 
-  '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053': {}
-
   '@prisma/engines-version@5.18.0-25.4c784e32044a8a016d99474bd02a3b6123742169': {}
 
   '@prisma/engines-version@5.19.0-31.5fe21811a6ba0b952a3bc71400666511fe3b902f': {}
-
-  '@prisma/engines@5.17.0':
-    dependencies:
-      '@prisma/debug': 5.17.0
-      '@prisma/engines-version': 5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053
-      '@prisma/fetch-engine': 5.17.0
-      '@prisma/get-platform': 5.17.0
 
   '@prisma/engines@5.18.0':
     dependencies:
@@ -15512,12 +15468,6 @@ snapshots:
       '@prisma/engines-version': 5.19.0-31.5fe21811a6ba0b952a3bc71400666511fe3b902f
       '@prisma/fetch-engine': 5.19.0
       '@prisma/get-platform': 5.19.0
-
-  '@prisma/fetch-engine@5.17.0':
-    dependencies:
-      '@prisma/debug': 5.17.0
-      '@prisma/engines-version': 5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053
-      '@prisma/get-platform': 5.17.0
 
   '@prisma/fetch-engine@5.18.0':
     dependencies:
@@ -15538,10 +15488,6 @@ snapshots:
   '@prisma/generator-helper@5.19.0':
     dependencies:
       '@prisma/debug': 5.19.0
-
-  '@prisma/get-platform@5.17.0':
-    dependencies:
-      '@prisma/debug': 5.17.0
 
   '@prisma/get-platform@5.18.0':
     dependencies:
@@ -23101,10 +23047,6 @@ snapshots:
       '@types/prismjs': 1.26.4
       clsx: 2.1.1
       react: 18.3.1
-
-  prisma@5.17.0:
-    dependencies:
-      '@prisma/engines': 5.17.0
 
   prisma@5.19.0:
     dependencies:
