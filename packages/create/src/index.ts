@@ -59,8 +59,6 @@ async function normalizeArgs () {
     'schema.ts',
     'package.json',
     'tsconfig.json',
-    'schema.graphql',
-    'schema.prisma',
     'keystone.ts',
     'auth.ts',
     'README.md',
