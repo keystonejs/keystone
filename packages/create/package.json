@@ -7,6 +7,9 @@
   "module": "dist/create-keystone-app.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/create",
   "bin": "./cli.js",
+  "scripts": {
+    "test": "rm -rf test-project && node cli.js --skip-install test-project && rm -rf test-project"
+  },
   "exports": {
     ".": {
       "module": "./dist/create-keystone-app.esm.js",

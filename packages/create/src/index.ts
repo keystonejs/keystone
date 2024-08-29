@@ -26,7 +26,17 @@ const starterDir = path.normalize(`${__dirname}/../starter`)
 const cli = meow(`
 Usage
   $ create-keystone-app [directory]
-`)
+
+  Options
+    --skip-install  Skip installing dependencies
+`, {
+  flags: {
+		skipInstall: {
+			type: 'boolean',
+      default: false,
+		}
+	}
+})
 
 async function normalizeArgs () {
   let directory = cli.input[0]
@@ -42,6 +52,7 @@ async function normalizeArgs () {
 
   return {
     directory: path.resolve(directory),
+    skipInstall: cli.flags.skipInstall,
   }
 }
 
@@ -70,30 +81,38 @@ async function normalizeArgs () {
   ))
 
   const [packageManager] = process.env.npm_config_user_agent?.split('/', 1) ?? ['npm']
-  const spinner = ora(`Installing dependencies with ${packageManager}. This may take a few minutes.`).start()
-  try {
-    await execa(packageManager, ['install'], { cwd: nextCwd })
-    spinner.succeed(`Installed dependencies with ${packageManager}.`)
-  } catch (err) {
-    spinner.fail(`Failed to install with ${packageManager}.`)
-    throw err
+  
+  if (!normalizedArgs.skipInstall) {
+    const spinner = ora(`Installing dependencies with ${packageManager}. This may take a few minutes.`).start()
+    try {
+      await execa(packageManager, ['install'], { cwd: nextCwd })
+      spinner.succeed(`Installed dependencies with ${packageManager}.`)
+    } catch (err) {
+      spinner.fail(`Failed to install with ${packageManager}.`)
+      throw err
+    }
   }
 
   const relativeProjectDir = path.relative(process.cwd(), normalizedArgs.directory)
+
+  const steps = [
+    `- cd ${relativeProjectDir}`,
+    normalizedArgs.skipInstall ? `- ${packageManager} install` : undefined,
+    `- ${packageManager} run dev`
+  ].filter(Boolean).join('\n  ')
+
   process.stdout.write('\n')
   console.log(`🎉  Keystone created a starter project in: ${c.bold(relativeProjectDir)}
 
   ${c.bold('To launch your app, run:')}
 
-  - cd ${relativeProjectDir}
-  - ${packageManager} run dev
+  ${steps}
 
   ${c.bold('Next steps:')}
 
   - Read ${c.bold(`${relativeProjectDir}${path.sep}README.md`)} for additional getting started details.
   - Edit ${c.bold(`${relativeProjectDir}${path.sep}keystone.ts`)} to customize your app.
   - Star Keystone on GitHub (https://github.com/keystonejs/keystone)
-  )}
 `)
 })().catch((err) => {
   if (err instanceof UserError) {
