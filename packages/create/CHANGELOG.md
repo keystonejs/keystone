@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 10.0.2
+
+### Patch Changes
+
+- [#9314](https://github.com/keystonejs/keystone/pull/9314) [`616907e`](https://github.com/keystonejs/keystone/commit/616907ec9066110e6f15aea689e954a668c7a7f2) Thanks [@dcousens](https://github.com/dcousens)! - Fix starter script error when looking for pre-built schemas
+
 ## 10.0.1
 
 ### Patch Changes
