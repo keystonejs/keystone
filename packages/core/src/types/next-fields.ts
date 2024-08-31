@@ -92,7 +92,7 @@ export type ScalarDBFieldDefault<
       | {
           String:
             | Literal<string>
-            | { kind: 'cuid' | 'uuid' }
+            | { kind: 'cuid' | 'uuid' | 'auto' }
             | { kind: 'random', bytes: number, encoding: 'hex' | 'base64url' }
           Boolean: Literal<boolean>
           Json: Literal<string>

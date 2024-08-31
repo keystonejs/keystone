@@ -1,6 +1,7 @@
 export * as postgresql from './providers/postgresql'
 export * as sqlite from './providers/sqlite'
 export * as mysql from './providers/mysql'
+export * as mongodb from './providers/mongodb'
 
 type EntriesAssumingNoExtraProps<T> = {
   [Key in keyof T]-?: [Key, T[Key]];

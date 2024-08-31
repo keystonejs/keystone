@@ -39,6 +39,12 @@ function isUuid (x: IDType) {
   return x.toLowerCase()
 }
 
+function isObjectId (x: IDType) {
+  if (typeof x !== 'string') return
+  if (x === '') return
+  return x // TODO: add better handling 
+}
+
 const nonCircularFields = {
   equals: graphql.arg({ type: graphql.ID }),
   in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
@@ -132,6 +138,7 @@ function unpack (i: IdFieldConfig) {
   if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const
   if (kind === 'number') return { kind: 'number', type: type ?? 'Int', default_: undefined } as const
   if (kind === 'autoincrement') return { kind: 'autoincrement', type: type ?? 'Int', default_: { kind } } as const
+  if (kind === 'objectid') return { kind: 'objectid', type: type ?? 'String', default_: { kind: 'auto' } } as const
   throw new Error(`Unknown id type ${kind}`)
 }
 
@@ -142,6 +149,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
     BigInt: isBigInt,
     String: isString,
     UUID: isUuid, // TODO: remove in breaking change
+    ObjectId: isObjectId,
   }[kind === 'uuid' ? 'UUID' : type_]
 
   function parse (value: IDType) {
@@ -163,6 +171,12 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
       scalar: type_,
       nativeType: NATIVE_TYPES[meta.provider]?.[kind],
       default: default_,
+      extendPrismaSchema(field) {
+        if (kind === 'objectid') {
+          return `${field} @map("_id") @${meta.provider}.ObjectId`
+        }
+        return field
+      },
     })({
       ...config,
 

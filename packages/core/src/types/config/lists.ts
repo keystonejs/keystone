@@ -230,6 +230,7 @@ export type IdFieldConfig =
   | { kind: 'cuid' | 'uuid' | 'string', type?: 'String' }
   | { kind: 'autoincrement', type?: 'Int' | 'BigInt' }
   | { kind: 'number', type: 'Int' | 'BigInt' }
+  | { kind: 'objectid', type: 'String' }
 
 export type ListDBConfig = {
   /**

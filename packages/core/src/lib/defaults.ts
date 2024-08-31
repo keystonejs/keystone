@@ -79,8 +79,8 @@ async function noop () {}
 function identity<T> (x: T) { return x }
 
 export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
-  if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
-    throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
+  if (!['postgresql', 'sqlite', 'mysql', 'mongodb'].includes(config.db.provider)) {
+    throw new TypeError(`"db.provider" only supports "sqlite", "postgresql", "mysql" or "mongodb"`)
   }
 
   // WARNING: Typescript should prevent this, but any string is useful for Prisma errors

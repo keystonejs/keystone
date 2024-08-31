@@ -1,3 +1,4 @@
+// TODO: THIS HAS TO BE UPDATED.
 import {
   type ScalarDBField,
   type ScalarDBFieldDefault
@@ -38,7 +39,8 @@ function printScalarDefaultValue (defaultValue: ScalarDBFieldDefault) {
     defaultValue.kind === 'now' ||
     defaultValue.kind === 'autoincrement' ||
     defaultValue.kind === 'cuid' ||
-    defaultValue.kind === 'uuid'
+    defaultValue.kind === 'uuid' ||
+    defaultValue.kind === 'auto'
   ) {
     return ` @default(${defaultValue.kind}())`
   }
@@ -228,7 +230,6 @@ export function printPrismaSchema (
         if (fieldPath === 'id') {
           fieldPrisma += ' @id'
         }
-
         listPrisma.push(
           field.extendPrismaSchema ? field.extendPrismaSchema(fieldPrisma) : fieldPrisma
         )

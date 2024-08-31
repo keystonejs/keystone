@@ -9,7 +9,7 @@ import { getDMMF } from '@prisma/internals'
 // - Json
 // - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
 
-const PROVIDERS = ['postgresql', 'sqlite', 'mysql'] as const
+const PROVIDERS = ['postgresql', 'sqlite', 'mysql', 'mongodb'] as const
 type Provider = (typeof PROVIDERS)[number]
 const SCALARS = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal', 'BigInt'] as const
 

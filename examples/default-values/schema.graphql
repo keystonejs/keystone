@@ -60,7 +60,13 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringFilter {
@@ -333,11 +339,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {

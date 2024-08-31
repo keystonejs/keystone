@@ -1,7 +1,7 @@
 import type { GraphQLResolveInfo } from 'graphql'
 import type { KeystoneContext } from './context'
 
-export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql'
+export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql' | 'mongodb'
 
 export type GraphQLResolver<Context extends KeystoneContext> = (
   root: any,
