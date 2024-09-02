@@ -1,19 +1,18 @@
-
 /** @jsxImportSource @emotion/react */
 
-import Link from 'next/link'
-import { type HTMLAttributes } from 'react'
+import Link from 'next/link';
+import { type HTMLAttributes } from 'react';
 
-import { useMediaQuery } from '../lib/media'
-import { GitHubButton } from './primitives/GitHubButton'
-import { SubscribeForm } from './SubscribeForm'
-import { Wrapper } from './primitives/Wrapper'
-import { Keystone } from './icons/Keystone'
-import { Emoji } from './primitives/Emoji'
-import { Type } from './primitives/Type'
-import { Socials } from './Socials'
+import { useMediaQuery } from '../lib/media';
+import { GitHubButton } from './primitives/GitHubButton';
+import { SubscribeForm } from './SubscribeForm';
+import { Wrapper } from './primitives/Wrapper';
+import { Keystone } from './icons/Keystone';
+import { Emoji } from './primitives/Emoji';
+import { Type } from './primitives/Type';
+import { Socials } from './Socials';
 
-function List (props: HTMLAttributes<HTMLElement>) {
+function List(props: HTMLAttributes<HTMLElement>) {
   return (
     <ul
       css={{
@@ -30,11 +29,11 @@ function List (props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  )
+  );
 }
 
-export function Footer () {
-  const mq = useMediaQuery()
+export function Footer() {
+  const mq = useMediaQuery();
 
   return (
     <footer
@@ -49,7 +48,12 @@ export function Footer () {
         <div
           css={mq({
             display: 'grid',
-            gridTemplateColumns: ['1fr', '1fr 1fr 1fr 1fr', null, '1fr 1fr 1fr 1fr 23rem'],
+            gridTemplateColumns: [
+              '1fr',
+              '1fr 1fr 1fr 1fr',
+              null,
+              '1fr 1fr 1fr 1fr 23rem',
+            ],
             gap: '1.5rem',
             borderTop: '1px solid var(--border)',
             margin: 0,
@@ -58,7 +62,12 @@ export function Footer () {
           })}
         >
           <div>
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
+            <Type
+              as="h3"
+              look="heading20bold"
+              color="var(--muted)"
+              margin="0 0 1rem 0"
+            >
               About Keystone
             </Type>
             <List>
@@ -72,15 +81,28 @@ export function Footer () {
                 <Link href="/for-organisations">For Organisations</Link>
               </li>
               <li>
-                <Link href="/for-content-management">For Content management</Link>
+                <Link href="/for-content-management">
+                  For Content management
+                </Link>
               </li>
               <li>
-                <Link href="/enterprise">For Enterprise</Link>
+                <Link
+                  href="https://www.thinkmill.com.au/services/keystone"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  For Enterprise &#8599;
+                </Link>
               </li>
             </List>
           </div>
           <div>
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
+            <Type
+              as="h3"
+              look="heading20bold"
+              color="var(--muted)"
+              margin="0 0 1rem 0"
+            >
               Resources
             </Type>
             <List>
@@ -102,17 +124,30 @@ export function Footer () {
             </List>
           </div>
           <div>
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
+            <Type
+              as="h3"
+              look="heading20bold"
+              color="var(--muted)"
+              margin="0 0 1rem 0"
+            >
               Community
             </Type>
             <List>
               <li>
-                <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noreferrer">
+                <a
+                  href="https://github.com/keystonejs/keystone"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Keystone on GitHub
                 </a>
               </li>
               <li>
-                <a href="https://community.keystonejs.com/" target="_blank" rel="noreferrer">
+                <a
+                  href="https://community.keystonejs.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Join our Slack
                 </a>
               </li>
@@ -137,7 +172,12 @@ export function Footer () {
             </List>
           </div>
           <div>
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0">
+            <Type
+              as="h3"
+              look="heading20bold"
+              color="var(--muted)"
+              margin="0 0 1rem 0"
+            >
               Updates
             </Type>
             <List>
@@ -237,11 +277,11 @@ export function Footer () {
         </div>
       </Wrapper>
     </footer>
-  )
+  );
 }
 
-export function DocsFooter () {
-  const mq = useMediaQuery()
+export function DocsFooter() {
+  const mq = useMediaQuery();
 
   return (
     <footer
@@ -279,7 +319,8 @@ export function DocsFooter () {
           >
             Thinkmill
           </a>
-          , with contributions from around the world <Emoji symbol="🌏" alt="Globe" />
+          , with contributions from around the world{' '}
+          <Emoji symbol="🌏" alt="Globe" />
         </Type>
         <Socials
           css={mq({
@@ -292,5 +333,5 @@ export function DocsFooter () {
         <GitHubButton repo="keystonejs/keystone" />
       </div>
     </footer>
-  )
+  );
 }
