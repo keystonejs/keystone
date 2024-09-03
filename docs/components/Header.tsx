@@ -84,15 +84,15 @@ function useCurrentSection () {
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem({
+function LinkItem ({
   children,
   href,
   target,
   rel,
 }: {
-  children: ReactNode,
-  href: string,
-  target?: string,
+  children: ReactNode
+  href: string
+  target?: string
   rel?: string
 }) {
   const mq = useMediaQuery()
@@ -138,8 +138,8 @@ function FlatMenu ({
   label,
   items = [],
 }: {
-  label: string,
-  items: Array<{ label: string; href: string }>
+  label: string
+  items: Array<{ label: string, href: string }>
 }) {
   const mq = useMediaQuery()
   const menuRef = useRef(null)
