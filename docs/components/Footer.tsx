@@ -74,8 +74,7 @@ export function Footer () {
                 <Link href="/for-content-management">For Content management</Link>
               </li>
               <li>
-                <Link href="https://www.thinkmill.com.au/services/keystone" target="_blank" rel="noreferrer"
-                >For Enterprise &#8599;</Link>
+                <Link href="https://www.thinkmill.com.au/services/keystone" target="_blank" rel="noreferrer">For Enterprise &#8599;</Link>
               </li>
             </List>
           </div>
@@ -166,7 +165,13 @@ export function Footer () {
                 verticalAlign: 'middle',
               }}
             />
-            <Type as="h3" look="heading20bold" color="var(--muted)" margin="0 0 1rem 0" css={{ display: 'inline-block' }}>
+            <Type
+              as="h3"
+              look="heading20bold"
+              color="var(--muted)"
+              margin="0 0 2rem 0"
+              css={{ display: 'inline-block' }}
+            >
               Keystone 6
             </Type>
             <SubscribeForm
