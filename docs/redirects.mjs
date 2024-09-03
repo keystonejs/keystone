@@ -233,6 +233,11 @@ const CURRENT = [
     destination: '/docs/graphql/overview',
     permanent: false,
   },
+  {
+    source: '/enterprise',
+    destination: 'https://www.thinkmill.com.au/services/keystone',
+    permanent: true,
+  },
   /* Telemetry - used to shorten the URL for CLI message */
   {
     source: '/telemetry',

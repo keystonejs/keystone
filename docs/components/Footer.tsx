@@ -1,4 +1,3 @@
-
 /** @jsxImportSource @emotion/react */
 
 import Link from 'next/link'
@@ -75,7 +74,7 @@ export function Footer () {
                 <Link href="/for-content-management">For Content management</Link>
               </li>
               <li>
-                <Link href="/enterprise">For Enterprise</Link>
+                <Link href="https://www.thinkmill.com.au/services/keystone" target="_blank" rel="noreferrer">For Enterprise &#8599;</Link>
               </li>
             </List>
           </div>

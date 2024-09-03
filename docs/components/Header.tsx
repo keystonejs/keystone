@@ -84,7 +84,17 @@ function useCurrentSection () {
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem ({ children, href }: { children: ReactNode, href: string }) {
+function LinkItem ({
+  children,
+  href,
+  target,
+  rel,
+}: {
+  children: ReactNode
+  href: string
+  target?: string
+  rel?: string
+}) {
   const mq = useMediaQuery()
   const currentSection = useCurrentSection()
   const isActive = href === currentSection
@@ -95,6 +105,8 @@ function LinkItem ({ children, href }: { children: ReactNode, href: string }) {
         isActive={isActive}
         alwaysVisible
         href={href}
+        target={target}
+        rel={rel}
         css={{
           padding: '0 !important',
         }}
@@ -387,7 +399,7 @@ export function Header () {
               { label: 'For Content Management', href: '/for-content-management' },
               { label: 'Our Roadmap', href: '/roadmap' },
               { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
-              { label: 'Enterprise', href: '/enterprise' },
+              { label: 'Enterprise', href: 'https://www.thinkmill.com.au/services/keystone' },
             ]}
           />
         </span>
@@ -429,7 +441,13 @@ export function Header () {
             display: ['none', null, 'inline-block'],
           })}
         >
-          <LinkItem href="/enterprise">Enterprise</LinkItem>
+          <LinkItem
+            href="https://www.thinkmill.com.au/services/keystone"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Enterprise &#8599;
+          </LinkItem>
         </span>
         <Button
           as="a"
