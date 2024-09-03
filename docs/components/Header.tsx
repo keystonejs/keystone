@@ -39,7 +39,7 @@ const HeaderContext = createContext<HeaderContextType>({
 })
 export const useHeaderContext = () => useContext(HeaderContext)
 
-function Logo() {
+function Logo () {
   const mq = useMediaQuery()
 
   return (
@@ -75,7 +75,7 @@ function Logo() {
   )
 }
 
-function useCurrentSection() {
+function useCurrentSection () {
   const pathname = usePathname()
   const check = (candidate: string) => pathname?.startsWith(candidate)
   if (['/updates', '/releases'].some(check)) return '/updates'
@@ -90,10 +90,10 @@ function LinkItem({
   target,
   rel,
 }: {
-  children: ReactNode;
-  href: string;
-  target?: string;
-  rel?: string;
+  children: ReactNode,
+  href: string,
+  target?: string,
+  rel?: string
 }) {
   const mq = useMediaQuery()
   const currentSection = useCurrentSection()
@@ -117,12 +117,12 @@ function LinkItem({
   )
 }
 
-function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
+function useClickOutside (ref: RefObject<HTMLElement>, cb: () => void) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside (event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         cb()
       }
@@ -134,7 +134,7 @@ function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
   }, [ref, cb])
 }
 
-function FlatMenu({
+function FlatMenu ({
   label,
   items = [],
 }: {
@@ -234,7 +234,7 @@ function FlatMenu({
     </div>
   )
 }
-export function Header() {
+export function Header () {
   const mq = useMediaQuery()
   const router = useRouter()
   const pathname = usePathname()
