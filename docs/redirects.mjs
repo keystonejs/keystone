@@ -12,7 +12,8 @@ const KEYSTONE_4 = [
   },
   {
     source: '/documentation/configuration/project-options',
-    destination: 'https://v4.keystonejs.com/documentation/configuration/project-options',
+    destination:
+      'https://v4.keystonejs.com/documentation/configuration/project-options',
     permanent: true,
   },
   {
@@ -77,7 +78,11 @@ const ORIGINAL_NEXT = [
     destination: '/docs/guides/document-fields',
     permanent: true,
   },
-  { source: '/guides/:path*', destination: '/docs/guides/:path*', permanent: true },
+  {
+    source: '/guides/:path*',
+    destination: '/docs/guides/:path*',
+    permanent: true,
+  },
   {
     source: '/tutorials/embedded-mode-with-sqlite-nextjs',
     destination: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
@@ -95,7 +100,11 @@ const ORIGINAL_NEXT = [
   },
   { source: '/updates', destination: '/blog', permanent: true },
   { source: '/updates/roadmap', destination: '/roadmap', permanent: true },
-  { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
+  {
+    source: '/whats-new',
+    destination: '/updates/whats-new-in-v6',
+    permanent: true,
+  },
 ]
 
 /* Splitbee Proxy */
@@ -233,6 +242,11 @@ const CURRENT = [
     destination: '/docs/graphql/overview',
     permanent: false,
   },
+  {
+    source: '/enterprise',
+    destination: 'https://www.thinkmill.com.au/services/keystone',
+    permanent: true,
+  },
   /* Telemetry - used to shorten the URL for CLI message */
   {
     source: '/telemetry',
@@ -262,12 +276,14 @@ const CURRENT = [
   },
   {
     source: '/releases/2021-07-29',
-    destination: 'https://github.com/keystonejs/keystone/releases/tag/2021-07-29',
+    destination:
+      'https://github.com/keystonejs/keystone/releases/tag/2021-07-29',
     permanent: false,
   },
   {
     source: '/releases/2021-11-02',
-    destination: 'https://github.com/keystonejs/keystone/releases/tag/2021-11-02',
+    destination:
+      'https://github.com/keystonejs/keystone/releases/tag/2021-11-02',
     permanent: false,
   },
   {
@@ -283,6 +299,6 @@ export default async function redirects () {
     ...CURRENT,
     ...ORIGINAL_NEXT,
     ...KEYSTONE_5,
-    ...KEYSTONE_4
+    ...KEYSTONE_4,
   ]
 }
