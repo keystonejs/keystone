@@ -77,8 +77,7 @@ const ORIGINAL_NEXT = [
     destination: '/docs/guides/document-fields',
     permanent: true,
   },
-  {
-    source: '/guides/:path*', destination: '/docs/guides/:path*', permanent: true,},
+  { source: '/guides/:path*', destination: '/docs/guides/:path*', permanent: true },
   {
     source: '/tutorials/embedded-mode-with-sqlite-nextjs',
     destination: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
@@ -94,9 +93,9 @@ const ORIGINAL_NEXT = [
     destination: 'https://github.com/keystonejs/keystone/releases',
     permanent: true,
   },
-  { source: '/updates', destination: '/blog', permanent: true, },
-  { source: '/updates/roadmap', destination: '/roadmap', permanent: true, },
-  { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true, },
+  { source: '/updates', destination: '/blog', permanent: true },
+  { source: '/updates/roadmap', destination: '/roadmap', permanent: true },
+  { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ]
 
 /* Splitbee Proxy */
