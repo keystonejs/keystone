@@ -827,6 +827,8 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
           fieldKey,
           fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
         )
+      } else {
+        // TODO: throw?
       }
     }
 
