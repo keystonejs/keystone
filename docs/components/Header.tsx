@@ -32,14 +32,14 @@ import { ArrowR } from './icons/ArrowR'
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number };
+type HeaderContextType = { mobileNavIsOpen: boolean, desktopOpenState: number }
 const HeaderContext = createContext<HeaderContextType>({
   mobileNavIsOpen: false,
   desktopOpenState: -1,
 })
 export const useHeaderContext = () => useContext(HeaderContext)
 
-function Logo () {
+function Logo() {
   const mq = useMediaQuery()
 
   return (
@@ -75,7 +75,7 @@ function Logo () {
   )
 }
 
-function useCurrentSection () {
+function useCurrentSection() {
   const pathname = usePathname()
   const check = (candidate: string) => pathname?.startsWith(candidate)
   if (['/updates', '/releases'].some(check)) return '/updates'
@@ -84,7 +84,7 @@ function useCurrentSection () {
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem ({
+function LinkItem({
   children,
   href,
   target,
@@ -117,12 +117,12 @@ function LinkItem ({
   )
 }
 
-function useClickOutside (ref: RefObject<HTMLElement>, cb: () => void) {
+function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */
-    function handleClickOutside (event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         cb()
       }
@@ -134,12 +134,12 @@ function useClickOutside (ref: RefObject<HTMLElement>, cb: () => void) {
   }, [ref, cb])
 }
 
-function FlatMenu ({
+function FlatMenu({
   label,
   items = [],
 }: {
-  label: string;
-  items: Array<{ label: string; href: string }>;
+  label: string,
+  items: Array<{ label: string; href: string }>
 }) {
   const mq = useMediaQuery()
   const menuRef = useRef(null)
@@ -191,9 +191,7 @@ function FlatMenu ({
             marginLeft: '0.25rem',
             width: '14px',
             transition: 'transform 150ms',
-            ...(showContent
-              ? { transform: 'rotate(-90deg)' }
-              : { transform: 'rotate(90deg)' }),
+            ...(showContent ? { transform: 'rotate(-90deg)' } : { transform: 'rotate(90deg)' }),
             path: { strokeWidth: '0.125em' },
           }}
         />
@@ -236,7 +234,7 @@ function FlatMenu ({
     </div>
   )
 }
-export function Header () {
+export function Header() {
   const mq = useMediaQuery()
   const router = useRouter()
   const pathname = usePathname()
@@ -295,18 +293,14 @@ export function Header () {
             if (window.location.hostname == 'keystonejs.com') return results
             return results.map((result: object) => {
               // @ts-expect-error
-              result.url = result.url.replace(
-                'https://keystonejs.com',
-                window.location.origin
-              )
+              result.url = result.url.replace('https://keystonejs.com', window.location.origin)
               return result
             })
           },
         })
       } else if (searchAttempt >= 10) {
         // @ts-expect-error
-        document.getElementById('search-field-container').style.visibility =
-          'hidden'
+        document.getElementById('search-field-container').style.visibility = 'hidden'
       } else {
         setTimeout(() => loadSearch(searchAttempt++), 500)
       }
@@ -402,19 +396,10 @@ export function Header () {
               { label: 'Why Keystone', href: '/why-keystone' },
               { label: 'For Developers', href: '/for-developers' },
               { label: 'For Organisations', href: '/for-organisations' },
-              {
-                label: 'For Content Management',
-                href: '/for-content-management',
-              },
+              { label: 'For Content Management', href: '/for-content-management' },
               { label: 'Our Roadmap', href: '/roadmap' },
-              {
-                label: 'GitHub Releases',
-                href: 'https://github.com/keystonejs/keystone/releases',
-              },
-              {
-                label: 'Enterprise',
-                href: 'https://www.thinkmill.com.au/services/keystone',
-              },
+              { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
+              { label: 'Enterprise', href: 'https://www.thinkmill.com.au/services/keystone' },
             ]}
           />
         </span>
