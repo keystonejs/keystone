@@ -77,7 +77,7 @@ Options:
 
 - `labelField`: Selects the field which will be used as the label column in the Admin UI.
   By default looks for a field called `'label'`, then falls back to `'name'`, then `'title'`, and finally `'id'`, which is guaranteed to exist.
-- `searchFields`: The fields used by the Admin UI when searching this list on the list view and in relationship fields.
+- `searchFields`: The fields used by the Admin UI when searching this list on the list view and in relationship fields. Nominated fields need to support the `contains` filter.
   It is always possible to search by an id and `'id'` should not be specified in this option.
   By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
 - `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
