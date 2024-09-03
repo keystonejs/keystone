@@ -72,13 +72,7 @@ function isUuid (x: unknown) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
 }
 
-export type RelationsSearchFields = {
-  field: string
-  refSearchFields: string[]
-  many: boolean
-}
-
-export function useFilter (value: string, list: ListMeta, searchFields: string[], relationsSearchFields: RelationsSearchFields[] = []) {
+export function useFilter (value: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -104,6 +98,40 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
     for (const fieldKey of searchFields) {
       const field = list.fields[fieldKey]
+
+      // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+      if (field.fieldMeta?.refSearchFields) {
+        // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+        for (const fieldKey of field.fieldMeta?.refSearchFields) {
+          const field = list.fields[fieldKey]
+
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          if (field.fieldMeta?.many) {
+            conditions.push({
+              [fieldKey]: {
+                some: {
+                  [fieldKey]: {
+                    contains: trimmedSearch,
+                    mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+                  },
+                },
+              },
+            })
+
+            continue
+          }
+
+          conditions.push({
+            [field.path]: {
+              contains: trimmedSearch,
+              mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+            },
+          })
+        }
+
+        continue
+      }
+
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
@@ -111,31 +139,6 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
         },
       })
     }
-
-    for (const { field, refSearchFields, many } of relationsSearchFields) {
-      conditions.push(
-        ...refSearchFields.map((refSearchField) =>
-          many
-            ? {
-                [field]: {
-                  some: {
-                    [refSearchField]: {
-                      contains: trimmedSearch,
-                    },
-                  },
-                },
-              }
-            : {
-                [field]: {
-                  [refSearchField]: {
-                    contains: trimmedSearch,
-                  },
-                },
-              },
-        ),
-      )
-    }
-
 
     return { OR: conditions }
   }, [value, list, searchFields])

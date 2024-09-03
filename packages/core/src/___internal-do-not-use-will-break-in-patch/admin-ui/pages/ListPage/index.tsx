@@ -26,7 +26,7 @@ import { Pagination, PaginationLabel, usePaginationParams } from '../../../../ad
 import { useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
-import { RelationsSearchFields, useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
@@ -158,27 +158,10 @@ function ListPage ({ listKey }: ListPageProps) {
   const filters = useFilters(list, filterableFields)
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
-  const relationsSearchFields: RelationsSearchFields[] = Object.keys(list.fields)
-    .map((key) => {
-      const field = list.fields[key]
-
-      // @ts-expect-error Wrong types for relationship fields
-      if (!field.fieldMeta.many !== undefined) return
-
-      return {
-        field: key,
-        // @ts-expect-error Wrong types for relationship fields
-        refSearchFields: field.fieldMeta?.refSearchFields,
-        // @ts-expect-error Wrong types for relationship fields
-        many: field.fieldMeta?.many,
-      }
-    })
-    .filter(Boolean) as RelationsSearchFields[]
-
   const searchLabels = searchFields.map(key => list.fields[key].label)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
-  const search = useFilter(searchParam, list, searchFields, relationsSearchFields)
+  const search = useFilter(searchParam, list, searchFields)
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
