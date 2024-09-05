@@ -1,7 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
 import { type HTMLAttributes, useEffect, useState } from 'react'
-import { jsx } from '@emotion/react'
 import copy from 'clipboard-copy'
 
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'

@@ -1,6 +1,6 @@
 ## Feature Example - Document Field
 
-This project demonstrates how to configure [document fields](https://keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend application.
+This project demonstrates how to configure [document fields](https://keystonejs.com/docs/guides/document-fields) in your Keystone system and render their data in a frontend.
 It builds on the [Blog](../blog) starter project.
 
 ## Instructions
@@ -16,13 +16,7 @@ You can use the Admin UI to create items in your database.
 
 You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
 
-In a separate terminal, start the frontend dev server:
-
-```
-pnpm dev:site
-```
-
-This will start the frontend at [localhost:3001](http://localhost:3001).
+Go to url [localhost:3000/site](http://localhost:3000/site) tp see the page rendering document field content.
 
 ## Configuring fields
 

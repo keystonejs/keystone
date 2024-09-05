@@ -1,5 +1,4 @@
 import { config } from '@keystone-6/core'
-import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
 
 export default config({
@@ -18,7 +17,7 @@ export default config({
     },
 
     // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixPrismaPath,
+    prismaClientPath: 'node_modules/myprisma',
   },
   lists,
 })

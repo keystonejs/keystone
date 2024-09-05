@@ -248,6 +248,8 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
       wasAccessAllowed: boolean
       basePath: string
     }) => MaybePromise<{ kind: 'redirect', to: string } | void>
+    /** Generate .tsx files instead of .js */
+    tsx?: boolean
   }
 }
 
@@ -259,7 +261,11 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
   graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
     path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
   }
-  lists: KeystoneConfig<TypeInfo>['lists']
+  lists: {
+    [listKey: string]: {
+      listKey: string
+    } & KeystoneConfig<TypeInfo>['lists'][string]
+  }
   server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
     options: ListenOptions
@@ -273,8 +279,8 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 export type AdminFileToWrite =
-  | { mode: 'write', src: string, outputPath: string }
-  | { mode: 'copy', inputPath: string, outputPath: string }
+  | { mode: 'write', src: string, outputPath: string, overwrite?: boolean}
+  | { mode: 'copy', inputPath: string, outputPath: string, overwrite?: boolean }
 
 export type {
   ListHooks,

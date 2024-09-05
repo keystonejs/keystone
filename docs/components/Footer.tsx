@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
 import Link from 'next/link'
 import { type HTMLAttributes } from 'react'
 
@@ -75,7 +74,7 @@ export function Footer () {
                 <Link href="/for-content-management">For Content management</Link>
               </li>
               <li>
-                <Link href="/enterprise">For Enterprise</Link>
+                <Link href="https://www.thinkmill.com.au/services/keystone" target="_blank" rel="noreferrer">For Enterprise &#8599;</Link>
               </li>
             </List>
           </div>
@@ -142,10 +141,10 @@ export function Footer () {
             </Type>
             <List>
               <li>
-                <Link href="/updates">Latest News</Link>
+                <Link href="/blog">Blog</Link>
               </li>
               <li>
-                <Link href="/updates/roadmap">Roadmap</Link>
+                <Link href="/roadmap">Roadmap</Link>
               </li>
               <li>
                 <Link href="/releases">Release Notes</Link>

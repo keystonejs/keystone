@@ -5,9 +5,7 @@ import { gql, useQuery } from '../../../../../admin-ui/apollo'
 import { type controller } from '../index'
 
 type ItemsState =
-  | {
-      kind: 'loading'
-    }
+  | { kind: 'loading' }
   | { kind: 'error', message: string }
   | { kind: 'loaded' }
 

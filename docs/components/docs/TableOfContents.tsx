@@ -1,7 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import { useState, useEffect } from 'react'
-import { jsx } from '@emotion/react'
 
 import { useMediaQuery } from '../../lib/media'
 import { Type } from '../primitives/Type'

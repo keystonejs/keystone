@@ -1,6 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Global, css } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
+import { Global, css } from '@emotion/react'
 import { Fragment, type HTMLAttributes } from 'react'
 
 import { algoliaStyles } from '../../lib/algoliaStyles'

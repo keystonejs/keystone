@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+
 import { type SVGAttributes } from 'react'
 
 export function FrontEndLogos (props: SVGAttributes<SVGElement>) {

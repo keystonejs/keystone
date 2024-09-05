@@ -1,0 +1,5 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view
+title: Custom Field View
+kind: standalone
+description: >
+  Adds a custom Admin UI view to a `json` field which provides a customised editing experience for users.

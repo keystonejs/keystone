@@ -7,6 +7,7 @@ module.exports = tseslint.config(
   {
     ignores: [
       '**/.keystone/',
+      '**/.next/',
       '**/dist/',
       '**/node_modules/',
       '**/syntax-error.js',
