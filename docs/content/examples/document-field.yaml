@@ -1,0 +1,6 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/document-field
+title: Document field
+kind: standalone
+description: >
+  Illustrates how to configure `document` fields in your
+  Keystone system and render their data in a frontend application.

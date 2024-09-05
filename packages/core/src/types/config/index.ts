@@ -259,7 +259,11 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
   graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
     path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
   }
-  lists: KeystoneConfig<TypeInfo>['lists']
+  lists: {
+    [listKey: string]: {
+      listKey: string
+    } & KeystoneConfig<TypeInfo>['lists'][string]
+  }
   server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
     options: ListenOptions

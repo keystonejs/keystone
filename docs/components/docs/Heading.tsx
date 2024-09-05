@@ -1,7 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import slugify from '@sindresorhus/slugify'
-import { jsx } from '@emotion/react'
 import { type ReactNode } from 'react'
 
 import { HeadingIdLink } from './CopyToClipboard'

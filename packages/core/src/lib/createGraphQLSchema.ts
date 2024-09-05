@@ -4,18 +4,18 @@ import { graphql } from '../types/schema'
 import {
   type __ResolvedKeystoneConfig
 } from '../types'
-import { KeystoneMeta } from './admin-meta-resolver'
+import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 
-import { getMutationsForList } from './core/mutations'
 import { getQueriesForList } from './core/queries'
+import { getMutationsForList } from './core/mutations'
 
 function getGraphQLSchema (
   lists: Record<string, InitialisedList>,
   extraFields: {
-    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
     query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
+    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
   },
   sudo: boolean
 ) {
@@ -29,7 +29,6 @@ function getGraphQLSchema (
   })
 
   const updateManyByList: Record<string, graphql.InputObjectType<any>> = {}
-
   const mutation = graphql.object()({
     name: 'Mutation',
     fields: Object.assign(
@@ -75,20 +74,22 @@ function collectTypes (
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-          collectedTypes.push(
-            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-          )
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType))
         }
       }
       collectedTypes.push(list.graphql.types.where.graphQLType)
       collectedTypes.push(list.graphql.types.orderBy.graphQLType)
     }
     if (isEnabled.update) {
-      collectedTypes.push(list.graphql.types.update.graphQLType)
+      if (list.graphql.types.update.kind === 'input') {
+        collectedTypes.push(list.graphql.types.update.graphQLType)
+      }
       collectedTypes.push(updateManyByList[list.listKey].graphQLType)
     }
     if (isEnabled.create) {
-      collectedTypes.push(list.graphql.types.create.graphQLType)
+      if (list.graphql.types.create.kind === 'input') {
+        collectedTypes.push(list.graphql.types.create.graphQLType)
+      }
     }
   }
   // this is not necessary, just about ordering

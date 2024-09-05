@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
 
 import { Edit } from '../../components/icons/Edit'
 import { Button } from './Button'
@@ -14,12 +12,12 @@ export function EditButton ({
   isIndexPage?: boolean
   editPath?: string
 }) {
-  let fileUrl = `https://github.com/keystonejs/keystone/edit/main/docs/pages`
+  let fileUrl = `https://github.com/keystonejs/keystone/edit/main/docs`
 
   if (editPath) {
-    fileUrl += `/${editPath}`
+    fileUrl += `/content/${editPath}`
   } else if (isIndexPage) {
-    fileUrl += `${pathName}/index.tsx`
+    fileUrl += `/app/(site)${pathName}/page-client.tsx`
   } else {
     fileUrl += `${pathName}.md`
   }

@@ -1,4 +1,7 @@
-import { Text, Editor } from 'slate'
+import {
+  Text,
+  Editor
+} from 'slate'
 import {
   type ComponentBlock,
   type ComponentSchema
@@ -144,9 +147,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps (
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
 ): ElementFromValidation {
-  if (isText(node)) {
-    return node
-  }
+  if (isText(node)) return node
   if (node.type === 'component-block') {
     if (Object.prototype.hasOwnProperty.call(componentBlocks, node.component)) {
       const componentBlock = componentBlocks[node.component]
@@ -173,6 +174,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps (
       children: node.children,
     }
   }
+
   return {
     ...node,
     children: node.children.map(x =>
@@ -188,9 +190,7 @@ export function validateAndNormalizeDocument (
   relationships: Relationships
 ) {
   validateDocumentStructure(value)
-  const children = value.map(x =>
-    getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships)
-  )
+  const children = value.map(x => getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships))
   const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships)
   editor.children = children
   Editor.normalize(editor, { force: true })

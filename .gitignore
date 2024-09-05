@@ -3,6 +3,7 @@
 dist/
 node_modules/
 *.db
+.env
 
 # ts-gql
 __generated__

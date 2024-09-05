@@ -3,6 +3,9 @@ import { promisify } from 'util'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
+import ms from 'ms'
+
+jest.setTimeout(ms('20 minutes'))
 
 export async function loadIndex (page: playwright.Page) {
   await page.goto('http://localhost:3000')
@@ -18,7 +21,7 @@ export async function loadIndex (page: playwright.Page) {
 }
 
 async function deleteAllData (projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.myprisma/client'))
+  const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
   const prisma = new PrismaClient()
 
   await prisma.$transaction(
@@ -31,9 +34,6 @@ async function deleteAllData (projectDir: string) {
 }
 
 const treeKill = promisify(_treeKill)
-
-// this'll take a while
-jest.setTimeout(10000000)
 
 export function initFirstItemTest (getPage: () => playwright.Page) {
   test('init first item', async () => {

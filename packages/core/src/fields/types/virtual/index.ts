@@ -42,12 +42,11 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export const virtual =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    field,
-    ...config
-  }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function virtual <ListTypeInfo extends BaseListTypeInfo>({
+  field,
+  ...config
+}: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return (meta) => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field
     const namedType = getNamedType(usableField.type.graphQLType)
     const hasRequiredArgs =
@@ -55,6 +54,7 @@ export const virtual =
       Object.values(
         usableField.args as Record<string, graphql.Arg<graphql.InputType, boolean>>
       ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined)
+
     if (
       (!isLeafType(namedType) || hasRequiredArgs) &&
       !config.ui?.query &&
@@ -73,9 +73,8 @@ export const virtual =
           `}`
       )
     }
-    return fieldType({
-      kind: 'none',
-    })({
+
+    return fieldType({ kind: 'none', })({
       ...config,
       output: graphql.field({
         ...(usableField as any),
@@ -85,6 +84,9 @@ export const virtual =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
-      getAdminMeta: () => ({ query: config.ui?.query || '' }),
+      getAdminMeta: () => ({
+        query: config.ui?.query || ''
+      }),
     })
   }
+}

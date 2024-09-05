@@ -11,7 +11,7 @@ import { graphql } from '../../..'
 import { filters } from '../../filters'
 import { type DecimalFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -48,7 +48,14 @@ function parseDecimalValueOption (meta: FieldData, value: string, name: string) 
   return decimal
 }
 
-export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+function safeParseDecimalValueOption (meta: FieldData, value: string | null | undefined, name: string): Decimal | null | undefined {
+  if (value === null || value === undefined) {
+    return value
+  }
+  return parseDecimalValueOption(meta, value, name)
+}
+
+export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     isIndexed,
     precision = 18,
@@ -107,7 +114,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalF
     } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
-      const value: Decimal | null | undefined = resolvedData[meta.fieldKey]
+      const value = safeParseDecimalValueOption(meta, resolvedData[meta.fieldKey], 'value')
       if (value != null) {
         if (min !== undefined && value.lessThan(min)) {
           addValidationError(`value must be greater than or equal to ${min}`)
@@ -134,7 +141,14 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalF
 
     return fieldType(dbField)({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate: {
+          ...config.hooks?.validate,
+          create: merge(validate, config.hooks?.validate?.create),
+          update: merge(validate, config.hooks?.validate?.update),
+        },
+      },
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,

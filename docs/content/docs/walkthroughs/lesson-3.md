@@ -1,8 +1,8 @@
 ---
-title: "Lesson 3: Publishing workflows"
-description: "Learn Keystone: Lesson 3"
----
+title: 'Lesson 3: Publishing workflows'
+description: 'Learn Keystone: Lesson 3'
 
+---
 Learn how to create a publishing workflow to your app using Keystons’s `select` and `timestamp` fields.
 
 ## Where we left off
@@ -294,7 +294,11 @@ export default config({
 ## Next lesson
 
 {% related-content %}
-{% well  heading="Lesson 4: Auth & Sessions" href="/docs/walkthroughs/lesson-4" %}
+{% well
+   heading="Lesson 4: Auth & Sessions"
+   grad="grad1"
+   href="/docs/walkthroughs/lesson-4"
+   target="" %}
 Add sessions, password protection, and a sign-in screen to your Keystone app
 {% /well %}
 {% /related-content %}

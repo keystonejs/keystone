@@ -78,18 +78,10 @@ export const lists = {
             // defaultValue: { kind: 'now' }
 
             hooks: {
-              resolveInput: ({ context, operation, resolvedData }) => {
-                if (operation === 'create') return new Date()
-                return resolvedData.createdAt
-              },
-            },
-
-            // TODO: this would be nice
-            // hooks: {
-            //   resolveInput: {
-            //     create: () => new Date()
-            //   }
-            // }
+              resolveInput: {
+                create: () => new Date()
+              }
+            }
           }),
 
           updatedBy: text({ ...readOnly }),
@@ -102,18 +94,10 @@ export const lists = {
             // },
 
             hooks: {
-              resolveInput: ({ context, operation, resolvedData }) => {
-                if (operation === 'update') return new Date()
-                return resolvedData.updatedAt
-              },
-            },
-
-            // TODO: this would be nice
-            // hooks: {
-            //   resolveInput: {
-            //     update: () => new Date()
-            //   }
-            // }
+              resolveInput: {
+                update: () => new Date()
+              }
+            }
           }),
         },
       }),
@@ -131,29 +115,45 @@ export const lists = {
           return resolvedData
         },
       },
-      validateInput: ({ context, operation, inputData, addValidationError }) => {
-        const { title, content } = inputData
+      validate: {
+        create: ({ inputData, addValidationError }) => {
+          const { title, content } = inputData
 
-        if (operation === 'update' && 'feedback' in inputData) {
-          const { feedback } = inputData
-          if (/profanity/i.test(feedback ?? '')) return addValidationError('Unacceptable feedback')
-        }
+  
+          // an example of a content filter, the prevents the title or content containing the word "Profanity"
+          if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
+          if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
+        },
+        update: ({ inputData, addValidationError }) => {
+          const { title, content } = inputData
 
-        // an example of a content filter, the prevents the title or content containing the word "Profanity"
-        if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
-        if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
+          if ('feedback' in inputData) {
+            const { feedback } = inputData
+            if (/profanity/i.test(feedback ?? '')) return addValidationError('Unacceptable feedback')
+          }
+
+          // an example of a content filter, the prevents the title or content containing the word "Profanity"
+          if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
+          if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
+        },
+        delete: ({ context, item, addValidationError }) => {
+          const { preventDelete } = item
+  
+          // an example of a content filter, the prevents the title or content containing the word "Profanity"
+          if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
+        },
       },
-      validateDelete: ({ context, item, addValidationError }) => {
-        const { preventDelete } = item
-
-        // an example of a content filter, the prevents the title or content containing the word "Profanity"
-        if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
+      beforeOperation: {
+        create: ({ item, resolvedData, operation }) => {
+          console.log(`Post beforeOperation.${operation}`, resolvedData)
+        },
+        update: ({ item, resolvedData, operation }) => {
+          console.log(`Post beforeOperation.${operation}`, resolvedData)
+        },
+        delete: ({ item, operation }) => {
+          console.log(`Post beforeOperation.${operation}`, item)
+        },
       },
-
-      beforeOperation: ({ item, resolvedData, operation }) => {
-        console.log(`Post beforeOperation.${operation}`, resolvedData)
-      },
-
       afterOperation: {
         create: ({ inputData, item }) => {
           console.log(`Post afterOperation.create`, inputData, '->', item)
@@ -162,7 +162,6 @@ export const lists = {
         update: ({ originalItem, item }) => {
           console.log(`Post afterOperation.update`, originalItem, '->', item)
         },
-
         delete: ({ originalItem }) => {
           console.log(`Post afterOperation.delete`, originalItem, '-> deleted')
         },

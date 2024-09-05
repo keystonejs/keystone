@@ -111,11 +111,9 @@ export type ListMeta = {
   singular: string
   plural: string
 
-  /** @deprecated */
-  gqlNames: InitialisedList['graphql']['names']
-
   fields: { [path: string]: FieldMeta }
   groups: FieldGroupMeta[]
+  gqlNames: InitialisedList['graphql']['names'] /** deprecated */
 
   pageSize: number
   initialColumns: string[]

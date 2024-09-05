@@ -22,11 +22,12 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  const updated: KeystoneConfig['lists'] = {}
+  const updated: __ResolvedKeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
       updated[listKey] = {
+        listKey,
         ...list,
         fields: {
           id: idFieldType({ kind: 'number', type: 'Int' }),
@@ -38,30 +39,12 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
 
     updated[listKey] = {
+      listKey,
       ...list,
       fields: {
         id: idFieldType(list.db?.idField ?? defaultIdField),
         ...list.fields,
       },
-    }
-  }
-
-  /** @deprecated, TODO: remove in breaking change */
-  for (const [listKey, list] of Object.entries(updated)) {
-    if (list.hooks === undefined) continue
-    if (list.hooks.validate !== undefined) {
-      if (list.hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${listKey}" list`)
-      if (list.hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${listKey}" list`)
-      continue
-    }
-
-    list.hooks = {
-      ...list.hooks,
-      validate: {
-        create: list.hooks.validateInput,
-        update: list.hooks.validateInput,
-        delete: list.hooks.validateDelete
-      }
     }
   }
 

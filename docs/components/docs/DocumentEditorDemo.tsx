@@ -1,5 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { type DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
