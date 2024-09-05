@@ -8,7 +8,6 @@ import {
   session,
   passportMiddleware
 } from './auth'
-import { fixPrismaPath } from '../example-utils'
 
 export default config<TypeInfo<Session>>({
   db: {
@@ -16,7 +15,7 @@ export default config<TypeInfo<Session>>({
     url: 'file:./keystone.db',
 
     // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixPrismaPath,
+    prismaClientPath: 'node_modules/myprisma',
   },
   lists,
   session,

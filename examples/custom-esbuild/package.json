@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/example-esbuild",
+  "version": null,
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^6.3.0",
+    "@prisma/client": "5.19.0"
+  },
+  "devDependencies": {
+    "prisma": "5.19.0",
+    "typescript": "^5.5.0"
+  }
+}

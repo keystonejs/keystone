@@ -110,7 +110,7 @@ export async function cli (cwd: string, argv: string[]) {
     return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
   }
 
-  if (command === 'telemetry') {
+  if (command.startsWith('telemetry')) {
     return telemetry(cwd, argv[1])
   }
 

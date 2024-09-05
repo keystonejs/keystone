@@ -1,8 +1,10 @@
 ---
-title: "Understanding Relationships"
-description: "Learn how to reason about and configure relationships in Keystone so you can bring value to your project through structured content."
----
+title: Understanding Relationships
+description: >-
+  Learn how to reason about and configure relationships in Keystone so you can
+  bring value to your project through structured content.
 
+---
 Relationships are the connections you make between different lists of content in Keystone. What you build depends a great deal on what you need. This guide will show you how to reason about, and configure relationships in Keystone so you can bring value to your project through structured content.
 
 ---
@@ -15,7 +17,7 @@ Keystone provides a lot of flexibility when it comes to relationships. To get wh
 
 Your needs here will define whether your relationship needs to be [one, or two-sided](#one-sided-and-two-sided-relationships).
 
-2. **How many connections do I need on either side of my relationship?**
+1. **How many connections do I need on either side of my relationship?**
 
 Understanding this will determine the kind of [cardinality](#establishing-cardinality) you need to configure.
 
@@ -44,12 +46,12 @@ export default config({
 ```
 
 {% hint kind="tip" %}
-The `many` config option relates to _cardinality_ which we explore later
+The `many` config option relates to *cardinality* which we explore later
 {% /hint %}
 
 ## One-sided & two-sided relationships
 
-In Keystone it’s possible to define relationships from one, or both sides of the two lists you’re connecting. We refer to these as _one-sided_, and _two-sided_ relationships:
+In Keystone it’s possible to define relationships from one, or both sides of the two lists you’re connecting. We refer to these as *one-sided*, and *two-sided* relationships:
 
 ### One-sided
 
@@ -126,7 +128,7 @@ Two-sided relationships are declared in two places, but **there is only one rela
 
 ### Self-referencing relationships
 
-Keystone also lets you define one, and two-sided **relationships that refer to the same list**. To make a _one-sided_ Twitter style following relationship we do the following:
+Keystone also lets you define one, and two-sided **relationships that refer to the same list**. To make a *one-sided* Twitter style following relationship we do the following:
 
 ```typescript{9}[1-3]
 import { config, list } from '@keystone-6/core';
@@ -144,7 +146,7 @@ export default config({
 });
 ```
 
-Or change this into a _two-sided_ relationship to also access the followers of every user:
+Or change this into a *two-sided* relationship to also access the followers of every user:
 
 ```typescript{9-10}[1-3]
 import { config, list } from '@keystone-6/core';
@@ -169,17 +171,28 @@ The only relationship configuration not currently supported is having a field re
 
 ## Establishing cardinality
 
-_Cardinality_ is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
+*Cardinality* is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
 
-| Relationship type | One to one                                   | One to many                              | Many to many                             |
-| ----------------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| One-sided         | {% emoji symbol="❌" alt="Not supported" /%} | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
-| Two-sided         | {% emoji symbol="✅" alt="Supported" /%}     | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
+{% table %}
+- Relationship type
+- One to one
+- One to many
+- Many to many
+---
+- One-sided
+- {% emoji symbol="❌" alt="Not supported" /%}
+- {% emoji symbol="✅" alt="Supported" /%}
+- {% emoji symbol="✅" alt="Supported" /%}
+---
+- Two-sided
+- {% emoji symbol="✅" alt="Supported" /%}
+- {% emoji symbol="✅" alt="Supported" /%}
+- {% emoji symbol="✅" alt="Supported" /%}
+{% /table %}
 
 Cardinality is defined through the `relationship` field’s `many` configuration option. It’s a boolean where:
 
 - `false` = one
-
 - `true` = many
 
 {% hint kind="tip" %}
@@ -350,8 +363,10 @@ Keystone relationships are managed using the [relationship](../fields/relationsh
 
 {% related-content %}
 {% well
-heading="Relationship Field API Reference"
-href="/docs/fields/relationship" %}
+   heading="Relationship Field API Reference"
+   grad="grad1"
+   href="/docs/fields/relationship"
+   target="" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
 {% /well %}
 {% /related-content %}

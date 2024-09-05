@@ -94,26 +94,19 @@ export const getSchemaExtension = ({
     // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
     // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
     // they want to add a GraphQL field, they'll probably use a virtual field
-    const query = `query($id: ID!) { ${
-      getGqlNames({ listKey, pluralGraphQLName: '' }).itemQueryName
-    }(where: { id: $id }) { ${sessionData} } }`
+    const { itemQueryName } = getGqlNames({ listKey, pluralGraphQLName: '' })
+    const query = `query($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${sessionData} } }`
 
     let ast
     try {
       ast = parse(query)
     } catch (err) {
-      throw new Error(
-        `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`
-      )
+      throw new Error( `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
     }
 
     const errors = validate(base.schema, ast)
     if (errors.length) {
-      throw new Error(
-        `The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join(
-          '\n'
-        )}`
-      )
+      throw new Error(`The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join('\n')}`)
     }
 
     return [

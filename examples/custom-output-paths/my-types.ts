@@ -1,17 +1,7 @@
 /* eslint-disable */
 
-type Scalars = {
-  readonly ID: string
-  readonly Boolean: boolean
-  readonly String: string
-  readonly Int: number
-  readonly Float: number
-  readonly JSON: import('@keystone-6/core/types').JSONValue
-  readonly Decimal: import('@keystone-6/core/types').Decimal | string
-}
-
 export type PostWhereUniqueInput = {
-  readonly id?: Scalars['ID'] | null
+  readonly id?: string | null
 }
 
 export type PostWhereInput = {
@@ -25,41 +15,41 @@ export type PostWhereInput = {
 }
 
 export type IDFilter = {
-  readonly equals?: Scalars['ID'] | null
-  readonly in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly notIn?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null
-  readonly lt?: Scalars['ID'] | null
-  readonly lte?: Scalars['ID'] | null
-  readonly gt?: Scalars['ID'] | null
-  readonly gte?: Scalars['ID'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
   readonly not?: IDFilter | null
 }
 
 export type StringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
 export type NestedStringFilter = {
-  readonly equals?: Scalars['String'] | null
-  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null
-  readonly lt?: Scalars['String'] | null
-  readonly lte?: Scalars['String'] | null
-  readonly gt?: Scalars['String'] | null
-  readonly gte?: Scalars['String'] | null
-  readonly contains?: Scalars['String'] | null
-  readonly startsWith?: Scalars['String'] | null
-  readonly endsWith?: Scalars['String'] | null
+  readonly equals?: string | null
+  readonly in?: ReadonlyArray<string> | string | null
+  readonly notIn?: ReadonlyArray<string> | string | null
+  readonly lt?: string | null
+  readonly lte?: string | null
+  readonly gt?: string | null
+  readonly gte?: string | null
+  readonly contains?: string | null
+  readonly startsWith?: string | null
+  readonly endsWith?: string | null
   readonly not?: NestedStringFilter | null
 }
 
@@ -86,8 +76,8 @@ export type OrderDirection =
   | 'desc'
 
 export type PostUpdateInput = {
-  readonly title?: Scalars['String'] | null
-  readonly content?: Scalars['String'] | null
+  readonly title?: string | null
+  readonly content?: string | null
   readonly publishDate?: any | null
 }
 
@@ -97,8 +87,8 @@ export type PostUpdateArgs = {
 }
 
 export type PostCreateInput = {
-  readonly title?: Scalars['String'] | null
-  readonly content?: Scalars['String'] | null
+  readonly title?: string | null
+  readonly content?: string | null
   readonly publishDate?: any | null
 }
 
@@ -133,22 +123,22 @@ export type KeystoneAdminUISortDirection =
   | 'DESC'
 
 type ResolvedPostCreateInput = {
-  id?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['id']
-  title?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['title']
-  content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content']
-  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate']
+  id?: import('./node_modules/myprisma').Prisma.PostCreateInput['id']
+  title?: import('./node_modules/myprisma').Prisma.PostCreateInput['title']
+  content?: import('./node_modules/myprisma').Prisma.PostCreateInput['content']
+  publishDate?: import('./node_modules/myprisma').Prisma.PostCreateInput['publishDate']
 }
 type ResolvedPostUpdateInput = {
   id?: undefined
-  title?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['title']
-  content?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['content']
-  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['publishDate']
+  title?: import('./node_modules/myprisma').Prisma.PostUpdateInput['title']
+  content?: import('./node_modules/myprisma').Prisma.PostUpdateInput['content']
+  publishDate?: import('./node_modules/myprisma').Prisma.PostUpdateInput['publishDate']
 }
 
 export declare namespace Lists {
   export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>>
   namespace Post {
-    export type Item = import('./node_modules/.myprisma/client').Post
+    export type Item = import('./node_modules/myprisma').Post
     export type TypeInfo<Session = any> = {
       key: 'Post'
       isSingleton: false
@@ -176,7 +166,7 @@ export type TypeInfo<Session = any> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo<Session>
   }
-  prisma: import('./node_modules/.myprisma/client').PrismaClient
+  prisma: import('./node_modules/myprisma').PrismaClient
   session: Session
 }
 

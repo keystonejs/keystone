@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import { resetDatabase } from '@keystone-6/core/testing'
 import { getContext } from '@keystone-6/core/context'
 import config from './keystone'
-import * as PrismaModule from '.myprisma/client'
+import * as PrismaModule from 'myprisma'
 
 const prismaSchemaPath = path.join(__dirname, 'schema.prisma')
 const context = getContext(config, PrismaModule)

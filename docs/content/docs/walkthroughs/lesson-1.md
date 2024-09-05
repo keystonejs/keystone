@@ -1,8 +1,7 @@
 ---
-title: "Lesson 1: Installing Keystone"
-description: "Learn Keystone: Lesson 1"
+title: 'Lesson 1: Installing Keystone'
+description: 'Learn Keystone: Lesson 1'
 ---
-
 Learn how to install Keystone, create your first content type, and get an app up and running with an intuitive editing environment.
 
 ## Introduction
@@ -29,17 +28,17 @@ Let’s start by setting up a workspace for a new Keystone project. Make a new f
 ```bash
 mkdir keystone-learning
 cd keystone-learning
-yarn init
+npm init
 ```
 
 {% hint kind="tip" %}
-We’ll be using `yarn` for installing packages, but you can use `npm` or any other package manager you prefer.
+We’ll be using `npm` for installing packages, but you can use any other package manager you prefer.
 {% /hint %}
 
 Now add the Keystone package:
 
 ```bash
-yarn add @keystone-6/core
+npm install @keystone-6/core
 ```
 
 ## Configure Keystone
@@ -54,7 +53,7 @@ export default {};
 And add TypeScript as a dependency:
 
 ```bash
-yarn add typescript
+npm install typescript
 ```
 
 {% hint kind="tip" %}
@@ -65,10 +64,10 @@ Your folder structure should now look like this:
 
 ```sh
 .
-├── node_modules   # Dependencies
-├── keystone.ts    # Keystone config
-├── package.json   # With Keystone and TypeScript as dependencies
-└── yarn.lock      # Your yarn lock file
+├── node_modules        # Dependencies
+├── keystone.ts         # Keystone config
+├── package.json        # With Keystone and TypeScript as dependencies
+└── package-lock.json   # Your npm lock file
 ```
 
 We now need to configure `keystone.ts` with two parts to get our project running:
@@ -143,14 +142,14 @@ are required, and declared that emails must be unique, so there can only be one 
 We now have everything we need to start Keystone, so let’s do just that:
 
 ```bash
-yarn keystone dev
+npx keystone dev
 ```
 
-In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at <http://localhost:3000>
+In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)
 
 ![Terminal dialog showing successful Keystone startup](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/keystone-startup.png)
 
-Head on over to <http://localhost:3000/users> where you can create your first user with a `name` and `email`:
+Head on over to [http://localhost:3000/users](http://localhost:3000/users) where you can create your first user with a `name` and `email`:
 
 ![Adding a user record in Keystone Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/first-user-creation.gif)
 
@@ -161,7 +160,11 @@ Next up, we’ll level-up our blog starter with a `post` list and connect it to 
 ## Next lesson
 
 {% related-content %}
-{% well  heading="Lesson 2: Relating things" href="/docs/walkthroughs/lesson-2" %}
+{% well
+   heading="Lesson 2: Relating things"
+   grad="grad1"
+   href="/docs/walkthroughs/lesson-2"
+   target="" %}
 Connect two content types and learn how to configure the appearance of field inputs
 {% /well %}
 {% /related-content %}

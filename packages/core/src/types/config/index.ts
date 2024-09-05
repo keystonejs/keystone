@@ -251,7 +251,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   }
 }
 
-export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+export type ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types: KeystoneConfig<TypeInfo>['types']
   db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
     enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
@@ -259,7 +259,11 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
   graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
     path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
   }
-  lists: KeystoneConfig<TypeInfo>['lists']
+  lists: {
+    [listKey: string]: {
+      listKey: string
+    } & KeystoneConfig<TypeInfo>['lists'][string]
+  }
   server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
     options: ListenOptions
