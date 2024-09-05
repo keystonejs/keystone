@@ -1,0 +1,6 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus
+title: Extend GraphQL API with Nexus
+kind: standalone
+description: >
+  Shows you how to use `Nexus` to extend the GraphQL API provided by Keystone
+  with custom queries and mutations.

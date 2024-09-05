@@ -261,13 +261,13 @@ export const relationship =
               return resolve(value)
             },
           },
-          create: foreignListTypes.relateTo.many.create && {
+          create: {
             arg: graphql.arg({ type: foreignListTypes.relateTo.many.create }),
             async resolve (value, context, resolve) {
               return resolve(value)
             },
           },
-          update: foreignListTypes.relateTo.many.update && {
+          update: {
             arg: graphql.arg({ type: foreignListTypes.relateTo.many.update }),
             async resolve (value, context, resolve) {
               return resolve(value)

@@ -3,6 +3,7 @@ import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { dbProvider } from './utils'
+import ms from 'ms'
 
 function yesNo (x: boolean) {
   if (x === true) return '1'
@@ -13,7 +14,7 @@ function random (n = 100) {
   return 1 + (Math.random() * n | 0)
 }
 
-jest.setTimeout(10000000)
+jest.setTimeout(ms('20 minutes'))
 
 function makeFieldEntry ({
   access

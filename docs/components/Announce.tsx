@@ -1,6 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+
+/** @jsxImportSource @emotion/react */
+
 import { type HTMLAttributes, type ReactNode } from 'react'
 
 import { Wrapper } from './primitives/Wrapper'

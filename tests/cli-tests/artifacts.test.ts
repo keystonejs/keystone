@@ -45,20 +45,6 @@ const schemasMatch = ['schema.prisma', 'schema.graphql']
 // because when they're slow and then run the same code as the postinstall command
 // (and in the case of the build command we need to spawn a child process which would make each case take a _very_ long time)
 describe('postinstall', () => {
-  test('updates the schemas without prompting when --fix is passed', async () => {
-    const cwd = await testdir({
-      ...symlinkKeystoneDeps,
-      'keystone.js': basicKeystoneConfig,
-    })
-
-    const recording = recordConsole()
-    await cliMock(cwd, ['postinstall', '--fix'])
-    const files = await getFiles(cwd, schemasMatch)
-
-    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch))
-    expect(recording()).toMatchInlineSnapshot(`"? Generated GraphQL and Prisma schemas"`)
-  })
-
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,

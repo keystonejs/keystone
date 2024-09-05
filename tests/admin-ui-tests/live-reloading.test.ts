@@ -1,10 +1,20 @@
 import path from 'path'
 import fs from 'fs/promises'
-import { type ExecaChildProcess } from 'execa'
-import { type Browser, type Page, chromium } from 'playwright'
+import {
+  type Browser,
+  type Page,
+  chromium
+} from 'playwright'
 import { parse, print } from 'graphql'
 import fetch from 'node-fetch'
-import { generalStartKeystone, waitForIO, loadIndex, makeGqlRequest } from './utils'
+import ms from 'ms'
+
+import {
+  loadIndex,
+  makeGqlRequest,
+  spawnCommand3,
+  waitForIO,
+} from './utils'
 
 const gql = ([content]: TemplateStringsArray) => content
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')
@@ -16,15 +26,20 @@ async function replaceSchema (schema: string) {
   )
 }
 
+jest.setTimeout(ms('20 minutes'))
+
 let exit = async () => {}
-let ksProcess: ExecaChildProcess = undefined as any
+let ksProcess = undefined as any
 let page: Page = undefined as any
 let browser: Browser = undefined as any
 
 test('start keystone', async () => {
   // just in case a previous failing test run messed things up, let's reset it
-  await replaceSchema('initial.ts');
-  ({ exit, process: ksProcess } = await generalStartKeystone(testProjectPath, 'dev'))
+  await replaceSchema('initial.ts')
+  ;({
+    process: ksProcess,
+    exit,
+  } = await spawnCommand3(testProjectPath, ['dev']))
   browser = await chromium.launch()
   page = await browser.newPage()
 
@@ -44,13 +59,8 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
 
   await page.goto(`http://localhost:3000/somethings/${id}`)
   await page.waitForSelector('label:has-text("Text")')
-
-  const element = await page.waitForSelector(
-    'label:has-text("Initial Label For Text") >> .. >> input'
-  )
-
+  const element = await page.waitForSelector('label:has-text("Initial Label For Text") >> .. >> input')
   const value = await element.inputValue()
-
   expect(value).toBe('blah')
 })
 
@@ -64,9 +74,7 @@ test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second.ts')
   await waitForIO(ksProcess, 'compiled successfully')
 
-  const element = await page.waitForSelector(
-    'label:has-text("Very Important Text") >> .. >> input'
-  )
+  const element = await page.waitForSelector('label:has-text("Very Important Text") >> .. >> input')
   const value = await element.inputValue()
   expect(value).toBe('blah')
 })
@@ -95,8 +103,8 @@ test('the generated schema includes schema updates', async () => {
         }
 
         type Query {
-          somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
           something(where: SomethingWhereUniqueInput!): Something
+          somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
           somethingsCount(where: SomethingWhereInput! = {}): Int
           keystone: KeystoneMeta!
           someNumber: Int!
@@ -117,9 +125,7 @@ test("a runtime error is shown and doesn't crash the process", async () => {
 test('errors can be recovered from', async () => {
   await replaceSchema('initial.ts')
 
-  const element = await page.waitForSelector(
-    'label:has-text("Initial Label For Text") >> .. >> input'
-  )
+  const element = await page.waitForSelector('label:has-text("Initial Label For Text") >> .. >> input')
   const value = await element.inputValue()
   expect(value).toBe('blah')
 })

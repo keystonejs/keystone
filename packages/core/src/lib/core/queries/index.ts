@@ -40,8 +40,8 @@ export function getQueriesForList (list: InitialisedList) {
   })
 
   return {
-    [list.graphql.names.listQueryName]: findMany,
     [list.graphql.names.itemQueryName]: findOne,
+    [list.graphql.names.listQueryName]: findMany,
     [list.graphql.names.listQueryCountName]: countQuery,
   }
 }

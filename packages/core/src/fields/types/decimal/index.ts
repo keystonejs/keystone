@@ -48,7 +48,14 @@ function parseDecimalValueOption (meta: FieldData, value: string, name: string) 
   return decimal
 }
 
-export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+function safeParseDecimalValueOption (meta: FieldData, value: string | null | undefined, name: string): Decimal | null | undefined {
+  if (value === null || value === undefined) {
+    return value
+  }
+  return parseDecimalValueOption(meta, value, name)
+}
+
+export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     isIndexed,
     precision = 18,
@@ -107,7 +114,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo>(config: DecimalF
     } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
       if (operation === 'delete') return
 
-      const value: Decimal | null | undefined = resolvedData[meta.fieldKey]
+      const value = safeParseDecimalValueOption(meta, resolvedData[meta.fieldKey], 'value')
       if (value != null) {
         if (min !== undefined && value.lessThan(min)) {
           addValidationError(`value must be greater than or equal to ${min}`)

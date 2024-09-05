@@ -9,7 +9,6 @@ import { telemetry } from './telemetry'
 
 export type Flags = {
   dbPush: boolean
-  fix: boolean // TODO: deprecated, remove in breaking change
   frozen: boolean
   prisma: boolean
   server: boolean
@@ -58,9 +57,6 @@ export async function cli (cwd: string, argv: string[]) {
         prisma          use prisma commands in a Keystone context
 
     Options
-      --fix (postinstall) @deprecated
-        do build the graphql or prisma schemas, don't validate them
-
       --frozen (build, migrate)
         don't build the graphql or prisma schemas, only validate them
 
@@ -110,17 +106,13 @@ export async function cli (cwd: string, argv: string[]) {
     return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
   }
 
-  if (command === 'telemetry') {
+  if (command.startsWith('telemetry')) {
     return telemetry(cwd, argv[1])
   }
 
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
-    return build(cwd, {
-      frozen: !defaultFlags(flags, { fix: false }).fix,
-      prisma: true,
-      ui: false,
-    })
+    return build(cwd, { frozen: true, prisma: true, ui: false })
   }
 
   console.log(`${command} is an unknown command`)

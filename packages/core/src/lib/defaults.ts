@@ -22,11 +22,12 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  const updated: KeystoneConfig['lists'] = {}
+  const updated: __ResolvedKeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
       updated[listKey] = {
+        listKey,
         ...list,
         fields: {
           id: idFieldType({ kind: 'number', type: 'Int' }),
@@ -38,6 +39,7 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
 
     updated[listKey] = {
+      listKey,
       ...list,
       fields: {
         id: idFieldType(list.db?.idField ?? defaultIdField),

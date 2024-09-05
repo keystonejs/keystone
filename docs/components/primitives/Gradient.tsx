@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
 import { type HTMLAttributes, type ElementType } from 'react'
 
 const styleMap = {

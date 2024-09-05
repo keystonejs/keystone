@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import { config } from '@keystone-6/core'
-import { fixPrismaPath } from '../example-utils'
 import { lists, type Session } from './schema'
 import type { Context, TypeInfo } from '.keystone/types'
 
@@ -83,7 +82,7 @@ export default config<TypeInfo>({
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
     // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixPrismaPath,
+    prismaClientPath: 'node_modules/myprisma',
 
     onConnect: async () => {
       // WARNING: remove this

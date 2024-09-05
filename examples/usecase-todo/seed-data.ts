@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context'
 import { persons, tasks } from '../example-data'
 import config from './keystone'
-import * as PrismaModule from '.myprisma/client'
+import * as PrismaModule from 'myprisma'
 
 type PersonProps = {
   name: string
@@ -54,7 +54,7 @@ export async function main () {
   }
 
   console.log(`✅ Seed data inserted`)
-  console.log(`👋 Please start the process with \`yarn dev\` or \`npm run dev\``)
+  console.log(`👋 Please start the process with \`npm run dev\``)
 }
 
 main()

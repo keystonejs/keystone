@@ -1,11 +1,11 @@
 import { Stack } from '@keystone-ui/core'
 import { Notice } from '@keystone-ui/notice'
-import { type GraphQLError } from 'graphql'
+import type { GraphQLFormattedError } from 'graphql'
 import React from 'react'
 
 type GraphQLErrorNoticeProps = {
   networkError: Error | null | undefined
-  errors: readonly GraphQLError[] | undefined
+  errors: readonly GraphQLFormattedError[] | undefined
 }
 
 export function GraphQLErrorNotice ({ errors, networkError }: GraphQLErrorNoticeProps) {
