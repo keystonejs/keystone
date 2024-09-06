@@ -4,7 +4,6 @@ import { Fragment } from 'react'
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, MultiSelect } from '@keystone-ui/fields'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -42,18 +41,6 @@ export const Cell: CellComponent<typeof controller> = ({ item, field, linkTo }) 
   return linkTo ? <CellLink {...linkTo}>{label}</CellLink> : <CellContainer>{label}</CellContainer>
 }
 Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent<typeof controller> = ({ item, field }) => {
-  const value: readonly string[] | readonly number[] = item[field.path] ?? []
-  const label = value.map(value => field.valuesToOptionsWithStringValues[value].label).join(', ')
-
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {label}
-    </FieldContainer>
-  )
-}
 
 export type AdminMultiSelectFieldMeta = {
   options: readonly { label: string, value: string | number }[]

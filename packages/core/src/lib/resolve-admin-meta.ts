@@ -16,11 +16,11 @@ import {
 } from '../types/utils'
 import { QueryMode } from '../types'
 import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
-import {
-  type AdminMetaRootVal,
-  type FieldGroupMeta,
-  type FieldMetaRootVal,
-  type ListMetaRootVal,
+import type {
+  AdminMetaRootVal,
+  FieldGroupMetaRootVal,
+  FieldMetaRootVal,
+  ListMetaRootVal,
 } from './create-admin-meta'
 
 type Context = KeystoneContext | { isAdminUIBuildProcess: true }
@@ -152,7 +152,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMeta>()({
+const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMetaRootVal>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
     label: graphql.field({ type: graphql.nonNull(graphql.String) }),
@@ -223,30 +223,26 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
     key: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    itemQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    listQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    ...contextFunctionField('hideCreate', graphql.Boolean),
-    ...contextFunctionField('hideDelete', graphql.Boolean),
     path: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    description: graphql.field({ type: graphql.String }),
+
     label: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    labelField: graphql.field({ type: graphql.nonNull(graphql.String) }),
     singular: graphql.field({ type: graphql.nonNull(graphql.String) }),
     plural: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    description: graphql.field({ type: graphql.String }),
-    initialColumns: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))),
-    }),
-    pageSize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    labelField: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    fields: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
-    }),
-    groups: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))),
-    }),
+
+    fields: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))), }),
+    groups: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))), }),
     graphql: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQL) }),
+
+    pageSize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    initialColumns: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))), }),
     initialSort: graphql.field({ type: KeystoneAdminUISort }),
-    ...contextFunctionField('isHidden', graphql.Boolean),
     isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+
+    ...contextFunctionField('hideNavigation', graphql.Boolean),
+    ...contextFunctionField('hideCreate', graphql.Boolean),
+    ...contextFunctionField('hideDelete', graphql.Boolean),
   },
 })
 

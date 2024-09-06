@@ -1,43 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import 'intersection-observer'
-import {
-  type RefObject,
-  useEffect,
-  useMemo,
-  useState,
-  createContext,
-  useContext,
-  useRef
-} from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Combobox, Item } from '@keystar/ui/combobox'
 
-import { jsx } from '@keystone-ui/core'
-import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { type ListMeta } from '../../../../types'
-import {
-  type TypedDocumentNode,
-  ApolloClient,
-  gql,
-  InMemoryCache,
-  useApolloClient,
-  useQuery,
-} from '../../../../admin-ui/apollo'
-
-function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObject<any>) {
-  const cbRef = useRef(cb)
-  useEffect(() => {
-    cbRef.current = cb
-  })
-  useEffect(() => {
-    let observer = new IntersectionObserver((...args) => cbRef.current(...args), {})
-    let node = ref.current
-    if (node !== null) {
-      observer.observe(node)
-      return () => observer.unobserve(node)
-    }
-  }, [ref])
-}
+import { type TypedDocumentNode, ApolloClient, gql, InMemoryCache, useApolloClient, useQuery } from '../../../../admin-ui/apollo'
 
 function useDebouncedValue<T> (value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
@@ -79,7 +45,6 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
     const conditions: Record<string, any>[] = []
     const idField = list.fields.id.fieldMeta as { type: string, kind: string }
-    console.error({ idField, value, meta: list.fields.id.fieldMeta })
 
     if (idField.type === 'String') {
       // TODO: remove in breaking change?
@@ -92,7 +57,6 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
       }
     } else if (idField.type === 'Int' && isInt(trimmedSearch)) {
       conditions.push({ id: { equals: Number(trimmedSearch) } })
-
     } else if (idField.type === 'BigInt' && isBigInt(trimmedSearch)) {
       conditions.push({ id: { equals: trimmedSearch } })
     }
@@ -114,36 +78,30 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 const idFieldAlias = '____id____'
 const labelFieldAlias = '____label____'
 
-const LoadingIndicatorContext = createContext<{
-  count: number
-  ref:(element: HTMLElement | null) => void
-}>({
-  count: 0,
-  ref: () => {},
-})
-
 export const RelationshipSelect = ({
   autoFocus,
-  controlShouldRenderValue,
+  description,
   isDisabled,
   isLoading,
+  isReadOnly,
+  label,
   labelField,
   searchFields,
   list,
   placeholder,
-  portalMenu,
   state,
   extraSelection = '',
 }: {
   autoFocus?: boolean
-  controlShouldRenderValue: boolean
-  isDisabled: boolean
+  description?: string
+  isDisabled?: boolean
   isLoading?: boolean
+  isReadOnly?: boolean
+  label?: string
   labelField: string
   searchFields: string[]
   list: ListMeta
   placeholder?: string
-  portalMenu?: true | undefined
   state:
     | {
         kind: 'many'
@@ -158,23 +116,18 @@ export const RelationshipSelect = ({
   extraSelection?: string
 }) => {
   const [search, setSearch] = useState('')
-  // note it's important that this is in state rather than a ref
-  // because we want a re-render if the element changes
-  // so that we can register the intersection observer
-  // on the right element
-  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null)
 
   const QUERY: TypedDocumentNode<
     { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[], count: number },
     { where: Record<string, any>, take: number, skip: number }
   > = gql`
-    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
+    query RelationshipSelect($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
+      items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
         ${idFieldAlias}: id
         ${labelFieldAlias}: ${labelField}
         ${extraSelection}
       }
-      count: ${list.gqlNames.listQueryCountName}(where: $where)
+      count: ${list.graphql.names.listQueryCountName}(where: $where)
     }
   `
 
@@ -192,7 +145,7 @@ export const RelationshipSelect = ({
           typePolicies: {
             Query: {
               fields: {
-                [list.gqlNames.listQueryName]: {
+                [list.graphql.names.listQueryName]: {
                   keyArgs: ['where'],
                   merge: (existing: readonly unknown[], incoming: readonly unknown[], { args }) => {
                     const merged = existing ? existing.slice() : []
@@ -208,7 +161,7 @@ export const RelationshipSelect = ({
           },
         }),
       }),
-    [link, list.gqlNames.listQueryName]
+    [link, list.graphql.names.listQueryName]
   )
 
   const initialItemsToLoad = Math.min(list.pageSize, 10)
@@ -221,21 +174,6 @@ export const RelationshipSelect = ({
 
   const count = data?.count || 0
 
-  const options =
-    data?.items?.map(({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
-      value,
-      label: label || value,
-      data,
-    })) || []
-
-  const loadingIndicatorContextVal = useMemo(
-    () => ({
-      count,
-      ref: setLoadingIndicatorElement,
-    }),
-    [count]
-  )
-
   // we want to avoid fetching more again and `loading` from Apollo
   // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
@@ -245,50 +183,43 @@ export const RelationshipSelect = ({
     skip: number
   } | null>(null)
 
-  useIntersectionObserver(
-    ([{ isIntersecting }]) => {
-      const skip = data?.items.length
-      if (
-        !loading &&
-        skip &&
-        isIntersecting &&
-        options.length < count &&
-        (lastFetchMore?.extraSelection !== extraSelection ||
-          lastFetchMore?.where !== where ||
-          lastFetchMore?.list !== list ||
-          lastFetchMore?.skip !== skip)
-      ) {
-        const QUERY: TypedDocumentNode<
-          { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
-          { where: Record<string, any>, take: number, skip: number }
-        > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
+  const onLoadMore = () => {
+    const skip = data?.items.length
+    if (
+      !loading &&
+      skip &&
+      data.items.length < count &&
+      (lastFetchMore?.extraSelection !== extraSelection || lastFetchMore?.where !== where || lastFetchMore?.list !== list || lastFetchMore?.skip !== skip)
+    ) {
+      const QUERY: TypedDocumentNode<
+        { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
+        { where: Record<string, any>, take: number, skip: number }
+      > = gql`
+            query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
+              items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
+                ${labelFieldAlias}: ${labelField}
+                ${idFieldAlias}: id
+                ${extraSelection}
               }
-            `
-        setLastFetchMore({ extraSelection, list, skip, where })
-        fetchMore({
-          query: QUERY,
-          variables: {
-            where,
-            take: subsequentItemsToLoad,
-            skip,
-          },
+            }
+          `
+      setLastFetchMore({ extraSelection, list, skip, where })
+      fetchMore({
+        query: QUERY,
+        variables: {
+          where,
+          take: subsequentItemsToLoad,
+          skip,
+        },
+      })
+        .then(() => {
+          setLastFetchMore(null)
         })
-          .then(() => {
-            setLastFetchMore(null)
-          })
-          .catch(() => {
-            setLastFetchMore(null)
-          })
-      }
-    },
-    { current: loadingIndicatorElement }
-  )
+        .catch(() => {
+          setLastFetchMore(null)
+        })
+    }
+  }
 
   // TODO: better error UI
   // TODO: Handle permission errors
@@ -300,83 +231,54 @@ export const RelationshipSelect = ({
 
   if (state.kind === 'one') {
     return (
-      <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-        <Select
-          // this is necessary because react-select passes a second argument to onInputChange
-          // and useState setters log a warning if a second argument is passed
-          onInputChange={val => setSearch(val)}
-          isLoading={loading || isLoading}
-          autoFocus={autoFocus}
-          components={relationshipSelectComponents}
-          portalMenu={portalMenu}
-          value={
-            state.value
+      <Combobox
+        autoFocus={autoFocus}
+        description={description}
+        isDisabled={isDisabled}
+        isReadOnly={isReadOnly}
+        items={data?.items ?? []}
+        label={label}
+        loadingState={loading || isLoading ? 'loading' : 'idle'}
+        onInputChange={setSearch}
+        onLoadMore={onLoadMore}
+        placeholder={placeholder}
+        selectedKey={state.value ? state.value.id : null}
+        onSelectionChange={(key) => {
+          const item = key ? data?.items.find((item) => item[idFieldAlias] === key) : null
+          state.onChange(
+            item
               ? {
-                  value: state.value.id,
-                  label: state.value.label,
-                  // @ts-expect-error
-                  data: state.value.data,
+                  id: item[idFieldAlias],
+                  label: item[labelFieldAlias] ?? '',
+                  data: item,
                 }
               : null
-          }
-          options={options}
-          onChange={value => {
-            state.onChange(
-              value
-                ? {
-                    id: value.value,
-                    label: value.label,
-                    data: (value as any).data,
-                  }
-                : null
-            )
-          }}
-          placeholder={placeholder}
-          controlShouldRenderValue={controlShouldRenderValue}
-          isClearable={controlShouldRenderValue}
-          isDisabled={isDisabled}
-        />
-      </LoadingIndicatorContext.Provider>
+          )
+        }}
+        minWidth="alias.singleLineWidth"
+        width="auto"
+      >
+        {(item) => <Item key={item[idFieldAlias]}>{item[labelFieldAlias] || item[idFieldAlias]}</Item>}
+      </Combobox>
     )
   }
 
   return (
-    <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
-        // and useState setters log a warning if a second argument is passed
-        onInputChange={val => setSearch(val)}
-        isLoading={loading || isLoading}
-        autoFocus={autoFocus}
-        components={relationshipSelectComponents}
-        portalMenu={portalMenu}
-        value={state.value.map(value => ({
-          value: value.id,
-          label: value.label,
-          data: value.data,
-        }))}
-        options={options}
-        onChange={value => {
-          state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })))
-        }}
-        placeholder={placeholder}
-        controlShouldRenderValue={controlShouldRenderValue}
-        isClearable={controlShouldRenderValue}
-        isDisabled={isDisabled}
-      />
-    </LoadingIndicatorContext.Provider>
+    <Combobox
+      autoFocus={autoFocus}
+      description={description}
+      isDisabled={isDisabled}
+      isReadOnly={isReadOnly}
+      items={data?.items ?? []}
+      label={label}
+      loadingState={loading || isLoading ? 'loading' : 'idle'}
+      onInputChange={setSearch}
+      onLoadMore={onLoadMore}
+      placeholder={placeholder}
+      minWidth="alias.singleLineWidth"
+      width="auto"
+    >
+      {(item) => <Item key={item[idFieldAlias]}>{item[labelFieldAlias] || item[idFieldAlias]}</Item>}
+    </Combobox>
   )
-}
-
-const relationshipSelectComponents: Partial<typeof selectComponents> = {
-  MenuList: ({ children, ...props }) => {
-    const { count, ref } = useContext(LoadingIndicatorContext)
-    return (
-      <selectComponents.MenuList {...props}>
-        {children}
-        <div css={{ textAlign: 'center' }} ref={ref}>
-          {props.options.length < count && <span css={{ padding: 8 }}>Loading...</span>}
-        </div>
-      </selectComponents.MenuList>
-    )
-  },
 }

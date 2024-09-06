@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { jsx, Inline, Stack, Text } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel, DatePicker, FieldDescription } from '@keystone-ui/fields'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -94,15 +93,6 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   )
 }
 Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {formatOutput(item[field.path])}
-    </FieldContainer>
-  )
-}
 
 function formatOutput (isoDateString: string | null) {
   if (!isoDateString) {

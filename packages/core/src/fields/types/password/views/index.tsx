@@ -13,7 +13,6 @@ import { SegmentedControl } from '@keystone-ui/segmented-control'
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -173,15 +172,6 @@ export function Field ({
 
 export const Cell: CellComponent = ({ item, field }) => {
   return <CellContainer>{isSetText(item[field.path]?.isSet)}</CellContainer>
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {isSetText(item[field.path]?.isSet)}
-    </FieldContainer>
-  )
 }
 
 type Validation = {

@@ -5,7 +5,6 @@ import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { useState } from 'react'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -47,9 +46,7 @@ function validate (value: Value, validation: Validation, label: string) {
   // so we need to try parsing it again here to provide good messages
   if (typeof val === 'string') {
     const number = parseFloat(val)
-    if (isNaN(number)) {
-      return `${label} must be a number`
-    }
+    if (isNaN(number)) return `${label} must be a number`
     return `${label} must be finite`
   }
 
@@ -161,15 +158,6 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
-}
 
 export const controller = (
   config: FieldControllerConfig<{ validation: Validation, defaultValue: number | null }>

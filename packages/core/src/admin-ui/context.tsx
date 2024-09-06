@@ -1,15 +1,19 @@
+import { createUploadLink } from 'apollo-upload-client'
+import NextHead from 'next/head'
+import { useRouter } from 'next/router'
 import React, { type ReactNode, createContext, useContext, useMemo } from 'react'
+
+import {
+  ClientSideOnlyDocumentElement,
+  KeystarProvider,
+} from '@keystar/ui/core'
+import { Toaster } from '@keystar/ui/toast'
 import { Center } from '@keystone-ui/core'
-import { ToastProvider } from '@keystone-ui/toast'
 import { LoadingDots } from '@keystone-ui/loading'
 import { DrawerProvider } from '@keystone-ui/modals'
-import { createUploadLink } from 'apollo-upload-client'
-import {
-  type AdminConfig,
-  type AdminMeta,
-  type FieldViews
-} from '../types'
-import { useAdminMeta } from './utils/useAdminMeta'
+import { ToastProvider } from '@keystone-ui/toast'
+
+import type { AdminConfig, AdminMeta, FieldViews } from '../types'
 import {
   type ApolloError,
   type DocumentNode,
@@ -17,8 +21,8 @@ import {
   ApolloClient,
   InMemoryCache,
 } from './apollo'
+import { useAdminMeta } from './utils/useAdminMeta'
 import {
-  type AuthenticatedItem,
   type CreateViewFieldModes,
   type VisibleLists,
   useLazyMetadata,
@@ -30,7 +34,6 @@ type KeystoneContextType = {
     | { state: 'loaded', value: AdminMeta }
     | { state: 'error', error: ApolloError, refetch: () => Promise<void> }
   fieldViews: FieldViews
-  authenticatedItem: AuthenticatedItem
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
   reinitContext: () => Promise<void>
@@ -40,25 +43,26 @@ type KeystoneContextType = {
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined)
 
 type KeystoneProviderProps = {
-  children: ReactNode
   adminConfig: AdminConfig
   adminMetaHash: string
+  apiPath: string
+  children: ReactNode
   fieldViews: FieldViews
   lazyMetadataQuery: DocumentNode
-  apiPath: string
 }
 
 function InternalKeystoneProvider ({
   adminConfig,
-  fieldViews,
   adminMetaHash,
-  children,
-  lazyMetadataQuery,
   apiPath,
+  children,
+  fieldViews,
+  lazyMetadataQuery,
 }: KeystoneProviderProps) {
+  const { push: navigate } = useRouter()
+  const keystarRouter = useMemo(() => ({ navigate }), [navigate])
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews)
-  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
-    useLazyMetadata(lazyMetadataQuery)
+  const { visibleLists, createViewFieldModes, refetch } = useLazyMetadata(lazyMetadataQuery)
   const reinitContext = async () => {
     await adminMeta?.refetch?.()
     await refetch()
@@ -71,25 +75,41 @@ function InternalKeystoneProvider ({
       </Center>
     )
   }
+
   return (
-    <ToastProvider>
-      <DrawerProvider>
-        <KeystoneContext.Provider
-          value={{
-            adminConfig,
-            adminMeta,
-            fieldViews,
-            authenticatedItem,
-            reinitContext,
-            visibleLists,
-            createViewFieldModes,
-            apiPath,
-          }}
-        >
-          {children}
-        </KeystoneContext.Provider>
-      </DrawerProvider>
-    </ToastProvider>
+    <KeystarProvider router={keystarRouter}>
+      <ClientSideOnlyDocumentElement bodyBackground="surface" />
+      <NextHead>
+        <meta
+          key="viewport"
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </NextHead>
+
+      <ToastProvider>
+        <DrawerProvider>
+          <KeystoneContext.Provider
+            value={{
+              adminConfig,
+              adminMeta,
+              fieldViews,
+              reinitContext,
+              visibleLists,
+              createViewFieldModes,
+              apiPath,
+            }}
+          >
+            {children}
+          </KeystoneContext.Provider>
+        </DrawerProvider>
+      </ToastProvider>
+      <Toaster />
+    </KeystarProvider>
   )
 }
 
@@ -116,7 +136,6 @@ export function KeystoneProvider (props: KeystoneProviderProps) {
 export function useKeystone (): {
   adminConfig: AdminConfig
   adminMeta: AdminMeta
-  authenticatedItem: AuthenticatedItem
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
   apiPath: string
@@ -128,7 +147,6 @@ export function useKeystone (): {
   return {
     adminConfig: value.adminConfig,
     adminMeta: value.adminMeta.value,
-    authenticatedItem: value.authenticatedItem,
     visibleLists: value.visibleLists,
     createViewFieldModes: value.createViewFieldModes,
     apiPath: value.apiPath,

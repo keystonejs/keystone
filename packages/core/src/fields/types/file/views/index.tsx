@@ -2,9 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -29,16 +27,6 @@ export const Cell: CellComponent = ({ item, field }) => {
     >
       {data.filename}
     </div>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && data.filename}
-    </FieldContainer>
   )
 }
 

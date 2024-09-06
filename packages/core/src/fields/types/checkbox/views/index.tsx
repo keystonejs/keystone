@@ -1,64 +1,35 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
+import { Badge } from '@keystar/ui/badge'
+import { Checkbox } from '@keystar/ui/checkbox'
+import { Text } from '@keystar/ui/typography'
 
-import { jsx, useTheme } from '@keystone-ui/core'
-import { Checkbox, FieldContainer, FieldLabel, FieldDescription } from '@keystone-ui/fields'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
-import { CellContainer } from '../../../../admin-ui/components'
 
 export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
-  const { fields, typography, spacing } = useTheme()
   return (
-    <FieldContainer>
-      <Checkbox
-        autoFocus={autoFocus}
-        disabled={onChange === undefined}
-        onChange={event => {
-          onChange?.(event.target.checked)
-        }}
-        checked={value}
-        aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-      >
-        <span
-          css={{
-            color: fields.labelColor,
-            display: 'block',
-            fontWeight: typography.fontWeight.semibold,
-            marginBottom: spacing.xsmall,
-            minWidth: 120,
-          }}
-        >
-          {field.label}
-        </span>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      </Checkbox>
-    </FieldContainer>
+    <Checkbox
+      autoFocus={autoFocus}
+      isReadOnly={onChange == null}
+      isSelected={value}
+      onChange={onChange}
+    >
+      <Text>{field.label}</Text>
+      {field.description && <Text slot="description">{field.description}</Text>}
+    </Checkbox>
   )
 }
 
 export const Cell: CellComponent = ({ item, field }) => {
   const value = !!item[field.path]
   return (
-    <CellContainer>
-      <Checkbox disabled checked={value} size="small">
-        <span css={{}}>{value ? 'True' : 'False'}</span>
-      </Checkbox>
-    </CellContainer>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path] + ''}
-    </FieldContainer>
+    <Badge tone={value ? 'positive' : 'critical'}>
+      <Text>{value ? 'true' : 'false'}</Text>
+    </Badge>
   )
 }
 
@@ -83,22 +54,31 @@ export const controller = (
       }
     },
     filter: {
-      Filter () {
-        return null
+      Filter (props) {
+        const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
+        return (
+          <Checkbox autoFocus={autoFocus} onChange={onChange} isSelected={value} {...otherProps}>
+            {typeLabel} {config.label.toLocaleLowerCase()}
+          </Checkbox>
+        )
       },
-      graphql ({ type }) {
-        return { [config.path]: { equals: type === 'is' } }
+      Label ({ label, type, value }) {
+        return `${label.toLowerCase()} ${value ? 'true' : 'false'}`
       },
-      Label ({ label }) {
-        return label.toLowerCase()
+      graphql ({ type, value }) {
+        return {
+          [config.path]: {
+            equals: type === 'not' ? !value : value,
+          }
+        }
       },
       types: {
         is: {
-          label: 'is',
+          label: 'Is',
           initialValue: true,
         },
         not: {
-          label: 'is not',
+          label: 'Is not',
           initialValue: true,
         },
       },

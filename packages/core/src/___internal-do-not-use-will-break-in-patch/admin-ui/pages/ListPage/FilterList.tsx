@@ -1,31 +1,29 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Inline, jsx, Stack } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
-import { usePopover, PopoverDialog } from '@keystone-ui/popover'
-import { type FormEvent, Fragment, useState } from 'react'
-import { Pill } from '@keystone-ui/pill'
+import { useRouter } from 'next/router'
+import React, { type FormEvent, useState } from 'react'
+
+import { ButtonGroup, Button } from '@keystar/ui/button'
+import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
+import { Flex } from '@keystar/ui/layout'
+import { Content } from '@keystar/ui/slots'
+import { Heading, Text } from '@keystar/ui/typography'
+
 import { type FieldMeta, type ListMeta } from '../../../../types'
-import { useRouter } from '../../../../admin-ui/router'
+import { Tag } from './Tag'
 import { type Filter } from './useFilters'
 
 export function FilterList ({ filters, list }: { filters: Filter[], list: ListMeta }) {
   return (
-    <Inline gap="small">
+    <Flex gap="small" wrap>
       {filters.map(filter => {
         const field = list.fields[filter.field]
-        return <FilterPill key={`${filter.field}_${filter.type}`} field={field} filter={filter} />
+        return <FilterTag key={`${filter.field}_${filter.type}`} field={field} filter={filter} />
       })}
-    </Inline>
+    </Flex>
   )
 }
 
-function FilterPill ({ filter, field }: { filter: Filter, field: FieldMeta }) {
+function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
   const router = useRouter()
-  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
-    placement: 'bottom',
-    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
-  })
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
   const Label = field.controller.filter!.Label as (props: {
@@ -33,83 +31,81 @@ function FilterPill ({ filter, field }: { filter: Filter, field: FieldMeta }) {
     type: string
     value: any
   }) => JSX.Element
+  const onRemove = () => {
+    const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query
+    router.push({ pathname: router.pathname, query: queryToKeep })
+  }
+
   return (
-    <Fragment>
-      <Pill
-        containerProps={{
-          'aria-label': `Filter item ${filter.field}, press to edit filter`,
-        }}
-        {...trigger.props}
-        ref={trigger.ref}
-        onClick={() => setOpen(!isOpen)}
-        weight="light"
-        tone="passive"
-        onRemove={() => {
-          const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query
-          router.push({ pathname: router.pathname, query: queryToKeep })
-        }}
-      >
-        {field.label}{' '}
-        <Label
-          label={field.controller.filter!.types[filter.type].label}
-          type={filter.type}
-          value={filter.value}
-        />
-      </Pill>
-      <PopoverDialog
-        aria-label={`filter item config, dialog for configuring ${filter.field} filter`}
-        arrow={arrow}
-        {...dialog.props}
-        isVisible={isOpen}
-        ref={dialog.ref}
-      >
-        {isOpen && (
-          <EditDialog
-            onClose={() => {
-              setOpen(false)
-            }}
-            field={field}
-            filter={filter}
+    <DialogTrigger type="popover" mobileType="tray">
+      <Tag onRemove={onRemove}>
+        <Text>
+          <strong>{field.label}</strong>{' '}
+          <Label
+            label={field.controller.filter!.types[filter.type].label}
+            type={filter.type}
+            value={filter.value}
           />
-        )}
-      </PopoverDialog>
-    </Fragment>
+        </Text>
+      </Tag>
+      {onDismiss => (
+        <FilterDialog
+          onDismiss={onDismiss}
+          field={field}
+          filter={filter}
+        />
+      )}
+    </DialogTrigger>
   )
 }
 
-function EditDialog ({
+function FilterDialog ({
   filter,
   field,
-  onClose,
+  onDismiss,
 }: {
   filter: Filter
   field: FieldMeta
-  onClose: () => void
+  onDismiss: () => void
 }) {
-  const Filter = field.controller.filter!.Filter
   const router = useRouter()
   const [value, setValue] = useState(filter.value)
+
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    router.push({
+      query: {
+        ...router.query,
+        [`!${filter.field}_${filter.type}`]: JSON.stringify(value),
+      },
+    })
+    onDismiss()
+  }
+
+  const Filter = field.controller.filter!.Filter
+  const filterTypeLabel = field.controller.filter?.types[filter.type].label
+
   return (
-    <Stack
-      as="form"
-      padding="small"
-      gap="small"
-      onSubmit={(event: FormEvent) => {
-        event.preventDefault()
-        router.push({
-          query: {
-            ...router.query,
-            [`!${filter.field}_${filter.type}`]: JSON.stringify(value),
-          },
-        })
-        onClose()
-      }}
-    >
-      <Filter type={filter.type} value={value} onChange={setValue} />
-      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button type="submit">Save</Button>
-      </div>
-    </Stack>
+    <Dialog>
+      <form onSubmit={onSubmit} style={{ display: 'contents' }}>
+        <Heading>
+          {field.label}
+        </Heading>
+        <Content>
+          <Filter
+            autoFocus
+            context="edit"
+            typeLabel={filterTypeLabel}
+            onChange={setValue}
+            type={filter.type}
+            value={value}
+          />
+        </Content>
+        <ButtonGroup>
+          <Button onPress={onDismiss}>Cancel</Button>
+          <Button type="submit" prominence="high">Save</Button>
+        </ButtonGroup>
+      </form>
+    </Dialog>
   )
 }

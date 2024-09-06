@@ -5,10 +5,8 @@
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
 import { Node } from 'slate'
-import { DocumentRenderer } from '@keystone-6/document-renderer'
 
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldProps,
 } from '@keystone-6/core/types'
@@ -68,14 +66,5 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   )
 }
 Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <DocumentRenderer document={item[field.path]?.document || []} />
-    </FieldContainer>
-  )
-}
 
 export const allowedExportsOnCustomViews = ['componentBlocks']

@@ -17,10 +17,15 @@
       "module": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.esm.js",
       "default": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js"
     },
+    "./components/Navigation": {
+      "module": "./components/Navigation/dist/keystone-6-auth-components-Navigation.esm.js",
+      "default": "./components/Navigation/dist/keystone-6-auth-components-Navigation.cjs.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
+    "@keystar/ui": "^0.7.6",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/fields": "workspace:^",
@@ -41,6 +46,7 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "components/Navigation.tsx",
       "pages/*.tsx"
     ]
   },

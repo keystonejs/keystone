@@ -3,12 +3,12 @@
 
 import { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
+import isDeepEqual from 'fast-deep-equal'
 
 import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Checkbox, TextInput } from '@keystone-ui/fields'
 import { type FieldMeta } from '@keystone-6/core/types'
-import isDeepEqual from 'fast-deep-equal'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context'
@@ -25,6 +25,8 @@ import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
+
+export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
 function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState(false)
@@ -88,7 +90,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       >
         <H1>Welcome</H1>
         <Stack across gap="small">
-          <IconTwitter 
+          <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
             title="Twitter Logo"
@@ -272,5 +274,3 @@ function InitPage ({
     </SigninContainer>
   )
 }
-
-export const getInitPage = (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />

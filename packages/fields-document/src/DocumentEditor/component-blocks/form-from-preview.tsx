@@ -75,13 +75,11 @@ function RelationshipFieldPreview ({
       <FieldLabel>{schema.label}</FieldLabel>
       <RelationshipSelect
         autoFocus={autoFocus}
-        controlShouldRenderValue
         isDisabled={false}
         list={list}
         labelField={list.labelField}
         searchFields={searchFields}
         extraSelection={schema.selection || ''}
-        portalMenu
         state={
           schema.many
             ? {
