@@ -1,12 +1,8 @@
 import { list } from "@keystone-6/core";
-import { allOperations, allowAll, denyAll, unfiltered } from "@keystone-6/core/access";
+import { unfiltered } from "@keystone-6/core/access";
 import { checkbox, text } from "@keystone-6/core/fields";
 import type { Lists } from ".keystone/types";
 import RoleNames, { hasRole, SwaClientPrincipal } from "./session";
-
-function hasSession({ session }: { session?: SwaClientPrincipal }) {
-  return Boolean(session);
-}
 
 function isAdmin({ session }: { session?: SwaClientPrincipal }) {
   if (!session) return false;

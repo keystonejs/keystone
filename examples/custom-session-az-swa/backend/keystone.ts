@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
-import type { Context, TypeInfo } from '.keystone/types'
+import type { TypeInfo } from '.keystone/types'
 import { AzStaticWebAppAuthSessionStrategy } from './session'
 
 export default config<TypeInfo>({
