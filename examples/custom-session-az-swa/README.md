@@ -4,7 +4,7 @@ This project demonstrates how to integrate a KeystoneJS backend with a React fro
 
 ## Features
 
-- React frontend with login/logout functionality
+- React frontend with login/logout functionality, and role-based authorization tests
 - KeystoneJS backend with authorization based on roles
 - Custom session implementation using `x-ms-client-principal` header
 
