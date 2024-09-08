@@ -1,6 +1,6 @@
 # KeystoneJS Azure Static Web Apps Example
 
-This project demonstrates how to integrate a KeystoneJS backend with a React frontend, deployed on Azure Static Web Apps. It showcases a custom session implementation using Azure's authentication headers.
+This project demonstrates how to integrate a KeystoneJS backend with a React frontend, deployed on Azure Static Web Apps. It showcases a custom session implementation using Azure's authentication headers. Additionally, it demonstrates how to use roles for authorization on the backend.
 
 ## Features
 
