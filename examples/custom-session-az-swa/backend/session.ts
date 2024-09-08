@@ -75,10 +75,7 @@ export const AzStaticWebAppAuthSessionStrategy = {
 
       // Deserialize into the required structure
       clientPrincipal = JSON.parse(decodedBase64);
-    } catch (e: unknown) {
-      // If an error occurs during decoding or deserialization, return
-      // logger.error(`getRoles: error decoding or deserializing clientPrincipal: ${e}`);
-      // Check if 'e' is an instance of Error
+    } catch (e: unknown) {      
       let errorToTrack: Error;
       if (e instanceof Error) {
         errorToTrack = e;
@@ -89,7 +86,6 @@ export const AzStaticWebAppAuthSessionStrategy = {
       }
       // log the error if needed
       // console.error(errorToTrack);
-
       return undefined;
     }
 
