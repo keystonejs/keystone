@@ -65,10 +65,14 @@ custom-session-az-swa/
 
 The custom session implementation in `backend/session.ts` uses the `x-ms-client-principal` header provided by Azure Static Web Apps. This header contains encoded user information when a user is authenticated.
 
-## Important Notes
+## Roles and Authorization
+**NOTE: This is a simple example to demonstrate how to use roles for authorization. In a production application, you should use a more secure method to manage roles and permissions.**
 
-- Ensure all API routes are prefixed with `/api` in your frontend requests.
-- Because backend is hiden under a reverse proxy under /api sub path,  the Admin dashboard is moved to /api/admin, 
+The following roles are defined in `backend/session.ts`:
+- `blogReader`: Can only read posts
+- `blogContributor`: Can read, create, update, and delete posts
+- `admin`: Can perform all operations
+
 - Roles are used for authorization on the **Post** list.
 ```
 operation: {   
@@ -78,5 +82,11 @@ operation: {
     delete: isBlogContributor,
 },
 ```
+
+## Important Notes
+
+- Ensure all API routes are prefixed with `/api` in your frontend requests.
+- Because backend is "hiden" under a reverse proxy under /api sub path,  the Admin dashboard is moved to /api/admin, 
+
 - The local development environment may not fully replicate the Azure Static Web Apps authentication. Always test in a staging environment before deploying to production.
 
