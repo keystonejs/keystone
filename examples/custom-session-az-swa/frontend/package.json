@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@keystone-6/example-custom-session-az-swa-frontend",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:4280",
