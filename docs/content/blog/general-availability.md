@@ -53,7 +53,7 @@ Here's a few of the other cool things we shipped in Keystone this year:
 - [JSON field](/docs/fields/json)
 - [17 example projects](/docs/examples) to explore Keystone's many features and get you up and running on the web
 
-This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you've been waiting to tryout Keystone 6 **there's never been a better time**. Just `npm create keystone-app` or read our [getting started guide](/docs/getting-started) to take your first steps.
+This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you've been waiting to tryout Keystone 6 **there's never been a better time**. Just `npm create keystone-app@latest` or read our [getting started guide](/docs/getting-started) to take your first steps.
 
 ## What's Next
 

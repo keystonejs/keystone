@@ -11,7 +11,7 @@ It generates some files for you and installs all the dependencies you need to ru
 ## Quick Start
 
 ```sh
-npm create keystone-app
+npm create keystone-app@latest
 cd my-app
 npm run dev
 ```

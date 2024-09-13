@@ -13,7 +13,7 @@
 		</g>
 		<text id="λ-yarn-create-keysto" font-family="'Source Code Pro', monospace" font-size="200" font-weight="normal">
 			<tspan x="226" y="729" fill="#80B1FF">λ</tspan>
-			<tspan x="346.410156" y="729" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> npm create keystone-app</tspan>
+			<tspan x="346.410156" y="729" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> npm create keystone-app@latest</tspan>
 			
 			<tspan x="226" y="1229" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[1/4]</tspan>
 			<tspan x="826.097656" y="1229" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
