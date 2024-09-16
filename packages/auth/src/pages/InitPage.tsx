@@ -50,7 +50,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
         return
       }
 
-      const tags = [ '@keystone-6/auth' ]
+      const tags = [ 'source: @keystone-6/auth' ]
       if (subscribe.keystone) tags.push('keystone_list')
       if (subscribe.thinkmill) tags.push('thinkmill_list')
 
