@@ -42,7 +42,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
     setError(null)
 
     // Check if user wants to subscribe and a valid email address
-    if (subscribe) {
+    if (subscribe.keystone || subscribe.thinkmill) {
       setLoading(true)
 
       if (!validEmail(email)) {
