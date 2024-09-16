@@ -115,7 +115,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       </p>
 
       <p>
-        To stay connected to the latest Keystone and Thinkmill news, signup to our newsletters:
+        To stay connected to the latest Keystone and <a href="https://thinkmill.com.au" target='_blank'>Thinkmill</a> news, signup to our newsletters:
       </p>
 
       <form onSubmit={onSubmit}>
