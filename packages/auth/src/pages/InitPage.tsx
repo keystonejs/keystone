@@ -110,7 +110,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       </Stack>
 
       <p css={{ margin: 0 }}>
-      Thanks for installing Keystone. For help getting started check out the docs at{' '}
+        Thanks for installing Keystone. For help getting started check out the docs at{' '}
         <a href="https://keystonejs.com">keystonejs.com</a>
       </p>
 
