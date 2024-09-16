@@ -140,14 +140,14 @@ importers:
         specifier: workspace:^
         version: link:../popover
       date-fns:
-        specifier: ^3.0.0
-        version: 3.6.0
+        specifier: ^4.0.0
+        version: 4.0.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-day-picker:
         specifier: ^8.0.4
-        version: 8.10.1(date-fns@3.6.0)(react@18.3.1)
+        version: 8.10.1(date-fns@4.0.0)(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -521,8 +521,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       date-fns:
-        specifier: ^3.0.0
-        version: 3.6.0
+        specifier: ^4.0.0
+        version: 4.0.0
       dedent:
         specifier: ^1.0.0
         version: 1.5.3(babel-plugin-macros@3.1.0)
@@ -2082,8 +2082,8 @@ importers:
         specifier: ^2.1.0
         version: 2.2.2
       date-fns:
-        specifier: ^3.0.0
-        version: 3.6.0
+        specifier: ^4.0.0
+        version: 4.0.0
       decimal.js:
         specifier: ^10.4.1
         version: 10.4.3
@@ -7384,8 +7384,8 @@ packages:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
 
-  date-fns@3.6.0:
-    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
+  date-fns@4.0.0:
+    resolution: {integrity: sha512-6K33+I8fQ5otvHgLIvKK1xmMbLAh0pduyrx7dwMXKiGYeoWhmk6M3Zoak9n7bXHMJQlHq1yqmdGy1QxKddJjUA==}
 
   deasync@0.1.30:
     resolution: {integrity: sha512-OaAjvEQuQ9tJsKG4oHO9nV1UHTwb2Qc2+fadB0VeVtD0Z9wiG1XPGLJ4W3aLhAoQSYTaLROFRbd5X20Dkzf7MQ==}
@@ -18932,7 +18932,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.25.6
 
-  date-fns@3.6.0: {}
+  date-fns@4.0.0: {}
 
   deasync@0.1.30:
     dependencies:
@@ -23150,9 +23150,9 @@ snapshots:
       '@babel/runtime': 7.25.6
       react: 18.3.1
 
-  react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
+  react-day-picker@8.10.1(date-fns@4.0.0)(react@18.3.1):
     dependencies:
-      date-fns: 3.6.0
+      date-fns: 4.0.0
       react: 18.3.1
 
   react-dom@18.3.1(react@18.3.1):
