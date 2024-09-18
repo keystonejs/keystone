@@ -84,7 +84,7 @@ export function SubscribeForm ({ autoFocus, stacked, children, ...props }: Subsc
                 name="tags"
                 id="mailing-list-keystone"
                 css={{ height: '1rem', width: '1rem' }}
-                value="keystone_list"
+                value="list:keystone"
                 defaultChecked
               />
               <label css={{ fontSize: '0.9rem' }} htmlFor="mailing-list-keystone">
@@ -97,7 +97,7 @@ export function SubscribeForm ({ autoFocus, stacked, children, ...props }: Subsc
                 name="tags"
                 id="mailing-list-thinkmill"
                 css={{ height: '1rem', width: '1rem' }}
-                value="thinkmill_list"
+                value="list:thinkmill"
               />
               <label css={{ fontSize: '0.9rem' }} htmlFor="mailing-list-thinkmill">
                 Thinkmill news (
