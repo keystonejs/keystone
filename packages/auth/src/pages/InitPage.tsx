@@ -51,8 +51,8 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       }
 
       const tags = ['source:@keystone-6/auth']
-      if (subscribe.keystone) tags.push('keystone_list')
-      if (subscribe.thinkmill) tags.push('thinkmill_list')
+      if (subscribe.keystone) tags.push('list:keystone')
+      if (subscribe.thinkmill) tags.push('list:thinkmill')
 
       const res = await fetch(signupURL, {
         method: 'POST',
