@@ -205,7 +205,7 @@ type Session = {
 We can now set up **operation** access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
-const isAdmin = ({ session }: { session: Session }) => Boolean(session?.data.isAdmin);
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin);
 
 const Post = list({
   access: {
@@ -225,11 +225,11 @@ const Post = list({
 We can also use **filter** access control to make sure that unauthenticated users can only see published posts:
 
 ```ts
-const filterPosts = ({ session }: { session: Session }) => {
+function filterPosts ({ session }: { session?: Session }) {
   // if the user is an Admin, they can access all the records
   if (session?.data.isAdmin) return true;
   // otherwise, filter for published posts
-  return { isPublished: { equals: true } };
+  return { isPublished: { equals: true } }
 }
 
 const Post = list({
@@ -435,7 +435,7 @@ When you need it, you can call `context.sudo()` to create a new context with ele
 For example, we probably want to block all public access to querying users in our system:
 
 ```ts
-const isAdmin = ({ session }: { session: Session }) => Boolean(session?.data.isAdmin);
+const isAdmin = ({ session }: { session?: Session }) => Boolean(session?.data.isAdmin);
 
 const Person = list({
   access: {
@@ -520,19 +520,19 @@ type PersonData = {
 };
 
 // Validate there is a user with a valid session
-const isUser = ({ session }: { session: Session }) =>
+const isUser = ({ session }: { session?: Session }) =>
   !!session?.data.id;
 
 // Validate the current user is an Admin
-const isAdmin = ({ session }: { session: Session }) =>
+const isAdmin = ({ session }: { session?: Session }) =>
   Boolean(session?.data.isAdmin);
 
 // Validate the current user is updating themselves
-const isPerson = ({ session, item }: { session: Session, item: PersonData }) =>
+const isPerson = ({ session, item }: { session?: Session, item: PersonData }) =>
   session?.data.id === item.id;
 
 // Validate the current user is an Admin, or updating themselves
-const isAdminOrPerson = ({ session, item }: { session: Session, item: PersonData }) =>
+const isAdminOrPerson = ({ session, item }: { session?: Session, item: PersonData }) =>
   isAdmin({ session }) || isPerson({ session, item });
 
 const Person = list({
