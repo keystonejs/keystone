@@ -14,15 +14,8 @@ type ImageFieldOutput {
   filesize: Int!
   width: Int!
   height: Int!
-  extension: ImageExtension!
+  extension: String!
   url: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
 }
 
 type FileFieldOutput {

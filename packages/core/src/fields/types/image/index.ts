@@ -1,3 +1,5 @@
+import mime from 'mime-types';
+
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -8,7 +10,6 @@ import {
   fieldType,
 } from '../../../types'
 import { graphql } from '../../..'
-import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -18,11 +19,6 @@ export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       extendPrismaSchema?: (field: string) => string
     }
   }
-
-const ImageExtensionEnum = graphql.enum({
-  name: 'ImageExtension',
-  values: graphql.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
-})
 
 const ImageFieldInput = graphql.inputObject({
   name: 'ImageFieldInput',
@@ -40,7 +36,7 @@ const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
     filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+    extension: graphql.field({ type: graphql.nonNull(graphql.String) }), 
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve (data, args, context) {
@@ -69,10 +65,9 @@ async function inputResolver (
   return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
-const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS)
-
 function isValidImageExtension (extension: string): extension is ImageExtension {
-  return extensionsSet.has(extension)
+  const mimeType = mime.lookup(extension);
+  return mimeType ? mimeType.startsWith('image/') : false;
 }
 
 export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {

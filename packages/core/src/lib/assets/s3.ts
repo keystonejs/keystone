@@ -1,3 +1,4 @@
+import mime from 'mime-types';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3, GetObjectCommand } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
@@ -21,12 +22,7 @@ export function s3ImageAssetsAPI (storageConfig: StorageConfig & { kind: 's3' })
           Bucket: storageConfig.bucketName,
           Key: `${storageConfig.pathPrefix || ''}${id}.${extension}`,
           Body: buffer,
-          ContentType: {
-            png: 'image/png',
-            webp: 'image/webp',
-            gif: 'image/gif',
-            jpg: 'image/jpeg',
-          }[extension],
+          ContentType: mime.lookup(extension) || 'application/octet-stream',
           ACL: storageConfig.acl,
         },
       })
@@ -51,7 +47,7 @@ export function s3FileAssetsAPI (storageConfig: StorageConfig & { kind: 's3' }):
       }
       return generateUrl(await presign(filename))
     },
-    async upload (stream, filename) {
+    async upload (stream, filename, originalFilename) {
       let filesize = 0
       stream.on('data', data => {
         filesize += data.length
@@ -63,7 +59,7 @@ export function s3FileAssetsAPI (storageConfig: StorageConfig & { kind: 's3' }):
           Bucket: storageConfig.bucketName,
           Key: (storageConfig.pathPrefix || '') + filename,
           Body: stream,
-          ContentType: 'application/octet-stream',
+          ContentType: mime.lookup(originalFilename) || 'application/octet-stream',
           ACL: storageConfig.acl,
         },
       })

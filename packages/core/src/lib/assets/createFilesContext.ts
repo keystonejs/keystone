@@ -52,7 +52,7 @@ export function createFilesContext (config: __ResolvedKeystoneConfig): FilesCont
         }
 
         const filename = await transformName(originalFilename)
-        const { filesize } = await adapter.upload(stream, filename)
+        const { filesize } = await adapter.upload(stream, filename, originalFilename)
         return { filename, filesize }
       },
       deleteAtSource: async filename => {

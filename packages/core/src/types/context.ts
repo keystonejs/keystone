@@ -201,7 +201,7 @@ export type FilesContext = (storage: string) => {
 
 // Images API
 
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif'
+export type ImageExtension = string
 
 export type ImageMetadata = {
   extension: ImageExtension

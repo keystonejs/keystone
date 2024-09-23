@@ -247,10 +247,9 @@ export const lists = {
 
 ## How Content-Type differs between Images & Files
 
-- When serving **files**, Keystone uses `application/octetstream` for the `Content-Type`.
-- When serving **images** the `Content-Type` is set from the mime-type configured by the file extension.
+- **S3 Adapter**: When using the S3 storage adapter (`'s3'`), Keystone automatically detects and sets the correct Content-Type for uploaded files based on their file extensions. This is achieved using the [`mime-types`](https://github.com/jshttp/mime-types) package, which maps file extensions (e.g., .jpg, .png, .pdf) to their corresponding MIME types (e.g., image/jpeg, image/png, application/pdf). This ensures that files are served with the appropriate Content-Type header when requested from S3. In case the MIME type cannot be determined, the default Content-Type is set to `application/octet-stream`.
 
-This means that for images the extension can be trusted, but for files, it can not. This applies to both `local` and `S3` options.
+- **Local Adapter**: When using the local adapter (`'local'`), Keystone does not explicitly set the Content-Type during the upload process. Instead, the MIME type is handled by the web server that serves the files. For example, when serving files through an HTTP server like Express or a reverse proxy like Nginx, the Content-Type is determined based on the file's extension.
 
 ## Related Resources
 

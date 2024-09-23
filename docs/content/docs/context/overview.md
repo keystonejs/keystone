@@ -115,7 +115,7 @@ This API takes advantage of the following types:
 ```
 type ImageMode = 'local';
 
-type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
+type ImageExtension = string;
 
 type ImageData = {
   mode: ImageMode;

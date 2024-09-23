@@ -8,7 +8,7 @@ export type ImageAdapter = {
 }
 
 export type FileAdapter = {
-  upload(stream: Readable, filename: string): Promise<FileMetadata>
+  upload(stream: Readable, filename: string, originalFilename: string): Promise<FileMetadata>
   delete(id: string): Promise<void>
   url(filename: string): Promise<string>
 }

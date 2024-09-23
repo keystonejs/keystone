@@ -7,7 +7,6 @@ import { jsx, Stack, Text } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
 import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '../../../../types'
-import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 import { type ImageValue } from './index'
 import { type controller } from '.'
 
@@ -51,10 +50,6 @@ export function Field ({
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
   const inputKey = useMemo(() => Math.random(), [value])
-  const accept = useMemo(
-    () => SUPPORTED_IMAGE_EXTENSIONS.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(', '),
-    []
-  )
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -75,7 +70,7 @@ export function Field ({
         name={field.path}
         onChange={onUploadChange}
         type="file"
-        accept={accept}
+        accept="image/*"
         aria-describedby={field.description === null ? undefined : `${field.path}-description`}
         disabled={onChange === undefined}
       />
@@ -270,19 +265,7 @@ export function validateImage ({
   }
   // check if the file is actually an image
   if (!file.type.includes('image')) {
-    return `Sorry, that file type isn't accepted. Please try ${SUPPORTED_IMAGE_EXTENSIONS.reduce(
-      (acc, curr, currentIndex) => {
-        if (currentIndex === SUPPORTED_IMAGE_EXTENSIONS.length - 1) {
-          acc += ` or .${curr}`
-        } else if (currentIndex > 0) {
-          acc += `, .${curr}`
-        } else {
-          acc += `.${curr}`
-        }
-        return acc
-      },
-      ''
-    )}.`
+    return `Sorry, that file is not an image.`
   }
 }
 

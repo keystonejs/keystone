@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import imageSize from 'image-size'
+import mime from 'mime-types';
 
 import {
   type ImagesContext,
@@ -21,8 +22,9 @@ async function getImageMetadataFromBuffer (buffer: Buffer) {
   }
 
   const { ext: extension } = fileType
-  if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
-    throw new Error(`${extension} is not a supported image type`)
+  const mimeType = mime.lookup(extension);
+  if (!mimeType || !mimeType.startsWith('image/')) {
+    throw new Error(`${extension} is not a supported image type`);
   }
 
   const { height, width } = imageSize(buffer)
