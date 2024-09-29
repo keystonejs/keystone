@@ -71,7 +71,7 @@ export default function PageClient () {
             marginTop: '2.5rem',
           })}
         >
-          <CodeBox code="npm create keystone-app" />
+          <CodeBox code="npm create keystone-app@latest" />
           <Button
             as="a"
             href="/docs"

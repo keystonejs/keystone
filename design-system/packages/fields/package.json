@@ -19,9 +19,9 @@
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
-    "date-fns": "^3.0.0",
+    "date-fns": "^4.0.0",
     "react": "^18.3.1",
-    "react-day-picker": "^8.0.4",
+    "react-day-picker": "^9.0.0",
     "react-dom": "^18.3.1",
     "react-focus-lock": "^2.7.1",
     "react-select": "^5.2.1"

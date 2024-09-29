@@ -33,7 +33,7 @@
     "@vercel/og": "^0.6.0",
     "classnames": "^2.3.1",
     "clipboard-copy": "^4.0.1",
-    "date-fns": "^3.0.0",
+    "date-fns": "^4.0.0",
     "dedent": "^1.0.0",
     "facepaint": "^1.2.1",
     "globby": "^14.0.0",

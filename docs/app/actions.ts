@@ -9,7 +9,7 @@ export async function subscribeToButtondown (pathname: string, formData: FormDat
       email: formData.get('email'),
       tags: [
         ...formData.getAll('tags'),
-        `keystone website${pathname !== '/' ? `: ${pathname}` : ' homepage'}`,
+        `source:keystonejs.com${pathname}`.substring(0, 80),
       ],
     }
 
