@@ -1,0 +1,28 @@
+{
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [
+      "/images/*.{svg,png,jpg,gif,webp}",
+      "/css/*"
+    ]
+  },
+  "routes": [
+    {
+      "route": "/api/graphql",
+      "allowedRoles": [
+        "authenticated"
+      ]
+    }
+  ], 
+    "auth": {
+      "identityProviders": {
+        "azureActiveDirectory": {
+          "registration": {
+            "openIdIssuer": "https://login.microsoftonline.com/<your-tenant-id>/v2.0",
+            "clientIdSettingName": "AZURE_CLIENT_ID",
+            "clientSecretSettingName": "AZURE_CLIENT_SECRET"
+          }
+        }
+      }
+    }
+  }

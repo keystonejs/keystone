@@ -1,0 +1,14 @@
+{
+    "configurations": {
+      "app": {
+        "outputLocation": "frontend/build",
+        "apiLocation": "backend",
+        "appLocation": "frontend",
+        "appBuildCommand": "npm run build",
+        "apiBuildCommand": "npm run build",
+        "run": "npm start",
+        "appDevserverUrl": "http://127.0.0.1:3000",
+        "apiDevserverUrl": "http://127.0.0.1:3001"  
+      }
+    }
+  }
