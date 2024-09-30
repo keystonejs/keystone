@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
