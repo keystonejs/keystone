@@ -3,14 +3,14 @@ import fs from 'node:fs/promises'
 
 export class ExitError extends Error {
   code: number
-  constructor(code: number) {
+  constructor (code: number) {
     super(`The process exited with Error ${code}`)
     this.code = code
   }
 }
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-export async function importBuiltKeystoneConfiguration(cwd: string) {
+export async function importBuiltKeystoneConfiguration (cwd: string) {
   try {
     const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
     if (!(await fs.stat(builtConfigPath).catch(() => null))) {
