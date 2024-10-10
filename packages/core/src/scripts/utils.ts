@@ -17,7 +17,7 @@ export async function importBuiltKeystoneConfiguration(cwd: string) {
       console.error('🚨 keystone build has not been run')
       throw new ExitError(1)
     }
-    return require(getBuiltKeystoneConfigurationPath(cwd)).default
+    return require(builtConfigPath).default
   } catch (err: any) {
     console.error('🚨 importing built keystone config failed')
     throw err
