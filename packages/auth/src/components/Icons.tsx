@@ -64,7 +64,7 @@ export const IconGithub = (props: any) => (
 // Misc
 // ==============================
 
-const A11yText = forwardRefWithAs<'span', {}>(({ as: Tag = 'span', ...props }, ref) => (
+const A11yText = forwardRefWithAs<'span', unknown>(({ as: Tag = 'span', ...props }, ref) => (
   <Tag
     ref={ref}
     css={{

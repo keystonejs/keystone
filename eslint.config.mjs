@@ -1,23 +1,28 @@
 // @ts-check
 
-const eslint = require('@eslint/js')
-const tseslint = require('typescript-eslint')
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import stylisticTs from '@stylistic/eslint-plugin-ts'
 
-module.exports = tseslint.config(
+export default tseslint.config(
   {
     ignores: [
       '**/.keystone/',
+      '**/.next/',
       '**/dist/',
+      '**/__generated__/',
       '**/node_modules/',
       '**/syntax-error.js',
       '**/public/',
-      'examples/extend-graphql-schema-nexus/nexus-types.ts'
+      'examples/',
     ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.strict,
-//    ...tseslint.configs.stylistic,
   {
+    plugins: {
+      '@stylistic/ts': stylisticTs,
+    },
     rules: {
       // TODO: remove
       'no-empty': 'off',
@@ -50,7 +55,7 @@ module.exports = tseslint.config(
       'space-before-blocks': ['error', 'always'],
       'space-before-function-paren': ['error', 'always'],
       'space-in-parens': ['error', 'never'],
-      '@typescript-eslint/member-delimiter-style': [
+      '@stylistic/ts/member-delimiter-style': [
         'error',
         {
           multiline: { delimiter: 'none' },
@@ -64,7 +69,7 @@ module.exports = tseslint.config(
       }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-      '@typescript-eslint/semi': ['error', 'never'],
+      '@stylistic/ts/semi': ['error', 'never'],
     }
   }
 )

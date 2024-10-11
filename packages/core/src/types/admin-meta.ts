@@ -26,7 +26,7 @@ export type CreateViewFieldModes =
 
 export type AdminConfig = {
   components?: {
-    Logo?: (props: {}) => ReactElement
+    Logo?: (props: object) => ReactElement
     Navigation?: (props: NavigationProps) => ReactElement
   }
 }

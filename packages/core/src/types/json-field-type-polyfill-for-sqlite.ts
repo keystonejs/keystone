@@ -10,9 +10,10 @@ import {
   type UpdateFieldInputArg,
   fieldType,
 } from '.'
+import { type InputType, type Arg } from '@graphql-ts/schema'
 
 function mapOutputFieldToSQLite (
-  field: graphql.Field<{ value: JSONValue, item: BaseItem }, {}, any, 'value'>
+  field: graphql.Field<{ value: JSONValue, item: BaseItem }, Record<string, Arg<InputType>>, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value)
   return graphql.fields<{

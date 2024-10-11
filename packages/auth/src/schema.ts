@@ -101,7 +101,7 @@ export const getSchemaExtension = ({
     try {
       ast = parse(query)
     } catch (err) {
-      throw new Error( `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
+      throw new Error(`The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
     }
 
     const errors = validate(base.schema, ast)

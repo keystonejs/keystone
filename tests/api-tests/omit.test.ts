@@ -74,7 +74,7 @@ function makeList ({
   isOrderable,
   omit,
 }: {
-  fields: typeof fieldsMatrix,
+  fields: typeof fieldsMatrix
   isFilterable: boolean
   isOrderable: boolean
   omit:

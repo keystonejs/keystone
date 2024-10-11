@@ -42,7 +42,7 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function virtual <ListTypeInfo extends BaseListTypeInfo>({
+export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
   field,
   ...config
 }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {

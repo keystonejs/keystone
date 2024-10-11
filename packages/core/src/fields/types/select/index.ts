@@ -55,7 +55,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function select <ListTypeInfo extends BaseListTypeInfo>(config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   const {
     isIndexed,
     ui: { displayMode = 'select', ...ui } = {},

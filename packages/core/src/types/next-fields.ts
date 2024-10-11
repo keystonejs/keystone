@@ -182,7 +182,7 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
       many: readonly ScalarPrismaTypes[Scalar][] | undefined
     }[Mode]
   : TDBField extends RelationDBField<'many' | 'one'>
-  ? { connect?: {}, disconnect?: boolean } | undefined
+  ? { connect?: object, disconnect?: boolean } | undefined
   : TDBField extends EnumDBField<infer Value, infer Mode>
   ? {
       optional: Value | null | undefined

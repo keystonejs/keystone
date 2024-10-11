@@ -10,7 +10,7 @@ import { useToolbarState } from './toolbar-state'
 
 export * from './code-block-shared'
 
-function CodeButton ({ attrs }: { attrs: {} }) {
+function CodeButton ({ attrs }: { attrs: object }) {
   const {
     editor,
     code: { isDisabled, isSelected },

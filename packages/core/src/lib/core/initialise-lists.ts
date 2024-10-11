@@ -121,7 +121,7 @@ export type InitialisedList = {
   }
 
   prisma: {
-    types: GraphQLNames, // TODO: not completely appropriate, but what is used for now
+    types: GraphQLNames // TODO: not completely appropriate, but what is used for now
     listKey: string
     mapping: string | undefined
     extendPrismaSchema: ((schema: string) => string) | undefined
@@ -541,7 +541,7 @@ function getListsWithInitialisedFields (
     const findManyArgs: FindManyArgs = {
       where: graphql.arg({
         type: graphql.nonNull(where),
-        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
+        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as object) : {},
       }),
       orderBy: graphql.arg({
         type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),

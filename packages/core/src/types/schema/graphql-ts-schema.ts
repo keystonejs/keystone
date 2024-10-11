@@ -40,6 +40,7 @@ export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend, wrap } from '@graphql-ts/extend'
 import { field as fieldd } from './schema-api-with-context'
+import { type InputType, type Arg } from '@graphql-ts/schema'
 export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
 
 // TODO: remove when we use { graphql } from '.keystone'
@@ -72,7 +73,7 @@ type FieldFuncResolve<
       ? {
           resolve?: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
             Type,
             Context
           >
@@ -80,7 +81,7 @@ type FieldFuncResolve<
       : {
           resolve: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
             Type,
             Context
           >
@@ -88,7 +89,7 @@ type FieldFuncResolve<
     : {
         resolve: graphqlTsSchema.FieldResolver<
           Source,
-          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+          SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
           Type,
           Context
         >
@@ -113,7 +114,7 @@ type FieldFunc = <
   Type extends OutputType,
   Key extends string,
   Context extends KeystoneContext<any>,
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {}
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object
 >(
   field: FieldFuncArgs<Source, Args, Type, Key, Context>
 ) => graphqlTsSchema.Field<Source, Args, Type, Key, Context>
@@ -282,7 +283,7 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   })
 )
 
-export const Empty = graphqlTsSchema.graphql.scalar<{}>(
+export const Empty = graphqlTsSchema.graphql.scalar(
   new GraphQLScalarType({
     name: 'Empty',
     serialize (value) { return null },
