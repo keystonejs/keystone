@@ -216,7 +216,7 @@
     "ci-info": "^4.0.0",
     "clipboard-copy": "^4.0.1",
     "conf": "^10.2.0",
-    "cookie": "^0.7.0",
+    "cookie": "^1.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.1.0",
     "date-fns": "^4.0.0",

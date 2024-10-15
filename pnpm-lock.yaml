@@ -2073,8 +2073,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0
       cookie:
-        specifier: ^0.7.0
-        version: 0.7.2
+        specifier: ^1.0.0
+        version: 1.0.1
       cors:
         specifier: ^2.8.5
         version: 2.8.5
