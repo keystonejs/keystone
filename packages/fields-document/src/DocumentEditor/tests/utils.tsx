@@ -346,9 +346,7 @@ function nodeToReactElement (
       ...marks,
     })
   }
-  const children = node.children.map((x, i) =>
-    nodeToReactElement(editor, x, selection, path.concat(i))
-  )
+  const children = node.children.map((x, i) => nodeToReactElement(editor, x, selection, path.concat(i)))
   if (Editor.isEditor(node)) {
     const config = (editor as any).__config
     validateAndNormalizeDocument(
@@ -375,6 +373,7 @@ function nodeToReactElement (
   if (type !== undefined) {
     return createElement(type, { ...restNode, ...computedData, children })
   }
+  // @ts-ignore TODO: can `type` actually be undefined?
   return createElement('element', { ...node, ...computedData, children })
 }
 
