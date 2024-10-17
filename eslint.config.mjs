@@ -26,21 +26,14 @@ export default tseslint.config(
     rules: {
       // TODO: remove
       'no-empty': 'off',
-      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
-      'no-extra-boolean-cast': 'off',
-      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
       'prefer-const': 'off',
-      'no-regex-spaces': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/ban-types': 'off',
       '@typescript-eslint/no-dynamic-delete': 'off',
       '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-require-imports': 'off', // TODO: always
-      'import/no-unresolved': 'off',
       // TODO: remove
 
       semi: ['error', 'never'],
