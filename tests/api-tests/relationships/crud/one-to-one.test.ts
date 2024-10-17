@@ -644,7 +644,7 @@ describe(`One-to-one relationships`, () => {
       'With create A',
       runner(async ({ context }) => {
         const { companies } = await createInitialData(context)
-        let company = companies[0]
+        const company = companies[0]
         const locationName = sampleOne(alphanumGenerator)
         const _company = await context.query.Company.updateOne({
           where: { id: company.id },
@@ -668,7 +668,7 @@ describe(`One-to-one relationships`, () => {
       'With create B',
       runner(async ({ context }) => {
         const { locations } = await createInitialData(context)
-        let location = locations[0]
+        const location = locations[0]
         const companyName = sampleOne(alphanumGenerator)
         const _location = await context.query.Location.updateOne({
           where: { id: location.id },
@@ -692,7 +692,7 @@ describe(`One-to-one relationships`, () => {
       runner(async ({ context }) => {
         // To begin with, nothing is linked
         const { companies } = await createInitialData(context)
-        let company = companies[0]
+        const company = companies[0]
 
         // Update company.location to be a new thing.
         const locationName = sampleOne(alphanumGenerator)
@@ -743,7 +743,7 @@ describe(`One-to-one relationships`, () => {
       'With recreate B',
       runner(async ({ context }) => {
         const { locations } = await createInitialData(context)
-        let location = locations[0]
+        const location = locations[0]
         const companyName = sampleOne(alphanumGenerator)
         const _location = await context.query.Location.updateOne({
           where: { id: location.id },

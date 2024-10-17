@@ -276,7 +276,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
     <CellContainer>
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
-          {!!index ? ', ' : ''}
+          {index ? ', ' : ''}
           <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`} css={styles}>
             {item.label || item.id}
           </Link>
@@ -297,7 +297,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
         .filter(item => item)
         .map((item, index) => (
           <Fragment key={item.id}>
-            {!!index ? ', ' : ''}
+            {index ? ', ' : ''}
             <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`}>
               {item.label || item.id}
             </Link>
@@ -465,7 +465,7 @@ export function controller (
         }
       }
       if (config.fieldMeta.many) {
-        let value = (data[config.path] || []).map((x: any) => ({
+        const value = (data[config.path] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,
         }))
@@ -575,12 +575,12 @@ export function controller (
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id))
         const initialIds = new Set(state.initialValue.map(x => x.id))
-        let disconnect = state.initialValue
+        const disconnect = state.initialValue
           .filter(x => !newAllIds.has(x.id))
           .map(x => ({ id: x.id }))
-        let connect = state.value.filter(x => !initialIds.has(x.id)).map(x => ({ id: x.id }))
+        const connect = state.value.filter(x => !initialIds.has(x.id)).map(x => ({ id: x.id }))
         if (disconnect.length || connect.length) {
-          let output: any = {}
+          const output: any = {}
 
           if (disconnect.length) {
             output.disconnect = disconnect
@@ -607,10 +607,10 @@ export function controller (
           }
         }
       } else if (state.kind === 'cards-view') {
-        let disconnect = [...state.initialIds]
+        const disconnect = [...state.initialIds]
           .filter(id => !state.currentIds.has(id))
           .map(id => ({ id }))
-        let connect = [...state.currentIds]
+        const connect = [...state.currentIds]
           .filter(id => !state.initialIds.has(id))
           .map(id => ({ id }))
 

@@ -7,7 +7,7 @@
 export function humanize (str: string) {
   return str
     .replace(/([a-z])([A-Z]+)/g, '$1 $2')
-    .split(/\s|_|\-/)
+    .split(/\s|_|-/)
     .filter(i => i)
     .map(x => x.charAt(0).toUpperCase() + x.slice(1))
     .join(' ')

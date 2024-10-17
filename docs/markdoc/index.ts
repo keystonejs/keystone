@@ -42,13 +42,13 @@ export type BlogContent = BlogFrontmatter & {
 }
 
 export async function readBlogContent (filepath: string): Promise<BlogContent> {
-  let content = await fs.readFile(filepath, 'utf8')
+  const content = await fs.readFile(filepath, 'utf8')
   const frontmatter = extractBlogFrontmatter(content)
   return { content: transformContent(`docs/${filepath}`, content), ...frontmatter }
 }
 
 export async function readDocsContent (filepath: string): Promise<DocsContent> {
-  let content = await fs.readFile(filepath, 'utf8')
+  const content = await fs.readFile(filepath, 'utf8')
   const frontmatter = extractDocsFrontmatter(content)
   return { content: transformContent(`docs/${filepath}`, content), ...frontmatter }
 }
@@ -96,7 +96,7 @@ export function extractDocsFrontmatter (content: string): {
       `Expected frontmatter yaml to be an object but found:\n${JSON.stringify(parsed)}`
     )
   }
-  let obj = parsed as Record<string, unknown>
+  const obj = parsed as Record<string, unknown>
   if (typeof obj.title !== 'string') {
     throw new Error(`Expected frontmatter to contain a title`)
   }
@@ -138,7 +138,7 @@ export function extractBlogFrontmatter (content: string): BlogFrontmatter {
       `Expected frontmatter yaml to be an object but found:\n${JSON.stringify(parsed)}`
     )
   }
-  let obj = parsed as Record<string, unknown>
+  const obj = parsed as Record<string, unknown>
   if (typeof obj.title !== 'string') {
     throw new Error(`Expected frontmatter to contain title`)
   }

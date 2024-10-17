@@ -44,7 +44,7 @@ const componentBlocks = {
 }
 
 test('delete backward at start', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withChildElements"
@@ -90,7 +90,7 @@ test('delete backward at start', () => {
 })
 
 test('insert break in last (inline) child prop', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withChildElements"
@@ -166,7 +166,7 @@ test('insert break in last (inline) child prop', () => {
 })
 
 test('insert break in first (block) child prop in empty paragraph', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withChildElements"
@@ -239,7 +239,7 @@ test('insert break in first (block) child prop in empty paragraph', () => {
 })
 
 test('insert break in last (block) child prop in empty paragraph', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withChildElementsBlockLast"
@@ -316,7 +316,7 @@ test('insert break in last (block) child prop in empty paragraph', () => {
 })
 
 test('insert break in first (inline) child prop', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withChildElementsBlockLast"

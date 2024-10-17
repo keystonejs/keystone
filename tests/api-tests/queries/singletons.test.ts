@@ -149,7 +149,7 @@ describe('queries "work" on singletons', () => {
       })
 
       expect(errors?.[0].message).toEqual(
-        `Field \"id\" is not defined by type \"SingularCreateInput\".`
+        `Field "id" is not defined by type "SingularCreateInput".`
       )
     })
   )

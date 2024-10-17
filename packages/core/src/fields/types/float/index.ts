@@ -27,7 +27,7 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function float <ListTypeInfo extends BaseListTypeInfo>(config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     defaultValue,
     isIndexed,

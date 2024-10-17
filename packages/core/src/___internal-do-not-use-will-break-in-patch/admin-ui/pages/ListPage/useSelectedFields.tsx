@@ -9,10 +9,10 @@ export function useSelectedFields (
   const { query } = useRouter()
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : ''
   return useMemo(() => {
-    let selectedFieldsArray = selectedFieldsFromUrl
+    const selectedFieldsArray = selectedFieldsFromUrl
       ? selectedFieldsFromUrl.split(',')
       : list.initialColumns
-    let fields = selectedFieldsArray.filter(field => {
+    const fields = selectedFieldsArray.filter(field => {
       return fieldModesByFieldPath[field] === 'read'
     })
 

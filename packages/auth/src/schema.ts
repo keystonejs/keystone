@@ -33,7 +33,7 @@ function assertSecretFieldImpl (
     typeof impl.generateHash !== 'function'
   ) {
     const s = JSON.stringify(secretField)
-    let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`
+    const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`
     throw new Error(msg)
   }
 }
@@ -101,7 +101,7 @@ export const getSchemaExtension = ({
     try {
       ast = parse(query)
     } catch (err) {
-      throw new Error( `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
+      throw new Error(`The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
     }
 
     const errors = validate(base.schema, ast)

@@ -323,8 +323,8 @@ export function Cards ({
                       if (isMountedRef.current) {
                         const dataGetters = makeDataGetter(data, errors)
                         const itemsDataGetter = dataGetters.get('items')
-                        let newItems = { ...items }
-                        let newCurrentIds = field.many
+                        const newItems = { ...items }
+                        const newCurrentIds = field.many
                           ? new Set(value.currentIds)
                           : new Set<string>()
                         if (Array.isArray(itemsDataGetter.data)) {
@@ -352,7 +352,7 @@ export function Cards ({
                   }
                 },
                 value: (() => {
-                  let options: { label: string, id: string }[] = []
+                  const options: { label: string, id: string }[] = []
                   Object.keys(items).forEach(id => {
                     if (value.currentIds.has(id)) {
                       options.push({ id, label: id })

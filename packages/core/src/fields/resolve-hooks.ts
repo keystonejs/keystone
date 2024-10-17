@@ -26,7 +26,7 @@ function resolveValidateHooks <ListTypeInfo extends BaseListTypeInfo> ({
   validate,
   validateInput,
   validateDelete
-}: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>["validate"], Function> | undefined {
+}: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>['validate'], (...args: any) => any> | undefined {
   if (!validate && !validateInput && !validateDelete) return
   return {
     create: merge(validateInput,  typeof validate === 'function' ? validate : validate?.create),

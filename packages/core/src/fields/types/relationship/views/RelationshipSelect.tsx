@@ -30,8 +30,8 @@ function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObje
     cbRef.current = cb
   })
   useEffect(() => {
-    let observer = new IntersectionObserver((...args) => cbRef.current(...args), {})
-    let node = ref.current
+    const observer = new IntersectionObserver((...args) => cbRef.current(...args), {})
+    const node = ref.current
     if (node !== null) {
       observer.observe(node)
       return () => observer.unobserve(node)

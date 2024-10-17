@@ -128,7 +128,7 @@ export type StaticAdminMetaQuery = {
         }>
         graphql: {
           names: GraphQLNames
-        },
+        }
 
         pageSize: number
         initialColumns: Array<string>

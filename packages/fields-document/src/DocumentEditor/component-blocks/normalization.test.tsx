@@ -33,7 +33,7 @@ const componentBlocks = {
 }
 
 test('component-inline-prop and component-block-prop outside of component-block are unwrapped', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <component-inline-prop propPath={undefined as any}>
@@ -73,7 +73,7 @@ test('component-inline-prop and component-block-prop outside of component-block 
 })
 
 test('non component block prop in component-block', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block component={'basic'} props={{ prop: '' }}>
         <paragraph>
@@ -114,7 +114,7 @@ test('non component block prop in component-block', () => {
 })
 
 test('content inside of void child prop', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="basic"
@@ -160,7 +160,7 @@ test('content inside of void child prop', () => {
 })
 
 test('prop path for old fake void prop is removed', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="basic"
@@ -208,7 +208,7 @@ test('prop path for old fake void prop is removed', () => {
 })
 
 test('inserting a void component block', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -243,7 +243,7 @@ test('inserting a void component block', () => {
 })
 
 test('extra component props are removed', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text />
@@ -323,7 +323,7 @@ test('extra component props are removed', () => {
 })
 
 test('missing component props are added', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block component="withChildElements" props={{ prop: '', block: null }}>
         <component-block-prop propPath={['block']}>
@@ -383,7 +383,7 @@ test('missing component props are added', () => {
 })
 
 test('prop with wrong type for a given prop path', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block component="withChildElements" props={{ prop: '' }}>
         <component-inline-prop propPath={['block']}>
@@ -448,7 +448,7 @@ test('prop with wrong type for a given prop path', () => {
 })
 
 test('props in wrong order', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block
         component="withLotsOfChildElements"

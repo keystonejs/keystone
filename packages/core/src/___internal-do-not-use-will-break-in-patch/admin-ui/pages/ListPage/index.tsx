@@ -45,7 +45,7 @@ type FetchedFieldMeta = {
   listView: { fieldMode: 'read' | 'hidden' }
 }
 
-let listMetaGraphqlQuery: TypedDocumentNode<
+const listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
@@ -94,7 +94,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(
     () => {
-      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+      const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
         return x.startsWith('!') || storeableQueries.includes(x)
       })
 
@@ -112,7 +112,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
     [localStorageKey, router.isReady]
   )
   useEffect(() => {
-    let queryParamsToSerialize: Record<string, string> = {}
+    const queryParamsToSerialize: Record<string, string> = {}
     Object.keys(router.query).forEach(key => {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
         queryParamsToSerialize[key] = router.query[key] as string

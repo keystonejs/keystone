@@ -21,7 +21,7 @@ const runner = (enableLogging: boolean) =>
 test(
   'enableLogging: true enables logging',
   runner(true)(async ({ context }) => {
-    let prevConsoleLog = console.log
+    const prevConsoleLog = console.log
     const logs: unknown[][] = []
     console.log = (...args) => {
       logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, '^') : x)))
@@ -43,7 +43,7 @@ test(
 test(
   'enableLogging: false does not enable logging',
   runner(false)(async ({ context }) => {
-    let prevConsoleLog = console.log
+    const prevConsoleLog = console.log
     let didLog = false
     console.log = () => {
       didLog = true

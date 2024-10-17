@@ -68,7 +68,7 @@ export function createContext ({
   }: {
     prisma: any
     session?: unknown
-    sudo: Boolean
+    sudo: boolean
     req?: IncomingMessage
     res?: ServerResponse
   }) => {

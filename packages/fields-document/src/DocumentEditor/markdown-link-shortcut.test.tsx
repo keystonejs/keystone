@@ -6,7 +6,7 @@ import { component, fields } from './component-blocks/api'
 import { defaultDocumentFeatures, jsx, makeEditor } from './tests/utils'
 
 test('basic link shortcut', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -38,7 +38,7 @@ test('basic link shortcut', () => {
 })
 
 test('link shortcut with content before it and whitespace directly before it works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -72,7 +72,7 @@ test('link shortcut with content before it and whitespace directly before it wor
 })
 
 test("link shortcut with content before it without whitespace directly before doesn't activate the shortcut", () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -96,7 +96,7 @@ test("link shortcut with content before it without whitespace directly before do
 })
 
 test('shortcut with whitespace in the middle of the content works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -128,7 +128,7 @@ test('shortcut with whitespace in the middle of the content works', () => {
 })
 
 test('link shortcut then typing inserts text outside of the link', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -162,7 +162,7 @@ test('link shortcut then typing inserts text outside of the link', () => {
 })
 
 test('link shortcut with bold in some of the content works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>[co</text>
@@ -204,7 +204,7 @@ test('link shortcut with bold in some of the content works', () => {
 })
 
 test("link shortcut doesn't do anything when links are disabled globally in the editor", () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>[co</text>
@@ -239,7 +239,7 @@ test("link shortcut doesn't do anything when links are disabled globally in the 
 })
 
 test("link shortcut doesn't do anything when inside of a component block with links disabled", () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
@@ -294,7 +294,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
   `)
 })
 test('link shortcut works when inside of a component block with links option inherited', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
@@ -358,7 +358,7 @@ test('link shortcut works when inside of a component block with links option inh
 })
 
 test('an undo only reverts to the whole shortcut text', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -401,7 +401,7 @@ test('an undo only reverts to the whole shortcut text', () => {
 })
 
 test("text after the markdown shortcut isn't included in the link text", () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

@@ -6,7 +6,7 @@ import { makeEditor, jsx } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 
 const deserializeMarkdown = (markdown: string) => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

@@ -107,7 +107,7 @@ function validateComponentBlockProps (
         throw new PropValidationError(`Key on object value "${key}" is not allowed`, path)
       }
     }
-    let val: Record<string, any> = {}
+    const val: Record<string, any> = {}
     for (const key of Object.keys(schema.fields)) {
       const propVal = validateComponentBlockProps(
         schema.fields[key],

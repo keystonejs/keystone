@@ -25,7 +25,7 @@ export const schemas = {
 }
 
 export function recordConsole () {
-  let oldConsole = { ...console }
+  const oldConsole = { ...console }
   const contents: string[] = []
   const log = (...args: any[]) => {
     contents.push(format(...args).replace(/[^ -~\n]+/g, '?'))

@@ -33,7 +33,7 @@ import { ToolbarStateProvider } from '../toolbar-state'
 import { createToolbarState } from '../toolbar-state-shared'
 import { validateAndNormalizeDocument } from '../../validation'
 
-let oldConsoleError = console.error
+const oldConsoleError = console.error
 
 console.error = (...stuff: any[]) => {
   if (typeof stuff[0] === 'string') {
@@ -346,9 +346,7 @@ function nodeToReactElement (
       ...marks,
     })
   }
-  let children = node.children.map((x, i) =>
-    nodeToReactElement(editor, x, selection, path.concat(i))
-  )
+  const children = node.children.map((x, i) => nodeToReactElement(editor, x, selection, path.concat(i)))
   if (Editor.isEditor(node)) {
     const config = (editor as any).__config
     validateAndNormalizeDocument(
@@ -364,7 +362,7 @@ function nodeToReactElement (
       ...(marks && Object.keys(marks).length ? { marks } : {}),
     })
   }
-  let { type, ...restNode } = node
+  const { type, ...restNode } = node
   const computedData: { '@@isVoid'?: true, '@@isInline'?: true } = {}
   if (editor.isVoid(node)) {
     computedData['@@isVoid'] = true
@@ -375,6 +373,7 @@ function nodeToReactElement (
   if (type !== undefined) {
     return createElement(type, { ...restNode, ...computedData, children })
   }
+  // @ts-ignore TODO: can `type` actually be undefined?
   return createElement('element', { ...node, ...computedData, children })
 }
 

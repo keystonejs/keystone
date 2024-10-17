@@ -44,6 +44,7 @@ export function useItemState ({
     ).filter((x: DataGetter<any>) => x.data?.id != null)
     return { relationshipGetter, itemsArrFromData }
   }, [data, error])
+
   let [{ items, itemsArrFromData: itemsArrFromDataState }, setItemsState] = useState<{
     itemsArrFromData: DataGetter<any>[]
     items: Record<
@@ -56,7 +57,7 @@ export function useItemState ({
   }>({ itemsArrFromData: [], items: {} })
 
   if (itemsArrFromDataState !== itemsArrFromData) {
-    let newItems: Record<
+    const newItems: Record<
       string,
       {
         current: DataGetter<{ id: string, [key: string]: any }>
@@ -64,7 +65,7 @@ export function useItemState ({
       }
     > = {}
 
-    itemsArrFromData.forEach(item => {
+    for (const item of itemsArrFromData) {
       const initialItemInState = items[item.data.id]?.fromInitialQuery
       if (
         ((items[item.data.id] && initialItemInState) || !items[item.data.id]) &&
@@ -77,7 +78,8 @@ export function useItemState ({
       } else {
         newItems[item.data.id] = items[item.data.id]
       }
-    })
+    }
+
     items = newItems
     setItemsState({
       items: newItems,
@@ -96,7 +98,7 @@ export function useItemState ({
     setItems: useCallback(
       (items: Items) => {
         setItemsState(state => {
-          let itemsForState: (typeof state)['items'] = {}
+          const itemsForState: (typeof state)['items'] = {}
           Object.keys(items).forEach(id => {
             if (items[id] === state.items[id]?.current) {
               itemsForState[id] = state.items[id]

@@ -218,7 +218,7 @@ describe(`One-to-many relationships`, () => {
       'With create',
       runner(async ({ context }) => {
         const { users } = await createInitialData(context)
-        let user = users[0]
+        const user = users[0]
         const friendName = sampleOne(alphanumGenerator)
         const _user = await context.query.User.updateOne({
           where: { id: user.id },

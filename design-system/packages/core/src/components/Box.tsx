@@ -181,10 +181,10 @@ function useRadii (
   { rounding, roundingTop, roundingRight, roundingBottom, roundingLeft }: RadiiProps,
   { radii }: Theme
 ) {
-  let borderBottomLeftRadius = roundingBottom || roundingLeft || rounding
-  let borderBottomRightRadius = roundingBottom || roundingRight || rounding
-  let borderTopLeftRadius = roundingTop || roundingLeft || rounding
-  let borderTopRightRadius = roundingTop || roundingRight || rounding
+  const borderBottomLeftRadius = roundingBottom || roundingLeft || rounding
+  const borderBottomRightRadius = roundingBottom || roundingRight || rounding
+  const borderTopLeftRadius = roundingTop || roundingLeft || rounding
+  const borderTopRightRadius = roundingTop || roundingRight || rounding
 
   return {
     borderBottomLeftRadius:
@@ -208,10 +208,10 @@ function usePadding (
   }: PaddingProps,
   { spacing }: Theme
 ) {
-  let pb = paddingBottom || paddingY || padding
-  let pt = paddingTop || paddingY || padding
-  let pl = paddingLeft || paddingX || padding
-  let pr = paddingRight || paddingX || padding
+  const pb = paddingBottom || paddingY || padding
+  const pt = paddingTop || paddingY || padding
+  const pl = paddingLeft || paddingX || padding
+  const pr = paddingRight || paddingX || padding
 
   return {
     paddingBottom: pb && mapResponsiveProp(pb, spacing),
@@ -225,10 +225,10 @@ function useMargin (
   { margin, marginTop, marginRight, marginBottom, marginLeft, marginY, marginX }: MarginProps,
   { spacing }: Theme
 ) {
-  let mb = marginBottom || marginY || margin
-  let mt = marginTop || marginY || margin
-  let ml = marginLeft || marginX || margin
-  let mr = marginRight || marginX || margin
+  const mb = marginBottom || marginY || margin
+  const mt = marginTop || marginY || margin
+  const ml = marginLeft || marginX || margin
+  const mr = marginRight || marginX || margin
 
   return {
     marginBottom: mb && mapResponsiveProp(mb, spacing),

@@ -322,7 +322,7 @@ describe(`Many-to-many relationships`, () => {
       'With create',
       runner(async ({ context }) => {
         const { users } = await createInitialData(context)
-        let user = users[0]
+        const user = users[0]
         const locationName = sampleOne(alphanumGenerator)
 
         const _user = await context.query.User.updateOne({

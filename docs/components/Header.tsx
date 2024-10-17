@@ -272,7 +272,7 @@ export function Header () {
   useEffect(() => {
     document.body.style.overflow = 'auto'
     // search - init field
-    let searchAttempt = 0
+    const searchAttempt = 0
     // @ts-expect-error
     document.getElementById('search-field').disabled = true
     const loadSearch = (searchAttempt: number) => {
@@ -308,7 +308,7 @@ export function Header () {
     // yoo hooo
     loadSearch(searchAttempt)
     // search - keyboard shortcut
-    let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
+    const keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
     document.body.addEventListener('keydown', (event) => {
       // If we're typing in an input, don't ever focus the search input
       if (

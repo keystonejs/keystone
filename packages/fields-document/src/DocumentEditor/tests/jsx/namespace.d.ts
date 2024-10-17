@@ -51,7 +51,7 @@ declare namespace __jsx {
         data: {
           id: string
           label: string
-          data: {}
+          data: object
         }
 
         children: Children
@@ -59,10 +59,10 @@ declare namespace __jsx {
     }
     type Element = Node
     interface ElementAttributesProperty {
-      props: {}
+      props: object
     }
     interface ElementChildrenAttribute {
-      children: {}
+      children: object
     }
   }
 }

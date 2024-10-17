@@ -195,7 +195,7 @@ function InitPage ({
   }, [fieldPaths, adminMeta.lists, listKey])
 
   const [value, setValue] = useState(() => {
-    let state: Record<string, any> = {}
+    const state: Record<string, any> = {}
     Object.keys(fields).forEach(fieldPath => {
       state[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue }
     })
