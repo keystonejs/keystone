@@ -320,8 +320,7 @@ describe('isFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['users'],
-          message:
-            'You do not have access to perform \'filter\' operations on the fields ["User.filterFunctionFalse"].',
+          message: `You do not have access to perform 'filter' operations on the fields ["User.filterFunctionFalse"].`,
         },
       ])
     })
@@ -386,7 +385,7 @@ describe('isFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['secondaryLists'],
-          message: `You do not have access to perform 'filter' operations on the fields [\"SecondaryList.filterFunctionFalse\",\"SecondaryList.filterFunctionFalse\",\"User.filterFunctionFalse\"].`,
+          message: `You do not have access to perform 'filter' operations on the fields ["SecondaryList.filterFunctionFalse","SecondaryList.filterFunctionFalse","User.filterFunctionFalse"].`,
         },
       ])
     })
@@ -441,8 +440,7 @@ describe('defaultIsFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['defaultFilterFunctionFalses'],
-          message:
-            'You do not have access to perform \'filter\' operations on the fields ["DefaultFilterFunctionFalse.a"].',
+          message: `You do not have access to perform 'filter' operations on the fields ["DefaultFilterFunctionFalse.a"].`,
         },
       ])
     })
