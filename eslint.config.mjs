@@ -41,6 +41,7 @@ export default tseslint.config(
       '@typescript-eslint/no-dynamic-delete': 'off',
       '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-require-imports': 'off', // TODO: always
       'import/no-unresolved': 'off',
       // TODO: remove
 
