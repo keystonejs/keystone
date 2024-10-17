@@ -1,11 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
-import FocusLock from 'react-focus-lock'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { jsx } from '@keystone-ui/core'
-import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover'
-
 import {
   deserializeDate,
   formatDate,
@@ -15,8 +12,6 @@ import {
 import { type DateType } from '../types'
 import { Calendar } from './Calendar'
 import { InputButton } from './components/InputButton'
-
-export {BlockDatePicker} from './BlockDatePicker'
 
 export type DateInputValue = string | undefined
 
@@ -38,55 +33,22 @@ export function useEventCallback<Func extends (...args: any) => any>(callback: F
   return cb as any
 }
 
-export const DatePicker = ({
+export const BlockDatePicker = ({
   value,
   onUpdate,
   onClear,
   onBlur: _onBlur,
   ...props
 }: DatePickerProps) => {
-  const [isOpen, _setOpen] = useState(false)
   const onBlur = useEventCallback(() => {
     _onBlur?.()
   })
-  const setOpen = useCallback(
-    (val: boolean) => {
-      _setOpen(val)
-      if (!val) {
-        onBlur?.()
-      }
-    },
-    [onBlur]
-  )
-  const { dialog, trigger, arrow } = useControlledPopover(
-    {
-      isOpen,
-      onClose: useCallback(() => {
-        setOpen(false)
-      }, [setOpen]),
-    },
-    {
-      placement: 'bottom-start',
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    }
-  )
 
   const handleDayClick = useCallback(
     (day: Date) => {
       onUpdate(formatDateType(day))
-      // wait a moment so the user has time to see the day become selected
-      setTimeout(() => {
-        setOpen(false)
-      }, 300)
     },
-    [onUpdate, setOpen]
+    [onUpdate]
   )
 
   // We **can** memoize this, but its a trivial operation
@@ -99,7 +61,6 @@ export const DatePicker = ({
     <Fragment>
       <InputButton
         aria-label={'Choose date' + (formattedDate ? `, selected date is ${formattedDate}` : '')}
-        onClick={() => setOpen(true)}
         onClear={
           value
             ? () => {
@@ -108,22 +69,13 @@ export const DatePicker = ({
               }
             : undefined
         }
-        isSelected={isOpen}
-        ref={trigger.ref}
         {...props}
-        {...trigger.props}
         // todo - magic number - align instead to parent Field ?
         style={{ minWidth: 200 }}
       >
         {formattedDate || dateFormatPlaceholder}
       </InputButton>
-      {isOpen && (
-        <PopoverDialog arrow={arrow} isVisible ref={dialog.ref} {...dialog.props}>
-          <FocusLock autoFocus returnFocus disabled={!isOpen}>
-            <Calendar onDayClick={handleDayClick} selected={selectedDay} />
-          </FocusLock>
-        </PopoverDialog>
-      )}
+			<Calendar onDayClick={handleDayClick} selected={selectedDay} />
     </Fragment>
   )
 }
