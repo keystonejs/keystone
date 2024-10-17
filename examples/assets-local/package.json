@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.3.0",
-    "@prisma/client": "5.19.0"
+    "@prisma/client": "5.19.0",
+    "bytes": "^3.1.1"
   },
   "devDependencies": {
+    "@types/bytes": "^3.1.1",
     "prisma": "5.19.0",
     "typescript": "^5.5.0"
   }

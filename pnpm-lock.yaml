@@ -602,7 +602,13 @@ importers:
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
+      bytes:
+        specifier: ^3.1.1
+        version: 3.1.2
     devDependencies:
+      '@types/bytes':
+        specifier: ^3.1.1
+        version: 3.1.4
       prisma:
         specifier: 5.19.0
         version: 5.19.0
@@ -618,10 +624,16 @@ importers:
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
+      bytes:
+        specifier: ^3.1.1
+        version: 3.1.2
       dotenv:
         specifier: ^16.0.0
         version: 16.4.5
     devDependencies:
+      '@types/bytes':
+        specifier: ^3.1.1
+        version: 3.1.4
       prisma:
         specifier: 5.19.0
         version: 5.19.0

@@ -1,5 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
+import bytes from 'bytes'
 
 export default config({
   db: {
@@ -10,6 +11,9 @@ export default config({
     prismaClientPath: 'node_modules/myprisma',
   },
   lists,
+  server: {
+    maxFileSize: bytes('40Mb')
+  },
   storage: {
     my_images: {
       kind: 'local',
