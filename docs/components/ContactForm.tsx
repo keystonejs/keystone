@@ -8,10 +8,9 @@ import { Field } from './primitives/Field'
 import { Stack } from './primitives/Stack'
 import { Type } from './primitives/Type'
 
-const validEmail = (email: string) =>
-  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
-    email
-  )
+function validEmail (email: string) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email)
+}
 
 const enquiryUrl = 'https://endpoints.thinkmill.com.au/enquiry'
 

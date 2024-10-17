@@ -51,7 +51,7 @@ const PasswordFilter = graphql.inputObject({
   },
 })
 
-const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/
+const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[./A-Za-z0-9]{53}$/
 
 export function password <ListTypeInfo extends BaseListTypeInfo> (config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {

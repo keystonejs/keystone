@@ -8,8 +8,8 @@ export default config({
     url: 'file:./app.db',
     extendPrismaSchema: schema =>
       schema
-        .replace(/(\ngenerator[^\n]+\{[^\}]+)}/, '$1  previewFeatures = ["multiSchema"]\n}')
-        .replace(/(datasource[^\n]+\{[^\}]+)}/, '$1  schemas = ["first", "second"]\n}'),
+        .replace(/(\ngenerator[^\n]+\{[^}]+)}/, '$1  previewFeatures = ["multiSchema"]\n}')
+        .replace(/(datasource[^\n]+\{[^}]+)}/, '$1  schemas = ["first", "second"]\n}'),
   },
   ui: { isDisabled: true },
   lists: {

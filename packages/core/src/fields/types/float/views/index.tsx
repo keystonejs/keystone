@@ -199,10 +199,10 @@ export const controller = (
           <TextInput
             onChange={event => {
               if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d\.,\s-]/g, ''))
+                onChange(event.target.value.replace(/[^\d.,\s-]/g, ''))
                 return
               }
-              onChange(event.target.value.replace(/[^\d\.\s-]/g, ''))
+              onChange(event.target.value.replace(/[^\d.\s-]/g, ''))
             }}
             value={value}
             autoFocus={autoFocus}

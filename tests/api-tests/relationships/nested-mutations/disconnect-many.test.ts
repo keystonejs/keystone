@@ -110,7 +110,7 @@ describe('no access control', () => {
       }).expect(400)
       expectGraphQLValidationError(body.errors, [
         {
-          message: `Field "disconnect" is not defined by type "NoteRelateToManyForCreateInput". Did you mean \"connect\"?`,
+          message: `Field "disconnect" is not defined by type "NoteRelateToManyForCreateInput". Did you mean "connect"?`,
         },
       ])
     })

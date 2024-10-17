@@ -102,7 +102,7 @@ export async function dev (
     //   WARNING: this is only actually required for tests
     // stop httpServer
     if (aHttpServer) {
-      await new Promise(async (resolve, reject) => {
+      await new Promise((resolve, reject) => {
         aHttpServer.close(async (err: any) => {
           if (err) {
             console.error('Error closing the server', err)
