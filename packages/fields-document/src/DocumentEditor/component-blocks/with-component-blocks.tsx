@@ -81,7 +81,7 @@ function normalizeNodeWithinComponentProp (
     )
   }
   if (Element.isElement(node)) {
-    let childrenHasChanged = node.children
+    const childrenHasChanged = node.children
       .map((node, i) =>
         normalizeNodeWithinComponentProp([node, [...path, i]], editor, fieldOptions, relationships)
       )

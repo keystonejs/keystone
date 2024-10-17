@@ -28,7 +28,7 @@ export function withBlockMarkdownShortcuts (
     ...documentFeatures,
     relationships: true,
   }
-  let addShortcut = (
+  const addShortcut = (
     text: string,
     insert: () => void,
     shouldBeEnabledInComponentBlock: (

@@ -26,7 +26,7 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase> (
   if (typeof value === 'string' && typeof config.parse(value) !== 'string') {
     throw new Error(`Expected ${typeof config.parse(value)}, got ${typeof value}`)
   }
-  let [internalValueState, setInternalValueState] = useState(() =>
+  const [internalValueState, setInternalValueState] = useState(() =>
     typeof value === 'string' ? value : config.format(value)
   )
   const [isFocused, setIsFocused] = useState(false)

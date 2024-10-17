@@ -4,7 +4,7 @@
 import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a heading with a shortcut works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -33,7 +33,7 @@ test('inserting a heading with a shortcut works', () => {
 })
 
 test('inserting a break at the end of the heading exits the heading', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <heading level={1}>
         <text>
@@ -70,7 +70,7 @@ test('inserting a break at the end of the heading exits the heading', () => {
 })
 
 test('inserting a break in the middle of the heading splits the text and does not exit the heading', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <heading level={1}>
         <text>
@@ -110,7 +110,7 @@ test('inserting a break in the middle of the heading splits the text and does no
 })
 
 test('inserting a break at the start of the heading inserts a paragraph above the heading', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <heading level={1}>
         <text>

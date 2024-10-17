@@ -112,7 +112,7 @@ function getLazyMetadataQuery (
             `All members of the AuthenticatedItem union must refer to Keystone lists but "${type.name}" is in the AuthenticatedItem union but is not a Keystone list`
           )
         }
-        let labelGraphQLField = fields[list.labelField]
+        const labelGraphQLField = fields[list.labelField]
         if (labelGraphQLField === undefined) {
           throw new Error(
             `The labelField for the list "${list.key}" is "${list.labelField}" but the GraphQL type does not have a field named "${list.labelField}"`

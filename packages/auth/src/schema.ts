@@ -33,7 +33,7 @@ function assertSecretFieldImpl (
     typeof impl.generateHash !== 'function'
   ) {
     const s = JSON.stringify(secretField)
-    let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`
+    const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, but the field type doesn't implement the required functionality.`
     throw new Error(msg)
   }
 }

@@ -41,7 +41,7 @@ function IntegerInput ({
           return null
         }
         if (/^[+-]?\d+$/.test(raw)) {
-          let parsed = parseInt(raw)
+          const parsed = parseInt(raw)
           if (!Number.isSafeInteger(parsed)) {
             return raw
           }
@@ -114,7 +114,7 @@ export const Field = ({
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true

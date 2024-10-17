@@ -8,9 +8,9 @@ import { Drawer, DrawerController, AlertDialog } from '@keystone-ui/modals'
 import { Page } from '../../components/Page'
 
 export default function ModalsPage () {
-  let [isNarrowOpen, setIsNarrowOpen] = useState(false)
-  let [isWideOpen, setIsWideOpen] = useState(false)
-  let [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
+  const [isNarrowOpen, setIsNarrowOpen] = useState(false)
+  const [isWideOpen, setIsWideOpen] = useState(false)
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   return (
     <Page>

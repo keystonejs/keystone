@@ -17,7 +17,7 @@ const props: ComponentProps<typeof CheckMark>[] = [
 ]
 
 export default function OptionsPage () {
-  let [value, setValue] = useState<undefined | { label: string, value: string }>()
+  const [value, setValue] = useState<undefined | { label: string, value: string }>()
   return (
     <Page>
       <h1>Options</h1>

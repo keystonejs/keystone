@@ -343,7 +343,7 @@ export async function dev (
               servers.expressServer.use(createAdminUIMiddlewareWithNextApp(newSystem.config, newContext, nextApp))
             }
             expressServer = servers.expressServer
-            let prevApolloServer = lastApolloServer
+            const prevApolloServer = lastApolloServer
             lastApolloServer = servers.apolloServer
             await prevApolloServer.stop()
           }
@@ -357,7 +357,7 @@ export async function dev (
   // Serve the dev status page for the Admin UI
   let initKeystonePromiseResolve: () => void | undefined
   let initKeystonePromiseReject: (err: any) => void | undefined
-  let initKeystonePromise = new Promise<void>((resolve, reject) => {
+  const initKeystonePromise = new Promise<void>((resolve, reject) => {
     initKeystonePromiseResolve = resolve
     initKeystonePromiseReject = reject
   })

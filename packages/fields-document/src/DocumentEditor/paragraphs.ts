@@ -12,7 +12,7 @@ export function withParagraphs (editor: Editor): Editor {
     const [node, path] = entry
 
     if (Editor.isEditor(node)) {
-      let lastNode = node.children[node.children.length - 1]
+      const lastNode = node.children[node.children.length - 1]
       if (lastNode?.type !== 'paragraph') {
         Transforms.insertNodes(editor, paragraphElement(), {
           at: [...path, node.children.length],

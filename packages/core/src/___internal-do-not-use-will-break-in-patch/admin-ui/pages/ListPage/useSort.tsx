@@ -4,7 +4,7 @@ import { useRouter } from '../../../../admin-ui/router'
 
 export function useSort (list: ListMeta, orderableFields: Set<string>) {
   const { query } = useRouter()
-  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
+  const sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
 
   return useMemo(() => {
     if (sortByFromUrl === '') return null

@@ -21,7 +21,7 @@ export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...
       }
     : {}
 
-  let dialog = (
+  const dialog = (
     <div
       ref={ref}
       contentEditable={false}

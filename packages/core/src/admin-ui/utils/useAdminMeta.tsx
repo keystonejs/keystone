@@ -16,7 +16,7 @@ const adminMetaLocalStorageKey = 'keystone.adminMeta'
 let _mustRenderServerResult = true
 
 function useMustRenderServerResult () {
-  let [, forceUpdate] = useState(0)
+  const [, forceUpdate] = useState(0)
   useEffect(() => {
     _mustRenderServerResult = false
     forceUpdate(1)
@@ -35,7 +35,7 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
     if (item === null) return
 
     try {
-      let parsed = JSON.parse(item)
+      const parsed = JSON.parse(item)
       if (parsed.hash === adminMetaHash) {
         return parsed.meta as StaticAdminMetaQuery['keystone']['adminMeta']
       }

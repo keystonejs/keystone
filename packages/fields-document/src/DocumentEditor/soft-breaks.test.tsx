@@ -5,7 +5,7 @@ import { Editor } from 'slate'
 import { jsx, makeEditor } from './tests/utils'
 
 test('basic soft break', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -31,7 +31,7 @@ test('basic soft break', () => {
 })
 
 test('soft break deletes selection', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

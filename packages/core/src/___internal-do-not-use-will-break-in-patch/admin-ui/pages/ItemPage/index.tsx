@@ -153,7 +153,7 @@ function ItemForm ({
       })
   })
   const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
-  const itemId = state.item.data?.id!
+  const itemId = state.item.data?.id
   const hasChangedFields = !!changedFields.size
   usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]))
   return (

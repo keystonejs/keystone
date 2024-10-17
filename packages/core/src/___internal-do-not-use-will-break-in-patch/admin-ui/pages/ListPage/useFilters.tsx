@@ -18,7 +18,7 @@ export function useFilters (list: ListMeta, filterableFields: Set<string>) {
     return possibleFilters
   }, [list, filterableFields])
   const filters = useMemo(() => {
-    let filters: Filter[] = []
+    const filters: Filter[] = []
     Object.keys(query).forEach(key => {
       const filter = possibleFilters[key]
       const val = query[key]

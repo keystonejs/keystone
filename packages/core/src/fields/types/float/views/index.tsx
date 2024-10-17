@@ -91,7 +91,7 @@ function FloatInput ({
         if (raw === '') {
           return null
         }
-        let parsed = parseFloat(raw)
+        const parsed = parseFloat(raw)
         if (Number.isFinite(parsed)) {
           return parsed
         }
@@ -157,7 +157,7 @@ export const Field = ({
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true

@@ -4,7 +4,7 @@
 import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a blockquote with a shortcut works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -34,7 +34,7 @@ test('inserting a blockquote with a shortcut works', () => {
 })
 
 test('backspace at start of blockquote', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <blockquote>
         <paragraph>
@@ -67,7 +67,7 @@ test('backspace at start of blockquote', () => {
 })
 
 test('enter on empty line at end of blockquote exits blockquote', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <blockquote>
         <paragraph>
@@ -100,7 +100,7 @@ test('enter on empty line at end of blockquote exits blockquote', () => {
 })
 
 test('enter on empty line in middle splits the blockquote', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <blockquote>
         <paragraph>

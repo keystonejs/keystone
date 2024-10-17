@@ -220,7 +220,7 @@ function HeadingButton ({
   onToggleShowMenu: () => void
 }) {
   const { textStyles } = useToolbarState()
-  let buttonLabel =
+  const buttonLabel =
     textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected
   const isDisabled = textStyles.allowedHeadingLevels.length === 0
   return useMemo(
@@ -308,7 +308,7 @@ function HeadingDialog ({
   return (
     <ToolbarGroup direction="column">
       {headingLevels.map(hNum => {
-        let Tag = `h${hNum}` as const
+        const Tag = `h${hNum}` as const
         const isSelected = textStyles.selected === hNum
         return (
           <ToolbarButton

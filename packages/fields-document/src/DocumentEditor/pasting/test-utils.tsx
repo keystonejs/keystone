@@ -4,7 +4,7 @@ import { makeEditor, jsx } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 
 export function htmlToEditor (html: string) {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

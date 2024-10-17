@@ -193,7 +193,7 @@ export function InsertMenu ({ children, text }: { children: ReactNode, text: Tex
 
   useEffect(() => {
     const domNode = ReactEditor.toDOMNode(editor, editor)
-    let listener = (event: KeyboardEvent) => {
+    const listener = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return
       switch (event.key) {
         case 'ArrowDown': {

@@ -279,7 +279,7 @@ export function DocumentEditorEditable (props: EditableProps) {
     <Editable
       decorate={useCallback(
         ([node, path]: NodeEntry<Node>) => {
-          let decorations: Range[] = []
+          const decorations: Range[] = []
           if (node.type === 'component-block') {
             if (
               node.children.length === 1 &&

@@ -177,7 +177,7 @@ function objToShorthand<
   Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
 > (obj: Obj): Obj | true | undefined {
   const values = Object.values(obj)
-  let state: (typeof values)[number] = values[0]!
+  const state: (typeof values)[number] = values[0]!
   for (const val of values) {
     if (val !== state || (val !== undefined && val !== true)) {
       return obj

@@ -111,7 +111,7 @@ describe('File - Crud special tests', () => {
     `,
     })
 
-  for (let matrixValue of testMatrix) {
+  for (const matrixValue of testMatrix) {
     const getConfig = (): StorageConfig => ({
       ...(matrixValue === 's3'
         ? { ...s3DefaultStorage, preserve: false, type: 'file' }

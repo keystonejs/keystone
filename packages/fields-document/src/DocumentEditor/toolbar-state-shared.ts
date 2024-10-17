@@ -102,7 +102,7 @@ export const createToolbarState = (
       softBreaks: true,
     }
 
-  let [maybeCodeBlockEntry] = Editor.nodes(editor, {
+  const [maybeCodeBlockEntry] = Editor.nodes(editor, {
     match: node => node.type !== 'code' && Element.isElement(node) && Editor.isBlock(editor, node),
   })
   const editorMarks = Editor.marks(editor) || {}
@@ -151,15 +151,15 @@ export const createToolbarState = (
     }
   }
 
-  let [headingEntry] = Editor.nodes(editor, {
+  const [headingEntry] = Editor.nodes(editor, {
     match: nodeTypeMatcher('heading'),
   })
 
-  let [listEntry] = Editor.nodes(editor, {
+  const [listEntry] = Editor.nodes(editor, {
     match: isListNode,
   })
 
-  let [alignableEntry] = Editor.nodes(editor, {
+  const [alignableEntry] = Editor.nodes(editor, {
     match: nodeTypeMatcher('paragraph', 'heading'),
   })
 

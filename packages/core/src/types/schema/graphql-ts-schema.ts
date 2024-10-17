@@ -162,7 +162,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('Decimal only accepts values as strings')
       }
-      let decimal = new DecimalValue(value.value)
+      const decimal = new DecimalValue(value.value)
       if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite')
       }
@@ -178,7 +178,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       if (typeof value !== 'string') {
         throw new GraphQLError('Decimal only accepts values as strings')
       }
-      let decimal = new DecimalValue(value)
+      const decimal = new DecimalValue(value)
       if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite')
       }
