@@ -79,7 +79,6 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
     const conditions: Record<string, any>[] = []
     const idField = list.fields.id.fieldMeta as { type: string, kind: string }
-    console.error({ idField, value, meta: list.fields.id.fieldMeta })
 
     if (idField.type === 'String') {
       // TODO: remove in breaking change?
@@ -99,6 +98,40 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
     for (const fieldKey of searchFields) {
       const field = list.fields[fieldKey]
+
+      // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+      if (field.fieldMeta?.refSearchFields) {
+        // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+        for (const fieldKey of field.fieldMeta?.refSearchFields) {
+          const field = list.fields[fieldKey]
+
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          if (field.fieldMeta?.many) {
+            conditions.push({
+              [fieldKey]: {
+                some: {
+                  [fieldKey]: {
+                    contains: trimmedSearch,
+                    mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+                  },
+                },
+              },
+            })
+
+            continue
+          }
+
+          conditions.push({
+            [field.path]: {
+              contains: trimmedSearch,
+              mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+            },
+          })
+        }
+
+        continue
+      }
+
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,

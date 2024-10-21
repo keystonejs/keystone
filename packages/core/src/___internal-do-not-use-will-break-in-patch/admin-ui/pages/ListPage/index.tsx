@@ -84,7 +84,6 @@ const storeableQueries = ['sortBy', 'fields']
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
-
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
     router.replace({ pathname: router.pathname })
@@ -136,8 +135,8 @@ function ListPage ({ listKey }: ListPageProps) {
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
@@ -157,10 +156,9 @@ function ListPage ({ listKey }: ListPageProps) {
 
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
-
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
-  const searchLabels = searchFields.map(key => list.fields[key].label)
 
+  const searchLabels = searchFields.map(key => list.fields[key].label)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
   const search = useFilter(searchParam, list, searchFields)
