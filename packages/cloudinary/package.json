@@ -32,7 +32,7 @@
     "@types/express": "^4.17.14",
     "@types/react": "^18.3.3",
     "graphql": "^16.8.1",
-    "graphql-upload": "^15.0.2"
+    "graphql-upload": "^17.0.0"
   },
   "preconstruct": {
     "entrypoints": [
