@@ -1,0 +1,46 @@
+{
+  "name": "@keystone-6/fields-query-builder",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/keystone-6-fields-query-builder.cjs.js",
+  "module": "dist/keystone-6-fields-query-builder.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-6-fields-query-builder.esm.js",
+      "default": "./dist/keystone-6-fields-query-builder.cjs.js"
+    },
+    "./views": {
+      "module": "./views/dist/keystone-6-fields-query-builder-views.esm.js",
+      "default": "./views/dist/keystone-6-fields-query-builder-views.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.9.2",
+    "@babel/runtime": "^7.16.3",
+    "@keystone-ui/fields": "workspace:^",
+    "@react-awesome-query-builder/antd": "^6.0.0",
+    "@react-awesome-query-builder/core": "^6.0.0",
+    "@react-awesome-query-builder/ui": "^6.0.0",
+    "@types/react": "^18.0.9",
+    "antd": "^5.0.0",
+    "lodash.merge": "^4.0.0",
+    "react": "^18.2.0"
+  },
+  "peerDependencies": {
+    "@keystone-6/core": "^6.0.0"
+  },
+  "devDependencies": {
+    "@keystone-6/core": "workspace:^",
+    "@types/express": "^4.17.14",
+    "graphql": "^16.8.1",
+    "graphql-upload": "^15.0.2"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "views/index.tsx"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-query-builder"
+}
