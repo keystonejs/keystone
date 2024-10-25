@@ -9,6 +9,7 @@ import {
   TextInput,
   DatePicker,
   FieldDescription,
+  BlockDatePicker
 } from '@keystone-ui/fields'
 import {
   type CardValueComponent,
@@ -261,5 +262,47 @@ export const controller = (
       return { [config.path]: null }
     },
     validate: value => validate(value, config.fieldMeta, config.label) === undefined,
+    filter: {
+      Filter ({ onChange, value }) {
+        return (
+          <BlockDatePicker
+						onClear={() => {
+							onChange('')
+						}}
+						onUpdate={date => {
+							onChange(date)
+						}}
+						value={value}
+          />
+        )
+      },
+
+      graphql: ({ type, value }) => {
+        const valueWithoutWhitespace = value.replace(/\s/g, '')
+        return { [config.path]: { [type]: valueWithoutWhitespace ? new Date(valueWithoutWhitespace).toISOString(): new Date().toISOString() } }
+      },
+      Label ({ label, value }) {
+        let renderedValue = value
+        return `${label.toLowerCase()}: ${renderedValue}`
+      },
+      types: {
+        gt: {
+          label: 'Is greater than',
+          initialValue: '',
+        },
+        lt: {
+          label: 'Is less than',
+          initialValue: '',
+        },
+        gte: {
+          label: 'Is greater than or equal to',
+          initialValue: '',
+        },
+        lte: {
+          label: 'Is less than or equal to',
+          initialValue: '',
+        },
+      },
+    },
   }
 }
