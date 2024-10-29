@@ -34,7 +34,7 @@
     "@preconstruct/cli": "^2.8.9",
     "@stylistic/eslint-plugin-ts": "^2.9.0",
     "@types/jest": "^29.0.0",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.5.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
