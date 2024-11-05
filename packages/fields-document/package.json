@@ -75,7 +75,7 @@
     "scroll-into-view-if-needed": "^3.0.0",
     "slate": "^0.110.0",
     "slate-history": "^0.110.0",
-    "slate-react": "^0.110.0",
+    "slate-react": "^0.111.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
