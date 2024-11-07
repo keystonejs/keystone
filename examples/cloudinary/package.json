@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@keystone-6/cloudinary": "^8.0.0",
-    "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.3.0",
+    "@keystone-6/auth": "^8.1.0",
+    "@keystone-6/core": "^6.3.1",
     "@prisma/client": "5.19.0",
     "dotenv": "^16.0.0"
   },

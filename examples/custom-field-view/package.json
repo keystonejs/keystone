@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
-    "@keystone-6/core": "^6.3.0",
+    "@keystone-6/core": "^6.3.1",
     "@keystone-ui/button": "^7.0.2",
     "@keystone-ui/core": "^5.0.2",
     "@keystone-ui/fields": "^7.2.0",
