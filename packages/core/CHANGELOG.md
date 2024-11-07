@@ -1,5 +1,17 @@
 # @keystone-6/core
 
+## 6.3.1
+
+### Patch Changes
+
+- [#9348](https://github.com/keystonejs/keystone/pull/9348) [`86c5db3`](https://github.com/keystonejs/keystone/commit/86c5db38497e7f53452b05cba022ed116c86ae63) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `serxer.maxFileSize` parameter being ignored
+
+- [#9391](https://github.com/keystonejs/keystone/pull/9391) [`91ae307`](https://github.com/keystonejs/keystone/commit/91ae307949053daebbd4933d511e17aee4c38143) Thanks [@dcousens](https://github.com/dcousens)! - Updates `prisma` minor version to `5.22.0`
+
+- [#9262](https://github.com/keystonejs/keystone/pull/9262) [`d543e60`](https://github.com/keystonejs/keystone/commit/d543e60d2f59959caf804fb6f6dc58227c98934d) Thanks [@kennedybaird](https://github.com/kennedybaird)! - Fixes `decimal` field bug (#8597) by parsing to `Decimal` before lessThan / greaterThan checks
+
+- [#9359](https://github.com/keystonejs/keystone/pull/9359) [`70eaf68`](https://github.com/keystonejs/keystone/commit/70eaf68340dabf3848935b821eb384c9716a5c26) Thanks [@marekryb](https://github.com/marekryb)! - Fix misleading error messages when importing `.keystone/config.js`
+
 ## 6.3.0
 
 ### Minor Changes

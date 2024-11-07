@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 10.0.3
+
+### Patch Changes
+
+- [#9391](https://github.com/keystonejs/keystone/pull/9391) [`e937bad`](https://github.com/keystonejs/keystone/commit/e937bad31368163f2b7ea2e031a35d305c5feeec) Thanks [@dcousens](https://github.com/dcousens)! - Fix output formatting for CLI instructions
+
 ## 10.0.2
 
 ### Patch Changes

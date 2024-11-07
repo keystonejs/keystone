@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 9.1.1
+
+### Patch Changes
+
+- [#9326](https://github.com/keystonejs/keystone/pull/9326) [`8cb70c9`](https://github.com/keystonejs/keystone/commit/8cb70c9705670121f8ecf7e2eab7165df6140539) Thanks [@kidneyweakx](https://github.com/kidneyweakx)! - Fixes URL validation bug by using `encodeURI` to preserve percent-encoded characters during validation.
+
 ## 9.1.0
 
 ### Minor Changes

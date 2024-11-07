@@ -1,5 +1,11 @@
 # @keystone-6/auth
 
+## 8.1.0
+
+### Minor Changes
+
+- [#9335](https://github.com/keystonejs/keystone/pull/9335) [`33258b5`](https://github.com/keystonejs/keystone/commit/33258b5e5fa9d4474abf98da1bc1a7903f44c709) Thanks [@benderham](https://github.com/benderham)! - Updates the welcome page newsletter to include Thinkmill
+
 ## 8.0.0
 
 ### Patch Changes
