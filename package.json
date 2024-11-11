@@ -5,8 +5,8 @@
   "private": true,
   "version": null,
   "license": "MIT",
-  "repository": "https://github.com/keystonejs/keystone",
-  "homepage": "https://github.com/keystonejs/keystone",
+  "repository": "https://github.com/BankerAdvisor/keystoneForked",
+  "homepage": "https://github.com/BankerAdvisor/keystoneForked",
   "packageManager": "pnpm@9.12.3",
   "scripts": {
     "coverage": "jest --coverage",
