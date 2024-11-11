@@ -157,7 +157,7 @@ function FieldGroup (props: { label: string, description: string | null, childre
       aria-labelledby={labelId}
       aria-describedby={props.description === null ? undefined : descriptionId}
     >
-      <details open>
+      <details open={false}>
         <summary
           css={{ listStyle: 'none', outline: 0, '::-webkit-details-marker': { display: 'none' } }}
         >
