@@ -88,19 +88,17 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig)
 
-export const relationship =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    ref,
-    ...config
-  }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  ({ fieldKey, listKey, lists }) => {
+export function relationship <ListTypeInfo extends BaseListTypeInfo>({
+  ref,
+  ...config
+}: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return ({ fieldKey, listKey, lists }) => {
     const { many = false } = config
     const [foreignListKey, foreignFieldKey] = ref.split('.')
     const foreignList = lists[foreignListKey]
     if (!foreignList) throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
 
     const foreignListTypes = foreignList.types
-
     const commonConfig = {
       ...config,
       __ksTelemetryFieldTypeName: '@keystone-6/relationship',
@@ -338,3 +336,4 @@ export const relationship =
       }),
     })
   }
+}

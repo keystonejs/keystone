@@ -117,6 +117,7 @@ export type ListMeta = {
 
   pageSize: number
   initialColumns: string[]
+  initialSearch: string[]
   initialSort: null | { direction: 'ASC' | 'DESC', field: string }
   isSingleton: boolean
 }

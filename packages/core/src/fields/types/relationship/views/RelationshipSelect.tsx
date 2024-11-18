@@ -72,7 +72,9 @@ function isUuid (x: unknown) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
 }
 
-export function useFilter (value: string, list: ListMeta, searchFields: string[]) {
+export function useSearchFilter (value: string, list: ListMeta, searchFields: string[], lists: {
+  [list: string]: ListMeta
+}) {
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -101,18 +103,26 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
 
       // @ts-expect-error TODO: fix fieldMeta type for relationship fields
       if (field.fieldMeta?.refSearchFields) {
-        // @ts-expect-error TODO: fix fieldMeta type for relationship fields
-        for (const fieldKey of field.fieldMeta?.refSearchFields) {
-          const field = list.fields[fieldKey]
-
+        const {
           // @ts-expect-error TODO: fix fieldMeta type for relationship fields
-          if (field.fieldMeta?.many) {
+          refListKey,
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          refSearchFields,
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          many = false,
+        } = field.fieldMeta
+        const refList = lists[refListKey]
+
+        for (const refFieldKey of refSearchFields) {
+          const refField = refList.fields[refFieldKey]
+
+          if (many) {
             conditions.push({
               [fieldKey]: {
                 some: {
-                  [fieldKey]: {
+                  [refFieldKey]: {
                     contains: trimmedSearch,
-                    mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+                    mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
                   },
                 },
               },
@@ -122,9 +132,13 @@ export function useFilter (value: string, list: ListMeta, searchFields: string[]
           }
 
           conditions.push({
-            [field.path]: {
-              contains: trimmedSearch,
-              mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+            [fieldKey]: {
+              some: {
+                [refFieldKey]: {
+                  contains: trimmedSearch,
+                  mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
+                },
+              },
             },
           })
         }
@@ -155,7 +169,7 @@ const LoadingIndicatorContext = createContext<{
   ref: () => {},
 })
 
-export const RelationshipSelect = ({
+export function RelationshipSelect ({
   autoFocus,
   controlShouldRenderValue,
   isDisabled,
@@ -189,7 +203,7 @@ export const RelationshipSelect = ({
         onChange(value: { label: string, id: string, data: Record<string, any> } | null): void
       }
   extraSelection?: string
-}) => {
+}) {
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
   // because we want a re-render if the element changes
@@ -212,7 +226,7 @@ export const RelationshipSelect = ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useFilter(debouncedSearch, list, searchFields)
+  const where = useSearchFilter(debouncedSearch, list, searchFields)
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies

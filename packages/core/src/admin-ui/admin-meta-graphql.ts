@@ -26,6 +26,7 @@ export const staticAdminMetaQuery = gql`
           plural
           description
           initialColumns
+          initialSearch
           pageSize
           labelField
           isSingleton
@@ -132,6 +133,7 @@ export type StaticAdminMetaQuery = {
 
         pageSize: number
         initialColumns: Array<string>
+        initialSearch: Array<string>
         initialSort: {
           __typename: 'KeystoneAdminUISort'
           field: string
