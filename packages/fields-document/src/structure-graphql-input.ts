@@ -348,14 +348,10 @@ export async function resolveRelateToManyForUpdateInput (
     !Array.isArray(value.disconnect) &&
     !Array.isArray(value.set)
   ) {
-    throw new Error(
-      `You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`
-    )
+    throw new Error(`You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`)
   }
   if (value.set && value.disconnect) {
-    throw new Error(
-      `The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`
-    )
+    throw new Error(`The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`)
   }
 
   // Perform queries for the connections
