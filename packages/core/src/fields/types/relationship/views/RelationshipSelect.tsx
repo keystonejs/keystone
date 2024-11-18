@@ -23,6 +23,9 @@ import {
   useApolloClient,
   useQuery,
 } from '../../../../admin-ui/apollo'
+import {
+  useKeystone
+} from '../../../../admin-ui/context'
 
 function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObject<any>) {
   const cbRef = useRef(cb)
@@ -202,6 +205,7 @@ export function RelationshipSelect ({
       }
   extraSelection?: string
 }) {
+  const keystone = useKeystone()
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
   // because we want a re-render if the element changes
@@ -224,7 +228,7 @@ export function RelationshipSelect ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useSearchFilter(debouncedSearch, list, searchFields)
+  const where = useSearchFilter(debouncedSearch, list, searchFields, keystone.adminMeta.lists)
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies

@@ -80,8 +80,6 @@ export const lists = {
           inlineEdit: { fields: ['name', 'email'] },
           linkToItem: true,
           inlineConnect: true,
-
-          searchFields: [],
         },
 
         many: false, // only 1 author for each Post (the default)
