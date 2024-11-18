@@ -133,11 +133,9 @@ export function useSearchFilter (value: string, list: ListMeta, searchFields: st
 
           conditions.push({
             [fieldKey]: {
-              some: {
-                [refFieldKey]: {
-                  contains: trimmedSearch,
-                  mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
-                },
+              [refFieldKey]: {
+                contains: trimmedSearch,
+                mode: refField.search === 'insensitive' ? 'insensitive' : undefined,
               },
             },
           })

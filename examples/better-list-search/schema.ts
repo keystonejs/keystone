@@ -11,6 +11,9 @@ export const lists = {
 
     fields: {
       title: text({ validation: { isRequired: true } }),
+      author: relationship({
+        ref: 'Author',
+      }),
       tags: relationship({
         ref: 'Tag.posts',
         many: true,
@@ -19,7 +22,24 @@ export const lists = {
 
     ui: {
       searchFields: [
-        'tags',
+        'author',
+        'tags', // WARNING: results in searching by post.tags.name
+                //   this is quite powerful, but may load your database
+      ]
+    }
+  }),
+
+  Author: list({
+    // WARNING - for this example, anyone can create, query, update and delete anything
+    access: allowAll,
+
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+    },
+
+    ui: {
+      searchFields: [
+        'name',
       ]
     }
   }),
