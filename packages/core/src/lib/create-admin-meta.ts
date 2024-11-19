@@ -126,7 +126,7 @@ export function createAdminMeta (
       ].slice(0, 3)
     }
 
-    let initialSearch = listConfig.ui?.searchFields
+    let initialSearch = listConfig.ui?.searchFields?.concat()
     if (!initialSearch) {
       initialSearch = [...list.ui.searchableFields.keys()]
     }
