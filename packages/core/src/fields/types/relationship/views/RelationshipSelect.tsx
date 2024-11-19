@@ -75,9 +75,14 @@ function isUuid (x: unknown) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
 }
 
-export function useSearchFilter (value: string, list: ListMeta, searchFields: string[], lists: {
-  [list: string]: ListMeta
-}) {
+export function useSearchFilter (
+  value: string,
+  list: ListMeta,
+  searchFields: string[],
+  lists: {
+    [list: string]: ListMeta
+  }
+) {
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -311,14 +316,15 @@ export function RelationshipSelect ({
           { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
           { where: Record<string, any>, take: number, skip: number }
         > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
-              }
-            `
+          query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
+            items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
+              ${labelFieldAlias}: ${labelField}
+              ${idFieldAlias}: id
+              ${extraSelection}
+            }
+          }
+        `
+
         setLastFetchMore({ extraSelection, list, skip, where })
         fetchMore({
           query: QUERY,

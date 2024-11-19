@@ -137,18 +137,16 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo>({
         }
 
         const hideCreate = config.ui?.hideCreate ?? false
-        const refLabelField: typeof foreignFieldKey = foreignListMeta.labelField
-        const refSearchFields: (typeof foreignFieldKey)[] = foreignListMeta.fields
-          .filter(x => x.search)
-          .map(x => x.key)
+        const refLabelField = foreignListMeta.labelField
+        const refSearchFields = foreignListMeta.initialSearch
 
         if (config.ui?.displayMode === 'count') {
           return {
+            displayMode: 'count',
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
             many,
             hideCreate,
-            displayMode: 'count',
             refLabelField,
             refSearchFields,
           }
@@ -189,11 +187,11 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo>({
           }
 
           return {
+            displayMode: 'cards',
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
             many,
             hideCreate,
-            displayMode: 'cards',
             cardFields: config.ui.cardFields,
             linkToItem: config.ui.linkToItem ?? false,
             removeMode: config.ui.removeMode ?? 'disconnect',
@@ -221,21 +219,14 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo>({
               `The ui.searchFields option for relationship field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
             )
           }
-
-          const field = foreignListMeta.fieldsByKey[searchFieldKey]
-          if (field.search) continue
-
-          throw new Error(
-            `The ui.searchFields option for field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-          )
         }
 
         return {
+          displayMode: 'select',
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
           hideCreate,
-          displayMode: 'select',
           refLabelField: specificRefLabelField,
           refSearchFields: specificRefSearchFields,
         }

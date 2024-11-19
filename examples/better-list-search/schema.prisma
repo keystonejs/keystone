@@ -13,11 +13,13 @@ generator client {
 }
 
 model Post {
-  id       String  @id @default(cuid())
-  title    String  @default("")
-  author   Author? @relation("Post_author", fields: [authorId], references: [id])
-  authorId String? @map("author")
-  tags     Tag[]   @relation("Post_tags")
+  id                String  @id @default(cuid())
+  title             String  @default("")
+  author            Author? @relation("Post_author", fields: [authorId], references: [id])
+  authorId          String? @map("author")
+  related           Post[]  @relation("Post_related")
+  tags              Tag[]   @relation("Post_tags")
+  from_Post_related Post[]  @relation("Post_related")
 
   @@index([authorId])
 }

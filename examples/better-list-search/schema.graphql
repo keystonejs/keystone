@@ -5,6 +5,8 @@ type Post {
   id: ID!
   title: String
   author: Author
+  related(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedCount(where: PostWhereInput! = {}): Int
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
 }
@@ -20,6 +22,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   author: AuthorWhereInput
+  related: PostManyRelationFilter
   tags: TagManyRelationFilter
 }
 
@@ -62,6 +65,12 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
@@ -81,6 +90,7 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   author: AuthorRelateToOneForUpdateInput
+  related: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
 }
 
@@ -88,6 +98,13 @@ input AuthorRelateToOneForUpdateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
   disconnect: Boolean
+}
+
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input TagRelateToManyForUpdateInput {
@@ -105,12 +122,18 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   author: AuthorRelateToOneForCreateInput
+  related: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
 }
 
 input AuthorRelateToOneForCreateInput {
   create: AuthorCreateInput
   connect: AuthorWhereUniqueInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input TagRelateToManyForCreateInput {
@@ -173,12 +196,6 @@ input TagWhereInput {
   posts: PostManyRelationFilter
 }
 
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -189,13 +206,6 @@ input TagUpdateInput {
   posts: PostRelateToManyForUpdateInput
 }
 
-input PostRelateToManyForUpdateInput {
-  disconnect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
-}
-
 input TagUpdateArgs {
   where: TagWhereUniqueInput!
   data: TagUpdateInput!
@@ -204,11 +214,6 @@ input TagUpdateArgs {
 input TagCreateInput {
   name: String
   posts: PostRelateToManyForCreateInput
-}
-
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
 }
 
 """

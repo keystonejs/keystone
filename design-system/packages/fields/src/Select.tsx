@@ -167,6 +167,7 @@ export function MultiSelect ({
       inputId={id}
       styles={composedStyles}
       value={value}
+      filterOption={null}
       onChange={value => {
         if (!value) {
           onChange([])

@@ -14,6 +14,10 @@ export const lists = {
       author: relationship({
         ref: 'Author',
       }),
+      related: relationship({
+        ref: 'Post',
+        many: true,
+      }),
       tags: relationship({
         ref: 'Tag.posts',
         many: true,
