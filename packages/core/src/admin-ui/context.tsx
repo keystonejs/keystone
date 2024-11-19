@@ -147,10 +147,18 @@ export function useRawKeystone () {
   throw new Error('useRawKeystone must be called inside a KeystoneProvider component')
 }
 
-export function useList (key: string) {
+export function useList (listKey: string) {
   const {
     adminMeta: { lists },
   } = useKeystone()
-  if (key in lists) return lists[key]
-  throw new Error(`Invalid list key provided to useList: ${key}`)
+  const list = lists[listKey]
+  if (!list) throw new Error(`Unknown field ${listKey}`)
+  return list
+}
+
+export function useField (listKey: string, fieldKey: string) {
+  const list = useList(listKey)
+  const field = list.fields[fieldKey]
+  if (!field) throw new Error(`Unknown field ${listKey}.${fieldKey}`)
+  return field
 }

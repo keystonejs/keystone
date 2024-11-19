@@ -5,7 +5,10 @@ import {
   fieldType
 } from '../../../types'
 import { graphql } from '../../..'
-import { getAdminMetaForRelationshipField } from '../../../lib/create-admin-meta'
+import {
+  type ListMetaRootVal,
+  getAdminMetaForRelationshipField
+} from '../../../lib/create-admin-meta'
 import { type controller } from './views'
 
 // This is the default display mode for Relationships
@@ -78,6 +81,22 @@ type ManyDbConfig = {
   }
 }
 
+function throwIfMissingFields (
+  localListMeta: ListMetaRootVal,
+  foreignListMeta: ListMetaRootVal,
+  refLabelField: string,
+  refSearchFields: string[]
+) {
+  if (!(refLabelField in foreignListMeta.fieldsByKey)) {
+    throw new Error(`"${refLabelField}" is not a field of list "${foreignListMeta.key}"`)
+  }
+
+  for (const searchFieldKey of refSearchFields) {
+    if (searchFieldKey in foreignListMeta.fieldsByKey) continue
+    throw new Error(`"${refSearchFields}" is not a field of list "${foreignListMeta.key}"`)
+  }
+}
+
 export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     many?: boolean
@@ -88,19 +107,17 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig)
 
-export const relationship =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    ref,
-    ...config
-  }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  ({ fieldKey, listKey, lists }) => {
+export function relationship <ListTypeInfo extends BaseListTypeInfo>({
+  ref,
+  ...config
+}: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return ({ fieldKey, listKey, lists }) => {
     const { many = false } = config
     const [foreignListKey, foreignFieldKey] = ref.split('.')
     const foreignList = lists[foreignListKey]
     if (!foreignList) throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
 
     const foreignListTypes = foreignList.types
-
     const commonConfig = {
       ...config,
       __ksTelemetryFieldTypeName: '@keystone-6/relationship',
@@ -113,6 +130,10 @@ export const relationship =
         if (!foreignListMeta) {
           throw new Error(`The ref [${ref}] on relationship [${listKey}.${fieldKey}] is invalid`)
         }
+
+        const refLabelField = foreignListMeta.labelField
+        const refSearchFields = foreignListMeta.initialSearchFields
+        const hideCreate = config.ui?.hideCreate ?? false
 
         if (config.ui?.displayMode === 'cards') {
           // we're checking whether the field which will be in the admin meta at the time that getAdminMeta is called.
@@ -138,19 +159,13 @@ export const relationship =
           }
         }
 
-        const hideCreate = config.ui?.hideCreate ?? false
-        const refLabelField: typeof foreignFieldKey = foreignListMeta.labelField
-        const refSearchFields: (typeof foreignFieldKey)[] = foreignListMeta.fields
-          .filter(x => x.search)
-          .map(x => x.key)
-
         if (config.ui?.displayMode === 'count') {
           return {
+            displayMode: 'count',
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
             many,
             hideCreate,
-            displayMode: 'count',
             refLabelField,
             refSearchFields,
           }
@@ -169,33 +184,13 @@ export const relationship =
                   refSearchFields,
                 }
 
-          if (!(inlineConnectConfig.refLabelField in foreignListMeta.fieldsByKey)) {
-            throw new Error(
-              `The ui.inlineConnect.labelField option for field '${listKey}.${fieldKey}' uses '${inlineConnectConfig.refLabelField}' but that field doesn't exist.`
-            )
-          }
-
-          for (const searchFieldKey of inlineConnectConfig.refSearchFields) {
-            if (!(searchFieldKey in foreignListMeta.fieldsByKey)) {
-              throw new Error(
-                `The ui.inlineConnect.searchFields option for relationship field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
-              )
-            }
-
-            const field = foreignListMeta.fieldsByKey[searchFieldKey]
-            if (field.search) continue
-
-            throw new Error(
-              `The ui.searchFields option for field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-            )
-          }
-
+          throwIfMissingFields(localListMeta, foreignListMeta, inlineConnectConfig.refLabelField, inlineConnectConfig.refSearchFields)
           return {
+            displayMode: 'cards',
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
             many,
             hideCreate,
-            displayMode: 'cards',
             cardFields: config.ui.cardFields,
             linkToItem: config.ui.linkToItem ?? false,
             removeMode: config.ui.removeMode ?? 'disconnect',
@@ -210,34 +205,13 @@ export const relationship =
         // prefer the local definition to the foreign list, if provided
         const specificRefLabelField = config.ui?.labelField || refLabelField
         const specificRefSearchFields = config.ui?.searchFields || refSearchFields
-
-        if (!(specificRefLabelField in foreignListMeta.fieldsByKey)) {
-          throw new Error(
-            `The ui.labelField option for field '${listKey}.${fieldKey}' uses '${specificRefLabelField}' but that field doesn't exist.`
-          )
-        }
-
-        for (const searchFieldKey of specificRefSearchFields) {
-          if (!(searchFieldKey in foreignListMeta.fieldsByKey)) {
-            throw new Error(
-              `The ui.searchFields option for relationship field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
-            )
-          }
-
-          const field = foreignListMeta.fieldsByKey[searchFieldKey]
-          if (field.search) continue
-
-          throw new Error(
-            `The ui.searchFields option for field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-          )
-        }
-
+        throwIfMissingFields(localListMeta, foreignListMeta, specificRefLabelField, specificRefSearchFields)
         return {
+          displayMode: 'select',
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
           hideCreate,
-          displayMode: 'select',
           refLabelField: specificRefLabelField,
           refSearchFields: specificRefSearchFields,
         }
@@ -338,3 +312,4 @@ export const relationship =
       }),
     })
   }
+}

@@ -15,17 +15,18 @@ export const staticAdminMetaQuery = gql`
           key
           itemQueryName
           listQueryName
-          initialSort {
-            __typename
-            field
-            direction
-          }
           path
           label
           singular
           plural
           description
           initialColumns
+          initialSearchFields
+          initialSort {
+            __typename
+            field
+            direction
+          }
           pageSize
           labelField
           isSingleton
@@ -132,6 +133,7 @@ export type StaticAdminMetaQuery = {
 
         pageSize: number
         initialColumns: Array<string>
+        initialSearchFields: Array<string>
         initialSort: {
           __typename: 'KeystoneAdminUISort'
           field: string

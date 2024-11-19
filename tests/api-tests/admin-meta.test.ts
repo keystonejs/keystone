@@ -156,6 +156,7 @@ test(
               },
               groups: [],
               initialColumns: ['name', 'something'],
+              initialSearchFields: ['name'],
               initialSort: null,
               itemQueryName: 'User',
               key: 'User',

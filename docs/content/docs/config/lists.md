@@ -77,7 +77,7 @@ Options:
 
 - `labelField`: Selects the field which will be used as the label column in the Admin UI.
   By default looks for a field called `'label'`, then falls back to `'name'`, then `'title'`, and finally `'id'`, which is guaranteed to exist.
-- `searchFields`: The fields used by the Admin UI when searching this list on the list view and in relationship fields.
+- `searchFields`: The fields used by the Admin UI when searching this list on the list view and in relationship fields. Nominated fields need to support the `contains` filter.
   It is always possible to search by an id and `'id'` should not be specified in this option.
   By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
 - `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
@@ -89,17 +89,17 @@ Options:
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
 - `createView`: Controls the create view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
+    Can be overridden by per-field values in the `ui.createView.fieldMode` config.
     See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
 - `itemView`: Controls the item view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
+    Can be overridden by per-field values in the `ui.itemView.fieldMode` config.
     See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
 - `listView`: Controls the list view page of the Admin UI.
   - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
-    Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
+    Can be overridden by per-field values in the `ui.listView.fieldMode` config.
     See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
   - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.

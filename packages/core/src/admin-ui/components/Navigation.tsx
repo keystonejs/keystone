@@ -196,7 +196,7 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
   )
 }
 
-export const Navigation = () => {
+export function Navigation () {
   const {
     adminMeta: { lists },
     adminConfig,
