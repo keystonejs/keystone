@@ -180,11 +180,10 @@ Note it does not allow modifying the value.
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
 import { CellComponent } from '@keystone-6/core/types';
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
+export const Cell: CellComponent = ({ item, field }) => {
+  const value = item[field.path] + '';
+  return <CellContainer>{value}</CellContainer>;
 };
-Cell.supportsLinkTo = true;
 ```
 
 ## Related resources

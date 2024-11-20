@@ -1,196 +1,80 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { useState } from 'react'
 
-import { Text } from '@keystar/ui/typography'
+import { ContextualHelp } from '@keystar/ui/contextual-help'
+import { Content } from '@keystar/ui/slots'
+import { TextField } from '@keystar/ui/text-field'
+import { Heading, Text } from '@keystar/ui/typography'
 
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { useState } from 'react'
 import {
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { useFormattedInput } from '../../integer/views/utils'
 
-type Validation = {
-  isRequired: boolean
-  min: bigint
-  max: bigint
-}
-
-type Value =
-  | { kind: 'create', value: string | bigint | null }
-  | { kind: 'update', value: string | bigint | null, initial: unknown | null }
-
-function BigIntInput ({
-  value,
-  onChange,
-  id,
-  autoFocus,
-  forceValidation,
-  validationMessage,
-  placeholder,
-}: {
-  id: string
-  autoFocus?: boolean
-  value: bigint | string | null
-  onChange: (value: bigint | string | null) => void
-  forceValidation?: boolean
-  validationMessage?: string
-  placeholder?: string
-}) {
-  const [hasBlurred, setHasBlurred] = useState(false)
-  const props = useFormattedInput<bigint | null>(
-    {
-      format: value => (value === null ? '' : value.toString()),
-      parse: raw => {
-        raw = raw.trim()
-        if (raw === '') {
-          return null
-        }
-        if (/^[+-]?\d+$/.test(raw)) {
-          try {
-            return BigInt(raw)
-          } catch {
-            return raw
-          }
-        }
-        return raw
-      },
-    },
-    {
-      value,
-      onChange,
-      onBlur: () => {
-        setHasBlurred(true)
-      },
-    }
-  )
-  return (
-    <span>
-      <TextInput
-        placeholder={placeholder}
-        id={id}
-        autoFocus={autoFocus}
-        inputMode="numeric"
-        {...props}
-      />
-      {(hasBlurred || forceValidation) && validationMessage && (
-        <span css={{ color: 'red' }}>{validationMessage}</span>
-      )}
-    </span>
-  )
-}
-
-export const Field = ({
-  field,
-  value,
-  onChange,
-  autoFocus,
-  forceValidation,
-}: FieldProps<typeof controller>) => {
-  const message = validate(value, field.validation, field.label, field.hasAutoIncrementDefault)
-
-  return (
-    <FieldContainer>
-      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      {onChange ? (
-        <span>
-          <BigIntInput
-            id={field.path}
-            autoFocus={autoFocus}
-            onChange={val => {
-              onChange({ ...value, value: val })
-            }}
-            value={value.value}
-            forceValidation={forceValidation}
-            placeholder={
-              field.hasAutoIncrementDefault && value.kind === 'create'
-                ? 'Defaults to an incremented number'
-                : undefined
-            }
-            validationMessage={message}
-            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-          />
-        </span>
-      ) : value.value === null ? (
-        'null'
-      ) : (
-        value.value.toString()
-      )}
-    </FieldContainer>
-  )
-}
+const TYPE_OPERATOR_MAP = {
+  equals: '=',
+  not: '≠',
+  gt: '>',
+  lt: '<',
+  gte: '≥',
+  lte: '≤',
+} as const
 
 export const Cell: CellComponent = ({ field, item }) => {
   const value = item[field.path]
-  return value != null
-    ? <Text>{value.toString()}</Text>
-    : null
+  return value != null ? <Text>{value.toString()}</Text> : null
 }
 
-function validate (
-  state: Value,
+type Value =
+  | { kind: 'create', value: string | null }
+  | { kind: 'update', initial: string | null, value: string | null }
+
+type Validation = {
+  isRequired: boolean
+  min: string
+  max: string
+}
+
+function validate_ (
+  value: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const { kind, value } = state
-  if (typeof value === 'string') {
-    return `${label} must be a BigInt`
+  const {
+    value: input,
+    kind,
+  } = value
+  if (kind === 'create' && hasAutoIncrementDefault && input === null) return
+  if (kind === 'update' && value.initial === null && input === null) return
+  if (validation.isRequired && input === null) return `${label} is required`
+  if (typeof input !== 'string') return
+  try {
+    const v = BigInt(input)
+    if (validation.min !== undefined && v < BigInt(validation.min)) return `${label} must be greater than or equal to ${validation.min}`
+    if (validation.max !== undefined && v > BigInt(validation.max)) return `${label} must be less than or equal to ${validation.max}`
+  } catch (e: any) {
+    return `${label} is not a valid BigInt`
   }
-
-  // if we receive null initially on the item view and the current value is null,
-  // we should always allow saving it because:
-  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
-  // - we might have null because of an access control error
-  if (kind === 'update' && state.initial === null && value === null) {
-    return undefined
-  }
-
-  if (kind === 'create' && value === null && hasAutoIncrementDefault) {
-    return undefined
-  }
-
-  if (validation.isRequired && value === null) {
-    return `${label} is required`
-  }
-  if (typeof value === 'bigint') {
-    if (value < validation.min) {
-      return `${label} must be greater than or equal to ${validation.min}`
-    }
-    if (value > validation.max) {
-      return `${label} must be less than or equal to ${validation.max}`
-    }
-  }
-
-  return undefined
 }
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{
-    validation: {
-      isRequired: boolean
-      min: string
-      max: string
-    }
-    defaultValue: string | null | { kind: 'autoincrement' }
+    validation: Validation
+    defaultValue: string | null | 'autoincrement'
   }>
-): FieldController<Value, string> & {
+): FieldController<Value, string | null> & {
   validation: Validation
   hasAutoIncrementDefault: boolean
-} => {
-  const hasAutoIncrementDefault =
-    typeof config.fieldMeta.defaultValue === 'object' &&
-    config.fieldMeta.defaultValue?.kind === 'autoincrement'
-
-  const validation = {
-    isRequired: config.fieldMeta.validation.isRequired,
-    min: BigInt(config.fieldMeta.validation.min),
-    max: BigInt(config.fieldMeta.validation.max),
+} {
+  const validate = (value: Value) => {
+    return validate_(
+      value,
+      config.fieldMeta.validation,
+      config.label,
+      config.fieldMeta.defaultValue === 'autoincrement'
+    )
   }
 
   return {
@@ -198,99 +82,144 @@ export const controller = (
     label: config.label,
     description: config.description,
     graphqlSelection: config.path,
-    validation,
+    validation: config.fieldMeta.validation,
     defaultValue: {
       kind: 'create',
-      value:
-        typeof config.fieldMeta.defaultValue === 'string'
-          ? BigInt(config.fieldMeta.defaultValue)
-          : null,
+      value: config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
     },
-    deserialize: data => {
-      const raw = data[config.path]
-      return {
-        kind: 'update',
-        value: raw === null ? null : BigInt(raw),
-        initial: raw,
-      }
-    },
-    serialize: value => ({ [config.path]: value.value === null ? null : value.value.toString() }),
-    hasAutoIncrementDefault,
-    validate: value =>
-      validate(value, validation, config.label, hasAutoIncrementDefault) === undefined,
+    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
+    serialize: value => ({ [config.path]: value.value }),
     filter: {
-      Filter ({ autoFocus, type, onChange, value }) {
+      Filter (props) {
+        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+        const [isDirty, setDirty] = useState(false)
+        if (type === 'empty' || type === 'not_empty') return null
+
+        const labelProps = context === 'add'
+          ? { label: config.label, description: typeLabel }
+          : { label: typeLabel }
+
         return (
-          <TextInput
-            onChange={event => {
-              if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d,\s-]/g, ''))
-                return
-              }
-              onChange(event.target.value.replace(/[^\d\s-]/g, ''))
-            }}
-            value={value}
+          <TextField
+            {...otherProps}
+            {...labelProps}
             autoFocus={autoFocus}
+            errorMessage={(forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value }) ? 'Required' : null}
+            inputMode="numeric"
+            width="auto"
+            onBlur={() => setDirty(true)}
+            onChange={x => onChange?.(x === '' ? null : x)}
+            value={value ?? ''}
           />
         )
       },
 
       graphql: ({ type, value }) => {
-        const valueWithoutWhitespace = value.replace(/\s/g, '')
-        const parsed =
-          type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',')
-            : valueWithoutWhitespace
-        if (type === 'not') {
-          return { [config.path]: { not: { equals: parsed } } }
-        }
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
-        return { [config.path]: { [key]: parsed } }
+        if (type === 'empty') return { [config.path]: { equals: null } }
+        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'not') return { [config.path]: { not: { equals: value } } }
+        return { [config.path]: { [type]: value } }
       },
-      Label ({ label, value, type }) {
-        let renderedValue = value
-        if (['in', 'not_in'].includes(type)) {
-          renderedValue = value
-            .split(',')
-            .map(value => value.trim())
-            .join(', ')
-        }
-        return `${label.toLowerCase()}: ${renderedValue}`
+      Label ({ label, type, value }) {
+        if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()
+        const operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
+        return `${operator} ${value}`
       },
       types: {
-        is: {
+        equals: {
           label: 'Is exactly',
-          initialValue: '',
+          initialValue: null,
         },
         not: {
           label: 'Is not exactly',
-          initialValue: '',
+          initialValue: null,
         },
         gt: {
           label: 'Is greater than',
-          initialValue: '',
+          initialValue: null,
         },
         lt: {
           label: 'Is less than',
-          initialValue: '',
+          initialValue: null,
         },
         gte: {
           label: 'Is greater than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
         lte: {
           label: 'Is less than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
+        empty: {
+          label: 'Is empty',
+          initialValue: null,
         },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
+        not_empty: {
+          label: 'Is not empty',
+          initialValue: null,
         },
       },
     },
+
+    hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
+    validate: value => validate(value) === undefined,
   }
+}
+
+export function Field ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) {
+  const [isDirty, setDirty] = useState(false)
+  const isReadOnly = !onChange || field.hasAutoIncrementDefault
+
+  if (field.hasAutoIncrementDefault && value.kind === 'create') {
+    return (
+      <TextField
+        autoFocus={autoFocus}
+        description={field.description}
+        label={field.label}
+        isReadOnly
+        defaultValue="--"
+        contextualHelp={(
+          <ContextualHelp>
+            <Heading>Auto increment</Heading>
+            <Content>
+              <Text>
+                This field is set to auto increment. It will default to the next available number.
+              </Text>
+            </Content>
+          </ContextualHelp>
+        )}
+      />
+    )
+  }
+
+  const validate = (value: Value) => {
+    return validate_(
+      value,
+      field.validation,
+      field.label,
+      field.hasAutoIncrementDefault
+    )
+  }
+
+  return (
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      errorMessage={(forceValidation || isDirty) && validate(value)}
+      isReadOnly={isReadOnly}
+      isRequired={field.validation.isRequired}
+      inputMode="numeric"
+      width="alias.singleLineWidth"
+      onBlur={() => setDirty(true)}
+      onChange={x => onChange?.({ ...value, value: x === '' ? null : x })}
+      value={value.value ?? ''}
+    />
+  )
 }

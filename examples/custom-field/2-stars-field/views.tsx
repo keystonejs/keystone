@@ -1,39 +1,50 @@
-import React from 'react'
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
+import React, { InputHTMLAttributes } from 'react'
+
+import { Field as KeystarField } from '@keystar/ui/field'
 
 import {
-  type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '@keystone-6/core/types'
-import { StarsInput } from './stars-input'
 
 // this is the component shown in the create modal and item page
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer as="fieldset">
-    <FieldLabel as="legend">{field.label}</FieldLabel>
-    <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-    <StarsInput maxStars={field.maxStars} onChange={onChange} value={value} autoFocus={autoFocus} />
-  </FieldContainer>
-)
+export function Field({
+  autoFocus,
+  field,
+  onChange,
+  value,
+}: FieldProps<typeof controller>) {
+  const readOnlyAccess = onChange === undefined
 
-// this is shown on the list view in the table
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+  return (
+    <KeystarField
+      label={field.label}
+      isReadOnly={readOnlyAccess}
+      description={field.description}
+      errorMessage={field.validate?.(value) ?? undefined}
+    >
+      {(inputProps) => (
+        <MyCustomInput
+          {...inputProps}
+          autoFocus={autoFocus}
+          onChange={(e) => onChange?.(parseFloat(e.target.value))}
+          value={value ?? ''}
+        />
+      )}
+    </KeystarField>
+  )
 }
-// setting supportsLinksTo means the cell component allows containing a link to the item
-// for example, text fields support it but relationship fields don't because
-// their cell component links to the related item so it can't link to the item that the relationship is on
-Cell.supportsLinkTo = true
 
-export const controller = (
+function MyCustomInput(props: InputHTMLAttributes<HTMLInputElement>) {
+  return <input {...props} style={{ fontSize: 32, padding: 8 }} />
+}
+
+export function controller(
   // the type parameter here needs to align with what is returned from `getAdminMeta`
   // in the server-side portion of the field type
   config: FieldControllerConfig<{ maxStars: number }>
-): FieldController<number | null, string> & { maxStars: number } => {
+): FieldController<number | null, string> & { maxStars: number } {
   return {
     maxStars: config.fieldMeta.maxStars,
     path: config.path,
@@ -41,10 +52,10 @@ export const controller = (
     description: config.description,
     graphqlSelection: config.path,
     defaultValue: null,
-    deserialize: data => {
+    deserialize: (data) => {
       const value = data[config.path]
       return typeof value === 'number' ? value : null
     },
-    serialize: value => ({ [config.path]: value }),
+    serialize: (value) => ({ [config.path]: value }),
   }
 }

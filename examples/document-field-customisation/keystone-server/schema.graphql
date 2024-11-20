@@ -237,34 +237,17 @@ type KeystoneAdminUIListMeta {
   labelField: String!
   singular: String!
   plural: String!
-<<<<<<< HEAD
-  description: String
-  pageSize: Int!
-  labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
   graphql: KeystoneAdminUIGraphQL!
+  pageSize: Int!
   initialColumns: [String!]!
   initialSearchFields: [String!]!
-  initialSort: KeystoneAdminUISort
-  isSingleton: Boolean!
-  hideCreate: Boolean!
-  hideDelete: Boolean!
-  isHidden: Boolean!
-  itemQueryName: String!
-  listQueryName: String!
-=======
-  fields: [KeystoneAdminUIFieldMeta!]!
-  groups: [KeystoneAdminUIFieldGroupMeta!]!
-  graphql: KeystoneAdminUIGraphQL!
-  pageSize: Int!
-  initialColumns: [String!]!
   initialSort: KeystoneAdminUISort
   isSingleton: Boolean!
   hideNavigation: Boolean!
   hideCreate: Boolean!
   hideDelete: Boolean!
->>>>>>> 6698465de (upgrade design system squash)
 }
 
 type KeystoneAdminUIFieldMeta {

@@ -76,9 +76,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
 export const Cell: CellComponent = ({ field, item }) => {
   const value = item[field.path]
-  return value != null
-    ? <Text>{value.toString()}</Text>
-    : null
+  return value != null ? <Text>{value.toString()}</Text> : null
 }
 
 type Config = FieldControllerConfig<TextFieldMeta>
@@ -138,19 +136,17 @@ type TextValue =
   | { kind: 'update', inner: InnerTextValue, initial: InnerTextValue }
 
 function deserializeTextValue (value: string | null): InnerTextValue {
-  if (value === null) {
-    return { kind: 'null', prev: '' }
-  }
+  if (value === null) return { kind: 'null', prev: '' }
   return { kind: 'value', value }
 }
 
-export const controller = (
+export function controller (
   config: Config
 ): FieldController<TextValue, string> & {
   displayMode: 'input' | 'textarea'
   validation: Validation
   isNullable: boolean
-} => {
+} {
   const validation: Validation = {
     isRequired: config.fieldMeta.validation.isRequired,
     length: config.fieldMeta.validation.length,
