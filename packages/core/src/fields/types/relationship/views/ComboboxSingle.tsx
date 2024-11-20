@@ -67,7 +67,15 @@ export const ComboboxSingle = ({
       items={data?.items ?? []}
       label={label}
       loadingState={loading || isLoading ? 'loading' : 'idle'}
-      onInputChange={setSearch}
+      onInputChange={input => {
+        setSearch(input)
+
+        // unset the selected value when the user clears the input
+        // NOTE: remove when we support required relationships
+        if (input === '') {
+          state.onChange(null)
+        }
+      }}
       inputValue={search}
       onLoadMore={onLoadMore}
       placeholder={placeholder}

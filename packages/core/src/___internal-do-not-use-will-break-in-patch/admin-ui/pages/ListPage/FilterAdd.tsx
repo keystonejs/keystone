@@ -42,9 +42,7 @@ export function FilterAdd (props: {
     event.preventDefault()
     setForceValidation(true)
 
-    if (state.kind !== 'filter-value') {
-      return
-    }
+    if (state.kind !== 'filter-value') return
     if ((state.filterType !== 'empty' && state.filterType !== 'not_empty') && state.filterValue == null) {
       return
     }

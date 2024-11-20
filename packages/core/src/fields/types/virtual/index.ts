@@ -7,7 +7,6 @@ import {
   type KeystoneContext,
   type ListGraphQLTypes,
   fieldType,
-  getGqlNames,
 } from '../../../types'
 import { graphql } from '../../..'
 
@@ -20,23 +19,19 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
-      | ((
-          lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+      | ((lists: Record<string, ListGraphQLTypes>) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
     ui?: {
       /**
-       * Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:
+       * This can be used by the AdminUI to fetch the relevant sub-fields
+       *   or arguments on a non-scalar field GraphQL type
        * ```graphql
        * query {
        *   item(where: { id: "..." }) {
-       *     field${ui.query}
+       *     fieldName${ui.query}
        *   }
        * }
        * ```
-       *
-       * This is only needed when you your field returns a GraphQL type other than a scalar(String and etc.)
-       * or an enum or you need to provide arguments to the field.
        */
       query?: string
     }
@@ -60,18 +55,7 @@ export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
       !config.ui?.query &&
       (config.ui?.itemView?.fieldMode !== 'hidden' || config.ui?.listView?.fieldMode !== 'hidden')
     ) {
-      throw new Error(
-        `The virtual field at ${meta.listKey}.${meta.fieldKey} requires a selection for the Admin UI but ui.query is unspecified and ui.listView.fieldMode and ui.itemView.fieldMode are not both set to 'hidden'.\n` +
-          `Either set ui.query with what the Admin UI should fetch or hide the field from the Admin UI by setting ui.listView.fieldMode and ui.itemView.fieldMode to 'hidden'.\n` +
-          `When setting ui.query, it is interpolated into a GraphQL query like this:\n` +
-          `query {\n` +
-          `  ${
-            getGqlNames({ listKey: meta.listKey, pluralGraphQLName: '' }).itemQueryName
-          }(where: { id: "..." }) {\n` +
-          `    ${meta.fieldKey}\${ui.query}\n` +
-          `  }\n` +
-          `}`
-      )
+      throw new Error(`${meta.listKey}.${meta.fieldKey} requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden'`)
     }
 
     return fieldType({ kind: 'none', })({
@@ -85,7 +69,7 @@ export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
       getAdminMeta: () => ({
-        query: config.ui?.query || ''
+        query: config.ui?.query ?? ''
       }),
     })
   }

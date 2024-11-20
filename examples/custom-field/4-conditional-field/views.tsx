@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
+import { Cell as CellContainer } from '@keystar/ui/table'
+import { TextField } from '@keystar/ui/text-field'
 
 import {
   type CellComponent,
@@ -27,31 +27,23 @@ export function Field ({
 
   const disabled = onChange === undefined
   return (
-    <FieldContainer as="fieldset">
-      <FieldLabel>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      <div>
-        <TextInput
-          type="text"
-          onChange={event => {
-            onChange?.(event.target.value)
-          }}
-          disabled={disabled}
-          value={value || ''}
-          autoFocus={autoFocus}
-        />
-      </div>
-    </FieldContainer>
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      isDisabled={disabled}
+      onChange={x => onChange?.(x === '' ? null : x)}
+      value={value ?? ''}
+    />
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
+export const Cell: CellComponent = ({ item, field }) => {
   const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+  return <CellContainer>{value}</CellContainer>
 }
-Cell.supportsLinkTo = true
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{
     dependency: {
       field: string
@@ -63,7 +55,7 @@ export const controller = (
     field: string
     minimumValue: number
   }
-} => {
+} {
   return {
     path: config.path,
     label: config.label,

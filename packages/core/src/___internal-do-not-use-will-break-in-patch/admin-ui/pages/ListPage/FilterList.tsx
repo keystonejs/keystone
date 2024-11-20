@@ -52,9 +52,7 @@ function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
   // have no editable value, basically `null` or `!null`. Which offers:
   // * better DX — we can avoid weird nullable types and UIs that don't make sense
   // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
-  if (filter.type === 'empty' || filter.type === 'not_empty') {
-    return tagElement
-  }
+  if (filter.type === 'empty' || filter.type === 'not_empty') return tagElement
 
   return (
     <DialogTrigger type="popover" mobileType="tray">
@@ -84,6 +82,11 @@ function FilterDialog ({
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault()
+
+    if ((filter.type !== 'empty' && filter.type !== 'not_empty') && value == null) {
+      return
+    }
+
     router.push({
       query: {
         ...router.query,

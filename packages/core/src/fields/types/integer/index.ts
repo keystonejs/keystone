@@ -61,6 +61,9 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
         )
       }
     }
+    if (defaultValue !== null && !Number.isInteger(defaultValue)) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
+    }
     if (min !== undefined && !Number.isInteger(min)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
     }

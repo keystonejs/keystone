@@ -6,7 +6,9 @@
   "scripts": {
     "astro": "astro",
     "build": "astro build",
+    "build:keystone": "keystone build",
     "dev": "astro dev",
+    "dev:keystone": "keystone dev",
     "postinstall": "keystone postinstall",
     "preview": "astro preview",
     "start": "astro dev"
