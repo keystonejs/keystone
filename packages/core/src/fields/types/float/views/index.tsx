@@ -1,261 +1,192 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { useState } from 'react'
 
+import { TextField } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'
 
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { useState } from 'react'
 import {
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { useFormattedInput } from '../../integer/views/utils'
 
-type Validation = {
-  min?: number
-  max?: number
-  isRequired?: boolean
-}
-
-type Value =
-  | { kind: 'update', initial: number | null, value: string | number | null }
-  | { kind: 'create', value: string | number | null }
-
-function validate (value: Value, validation: Validation, label: string) {
-  const val = value.value
-
-  // if we recieve null initially on the item view and the current value is null,
-  // we should always allow saving it because:
-  // - the value might be null in the database and we don't want to prevent saving the whole item because of that
-  // - we might have null because of an access control error
-  if (value.kind === 'update' && value.initial === null && val === null) {
-    return undefined
-  }
-
-  if (value.kind === 'create' && value.value === null) {
-    return undefined
-  }
-
-  if (validation.isRequired && val === null) {
-    return `${label} is required`
-  }
-
-  // we don't parse infinite numbers into +-Infinity/NaN so that we don't lose the text that the user wrote
-  // so we need to try parsing it again here to provide good messages
-  if (typeof val === 'string') {
-    const number = parseFloat(val)
-    if (isNaN(number)) return `${label} must be a number`
-    return `${label} must be finite`
-  }
-
-  if (typeof val === 'number') {
-    if (typeof validation?.min === 'number' && val < validation.min) {
-      return `${label} must be greater than or equal to ${validation.min}`
-    }
-    if (typeof validation?.max === 'number' && val > validation?.max) {
-      return `${label} must be less than or equal to ${validation.max}`
-    }
-  }
-
-  return undefined
-}
-
-function FloatInput ({
-  value,
-  onChange,
-  id,
-  autoFocus,
-  forceValidation,
-  validationMessage,
-  placeholder,
-}: {
-  id: string
-  autoFocus?: boolean
-  value: number | string | null
-  onChange: (value: number | string | null) => void
-  forceValidation?: boolean
-  validationMessage?: string
-  placeholder?: string
-}) {
-  const [hasBlurred, setHasBlurred] = useState(false)
-  const props = useFormattedInput<number | null>(
-    {
-      format: value => (value === null ? '' : value.toString()),
-      parse: raw => {
-        raw = raw.trim()
-        if (raw === '') {
-          return null
-        }
-        const parsed = parseFloat(raw)
-        if (Number.isFinite(parsed)) {
-          return parsed
-        }
-        return raw
-      },
-    },
-    {
-      value,
-      onChange,
-      onBlur: () => {
-        setHasBlurred(true)
-      },
-    }
-  )
-
-  return (
-    <span>
-      <TextInput
-        placeholder={placeholder}
-        id={id}
-        autoFocus={autoFocus}
-        inputMode="numeric"
-        {...props}
-      />
-      {(hasBlurred || forceValidation) && validationMessage && (
-        <span css={{ color: 'red' }}>{validationMessage}</span>
-      )}
-    </span>
-  )
-}
-
-export const Field = ({
-  field,
-  value,
-  onChange,
-  autoFocus,
-  forceValidation,
-}: FieldProps<typeof controller>) => {
-  const message = validate(value, field.validation, field.label)
-  return (
-    <FieldContainer>
-      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      {onChange ? (
-        <span>
-          <FloatInput
-            id={field.path}
-            autoFocus={autoFocus}
-            onChange={val => {
-              onChange({ ...value, value: val })
-            }}
-            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-            value={value.value}
-            forceValidation={forceValidation}
-            validationMessage={message}
-          />
-        </span>
-      ) : (
-        value.value
-      )}
-    </FieldContainer>
-  )
-}
+const TYPE_OPERATOR_MAP = {
+  equals: '=',
+  not: '≠',
+  gt: '>',
+  lt: '<',
+  gte: '≥',
+  lte: '≤',
+} as const
 
 export const Cell: CellComponent = ({ field, item }) => {
   const value = item[field.path]
-  return value != null
-    ? <Text>{value.toString()}</Text>
-    : null
+  return value != null ? <Text>{value.toString()}</Text> : null
+}
+
+type Value =
+  | { kind: 'create', value: string | null }
+  | { kind: 'update', initial: string | null, value: string | null }
+
+type Validation = {
+  isRequired: boolean
+  min: string
+  max: string
+}
+
+function validate_ (
+  value: Value,
+  validation: Validation,
+  label: string,
+): string | undefined {
+  const {
+    value: input,
+    kind,
+  } = value
+  if (kind === 'update' && value.initial === null && input === null) return
+  if (validation.isRequired && input === null) return `${label} is required`
+  if (typeof input !== 'string') return
+  const v = parseFloat(input)
+  if (Number.isNaN(v)) return `${label} is not a valid float`
+  if (validation.min !== undefined && v < parseFloat(validation.min)) return `${label} must be greater than or equal to ${validation.min}`
+  if (validation.max !== undefined && v > parseFloat(validation.max)) return `${label} must be less than or equal to ${validation.max}`
 }
 
 export function controller (
-  config: FieldControllerConfig<{ validation: Validation, defaultValue: number | null }>
-): FieldController<Value, string> & {
+  config: FieldControllerConfig<{
+    validation: Validation
+    defaultValue: string | null
+  }>
+): FieldController<Value, string | null> & {
   validation: Validation
 } {
+  const validate = (value: Value) => {
+    return validate_(
+      value,
+      config.fieldMeta.validation,
+      config.label,
+    )
+  }
+
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: config.path,
     validation: config.fieldMeta.validation,
-    defaultValue: {
-      kind: 'create',
-      value: config.fieldMeta.defaultValue,
+    defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue, },
+    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
+    serialize: value => {
+      const v = value.value !== null ? parseFloat(value.value) : null
+      return { [config.path]: Number.isFinite(v) ? v : null }
     },
-    deserialize: data => ({
-      kind: 'update',
-      initial: data[config.path],
-      value: data[config.path],
-    }),
-    serialize: value => ({ [config.path]: value.value }),
-    validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
     filter: {
-      Filter ({ autoFocus, type, onChange, value }) {
+      Filter (props) {
+        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+        const [isDirty, setDirty] = useState(false)
+        if (type === 'empty' || type === 'not_empty') return null
+
+        const labelProps = context === 'add'
+          ? { label: config.label, description: typeLabel }
+          : { label: typeLabel }
+
         return (
-          <TextInput
-            onChange={event => {
-              if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d.,\s-]/g, ''))
-                return
-              }
-              onChange(event.target.value.replace(/[^\d.\s-]/g, ''))
-            }}
-            value={value}
+          <TextField
+            {...otherProps}
+            {...labelProps}
             autoFocus={autoFocus}
+            errorMessage={(forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value }) ? 'Required' : null}
+            inputMode="numeric"
+            width="auto"
+            onBlur={() => setDirty(true)}
+            onChange={x => onChange?.(x === '' ? null : x)}
+            value={value ?? ''}
           />
         )
       },
 
       graphql: ({ type, value }) => {
-        const valueWithoutWhitespace = value.replace(/\s/g, '')
-        const parsed =
-          type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',').map(x => parseFloat(x))
-            : parseFloat(valueWithoutWhitespace)
-        if (type === 'not') {
-          return { [config.path]: { not: { equals: parsed } } }
-        }
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
-        return { [config.path]: { [key]: parsed } }
+        if (type === 'empty') return { [config.path]: { equals: null } }
+        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'not') return { [config.path]: { not: { equals: value } } }
+        return { [config.path]: { [type]: value } }
       },
-      Label ({ label, value, type }) {
-        let renderedValue = value
-        if (['in', 'not_in'].includes(type)) {
-          renderedValue = value
-            .split(',')
-            .map(value => value.trim())
-            .join(', ')
-        }
-        return `${label.toLowerCase()}: ${renderedValue}`
+      Label ({ label, type, value }) {
+        if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()
+        const operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
+        return `${operator} ${value}`
       },
       types: {
-        is: {
+        equals: {
           label: 'Is exactly',
-          initialValue: '',
+          initialValue: null,
         },
         not: {
           label: 'Is not exactly',
-          initialValue: '',
+          initialValue: null,
         },
         gt: {
           label: 'Is greater than',
-          initialValue: '',
+          initialValue: null,
         },
         lt: {
           label: 'Is less than',
-          initialValue: '',
+          initialValue: null,
         },
         gte: {
           label: 'Is greater than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
         lte: {
           label: 'Is less than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
+        empty: {
+          label: 'Is empty',
+          initialValue: null,
         },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
+        not_empty: {
+          label: 'Is not empty',
+          initialValue: null,
         },
       },
     },
+
+    validate: value => validate(value) === undefined,
   }
+}
+
+export function Field ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) {
+  const [isDirty, setDirty] = useState(false)
+  const isReadOnly = !onChange
+
+  const validate = (value: Value) => {
+    return validate_(
+      value,
+      field.validation,
+      field.label,
+    )
+  }
+
+  return (
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      errorMessage={(forceValidation || isDirty) && validate(value)}
+      isReadOnly={isReadOnly}
+      isRequired={field.validation.isRequired}
+      inputMode="numeric"
+      width="alias.singleLineWidth"
+      onBlur={() => setDirty(true)}
+      onChange={x => onChange?.({ ...value, value: x === '' ? null : x })}
+      value={value.value ?? ''}
+    />
+  )
 }
