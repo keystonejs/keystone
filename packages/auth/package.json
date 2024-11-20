@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystar/ui": "^0.7.6",
+    "@keystar/ui": "^0.7.13",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/fields": "workspace:^",

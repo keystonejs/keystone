@@ -63,7 +63,9 @@ export function SegmentedControl<T> (props: SegmentedControlProps<T>) {
         items={items}
         onSelectionChange={selection => {
           if (selection === 'all') return // irrelevant for single-select
-          onChange(selection.values().next().value)
+          const next = selection.values().next().value
+          if (!next) return
+          onChange(next)
         }}
         selectedKeys={selectedKeys}
       >
