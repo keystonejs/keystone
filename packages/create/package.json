@@ -9,6 +9,7 @@
   "bin": "./cli.js",
   "exports": {
     ".": {
+      "types": "./dist/create-keystone-app.cjs.js",
       "module": "./dist/create-keystone-app.esm.js",
       "default": "./dist/create-keystone-app.cjs.js"
     },
