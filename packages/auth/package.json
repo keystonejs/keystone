@@ -6,18 +6,22 @@
   "module": "dist/keystone-6-auth.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-auth.cjs.js",
       "module": "./dist/keystone-6-auth.esm.js",
       "default": "./dist/keystone-6-auth.cjs.js"
     },
     "./pages/InitPage": {
+      "types": "./pages/InitPage/dist/keystone-6-auth-pages-InitPage.cjs.js",
       "module": "./pages/InitPage/dist/keystone-6-auth-pages-InitPage.esm.js",
       "default": "./pages/InitPage/dist/keystone-6-auth-pages-InitPage.cjs.js"
     },
     "./pages/SigninPage": {
+      "types": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js",
       "module": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.esm.js",
       "default": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js"
     },
     "./components/Navigation": {
+      "types": "./components/Navigation/dist/keystone-6-auth-components-Navigation.cjs.js",
       "module": "./components/Navigation/dist/keystone-6-auth-components-Navigation.esm.js",
       "default": "./components/Navigation/dist/keystone-6-auth-components-Navigation.cjs.js"
     },

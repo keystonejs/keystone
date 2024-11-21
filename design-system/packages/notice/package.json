@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-notice.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-notice.cjs.js",
       "module": "./dist/keystone-ui-notice.esm.js",
       "default": "./dist/keystone-ui-notice.cjs.js"
     },
