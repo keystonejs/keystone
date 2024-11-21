@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-pill.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-pill.cjs.js",
       "module": "./dist/keystone-ui-pill.esm.js",
       "default": "./dist/keystone-ui-pill.cjs.js"
     },

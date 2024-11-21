@@ -7,22 +7,67 @@
   "module": "dist/keystone-6-fields-document.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-fields-document.cjs.js",
+      "node": {
+        "module": "./dist/keystone-6-fields-document.node.esm.js",
+        "default": "./dist/keystone-6-fields-document.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./dist/keystone-6-fields-document.node.esm.js",
+        "default": "./dist/keystone-6-fields-document.node.cjs.js"
+      },
       "module": "./dist/keystone-6-fields-document.esm.js",
       "default": "./dist/keystone-6-fields-document.cjs.js"
     },
     "./views": {
+      "types": "./views/dist/keystone-6-fields-document-views.cjs.js",
+      "node": {
+        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
+        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
+        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
+      },
       "module": "./views/dist/keystone-6-fields-document-views.esm.js",
       "default": "./views/dist/keystone-6-fields-document-views.cjs.js"
     },
     "./primitives": {
+      "types": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js",
+      "node": {
+        "module": "./primitives/dist/keystone-6-fields-document-primitives.node.esm.js",
+        "default": "./primitives/dist/keystone-6-fields-document-primitives.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./primitives/dist/keystone-6-fields-document-primitives.node.esm.js",
+        "default": "./primitives/dist/keystone-6-fields-document-primitives.node.cjs.js"
+      },
       "module": "./primitives/dist/keystone-6-fields-document-primitives.esm.js",
       "default": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js"
     },
     "./structure-views": {
+      "types": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js",
+      "node": {
+        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
+        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
+        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
+      },
       "module": "./structure-views/dist/keystone-6-fields-document-structure-views.esm.js",
       "default": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js"
     },
     "./component-blocks": {
+      "types": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js",
+      "node": {
+        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
+        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
+        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
+      },
       "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
       "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
     },
@@ -89,5 +134,12 @@
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"
+  },
+  "imports": {
+    "#primitives-for-export": {
+      "node": "./src/DocumentEditor/primitives/empty.ts",
+      "react-server": "./src/DocumentEditor/primitives/empty.ts",
+      "default": "./src/DocumentEditor/primitives/index.tsx"
+    }
   }
 }

@@ -6,10 +6,12 @@
   "module": "dist/keystone-6-cloudinary.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-cloudinary.cjs.js",
       "module": "./dist/keystone-6-cloudinary.esm.js",
       "default": "./dist/keystone-6-cloudinary.cjs.js"
     },
     "./views": {
+      "types": "./views/dist/keystone-6-cloudinary-views.cjs.js",
       "module": "./views/dist/keystone-6-cloudinary-views.esm.js",
       "default": "./views/dist/keystone-6-cloudinary-views.cjs.js"
     },
