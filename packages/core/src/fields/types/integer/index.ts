@@ -16,7 +16,7 @@ import { mergeFieldHooks } from '../../resolve-hooks'
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique'
-    defaultValue?: number | { kind: 'autoincrement' }
+    defaultValue?: number | null | { kind: 'autoincrement' }
     validation?: {
       isRequired?: boolean
       min?: number
@@ -29,13 +29,13 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-// these are the lowest and highest values for a signed 32-bit integer
-const MAX_INT = 2147483647
-const MIN_INT = -2147483648
+// for a signed 32-bit integer
+const MAX_INT =  0x7fffffff
+const MIN_INT = -0x80000000
 
 export function integer <ListTypeInfo extends BaseListTypeInfo> (config: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue: _defaultValue,
+    defaultValue: defaultValue_,
     isIndexed,
     validation = {},
   } = config
@@ -45,15 +45,10 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
     min,
     max
   } = validation
+  const defaultValue = typeof defaultValue_ === 'number' ? defaultValue_ : (defaultValue_?.kind ?? null)
 
   return (meta) => {
-    const defaultValue = _defaultValue ?? null
-    const hasAutoIncDefault =
-      typeof defaultValue == 'object' &&
-      defaultValue !== null &&
-      defaultValue.kind === 'autoincrement'
-
-    if (hasAutoIncDefault) {
+    if (defaultValue === 'autoincrement') {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
@@ -109,14 +104,13 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
       kind: 'scalar',
       mode,
       scalar: 'Int',
-      // this will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'number'
           ? { kind: 'literal', value: defaultValue }
-          : defaultValue?.kind === 'autoincrement'
-          ? { kind: 'autoincrement' }
-          : undefined,
+          : (defaultValue === 'autoincrement')
+            ? { kind: 'autoincrement' }
+            : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
@@ -134,7 +128,8 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
           resolve (value) {
-            if (value === undefined && typeof defaultValue === 'number') {
+            if (value === undefined) {
+              if (defaultValue === 'autoincrement') return null
               return defaultValue
             }
             return value
@@ -149,14 +144,11 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
       getAdminMeta () {
         return {
           validation: {
+            isRequired,
             min: min ?? MIN_INT,
             max: max ?? MAX_INT,
-            isRequired,
           },
-          defaultValue:
-            defaultValue === null || typeof defaultValue === 'number'
-              ? defaultValue
-              : 'autoincrement',
+          defaultValue
         }
       },
     })
