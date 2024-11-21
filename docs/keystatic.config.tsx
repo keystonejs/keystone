@@ -7,6 +7,7 @@ import { creditCardIcon } from '@keystar/ui/icon/icons/creditCardIcon'
 import { emoji, hint } from './keystatic/content-components'
 import { gradientSelector } from './keystatic/gradient-selector'
 
+
 export default config({
   storage: {
     kind: 'local',
@@ -16,7 +17,7 @@ export default config({
       name: 'Keystone Website',
     },
     navigation: {
-      Pages: ['docs', 'posts', 'examples'],
+      Pages: ['docs', 'posts', 'examples', 'examplesReadme'],
       Config: ['navigation', 'featuredDocs', 'featuredExamples'],
     },
   },
@@ -142,6 +143,47 @@ export default config({
         description: fields.markdoc.inline({ label: 'Description' }),
       },
     }),
+
+    // ------------------------------
+    // Examples
+    // ------------------------------
+    examplesReadme: collection({
+      label: 'Examples Readmes',
+      path: 'examples/*/',
+      slugField: 'exampleSlug',
+      schema: {
+        exampleSlug: fields.slug({ name: { label: 'Example Slug / Folder Name', validation: {pattern: {regex: /^[a-z]+(-[a-z]+)*$/}} } }),
+        description: fields.markdoc.inline({ label: 'Summary' }),
+        tags: fields.multiselect({
+          label: 'Example Tags',
+          options: [
+            { label: 'Standalone', value: 'standalone' },
+            { label: 'End-to-End', value: 'end-to-end' },
+            { label: 'Deployment', value: 'deployment' },
+          ],
+        }),
+        README: fields.markdoc({ label: 'ReadMe', extension: 'md' }),
+        previewFile: fields.conditional(
+          fields.checkbox({ label: 'Include preview file?', defaultValue: false }),
+          {
+            true: fields.object({
+              fileName: fields.text({ label: 'File Name', validation: { isRequired: true, 
+                pattern: { regex: /^.*\.(ts|tsx|prisma|graphql|)$/ } } 
+              }),
+              description: fields.text({ label: 'Description' }),
+            }),
+            false: fields.empty(),
+          },
+        ),
+        relatedDocs: fields.multiRelationship({
+          label: 'Related Docs',
+          collection: 'docs',
+        }),
+      },
+    }),
+
+
+
   },
   singletons: {
     // ------------------------------
