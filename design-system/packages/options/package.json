@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-options.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-options.cjs.js",
       "module": "./dist/keystone-ui-options.esm.js",
       "default": "./dist/keystone-ui-options.cjs.js"
     },
