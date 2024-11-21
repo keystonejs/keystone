@@ -1,4 +1,3 @@
-// Float in GQL: A signed double-precision floating-point value.
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -13,12 +12,12 @@ import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: number
     isIndexed?: boolean | 'unique'
+    defaultValue?: number | null
     validation?: {
+      isRequired?: boolean
       min?: number
       max?: number
-      isRequired?: boolean
     }
     db?: {
       isNullable?: boolean
@@ -29,7 +28,7 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 
 export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue,
+    defaultValue: defaultValue_,
     isIndexed,
     validation = {},
   } = config
@@ -39,6 +38,7 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
     min,
     max
   } = validation
+  const defaultValue = defaultValue_ ?? null
 
   return (meta) => {
     if (defaultValue !== undefined && (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))) {
@@ -82,7 +82,10 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
       mode,
       scalar: 'Float',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
-      default: typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
+      default:
+        typeof defaultValue === 'number'
+          ? { kind: 'literal', value: defaultValue }
+          : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
@@ -100,18 +103,14 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
           resolve (value) {
-            if (value === undefined) {
-              return defaultValue ?? null
-            }
+            if (value === undefined) return defaultValue
             return value
           },
         },
         update: { arg: graphql.arg({ type: graphql.Float }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Float,
-      }),
+      output: graphql.field({ type: graphql.Float, }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
       getAdminMeta () {
@@ -121,7 +120,7 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
             min: min ?? null,
             max: max ?? null,
           },
-          defaultValue: defaultValue ?? null,
+          defaultValue
         }
       },
     })

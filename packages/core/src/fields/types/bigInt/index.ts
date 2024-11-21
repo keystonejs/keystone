@@ -16,7 +16,7 @@ import { mergeFieldHooks } from '../../resolve-hooks'
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique'
-    defaultValue?: bigint | { kind: 'autoincrement' }
+    defaultValue?: bigint | null | { kind: 'autoincrement' }
     validation?: {
       isRequired?: boolean
       min?: bigint
@@ -29,13 +29,13 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-// these are the lowest and highest values for a signed 64-bit integer
-const MAX_INT = 9223372036854775807n
+// for a signed 64-bit integer
+const MAX_INT =  9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
 export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue: _defaultValue,
+    defaultValue: defaultValue_,
     isIndexed,
     validation = {},
   } = config
@@ -45,15 +45,10 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
     min,
     max
   } = validation
+  const defaultValue = typeof defaultValue_ === 'bigint' ? defaultValue_ : (defaultValue_?.kind ?? null)
 
   return (meta) => {
-    const defaultValue = _defaultValue ?? null
-    const hasAutoIncDefault =
-      typeof defaultValue == 'object' &&
-      defaultValue !== null &&
-      defaultValue.kind === 'autoincrement'
-
-    if (hasAutoIncDefault) {
+    if (defaultValue === 'autoincrement') {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
       }
@@ -112,14 +107,13 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       kind: 'scalar',
       mode,
       scalar: 'BigInt',
-      // this will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'bigint'
           ? { kind: 'literal', value: defaultValue }
-          : defaultValue?.kind === 'autoincrement'
-          ? { kind: 'autoincrement' }
-          : undefined,
+          : (defaultValue === 'autoincrement')
+            ? { kind: 'autoincrement' }
+            : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
@@ -137,7 +131,8 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
             defaultValue: typeof defaultValue === 'bigint' ? defaultValue : undefined,
           }),
           resolve (value) {
-            if (value === undefined && typeof defaultValue === 'bigint') {
+            if (value === undefined) {
+              if (defaultValue === 'autoincrement') return null
               return defaultValue
             }
             return value
@@ -152,9 +147,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       getAdminMeta () {
         return {
           validation: {
+            isRequired,
             min: min?.toString() ?? `${MIN_INT}`,
             max: max?.toString() ?? `${MAX_INT}`,
-            isRequired,
           },
           defaultValue:
             typeof defaultValue === 'bigint'
