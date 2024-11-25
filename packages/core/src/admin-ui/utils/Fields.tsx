@@ -1,22 +1,35 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core'
-import { memo, type ReactNode, useContext, useId, useMemo } from 'react'
-import { FieldDescription } from '@keystone-ui/fields'
-import { ButtonContext } from '@keystone-ui/button'
-import { type FieldGroupMeta, type FieldMeta } from '../../types'
+import { useSlotId } from '@react-aria/utils'
+import React, { type ReactNode, memo, useId, useMemo } from 'react'
+
+import { FieldButton } from '@keystar/ui/button'
+import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
+import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
+import { Icon } from '@keystar/ui/icon'
+import { HStack, VStack } from '@keystar/ui/layout'
+import { css, tokenSchema } from '@keystar/ui/style'
+import { Text } from '@keystar/ui/typography'
+
+import type {
+  FieldEnvironment,
+  FieldGroupMeta,
+  FieldMeta,
+  Item,
+} from '../../types'
+import { EmptyState } from '../components/EmptyState'
 import { type Value } from '.'
 
 type RenderFieldProps = {
-  field: FieldMeta
-  value: unknown
-  itemValue: unknown
-  onChange?(value: (value: Value) => Value): void
   autoFocus?: boolean
+  environment: FieldEnvironment
+  field: FieldMeta
   forceValidation?: boolean
+  itemValue: Item
+  onChange?(value: (value: Value) => Value): void
+  value: unknown
 }
 
-const RenderField = memo(function RenderField ({
+const RenderField = memo(function RenderField({
+  environment,
   field,
   value,
   itemValue,
@@ -26,11 +39,15 @@ const RenderField = memo(function RenderField ({
 }: RenderFieldProps) {
   return (
     <field.views.Field
+      environment={environment}
       field={field.controller}
       onChange={useMemo(() => {
         if (onChange === undefined) return undefined
         return value => {
-          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }))
+          onChange(val => ({
+            ...val,
+            [field.controller.path]: { kind: 'value', value },
+          }))
         }
       }, [onChange, field.controller.path])}
       value={value}
@@ -42,18 +59,27 @@ const RenderField = memo(function RenderField ({
 })
 
 type FieldsProps = {
-  fields: Record<string, FieldMeta>
-  groups?: FieldGroupMeta[]
-  value: Value
+  /**
+   * The environment in which the fields are being rendered. Certain fields may
+   * render differently depending on context, for example the relationship field
+   * does not support "add" behavior in the create dialog.
+   *
+   * @default 'edit-page'
+   */
+  environment?: FieldEnvironment
   fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
   fieldPositions?: Record<string, 'form' | 'sidebar'> | null
+  fields: Record<string, FieldMeta>
   forceValidation: boolean
-  position?: 'form' | 'sidebar'
+  groups?: FieldGroupMeta[]
   invalidFields: ReadonlySet<string>
   onChange(value: (value: Value) => Value): void
+  position?: 'form' | 'sidebar'
+  value: Value
 }
 
 export function Fields ({
+  environment = 'edit-page',
   fields,
   value,
   fieldModes = null,
@@ -64,38 +90,61 @@ export function Fields ({
   groups = [],
   onChange,
 }: FieldsProps) {
+  // TODO: auto-focusing the first field makes sense for e.g. the create item
+  // view, but may be disorienting in other situations. this needs to be
+  // revisited, and the result should probably be memoized
+  const firstFocusable = Object.keys(fields).find(fieldKey => {
+    const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
+    const fieldPosition =
+      fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+    return fieldMode !== 'hidden' && fieldPosition === 'form'
+  })
+
   const renderedFields = Object.fromEntries(
     Object.keys(fields).map((fieldKey, index) => {
       const field = fields[fieldKey]
       const val = value[fieldKey]
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+      const fieldPosition =
+        fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+
       if (fieldMode === 'hidden') return [fieldKey, null]
       if (fieldPosition !== position) return [fieldKey, null]
+      // TODO: this isn't accessible, it should:
+      // - render an inline alert (`Notice`), or
+      // - invoke a "critical" toast message
       if (val.kind === 'error') {
         return [
           fieldKey,
-          <div key={fieldKey}>
-            {field.label}: <span css={{ color: 'red' }}>{val.errors[0].message}</span>
-          </div>,
+          <Text key={fieldKey}>
+            {field.label}: <Text color="critical">{val.errors[0].message}</Text>
+          </Text>,
         ]
       }
+
       return [
         fieldKey,
         <RenderField
           key={fieldKey}
+          environment={environment}
           field={field}
           value={val.value}
           itemValue={value}
           forceValidation={forceValidation && invalidFields.has(fieldKey)}
           onChange={fieldMode === 'edit' ? onChange : undefined}
-          autoFocus={index === 0}
+          autoFocus={fieldKey === firstFocusable}
         />,
       ]
     })
   )
   const rendered: ReactNode[] = []
-  const fieldGroups = new Map<string, { rendered: boolean, group: FieldGroupMeta }>()
+  const fieldGroups = new Map<
+    string,
+    {
+      rendered: boolean
+      group: FieldGroupMeta
+    }
+  >()
   for (const group of groups) {
     const state = { group, rendered: false }
     for (const field of group.fields) {
@@ -106,15 +155,13 @@ export function Fields ({
     const fieldKey = field.path
     if (fieldGroups.has(fieldKey)) {
       const groupState = fieldGroups.get(field.path)!
-      if (groupState.rendered) {
-        continue
-      }
+      if (groupState.rendered) continue
       groupState.rendered = true
       const { group } = groupState
-      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
-      if (renderedFieldsInGroup.every(field => field === null)) {
-        continue
-      }
+      const renderedFieldsInGroup = group.fields.map(
+        field => renderedFields[field.path]
+      )
+      if (renderedFieldsInGroup.every(field => field === null)) continue
       rendered.push(
         <FieldGroup label={group.label} description={group.description}>
           {renderedFieldsInGroup}
@@ -122,89 +169,117 @@ export function Fields ({
       )
       continue
     }
-    if (renderedFields[fieldKey] === null) {
-      continue
-    }
+    if (renderedFields[fieldKey] === null) continue
     rendered.push(renderedFields[fieldKey])
   }
 
+  // TODO: not sure what to do about the sidebar case. i think it's fine to
+  // just render nothing for now, but we should revisit this.
+  if (rendered.length === 0 && position === 'form') {
+    return (
+      <EmptyState
+        icon={textCursorInputIcon}
+        title="No fields"
+        message="There are no fields matching access."
+      />
+    )
+  }
+
+  // the "inline" container allows fields to react to the width of their column
   return (
-    <Stack gap="xlarge">
-      {rendered.length === 0 ? 'There are no fields that you can read or edit' : rendered}
-    </Stack>
+    <VStack gap="xlarge" UNSAFE_style={{ containerType: 'inline-size' }}>
+      {rendered}
+    </VStack>
   )
 }
 
-function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {
-  const descriptionId = useId()
+function FieldGroup (props: {
+  label: string
+  description: string | null
+  children: ReactNode
+}) {
   const labelId = useId()
-  const theme = useTheme()
-  const buttonSize = 24
-  const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext)
-  const buttonStyles = useButtonStyles({ tokens: useButtonTokens(defaults) })
-  const divider = (
-    <div
-      css={{
-        height: '100%',
-        width: 2,
-        backgroundColor: theme.colors.border,
-      }}
-    />
-  )
+  const descriptionId = useSlotId([Boolean(props.description)])
+
   return (
-    <div
-      role="group"
-      aria-labelledby={labelId}
-      aria-describedby={props.description === null ? undefined : descriptionId}
-    >
-      <details open>
-        <summary
-          css={{ listStyle: 'none', outline: 0, '::-webkit-details-marker': { display: 'none' } }}
+    <details aria-labelledby={labelId} aria-describedby={descriptionId} open>
+      <HStack
+        gap="medium"
+        alignItems="center"
+        elementType="summary"
+        UNSAFE_className={css({
+          listStyle: 'none',
+          outline: 0,
+          '::-webkit-details-marker': { display: 'none' },
+        })}
+      >
+        <FieldButton
+          // @ts-expect-error — this works, it's just not exposed in the public types
+          elementType="div"
+          // the <summary/> (above) is the focusable element
+          excludeFromTabOrder
+          prominence="low"
+          height="element.small"
+          width="element.small"
+          minWidth="auto"
+          UNSAFE_className={css({
+            'details[open] &': {
+              transform: 'rotate(90deg)',
+            },
+          })}
         >
-          <Stack across gap="medium">
-            <div // this is a div rather than a button because the interactive element here is the <summary> above
-              css={{
-                ...buttonStyles,
-                'summary:focus &': buttonStyles[':focus'],
-                padding: 0,
-                height: buttonSize,
-                width: buttonSize,
-                'details[open] &': {
-                  transform: 'rotate(90deg)',
-                },
-              }}
-            >
-              {downChevron}
-            </div>
-            {divider}
-            <Text id={labelId} size="large" weight="bold" css={{ position: 'relative' }}>
-              {props.label}
+          <Icon src={chevronRightIcon} size="medium" />
+        </FieldButton>
+        <VStack
+          gap="regular"
+          UNSAFE_className={css({
+            cursor: 'default',
+            userSelect: 'none',
+          })}
+        >
+          <Text
+            color="neutralEmphasis"
+            size="large"
+            weight="medium"
+            id={labelId}
+            position="relative"
+          >
+            {props.label}
+          </Text>
+          {!!props.description && (
+            <Text id={descriptionId} size="regular" color="neutralSecondary">
+              {props.description}
             </Text>
-          </Stack>
-        </summary>
-        <div css={{ display: 'flex' }}>
-          <div css={{ display: 'flex' }}>
-            <Stack across gap="medium">
-              <div css={{ width: buttonSize }} />
-              {divider}
-            </Stack>
-          </div>
-          <Stack marginLeft="medium" css={{ width: '100%' }}>
-            {props.description !== null && (
-              <FieldDescription id={descriptionId}>{props.description}</FieldDescription>
-            )}
-            <Stack marginTop="large" gap="xlarge">
-              {props.children}
-            </Stack>
-          </Stack>
-        </div>
-      </details>
-    </div>
+          )}
+        </VStack>
+      </HStack>
+
+      {/*
+        Padding is applied here because `<details>` doesn't accept flex/grid
+        layout, prefer "gap" in most cases.
+      */}
+      <HStack gap="medium" paddingTop="medium">
+        <GroupIndicatorLine />
+        <VStack gap="xlarge" flex>
+          {props.children}
+        </VStack>
+      </HStack>
+    </details>
   )
 }
 
-const downChevron = (
-  <svg width="16" height="16" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5 3L8.75 6L5 9L5 3Z" fill="currentColor" />
-  </svg>
-)
+export function GroupIndicatorLine() {
+  return (
+    <HStack justifyContent="center" width="element.small">
+      <div
+        className={css({
+          height: '100%',
+          width: tokenSchema.size.alias.focusRing,
+          borderRadius: tokenSchema.size.alias.focusRing,
+          backgroundColor: tokenSchema.color.border.neutral,
+          flexShrink: 0,
+        })}
+      />
+    </HStack>
+  )
+}

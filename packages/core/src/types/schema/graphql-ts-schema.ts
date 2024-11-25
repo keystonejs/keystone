@@ -149,39 +149,25 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
   new GraphQLScalarType({
     name: 'Decimal',
     serialize (value) {
-      if (!DecimalValue.isDecimal(value)) {
-        throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
-      }
+      if (!DecimalValue.isDecimal(value)) throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
       const cast = value as DecimalValue & { scaleToPrint?: number }
-      if (cast.scaleToPrint !== undefined) {
-        return value.toFixed(cast.scaleToPrint)
-      }
+      if (cast.scaleToPrint !== undefined) return value.toFixed(cast.scaleToPrint)
       return value.toString()
     },
     parseLiteral (value) {
-      if (value.kind !== 'StringValue') {
-        throw new GraphQLError('Decimal only accepts values as strings')
-      }
+      if (value.kind !== 'StringValue') throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value.value)
-      if (!decimal.isFinite()) {
-        throw new GraphQLError('Decimal values must be finite')
-      }
+      if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
     },
     parseValue (value) {
       if (DecimalValue.isDecimal(value)) {
-        if (!value.isFinite()) {
-          throw new GraphQLError('Decimal values must be finite')
-        }
+        if (!value.isFinite()) throw new GraphQLError('Decimal values must be finite')
         return value
       }
-      if (typeof value !== 'string') {
-        throw new GraphQLError('Decimal only accepts values as strings')
-      }
+      if (typeof value !== 'string') throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value)
-      if (!decimal.isFinite()) {
-        throw new GraphQLError('Decimal values must be finite')
-      }
+      if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
     },
   })

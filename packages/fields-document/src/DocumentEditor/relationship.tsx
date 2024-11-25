@@ -88,12 +88,10 @@ export function RelationshipElement ({
       >
         {relationship ? (
           <RelationshipSelect
-            controlShouldRenderValue
             isDisabled={false}
             list={list}
             labelField={list.labelField}
             searchFields={searchFields}
-            portalMenu
             state={{
               kind: 'one',
               value:

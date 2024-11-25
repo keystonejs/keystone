@@ -34,9 +34,12 @@ export function CreateItemDrawer ({
           loading: createItemState.state === 'loading',
           action: async () => {
             const item = await createItemState.create()
-            if (item) {
-              onCreate({ id: item.id, label: item.label || item.id })
-            }
+            if (!item) return
+
+            onCreate({
+              id: item.id as string,
+              label: (item.label as string) ?? `${item.id}`
+            })
           },
         },
         cancel: {

@@ -1,53 +1,32 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Button } from '@keystone-ui/button'
-import { Box, jsx } from '@keystone-ui/core'
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
-import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options'
-import { Popover } from '@keystone-ui/popover'
+import React, {
+  type Key,
+  useMemo,
+} from 'react'
 import { useRouter } from 'next/router'
-import { type ListMeta } from '../../../../types'
+
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
+import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
+import { Text } from '@keystar/ui/typography'
+
+import type { ListMeta } from '../../../../types'
 import { useSelectedFields } from './useSelectedFields'
 
-function isArrayEqual (arrA: string[], arrB: string[]) {
-  if (arrA.length !== arrB.length) return false
-  for (let i = 0; i < arrA.length; i++) {
-    if (arrA[i] !== arrB[i]) {
-      return false
-    }
-  }
-  return true
-}
-
-const Option: typeof OptionPrimitive = props => {
-  return (
-    <OptionPrimitive {...props}>
-      {props.children}
-      <CheckMark
-        isDisabled={props.isDisabled}
-        isFocused={props.isFocused}
-        isSelected={props.isSelected}
-      />
-    </OptionPrimitive>
-  )
-}
-
-// TODO: return type required by pnpm :(
-export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
-  Option,
-}
-
 export function FieldSelection ({
-  list,
   fieldModesByFieldPath,
+  isDisabled,
+  list,
 }: {
-  list: ListMeta
   fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
+  isDisabled?: boolean
+  list: ListMeta
 }) {
   const router = useRouter()
   const selectedFields = useSelectedFields(list, fieldModesByFieldPath)
 
-  const setNewSelectedFields = (selectedFields: string[]) => {
+  const setNewSelectedFields = (selectedFields: Key[]) => {
+    // Clear the `fields` query param when selection matches initial columns
     if (isArrayEqual(selectedFields, list.initialColumns)) {
       const { fields: _ignore, ...otherQueryFields } = router.query
       router.push({ query: otherQueryFields })
@@ -55,45 +34,50 @@ export function FieldSelection ({
       router.push({ query: { ...router.query, fields: selectedFields.join(',') } })
     }
   }
-  const fields: { value: string, label: string, isDisabled: boolean }[] = []
-  Object.keys(fieldModesByFieldPath).forEach(fieldPath => {
-    if (fieldModesByFieldPath[fieldPath] === 'read') {
-      fields.push({
+
+  const fields = useMemo(() => {
+    return Object.keys(fieldModesByFieldPath)
+      .filter(fieldPath => fieldModesByFieldPath[fieldPath] === 'read')
+      .map(fieldPath => ({
         value: fieldPath,
         label: list.fields[fieldPath].label,
         isDisabled: selectedFields.size === 1 && selectedFields.has(fieldPath),
-      })
-    }
-  })
+      }))
+  }, [fieldModesByFieldPath, list.fields, selectedFields])
 
   return (
-    <Popover
-      aria-label={`Columns options, list of column options to apply to the ${list.key} list`}
-      triggerRenderer={({ triggerProps }) => {
-        return (
-          <Button weight="link" css={{ padding: 4 }} {...triggerProps}>
-            <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
-              {selectedFields.size} column{selectedFields.size === 1 ? '' : 's'}{' '}
-              <ChevronDownIcon size="smallish" />
-            </span>
-          </Button>
-        )
-      }}
-    >
-      <div css={{ width: 320 }}>
-        <Box padding="medium">
-          <Options
-            onChange={options => {
-              if (!Array.isArray(options)) return
-              setNewSelectedFields(options.map(x => x.value))
-            }}
-            isMulti
-            value={fields.filter(option => selectedFields.has(option.value))}
-            options={fields}
-            components={fieldSelectionOptionsComponents}
-          />
-        </Box>
-      </div>
-    </Popover>
+    <MenuTrigger>
+      <ActionButton isDisabled={isDisabled}>
+        <Text>Columns</Text>
+        <Icon src={chevronDownIcon} />
+      </ActionButton>
+      <Menu
+        items={fields}
+        disallowEmptySelection
+        onSelectionChange={selection => {
+          if (selection === 'all') {
+            setNewSelectedFields(fields.map(field => field.value))
+          } else {
+            setNewSelectedFields(Array.from(selection))
+          }
+        }}
+        selectionMode="multiple"
+        selectedKeys={selectedFields}
+      >
+        {item => (
+          <Item key={item.value} >{item.label}</Item>
+        )}
+      </Menu>
+    </MenuTrigger>
   )
+}
+
+function isArrayEqual (arrA: Key[], arrB: Key[]) {
+  if (arrA.length !== arrB.length) return false
+  for (let i = 0; i < arrA.length; i++) {
+    if (arrA[i] !== arrB[i]) {
+      return false
+    }
+  }
+  return true
 }

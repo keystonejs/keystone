@@ -41,13 +41,13 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
   const defaultValue = defaultValue_ ?? null
 
   return (meta) => {
-    if (defaultValue !== undefined && (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))) {
+    if (defaultValue !== null && !Number.isFinite(defaultValue)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
-    if (min !== undefined && (typeof min !== 'number' || !Number.isFinite(min))) {
+    if (min !== undefined && !Number.isFinite(min)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`)
     }
-    if (max !== undefined && (typeof max !== 'number' || !Number.isFinite(max))) {
+    if (max !== undefined && !Number.isFinite(max)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`)
     }
     if (

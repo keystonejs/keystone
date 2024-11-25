@@ -1,6 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { tokenSchema } from '@keystar/ui/style'
+
 import {
   type ReactNode,
   type HTMLAttributes,
@@ -177,13 +179,13 @@ const MarkButton = forwardRef<any, { children: ReactNode, type: Mark }>(function
 })
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, spacing } = useTheme()
+  const { spacing } = useTheme()
 
   return (
     <div
       css={{
-        borderBottom: `1px solid ${colors.border}`,
-        background: colors.background,
+        borderBottom: `1px solid ${tokenSchema.color.border.neutral}`,
+        background: tokenSchema.color.background.surface,
         position: 'sticky',
         top: 0,
         zIndex: 2,
