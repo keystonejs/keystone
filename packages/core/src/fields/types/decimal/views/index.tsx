@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { Text } from '@keystar/ui/typography'
+
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { Decimal } from 'decimal.js'
 import { useState } from 'react'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'
 
 export function Field ({
@@ -26,9 +26,7 @@ export function Field ({
   const inputProps = useFormattedInput<Decimal | null>(
     {
       format (decimal) {
-        if (decimal === null) {
-          return ''
-        }
+        if (decimal === null) return ''
 
         return decimal.toFixed(field.scale)
       },
@@ -78,19 +76,11 @@ export function Field ({
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] || ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent = ({ field, item }) => {
+  const value = item[field.path]
+  return value != null
+    ? <Text>{value.toString()}</Text>
+    : null
 }
 
 export type DecimalFieldMeta = {

@@ -1,16 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core'
+import Link, { type LinkProps } from 'next/link'
+import { type AnchorHTMLAttributes } from 'react'
 
-import { Link, type LinkProps } from '../router'
+import { jsx, useTheme } from '@keystone-ui/core'
 
 /**
  * This is the component you should use when linking a Cell to an item (i.e when the Cell supports
  * the linkTo prop)
  */
 
-export const CellLink = (props: LinkProps) => {
+export const CellLink = (props: LinkProps & AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const { colors, spacing } = useTheme()
   return (
     <Link

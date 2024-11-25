@@ -1,79 +1,50 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
 
-import { jsx, Stack, Text } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields'
+import { css, tokenSchema } from '@keystar/ui/style'
+import { TextArea } from '@keystar/ui/text-field'
+import { Text } from '@keystar/ui/typography'
+
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
   type JSONValue,
 } from '../../../../types'
-import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
-export const Field = ({
-  field,
-  forceValidation,
-  value,
-  onChange,
-  autoFocus,
-}: FieldProps<typeof controller>) => {
+export const Field = (props: FieldProps<typeof controller>) => {
+  const { autoFocus, field, forceValidation, onChange, value } = props
+  const errorMessage = forceValidation ? 'Invalid JSON' : undefined
+
   return (
-    <FieldContainer>
-      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      <Stack>
-        <TextArea
-          id={field.path}
-          aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-          readOnly={onChange === undefined}
-          css={{
-            fontFamily: 'monospace',
-            ...(!onChange && {
-              backgroundColor: '#eff3f6',
-              border: '1px solid transparent',
-              '&:focus-visible': {
-                outline: 0,
-                backgroundColor: '#eff3f6',
-                boxShadow: '0 0 0 2px #e1e5e9',
-                border: '1px solid #b1b5b9',
-              },
-            }),
-          }}
-          autoFocus={autoFocus}
-          onChange={event => onChange?.(event.target.value)}
-          value={value}
-        />
-        {forceValidation && (
-          <Text color="red600" size="small">
-            {'Invalid JSON'}
-          </Text>
-        )}
-      </Stack>
-    </FieldContainer>
+    <TextArea
+      autoFocus={autoFocus}
+      description={field.description}
+      errorMessage={errorMessage}
+      isReadOnly={onChange === undefined}
+      label={field.label}
+      onChange={onChange}
+      value={value}
+      UNSAFE_className={css({
+        textarea: {
+          fontSize: tokenSchema.typography.text.small.size,
+          fontFamily: tokenSchema.typography.fontFamily.code,
+        }
+      })}
+    />
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent = ({ item, field }) => {
+  const value = item[field.path]
+  return value
+    ? <Text>{JSON.stringify(value)}</Text>
+    : null
 }
 
 type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
 
-export const controller = (config: Config): FieldController<string, string> => {
+export function controller (config: Config): FieldController<string, string> {
   return {
     path: config.path,
     label: config.label,

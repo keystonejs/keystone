@@ -51,7 +51,7 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
             color: colors.foreground,
             fontSize: '1rem',
             fontWeight: typography.fontWeight.regular,
-            lineHeight: typography.leading.base,
+            // lineHeight: typography.leading.base,
             fontFamily: typography.fontFamily.body,
 
             // optimize legibility

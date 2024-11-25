@@ -1,15 +1,20 @@
 import path from 'node:path'
 import {
   type BaseListTypeInfo,
-  type JSONValue,
   type KeystoneContext,
   type MaybeItemFunction,
   type MaybePromise,
   type MaybeSessionFunction,
   type __ResolvedKeystoneConfig,
 } from '../types'
-import {
-  type GraphQLNames
+
+import type {
+  FieldMeta,
+  FieldGroupMeta,
+  ListMeta,
+} from '../types/admin-meta'
+import type {
+  GraphQLNames,
 } from '../types/utils'
 import { type FilterOrderArgs } from '../types/config/fields'
 
@@ -18,51 +23,37 @@ import { type InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
-export type FieldMetaRootVal = {
+type FieldMetaRootVal_ = {
   key: string
-  /**
-   * @deprecated use .key, not .path
-   */
-  path: string
-  label: string
-  description: string | null
-  fieldMeta: JSONValue | null
-  viewsIndex: number
-  customViewsIndex: number | null
   listKey: string
-  search: 'default' | 'insensitive' | null
   isOrderable: ContextFunction<boolean>
   isFilterable: ContextFunction<boolean>
-  isNonNull: ('read' | 'create' | 'update')[]
-  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> }
-  // itemView is intentionally special because static values are special cased
-  // and fetched when fetching the static admin ui
+
+  isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
+  createView: {
+    fieldMode: ContextFunction<'edit' | 'hidden'>
+  }
   itemView: {
     fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>
     fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>
   }
-  listView: { fieldMode: ContextFunction<'read' | 'hidden'> }
+  listView: {
+    fieldMode: ContextFunction<'read' | 'hidden'>
+  }
 }
 
-export type FieldGroupMeta = {
-  label: string
-  description: string | null
-  fields: Array<FieldMetaRootVal>
+export type FieldMetaRootVal = FieldMetaRootVal_
+  & Omit<FieldMeta, keyof FieldMetaRootVal_ | 'controller' | 'graphql' | 'views'>
+
+type FieldGroupMetaRootVal_ = {
+  fields: FieldMetaRootVal[]
 }
+export type FieldGroupMetaRootVal = FieldGroupMetaRootVal_ & Omit<FieldGroupMeta, keyof FieldGroupMetaRootVal_>
 
-export type ListMetaRootVal = {
-  key: string
-  path: string
-  description: string | null
-
-  label: string
-  labelField: string
-  singular: string
-  plural: string
-
+type ListMetaRootVal_ = {
   fields: FieldMetaRootVal[]
   fieldsByKey: Record<string, FieldMetaRootVal>
-  groups: Array<FieldGroupMeta>
+  groups: FieldGroupMetaRootVal[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
@@ -70,19 +61,17 @@ export type ListMetaRootVal = {
   initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
-  // TODO: probably remove this
-  itemQueryName: string
-  listQueryName: string
-  isHidden: ContextFunction<boolean>
+  hideNavigation: ContextFunction<boolean>
   hideCreate: ContextFunction<boolean>
   hideDelete: ContextFunction<boolean>
 }
+export type ListMetaRootVal = ListMetaRootVal_ & Omit<ListMeta, keyof ListMetaRootVal_>
 
 export type AdminMetaRootVal = {
   lists: ListMetaRootVal[]
   listsByKey: Record<string, ListMetaRootVal>
   views: string[]
-  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>)
+  isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
 
 export function createAdminMeta (
@@ -162,13 +151,9 @@ export function createAdminMeta (
           | undefined) ?? null,
       isSingleton: list.isSingleton,
 
-      // TODO: probably remove this
-      itemQueryName: listKey,
-      listQueryName: list.graphql.namePlural, // TODO: remove
-
+      hideNavigation: normalizeMaybeSessionFunction(listConfig.ui?.hideNavigation ?? false),
       hideCreate: normalizeMaybeSessionFunction(listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create),
       hideDelete: normalizeMaybeSessionFunction(listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete),
-      isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
     }
 
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
@@ -198,18 +183,25 @@ export function createAdminMeta (
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
       const isNonNull = (['read', 'create', 'update'] as const).filter(operation => field.graphql.isNonNull[operation])
       const fieldMeta = {
-        key: fieldKey,
+        path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
+        fieldMeta: null,
+
+        key: fieldKey,
+        listKey: listKey,
+        isFilterable: normalizeIsOrderFilter(field.input?.where ? field.graphql.isEnabled.filter : false, baseOrderFilterArgs),
+        isOrderable: normalizeIsOrderFilter(field.input?.orderBy ? field.graphql.isEnabled.orderBy : false, baseOrderFilterArgs),
+
         viewsIndex: getViewId(field.views),
         customViewsIndex:
           field.ui.views === null
             ? null
             : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
               getViewId(field.ui.views)),
-        fieldMeta: null,
-        listKey: listKey,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
+
+        isNonNull,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.createView.fieldMode),
         },
@@ -220,18 +212,6 @@ export function createAdminMeta (
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),
         },
-        isFilterable: normalizeIsOrderFilter(
-          field.input?.where ? field.graphql.isEnabled.filter : false,
-          baseOrderFilterArgs
-        ),
-        isOrderable: normalizeIsOrderFilter(
-          field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
-          baseOrderFilterArgs
-        ),
-        isNonNull,
-
-        // TODO: deprecated, remove in breaking change
-        path: fieldKey,
       }
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
@@ -241,9 +221,7 @@ export function createAdminMeta (
       adminMetaRoot.listsByKey[listKey].groups.push({
         label: group.label,
         description: group.description,
-        fields: group.fields.map(
-          fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
-        ),
+        fields: group.fields.map(fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]),
       })
     }
   }

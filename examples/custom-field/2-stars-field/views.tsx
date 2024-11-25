@@ -3,7 +3,6 @@ import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/field
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
 
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -29,16 +28,6 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
 // for example, text fields support it but relationship fields don't because
 // their cell component links to the related item so it can't link to the item that the relationship is on
 Cell.supportsLinkTo = true
-
-// this is shown on the item page in relationship fields with `displayMode: 'cards'`
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
-}
 
 export const controller = (
   // the type parameter here needs to align with what is returned from `getAdminMeta`

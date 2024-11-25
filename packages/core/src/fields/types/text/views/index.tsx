@@ -1,144 +1,84 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Stack, useTheme } from '@keystone-ui/core'
-import {
-  Checkbox,
-  FieldContainer,
-  FieldLabel,
-  FieldDescription,
-  TextArea,
-  TextInput,
-} from '@keystone-ui/fields'
-import { useState } from 'react'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-} from '../../../../types'
-import { CellContainer, CellLink } from '../../../../admin-ui/components'
-import { type TextFieldMeta } from '..'
+import React, { useState } from 'react'
+import { TextArea, TextField } from '@keystar/ui/text-field'
+import { Text } from '@keystar/ui/typography'
 
-export function Field ({
-  field,
-  value,
-  onChange,
-  autoFocus,
-  forceValidation,
-}: FieldProps<typeof controller>) {
-  const { typography, fields } = useTheme()
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+} from '../../../../types'
+import { NullableFieldWrapper } from '../../../../admin-ui/components'
+import type { TextFieldMeta } from '..'
+
+export function Field (props: FieldProps<typeof controller>) {
+  const { autoFocus, field, forceValidation, onChange, value } = props
+
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
   const validationMessages = validate(value, field.validation, field.label)
+
+  const isReadOnly = onChange == null
+  const isNull = value.inner.kind === 'null'
+  const isTextArea = field.displayMode === 'textarea'
+  const FieldComponent = isTextArea ? TextArea : TextField
+
   return (
-    <FieldContainer>
-      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      {onChange ? (
-        <Stack gap="small">
-          {field.displayMode === 'textarea' ? (
-            <TextArea
-              id={field.path}
-              autoFocus={autoFocus}
-              onChange={(event) => {
-                onChange({
-                  ...value,
-                  inner: {
-                    kind: 'value',
-                    value: event.target.value
-                  }
-                })
-              }}
-              value={value.inner.kind === 'null' ? '' : value.inner.value}
-              disabled={value.inner.kind === 'null'}
-              onBlur={() => {
-                setShouldShowErrors(true)
-              }}
-              aria-describedby={
-                field.description === null ? undefined : `${field.path}-description`
-              }
-            />
-          ) : (
-            <TextInput
-              id={field.path}
-              autoFocus={autoFocus}
-              onChange={(event) => {
-                onChange({
-                  ...value,
-                  inner: {
-                    kind: 'value',
-                    value: event.target.value
-                  }
-                })
-              }}
-              value={value.inner.kind === 'null' ? '' : value.inner.value}
-              disabled={value.inner.kind === 'null'}
-              onBlur={() => {
-                setShouldShowErrors(true)
-              }}
-              aria-describedby={
-                field.description === null ? undefined : `${field.path}-description`
-              }
-            />
-          )}
-          {field.isNullable && (
-            <Checkbox
-              autoFocus={autoFocus}
-              disabled={onChange === undefined}
-              onChange={() => {
-                if (value.inner.kind === 'value') {
-                  onChange({
-                    ...value,
-                    inner: {
-                      kind: 'null',
-                      prev: value.inner.value,
-                    },
-                  })
-                } else {
-                  onChange({
-                    ...value,
-                    inner: {
-                      kind: 'value',
-                      value: value.inner.prev,
-                    },
-                  })
-                }
-              }}
-              checked={value.inner.kind === 'null'}
-            >
-              <span css={{ fontWeight: typography.fontWeight.semibold, color: fields.labelColor }}>
-                Set field as null
-              </span>
-            </Checkbox>
-          )}
-          {!!validationMessages.length &&
-            (shouldShowErrors || forceValidation) &&
-            validationMessages.map((message, i) => (
-              <span key={i} css={{ color: 'red' }}>
-                {message}
-              </span>
-            ))}
-        </Stack>
-      ) : value.inner.kind === 'null' ? null : (
-        value.inner.value
-      )}
-    </FieldContainer>
+    <NullableFieldWrapper
+      isAllowed={field.isNullable}
+      autoFocus={isNull && autoFocus}
+      label={field.label}
+      isReadOnly={isReadOnly}
+      isNull={isNull}
+      onChange={() => {
+        if (!onChange) return
+
+        const inner = value.inner.kind === 'value'
+          ? { kind: 'null', prev: value.inner.value } as const
+          : { kind: 'value', value: value.inner.prev } as const
+
+        onChange({ ...value, inner })
+      }}
+    >
+      <FieldComponent
+        autoFocus={autoFocus}
+        description={field.description}
+        label={field.label}
+        errorMessage={
+          !!validationMessages.length && (shouldShowErrors || forceValidation)
+            ? validationMessages.join('. ')
+            : undefined
+        }
+        isDisabled={isNull}
+        isReadOnly={isReadOnly}
+        isRequired={field.validation.isRequired}
+        onBlur={() => {
+          setShouldShowErrors(true)
+        }}
+        onChange={(textValue) => {
+          if (!onChange) return
+          onChange({
+            ...value,
+            inner: {
+              kind: 'value',
+              value: textValue
+            }
+          })
+        }}
+        // maintain the previous value when set to null in aid of continuity for
+        // the user. it will be cleared when the item is saved
+        value={value.inner.kind === 'value'
+          ? value.inner.value
+          : value.inner.prev}
+      />
+    </NullableFieldWrapper>
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent = ({ field, item }) => {
+  const value = item[field.path]
+  return value != null
+    ? <Text>{value.toString()}</Text>
+    : null
 }
 
 type Config = FieldControllerConfig<TextFieldMeta>
@@ -241,15 +181,30 @@ export const controller = (
     validate: val => validate(val, validation, config.label).length === 0,
     filter: {
       Filter (props) {
+        const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props
+
+        const labelProps = context === 'add'
+          ? { label: config.label, description: typeLabel }
+          : { label: typeLabel }
+
+        // NOTE: "type" is a valid attribute for an input element, however the
+        // prop represents a filter type in this context e.g. "contains_i", so
+        // we're filtering it out of the spread.
+        // TODO: more consideration is needed for the filter API, once
+        // requirements are better understood.
         return (
-          <TextInput
-            onChange={event => {
-              props.onChange(event.target.value)
-            }}
-            value={props.value}
-            autoFocus={props.autoFocus}
+          <TextField
+            {...otherProps}
+            {...labelProps}
+            autoFocus={autoFocus}
+            onChange={onChange}
+            value={value}
           />
         )
+      },
+      Label ({ label, value }) {
+        const trimmedLabel = label.toLowerCase().replace(' exactly', '')
+        return `${trimmedLabel} "${value}"`
       },
 
       graphql: ({ type, value }) => {
@@ -268,9 +223,6 @@ export const controller = (
             mode: config.fieldMeta.shouldUseModeInsensitive ? 'insensitive' : undefined,
           },
         }
-      },
-      Label ({ label, value }) {
-        return `${label.toLowerCase()}: "${value}"`
       },
       types: {
         contains_i: {

@@ -52,6 +52,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@emotion/weak-memoize": "^0.4.0",
+    "@keystar/ui": "^0.7.12",
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",

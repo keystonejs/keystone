@@ -1,68 +1,97 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { useState } from 'react'
+import { CalendarDate, getLocalTimeZone, now, parseDate } from '@internationalized/date'
+import { useDateFormatter } from '@react-aria/i18n'
+import React, { useMemo, useReducer, useState } from 'react'
 
-import { jsx, Inline, Stack, Text } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel, DatePicker, FieldDescription } from '@keystone-ui/fields'
+import { ToggleButton } from '@keystar/ui/button'
+import { DatePicker } from '@keystar/ui/date-time'
+import { Icon } from '@keystar/ui/icon'
+import { calendarClockIcon } from '@keystar/ui/icon/icons/calendarClockIcon'
+import { Grid } from '@keystar/ui/layout'
+import { TextField } from '@keystar/ui/text-field'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Text } from '@keystar/ui/typography'
+
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
 export type Value =
   | { kind: 'create', value: string | null }
   | { kind: 'update', value: string | null, initial: string | null }
 
-export const Field = ({
-  field,
-  value,
-  onChange,
-  forceValidation,
-}: FieldProps<typeof controller>) => {
-  const [touchedInput, setTouchedInput] = useState(false)
-  const showValidation = touchedInput || forceValidation
+export function Field (props: FieldProps<typeof controller>) {
+  const { field, value, forceValidation, onChange } = props
+  const parsedValue = value.value ? parseDate(value.value) : null
 
+  const [isDirty, setDirty] = useState(false)
+  const [isReadonlyUTC, toggleReadonlyUTC] = useReducer((prev) => !prev, false)
+  const dateFormatter = useDateFormatter({ dateStyle: 'long' })
+  const placeholderValue = useMemo(() => {
+    let today = now(getLocalTimeZone())
+    return new CalendarDate(today.year, today.month, today.day)
+  }, [])
+
+  // the read-only date field is deceptively interactive, better to render a
+  // text field to avoid confusion. when there's no value the field is disabled,
+  // placeholder text is shown, and the toggle button is hidden
+  if (!onChange) {
+    return (
+      <Grid columns={!!parsedValue ? 'minmax(0, 1fr) auto' : undefined} gap="regular" alignItems="end">
+        <TextField
+          label={field.label}
+          description={field.description}
+          isDisabled={!parsedValue}
+          isReadOnly
+          value={parsedValue
+            ? isReadonlyUTC
+              ? parsedValue.toString()
+              : dateFormatter.format(parsedValue.toDate(getLocalTimeZone()))
+            : 'yyyy-mm-dd'
+          }
+        />
+        {!!parsedValue && (
+          <TooltipTrigger>
+            <ToggleButton
+              aria-label="utc time"
+              isSelected={isReadonlyUTC}
+              onPress={toggleReadonlyUTC}
+            >
+              <Icon src={calendarClockIcon} />
+            </ToggleButton>
+            <Tooltip>Local / UTC</Tooltip>
+          </TooltipTrigger>
+        )}
+      </Grid>
+    )
+  }
+
+  const showValidation = isDirty || forceValidation
   const validationMessage = showValidation
     ? validate(value, field.fieldMeta, field.label)
     : undefined
 
   return (
-    <FieldContainer>
-      <Stack>
-        <FieldLabel>{field.label}</FieldLabel>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-        {onChange ? (
-          <Inline gap="small">
-            <Stack>
-              <DatePicker
-                onUpdate={date => {
-                  onChange({
-                    ...value,
-                    value: date,
-                  })
-                }}
-                onClear={() => {
-                  onChange({ ...value, value: null })
-                }}
-                onBlur={() => setTouchedInput(true)}
-                value={value.value ?? ''}
-              />
-              {validationMessage && (
-                <Text color="red600" size="small">
-                  {validationMessage}
-                </Text>
-              )}
-            </Stack>
-          </Inline>
-        ) : (
-          value.value !== null && <Text>{formatOutput(value.value)}</Text>
-        )}
-      </Stack>
-    </FieldContainer>
+    <DatePicker
+      label={field.label}
+      description={field.description}
+      errorMessage={showValidation ? validationMessage : undefined}
+      granularity="day"
+      // isReadOnly={undefined} // read-only state handled above
+      isRequired={field.fieldMeta.isRequired}
+      // NOTE: in addition to providing a cue for users about the expected input
+      // format, the `placeholderValue` determines the type of value for the
+      // field. the implementation below ensures `CalendarDate` so we can avoid
+      // unnecessary guards or transformations.
+      placeholderValue={placeholderValue}
+      onBlur={() => setDirty(true)}
+      onChange={datetime => {
+        onChange({ ...value, value: datetime?.toString() ?? null })
+      }}
+      value={parsedValue}
+    />
   )
 }
 
@@ -85,36 +114,12 @@ function validate (
   return undefined
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
+export const Cell: CellComponent = ({ field, item }) => {
+  const dateFormatter = useDateFormatter({ dateStyle: 'medium' })
   const value = item[field.path]
-  return linkTo ? (
-    <CellLink {...linkTo}>{formatOutput(value)}</CellLink>
-  ) : (
-    <CellContainer>{formatOutput(value)}</CellContainer>
-  )
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {formatOutput(item[field.path])}
-    </FieldContainer>
-  )
-}
-
-function formatOutput (isoDateString: string | null) {
-  if (!isoDateString) {
-    return null
-  }
-  const date = new Date(`${isoDateString}T00:00Z`)
-  const dateInLocalTimezone = new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate()
-  )
-  return dateInLocalTimezone.toLocaleDateString()
+  return value
+    ? <Text>{dateFormatter.format(new Date(value))}</Text>
+    : null
 }
 
 export type CalendarDayFieldMeta = {

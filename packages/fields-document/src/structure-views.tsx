@@ -5,7 +5,6 @@ import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -52,10 +51,6 @@ export function Field ({
 
 export const Cell: CellComponent = () => {
   return null
-}
-
-export const CardValue: CardValueComponent = () => {
-  return null as any
 }
 
 export const allowedExportsOnCustomViews = ['schema']
