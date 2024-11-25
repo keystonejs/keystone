@@ -3,7 +3,6 @@ import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keysto
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
 
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -51,15 +50,6 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
-}
 
 export const controller = (
   config: FieldControllerConfig<{

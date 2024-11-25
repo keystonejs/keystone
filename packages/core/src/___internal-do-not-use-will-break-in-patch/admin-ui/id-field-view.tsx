@@ -1,34 +1,24 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
 
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { TextField } from '@keystar/ui/text-field'
+import { Text } from '@keystar/ui/typography'
+
 import type {
-  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   IdFieldConfig,
 } from '../../types'
-import { CellLink, CellContainer } from '../../admin-ui/components'
 
 export function Field () {
   return null
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent = ({ field, item }) => {
+  let value = item[field.path]
+  return value != null
+    ? <Text>{value.toString()}</Text>
+    : null
 }
 
 export function controller (
@@ -44,13 +34,19 @@ export function controller (
     serialize: () => ({}),
     filter: {
       Filter (props) {
+        const { autoFocus, context, onChange, type, typeLabel, value, ...otherProps } = props
+
+        const labelProps = context === 'add'
+          ? { label: config.label, description: typeLabel }
+          : { label: typeLabel }
+
         return (
-          <TextInput
-            onChange={event => {
-              props.onChange(event.target.value)
-            }}
-            value={props.value}
-            autoFocus={props.autoFocus}
+          <TextField
+            {...otherProps}
+            {...labelProps}
+            autoFocus={autoFocus}
+            onChange={onChange}
+            value={value}
           />
         )
       },

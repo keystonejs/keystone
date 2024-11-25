@@ -1,48 +1,50 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import copyToClipboard from 'clipboard-copy'
-import { useRouter } from 'next/router'
-import {
-  Fragment,
-  type HTMLAttributes,
-  memo,
+import React, {
+  type PropsWithChildren,
   type ReactElement,
+  Fragment,
+  memo,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
+import copyToClipboard from 'clipboard-copy'
+import { useRouter } from 'next/router'
 
-import { Button } from '@keystone-ui/button'
-import { Box, Center, Stack, Text, jsx, useTheme } from '@keystone-ui/core'
-import { LoadingDots } from '@keystone-ui/loading'
-import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon'
-import { AlertDialog } from '@keystone-ui/modals'
-import { Notice } from '@keystone-ui/notice'
-import { useToasts } from '@keystone-ui/toast'
-import { Tooltip } from '@keystone-ui/tooltip'
-import { FieldLabel, TextInput } from '@keystone-ui/fields'
+import { ActionButton, Button } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { fileWarningIcon } from '@keystar/ui/icon/icons/fileWarningIcon'
+import { clipboardIcon } from '@keystar/ui/icon/icons/clipboardIcon'
+import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
+import { Box, Grid, VStack } from '@keystar/ui/layout'
+import { Notice } from '@keystar/ui/notice'
+import { ProgressCircle } from '@keystar/ui/progress'
+import { SlotProvider } from '@keystar/ui/slots'
+import { TextField } from '@keystar/ui/text-field'
+import { toastQueue } from '@keystar/ui/toast'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Heading, Text } from '@keystar/ui/typography'
+
 import type { ListMeta, FieldMeta } from '../../../../types'
 import {
   type DataGetter,
   type DeepNullable,
-  makeDataGetter,
-  deserializeValue,
   type ItemData,
-  useInvalidFields,
   Fields,
+  deserializeValue,
+  makeDataGetter,
   useChangedFieldsAndDataForUpdate,
+  useInvalidFields,
 } from '../../../../admin-ui/utils'
-
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { useList } from '../../../../admin-ui/context'
-import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
-import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
+import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
+import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
 
 type ItemPageProps = {
   listKey: string
@@ -80,11 +82,11 @@ function ItemForm ({
   item: ItemData
 }) {
   const list = useList(listKey)
-  const { spacing, typography } = useTheme()
+  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
 
   const [update, { loading, error, data }] = useMutation(
-    gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
-      item: ${list.gqlNames.updateMutationName}(where: { id: $id }, data: $data) {
+    gql`mutation ($data: ${list.graphql.names.updateInputName}!, $id: ID!) {
+      item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
         ${selectedFields}
       }
     }`,
@@ -119,8 +121,8 @@ function ItemForm ({
   const invalidFields = useInvalidFields(list.fields, state.value)
 
   const [forceValidation, setForceValidation] = useState(false)
-  const toasts = useToasts()
-  const onSave = useEventCallback(() => {
+  const onSave = useEventCallback((e) => {
+    e.preventDefault()
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
     if (newForceValidation) return
@@ -134,55 +136,89 @@ function ItemForm ({
         // update the item, path being undefined generally indicates a failure in the graphql mutation itself - ie a type error
         const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
         if (error) {
-          toasts.addToast({
-            title: 'Failed to update item',
-            tone: 'negative',
-            message: error.message,
+          toastQueue.critical('Unable to save item', {
+            actionLabel: 'Details',
+            onAction: () => setErrorDialogValue(new Error(error.message)),
+            shouldCloseOnAction: true,
           })
         } else {
-          toasts.addToast({
-            // title: data.item[list.labelField] || data.item.id,
-            tone: 'positive',
-            title: 'Saved successfully',
-            // message: 'Saved successfully',
+          // do we really need a toast for this? the item _should_ save…
+          toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {
+            timeout: 5000,
           })
         }
       })
       .catch(err => {
-        toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message })
+        toastQueue.critical('Unable to save item', {
+          actionLabel: 'Details',
+          onAction: () => setErrorDialogValue(err),
+          shouldCloseOnAction: true,
+        })
       })
   })
   const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
   const itemId = state.item.data?.id
   const hasChangedFields = !!changedFields.size
   usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]))
+
   return (
     <Fragment>
-      <Box marginTop="xlarge">
-        <GraphQLErrorNotice
-          networkError={error?.networkError}
-          // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-          // which are handled seperately and do not indicate a failure to update the item
-          errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
-        />
-        <Fields
-          groups={list.groups}
-          fieldModes={fieldModes}
-          fields={list.fields}
-          forceValidation={forceValidation}
-          invalidFields={invalidFields}
-          position="form"
-          fieldPositions={fieldPositions}
-          onChange={useCallback(
-            value => {
-              setValue(state => ({ item: state.item, value: value(state.value) }))
-            },
-            [setValue]
-          )}
-          value={state.value}
-        />
+      <form onSubmit={onSave} style={{ display: 'contents' }}>
+        {/*
+          Workaround for react-aria "bug" where pressing enter in a form field
+          moves focus to the submit button.
+          See: https://github.com/adobe/react-spectrum/issues/5940
+        */}
+        <button type="submit" style={{ display: 'none' }} />
+        <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
+          <GraphQLErrorNotice
+            networkError={error?.networkError}
+            // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+            // which are handled seperately and do not indicate a failure to update the item
+            errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
+          />
+          <Fields
+            groups={list.groups}
+            fieldModes={fieldModes}
+            fields={list.fields}
+            forceValidation={forceValidation}
+            invalidFields={invalidFields}
+            position="form"
+            fieldPositions={fieldPositions}
+            onChange={useCallback(
+              value => {
+                setValue(state => ({ item: state.item, value: value(state.value) }))
+              },
+              [setValue]
+            )}
+            value={state.value}
+          />
+        </VStack>
+
+        <StickySidebar>
+          <IdField itemId={itemId} />
+
+          <Box marginTop="xlarge">
+            <Fields
+              groups={list.groups}
+              fieldModes={fieldModes}
+              fields={list.fields}
+              forceValidation={forceValidation}
+              invalidFields={invalidFields}
+              position="sidebar"
+              fieldPositions={fieldPositions}
+              onChange={useCallback(
+                value => {
+                  setValue(state => ({ item: state.item, value: value(state.value) }))
+                },
+                [setValue]
+              )}
+              value={state.value}
+            />
+          </Box>
+        </StickySidebar>
+
         <Toolbar
-          onSave={onSave}
           hasChangedFields={!!changedFields.size}
           onReset={useEventCallback(() => {
             setValue(state => ({
@@ -203,58 +239,62 @@ function ItemForm ({
             [showDelete, list, labelFieldValue, itemId]
           )}
         />
-      </Box>
-      <StickySidebar>
-        <FieldLabel>Item ID</FieldLabel>
-        <div
-          css={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <TextInput
-            css={{
-              marginRight: spacing.medium,
-              fontFamily: typography.fontFamily.monospace,
-              fontSize: typography.fontSize.small,
-            }}
-            readOnly
-            value={item.id}
-          />
-          <Tooltip content="Copy ID">
-            {props => (
-              <Button
-                {...props}
-                aria-label="Copy ID"
-                onClick={() => {
-                  copyToClipboard(item.id)
-                }}
-              >
-                <ClipboardIcon size="small" />
-              </Button>
-            )}
-          </Tooltip>
-        </div>
-        <Box marginTop="xlarge">
-          <Fields
-            groups={list.groups}
-            fieldModes={fieldModes}
-            fields={list.fields}
-            forceValidation={forceValidation}
-            invalidFields={invalidFields}
-            position="sidebar"
-            fieldPositions={fieldPositions}
-            onChange={useCallback(
-              value => {
-                setValue(state => ({ item: state.item, value: value(state.value) }))
-              },
-              [setValue]
-            )}
-            value={state.value}
-          />
-        </Box>
-      </StickySidebar>
+      </form>
+
+      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
+        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      </DialogContainer>
     </Fragment>
+  )
+}
+
+const COPY_TOOLTIP_CONTENT = {
+  neutral: 'Copy ID',
+  positive: 'Copied to clipboard',
+  critical: 'Unable to copy',
+}
+type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
+function IdField ({ itemId }: { itemId: string }) {
+  const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
+
+  const onCopy = useCallback(async () => {
+    try {
+      await copyToClipboard(itemId)
+      setTooltipState({ isOpen: true, tone: 'positive' })
+    } catch (err: any) {
+      setTooltipState({ isOpen: true, tone: 'critical' })
+    }
+
+    // close, then reset the tooltip state after a delay
+    setTimeout(() => {
+      setTooltipState(state => ({ ...state, isOpen: false }))
+    }, 2000)
+    setTimeout(() => {
+      setTooltipState({ isOpen: undefined, tone: 'neutral' })
+    }, 2300)
+  }, [itemId])
+
+  return (
+    <Grid gap="regular" columns="1fr auto" alignItems="end">
+      <TextField
+        label="Item ID"
+        value={itemId}
+        isReadOnly
+        onFocus={({ target }) => {
+          if (target instanceof HTMLInputElement) {
+            target.select()
+          }
+        }}
+      />
+      <TooltipTrigger isOpen={tooltipState.isOpen} placement='top end'>
+        <ActionButton aria-label="copy id" onPress={onCopy}>
+          <Icon src={clipboardIcon} />
+        </ActionButton>
+        <Tooltip tone={tooltipState.tone}>
+          {COPY_TOOLTIP_CONTENT[tooltipState.tone]}
+        </Tooltip>
+      </TooltipTrigger>
+    </Grid>
   )
 }
 
@@ -267,65 +307,58 @@ function DeleteButton ({
   itemId: string
   list: ListMeta
 }) {
-  const toasts = useToasts()
-  const [deleteItem, { loading }] = useMutation(
+  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const router = useRouter()
+  const [deleteItem] = useMutation(
     gql`mutation ($id: ID!) {
-      ${list.gqlNames.deleteMutationName}(where: { id: $id }) {
+      ${list.graphql.names.deleteMutationName}(where: { id: $id }) {
         id
       }
     }`,
     { variables: { id: itemId } }
   )
-  const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
 
   return (
     <Fragment>
-      <Button
-        tone="negative"
-        onClick={() => {
-          setIsOpen(true)
-        }}
-      >
-        Delete
-      </Button>
-      <AlertDialog
-        // TODO: change the copy in the title and body of the modal
-        title="Delete Confirmation"
-        isOpen={isOpen}
-        tone="negative"
-        actions={{
-          confirm: {
-            label: 'Delete',
-            action: async () => {
-              try {
-                await deleteItem()
-              } catch (err: any) {
-                return toasts.addToast({
-                  title: `Failed to delete ${list.singular} item: ${itemLabel}`,
-                  message: err.message,
-                  tone: 'negative',
-                })
-              }
-              router.push(list.isSingleton ? '/' : `/${list.path}`)
-              return toasts.addToast({
-                title: itemLabel,
-                message: `Deleted ${list.singular} item successfully`,
-                tone: 'positive',
+      <DialogTrigger>
+        <Button tone="critical">
+          Delete
+        </Button>
+        <AlertDialog
+          tone="critical"
+          title="Delete item"
+          cancelLabel="Cancel"
+          primaryActionLabel="Yes, delete"
+          onPrimaryAction={async () => {
+            try {
+              await deleteItem()
+            } catch (err: any) {
+              toastQueue.critical('Unable to delete item.', {
+                actionLabel: 'Details',
+                onAction: () => {
+                  setErrorDialogValue(err)
+                },
+                shouldCloseOnAction: true,
               })
-            },
-            loading,
-          },
-          cancel: {
-            label: 'Cancel',
-            action: () => {
-              setIsOpen(false)
-            },
-          },
-        }}
-      >
-        Are you sure you want to delete <strong>{itemLabel}</strong>?
-      </AlertDialog>
+              return
+            }
+
+            toastQueue.neutral(`${list.singular} deleted.`, {
+              timeout: 5000,
+            })
+            router.push(list.isSingleton ? '/' : `/${list.path}`)
+          }}
+        >
+          <Text>
+            Are you sure you want to delete <strong>“{itemLabel}”</strong>?
+            This action cannot be undone.
+          </Text>
+        </AlertDialog>
+      </DialogTrigger>
+
+      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
+        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      </DialogContainer>
     </Fragment>
   )
 }
@@ -351,7 +384,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
       selectedFields,
       query: gql`
         query ItemPage($id: ID!, $listKey: String!) {
-          item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
+          item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
             ${selectedFields}
           }
           keystone {
@@ -419,11 +452,8 @@ function ItemPage ({ listKey }: ItemPageProps) {
 
   const pageLoading = loading || id === undefined
   const metaQueryErrors = dataGetter.get('keystone').errors
-  const pageTitle: string = list.isSingleton
-    ? list.label
-    : pageLoading
-    ? undefined
-    : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+  const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+  const pageTitle: string = list.isSingleton ? list.label : pageLoading ? undefined : pageLabel
 
   return (
     <PageContainer
@@ -431,21 +461,18 @@ function ItemPage ({ listKey }: ItemPageProps) {
       header={
         <ItemPageHeader
           list={list}
-          label={
-            pageLoading
-              ? 'Loading...'
-              : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
-          }
+          label={pageLoading ? 'Loading...' : pageLabel}
+          title={pageTitle}
         />
       }
     >
       {pageLoading ? (
-        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <LoadingDots label="Loading item data" size="large" tone="passive" />
-        </Center>
+        <VStack height="100%" alignItems="center" justifyContent="center">
+          <ProgressCircle aria-label="loading item data" size="large" isIndeterminate  />
+        </VStack>
       ) : metaQueryErrors ? (
         <Box marginY="xlarge">
-          <Notice tone="negative">{metaQueryErrors[0].message}</Notice>
+          <Notice tone="critical">{metaQueryErrors[0].message}</Notice>
         </Box>
       ) : (
         <ColumnLayout>
@@ -458,19 +485,19 @@ function ItemPage ({ listKey }: ItemPageProps) {
                 />
               ) : list.isSingleton ? (
                 id === '1' ? (
-                  <Stack gap="medium">
-                    <Notice tone="negative">
-                      {list.label} doesn't exist or you don't have access to it.
-                    </Notice>
+                  <ItemNotFound>
+                    <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
                     {!data.keystone.adminMeta.list!.hideCreate && <CreateButtonLink list={list} />}
-                  </Stack>
+                  </ItemNotFound>
                 ) : (
-                  <Notice tone="negative">The item with id "{id}" does not exist</Notice>
+                  <ItemNotFound>
+                    <Text>An item with ID <strong>“{id}”</strong> does not exist.</Text>
+                  </ItemNotFound>
                 )
               ) : (
-                <Notice tone="negative">
-                  The item with id "{id}" could not be found or you don't have access to it.
-                </Notice>
+                <ItemNotFound>
+                  <Text>The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access to it.</Text>
+                </ItemNotFound>
               )}
             </Box>
           ) : (
@@ -495,89 +522,68 @@ function ItemPage ({ listKey }: ItemPageProps) {
 // Styled Components
 // ------------------------------
 
+function ItemNotFound (props: PropsWithChildren<{}>) {
+  return (
+    <VStack
+      alignItems="center"
+      backgroundColor="surface"
+      borderRadius="medium"
+      gap="large"
+      justifyContent="center"
+      minHeight="scale.3000"
+      padding="xlarge"
+    >
+      <Icon src={fileWarningIcon} color="neutralEmphasis" size="large" />
+      <Heading align="center">Not found</Heading>
+      <SlotProvider slots={{ text: { align:'center', maxWidth: 'scale.5000' } }}>
+        {props.children}
+      </SlotProvider>
+    </VStack>
+  )
+}
+
 const Toolbar = memo(function Toolbar ({
   hasChangedFields,
   loading,
-  onSave,
   onReset,
   deleteButton,
 }: {
   hasChangedFields: boolean
   loading: boolean
-  onSave: () => void
   onReset: () => void
   deleteButton?: ReactElement
 }) {
   return (
     <BaseToolbar>
       <Button
-        isDisabled={!hasChangedFields}
-        isLoading={loading}
-        weight="bold"
-        tone="active"
-        onClick={onSave}
+        isPending={loading}
+        prominence="high"
+        type="submit"
       >
-        Save changes
+        Save
       </Button>
-      <Stack align="center" across gap="small">
-        {hasChangedFields ? (
-          <ResetChangesButton onReset={onReset} />
-        ) : (
-          <Text weight="medium" paddingX="large" color="neutral600">
-            No changes
-          </Text>
-        )}
-        {deleteButton}
-      </Stack>
+      <ResetButton onReset={onReset} hasChanges={hasChangedFields} />
+      <Box flex />
+      {deleteButton}
     </BaseToolbar>
   )
 })
 
-function ResetChangesButton (props: { onReset: () => void }) {
-  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false)
-
+function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
   return (
-    <Fragment>
-      <Button
-        weight="none"
-        onClick={() => {
-          setConfirmModalOpen(true)
-        }}
-      >
-        Reset changes
+    <DialogTrigger>
+      <Button tone="accent" isDisabled={!props.hasChanges}>
+        Reset
       </Button>
       <AlertDialog
-        actions={{
-          confirm: {
-            action: () => props.onReset(),
-            label: 'Reset changes',
-          },
-          cancel: {
-            action: () => setConfirmModalOpen(false),
-            label: 'Cancel',
-          },
-        }}
-        isOpen={isConfirmModalOpen}
-        title="Are you sure you want to reset changes?"
-        tone="negative"
+        title="Reset changes"
+        cancelLabel="Cancel"
+        primaryActionLabel="Yes, reset"
+        autoFocusButton="primary"
+        onPrimaryAction={props.onReset}
       >
-        {null}
+        Are you sure? Lost changes cannot be recovered.
       </AlertDialog>
-    </Fragment>
-  )
-}
-
-function StickySidebar (props: HTMLAttributes<HTMLDivElement>) {
-  const { spacing } = useTheme()
-  return (
-    <div
-      css={{
-        marginTop: spacing.xlarge,
-        marginBottom: spacing.xxlarge,
-        position: 'sticky',
-        top: spacing.xlarge,
-      }}
-      {...props}
-    />
+    </DialogTrigger>
   )
 }

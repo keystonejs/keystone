@@ -11,16 +11,36 @@ import {
   executeSync,
   parse,
 } from 'graphql'
-import { staticAdminMetaQuery, type StaticAdminMetaQuery } from '../admin-meta-graphql'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import Path from 'path'
+import resolve from 'resolve'
 
-type AppTemplateOptions = { configFileExists: boolean }
+import {
+  staticAdminMetaQuery,
+  type StaticAdminMetaQuery,
+} from '../admin-meta-graphql'
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import type { __ResolvedKeystoneConfig } from '../../types'
+
+function getDoesAdminConfigExist () {
+  try {
+    const configPath = Path.join(process.cwd(), 'admin', 'config')
+    resolve.sync(configPath, {
+      extensions: ['.ts', '.tsx', '.js'],
+      preserveSymlinks: false,
+    })
+    return true
+  } catch (err: any) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      return false
+    }
+    throw err
+  }
+}
 
 export function appTemplate (
+  config: __ResolvedKeystoneConfig,
   adminMetaRootVal: AdminMetaRootVal,
-  graphQLSchema: GraphQLSchema,
-  { configFileExists }: AppTemplateOptions,
-  apiPath: string
+  graphQLSchema: GraphQLSchema
 ) {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -33,9 +53,10 @@ export function appTemplate (
   const { adminMeta } = result.data!.keystone
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta))
 
-  const allViews = adminMetaRootVal.views.map(viewRelativeToProject => {
+  const allViews = adminMetaRootVal.views.map((viewRelativeToProject) => {
     const isRelativeToFile =
-      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
+      viewRelativeToProject.startsWith('./') ||
+      viewRelativeToProject.startsWith('../')
     const viewRelativeToAppFile = isRelativeToFile
       ? '../../../' + viewRelativeToProject
       : viewRelativeToProject
@@ -46,23 +67,25 @@ export function appTemplate (
     return JSON.stringify(viewRelativeToAppFile)
   })
   // -- TEMPLATE START
-  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';
+  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
 
 ${allViews.map((views, i) => `import * as view${i} from ${views};`).join('\n')}
 
 ${
-  configFileExists
-    ? `import * as adminConfig from "../../../admin/config";`
-    : 'var adminConfig = {};'
+  getDoesAdminConfigExist()
+    ? `import * as adminConfig from "../../../admin/config"`
+    : 'var adminConfig = {}'
 }
 
 export default getApp({
-  lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
+  lazyMetadataQuery: ${JSON.stringify(
+    getLazyMetadataQuery(graphQLSchema, adminMeta)
+  )},
   fieldViews: [${allViews.map((_, i) => `view${i}`)}],
   adminMetaHash: "${adminMetaQueryResultHash}",
   adminConfig: adminConfig,
-  apiPath: "${apiPath}",
-});
+  apiPath: "${config.graphql.path}",
+})
 `
   // -- TEMPLATE END
 }
@@ -77,7 +100,7 @@ function getLazyMetadataQuery (
       adminMeta {
         lists {
           key
-          isHidden
+          hideNavigation
           fields {
             path
             createView {
@@ -92,7 +115,8 @@ function getLazyMetadataQuery (
 
   const queryType = graphqlSchema.getQueryType()
   if (queryType) {
-    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name)
+    const getListByKey = (name: string) =>
+      adminMeta.lists.find(({ key }: any) => key === name)
     const fields = queryType.getFields()
     if (fields['authenticatedItem'] !== undefined) {
       const authenticatedItemType = fields['authenticatedItem'].type
@@ -128,7 +152,8 @@ function getLazyMetadataQuery (
           )
         }
         const requiredArgs = labelGraphQLField.args.filter(
-          arg => arg.defaultValue === undefined && arg.type instanceof GraphQLNonNull
+          (arg) =>
+            arg.defaultValue === undefined && arg.type instanceof GraphQLNonNull
         )
         if (requiredArgs.length) {
           throw new Error(
@@ -144,14 +169,20 @@ function getLazyMetadataQuery (
           kind: Kind.SELECTION_SET,
           selections: authenticatedItemType.getTypes().map(({ name }) => ({
             kind: Kind.INLINE_FRAGMENT,
-            typeCondition: { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: name } },
+            typeCondition: {
+              kind: Kind.NAMED_TYPE,
+              name: { kind: Kind.NAME, value: name },
+            },
             selectionSet: {
               kind: Kind.SELECTION_SET,
               selections: [
                 { kind: Kind.FIELD, name: { kind: Kind.NAME, value: 'id' } },
                 {
                   kind: Kind.FIELD,
-                  name: { kind: Kind.NAME, value: getListByKey(name)!.labelField },
+                  name: {
+                    kind: Kind.NAME,
+                    value: getListByKey(name)!.labelField,
+                  },
                 },
               ],
             },

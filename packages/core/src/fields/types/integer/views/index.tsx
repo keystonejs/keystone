@@ -1,131 +1,74 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { useState } from 'react'
 
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { useState } from 'react'
+import { ContextualHelp } from '@keystar/ui/contextual-help'
+import { NumberField } from '@keystar/ui/number-field'
+import { Content } from '@keystar/ui/slots'
+import { TextField } from '@keystar/ui/text-field'
+import { Heading, Numeral, Text } from '@keystar/ui/typography'
+
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { CellLink, CellContainer } from '../../../../admin-ui/components'
-import { useFormattedInput } from './utils'
 
-function IntegerInput ({
-  value,
-  onChange,
-  id,
-  autoFocus,
-  forceValidation,
-  validationMessage,
-  placeholder,
-}: {
-  id: string
-  autoFocus?: boolean
-  value: number | string | null
-  onChange: (value: number | string | null) => void
-  forceValidation?: boolean
-  validationMessage?: string
-  placeholder?: string
-}) {
-  const [hasBlurred, setHasBlurred] = useState(false)
-  const props = useFormattedInput<number | null>(
-    {
-      format: value => (value === null ? '' : value.toString()),
-      parse: raw => {
-        raw = raw.trim()
-        if (raw === '') {
-          return null
-        }
-        if (/^[+-]?\d+$/.test(raw)) {
-          const parsed = parseInt(raw)
-          if (!Number.isSafeInteger(parsed)) {
-            return raw
-          }
-          return parsed
-        }
-        return raw
-      },
-    },
-    {
-      value,
-      onChange,
-      onBlur: () => {
-        setHasBlurred(true)
-      },
-    }
-  )
-  return (
-    <span>
-      <TextInput
-        placeholder={placeholder}
-        id={id}
-        autoFocus={autoFocus}
-        inputMode="numeric"
-        {...props}
-      />
-      {(hasBlurred || forceValidation) && validationMessage && (
-        <span css={{ color: 'red' }}>{validationMessage}</span>
-      )}
-    </span>
-  )
-}
-
-export const Field = ({
+export function Field ({
   field,
   value,
   onChange,
   autoFocus,
   forceValidation,
-}: FieldProps<typeof controller>) => {
-  const message = validate(value, field.validation, field.label, field.hasAutoIncrementDefault)
+}: FieldProps<typeof controller>) {
+  const [isDirty, setIsDirty] = useState(false)
+  const validationMessage = validate(value, field.validation, field.label, field.hasAutoIncrementDefault)
+  const isReadOnly = onChange == null || field.hasAutoIncrementDefault
+
+  if (field.hasAutoIncrementDefault && value.kind === 'create') {
+    return (
+      <TextField
+        autoFocus={autoFocus}
+        defaultValue="--"
+        description={field.description}
+        isReadOnly
+        label={field.label}
+        contextualHelp={(
+          <ContextualHelp>
+            <Heading>Auto increment</Heading>
+            <Content>
+              <Text>
+                This field is set to auto increment. It will default to the next available number.
+              </Text>
+            </Content>
+          </ContextualHelp>
+        )}
+      />
+    )
+  }
 
   return (
-    <FieldContainer>
-      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      {onChange ? (
-        <span>
-          <IntegerInput
-            id={field.path}
-            autoFocus={autoFocus}
-            onChange={val => {
-              onChange({ ...value, value: val })
-            }}
-            value={value.value}
-            forceValidation={forceValidation}
-            placeholder={
-              field.hasAutoIncrementDefault && value.kind === 'create'
-                ? 'Defaults to an incremented number'
-                : undefined
-            }
-            validationMessage={message}
-            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-          />
-        </span>
-      ) : (
-        value.value
-      )}
-    </FieldContainer>
+    <NumberField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      errorMessage={(isDirty || forceValidation) && validationMessage}
+      isReadOnly={isReadOnly}
+      isRequired={field.validation.isRequired}
+      minValue={field.validation.min}
+      maxValue={field.validation.max}
+      step={1}
+      onBlur={() => setIsDirty(true)}
+      onChange={val => {
+        onChange?.({ ...value, value: val })
+      }}
+      value={value.value ?? null}
+    />
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path] === null ? '' : item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent = ({ field, item }) => {
+  const value = item[field.path]
+  return value != null ? <Numeral value={value} /> : null
 }
 
 function validate (
@@ -173,15 +116,15 @@ type Validation = {
 }
 
 type Value =
-  | { kind: 'update', initial: number | null, value: string | number | null }
-  | { kind: 'create', value: string | number | null }
+  | { kind: 'update', initial: number | null, value: number | null }
+  | { kind: 'create', value: number | null }
 
 export const controller = (
   config: FieldControllerConfig<{
     validation: Validation
     defaultValue: number | null | 'autoincrement'
   }>
-): FieldController<Value, string> & {
+): FieldController<Value, number | null> & {
   validation: Validation
   hasAutoIncrementDefault: boolean
 } => {
@@ -207,80 +150,100 @@ export const controller = (
         config.fieldMeta.defaultValue === 'autoincrement'
       ) === undefined,
     filter: {
-      Filter ({ autoFocus, type, onChange, value }) {
-        return (
-          <TextInput
-            type="text"
-            onChange={event => {
-              if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d,\s-]/g, ''))
-                return
-              }
+      Filter (props) {
+        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+        const [isDirty, setDirty] = useState(false)
 
-              onChange(event.target.value.replace(/[^\d\s-]/g, ''))
-            }}
-            value={value}
+        if (type === 'empty' || type === 'not_empty') {
+          return null;
+        }
+
+        const labelProps = context === 'add'
+          ? { label: config.label, description: typeLabel }
+          : { label: typeLabel }
+
+        return (
+          <NumberField
+            {...otherProps}
+            {...labelProps}
+            isRequired
+            step={1}
+            width="auto"
             autoFocus={autoFocus}
+            errorMessage={(forceValidation || isDirty) && !value ? 'Required' : null}
+            onBlur={() => setDirty(true)}
+            onChange={onChange}
+            value={value ?? null}
           />
         )
       },
 
       graphql: ({ type, value }) => {
-        const valueWithoutWhitespace = value.replace(/\s/g, '')
-        const parsed =
-          type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',').map(x => parseInt(x))
-            : parseInt(valueWithoutWhitespace)
+        if (type === 'empty') {
+          return { [config.path]: { equals: null } }
+        }
+        if (type === 'not_empty') {
+          return { [config.path]: { not: { equals: null } } }
+        }
         if (type === 'not') {
-          return { [config.path]: { not: { equals: parsed } } }
+          return { [config.path]: { not: { equals: value } } }
         }
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
-        return { [config.path]: { [key]: parsed } }
+
+        return {
+          [config.path]: { [type]: value }
+        }
       },
-      Label ({ label, value, type }) {
-        let renderedValue = value
-        if (['in', 'not_in'].includes(type)) {
-          renderedValue = value
-            .split(',')
-            .map(value => value.trim())
-            .join(', ')
+      Label ({ label, type, value }) {
+        if (type === 'empty' || type === 'not_empty') {
+          return label.toLocaleLowerCase()
         }
-        return `${label.toLowerCase()}: ${renderedValue}`
+
+        let operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
+        return `${operator} ${value}`
       },
       types: {
-        is: {
+        equals: {
           label: 'Is exactly',
-          initialValue: '',
+          initialValue: null,
         },
         not: {
           label: 'Is not exactly',
-          initialValue: '',
+          initialValue: null,
         },
         gt: {
           label: 'Is greater than',
-          initialValue: '',
+          initialValue: null,
         },
         lt: {
           label: 'Is less than',
-          initialValue: '',
+          initialValue: null,
         },
         gte: {
           label: 'Is greater than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
         lte: {
           label: 'Is less than or equal to',
-          initialValue: '',
+          initialValue: null,
         },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
+        empty: {
+          label: 'Is empty',
+          initialValue: null,
         },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
+        not_empty: {
+          label: 'Is not empty',
+          initialValue: null,
         },
       },
     },
   }
 }
+
+const TYPE_OPERATOR_MAP = {
+  equals: '=',
+  not: '≠',
+  gt: '>',
+  lt: '<',
+  gte: '≥',
+  lte: '≤',
+} as const

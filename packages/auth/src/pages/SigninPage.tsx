@@ -1,28 +1,30 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState, Fragment, type FormEvent, useRef, useEffect } from 'react'
+import {
+  type FormEvent,
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { TextInput } from '@keystone-ui/fields'
 import { Notice } from '@keystone-ui/notice'
 
-import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
+import {
+  useQuery,
+  useMutation,
+  gql
+} from '@keystone-6/core/admin-ui/apollo'
 import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
-type SigninPageProps = {
-  identityField: string
-  secretField: string
-  mutationName: string
-  successTypename: string
-  failureTypename: string
-}
-
-export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />
+export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
 export function SigninPage ({
   identityField,
@@ -30,9 +32,15 @@ export function SigninPage ({
   mutationName,
   successTypename,
   failureTypename,
-}: SigninPageProps) {
+}: {
+  identityField: string
+  secretField: string
+  mutationName: string
+  successTypename: string
+  failureTypename: string
+}) {
   const mutation = gql`
-    mutation($identity: String!, $secret: String!) {
+    mutation ($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
@@ -60,14 +68,23 @@ export function SigninPage ({
   const router = useRouter()
   const rawKeystone = useRawKeystone()
   const redirect = useRedirect()
+  const { data: whoamiResult } = useQuery<{
+    authenticatedItem: { id: unknown } | null
+  }>(gql`
+    query Session {
+      authenticatedItem {
+        id
+      }
+    }
+  `)
 
   // if we are signed in, redirect immediately
   useEffect(() => {
     if (submitted) return
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
+    if (whoamiResult?.authenticatedItem?.id) {
       router.push(redirect)
     }
-  }, [rawKeystone.authenticatedItem, router, redirect, submitted])
+  }, [whoamiResult?.authenticatedItem?.id, router, redirect, submitted])
 
   useEffect(() => {
     if (!submitted) return
