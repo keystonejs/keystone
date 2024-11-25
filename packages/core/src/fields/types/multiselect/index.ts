@@ -32,6 +32,9 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
           defaultValue?: readonly number[] | null
         }
     ) & {
+      ui?: {
+        displayMode?: 'checkboxes' | 'select'
+      },
       db?: {
         isNullable?: boolean
         map?: string
@@ -48,6 +51,7 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
 ): FieldTypeFunc<ListTypeInfo> {
   const {
     defaultValue: defaultValue_,
+    ui: { displayMode = 'select', ...ui } = {},
   } = config
 
   config.db ??= {}
@@ -107,12 +111,14 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       meta.provider,
       {
         ...config,
+        ui,
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
         hooks: mergeFieldHooks({ validate }, config.hooks),
         views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,
           type: config.type ?? 'string',
+          displayMode: displayMode,
           defaultValue: [],
         }),
         input: {

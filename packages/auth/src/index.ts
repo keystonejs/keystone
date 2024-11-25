@@ -10,11 +10,11 @@ import { password, timestamp } from '@keystone-6/core/fields'
 
 import type { AuthConfig, AuthGqlNames } from './types'
 import { getSchemaExtension } from './schema'
-import { signinTemplate } from './templates/signin'
-import { initTemplate } from './templates/init'
+import configTemplate from './templates/config'
+import signinTemplate from './templates/signin'
+import initTemplate from './templates/init'
 
 export type AuthSession = {
-  listKey: string // TODO: use ListTypeInfo
   itemId: string | number // TODO: use ListTypeInfo
   data: unknown // TODO: use ListTypeInfo
 }
@@ -99,12 +99,29 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const authGetAdditionalFiles = () => {
+  const authGetAdditionalFiles = (config: KeystoneConfig) => {
+    // TODO: FIXME: this is a duplication of initialise-lists:747
+    const listConfig = config.lists[listKey]
+    const labelField =
+      listConfig.ui?.labelField ??
+      (listConfig.fields.label
+        ? 'label'
+        : listConfig.fields.name
+        ? 'name'
+        : listConfig.fields.title
+        ? 'title'
+        : 'id')
+
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ gqlNames, identityField, secretField }),
+        src: signinTemplate({ listKey, gqlNames, identityField, secretField }),
         outputPath: 'pages/signin.js',
+      },
+      {
+        mode: 'write',
+        src: configTemplate({ labelField }),
+        outputPath: 'config.ts',
       },
     ]
     if (initFirstItem) {
@@ -169,9 +186,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
       get: async ({ context }) => {
         const session = await get({ context })
         const sudoContext = context.sudo()
-        if (!session) return
-        if (!session.itemId) return
-        if (session.listKey !== listKey) return
+        if (!session?.itemId) return
+
+        // TODO: replace with SessionSecret: HMAC({ listKey, identityField, secretField }, SessionSecretVar)
+        // if (session.listKey !== listKey) return null
 
         try {
           const data = await sudoContext.query[listKey].findOne({
@@ -180,11 +198,14 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
           })
           if (!data) return
 
-          return { ...session, itemId: session.itemId, listKey, data }
+          return {
+            ...session,
+            itemId: session.itemId,
+            data
+          }
         } catch (e) {
           console.error(e)
-          // TODO: the assumption is this could only be from an invalid sessionData configuration
-          //   it could be something else though, either way, result is a bad session
+          // WARNING: this is probably an invalid configuration
           return
         }
       },
@@ -262,7 +283,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
       ui = {
         ...ui,
         publicPages: [...publicPages, ...authPublicPages],
-        getAdditionalFiles: [...getAdditionalFiles, authGetAdditionalFiles],
+        getAdditionalFiles: [...getAdditionalFiles, () => authGetAdditionalFiles(config)],
 
         isAccessAllowed: async (context: KeystoneContext) => {
           if (await hasInitFirstItemConditions(context)) return true

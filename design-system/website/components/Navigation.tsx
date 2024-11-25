@@ -6,7 +6,7 @@ import { jsx, useTheme } from '@keystone-ui/core'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-const Brand = () => {
+function Brand () {
   const { palette } = useTheme()
   return (
     <h2>
@@ -25,7 +25,7 @@ const Brand = () => {
 }
 
 type SectionProps = { label: string, children: ReactNode }
-const Section = ({ label, children }: SectionProps) => {
+function Section ({ label, children }: SectionProps) {
   return (
     <Fragment>
       <h3>{label}</h3>
@@ -35,7 +35,7 @@ const Section = ({ label, children }: SectionProps) => {
 }
 
 type NavItemProps = { href: string, children: ReactNode }
-const NavItem = ({ href, children }: NavItemProps) => {
+function NavItem ({ href, children }: NavItemProps) {
   const { palette, radii, spacing } = useTheme()
   const router = useRouter()
   const isSelected = router.pathname === href
@@ -68,7 +68,7 @@ const NavItem = ({ href, children }: NavItemProps) => {
   )
 }
 
-export const Navigation = () => {
+export function Navigation () {
   return (
     <Fragment>
       <Brand />

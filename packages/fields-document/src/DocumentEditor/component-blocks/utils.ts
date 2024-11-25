@@ -1,12 +1,12 @@
-import { type DocumentFeatures } from '../../views-shared'
-import { type DocumentFeaturesForNormalization } from '../document-features-normalization'
+import type { DocumentFeatures } from '../../views-shared'
+import type { DocumentFeaturesForNormalization } from '../document-features-normalization'
 import {
   type Mark,
   assert,
 } from '../utils'
-import {
-  type ComponentSchema,
-  type ChildField
+import type {
+  ComponentSchema,
+  ChildField
 } from './api-shared'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 

@@ -36,13 +36,14 @@ function safeParseDecimal (value: string | null | undefined) {
   return result
 }
 
+// TODO: https://github.com/Thinkmill/keystatic/blob/main/design-system/pkg/src/number-field/NumberField.tsx
 export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     defaultValue: defaultValue_,
     isIndexed,
     precision = 18,
     scale = 4,
-    validation,
+    validation = {},
   } = config
 
   const {
@@ -50,7 +51,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
     min,
     max
   } = validation
-  const defaultValue = typeof defaultValue_ === 'bigint' ? defaultValue_ : (defaultValue_?.kind ?? null)
+  const defaultValue = typeof defaultValue_ === 'string' ? defaultValue_ : null
 
   const parsedDefaultValue = safeParseDecimal(defaultValue)
   const parsedMax = safeParseDecimal(max) ?? undefined
@@ -72,7 +73,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
           `must not be larger than the field's precision (${precision})`
       )
     }
-    if (defaultValue !== undefined && !parsedDefaultValue) {
+    if (defaultValue !== null && !parsedDefaultValue) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
     if (min !== undefined && !parsedMin) {
@@ -125,8 +126,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Decimal[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,

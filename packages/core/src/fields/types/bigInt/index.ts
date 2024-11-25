@@ -33,9 +33,10 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT =  9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
+// TODO: https://github.com/Thinkmill/keystatic/blob/main/design-system/pkg/src/number-field/NumberField.tsx
 export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    defaultValue: defaultValue_,
+    defaultValue: defaultValue_ = null,
     isIndexed,
     validation = {},
   } = config
@@ -63,6 +64,9 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       if (isRequired) {
         throw new Error(`${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`)
       }
+    }
+    if (defaultValue !== null && typeof defaultValue !== 'bigint') {
+      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
     if (min !== undefined && !Number.isInteger(min)) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)

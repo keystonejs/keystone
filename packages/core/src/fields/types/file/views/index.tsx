@@ -2,9 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
@@ -14,9 +12,8 @@ import { validateFile } from './Field'
 
 export { Field } from './Field'
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path]
-  if (!data) return null
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  if (!value) return null
   return (
     <div
       css={{
@@ -27,18 +24,8 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      {data.filename}
+      {value.filename}
     </div>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && data.filename}
-    </FieldContainer>
   )
 }
 
@@ -66,7 +53,7 @@ export type FileValue =
 
 type FileController = FieldController<FileValue>
 
-export const controller = (config: FieldControllerConfig): FileController => {
+export function controller (config: FieldControllerConfig): FileController {
   return {
     path: config.path,
     label: config.label,

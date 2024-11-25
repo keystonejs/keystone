@@ -14,7 +14,7 @@ The default export of every file in this directory is expected to be a valid Rea
 
 ```tsx
 // admin/pages/custom-page.tsx
-import Link from 'next/link';
+import Link from 'next/link'
 
 export default function CustomPage () {
     return (
@@ -43,8 +43,8 @@ This `header` prop is rendered out as the page title at the top of the page.
 
 ```tsx
 // admin/pages/custom-page.tsx
-import Link from 'next/link';
-import { PageContainer } from '@keystone-6/core/admin-ui/components';
+import Link from 'next/link'
+import { PageContainer } from '@keystone-6/core/admin-ui/components'
 
 export default function CustomPage () {
     return (
@@ -66,8 +66,8 @@ Keystone pages leverage the `Heading` component from the `@keystone-ui/core` pac
 
 ```tsx
 // admin/pages/custom-page.tsx.
-import { PageContainer } from '@keystone-6/core/admin-ui/components';
-import { Heading } from '@keystone-ui/core';
+import { PageContainer } from '@keystone-6/core/admin-ui/components'
+import { Heading } from '@keystone-ui/core'
 
 export default function CustomPage () {
     return (
@@ -91,20 +91,20 @@ First add the following files to the `/admin` directory in the root of your Keys
 
 ```tsx
 // admin/config.ts
-import type { AdminConfig } from '@keystone-6/core/types';
-import { CustomNavigation } from './components/CustomNavigation';
+import type { AdminConfig } from '@keystone-6/core/types'
+import { CustomNavigation } from './components/CustomNavigation'
 export const components: AdminConfig['components']= {
     Navigation: CustomNavigation
-};
+}
 ```
 
 ```tsx
 // admin/components/CustomNavigation.tsx
-import { NavigationContainer, ListNavItems, NavItem } from '@keystone-6/core/admin-ui/components';
-import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
-export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
+import { NavigationContainer, ListNavItems, NavItem } from '@keystone-6/core/admin-ui/components'
+import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
+export function CustomNavigation({ lists }: NavigationProps) {
     return (
-        <NavigationContainer authenticatedItem={authenticatedItem}>
+        <NavigationContainer>
             <NavItem href="/">Dashboard</NavItem>
             <ListNavItems lists={lists} />
         </NavigationContainer>
@@ -124,11 +124,11 @@ Lastly we'll add our new route to the newly created `CustomNavigation` component
 
 ```tsx
 // admin/components/CustomNavigation.tsx
-import { NavigationContainer, ListNavItems, NavItem } from '@keystone-6/core/admin-ui/components';
-import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
-export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
+import { NavigationContainer, ListNavItems, NavItem } from '@keystone-6/core/admin-ui/components'
+import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
+export function CustomNavigation({ lists }: NavigationProps) {
     return (
-        <NavigationContainer authenticatedItem={authenticatedItem}>
+        <NavigationContainer>
             <NavItem href="/">Dashboard</NavItem>
             <ListNavItems lists={lists} />
             <NavItem href="/custom-page">Custom Page</NavItem>
@@ -155,10 +155,10 @@ The snippet below uses the emotion `jsx` runtime exported from `@keystone-ui/cor
 // admin/pages/custom-page.tsx
 /** @jsxRuntime classic */
 
-import Link from 'next/link';
-import { jsx } from '@keystone-ui/core';
-import { PageContainer } from '@keystone-6/core/admin-ui/components';
-import { Heading } from '@keystone-ui/core';
+import Link from 'next/link'
+import { jsx } from '@keystone-ui/core'
+import { PageContainer } from '@keystone-6/core/admin-ui/components'
+import { Heading } from '@keystone-ui/core'
 
 export default function CustomPage () {
     return (

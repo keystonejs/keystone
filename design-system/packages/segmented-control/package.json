@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-segmented-control.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-segmented-control.cjs.js",
       "module": "./dist/keystone-ui-segmented-control.esm.js",
       "default": "./dist/keystone-ui-segmented-control.cjs.js"
     },

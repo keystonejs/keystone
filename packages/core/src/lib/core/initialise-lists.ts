@@ -102,9 +102,9 @@ export type InitialisedList = {
 
   fields: Record<string, InitialisedField>
   groups: {
-    fields: BaseListTypeInfo['fields'][]
     label: string
     description: string | null
+    fields: BaseListTypeInfo['fields'][]
   }[]
 
   hooks: ResolvedListHooks<BaseListTypeInfo>
@@ -743,7 +743,7 @@ function getListsWithInitialisedFields (
       }
     }
 
-    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
+    // default labelField to `name`, `label`, or `title`; fallback to `id`
     const labelField =
       listConfig.ui?.labelField ??
       (listConfig.fields.label
@@ -800,6 +800,7 @@ function getListsWithInitialisedFields (
         if (cacheHint !== undefined) return () => cacheHint
         return undefined
       })(),
+
       isSingleton: listConfig.isSingleton ?? false,
     }
   }

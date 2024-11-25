@@ -35,7 +35,7 @@ export const lists = {
       description: text(),
     },
     ui: {
-      isHidden: true,
+      hideNavigation: true,
     },
   }),
 }

@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-button.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-button.cjs.js",
       "module": "./dist/keystone-ui-button.esm.js",
       "default": "./dist/keystone-ui-button.cjs.js"
     },

@@ -7,8 +7,7 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall",
-    "seed-data": "tsx seed-data.ts"
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^6.3.1",

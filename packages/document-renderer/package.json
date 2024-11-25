@@ -7,6 +7,7 @@
   "module": "dist/keystone-6-document-renderer.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-document-renderer.cjs.js",
       "module": "./dist/keystone-6-document-renderer.esm.js",
       "default": "./dist/keystone-6-document-renderer.cjs.js"
     },

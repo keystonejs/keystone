@@ -1,22 +1,19 @@
 import type { BaseListTypeInfo } from '@keystone-6/core/types'
 import type { AuthConfig } from '../types'
 
-type InitTemplateArgs = {
+export default function ({
+  listKey,
+  initFirstItem
+}: {
   listKey: string
   initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>
-}
+}) {
+  return `import makeSigninPage from '@keystone-6/auth/pages/InitPage'
 
-export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
-  // -- TEMPLATE START
-  return `import { getInitPage } from '@keystone-6/auth/pages/InitPage';
-
-const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
-
-export default getInitPage(${JSON.stringify({
-    listKey,
-    fieldPaths: initFirstItem.fields,
-    enableWelcome: !initFirstItem.skipKeystoneWelcome,
-  })});
+export default makeSigninPage(${JSON.stringify({
+  listKey,
+  fieldPaths: initFirstItem.fields,
+  enableWelcome: !initFirstItem.skipKeystoneWelcome,
+})})
 `
-  // -- TEMPLATE END
 }

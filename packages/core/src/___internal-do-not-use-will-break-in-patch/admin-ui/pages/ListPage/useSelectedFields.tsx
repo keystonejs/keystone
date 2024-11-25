@@ -1,6 +1,7 @@
+import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+
 import { type ListMeta } from '../../../../types'
-import { useRouter } from '../../../../admin-ui/router'
 
 export function useSelectedFields (
   list: ListMeta,

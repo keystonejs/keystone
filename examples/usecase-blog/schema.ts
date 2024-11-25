@@ -72,16 +72,6 @@ export const lists = {
       author: relationship({
         // we could have used 'Author', but then the relationship would only be 1-way
         ref: 'Author.posts',
-
-        // we customise how this will look in the AdminUI, for fun
-        ui: {
-          displayMode: 'cards',
-          cardFields: ['name', 'email'],
-          inlineEdit: { fields: ['name', 'email'] },
-          linkToItem: true,
-          inlineConnect: true,
-        },
-
         many: false, // only 1 author for each Post (the default)
       }),
 
@@ -90,27 +80,28 @@ export const lists = {
         ref: 'Tag.posts',
         many: true, // a Post can have many Tags, not just one
 
-        // we customise how this will look in the AdminUI, for fun
-        ui: {
-          displayMode: 'cards',
-          cardFields: ['name'],
-          inlineEdit: { fields: ['name'] },
-          linkToItem: true,
-          inlineConnect: true,
-          inlineCreate: { fields: ['name'] },
-        },
+        // TODO: restore after breaking change
+//          ui: {
+//            inlineCreate: {
+//              fields: ['name']
+//            }
+//          }
       }),
     },
   }),
 
   // this last list is our Tag list, it only has a name field for now
   Tag: list({
-    // WARNING - for this example, anyone can create, query, update and delete anything
+    // WARNING
+    //   for this starter project, anyone can create, query, update and delete anything
+    //
+    //   if you want to prevent random people on the internet from accessing your data,
+    //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
     access: allowAll,
 
-    // we want to hide this list in the AdminUI
+    // dont show this list in the AdminUI
     ui: {
-      isHidden: true,
+      hideNavigation: true,
     },
 
     fields: {

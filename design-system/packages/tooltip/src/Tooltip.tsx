@@ -136,6 +136,14 @@ export const TooltipElement = memo(
       const { elevation, radii, colors, spacing, typography } = useTheme()
       const arrowStyles = useArrowStyles()
 
+      // Fix for hidden tooltips breaking responsive layout. There's no
+      // animation so not sure why we weren't doing this already.
+      // Leaving everything else as is for now. We should replace instances with
+      // Keystar UI components eventually.
+      if (!isVisible) {
+        return null
+      }
+
       return (
         <Portal>
           <div

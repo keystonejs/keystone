@@ -14,9 +14,8 @@ const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'))
 
 export function writeAdminFiles (
   config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  configFileExists: boolean
+  graphQLSchema: GraphQLSchema,
 ) {
   return [
     {
@@ -32,12 +31,7 @@ export function writeAdminFiles (
     { mode: 'write' as const, src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
     {
       mode: 'write' as const,
-      src: appTemplate(
-        adminMeta,
-        graphQLSchema,
-        { configFileExists },
-        config.graphql?.path || '/api/graphql'
-      ),
+      src: appTemplate(config, adminMeta, graphQLSchema),
       outputPath: 'pages/_app.js',
     },
     { mode: 'write' as const, src: homeTemplate, outputPath: 'pages/index.js' },

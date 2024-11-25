@@ -1,9 +1,15 @@
-import { useToasts } from '@keystone-ui/toast'
-import { type ComponentProps, useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import isDeepEqual from 'fast-deep-equal'
-import { useMutation, gql, type ApolloError } from '../apollo'
-import { useKeystone } from '..'
+import { useRouter } from 'next/router'
+import {
+  type ComponentProps,
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react'
+
+import { toastQueue } from '@keystar/ui/toast'
+
 import type { ListMeta } from '../../types'
+import { type ApolloError, gql, useMutation } from '../apollo'
+import { useKeystone } from '../context'
 import { usePreventNavigation } from './usePreventNavigation'
 import type { Fields, Value } from '.'
 
@@ -18,12 +24,12 @@ type CreateItemHookResult = {
 }
 
 export function useCreateItem (list: ListMeta): CreateItemHookResult {
-  const toasts = useToasts()
   const { createViewFieldModes } = useKeystone()
+  const router = useRouter()
 
   const [createItem, { loading, error, data: returnedData }] = useMutation(
-    gql`mutation($data: ${list.gqlNames.createInputName}!) {
-      item: ${list.gqlNames.createMutationName}(data: $data) {
+    gql`mutation($data: ${list.graphql.names.createInputName}!) {
+      item: ${list.graphql.names.createMutationName}(data: $data) {
         id
         label: ${list.labelField}
       }
@@ -107,7 +113,7 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
                 id: 'ROOT_QUERY',
-                fieldName: `${list.gqlNames.itemQueryName}(${JSON.stringify({
+                fieldName: `${list.graphql.names.itemQueryName}(${JSON.stringify({
                   where: { id: data.item.id },
                 })})`,
               })
@@ -115,15 +121,24 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
           },
         }).then(x => x.data)
       } catch {
+        // TODO: what about `error` returned from the mutation? do we need
+        // to handle that too, should they be combined? does this code path
+        // even happen?
+        toastQueue.critical(`Unable to create ${list.singular.toLocaleLowerCase()}`)
         return undefined
       }
+
       shouldPreventNavigationRef.current = false
-      const label = outputData.item.label || outputData.item.id
-      toasts.addToast({
-        title: label,
-        message: 'Created Successfully',
-        tone: 'positive',
+
+      toastQueue.positive(`${list.singular} created`, {
+        timeout: 5000,
+        actionLabel: 'Add another',
+        onAction: () => {
+          router.push(`/${list.path}/create`)
+        },
+        shouldCloseOnAction: true,
       })
+
       return outputData.item
     },
   }

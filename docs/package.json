@@ -21,7 +21,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/server": "11.11.0",
     "@emotion/weak-memoize": "^0.4.0",
-    "@keystar/ui": "^0.7.6",
+    "@keystar/ui": "^0.7.13",
     "@keystatic/core": "^0.5.24",
     "@keystatic/next": "^5.0.1",
     "@keystone-6/fields-document": "workspace:^",

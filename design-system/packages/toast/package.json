@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-toast.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-toast.cjs.js",
       "module": "./dist/keystone-ui-toast.esm.js",
       "default": "./dist/keystone-ui-toast.cjs.js"
     },

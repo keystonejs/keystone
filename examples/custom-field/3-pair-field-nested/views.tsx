@@ -1,10 +1,7 @@
 import React from 'react'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
+import { TextField } from '@keystar/ui/text-field'
 
 import {
-  type CardValueComponent,
-  type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
@@ -16,60 +13,27 @@ export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof 
 
   return (
     <>
-      <FieldContainer as="fieldset">
-        <FieldLabel>{field.label} (Left)</FieldLabel>
-        <FieldDescription id={`${field.path}-description-left`}>
-          {field.description}
-        </FieldDescription>
-        <div>
-          <TextInput
-            type="text"
-            onChange={event => {
-              onChange?.({ left: event.target.value, right })
-            }}
-            disabled={disabled}
-            value={left || ''}
-            autoFocus={autoFocus}
-          />
-        </div>
-      </FieldContainer>
-      <FieldContainer as="fieldset">
-        <FieldLabel>{field.label} (Right)</FieldLabel>
-        <FieldDescription id={`${field.path}-description-right`}>
-          {field.description}
-        </FieldDescription>
-        <div>
-          <TextInput
-            type="text"
-            onChange={event => {
-              onChange?.({ left, right: event.target.value })
-            }}
-            disabled={disabled}
-            value={right || ''}
-            autoFocus={autoFocus}
-          />
-        </div>
-      </FieldContainer>
+      <TextField
+        autoFocus={autoFocus}
+        description={`${field.description} (Left)`}
+        label={`${field.label} (Left)`}
+        isDisabled={disabled}
+        onChange={x => onChange?.({ left: x === '' ? null : x, right })}
+        value={left ?? ''}
+      />
+      <TextField
+        autoFocus={autoFocus}
+        description={`${field.description} (Right)`}
+        label={`${field.label} (Right)`}
+        isDisabled={disabled}
+        onChange={x => onChange?.({ right: x === '' ? null : x, left })}
+        value={right ?? ''}
+      />
     </>
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
-}
-
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{}>
 ): FieldController<
   {
@@ -77,7 +41,7 @@ export const controller = (
     right: string | null
   } | null,
   string
-> => {
+> {
   return {
     path: config.path,
     label: config.label,

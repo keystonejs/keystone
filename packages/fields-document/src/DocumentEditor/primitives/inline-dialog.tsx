@@ -1,6 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { tokenSchema } from '@keystar/ui/style'
+
 import { jsx, Portal, useTheme } from '@keystone-ui/core'
 import { type HTMLAttributes, forwardRef } from 'react'
 
@@ -26,7 +28,7 @@ export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...
       ref={ref}
       contentEditable={false}
       css={{
-        background: 'white',
+        background: tokenSchema.color.background.surface,
         borderRadius: radii.small,
         boxShadow: `rgba(9, 30, 66, 0.31) 0px 0px 1px, rgba(9, 30, 66, 0.25) 0px 4px 8px -2px`,
         padding: spacing.small,
@@ -38,9 +40,6 @@ export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...
     />
   )
 
-  if (isRelative) {
-    return dialog
-  }
-
+  if (isRelative) { return dialog }
   return <Portal>{dialog}</Portal>
 })

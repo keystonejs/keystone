@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-popover.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-popover.cjs.js",
       "module": "./dist/keystone-ui-popover.esm.js",
       "default": "./dist/keystone-ui-popover.cjs.js"
     },
