@@ -1,22 +1,36 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core'
+
+import { useSlotId } from '@react-aria/utils'
+
+import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
+import { VStack } from '@keystar/ui/layout'
+import { Text } from '@keystar/ui/typography'
+
+import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import { memo, type ReactNode, useContext, useId, useMemo } from 'react'
-import { FieldDescription } from '@keystone-ui/fields'
 import { ButtonContext } from '@keystone-ui/button'
-import { type FieldGroupMeta, type FieldMeta } from '../../types'
+import type {
+  FieldEnvironment,
+  FieldGroupMeta,
+  FieldMeta,
+  Item,
+} from '../../types'
+import { EmptyState } from '../components/EmptyState'
 import { type Value } from '.'
 
 type RenderFieldProps = {
-  field: FieldMeta
-  value: unknown
-  itemValue: unknown
-  onChange?(value: (value: Value) => Value): void
   autoFocus?: boolean
+  environment: FieldEnvironment
+  field: FieldMeta
   forceValidation?: boolean
+  itemValue: Item
+  onChange?(value: (value: Value) => Value): void
+  value: unknown
 }
 
 const RenderField = memo(function RenderField ({
+  environment,
   field,
   value,
   itemValue,
@@ -26,6 +40,7 @@ const RenderField = memo(function RenderField ({
 }: RenderFieldProps) {
   return (
     <field.views.Field
+      environment={environment}
       field={field.controller}
       onChange={useMemo(() => {
         if (onChange === undefined) return undefined
@@ -42,18 +57,27 @@ const RenderField = memo(function RenderField ({
 })
 
 type FieldsProps = {
-  fields: Record<string, FieldMeta>
-  groups?: FieldGroupMeta[]
-  value: Value
+  /**
+   * The environment in which the fields are being rendered. Certain fields may
+   * render differently depending on context, for example the relationship field
+   * does not support "add" behavior in the create dialog.
+   * 
+   * @default 'edit-page'
+  */
+  environment?: FieldEnvironment
   fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
   fieldPositions?: Record<string, 'form' | 'sidebar'> | null
+  fields: Record<string, FieldMeta>
   forceValidation: boolean
-  position?: 'form' | 'sidebar'
+  groups?: FieldGroupMeta[]
   invalidFields: ReadonlySet<string>
   onChange(value: (value: Value) => Value): void
+  position?: 'form' | 'sidebar'
+  value: Value
 }
 
 export function Fields ({
+  environment = 'edit-page',
   fields,
   value,
   fieldModes = null,
@@ -64,14 +88,27 @@ export function Fields ({
   groups = [],
   onChange,
 }: FieldsProps) {
+  // TODO: auto-focusing the first field makes sense for e.g. the create item
+  // view, but may be disorienting in other situations. this needs to be
+  // revisited, and the result should probably be memoized
+  const firstFocusable = Object.keys(fields).find(fieldKey => {
+    const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
+    const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+    return fieldMode !== 'hidden' && fieldPosition === 'form'
+  })
+
   const renderedFields = Object.fromEntries(
     Object.keys(fields).map((fieldKey, index) => {
       const field = fields[fieldKey]
       const val = value[fieldKey]
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
       const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+
       if (fieldMode === 'hidden') return [fieldKey, null]
       if (fieldPosition !== position) return [fieldKey, null]
+      // TODO: this isn't accessible, it should:
+      // - render an inline alert (`Notice`), or
+      // - invoke a "critical" toast message
       if (val.kind === 'error') {
         return [
           fieldKey,
@@ -80,16 +117,18 @@ export function Fields ({
           </div>,
         ]
       }
+
       return [
         fieldKey,
         <RenderField
           key={fieldKey}
+          environment={environment}
           field={field}
           value={val.value}
           itemValue={value}
           forceValidation={forceValidation && invalidFields.has(fieldKey)}
           onChange={fieldMode === 'edit' ? onChange : undefined}
-          autoFocus={index === 0}
+          autoFocus={fieldKey === firstFocusable}
         />,
       ]
     })
@@ -128,18 +167,35 @@ export function Fields ({
     rendered.push(renderedFields[fieldKey])
   }
 
+  // TODO: not sure what to do about the sidebar case. i think it's fine to
+  // just render nothing for now, but we should revisit this.
+  if (rendered.length === 0 && position === 'form') {
+    return (
+      <EmptyState
+        icon={textCursorInputIcon}
+        title="No fields"
+        message="There are no fields matching access."
+      />
+    )
+  }
+
   return (
-    <Stack gap="xlarge">
-      {rendered.length === 0 ? 'There are no fields that you can read or edit' : rendered}
-    </Stack>
+    <VStack gap="xlarge">
+      {rendered}
+    </VStack>
   )
 }
 
-function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {
-  const descriptionId = useId()
+const buttonSize = 24
+
+function FieldGroup (props: {
+  label: string,
+  description: string | null,
+  children: ReactNode
+}) {
   const labelId = useId()
+  const descriptionId = useSlotId([Boolean(props.description)]);
   const theme = useTheme()
-  const buttonSize = 24
   const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext)
   const buttonStyles = useButtonStyles({ tokens: useButtonTokens(defaults) })
   const divider = (
@@ -155,7 +211,7 @@ function FieldGroup (props: { label: string, description: string | null, childre
     <div
       role="group"
       aria-labelledby={labelId}
-      aria-describedby={props.description === null ? undefined : descriptionId}
+      aria-describedby={descriptionId}
     >
       <details open>
         <summary
@@ -177,7 +233,13 @@ function FieldGroup (props: { label: string, description: string | null, childre
               {downChevron}
             </div>
             {divider}
-            <Text id={labelId} size="large" weight="bold" css={{ position: 'relative' }}>
+            <Text
+              color="neutralEmphasis"
+              size="medium"
+              weight="semibold"
+              id={labelId}
+              position="relative"
+            >
               {props.label}
             </Text>
           </Stack>
@@ -190,8 +252,10 @@ function FieldGroup (props: { label: string, description: string | null, childre
             </Stack>
           </div>
           <Stack marginLeft="medium" css={{ width: '100%' }}>
-            {props.description !== null && (
-              <FieldDescription id={descriptionId}>{props.description}</FieldDescription>
+            {!!props.description && (
+              <Text id={descriptionId} size="regular" color="neutralSecondary">
+                {props.description}
+              </Text>
             )}
             <Stack marginTop="large" gap="xlarge">
               {props.children}

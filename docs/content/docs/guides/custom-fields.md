@@ -187,27 +187,6 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
 Cell.supportsLinkTo = true;
 ```
 
-### CardValue
-
-The `CardValue` export is a React component which is shown on the **item view** in relationship fields with `displayMode: 'cards'` when the related item is not being edited.
-Note it does not allow modifying the value.
-
-```tsx
-// view.tsx
-
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { CardValueComponent } from '@keystone-6/core/types';
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  );
-};
-```
-
 ## Related resources
 
 {% related-content %}

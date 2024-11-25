@@ -7,7 +7,7 @@
     "isolatedModules": true,
     "jsx": "react",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
