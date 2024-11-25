@@ -10,7 +10,7 @@ import {
   staticAdminMetaQuery
 } from '../admin-meta-graphql'
 
-const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue'])
+const expectedExports = new Set(['Cell', 'Field', 'controller'])
 const adminMetaLocalStorageKey = 'keystone.adminMeta'
 
 let _mustRenderServerResult = true
@@ -71,7 +71,6 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
     for (const list of adminMeta.lists) {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
-        gqlNames: list.graphql.names,
         groups: [],
         fields: {},
       }
@@ -79,17 +78,13 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
       for (const field of list.fields) {
         for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
-            throw new Error(
-              `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
-            )
+            throw new Error(`The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`)
           }
         }
 
         Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
-            throw new Error(
-              `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
-            )
+            throw new Error(`Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`)
           }
         })
 
@@ -113,12 +108,8 @@ export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
 
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
-          itemView: {
-            fieldMode: field.itemView?.fieldMode ?? null,
-            fieldPosition: field.itemView?.fieldPosition ?? null,
-          },
           graphql: {
-            isNonNull: field.isNonNull,
+            isNonNull: field.isNonNull, // TODO: FIXME: flattened?
           },
           views,
           controller: views.controller({

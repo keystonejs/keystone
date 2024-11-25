@@ -2,14 +2,12 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
 } from '../../../../types'
-import { validateImage, ImageWrapper } from './Field'
+import { validateImage } from './Field'
 
 export { Field } from './Field'
 
@@ -28,20 +26,6 @@ export const Cell: CellComponent = ({ item, field }) => {
     >
       <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
     </div>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && (
-        <ImageWrapper>
-          <img css={{ width: '100%' }} alt={data.filename} src={data.url} />
-        </ImageWrapper>
-      )}
-    </FieldContainer>
   )
 }
 

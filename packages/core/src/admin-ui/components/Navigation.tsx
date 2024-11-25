@@ -1,219 +1,102 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { type AllHTMLAttributes, type ReactNode, Fragment } from 'react'
+import React, { type ReactNode, type PropsWithChildren } from 'react'
 import { useRouter } from 'next/router'
-import { Stack, jsx, useTheme, Text } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
-import { Popover } from '@keystone-ui/popover'
-import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { type NavigationProps, type ListMeta, type AuthenticatedItem } from '../../types'
 
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { bookTextIcon } from '@keystar/ui/icon/icons/bookTextIcon'
+import { constructionIcon } from '@keystar/ui/icon/icons/constructionIcon'
+import { githubIcon } from '@keystar/ui/icon/icons/githubIcon'
+import { fileJson2Icon } from '@keystar/ui/icon/icons/fileJson2Icon'
+import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
+import { Box, Divider, HStack, VStack } from '@keystar/ui/layout'
+import { NavList as KeystarNavList, NavItem as KeystarNavItem, NavListProps } from '@keystar/ui/nav-list'
+import { Notice } from '@keystar/ui/notice'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Text } from '@keystar/ui/typography'
+
+import { type ListMeta } from '../../types'
 import { useKeystone } from '../context'
-import { Link } from '../router'
-import { SignoutButton } from './SignoutButton'
 
 type NavItemProps = {
-  href: string
+  /**
+   * The content of the item.
+   */
   children: ReactNode
+  /**
+   * The URL to navigate to when the item is clicked. Omit the origin, as it
+   * interferes with client-side routing. Use `/` for the dashboard.
+   */
+  href: string
+  /**
+   * Optionally override the selected state of the item. By default, this is
+   * determined by the current route and the `href` provided.
+    */
   isSelected?: boolean
 }
 
-export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProps) => {
-  const { colors, palette, spacing, radii, typography } = useTheme()
+export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
+  return `/${list.path}${list.isSingleton ? '/1' : ''}`
+}
+
+/** A navigation item represents a page in the AdminUI. */
+export function NavItem (props: NavItemProps) {
+  const { children, href, isSelected: isSelectedProp } = props
   const router = useRouter()
 
-  const isSelected = _isSelected !== undefined ? _isSelected : router.pathname === href
-  return (
-    <li>
-      <Link
-        aria-current={isSelected ? 'location' : false}
-        href={href}
-        css={{
-          background: 'transparent',
-          borderBottomRightRadius: radii.xsmall,
-          borderTopRightRadius: radii.xsmall,
-          color: palette.neutral700,
-          display: 'block',
-          fontWeight: typography.fontWeight.medium,
-          marginBottom: spacing.xsmall,
-          marginRight: spacing.xlarge,
-          padding: `${spacing.small}px ${spacing.xlarge}px`,
-          position: 'relative',
-          textDecoration: 'none',
-
-          ':hover': {
-            background: colors.backgroundHover,
-            color: colors.linkHoverColor,
-          },
-
-          '&[aria-current=location]': {
-            background: palette.neutral200,
-            color: palette.neutral900,
-          },
-        }}
-      >
-        {children}
-      </Link>
-    </li>
-  )
-}
-
-const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined }) => {
-  const { apiPath } = useKeystone()
-  const { spacing, typography } = useTheme()
-  return (
-    <div
-      css={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: spacing.xlarge,
-        marginBottom: 0,
-      }}
-    >
-      {item && item.state === 'authenticated' ? (
-        <div css={{ fontSize: typography.fontSize.small }}>
-          Signed in as <strong css={{ display: 'block' }}>{item.label}</strong>
-        </div>
-      ) : (
-        process.env.NODE_ENV !== 'production' && (
-          <div css={{ fontSize: typography.fontSize.small }}>GraphQL Playground and Docs</div>
-        )
-      )}
-
-      {process.env.NODE_ENV === 'production' ? (
-        item && item.state === 'authenticated' && <SignoutButton />
-      ) : (
-        <Popover
-          placement="bottom"
-          triggerRenderer={({ triggerProps }) => (
-            <Button
-              size="small"
-              style={{ padding: 0, width: 36 }}
-              aria-label="Links and signout"
-              {...triggerProps}
-            >
-              <MoreHorizontalIcon />
-            </Button>
-          )}
-        >
-          <Stack gap="medium" padding="large" dividers="between">
-            <PopoverLink target="_blank" href={apiPath}>
-              API Explorer
-            </PopoverLink>
-            <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
-              GitHub Repository
-            </PopoverLink>
-            <PopoverLink target="_blank" href="https://keystonejs.com">
-              Keystone Documentation
-            </PopoverLink>
-            {item && item.state === 'authenticated' && <SignoutButton />}
-          </Stack>
-        </Popover>
-      )}
-    </div>
-  )
-}
-
-const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement>) => {
-  const { typography } = useTheme()
+  let ariaCurrent: 'page' | boolean | undefined = isSelectedProp
+  if (!ariaCurrent) {
+    if (router.pathname === href) {
+      ariaCurrent = 'page'
+    } else if (router.pathname.split('/')[1] === href.split('/')[1]) {
+      ariaCurrent = true
+    }
+  }
 
   return (
-    <a
-      css={{
-        alignItems: 'center',
-        display: 'flex',
-        fontSize: typography.fontSize.small,
-        textDecoration: 'none',
-      }}
-      {...props}
+    <KeystarNavItem
+      aria-current={ariaCurrent || undefined}
+      href={href}
     >
       {children}
-      <ChevronRightIcon size="small" />
-    </a>
+    </KeystarNavItem>
   )
 }
 
-export type NavigationContainerProps = Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
-  children: ReactNode
+/** Thin wrapper around "@keystar/ui" component */
+export function NavList (props: NavListProps) {
+  return <KeystarNavList aria-label='main' flex marginEnd='medium' {...props} />
 }
 
-export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {
-  const { spacing } = useTheme()
+/** The root navigation component for the AdminUI */
+export function NavContainer ({ children }: PropsWithChildren) {
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        position: 'relative',
-      }}
-    >
-      <AuthenticatedItemDialog item={authenticatedItem} />
-      <nav role="navigation" aria-label="Side Navigation" css={{ marginTop: spacing.xlarge }}>
-        <ul
-          css={{
-            padding: 0,
-            margin: 0,
-            li: {
-              listStyle: 'none',
-            },
-          }}
-        >
-          {children}
-        </ul>
-      </nav>
-    </div>
+    <VStack gap='large' height='100%' paddingY='xlarge'>
+      {children}
+    </VStack>
   )
 }
 
-export const ListNavItem = ({ list }: { list: ListMeta }) => {
-  const router = useRouter()
-  return (
-    <NavItem
-      isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
-      href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
-    >
-      {list.label}
-    </NavItem>
-  )
-}
-
-type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] }
-
-export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
-  const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists
-
-  return (
-    <Fragment>
-      {renderedList.map((list: ListMeta) => {
-        return <ListNavItem key={list.key} list={list} />
-      })}
-    </Fragment>
-  )
-}
-
+/** @private Exported for internal consumption only. */
 export function Navigation () {
   const {
     adminMeta: { lists },
     adminConfig,
-    authenticatedItem,
     visibleLists,
   } = useKeystone()
 
   if (visibleLists.state === 'loading') return null
-  // This visible lists error is critical and likely to result in a server restart
-  // if it happens, we'll show the error and not render the navigation component/s
+
+  // This visible lists error is critical, and is likely to result in a server
+  // restart. If it happens, show the error and don't render navigation.
   if (visibleLists.state === 'error') {
     return (
-      <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
-        {visibleLists.error instanceof Error
-          ? visibleLists.error.message
-          : visibleLists.error[0].message}
-      </Text>
+      <Box padding="xlarge">
+        <Notice tone="critical">
+          {visibleLists.error instanceof Error
+            ? visibleLists.error.message
+            : visibleLists.error[0].message}
+        </Notice>
+      </Box>
     )
   }
   const renderableLists = Object.keys(lists)
@@ -224,18 +107,65 @@ export function Navigation () {
     .filter((x): x is NonNullable<typeof x> => Boolean(x))
 
   if (adminConfig?.components?.Navigation) {
-    return (
-      <adminConfig.components.Navigation
-        authenticatedItem={authenticatedItem}
-        lists={renderableLists}
-      />
-    )
+    return <adminConfig.components.Navigation lists={renderableLists} />
   }
 
   return (
-    <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={renderableLists} />
-    </NavigationContainer>
+    <NavContainer>
+      <NavList>
+        <NavItem href='/'>Dashboard</NavItem>
+        <Divider />
+        {renderableLists.map((list: ListMeta) => (
+          <NavItem key={list.key} href={getHrefFromList(list)}>
+            {list.label}
+          </NavItem>
+        ))}
+      </NavList>
+
+      <NavFooter>
+        <DeveloperResourcesMenu />
+      </NavFooter>
+    </NavContainer>
+  )
+}
+
+/** Should be displayed below the `NavList` component. */
+export function NavFooter (props: PropsWithChildren) {
+  return (
+    <HStack paddingX='large' gap='regular'>
+      {props.children}
+    </HStack>
+  )
+}
+
+/** A footer item in the navigation. */
+export function DeveloperResourcesMenu () {
+  const { apiPath } = useKeystone()
+
+  if (process.env.NODE_ENV === 'production') return null
+  if (!apiPath) return null // TODO: FIXME: ?
+  return (
+    <MenuTrigger>
+      <TooltipTrigger>
+        <ActionButton aria-label='Developer resources'>
+          <Icon src={constructionIcon} />
+        </ActionButton>
+        <Tooltip>Developer resources</Tooltip>
+      </TooltipTrigger>
+      <Menu>
+        <Item href={apiPath} textValue='API explorer'>
+          <Icon src={fileJson2Icon} />
+          <Text>API explorer</Text>
+        </Item>
+        <Item target='_blank' href='https://github.com/keystonejs/keystone' textValue='GitHub repository'>
+          <Icon src={githubIcon} />
+          <Text>GitHub repository</Text>
+        </Item>
+        <Item target='_blank' href='https://keystonejs.com' textValue='Documentation'>
+          <Icon src={bookTextIcon} />
+          <Text>Documentation</Text>
+        </Item>
+      </Menu>
+    </MenuTrigger>
   )
 }

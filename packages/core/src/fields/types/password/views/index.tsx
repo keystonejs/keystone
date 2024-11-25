@@ -1,25 +1,24 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { Fragment, useState } from 'react'
-
-import { Button } from '@keystone-ui/button'
-import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon'
-import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon'
-import { XIcon } from '@keystone-ui/icons/icons/XIcon'
-import { SegmentedControl } from '@keystone-ui/segmented-control'
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
+import React, { useEffect, useId, useRef, useState } from 'react'
+import { useSlotId } from '@react-aria/utils'
+
+import { ActionButton, ToggleButton } from '@keystar/ui/button'
+import { Checkbox } from '@keystar/ui/checkbox'
+import { FieldLabel, FieldMessage } from '@keystar/ui/field'
+import { Icon } from '@keystar/ui/icon'
+import { eyeIcon } from '@keystar/ui/icon/icons/eyeIcon';
+import { asteriskIcon } from '@keystar/ui/icon/icons/asteriskIcon'
+import { Flex, VStack } from '@keystar/ui/layout'
+import { TextField } from '@keystar/ui/text-field'
+import { Text, VisuallyHidden } from '@keystar/ui/typography'
+
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '../../../../types'
-import { CellContainer } from '../../../../admin-ui/components'
 
 function validate (value: Value, validation: Validation, fieldLabel: string): string | undefined {
   if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
@@ -52,136 +51,153 @@ function validate (value: Value, validation: Validation, fieldLabel: string): st
   return undefined
 }
 
-function isSetText (isSet: null | undefined | boolean) {
-  return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set'
+function readonlyCheckboxProps (isSet: null | undefined | boolean) {
+  const isIndeterminate = isSet == null
+  const isSelected = isSet == null ? undefined : isSet
+  return {
+    children: isIndeterminate ? 'Access denied' : 'Value is set',
+    isIndeterminate,
+    isReadOnly: true,
+    isSelected,
+    prominence: 'low' as const,
+  }
 }
 
-export function Field ({
-  field,
-  value,
-  onChange,
-  forceValidation,
-  autoFocus,
-}: FieldProps<typeof controller>) {
-  const [showInputValue, setShowInputValue] = useState(false)
-  const [touchedFirstInput, setTouchedFirstInput] = useState(false)
-  const [touchedSecondInput, setTouchedSecondInput] = useState(false)
-  const shouldShowValidation = forceValidation || (touchedFirstInput && touchedSecondInput)
-  const validationMessage = shouldShowValidation
+export function Field (props: FieldProps<typeof controller>) {
+  const { autoFocus, field, forceValidation, onChange, value } = props
+
+  const [secureTextEntry, setSecureTextEntry] = useState(true)
+  const [touched, setTouched] = useState({ value: false, confirm: false })
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  const isReadOnly = onChange == null
+  const validationMessage = forceValidation || (touched.value && touched.confirm)
     ? validate(value, field.validation, field.label)
     : undefined
-  const validation = validationMessage && (
-    <Text color="red600" size="small">
-      {validationMessage}
-    </Text>
-  )
-  const inputType = showInputValue ? 'text' : 'password'
+
+  const labelId = useId()
+  const descriptionId = useSlotId([!!field.description, !!validationMessage])
+  const messageId = useSlotId([!!field.description, !!validationMessage])
+
+  const cancelEditing = () => {
+    onChange?.({ kind: 'initial', isSet: value.isSet })
+    setTimeout(() => {
+      triggerRef.current?.focus()
+    }, 0)
+  }
+  const onEscape = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Escape' || value.kind !== 'editing') return
+    if (value.value === '' && value.confirm === '') {
+      cancelEditing()
+    }
+  }
+
+  // reset when the user cancels, or when the form is submitted
+  useEffect(() => {
+    if (value.kind === 'initial') {
+      setTouched({ value: false, confirm: false })
+      setSecureTextEntry(true)
+    }
+  }, [value.kind])
+
   return (
-    <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      {onChange === undefined ? (
-        isSetText(value.isSet)
-      ) : value.kind === 'initial' ? (
-        <Fragment>
-          <Button
-            autoFocus={autoFocus}
-            onClick={() => {
-              onChange({
-                kind: 'editing',
-                confirm: '',
-                value: '',
-                isSet: value.isSet,
-              })
-            }}
-          >
-            {value.isSet ? 'Change Password' : 'Set Password'}
-          </Button>
-          {validation}
-        </Fragment>
-      ) : (
-        <Stack gap="small">
-          <div css={{ display: 'flex' }}>
-            <VisuallyHidden as="label" htmlFor={`${field.path}-new-password`}>
-              New Password
-            </VisuallyHidden>
-            <TextInput
-              id={`${field.path}-new-password`}
-              autoFocus
-              invalid={validationMessage !== undefined}
-              type={inputType}
-              value={value.value}
-              placeholder="New Password"
-              onChange={event => {
-                onChange({
-                  ...value,
-                  value: event.target.value,
-                })
-              }}
-              onBlur={() => {
-                setTouchedFirstInput(true)
-              }}
-            />
-            <Spacer />
-            <VisuallyHidden as="label" htmlFor={`${field.path}-confirm-password`}>
-              Confirm Password
-            </VisuallyHidden>
-            <TextInput
-              id={`${field.path}-confirm-password`}
-              invalid={validationMessage !== undefined}
-              type={inputType}
-              value={value.confirm}
-              placeholder="Confirm Password"
-              onChange={event => {
-                onChange({
-                  ...value,
-                  confirm: event.target.value,
-                })
-              }}
-              onBlur={() => {
-                setTouchedSecondInput(true)
-              }}
-            />
-            <Spacer />
-            <Button
-              onClick={() => {
-                setShowInputValue(!showInputValue)
-              }}
-            >
-              <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
-              {showInputValue ? <EyeOffIcon /> : <EyeIcon />}
-            </Button>
-            <Spacer />
-            <Button
-              onClick={() => {
-                onChange({
-                  kind: 'initial',
-                  isSet: value.isSet,
-                })
-              }}
-            >
-              <VisuallyHidden>Cancel</VisuallyHidden>
-              <XIcon />
-            </Button>
-          </div>
-          {validation}
-        </Stack>
+    <VStack 
+      role="group"
+      aria-labelledby={labelId}
+      aria-describedby={descriptionId}
+      gap="medium"
+      minWidth={0}
+    >
+      <FieldLabel elementType="span" id={labelId}>
+        {field.label}
+      </FieldLabel>
+      {!!field.description && (
+        <Text id={descriptionId} size="regular" color="neutralSecondary">
+          {field.description}
+        </Text>
       )}
-    </FieldContainer>
+      {isReadOnly ? (
+        <Checkbox {...readonlyCheckboxProps(value.isSet)} />
+      ) : value.kind === 'initial' ? (
+        <ActionButton
+          ref={triggerRef}
+          alignSelf="start"
+          autoFocus={autoFocus}
+          onPress={() => {
+            onChange({
+              kind: 'editing',
+              confirm: '',
+              value: '',
+              isSet: value.isSet,
+            })
+          }}
+        >
+          {value.isSet ? `Change ` : `Set `}
+          {field.label.toLocaleLowerCase()}
+        </ActionButton>
+      ) : (
+        <Flex gap="regular" direction={{ mobile: 'column', tablet: 'row' }}>
+          <TextField
+            autoFocus
+            aria-label={`new ${field.label}`}
+            aria-describedby={[descriptionId, messageId].filter(Boolean).join(' ')}
+            // @ts-expect-error — needs to be fixed in "@keystar/ui"
+            isInvalid={!!validationMessage}
+            onBlur={() => setTouched({ ...touched, value: true })}
+            onChange={text => onChange({ ...value, value: text })}
+            onKeyDown={onEscape}
+            placeholder="New"
+            type={secureTextEntry ? 'password' : 'text'}
+            value={value.value}
+            flex
+          />
+          <TextField
+            aria-label={`confirm ${field.label}`}
+            aria-describedby={messageId} // don't repeat the description announcement for the confirm field
+            // @ts-expect-error — needs to be fixed in "@keystar/ui"
+            isInvalid={!!validationMessage}
+            onBlur={() => setTouched({ ...touched, confirm: true })}
+            onChange={text => onChange({ ...value, confirm: text })}
+            onKeyDown={onEscape}
+            placeholder="Confirm"
+            type={secureTextEntry ? 'password' : 'text'}
+            value={value.confirm}
+            flex
+          />
+
+          <Flex gap="regular">
+            <ToggleButton
+              aria-label="show"
+              isSelected={!secureTextEntry}
+              onPress={() => setSecureTextEntry(bool => !bool)}
+            >
+              <Icon src={eyeIcon} />
+              <Text isHidden={{ above: 'mobile' }}>Show</Text>
+            </ToggleButton>
+            <ActionButton onPress={cancelEditing}>
+              Cancel
+            </ActionButton>
+          </Flex>
+        </Flex>
+      )}
+      {!!validationMessage && (
+        <FieldMessage id={messageId}>{validationMessage}</FieldMessage>
+      )}
+    </VStack>
   )
 }
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <CellContainer>{isSetText(item[field.path]?.isSet)}</CellContainer>
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {isSetText(item[field.path]?.isSet)}
-    </FieldContainer>
-  )
+  const value = !!item[field.path].isSet
+  return value
+    ? (
+      <div aria-label="is set" style={{display:'flex'}}>
+        <Icon src={asteriskIcon} size="small" />
+        <Icon src={asteriskIcon} size="small" />
+        <Icon src={asteriskIcon} size="small" />
+      </div>
+    )
+    : <VisuallyHidden>not set</VisuallyHidden>
 }
 
 type Validation = {
@@ -264,33 +280,36 @@ export const controller = (
         ? undefined
         : {
             Filter (props) {
+              const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
               return (
-                <SegmentedControl
-                  selectedIndex={Number(props.value)}
-                  onChange={value => {
-                    props.onChange(!!value)
-                  }}
-                  segments={['Is Not Set', 'Is Set']}
-                />
+                <Checkbox autoFocus={autoFocus} onChange={onChange} isSelected={value} {...otherProps}>
+                  {typeLabel} set
+                </Checkbox>
               )
             },
-            graphql: ({ value }) => {
-              return { [config.path]: { isSet: value } }
+            graphql ({ type, value }) {
+              return {
+                [config.path]: {
+                  isSet: type === 'not' ? !value : value,
+                }
+              }
             },
-            Label ({ value }) {
-              return value ? 'is set' : 'is not set'
+            Label ({ type, value }) {
+              if (type === 'is' && value || type === 'not' && !value) {
+                return `is set`
+              }
+              return `is not set`
             },
             types: {
-              is_set: {
-                label: 'Is Set',
+              is: {
+                label: 'Is',
+                initialValue: true,
+              },
+              not: {
+                label: 'Is not',
                 initialValue: true,
               },
             },
           },
   }
-}
-
-const Spacer = () => {
-  const { spacing } = useTheme()
-  return <div css={{ width: spacing.small, flexShrink: 0 }} />
 }

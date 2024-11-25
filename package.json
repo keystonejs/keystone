@@ -7,7 +7,11 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
+<<<<<<< HEAD
   "packageManager": "pnpm@9.14.2",
+=======
+  "packageManager": "pnpm@9.12.3",
+>>>>>>> 8afd265da (upgrade design system)
   "scripts": {
     "coverage": "jest --coverage",
     "test": "jest",

@@ -3,12 +3,12 @@
 
 import { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
+import isDeepEqual from 'fast-deep-equal'
 
 import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { type FieldMeta } from '@keystone-6/core/types'
-import isDeepEqual from 'fast-deep-equal'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context'
@@ -25,6 +25,8 @@ import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
+
+export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
 function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState<{ keystone: boolean, thinkmill: boolean}>(
@@ -300,5 +302,3 @@ function InitPage ({
     </SigninContainer>
   )
 }
-
-export const getInitPage = (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />

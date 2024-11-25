@@ -1,8 +1,6 @@
 import * as Path from 'path'
 import { type GraphQLSchema } from 'graphql'
-import {
-  type __ResolvedKeystoneConfig
-} from '../../types'
+import type { __ResolvedKeystoneConfig } from '../../types'
 import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
 import { appTemplate } from './app'
 import { homeTemplate } from './home'
@@ -14,10 +12,10 @@ import { nextConfigTemplate } from './next-config'
 
 const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'))
 
-export function writeAdminFiles (config: __ResolvedKeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+export function writeAdminFiles (
+  config: __ResolvedKeystoneConfig,
   adminMeta: AdminMetaRootVal,
-  configFileExists: boolean
+  graphQLSchema: GraphQLSchema,
 ) {
   return [
     {
@@ -33,12 +31,7 @@ export function writeAdminFiles (config: __ResolvedKeystoneConfig,
     { mode: 'write' as const, src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
     {
       mode: 'write' as const,
-      src: appTemplate(
-        adminMeta,
-        graphQLSchema,
-        { configFileExists },
-        config.graphql?.path || '/api/graphql'
-      ),
+      src: appTemplate(config, adminMeta, graphQLSchema),
       outputPath: 'pages/_app.js',
     },
     { mode: 'write' as const, src: homeTemplate, outputPath: 'pages/index.js' },

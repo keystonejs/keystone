@@ -81,7 +81,7 @@ Options:
   It is always possible to search by an id and `'id'` should not be specified in this option.
   By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
 - `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
-- `isHidden` (default: `false`): Controls whether the list is visible in the navigation elements of the Admin UI.
+- `hideNavigation` (default: `false`): Controls whether the list is visible in the navigation elements of the Admin UI.
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
 - `hideCreate` (default: `false`): Controls whether the `create` button is available in the Admin UI for this list.
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
@@ -124,7 +124,7 @@ export default config({
         labelField: 'name',
         searchFields: ['name', 'alternativeName'],
         description: '...',
-        isHidden: ({ session, context }) => false,
+        hideNavigation: ({ session, context }) => false,
         hideCreate: ({ session, context }) => false,
         hideDelete: ({ session, context }) => false,
         createView: {

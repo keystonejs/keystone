@@ -3,12 +3,10 @@
 
 import { jsx } from '@keystone-ui/core'
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
 } from '@keystone-6/core/types'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import { validateImage } from './Field'
 
 export { Field } from './Field'
@@ -32,16 +30,6 @@ export const Cell: CellComponent = ({ item, field }) => {
         src={data.publicUrlTransformed}
       />
     </div>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
-    </FieldContainer>
   )
 }
 
@@ -69,7 +57,7 @@ type CloudinaryImageValue =
 
 type CloudinaryImageController = FieldController<CloudinaryImageValue>
 
-export const controller = (config: FieldControllerConfig): CloudinaryImageController => {
+export function controller (config: FieldControllerConfig): CloudinaryImageController {
   return {
     path: config.path,
     label: config.label,

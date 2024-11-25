@@ -1,7 +1,10 @@
-import { Stack } from '@keystone-ui/core'
-import { Notice } from '@keystone-ui/notice'
 import type { GraphQLFormattedError } from 'graphql'
 import React from 'react'
+
+import { VStack } from '@keystar/ui/layout'
+import { Notice } from '@keystar/ui/notice'
+import { Content } from '@keystar/ui/slots'
+import { Heading, Text } from '@keystar/ui/typography'
 
 type GraphQLErrorNoticeProps = {
   networkError: Error | null | undefined
@@ -11,21 +14,36 @@ type GraphQLErrorNoticeProps = {
 export function GraphQLErrorNotice ({ errors, networkError }: GraphQLErrorNoticeProps) {
   if (networkError) {
     return (
-      <Notice tone="negative" marginBottom="large">
+      <Notice tone="critical">
         {networkError.message}
       </Notice>
     )
   }
+
   if (errors?.length) {
+    if (errors.length === 1) {
+      return (
+        <Notice tone="critical">
+          {errors[0].message}
+        </Notice>
+      )
+    }
+
     return (
-      <Stack gap="small" marginBottom="large">
-        {errors.map((err, idx) => (
-          <Notice tone="negative" key={idx}>
-            {err.message}
-          </Notice>
-        ))}
-      </Stack>
+      <Notice tone="critical">
+        <Heading>Errors</Heading>
+        <Content>
+          <VStack elementType="ul" gap="large">
+            {errors.map((err, idx) => (
+              <Text elementType="li" key={idx}>
+                {err.message}
+              </Text>
+            ))}
+          </VStack>
+        </Content>
+      </Notice>
     )
   }
+
   return null
 }

@@ -1,93 +1,180 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import { useRouter } from 'next/router'
+import React, { type FormEvent, Fragment, useMemo, useState, useRef } from 'react'
 
-import { type ComponentProps, Fragment, type FormEvent, useMemo, useState } from 'react'
-import { Button } from '@keystone-ui/button'
-import { Box, Divider, Heading, Stack, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
-import { Select } from '@keystone-ui/fields'
-import { ChevronLeftIcon } from '@keystone-ui/icons/icons/ChevronLeftIcon'
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
-import { OptionPrimitive, Options } from '@keystone-ui/options'
-import { PopoverDialog, usePopover } from '@keystone-ui/popover'
+import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
+import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
+import { Icon } from '@keystar/ui/icon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
+import { Grid } from '@keystar/ui/layout'
+import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
+import { Picker } from '@keystar/ui/picker'
+import { Content } from '@keystar/ui/slots'
+import { Heading, Text } from '@keystar/ui/typography'
 
 import { type FieldMeta, type JSONValue } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
-import { useRouter } from '../../../../admin-ui/router'
 
 type State =
   | { kind: 'selecting-field' }
   | { kind: 'filter-value', fieldPath: string, filterType: string, filterValue: JSONValue }
 
-const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
-  Option: ({ children, ...props }) => {
-    const theme = useTheme()
-    const iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim
-    return (
-      <OptionPrimitive {...props}>
-        <span>{children}</span>
-        <div
-          css={{
-            alignItems: 'center',
-            display: 'flex',
-            height: 24,
-            justifyContent: 'center',
-            width: 24,
-          }}
-        >
-          <ChevronRightIcon css={{ color: iconColor }} />
-        </div>
-      </OptionPrimitive>
-    )
-  },
-}
-export function FilterAdd ({
-  listKey,
-  filterableFields,
-}: {
-  listKey: string
+export function FilterAdd (props: {
   filterableFields: Set<string>
+  isDisabled?: boolean
+  listKey: string
 }) {
-  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
-    placement: 'bottom',
-    modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
-  })
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const [state, setState] = useState<State>({ kind: 'selecting-field' })
+  const [forceValidation, setForceValidation] = useState(false)
+  const router = useRouter()
+
+  const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(props)
+  const resetState = () => {
+    setState({ kind: 'selecting-field' })
+    setForceValidation(false)
+    // This is a bit of a hack to ensure the trigger button is focused after the
+    // dialog closes, since we're forking the render
+    setTimeout(() => {
+      triggerRef?.current?.focus()
+    }, 200)
+  }
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    setForceValidation(true)
+
+    if (state.kind !== 'filter-value') {
+      return
+    }
+    if ((state.filterType !== 'empty' && state.filterType !== 'not_empty') && state.filterValue == null) {
+      return
+    }
+
+    router.push({
+      query: {
+        ...router.query,
+        [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
+      },
+    })
+    resetState()
+  }
+
+  if (state.kind === 'filter-value') {
+    const { Filter } = fieldsWithFilters[state.fieldPath].controller.filter
+    const fieldLabel = list.fields[state.fieldPath].label
+    const filterTypes = filtersByFieldThenType[state.fieldPath]
+    const typeLabel = filterTypes[state.filterType]
+    return (
+      <DialogTrigger type="popover" mobileType="tray" defaultOpen onOpenChange={isOpen => !isOpen && resetState()}>
+        <ActionButton>
+          <Text>Filter</Text>
+          <Icon src={chevronDownIcon} />
+        </ActionButton>
+        <Dialog>
+          <form onSubmit={onSubmit} style={{ display: 'contents' }}>
+            {/*
+              Workaround for react-aria "bug" where pressing enter in a form field
+              moves focus to the submit button.
+              See: https://github.com/adobe/react-spectrum/issues/5940
+            */}
+            <button type="submit" style={{ display: 'none' }} />
+            <Heading>
+              Filter by {fieldLabel.toLocaleLowerCase()}
+            </Heading>
+            <Content>
+              <Grid gap="large" rows="auto minmax(0, 1fr)" height="100%">
+                <Picker
+                  width="100%"
+                  aria-label="filter type"
+                  isRequired
+                  items={Object.keys(filterTypes).map(filterType => ({
+                    label: filterTypes[filterType],
+                    value: filterType,
+                  }))}
+                  selectedKey={state.filterType}
+                  onSelectionChange={key => {
+                    if (key) {
+                      setState({
+                        kind: 'filter-value',
+                        fieldPath: state.fieldPath,
+                        filterValue:
+                          fieldsWithFilters[state.fieldPath].controller.filter.types[key]
+                            .initialValue,
+                        filterType: key as string,
+                      })
+                    }
+                  }}
+                >
+                  {item => <Item key={item.value}>{item.label}</Item>}
+                </Picker>
+
+                {/*
+                  TODO: support validation, default to field controller's validate function?
+                  validate?: (value: JSONValue) => string | undefined
+                */}
+                <Filter
+                  autoFocus
+                  context="add"
+                  forceValidation={forceValidation}
+                  typeLabel={typeLabel}
+                  type={state.filterType}
+                  value={state.filterValue}
+                  onChange={value => {
+                    setState(state => ({
+                      ...state,
+                      filterValue: value,
+                    }))
+                  }}
+                />
+              </Grid>
+            </Content>
+            <ButtonGroup>
+              <Button onPress={resetState}>Cancel</Button>
+              <Button prominence="high" type="submit">
+                Save
+              </Button>
+            </ButtonGroup>
+          </form>
+        </Dialog>
+      </DialogTrigger>
+    )
+  }
 
   return (
     <Fragment>
-      <Button tone="active" {...trigger.props} ref={trigger.ref} onClick={() => setOpen(!isOpen)}>
-        <Box as="span" marginRight="xsmall">
-          Filter List
-        </Box>
-        <ChevronDownIcon size="small" />
-      </Button>
-      <PopoverDialog
-        aria-label={`Filters options, list of filters to apply to the ${listKey} list`}
-        arrow={arrow}
-        isVisible={isOpen}
-        {...dialog.props}
-        ref={dialog.ref}
-      >
-        {isOpen && (
-          <FilterAddPopoverContent
-            onClose={() => {
-              setOpen(false)
-            }}
-            listKey={listKey}
-            filterableFields={filterableFields}
-          />
-        )}
-      </PopoverDialog>
+      <MenuTrigger>
+        <ActionButton ref={triggerRef} isDisabled={props.isDisabled}>
+          <Text>Filter</Text>
+          <Icon src={chevronDownIcon} />
+        </ActionButton>
+        <Menu
+          items={Object.keys(filtersByFieldThenType).map(fieldPath => ({
+            label: fieldsWithFilters[fieldPath].label,
+            value: fieldPath,
+          }))}
+          onAction={fieldPath => {
+            const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0]
+            setState({
+              kind: 'filter-value',
+              fieldPath: fieldPath as string,
+              filterType,
+              filterValue:
+                fieldsWithFilters[fieldPath].controller.filter.types[filterType].initialValue,
+            })
+          }}
+        >
+          {item => (
+            <Item key={item.value} >{item.label}</Item>
+          )}
+        </Menu>
+      </MenuTrigger>
     </Fragment>
   )
 }
 
-function FilterAddPopoverContent ({
-  onClose,
+function useFilterFields ({
   listKey,
   filterableFields,
 }: {
-  onClose: () => void
   listKey: string
   filterableFields: Set<string>
 }) {
@@ -124,126 +211,10 @@ function FilterAddPopoverContent ({
     })
     return filtersByFieldThenType
   }, [router.query, fieldsWithFilters])
-  const [state, setState] = useState<State>({ kind: 'selecting-field' })
 
-  return (
-    <Stack
-      padding="medium"
-      as="form"
-      css={{ minWidth: 320 }}
-      onSubmit={(event: FormEvent) => {
-        event.preventDefault()
-        if (state.kind === 'filter-value') {
-          router.push({
-            query: {
-              ...router.query,
-              [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-            },
-          })
-          onClose()
-        }
-      }}
-      gap="small"
-    >
-      <div css={{ position: 'relative' }}>
-        {state.kind !== 'selecting-field' && (
-          <button
-            type="button"
-            onClick={() => {
-              setState({ kind: 'selecting-field' })
-            }}
-            css={{
-              border: 0,
-              background: 'transparent',
-              cursor: 'pointer',
-              position: 'absolute',
-            }}
-          >
-            <VisuallyHidden>Back</VisuallyHidden>
-            <ChevronLeftIcon size="smallish" />
-          </button>
-        )}
-        <Heading textAlign="center" type="h5">
-          {(() => {
-            switch (state.kind) {
-              case 'selecting-field': {
-                return 'Filter'
-              }
-              case 'filter-value': {
-                return list.fields[state.fieldPath].label
-              }
-            }
-          })()}
-        </Heading>
-      </div>
-      <Divider />
-      {state.kind === 'selecting-field' && (
-        <Options
-          components={fieldSelectComponents}
-          onChange={newVal => {
-            const fieldPath: string = (newVal as any).value
-            const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0]
-            setState({
-              kind: 'filter-value',
-              fieldPath,
-              filterType,
-              filterValue:
-                fieldsWithFilters[fieldPath].controller.filter.types[filterType].initialValue,
-            })
-          }}
-          options={Object.keys(filtersByFieldThenType).map(fieldPath => ({
-            label: fieldsWithFilters[fieldPath].label,
-            value: fieldPath,
-          }))}
-        />
-      )}
-      {state.kind === 'filter-value' && (
-        <Select
-          width="full"
-          value={{
-            value: state.filterType,
-            label: filtersByFieldThenType[state.fieldPath][state.filterType],
-          }}
-          onChange={newVal => {
-            if (newVal) {
-              setState({
-                kind: 'filter-value',
-                fieldPath: state.fieldPath,
-                filterValue:
-                  fieldsWithFilters[state.fieldPath].controller.filter.types[newVal.value]
-                    .initialValue,
-                filterType: newVal.value,
-              })
-            }
-          }}
-          options={Object.keys(filtersByFieldThenType[state.fieldPath]).map(filterType => ({
-            label: filtersByFieldThenType[state.fieldPath][filterType],
-            value: filterType,
-          }))}
-        />
-      )}
-      {state.kind == 'filter-value' &&
-        (() => {
-          const { Filter } = fieldsWithFilters[state.fieldPath].controller.filter
-          return (
-            <Filter
-              type={state.filterType}
-              value={state.filterValue}
-              onChange={value => {
-                setState(state => ({
-                  ...state,
-                  filterValue: value,
-                }))
-              }}
-            />
-          )
-        })()}
-      {state.kind == 'filter-value' && (
-        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit">Apply</Button>
-        </div>
-      )}
-    </Stack>
-  )
+  return {
+    fieldsWithFilters,
+    filtersByFieldThenType,
+    list
+  }
 }

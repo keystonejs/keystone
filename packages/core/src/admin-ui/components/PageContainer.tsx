@@ -1,20 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core'
+import NextHead from 'next/head'
 import { Fragment, type HTMLAttributes, type ReactNode, useState } from 'react'
-import { MenuIcon, XCircleIcon } from '@keystone-ui/icons'
 
-import { Navigation } from './Navigation'
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { menuIcon } from '@keystar/ui/icon/icons/menuIcon'
+import { xIcon } from '@keystar/ui/icon/icons/xIcon'
+import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
+import { HStack, VStack } from '@keystar/ui/layout'
+
+import { jsx } from '@keystone-ui/core'
+
 import { Logo } from './Logo'
+import { Navigation } from './Navigation'
 
 type PageContainerProps = {
   children: ReactNode
   header: ReactNode
   title?: string
 }
-
-export const HEADER_HEIGHT = 80
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
   // const { colors } = useTheme();
@@ -26,13 +32,12 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
         css={{
           // background: colors.background,
           display: 'grid',
-          gridTemplateColumns: `minmax(300px, 1fr)`,
-          gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+          gridTemplateRows: `repeat(2, ${tokenSchema.size.element.large}) auto`,
           height: '100vh',
           isolation: 'isolate',
-          '@media (min-width: 576px)': {
-            gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
-            gridTemplateRows: `${HEADER_HEIGHT}px auto`,
+          [breakpointQueries.above.mobile]: {
+            gridTemplateColumns: `${tokenSchema.size.scale[3600]} minmax(0, 1fr)`,
+            gridTemplateRows: `${tokenSchema.size.element.xlarge} auto`,
           },
         }}
         {...props}
@@ -47,16 +52,14 @@ const Sidebar = ({
 }: HTMLAttributes<HTMLElement> & {
   isSidebarOpen: boolean
 }) => {
-  // const { colors } = useTheme();
-
   return (
     <div
-      css={{
+      className={css({
         gridColumn: '1/2',
         gridRow: '2/4',
         display: isSidebarOpen ? 'block' : 'none',
         height: '100vh',
-        '@media (min-width: 576px)': {
+        [breakpointQueries.above.mobile]: {
           gridColumn: '1/2',
           gridRow: '2/3',
           display: 'block',
@@ -64,14 +67,13 @@ const Sidebar = ({
         },
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
-      }}
+      })}
     >
       <aside
-        css={{
-          // borderRight: `1px solid ${colors.border}`,
+        className={css({
+          height: '100%',
           minWidth: 0, // resolves collapsing issues in children
-          WebkitOverflowScrolling: 'touch',
-        }}
+        })}
         {...props}
       />
     </div>
@@ -79,68 +81,66 @@ const Sidebar = ({
 }
 
 const Content = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing } = useTheme()
-
   return (
-    <main
-      css={{
-        backgroundColor: colors.background,
-        boxSizing: 'border-box',
-        minWidth: 0, // resolves collapsing issues in children
-        paddingLeft: spacing.xlarge,
-        paddingRight: spacing.xlarge,
-        overflowY: 'auto',
+    <VStack
+      elementType='main'
+      minHeight={0}
+      minWidth={0}
+      overflow="hidden auto"
+      paddingX="xlarge"
+      position="relative"
+      UNSAFE_className={css({
         WebkitOverflowScrolling: 'touch',
-        position: 'relative',
-      }}
+        
+        // prevent focused form fields being hidden behind the sticky toolbar
+        // this is particularly important for textareas that may expand
+        [breakpointQueries.above.mobile]: {
+          // must be kept in-sync with the toolbar height
+          scrollPaddingBlockEnd: tokenSchema.size.element.xlarge,
+        }
+      })}
       {...props}
     />
   )
 }
 
 export const PageContainer = ({ children, header, title }: PageContainerProps) => {
-  const { colors, spacing } = useTheme()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
     <PageWrapper>
-      <div
-        css={{
-          alignItems: 'center',
-          // borderRight: `1px solid ${colors.border}`,
-          borderBottom: `1px solid ${colors.border}`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingLeft: spacing.xlarge,
-          paddingRight: spacing.xlarge,
-        }}
+      <NextHead>
+        <title key="title">{title ? `Keystone - ${title}` : 'Keystone'}</title>
+      </NextHead>
+      <HStack
+        alignItems="center"
+        borderBottom="neutral"
+        justifyContent="space-between"
+        paddingX="xlarge"
       >
         <Logo />
-        <div
-          onClick={() => {
-            setIsSidebarOpen(!isSidebarOpen)
+        <ActionButton
+          aria-label="open main menu"
+          aria-pressed={isSidebarOpen}
+          onPress={() => {
+            setSidebarOpen(bool => !bool)
           }}
-          css={{ display: 'block', '@media (min-width: 576px)': { display: 'none' } }}
+          prominence="low"
+          isHidden={{ above: 'mobile' }}
         >
-          {isSidebarOpen ? <XCircleIcon /> : <MenuIcon />}
-        </div>
-      </div>
-      <header
-        css={{
-          alignItems: 'center',
-          backgroundColor: colors.background,
-          borderBottom: `1px solid ${colors.border}`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          minWidth: 0, // fix flex text truncation
-          paddingLeft: spacing.xlarge,
-          paddingRight: spacing.xlarge,
-          visibility: isSidebarOpen ? 'hidden' : 'visible',
-        }}
+          <Icon src={isSidebarOpen ? xIcon : menuIcon} />
+        </ActionButton>
+      </HStack>
+      <HStack
+        elementType='header'
+        alignItems="center"
+        borderBottom="neutral"
+        justifyContent="space-between"
+        paddingX="xlarge"
+        minWidth={0}
+        UNSAFE_style={{ visibility: isSidebarOpen ? 'hidden' : 'visible' }}
       >
-        <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {header}
-      </header>
+      </HStack>
       <Sidebar isSidebarOpen={isSidebarOpen}>
         <Navigation />
       </Sidebar>
