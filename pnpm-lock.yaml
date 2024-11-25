@@ -473,8 +473,8 @@ importers:
         specifier: ^2.0.1
         version: 2.2.0
       '@emotion/cache':
-        specifier: 11.13.1
-        version: 11.13.1
+        specifier: 11.13.5
+        version: 11.13.5
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.13.5
