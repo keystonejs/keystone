@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Cell as CellContainer } from '@keystar/ui/table'
+import { Text } from '@keystar/ui/typography'
 import { TextField } from '@keystar/ui/text-field'
 
 import {
@@ -38,9 +38,11 @@ export function Field ({
   )
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = item[field.path] + ''
-  return <CellContainer>{value}</CellContainer>
+export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
+  const discriminant = item?.[field.dependency.field]?.value ?? Infinity
+  const hidden = discriminant > field.dependency.minimumValue
+  if (hidden) return <Text><i>hidden</i></Text>
+  return <Text>{item[field.path]}</Text>
 }
 
 export function controller (
