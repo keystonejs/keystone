@@ -7,7 +7,6 @@ import { NumberField } from '@keystar/ui/number-field'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import {
-  type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
@@ -21,11 +20,6 @@ const TYPE_OPERATOR_MAP = {
   gte: '≥',
   lte: '≤',
 } as const
-
-export const Cell: CellComponent = ({ field, item }) => {
-  const value = item[field.path]
-  return value != null ? <Text>{value.toString()}</Text> : null
-}
 
 type Value =
   | { kind: 'create', value: number | null }

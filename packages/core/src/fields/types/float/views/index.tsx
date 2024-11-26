@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 
 import { TextField } from '@keystar/ui/text-field'
-import { Text } from '@keystar/ui/typography'
 
 import {
-  type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
@@ -18,11 +16,6 @@ const TYPE_OPERATOR_MAP = {
   gte: '≥',
   lte: '≤',
 } as const
-
-export const Cell: CellComponent = ({ field, item }) => {
-  const value = item[field.path]
-  return value != null ? <Text>{value.toString()}</Text> : null
-}
 
 type Value =
   | { kind: 'create', value: string | null }
