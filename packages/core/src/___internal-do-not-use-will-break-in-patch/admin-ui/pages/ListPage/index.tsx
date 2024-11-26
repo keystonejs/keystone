@@ -666,20 +666,6 @@ function DeleteItemsDialog(props: {
           timeout: 5000,
         }
       )
-      // toasts.addToast({
-      //   tone: 'negative',
-      //   title: `Failed to delete ${unsuccessfulItems} of ${
-      //     data[list.graphql.names.deleteManyMutationName].length
-      //   } ${list.plural}`,
-      //   message: errors
-      //     .reduce((acc, error) => {
-      //       if (acc.indexOf(error.message) < 0) {
-      //         acc.push(error.message)
-      //       }
-      //       return acc
-      //     }, [] as string[])
-      //     .join('\n'),
-      // })
     }
 
     if (successfulItems) {
@@ -689,13 +675,6 @@ function DeleteItemsDialog(props: {
           timeout: 5000,
         }
       )
-      // toasts.addToast({
-      //   tone: 'positive',
-      //   title: `Deleted ${successfulItems} of ${
-      //     data[list.graphql.names.deleteManyMutationName].length
-      //   } ${list.plural} successfully`,
-      //   message: successMessage,
-      // })
     }
 
     return refetch()
