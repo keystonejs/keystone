@@ -34,8 +34,7 @@ export function Field (props: FieldProps<typeof controller>) {
   />
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = item[field.path]
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
   return value != null ? <Text>{stringify(value)}</Text> : null
 }
 

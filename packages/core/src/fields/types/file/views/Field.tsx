@@ -31,7 +31,7 @@ import { type FieldProps } from '../../../../types'
 import { type FileValue } from './index'
 import { type controller } from '.'
 
-export function Field(props: FieldProps<typeof controller>) {
+export function Field (props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
 
   const inputRef = useRef<HTMLInputElement | null>(null)

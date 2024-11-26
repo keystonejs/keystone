@@ -19,7 +19,7 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-export const Field = (props: FieldProps<typeof controller>) => {
+export function Field (props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
 
   const pickerRef = useRef<HTMLDivElement>(null)
@@ -153,8 +153,7 @@ export const Field = (props: FieldProps<typeof controller>) => {
   )
 }
 
-export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
-  let value = item[field.path] + ''
+export const Cell: CellComponent<typeof controller> = ({ value, field }) => {
   const label = field.options.find(x => x.value === value)?.label
   return <Text>{label}</Text>
 }
@@ -198,14 +197,14 @@ const FILTER_TYPES = {
   },
 }
 
-export const controller = (
+export function controller (
   config: Config
 ): FieldController<Value, Option[]> & {
   options: Option[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
   isRequired: boolean
-} => {
+} {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,
     value: x.value.toString(),

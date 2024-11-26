@@ -16,17 +16,12 @@ import {
   type FieldProps,
 } from '../../../../types'
 
-export const Field = (props: FieldProps<typeof controller>) => {
-  if (props.field.displayMode === 'checkboxes') {
-    return <CheckboxesModeField {...props} />
-  }
-
-  return (
-    <SelectModeField {...props} />
-  )
+export function Field (props: FieldProps<typeof controller>) {
+  if (props.field.displayMode === 'checkboxes') return <CheckboxesModeField {...props} />
+  return <SelectModeField {...props} />
 }
 
-const SelectModeField = (props: FieldProps<typeof controller>) => {
+function SelectModeField (props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
 
   const [filterText, setFilterText] = React.useState('')
@@ -36,7 +31,7 @@ const SelectModeField = (props: FieldProps<typeof controller>) => {
   const filteredItems = filterText
     ? items.filter(item => contains(item.label, filterText))
     : items
-  
+
   return (
     <VStack gap="regular">
       <Combobox
@@ -60,7 +55,7 @@ const SelectModeField = (props: FieldProps<typeof controller>) => {
           </Item>
         )}
       </Combobox>
-      
+
       <TagGroup
         aria-label={`${field.label} selected items`}
         items={value}
@@ -85,7 +80,7 @@ const SelectModeField = (props: FieldProps<typeof controller>) => {
   )
 }
 
-const CheckboxesModeField = (props: FieldProps<typeof controller>) => {
+function CheckboxesModeField (props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
   return (
     <CheckboxGroup
@@ -106,12 +101,9 @@ const CheckboxesModeField = (props: FieldProps<typeof controller>) => {
   )
 }
 
-export const Cell: CellComponent<typeof controller> = (props) => {
-  const { item, field } = props
-
+export const Cell: CellComponent<typeof controller> = ({ value = [], field }) => {
   const listFormatter = useListFormatter({ style: 'short', type: 'conjunction' })
-  const value: readonly string[] | readonly number[] = item[field.path] ?? []
-  const labels = value.map(value => field.valuesToOptionsWithStringValues[value].label)
+  const labels = (value as string[]).map(x => field.valuesToOptionsWithStringValues[x].label)
   let cellContent = null
 
   if (value.length > 3) {
@@ -136,25 +128,21 @@ type Option = { label: string, value: string }
 
 type Value = readonly Option[]
 
-export const controller = (
+export function controller (
   config: Config
 ): FieldController<Value, Option[]> & {
   displayMode: 'checkboxes' | 'select'
   options: Option[]
   type: 'string' | 'integer' | 'enum'
   valuesToOptionsWithStringValues: Record<string, Option>
-} => {
+} {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,
     value: x.value.toString(),
   }))
 
-  const valuesToOptionsWithStringValues = Object.fromEntries(
-    optionsWithStringValues.map(option => [option.value, option])
-  )
-
-  const parseValue = (value: string) =>
-    config.fieldMeta.type === 'integer' ? parseInt(value) : value
+  const valuesToOptionsWithStringValues = Object.fromEntries(optionsWithStringValues.map(option => [option.value, option]))
+  const parseValue = (value: string) => config.fieldMeta.type === 'integer' ? parseInt(value) : value
 
   return {
     displayMode: config.fieldMeta.displayMode,
@@ -232,19 +220,13 @@ export const controller = (
           type: 'disjunction',
         })
 
-        if (value.length === 0) {
-          return type === 'not_matches' ? `is set` : `is not set`
-        }
+        if (value.length === 0) return type === 'not_matches' ? `is set` : `is not set`
 
         const labels = value.map(i => i.label)
         const prefix = type === 'not_matches' ? `is not` : `is`
 
-        if (value.length === 1) {
-          return `${prefix} ${labels[0]}`
-        }
-        if (value.length === 2) {
-          return `${prefix} ${listFormatter.format(labels)}`
-        }
+        if (value.length === 1) return `${prefix} ${labels[0]}`
+        if (value.length === 2) return `${prefix} ${listFormatter.format(labels)}`
 
         return `${prefix} ${listFormatter.format([labels[0], `${value.length - 1} more`])}`
       },
