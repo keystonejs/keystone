@@ -39,10 +39,8 @@ function serialize (nodes: Node[]) {
   return nodes.map((n: Node) => Node.string(n)).join('\n')
 }
 
-export const Cell: CellComponent = ({ field, item }) => {
-  const value = item[field.path]?.document
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null
-
   return <Text>{serialize(value).slice(0, 60)}</Text>
 }
 

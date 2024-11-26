@@ -19,7 +19,7 @@ import {
 } from '../../../../types'
 import { type Value } from './utils'
 
-export const Field = (props: FieldProps<typeof controller>) => {
+export function Field (props: FieldProps<typeof controller>) {
   const { field, value, forceValidation, onChange } = props
   const parsedValue = value.value ? parseAbsoluteToLocal(value.value) : null
 
@@ -112,19 +112,14 @@ function validate (
     return undefined
   }
 
-  if (fieldMeta.isRequired && isEmpty) {
-    return `${label} is required`
-  }
-
+  if (fieldMeta.isRequired && isEmpty) return `${label} is required`
   // TODO: update field in "@keystar/ui" to use new validation APIs, for more
   // granular validation messages
-
   return undefined
 }
 
-export const Cell: CellComponent = ({ field, item }) => {
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
   const dateFormatter = useDateFormatter({ dateStyle: 'medium', timeStyle: 'short' })
-  const value = item[field.path]
   return value
     ? <Text>{dateFormatter.format(new Date(value))}</Text>
     : null
@@ -194,19 +189,10 @@ export function controller (
         )
       },
       graphql: ({ type, value }) => {
-        if (type === 'empty') {
-          return { [config.path]: { equals: null } }
-        }
-        if (type === 'not_empty') {
-          return { [config.path]: { not: { equals: null } } }
-        }
-        if (type === 'not') {
-          return { [config.path]: { not: { equals: value } } }
-        }
-
-        return {
-          [config.path]: { [type]: value }
-        }
+        if (type === 'empty') return { [config.path]: { equals: null } }
+        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'not') return { [config.path]: { not: { equals: value } } }
+        return { [config.path]: { [type]: value } }
       },
       Label ({ label, type, value }) {
         const dateFormatter = useDateFormatter({ dateStyle: 'short', timeStyle: 'short' })

@@ -472,13 +472,18 @@ function ListTable({
                 <Row href={`/${list.path}/${row?.id}`}>
                   {key => {
                     const field = list.fields[key]
+                    const value = row[key]
                     const CellContent = field.views.Cell
                     return (
                       <Cell>
                         {CellContent ? (
-                          <CellContent field={field.controller} item={row} />
+                          <CellContent
+                            value={value}
+                            field={field.controller}
+                            item={row}
+                          />
                         ) : (
-                          <Text>{row[key]?.toString()}</Text>
+                          <Text>{value?.toString()}</Text>
                         )}
                       </Cell>
                     )

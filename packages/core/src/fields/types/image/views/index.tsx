@@ -11,9 +11,8 @@ import { validateImage } from './Field'
 
 export { Field } from './Field'
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path]
-  if (!data) return null
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  if (!value) return null
   return (
     <div
       css={{
@@ -24,7 +23,7 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
+      <img alt={value.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
     </div>
   )
 }

@@ -49,7 +49,7 @@ export function Field ({
   )
 }
 
-export const Cell: CellComponent = () => {
+export const Cell: CellComponent<typeof controller> = () => {
   return null
 }
 

@@ -101,7 +101,7 @@ export function Field (props: FieldProps<typeof controller>) {
   }, [value.kind])
 
   return (
-    <VStack 
+    <VStack
       role="group"
       aria-labelledby={labelId}
       aria-describedby={descriptionId}
@@ -187,9 +187,8 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = !!item[field.path].isSet
-  return value
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  return value.isSet
     ? (
       <div aria-label="is set" style={{display:'flex'}}>
         <Icon src={asteriskIcon} size="small" />
@@ -295,9 +294,7 @@ export const controller = (
               }
             },
             Label ({ type, value }) {
-              if (type === 'is' && value || type === 'not' && !value) {
-                return `is set`
-              }
+              if (type === 'is' && value || type === 'not' && !value) return `is set`
               return `is not set`
             },
             types: {
