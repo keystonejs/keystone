@@ -1,7 +1,6 @@
 import React, { InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'
-
 import {
   type FieldController,
   type FieldControllerConfig,
@@ -57,5 +56,6 @@ export function controller(
       return typeof value === 'number' ? value : null
     },
     serialize: (value) => ({ [config.path]: value }),
+    validate: (value) => value === null || (value >= 0 && value <= config.fieldMeta.maxStars)
   }
 }
