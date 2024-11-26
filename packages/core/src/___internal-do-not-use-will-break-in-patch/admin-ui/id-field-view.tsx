@@ -1,10 +1,8 @@
 import React from 'react'
 
 import { TextField } from '@keystar/ui/text-field'
-import { Text } from '@keystar/ui/typography'
 
 import type {
-  CellComponent,
   FieldController,
   FieldControllerConfig,
   IdFieldConfig,
@@ -12,13 +10,6 @@ import type {
 
 export function Field () {
   return null
-}
-
-export const Cell: CellComponent = ({ field, item }) => {
-  let value = item[field.path]
-  return value != null
-    ? <Text>{value.toString()}</Text>
-    : null
 }
 
 export function controller (
@@ -35,7 +26,6 @@ export function controller (
     filter: {
       Filter (props) {
         const { autoFocus, context, onChange, type, typeLabel, value, ...otherProps } = props
-
         const labelProps = context === 'add'
           ? { label: config.label, description: typeLabel }
           : { label: typeLabel }
@@ -52,9 +42,7 @@ export function controller (
       },
 
       graphql: ({ type, value }) => {
-        if (type === 'not') {
-          return { [config.path]: { not: { equals: value } } }
-        }
+        if (type === 'not') return { [config.path]: { not: { equals: value } } }
         const valueWithoutWhitespace = value.replace(/\s/g, '')
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
 

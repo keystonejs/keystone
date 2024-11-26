@@ -1,9 +1,7 @@
 import React from 'react'
-import { Cell as CellContainer } from '@keystar/ui/table'
 import { TextField } from '@keystar/ui/text-field'
 
 import {
-  type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
@@ -35,12 +33,7 @@ export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof 
   )
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = item[field.path] + ''
-  return <CellContainer>{value}</CellContainer>
-}
-
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{}>
 ): FieldController<
   {
@@ -48,7 +41,7 @@ export const controller = (
     right: string | null
   } | null,
   string
-> => {
+> {
   return {
     path: config.path,
     label: config.label,

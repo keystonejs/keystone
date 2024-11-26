@@ -114,9 +114,8 @@ function validate (
   return undefined
 }
 
-export const Cell: CellComponent = ({ field, item }) => {
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
   const dateFormatter = useDateFormatter({ dateStyle: 'medium' })
-  const value = item[field.path]
   return value
     ? <Text>{dateFormatter.format(new Date(value))}</Text>
     : null
@@ -127,9 +126,9 @@ export type CalendarDayFieldMeta = {
   isRequired: boolean
 }
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<CalendarDayFieldMeta>
-): FieldController<Value, string> & { fieldMeta: CalendarDayFieldMeta } => {
+): FieldController<Value, string> & { fieldMeta: CalendarDayFieldMeta } {
   return {
     path: config.path,
     label: config.label,

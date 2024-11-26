@@ -26,8 +26,7 @@ export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof 
   )
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = !!item[field.path]
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
   return value
     ? <Icon src={checkIcon} aria-label="true" />
     : <VisuallyHidden>false</VisuallyHidden>

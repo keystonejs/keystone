@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
-import { Text } from '@keystar/ui/typography'
 
 import type {
-  CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
@@ -72,11 +70,6 @@ export function Field (props: FieldProps<typeof controller>) {
       />
     </NullableFieldWrapper>
   )
-}
-
-export const Cell: CellComponent = ({ field, item }) => {
-  const value = item[field.path]
-  return value != null ? <Text>{value.toString()}</Text> : null
 }
 
 type Config = FieldControllerConfig<TextFieldMeta>

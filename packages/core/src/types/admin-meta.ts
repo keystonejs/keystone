@@ -177,7 +177,8 @@ export type CellComponent<
   >
 > = {
   (props: {
-    item: Record<string, any>
+    value: any // TODO: T
     field: ReturnType<FieldControllerFn>
+    item: Record<string, unknown>
   }): ReactElement | null
 }
