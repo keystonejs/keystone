@@ -34,9 +34,9 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 
 type CheckboxController = FieldController<boolean, boolean>
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{ defaultValue: boolean }>
-): CheckboxController => {
+): CheckboxController {
   return {
     path: config.path,
     label: config.label,
@@ -47,11 +47,7 @@ export const controller = (
       const value = item[config.path]
       return typeof value === 'boolean' ? value : false
     },
-    serialize (value) {
-      return {
-        [config.path]: value,
-      }
-    },
+    serialize (value) { return { [config.path]: value, } },
     filter: {
       Filter (props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
@@ -61,9 +57,7 @@ export const controller = (
           </Checkbox>
         )
       },
-      Label ({ label, type, value }) {
-        return `${label.toLowerCase()} ${value ? 'true' : 'false'}`
-      },
+      Label ({ label, type, value }) { return `${label.toLowerCase()} ${value ? 'true' : 'false'}` },
       graphql ({ type, value }) {
         return {
           [config.path]: {

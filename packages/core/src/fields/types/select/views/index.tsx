@@ -1,4 +1,4 @@
-import React, { type Key, useMemo, useRef, useState } from 'react'
+import React, { type Key, useMemo, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 
 import { ListView } from '@keystar/ui/list-view'
@@ -21,14 +21,10 @@ import type {
 
 export function Field (props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
-
-  const pickerRef = useRef<HTMLDivElement>(null)
   const [isDirty, setDirty] = useState(false)
   const [preNullValue, setPreNullValue] = useState(value.value || (value.kind === 'update' ? value.initial : null))
   const longestLabelLength = useMemo(() => {
-    return field.options.reduce((acc, item) => {
-      return item.label.length > acc ? item.label.length : acc
-    }, 0)
+    return field.options.reduce((a, item) => Math.max(a, item.label.length), 0)
   }, [field.options])
 
   const selectedKey = value.value?.value || preNullValue?.value || null
@@ -45,7 +41,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
     // FIXME: the value should be primitive, not an object. i think this is an
     // artefact from react-select’s API
-    let newValue: Value['value'] = field.options.find(opt => opt.value === key) ?? null
+    const newValue: Value['value'] = field.options.find(opt => opt.value === key) ?? null
 
     // allow clearing the value if the field is not required
     // if (!field.isRequired && key === selectedKey) {
@@ -114,7 +110,6 @@ export function Field (props: FieldProps<typeof controller>) {
       default:
         return (
           <Picker
-            ref={pickerRef}
             autoFocus={autoFocus}
             label={field.label}
             description={field.description}
@@ -178,9 +173,7 @@ function validate (value: Value, isRequired: boolean) {
   if (isRequired) {
     // if you got null initially on the update screen, we want to allow saving
     // since the user probably doesn't have read access control
-    if (value.kind === 'update' && value.initial === null) {
-      return true
-    }
+    if (value.kind === 'update' && value.initial === null) return true
     return value.value !== null
   }
   return true
@@ -250,7 +243,6 @@ export function controller (
 
         const densityLevels = ['spacious', 'regular', 'compact'] as const
         const density = densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
-
         const listView = (
           <ListView
             aria-label={typeLabel}
@@ -309,13 +301,8 @@ export function controller (
         const labels = value.map(i => i.label)
         const prefix = type === 'not_matches' ? `is not` : `is`
 
-        if (value.length === 1) {
-          return `${prefix} ${labels[0]}`
-        }
-        if (value.length === 2) {
-          return `${prefix} ${listFormatter.format(labels)}`
-        }
-
+        if (value.length === 1) return `${prefix} ${labels[0]}`
+        if (value.length === 2) return `${prefix} ${listFormatter.format(labels)}`
         return `${prefix} ${listFormatter.format([labels[0], `${value.length - 1} more`])}`
       },
       types: FILTER_TYPES,
