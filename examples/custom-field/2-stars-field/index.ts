@@ -17,13 +17,12 @@ type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig
   maxStars?: number
 }
 
-export const stars =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    maxStars = 5,
-    ...config
-  }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta =>
+export function stars <ListTypeInfo extends BaseListTypeInfo>({
+  isIndexed,
+  maxStars = 5,
+  ...config
+}: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta =>
     fieldType({
       // this configures what data is stored in the database
       kind: 'scalar',
@@ -84,3 +83,4 @@ export const stars =
         return { maxStars }
       },
     })
+}

@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { useEffect, useMemo, useRef } from 'react'
 import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-
 import {
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '@keystone-6/core/types'
-import { useEffect, useMemo, useRef } from 'react'
+import { Field as KeystarField } from '@keystar/ui/field'
+
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
@@ -38,14 +38,18 @@ export function Field ({
     )
   }, [field.schema, onChange])
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <FormValueContentFromPreviewProps
-        forceValidation={forceValidation}
-        autoFocus={autoFocus}
-        {...createPreviewProps(value.value)}
-      />
-    </FieldContainer>
+    <KeystarField
+      label={field.label}
+      description={field.description}
+    >
+      {(inputProps) => (
+        <FormValueContentFromPreviewProps
+          autoFocus={autoFocus}
+          forceValidation={forceValidation}
+          {...createPreviewProps(value.value)}
+        />
+      )}
+    </KeystarField>
   )
 }
 
