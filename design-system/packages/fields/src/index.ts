@@ -8,7 +8,7 @@
  */
 
 export { Checkbox, CheckboxControl } from './Checkbox'
-export { FieldContainer } from './FieldContainer'
+// export { FieldContainer } from './FieldContainer'
 export { FieldLabel } from './FieldLabel'
 export { FieldLegend } from './FieldLegend'
 export { FieldDescription } from './FieldDescription'
