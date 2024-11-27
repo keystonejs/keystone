@@ -2,14 +2,14 @@
 /** @jsx jsx */
 import { graphql } from '@keystone-6/core'
 import { jsx } from '@keystone-ui/core'
-import {
-  FieldContainer,
-  FieldLabel,
-  Select,
-  TextInput,
-  Checkbox,
-  MultiSelect,
-} from '@keystone-ui/fields'
+
+import { TextField } from '@keystar/ui/text-field'
+import { NumberField } from '@keystar/ui/number-field'
+import { Item, Picker } from '@keystar/ui/picker'
+import { tokenSchema } from '@keystar/ui/style'
+import { Checkbox } from '@keystar/ui/checkbox'
+import { Text } from '@keystar/ui/typography'
+
 import {
   type HTMLAttributes,
   type ReactElement,
@@ -45,18 +45,12 @@ export const fields = {
     return {
       kind: 'form',
       Input ({ value, onChange, autoFocus }) {
-        return (
-          <FieldContainer>
-            <FieldLabel>{label}</FieldLabel>
-            <TextInput
-              autoFocus={autoFocus}
-              value={value}
-              onChange={event => {
-                onChange(event.target.value)
-              }}
-            />
-          </FieldContainer>
-        )
+        return <TextField
+          autoFocus={autoFocus}
+          label={label}
+          onChange={x => onChange?.(x)}
+          value={value}
+        />
       },
       options: undefined,
       defaultValue,
@@ -82,29 +76,17 @@ export const fields = {
     return {
       kind: 'form',
       Input ({ value, onChange, autoFocus, forceValidation }) {
-        const [blurred, setBlurred] = useState(false)
-        const [inputValue, setInputValue] = useState(String(value))
-        const showValidation = forceValidation || (blurred && !validate(value))
-
+        const [isDirty, setDirty] = useState(false)
         return (
-          <FieldContainer>
-            <FieldLabel>{label}</FieldLabel>
-            <TextInput
-              onBlur={() => setBlurred(true)}
-              autoFocus={autoFocus}
-              value={inputValue}
-              onChange={event => {
-                const raw = event.target.value
-                setInputValue(raw)
-                if (/^[+-]?\d+$/.test(raw)) {
-                  onChange(Number(raw))
-                } else {
-                  onChange(NaN)
-                }
-              }}
-            />
-            {showValidation && <span css={{ color: 'red' }}>Please specify an integer</span>}
-          </FieldContainer>
+          <NumberField
+            autoFocus={autoFocus}
+            label={label}
+            errorMessage={(forceValidation || isDirty) && !validate(value) ? 'Invalid integer' : null}
+            step={1}
+            onBlur={() => setDirty(true)}
+            onChange={x => onChange?.((!Number.isInteger(x)) ? NaN : x)}
+            value={value ?? NaN}
+          />
         )
       },
       options: undefined,
@@ -129,22 +111,15 @@ export const fields = {
     return {
       kind: 'form',
       Input ({ value, onChange, autoFocus, forceValidation }) {
-        const [blurred, setBlurred] = useState(false)
-        const showValidation = forceValidation || (blurred && !validate(value))
-        return (
-          <FieldContainer>
-            <FieldLabel>{label}</FieldLabel>
-            <TextInput
-              onBlur={() => setBlurred(true)}
-              autoFocus={autoFocus}
-              value={value}
-              onChange={event => {
-                onChange(event.target.value)
-              }}
-            />
-            {showValidation && <span css={{ color: 'red' }}>Please provide a valid URL</span>}
-          </FieldContainer>
-        )
+        const [isDirty, setDirty] = useState(false)
+        return <TextField
+          autoFocus={autoFocus}
+          label={label}
+          errorMessage={(forceValidation || isDirty) && !validate(value) ? 'Invalid URL' : null}
+          onBlur={() => setDirty(true)}
+          onChange={x => onChange?.(x)}
+          value={value}
+        />
       },
       options: undefined,
       defaultValue,
@@ -165,35 +140,34 @@ export const fields = {
     defaultValue: Option['value']
   }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value))
-    if (!optionValuesSet.has(defaultValue)) {
-      throw new Error(
-        `A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`
-      )
-    }
+    if (!optionValuesSet.has(defaultValue)) throw new Error(`A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`)
+    const longestLabelLength = options.reduce((a, item) => Math.max(a, item.label.length), 0)
+
     return {
       kind: 'form',
       Input ({ value, onChange, autoFocus }) {
         return (
-          <FieldContainer>
-            <FieldLabel>{label}</FieldLabel>
-            <Select
-              autoFocus={autoFocus}
-              value={options.find(option => option.value === value) || null}
-              onChange={option => {
-                if (option) {
-                  onChange(option.value)
-                }
-              }}
-              options={options}
-            />
-          </FieldContainer>
+          <Picker
+            autoFocus={autoFocus}
+            label={label}
+            items={options}
+            onSelectionChange={(key) => options.find(option => option.value === key)?.value}
+            selectedKey={options.find(option => option.value === value)?.value ?? null}
+            flex={{ mobile: true, desktop: 'initial' }}
+            UNSAFE_style={{
+              fontSize: tokenSchema.typography.text.regular.size,
+              width: `clamp(${tokenSchema.size.alias.singleLineWidth}, calc(${longestLabelLength}ex + ${tokenSchema.size.icon.regular}), 100%)`,
+            }}
+          >
+            {item => (
+              <Item key={item.value}>{item.label}</Item>
+            )}
+          </Picker>
         )
       },
       options,
       defaultValue,
-      validate (value) {
-        return typeof value === 'string' && optionValuesSet.has(value)
-      },
+      validate (value) { return typeof value === 'string' && optionValuesSet.has(value) },
       graphql: {
         input: graphql.String,
         output: graphql.field({
@@ -206,53 +180,48 @@ export const fields = {
       },
     }
   },
-  multiselect<Option extends { label: string, value: string }> ({
-    label,
-    options,
-    defaultValue,
-  }: {
-    label: string
-    options: readonly Option[]
-    defaultValue: readonly Option['value'][]
-  }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
-    const valuesToOption = new Map(options.map(x => [x.value, x]))
-    return {
-      kind: 'form',
-      Input ({ value, onChange, autoFocus }) {
-        return (
-          <FieldContainer>
-            <FieldLabel>{label}</FieldLabel>
-            <MultiSelect
-              autoFocus={autoFocus}
-              value={value.map(x => valuesToOption.get(x)!)}
-              options={options}
-              onChange={options => {
-                onChange(options.map(x => x.value))
-              }}
-            />
-          </FieldContainer>
-        )
-      },
-      options,
-      defaultValue,
-      validate (value) {
-        return (
-          Array.isArray(value) &&
-          value.every(value => typeof value === 'string' && valuesToOption.has(value))
-        )
-      },
-      graphql: {
-        input: graphql.list(graphql.nonNull(graphql.String)),
-        output: graphql.field({
-          type: graphql.list(graphql.nonNull(graphql.String)),
-          // TODO: investigate why this resolve is required here
-          resolve ({ value }) {
-            return value
-          },
-        }),
-      },
-    }
-  },
+//   multiselect<Option extends { label: string, value: string }> ({
+//     label,
+//     options,
+//     defaultValue,
+//   }: {
+//     label: string
+//     options: readonly Option[]
+//     defaultValue: readonly Option['value'][]
+//   }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
+//     const valuesToOption = new Map(options.map(x => [x.value, x]))
+//     return {
+//       kind: 'form',
+//       Input ({ value, onChange, autoFocus }) {
+//         return (
+//           <FieldContainer>
+//             <FieldLabel>{label}</FieldLabel>
+//             <MultiSelect
+//               autoFocus={autoFocus}
+//               value={value.map(x => valuesToOption.get(x)!)}
+//               options={options}
+//               onChange={options => {
+//                 onChange(options.map(x => x.value))
+//               }}
+//             />
+//           </FieldContainer>
+//         )
+//       },
+//       options,
+//       defaultValue,
+//       validate (value) {
+//         return Array.isArray(value) && value.every(value => typeof value === 'string' && valuesToOption.has(value))
+//       },
+//       graphql: {
+//         input: graphql.list(graphql.nonNull(graphql.String)),
+//         output: graphql.field({
+//           type: graphql.list(graphql.nonNull(graphql.String)),
+//           // TODO: why is this required
+//           resolve ({ value }) { return value },
+//         }),
+//       },
+//     }
+//   },
   checkbox ({
     label,
     defaultValue = false,
@@ -264,24 +233,19 @@ export const fields = {
       kind: 'form',
       Input ({ value, onChange, autoFocus }) {
         return (
-          <FieldContainer>
-            <Checkbox
-              checked={value}
-              autoFocus={autoFocus}
-              onChange={event => {
-                onChange(event.target.checked)
-              }}
-            >
-              {label}
-            </Checkbox>
-          </FieldContainer>
+          <Checkbox
+            autoFocus={autoFocus}
+            isReadOnly={onChange == null}
+            isSelected={value}
+            onChange={onChange}
+          >
+            <Text>{label}</Text>
+          </Checkbox>
         )
       },
       options: undefined,
       defaultValue,
-      validate (value) {
-        return typeof value === 'boolean'
-      },
+      validate (value) { return typeof value === 'boolean' },
       graphql: {
         input: graphql.Boolean,
         output: graphql.field({ type: graphql.Boolean }),
@@ -291,9 +255,7 @@ export const fields = {
   empty (): FormField<null, undefined> {
     return {
       kind: 'form',
-      Input () {
-        return null
-      },
+      Input () { return null },
       options: undefined,
       defaultValue: null,
       validate (value) {
@@ -374,9 +336,7 @@ export const fields = {
       (discriminant.validate('true') || discriminant.validate('false')) &&
       (discriminant.validate(true) || discriminant.validate(false))
     ) {
-      throw new Error(
-        'The discriminant of a conditional field only supports string values, or boolean values, not both.'
-      )
+      throw new Error('The discriminant of a conditional field only supports string values, or boolean values, not both.')
     }
     return {
       kind: 'conditional',
