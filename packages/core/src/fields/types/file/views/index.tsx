@@ -1,4 +1,4 @@
-// /** @jsxRuntime classic */
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core'
