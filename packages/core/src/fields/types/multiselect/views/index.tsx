@@ -1,5 +1,5 @@
 import { useFilter, useListFormatter } from '@react-aria/i18n';
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
 import { Combobox, Item } from '@keystar/ui/combobox'
@@ -23,7 +23,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
 function SelectModeField (props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
-  const [filterText, setFilterText] = React.useState('')
+  const [filterText, setFilterText] = useState('')
   const { contains } = useFilter({ sensitivity: 'base' })
   const items = field.options.filter(option => !value.some(x => x.value === option.value))
   const filteredItems = filterText
