@@ -1,27 +1,35 @@
 import React from 'react'
 import { graphql } from '@keystone-6/core'
 
-import {
-  type HTMLAttributes,
-  type ReactElement,
-  type ReactNode,
+import type {
+  HTMLAttributes,
+  ReactElement,
+  ReactNode,
 } from 'react'
 import { isValidURL } from '../isValidURL'
-import {
-  type ArrayField,
-  type BlockFormattingConfig,
-  type ChildField,
-  type ComponentBlock,
-  type ComponentSchema,
-  type ConditionalField,
-  type FormField,
-  type FormFieldWithGraphQLField,
-  type GenericPreviewProps,
-  type InlineMarksConfig,
-  type ObjectField,
-  type RelationshipField,
+import type {
+  ArrayField,
+  BlockFormattingConfig,
+  ChildField,
+  ComponentBlock,
+  ComponentSchema,
+  ConditionalField,
+  FormField,
+  FormFieldWithGraphQLField,
+  GenericPreviewProps,
+  InlineMarksConfig,
+  ObjectField,
+  RelationshipField,
 } from './api-shared'
-import { Checkbox, makeIntegerFieldInput, makeSelectFieldInput, makeUrlFieldInput, Text, TextField } from '#fields-ui'
+import {
+  makeIntegerFieldInput,
+  makeMultiselectFieldInput,
+  makeSelectFieldInput,
+  makeUrlFieldInput,
+  Checkbox,
+  Text,
+  TextField
+} from '#fields-ui'
 
 export * from './api-shared'
 
@@ -45,9 +53,7 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
-      validate (value) {
-        return typeof value === 'string'
-      },
+      validate (value) { return typeof value === 'string' },
       graphql: {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
@@ -66,10 +72,7 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input: makeIntegerFieldInput({
-        label,
-        validate,
-      }),
+      Input: makeIntegerFieldInput({ label, validate, }),
       options: undefined,
       defaultValue,
       validate,
@@ -124,55 +127,39 @@ export const fields = {
         output: graphql.field({
           type: graphql.String,
           // TODO: investigate why this resolve is required here
-          resolve ({ value }) {
-            return value
-          },
+          resolve ({ value }) { return value },
         }),
       },
     }
   },
-//   multiselect<Option extends { label: string, value: string }> ({
-//     label,
-//     options,
-//     defaultValue,
-//   }: {
-//     label: string
-//     options: readonly Option[]
-//     defaultValue: readonly Option['value'][]
-//   }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
-//     const valuesToOption = new Map(options.map(x => [x.value, x]))
-//     return {
-//       kind: 'form',
-//       Input ({ value, onChange, autoFocus }) {
-//         return (
-//           <FieldContainer>
-//             <FieldLabel>{label}</FieldLabel>
-//             <MultiSelect
-//               autoFocus={autoFocus}
-//               value={value.map(x => valuesToOption.get(x)!)}
-//               options={options}
-//               onChange={options => {
-//                 onChange(options.map(x => x.value))
-//               }}
-//             />
-//           </FieldContainer>
-//         )
-//       },
-//       options,
-//       defaultValue,
-//       validate (value) {
-//         return Array.isArray(value) && value.every(value => typeof value === 'string' && valuesToOption.has(value))
-//       },
-//       graphql: {
-//         input: graphql.list(graphql.nonNull(graphql.String)),
-//         output: graphql.field({
-//           type: graphql.list(graphql.nonNull(graphql.String)),
-//           // TODO: why is this required
-//           resolve ({ value }) { return value },
-//         }),
-//       },
-//     }
-//   },
+  multiselect<Option extends { label: string, value: string }> ({
+    label,
+    options,
+    defaultValue,
+  }: {
+    label: string
+    options: readonly Option[]
+    defaultValue: readonly Option['value'][]
+  }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
+    const valuesToOption = new Map(options.map(x => [x.value, x]))
+    return {
+      kind: 'form',
+      Input: makeMultiselectFieldInput({ label, options }),
+      options,
+      defaultValue,
+      validate (value) {
+        return Array.isArray(value) && value.every(value => typeof value === 'string' && valuesToOption.has(value))
+      },
+      graphql: {
+        input: graphql.list(graphql.nonNull(graphql.String)),
+        output: graphql.field({
+          type: graphql.list(graphql.nonNull(graphql.String)),
+          // TODO: why is this required
+          resolve ({ value }) { return value },
+        }),
+      },
+    }
+  },
   checkbox ({
     label,
     defaultValue = false,
