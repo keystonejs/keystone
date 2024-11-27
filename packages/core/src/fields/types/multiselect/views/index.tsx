@@ -23,10 +23,8 @@ export function Field (props: FieldProps<typeof controller>) {
 
 function SelectModeField (props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
-
   const [filterText, setFilterText] = React.useState('')
-  const { contains } = useFilter({ sensitivity: 'base' });
-
+  const { contains } = useFilter({ sensitivity: 'base' })
   const items = field.options.filter(option => !value.some(x => x.value === option.value))
   const filteredItems = filterText
     ? items.filter(item => contains(item.label, filterText))
@@ -50,9 +48,7 @@ function SelectModeField (props: FieldProps<typeof controller>) {
         width="auto"
       >
         {item => (
-          <Item key={item.value}>
-            {item.label}
-          </Item>
+          <Item key={item.value}>{item.label}</Item>
         )}
       </Combobox>
 
@@ -71,9 +67,7 @@ function SelectModeField (props: FieldProps<typeof controller>) {
         )}
       >
         {item => (
-          <Item key={item.value}>
-            {item.label}
-          </Item>
+          <Item key={item.value}>{item.label}</Item>
         )}
       </TagGroup>
     </VStack>
@@ -104,8 +98,8 @@ function CheckboxesModeField (props: FieldProps<typeof controller>) {
 export const Cell: CellComponent<typeof controller> = ({ value = [], field }) => {
   const listFormatter = useListFormatter({ style: 'short', type: 'conjunction' })
   const labels = (value as string[]).map(x => field.valuesToOptionsWithStringValues[x].label)
-  let cellContent = null
 
+  let cellContent = null
   if (value.length > 3) {
     cellContent = listFormatter.format([labels[0], `${value.length - 1} more`])
   } else {
@@ -123,9 +117,7 @@ export type AdminMultiSelectFieldMeta = {
 }
 
 type Config = FieldControllerConfig<AdminMultiSelectFieldMeta>
-
 type Option = { label: string, value: string }
-
 type Value = readonly Option[]
 
 export function controller (
@@ -165,7 +157,6 @@ export function controller (
     filter: {
       Filter (props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
-
         const densityLevels = ['spacious', 'regular', 'compact'] as const
         const density = densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
 
@@ -187,9 +178,7 @@ export function controller (
             {...otherProps}
           >
             {(item) => (
-              <Item key={item.value}>
-                {item.label}
-              </Item>
+              <Item key={item.value}>{item.label}</Item>
             )}
           </ListView>
         )
@@ -227,7 +216,6 @@ export function controller (
 
         if (value.length === 1) return `${prefix} ${labels[0]}`
         if (value.length === 2) return `${prefix} ${listFormatter.format(labels)}`
-
         return `${prefix} ${listFormatter.format([labels[0], `${value.length - 1} more`])}`
       },
       types: {
