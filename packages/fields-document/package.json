@@ -140,6 +140,11 @@
       "node": "./src/DocumentEditor/primitives/empty.ts",
       "react-server": "./src/DocumentEditor/primitives/empty.ts",
       "default": "./src/DocumentEditor/primitives/index.tsx"
+    },
+    "#fields-ui": {
+      "node": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
+      "react-server": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
+      "default": "./src/DocumentEditor/component-blocks/fields-ui.tsx"
     }
   }
 }

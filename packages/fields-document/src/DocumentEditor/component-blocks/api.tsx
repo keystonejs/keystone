@@ -1,20 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
 import { graphql } from '@keystone-6/core'
-import { jsx } from '@keystone-ui/core'
-
-import { TextField } from '@keystar/ui/text-field'
-import { NumberField } from '@keystar/ui/number-field'
-import { Item, Picker } from '@keystar/ui/picker'
-import { tokenSchema } from '@keystar/ui/style'
-import { Checkbox } from '@keystar/ui/checkbox'
-import { Text } from '@keystar/ui/typography'
 
 import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
-  useState
 } from 'react'
 import { isValidURL } from '../isValidURL'
 import {
@@ -31,6 +21,7 @@ import {
   type ObjectField,
   type RelationshipField,
 } from './api-shared'
+import { Checkbox, makeIntegerFieldInput, makeSelectFieldInput, makeUrlFieldInput, Text, TextField } from '#fields-ui'
 
 export * from './api-shared'
 
@@ -75,20 +66,10 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input ({ value, onChange, autoFocus, forceValidation }) {
-        const [isDirty, setDirty] = useState(false)
-        return (
-          <NumberField
-            autoFocus={autoFocus}
-            label={label}
-            errorMessage={(forceValidation || isDirty) && !validate(value) ? 'Invalid integer' : null}
-            step={1}
-            onBlur={() => setDirty(true)}
-            onChange={x => onChange?.((!Number.isInteger(x)) ? NaN : x)}
-            value={value ?? NaN}
-          />
-        )
-      },
+      Input: makeIntegerFieldInput({
+        label,
+        validate,
+      }),
       options: undefined,
       defaultValue,
       validate,
@@ -110,17 +91,7 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input ({ value, onChange, autoFocus, forceValidation }) {
-        const [isDirty, setDirty] = useState(false)
-        return <TextField
-          autoFocus={autoFocus}
-          label={label}
-          errorMessage={(forceValidation || isDirty) && !validate(value) ? 'Invalid URL' : null}
-          onBlur={() => setDirty(true)}
-          onChange={x => onChange?.(x)}
-          value={value}
-        />
-      },
+      Input: makeUrlFieldInput({ label, validate }),
       options: undefined,
       defaultValue,
       validate,
@@ -141,30 +112,10 @@ export const fields = {
   }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value))
     if (!optionValuesSet.has(defaultValue)) throw new Error(`A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`)
-    const longestLabelLength = options.reduce((a, item) => Math.max(a, item.label.length), 0)
 
     return {
       kind: 'form',
-      Input ({ value, onChange, autoFocus }) {
-        return (
-          <Picker
-            autoFocus={autoFocus}
-            label={label}
-            items={options}
-            onSelectionChange={(key) => options.find(option => option.value === key)?.value}
-            selectedKey={options.find(option => option.value === value)?.value ?? null}
-            flex={{ mobile: true, desktop: 'initial' }}
-            UNSAFE_style={{
-              fontSize: tokenSchema.typography.text.regular.size,
-              width: `clamp(${tokenSchema.size.alias.singleLineWidth}, calc(${longestLabelLength}ex + ${tokenSchema.size.icon.regular}), 100%)`,
-            }}
-          >
-            {item => (
-              <Item key={item.value}>{item.label}</Item>
-            )}
-          </Picker>
-        )
-      },
+      Input: makeSelectFieldInput({ label, options }),
       options,
       defaultValue,
       validate (value) { return typeof value === 'string' && optionValuesSet.has(value) },
@@ -416,7 +367,7 @@ export function component<
 }
 
 export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
+  <span style={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
   </span>
 )
