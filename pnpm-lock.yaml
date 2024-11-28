@@ -488,7 +488,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@keystar/ui':
-        specifier: ^0.7.6
+        specifier: ^0.7.13
         version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystatic/core':
         specifier: ^0.5.24
@@ -740,6 +740,9 @@ importers:
 
   examples/custom-admin-ui-navigation:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -759,6 +762,9 @@ importers:
 
   examples/custom-admin-ui-pages:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -803,6 +809,9 @@ importers:
 
   examples/custom-field:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1293,6 +1302,9 @@ importers:
       '@graphql-tools/schema':
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1672,6 +1684,22 @@ importers:
         specifier: ^5.5.0
         version: 5.7.2
 
+  examples/number-fields:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.3.1
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
+    devDependencies:
+      prisma:
+        specifier: 5.19.0
+        version: 5.19.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.7.2
+
   examples/omit:
     dependencies:
       '@keystone-6/core':
@@ -1918,6 +1946,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -2031,6 +2062,12 @@ importers:
       '@hapi/iron':
         specifier: ^7.0.0
         version: 7.0.1
+      '@internationalized/date':
+        specifier: ^3.5.5
+        version: 3.6.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -2082,6 +2119,18 @@ importers:
       '@prisma/migrate':
         specifier: 5.22.0
         version: 5.22.0(@prisma/generator-helper@5.22.0)(@prisma/internals@5.22.0)
+      '@react-aria/i18n':
+        specifier: ^3.12.1
+        version: 3.12.4(react@18.3.1)
+      '@react-aria/label':
+        specifier: ^3.7.10
+        version: 3.7.13(react@18.3.1)
+      '@react-aria/utils':
+        specifier: ^3.25.1
+        version: 3.26.0(react@18.3.1)
+      '@react-stately/data':
+        specifier: ^3.11.6
+        version: 3.12.0(react@18.3.1)
       '@sindresorhus/slugify':
         specifier: ^1.1.2
         version: 1.1.2
@@ -2275,6 +2324,9 @@ importers:
       '@emotion/weak-memoize':
         specifier: ^0.4.0
         version: 0.4.0
+      '@keystar/ui':
+        specifier: ^0.7.14
+        version: 0.7.14(next@14.2.18(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
