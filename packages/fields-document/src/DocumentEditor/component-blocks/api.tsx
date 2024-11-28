@@ -309,7 +309,12 @@ export const fields = {
       label?: string
     }
   ): ArrayField<ElementField> {
-    return { kind: 'array', element, itemLabel: opts?.itemLabel, label: opts?.label }
+    return {
+      kind: 'array',
+      element,
+      itemLabel: opts?.itemLabel,
+      label: opts?.label
+    }
   },
 }
 

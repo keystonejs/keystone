@@ -64,11 +64,7 @@ export function controller (
 ): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
   schema: ComponentSchemaForGraphQL
 } {
-  if (!config.customViews.schema) {
-    throw new Error(
-      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
-    )
-  }
+  if (!config.customViews.schema) throw new Error(`No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`)
   return {
     path: config.path,
     label: config.label,
