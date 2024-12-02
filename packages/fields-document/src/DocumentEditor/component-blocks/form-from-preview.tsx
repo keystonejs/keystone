@@ -167,9 +167,9 @@ function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
   >('closed')
 
   return (
-    <KeystarField label={label}>
-      {inputProps => (
-        <VStack gap="medium" role="group" minWidth={0}>
+    <KeystarField label={label} labelElementType="span">
+      {groupProps => (
+        <VStack gap="medium" role="group" minWidth={0} {...groupProps}>
           <ArrayFieldListView
             {...props}
             aria-label={label ?? ''}
@@ -341,7 +341,7 @@ function ObjectFieldPreview ({ schema, autoFocus, fields }: DefaultFieldProps<'o
   return (
     <HStack gap="medium" paddingTop="medium">
       <GroupIndicatorLine />
-      <VStack gap="xlarge" flex>
+      <VStack gap="xlarge" flex minWidth={0}>
         {[...function* () {
           for (const [key, propVal] of Object.entries(fields)) {
             if (!isNonChildFieldPreviewProps(propVal)) continue
