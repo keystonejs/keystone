@@ -203,7 +203,7 @@
     "@keystone-ui/segmented-control": "workspace:^",
     "@keystone-ui/toast": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
-    "@nodelib/fs.walk": "^2.0.0",
+    "@nodelib/fs.walk": "^3.0.0",
     "@prisma/client": "5.22.0",
     "@prisma/internals": "5.22.0",
     "@prisma/migrate": "5.22.0",
