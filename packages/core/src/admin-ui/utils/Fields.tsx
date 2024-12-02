@@ -78,7 +78,7 @@ type FieldsProps = {
   value: Value
 }
 
-export function Fields({
+export function Fields ({
   environment = 'edit-page',
   fields,
   value,
@@ -193,7 +193,7 @@ export function Fields({
   )
 }
 
-function FieldGroup(props: {
+function FieldGroup (props: {
   label: string
   description: string | null
   children: ReactNode
@@ -268,7 +268,7 @@ function FieldGroup(props: {
   )
 }
 
-function GroupIndicatorLine() {
+export function GroupIndicatorLine() {
   return (
     <HStack justifyContent="center" width="element.small">
       <div
