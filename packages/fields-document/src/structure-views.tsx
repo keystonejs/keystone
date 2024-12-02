@@ -97,12 +97,8 @@ function serializeValue (
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
     }
   }
-  if (schema.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(schema.element, a, kind))
-  }
-  if (schema.kind === 'form') {
-    return value
-  }
+  if (schema.kind === 'array') return (value as any[]).map(a => serializeValue(schema.element, a, kind))
+  if (schema.kind === 'form') { return value }
   if (schema.kind === 'object') {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, val]) => {
@@ -117,14 +113,10 @@ function serializeValue (
       }
     }
     if (value === null) {
-      if (kind === 'create') {
-        return undefined
-      }
+      if (kind === 'create') return undefined
       return { disconnect: true }
     }
-    return {
-      connect: { id: value.id },
-    }
+    return { connect: { id: value.id }, }
   }
   assertNever(schema)
 }
