@@ -7,7 +7,7 @@ import { GroupIndicatorLine } from '@keystone-6/core/admin-ui/utils'
 
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Dialog, DialogContainer } from '@keystar/ui/dialog'
-import { Field as KeystarField } from '@keystar/ui/field'
+import { Field } from '@keystar/ui/field'
 import { Heading, Text } from '@keystar/ui/typography'
 import { Icon } from '@keystar/ui/icon'
 import { Item, ListView } from '@keystar/ui/list-view'
@@ -167,7 +167,7 @@ function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
   >('closed')
 
   return (
-    <KeystarField label={label} labelElementType="span">
+    <Field label={label} labelElementType="span">
       {groupProps => (
         <VStack gap="medium" role="group" minWidth={0} {...groupProps}>
           <ArrayFieldListView
@@ -245,7 +245,7 @@ function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
           </DialogContainer>
         </VStack>
       )}
-    </KeystarField>
+    </Field>
   )
 }
 

@@ -6,7 +6,7 @@ import { css } from '@keystar/ui/style'
 import { type ListMeta } from '../../../../types'
 import { useApolloQuery } from './useApolloQuery'
 
-export const ComboboxMany = ({
+export function ComboboxMany ({
   autoFocus,
   description,
   isDisabled,
@@ -36,7 +36,7 @@ export const ComboboxMany = ({
     onChange(value: { label: string; id: string }[]): void
   }
   extraSelection?: string
-}) => {
+}) {
   const { data, loadingState, error, onLoadMore, search, setSearch } =
     useApolloQuery({
       extraSelection,
@@ -50,9 +50,7 @@ export const ComboboxMany = ({
   // TODO: Handle permission errors
   // (ie; user has permission to read this relationship field, but
   // not the related list, or some items on the list)
-  if (error) {
-    return <span>Error</span>
-  }
+  if (error) return <span>Error</span>
 
   // diff selection. only show items that are not selected
   const items = data?.items ?? []
@@ -61,8 +59,7 @@ export const ComboboxMany = ({
     <ComboboxMulti
       autoFocus={autoFocus}
       description={description}
-      isDisabled={isDisabled || isReadOnly} // no selection available if isReadOnly
-      // isReadOnly={isReadOnly}
+      isDisabled={isDisabled || isReadOnly}
       items={items}
       label={label}
       loadingState={loadingState}
@@ -70,18 +67,12 @@ export const ComboboxMany = ({
       inputValue={search}
       onLoadMore={onLoadMore}
       placeholder={placeholder}
-      // menuTrigger="focus"
       selectedKeys={state.value.map(item => item.id)}
       onSelectionChange={selection => {
-        console.log(selection)
-        if (selection === 'all') {
-          // TODO
-          return
-        }
-        const selectedItems = uniqueById([...state.value, ...items]).filter(
-          item => selection.has(item.id)
-        )
+        // TODO
+        if (selection === 'all') return
 
+        const selectedItems = uniqueById([...state.value, ...items]).filter(item => selection.has(item.id))
         state.onChange(selectedItems)
       }}
       minWidth="alias.singleLineWidth"

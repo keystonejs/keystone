@@ -2299,6 +2299,9 @@ importers:
       '@keystone-ui/tooltip':
         specifier: workspace:^
         version: link:../../design-system/packages/tooltip
+      '@react-aria/i18n':
+        specifier: ^3.12.1
+        version: 3.12.4(react@18.3.1)
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.18

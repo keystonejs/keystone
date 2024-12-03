@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { type FormEvent, useState } from 'react'
+import React, { type FormEvent, useId, useState } from 'react'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -50,7 +50,7 @@ function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
 
   // TODO: Special "empty" types need to be documented somewhere. Filters that
   // have no editable value, basically `null` or `!null`. Which offers:
-  // * better DX — we can avoid weird nullable types and UIs that don't make sense
+  // * better DX — we can avoid weird nullable types and UIs that don't make sense
   // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
   if (filter.type === 'empty' || filter.type === 'not_empty') return tagElement
 
@@ -77,6 +77,7 @@ function FilterDialog ({
   field: FieldMeta
   onDismiss: () => void
 }) {
+  const formId = useId()
   const router = useRouter()
   const [value, setValue] = useState(filter.value)
 
@@ -101,11 +102,11 @@ function FilterDialog ({
 
   return (
     <Dialog>
-      <form onSubmit={onSubmit} style={{ display: 'contents' }}>
-        <Heading>
-          {field.label}
-        </Heading>
-        <Content>
+      <Heading>
+        {field.label}
+      </Heading>
+      <Content>
+        <form onSubmit={onSubmit} id={formId}>
           <Filter
             autoFocus
             context="edit"
@@ -114,12 +115,12 @@ function FilterDialog ({
             type={filter.type}
             value={value}
           />
-        </Content>
-        <ButtonGroup>
-          <Button onPress={onDismiss}>Cancel</Button>
-          <Button type="submit" prominence="high">Save</Button>
-        </ButtonGroup>
-      </form>
+        </form>
+      </Content>
+      <ButtonGroup>
+        <Button onPress={onDismiss}>Cancel</Button>
+        <Button type="submit" prominence="high" form={formId}>Save</Button>
+      </ButtonGroup>
     </Dialog>
   )
 }

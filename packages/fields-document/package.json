@@ -106,6 +106,7 @@
     "@keystone-ui/modals": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
+    "@react-aria/i18n": "^3.12.1",
     "@types/react": "^18.3.3",
     "apply-ref": "^1.0.0",
     "graphql": "^16.8.1",

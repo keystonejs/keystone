@@ -15,7 +15,7 @@ type RelationshipProps = {
   onAdd: () => void
 } & FieldProps<() => RelationshipController>
 
-export function ContextualActions(props: PropsWithChildren<RelationshipProps>) {
+export function ContextualActions (props: PropsWithChildren<RelationshipProps>) {
   const { children, ...otherProps } = props
   return (
     <Grid gap="regular" alignItems="end" columns="minmax(0, 1fr) auto">
@@ -25,19 +25,18 @@ export function ContextualActions(props: PropsWithChildren<RelationshipProps>) {
   )
 }
 
-function ContextualActionsMenu(props: RelationshipProps) {
+function ContextualActionsMenu (props: RelationshipProps) {
   const { environment, field, onAdd, onChange, value } = props
 
   const foreignList = useList(field.refListKey)
   const relatedItem = useRelatedItem(props)
-
   const items = useMemo(() => {
-    let result = []
-    let allowCreate =
+    const allowCreate =
       !field.hideCreate &&
       onChange !== undefined &&
       environment !== 'create-dialog'
 
+    const result = []
     if (allowCreate) {
       result.push({
         icon: plusIcon,
@@ -45,6 +44,7 @@ function ContextualActionsMenu(props: RelationshipProps) {
         label: `Add ${foreignList.singular.toLocaleLowerCase()}`,
       })
     }
+
     if (relatedItem) {
       result.push({
         key: 'view',
