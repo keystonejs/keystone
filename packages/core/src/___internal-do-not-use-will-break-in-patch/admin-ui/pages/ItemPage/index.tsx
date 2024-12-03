@@ -498,17 +498,15 @@ function ItemPage ({ listKey }: ItemPageProps) {
               )}
             </Box>
           ) : (
-            <Fragment>
-              <ItemForm
-                fieldModes={itemViewFieldModesByField}
-                fieldPositions={itemViewFieldPositionsByField}
-                selectedFields={selectedFields}
-                showDelete={!data.keystone.adminMeta.list!.hideDelete}
-                listKey={listKey}
-                itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-                item={data.item}
-              />
-            </Fragment>
+            <ItemForm
+              fieldModes={itemViewFieldModesByField}
+              fieldPositions={itemViewFieldPositionsByField}
+              selectedFields={selectedFields}
+              showDelete={!data.keystone.adminMeta.list!.hideDelete}
+              listKey={listKey}
+              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
+              item={data.item}
+            />
           )}
         </ColumnLayout>
       )}
