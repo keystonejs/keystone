@@ -1,8 +1,6 @@
 import React, {
   type PropsWithChildren,
-  type ReactElement,
   Fragment,
-  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -83,7 +81,6 @@ function ItemForm ({
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-
   const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.graphql.names.updateInputName}!, $id: ID!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
@@ -92,11 +89,10 @@ function ItemForm ({
     }`,
     { errorPolicy: 'all' }
   )
+
   itemGetter =
     useMemo(() => {
-      if (data) {
-        return makeDataGetter(data, error?.graphQLErrors).get('item')
-      }
+      if (data) return makeDataGetter(data, error?.graphQLErrors).get('item')
     }, [data, error]) ?? itemGetter
 
   const [state, setValue] = useState(() => {
@@ -119,42 +115,32 @@ function ItemForm ({
   )
 
   const invalidFields = useInvalidFields(list.fields, state.value)
-
   const [forceValidation, setForceValidation] = useState(false)
-  const onSave = useEventCallback((e) => {
+  const onSave = useEventCallback(async (e) => {
     e.preventDefault()
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
     if (newForceValidation) return
 
-    update({ variables: { data: dataForUpdate, id: state.item.get('id').data } })
-      // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
-      // out below. If we're happy with this, clean up the unused lines.
-      .then(({ /* data, */ errors }) => {
-        // we're checking for path being undefined OR path.length === 1 because errors with a path larger than 1 will
-        // be field level errors which are handled seperately and do not indicate a failure to
-        // update the item, path being undefined generally indicates a failure in the graphql mutation itself - ie a type error
-        const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
-        if (error) {
-          toastQueue.critical('Unable to save item', {
-            actionLabel: 'Details',
-            onAction: () => setErrorDialogValue(new Error(error.message)),
-            shouldCloseOnAction: true,
-          })
-        } else {
-          // do we really need a toast for this? the item _should_ save…
-          toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {
-            timeout: 5000,
-          })
-        }
+    const { errors } = await update({
+      variables: {
+        data: dataForUpdate,
+        id: state.item.get('id').data
+      }
+    })
+
+    const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
+    if (error) {
+      return toastQueue.critical('Unable to save item', {
+        actionLabel: 'Details',
+        onAction: () => setErrorDialogValue(new Error(error.message)),
+        shouldCloseOnAction: true,
       })
-      .catch(err => {
-        toastQueue.critical('Unable to save item', {
-          actionLabel: 'Details',
-          onAction: () => setErrorDialogValue(err),
-          shouldCloseOnAction: true,
-        })
-      })
+    }
+
+    toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {
+      timeout: 5000,
+    })
   })
   const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
   const itemId = state.item.data?.id
@@ -185,12 +171,9 @@ function ItemForm ({
             invalidFields={invalidFields}
             position="form"
             fieldPositions={fieldPositions}
-            onChange={useCallback(
-              value => {
-                setValue(state => ({ item: state.item, value: value(state.value) }))
-              },
-              [setValue]
-            )}
+            onChange={useCallback(value => {
+              setValue(state => ({ item: state.item, value: value(state.value) }))
+            }, [setValue])}
             value={state.value}
           />
         </VStack>
@@ -218,27 +201,35 @@ function ItemForm ({
           </Box>
         </StickySidebar>
 
-        <Toolbar
-          hasChangedFields={!!changedFields.size}
-          onReset={useEventCallback(() => {
-            setValue(state => ({
-              item: state.item,
-              value: deserializeValue(list.fields, state.item),
-            }))
-          })}
-          loading={loading}
-          deleteButton={useMemo(
-            () =>
-              showDelete ? (
-                <DeleteButton
-                  list={list}
-                  itemLabel={(labelFieldValue ?? itemId) as string}
-                  itemId={itemId}
-                />
-              ) : undefined,
-            [showDelete, list, labelFieldValue, itemId]
-          )}
-        />
+        <BaseToolbar>
+          <Button
+            isDisabled={!hasChangedFields}
+            isPending={loading}
+            prominence="high"
+            type="submit"
+          >
+            Save
+          </Button>
+          <ResetButton
+            hasChanges={hasChangedFields}
+            onReset={useEventCallback(() => {
+              setValue(state => ({
+                item: state.item,
+                value: deserializeValue(list.fields, state.item),
+              }))
+            })}
+          />
+          <Box flex />
+          {useMemo(() =>
+            showDelete ? (
+              <DeleteButton
+                list={list}
+                itemLabel={labelFieldValue ?? itemId}
+                itemId={itemId}
+              />
+            ) : undefined,
+          [showDelete, list, labelFieldValue, itemId])}
+        </BaseToolbar>
       </form>
 
       <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
@@ -253,7 +244,7 @@ const COPY_TOOLTIP_CONTENT = {
   positive: 'Copied to clipboard',
   critical: 'Unable to copy',
 }
-type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
+type TooltipState = { isOpen?: boolean, tone: keyof typeof COPY_TOOLTIP_CONTENT }
 function IdField ({ itemId }: { itemId: string }) {
   const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
 
@@ -367,7 +358,8 @@ export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} 
 
 function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
-  const id = useRouter().query.id as string
+  const id_ = useRouter().query.id
+  const [id] = Array.isArray(id_) ? id_ : [id_]
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
@@ -501,17 +493,15 @@ function ItemPage ({ listKey }: ItemPageProps) {
               )}
             </Box>
           ) : (
-            <Fragment>
-              <ItemForm
-                fieldModes={itemViewFieldModesByField}
-                fieldPositions={itemViewFieldPositionsByField}
-                selectedFields={selectedFields}
-                showDelete={!data.keystone.adminMeta.list!.hideDelete}
-                listKey={listKey}
-                itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-                item={data.item}
-              />
-            </Fragment>
+            <ItemForm
+              fieldModes={itemViewFieldModesByField}
+              fieldPositions={itemViewFieldPositionsByField}
+              selectedFields={selectedFields}
+              showDelete={!data.keystone.adminMeta.list!.hideDelete}
+              listKey={listKey}
+              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
+              item={data.item}
+            />
           )}
         </ColumnLayout>
       )}
@@ -522,7 +512,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
 // Styled Components
 // ------------------------------
 
-function ItemNotFound (props: PropsWithChildren<{}>) {
+function ItemNotFound (props: PropsWithChildren) {
   return (
     <VStack
       alignItems="center"
@@ -541,33 +531,6 @@ function ItemNotFound (props: PropsWithChildren<{}>) {
     </VStack>
   )
 }
-
-const Toolbar = memo(function Toolbar ({
-  hasChangedFields,
-  loading,
-  onReset,
-  deleteButton,
-}: {
-  hasChangedFields: boolean
-  loading: boolean
-  onReset: () => void
-  deleteButton?: ReactElement
-}) {
-  return (
-    <BaseToolbar>
-      <Button
-        isPending={loading}
-        prominence="high"
-        type="submit"
-      >
-        Save
-      </Button>
-      <ResetButton onReset={onReset} hasChanges={hasChangedFields} />
-      <Box flex />
-      {deleteButton}
-    </BaseToolbar>
-  )
-})
 
 function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
   return (

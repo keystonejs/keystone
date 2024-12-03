@@ -17,10 +17,10 @@ type CreateItemPageProps = { listKey: string }
 export const getCreateItemPage = (props: CreateItemPageProps) => () => <CreateItemPage {...props} />
 
 function CreateItemPage (props: CreateItemPageProps) {
-  const router = useRouter()
+  const { createViewFieldModes } = useKeystone()
   const list = useList(props.listKey)
   const createItem = useCreateItem(list)
-  const { createViewFieldModes } = useKeystone()
+  const router = useRouter()
 
   return (
     <PageContainer
@@ -34,14 +34,13 @@ function CreateItemPage (props: CreateItemPageProps) {
           <form
             onSubmit={async (e) => {
               e.preventDefault()
+
               const item = await createItem.create()
-              if (item) {
-                router.push(`/${list.path}/${item.id}`)
-              }
+              if (!item) return
+
+              router.push(`/${list.path}/${item.id}`)
             }}
-            style={{
-              display: 'contents',
-            }}
+            style={{ display: 'contents' }}
           >
             {/*
               Workaround for react-aria "bug" where pressing enter in a form field
@@ -52,16 +51,8 @@ function CreateItemPage (props: CreateItemPageProps) {
             <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
               {createViewFieldModes.state === 'error' && (
                 <GraphQLErrorNotice
-                  networkError={
-                    createViewFieldModes.error instanceof Error
-                      ? createViewFieldModes.error
-                      : undefined
-                  }
-                  errors={
-                    createViewFieldModes.error instanceof Error
-                      ? undefined
-                      : createViewFieldModes.error
-                  }
+                  networkError={createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined }
+                  errors={createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error }
                 />
               )}
 
@@ -82,7 +73,6 @@ function CreateItemPage (props: CreateItemPageProps) {
                 type="submit"
               >
                 Create
-                {/* Create {list.singular.toLocaleLowerCase()} */}
               </Button>
             </BaseToolbar>
           </form>

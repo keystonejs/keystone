@@ -1,8 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import NextHead from 'next/head'
-import { Fragment, type HTMLAttributes, type ReactNode, useState } from 'react'
+import React, {
+  type HTMLAttributes,
+  type ReactNode,
+  Fragment,
+  useState
+} from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -11,26 +13,14 @@ import { xIcon } from '@keystar/ui/icon/icons/xIcon'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { HStack, VStack } from '@keystar/ui/layout'
 
-import { jsx } from '@keystone-ui/core'
-
 import { Logo } from './Logo'
 import { Navigation } from './Navigation'
 
-type PageContainerProps = {
-  children: ReactNode
-  header: ReactNode
-  title?: string
-}
-
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
-  // const { colors } = useTheme();
   return (
     <Fragment>
-      {/* TODO: not sure where to put this */}
-      <style>{`body { overflow: hidden; }`}</style>
       <div
-        css={{
-          // background: colors.background,
+        className={css({
           display: 'grid',
           gridTemplateRows: `repeat(2, ${tokenSchema.size.element.large}) auto`,
           height: '100vh',
@@ -39,7 +29,7 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
             gridTemplateColumns: `${tokenSchema.size.scale[3600]} minmax(0, 1fr)`,
             gridTemplateRows: `${tokenSchema.size.element.xlarge} auto`,
           },
-        }}
+        })}
         {...props}
       />
     </Fragment>
@@ -59,14 +49,15 @@ const Sidebar = ({
         gridRow: '2/4',
         display: isSidebarOpen ? 'block' : 'none',
         height: '100vh',
+        overflow: 'hidden auto',
+        WebkitOverflowScrolling: 'touch',
+
         [breakpointQueries.above.mobile]: {
           gridColumn: '1/2',
           gridRow: '2/3',
           display: 'block',
           height: '100%',
         },
-        overflowY: 'auto',
-        WebkitOverflowScrolling: 'touch',
       })}
     >
       <aside
@@ -80,18 +71,18 @@ const Sidebar = ({
   )
 }
 
-const Content = (props: HTMLAttributes<HTMLElement>) => {
+function Content (props: HTMLAttributes<HTMLElement>) {
   return (
     <VStack
       elementType='main'
       minHeight={0}
       minWidth={0}
-      overflow="hidden auto"
       paddingX="xlarge"
       position="relative"
       UNSAFE_className={css({
+        overflow: 'hidden auto',
         WebkitOverflowScrolling: 'touch',
-        
+
         // prevent focused form fields being hidden behind the sticky toolbar
         // this is particularly important for textareas that may expand
         [breakpointQueries.above.mobile]: {
@@ -104,7 +95,13 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
   )
 }
 
-export const PageContainer = ({ children, header, title }: PageContainerProps) => {
+type PageContainerProps = {
+  children: ReactNode
+  header: ReactNode
+  title?: string
+}
+
+export function PageContainer ({ children, header, title }: PageContainerProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
     <PageWrapper>
