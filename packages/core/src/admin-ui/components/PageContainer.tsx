@@ -2,7 +2,12 @@
 /** @jsx jsx */
 
 import NextHead from 'next/head'
-import { Fragment, type HTMLAttributes, type ReactNode, useState } from 'react'
+import {
+  type HTMLAttributes,
+  type ReactNode,
+  Fragment,
+  useState
+} from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -12,7 +17,6 @@ import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { HStack, VStack } from '@keystar/ui/layout'
 
 import { jsx } from '@keystone-ui/core'
-
 import { Logo } from './Logo'
 import { Navigation } from './Navigation'
 
@@ -80,7 +84,7 @@ const Sidebar = ({
   )
 }
 
-const Content = (props: HTMLAttributes<HTMLElement>) => {
+function Content (props: HTMLAttributes<HTMLElement>) {
   return (
     <VStack
       elementType='main'
@@ -91,7 +95,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
       position="relative"
       UNSAFE_className={css({
         WebkitOverflowScrolling: 'touch',
-        
+
         // prevent focused form fields being hidden behind the sticky toolbar
         // this is particularly important for textareas that may expand
         [breakpointQueries.above.mobile]: {
@@ -104,7 +108,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
   )
 }
 
-export const PageContainer = ({ children, header, title }: PageContainerProps) => {
+export function PageContainer ({ children, header, title }: PageContainerProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
     <PageWrapper>

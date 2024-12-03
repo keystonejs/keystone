@@ -83,7 +83,6 @@ function ItemForm ({
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-
   const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.graphql.names.updateInputName}!, $id: ID!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
@@ -92,11 +91,10 @@ function ItemForm ({
     }`,
     { errorPolicy: 'all' }
   )
+
   itemGetter =
     useMemo(() => {
-      if (data) {
-        return makeDataGetter(data, error?.graphQLErrors).get('item')
-      }
+      if (data) return makeDataGetter(data, error?.graphQLErrors).get('item')
     }, [data, error]) ?? itemGetter
 
   const [state, setValue] = useState(() => {
@@ -119,7 +117,6 @@ function ItemForm ({
   )
 
   const invalidFields = useInvalidFields(list.fields, state.value)
-
   const [forceValidation, setForceValidation] = useState(false)
   const onSave = useEventCallback((e) => {
     e.preventDefault()
