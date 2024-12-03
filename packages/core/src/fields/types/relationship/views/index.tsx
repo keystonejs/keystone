@@ -150,7 +150,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
 
   if (field.display === 'count') {
-    const count = item[`${field.path}Count`]
+    const count = item[`${field.path}Count`] as number
     return count != null ? <Numeral value={count} abbreviate /> : null
   }
 
@@ -184,12 +184,8 @@ export function controller (
       refLabelField: string
       refSearchFields: string[]
     } & (
-      | {
-          displayMode: 'select'
-        }
-      | {
-          displayMode: 'count'
-        }
+      | { displayMode: 'select' }
+      | { displayMode: 'count' }
     )
   >
 ): RelationshipController {
@@ -275,23 +271,12 @@ export function controller (
         if (disconnect.length || connect.length) {
           const output: any = {}
 
-          if (disconnect.length) {
-            output.disconnect = disconnect
-          }
-
-          if (connect.length) {
-            output.connect = connect
-          }
-
-          return {
-            [config.path]: output,
-          }
+          if (disconnect.length) output.disconnect = disconnect
+          if (connect.length) output.connect = connect
+          return { [config.path]: output }
         }
       } else if (state.kind === 'one') {
-        if (state.initialValue && !state.value) {
-          return { [config.path]: { disconnect: true } }
-        }
-
+        if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
         if (state.value && state.value.id !== state.initialValue?.id) {
           return {
             [config.path]: {
