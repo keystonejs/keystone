@@ -22,7 +22,6 @@ import type { RelationshipController } from './types'
 
 export function Field (props: FieldProps<typeof controller>) {
   const { field, value, autoFocus, onChange } = props
-
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
 
