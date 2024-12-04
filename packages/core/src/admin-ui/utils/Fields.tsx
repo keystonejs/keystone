@@ -39,6 +39,8 @@ const RenderField = memo(function RenderField({
 }: RenderFieldProps) {
   return (
     <field.views.Field
+      autoFocus={autoFocus}
+      forceValidation={forceValidation}
       environment={environment}
       field={field.controller}
       onChange={useMemo(() => {
@@ -52,8 +54,6 @@ const RenderField = memo(function RenderField({
       }, [onChange, field.controller.path])}
       value={value}
       itemValue={itemValue}
-      autoFocus={autoFocus}
-      forceValidation={forceValidation}
     />
   )
 })
@@ -151,16 +151,17 @@ export function Fields ({
       fieldGroups.set(field.path, state)
     }
   }
+
   for (const field of Object.values(fields)) {
     const fieldKey = field.path
+
     if (fieldGroups.has(fieldKey)) {
       const groupState = fieldGroups.get(field.path)!
       if (groupState.rendered) continue
       groupState.rendered = true
+
       const { group } = groupState
-      const renderedFieldsInGroup = group.fields.map(
-        field => renderedFields[field.path]
-      )
+      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
       if (renderedFieldsInGroup.every(field => field === null)) continue
       rendered.push(
         <FieldGroup label={group.label} description={group.description}>
@@ -169,6 +170,7 @@ export function Fields ({
       )
       continue
     }
+
     if (renderedFields[fieldKey] === null) continue
     rendered.push(renderedFields[fieldKey])
   }
