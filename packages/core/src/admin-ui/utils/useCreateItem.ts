@@ -64,13 +64,13 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
 
   const data: Record<string, any> = {}
-  Object.keys(list.fields).forEach(fieldPath => {
+  for (const fieldPath in list.fields) {
     const { controller } = list.fields[fieldPath]
     const serialized = controller.serialize(value[fieldPath].value)
     if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
       Object.assign(data, serialized)
     }
-  })
+  }
 
   const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
