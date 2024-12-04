@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { useRouter } from 'next/router'
 
 import { Button } from '@keystar/ui/button'
@@ -17,10 +17,11 @@ type CreateItemPageProps = { listKey: string }
 export const getCreateItemPage = (props: CreateItemPageProps) => () => <CreateItemPage {...props} />
 
 function CreateItemPage (props: CreateItemPageProps) {
-  const router = useRouter()
+  const { createViewFieldModes } = useKeystone()
   const list = useList(props.listKey)
   const createItem = useCreateItem(list)
-  const { createViewFieldModes } = useKeystone()
+  const router = useRouter()
+  const formId = useId()
 
   return (
     <PageContainer
@@ -32,12 +33,13 @@ function CreateItemPage (props: CreateItemPageProps) {
       ) : (
         <ColumnLayout>
           <form
+            id={formId}
             onSubmit={async (e) => {
               e.preventDefault()
               const item = await createItem.create()
-              if (item) {
-                router.push(`/${list.path}/${item.id}`)
-              }
+              if (!item) return
+
+              router.push(`/${list.path}/${item.id}`)
             }}
             style={{
               display: 'contents',
@@ -52,16 +54,8 @@ function CreateItemPage (props: CreateItemPageProps) {
             <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
               {createViewFieldModes.state === 'error' && (
                 <GraphQLErrorNotice
-                  networkError={
-                    createViewFieldModes.error instanceof Error
-                      ? createViewFieldModes.error
-                      : undefined
-                  }
-                  errors={
-                    createViewFieldModes.error instanceof Error
-                      ? undefined
-                      : createViewFieldModes.error
-                  }
+                  networkError={createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined }
+                  errors={createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error }
                 />
               )}
 
@@ -77,6 +71,7 @@ function CreateItemPage (props: CreateItemPageProps) {
 
             <BaseToolbar>
               <Button
+                id={formId}
                 isPending={createItem.state === 'loading'}
                 prominence="high"
                 type="submit"
