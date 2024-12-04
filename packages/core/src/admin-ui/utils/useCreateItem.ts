@@ -2,7 +2,11 @@ import isDeepEqual from 'fast-deep-equal'
 import { useRouter } from 'next/router'
 import {
   type ComponentProps,
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
@@ -26,8 +30,7 @@ type CreateItemHookResult = {
 export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const { createViewFieldModes } = useKeystone()
   const router = useRouter()
-
-  const [createItem, { loading, error, data: returnedData }] = useMutation(
+  const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
       item: ${list.graphql.names.createMutationName}(data: $data) {
         id
@@ -36,32 +39,30 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     }`
   )
 
+  const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => {
     const value: ValueWithoutServerSideErrors = {}
-    Object.keys(list.fields).forEach(fieldPath => {
+    for (const fieldPath in list.fields) {
       value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue }
-    })
+    }
     return value
   })
 
   const invalidFields = useMemo(() => {
     const invalidFields = new Set<string>()
 
-    Object.keys(value).forEach(fieldPath => {
+    for (const fieldPath in value) {
       const val = value[fieldPath].value
-
       const validateFn = list.fields[fieldPath].controller.validate
-      if (validateFn) {
-        const result = validateFn(val)
-        if (result === false) {
-          invalidFields.add(fieldPath)
-        }
+      if (!validateFn) continue
+      const result = validateFn(val)
+      if (result === false) {
+        invalidFields.add(fieldPath)
       }
-    })
+    }
+
     return invalidFields
   }, [list, value])
-
-  const [forceValidation, setForceValidation] = useState(false)
 
   const data: Record<string, any> = {}
   for (const fieldPath in list.fields) {
@@ -78,7 +79,6 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   useEffect(() => {
     shouldPreventNavigationRef.current = shouldPreventNavigation
   }, [shouldPreventNavigation])
-
   usePreventNavigation(shouldPreventNavigationRef)
 
   return {
@@ -88,8 +88,7 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     props: {
       fields: list.fields,
       groups: list.groups,
-      fieldModes:
-        createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
+      fieldModes: createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
       forceValidation,
       invalidFields,
       value,
@@ -105,10 +104,8 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
 
       let outputData: { item: { id: string, label: string | null } }
       try {
-        outputData = await createItem({
-          variables: {
-            data,
-          },
+        outputData = await tryCreateItem({
+          variables: { data },
           update (cache, { data }) {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
@@ -129,7 +126,6 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
       }
 
       shouldPreventNavigationRef.current = false
-
       toastQueue.positive(`${list.singular} created`, {
         timeout: 5000,
         actionLabel: 'Add another',
