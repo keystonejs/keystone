@@ -35,6 +35,9 @@ function CreateItemPage (props: CreateItemPageProps) {
           <form
             id={formId}
             onSubmit={async (e) => {
+              console.log('CreateItemPage', e)
+              if (e.target !== e.currentTarget) return // TODO: why
+
               e.preventDefault()
               const item = await createItem.create()
               if (!item) return
