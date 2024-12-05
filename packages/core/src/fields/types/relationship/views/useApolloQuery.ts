@@ -12,21 +12,21 @@ import {
 } from '../../../../admin-ui/apollo'
 import { useDebouncedValue } from './utils'
 import { useSearchFilter } from './useFilter'
-import type { ManyValueState, SingleValueState } from './types'
+import { RelationshipValue } from './types'
 
 export function useApolloQuery (args: {
   extraSelection: string
   labelField: string
   list: ListMeta
   searchFields: string[]
-  state: ManyValueState | SingleValueState
+  state:
+    | { kind: 'many', value: RelationshipValue[] }
+    | { kind: 'one', value: RelationshipValue | null }
 }) {
   const keystone = useKeystone()
   const { extraSelection, labelField, list, searchFields, state } = args
   const [search, setSearch] = useState(() => {
-    if (state.kind === 'one' && state.value?.label) {
-      return state.value?.label
-    }
+    if (state.kind === 'one' && state.value?.label) return state.value?.label
     return ''
   })
 
@@ -93,8 +93,6 @@ export function useApolloQuery (args: {
     client: apolloClient,
   })
 
-  const count = data?.count || 0
-
   // we want to avoid fetching more again and `loading` from Apollo
   // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
@@ -104,6 +102,7 @@ export function useApolloQuery (args: {
     skip: number
   } | null>(null)
 
+  const count = data?.count || 0
   const onLoadMore = () => {
     const skip = data?.items.length
     if (
@@ -119,14 +118,14 @@ export function useApolloQuery (args: {
         { items: { id: string; label: string | null }[] },
         { where: Record<string, any>; take: number; skip: number }
       > = gql`
-            query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
-              items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
-                label: ${labelField}
-                id: id
-                ${extraSelection}
-              }
-            }
-          `
+        query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
+          items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
+            label: ${labelField}
+            id: id
+            ${extraSelection}
+          }
+        }
+      `
       setLastFetchMore({ extraSelection, list, skip, where })
       fetchMore({
         query: QUERY,
@@ -161,10 +160,7 @@ function getLoadingState(options: {
   search: string
 }): LoadingState {
   if (options.loading) {
-    if (options.search.length) {
-      return 'filtering'
-    }
-
+    if (options.search.length) return 'filtering'
     return 'loading'
   }
 
