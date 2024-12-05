@@ -34,18 +34,22 @@ export function CreateItemDialog (props: {
         <form
           id={formId}
           onSubmit={async (e) => {
-            console.log('CreateItemDialog', e)
-            if (e.target !== e.currentTarget) return // TODO: why
-
             e.preventDefault()
-            const item = await createItem.create()
-            if (!item) return
 
-            props.onCreate({
-              id: item.id as string,
-              label: (item.label as string) ?? `${item.id}`
-            })
-            dialogState.dismiss()
+            // NOTE: This little hack prevents the parent form being submitted.
+            // However, it's not clear why this is necessary since the modal
+            // dialog is rendered outside the parent form in the DOM.
+            e.stopPropagation()
+            
+            const item = await createItem.create()
+
+            if (item) {
+              props.onCreate({
+                id: item.id as string,
+                label: (item.label as string) ?? `${item.id}`
+              })
+              dialogState.dismiss()
+            }
           }}
         >
           {createViewFieldModes.state === 'error' && (
