@@ -1,4 +1,4 @@
-import React, { useId } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 
 import { Button } from '@keystar/ui/button'
@@ -21,7 +21,6 @@ function CreateItemPage (props: CreateItemPageProps) {
   const list = useList(props.listKey)
   const createItem = useCreateItem(list)
   const router = useRouter()
-  const formId = useId()
 
   return (
     <PageContainer
@@ -33,19 +32,15 @@ function CreateItemPage (props: CreateItemPageProps) {
       ) : (
         <ColumnLayout>
           <form
-            id={formId}
             onSubmit={async (e) => {
-              if (e.target !== e.currentTarget) return // TODO: why
-
               e.preventDefault()
-              const item = await createItem.create()
-              if (!item) return
 
-              router.push(`/${list.path}/${item.id}`)
+              const item = await createItem.create()
+              if (item) {
+                router.push(`/${list.path}/${item.id}`)
+              }
             }}
-            style={{
-              display: 'contents',
-            }}
+            style={{ display: 'contents' }}
           >
             {/*
               Workaround for react-aria "bug" where pressing enter in a form field
@@ -73,7 +68,6 @@ function CreateItemPage (props: CreateItemPageProps) {
 
             <BaseToolbar>
               <Button
-                id={formId}
                 isPending={createItem.state === 'loading'}
                 prominence="high"
                 type="submit"
