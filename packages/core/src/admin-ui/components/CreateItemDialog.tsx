@@ -16,12 +16,15 @@ import { useCreateItem } from '../utils/useCreateItem'
 import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 import { useId } from 'react'
 
-export function CreateItemDialog (props: {
- listKey: string
- onCreate: (item: { id: string, label: string }) => void
+export function CreateItemDialog ({
+  listKey,
+  onCreate,
+}: {
+  listKey: string
+  onCreate: (item: { id: string, label: string }) => void
 }) {
   const { createViewFieldModes } = useKeystone()
-  const list = useList(props.listKey)
+  const list = useList(listKey)
   const createItem = useCreateItem(list)
   const dialogState = useDialogContainer()
   const formId = useId()
@@ -36,20 +39,19 @@ export function CreateItemDialog (props: {
           onSubmit={async (e) => {
             e.preventDefault()
 
-            // NOTE: This little hack prevents the parent form being submitted.
-            // However, it's not clear why this is necessary since the modal
-            // dialog is rendered outside the parent form in the DOM.
+            // WARNING: prevent other forms being submitted
+            //   it is not clear why this is necessary
+            //   our forms are not nested in the DOM.
             e.stopPropagation()
-            
-            const item = await createItem.create()
 
-            if (item) {
-              props.onCreate({
-                id: item.id as string,
-                label: (item.label as string) ?? `${item.id}`
-              })
-              dialogState.dismiss()
-            }
+            const item = await createItem.create()
+            if (!item) return
+
+            onCreate({
+              id: item.id,
+              label: item.label ?? item.id
+            })
+            dialogState.dismiss()
           }}
         >
           {createViewFieldModes.state === 'error' && (

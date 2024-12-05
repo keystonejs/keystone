@@ -117,17 +117,17 @@ export function Field (props: FieldProps<typeof controller>) {
           {dialogIsOpen && (
             <CreateItemDialog
               listKey={foreignList.key}
-              onCreate={val => {
+              onCreate={newValue => {
                 setDialogOpen(false)
                 if (value.kind === 'many') {
                   onChange({
                     ...value,
-                    value: [...value.value, val],
+                    value: [...value.value, newValue],
                   })
                 } else if (value.kind === 'one') {
                   onChange({
                     ...value,
-                    value: val,
+                    value: newValue,
                   })
                 }
               }}
