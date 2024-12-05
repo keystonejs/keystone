@@ -142,6 +142,7 @@ function ItemForm ({
       timeout: 5000,
     })
   })
+
   const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
   const itemId = state.item.data?.id
   const hasChangedFields = !!changedFields.size
@@ -158,10 +159,12 @@ function ItemForm ({
         <button type="submit" style={{ display: 'none' }} />
         <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
           <GraphQLErrorNotice
-            networkError={error?.networkError}
             // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
             // which are handled seperately and do not indicate a failure to update the item
-            errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
+            errors={[
+              error?.networkError?.message,
+              ...error?.graphQLErrors.filter(x => x.path?.length === 1).map(x => x.message) ?? []
+            ]}
           />
           <Fields
             groups={list.groups}
@@ -272,9 +275,7 @@ function IdField ({ itemId }: { itemId: string }) {
         value={itemId}
         isReadOnly
         onFocus={({ target }) => {
-          if (target instanceof HTMLInputElement) {
-            target.select()
-          }
+          if (target instanceof HTMLInputElement) target.select()
         }}
       />
       <TooltipTrigger isOpen={tooltipState.isOpen} placement='top end'>
@@ -470,12 +471,13 @@ function ItemPage ({ listKey }: ItemPageProps) {
         <ColumnLayout>
           {data?.item == null ? (
             <Box marginY="xlarge">
-              {error?.graphQLErrors.length || error?.networkError ? (
-                <GraphQLErrorNotice
-                  errors={error?.graphQLErrors}
-                  networkError={error?.networkError}
-                />
-              ) : list.isSingleton ? (
+              <GraphQLErrorNotice
+                errors={[
+                  error?.networkError,
+                  ...error?.graphQLErrors ?? []
+                ]}
+              />
+              {list.isSingleton ? (
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>

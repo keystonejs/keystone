@@ -49,20 +49,13 @@ function CreateItemPage (props: CreateItemPageProps) {
             */}
             <button type="submit" style={{ display: 'none' }} />
             <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
-              {createViewFieldModes.state === 'error' && (
-                <GraphQLErrorNotice
-                  networkError={createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined }
-                  errors={createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error }
-                />
-              )}
-
-              {createItem.error && (
-                <GraphQLErrorNotice
-                  networkError={createItem.error?.networkError}
-                  errors={createItem.error?.graphQLErrors}
-                />
-              )}
-
+              <GraphQLErrorNotice
+                errors={[
+                  ...(createViewFieldModes.state === 'error' ? [createViewFieldModes.error].flat() : []),
+                  createItem?.error?.networkError,
+                  ...createItem?.error?.graphQLErrors ?? []
+                ]}
+              />
               <Fields environment='create-page' {...createItem.props} />
             </VStack>
 
