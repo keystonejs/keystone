@@ -1,9 +1,7 @@
 import { useSlotId } from '@react-aria/utils'
 import React, {
   type ReactNode,
-  memo,
   useId,
-  useMemo
 } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
@@ -18,50 +16,9 @@ import type {
   FieldEnvironment,
   FieldGroupMeta,
   FieldMeta,
-  Item,
 } from '../../types'
 import { EmptyState } from '../components/EmptyState'
 import { type Value } from '.'
-
-type RenderFieldProps = {
-  autoFocus?: boolean
-  environment: FieldEnvironment
-  field: FieldMeta
-  forceValidation?: boolean
-  itemValue: Item
-  onChange?(value: (value: Value) => Value): void
-  value: unknown
-}
-
-const RenderField = memo(function RenderField({
-  environment,
-  field,
-  value,
-  itemValue,
-  autoFocus,
-  forceValidation,
-  onChange,
-}: RenderFieldProps) {
-  return (
-    <field.views.Field
-      autoFocus={autoFocus}
-      forceValidation={forceValidation}
-      environment={environment}
-      field={field.controller}
-      onChange={useMemo(() => {
-        if (onChange === undefined) return undefined
-        return value => {
-          onChange(val => ({
-            ...val,
-            [field.controller.path]: { kind: 'value', value },
-          }))
-        }
-      }, [onChange, field.controller.path])}
-      value={value}
-      itemValue={itemValue}
-    />
-  )
-})
 
 type FieldsProps = {
   /**
@@ -78,7 +35,7 @@ type FieldsProps = {
   forceValidation: boolean
   groups?: FieldGroupMeta[]
   invalidFields: ReadonlySet<string>
-  onChange(value: (value: Value) => Value): void
+  onChange(value: Value): void
   position?: 'form' | 'sidebar'
   value: Value
 }
@@ -111,8 +68,6 @@ export function Fields ({
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
       const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
 
-      console.log({ itemValue, field, fieldValue, fieldMode, fieldPosition, })
-
       if (fieldMode === 'hidden') return [fieldKey, null]
       if (fieldPosition !== position) return [fieldKey, null]
       // TODO: this isn't accessible, it should:
@@ -129,16 +84,24 @@ export function Fields ({
 
       return [
         fieldKey,
-        <RenderField
+        <field.views.Field
           key={fieldKey}
+          autoFocus={fieldKey === firstFocusable}
+          forceValidation={forceValidation && invalidFields.has(fieldKey)}
           environment={environment}
-          field={field}
+          field={field.controller}
+          onChange={(newFieldValue) => {
+            console.log('FOC', { itemValue, newFieldValue, fieldMode, onChange })
+            if (fieldMode !== 'edit') return
+            if (onChange === undefined) return
+            onChange({
+              ...itemValue,
+              [field.controller.path]: { kind: 'value', value: newFieldValue },
+            })
+          }}
           value={fieldValue.value}
           itemValue={itemValue}
-          forceValidation={forceValidation && invalidFields.has(fieldKey)}
-          onChange={fieldMode === 'edit' ? onChange : undefined}
-          autoFocus={fieldKey === firstFocusable}
-        />,
+        />
       ]
     })
   )
