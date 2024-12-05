@@ -204,33 +204,46 @@ export function controller (
     )
   >
 ): RelationshipController {
-  const refLabelField = config.fieldMeta.refLabelField
-  const refSearchFields = config.fieldMeta.refSearchFields
+  const {
+    listKey,
+    path: fieldKey,
+    label,
+    description,
+  } = config
+  const {
+    displayMode,
+    hideCreate,
+    many,
+    refFieldKey,
+    refLabelField,
+    refListKey,
+    refSearchFields,
+  } = config.fieldMeta
 
   return {
-    refFieldKey: config.fieldMeta.refFieldKey,
-    many: config.fieldMeta.many,
-    listKey: config.listKey,
-    path: config.path,
-    label: config.label,
-    description: config.description,
-    display: config.fieldMeta.displayMode,
+    refFieldKey,
+    many,
+    listKey,
+    path: fieldKey,
+    label,
+    description,
+    display: displayMode,
     refLabelField,
     refSearchFields,
-    refListKey: config.fieldMeta.refListKey,
+    refListKey,
     graphqlSelection:
-      config.fieldMeta.displayMode === 'count'
-        ? `${config.path}Count`
-        : `${config.path} {
+      displayMode === 'count'
+        ? `${fieldKey}Count`
+        : `${fieldKey} {
               id
               label: ${refLabelField}
             }`,
-    hideCreate: config.fieldMeta.hideCreate,
+    hideCreate,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
     // but that's not a problem here since we're creating a new item so we might as well them a better UI
-    defaultValue: config.fieldMeta.many
+    defaultValue: many
       ? {
           kind: 'many',
           id: null,
@@ -245,14 +258,14 @@ export function controller (
         },
     validate() { return true },
     deserialize: (data) => {
-      if (config.fieldMeta.displayMode === 'count') {
+      if (displayMode === 'count') {
         return {
           id: data.id,
           kind: 'count',
           count: data[`${config.path}Count`] ?? 0,
         }
       }
-      if (config.fieldMeta.many) {
+      if (many) {
         const value = (data[config.path] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,

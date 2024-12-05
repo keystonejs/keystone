@@ -163,13 +163,17 @@ export function Fields ({
   )
 }
 
-function FieldGroup (props: {
+function FieldGroup ({
+  description,
+  label,
+  children,
+}: {
   label: string
   description: string | null
   children: ReactNode
 }) {
   const labelId = useId()
-  const descriptionId = useSlotId([Boolean(props.description)])
+  const descriptionId = useSlotId([Boolean(description)])
 
   return (
     <details aria-labelledby={labelId} aria-describedby={descriptionId} open>
@@ -214,11 +218,11 @@ function FieldGroup (props: {
             id={labelId}
             position="relative"
           >
-            {props.label}
+            {label}
           </Text>
-          {!!props.description && (
+          {!!description && (
             <Text id={descriptionId} size="regular" color="neutralSecondary">
-              {props.description}
+              {description}
             </Text>
           )}
         </VStack>
@@ -231,7 +235,7 @@ function FieldGroup (props: {
       <HStack gap="medium" paddingTop="medium">
         <GroupIndicatorLine />
         <VStack gap="xlarge" flex>
-          {props.children}
+          {children}
         </VStack>
       </HStack>
     </details>

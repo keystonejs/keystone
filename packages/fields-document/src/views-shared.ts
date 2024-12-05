@@ -1,6 +1,6 @@
-import {
-  type FieldController,
-  type FieldControllerConfig,
+import type {
+  FieldController,
+  FieldControllerConfig,
 } from '@keystone-6/core/types'
 import {
   type Descendant,
@@ -11,8 +11,8 @@ import {
 
 import weakMemoize from '@emotion/weak-memoize'
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
-import { type ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
-import { type Relationships } from './DocumentEditor/relationship-shared'
+import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
+import type { Relationships } from './DocumentEditor/relationship-shared'
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { isValidURL } from './DocumentEditor/isValidURL'
 
@@ -93,9 +93,7 @@ export function controller (
     )
   }
   const validateNode = weakMemoize((node: Node): boolean => {
-    if (Text.isText(node)) {
-      return true
-    }
+    if (Text.isText(node)) { return true }
     if (node.type === 'component-block') {
       const componentBlock = componentBlocks[node.component as string]
       if (componentBlock) {
