@@ -4,7 +4,7 @@ export type RelationshipValue = {
   id: string | number
   label: string | null
   data?: Record<string, unknown>
-  built?: true
+  built: undefined | true
 }
 
 export type SingleRelationshipValue = {
