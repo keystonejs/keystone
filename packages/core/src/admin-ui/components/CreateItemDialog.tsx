@@ -39,9 +39,8 @@ export function CreateItemDialog ({
           onSubmit={async (e) => {
             e.preventDefault()
 
-            // WARNING: prevent other forms being submitted
-            //   it is not clear why this is necessary
-            //   our forms are not nested in the DOM.
+            // NOTE: React events bubble through portals, this prevents the
+            // parent form being submitted.
             e.stopPropagation()
 
             const item = await createItem.create()
