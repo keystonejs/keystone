@@ -32,8 +32,8 @@ import {
   makeDataGetter,
 } from '../../../../admin-ui/utils'
 import {
-  gql,
   type TypedDocumentNode,
+  gql,
   useMutation,
   useQuery,
 } from '../../../../admin-ui/apollo'
@@ -146,8 +146,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () =>
-  <ListPage {...props} />
+export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 function ListPage ({ listKey }: ListPageProps) {
   const keystone = useKeystone()
@@ -164,8 +163,7 @@ function ListPage ({ listKey }: ListPageProps) {
       const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
       const orderableFields = new Set<string>()
       const filterableFields = new Set<string>()
-      for (const field of metaQuery.data?.keystone.adminMeta.list?.fields ||
-        []) {
+      for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
         listViewFieldModesByField[field.path] = field.listView.fieldMode
         if (field.isOrderable) {
           orderableFields.add(field.path)
@@ -185,9 +183,8 @@ function ListPage ({ listKey }: ListPageProps) {
   const search = useSearchFilter(searchParam, list, list.initialSearchFields, keystone.adminMeta.lists)
 
   useEffect(() => {
-    if (searchParam !== searchString) {
-      setSearchString(searchParam)
-    }
+    if (searchParam === searchString) return
+    setSearchString(searchParam)
   }, [searchParam])
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
@@ -247,21 +244,15 @@ function ListPage ({ listKey }: ListPageProps) {
   )
 
   const [dataState, setDataState] = useState({ data: newData, error: newError })
-  if (newData && dataState.data !== newData) {
-    setDataState({ data: newData, error: newError })
-  }
+  if (newData && dataState.data !== newData) setDataState({ data: newData, error: newError })
 
   const { data, error } = dataState
   const dataGetter = makeDataGetter<
     DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
   >(data, error?.graphQLErrors)
 
-  const allowCreate = !(
-    metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true
-  )
-  const allowDelete = !(
-    metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true
-  )
+  const allowCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)
+  const allowDelete = !(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true)
   const isConstrained = Boolean(filters.filters.length || query.search)
   const isEmpty = Boolean(data && data.count === 0 && !isConstrained)
 
@@ -399,9 +390,7 @@ function ListTable({
 }) {
   const list = useList(listKey)
   const router = useRouter()
-  const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(
-    () => new Set([])
-  )
+  const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
     const sortBy =
       sortDescriptor.direction === 'ascending'
@@ -418,8 +407,7 @@ function ListTable({
     return {
       id: path,
       label: field.label,
-      allowsSorting:
-        !isConstrained && !items.length ? false : orderableFields.has(path),
+      allowsSorting: !isConstrained && !items.length ? false : orderableFields.has(path),
     }
   })
 
@@ -562,14 +550,10 @@ function ListTable({
 function parseSortQuery(
   queryString?: string | string[]
 ): SortDescriptor | undefined {
-  if (!queryString) {
-    return undefined
-  }
+  if (!queryString) return undefined
 
-  if (Array.isArray(queryString)) {
-    // TODO: handle multiple sort queries?
-    return parseSortQuery(queryString[0])
-  }
+  // TODO: handle multiple sort queries?
+  if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
 
   const column = queryString.startsWith('-')
     ? queryString.slice(1)
@@ -582,10 +566,7 @@ function parseSortQuery(
 function parseInitialSort(
   sort?: { field: string; direction: 'ASC' | 'DESC' } | null
 ): SortDescriptor | undefined {
-  if (!sort) {
-    return undefined
-  }
-
+  if (!sort) return undefined
   return {
     column: sort.field,
     direction: sort.direction === 'ASC' ? 'ascending' : 'descending',
