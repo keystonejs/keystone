@@ -159,11 +159,11 @@ function ItemForm ({
         <button type="submit" style={{ display: 'none' }} />
         <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
           <GraphQLErrorNotice
-            // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-            // which are handled seperately and do not indicate a failure to update the item
             errors={[
-              error?.networkError?.message,
-              ...error?.graphQLErrors.filter(x => x.path?.length === 1).map(x => x.message) ?? []
+              error?.networkError,
+              // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+              // which are handled seperately and do not indicate a failure to update the item
+              ...error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []
             ]}
           />
           <Fields

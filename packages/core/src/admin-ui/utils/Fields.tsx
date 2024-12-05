@@ -1,5 +1,10 @@
 import { useSlotId } from '@react-aria/utils'
-import React, { type ReactNode, memo, useId, useMemo } from 'react'
+import React, {
+  type ReactNode,
+  memo,
+  useId,
+  useMemo
+} from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
 import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
@@ -81,7 +86,7 @@ type FieldsProps = {
 export function Fields ({
   environment = 'edit-page',
   fields,
-  value,
+  value: itemValue,
   fieldModes = null,
   fieldPositions = null,
   forceValidation,
@@ -95,29 +100,27 @@ export function Fields ({
   // revisited, and the result should probably be memoized
   const firstFocusable = Object.keys(fields).find(fieldKey => {
     const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-    const fieldPosition =
-      fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+    const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
     return fieldMode !== 'hidden' && fieldPosition === 'form'
   })
 
   const renderedFields = Object.fromEntries(
     Object.keys(fields).map((fieldKey, index) => {
       const field = fields[fieldKey]
-      const val = value[fieldKey]
+      const fieldValue = itemValue[fieldKey]
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-      const fieldPosition =
-        fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
 
       if (fieldMode === 'hidden') return [fieldKey, null]
       if (fieldPosition !== position) return [fieldKey, null]
       // TODO: this isn't accessible, it should:
       // - render an inline alert (`Notice`), or
       // - invoke a "critical" toast message
-      if (val.kind === 'error') {
+      if (fieldValue.kind === 'error') {
         return [
           fieldKey,
           <Text key={fieldKey}>
-            {field.label}: <Text color="critical">{val.errors[0].message}</Text>
+            {field.label}: <Text color="critical">{fieldValue.errors[0].message}</Text>
           </Text>,
         ]
       }
@@ -128,8 +131,8 @@ export function Fields ({
           key={fieldKey}
           environment={environment}
           field={field}
-          value={val.value}
-          itemValue={value}
+          value={fieldValue.value}
+          itemValue={itemValue}
           forceValidation={forceValidation && invalidFields.has(fieldKey)}
           onChange={fieldMode === 'edit' ? onChange : undefined}
           autoFocus={fieldKey === firstFocusable}
