@@ -36,9 +36,9 @@ function CreateItemPage (props: CreateItemPageProps) {
               e.preventDefault()
 
               const item = await createItem.create()
-              if (item) {
-                router.push(`/${list.path}/${item.id}`)
-              }
+              if (!item) return
+
+              router.push(`/${list.path}/${item.id}`)
             }}
             style={{ display: 'contents' }}
           >
