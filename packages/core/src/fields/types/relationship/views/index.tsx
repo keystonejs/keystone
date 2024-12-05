@@ -13,7 +13,7 @@ import type {
   FieldProps,
 } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
-import { CreateItemDialog } from '../../../../admin-ui/components'
+import { BuildItemDialog } from '../../../../admin-ui/components'
 
 import { ContextualActions } from './ContextualActions'
 import { ComboboxMany } from './ComboboxMany'
@@ -21,7 +21,12 @@ import { ComboboxSingle } from './ComboboxSingle'
 import type { RelationshipController } from './types'
 
 export function Field (props: FieldProps<typeof controller>) {
-  const { field, value, autoFocus, onChange } = props
+  const {
+    field,
+    value,
+    autoFocus,
+    onChange
+  } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
 
@@ -84,22 +89,19 @@ export function Field (props: FieldProps<typeof controller>) {
           <TagGroup
             aria-label={`related ${foreignList.plural}`}
             items={value.value.map(item => ({
-              id: item.id,
-              label: item.label,
+              id: item.id.toString() ?? '',
+              label: item.label ?? '',
               href: `/${foreignList.path}/${item.id}`,
             }))}
             maxRows={2}
             onRemove={keys => {
-              const key = keys.values().next().value
-              const item = key
-                ? value.value.find(item => item.id === key)
-                : null
-              if (item) {
-                onChange?.({
-                  ...value,
-                  value: value.value.filter(i => i.id !== item.id),
-                })
-              }
+              const [key] = [...keys]
+              const item = value.value.find(item => item.id.toString() === key)
+              if (!item) return
+              onChange?.({
+                ...value,
+                value: value.value.filter(item2 => item2 !== item),
+              })
             }}
             renderEmptyState={() => (
               <Text color="neutralSecondary" size="small">
@@ -115,19 +117,32 @@ export function Field (props: FieldProps<typeof controller>) {
       {onChange !== undefined && (
         <DialogContainer onDismiss={() => setDialogOpen(false)}>
           {dialogIsOpen && (
-            <CreateItemDialog
+            <BuildItemDialog
               listKey={foreignList.key}
-              onCreate={newValue => {
+              onChange={builtItemData => {
                 setDialogOpen(false)
                 if (value.kind === 'many') {
                   onChange({
                     ...value,
-                    value: [...value.value, newValue],
+                    value: [
+                      ...value.value,
+                      {
+                        id: `_____internal_${Math.random().toString()}`,
+                        label: `<new>`,
+                        data: builtItemData,
+                        built: true
+                      }
+                    ],
                   })
                 } else if (value.kind === 'one') {
                   onChange({
                     ...value,
-                    value: newValue,
+                    value: {
+                      id: `_____internal_${Math.random().toString()}`,
+                      label: `<new>`,
+                      data: builtItemData,
+                      built: true
+                    }
                   })
                 }
               }}
@@ -216,15 +231,18 @@ export function controller (
     // but that's not a problem here since we're creating a new item so we might as well them a better UI
     defaultValue: config.fieldMeta.many
       ? {
-          id: null,
           kind: 'many',
+          id: null,
           initialValue: [],
           value: [],
         }
-      : { id: null, kind: 'one', value: null, initialValue: null },
-    validate() {
-      return true
-    },
+      : {
+          kind: 'one',
+          id: null,
+          value: null,
+          initialValue: null
+        },
+    validate() { return true },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'count') {
         return {

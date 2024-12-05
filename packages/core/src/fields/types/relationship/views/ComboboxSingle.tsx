@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { Combobox, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
 import { type ListMeta } from '../../../../types'
+import { type RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
-export const ComboboxSingle = ({
+export function ComboboxSingle ({
   autoFocus,
   description,
   isDisabled,
@@ -32,13 +33,11 @@ export const ComboboxSingle = ({
   placeholder?: string
   state: {
     kind: 'one'
-    value: { label: string; id: string; data?: Record<string, any> } | null
-    onChange(
-      value: { label: string; id: string; data: Record<string, any> } | null
-    ): void
+    value: RelationshipValue | null
+    onChange(value: RelationshipValue | null): void
   }
   extraSelection?: string
-}) => {
+}) {
   const { data, loading, error, onLoadMore, search, setSearch } =
     useApolloQuery({
       extraSelection,
@@ -48,16 +47,13 @@ export const ComboboxSingle = ({
       state,
     })
 
-  useEffect(() => {}, [])
-
   // TODO: better error UI
   // TODO: Handle permission errors
   // (ie; user has permission to read this relationship field, but
   // not the related list, or some items on the list)
-  if (error) {
-    return <span>Error</span>
-  }
+  if (error) return <span>Error</span>
 
+  const items = data?.items ?? []
   return (
     <Combobox
       autoFocus={autoFocus}
@@ -71,27 +67,17 @@ export const ComboboxSingle = ({
         setSearch(input)
 
         // unset the selected value when the user clears the input
-        // NOTE: remove when we support required relationships
-        if (input === '') {
-          state.onChange(null)
-        }
+        if (input === '') state.onChange(null)
       }}
       inputValue={search}
       onLoadMore={onLoadMore}
       placeholder={placeholder}
-      selectedKey={state.value ? state.value.id : null}
+      selectedKey={state.value ? state.value.id.toString() : null}
       onSelectionChange={key => {
-        const item = key ? data?.items.find(item => item.id === key) : null
-        state.onChange(
-          item
-            ? {
-                id: item.id,
-                label: item.label ?? item.id,
-                data: item,
-              }
-            : null
-        )
-        setSearch(item?.label ?? '')
+        const [selectedItem = null] = items.filter(item => key === item.id.toString())
+
+        state.onChange(selectedItem)
+        setSearch(selectedItem?.label ?? '')
       }}
       minWidth="alias.singleLineWidth"
       width="auto"
