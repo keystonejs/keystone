@@ -111,6 +111,8 @@ export function Fields ({
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
       const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
 
+      console.log({ itemValue, field, fieldValue, fieldMode, fieldPosition, })
+
       if (fieldMode === 'hidden') return [fieldKey, null]
       if (fieldPosition !== position) return [fieldKey, null]
       // TODO: this isn't accessible, it should:
