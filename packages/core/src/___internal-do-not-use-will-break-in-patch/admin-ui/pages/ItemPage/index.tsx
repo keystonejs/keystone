@@ -1,8 +1,6 @@
 import React, {
   type PropsWithChildren,
-  type ReactElement,
   Fragment,
-  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -258,7 +256,7 @@ const COPY_TOOLTIP_CONTENT = {
   positive: 'Copied to clipboard',
   critical: 'Unable to copy',
 }
-type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
+type TooltipState = { isOpen?: boolean, tone: keyof typeof COPY_TOOLTIP_CONTENT }
 function IdField ({ itemId }: { itemId: string }) {
   const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
 
@@ -526,7 +524,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
 // Styled Components
 // ------------------------------
 
-function ItemNotFound (props: PropsWithChildren<{}>) {
+function ItemNotFound (props: PropsWithChildren) {
   return (
     <VStack
       alignItems="center"
