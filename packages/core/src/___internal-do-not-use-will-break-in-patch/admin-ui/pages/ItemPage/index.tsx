@@ -215,27 +215,35 @@ function ItemForm ({
           </Box>
         </StickySidebar>
 
-        <Toolbar
-          hasChangedFields={!!changedFields.size}
-          onReset={useEventCallback(() => {
-            setValue(state => ({
-              item: state.item,
-              value: deserializeValue(list.fields, state.item),
-            }))
-          })}
-          loading={loading}
-          deleteButton={useMemo(
-            () =>
-              showDelete ? (
-                <DeleteButton
-                  list={list}
-                  itemLabel={(labelFieldValue ?? itemId) as string}
-                  itemId={itemId}
-                />
-              ) : undefined,
-            [showDelete, list, labelFieldValue, itemId]
-          )}
-        />
+        <BaseToolbar>
+          <Button
+            isDisabled={!hasChangedFields}
+            isPending={loading}
+            prominence="high"
+            type="submit"
+          >
+            Save
+          </Button>
+          <ResetButton
+            hasChanges={hasChangedFields}
+            onReset={useEventCallback(() => {
+              setValue(state => ({
+                item: state.item,
+                value: deserializeValue(list.fields, state.item),
+              }))
+            })}
+          />
+          <Box flex />
+          {useMemo(() =>
+            showDelete ? (
+              <DeleteButton
+                list={list}
+                itemLabel={labelFieldValue ?? itemId}
+                itemId={itemId}
+              />
+            ) : undefined,
+          [showDelete, list, labelFieldValue, itemId])}
+        </BaseToolbar>
       </form>
 
       <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
@@ -364,7 +372,8 @@ export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} 
 
 function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
-  const id = useRouter().query.id as string
+  const id_ = useRouter().query.id
+  const [id] = Array.isArray(id_) ? id_ : [id_]
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
@@ -536,33 +545,6 @@ function ItemNotFound (props: PropsWithChildren<{}>) {
     </VStack>
   )
 }
-
-const Toolbar = memo(function Toolbar ({
-  hasChangedFields,
-  loading,
-  onReset,
-  deleteButton,
-}: {
-  hasChangedFields: boolean
-  loading: boolean
-  onReset: () => void
-  deleteButton?: ReactElement
-}) {
-  return (
-    <BaseToolbar>
-      <Button
-        isPending={loading}
-        prominence="high"
-        type="submit"
-      >
-        Save
-      </Button>
-      <ResetButton onReset={onReset} hasChanges={hasChangedFields} />
-      <Box flex />
-      {deleteButton}
-    </BaseToolbar>
-  )
-})
 
 function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
   return (
