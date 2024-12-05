@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { type FormEvent, Fragment, useMemo, useState, useRef } from 'react'
+import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -27,6 +27,7 @@ export function FilterAdd (props: {
   const [state, setState] = useState<State>({ kind: 'selecting-field' })
   const [forceValidation, setForceValidation] = useState(false)
   const router = useRouter()
+  const formId = useId()
 
   const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(props)
   const resetState = () => {
@@ -68,17 +69,17 @@ export function FilterAdd (props: {
           <Icon src={chevronDownIcon} />
         </ActionButton>
         <Dialog>
-          <form onSubmit={onSubmit} style={{ display: 'contents' }}>
-            {/*
-              Workaround for react-aria "bug" where pressing enter in a form field
-              moves focus to the submit button.
-              See: https://github.com/adobe/react-spectrum/issues/5940
-            */}
-            <button type="submit" style={{ display: 'none' }} />
-            <Heading>
-              Filter by {fieldLabel.toLocaleLowerCase()}
-            </Heading>
-            <Content>
+          <Heading>
+            Filter by {fieldLabel.toLocaleLowerCase()}
+          </Heading>
+          <Content>
+            <form onSubmit={onSubmit} id={formId}>
+              {/*
+                Workaround for react-aria "bug" where pressing enter in a form field
+                moves focus to the submit button.
+                See: https://github.com/adobe/react-spectrum/issues/5940
+              */}
+              <button type="submit" form={formId} style={{ display: 'none' }} />
               <Grid gap="large" rows="auto minmax(0, 1fr)" height="100%">
                 <Picker
                   width="100%"
@@ -124,14 +125,14 @@ export function FilterAdd (props: {
                   }}
                 />
               </Grid>
-            </Content>
-            <ButtonGroup>
-              <Button onPress={resetState}>Cancel</Button>
-              <Button prominence="high" type="submit">
-                Save
-              </Button>
-            </ButtonGroup>
-          </form>
+            </form>
+          </Content>
+          <ButtonGroup>
+            <Button onPress={resetState}>Cancel</Button>
+            <Button prominence="high" type="submit" form={formId}>
+              Save
+            </Button>
+          </ButtonGroup>
         </Dialog>
       </DialogTrigger>
     )
