@@ -294,6 +294,13 @@ export function controller (
         }
       } else if (state.kind === 'one') {
         if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
+        if (state.value?.built) {
+          return {
+            [config.path]: {
+              create: state.value.data
+            },
+          }
+        }
         if (state.value && state.value.id !== state.initialValue?.id) {
           return {
             [config.path]: {
