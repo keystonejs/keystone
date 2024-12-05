@@ -58,7 +58,8 @@ const errorContainerSlots = {
   heading: { align: 'center', margin: 0 },
   text: { align: 'center' }
 } as const
-export const ErrorContainer = ({ children }: ErrorContainerProps) => {
+
+export function ErrorContainer ({ children }: ErrorContainerProps) {
   return (
     <Grid minHeight="100vh" minWidth="100vw" alignItems="center" justifyContent="center">
       <VStack
@@ -80,16 +81,18 @@ export const ErrorContainer = ({ children }: ErrorContainerProps) => {
   )
 }
 
-export function ErrorDetailsDialog (props: { error: Error }) {
+export function ErrorDetailsDialog ({ error }: { error: Error }) {
+  const {
+    message,
+    stack,
+  } = error
   return (
     <Dialog>
       <Heading>Error details</Heading>
       <Content>
         <VStack gap="large">
-          <Text weight="medium">
-            {props.error.message}
-          </Text>
-          {props.error.stack && (
+          <Text weight="medium">{message}</Text>
+          {stack && (
             <Box
               elementType="pre"
               backgroundColor="critical"
@@ -105,7 +108,7 @@ export function ErrorDetailsDialog (props: { error: Error }) {
                   fontFamily: tokenSchema.typography.fontFamily.code
                 })}
               >
-                {props.error.stack}
+                {stack}
               </Text>
             </Box>
           )}
