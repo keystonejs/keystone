@@ -73,7 +73,6 @@ function CreateItemPage (props: CreateItemPageProps) {
                 type="submit"
               >
                 Create
-                {/* Create {list.singular.toLocaleLowerCase()} */}
               </Button>
             </BaseToolbar>
           </form>
