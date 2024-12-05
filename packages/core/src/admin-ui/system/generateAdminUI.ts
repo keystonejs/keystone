@@ -2,7 +2,6 @@ import Path from 'node:path'
 import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
-import resolve from 'resolve'
 import { type GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
 import {
@@ -24,26 +23,11 @@ function serializePathForImport (path: string) {
   )
 }
 
-function getDoesAdminConfigExist () {
-  try {
-    const configPath = Path.join(process.cwd(), 'admin', 'config')
-    resolve.sync(configPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false })
-    return true
-  } catch (err: any) {
-    if (err.code === 'MODULE_NOT_FOUND') {
-      return false
-    }
-    throw err
-  }
-}
-
 export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath)
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
-      throw new Error(
-        `An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`
-      )
+      throw new Error(`An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`)
     }
     await fse.ensureDir(Path.dirname(outputFilename))
     // TODO: should we use copyFile or copy?
@@ -53,9 +37,7 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
   try {
     content = await fs.readFile(outputFilename, 'utf8')
   } catch (err: any) {
-    if (err.code !== 'ENOENT') {
-      throw err
-    }
+    if (err.code !== 'ENOENT') throw err
   }
   if (file.mode === 'write' && content !== file.src) {
     await fse.outputFile(outputFilename, file.src)
@@ -76,9 +58,7 @@ export async function generateAdminUI (
   // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
   if (!isLiveReload) {
     const dir = await fs.readdir(projectAdminPath).catch(err => {
-      if (err.code === 'ENOENT') {
-        return []
-      }
+      if (err.code === 'ENOENT') return []
       throw err
     })
 
@@ -93,13 +73,8 @@ export async function generateAdminUI (
   // Write out the files configured by the user
   const userFiles = config.ui?.getAdditionalFiles?.map(x => x()) ?? []
   const userFilesToWrite = (await Promise.all(userFiles)).flat()
-  const savedFiles = await Promise.all(
-    userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))
-  )
+  const savedFiles = await Promise.all(userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath)))
   const uniqueFiles = new Set(savedFiles)
-
-  // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
-  const configFileExists = getDoesAdminConfigExist()
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const adminConfigDir = Path.join(process.cwd(), 'admin')
@@ -114,7 +89,7 @@ export async function generateAdminUI (
     if (err.code !== 'ENOENT') throw err
   }
 
-  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists)
+  let adminFiles = writeAdminFiles(config, adminMeta, graphQLSchema)
   for (const { path } of userPagesEntries) {
     const outputFilename = Path.relative(adminConfigDir, path)
     const importPath = Path.relative(

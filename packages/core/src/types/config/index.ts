@@ -256,8 +256,8 @@ export type __ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = Bas
   db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
     enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
   }
-  graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
-    path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
+  graphql: Omit<NonNullable<KeystoneConfig<TypeInfo>['graphql']>, 'path'> & {
+    path: string
   }
   lists: {
     [listKey: string]: {

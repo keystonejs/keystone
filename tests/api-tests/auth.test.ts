@@ -45,7 +45,7 @@ const auth = createAuth({
 const runner = setupTestRunner({
   serve: true,
   config: auth.withAuth({
-    db: {} as any,
+    db: {} as any, // replaced by setupTestRunner
     lists: {
       User: list({
         access: allowAll,
@@ -53,6 +53,8 @@ const runner = setupTestRunner({
           name: text(),
           email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
           password: password(),
+          noRead: text({ access: { read: () => false } }),
+          yesRead: text({ access: { read: () => true } }),
         },
       }),
     },
@@ -1153,3 +1155,25 @@ describe('Auth testing', () => {
     )
   })
 })
+
+test(
+  'authenticatedItem',
+  runner(async ({ context }) => {
+    const user = (await context.query.User.createOne({
+      data: { name: 'test', yesRead: 'yes', noRead: 'no' },
+      query: 'id name yesRead noRead',
+    })) as { id: string, name: string, yesRead: string, noRead: string }
+
+    const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`
+    const _context = context.withSession({
+      itemId: user.id,
+      listKey: 'User',
+      data: user,
+    })
+    const { data, errors } = await _context.graphql.raw({ query })
+    expect(data).toEqual({
+      authenticatedItem: { id: user.id, yesRead: user.yesRead, noRead: null },
+    })
+    expect(errors).toBe(undefined)
+  })
+)

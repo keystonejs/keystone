@@ -1,7 +1,7 @@
 import { list, group, graphql } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
-import { type Lists } from '.keystone/types'
+import type { Lists } from '.keystone/types'
 
 function ifUnsetHideUI (field: string) {
   return {
@@ -14,7 +14,7 @@ function ifUnsetHideUI (field: string) {
   }
 }
 
-export const lists = {
+export const lists: Lists = {
   Post: list({
     access: allowAll,
     fields: {
@@ -80,28 +80,19 @@ export const lists = {
     },
 
     hooks: {
-      validateInput: async ({ operation, inputData, addValidationError }) => {
-        if (operation === 'create') {
+      validate: {
+        create: async ({ operation, inputData, addValidationError }) => {
           const { post, link } = inputData
           const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length === 0) {
-            return addValidationError('A relationship is required')
-          }
-          if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
-          }
-        }
-
-        if (operation === 'update') {
+          if (values.length === 0) return addValidationError('A media type relationship is required')
+          if (values.length > 1) return addValidationError('Only one media type relationship can be selected')
+        },
+        update: async ({ operation, inputData, addValidationError }) => {
           const { post, link } = inputData
-          if ([post, link].some(x => x?.disconnect)) {
-            return addValidationError('Cannot change relationship type')
-          }
+          if ([post, link].some(x => x?.disconnect)) return addValidationError('Cannot change media type relationship type')
 
           const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
-          }
+          if (values.length > 1) return addValidationError('Only one media type relationship can be selected')
 
           // TODO: prevent item from changing types with implicit disconnect
         }

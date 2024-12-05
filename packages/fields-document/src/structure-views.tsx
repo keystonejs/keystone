@@ -1,17 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { useEffect, useMemo, useRef } from 'react'
 import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-
 import {
-  type CardValueComponent,
   type CellComponent,
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
 } from '@keystone-6/core/types'
-import { useEffect, useMemo, useRef } from 'react'
+import { Field as KeystarField } from '@keystar/ui/field'
+
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
@@ -39,23 +38,23 @@ export function Field ({
     )
   }, [field.schema, onChange])
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <FormValueContentFromPreviewProps
-        forceValidation={forceValidation}
-        autoFocus={autoFocus}
-        {...createPreviewProps(value.value)}
-      />
-    </FieldContainer>
+    <KeystarField
+      label={field.label}
+      description={field.description}
+    >
+      {(inputProps) => (
+        <FormValueContentFromPreviewProps
+          autoFocus={autoFocus}
+          forceValidation={forceValidation}
+          {...createPreviewProps(value.value)}
+        />
+      )}
+    </KeystarField>
   )
 }
 
-export const Cell: CellComponent = () => {
+export const Cell: CellComponent<typeof controller> = () => {
   return null
-}
-
-export const CardValue: CardValueComponent = () => {
-  return null as any
 }
 
 export const allowedExportsOnCustomViews = ['schema']
@@ -65,11 +64,7 @@ export function controller (
 ): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
   schema: ComponentSchemaForGraphQL
 } {
-  if (!config.customViews.schema) {
-    throw new Error(
-      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
-    )
-  }
+  if (!config.customViews.schema) throw new Error(`No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`)
   return {
     path: config.path,
     label: config.label,
@@ -102,12 +97,8 @@ function serializeValue (
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
     }
   }
-  if (schema.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(schema.element, a, kind))
-  }
-  if (schema.kind === 'form') {
-    return value
-  }
+  if (schema.kind === 'array') return (value as any[]).map(a => serializeValue(schema.element, a, kind))
+  if (schema.kind === 'form') { return value }
   if (schema.kind === 'object') {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, val]) => {
@@ -122,14 +113,10 @@ function serializeValue (
       }
     }
     if (value === null) {
-      if (kind === 'create') {
-        return undefined
-      }
+      if (kind === 'create') return undefined
       return { disconnect: true }
     }
-    return {
-      connect: { id: value.id },
-    }
+    return { connect: { id: value.id }, }
   }
   assertNever(schema)
 }

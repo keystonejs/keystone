@@ -1,13 +1,13 @@
 import Decimal from 'decimal.js'
 import { graphql } from '..'
-import { type BaseListTypeInfo } from './type-info'
-import { type CommonFieldConfig } from './config'
-import { type DatabaseProvider } from './core'
-import {
-  type JSONValue,
-  type KeystoneContext,
-  type MaybePromise,
-  type StorageConfig
+import type { BaseListTypeInfo } from './type-info'
+import type { CommonFieldConfig } from './config'
+import type { DatabaseProvider } from './core'
+import type {
+  JSONValue,
+  KeystoneContext,
+  MaybePromise,
+  StorageConfig
 } from '.'
 
 export { Decimal }

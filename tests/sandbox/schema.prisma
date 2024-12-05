@@ -61,8 +61,8 @@ model Todo {
   assignedTo                        User?     @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId                      String?   @map("assignedTo")
   finishBy                          DateTime?
-  createdAt                         DateTime  @default(now())
-  updatedAt                         DateTime  @updatedAt
+  createdAt                         DateTime? @default(now())
+  updatedAt                         DateTime? @updatedAt
   from_Thing_toManyRelationship     Thing[]   @relation("Thing_toManyRelationship")
   from_Thing_toManyRelationshipCard Thing[]   @relation("Thing_toManyRelationshipCard")
 
@@ -70,16 +70,16 @@ model Todo {
 }
 
 model User {
-  id                                         String   @id @default(cuid())
-  name                                       String   @default("")
-  email                                      String   @default("")
+  id                                         String    @id @default(cuid())
+  name                                       String    @default("")
+  email                                      String    @default("")
   password                                   String?
-  tasks                                      Todo[]   @relation("Todo_assignedTo")
-  createdAt                                  DateTime @default(now())
-  updatedAt                                  DateTime @updatedAt
-  from_Thing_toOneRelationship               Thing[]  @relation("Thing_toOneRelationship")
-  from_Thing_toOneRelationshipAlternateLabel Thing[]  @relation("Thing_toOneRelationshipAlternateLabel")
-  from_Thing_toOneRelationshipCard           Thing[]  @relation("Thing_toOneRelationshipCard")
+  tasks                                      Todo[]    @relation("Todo_assignedTo")
+  createdAt                                  DateTime? @default(now())
+  updatedAt                                  DateTime? @updatedAt
+  from_Thing_toOneRelationship               Thing[]   @relation("Thing_toOneRelationship")
+  from_Thing_toOneRelationshipAlternateLabel Thing[]   @relation("Thing_toOneRelationshipAlternateLabel")
+  from_Thing_toOneRelationshipCard           Thing[]   @relation("Thing_toOneRelationshipCard")
 }
 
 model Settings {

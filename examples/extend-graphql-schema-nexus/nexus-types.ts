@@ -15,151 +15,146 @@ declare global {
 
 export interface NexusGenInputs {
   AuthorCreateInput: { // input type
-    email?: string | null // String
-    name?: string | null // String
-    posts?: NexusGenInputs['PostRelateToManyForCreateInput'] | null // PostRelateToManyForCreateInput
+    name?: string | null; // String
+    posts?: NexusGenInputs['PostRelateToManyForCreateInput'] | null; // PostRelateToManyForCreateInput
   }
   AuthorOrderByInput: { // input type
-    email?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    id?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    name?: NexusGenEnums['OrderDirection'] | null // OrderDirection
+    id?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
+    name?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
   }
   AuthorRelateToOneForCreateInput: { // input type
-    connect?: NexusGenInputs['AuthorWhereUniqueInput'] | null // AuthorWhereUniqueInput
-    create?: NexusGenInputs['AuthorCreateInput'] | null // AuthorCreateInput
+    connect?: NexusGenInputs['AuthorWhereUniqueInput'] | null; // AuthorWhereUniqueInput
+    create?: NexusGenInputs['AuthorCreateInput'] | null; // AuthorCreateInput
   }
   AuthorRelateToOneForUpdateInput: { // input type
-    connect?: NexusGenInputs['AuthorWhereUniqueInput'] | null // AuthorWhereUniqueInput
-    create?: NexusGenInputs['AuthorCreateInput'] | null // AuthorCreateInput
-    disconnect?: boolean | null // Boolean
+    connect?: NexusGenInputs['AuthorWhereUniqueInput'] | null; // AuthorWhereUniqueInput
+    create?: NexusGenInputs['AuthorCreateInput'] | null; // AuthorCreateInput
+    disconnect?: boolean | null; // Boolean
   }
   AuthorUpdateArgs: { // input type
-    data: NexusGenInputs['AuthorUpdateInput'] // AuthorUpdateInput!
-    where: NexusGenInputs['AuthorWhereUniqueInput'] // AuthorWhereUniqueInput!
+    data: NexusGenInputs['AuthorUpdateInput']; // AuthorUpdateInput!
+    where: NexusGenInputs['AuthorWhereUniqueInput']; // AuthorWhereUniqueInput!
   }
   AuthorUpdateInput: { // input type
-    email?: string | null // String
-    name?: string | null // String
-    posts?: NexusGenInputs['PostRelateToManyForUpdateInput'] | null // PostRelateToManyForUpdateInput
+    name?: string | null; // String
+    posts?: NexusGenInputs['PostRelateToManyForUpdateInput'] | null; // PostRelateToManyForUpdateInput
   }
   AuthorWhereInput: { // input type
-    AND?: NexusGenInputs['AuthorWhereInput'][] | null // [AuthorWhereInput!]
-    NOT?: NexusGenInputs['AuthorWhereInput'][] | null // [AuthorWhereInput!]
-    OR?: NexusGenInputs['AuthorWhereInput'][] | null // [AuthorWhereInput!]
-    email?: NexusGenInputs['StringFilter'] | null // StringFilter
-    id?: NexusGenInputs['IDFilter'] | null // IDFilter
-    name?: NexusGenInputs['StringFilter'] | null // StringFilter
-    posts?: NexusGenInputs['PostManyRelationFilter'] | null // PostManyRelationFilter
+    AND?: NexusGenInputs['AuthorWhereInput'][] | null; // [AuthorWhereInput!]
+    NOT?: NexusGenInputs['AuthorWhereInput'][] | null; // [AuthorWhereInput!]
+    OR?: NexusGenInputs['AuthorWhereInput'][] | null; // [AuthorWhereInput!]
+    id?: NexusGenInputs['IDFilter'] | null; // IDFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    posts?: NexusGenInputs['PostManyRelationFilter'] | null; // PostManyRelationFilter
   }
   AuthorWhereUniqueInput: { // input type
-    email?: string | null // String
-    id?: string | null // ID
+    id?: string | null; // ID
   }
   DateTimeNullableFilter: { // input type
-    equals?: NexusGenScalars['DateTime'] | null // DateTime
-    gt?: NexusGenScalars['DateTime'] | null // DateTime
-    gte?: NexusGenScalars['DateTime'] | null // DateTime
-    in?: NexusGenScalars['DateTime'][] | null // [DateTime!]
-    lt?: NexusGenScalars['DateTime'] | null // DateTime
-    lte?: NexusGenScalars['DateTime'] | null // DateTime
-    not?: NexusGenInputs['DateTimeNullableFilter'] | null // DateTimeNullableFilter
-    notIn?: NexusGenScalars['DateTime'][] | null // [DateTime!]
+    equals?: NexusGenScalars['DateTime'] | null; // DateTime
+    gt?: NexusGenScalars['DateTime'] | null; // DateTime
+    gte?: NexusGenScalars['DateTime'] | null; // DateTime
+    in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
+    lt?: NexusGenScalars['DateTime'] | null; // DateTime
+    lte?: NexusGenScalars['DateTime'] | null; // DateTime
+    not?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
   IDFilter: { // input type
-    equals?: string | null // ID
-    gt?: string | null // ID
-    gte?: string | null // ID
-    in?: string[] | null // [ID!]
-    lt?: string | null // ID
-    lte?: string | null // ID
-    not?: NexusGenInputs['IDFilter'] | null // IDFilter
-    notIn?: string[] | null // [ID!]
+    equals?: string | null; // ID
+    gt?: string | null; // ID
+    gte?: string | null; // ID
+    in?: string[] | null; // [ID!]
+    lt?: string | null; // ID
+    lte?: string | null; // ID
+    not?: NexusGenInputs['IDFilter'] | null; // IDFilter
+    notIn?: string[] | null; // [ID!]
   }
   NestedStringFilter: { // input type
-    contains?: string | null // String
-    endsWith?: string | null // String
-    equals?: string | null // String
-    gt?: string | null // String
-    gte?: string | null // String
-    in?: string[] | null // [String!]
-    lt?: string | null // String
-    lte?: string | null // String
-    not?: NexusGenInputs['NestedStringFilter'] | null // NestedStringFilter
-    notIn?: string[] | null // [String!]
-    startsWith?: string | null // String
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
   }
   PostCreateInput: { // input type
-    author?: NexusGenInputs['AuthorRelateToOneForCreateInput'] | null // AuthorRelateToOneForCreateInput
-    content?: string | null // String
-    publishDate?: NexusGenScalars['DateTime'] | null // DateTime
-    status?: NexusGenEnums['PostStatusType'] | null // PostStatusType
-    title?: string | null // String
+    author?: NexusGenInputs['AuthorRelateToOneForCreateInput'] | null; // AuthorRelateToOneForCreateInput
+    content?: string | null; // String
+    publishDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    status?: NexusGenEnums['PostStatusType'] | null; // PostStatusType
+    title?: string | null; // String
   }
   PostManyRelationFilter: { // input type
-    every?: NexusGenInputs['PostWhereInput'] | null // PostWhereInput
-    none?: NexusGenInputs['PostWhereInput'] | null // PostWhereInput
-    some?: NexusGenInputs['PostWhereInput'] | null // PostWhereInput
+    every?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    none?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    some?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
   }
   PostOrderByInput: { // input type
-    content?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    id?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    publishDate?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    status?: NexusGenEnums['OrderDirection'] | null // OrderDirection
-    title?: NexusGenEnums['OrderDirection'] | null // OrderDirection
+    content?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
+    id?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
+    publishDate?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
+    status?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
+    title?: NexusGenEnums['OrderDirection'] | null; // OrderDirection
   }
   PostRelateToManyForCreateInput: { // input type
-    connect?: NexusGenInputs['PostWhereUniqueInput'][] | null // [PostWhereUniqueInput!]
-    create?: NexusGenInputs['PostCreateInput'][] | null // [PostCreateInput!]
+    connect?: NexusGenInputs['PostWhereUniqueInput'][] | null; // [PostWhereUniqueInput!]
+    create?: NexusGenInputs['PostCreateInput'][] | null; // [PostCreateInput!]
   }
   PostRelateToManyForUpdateInput: { // input type
-    connect?: NexusGenInputs['PostWhereUniqueInput'][] | null // [PostWhereUniqueInput!]
-    create?: NexusGenInputs['PostCreateInput'][] | null // [PostCreateInput!]
-    disconnect?: NexusGenInputs['PostWhereUniqueInput'][] | null // [PostWhereUniqueInput!]
-    set?: NexusGenInputs['PostWhereUniqueInput'][] | null // [PostWhereUniqueInput!]
+    connect?: NexusGenInputs['PostWhereUniqueInput'][] | null; // [PostWhereUniqueInput!]
+    create?: NexusGenInputs['PostCreateInput'][] | null; // [PostCreateInput!]
+    disconnect?: NexusGenInputs['PostWhereUniqueInput'][] | null; // [PostWhereUniqueInput!]
+    set?: NexusGenInputs['PostWhereUniqueInput'][] | null; // [PostWhereUniqueInput!]
   }
   PostStatusTypeNullableFilter: { // input type
-    equals?: NexusGenEnums['PostStatusType'] | null // PostStatusType
-    in?: NexusGenEnums['PostStatusType'][] | null // [PostStatusType!]
-    not?: NexusGenInputs['PostStatusTypeNullableFilter'] | null // PostStatusTypeNullableFilter
-    notIn?: NexusGenEnums['PostStatusType'][] | null // [PostStatusType!]
+    equals?: NexusGenEnums['PostStatusType'] | null; // PostStatusType
+    in?: NexusGenEnums['PostStatusType'][] | null; // [PostStatusType!]
+    not?: NexusGenInputs['PostStatusTypeNullableFilter'] | null; // PostStatusTypeNullableFilter
+    notIn?: NexusGenEnums['PostStatusType'][] | null; // [PostStatusType!]
   }
   PostUpdateArgs: { // input type
-    data: NexusGenInputs['PostUpdateInput'] // PostUpdateInput!
-    where: NexusGenInputs['PostWhereUniqueInput'] // PostWhereUniqueInput!
+    data: NexusGenInputs['PostUpdateInput']; // PostUpdateInput!
+    where: NexusGenInputs['PostWhereUniqueInput']; // PostWhereUniqueInput!
   }
   PostUpdateInput: { // input type
-    author?: NexusGenInputs['AuthorRelateToOneForUpdateInput'] | null // AuthorRelateToOneForUpdateInput
-    content?: string | null // String
-    publishDate?: NexusGenScalars['DateTime'] | null // DateTime
-    status?: NexusGenEnums['PostStatusType'] | null // PostStatusType
-    title?: string | null // String
+    author?: NexusGenInputs['AuthorRelateToOneForUpdateInput'] | null; // AuthorRelateToOneForUpdateInput
+    content?: string | null; // String
+    publishDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    status?: NexusGenEnums['PostStatusType'] | null; // PostStatusType
+    title?: string | null; // String
   }
   PostWhereInput: { // input type
-    AND?: NexusGenInputs['PostWhereInput'][] | null // [PostWhereInput!]
-    NOT?: NexusGenInputs['PostWhereInput'][] | null // [PostWhereInput!]
-    OR?: NexusGenInputs['PostWhereInput'][] | null // [PostWhereInput!]
-    author?: NexusGenInputs['AuthorWhereInput'] | null // AuthorWhereInput
-    content?: NexusGenInputs['StringFilter'] | null // StringFilter
-    id?: NexusGenInputs['IDFilter'] | null // IDFilter
-    publishDate?: NexusGenInputs['DateTimeNullableFilter'] | null // DateTimeNullableFilter
-    status?: NexusGenInputs['PostStatusTypeNullableFilter'] | null // PostStatusTypeNullableFilter
-    title?: NexusGenInputs['StringFilter'] | null // StringFilter
+    AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    author?: NexusGenInputs['AuthorWhereInput'] | null; // AuthorWhereInput
+    content?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['IDFilter'] | null; // IDFilter
+    publishDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    status?: NexusGenInputs['PostStatusTypeNullableFilter'] | null; // PostStatusTypeNullableFilter
+    title?: NexusGenInputs['StringFilter'] | null; // StringFilter
   }
   PostWhereUniqueInput: { // input type
-    id?: string | null // ID
+    id?: string | null; // ID
   }
   StringFilter: { // input type
-    contains?: string | null // String
-    endsWith?: string | null // String
-    equals?: string | null // String
-    gt?: string | null // String
-    gte?: string | null // String
-    in?: string[] | null // [String!]
-    lt?: string | null // String
-    lte?: string | null // String
-    not?: NexusGenInputs['NestedStringFilter'] | null // NestedStringFilter
-    notIn?: string[] | null // [String!]
-    startsWith?: string | null // String
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
   }
 }
 
@@ -186,59 +181,83 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-  Author: {}
+  Author: {};
   KeystoneAdminMeta: { // root type
-    lists: NexusGenRootTypes['KeystoneAdminUIListMeta'][] // [KeystoneAdminUIListMeta!]!
+    lists: NexusGenRootTypes['KeystoneAdminUIListMeta'][]; // [KeystoneAdminUIListMeta!]!
   }
   KeystoneAdminUIFieldGroupMeta: { // root type
-    description?: string | null // String
-    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][] // [KeystoneAdminUIFieldMeta!]!
-    label: string // String!
+    description?: string | null; // String
+    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][]; // [KeystoneAdminUIFieldMeta!]!
+    label: string; // String!
   }
   KeystoneAdminUIFieldMeta: { // root type
-    createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView'] // KeystoneAdminUIFieldMetaCreateView!
-    customViewsIndex?: number | null // Int
-    description?: string | null // String
-    fieldMeta?: NexusGenScalars['JSON'] | null // JSON
-    isNonNull?: NexusGenEnums['KeystoneAdminUIFieldMetaIsNonNull'][] | null // [KeystoneAdminUIFieldMetaIsNonNull!]
-    label: string // String!
-    listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView'] // KeystoneAdminUIFieldMetaListView!
-    path: string // String!
-    search?: NexusGenEnums['QueryMode'] | null // QueryMode
-    viewsIndex: number // Int!
+    createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView']; // KeystoneAdminUIFieldMetaCreateView!
+    customViewsIndex?: number | null; // Int
+    description?: string | null; // String
+    fieldMeta?: NexusGenScalars['JSON'] | null; // JSON
+    isNonNull?: NexusGenEnums['KeystoneAdminUIFieldMetaIsNonNull'][] | null; // [KeystoneAdminUIFieldMetaIsNonNull!]
+    label: string; // String!
+    listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView']; // KeystoneAdminUIFieldMetaListView!
+    path: string; // String!
+    search?: NexusGenEnums['QueryMode'] | null; // QueryMode
+    viewsIndex: number; // Int!
   }
-  KeystoneAdminUIFieldMetaCreateView: {}
-  KeystoneAdminUIFieldMetaItemView: {}
-  KeystoneAdminUIFieldMetaListView: {}
+  KeystoneAdminUIFieldMetaCreateView: {};
+  KeystoneAdminUIFieldMetaItemView: {};
+  KeystoneAdminUIFieldMetaListView: {};
+  KeystoneAdminUIGraphQL: { // root type
+    names: NexusGenRootTypes['KeystoneAdminUIGraphQLNames']; // KeystoneAdminUIGraphQLNames!
+  }
+  KeystoneAdminUIGraphQLNames: { // root type
+    createInputName: string; // String!
+    createManyMutationName: string; // String!
+    createMutationName: string; // String!
+    deleteManyMutationName: string; // String!
+    deleteMutationName: string; // String!
+    itemQueryName: string; // String!
+    listOrderName: string; // String!
+    listQueryCountName: string; // String!
+    listQueryName: string; // String!
+    outputTypeName: string; // String!
+    relateToManyForCreateInputName: string; // String!
+    relateToManyForUpdateInputName: string; // String!
+    relateToOneForCreateInputName: string; // String!
+    relateToOneForUpdateInputName: string; // String!
+    updateInputName: string; // String!
+    updateManyInputName: string; // String!
+    updateManyMutationName: string; // String!
+    updateMutationName: string; // String!
+    whereInputName: string; // String!
+    whereUniqueInputName: string; // String!
+  }
   KeystoneAdminUIListMeta: { // root type
-    description?: string | null // String
-    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][] // [KeystoneAdminUIFieldMeta!]!
-    groups: NexusGenRootTypes['KeystoneAdminUIFieldGroupMeta'][] // [KeystoneAdminUIFieldGroupMeta!]!
-    initialColumns: string[] // [String!]!
-    initialSort?: NexusGenRootTypes['KeystoneAdminUISort'] | null // KeystoneAdminUISort
-    isSingleton: boolean // Boolean!
-    itemQueryName: string // String!
-    key: string // String!
-    label: string // String!
-    labelField: string // String!
-    listQueryName: string // String!
-    pageSize: number // Int!
-    path: string // String!
-    plural: string // String!
-    singular: string // String!
+    description?: string | null; // String
+    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][]; // [KeystoneAdminUIFieldMeta!]!
+    graphql: NexusGenRootTypes['KeystoneAdminUIGraphQL']; // KeystoneAdminUIGraphQL!
+    groups: NexusGenRootTypes['KeystoneAdminUIFieldGroupMeta'][]; // [KeystoneAdminUIFieldGroupMeta!]!
+    initialColumns: string[]; // [String!]!
+    initialSort?: NexusGenRootTypes['KeystoneAdminUISort'] | null; // KeystoneAdminUISort
+    isSingleton: boolean; // Boolean!
+    key: string; // String!
+    label: string; // String!
+    labelField: string; // String!
+    pageSize: number; // Int!
+    path: string; // String!
+    plural: string; // String!
+    singular: string; // String!
   }
   KeystoneAdminUISort: { // root type
-    direction: NexusGenEnums['KeystoneAdminUISortDirection'] // KeystoneAdminUISortDirection!
-    field: string // String!
+    direction: NexusGenEnums['KeystoneAdminUISortDirection']; // KeystoneAdminUISortDirection!
+    field: string; // String!
   }
-  KeystoneMeta: {}
-  Mutation: {}
+  KeystoneMeta: {};
+  Mutation: {};
   NexusThing: { // root type
-    id?: number | null // Int
-    title?: string | null // String
+    id?: number | null; // Int
+    title?: string | null; // String
   }
-  Post: {}
-  Query: {}
+  Post: {};
+  Query: {};
 }
 
 export interface NexusGenInterfaces {
@@ -253,115 +272,137 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 
 export interface NexusGenFieldTypes {
   Author: { // field return type
-    email: string | null // String
-    id: string // ID!
-    name: string | null // String
-    posts: NexusGenRootTypes['Post'][] | null // [Post!]
-    postsCount: number | null // Int
+    id: string; // ID!
+    name: string | null; // String
+    posts: NexusGenRootTypes['Post'][] | null; // [Post!]
+    postsCount: number | null; // Int
   }
   KeystoneAdminMeta: { // field return type
-    list: NexusGenRootTypes['KeystoneAdminUIListMeta'] | null // KeystoneAdminUIListMeta
-    lists: NexusGenRootTypes['KeystoneAdminUIListMeta'][] // [KeystoneAdminUIListMeta!]!
+    list: NexusGenRootTypes['KeystoneAdminUIListMeta'] | null; // KeystoneAdminUIListMeta
+    lists: NexusGenRootTypes['KeystoneAdminUIListMeta'][]; // [KeystoneAdminUIListMeta!]!
   }
   KeystoneAdminUIFieldGroupMeta: { // field return type
-    description: string | null // String
-    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][] // [KeystoneAdminUIFieldMeta!]!
-    label: string // String!
+    description: string | null; // String
+    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][]; // [KeystoneAdminUIFieldMeta!]!
+    label: string; // String!
   }
   KeystoneAdminUIFieldMeta: { // field return type
-    createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView'] // KeystoneAdminUIFieldMetaCreateView!
-    customViewsIndex: number | null // Int
-    description: string | null // String
-    fieldMeta: NexusGenScalars['JSON'] | null // JSON
-    isFilterable: boolean // Boolean!
-    isNonNull: NexusGenEnums['KeystoneAdminUIFieldMetaIsNonNull'][] | null // [KeystoneAdminUIFieldMetaIsNonNull!]
-    isOrderable: boolean // Boolean!
-    itemView: NexusGenRootTypes['KeystoneAdminUIFieldMetaItemView'] | null // KeystoneAdminUIFieldMetaItemView
-    label: string // String!
-    listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView'] // KeystoneAdminUIFieldMetaListView!
-    path: string // String!
-    search: NexusGenEnums['QueryMode'] | null // QueryMode
-    viewsIndex: number // Int!
+    createView: NexusGenRootTypes['KeystoneAdminUIFieldMetaCreateView']; // KeystoneAdminUIFieldMetaCreateView!
+    customViewsIndex: number | null; // Int
+    description: string | null; // String
+    fieldMeta: NexusGenScalars['JSON'] | null; // JSON
+    isFilterable: boolean; // Boolean!
+    isNonNull: NexusGenEnums['KeystoneAdminUIFieldMetaIsNonNull'][] | null; // [KeystoneAdminUIFieldMetaIsNonNull!]
+    isOrderable: boolean; // Boolean!
+    itemView: NexusGenRootTypes['KeystoneAdminUIFieldMetaItemView'] | null; // KeystoneAdminUIFieldMetaItemView
+    label: string; // String!
+    listView: NexusGenRootTypes['KeystoneAdminUIFieldMetaListView']; // KeystoneAdminUIFieldMetaListView!
+    path: string; // String!
+    search: NexusGenEnums['QueryMode'] | null; // QueryMode
+    viewsIndex: number; // Int!
   }
   KeystoneAdminUIFieldMetaCreateView: { // field return type
-    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaCreateViewFieldMode'] // KeystoneAdminUIFieldMetaCreateViewFieldMode!
+    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaCreateViewFieldMode']; // KeystoneAdminUIFieldMetaCreateViewFieldMode!
   }
   KeystoneAdminUIFieldMetaItemView: { // field return type
-    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaItemViewFieldMode'] | null // KeystoneAdminUIFieldMetaItemViewFieldMode
-    fieldPosition: NexusGenEnums['KeystoneAdminUIFieldMetaItemViewFieldPosition'] | null // KeystoneAdminUIFieldMetaItemViewFieldPosition
+    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaItemViewFieldMode'] | null; // KeystoneAdminUIFieldMetaItemViewFieldMode
+    fieldPosition: NexusGenEnums['KeystoneAdminUIFieldMetaItemViewFieldPosition'] | null; // KeystoneAdminUIFieldMetaItemViewFieldPosition
   }
   KeystoneAdminUIFieldMetaListView: { // field return type
-    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaListViewFieldMode'] // KeystoneAdminUIFieldMetaListViewFieldMode!
+    fieldMode: NexusGenEnums['KeystoneAdminUIFieldMetaListViewFieldMode']; // KeystoneAdminUIFieldMetaListViewFieldMode!
+  }
+  KeystoneAdminUIGraphQL: { // field return type
+    names: NexusGenRootTypes['KeystoneAdminUIGraphQLNames']; // KeystoneAdminUIGraphQLNames!
+  }
+  KeystoneAdminUIGraphQLNames: { // field return type
+    createInputName: string; // String!
+    createManyMutationName: string; // String!
+    createMutationName: string; // String!
+    deleteManyMutationName: string; // String!
+    deleteMutationName: string; // String!
+    itemQueryName: string; // String!
+    listOrderName: string; // String!
+    listQueryCountName: string; // String!
+    listQueryName: string; // String!
+    outputTypeName: string; // String!
+    relateToManyForCreateInputName: string; // String!
+    relateToManyForUpdateInputName: string; // String!
+    relateToOneForCreateInputName: string; // String!
+    relateToOneForUpdateInputName: string; // String!
+    updateInputName: string; // String!
+    updateManyInputName: string; // String!
+    updateManyMutationName: string; // String!
+    updateMutationName: string; // String!
+    whereInputName: string; // String!
+    whereUniqueInputName: string; // String!
   }
   KeystoneAdminUIListMeta: { // field return type
-    description: string | null // String
-    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][] // [KeystoneAdminUIFieldMeta!]!
-    groups: NexusGenRootTypes['KeystoneAdminUIFieldGroupMeta'][] // [KeystoneAdminUIFieldGroupMeta!]!
-    hideCreate: boolean // Boolean!
-    hideDelete: boolean // Boolean!
-    initialColumns: string[] // [String!]!
-    initialSort: NexusGenRootTypes['KeystoneAdminUISort'] | null // KeystoneAdminUISort
-    isHidden: boolean // Boolean!
-    isSingleton: boolean // Boolean!
-    itemQueryName: string // String!
-    key: string // String!
-    label: string // String!
-    labelField: string // String!
-    listQueryName: string // String!
-    pageSize: number // Int!
-    path: string // String!
-    plural: string // String!
-    singular: string // String!
+    description: string | null; // String
+    fields: NexusGenRootTypes['KeystoneAdminUIFieldMeta'][]; // [KeystoneAdminUIFieldMeta!]!
+    graphql: NexusGenRootTypes['KeystoneAdminUIGraphQL']; // KeystoneAdminUIGraphQL!
+    groups: NexusGenRootTypes['KeystoneAdminUIFieldGroupMeta'][]; // [KeystoneAdminUIFieldGroupMeta!]!
+    hideCreate: boolean; // Boolean!
+    hideDelete: boolean; // Boolean!
+    hideNavigation: boolean; // Boolean!
+    initialColumns: string[]; // [String!]!
+    initialSort: NexusGenRootTypes['KeystoneAdminUISort'] | null; // KeystoneAdminUISort
+    isSingleton: boolean; // Boolean!
+    key: string; // String!
+    label: string; // String!
+    labelField: string; // String!
+    pageSize: number; // Int!
+    path: string; // String!
+    plural: string; // String!
+    singular: string; // String!
   }
   KeystoneAdminUISort: { // field return type
-    direction: NexusGenEnums['KeystoneAdminUISortDirection'] // KeystoneAdminUISortDirection!
-    field: string // String!
+    direction: NexusGenEnums['KeystoneAdminUISortDirection']; // KeystoneAdminUISortDirection!
+    field: string; // String!
   }
   KeystoneMeta: { // field return type
-    adminMeta: NexusGenRootTypes['KeystoneAdminMeta'] // KeystoneAdminMeta!
+    adminMeta: NexusGenRootTypes['KeystoneAdminMeta']; // KeystoneAdminMeta!
   }
   Mutation: { // field return type
-    createAuthor: NexusGenRootTypes['Author'] | null // Author
-    createAuthors: Array<NexusGenRootTypes['Author'] | null> | null // [Author]
-    createPost: NexusGenRootTypes['Post'] | null // Post
-    createPosts: Array<NexusGenRootTypes['Post'] | null> | null // [Post]
-    deleteAuthor: NexusGenRootTypes['Author'] | null // Author
-    deleteAuthors: Array<NexusGenRootTypes['Author'] | null> | null // [Author]
-    deletePost: NexusGenRootTypes['Post'] | null // Post
-    deletePosts: Array<NexusGenRootTypes['Post'] | null> | null // [Post]
-    updateAuthor: NexusGenRootTypes['Author'] | null // Author
-    updateAuthors: Array<NexusGenRootTypes['Author'] | null> | null // [Author]
-    updatePost: NexusGenRootTypes['Post'] | null // Post
-    updatePosts: Array<NexusGenRootTypes['Post'] | null> | null // [Post]
+    createAuthor: NexusGenRootTypes['Author'] | null; // Author
+    createAuthors: Array<NexusGenRootTypes['Author'] | null> | null; // [Author]
+    createPost: NexusGenRootTypes['Post'] | null; // Post
+    createPosts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    deleteAuthor: NexusGenRootTypes['Author'] | null; // Author
+    deleteAuthors: Array<NexusGenRootTypes['Author'] | null> | null; // [Author]
+    deletePost: NexusGenRootTypes['Post'] | null; // Post
+    deletePosts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    updateAuthor: NexusGenRootTypes['Author'] | null; // Author
+    updateAuthors: Array<NexusGenRootTypes['Author'] | null> | null; // [Author]
+    updatePost: NexusGenRootTypes['Post'] | null; // Post
+    updatePosts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
   }
   NexusThing: { // field return type
-    id: number | null // Int
-    title: string | null // String
+    id: number | null; // Int
+    title: string | null; // String
   }
   Post: { // field return type
-    author: NexusGenRootTypes['Author'] | null // Author
-    content: string | null // String
-    id: string // ID!
-    publishDate: NexusGenScalars['DateTime'] | null // DateTime
-    status: NexusGenEnums['PostStatusType'] | null // PostStatusType
-    title: string | null // String
+    author: NexusGenRootTypes['Author'] | null; // Author
+    content: string | null; // String
+    id: string; // ID!
+    publishDate: NexusGenScalars['DateTime'] | null; // DateTime
+    status: NexusGenEnums['PostStatusType'] | null; // PostStatusType
+    title: string | null; // String
   }
   Query: { // field return type
-    author: NexusGenRootTypes['Author'] | null // Author
-    authors: NexusGenRootTypes['Author'][] | null // [Author!]
-    authorsCount: number | null // Int
-    keystone: NexusGenRootTypes['KeystoneMeta'] // KeystoneMeta!
-    nexusPosts: Array<NexusGenRootTypes['Post'] | null> // [Post]!
-    post: NexusGenRootTypes['Post'] | null // Post
-    posts: NexusGenRootTypes['Post'][] | null // [Post!]
-    postsCount: number | null // Int
-    things: Array<NexusGenRootTypes['NexusThing'] | null> // [NexusThing]!
+    author: NexusGenRootTypes['Author'] | null; // Author
+    authors: NexusGenRootTypes['Author'][] | null; // [Author!]
+    authorsCount: number | null; // Int
+    keystone: NexusGenRootTypes['KeystoneMeta']; // KeystoneMeta!
+    nexusPosts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
+    post: NexusGenRootTypes['Post'] | null; // Post
+    posts: NexusGenRootTypes['Post'][] | null; // [Post!]
+    postsCount: number | null; // Int
+    things: Array<NexusGenRootTypes['NexusThing'] | null>; // [NexusThing]!
   }
 }
 
 export interface NexusGenFieldTypeNames {
   Author: { // field return type name
-    email: 'String'
     id: 'ID'
     name: 'String'
     posts: 'Post'
@@ -401,21 +442,45 @@ export interface NexusGenFieldTypeNames {
   KeystoneAdminUIFieldMetaListView: { // field return type name
     fieldMode: 'KeystoneAdminUIFieldMetaListViewFieldMode'
   }
+  KeystoneAdminUIGraphQL: { // field return type name
+    names: 'KeystoneAdminUIGraphQLNames'
+  }
+  KeystoneAdminUIGraphQLNames: { // field return type name
+    createInputName: 'String'
+    createManyMutationName: 'String'
+    createMutationName: 'String'
+    deleteManyMutationName: 'String'
+    deleteMutationName: 'String'
+    itemQueryName: 'String'
+    listOrderName: 'String'
+    listQueryCountName: 'String'
+    listQueryName: 'String'
+    outputTypeName: 'String'
+    relateToManyForCreateInputName: 'String'
+    relateToManyForUpdateInputName: 'String'
+    relateToOneForCreateInputName: 'String'
+    relateToOneForUpdateInputName: 'String'
+    updateInputName: 'String'
+    updateManyInputName: 'String'
+    updateManyMutationName: 'String'
+    updateMutationName: 'String'
+    whereInputName: 'String'
+    whereUniqueInputName: 'String'
+  }
   KeystoneAdminUIListMeta: { // field return type name
     description: 'String'
     fields: 'KeystoneAdminUIFieldMeta'
+    graphql: 'KeystoneAdminUIGraphQL'
     groups: 'KeystoneAdminUIFieldGroupMeta'
     hideCreate: 'Boolean'
     hideDelete: 'Boolean'
+    hideNavigation: 'Boolean'
     initialColumns: 'String'
     initialSort: 'KeystoneAdminUISort'
-    isHidden: 'Boolean'
     isSingleton: 'Boolean'
-    itemQueryName: 'String'
     key: 'String'
     label: 'String'
     labelField: 'String'
-    listQueryName: 'String'
     pageSize: 'Int'
     path: 'String'
     plural: 'String'
@@ -470,96 +535,96 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Author: {
     posts: { // args
-      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null // PostWhereUniqueInput
-      orderBy: NexusGenInputs['PostOrderByInput'][] // [PostOrderByInput!]!
-      skip: number // Int!
-      take?: number | null // Int
-      where: NexusGenInputs['PostWhereInput'] // PostWhereInput!
+      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      orderBy: NexusGenInputs['PostOrderByInput'][]; // [PostOrderByInput!]!
+      skip: number; // Int!
+      take?: number | null; // Int
+      where: NexusGenInputs['PostWhereInput']; // PostWhereInput!
     }
     postsCount: { // args
-      where: NexusGenInputs['PostWhereInput'] // PostWhereInput!
+      where: NexusGenInputs['PostWhereInput']; // PostWhereInput!
     }
   }
   KeystoneAdminMeta: {
     list: { // args
-      key: string // String!
+      key: string; // String!
     }
   }
   KeystoneAdminUIFieldMeta: {
     itemView: { // args
-      id?: string | null // ID
+      id?: string | null; // ID
     }
   }
   Mutation: {
     createAuthor: { // args
-      data: NexusGenInputs['AuthorCreateInput'] // AuthorCreateInput!
+      data: NexusGenInputs['AuthorCreateInput']; // AuthorCreateInput!
     }
     createAuthors: { // args
-      data: NexusGenInputs['AuthorCreateInput'][] // [AuthorCreateInput!]!
+      data: NexusGenInputs['AuthorCreateInput'][]; // [AuthorCreateInput!]!
     }
     createPost: { // args
-      data: NexusGenInputs['PostCreateInput'] // PostCreateInput!
+      data: NexusGenInputs['PostCreateInput']; // PostCreateInput!
     }
     createPosts: { // args
-      data: NexusGenInputs['PostCreateInput'][] // [PostCreateInput!]!
+      data: NexusGenInputs['PostCreateInput'][]; // [PostCreateInput!]!
     }
     deleteAuthor: { // args
-      where: NexusGenInputs['AuthorWhereUniqueInput'] // AuthorWhereUniqueInput!
+      where: NexusGenInputs['AuthorWhereUniqueInput']; // AuthorWhereUniqueInput!
     }
     deleteAuthors: { // args
-      where: NexusGenInputs['AuthorWhereUniqueInput'][] // [AuthorWhereUniqueInput!]!
+      where: NexusGenInputs['AuthorWhereUniqueInput'][]; // [AuthorWhereUniqueInput!]!
     }
     deletePost: { // args
-      where: NexusGenInputs['PostWhereUniqueInput'] // PostWhereUniqueInput!
+      where: NexusGenInputs['PostWhereUniqueInput']; // PostWhereUniqueInput!
     }
     deletePosts: { // args
-      where: NexusGenInputs['PostWhereUniqueInput'][] // [PostWhereUniqueInput!]!
+      where: NexusGenInputs['PostWhereUniqueInput'][]; // [PostWhereUniqueInput!]!
     }
     updateAuthor: { // args
-      data: NexusGenInputs['AuthorUpdateInput'] // AuthorUpdateInput!
-      where: NexusGenInputs['AuthorWhereUniqueInput'] // AuthorWhereUniqueInput!
+      data: NexusGenInputs['AuthorUpdateInput']; // AuthorUpdateInput!
+      where: NexusGenInputs['AuthorWhereUniqueInput']; // AuthorWhereUniqueInput!
     }
     updateAuthors: { // args
-      data: NexusGenInputs['AuthorUpdateArgs'][] // [AuthorUpdateArgs!]!
+      data: NexusGenInputs['AuthorUpdateArgs'][]; // [AuthorUpdateArgs!]!
     }
     updatePost: { // args
-      data: NexusGenInputs['PostUpdateInput'] // PostUpdateInput!
-      where: NexusGenInputs['PostWhereUniqueInput'] // PostWhereUniqueInput!
+      data: NexusGenInputs['PostUpdateInput']; // PostUpdateInput!
+      where: NexusGenInputs['PostWhereUniqueInput']; // PostWhereUniqueInput!
     }
     updatePosts: { // args
-      data: NexusGenInputs['PostUpdateArgs'][] // [PostUpdateArgs!]!
+      data: NexusGenInputs['PostUpdateArgs'][]; // [PostUpdateArgs!]!
     }
   }
   Query: {
     author: { // args
-      where: NexusGenInputs['AuthorWhereUniqueInput'] // AuthorWhereUniqueInput!
+      where: NexusGenInputs['AuthorWhereUniqueInput']; // AuthorWhereUniqueInput!
     }
     authors: { // args
-      cursor?: NexusGenInputs['AuthorWhereUniqueInput'] | null // AuthorWhereUniqueInput
-      orderBy: NexusGenInputs['AuthorOrderByInput'][] // [AuthorOrderByInput!]!
-      skip: number // Int!
-      take?: number | null // Int
-      where: NexusGenInputs['AuthorWhereInput'] // AuthorWhereInput!
+      cursor?: NexusGenInputs['AuthorWhereUniqueInput'] | null; // AuthorWhereUniqueInput
+      orderBy: NexusGenInputs['AuthorOrderByInput'][]; // [AuthorOrderByInput!]!
+      skip: number; // Int!
+      take?: number | null; // Int
+      where: NexusGenInputs['AuthorWhereInput']; // AuthorWhereInput!
     }
     authorsCount: { // args
-      where: NexusGenInputs['AuthorWhereInput'] // AuthorWhereInput!
+      where: NexusGenInputs['AuthorWhereInput']; // AuthorWhereInput!
     }
     nexusPosts: { // args
-      id: string // String!
-      seconds: number // Int!
+      id: string; // String!
+      seconds: number; // Int!
     }
     post: { // args
-      where: NexusGenInputs['PostWhereUniqueInput'] // PostWhereUniqueInput!
+      where: NexusGenInputs['PostWhereUniqueInput']; // PostWhereUniqueInput!
     }
     posts: { // args
-      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null // PostWhereUniqueInput
-      orderBy: NexusGenInputs['PostOrderByInput'][] // [PostOrderByInput!]!
-      skip: number // Int!
-      take?: number | null // Int
-      where: NexusGenInputs['PostWhereInput'] // PostWhereInput!
+      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      orderBy: NexusGenInputs['PostOrderByInput'][]; // [PostOrderByInput!]!
+      skip: number; // Int!
+      take?: number | null; // Int
+      where: NexusGenInputs['PostWhereInput']; // PostWhereInput!
     }
     postsCount: { // args
-      where: NexusGenInputs['PostWhereInput'] // PostWhereInput!
+      where: NexusGenInputs['PostWhereInput']; // PostWhereInput!
     }
   }
 }
@@ -570,21 +635,21 @@ export interface NexusGenAbstractTypeMembers {
 export interface NexusGenTypeInterfaces {
 }
 
-export type NexusGenObjectNames = keyof NexusGenObjects
+export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = keyof NexusGenInputs
+export type NexusGenInputNames = keyof NexusGenInputs;
 
-export type NexusGenEnumNames = keyof NexusGenEnums
+export type NexusGenEnumNames = keyof NexusGenEnums;
 
-export type NexusGenInterfaceNames = never
+export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = keyof NexusGenScalars
+export type NexusGenScalarNames = keyof NexusGenScalars;
 
-export type NexusGenUnionNames = never
+export type NexusGenUnionNames = never;
 
-export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never
+export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = never
+export type NexusGenAbstractsUsingStrategyResolveType = never;
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {
@@ -595,29 +660,29 @@ export type NexusGenFeaturesConfig = {
 }
 
 export interface NexusGenTypes {
-  context: Context
-  inputTypes: NexusGenInputs
-  rootTypes: NexusGenRootTypes
-  inputTypeShapes: NexusGenInputs & NexusGenEnums & NexusGenScalars
-  argTypes: NexusGenArgTypes
-  fieldTypes: NexusGenFieldTypes
-  fieldTypeNames: NexusGenFieldTypeNames
-  allTypes: NexusGenAllTypes
-  typeInterfaces: NexusGenTypeInterfaces
-  objectNames: NexusGenObjectNames
-  inputNames: NexusGenInputNames
-  enumNames: NexusGenEnumNames
-  interfaceNames: NexusGenInterfaceNames
-  scalarNames: NexusGenScalarNames
-  unionNames: NexusGenUnionNames
-  allInputTypes: NexusGenTypes['inputNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['scalarNames']
-  allOutputTypes: NexusGenTypes['objectNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['unionNames'] | NexusGenTypes['interfaceNames'] | NexusGenTypes['scalarNames']
+  context: Context;
+  inputTypes: NexusGenInputs;
+  rootTypes: NexusGenRootTypes;
+  inputTypeShapes: NexusGenInputs & NexusGenEnums & NexusGenScalars;
+  argTypes: NexusGenArgTypes;
+  fieldTypes: NexusGenFieldTypes;
+  fieldTypeNames: NexusGenFieldTypeNames;
+  allTypes: NexusGenAllTypes;
+  typeInterfaces: NexusGenTypeInterfaces;
+  objectNames: NexusGenObjectNames;
+  inputNames: NexusGenInputNames;
+  enumNames: NexusGenEnumNames;
+  interfaceNames: NexusGenInterfaceNames;
+  scalarNames: NexusGenScalarNames;
+  unionNames: NexusGenUnionNames;
+  allInputTypes: NexusGenTypes['inputNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['scalarNames'];
+  allOutputTypes: NexusGenTypes['objectNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['unionNames'] | NexusGenTypes['interfaceNames'] | NexusGenTypes['scalarNames'];
   allNamedTypes: NexusGenTypes['allInputTypes'] | NexusGenTypes['allOutputTypes']
-  abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames']
-  abstractTypeMembers: NexusGenAbstractTypeMembers
-  objectsUsingAbstractStrategyIsTypeOf: NexusGenObjectsUsingAbstractStrategyIsTypeOf
-  abstractsUsingStrategyResolveType: NexusGenAbstractsUsingStrategyResolveType
-  features: NexusGenFeaturesConfig
+  abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames'];
+  abstractTypeMembers: NexusGenAbstractTypeMembers;
+  objectsUsingAbstractStrategyIsTypeOf: NexusGenObjectsUsingAbstractStrategyIsTypeOf;
+  abstractsUsingStrategyResolveType: NexusGenAbstractsUsingStrategyResolveType;
+  features: NexusGenFeaturesConfig;
 }
 
 

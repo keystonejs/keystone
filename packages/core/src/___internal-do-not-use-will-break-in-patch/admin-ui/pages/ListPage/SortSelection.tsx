@@ -1,15 +1,35 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+
+import { useRouter } from 'next/router'
+import { Fragment } from 'react'
+
 import { Button } from '@keystone-ui/button'
 import { Divider, Heading, jsx, Stack } from '@keystone-ui/core'
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
-import { Options } from '@keystone-ui/options'
+import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options'
 import { PopoverDialog, usePopover } from '@keystone-ui/popover'
-import { Fragment } from 'react'
+
 import { type ListMeta } from '../../../../types'
-import { useRouter } from '../../../../admin-ui/router'
-import { fieldSelectionOptionsComponents } from './FieldSelection'
 import { useSort } from './useSort'
+
+const Option: typeof OptionPrimitive = props => {
+  return (
+    <OptionPrimitive {...props}>
+      {props.children}
+      <CheckMark
+        isDisabled={props.isDisabled}
+        isFocused={props.isFocused}
+        isSelected={props.isSelected}
+      />
+    </OptionPrimitive>
+  )
+}
+
+// TODO: return type required by pnpm :(
+export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
+  Option,
+}
 
 export function SortSelection ({
   list,

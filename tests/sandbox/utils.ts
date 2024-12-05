@@ -39,7 +39,6 @@ export const trackingFields = {
   createdAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
     graphql: { omit: { create: true, update: true } },
-    validation: { isRequired: true },
     defaultValue: { kind: 'now' },
     ui: {
       createView: { fieldMode: 'hidden' },
@@ -50,7 +49,6 @@ export const trackingFields = {
     access: { read: () => true, create: () => false, update: () => false },
     graphql: { omit: { create: true, update: true } },
     db: { updatedAt: true },
-    validation: { isRequired: true },
     ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'read' },
