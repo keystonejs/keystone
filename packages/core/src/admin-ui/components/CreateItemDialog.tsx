@@ -12,26 +12,26 @@ import { LoadingDots } from '@keystone-ui/loading'
 import { useKeystone, useList } from '../context'
 
 import { Fields } from '../utils/Fields'
-import { useCreateItem } from '../utils/useCreateItem'
+import { useBuildItem } from '../utils/useCreateItem'
 import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 import { useId } from 'react'
 
-export function CreateItemDialog ({
+export function BuildItemDialog ({
   listKey,
-  onCreate,
+  onChange,
 }: {
   listKey: string
-  onCreate: (item: { id: string, label: string }) => void
+  onChange: (subItem: Record<string, unknown>) => void
 }) {
   const { createViewFieldModes } = useKeystone()
   const list = useList(listKey)
-  const createItem = useCreateItem(list)
+  const buildItem = useBuildItem(list)
   const dialogState = useDialogContainer()
   const formId = useId()
 
   return (
     <Dialog>
-      <Heading>Create {list.singular}</Heading>
+      <Heading>Add {list.singular}</Heading>
 
       <Content>
         <form
@@ -43,13 +43,10 @@ export function CreateItemDialog ({
             // parent form being submitted.
             e.stopPropagation()
 
-            const item = await createItem.create()
-            if (!item) return
+            const subItem = await buildItem.build()
+            if (!subItem) return
 
-            onCreate({
-              id: item.id,
-              label: item.label ?? item.id
-            })
+            onChange(subItem)
             dialogState.dismiss()
           }}
         >
@@ -57,12 +54,10 @@ export function CreateItemDialog ({
           <GraphQLErrorNotice
             errors={[
               ...(createViewFieldModes.state === 'error' ? [createViewFieldModes.error].flat() : []),
-              createItem?.error?.networkError,
-              ...createItem?.error?.graphQLErrors ?? []
             ]}
           />
           <Box paddingY="xlarge">
-            <Fields environment='create-dialog' {...createItem.props} />
+            <Fields environment='create-dialog' {...buildItem.props} />
           </Box>
         </form>
       </Content>
@@ -71,11 +66,11 @@ export function CreateItemDialog ({
         <Button onPress={dialogState.dismiss}>Cancel</Button>
         <Button
           form={formId}
-          isPending={createItem.state === 'loading'}
+          isPending={buildItem.state === 'loading'}
           prominence="high"
           type="submit"
          >
-          Create
+           Add
         </Button>
       </ButtonGroup>
     </Dialog>

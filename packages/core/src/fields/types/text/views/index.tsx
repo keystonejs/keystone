@@ -96,9 +96,7 @@ function validate (value: TextValue, validation: Validation, fieldLabel: string)
   }
 
   if (value.inner.kind === 'null') {
-    if (validation.isRequired) {
-      return [`${fieldLabel} is required`]
-    }
+    if (validation.isRequired) return [`${fieldLabel} is required`]
     return []
   }
 

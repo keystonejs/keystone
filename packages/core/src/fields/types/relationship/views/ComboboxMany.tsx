@@ -4,6 +4,7 @@ import { ComboboxMulti, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
 import { type ListMeta } from '../../../../types'
+import { type RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
 export function ComboboxMany ({
@@ -32,8 +33,8 @@ export function ComboboxMany ({
   placeholder?: string
   state: {
     kind: 'many'
-    value: { label: string; id: string }[]
-    onChange(value: { label: string; id: string }[]): void
+    value: RelationshipValue[]
+    onChange(value: RelationshipValue[]): void
   }
   extraSelection?: string
 }) {
@@ -52,9 +53,7 @@ export function ComboboxMany ({
   // not the related list, or some items on the list)
   if (error) return <span>Error</span>
 
-  // diff selection. only show items that are not selected
   const items = data?.items ?? []
-
   return (
     <ComboboxMulti
       autoFocus={autoFocus}
@@ -67,12 +66,12 @@ export function ComboboxMany ({
       inputValue={search}
       onLoadMore={onLoadMore}
       placeholder={placeholder}
-      selectedKeys={state.value.map(item => item.id)}
+      selectedKeys={state.value?.map(item => item.id.toString())}
       onSelectionChange={selection => {
         // TODO
         if (selection === 'all') return
 
-        const selectedItems = uniqueById([...state.value, ...items]).filter(item => selection.has(item.id))
+        const selectedItems = items.filter(item => selection.has(item.id.toString()))
         state.onChange(selectedItems)
       }}
       minWidth="alias.singleLineWidth"
@@ -86,8 +85,4 @@ export function ComboboxMany ({
       {item => <Item>{item.label || item.id}</Item>}
     </ComboboxMulti>
   )
-}
-
-function uniqueById<T extends { id: string }>(items: T[]): T[] {
-  return Array.from(new Map(items.map(item => [item.id, item])).values())
 }
