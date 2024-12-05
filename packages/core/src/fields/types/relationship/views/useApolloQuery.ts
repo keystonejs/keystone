@@ -1,4 +1,8 @@
-import { useMemo, useState } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 import { useKeystone } from '@keystone-6/core/admin-ui/context'
 import { type ListMeta } from '../../../../types'
@@ -10,9 +14,21 @@ import {
   useApolloClient,
   useQuery,
 } from '../../../../admin-ui/apollo'
-import { useDebouncedValue } from './utils'
 import { useSearchFilter } from './useFilter'
 import { RelationshipValue } from './types'
+
+function useDebouncedValue<T> (value: T, limitMs: number) {
+  const [debouncedValue, setDebouncedValue] = useState(() => value)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(() => value)
+    }, limitMs)
+    return () => clearTimeout(timeout)
+  }, [value, limitMs])
+
+  return debouncedValue
+}
 
 export function useApolloQuery (args: {
   extraSelection: string
