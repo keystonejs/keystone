@@ -95,9 +95,7 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
       forceValidation,
       invalidFields,
       value,
-      onChange: useCallback((getNewValue: (value: Value) => Value) => {
-        setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
-      }, []),
+      onChange: (newItemValue) => setValue(newItemValue as ValueWithoutServerSideErrors)
     },
     async create (): Promise<{ id: string, label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
@@ -143,7 +141,14 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   }
 }
 
-export function useBuildItem (list: ListMeta) {
+type BuildItemHookResult = {
+  state: 'editing'
+  error?: ApolloError
+  props: ComponentProps<typeof Fields>
+  build: () => Promise<Record<string, unknown> | undefined>
+}
+
+export function useBuildItem (list: ListMeta): BuildItemHookResult {
   const { createViewFieldModes } = useKeystone()
 
   const [forceValidation, setForceValidation] = useState(false)
@@ -192,9 +197,7 @@ export function useBuildItem (list: ListMeta) {
       forceValidation,
       invalidFields,
       value,
-      onChange: useCallback((getNewValue: (value: Value) => Value) => {
-        setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
-      }, []),
+      onChange: (newItemValue) => setValue(newItemValue as ValueWithoutServerSideErrors)
     },
     async build () {
       const newForceValidation = invalidFields.size !== 0
