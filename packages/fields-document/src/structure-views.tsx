@@ -3,11 +3,11 @@
 
 import { useEffect, useMemo, useRef } from 'react'
 import { jsx } from '@keystone-ui/core'
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
 import { Field as KeystarField } from '@keystar/ui/field'
 
@@ -32,7 +32,10 @@ export function Field ({
     return createGetPreviewProps(
       field.schema,
       getNewVal => {
-        onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) })
+        onChange?.({
+          kind: valueRef.current.kind,
+          value: getNewVal(valueRef.current.value)
+        })
       },
       () => undefined
     )

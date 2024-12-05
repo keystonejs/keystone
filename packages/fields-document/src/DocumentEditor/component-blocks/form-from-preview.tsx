@@ -522,9 +522,9 @@ function ArrayFieldListView<Element extends ComponentSchema>(
       selectionMode="none"
       renderEmptyState={arrayFieldEmptyState}
       onAction={key => {
-        const idx = props.elements.findIndex(x => x.key === key)
-        if (idx === -1) return
-        props.onOpenItem(idx)
+        const i = props.elements.findIndex(x => x.key === key)
+        if (i === -1) return
+        props.onOpenItem(i)
       }}
     >
       {item => {

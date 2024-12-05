@@ -25,12 +25,9 @@ export function getInitialValue (type: string, componentBlock: ComponentBlock) {
 
 export function getInitialPropsValue (schema: ComponentSchema): any {
   switch (schema.kind) {
-    case 'form':
-      return schema.defaultValue
-    case 'child':
-      return null
-    case 'relationship':
-      return schema.many ? [] : null
+    case 'form': return schema.defaultValue
+    case 'child': return null
+    case 'relationship': return schema.many ? [] : null
     case 'conditional': {
       const defaultValue = schema.discriminant.defaultValue
       return {
@@ -45,9 +42,7 @@ export function getInitialPropsValue (schema: ComponentSchema): any {
       }
       return obj
     }
-    case 'array': {
-      return []
-    }
+    case 'array': return []
   }
   assertNever(schema)
 }
