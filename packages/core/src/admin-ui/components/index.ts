@@ -21,6 +21,5 @@ export type { NavigationProps } from '../../types'
 
 export { PageContainer } from './PageContainer'
 export { CreateItemDialog } from './CreateItemDialog'
-export { CreateItemDrawer } from './CreateItemDrawer'
 export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 export { Pagination, PaginationLabel, usePaginationParams } from './Pagination'

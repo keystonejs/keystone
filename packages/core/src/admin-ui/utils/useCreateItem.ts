@@ -43,7 +43,10 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const [value, setValue] = useState(() => {
     const value: ValueWithoutServerSideErrors = {}
     for (const fieldPath in list.fields) {
-      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue }
+      value[fieldPath] = {
+        kind: 'value',
+        value: list.fields[fieldPath].controller.defaultValue
+      }
     }
     return value
   })
