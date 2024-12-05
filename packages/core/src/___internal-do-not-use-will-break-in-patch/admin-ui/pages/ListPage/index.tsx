@@ -270,16 +270,12 @@ function ListPage ({ listKey }: ListPageProps) {
       header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
       title={list.label}
     >
-      {error?.graphQLErrors.length || error?.networkError ? (
-        <GraphQLErrorNotice
-          errors={error?.graphQLErrors}
-          networkError={error?.networkError}
-        />
-      ) : null}
-
-      {/* FIXME: consolidate error messages. */}
-      {/* {metaQuery.error ? 'Error...' : null} */}
-
+      <GraphQLErrorNotice
+        errors={[
+          error?.networkError,
+          ...error?.graphQLErrors ?? []
+        ]}
+      />
       {data && metaQuery.data ? (
         <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
           {/* FIXME: this is really weird; not sure where it should live. */}

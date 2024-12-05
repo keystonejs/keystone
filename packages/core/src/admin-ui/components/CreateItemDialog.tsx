@@ -54,19 +54,14 @@ export function CreateItemDialog ({
             dialogState.dismiss()
           }}
         >
-          {createViewFieldModes.state === 'error' && (
-            <GraphQLErrorNotice
-              networkError={createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined}
-              errors={createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error}
-            />
-          )}
           {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
-          {createItem.error && (
-            <GraphQLErrorNotice
-              networkError={createItem.error?.networkError}
-              errors={createItem.error?.graphQLErrors}
-            />
-          )}
+          <GraphQLErrorNotice
+            errors={[
+              ...(createViewFieldModes.state === 'error' ? [createViewFieldModes.error].flat() : []),
+              createItem?.error?.networkError,
+              ...createItem?.error?.graphQLErrors ?? []
+            ]}
+          />
           <Box paddingY="xlarge">
             <Fields environment='create-dialog' {...createItem.props} />
           </Box>
