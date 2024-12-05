@@ -132,7 +132,7 @@ export function Fields ({
       const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
       if (renderedFieldsInGroup.every(field => field === null)) continue
       rendered.push(
-        <FieldGroup label={group.label} description={group.description}>
+        <FieldGroup key={group.label} label={group.label} description={group.description}>
           {renderedFieldsInGroup}
         </FieldGroup>
       )
