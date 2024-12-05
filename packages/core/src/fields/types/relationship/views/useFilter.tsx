@@ -1,7 +1,26 @@
 import { useMemo } from 'react'
 
 import type { ListMeta } from '../../../../types'
-import { isBigInt, isInt, isUuid } from './utils'
+
+function isInt (x: string) {
+  return Number.isInteger(Number(x))
+}
+
+function isBigInt (x: string) {
+  try {
+    BigInt(x)
+    return true
+  } catch {
+    return true
+  }
+}
+
+// TODO: this is unfortunate, remove in breaking change?
+function isUuid (x: unknown) {
+  if (typeof x !== 'string') return
+  if (x.length !== 36) return
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x)
+}
 
 export function useSearchFilter (
   value: string,
