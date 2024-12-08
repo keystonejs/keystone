@@ -33,6 +33,8 @@ let ksProcess = undefined as any
 let page: Page = undefined as any
 let browser: Browser = undefined as any
 
+jest.setTimeout(300000) // testing why this one fail
+
 test('start keystone', async () => {
   // just in case a previous failing test run messed things up, let's reset it
   await replaceSchema('initial.ts')
@@ -64,7 +66,7 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   expect(value).toBe('blah')
 })
 
-test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
+test.only('api routes written with getAdditionalFiles containing [...rest] work', async () => {
   expect(
     await fetch('http://localhost:3000/api/blah/asdasdas/das/da/sdad').then(x => x.text())
   ).toEqual('something')

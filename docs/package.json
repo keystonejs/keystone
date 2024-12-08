@@ -39,7 +39,7 @@
     "globby": "^14.0.0",
     "js-yaml": "^4.1.0",
     "lodash.debounce": "^4.0.8",
-    "next": "^14.2.0",
+    "next": "^15.0.0",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^2.0.0",
     "react": "^18.3.1",

@@ -21,6 +21,7 @@ model Task {
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
   relatedLinks String?
+  moreLinks    String?
 
   @@index([assignedToId])
 }

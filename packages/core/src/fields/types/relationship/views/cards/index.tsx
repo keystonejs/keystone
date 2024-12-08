@@ -30,6 +30,7 @@ import { RelationshipSelect } from '../RelationshipSelect'
 import { useItemState } from './useItemState'
 import { InlineEdit } from './InlineEdit'
 import { InlineCreate } from './InlineCreate'
+import { useKeystone } from '../../../../../admin-ui'
 
 type CardContainerProps = {
   children: ReactNode
@@ -106,7 +107,7 @@ export function Cards ({
     id,
     field,
   })
-
+  const { adminPath } = useKeystone()
   const client = useApolloClient()
 
   const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false)
@@ -264,7 +265,7 @@ export function Cards ({
                           tone="active"
                           css={{ textDecoration: 'none' }}
                           as={Link}
-                          href={`/${foreignList.path}/${id}`}
+                          href={`${adminPath}/${foreignList.path}/${id}`}
                         >
                           View {foreignList.singular} details
                         </Button>

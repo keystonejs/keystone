@@ -78,7 +78,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
 async function noop () {}
 function identity<T> (x: T) { return x }
 
-export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): __ResolvedKeystoneConfig<TypeInfo> {
+export function resolveDefaults<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>, inject = false): __ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -128,7 +128,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
     },
-    lists: injectDefaults(config, defaultIdField),
+    lists: inject ? injectDefaults(config, defaultIdField) : config.lists,
     server: {
       ...config.server,
       maxFileSize: config.server?.maxFileSize ?? (200 * 1024 * 1024), // 200 MiB
@@ -150,6 +150,7 @@ export function resolveDefaults <TypeInfo extends BaseKeystoneTypeInfo> (config:
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
       publicPages:config.ui?.publicPages ?? [],
+      tsx: config.ui?.tsx ?? true,
     },
   }
 }

@@ -23,10 +23,7 @@ import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
-import {
-  useKeystone,
-  useList
-} from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
@@ -39,7 +36,7 @@ import { useFilters } from './useFilters'
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { params: { listKey: string } }
 
 type FetchedFieldMeta = {
   path: string
@@ -100,7 +97,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         return x.startsWith('!') || storeableQueries.includes(x)
       })
 
-      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+      if (!hasSomeQueryParamsWhichAreAboutListPage) {
         const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
         let parsed
         try {
@@ -111,7 +108,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         }
       }
     },
-    [localStorageKey, router.isReady]
+    [localStorageKey]
   )
   useEffect(() => {
     const queryParamsToSerialize: Record<string, string> = {}
@@ -130,10 +127,9 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
-function ListPage ({ listKey }: ListPageProps) {
-  const keystone = useKeystone()
+export function ListPage ({ params }: ListPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
@@ -576,6 +572,7 @@ function ListTable ({
   orderableFields: Set<string>
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const { query } = useRouter()
   const shouldShowLinkIcon = selectedFields.keys().some((k, i) => !list.fields[k].views.Cell.supportsLinkTo && i === 0)
   return (
@@ -695,8 +692,8 @@ function ListTable ({
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
-                      href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                      href={`${adminPath}/${list.path}/[id]`}
+                      as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
@@ -714,8 +711,8 @@ function ListTable ({
                         <TableBodyCell css={{ color: 'red' }} key={path}>
                           {i === 0 && Cell.supportsLinkTo ? (
                             <CellLink
-                              href={`/${list.path}/[id]`}
-                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                              href={`${adminPath}/${list.path}/[id]`}
+                              as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                             >
                               {errorMessage}
                             </CellLink>
@@ -736,8 +733,8 @@ function ListTable ({
                         linkTo={
                           i === 0 && Cell.supportsLinkTo
                             ? {
-                                href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
+                                href: `${adminPath}/${list.path}/[id]`,
+                                as: `${adminPath}/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }
