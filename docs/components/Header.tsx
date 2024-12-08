@@ -117,7 +117,7 @@ function LinkItem ({
   )
 }
 
-function useClickOutside (ref: RefObject<HTMLElement>, cb: () => void) {
+function useClickOutside (ref: RefObject<HTMLElement | null>, cb: () => void) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
