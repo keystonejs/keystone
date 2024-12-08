@@ -40,6 +40,7 @@ export const componentBlocks = {
             {props.fields.items.elements.map(item => {
               return (
                 <Box
+                  key={item.key}
                   margin="xsmall"
                   css={{
                     minWidth: '61.8%',
