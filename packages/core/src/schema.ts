@@ -1,3 +1,4 @@
+import { resolveDefaults } from './lib/defaults'
 import {
   type BaseFields,
   type BaseKeystoneTypeInfo,
@@ -7,7 +8,7 @@ import {
 } from './types'
 
 export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>) {
-  return config
+  return resolveDefaults(config)
 }
 
 let i = 0

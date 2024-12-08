@@ -5,7 +5,6 @@ import { type ChildProcess } from 'node:child_process'
 import { printSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import { ExitError } from './scripts/utils'
-import { type __ResolvedKeystoneConfig } from './types'
 import { initialiseLists } from './lib/core/initialise-lists'
 import {
   type System,
