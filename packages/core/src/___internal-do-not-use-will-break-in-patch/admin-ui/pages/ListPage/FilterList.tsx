@@ -3,7 +3,7 @@
 import { Inline, jsx, Stack } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { usePopover, PopoverDialog } from '@keystone-ui/popover'
-import { type FormEvent, Fragment, useState } from 'react'
+import { type FormEvent, Fragment, useState, type JSX } from 'react'
 import { Pill } from '@keystone-ui/pill'
 import { type FieldMeta, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
