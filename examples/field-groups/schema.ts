@@ -26,15 +26,12 @@ export const lists = {
             // for this example, we are going to use a hook for fun
             //  defaultValue: { kind: 'now' }
             hooks: {
-              resolveInput: ({ context, operation, resolvedData }) => {
-                // TODO: text should allow you to prevent a defaultValue, then Prisma create could be non-null
-                // if (operation === 'create') return resolvedData.title.replace(/ /g, '-').toLowerCase()
-                if (operation === 'create') {
-                  return resolvedData.title?.replace(/ /g, '-').toLowerCase()
-                }
-
-                return resolvedData.slug
-              },
+              resolveInput: {
+                create: ({ context, operation, resolvedData }) => {
+                  // TODO: text should allow you to prevent a defaultValue, then Prisma create could be non-null
+                  return resolvedData.title?.replace(/ /g, '-').toLowerCase()                  
+                },                
+              }
             },
           }),
         },

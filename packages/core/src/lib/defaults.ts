@@ -48,25 +48,6 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  /** @deprecated, TODO: remove in breaking change */
-  for (const [listKey, list] of Object.entries(updated)) {
-    if (list.hooks === undefined) continue
-    if (list.hooks.validate !== undefined) {
-      if (list.hooks.validateInput !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateInput" for the "${listKey}" list`)
-      if (list.hooks.validateDelete !== undefined) throw new TypeError(`"hooks.validate" conflicts with "hooks.validateDelete" for the "${listKey}" list`)
-      continue
-    }
-
-    list.hooks = {
-      ...list.hooks,
-      validate: {
-        create: list.hooks.validateInput,
-        update: list.hooks.validateInput,
-        delete: list.hooks.validateDelete
-      }
-    }
-  }
-
   return updated
 }
 

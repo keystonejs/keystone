@@ -12,17 +12,30 @@ export const lists = {
     access: allowAll,
     hooks: {
       // this hook publishes posts to the 'POST_UPDATED' channel when a post mutated
-      afterOperation: async ({ item }) => {
-        // WARNING: passing this item directly to pubSub bypasses any contextual access control
-        //    if you want access control, you need to use a different architecture
-        //
-        //   tl;dr Keystone access filters are not respected in this scenario
-        console.log('POST_UPDATED', { id: item?.id })
-
-        pubSub.publish('POST_UPDATED', {
-          postUpdated: item,
-        })
-      },
+      afterOperation: {
+        create: async ({ item }) => {
+          // WARNING: passing this item directly to pubSub bypasses any contextual access control
+          //    if you want access control, you need to use a different architecture
+          //
+          //   tl;dr Keystone access filters are not respected in this scenario
+          console.log('POST_UPDATED', { id: item?.id })
+  
+          pubSub.publish('POST_UPDATED', {
+            postUpdated: item,
+          })
+        },
+        update: async ({ item }) => {
+          // WARNING: passing this item directly to pubSub bypasses any contextual access control
+          //    if you want access control, you need to use a different architecture
+          //
+          //   tl;dr Keystone access filters are not respected in this scenario
+          console.log('POST_UPDATED', { id: item?.id })
+  
+          pubSub.publish('POST_UPDATED', {
+            postUpdated: item,
+          })
+        },
+      }
     },
     fields: {
       title: text({ validation: { isRequired: true } }),
