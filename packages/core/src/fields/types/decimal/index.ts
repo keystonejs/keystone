@@ -11,7 +11,7 @@ import { graphql } from '../../..'
 import { filters } from '../../filters'
 import { type DecimalFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -141,7 +141,14 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
 
     return fieldType(dbField)({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate: {
+          ...config.hooks?.validate,
+          create: merge(validate, config.hooks?.validate?.create),
+          update: merge(validate, config.hooks?.validate?.update),
+        },
+      },
       input: {
         uniqueWhere:
           isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,

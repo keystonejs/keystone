@@ -55,18 +55,23 @@ function trackingByHooks<
   //    FieldKey extends 'createdBy' | 'updatedBy' // TODO: refined types for the return types
 > (immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
-    async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
-      if (operation === 'update') {
+    resolveInput: {
+      async create ({ context, operation, resolvedData, item, fieldKey }) {
+        // TODO: refined types for the return types
+        //   FIXME: CommonFieldConfig need not always be generalised
+        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
+      },
+      async update ({ context, operation, resolvedData, item, fieldKey }) {
         if (immutable) return undefined
 
         // show we have refined types for compatible item.* fields
         if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
-      }
-
-      // TODO: refined types for the return types
-      //   FIXME: CommonFieldConfig need not always be generalised
-      return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
-    },
+  
+        // TODO: refined types for the return types
+        //   FIXME: CommonFieldConfig need not always be generalised
+        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
+      },
+    }
   }
 }
 
@@ -76,18 +81,23 @@ function trackingAtHooks<
 > (immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
     // TODO: switch to operation routing when supported for fields
-    async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
-      if (operation === 'update') {
+    resolveInput: {
+      async create ({ context, operation, resolvedData, item, fieldKey }) {
+        // TODO: refined types for the return types
+        //   FIXME: CommonFieldConfig need not always be generalised
+        return new Date() as any
+      },
+      async update ({ context, operation, resolvedData, item, fieldKey }) {
         if (immutable) return undefined
 
         // show we have refined types for compatible item.* fields
         if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
-      }
 
-      // TODO: refined types for the return types
-      //   FIXME: CommonFieldConfig need not always be generalised
-      return new Date() as any
-    },
+        // TODO: refined types for the return types
+        //   FIXME: CommonFieldConfig need not always be generalised
+        return new Date() as any
+      },
+    }
   }
 }
 

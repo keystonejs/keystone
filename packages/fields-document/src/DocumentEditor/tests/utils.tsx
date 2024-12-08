@@ -373,7 +373,7 @@ function nodeToReactElement (
   if (type !== undefined) {
     return createElement(type, { ...restNode, ...computedData, children })
   }
-  // @ts-ignore TODO: can `type` actually be undefined?
+  // @ts-expect-error TODO: can `type` actually be undefined?
   return createElement('element', { ...node, ...computedData, children })
 }
 
