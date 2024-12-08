@@ -2221,6 +2221,9 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.0.1
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.0.1
       '@types/resolve':
         specifier: ^1.20.2
         version: 1.20.6
