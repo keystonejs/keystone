@@ -107,7 +107,7 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig)
 
-export function relationship <ListTypeInfo extends BaseListTypeInfo>({
+export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
   ref,
   ...config
 }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
