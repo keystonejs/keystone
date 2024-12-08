@@ -9,14 +9,14 @@ export type ModalState = {
 const ModalContext = React.createContext<ModalState | null>(null)
 
 export const DrawerProvider = ({ children }: { children: ReactNode }) => {
-  let [drawerStack, setDrawerStack] = useState<string[]>([])
+  const [drawerStack, setDrawerStack] = useState<string[]>([])
 
   const pushToDrawerStack = useCallback((key: string) => {
     setDrawerStack(stack => [...stack, key])
   }, [])
   const popFromDrawerStack = useCallback(() => {
     setDrawerStack(stack => {
-      let less = stack.slice(0, -1)
+      const less = stack.slice(0, -1)
       return less
     })
   }, [])
@@ -50,7 +50,7 @@ export const useDrawerManager = (uniqueKey: string) => {
   }, [])
   // the last key in the array is the "top" modal visually, so the depth is the inverse index
   // be careful not to mutate the stack
-  let depth = modalState.drawerStack.slice().reverse().indexOf(uniqueKey)
+  const depth = modalState.drawerStack.slice().reverse().indexOf(uniqueKey)
   // if it's not in the stack already,
   // we know that it should be the last drawer in the stack but the effect hasn't happened yet
   // so we need to make the depth 0 so the depth is correct even though the effect hasn't happened yet

@@ -1,6 +1,7 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
+import ms from 'ms'
 import {
   getFiles,
   introspectDatabase,
@@ -57,7 +58,7 @@ model Todo {
 
 let mockPromptResponseEntries: [string, string | boolean][] = []
 
-jest.setTimeout(60 * 1000) // these tests are slow
+jest.setTimeout(ms('1 minute')) // these tests are slow
 
 jest.mock('prompts', () => {
   return function (
@@ -125,7 +126,7 @@ describe('dev', () => {
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
-      ? database created
+      ? Database created
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server

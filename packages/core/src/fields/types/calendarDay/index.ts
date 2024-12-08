@@ -25,7 +25,7 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function calendarDay <ListTypeInfo extends BaseListTypeInfo>(config: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     isIndexed,
     validation,

@@ -4,7 +4,7 @@
 import { jsx, makeEditor } from './tests/utils'
 
 test('layout with no layout are unwrapped', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <layout layout={undefined as any}>
         <layout-area>
@@ -31,7 +31,7 @@ test('layout with no layout are unwrapped', () => {
 })
 
 test('layout with not enough layout-area are added', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <layout layout={[1, 1]}>
         <layout-area>
@@ -77,7 +77,7 @@ test('layout with not enough layout-area are added', () => {
 })
 
 test('layout with extra layout-areas that are empty are removed', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <layout layout={[1, 1]}>
         <layout-area>
@@ -138,7 +138,7 @@ test('layout with extra layout-areas that are empty are removed', () => {
 })
 
 test('the content of extra layout-areas are merged into the last layout-area', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <layout layout={[1, 1]}>
         <layout-area>
@@ -226,7 +226,7 @@ test('the content of extra layout-areas are merged into the last layout-area', (
 })
 
 test('enter in layout area never exits layout area', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <layout layout={[1]}>
         <layout-area>
@@ -288,7 +288,7 @@ test('enter in layout area never exits layout area', () => {
 })
 
 test('delete backward never deletes or exits in first layout area', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text />
@@ -341,7 +341,7 @@ test('delete backward never deletes or exits in first layout area', () => {
 })
 
 test('delete backward never deletes or exits in second layout area', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text />

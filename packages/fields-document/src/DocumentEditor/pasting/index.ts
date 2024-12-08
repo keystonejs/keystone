@@ -58,7 +58,7 @@ export function withPasting (editor: Editor): Editor {
       editor.insertText(plain)
       return
     }
-    let vsCodeEditorData = data.getData('vscode-editor-data')
+    const vsCodeEditorData = data.getData('vscode-editor-data')
     if (vsCodeEditorData) {
       try {
         const vsCodeData = JSON.parse(vsCodeEditorData)

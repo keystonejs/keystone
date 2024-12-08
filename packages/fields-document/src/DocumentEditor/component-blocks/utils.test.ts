@@ -39,7 +39,7 @@ test('getChildFieldAtPath', () => {
 })
 
 test('getAncestorFields', () => {
-  let root = { kind: 'object' as const, fields: props }
+  const root = { kind: 'object' as const, fields: props }
   expect(getAncestorSchemas(root, ['something', 'blockChild'], falseVal)).toEqual([
     root,
     props.something,

@@ -47,7 +47,7 @@ type SwitchControlProps = {
 
 export const SwitchControl = forwardRef<HTMLButtonElement, SwitchControlProps>(
   ({ a11yLabels = { on: 'On', off: 'Off' }, checked = false, onChange, ...props }, ref) => {
-    let onClick = () => {
+    const onClick = () => {
       if (onChange) {
         onChange(!checked)
       }
@@ -64,10 +64,10 @@ export const SwitchControl = forwardRef<HTMLButtonElement, SwitchControlProps>(
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const { animation, fields, sizing } = useTheme()
 
-  let gutter = 3
-  let trackHeight = sizing.xsmall + gutter
-  let trackWidth = trackHeight * 2 - 2 * gutter
-  let handleSize = trackHeight - gutter * 2
+  const gutter = 3
+  const trackHeight = sizing.xsmall + gutter
+  const trackWidth = trackHeight * 2 - 2 * gutter
+  const handleSize = trackHeight - gutter * 2
 
   return (
     <button

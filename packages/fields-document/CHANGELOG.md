@@ -1,5 +1,21 @@
 # @keystone-6/fields-document
 
+## 9.1.1
+
+### Patch Changes
+
+- [#9326](https://github.com/keystonejs/keystone/pull/9326) [`8cb70c9`](https://github.com/keystonejs/keystone/commit/8cb70c9705670121f8ecf7e2eab7165df6140539) Thanks [@kidneyweakx](https://github.com/kidneyweakx)! - Fixes URL validation bug by using `encodeURI` to preserve percent-encoded characters during validation.
+
+## 9.1.0
+
+### Minor Changes
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`fa63c76`](https://github.com/keystonejs/keystone/commit/fa63c7651b037aef41a67aaa7309a19f9792aa9a) Thanks [@dcousens](https://github.com/dcousens)! - Fix `@keystone-6/fields-document` package breaking when compiling in SSR environments (#8717)
+
+### Patch Changes
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`0f1dead`](https://github.com/keystonejs/keystone/commit/0f1deade68c3ab59dbf0c01e6affdccb026d0b87) Thanks [@dcousens](https://github.com/dcousens)! - Replace `io-ts` with `zod` internally
+
 ## 9.0.0
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core'
-import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
+import bytes from 'bytes'
 
 export default config({
   db: {
@@ -8,9 +8,12 @@ export default config({
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
     // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixPrismaPath,
+    prismaClientPath: 'node_modules/myprisma',
   },
   lists,
+  server: {
+    maxFileSize: bytes('40Mb')
+  },
   storage: {
     my_images: {
       kind: 'local',

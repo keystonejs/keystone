@@ -10,7 +10,7 @@ describe.each(
     .flat() as [keyof typeof allMarkdownShortcuts, string][]
 )('%s with shortcut "%s"', (markName, shortcut) => {
   test('basic shortcut usage', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -38,7 +38,7 @@ describe.each(
   })
 
   test('works when selection is not collapsed', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -66,7 +66,7 @@ describe.each(
     )
   })
   test('works when the start and ends are in different text nodes', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>{shortcut}t</text>
@@ -98,7 +98,7 @@ describe.each(
     )
   })
   test('does match when start of shortcut is in a different text node', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text keyboard>{shortcut}</text>
@@ -126,7 +126,7 @@ describe.each(
   })
   if (shortcut.length === 2) {
     test('matches when the end shortcut is in a different text node', () => {
-      let editor = makeEditor(
+      const editor = makeEditor(
         <editor marks={{ keyboard: true }}>
           <paragraph>
             <text>{shortcut}thing</text>
@@ -153,7 +153,7 @@ describe.each(
       )
     })
     test('does match when first and second characters in the start shortcut are in different text nodes', () => {
-      let editor = makeEditor(
+      const editor = makeEditor(
         <editor>
           <paragraph>
             <text keyboard>{shortcut[0]}</text>
@@ -181,7 +181,7 @@ describe.each(
     })
   }
   test('matches when the shortcut appears in an invalid position after the valid position in the same text node', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -208,7 +208,7 @@ describe.each(
     )
   })
   test('matches when the shortcut appears in an invalid position before the valid position in the same text node', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -235,7 +235,7 @@ describe.each(
     )
   })
   test("does not match when there is a different text node before the start of the shortcut that doesn't end in whitespace", () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text keyboard>some text</text>
@@ -263,7 +263,7 @@ describe.each(
     )
   })
   test('does not match when there is nothing between the start and end of the shortcut', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -288,7 +288,7 @@ describe.each(
     )
   })
   test('does not match when there is whitespace immediately after the end of the start of the shortcut', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -315,7 +315,7 @@ describe.each(
   })
 
   test('does not match when there is whitespace immediately before the start of the end shortcut', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -341,7 +341,7 @@ describe.each(
     )
   })
   test('does not match if there is a non-whitespace character before the start of the shortcut', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -367,7 +367,7 @@ describe.each(
     )
   })
   test('does match if there is content before the text but still whitespace before the shortcut', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -394,7 +394,7 @@ describe.each(
     )
   })
   test("does match if there's text in the same block with marks and still whitespace before the new place", () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text bold>some text</text>
@@ -423,7 +423,7 @@ describe.each(
     )
   })
   test("does match if there's lots of text in the same block with marks and still whitespace before the new place", () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text keyboard>some text</text>
@@ -479,7 +479,7 @@ describe.each(
   })
 
   test('undo only undos adding the mark and removing the shortcut, keeps the inserted text', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -508,7 +508,7 @@ describe.each(
 })
 
 test('inserting a break at the end of a block with a mark removes the mark', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ bold: true }}>
       <paragraph>
         <text bold>
@@ -547,7 +547,7 @@ test('inserting a break at the end of a block with a mark removes the mark', () 
 })
 
 test("inserting a break in the middle of text doesn't remove the mark", () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ bold: true }}>
       <paragraph>
         <text bold>

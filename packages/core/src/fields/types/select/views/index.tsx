@@ -129,14 +129,14 @@ export const Field = ({
 }
 
 export const Cell: CellComponent<typeof controller> = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   const label = field.options.find(x => x.value === value)?.label
   return linkTo ? <CellLink {...linkTo}>{label}</CellLink> : <CellContainer>{label}</CellContainer>
 }
 Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent<typeof controller> = ({ item, field }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   const label = field.options.find(x => x.value === value)?.label
 
   return (

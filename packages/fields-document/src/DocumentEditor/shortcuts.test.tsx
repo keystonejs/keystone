@@ -6,7 +6,7 @@ import { jsx, makeEditor } from './tests/utils'
 
 describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, result) => {
   test('can be inserted', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>
@@ -32,7 +32,7 @@ describe.each(Object.entries(shortcuts))('shortcut "%s" for "%s"', (shortcut, re
     )
   })
   test('the replacement can be undone', () => {
-    let editor = makeEditor(
+    const editor = makeEditor(
       <editor>
         <paragraph>
           <text>

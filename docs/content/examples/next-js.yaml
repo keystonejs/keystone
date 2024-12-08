@@ -1,0 +1,5 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory
+title: Next.js + Keystone
+kind: end-to-end
+description: >
+  Shows you how to use Keystone as a data engine within Next.js applications.

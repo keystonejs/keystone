@@ -16,11 +16,12 @@ import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 type AppTemplateOptions = { configFileExists: boolean }
 
-export function appTemplate (
+export function adminConfigTemplate (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists }: AppTemplateOptions,
-  apiPath: string
+  apiPath: string,
+  adminPath: string
 ) {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -46,24 +47,65 @@ export function appTemplate (
     return JSON.stringify(viewRelativeToAppFile)
   })
   // -- TEMPLATE START
-  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';
+  return `/* eslint-disable */\n${allViews
+    .map((views, i) => `import * as view${i} from ${views}`)
+    .join('\n')}
 
-${allViews.map((views, i) => `import * as view${i} from ${views};`).join('\n')}
+${configFileExists
+      ? 'import * as adminConfig from \'../config\''
+      : 'const adminConfig = {}'
+    }
 
-${
-  configFileExists
-    ? `import * as adminConfig from "../../../admin/config";`
-    : 'var adminConfig = {};'
+export const config = {
+  lazyMetadataQuery: ${JSON.stringify(
+      getLazyMetadataQuery(graphQLSchema, adminMeta)
+    )},
+  fieldViews: [${allViews.map((_, i) => `view${i}`)}],
+  adminMetaHash: '${adminMetaQueryResultHash}',
+  adminConfig,
+  apiPath: '${apiPath}',
+  adminPath: '${adminPath}',
+};
+`
+  // -- TEMPLATE END
 }
 
-export default getApp({
-  lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
-  fieldViews: [${allViews.map((_, i) => `view${i}`)}],
-  adminMetaHash: "${adminMetaQueryResultHash}",
-  adminConfig: adminConfig,
-  apiPath: "${apiPath}",
-});
-`
+export function adminLayoutTemplate () {
+
+  // -- TEMPLATE START
+  return `'use client'
+import { Layout } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
+import { config } from './.admin'
+
+
+export default function AdminLayout ({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <Layout config={config as any}>
+      {children}
+    </Layout>
+  )
+}`
+  // -- TEMPLATE END
+}
+
+export function adminRootLayoutTemplate () {
+
+  // -- TEMPLATE START
+  return `export default function RootLayout ({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}`
   // -- TEMPLATE END
 }
 
@@ -112,7 +154,7 @@ function getLazyMetadataQuery (
             `All members of the AuthenticatedItem union must refer to Keystone lists but "${type.name}" is in the AuthenticatedItem union but is not a Keystone list`
           )
         }
-        let labelGraphQLField = fields[list.labelField]
+        const labelGraphQLField = fields[list.labelField]
         if (labelGraphQLField === undefined) {
           throw new Error(
             `The labelField for the list "${list.key}" is "${list.labelField}" but the GraphQL type does not have a field named "${list.labelField}"`

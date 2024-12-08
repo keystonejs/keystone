@@ -1,0 +1,5 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/singleton
+title: Singleton
+kind: standalone
+description: >
+  Demonstrates how to use singleton lists with Keystone.

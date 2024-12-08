@@ -1,17 +1,20 @@
-import path from 'path'
-import type {
-  BaseListTypeInfo,
-  JSONValue,
-  KeystoneContext,
-  MaybeItemFunction,
-  MaybePromise,
-  MaybeSessionFunction,
-  __ResolvedKeystoneConfig,
+import path from 'node:path'
+import {
+  type BaseListTypeInfo,
+  type JSONValue,
+  type KeystoneContext,
+  type MaybeItemFunction,
+  type MaybePromise,
+  type MaybeSessionFunction,
+  type __ResolvedKeystoneConfig,
 } from '../types'
-import type { FilterOrderArgs } from '../types/config/fields'
+import {
+  type GraphQLNames
+} from '../types/utils'
+import { type FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
-import type { InitialisedList } from './core/initialise-lists'
+import { type InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
@@ -60,9 +63,10 @@ export type ListMetaRootVal = {
   fields: FieldMetaRootVal[]
   fieldsByKey: Record<string, FieldMetaRootVal>
   groups: Array<FieldGroupMeta>
-
+  graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
+  initialSearchFields: string[]
   initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
@@ -122,6 +126,11 @@ export function createAdminMeta (
       ].slice(0, 3)
     }
 
+    let initialSearchFields = listConfig.ui?.searchFields?.concat()
+    if (!initialSearchFields) {
+      initialSearchFields = [...list.ui.searchableFields.keys()]
+    }
+
     const maximumPageSize = Math.min(
       listConfig.ui?.listView?.pageSize ?? 50,
       (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
@@ -140,9 +149,13 @@ export function createAdminMeta (
       fields: [],
       fieldsByKey: {},
       groups: [],
+      graphql: {
+        names: list.graphql.names,
+      },
 
       pageSize: maximumPageSize,
       initialColumns,
+      initialSearchFields,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
           | { field: string, direction: 'ASC' | 'DESC' }

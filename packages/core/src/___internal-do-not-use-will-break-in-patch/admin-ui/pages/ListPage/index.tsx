@@ -23,10 +23,10 @@ import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel, usePaginationParams } from '../../../../admin-ui/components/Pagination'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { Link, useRouter } from '../../../../admin-ui/router'
-import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
+import { useSearchFilter } from '../../../../fields/types/relationship/views/RelationshipSelect'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
@@ -36,7 +36,7 @@ import { useFilters } from './useFilters'
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { params: { listKey: string } }
 
 type FetchedFieldMeta = {
   path: string
@@ -45,7 +45,7 @@ type FetchedFieldMeta = {
   listView: { fieldMode: 'read' | 'hidden' }
 }
 
-let listMetaGraphqlQuery: TypedDocumentNode<
+const listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
@@ -84,7 +84,6 @@ const storeableQueries = ['sortBy', 'fields']
 function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
-
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
     router.replace({ pathname: router.pathname })
@@ -94,11 +93,11 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   // MERGE QUERY PARAMS FROM CACHE WITH QUERY PARAMS FROM ROUTER
   useEffect(
     () => {
-      let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+      const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
         return x.startsWith('!') || storeableQueries.includes(x)
       })
 
-      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+      if (!hasSomeQueryParamsWhichAreAboutListPage) {
         const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
         let parsed
         try {
@@ -109,10 +108,10 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         }
       }
     },
-    [localStorageKey, router.isReady]
+    [localStorageKey]
   )
   useEffect(() => {
-    let queryParamsToSerialize: Record<string, string> = {}
+    const queryParamsToSerialize: Record<string, string> = {}
     Object.keys(router.query).forEach(key => {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
         queryParamsToSerialize[key] = router.query[key] as string
@@ -128,16 +127,15 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
-function ListPage ({ listKey }: ListPageProps) {
+export function ListPage ({ params }: ListPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
-
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
@@ -158,12 +156,11 @@ function ListPage ({ listKey }: ListPageProps) {
   const sort = useSort(list, orderableFields)
   const filters = useFilters(list, filterableFields)
 
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
-  const searchLabels = searchFields.map(key => list.fields[key].label)
-
+  const searchLabels = list.initialSearchFields.map(key => list.fields[key].label)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
-  const search = useFilter(searchParam, list, searchFields)
+  const search = useSearchFilter(searchParam, list, list.initialSearchFields, keystone.adminMeta.lists)
+
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
@@ -366,7 +363,7 @@ function ListPage ({ listKey }: ListPageProps) {
   )
 }
 
-const ListPageHeader = ({ listKey }: { listKey: string }) => {
+function ListPageHeader ({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   return (
     <Fragment>
@@ -384,8 +381,8 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
   )
 }
 
-const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
-  <p
+function ResultsSummaryContainer ({ children }: { children: ReactNode }) {
+  return <p
     css={{
       // TODO: don't do this
       // (this is to make it so things don't move when a user selects an item)
@@ -397,9 +394,9 @@ const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
   >
     {children}
   </p>
-)
+}
 
-const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
+function SortDirectionArrow ({ direction }: { direction: 'ASC' | 'DESC' }) {
   const size = '0.25em'
   return (
     <span
@@ -575,9 +572,9 @@ function ListTable ({
   orderableFields: Set<string>
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const { query } = useRouter()
-  const shouldShowLinkIcon =
-    !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo
+  const shouldShowLinkIcon = selectedFields.keys().some((k, i) => !list.fields[k].views.Cell.supportsLinkTo && i === 0)
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
@@ -620,9 +617,7 @@ function ListTable ({
           {shouldShowLinkIcon && <TableHeaderCell />}
           {[...selectedFields].map(path => {
             const label = list.fields[path].label
-            if (!orderableFields.has(path)) {
-              return <TableHeaderCell key={path}>{label}</TableHeaderCell>
-            }
+            if (!orderableFields.has(path)) return <TableHeaderCell key={path}>{label}</TableHeaderCell>
             return (
               <TableHeaderCell key={path}>
                 <Link
@@ -697,8 +692,8 @@ function ListTable ({
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
-                      href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                      href={`${adminPath}/${list.path}/[id]`}
+                      as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
@@ -706,11 +701,9 @@ function ListTable ({
                 )}
                 {[...selectedFields].map((path, i) => {
                   const field = list.fields[path]
-                  let { Cell } = list.fields[path].views
+                  const { Cell } = list.fields[path].views
                   const itemForField: Record<string, any> = {}
-                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
-                    field.controller
-                  )) {
+                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
                     const fieldGetter = itemGetter.get(graphqlField)
                     if (fieldGetter.errors) {
                       const errorMessage = fieldGetter.errors[0].message
@@ -718,8 +711,8 @@ function ListTable ({
                         <TableBodyCell css={{ color: 'red' }} key={path}>
                           {i === 0 && Cell.supportsLinkTo ? (
                             <CellLink
-                              href={`/${list.path}/[id]`}
-                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                              href={`${adminPath}/${list.path}/[id]`}
+                              as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                             >
                               {errorMessage}
                             </CellLink>
@@ -740,8 +733,8 @@ function ListTable ({
                         linkTo={
                           i === 0 && Cell.supportsLinkTo
                             ? {
-                                href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
+                                href: `${adminPath}/${list.path}/[id]`,
+                                as: `${adminPath}/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }
@@ -759,7 +752,7 @@ function ListTable ({
   )
 }
 
-const TableContainer = ({ children }: { children: ReactNode }) => {
+function TableContainer ({ children }: { children: ReactNode }) {
   return (
     <table
       css={{
@@ -775,7 +768,7 @@ const TableContainer = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const TableHeaderRow = ({ children }: { children: ReactNode }) => {
+function TableHeaderRow ({ children }: { children: ReactNode }) {
   return (
     <thead>
       <tr>{children}</tr>
@@ -783,7 +776,7 @@ const TableHeaderRow = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
+function TableHeaderCell (props: HTMLAttributes<HTMLElement>) {
   const { colors, spacing, typography } = useTheme()
   return (
     <th
@@ -803,7 +796,7 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
   )
 }
 
-const TableBodyCell = (props: HTMLAttributes<HTMLElement>) => {
+function TableBodyCell (props: HTMLAttributes<HTMLElement>) {
   const { colors, typography } = useTheme()
   return (
     <td

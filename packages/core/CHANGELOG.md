@@ -1,5 +1,67 @@
 # @keystone-6/core
 
+## 6.3.1
+
+### Patch Changes
+
+- [#9348](https://github.com/keystonejs/keystone/pull/9348) [`86c5db3`](https://github.com/keystonejs/keystone/commit/86c5db38497e7f53452b05cba022ed116c86ae63) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `serxer.maxFileSize` parameter being ignored
+
+- [#9391](https://github.com/keystonejs/keystone/pull/9391) [`91ae307`](https://github.com/keystonejs/keystone/commit/91ae307949053daebbd4933d511e17aee4c38143) Thanks [@dcousens](https://github.com/dcousens)! - Updates `prisma` minor version to `5.22.0`
+
+- [#9262](https://github.com/keystonejs/keystone/pull/9262) [`d543e60`](https://github.com/keystonejs/keystone/commit/d543e60d2f59959caf804fb6f6dc58227c98934d) Thanks [@kennedybaird](https://github.com/kennedybaird)! - Fixes `decimal` field bug (#8597) by parsing to `Decimal` before lessThan / greaterThan checks
+
+- [#9359](https://github.com/keystonejs/keystone/pull/9359) [`70eaf68`](https://github.com/keystonejs/keystone/commit/70eaf68340dabf3848935b821eb384c9716a5c26) Thanks [@marekryb](https://github.com/marekryb)! - Fix misleading error messages when importing `.keystone/config.js`
+
+## 6.3.0
+
+### Minor Changes
+
+- [#9292](https://github.com/keystonejs/keystone/pull/9292) [`19a734c`](https://github.com/keystonejs/keystone/commit/19a734cffad82ee34452013e76182f72abbfa431) Thanks [@dcousens](https://github.com/dcousens)! - Adds `keystone telemetry inform` command to show an informed consent notice
+
+- [#9310](https://github.com/keystonejs/keystone/pull/9310) [`c61ac79`](https://github.com/keystonejs/keystone/commit/c61ac794e77a9516863e0ab92914882b04a8f1c9) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrade prisma to `5.19.0`
+
+- [#9280](https://github.com/keystonejs/keystone/pull/9280) [`6bdf320`](https://github.com/keystonejs/keystone/commit/6bdf3209a2df833fdfd8e7dc5953ec08b785b72d) Thanks [@acburdine](https://github.com/acburdine)! - Adds context.transaction passthrough for prisma $transaction options
+
+### Patch Changes
+
+- [#9278](https://github.com/keystonejs/keystone/pull/9278) [`dc3802a`](https://github.com/keystonejs/keystone/commit/dc3802a579306b6e6fa5fd2e65a73142dc5f3e86) Thanks [@acburdine](https://github.com/acburdine)! - Fix blended usage of `{field}.hooks.validateInput` and `{field}.validate.*` resulting in an error
+
+- [`830d46d`](https://github.com/keystonejs/keystone/commit/830d46dcb5041d2b7ee52b7670c177139f7691cc) Thanks [@DavidMulder0](https://github.com/DavidMulder0)! - Fixes the `keystone telemetry disable` command for opting out of telemetry
+
+- [#9292](https://github.com/keystonejs/keystone/pull/9292) [`19a734c`](https://github.com/keystonejs/keystone/commit/19a734cffad82ee34452013e76182f72abbfa431) Thanks [@dcousens](https://github.com/dcousens)! - Update https://keystonejs.com/docs/reference/telemetry to show that `database` type is collected as part of telemetry
+
+## 6.2.0
+
+### Minor Changes
+
+- [#9235](https://github.com/keystonejs/keystone/pull/9235) [`ab1b44c`](https://github.com/keystonejs/keystone/commit/ab1b44cebdf3dd34fb68bb466a5d5b3a42c87b80) Thanks [@dcousens](https://github.com/dcousens)! - Add support for developers to add `esbuild.keystone.ts` to the working directory to mutate the default esbuild configuration
+
+- [#9254](https://github.com/keystonejs/keystone/pull/9254) [`27207a1`](https://github.com/keystonejs/keystone/commit/27207a1a0d77619100386c64c4186a11c25091b6) Thanks [@dcousens](https://github.com/dcousens)! - Add support for lists with no fields in GraphQL
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Add `db.isNullable` support for multiselect field type, defaulting to false
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`fa63c76`](https://github.com/keystonejs/keystone/commit/fa63c7651b037aef41a67aaa7309a19f9792aa9a) Thanks [@dcousens](https://github.com/dcousens)! - Add exports for internal AdminUI pagination components `Pagination`, `PaginationLabel` and `usePaginationParams` for use in custom pages
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `esbuild` to ^0.23.0
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `nextjs` to version 14
+
+- [#9264](https://github.com/keystonejs/keystone/pull/9264) [`3f9cf06`](https://github.com/keystonejs/keystone/commit/3f9cf06c8813580b74ae85da360dc4252e30a29d) Thanks [@dcousens](https://github.com/dcousens)! - Update `prisma` monorepo to version 5.17.0
+
+- [#9273](https://github.com/keystonejs/keystone/pull/9273) [`d80748e`](https://github.com/keystonejs/keystone/commit/d80748ea5084bed25e1c2973d66774a66c1bdf89) Thanks [@dcousens](https://github.com/dcousens)! - Fix Prisma errors not showing when a Prisma migration errors internally
+
+### Patch Changes
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Fix bigInt field type to throw if `defaultValue: { kind: 'autoincrement' }` and `validation.isRequired` is set
+
+- [#9217](https://github.com/keystonejs/keystone/pull/9217) [`5ee45ae`](https://github.com/keystonejs/keystone/commit/5ee45ae5ebc0cfe43ff51a185ac55737c49e0df5) Thanks [@dcousens](https://github.com/dcousens)! - Fix `list.ui.hide*` defaulting to false when GraphQL is omitted
+
+- [#9164](https://github.com/keystonejs/keystone/pull/9164) [`4262e50`](https://github.com/keystonejs/keystone/commit/4262e50c35d69847242b541db49afd2fda9cb50c) Thanks [@renovate](https://github.com/apps/renovate)! - Fix `keystone prisma ...` not returning the same error code as the Prisma engine
+
+- [#9155](https://github.com/keystonejs/keystone/pull/9155) [`0aa7317`](https://github.com/keystonejs/keystone/commit/0aa7317303e4cadec2051ca04c7ce1a3cefba952) Thanks [@dcousens](https://github.com/dcousens)! - Fix malformed uuid's from breaking relationship filters when using POSTGRESQL
+
+- [#9166](https://github.com/keystonejs/keystone/pull/9166) [`ad45b05`](https://github.com/keystonejs/keystone/commit/ad45b0541037c64462f26ae95232f34a8f02a6a1) Thanks [@acburdine](https://github.com/acburdine)! - Update built-in fields to use newer validate hook syntax
+
 ## 6.1.0
 
 ### Minor Changes
@@ -918,7 +980,7 @@
   }),
   ```
 
-  When updating to this change, and running `yarn dev`, Keystone will prompt you to update your schema.
+  When updating to this change, and running `npm run dev`, Keystone will prompt you to update your schema.
 
   - If you are using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration. **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION** - unless you want to `DROP` your data.
 

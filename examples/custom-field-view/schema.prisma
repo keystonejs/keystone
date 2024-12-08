@@ -9,7 +9,7 @@ datasource sqlite {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.myprisma/client"
+  output   = "node_modules/myprisma"
 }
 
 model Task {
@@ -21,6 +21,7 @@ model Task {
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
   relatedLinks String?
+  moreLinks    String?
 
   @@index([assignedToId])
 }

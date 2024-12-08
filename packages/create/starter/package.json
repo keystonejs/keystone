@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
-    "build": "keystone build",
-    "postinstall": "keystone build --no-ui --frozen"
+    "build": "keystone build"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",

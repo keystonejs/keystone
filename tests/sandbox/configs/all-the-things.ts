@@ -231,7 +231,10 @@ export const lists = {
 export default config({
   db: {
     provider: 'postgresql',
-    url: process.env.DATABASE_URL ?? ''
+    url: process.env.DATABASE_URL ?? '',
+
+    // WARNING: this is only needed for our monorepo examples, don't do this
+    prismaClientPath: 'node_modules/myprisma',
   },
   storage: localStorageConfig,
   lists,

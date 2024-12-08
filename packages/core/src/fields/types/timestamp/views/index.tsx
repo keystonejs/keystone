@@ -204,7 +204,7 @@ function validate (
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path]
+  const value = item[field.path]
   return linkTo ? (
     <CellLink {...linkTo}>{formatOutput(value)}</CellLink>
   ) : (
@@ -255,7 +255,7 @@ export const controller = (
     },
     serialize: ({ value: { dateValue, timeValue } }) => {
       if (dateValue && typeof timeValue === 'object' && timeValue.value !== null) {
-        let formattedDate = constructTimestamp({ dateValue, timeValue: timeValue.value })
+        const formattedDate = constructTimestamp({ dateValue, timeValue: timeValue.value })
         return { [config.path]: formattedDate }
       }
       return { [config.path]: null }

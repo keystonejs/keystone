@@ -26,8 +26,8 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
         label: ${list.labelField}
-    }
-  }`
+      }
+    }`
   )
 
   const [value, setValue] = useState(() => {

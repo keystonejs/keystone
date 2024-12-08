@@ -71,7 +71,7 @@ function getOutputGraphQLFieldInner (
         fields: () =>
           Object.fromEntries(
             Object.entries(schema.fields).map(
-              ([key, val]): [string, graphql.Field<unknown, {}, graphql.OutputType, string>] => {
+              ([key, val]): [string, graphql.Field<unknown, Record<string, graphql.Arg<graphql.InputType>>, graphql.OutputType, string>] => {
                 const field = getOutputGraphQLField(
                   `${name}${key[0].toUpperCase()}${key.slice(1)}`,
                   val,

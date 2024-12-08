@@ -15,7 +15,7 @@ import { generateAdminUI } from '../admin-ui/system'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt } from '../lib/prompts'
 import { createSystem, } from '../lib/createSystem'
-import { getEsbuildConfig } from '../lib/esbuild'
+import { getEsbuildConfig } from './esbuild'
 import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
 import { runTelemetry } from '../lib/telemetry'
@@ -56,7 +56,7 @@ function resolvablePromise<T> () {
 
 export async function dev (
   cwd: string,
-  { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
+  { dbPush, prisma, server, ui, resetAdmin }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui' | 'resetAdmin'>
 ) {
   console.log('✨ Starting Keystone')
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>()
@@ -71,7 +71,7 @@ export async function dev (
     prev.resolve({ value: build, done: false })
   }
 
-  const esbuildConfig = getEsbuildConfig(cwd)
+  const esbuildConfig = await getEsbuildConfig(cwd)
   const esbuildContext = await esbuild.context({
     ...esbuildConfig,
     plugins: [
@@ -102,7 +102,7 @@ export async function dev (
     //   WARNING: this is only actually required for tests
     // stop httpServer
     if (aHttpServer) {
-      await new Promise(async (resolve, reject) => {
+      await new Promise((resolve, reject) => {
         aHttpServer.close(async (err: any) => {
           if (err) {
             console.error('Error closing the server', err)
@@ -161,7 +161,7 @@ export async function dev (
         const paths = system.getPaths(cwd)
         if (dbPush) {
           const created = await createDatabase(system.config.db.url, path.dirname(paths.schema.prisma))
-          if (created) console.log(`✨ database created`)
+          if (created) console.log(`✨ Database created`)
 
           const migration = await withMigrate(paths.schema.prisma, system, async (m) => {
             // what does force on migrate.engine.schemaPush mean?
@@ -263,22 +263,22 @@ export async function dev (
 
     let nextApp
     if (!system.config.ui?.isDisabled && ui) {
-      const paths = system.getPaths(cwd)
-      await fsp.rm(paths.admin, { recursive: true, force: true })
+      if (!expressServer || !context) throw new TypeError('Error trying to prepare the Admin UI')
 
       console.log('✨ Generating Admin UI code')
-      await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
+      const paths = system.getPaths(cwd)
+      if (resetAdmin) {
+        await fsp.rm(paths.admin, { recursive: true, force: true })
+      }
+      await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, paths.hasSrc, false)
 
-      console.log('✨ Preparing Admin UI app')
-      nextApp = next({ dev: true, dir: paths.admin })
+      console.log('✨ Preparing Admin UI')
+      nextApp = next({ dev: true, dir: cwd })
       await nextApp.prepare()
-
+      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
       console.log(`✅ Admin UI ready`)
     }
 
-    if (nextApp && expressServer && context) {
-      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
-    }
     hasAddedAdminUIMiddleware = true
     initKeystonePromiseResolve()
 
@@ -336,7 +336,7 @@ export async function dev (
         }
 
         await generateTypes(cwd, newSystem)
-        await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, true)
+        await generateAdminUI(newSystem.config, newSystem.graphQLSchema, newSystem.adminMeta, paths.admin, paths.hasSrc, true)
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const { context: newContext } = newSystem.getKeystone(prismaClientModule)
@@ -345,7 +345,7 @@ export async function dev (
               servers.expressServer.use(createAdminUIMiddlewareWithNextApp(newSystem.config, newContext, nextApp))
             }
             expressServer = servers.expressServer
-            let prevApolloServer = lastApolloServer
+            const prevApolloServer = lastApolloServer
             lastApolloServer = servers.apolloServer
             await prevApolloServer.stop()
           }
@@ -359,7 +359,7 @@ export async function dev (
   // Serve the dev status page for the Admin UI
   let initKeystonePromiseResolve: () => void | undefined
   let initKeystonePromiseReject: (err: any) => void | undefined
-  let initKeystonePromise = new Promise<void>((resolve, reject) => {
+  const initKeystonePromise = new Promise<void>((resolve, reject) => {
     initKeystonePromiseResolve = resolve
     initKeystonePromiseReject = reject
   })

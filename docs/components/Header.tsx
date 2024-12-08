@@ -1,5 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import {
   createContext,
   useContext,
@@ -10,8 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
-import { useRouter } from 'next/router'
-import { jsx } from '@emotion/react'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import debounce from 'lodash.debounce'
 
@@ -75,15 +76,25 @@ function Logo () {
 }
 
 function useCurrentSection () {
-  const { pathname } = useRouter()
-  const check = (candidate: string) => pathname.startsWith(candidate)
+  const pathname = usePathname()
+  const check = (candidate: string) => pathname?.startsWith(candidate)
   if (['/updates', '/releases'].some(check)) return '/updates'
   if (['/why-keystone', '/for-'].some(check)) return '/why-keystone'
   if (['/docs'].some(check)) return '/docs'
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem ({ children, href }: { children: ReactNode, href: string }) {
+function LinkItem ({
+  children,
+  href,
+  target,
+  rel,
+}: {
+  children: ReactNode
+  href: string
+  target?: string
+  rel?: string
+}) {
   const mq = useMediaQuery()
   const currentSection = useCurrentSection()
   const isActive = href === currentSection
@@ -94,6 +105,8 @@ function LinkItem ({ children, href }: { children: ReactNode, href: string }) {
         isActive={isActive}
         alwaysVisible
         href={href}
+        target={target}
+        rel={rel}
         css={{
           padding: '0 !important',
         }}
@@ -133,7 +146,7 @@ function FlatMenu ({
   const [showContent, setShowContent] = useState(false)
 
   const onClickHandler = useCallback(() => {
-    setShowContent(b => !b)
+    setShowContent((b) => !b)
   }, [setShowContent])
 
   const closeMenu = useCallback(() => {
@@ -196,7 +209,7 @@ function FlatMenu ({
           border: '1px solid var(--border)',
           borderRadius: '0.25rem',
           background: 'var(--app-bg)',
-          gap: '1.25rem',
+          gap: '.25rem',
         }}
       >
         {items.map(({ href, label }) => {
@@ -208,7 +221,7 @@ function FlatMenu ({
                   alwaysVisible
                   href={href}
                   css={{
-                    padding: '0 !important',
+                    padding: '0.5rem 0 !important',
                   }}
                 >
                   {label}
@@ -224,6 +237,7 @@ function FlatMenu ({
 export function Header () {
   const mq = useMediaQuery()
   const router = useRouter()
+  const pathname = usePathname()
 
   const menuRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLElement>(null)
@@ -258,7 +272,7 @@ export function Header () {
   useEffect(() => {
     document.body.style.overflow = 'auto'
     // search - init field
-    let searchAttempt = 0
+    const searchAttempt = 0
     // @ts-expect-error
     document.getElementById('search-field').disabled = true
     const loadSearch = (searchAttempt: number) => {
@@ -294,8 +308,8 @@ export function Header () {
     // yoo hooo
     loadSearch(searchAttempt)
     // search - keyboard shortcut
-    let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
-    document.body.addEventListener('keydown', event => {
+    const keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
+    document.body.addEventListener('keydown', (event) => {
       // If we're typing in an input, don't ever focus the search input
       if (
         document.activeElement &&
@@ -310,7 +324,7 @@ export function Header () {
         document.getElementById('search-field')?.focus()
       }
     })
-    document.body.addEventListener('keyup', event => {
+    document.body.addEventListener('keyup', (event) => {
       delete keysPressed[event.key]
     })
   }, [])
@@ -328,11 +342,8 @@ export function Header () {
   }, [])
 
   useEffect(() => {
-    router.events.on('routeChangeComplete', handleClose)
-    return () => {
-      router.events.off('routeChangeComplete', handleClose)
-    }
-  }, [router.events, handleClose])
+    handleClose()
+  }, [pathname])
 
   return (
     <header ref={headerRef}>
@@ -386,9 +397,9 @@ export function Header () {
               { label: 'For Developers', href: '/for-developers' },
               { label: 'For Organisations', href: '/for-organisations' },
               { label: 'For Content Management', href: '/for-content-management' },
-              { label: 'Our Roadmap', href: '/updates/roadmap' },
+              { label: 'Our Roadmap', href: '/roadmap' },
               { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
-              { label: 'Enterprise', href: '/enterprise' },
+              { label: 'Enterprise', href: 'https://www.thinkmill.com.au/services/keystone' },
             ]}
           />
         </span>
@@ -430,7 +441,13 @@ export function Header () {
             display: ['none', null, 'inline-block'],
           })}
         >
-          <LinkItem href="/enterprise">Enterprise</LinkItem>
+          <LinkItem
+            href="https://www.thinkmill.com.au/services/keystone"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Enterprise &#8599;
+          </LinkItem>
         </span>
         <Button
           as="a"

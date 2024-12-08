@@ -42,7 +42,7 @@ interface Renderers {
     blockquote: OnlyChildrenComponent
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements
     layout: Component<{ layout: [number, ...number[]], children: ReactElement[] }>
-    divider: Component<{}> | keyof JSX.IntrinsicElements
+    divider: Component<unknown> | keyof JSX.IntrinsicElements
     heading: Component<{
       level: 1 | 2 | 3 | 4 | 5 | 6
       children: ReactNode

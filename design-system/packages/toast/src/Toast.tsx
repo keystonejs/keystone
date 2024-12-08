@@ -29,7 +29,7 @@ export function ToastProvider ({ children }: { children: ReactNode }) {
           }
 
           // populate defaults and update state
-          let toast = populateDefaults(options)
+          const toast = populateDefaults(options)
           return [...currentStack, toast]
         })
       },
@@ -68,7 +68,7 @@ export function ToastProvider ({ children }: { children: ReactNode }) {
 // ------------------------------
 
 let idCount = -1
-let genId = () => ++idCount
+const genId = () => ++idCount
 function populateDefaults (props: ToastProps): ToastPropsExact {
   return {
     title: props.title,

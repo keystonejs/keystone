@@ -5,7 +5,7 @@ import { Editor } from 'slate'
 import { jsx, makeEditor } from './utils'
 
 test('basic cursor snapshot', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -26,7 +26,7 @@ test('basic cursor snapshot', () => {
 })
 
 test('editor equality match', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -250,7 +250,7 @@ test('throws on non-normalized input', () => {
 })
 
 test('allows non-normalized input when passed normalization: "skip"', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <paragraph>
@@ -292,7 +292,7 @@ test('allows non-normalized input when passed normalization: "skip"', () => {
 })
 
 test('delete backward', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -334,7 +334,7 @@ test('marks that conflict with .marks', () => {
 })
 
 test('differing current marks', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ bold: true }}>
       <paragraph>
         <text bold>

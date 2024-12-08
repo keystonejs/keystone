@@ -65,7 +65,7 @@ test("array fields don't keep the props of an array item around after removing t
     { key: '2', value: 'blah2' },
   ])
 
-  let elementsBeforeChange = props.elements
+  const elementsBeforeChange = props.elements
   props.onChange([{ key: '2' }])
   expect(props.elements[0]).toBe(elementsBeforeChange[1])
   expect(props.elements[0]).toBe(elementsBeforeChange[1])
@@ -90,7 +90,7 @@ test('the props of two array fields in a conditional field change when the discr
   )
   let props = getPreviewProps(val)
   assert(props.discriminant === false)
-  let prevArrayOnChange = props.value.onChange
+  const prevArrayOnChange = props.value.onChange
   props.onChange(true)
   props = getPreviewProps(val)
   assert(props.discriminant === true)

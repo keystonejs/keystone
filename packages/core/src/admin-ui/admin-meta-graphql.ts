@@ -1,4 +1,7 @@
-import type { JSONValue } from '../types'
+import {
+  type GraphQLNames,
+  type JSONValue,
+} from '../types/utils'
 import { gql } from './apollo'
 
 export const staticAdminMetaQuery = gql`
@@ -12,17 +15,18 @@ export const staticAdminMetaQuery = gql`
           key
           itemQueryName
           listQueryName
-          initialSort {
-            __typename
-            field
-            direction
-          }
           path
           label
           singular
           plural
           description
           initialColumns
+          initialSearchFields
+          initialSort {
+            __typename
+            field
+            direction
+          }
           pageSize
           labelField
           isSingleton
@@ -32,6 +36,34 @@ export const staticAdminMetaQuery = gql`
             description
             fields {
               path
+            }
+          }
+          graphql {
+            names {
+              outputTypeName
+              whereInputName
+              whereUniqueInputName
+
+              createInputName
+              createMutationName
+              createManyMutationName
+              relateToOneForCreateInputName
+              relateToManyForCreateInputName
+
+              itemQueryName
+              listQueryName
+              listQueryCountName
+              listOrderName
+
+              updateInputName
+              updateMutationName
+              updateManyInputName
+              updateManyMutationName
+              relateToOneForUpdateInputName
+              relateToManyForUpdateInputName
+
+              deleteMutationName
+              deleteManyMutationName
             }
           }
           fields {
@@ -95,9 +127,13 @@ export type StaticAdminMetaQuery = {
             path: string
           }>
         }>
+        graphql: {
+          names: GraphQLNames
+        }
 
         pageSize: number
         initialColumns: Array<string>
+        initialSearchFields: Array<string>
         initialSort: {
           __typename: 'KeystoneAdminUISort'
           field: string

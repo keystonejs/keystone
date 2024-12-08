@@ -1,0 +1,5 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/virtual-field
+title: Virtual fields
+kind: standalone
+description: >
+  Implements virtual fields in a Keystone list.

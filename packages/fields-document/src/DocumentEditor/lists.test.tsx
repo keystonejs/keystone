@@ -5,7 +5,7 @@ import { nestList, toggleList } from './lists-shared'
 import { jsx, makeEditor } from './tests/utils'
 
 test('ordered list shortcut', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -36,7 +36,7 @@ test('ordered list shortcut', () => {
 })
 
 test('unordered list shortcut - ', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -67,7 +67,7 @@ test('unordered list shortcut - ', () => {
 })
 
 test('unordered list shortcut * ', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -98,7 +98,7 @@ test('unordered list shortcut * ', () => {
 })
 
 test('direct sibling lists of the same type are merged', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -167,7 +167,7 @@ test('direct sibling lists of the same type are merged', () => {
 })
 
 test('inserting a break on end of list in empty list item exits list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -215,7 +215,7 @@ test('inserting a break on end of list in empty list item exits list', () => {
 })
 
 test('inserting a break in empty list item in the middle of a list splits and exits', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -277,7 +277,7 @@ test('inserting a break in empty list item in the middle of a list splits and ex
 })
 
 test('toggle list on empty line', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -311,7 +311,7 @@ test('toggle list on empty line', () => {
 })
 
 test('toggle list on line with text', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -347,7 +347,7 @@ test('toggle list on line with text', () => {
 })
 
 test('toggle list on line with text with marks', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -392,7 +392,7 @@ test('toggle list on line with text with marks', () => {
 })
 
 test('toggle list on list with text with marks', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -438,7 +438,7 @@ test('toggle list on list with text with marks', () => {
 })
 
 test('toggle ordered-list inside of ordered-list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -474,7 +474,7 @@ test('toggle ordered-list inside of ordered-list', () => {
 })
 
 test('toggle ordered-list inside of multi-item ordered-list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -538,7 +538,7 @@ test('toggle ordered-list inside of multi-item ordered-list', () => {
 })
 
 test('toggle unordered-list inside of single item in multi-item ordered-list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -606,7 +606,7 @@ test('toggle unordered-list inside of single item in multi-item ordered-list', (
 })
 
 test('toggle unordered-list for all items in multi-item ordered-list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -674,7 +674,7 @@ test('toggle unordered-list for all items in multi-item ordered-list', () => {
 })
 
 test('backspace at start of list only unwraps the first item', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -736,7 +736,7 @@ test('backspace at start of list only unwraps the first item', () => {
 })
 
 test('nested list as direct child of list is moved to last list-item', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -787,7 +787,7 @@ test('nested list as direct child of list is moved to last list-item', () => {
 })
 
 test('nest list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -848,7 +848,7 @@ test('nest list', () => {
 })
 
 test('nest list when previous thing is nested', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -916,7 +916,7 @@ test('nest list when previous thing is nested', () => {
 })
 
 test('inserting a break on end of list non-empty list item adds a new list item', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -962,7 +962,7 @@ test('inserting a break on end of list non-empty list item adds a new list item'
 })
 
 test('changing the type of a nested list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -1017,7 +1017,7 @@ test('changing the type of a nested list', () => {
 })
 
 test('changing the type of a nested list to something which it is nested inside', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -1088,7 +1088,7 @@ test('changing the type of a nested list to something which it is nested inside'
 })
 
 test('nesting a list item in an ordered list into an unordered list makes the item unordered', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <unordered-list>
         <list-item>
@@ -1156,7 +1156,7 @@ test('nesting a list item in an ordered list into an unordered list makes the it
 
 // TODO: fix this(the snapshot shows the correct output)
 test.skip('toggling unordered-list in a nested unordered-list moves the list item out of the list', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>
@@ -1210,7 +1210,7 @@ test.skip('toggling unordered-list in a nested unordered-list moves the list ite
 
 // TODO: fix this
 test.skip('nesting multiple items at the same time works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <ordered-list>
         <list-item>

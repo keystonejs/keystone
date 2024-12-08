@@ -127,7 +127,7 @@ export function Field ({
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true
@@ -173,7 +173,7 @@ function validate (value: TextValue, validation: Validation, fieldLabel: string)
 
   const val = value.inner.value
 
-  let messages: string[] = []
+  const messages: string[] = []
   if (validation.length.min !== null && val.length < validation.length.min) {
     if (validation.length.min === 1) {
       messages.push(`${fieldLabel} must not be empty`)

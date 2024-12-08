@@ -1,0 +1,5 @@
+title: Custom Admin UI Navigation
+url: https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-navigation
+kind: standalone
+description: >
+  Adds a custom Navigation component to the Admin UI.

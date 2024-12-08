@@ -256,7 +256,7 @@ Object.keys(cases).forEach(key => {
   const testCase = cases[key]
   test(key, () => {
     const Prop = `component-${testCase.schema.options.kind}-prop` as const
-    let editor = makeEditorWithChildField(
+    const editor = makeEditorWithChildField(
       testCase.schema,
       testCase.children,
       testCase.expectedNormalized === undefined ? 'disallow-non-normalized' : 'normalize'

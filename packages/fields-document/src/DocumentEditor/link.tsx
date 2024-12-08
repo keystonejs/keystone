@@ -160,9 +160,9 @@ const UnlinkButton = memo(function UnlinkButton ({ onUnlink }: { onUnlink: () =>
   )
 })
 
-let linkIcon = <LinkIcon size="small" />
+const linkIcon = <LinkIcon size="small" />
 
-const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton (props, ref) {
+const LinkButton = forwardRef<HTMLButtonElement>(function LinkButton (props, ref) {
   const {
     editor,
     links: { isDisabled, isSelected },

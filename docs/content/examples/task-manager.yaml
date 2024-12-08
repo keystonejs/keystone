@@ -1,0 +1,7 @@
+title: Task Manager
+kind: standalone
+url: https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo
+description: >
+  A basic Task Management app, with Tasks and People who can be assigned to
+  tasks. Great for learning how to use Keystone. It’s also a starter for other
+  feature projects.

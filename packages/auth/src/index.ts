@@ -99,19 +99,20 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const authGetAdditionalFiles = () => {
+  const authGetAdditionalFiles = ({ tsx }: { tsx: boolean }) => {
+    const ext = tsx ? 'tsx' : 'js'
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
         src: signinTemplate({ gqlNames, identityField, secretField }),
-        outputPath: 'pages/signin.js',
+        outputPath: `signin/page.${ext}`,
       },
     ]
     if (initFirstItem) {
       filesToWrite.push({
         mode: 'write',
         src: initTemplate({ listKey, initFirstItem }),
-        outputPath: 'pages/init.js',
+        outputPath: `init/page.${ext}`,
       })
     }
     return filesToWrite
@@ -215,7 +216,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   }): Promise<{ kind: 'redirect', to: string } | void> {
     const { req } = context
     const { pathname } = new URL(req!.url!, 'http://_')
-
     // redirect to init if initFirstItem conditions are met
     if (pathname !== `${basePath}/init` && (await hasInitFirstItemConditions(context))) {
       return { kind: 'redirect', to: `${basePath}/init` }
@@ -262,7 +262,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
       ui = {
         ...ui,
         publicPages: [...publicPages, ...authPublicPages],
-        getAdditionalFiles: [...getAdditionalFiles, authGetAdditionalFiles],
+        getAdditionalFiles: [...getAdditionalFiles, () => authGetAdditionalFiles({ tsx: ui?.tsx ?? true })],
 
         isAccessAllowed: async (context: KeystoneContext) => {
           if (await hasInitFirstItemConditions(context)) return true

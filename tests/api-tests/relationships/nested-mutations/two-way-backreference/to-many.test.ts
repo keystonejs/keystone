@@ -157,7 +157,7 @@ describe('update many to many relationship back reference', () => {
           query: 'id teachers(orderBy: { id: asc }) { id }',
         })
 
-        let newTeachers = newStudent.teachers
+        const newTeachers = newStudent.teachers
 
         // Check the link has been broken
         const teacher1 = await getTeacher(context, newTeachers[0].id)
@@ -184,7 +184,7 @@ describe('update many to many relationship back reference', () => {
           query: 'id teachers { id }',
         })
 
-        let newTeachers = _student.teachers
+        const newTeachers = _student.teachers
 
         // Check the link has been broken
         const teacher1 = await getTeacher(context, newTeachers[0].id)

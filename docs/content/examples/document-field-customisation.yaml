@@ -1,0 +1,5 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog
+title: Document Field Customisation
+kind: end-to-end
+description: >
+  Example to demonstrate customisation of Keystone's document field and document renderer.
