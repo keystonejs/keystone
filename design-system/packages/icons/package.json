@@ -1162,10 +1162,10 @@
     "@svgr/core": "^8.0.0",
     "@svgr/plugin-jsx": "^8.0.0",
     "@svgr/plugin-svgo": "^8.0.0",
-    "@types/react": "^18.3.3",
+    "@types/react": "^19.0.0",
     "feather-icons": "^4.28.0",
     "globby": "^14.0.0",
-    "react": "^18.3.1",
+    "react": "^19.0.0",
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
@@ -1173,7 +1173,7 @@
     "@keystone-ui/core": "workspace:^"
   },
   "peerDependencies": {
-    "react": "^18.3.1"
+    "react": "^19.0.0"
   },
   "preconstruct": {
     "entrypoints": [
