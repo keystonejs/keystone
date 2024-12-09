@@ -73,7 +73,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "scroll-into-view-if-needed": "^3.0.0",
-    "slate": "^0.110.0",
+    "slate": "^0.112.0",
     "slate-history": "^0.110.0",
     "slate-react": "^0.111.0",
     "zod": "^3.23.8"
