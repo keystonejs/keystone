@@ -31,7 +31,6 @@ function useDebouncedValue<T> (value: T, limitMs: number) {
 }
 
 export function useApolloQuery (args: {
-  extraSelection: string
   labelField: string
   list: ListMeta
   searchFields: string[]
@@ -39,8 +38,8 @@ export function useApolloQuery (args: {
     | { kind: 'many', value: RelationshipValue[] }
     | { kind: 'one', value: RelationshipValue | null }
 }) {
+  const { labelField, list, searchFields, state } = args
   const keystone = useKeystone()
-  const { extraSelection, labelField, list, searchFields, state } = args
   const [search, setSearch] = useState(() => {
     if (state.kind === 'one' && state.value?.label) return state.value?.label
     return ''
@@ -54,7 +53,6 @@ export function useApolloQuery (args: {
       items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
         id: id
         label: ${labelField}
-        ${extraSelection}
       }
       count: ${list.graphql.names.listQueryCountName}(where: $where)
     }
@@ -113,7 +111,6 @@ export function useApolloQuery (args: {
   // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
     where: Record<string, any>
-    extraSelection: string
     list: ListMeta
     skip: number
   } | null>(null)
@@ -125,24 +122,22 @@ export function useApolloQuery (args: {
       !loading &&
       skip &&
       data.items.length < count &&
-      (lastFetchMore?.extraSelection !== extraSelection ||
-        lastFetchMore?.where !== where ||
-        lastFetchMore?.list !== list ||
-        lastFetchMore?.skip !== skip)
+        (lastFetchMore?.where !== where ||
+         lastFetchMore?.list !== list ||
+         lastFetchMore?.skip !== skip)
     ) {
       const QUERY: TypedDocumentNode<
-        { items: { id: string; label: string | null }[] },
-        { where: Record<string, any>; take: number; skip: number }
+        { items: { id: string, label: string | null }[] },
+        { where: Record<string, any>, take: number, skip: number }
       > = gql`
         query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
           items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
             label: ${labelField}
             id: id
-            ${extraSelection}
           }
         }
       `
-      setLastFetchMore({ extraSelection, list, skip, where })
+      setLastFetchMore({ list, skip, where })
       fetchMore({
         query: QUERY,
         variables: {
@@ -151,12 +146,8 @@ export function useApolloQuery (args: {
           skip,
         },
       })
-        .then(() => {
-          setLastFetchMore(null)
-        })
-        .catch(() => {
-          setLastFetchMore(null)
-        })
+        .then(() => setLastFetchMore(null))
+        .catch(() => setLastFetchMore(null))
     }
   }
 
