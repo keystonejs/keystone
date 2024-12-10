@@ -19,7 +19,6 @@ export function ComboboxSingle ({
   list,
   placeholder,
   state,
-  extraSelection = '',
 }: {
   autoFocus?: boolean
   description?: string
@@ -36,11 +35,9 @@ export function ComboboxSingle ({
     value: RelationshipValue | null
     onChange(value: RelationshipValue | null): void
   }
-  extraSelection?: string
 }) {
   const { data, loading, error, onLoadMore, search, setSearch } =
     useApolloQuery({
-      extraSelection,
       labelField,
       list,
       searchFields,

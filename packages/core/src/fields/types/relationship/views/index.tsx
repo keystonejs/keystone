@@ -29,13 +29,16 @@ export function Field (props: FieldProps<typeof controller>) {
   } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
+  const description = field.description || undefined
+  const isReadOnly = onChange === undefined
 
   if (value.kind === 'count') {
     return (
       <TextField
         autoFocus={autoFocus}
-        isReadOnly
         label={field.label}
+        description={description}
+        isReadOnly
         value={value.count.toString()}
         width="alias.singleLineWidth"
       />
@@ -48,11 +51,10 @@ export function Field (props: FieldProps<typeof controller>) {
         <ContextualActions onAdd={() => setDialogOpen(true)} {...props}>
           {value.kind === 'many' ? (
             <ComboboxMany
-              key={field.path}
               autoFocus={autoFocus}
               label={field.label}
-              description={field.description || undefined}
-              isReadOnly={onChange === undefined}
+              description={description}
+              isReadOnly={isReadOnly}
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               list={foreignList}
@@ -66,11 +68,10 @@ export function Field (props: FieldProps<typeof controller>) {
             />
           ) : (
             <ComboboxSingle
-              key={field.path}
               autoFocus={autoFocus}
               label={field.label}
-              description={field.description || undefined}
-              isReadOnly={onChange === undefined}
+              description={description}
+              isReadOnly={isReadOnly}
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               list={foreignList}
@@ -114,7 +115,7 @@ export function Field (props: FieldProps<typeof controller>) {
         )}
       </VStack>
 
-      {onChange !== undefined && (
+      {!isReadOnly && (
         <DialogContainer onDismiss={() => setDialogOpen(false)}>
           {dialogIsOpen && (
             <BuildItemDialog
@@ -243,7 +244,7 @@ export function controller (
           initialValue: null
         },
     validate() { return true },
-    deserialize: data => {
+    deserialize: (data) => {
       if (config.fieldMeta.displayMode === 'count') {
         return {
           id: data.id,
@@ -277,7 +278,7 @@ export function controller (
         initialValue: value,
       }
     },
-    serialize: state => {
+    serialize: (state) => {
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id))
         const initialIds = new Set(state.initialValue.map(x => x.id))
