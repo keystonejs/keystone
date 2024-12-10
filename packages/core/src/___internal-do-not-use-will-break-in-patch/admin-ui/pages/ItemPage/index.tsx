@@ -175,7 +175,7 @@ function ItemForm ({
             position="form"
             fieldPositions={fieldPositions}
             onChange={useCallback(value => {
-              setValue(state => ({ item: state.item, value: value(state.value) }))
+              setValue(state => ({ item: state.item, value: state.value }))
             }, [setValue])}
             value={state.value}
           />
@@ -195,7 +195,7 @@ function ItemForm ({
               fieldPositions={fieldPositions}
               onChange={useCallback(
                 value => {
-                  setValue(state => ({ item: state.item, value: value(state.value) }))
+                  setValue(state => ({ item: state.item, value: state.value }))
                 },
                 [setValue]
               )}
