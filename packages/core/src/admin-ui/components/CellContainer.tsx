@@ -1,18 +1,12 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, {
+  type ReactNode,
+} from 'react'
+import { Cell } from '@keystar/ui/table'
 
-import type { ReactNode } from 'react'
-import { jsx, useTheme } from '@keystone-ui/core'
-
-/**
- * This is the component you should use when you want the standard padding around a cell value
- */
-
-export const CellContainer = ({ children, ...props }: { children: ReactNode }) => {
-  const { spacing } = useTheme()
+export function CellContainer ({ children, ...props }: { children: ReactNode }) {
   return (
-    <div css={{ padding: spacing.small }} {...props}>
+    <Cell {...props}>
       {children}
-    </div>
+    </Cell>
   )
 }

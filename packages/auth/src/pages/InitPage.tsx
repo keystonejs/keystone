@@ -3,12 +3,12 @@
 
 import { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
+import isDeepEqual from 'fast-deep-equal'
 
 import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { type FieldMeta } from '@keystone-6/core/types'
-import isDeepEqual from 'fast-deep-equal'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context'
@@ -25,6 +25,8 @@ import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
+
+export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
 function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState<{ keystone: boolean, thinkmill: boolean}>(
@@ -186,6 +188,10 @@ function InitPage ({
   enableWelcome: boolean
 }) {
   const { adminMeta } = useKeystone()
+  const reinitContext = useReinitContext()
+  const router = useRouter()
+  const redirect = useRedirect()
+
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
     fieldPaths.forEach(fieldPath => {
@@ -196,9 +202,12 @@ function InitPage ({
 
   const [value, setValue] = useState(() => {
     const state: Record<string, any> = {}
-    Object.keys(fields).forEach(fieldPath => {
-      state[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue }
-    })
+    for (const fieldPath in fields) {
+      state[fieldPath] = {
+        kind: 'value',
+        value: fields[fieldPath].controller.defaultValue
+      }
+    }
     return state
   })
 
@@ -216,9 +225,6 @@ function InitPage ({
       }
     }
   }`)
-  const reinitContext = useReinitContext()
-  const router = useRouter()
-  const redirect = useRedirect()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -260,19 +266,19 @@ function InitPage ({
     router.push(redirect)
   }
 
-  const onComplete = () => {
-    router.push(redirect)
-  }
-
+  const onComplete = () => router.push(redirect)
   return mode === 'init' ? (
     <SigninContainer title="Welcome to KeystoneJS">
       <H1>Welcome to KeystoneJS</H1>
       <p>Create your first user to get started</p>
       <form onSubmit={onSubmit}>
         <Stack gap="large">
-          {error && (
-            <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
-          )}
+          <GraphQLErrorNotice
+            errors={[
+              error?.networkError,
+              ...error?.graphQLErrors ?? []
+            ]}
+          />
           <Fields
             fields={fields}
             forceValidation={forceValidation}
@@ -300,5 +306,3 @@ function InitPage ({
     </SigninContainer>
   )
 }
-
-export const getInitPage = (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />

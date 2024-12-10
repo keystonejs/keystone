@@ -40,36 +40,6 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
 
-test("labelField that doesn't exist is rejected with displayMode: cards", () => {
-  expect(() =>
-    getContext(
-      ({
-        db: {
-          provider: 'sqlite',
-          url: 'file://'
-        },
-        lists: {
-          A: list({
-            access: allowAll,
-            fields: {
-              something: relationship({
-                ref: 'Thing',
-                ui: {
-                  displayMode: 'cards',
-                  cardFields: ['name'],
-                  inlineConnect: { labelField: 'doesNotExist' },
-                },
-              }),
-            },
-          }),
-          Thing,
-        },
-      }),
-      {} as any
-    )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
-})
-
 test("searchFields that don't exist are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
@@ -98,7 +68,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
 
-test("searchFields that don't exist are rejected with displayMode: cards", () => {
+test("searchFields that aren't searchable are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
       ({
@@ -113,9 +83,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
               something: relationship({
                 ref: 'Thing',
                 ui: {
-                  displayMode: 'cards',
-                  cardFields: ['name'],
-                  inlineConnect: { labelField: 'name', searchFields: ['doesNotExist'] },
+                  searchFields: ['notText'],
                 },
               }),
             },

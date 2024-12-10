@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { useEffect } from 'react'
 import { Box, jsx, useTheme } from '@keystone-ui/core'
 import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
@@ -14,7 +15,6 @@ import {
   ToolbarGroup,
   ToolbarSeparator,
 } from '@keystone-6/fields-document/primitives'
-import { useEffect } from 'react'
 import { Button } from '@keystone-ui/button'
 
 const noticeIconMap = {

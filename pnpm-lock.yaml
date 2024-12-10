@@ -488,7 +488,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@keystar/ui':
-        specifier: ^0.7.6
+        specifier: ^0.7.13
         version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystatic/core':
         specifier: ^0.5.24
@@ -710,6 +710,25 @@ importers:
         specifier: ^5.5.0
         version: 5.7.2
 
+  examples/component-block-structures:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.3.1
+        version: link:../../packages/core
+      '@keystone-6/fields-document':
+        specifier: ^9.1.1
+        version: link:../../packages/fields-document
+      '@prisma/client':
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
+    devDependencies:
+      prisma:
+        specifier: 5.19.0
+        version: 5.19.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.7.2
+
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
@@ -740,6 +759,9 @@ importers:
 
   examples/custom-admin-ui-navigation:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -759,6 +781,9 @@ importers:
 
   examples/custom-admin-ui-pages:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -803,6 +828,9 @@ importers:
 
   examples/custom-field:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1293,6 +1321,9 @@ importers:
       '@graphql-tools/schema':
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.9.0)
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1672,6 +1703,22 @@ importers:
         specifier: ^5.5.0
         version: 5.7.2
 
+  examples/number-fields:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.3.1
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
+    devDependencies:
+      prisma:
+        specifier: 5.19.0
+        version: 5.19.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.7.2
+
   examples/omit:
     dependencies:
       '@keystone-6/core':
@@ -1918,6 +1965,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -2031,6 +2081,12 @@ importers:
       '@hapi/iron':
         specifier: ^7.0.0
         version: 7.0.1
+      '@internationalized/date':
+        specifier: ^3.5.5
+        version: 3.6.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -2082,6 +2138,18 @@ importers:
       '@prisma/migrate':
         specifier: 5.22.0
         version: 5.22.0(@prisma/generator-helper@5.22.0)(@prisma/internals@5.22.0)
+      '@react-aria/i18n':
+        specifier: ^3.12.1
+        version: 3.12.4(react@18.3.1)
+      '@react-aria/label':
+        specifier: ^3.7.10
+        version: 3.7.13(react@18.3.1)
+      '@react-aria/utils':
+        specifier: ^3.25.1
+        version: 3.26.0(react@18.3.1)
+      '@react-stately/data':
+        specifier: ^3.11.6
+        version: 3.12.0(react@18.3.1)
       '@sindresorhus/slugify':
         specifier: ^1.1.2
         version: 1.1.2
@@ -2275,6 +2343,9 @@ importers:
       '@emotion/weak-memoize':
         specifier: ^0.4.0
         version: 0.4.0
+      '@keystar/ui':
+        specifier: ^0.7.14
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
@@ -2299,6 +2370,9 @@ importers:
       '@keystone-ui/tooltip':
         specifier: workspace:^
         version: link:../../design-system/packages/tooltip
+      '@react-aria/i18n':
+        specifier: ^3.12.1
+        version: 3.12.4(react@18.3.1)
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.14
@@ -14887,14 +14961,14 @@ snapshots:
   '@graphql-tools/optimize@1.4.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   '@graphql-tools/relay-operation-optimizer@6.5.18(graphql@16.9.0)':
     dependencies:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.9.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14910,7 +14984,7 @@ snapshots:
   '@graphql-tools/utils@8.13.1(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   '@graphql-tools/utils@9.2.1(graphql@16.9.0)':
     dependencies:
@@ -18788,7 +18862,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   camelcase-keys@6.2.2:
     dependencies:
@@ -18809,7 +18883,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   capture-exit@2.0.0:
@@ -18866,7 +18940,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   char-regex@1.0.2: {}
 
@@ -19068,7 +19142,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case: 2.0.2
 
   content-disposition@0.5.4:
@@ -20557,7 +20631,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   hex-rgb@4.3.0: {}
 
@@ -20870,7 +20944,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-module@1.0.0: {}
 
@@ -20940,7 +21014,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-windows@1.0.2: {}
 
@@ -21601,11 +21675,11 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lowercase-keys@2.0.0: {}
 
@@ -23008,7 +23082,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   parent-module@1.0.1:
     dependencies:
@@ -23083,7 +23157,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   pascalcase@0.1.1: {}
 
@@ -23110,7 +23184,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   path-exists@3.0.0: {}
 
@@ -24061,7 +24135,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   serve-static@1.16.2:
@@ -24360,7 +24434,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   sprintf-js@1.0.3: {}
 
@@ -24527,7 +24601,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   symbol-observable@4.0.0: {}
 
@@ -24604,7 +24678,7 @@ snapshots:
 
   title-case@3.0.3:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   tmp@0.0.33:
     dependencies:
@@ -24926,11 +25000,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:
