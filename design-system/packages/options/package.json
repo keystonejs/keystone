@@ -24,7 +24,7 @@
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/fields": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
-    "react-select": "^5.2.1"
+    "react-select": "^5.8.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/options"
 }
