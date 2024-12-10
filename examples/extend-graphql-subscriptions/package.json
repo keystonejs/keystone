@@ -10,7 +10,7 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.0",
+    "@apollo/client": "^3.12.2",
     "@emotion/css": "^11.7.1",
     "@graphql-tools/schema": "^9.0.0",
     "@keystone-6/core": "^6.3.1",
@@ -21,7 +21,7 @@
     "graphql": "^16.8.1",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.1",
-    "react": "^18.3.1",
+    "react": "^19.0.0",
     "ws": "^8.8.0"
   },
   "devDependencies": {
