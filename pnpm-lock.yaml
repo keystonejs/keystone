@@ -2267,11 +2267,11 @@ importers:
         specifier: ^6.0.6
         version: 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@dnd-kit/modifiers':
-        specifier: ^8.0.0
-        version: 8.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@dnd-kit/sortable':
         specifier: ^9.0.0
         version: 9.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      '@dnd-kit/sortable':
+        specifier: ^10.0.0
+        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@emotion/weak-memoize':
         specifier: ^0.4.0
         version: 0.4.0
@@ -3771,16 +3771,16 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@dnd-kit/modifiers@8.0.0':
-    resolution: {integrity: sha512-oPZ0JoKtVSK9hVHSBDKG1oCLgnZbpxuH/SMnyDtXkNhn9+SF1+98DlWILFYxIT8faOS/GgfhlNFREmym6oqrEg==}
+  '@dnd-kit/modifiers@9.0.0':
+    resolution: {integrity: sha512-ybiLc66qRGuZoC20wdSSG6pDXFikui/dCNGthxv4Ndy8ylErY0N3KVxY2bgo7AWwIbxDmXDg3ylAFmnrjcbVvw==}
     peerDependencies:
-      '@dnd-kit/core': ^6.2.0
+      '@dnd-kit/core': ^6.3.0
       react: '>=16.8.0'
 
-  '@dnd-kit/sortable@9.0.0':
-    resolution: {integrity: sha512-3/9r8Mmba0nKTbo8kPnVSFZKf/VSy94nXZ3aUwzPEh78j/LooQ/EFKRZENak4PHKBkN53mgTF/z+Sd8H+FcAnQ==}
+  '@dnd-kit/sortable@10.0.0':
+    resolution: {integrity: sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg==}
     peerDependencies:
-      '@dnd-kit/core': ^6.2.0
+      '@dnd-kit/core': ^6.3.0
       react: '>=16.8.0'
 
   '@dnd-kit/utilities@3.2.2':
@@ -14274,14 +14274,14 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       tslib: 2.8.1
 
-  '@dnd-kit/modifiers@8.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+  '@dnd-kit/modifiers@9.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@dnd-kit/utilities': 3.2.2(react@18.3.1)
       react: 18.3.1
       tslib: 2.8.1
 
-  '@dnd-kit/sortable@9.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
+  '@dnd-kit/sortable@10.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@dnd-kit/utilities': 3.2.2(react@18.3.1)
@@ -14887,14 +14887,14 @@ snapshots:
   '@graphql-tools/optimize@1.4.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   '@graphql-tools/relay-operation-optimizer@6.5.18(graphql@16.9.0)':
     dependencies:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.9.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14910,7 +14910,7 @@ snapshots:
   '@graphql-tools/utils@8.13.1(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   '@graphql-tools/utils@9.2.1(graphql@16.9.0)':
     dependencies:
@@ -18788,7 +18788,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   camelcase-keys@6.2.2:
     dependencies:
@@ -18809,7 +18809,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   capture-exit@2.0.0:
@@ -18866,7 +18866,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   char-regex@1.0.2: {}
 
@@ -19068,7 +19068,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case: 2.0.2
 
   content-disposition@0.5.4:
@@ -20557,7 +20557,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   hex-rgb@4.3.0: {}
 
@@ -20870,7 +20870,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-module@1.0.0: {}
 
@@ -20940,7 +20940,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-windows@1.0.2: {}
 
@@ -21601,11 +21601,11 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lowercase-keys@2.0.0: {}
 
@@ -23008,7 +23008,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   parent-module@1.0.1:
     dependencies:
@@ -23083,7 +23083,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   pascalcase@0.1.1: {}
 
@@ -23110,7 +23110,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   path-exists@3.0.0: {}
 
@@ -24061,7 +24061,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   serve-static@1.16.2:
@@ -24360,7 +24360,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   sprintf-js@1.0.3: {}
 
@@ -24527,7 +24527,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   symbol-observable@4.0.0: {}
 
@@ -24604,7 +24604,7 @@ snapshots:
 
   title-case@3.0.3:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   tmp@0.0.33:
     dependencies:
@@ -24926,11 +24926,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:
