@@ -105,7 +105,7 @@ function ImgView ({
   value: ImageValue
   onChange?: (value: ImageValue) => void
   field: ReturnType<typeof controller>
-  inputRef: RefObject<HTMLInputElement>
+  inputRef: RefObject<HTMLInputElement | null>
 }) {
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 })
   const imagePathFromUpload = useObjectURL(
