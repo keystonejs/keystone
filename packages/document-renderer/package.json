@@ -13,10 +13,10 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "react": "^16.14.0 || 17 || 18"
+    "react": "19"
   },
   "devDependencies": {
-    "react": "^18.3.1"
+    "react": "^19.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/document-renderer"
 }
