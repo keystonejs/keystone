@@ -210,6 +210,7 @@ export function createSystem (config_: KeystoneConfig) {
   return {
     config,
     graphQLSchema,
+    graphQLSchemaSudo,
     adminMeta,
     lists,
 
