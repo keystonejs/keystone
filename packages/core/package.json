@@ -215,7 +215,7 @@
     "chalk": "^4.1.2",
     "ci-info": "^4.0.0",
     "clipboard-copy": "^4.0.1",
-    "conf": "^10.2.0",
+    "conf": "^13.0.0",
     "cookie": "^1.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.1.0",
