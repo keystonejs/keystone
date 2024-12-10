@@ -115,9 +115,9 @@ export type ArrayField<ElementField extends ComponentSchema> = {
 export type RelationshipField<Many extends boolean> = {
   kind: 'relationship'
   listKey: string
-  selection: string | undefined
   label: string
   many: Many
+  selection?: string
 }
 
 export interface ObjectField<
@@ -297,15 +297,15 @@ type DiscriminantStringToDiscriminantValue<
   : DiscriminantString
 
 export type HydratedRelationshipData = {
-  id: string
-  label: string
-  data: Record<string, any>
+  id: string | number
+  label: string | null
+  data?: Record<string, unknown>
 }
 
 export type RelationshipData = {
-  id: string
-  label?: string
-  data?: Record<string, any>
+  id: string | number
+  label: string | null
+  data?: Record<string, unknown>
 }
 
 type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =

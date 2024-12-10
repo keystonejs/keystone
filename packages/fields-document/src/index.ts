@@ -8,14 +8,14 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import { type Relationships } from './DocumentEditor/relationship-shared'
-import { type ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
+import type { Relationships } from './DocumentEditor/relationship-shared'
+import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import {
-  type DocumentFeatures,
-  type controller,
+import type {
+  DocumentFeatures,
+  controller,
 } from './views-shared'
 
 type RelationshipsConfig = Record<string, {
@@ -146,9 +146,7 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
             },
           }),
           resolve ({ value }) {
-            if (value === null) {
-              return null
-            }
+            if (value === null) return null
             return { document: value }
           },
         }),

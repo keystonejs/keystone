@@ -40,7 +40,6 @@ export function ComboboxMany ({
 }) {
   const { data, loadingState, error, onLoadMore, search, setSearch } =
     useApolloQuery({
-      extraSelection,
       labelField,
       list,
       searchFields,

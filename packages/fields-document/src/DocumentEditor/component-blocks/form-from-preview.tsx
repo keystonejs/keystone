@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
+import { Field as RelationshipFieldView } from '@keystone-6/core/fields/types/relationship/views'
 import { jsx } from '@keystone-ui/core'
 import { GroupIndicatorLine } from '@keystone-6/core/admin-ui/utils'
 
@@ -18,9 +18,9 @@ import { move } from '@keystar/ui/drag-and-drop'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 
 import {
+  type Key,
   type MemoExoticComponent,
   type ReactElement,
-  type Key,
   memo,
   useCallback,
   useMemo,
@@ -36,7 +36,6 @@ import type {
   GenericPreviewProps,
   InitialOrUpdateValueFromComponentPropField,
   ObjectField,
-  RelationshipData,
   RelationshipField,
   ValueForComponentSchema,
 } from './api'
@@ -249,52 +248,75 @@ function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
   )
 }
 
-function RelationshipFieldPreview ({
-  schema,
-  autoFocus,
-  onChange,
-  value,
-}: DefaultFieldProps<'relationship'>) {
-  const list = useList(schema.listKey)
+function RelationshipFieldPreview (props: DefaultFieldProps<'relationship'>) {
+  const {
+    autoFocus,
+    onChange,
+    schema,
+    value
+  } = props
+  const {
+    label,
+    listKey,
+    many
+  } = schema
+  const list = useList(listKey)
+  const formValue = (function () {
+    if (many) {
+      if (value !== null && !('length' in value)) throw TypeError('bad value')
+      const manyValue = value === null
+        ? []
+          : value.map(x => ({
+            id: x.id,
+            label: x.label || x.id.toString(),
+            data: x.data,
+            built: undefined
+          }))
+      return {
+        kind: 'many' as const,
+        id: '', // unused
+        initialValue: manyValue,
+        value: manyValue
+      }
+    }
 
-  // TODO: FIXME
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
+    if (value !== null && 'length' in value) throw TypeError('bad value')
+    const oneValue = value ? {
+      id: value.id,
+      label: value.label || value.id.toString(),
+      data: value.data,
+      built: undefined
+    } : null
+    return {
+      kind: 'one' as const,
+      id: '', // unused
+      initialValue: oneValue,
+      value: oneValue
+    }
+  })()
 
-  return (
-    <div>
-      <FieldLabel>{schema.label}</FieldLabel>
-      <RelationshipSelect
-        autoFocus={autoFocus}
-        isDisabled={false}
-        list={list}
-        labelField={list.labelField}
-        searchFields={searchFields}
-        extraSelection={schema.selection || ''}
-        state={
-          schema.many
-            ? {
-                kind: 'many',
-                value: (value as RelationshipData[]).map(x => ({
-                  id: x.id,
-                  label: x.label || x.id,
-                  data: x.data,
-                })),
-                onChange: onChange,
-              }
-            : {
-                kind: 'one',
-                value: value
-                  ? {
-                      ...(value as RelationshipData),
-                      label: (value as RelationshipData).label || (value as RelationshipData).id,
-                    }
-                  : null,
-                onChange: onChange,
-              }
-        }
-      />
-    </div>
-  )
+  return <RelationshipFieldView
+    autoFocus={autoFocus}
+    environment='create-page'
+    field={{
+      path: '', // unused
+      label,
+      description: '', // TODO
+      display: 'select',
+      listKey: '', // unused
+      refListKey: list.key,
+      refLabelField: list.labelField,
+      refSearchFields: list.initialSearchFields,
+      hideCreate: true,
+      many
+    } as any}
+    onChange={(thing) => {
+      if (thing.kind === 'count') return // shouldnt happen
+      onChange(thing.value)
+    }}
+    value={formValue}
+    itemValue={{}}
+  />
 }
 
 function FormFieldPreview ({
