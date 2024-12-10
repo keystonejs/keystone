@@ -44,7 +44,7 @@
     "prism-react-renderer": "^2.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-focus-lock": "^2.7.1",
+    "react-focus-lock": "^2.13.2",
     "rss": "^1.2.2",
     "tsx": "^4.0.0"
   },

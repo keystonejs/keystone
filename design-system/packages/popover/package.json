@@ -24,7 +24,7 @@
     "@keystone-ui/core": "workspace:^",
     "@popperjs/core": "^2.10.2",
     "focus-trap": "^7.0.0",
-    "react-popper": "^2.2.5"
+    "react-popper": "^2.3.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/popover"
 }
