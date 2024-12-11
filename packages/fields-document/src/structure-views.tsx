@@ -12,7 +12,7 @@ import type {
 import { Field as KeystarField } from '@keystar/ui/field'
 
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
@@ -77,12 +77,14 @@ export function controller (
     defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.schema) },
     validate: value => clientSideValidateProp(config.customViews.schema, value.value),
     deserialize: data => {
+      console.log('sv', data)
       return {
         kind: 'update',
         value: data[`${config.path}`]?.json ?? null,
       }
     },
     serialize: value => {
+      console.log('sv serializeValue', config.customViews.schema, value)
       return {
         [config.path]: serializeValue(config.customViews.schema, value.value, value.kind),
       }
@@ -100,8 +102,11 @@ function serializeValue (
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
     }
   }
-  if (schema.kind === 'array') return (value as any[]).map(a => serializeValue(schema.element, a, kind))
-  if (schema.kind === 'form') { return value }
+  if (schema.kind === 'array') {
+    if (value === null) return []
+    return value.map((x: any) => serializeValue(schema.element, x, kind))
+  }
+  if (schema.kind === 'form') return value
   if (schema.kind === 'object') {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, val]) => {
@@ -116,7 +121,7 @@ function serializeValue (
       }
     }
     if (value === null) {
-      if (kind === 'create') return undefined
+      if (kind === 'create') return
       return { disconnect: true }
     }
     return { connect: { id: value.id }, }

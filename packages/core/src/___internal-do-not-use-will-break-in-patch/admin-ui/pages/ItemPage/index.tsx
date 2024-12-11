@@ -16,7 +16,6 @@ import { fileWarningIcon } from '@keystar/ui/icon/icons/fileWarningIcon'
 import { clipboardIcon } from '@keystar/ui/icon/icons/clipboardIcon'
 import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Box, Grid, VStack } from '@keystar/ui/layout'
-import { Notice } from '@keystar/ui/notice'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { SlotProvider } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
@@ -24,25 +23,27 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { ListMeta, FieldMeta } from '../../../../types'
+import type { ListMeta } from '../../../../types'
 import {
-  type DataGetter,
-  type DeepNullable,
-  type ItemData,
   Fields,
-  deserializeValue,
-  makeDataGetter,
-  useChangedFieldsAndDataForUpdate,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { useList } from '../../../../admin-ui/context'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
-import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
-import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
+import {
+  BaseToolbar,
+  ColumnLayout,
+  ItemPageHeader,
+  StickySidebar
+} from './common'
+import {
+  deserializeItemToValue,
+  useChangedFieldsAndDataForUpdate,
+} from './utils'
 
 type ItemPageProps = {
   listKey: string
@@ -59,25 +60,16 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
   return cb as any
 }
 
-type ItemViewFieldModes = NonNullable<FieldMeta['itemView']['fieldMode']>
-type ItemViewFieldPositions = NonNullable<FieldMeta['itemView']['fieldPosition']>
-
 function ItemForm ({
   listKey,
-  itemGetter,
-  selectedFields,
-  fieldModes,
-  fieldPositions,
-  showDelete,
   item,
+  selectedFields,
+  showDelete,
 }: {
   listKey: string
-  itemGetter: DataGetter<ItemData>
+  item: Record<string, unknown>
   selectedFields: string
-  fieldModes: Record<string, ItemViewFieldModes>
-  fieldPositions: Record<string, ItemViewFieldPositions>
   showDelete: boolean
-  item: ItemData
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
@@ -90,31 +82,12 @@ function ItemForm ({
     { errorPolicy: 'all' }
   )
 
-  itemGetter =
-    useMemo(() => {
-      if (data) return makeDataGetter(data, error?.graphQLErrors).get('item')
-    }, [data, error]) ?? itemGetter
-
-  const [state, setValue] = useState(() => {
-    const value = deserializeValue(list.fields, itemGetter)
-    return { value, item: itemGetter }
+  const [value, setValue] = useState(() => {
+    return deserializeItemToValue(list.fields, item)
   })
-  if (
-    !loading &&
-    state.item.data !== itemGetter.data &&
-    (itemGetter.errors || []).every(x => x.path?.length !== 1)
-  ) {
-    const value = deserializeValue(list.fields, itemGetter)
-    setValue({ value, item: itemGetter })
-  }
 
-  const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
-    list.fields,
-    state.item,
-    state.value
-  )
-
-  const invalidFields = useInvalidFields(list.fields, state.value)
+  console.log('ip', { item, value })
+  const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
   const onSave = useEventCallback(async (e) => {
     e.preventDefault()
@@ -125,7 +98,7 @@ function ItemForm ({
     const { errors } = await update({
       variables: {
         data: dataForUpdate,
-        id: state.item.get('id').data
+        id: itemId
       }
     })
 
@@ -143,10 +116,12 @@ function ItemForm ({
     })
   })
 
-  const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
-  const itemId = state.item.data?.id
-  const hasChangedFields = !!changedFields.size
-  usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]))
+  const itemId = (value.id ?? '') as (string | number)
+  const labelFieldValue = list.isSingleton ? list.label : (value[list.labelField] as string)
+  const {
+    hasChangedFields,
+    dataForUpdate
+  } = useChangedFieldsAndDataForUpdate(list.fields, item, value)
 
   return (
     <Fragment>
@@ -172,15 +147,13 @@ function ItemForm ({
             forceValidation={forceValidation}
             invalidFields={invalidFields}
             position="form"
-            onChange={useCallback(value => {
-              setValue(state => ({ item: state.item, value: state.value }))
-            }, [setValue])}
-            value={state.value}
+            onChange={useCallback(value => setValue(value), [setValue])}
+            value={value}
           />
         </VStack>
 
         <StickySidebar>
-          <IdField itemId={itemId} />
+          <IdField itemId={itemId.toString()} />
 
           <Box marginTop="xlarge">
             <Fields
@@ -189,14 +162,8 @@ function ItemForm ({
               forceValidation={forceValidation}
               invalidFields={invalidFields}
               position="sidebar"
-              fieldPositions={fieldPositions}
-              onChange={useCallback(
-                value => {
-                  setValue(state => ({ item: state.item, value: state.value }))
-                },
-                [setValue]
-              )}
-              value={state.value}
+              onChange={useCallback(value => setValue(value), [setValue])}
+              value={value}
             />
           </Box>
         </StickySidebar>
@@ -213,22 +180,17 @@ function ItemForm ({
           <ResetButton
             hasChanges={hasChangedFields}
             onReset={useEventCallback(() => {
-              setValue(state => ({
-                item: state.item,
-                value: deserializeValue(list.fields, state.item),
-              }))
+              setValue(state => deserializeItemToValue(list.fields, data))
             })}
           />
           <Box flex />
-          {useMemo(() =>
-            showDelete ? (
-              <DeleteButton
-                list={list}
-                itemLabel={labelFieldValue ?? itemId}
-                itemId={itemId}
-              />
-            ) : undefined,
-          [showDelete, list, labelFieldValue, itemId])}
+          {showDelete ? (
+            <DeleteButton
+              list={list}
+              itemLabel={labelFieldValue ?? itemId.toString()}
+              itemId={itemId.toString()}
+            />
+          ) : null}
         </BaseToolbar>
       </form>
 
@@ -403,45 +365,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
     skip: id === undefined,
   })
 
-  const dataGetter = makeDataGetter<
-    DeepNullable<{
-      item: ItemData
-      keystone: {
-        adminMeta: {
-          list: {
-            fields: {
-              path: string
-              itemView: {
-                fieldMode: ItemViewFieldModes
-                fieldPosition: ItemViewFieldPositions
-              }
-            }[]
-          }
-        }
-      }
-    }>
-  >(data, error?.graphQLErrors)
-
-  const itemViewFieldModesByField = useMemo(() => {
-    const itemViewFieldModesByField: Record<string, ItemViewFieldModes> = {}
-    dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field === null || field.path === null || field?.itemView?.fieldMode == null) return
-      itemViewFieldModesByField[field.path] = field.itemView.fieldMode
-    })
-    return itemViewFieldModesByField
-  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields])
-
-  const itemViewFieldPositionsByField = useMemo(() => {
-    const itemViewFieldPositionsByField: Record<string, ItemViewFieldPositions> = {}
-    dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field === null || field.path === null || field?.itemView?.fieldPosition == null) return
-      itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition
-    })
-    return itemViewFieldPositionsByField
-  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields])
-
   const pageLoading = loading || id === undefined
-  const metaQueryErrors = dataGetter.get('keystone').errors
   const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
   const pageTitle: string = list.isSingleton ? list.label : pageLoading ? undefined : pageLabel
 
@@ -460,21 +384,17 @@ function ItemPage ({ listKey }: ItemPageProps) {
         <VStack height="100%" alignItems="center" justifyContent="center">
           <ProgressCircle aria-label="loading item data" size="large" isIndeterminate  />
         </VStack>
-      ) : metaQueryErrors ? (
-        <Box marginY="xlarge">
-          <Notice tone="critical">{metaQueryErrors[0].message}</Notice>
-        </Box>
       ) : (
         <ColumnLayout>
-          {data?.item == null ? (
-            <Box marginY="xlarge">
-              <GraphQLErrorNotice
-                errors={[
-                  error?.networkError,
-                  ...error?.graphQLErrors ?? []
-                ]}
-              />
-              {list.isSingleton ? (
+          <Box marginY="xlarge">
+            <GraphQLErrorNotice
+              errors={[
+                error?.networkError,
+                ...error?.graphQLErrors ?? []
+              ]}
+            />
+            {data?.item == null ? (
+              list.isSingleton ? (
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
@@ -489,19 +409,16 @@ function ItemPage ({ listKey }: ItemPageProps) {
                 <ItemNotFound>
                   <Text>The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access to it.</Text>
                 </ItemNotFound>
-              )}
-            </Box>
-          ) : (
-            <ItemForm
-              fieldModes={itemViewFieldModesByField}
-              fieldPositions={itemViewFieldPositionsByField}
-              selectedFields={selectedFields}
-              showDelete={!data.keystone.adminMeta.list!.hideDelete}
-              listKey={listKey}
-              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-              item={data.item}
-            />
-          )}
+              )
+            ) : (
+              <ItemForm
+                listKey={listKey}
+                selectedFields={selectedFields}
+                showDelete={!data.keystone.adminMeta.list!.hideDelete}
+                item={data.item}
+              />
+            )}
+          </Box>
         </ColumnLayout>
       )}
     </PageContainer>

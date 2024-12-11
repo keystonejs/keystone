@@ -191,11 +191,13 @@ export function getSchemaAtPropPath (
   })
 }
 
-export function clientSideValidateProp (schema: ComponentSchema, value: any): boolean {
+export function clientSideValidateProp (schema: ComponentSchema, value: unknown): boolean {
+  if (schema.kind === 'child') return true
+  if (schema.kind === 'relationship') return true
+  if (schema.kind === 'form') return schema.validate(value)
+  if (typeof value !== 'object') return false
+  if (value === null) return false
   switch (schema.kind) {
-    case 'child':
-    case 'relationship': return true
-    case 'form': return schema.validate(value)
     case 'conditional': {
       if (!schema.discriminant.validate(value.discriminant)) return false
       return clientSideValidateProp(schema.values[value.discriminant], value.value)

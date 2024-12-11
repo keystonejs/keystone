@@ -18,7 +18,16 @@ import type {
 } from '../../types'
 import { EmptyState } from '../components/EmptyState'
 
-type FieldsProps = {
+export function Fields ({
+  view = 'itemView',
+  position = 'form',
+  fields,
+  groups = [],
+  forceValidation,
+  invalidFields,
+  onChange,
+  value: itemValue,
+}: {
   view?: 'createView' | 'itemView'
   position?: 'form' | 'sidebar'
   fields: Record<string, FieldMeta>
@@ -27,18 +36,7 @@ type FieldsProps = {
   invalidFields: ReadonlySet<string>
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
-}
-
-export function Fields ({
-  view = 'itemView',
-  position = 'form',
-  fields,
-  forceValidation,
-  groups = [],
-  invalidFields,
-  onChange,
-  value: itemValue,
-}: FieldsProps) {
+}) {
   let focused = false
   const renderedFields = Object.fromEntries(
     Object.keys(fields).map((fieldKey) => {

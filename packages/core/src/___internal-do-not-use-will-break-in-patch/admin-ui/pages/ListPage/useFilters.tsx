@@ -1,26 +1,37 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
-import { type JSONValue, type ListMeta } from '../../../../types'
+import type {
+  JSONValue,
+  ListMeta
+} from '../../../../types'
 
-export type Filter = { field: string, type: string, value: JSONValue }
+export type Filter = {
+  field: string,
+  type: string,
+  value: JSONValue
+}
 
-export function useFilters (list: ListMeta, filterableFields: Set<string>) {
+export function useFilters (list: ListMeta) {
   const { query } = useRouter()
   const possibleFilters = useMemo(() => {
     const possibleFilters: Record<string, { type: string, field: string }> = {}
-    Object.entries(list.fields).forEach(([fieldPath, field]) => {
-      if (field.controller.filter && filterableFields.has(fieldPath)) {
-        Object.keys(field.controller.filter.types).forEach(type => {
-          possibleFilters[`!${fieldPath}_${type}`] = { type, field: fieldPath }
-        })
+
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
+      if (field.isFilterable && field.controller.filter) {
+        for (const filterType in field.controller.filter.types) {
+          possibleFilters[`!${fieldPath}_${filterType}`] = {
+            type: filterType,
+            field: fieldPath
+          }
+        }
       }
-    })
+    }
     return possibleFilters
-  }, [list, filterableFields])
+  }, [list])
   const filters = useMemo(() => {
     const filters: Filter[] = []
-    Object.keys(query).forEach(key => {
+    for (const key in query) {
       const filter = possibleFilters[key]
       const val = query[key]
       if (filter && typeof val === 'string') {
@@ -32,7 +43,7 @@ export function useFilters (list: ListMeta, filterableFields: Set<string>) {
           filters.push({ ...filter, value })
         }
       }
-    })
+    }
 
     const where = filters.reduce((_where, filter) => {
       return Object.assign(
