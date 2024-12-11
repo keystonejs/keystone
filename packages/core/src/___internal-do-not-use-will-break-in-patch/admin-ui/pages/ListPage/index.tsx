@@ -26,10 +26,8 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import {
-  type DataGetter,
-  type DeepNullable,
-  makeDataGetter,
+import type {
+  DeepNullable,
 } from '../../../../admin-ui/utils'
 import {
   type TypedDocumentNode,
@@ -247,14 +245,11 @@ function ListPage ({ listKey }: ListPageProps) {
   if (newData && dataState.data !== newData) setDataState({ data: newData, error: newError })
 
   const { data, error } = dataState
-  const dataGetter = makeDataGetter<
-    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
-  >(data, error?.graphQLErrors)
-
   const allowCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)
   const allowDelete = !(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true)
   const isConstrained = Boolean(filters.filters.length || query.search)
   const isEmpty = Boolean(data && data.count === 0 && !isConstrained)
+  const items = []
 
   return (
     <PageContainer
@@ -319,7 +314,7 @@ function ListPage ({ listKey }: ListPageProps) {
             allowDelete={allowDelete}
             count={data.count}
             currentPage={currentPage}
-            itemsGetter={dataGetter.get('items')}
+            items={items}
             isConstrained={isConstrained}
             listKey={listKey}
             orderableFields={orderableFields}

@@ -22,10 +22,10 @@ import type { RelationshipController } from './types'
 
 export function Field (props: FieldProps<typeof controller>) {
   const {
-    field,
-    value,
     autoFocus,
-    onChange
+    field,
+    onChange,
+    value,
   } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
@@ -48,7 +48,7 @@ export function Field (props: FieldProps<typeof controller>) {
   return (
     <Fragment>
       <VStack gap="medium">
-        <ContextualActions onAdd={() => setDialogOpen(true)} {...props}>
+        <ContextualActions onAdd={() => setDialogOpen(true)} {...props} >
           {value.kind === 'many' ? (
             <ComboboxMany
               autoFocus={autoFocus}

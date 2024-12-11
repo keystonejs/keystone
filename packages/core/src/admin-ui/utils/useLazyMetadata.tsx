@@ -1,8 +1,10 @@
-import type { GraphQLError } from 'graphql'
 import { useMemo } from 'react'
 import type { VisibleLists, CreateViewFieldModes } from '../../types'
-import { type DocumentNode, useQuery, type QueryResult, type ServerError, type ServerParseError } from '../apollo'
-import { type DeepNullable, makeDataGetter } from './dataGetter'
+import {
+  type DocumentNode,
+  type QueryResult,
+  useQuery,
+} from '../apollo'
 
 export type { VisibleLists, CreateViewFieldModes }
 
@@ -12,72 +14,34 @@ export function useLazyMetadata (query: DocumentNode): {
   createViewFieldModes: CreateViewFieldModes
 } {
   const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'no-cache' })
+  const error = result.error?.networkError
   return useMemo(() => {
-    const refetch = async () => {
-      await result.refetch()
-    }
-
-    const dataGetter = makeDataGetter<
-      DeepNullable<{
-        keystone: {
-          adminMeta: {
-            lists: {
-              key: string
-              fields: { path: string, createView: { fieldMode: 'edit' | 'hidden' } }[]
-            }[]
-          }
-        }
-      }>
-    >(result.data, result.error?.graphQLErrors)
-    const keystoneMetaGetter = dataGetter.get('keystone')
-
+    const refetch = async () => { await result.refetch() }
     return {
       refetch,
-      visibleLists: getVisibleLists(
-        result,
-        keystoneMetaGetter.errors || (result.error?.networkError ?? undefined)
-      ),
-      createViewFieldModes: getCreateViewFieldModes(
-        result,
-        keystoneMetaGetter.errors || (result.error?.networkError ?? undefined)
-      ),
+      visibleLists: error ? { state: 'error', error } : getVisibleLists(result),
+      createViewFieldModes: error ? { state: 'error', error } : getCreateViewFieldModes(result),
     }
-  }, [result])
+  }, [result, error])
 }
 
-function getCreateViewFieldModes (
-  { data }: QueryResult,
-  error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
-): CreateViewFieldModes {
-  if (error) {
-    return { state: 'error', error }
+function getCreateViewFieldModes ({ data }: QueryResult): CreateViewFieldModes {
+  if (!data) return { state: 'loading' }
+  const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {}
+  for (const list of data.keystone.adminMeta.lists) {
+    lists[list.key] = {}
+    for (const field of list.fields) {
+      lists[list.key][field.path] = field.createView.fieldMode
+    }
   }
-  if (data) {
-    const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {}
-    data.keystone.adminMeta.lists.forEach((list: any) => {
-      lists[list.key] = {}
-      list.fields.forEach((field: any) => {
-        lists[list.key][field.path] = field.createView.fieldMode
-      })
-    })
-    return { state: 'loaded', lists }
-  }
-
-  return { state: 'loading' }
+  return { state: 'loaded', lists }
 }
 
-function getVisibleLists (
-  { data }: QueryResult,
-  error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
-): VisibleLists {
-  if (error) return { state: 'error', error }
-  if (data) {
-    const lists = new Set<string>()
-    data.keystone.adminMeta.lists.forEach((list: any) => {
-      if (!list.hideNavigation) lists.add(list.key)
-    })
-    return { state: 'loaded', lists }
+function getVisibleLists ({ data }: QueryResult): VisibleLists {
+  if (!data) return { state: 'loading' }
+  const lists = new Set<string>()
+  for (const list of data.keystone.adminMeta.lists) {
+    if (!list.hideNavigation) lists.add(list.key)
   }
-
-  return { state: 'loading' }
+  return { state: 'loaded', lists }
 }
