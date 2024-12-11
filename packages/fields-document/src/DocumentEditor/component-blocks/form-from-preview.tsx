@@ -186,7 +186,10 @@ function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
             alignSelf="start"
             autoFocus={props.autoFocus}
             onPress={() => {
-              onChange([...elements.map(x => ({ key: x.key })), { key: undefined }])
+              onChange([
+                ...elements.map(x => ({ key: x.key })),
+                { key: undefined }
+              ])
             }}
           >
             Add
@@ -297,7 +300,6 @@ function RelationshipFieldPreview (props: DefaultFieldProps<'relationship'>) {
 
   return <RelationshipFieldView
     autoFocus={autoFocus}
-    environment='create-page'
     field={{
       path: '', // unused
       label,

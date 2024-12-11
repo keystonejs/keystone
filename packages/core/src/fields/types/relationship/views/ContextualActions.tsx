@@ -26,18 +26,19 @@ export function ContextualActions (props: PropsWithChildren<RelationshipProps>) 
 }
 
 function ContextualActionsMenu (props: RelationshipProps) {
-  const { environment, field, onAdd, onChange, value } = props
+  const {
+    field,
+    onAdd,
+    onChange,
+    value,
+  } = props
 
   const foreignList = useList(field.refListKey)
   const relatedItem = useRelatedItem(props)
   const items = useMemo(() => {
-    const allowCreate =
-      !field.hideCreate &&
-      onChange !== undefined &&
-      environment !== 'create-dialog'
-
+    const allowAdd = !field.hideCreate && onChange
     const result = []
-    if (allowCreate) {
+    if (allowAdd) {
       result.push({
         icon: plusIcon,
         key: 'add',
