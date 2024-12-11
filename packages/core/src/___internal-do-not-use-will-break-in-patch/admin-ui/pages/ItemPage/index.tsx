@@ -168,12 +168,10 @@ function ItemForm ({
           />
           <Fields
             groups={list.groups}
-            fieldModes={fieldModes}
             fields={list.fields}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
             position="form"
-            fieldPositions={fieldPositions}
             onChange={useCallback(value => {
               setValue(state => ({ item: state.item, value: state.value }))
             }, [setValue])}
@@ -187,7 +185,6 @@ function ItemForm ({
           <Box marginTop="xlarge">
             <Fields
               groups={list.groups}
-              fieldModes={fieldModes}
               fields={list.fields}
               forceValidation={forceValidation}
               invalidFields={invalidFields}

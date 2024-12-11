@@ -10,7 +10,7 @@ export function useInvalidFields (
     const invalidFields = new Set<string>()
 
     for (const fieldPath in item) {
-      const validateFn = fields[fieldPath].controller.validate
+      const validateFn = fields[fieldPath]?.controller?.validate
       if (!validateFn) continue
 
       const fieldValue = item[fieldPath]
