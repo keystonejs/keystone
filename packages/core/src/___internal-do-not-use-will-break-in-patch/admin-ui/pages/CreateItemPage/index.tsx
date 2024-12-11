@@ -56,7 +56,7 @@ function CreateItemPage (props: CreateItemPageProps) {
                   ...createItem?.error?.graphQLErrors ?? []
                 ]}
               />
-              <Fields environment='create-page' {...createItem.props} />
+              <Fields view='createView' {...createItem.props} />
             </VStack>
 
             <BaseToolbar>

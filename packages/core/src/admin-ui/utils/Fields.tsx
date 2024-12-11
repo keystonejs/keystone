@@ -13,93 +13,61 @@ import { css, tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
 import type {
-  FieldEnvironment,
   FieldGroupMeta,
   FieldMeta,
 } from '../../types'
 import { EmptyState } from '../components/EmptyState'
-import { type Value } from '.'
 
 type FieldsProps = {
-  /**
-   * The environment in which the fields are being rendered. Certain fields may
-   * render differently depending on context, for example the relationship field
-   * does not support "add" behavior in the create dialog.
-   *
-   * @default 'edit-page'
-   */
-  environment?: FieldEnvironment
-  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
-  fieldPositions?: Record<string, 'form' | 'sidebar'> | null
+  view?: 'createView' | 'itemView'
+  position?: 'form' | 'sidebar'
   fields: Record<string, FieldMeta>
   forceValidation: boolean
   groups?: FieldGroupMeta[]
   invalidFields: ReadonlySet<string>
-  onChange(value: Value): void
-  position?: 'form' | 'sidebar'
-  value: Value
+  onChange(value: Record<string, unknown>): void
+  value: Record<string, unknown>
 }
 
 export function Fields ({
-  environment = 'edit-page',
-  fields,
-  value: itemValue,
-  fieldModes = null,
-  fieldPositions = null,
-  forceValidation,
-  invalidFields,
+  view = 'itemView',
   position = 'form',
+  fields,
+  forceValidation,
   groups = [],
+  invalidFields,
   onChange,
+  value: itemValue,
 }: FieldsProps) {
-  // TODO: auto-focusing the first field makes sense for e.g. the create item
-  // view, but may be disorienting in other situations. this needs to be
-  // revisited, and the result should probably be memoized
-  const firstFocusable = Object.keys(fields).find(fieldKey => {
-    const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-    const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
-    return fieldMode !== 'hidden' && fieldPosition === 'form'
-  })
-
+  let focused = false
   const renderedFields = Object.fromEntries(
-    Object.keys(fields).map((fieldKey, index) => {
+    Object.keys(fields).map((fieldKey) => {
       const field = fields[fieldKey]
-      const fieldValue = itemValue[fieldKey]
-      const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
+      if (view === 'itemView' && field.itemView.fieldPosition !== position) return [fieldKey, null]
 
+      const { fieldMode } = field[view]
       if (fieldMode === 'hidden') return [fieldKey, null]
-      if (fieldPosition !== position) return [fieldKey, null]
-      // TODO: this isn't accessible, it should:
-      // - render an inline alert (`Notice`), or
-      // - invoke a "critical" toast message
-      if (fieldValue.kind === 'error') {
-        return [
-          fieldKey,
-          <Text key={fieldKey}>
-            {field.label}: <Text color="critical">{fieldValue.errors[0].message}</Text>
-          </Text>,
-        ]
-      }
+
+      const fieldValue = itemValue[fieldKey]
+      const autoFocus = focused === false // not great, but focuses the first field
+      focused = true
 
       return [
         fieldKey,
         <field.views.Field
           key={fieldKey}
-          autoFocus={fieldKey === firstFocusable}
+          autoFocus={autoFocus}
           forceValidation={forceValidation && invalidFields.has(fieldKey)}
-          environment={environment}
           field={field.controller}
           onChange={(newFieldValue) => {
-            console.log('FOC', { itemValue, newFieldValue, fieldMode, onChange })
             if (fieldMode !== 'edit') return
             if (onChange === undefined) return
             onChange({
               ...itemValue,
-              [field.controller.path]: { kind: 'value', value: newFieldValue },
+              [field.controller.path]: newFieldValue,
             })
           }}
-          value={fieldValue.value}
+          value={fieldValue}
           itemValue={itemValue}
         />
       ]
