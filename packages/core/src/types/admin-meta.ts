@@ -147,17 +147,15 @@ export type FieldEnvironment = 'create-dialog' | 'create-page' | 'edit-page'
 
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   autoFocus?: boolean
-  /** The environment in which a field is rendered. */
-  environment: FieldEnvironment
   field: ReturnType<FieldControllerFn>
   /**
    * Will be true when the user has clicked submit and
    * the validate function on the field controller has returned false
    */
   forceValidation?: boolean
-  itemValue: Item
   onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>
+  itemValue: Item
 }
 
 export type FieldViews = Record<

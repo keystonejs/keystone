@@ -39,16 +39,16 @@ export const staticAdminMetaQuery = gql`
 
             search
             isNonNull
-            #createView {
-            #  fieldMode
-            #}
+            createView {
+              fieldMode
+            }
             itemView {
               fieldMode
-            #  fieldPosition
+              fieldPosition
             }
-            #listView {
-            #  fieldMode
-            #}
+            listView {
+              fieldMode
+            }
           }
 
           groups {
