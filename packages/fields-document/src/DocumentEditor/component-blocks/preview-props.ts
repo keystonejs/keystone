@@ -1,14 +1,14 @@
-import {
-  type ArrayField,
-  type ComponentSchema,
-  type ConditionalField,
-  type ValueForComponentSchema,
-  type FormField,
-  type FormFieldValue,
-  type HydratedRelationshipData,
-  type ObjectField,
-  type RelationshipField,
-  type GenericPreviewProps,
+import type {
+  ArrayField,
+  ComponentSchema,
+  ConditionalField,
+  ValueForComponentSchema,
+  FormField,
+  FormFieldValue,
+  HydratedRelationshipData,
+  ObjectField,
+  RelationshipField,
+  GenericPreviewProps,
 } from './api-shared'
 import { updateValue } from './initial-values'
 
@@ -56,9 +56,7 @@ type GeneralMap<K, V> = {
 }
 
 function getOrInsert<K, V> (map: GeneralMap<K, V>, key: K, val: (key: K) => V): V {
-  if (!map.has(key)) {
-    map.set(key, val(key))
-  }
+  if (!map.has(key)) map.set(key, val(key))
   return map.get(key)!
 }
 
@@ -96,9 +94,9 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     conditional (schema, onChange) {
       return {
         onChange: (discriminant: string | boolean, value?: unknown) =>
-          onChange(val => updateValue(schema, val, { discriminant, value })),
+          onChange(v => updateValue(schema, v, { discriminant, value })),
         onChangeForValue: (cb: (prevVal: unknown) => unknown) =>
-          onChange(val => ({ discriminant: val.discriminant, value: cb(val.value) })),
+          onChange(v => ({ discriminant: v.discriminant, value: cb(v.value) })),
       }
     },
     object (schema, onChange) {
@@ -111,7 +109,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
             return [
               key,
               (newVal: (prevVal: unknown) => unknown) => {
-                onChange(val => ({ ...val, [key]: newVal(val[key]) }))
+                onChange(v => ({ ...v, [key]: newVal(v[key]) }))
               },
             ]
           })
