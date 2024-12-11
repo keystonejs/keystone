@@ -1,11 +1,11 @@
 import path from 'node:path'
-import {
-  type BaseListTypeInfo,
-  type KeystoneContext,
-  type MaybeItemFunction,
-  type MaybePromise,
-  type MaybeSessionFunction,
-  type __ResolvedKeystoneConfig,
+import type {
+  BaseListTypeInfo,
+  KeystoneContext,
+  MaybeItemFunction,
+  MaybePromise,
+  MaybeSessionFunction,
+  __ResolvedKeystoneConfig,
 } from '../types'
 
 import type {
@@ -16,10 +16,10 @@ import type {
 import type {
   GraphQLNames,
 } from '../types/utils'
-import { type FilterOrderArgs } from '../types/config/fields'
+import type { FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
-import { type InitialisedList } from './core/initialise-lists'
+import type { InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 

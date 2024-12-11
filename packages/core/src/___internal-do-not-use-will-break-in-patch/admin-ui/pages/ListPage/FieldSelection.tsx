@@ -3,6 +3,7 @@ import React, {
   useMemo,
 } from 'react'
 import { useRouter } from 'next/router'
+import isDeepEqual from 'fast-deep-equal'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -10,24 +11,23 @@ import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
 import { Text } from '@keystar/ui/typography'
 
-import type { ListMeta } from '../../../../types'
+import { useList } from '../../../../admin-ui/context'
 import { useSelectedFields } from './useSelectedFields'
 
 export function FieldSelection ({
-  fieldModesByFieldPath,
+  listKey,
   isDisabled,
-  list,
 }: {
-  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
+  listKey: string
   isDisabled?: boolean
-  list: ListMeta
 }) {
   const router = useRouter()
-  const selectedFields = useSelectedFields(list, fieldModesByFieldPath)
+  const list = useList(listKey)
+  const selectedFields = useSelectedFields(list)
 
   const setNewSelectedFields = (selectedFields: Key[]) => {
     // Clear the `fields` query param when selection matches initial columns
-    if (isArrayEqual(selectedFields, list.initialColumns)) {
+    if (isDeepEqual(selectedFields, list.initialColumns)) {
       const { fields: _ignore, ...otherQueryFields } = router.query
       router.push({ query: otherQueryFields })
     } else {
@@ -36,14 +36,14 @@ export function FieldSelection ({
   }
 
   const fields = useMemo(() => {
-    return Object.keys(fieldModesByFieldPath)
-      .filter(fieldPath => fieldModesByFieldPath[fieldPath] === 'read')
-      .map(fieldPath => ({
-        value: fieldPath,
-        label: list.fields[fieldPath].label,
-        isDisabled: selectedFields.size === 1 && selectedFields.has(fieldPath),
+    return Object.values(list.fields)
+      .filter(field => field.listView.fieldMode === 'read')
+      .map(field => ({
+        value: field.path,
+        label: field.label,
+        isDisabled: selectedFields.size === 1 && selectedFields.has(field.path),
       }))
-  }, [fieldModesByFieldPath, list.fields, selectedFields])
+  }, [list.fields, selectedFields])
 
   return (
     <MenuTrigger>
@@ -70,14 +70,4 @@ export function FieldSelection ({
       </Menu>
     </MenuTrigger>
   )
-}
-
-function isArrayEqual (arrA: Key[], arrB: Key[]) {
-  if (arrA.length !== arrB.length) return false
-  for (let i = 0; i < arrA.length; i++) {
-    if (arrA[i] !== arrB[i]) {
-      return false
-    }
-  }
-  return true
 }
