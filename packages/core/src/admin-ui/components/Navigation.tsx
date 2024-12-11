@@ -1,4 +1,7 @@
-import React, { type ReactNode, type PropsWithChildren } from 'react'
+import React, {
+  type ReactNode,
+  type PropsWithChildren
+} from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -8,13 +11,16 @@ import { constructionIcon } from '@keystar/ui/icon/icons/constructionIcon'
 import { githubIcon } from '@keystar/ui/icon/icons/githubIcon'
 import { fileJson2Icon } from '@keystar/ui/icon/icons/fileJson2Icon'
 import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
-import { Box, Divider, HStack, VStack } from '@keystar/ui/layout'
-import { NavList as KeystarNavList, NavItem as KeystarNavItem, NavListProps } from '@keystar/ui/nav-list'
-import { Notice } from '@keystar/ui/notice'
+import { Divider, HStack, VStack } from '@keystar/ui/layout'
+import {
+  NavList as KeystarNavList,
+  NavItem as KeystarNavItem,
+  NavListProps
+} from '@keystar/ui/nav-list'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import { type ListMeta } from '../../types'
+import type { ListMeta } from '../../types'
 import { useKeystone } from '../context'
 
 type NavItemProps = {
@@ -78,44 +84,17 @@ export function NavContainer ({ children }: PropsWithChildren) {
 
 /** @private Exported for internal consumption only. */
 export function Navigation () {
-  const {
-    adminMeta: { lists },
-    adminConfig,
-    visibleLists,
-  } = useKeystone()
+  const { adminMeta, adminConfig } = useKeystone()
+  const lists = Object.values(adminMeta?.lists ?? [])
+  const visibleLists = lists.filter(x => !x.hideNavigation)
 
-  if (visibleLists.state === 'loading') return null
-
-  // This visible lists error is critical, and is likely to result in a server
-  // restart. If it happens, show the error and don't render navigation.
-  if (visibleLists.state === 'error') {
-    return (
-      <Box padding="xlarge">
-        <Notice tone="critical">
-          {visibleLists.error instanceof Error
-            ? visibleLists.error.message
-            : visibleLists.error[0].message}
-        </Notice>
-      </Box>
-    )
-  }
-  const renderableLists = Object.keys(lists)
-    .map(key => {
-      if (!visibleLists.lists.has(key)) return null
-      return lists[key]
-    })
-    .filter((x): x is NonNullable<typeof x> => Boolean(x))
-
-  if (adminConfig?.components?.Navigation) {
-    return <adminConfig.components.Navigation lists={renderableLists} />
-  }
-
+  if (adminConfig?.components?.Navigation) return <adminConfig.components.Navigation lists={visibleLists} />
   return (
     <NavContainer>
       <NavList>
         <NavItem href='/'>Dashboard</NavItem>
         <Divider />
-        {renderableLists.map((list: ListMeta) => (
+        {visibleLists.map((list: ListMeta) => (
           <NavItem key={list.key} href={getHrefFromList(list)}>
             {list.label}
           </NavItem>

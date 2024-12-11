@@ -1,5 +1,12 @@
 import { useRouter } from 'next/router'
-import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
+import React, {
+  type FormEvent,
+  Fragment,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -11,17 +18,22 @@ import { Picker } from '@keystar/ui/picker'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { type FieldMeta, type JSONValue } from '../../../../types'
+import type {
+  FieldMeta,
+  JSONValue
+} from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
 
 type State =
   | { kind: 'selecting-field' }
   | { kind: 'filter-value', fieldPath: string, filterType: string, filterValue: JSONValue }
 
-export function FilterAdd (props: {
-  filterableFields: Set<string>
-  isDisabled?: boolean
+export function FilterAdd ({
+  listKey,
+  isDisabled
+}: {
   listKey: string
+  isDisabled?: boolean
 }) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [state, setState] = useState<State>({ kind: 'selecting-field' })
@@ -29,7 +41,11 @@ export function FilterAdd (props: {
   const router = useRouter()
   const formId = useId()
 
-  const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(props)
+  const {
+    fieldsWithFilters,
+    filtersByFieldThenType,
+    list,
+  } = useFilterFields(listKey)
   const resetState = () => {
     setState({ kind: 'selecting-field' })
     setForceValidation(false)
@@ -141,7 +157,7 @@ export function FilterAdd (props: {
   return (
     <Fragment>
       <MenuTrigger>
-        <ActionButton ref={triggerRef} isDisabled={props.isDisabled}>
+        <ActionButton ref={triggerRef} isDisabled={isDisabled}>
           <Text>Filter</Text>
           <Icon src={chevronDownIcon} />
         </ActionButton>
@@ -170,13 +186,7 @@ export function FilterAdd (props: {
   )
 }
 
-function useFilterFields ({
-  listKey,
-  filterableFields,
-}: {
-  listKey: string
-  filterableFields: Set<string>
-}) {
+function useFilterFields (listKey: string) {
   const list = useList(listKey)
   const router = useRouter()
   const fieldsWithFilters = useMemo(() => {
@@ -184,36 +194,37 @@ function useFilterFields ({
       string,
       FieldMeta & { controller: { filter: NonNullable<FieldMeta['controller']['filter']> } }
     > = {}
-    Object.keys(list.fields).forEach(fieldPath => {
+    for (const fieldPath in list.fields) {
       const field = list.fields[fieldPath]
-      if (filterableFields.has(fieldPath) && field.controller.filter) {
+      if (field.isFilterable && field.controller.filter) {
         fieldsWithFilters[fieldPath] = field as any
       }
-    })
+    }
     return fieldsWithFilters
-  }, [list.fields, filterableFields])
+  }, [list.fields])
+
   const filtersByFieldThenType = useMemo(() => {
     const filtersByFieldThenType: Record<string, Record<string, string>> = {}
-    Object.keys(fieldsWithFilters).forEach(fieldPath => {
+    for (const fieldPath in fieldsWithFilters) {
       const field = fieldsWithFilters[fieldPath]
       let hasUnusedFilters = false
       const filters: Record<string, string> = {}
-      Object.keys(field.controller.filter.types).forEach(filterType => {
+      for (const filterType in field.controller.filter.types) {
         if (router.query[`!${fieldPath}_${filterType}`] === undefined) {
           hasUnusedFilters = true
           filters[filterType] = field.controller.filter.types[filterType].label
         }
-      })
+      }
       if (hasUnusedFilters) {
         filtersByFieldThenType[fieldPath] = filters
       }
-    })
+    }
     return filtersByFieldThenType
   }, [router.query, fieldsWithFilters])
 
   return {
     fieldsWithFilters,
     filtersByFieldThenType,
-    list
+    list,
   }
 }

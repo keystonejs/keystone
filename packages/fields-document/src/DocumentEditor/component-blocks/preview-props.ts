@@ -172,10 +172,10 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
       return previewProps
     },
     array (schema, value, memoized, path, getInnerProp) {
+      if (!Array.isArray(value)) throw new TypeError('Expected array')
       const arrayValue = value as readonly unknown[]
       const keys = getKeysForArrayValue(arrayValue)
-
-      const unusedKeys = new Set(getKeysForArrayValue(value))
+      const unusedKeys = new Set([...keys])
 
       const props: GenericPreviewProps<ArrayField<ComponentSchema>, ChildFieldElement> = {
         elements: arrayValue.map((val, i) => {

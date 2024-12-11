@@ -2,7 +2,6 @@ import isDeepEqual from 'fast-deep-equal'
 import { useRouter } from 'next/router'
 import {
   type ComponentProps,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -15,7 +14,7 @@ import type { ListMeta } from '../../types'
 import { type ApolloError, gql, useMutation } from '../apollo'
 import { useKeystone } from '../context'
 import { usePreventNavigation } from './usePreventNavigation'
-import type { Fields, Value } from '.'
+import type { Fields } from '.'
 
 type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
 

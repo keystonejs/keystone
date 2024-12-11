@@ -166,11 +166,6 @@
       "module": "./fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js",
       "default": "./fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.js"
     },
-    "./fields/types/relationship/views/RelationshipSelect": {
-      "types": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.js",
-      "module": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.esm.js",
-      "default": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/artifacts": {
       "types": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js",
       "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
@@ -325,7 +320,6 @@
       "admin-ui/utils/index.ts",
       "fields/index.ts",
       "fields/types/*/views/index.tsx",
-      "fields/types/relationship/views/RelationshipSelect.tsx",
       "fields/types/{image,file}/utils.ts",
       "types/index.ts"
     ],

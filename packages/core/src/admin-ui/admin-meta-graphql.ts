@@ -1,15 +1,15 @@
-import {
-  type GraphQLNames,
+import type {
+  GraphQLNames,
 } from '../types/utils'
-import {
-  type ListMeta,
-  type FieldMeta,
-  type FieldGroupMeta,
+import type {
+  ListMeta,
+  FieldMeta,
+  FieldGroupMeta,
 } from '../types'
 import { gql } from './apollo'
 
-export const staticAdminMetaQuery = gql`
-  query StaticAdminMeta {
+export const adminMetaQuery = gql`
+  query AdminMeta {
     keystone {
       __typename
       adminMeta {
@@ -31,8 +31,8 @@ export const staticAdminMetaQuery = gql`
             label
             description
             fieldMeta
-            #isOrderable
-            #isFilterable
+            isOrderable
+            isFilterable
 
             viewsIndex
             customViewsIndex
@@ -98,9 +98,9 @@ export const staticAdminMetaQuery = gql`
           }
           isSingleton
 
-          #hideNavigation
-          #hideCreate
-          #hideDelete
+          hideNavigation
+          hideCreate
+          hideDelete
         }
       }
     }
@@ -108,14 +108,14 @@ export const staticAdminMetaQuery = gql`
 `
 
 // TODO: FIXME: should use DeepNullable
-export type StaticAdminMetaQuery = {
+// TODO: duplicate, reference core/src/lib/create-admin-meta.ts
+export type AdminMetaQuery = {
   keystone: {
     __typename: 'KeystoneMeta'
     adminMeta: {
       __typename: 'KeystoneAdminMeta'
       lists: (ListMeta & {
         __typename: 'KeystoneAdminUIListMeta'
-
         fields: (Omit<FieldMeta, 'graphql'> & {
           __typename: 'KeystoneAdminUIFieldMeta'
           isNonNull: FieldMeta['graphql']['isNonNull'] // TODO: FIXME: flattened?
@@ -131,11 +131,16 @@ export type StaticAdminMetaQuery = {
         }
 
         pageSize: number
-        initialColumns: Array<string>
-        initialSearchFields: Array<string>
+        initialColumns: string[]
+        initialSearchFields: string[]
         initialSort: ({
           __typename: 'KeystoneAdminUISort'
-        } & ListMeta['initialSort'])
+        } & ListMeta['initialSort']) | null
+        isSingleton: boolean
+
+        hideNavigation: boolean
+        hideCreate: boolean
+        hideDelete: boolean
       })[]
     }
   }

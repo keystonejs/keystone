@@ -7,13 +7,10 @@ import { Content } from '@keystar/ui/slots'
 import { Heading } from '@keystar/ui/typography'
 
 import { jsx, Box } from '@keystone-ui/core'
-import { LoadingDots } from '@keystone-ui/loading'
-
-import { useKeystone, useList } from '../context'
+import { useList } from '../context'
 
 import { Fields } from '../utils/Fields'
 import { useBuildItem } from '../utils/useCreateItem'
-import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 import { useId } from 'react'
 
 export function BuildItemDialog ({
@@ -23,7 +20,6 @@ export function BuildItemDialog ({
   listKey: string
   onChange: (subItem: Record<string, unknown>) => void
 }) {
-  const { createViewFieldModes } = useKeystone()
   const list = useList(listKey)
   const buildItem = useBuildItem(list)
   const dialogState = useDialogContainer()
@@ -50,14 +46,8 @@ export function BuildItemDialog ({
             dialogState.dismiss()
           }}
         >
-          {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
-          <GraphQLErrorNotice
-            errors={[
-              ...(createViewFieldModes.state === 'error' ? [createViewFieldModes.error].flat() : []),
-            ]}
-          />
           <Box paddingY="xlarge">
-            <Fields environment='create-dialog' {...buildItem.props} />
+            <Fields view="createView" {...buildItem.props} />
           </Box>
         </form>
       </Content>

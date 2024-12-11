@@ -3,20 +3,18 @@
 
 import { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
-import isDeepEqual from 'fast-deep-equal'
 
 import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { type FieldMeta } from '@keystone-6/core/types'
+import type { FieldMeta } from '@keystone-6/core/types'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
 import { useRouter, Link } from '@keystone-6/core/admin-ui/router'
 import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
 import {
   Fields,
-  serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-6/core/admin-ui/utils'
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
@@ -178,6 +176,18 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   )
 }
 
+function serializeItemValue (
+  fields: Record<string, FieldMeta>,
+  state: Record<string, unknown>
+) {
+  const result: Record<string, unknown> = {}
+  for (const field of Object.values(fields)) {
+    if (field.path === 'id') continue // cannot be used
+    result[field.path] = field.controller.serialize(state[field.path])?.[field.path]
+  }
+  return result
+}
+
 function InitPage ({
   fieldPaths,
   listKey,
@@ -188,30 +198,28 @@ function InitPage ({
   enableWelcome: boolean
 }) {
   const { adminMeta } = useKeystone()
-  const reinitContext = useReinitContext()
   const router = useRouter()
   const redirect = useRedirect()
+  const lists = adminMeta?.lists ?? {}
+  const list = lists[listKey]
 
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
-    fieldPaths.forEach(fieldPath => {
-      fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath]
-    })
+    for (const fieldPath of fieldPaths) {
+      fields[fieldPath] = list?.fields[fieldPath]
+    }
     return fields
-  }, [fieldPaths, adminMeta.lists, listKey])
+  }, [list, fieldPaths])
 
-  const [value, setValue] = useState(() => {
+  const [itemState, setItemState] = useState(() => {
     const state: Record<string, any> = {}
     for (const fieldPath in fields) {
-      state[fieldPath] = {
-        kind: 'value',
-        value: fields[fieldPath].controller.defaultValue
-      }
+      state[fieldPath] = fields[fieldPath].controller.defaultValue
     }
     return state
   })
 
-  const invalidFields = useInvalidFields(fields, value)
+  const invalidFields = useInvalidFields(fields, itemState)
   const [forceValidation, setForceValidation] = useState(false)
   const [mode, setMode] = useState<'init' | 'welcome'>('init')
 
@@ -228,39 +236,21 @@ function InitPage ({
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    // Check if there are any invalidFields
+
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
-
-    // if yes, don't submit the form
     if (newForceValidation) return
-
-    // If not we serialize the data
-    const data: Record<string, any> = {}
-    const allSerializedValues = serializeValueToObjByFieldKey(fields, value)
-
-    for (const fieldPath of Object.keys(allSerializedValues)) {
-      const { controller } = fields[fieldPath]
-      const serialized = allSerializedValues[fieldPath]
-      // we check the serialized values against the default values on the controller
-      if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-        // if they're different add them to the data object.
-        Object.assign(data, serialized)
-      }
-    }
 
     try {
       await createFirstItem({
         variables: {
-          data,
+          data: serializeItemValue(fields, itemState)
         },
       })
     } catch (e) {
       console.error(e)
       return
     }
-
-    await reinitContext()
 
     if (enableWelcome) return setMode('welcome')
     router.push(redirect)
@@ -280,17 +270,16 @@ function InitPage ({
             ]}
           />
           <Fields
+            view="createView"
             fields={fields}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
-            onChange={setValue}
-            value={value}
+            onChange={setItemState}
+            value={itemState}
+            position="form"
           />
           <Button
-            isLoading={
-              loading ||
-              data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
-            }
+            isLoading={loading || data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`}
             type="submit"
             weight="bold"
             tone="active"
@@ -302,7 +291,7 @@ function InitPage ({
     </SigninContainer>
   ) : (
     <SigninContainer>
-      <Welcome value={value} onContinue={onComplete} />
+      <Welcome value={itemState} onContinue={onComplete} />
     </SigninContainer>
   )
 }

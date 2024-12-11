@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 import type { FieldMeta } from '../../types'
-import type { Value } from './'
 
 export function useInvalidFields (
   fields: Record<string, FieldMeta>,
-  item: Value
+  item: Record<string, unknown>
 ): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>()
@@ -14,9 +13,7 @@ export function useInvalidFields (
       if (!validateFn) continue
 
       const fieldValue = item[fieldPath]
-      if (fieldValue.kind !== 'value') continue
-
-      const valid = validateFn(fieldValue.value)
+      const valid = validateFn(fieldValue)
       if (valid) continue
 
       invalidFields.add(fieldPath)

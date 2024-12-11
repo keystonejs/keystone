@@ -1,18 +1,15 @@
-import {
-  type GraphQLResolveInfo
-} from 'graphql'
-import {
-  type EnumType,
-  type EnumValue,
-  type ScalarType,
+import type {
+  EnumType,
+  EnumValue,
+  ScalarType,
 } from '@graphql-ts/schema'
-import {
-  type BaseItem,
-  type KeystoneContext,
-  type MaybePromise
+import type {
+  BaseItem,
+  KeystoneContext as Context,
+  MaybePromise
 } from '../types'
-import {
-  type GraphQLNames,
+import type {
+  GraphQLNames,
 } from '../types/utils'
 import { QueryMode } from '../types'
 import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
@@ -22,8 +19,6 @@ import type {
   FieldMetaRootVal,
   ListMetaRootVal,
 } from './create-admin-meta'
-
-type Context = KeystoneContext | { isAdminUIBuildProcess: true }
 
 const graphql = {
   ...graphqlBoundToKeystoneContext,
@@ -101,16 +96,10 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
             resolve ({ fieldMode, itemId, listKey }, args, context, info) {
-              if (itemId !== null) assertInRuntimeContext(context, info)
-              if (typeof fieldMode === 'string') return fieldMode
-              if (itemId === null) return null
-
-              // we need to re-assert this because typescript doesn't understand the relation between
-              // rootVal.itemId !== null and the context being a runtime context
-              assertInRuntimeContext(context, info)
-
+              if (!itemId) return null
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
                 if (item === null) return 'hidden' as const
+                if (typeof fieldMode !== 'function') return fieldMode
 
                 return fieldMode({
                   session: context.session,
@@ -126,15 +115,11 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               values: graphql.enumValues(['form', 'sidebar']),
             }),
             resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
-              if (itemId !== null) assertInRuntimeContext(context, info)
-              if (typeof fieldPosition === 'string') return fieldPosition
-              if (itemId === null) return null
-
-              assertInRuntimeContext(context, info)
+              if (!itemId) return null
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
-                if (item === null) {
-                  return 'form' as const
-                }
+                if (item === null) return 'form' as const
+                if (typeof fieldPosition !== 'function') return fieldPosition
+
                 return fieldPosition({
                   session: context.session,
                   context,
@@ -263,27 +248,16 @@ const adminMeta = graphql.object<AdminMetaRootVal>()({
   },
 })
 
-function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true
-  return session !== undefined
-}
-
 export const KeystoneMeta = graphql.object<{ adminMeta: AdminMetaRootVal }>()({
   name: 'KeystoneMeta',
   fields: {
     adminMeta: graphql.field({
       type: graphql.nonNull(adminMeta),
-      resolve ({ adminMeta }, args, context) {
-        if ('isAdminUIBuildProcess' in context) {
-          return adminMeta
-        }
-
-        const isAccessAllowed = adminMeta?.isAccessAllowed ?? defaultIsAccessAllowed
-        return Promise.resolve(isAccessAllowed(context)).then(isAllowed => {
+      resolve ({ adminMeta }, args, context, info) {
+        return Promise.resolve(adminMeta.isAccessAllowed(context)).then(isAllowed => {
           if (isAllowed) return adminMeta
 
-          // TODO: ughhhhhh, we really need to talk about errors.
-          // mostly unrelated to above: error or return null here(+ make field nullable)?s
+          // TODO: we need better errors
           throw new Error('Access denied')
         })
       },
@@ -308,22 +282,13 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
   }
 })
 
-function extendContext<T> (cb: (context: KeystoneContext) => T) {
-  const cache = new WeakMap<KeystoneContext, T>()
-  return (context: KeystoneContext) => {
+function extendContext<T> (cb: (context: Context) => T) {
+  const cache = new WeakMap<Context, T>()
+  return (context: Context) => {
     if (cache.has(context)) return cache.get(context)!
     const result = cb(context)
     cache.set(context, result)
     return result
-  }
-}
-
-function assertInRuntimeContext (
-  context: KeystoneContext | { isAdminUIBuildProcess: true },
-  { parentType, fieldName }: GraphQLResolveInfo
-): asserts context is KeystoneContext {
-  if ('isAdminUIBuildProcess' in context) {
-    throw new Error(`${parentType}.${fieldName} cannot be resolved during the build process`)
   }
 }
 
@@ -335,9 +300,8 @@ function contextFunctionField<Key extends string, Type extends string | boolean>
     [key]: graphql.field({
       type: graphql.nonNull(type),
       resolve (source: {
-        [_ in Key]: (context: KeystoneContext) => MaybePromise<Type>
+        [_ in Key]: (context: Context) => MaybePromise<Type>
       }, args, context, info) {
-        assertInRuntimeContext(context, info)
         return source[key](context)
       },
     })

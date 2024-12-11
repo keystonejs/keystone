@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react'
+import React, {
+  useEffect,
+  useMemo
+} from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Divider } from '@keystar/ui/layout'
@@ -20,11 +23,6 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 
-type AuthenticatedItem = {
-  label: string
-  id: string
-}
-
 export default ({ labelField }: { labelField: string }) => (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
 
 function Navigation ({
@@ -34,15 +32,18 @@ function Navigation ({
   labelField: string
 } & NavigationProps) {
   const { data } = useQuery<{
-    authenticatedItem: AuthenticatedItem | null
-  }>(gql`
+    authenticatedItem: null | {
+      label: string
+      id: string
+    }
+  }>(useMemo(() => gql`
     query Session {
       authenticatedItem {
         id
         label: ${labelField}
       }
     }
-  `)
+  `, [labelField]))
 
   return (
     <NavContainer>
@@ -66,40 +67,30 @@ function Navigation ({
   )
 }
 
-function SignoutButton (props: { authItemLabel: string, children?: React.ReactNode }) {
-  const { authItemLabel, children = 'Sign out' } = props
-  const { signout } = useSignout()
-
-  return (
-    <TooltipTrigger>
-      <ActionButton onPress={() => signout()}>
-        {children}
-      </ActionButton>
-      <Tooltip>
-        <Text>Signed in as <strong>{authItemLabel}</strong></Text>
-      </Tooltip>
-    </TooltipTrigger>
-  )
-}
-
 const END_SESSION = gql`
   mutation EndSession {
     endSession
   }
 `
 
-function useSignout () {
-  const [signout, result] = useMutation(END_SESSION)
-
-  // TODO: handle errors
+function SignoutButton ({
+  authItemLabel
+}: {
+  authItemLabel: string
+}) {
+  const [endSession, { data }] = useMutation(END_SESSION)
   useEffect(() => {
-    if (result.data?.endSession) {
+    if (data?.endSession) {
       window.location.reload()
     }
-  }, [result.data])
+  }, [data])
 
-  return {
-    signout,
-    loading: result.loading,
-  }
+  return (
+    <TooltipTrigger>
+      <ActionButton onPress={() => endSession()}>Sign out</ActionButton>
+      <Tooltip>
+        <Text>Signed in as <strong>{authItemLabel}</strong></Text>
+      </Tooltip>
+    </TooltipTrigger>
+  )
 }
