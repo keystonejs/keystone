@@ -1,28 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState, Fragment, type FormEvent, useRef, useEffect } from 'react'
+import {
+  type FormEvent,
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { TextInput } from '@keystone-ui/fields'
 import { Notice } from '@keystone-ui/notice'
 
-import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
-import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+import {
+  useMutation,
+  gql
+} from '@keystone-6/core/admin-ui/apollo'
 import { SigninContainer } from '../components/SigninContainer'
-import { useRedirect } from '../lib/useFromRedirect'
 
-type SigninPageProps = {
-  identityField: string
-  secretField: string
-  mutationName: string
-  successTypename: string
-  failureTypename: string
-}
-
-export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />
+export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
 export function SigninPage ({
   identityField,
@@ -30,9 +28,15 @@ export function SigninPage ({
   mutationName,
   successTypename,
   failureTypename,
-}: SigninPageProps) {
+}: {
+  identityField: string
+  secretField: string
+  mutationName: string
+  successTypename: string
+  failureTypename: string
+}) {
   const mutation = gql`
-    mutation($identity: String!, $secret: String!) {
+    mutation ($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
@@ -46,136 +50,80 @@ export function SigninPage ({
     }
   `
 
-  const [mode, setMode] = useState<'signin' | 'forgot password'>('signin')
   const [state, setState] = useState({ identity: '', secret: '' })
-  const [submitted, setSubmitted] = useState(false)
-
   const identityFieldRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     identityFieldRef.current?.focus()
-  }, [mode])
+  }, [])
 
-  const [mutate, { error, loading, data }] = useMutation(mutation)
-  const reinitContext = useReinitContext()
-  const router = useRouter()
-  const rawKeystone = useRawKeystone()
-  const redirect = useRedirect()
-
-  // if we are signed in, redirect immediately
-  useEffect(() => {
-    if (submitted) return
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(redirect)
-    }
-  }, [rawKeystone.authenticatedItem, router, redirect, submitted])
-
-  useEffect(() => {
-    if (!submitted) return
-
-    // TODO: this is horrible, we need to resolve this mess
-    // @ts-expect-error
-    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      router.push('/no-access')
-      return
-    }
-
-    router.push(redirect)
-  }, [rawKeystone.adminMeta, router, redirect, submitted])
-
+  const [tryAuthenticate, { error, loading, data }] = useMutation(mutation)
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (mode !== 'signin') return
-
     try {
-      const { data } = await mutate({
+      await tryAuthenticate({
         variables: {
           identity: state.identity,
           secret: state.secret,
         },
       })
-      if (data.authenticate?.__typename !== successTypename) return
     } catch (e) {
       console.error(e)
       return
     }
-
-    await reinitContext()
-    setSubmitted(true)
   }
 
   return (
-    <SigninContainer title="Keystone - Sign in">
-      <Stack gap="xlarge" as="form" onSubmit={onSubmit}>
-        <H1>Sign In</H1>
-        {error && (
-          <Notice title="Error" tone="negative">
-            {error.message}
-          </Notice>
-        )}
+    <SigninContainer title='Keystone - Sign in'>
+      <Stack gap='xlarge' as='form' onSubmit={onSubmit}>
+        <H1>Sign in</H1>
+        {error ? <Notice title='Error' tone='negative'>{error.message}</Notice> : null}
         {data?.authenticate?.__typename === failureTypename && (
-          <Notice title="Error" tone="negative">
+          <Notice title='Error' tone='negative'>
             {data?.authenticate.message}
           </Notice>
         )}
-        <Stack gap="medium">
-          <VisuallyHidden as="label" htmlFor="identity">
+        <Stack gap='medium'>
+          <VisuallyHidden as='label' htmlFor='identity'>
             {identityField}
           </VisuallyHidden>
           <TextInput
-            id="identity"
-            name="identity"
+            id='identity'
+            name='identity'
             value={state.identity}
             onChange={e => setState({ ...state, identity: e.target.value })}
             placeholder={identityField}
             ref={identityFieldRef}
           />
-          {mode === 'signin' && (
-            <Fragment>
-              <VisuallyHidden as="label" htmlFor="password">
-                {secretField}
-              </VisuallyHidden>
-              <TextInput
-                id="password"
-                name="password"
-                value={state.secret}
-                onChange={e => setState({ ...state, secret: e.target.value })}
-                placeholder={secretField}
-                type="password"
-              />
-            </Fragment>
-          )}
+          <Fragment>
+            <VisuallyHidden as='label' htmlFor='password'>
+              {secretField}
+            </VisuallyHidden>
+            <TextInput
+              id='password'
+              name='password'
+              value={state.secret}
+              onChange={e => setState({ ...state, secret: e.target.value })}
+              placeholder={secretField}
+              type='password'
+            />
+          </Fragment>
         </Stack>
 
-        {mode === 'forgot password' ? (
-          <Stack gap="medium" across>
-            <Button type="submit" weight="bold" tone="active">
-              Log reset link
-            </Button>
-            <Button weight="none" tone="active" onClick={() => setMode('signin')}>
-              Go back
-            </Button>
-          </Stack>
-        ) : (
-          <Stack gap="medium" across>
-            <Button
-              weight="bold"
-              tone="active"
-              isLoading={
-                loading ||
-                // this is for while the page is loading but the mutation has finished successfully
-                data?.authenticate?.__typename === successTypename
-              }
-              type="submit"
-            >
-              Sign in
-            </Button>
-            {/* Disabled until we come up with a complete password reset workflow */}
-            {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
-              Forgot your password?
-            </Button> */}
-          </Stack>
-        )}
+        <Stack gap='medium' across>
+          <Button
+            weight='bold'
+            tone='active'
+            isLoading={
+              loading ||
+              // this is for while the page is loading but the mutation has finished successfully
+              data?.authenticate?.__typename === successTypename
+            }
+            type='submit'
+          >
+            Sign in
+          </Button>
+        </Stack>
       </Stack>
     </SigninContainer>
   )
