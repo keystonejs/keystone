@@ -41,7 +41,7 @@ import {
   StickySidebar
 } from './common'
 import {
-  deserializeItemValue,
+  deserializeItemToValue,
   useChangedFieldsAndDataForUpdate,
 } from './utils'
 
@@ -83,9 +83,10 @@ function ItemForm ({
   )
 
   const [value, setValue] = useState(() => {
-    return deserializeItemValue(list.fields, item)
+    return deserializeItemToValue(list.fields, item)
   })
 
+  console.log('ip', { item, value })
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
   const onSave = useEventCallback(async (e) => {
@@ -117,12 +118,10 @@ function ItemForm ({
 
   const itemId = (value.id ?? '') as (string | number)
   const labelFieldValue = list.isSingleton ? list.label : (value[list.labelField] as string)
-  const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
-    list.fields,
-    item,
-    value
-  )
-  const hasChangedFields = !!changedFields.size
+  const {
+    hasChangedFields,
+    dataForUpdate
+  } = useChangedFieldsAndDataForUpdate(list.fields, item, value)
 
   return (
     <Fragment>
@@ -181,7 +180,7 @@ function ItemForm ({
           <ResetButton
             hasChanges={hasChangedFields}
             onReset={useEventCallback(() => {
-              setValue(state => deserializeItemValue(list.fields, data))
+              setValue(state => deserializeItemToValue(list.fields, data))
             })}
           />
           <Box flex />

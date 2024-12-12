@@ -3,75 +3,77 @@ import {
   getRootGraphQLFieldsFromFieldController,
 } from '../../../../admin-ui/utils'
 import isDeepEqual from 'fast-deep-equal'
-import type { FieldMeta } from '../../../../types'
+import type {
+  FieldMeta,
+  JSONValue
+} from '../../../../types'
 
-export function deserializeItemValue (
+export function deserializeItemToValue (
   fields: Record<string, FieldMeta>,
-  data: Record<string, unknown | null>
+  item: Record<string, unknown | null>
 ) {
-  const value: Record<string, unknown | null> = {}
+  const result: Record<string, unknown | null> = {}
   for (const fieldKey in fields) {
     const field = fields[fieldKey]
     const itemForField: Record<string, unknown> = {}
     for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
-      itemForField[graphqlField] = data?.[graphqlField] ?? null
+      itemForField[graphqlField] = item?.[graphqlField] ?? null
     }
-    value[fieldKey] = field.controller.deserialize(itemForField)
+    result[fieldKey] = field.controller.deserialize(itemForField)
   }
-  return value
+  return result
 }
 
-// function serializeValueToObjByFieldKey (
-//   fields: Record<string, FieldMeta>,
-//   value: DeserializedValue
-// ) {
-//   const obj: Record<string, Record<string, JSONValue>> = {}
-//   Object.keys(fields).map(fieldKey => {
-//     const val = value[fieldKey]
-//     if (val.kind === 'value') {
-//       obj[fieldKey] = fields[fieldKey].controller.serialize(val.value)
-//     }
-//   })
-//   return obj
-// }
+function serializeValueToItem (
+  fields: Record<string, FieldMeta>,
+  value: Record<string, unknown>
+) {
+  const result: Record<string, Record<string, JSONValue>> = {}
+  for (const fieldKey in fields) {
+    const fieldValue = value[fieldKey]
+    result[fieldKey] = fields[fieldKey].controller.serialize(fieldValue)
+  }
+  return result
+}
 
 export function useChangedFieldsAndDataForUpdate (
   fields: Record<string, FieldMeta>,
   item: Record<string, unknown>,
   value: Record<string, unknown>,
 ) {
+  const serializedItem = useMemo(() => serializeValueToItem(fields, value), [fields, value])
   const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(fields, itemGetter)
-    return serializeValueToObjByFieldKey(fields, value)
-  }, [fields, itemGetter])
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(fields, value)
-  }, [value, fields])
+    const value2 = deserializeItemToValue(fields, item)
+    return serializeValueToItem(fields, value2)
+  }, [fields, item])
 
   return useMemo(() => {
     const changedFields = new Set<string>()
-    Object.keys(serializedFieldValues).forEach(fieldKey => {
+    for (const fieldKey in serializedItem) {
       const isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
+        serializedItem[fieldKey],
         serializedValuesFromItem[fieldKey]
       )
       if (!isEqual) {
         changedFields.add(fieldKey)
       }
-    })
+    }
 
     const dataForUpdate: Record<string, any> = {}
-    changedFields.forEach(fieldKey => {
-      Object.assign(dataForUpdate, serializedFieldValues[fieldKey])
-    })
+    for (const fieldKey of changedFields) {
+      Object.assign(dataForUpdate, serializedItem[fieldKey])
+    }
 
-    Object.keys(serializedFieldValues)
+    Object.keys(serializedItem)
       .filter(fieldKey => fields[fieldKey].graphql.isNonNull?.includes('update'))
       .filter(fieldKey => !changedFields.has(fieldKey))
       .forEach(fieldKey => {
-        Object.assign(dataForUpdate, serializedFieldValues[fieldKey])
+        Object.assign(dataForUpdate, serializedItem[fieldKey])
       })
 
-    return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate }
-  }, [serializedFieldValues, serializedValuesFromItem, fields])
+    return {
+      hasChangedFields: changedFields.size > 0,
+      dataForUpdate
+    }
+  }, [serializedItem, serializedValuesFromItem, fields])
 }

@@ -10,7 +10,6 @@ import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { HStack, VStack } from '@keystar/ui/layout'
-import { ProgressCircle } from '@keystar/ui/progress'
 import { SearchField } from '@keystar/ui/search-field'
 import { css, tokenSchema } from '@keystar/ui/style'
 import {
