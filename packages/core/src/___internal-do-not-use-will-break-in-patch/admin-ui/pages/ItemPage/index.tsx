@@ -26,7 +26,6 @@ import { Heading, Text } from '@keystar/ui/typography'
 import type { ListMeta, FieldMeta } from '../../../../types'
 import {
   Fields,
-  getRootGraphQLFieldsFromFieldController,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
@@ -35,7 +34,16 @@ import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
-import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
+import {
+  BaseToolbar,
+  ColumnLayout,
+  ItemPageHeader,
+  StickySidebar
+} from './common'
+import {
+  deserializeItemValue,
+  useChangedFieldsAndDataForUpdate,
+} from './utils'
 
 type ItemPageProps = {
   listKey: string
@@ -51,36 +59,6 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
   })
   return cb as any
 }
-
-function deserializeItemValue (
-  fields: Record<string, FieldMeta>,
-  data: Record<string, unknown | null>
-) {
-  const value: Record<string, unknown | null> = {}
-  for (const fieldKey in fields) {
-    const field = fields[fieldKey]
-    const itemForField: Record<string, unknown> = {}
-    for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
-      itemForField[graphqlField] = data?.[graphqlField] ?? null
-    }
-    value[fieldKey] = field.controller.deserialize(itemForField)
-  }
-  return value
-}
-
-// function serializeValueToObjByFieldKey (
-//   fields: Record<string, FieldMeta>,
-//   value: DeserializedValue
-// ) {
-//   const obj: Record<string, Record<string, JSONValue>> = {}
-//   Object.keys(fields).map(fieldKey => {
-//     const val = value[fieldKey]
-//     if (val.kind === 'value') {
-//       obj[fieldKey] = fields[fieldKey].controller.serialize(val.value)
-//     }
-//   })
-//   return obj
-// }
 
 function ItemForm ({
   listKey,
@@ -118,7 +96,7 @@ function ItemForm ({
 
     const { errors } = await update({
       variables: {
-        data: {},
+        data: dataForUpdate,
         id: itemId
       }
     })
