@@ -26,11 +26,7 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type {
-  DeepNullable,
-} from '../../../../admin-ui/utils'
 import {
-  type TypedDocumentNode,
   gql,
   useMutation,
   useQuery,
@@ -54,46 +50,6 @@ import { useSort } from './useSort'
 
 type ListPageProps = { listKey: string }
 type SelectedKeys = 'all' | Set<number | string>
-type FetchedFieldMeta = {
-  path: string
-  isOrderable: boolean
-  isFilterable: boolean
-  listView: { fieldMode: 'read' | 'hidden' }
-}
-
-const listMetaGraphqlQuery: TypedDocumentNode<
-  {
-    keystone: {
-      adminMeta: {
-        list: {
-          hideCreate: boolean
-          hideDelete: boolean
-          fields: FetchedFieldMeta[]
-        } | null
-      }
-    }
-  },
-  { listKey: string }
-> = gql`
-  query ($listKey: String!) {
-    keystone {
-      adminMeta {
-        list(key: $listKey) {
-          hideDelete
-          hideCreate
-          fields {
-            path
-            isOrderable
-            isFilterable
-            listView {
-              fieldMode
-            }
-          }
-        }
-      }
-    }
-  }
-`
 
 const storeableQueries = ['sortBy', 'fields']
 
@@ -126,11 +82,11 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
   useEffect(() => {
     const queryParamsToSerialize: Record<string, string> = {}
-    Object.keys(router.query).forEach(key => {
+    for (const key in router.query) {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
         queryParamsToSerialize[key] = router.query[key] as string
       }
-    })
+    }
     if (Object.keys(queryParamsToSerialize).length) {
       localStorage.setItem(
         localStorageKey,
@@ -147,57 +103,23 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 function ListPage ({ listKey }: ListPageProps) {
-  const keystone = useKeystone()
+  const { adminMeta } = useKeystone()
   const list = useList(listKey)
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({
     defaultPageSize: list.pageSize,
   })
-  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
-
-  const { listViewFieldModesByField, filterableFields, orderableFields } =
-    useMemo(() => {
-      const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
-      const orderableFields = new Set<string>()
-      const filterableFields = new Set<string>()
-      for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
-        listViewFieldModesByField[field.path] = field.listView.fieldMode
-        if (field.isOrderable) {
-          orderableFields.add(field.path)
-        }
-        if (field.isFilterable) {
-          filterableFields.add(field.path)
-        }
-      }
-
-      return { listViewFieldModesByField, orderableFields, filterableFields }
-    }, [metaQuery.data?.keystone.adminMeta.list?.fields])
-
-  const sort = useSort(list, orderableFields)
-  const filters = useFilters(list, filterableFields)
+  const sort = useSort(list)
+  const filters = useFilters(list)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, setSearchString] = useState(searchParam)
-  const search = useSearchFilter(searchParam, list, list.initialSearchFields, keystone.adminMeta.lists)
+  const search = useSearchFilter(searchParam, list, list.initialSearchFields, adminMeta?.lists ?? {})
 
-  useEffect(() => {
-    if (searchParam === searchString) return
-    setSearchString(searchParam)
-  }, [searchParam])
-  const updateSearch = (value: string) => {
-    const { search, ...queries } = query
-
-    if (value.trim()) {
-      push({ query: { ...queries, search: value } })
-    } else {
-      push({ query: queries })
-    }
-  }
-
-  const selectedFields = useSelectedFields(list, listViewFieldModesByField)
+  const selectedFields = useSelectedFields(list)
   const {
-    data: newData,
-    error: newError,
+    data,
+    error,
     refetch,
   } = useQuery(
     useMemo(() => {
@@ -229,7 +151,6 @@ function ListPage ({ listKey }: ListPageProps) {
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
-      skip: !metaQuery.data,
       variables: {
         where: { ...filters.where, ...search },
         take: pageSize,
@@ -241,97 +162,87 @@ function ListPage ({ listKey }: ListPageProps) {
     }
   )
 
-  const [dataState, setDataState] = useState({ data: newData, error: newError })
-  if (newData && dataState.data !== newData) setDataState({ data: newData, error: newError })
+  useEffect(() => {
+    if (searchParam === searchString) return
+    setSearchString(searchParam)
+  }, [searchParam])
+  const updateSearch = (value: string) => {
+    const { search, ...queries } = query
 
-  const { data, error } = dataState
-  const allowCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)
-  const allowDelete = !(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true)
+    if (value.trim()) {
+      push({ query: { ...queries, search: value } })
+    } else {
+      push({ query: queries })
+    }
+  }
+
+  const allowCreate = !(list.hideCreate ?? true)
+  const allowDelete = !(list.hideDelete ?? true)
   const isConstrained = Boolean(filters.filters.length || query.search)
-  const isEmpty = Boolean(data && data.count === 0 && !isConstrained)
-  const items = []
+  const isEmpty = Boolean(data?.count === 0 && !isConstrained)
 
   return (
     <PageContainer
       header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
       title={list.label}
     >
-      <GraphQLErrorNotice
-        errors={[
-          error?.networkError,
-          ...error?.graphQLErrors ?? []
-        ]}
-      />
-      {data && metaQuery.data ? (
-        <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
-          {/* FIXME: this is really weird; not sure where it should live. */}
-          {/* {list.description !== null && (
-            <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
-          )} */}
-
-          <HStack gap="regular" alignItems="center">
-            <SearchField
-              aria-label="Search"
-              isDisabled={isEmpty}
-              // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
-              onClear={() => updateSearch('')}
-              onSubmit={updateSearch}
-              onChange={setSearchString}
-              placeholder="Search…"
-              value={searchString}
-              width="alias.singleLineWidth"
-              flexGrow={{ mobile: 1, tablet: 0 }}
-            />
-            <FilterAdd
-              filterableFields={filterableFields}
-              isDisabled={isEmpty}
-              listKey={listKey}
-            />
-            <FieldSelection
-              fieldModesByFieldPath={listViewFieldModesByField}
-              isDisabled={isEmpty}
-              list={list}
-            />
-            {Boolean(isConstrained || query.sortBy || query.fields) && (
-              <TooltipTrigger>
-                <ActionButton
-                  aria-label="reset"
-                  onPress={resetToDefaults}
-                  prominence="low"
-                >
-                  <Icon src={undo2Icon} />
-                </ActionButton>
-                <Tooltip>Reset to defaults</Tooltip>
-              </TooltipTrigger>
-            )}
-          </HStack>
-
-          {filters.filters.length ? (
-            <FilterList filters={filters.filters} list={list} />
-          ) : null}
-
-          <ListTable
-            allowDelete={allowDelete}
-            count={data.count}
-            currentPage={currentPage}
-            items={items}
-            isConstrained={isConstrained}
-            listKey={listKey}
-            orderableFields={orderableFields}
-            pageSize={pageSize}
-            refetch={refetch}
-            selectedFields={selectedFields}
+      <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
+        {/* TODO: FIXME: not sure where to put this */}
+        {/* {list.description !== null && (
+          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
+        )} */}
+        <HStack gap="regular" alignItems="center">
+          <SearchField
+            aria-label="Search"
+            isDisabled={isEmpty}
+            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
+            onClear={() => updateSearch('')}
+            onSubmit={updateSearch}
+            onChange={setSearchString}
+            placeholder="Search…"
+            value={searchString}
+            width="alias.singleLineWidth"
+            flexGrow={{ mobile: 1, tablet: 0 }}
           />
-        </VStack>
-      ) : (
-        <VStack height="100%" alignItems="center" justifyContent="center">
-          <ProgressCircle
-            aria-label="loading items"
-            size="large"
-            isIndeterminate
-          />
-        </VStack>
-      )}
+          <FilterAdd listKey={listKey} isDisabled={isEmpty} />
+          <FieldSelection listKey={listKey} isDisabled={isEmpty} />
+          {Boolean(isConstrained || query.sortBy || query.fields) && (
+            <TooltipTrigger>
+              <ActionButton
+                aria-label="reset"
+                onPress={resetToDefaults}
+                prominence="low"
+              >
+                <Icon src={undo2Icon} />
+              </ActionButton>
+              <Tooltip>Reset to defaults</Tooltip>
+            </TooltipTrigger>
+          )}
+        </HStack>
+
+        {filters.filters.length ? (
+          <FilterList filters={filters.filters} list={list} />
+        ) : null}
+
+        <GraphQLErrorNotice
+          errors={[
+            error?.networkError,
+            ...error?.graphQLErrors ?? []
+          ]}
+        />
+
+        <ListTable
+          listKey={listKey}
+          allowDelete={allowDelete}
+          count={data?.count ?? 0}
+          currentPage={currentPage}
+          isConstrained={isConstrained}
+          pageSize={pageSize}
+          refetch={refetch}
+          items={data?.items ?? []}
+          selectedFields={selectedFields}
+        />
+      </VStack>
     </PageContainer>
   )
 }
@@ -360,14 +271,13 @@ function ListPageHeader ({
   )
 }
 
-function ListTable({
+function ListTable ({
   allowDelete,
   count,
   currentPage,
   isConstrained,
-  itemsGetter,
   listKey,
-  orderableFields,
+  items,
   pageSize,
   refetch,
   selectedFields,
@@ -376,12 +286,11 @@ function ListTable({
   count: number
   currentPage: number
   isConstrained: boolean
-  itemsGetter: DataGetter<DeepNullable<{ id: string; [key: string]: any }[]>>
   listKey: string
-  orderableFields: Set<string>
   pageSize: number
   refetch: () => void
   selectedFields: ReturnType<typeof useSelectedFields>
+  items: Record<string, unknown>[]
 }) {
   const list = useList(listKey)
   const router = useRouter()
@@ -393,7 +302,6 @@ function ListTable({
         : sortDescriptor.column
     router.push({ query: { ...router.query, sortBy } })
   }
-  const items = itemsGetter.data ? getNonNullItems(itemsGetter.data) : []
   const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
   const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
@@ -402,7 +310,7 @@ function ListTable({
     return {
       id: path,
       label: field.label,
-      allowsSorting: !isConstrained && !items.length ? false : orderableFields.has(path),
+      allowsSorting: !isConstrained && !items.length ? false : field.isOrderable,
     }
   })
 
@@ -490,13 +398,7 @@ function ListTable({
             switch (key) {
               case 'delete':
                 if (selectedKeys === 'all') {
-                  const ids = []
-                  for (const item of items) {
-                    if (item.id != null) {
-                      ids.push(item.id)
-                    }
-                  }
-
+                  const ids = items.filter(x => x.id != null).map(x => `${x.id}`)
                   setIdsForDeletion(new Set(ids))
                 } else {
                   setIdsForDeletion(selectedKeys)
@@ -542,10 +444,10 @@ function ListTable({
   )
 }
 
-function parseSortQuery(
+function parseSortQuery (
   queryString?: string | string[]
 ): SortDescriptor | undefined {
-  if (!queryString) return undefined
+  if (!queryString) return
 
   // TODO: handle multiple sort queries?
   if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
@@ -558,7 +460,7 @@ function parseSortQuery(
   return { column, direction }
 }
 
-function parseInitialSort(
+function parseInitialSort (
   sort?: { field: string; direction: 'ASC' | 'DESC' } | null
 ): SortDescriptor | undefined {
   if (!sort) return undefined
@@ -568,7 +470,7 @@ function parseInitialSort(
   }
 }
 
-function DeleteItemsDialog(props: {
+function DeleteItemsDialog (props: {
   items: Set<Key>
   listKey: string
   refetch: () => void
@@ -669,8 +571,4 @@ function DeleteItemsDialog(props: {
       {items.size === 1 ? '' : 's'}.
     </AlertDialog>
   )
-}
-
-function getNonNullItems<T>(arr: T[]) {
-  return arr.filter(item => item != null) as NonNullable<T>[]
 }

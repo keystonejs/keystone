@@ -1,23 +1,12 @@
-import type { GraphQLError } from 'graphql'
 import type { ReactElement } from 'react'
 import type {
   GraphQLNames,
-  JSONValue
+  JSONValue,
 } from './utils'
 
 export type NavigationProps = {
   lists: ListMeta[]
 }
-
-export type VisibleLists =
-  | { state: 'loaded', lists: ReadonlySet<string> }
-  | { state: 'loading' }
-  | { state: 'error', error: Error | readonly [GraphQLError, ...GraphQLError[]] }
-
-export type CreateViewFieldModes =
-  | { state: 'loaded', lists: Record<string, Record<string, 'edit' | 'hidden'>> }
-  | { state: 'loading' }
-  | { state: 'error', error: Error | readonly [GraphQLError, ...GraphQLError[]] }
 
 export type AdminConfig = {
   components?: {
@@ -72,13 +61,12 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   }
 }
 
+// TODO: duplicate, reference core/src/lib/create-admin-meta.ts
 export type FieldMeta = {
   path: string
   label: string
   description: string | null
   fieldMeta: JSONValue | null
-  isFilterable: boolean
-  isOrderable: boolean
 
   viewsIndex: number
   customViewsIndex: number | null
@@ -99,6 +87,9 @@ export type FieldMeta = {
   listView: {
     fieldMode: 'read' | 'hidden' | null
   }
+
+  isFilterable: boolean
+  isOrderable: boolean
 }
 
 export type FieldGroupMeta = {
@@ -141,9 +132,6 @@ export type AdminMeta = {
 export type Item = {
   [key: string]: unknown
 }
-
-// NOTE: would prefer "context" but it's overloaded in React
-export type FieldEnvironment = 'create-dialog' | 'create-page' | 'edit-page'
 
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   autoFocus?: boolean

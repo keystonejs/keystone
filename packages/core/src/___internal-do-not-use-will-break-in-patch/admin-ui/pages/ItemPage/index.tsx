@@ -23,7 +23,7 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { ListMeta, FieldMeta } from '../../../../types'
+import type { ListMeta } from '../../../../types'
 import {
   Fields,
   useInvalidFields,

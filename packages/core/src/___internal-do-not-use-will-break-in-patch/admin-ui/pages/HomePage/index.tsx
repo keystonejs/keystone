@@ -5,145 +5,91 @@ import React, {
   useRef
 } from 'react'
 
+import { gql, useQuery } from '../../../../admin-ui/apollo'
+
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid, VStack } from '@keystar/ui/layout'
 import { useLink } from '@keystar/ui/link'
-import { Notice } from '@keystar/ui/notice'
-import { ProgressCircle } from '@keystar/ui/progress'
 import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { makeDataGetter } from '../../../../admin-ui/utils'
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { gql, useQuery } from '../../../../admin-ui/apollo'
-import { useKeystone, useList } from '../../../../admin-ui/context'
-
-type ListCardProps = {
-  listKey: string
-  hideCreate: boolean
-  count:
-    | { type: 'success', count: number }
-    | { type: 'no-access' }
-    | { type: 'error', message: string }
-    | { type: 'loading' }
-}
+import {
+  useKeystone,
+  useList,
+} from '../../../../admin-ui/context'
 
 export function HomePage () {
-  const {
-    adminMeta: { lists },
-    visibleLists,
-  } = useKeystone()
-  const query = useMemo(
-    () => gql`
-    query {
-      keystone {
-        adminMeta {
-          lists {
-            key
-            hideCreate
-          }
+  const { adminMeta } = useKeystone()
+  const lists = adminMeta?.lists
+  const LIST_COUNTS_QUERY = useMemo(() => gql(`
+    query GetListCounts {
+      ${[...function* () {
+        for (const list of Object.values(lists ?? [])) {
+          yield `${list.key}: ${list.graphql.names.listQueryCountName}`
         }
-      }
-      ${Object.values(lists)
-        .filter(list => !list.isSingleton)
-        .map(list => `${list.key}: ${list.graphql.names.listQueryCountName}`)
-        .join('\n')}
+      }()].join('\n')}
     }`,
-    [lists]
-  )
-  const { data, error } = useQuery(query, { errorPolicy: 'all' })
-
-  const dataGetter = makeDataGetter(data, error?.graphQLErrors)
-
-  const stateAwareElement = (() => {
-    if (visibleLists.state === 'error') {
-      return (
-        <Notice tone="critical">
-          {visibleLists.error instanceof Error
-            ? visibleLists.error.message
-            : visibleLists.error[0].message}
-        </Notice>
-      )
-    }
-    if (visibleLists.state === 'loading') {
-      return (
-        <VStack height="100%" alignItems="center" justifyContent="center">
-          <ProgressCircle aria-label='loading lists' size="large" isIndeterminate  />
-        </VStack>
-      )
-    }
-
-    return (
-      <Grid
-        autoRows="element.xlarge"
-        columns={`repeat(
-          auto-fill,
-          minmax(${tokenSchema.size.scale[3000]}, 1fr)
-        )`}
-        gap="large"
-      >
-        {Object.keys(lists).map(key => {
-          if (!visibleLists.lists.has(key)) {
-            return null
-          }
-          const result = dataGetter.get(key)
-          return (
-            <ListCard
-              count={
-                data
-                  ? result.errors
-                    ? { type: 'error', message: result.errors[0].message }
-                    : { type: 'success', count: data[key] }
-                  : { type: 'loading' }
-              }
-              hideCreate={
-                data?.keystone.adminMeta.lists.find((list: any) => list.key === key)
-                  ?.hideCreate ?? false
-              }
-              key={key}
-              listKey={key}
-            />
-          )
-        })}
-      </Grid>
-    )
-  })()
+  ), [lists])
+  const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
 
   return (
     <PageContainer header={<Heading elementType="h1" size="small">Dashboard</Heading>}>
       <Text elementType="h2" visuallyHidden>Lists</Text>
       <VStack paddingY="xlarge">
-        {stateAwareElement}
+        <GraphQLErrorNotice
+          errors={[
+            error?.networkError,
+            // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+            // which are handled seperately and do not indicate a failure to update the item
+            ...error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []
+          ]}
+        />
+        <Grid
+          autoRows="element.xlarge"
+          columns={`repeat(
+            auto-fill,
+            minmax(${tokenSchema.size.scale[3000]}, 1fr)
+          )`}
+          gap="large"
+        >
+          {Object.values(lists ?? []).map((list) => {
+            return <ListCard
+              key={list.key}
+              listKey={list.key}
+              count={data?.[list.key] ?? null}
+              hideCreate={list.hideCreate ?? false}
+            />
+          }) ?? [] }
+        </Grid>
       </VStack>
     </PageContainer>
   )
 }
 
-function ListCard ({ listKey, count, hideCreate }: ListCardProps) {
+function ListCard ({
+  listKey,
+  count,
+  hideCreate
+}: {
+  listKey: string
+  count: number | null
+  hideCreate: boolean
+}) {
   const list = useList(listKey)
   const countElementId = useId()
   const countElement = (() => {
-    if (list.isSingleton) {
-      return null
-    }
-
-    switch (count.type) {
-      case 'success':
-        return (
-          <Text id={countElementId} color="neutralSecondary">
-            {count.count} item{count.count !== 1 ? 's' : ''}
-          </Text>
-        )
-      case 'error':
-        return <Text id={countElementId} color="critical">{count.message}</Text>
-      case 'loading':
-        return <Text id={countElementId} aria-label="loading count" color="neutralTertiary">--</Text>
-      default:
-        return <Text id={countElementId} color="neutralTertiary">No access</Text>
-    }
+    if (list.isSingleton) return null
+    if (count === null) return <Text id={countElementId} color="neutralTertiary">Unknown</Text>
+    return (
+      <Text id={countElementId} color="neutralSecondary">
+        {count} item{count !== 1 ? 's' : ''}
+      </Text>
+    )
   })()
 
   return (
