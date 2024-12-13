@@ -11,6 +11,8 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
+import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
+import { EmptyState } from '../components/EmptyState'
 import type {
   FieldGroupMeta,
   FieldMeta,
@@ -39,8 +41,6 @@ export function Fields ({
   let focused = false
   for (const fieldKey in fields) {
     const field = fields[fieldKey]
-    fieldDomByKey[fieldKey] = null // default
-
     if (view === 'itemView' && field.itemView.fieldPosition !== position) continue
 
     const { fieldMode } = field[view]
@@ -76,6 +76,18 @@ export function Fields ({
     }
   }
 
+  // TODO: not sure what to do about the sidebar case. i think it's fine to
+  // just render nothing for now, but we should revisit this.
+  if (Object.keys(fieldDomByKey).length === 0 && position === 'form') {
+    return (
+      <EmptyState
+        icon={textCursorInputIcon}
+        title="No fields"
+        message="There are no fields to be shown."
+      />
+    )
+  }
+
   return (
     // the "inline" container allows fields to react to the width of their column
     <VStack gap="xlarge" UNSAFE_style={{ containerType: 'inline-size' }}>
@@ -90,7 +102,7 @@ export function Fields ({
             {[...function* () {
               for (const { path: fieldKey } of group.fields) {
                 if (fieldKey in rendered) continue
-                yield fieldDomByKey[fieldKey]
+                yield (fieldDomByKey[fieldKey] ?? null)
                 rendered[fieldKey] = true
               }
             }()]}
@@ -98,7 +110,7 @@ export function Fields ({
           continue
         }
 
-        yield fieldDomByKey[fieldKey]
+        yield (fieldDomByKey[fieldKey] ?? null)
         rendered[fieldKey] = true
       }
     }()]}
