@@ -6,1150 +6,1437 @@
   "module": "dist/keystone-ui-icons.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-icons.cjs.js",
       "module": "./dist/keystone-ui-icons.esm.js",
       "default": "./dist/keystone-ui-icons.cjs.js"
     },
     "./icons/XIcon": {
+      "types": "./icons/XIcon/dist/keystone-ui-icons-icons-XIcon.cjs.js",
       "module": "./icons/XIcon/dist/keystone-ui-icons-icons-XIcon.esm.js",
       "default": "./icons/XIcon/dist/keystone-ui-icons-icons-XIcon.cjs.js"
     },
     "./icons/TvIcon": {
+      "types": "./icons/TvIcon/dist/keystone-ui-icons-icons-TvIcon.cjs.js",
       "module": "./icons/TvIcon/dist/keystone-ui-icons-icons-TvIcon.esm.js",
       "default": "./icons/TvIcon/dist/keystone-ui-icons-icons-TvIcon.cjs.js"
     },
     "./icons/BoxIcon": {
+      "types": "./icons/BoxIcon/dist/keystone-ui-icons-icons-BoxIcon.cjs.js",
       "module": "./icons/BoxIcon/dist/keystone-ui-icons-icons-BoxIcon.esm.js",
       "default": "./icons/BoxIcon/dist/keystone-ui-icons-icons-BoxIcon.cjs.js"
     },
     "./icons/CpuIcon": {
+      "types": "./icons/CpuIcon/dist/keystone-ui-icons-icons-CpuIcon.cjs.js",
       "module": "./icons/CpuIcon/dist/keystone-ui-icons-icons-CpuIcon.esm.js",
       "default": "./icons/CpuIcon/dist/keystone-ui-icons-icons-CpuIcon.cjs.js"
     },
     "./icons/EyeIcon": {
+      "types": "./icons/EyeIcon/dist/keystone-ui-icons-icons-EyeIcon.cjs.js",
       "module": "./icons/EyeIcon/dist/keystone-ui-icons-icons-EyeIcon.esm.js",
       "default": "./icons/EyeIcon/dist/keystone-ui-icons-icons-EyeIcon.cjs.js"
     },
     "./icons/KeyIcon": {
+      "types": "./icons/KeyIcon/dist/keystone-ui-icons-icons-KeyIcon.cjs.js",
       "module": "./icons/KeyIcon/dist/keystone-ui-icons-icons-KeyIcon.esm.js",
       "default": "./icons/KeyIcon/dist/keystone-ui-icons-icons-KeyIcon.cjs.js"
     },
     "./icons/MapIcon": {
+      "types": "./icons/MapIcon/dist/keystone-ui-icons-icons-MapIcon.cjs.js",
       "module": "./icons/MapIcon/dist/keystone-ui-icons-icons-MapIcon.esm.js",
       "default": "./icons/MapIcon/dist/keystone-ui-icons-icons-MapIcon.cjs.js"
     },
     "./icons/MehIcon": {
+      "types": "./icons/MehIcon/dist/keystone-ui-icons-icons-MehIcon.cjs.js",
       "module": "./icons/MehIcon/dist/keystone-ui-icons-icons-MehIcon.esm.js",
       "default": "./icons/MehIcon/dist/keystone-ui-icons-icons-MehIcon.cjs.js"
     },
     "./icons/MicIcon": {
+      "types": "./icons/MicIcon/dist/keystone-ui-icons-icons-MicIcon.cjs.js",
       "module": "./icons/MicIcon/dist/keystone-ui-icons-icons-MicIcon.esm.js",
       "default": "./icons/MicIcon/dist/keystone-ui-icons-icons-MicIcon.cjs.js"
     },
     "./icons/RssIcon": {
+      "types": "./icons/RssIcon/dist/keystone-ui-icons-icons-RssIcon.cjs.js",
       "module": "./icons/RssIcon/dist/keystone-ui-icons-icons-RssIcon.esm.js",
       "default": "./icons/RssIcon/dist/keystone-ui-icons-icons-RssIcon.cjs.js"
     },
     "./icons/SunIcon": {
+      "types": "./icons/SunIcon/dist/keystone-ui-icons-icons-SunIcon.cjs.js",
       "module": "./icons/SunIcon/dist/keystone-ui-icons-icons-SunIcon.esm.js",
       "default": "./icons/SunIcon/dist/keystone-ui-icons-icons-SunIcon.cjs.js"
     },
     "./icons/TagIcon": {
+      "types": "./icons/TagIcon/dist/keystone-ui-icons-icons-TagIcon.cjs.js",
       "module": "./icons/TagIcon/dist/keystone-ui-icons-icons-TagIcon.esm.js",
       "default": "./icons/TagIcon/dist/keystone-ui-icons-icons-TagIcon.cjs.js"
     },
     "./icons/ZapIcon": {
+      "types": "./icons/ZapIcon/dist/keystone-ui-icons-icons-ZapIcon.cjs.js",
       "module": "./icons/ZapIcon/dist/keystone-ui-icons-icons-ZapIcon.esm.js",
       "default": "./icons/ZapIcon/dist/keystone-ui-icons-icons-ZapIcon.cjs.js"
     },
     "./icons/BellIcon": {
+      "types": "./icons/BellIcon/dist/keystone-ui-icons-icons-BellIcon.cjs.js",
       "module": "./icons/BellIcon/dist/keystone-ui-icons-icons-BellIcon.esm.js",
       "default": "./icons/BellIcon/dist/keystone-ui-icons-icons-BellIcon.cjs.js"
     },
     "./icons/BoldIcon": {
+      "types": "./icons/BoldIcon/dist/keystone-ui-icons-icons-BoldIcon.cjs.js",
       "module": "./icons/BoldIcon/dist/keystone-ui-icons-icons-BoldIcon.esm.js",
       "default": "./icons/BoldIcon/dist/keystone-ui-icons-icons-BoldIcon.cjs.js"
     },
     "./icons/BookIcon": {
+      "types": "./icons/BookIcon/dist/keystone-ui-icons-icons-BookIcon.cjs.js",
       "module": "./icons/BookIcon/dist/keystone-ui-icons-icons-BookIcon.esm.js",
       "default": "./icons/BookIcon/dist/keystone-ui-icons-icons-BookIcon.cjs.js"
     },
     "./icons/CastIcon": {
+      "types": "./icons/CastIcon/dist/keystone-ui-icons-icons-CastIcon.cjs.js",
       "module": "./icons/CastIcon/dist/keystone-ui-icons-icons-CastIcon.esm.js",
       "default": "./icons/CastIcon/dist/keystone-ui-icons-icons-CastIcon.cjs.js"
     },
     "./icons/CodeIcon": {
+      "types": "./icons/CodeIcon/dist/keystone-ui-icons-icons-CodeIcon.cjs.js",
       "module": "./icons/CodeIcon/dist/keystone-ui-icons-icons-CodeIcon.esm.js",
       "default": "./icons/CodeIcon/dist/keystone-ui-icons-icons-CodeIcon.cjs.js"
     },
     "./icons/CopyIcon": {
+      "types": "./icons/CopyIcon/dist/keystone-ui-icons-icons-CopyIcon.cjs.js",
       "module": "./icons/CopyIcon/dist/keystone-ui-icons-icons-CopyIcon.esm.js",
       "default": "./icons/CopyIcon/dist/keystone-ui-icons-icons-CopyIcon.cjs.js"
     },
     "./icons/CropIcon": {
+      "types": "./icons/CropIcon/dist/keystone-ui-icons-icons-CropIcon.cjs.js",
       "module": "./icons/CropIcon/dist/keystone-ui-icons-icons-CropIcon.esm.js",
       "default": "./icons/CropIcon/dist/keystone-ui-icons-icons-CropIcon.cjs.js"
     },
     "./icons/DiscIcon": {
+      "types": "./icons/DiscIcon/dist/keystone-ui-icons-icons-DiscIcon.cjs.js",
       "module": "./icons/DiscIcon/dist/keystone-ui-icons-icons-DiscIcon.esm.js",
       "default": "./icons/DiscIcon/dist/keystone-ui-icons-icons-DiscIcon.cjs.js"
     },
     "./icons/EditIcon": {
+      "types": "./icons/EditIcon/dist/keystone-ui-icons-icons-EditIcon.cjs.js",
       "module": "./icons/EditIcon/dist/keystone-ui-icons-icons-EditIcon.esm.js",
       "default": "./icons/EditIcon/dist/keystone-ui-icons-icons-EditIcon.cjs.js"
     },
     "./icons/FileIcon": {
+      "types": "./icons/FileIcon/dist/keystone-ui-icons-icons-FileIcon.cjs.js",
       "module": "./icons/FileIcon/dist/keystone-ui-icons-icons-FileIcon.esm.js",
       "default": "./icons/FileIcon/dist/keystone-ui-icons-icons-FileIcon.cjs.js"
     },
     "./icons/FilmIcon": {
+      "types": "./icons/FilmIcon/dist/keystone-ui-icons-icons-FilmIcon.cjs.js",
       "module": "./icons/FilmIcon/dist/keystone-ui-icons-icons-FilmIcon.esm.js",
       "default": "./icons/FilmIcon/dist/keystone-ui-icons-icons-FilmIcon.cjs.js"
     },
     "./icons/FlagIcon": {
+      "types": "./icons/FlagIcon/dist/keystone-ui-icons-icons-FlagIcon.cjs.js",
       "module": "./icons/FlagIcon/dist/keystone-ui-icons-icons-FlagIcon.esm.js",
       "default": "./icons/FlagIcon/dist/keystone-ui-icons-icons-FlagIcon.cjs.js"
     },
     "./icons/GiftIcon": {
+      "types": "./icons/GiftIcon/dist/keystone-ui-icons-icons-GiftIcon.cjs.js",
       "module": "./icons/GiftIcon/dist/keystone-ui-icons-icons-GiftIcon.esm.js",
       "default": "./icons/GiftIcon/dist/keystone-ui-icons-icons-GiftIcon.cjs.js"
     },
     "./icons/GridIcon": {
+      "types": "./icons/GridIcon/dist/keystone-ui-icons-icons-GridIcon.cjs.js",
       "module": "./icons/GridIcon/dist/keystone-ui-icons-icons-GridIcon.esm.js",
       "default": "./icons/GridIcon/dist/keystone-ui-icons-icons-GridIcon.cjs.js"
     },
     "./icons/HashIcon": {
+      "types": "./icons/HashIcon/dist/keystone-ui-icons-icons-HashIcon.cjs.js",
       "module": "./icons/HashIcon/dist/keystone-ui-icons-icons-HashIcon.esm.js",
       "default": "./icons/HashIcon/dist/keystone-ui-icons-icons-HashIcon.cjs.js"
     },
     "./icons/HomeIcon": {
+      "types": "./icons/HomeIcon/dist/keystone-ui-icons-icons-HomeIcon.cjs.js",
       "module": "./icons/HomeIcon/dist/keystone-ui-icons-icons-HomeIcon.esm.js",
       "default": "./icons/HomeIcon/dist/keystone-ui-icons-icons-HomeIcon.cjs.js"
     },
     "./icons/InfoIcon": {
+      "types": "./icons/InfoIcon/dist/keystone-ui-icons-icons-InfoIcon.cjs.js",
       "module": "./icons/InfoIcon/dist/keystone-ui-icons-icons-InfoIcon.esm.js",
       "default": "./icons/InfoIcon/dist/keystone-ui-icons-icons-InfoIcon.cjs.js"
     },
     "./icons/LinkIcon": {
+      "types": "./icons/LinkIcon/dist/keystone-ui-icons-icons-LinkIcon.cjs.js",
       "module": "./icons/LinkIcon/dist/keystone-ui-icons-icons-LinkIcon.esm.js",
       "default": "./icons/LinkIcon/dist/keystone-ui-icons-icons-LinkIcon.cjs.js"
     },
     "./icons/ListIcon": {
+      "types": "./icons/ListIcon/dist/keystone-ui-icons-icons-ListIcon.cjs.js",
       "module": "./icons/ListIcon/dist/keystone-ui-icons-icons-ListIcon.esm.js",
       "default": "./icons/ListIcon/dist/keystone-ui-icons-icons-ListIcon.cjs.js"
     },
     "./icons/LockIcon": {
+      "types": "./icons/LockIcon/dist/keystone-ui-icons-icons-LockIcon.cjs.js",
       "module": "./icons/LockIcon/dist/keystone-ui-icons-icons-LockIcon.esm.js",
       "default": "./icons/LockIcon/dist/keystone-ui-icons-icons-LockIcon.cjs.js"
     },
     "./icons/MailIcon": {
+      "types": "./icons/MailIcon/dist/keystone-ui-icons-icons-MailIcon.cjs.js",
       "module": "./icons/MailIcon/dist/keystone-ui-icons-icons-MailIcon.esm.js",
       "default": "./icons/MailIcon/dist/keystone-ui-icons-icons-MailIcon.cjs.js"
     },
     "./icons/MenuIcon": {
+      "types": "./icons/MenuIcon/dist/keystone-ui-icons-icons-MenuIcon.cjs.js",
       "module": "./icons/MenuIcon/dist/keystone-ui-icons-icons-MenuIcon.esm.js",
       "default": "./icons/MenuIcon/dist/keystone-ui-icons-icons-MenuIcon.cjs.js"
     },
     "./icons/MoonIcon": {
+      "types": "./icons/MoonIcon/dist/keystone-ui-icons-icons-MoonIcon.cjs.js",
       "module": "./icons/MoonIcon/dist/keystone-ui-icons-icons-MoonIcon.esm.js",
       "default": "./icons/MoonIcon/dist/keystone-ui-icons-icons-MoonIcon.cjs.js"
     },
     "./icons/MoveIcon": {
+      "types": "./icons/MoveIcon/dist/keystone-ui-icons-icons-MoveIcon.cjs.js",
       "module": "./icons/MoveIcon/dist/keystone-ui-icons-icons-MoveIcon.esm.js",
       "default": "./icons/MoveIcon/dist/keystone-ui-icons-icons-MoveIcon.cjs.js"
     },
     "./icons/PlayIcon": {
+      "types": "./icons/PlayIcon/dist/keystone-ui-icons-icons-PlayIcon.cjs.js",
       "module": "./icons/PlayIcon/dist/keystone-ui-icons-icons-PlayIcon.esm.js",
       "default": "./icons/PlayIcon/dist/keystone-ui-icons-icons-PlayIcon.cjs.js"
     },
     "./icons/PlusIcon": {
+      "types": "./icons/PlusIcon/dist/keystone-ui-icons-icons-PlusIcon.cjs.js",
       "module": "./icons/PlusIcon/dist/keystone-ui-icons-icons-PlusIcon.esm.js",
       "default": "./icons/PlusIcon/dist/keystone-ui-icons-icons-PlusIcon.cjs.js"
     },
     "./icons/SaveIcon": {
+      "types": "./icons/SaveIcon/dist/keystone-ui-icons-icons-SaveIcon.cjs.js",
       "module": "./icons/SaveIcon/dist/keystone-ui-icons-icons-SaveIcon.esm.js",
       "default": "./icons/SaveIcon/dist/keystone-ui-icons-icons-SaveIcon.cjs.js"
     },
     "./icons/SendIcon": {
+      "types": "./icons/SendIcon/dist/keystone-ui-icons-icons-SendIcon.cjs.js",
       "module": "./icons/SendIcon/dist/keystone-ui-icons-icons-SendIcon.esm.js",
       "default": "./icons/SendIcon/dist/keystone-ui-icons-icons-SendIcon.cjs.js"
     },
     "./icons/StarIcon": {
+      "types": "./icons/StarIcon/dist/keystone-ui-icons-icons-StarIcon.cjs.js",
       "module": "./icons/StarIcon/dist/keystone-ui-icons-icons-StarIcon.esm.js",
       "default": "./icons/StarIcon/dist/keystone-ui-icons-icons-StarIcon.cjs.js"
     },
     "./icons/ToolIcon": {
+      "types": "./icons/ToolIcon/dist/keystone-ui-icons-icons-ToolIcon.cjs.js",
       "module": "./icons/ToolIcon/dist/keystone-ui-icons-icons-ToolIcon.esm.js",
       "default": "./icons/ToolIcon/dist/keystone-ui-icons-icons-ToolIcon.cjs.js"
     },
     "./icons/TypeIcon": {
+      "types": "./icons/TypeIcon/dist/keystone-ui-icons-icons-TypeIcon.cjs.js",
       "module": "./icons/TypeIcon/dist/keystone-ui-icons-icons-TypeIcon.esm.js",
       "default": "./icons/TypeIcon/dist/keystone-ui-icons-icons-TypeIcon.cjs.js"
     },
     "./icons/UserIcon": {
+      "types": "./icons/UserIcon/dist/keystone-ui-icons-icons-UserIcon.cjs.js",
       "module": "./icons/UserIcon/dist/keystone-ui-icons-icons-UserIcon.esm.js",
       "default": "./icons/UserIcon/dist/keystone-ui-icons-icons-UserIcon.cjs.js"
     },
     "./icons/WifiIcon": {
+      "types": "./icons/WifiIcon/dist/keystone-ui-icons-icons-WifiIcon.cjs.js",
       "module": "./icons/WifiIcon/dist/keystone-ui-icons-icons-WifiIcon.esm.js",
       "default": "./icons/WifiIcon/dist/keystone-ui-icons-icons-WifiIcon.cjs.js"
     },
     "./icons/WindIcon": {
+      "types": "./icons/WindIcon/dist/keystone-ui-icons-icons-WindIcon.cjs.js",
       "module": "./icons/WindIcon/dist/keystone-ui-icons-icons-WindIcon.esm.js",
       "default": "./icons/WindIcon/dist/keystone-ui-icons-icons-WindIcon.cjs.js"
     },
     "./icons/AwardIcon": {
+      "types": "./icons/AwardIcon/dist/keystone-ui-icons-icons-AwardIcon.cjs.js",
       "module": "./icons/AwardIcon/dist/keystone-ui-icons-icons-AwardIcon.esm.js",
       "default": "./icons/AwardIcon/dist/keystone-ui-icons-icons-AwardIcon.cjs.js"
     },
     "./icons/CheckIcon": {
+      "types": "./icons/CheckIcon/dist/keystone-ui-icons-icons-CheckIcon.cjs.js",
       "module": "./icons/CheckIcon/dist/keystone-ui-icons-icons-CheckIcon.esm.js",
       "default": "./icons/CheckIcon/dist/keystone-ui-icons-icons-CheckIcon.cjs.js"
     },
     "./icons/ClockIcon": {
+      "types": "./icons/ClockIcon/dist/keystone-ui-icons-icons-ClockIcon.cjs.js",
       "module": "./icons/ClockIcon/dist/keystone-ui-icons-icons-ClockIcon.esm.js",
       "default": "./icons/ClockIcon/dist/keystone-ui-icons-icons-ClockIcon.cjs.js"
     },
     "./icons/CloudIcon": {
+      "types": "./icons/CloudIcon/dist/keystone-ui-icons-icons-CloudIcon.cjs.js",
       "module": "./icons/CloudIcon/dist/keystone-ui-icons-icons-CloudIcon.esm.js",
       "default": "./icons/CloudIcon/dist/keystone-ui-icons-icons-CloudIcon.cjs.js"
     },
     "./icons/Edit2Icon": {
+      "types": "./icons/Edit2Icon/dist/keystone-ui-icons-icons-Edit2Icon.cjs.js",
       "module": "./icons/Edit2Icon/dist/keystone-ui-icons-icons-Edit2Icon.esm.js",
       "default": "./icons/Edit2Icon/dist/keystone-ui-icons-icons-Edit2Icon.cjs.js"
     },
     "./icons/Edit3Icon": {
+      "types": "./icons/Edit3Icon/dist/keystone-ui-icons-icons-Edit3Icon.cjs.js",
       "module": "./icons/Edit3Icon/dist/keystone-ui-icons-icons-Edit3Icon.esm.js",
       "default": "./icons/Edit3Icon/dist/keystone-ui-icons-icons-Edit3Icon.cjs.js"
     },
     "./icons/FigmaIcon": {
+      "types": "./icons/FigmaIcon/dist/keystone-ui-icons-icons-FigmaIcon.cjs.js",
       "module": "./icons/FigmaIcon/dist/keystone-ui-icons-icons-FigmaIcon.esm.js",
       "default": "./icons/FigmaIcon/dist/keystone-ui-icons-icons-FigmaIcon.cjs.js"
     },
     "./icons/FrownIcon": {
+      "types": "./icons/FrownIcon/dist/keystone-ui-icons-icons-FrownIcon.cjs.js",
       "module": "./icons/FrownIcon/dist/keystone-ui-icons-icons-FrownIcon.esm.js",
       "default": "./icons/FrownIcon/dist/keystone-ui-icons-icons-FrownIcon.cjs.js"
     },
     "./icons/GlobeIcon": {
+      "types": "./icons/GlobeIcon/dist/keystone-ui-icons-icons-GlobeIcon.cjs.js",
       "module": "./icons/GlobeIcon/dist/keystone-ui-icons-icons-GlobeIcon.esm.js",
       "default": "./icons/GlobeIcon/dist/keystone-ui-icons-icons-GlobeIcon.cjs.js"
     },
     "./icons/HeartIcon": {
+      "types": "./icons/HeartIcon/dist/keystone-ui-icons-icons-HeartIcon.cjs.js",
       "module": "./icons/HeartIcon/dist/keystone-ui-icons-icons-HeartIcon.esm.js",
       "default": "./icons/HeartIcon/dist/keystone-ui-icons-icons-HeartIcon.cjs.js"
     },
     "./icons/ImageIcon": {
+      "types": "./icons/ImageIcon/dist/keystone-ui-icons-icons-ImageIcon.cjs.js",
       "module": "./icons/ImageIcon/dist/keystone-ui-icons-icons-ImageIcon.esm.js",
       "default": "./icons/ImageIcon/dist/keystone-ui-icons-icons-ImageIcon.cjs.js"
     },
     "./icons/InboxIcon": {
+      "types": "./icons/InboxIcon/dist/keystone-ui-icons-icons-InboxIcon.cjs.js",
       "module": "./icons/InboxIcon/dist/keystone-ui-icons-icons-InboxIcon.esm.js",
       "default": "./icons/InboxIcon/dist/keystone-ui-icons-icons-InboxIcon.cjs.js"
     },
     "./icons/Link2Icon": {
+      "types": "./icons/Link2Icon/dist/keystone-ui-icons-icons-Link2Icon.cjs.js",
       "module": "./icons/Link2Icon/dist/keystone-ui-icons-icons-Link2Icon.esm.js",
       "default": "./icons/Link2Icon/dist/keystone-ui-icons-icons-Link2Icon.cjs.js"
     },
     "./icons/LogInIcon": {
+      "types": "./icons/LogInIcon/dist/keystone-ui-icons-icons-LogInIcon.cjs.js",
       "module": "./icons/LogInIcon/dist/keystone-ui-icons-icons-LogInIcon.esm.js",
       "default": "./icons/LogInIcon/dist/keystone-ui-icons-icons-LogInIcon.cjs.js"
     },
     "./icons/MinusIcon": {
+      "types": "./icons/MinusIcon/dist/keystone-ui-icons-icons-MinusIcon.cjs.js",
       "module": "./icons/MinusIcon/dist/keystone-ui-icons-icons-MinusIcon.esm.js",
       "default": "./icons/MinusIcon/dist/keystone-ui-icons-icons-MinusIcon.cjs.js"
     },
     "./icons/MusicIcon": {
+      "types": "./icons/MusicIcon/dist/keystone-ui-icons-icons-MusicIcon.cjs.js",
       "module": "./icons/MusicIcon/dist/keystone-ui-icons-icons-MusicIcon.esm.js",
       "default": "./icons/MusicIcon/dist/keystone-ui-icons-icons-MusicIcon.cjs.js"
     },
     "./icons/PauseIcon": {
+      "types": "./icons/PauseIcon/dist/keystone-ui-icons-icons-PauseIcon.cjs.js",
       "module": "./icons/PauseIcon/dist/keystone-ui-icons-icons-PauseIcon.esm.js",
       "default": "./icons/PauseIcon/dist/keystone-ui-icons-icons-PauseIcon.cjs.js"
     },
     "./icons/PhoneIcon": {
+      "types": "./icons/PhoneIcon/dist/keystone-ui-icons-icons-PhoneIcon.cjs.js",
       "module": "./icons/PhoneIcon/dist/keystone-ui-icons-icons-PhoneIcon.esm.js",
       "default": "./icons/PhoneIcon/dist/keystone-ui-icons-icons-PhoneIcon.cjs.js"
     },
     "./icons/PowerIcon": {
+      "types": "./icons/PowerIcon/dist/keystone-ui-icons-icons-PowerIcon.cjs.js",
       "module": "./icons/PowerIcon/dist/keystone-ui-icons-icons-PowerIcon.esm.js",
       "default": "./icons/PowerIcon/dist/keystone-ui-icons-icons-PowerIcon.cjs.js"
     },
     "./icons/RadioIcon": {
+      "types": "./icons/RadioIcon/dist/keystone-ui-icons-icons-RadioIcon.cjs.js",
       "module": "./icons/RadioIcon/dist/keystone-ui-icons-icons-RadioIcon.esm.js",
       "default": "./icons/RadioIcon/dist/keystone-ui-icons-icons-RadioIcon.cjs.js"
     },
     "./icons/ShareIcon": {
+      "types": "./icons/ShareIcon/dist/keystone-ui-icons-icons-ShareIcon.cjs.js",
       "module": "./icons/ShareIcon/dist/keystone-ui-icons-icons-ShareIcon.esm.js",
       "default": "./icons/ShareIcon/dist/keystone-ui-icons-icons-ShareIcon.cjs.js"
     },
     "./icons/SlackIcon": {
+      "types": "./icons/SlackIcon/dist/keystone-ui-icons-icons-SlackIcon.cjs.js",
       "module": "./icons/SlackIcon/dist/keystone-ui-icons-icons-SlackIcon.esm.js",
       "default": "./icons/SlackIcon/dist/keystone-ui-icons-icons-SlackIcon.cjs.js"
     },
     "./icons/SlashIcon": {
+      "types": "./icons/SlashIcon/dist/keystone-ui-icons-icons-SlashIcon.cjs.js",
       "module": "./icons/SlashIcon/dist/keystone-ui-icons-icons-SlashIcon.esm.js",
       "default": "./icons/SlashIcon/dist/keystone-ui-icons-icons-SlashIcon.cjs.js"
     },
     "./icons/SmileIcon": {
+      "types": "./icons/SmileIcon/dist/keystone-ui-icons-icons-SmileIcon.cjs.js",
       "module": "./icons/SmileIcon/dist/keystone-ui-icons-icons-SmileIcon.esm.js",
       "default": "./icons/SmileIcon/dist/keystone-ui-icons-icons-SmileIcon.cjs.js"
     },
     "./icons/TrashIcon": {
+      "types": "./icons/TrashIcon/dist/keystone-ui-icons-icons-TrashIcon.cjs.js",
       "module": "./icons/TrashIcon/dist/keystone-ui-icons-icons-TrashIcon.esm.js",
       "default": "./icons/TrashIcon/dist/keystone-ui-icons-icons-TrashIcon.cjs.js"
     },
     "./icons/TruckIcon": {
+      "types": "./icons/TruckIcon/dist/keystone-ui-icons-icons-TruckIcon.cjs.js",
       "module": "./icons/TruckIcon/dist/keystone-ui-icons-icons-TruckIcon.esm.js",
       "default": "./icons/TruckIcon/dist/keystone-ui-icons-icons-TruckIcon.cjs.js"
     },
     "./icons/UserXIcon": {
+      "types": "./icons/UserXIcon/dist/keystone-ui-icons-icons-UserXIcon.cjs.js",
       "module": "./icons/UserXIcon/dist/keystone-ui-icons-icons-UserXIcon.esm.js",
       "default": "./icons/UserXIcon/dist/keystone-ui-icons-icons-UserXIcon.cjs.js"
     },
     "./icons/UsersIcon": {
+      "types": "./icons/UsersIcon/dist/keystone-ui-icons-icons-UsersIcon.cjs.js",
       "module": "./icons/UsersIcon/dist/keystone-ui-icons-icons-UsersIcon.esm.js",
       "default": "./icons/UsersIcon/dist/keystone-ui-icons-icons-UsersIcon.cjs.js"
     },
     "./icons/VideoIcon": {
+      "types": "./icons/VideoIcon/dist/keystone-ui-icons-icons-VideoIcon.cjs.js",
       "module": "./icons/VideoIcon/dist/keystone-ui-icons-icons-VideoIcon.esm.js",
       "default": "./icons/VideoIcon/dist/keystone-ui-icons-icons-VideoIcon.cjs.js"
     },
     "./icons/WatchIcon": {
+      "types": "./icons/WatchIcon/dist/keystone-ui-icons-icons-WatchIcon.cjs.js",
       "module": "./icons/WatchIcon/dist/keystone-ui-icons-icons-WatchIcon.esm.js",
       "default": "./icons/WatchIcon/dist/keystone-ui-icons-icons-WatchIcon.cjs.js"
     },
     "./icons/AnchorIcon": {
+      "types": "./icons/AnchorIcon/dist/keystone-ui-icons-icons-AnchorIcon.cjs.js",
       "module": "./icons/AnchorIcon/dist/keystone-ui-icons-icons-AnchorIcon.esm.js",
       "default": "./icons/AnchorIcon/dist/keystone-ui-icons-icons-AnchorIcon.cjs.js"
     },
     "./icons/AtSignIcon": {
+      "types": "./icons/AtSignIcon/dist/keystone-ui-icons-icons-AtSignIcon.cjs.js",
       "module": "./icons/AtSignIcon/dist/keystone-ui-icons-icons-AtSignIcon.esm.js",
       "default": "./icons/AtSignIcon/dist/keystone-ui-icons-icons-AtSignIcon.cjs.js"
     },
     "./icons/CameraIcon": {
+      "types": "./icons/CameraIcon/dist/keystone-ui-icons-icons-CameraIcon.cjs.js",
       "module": "./icons/CameraIcon/dist/keystone-ui-icons-icons-CameraIcon.esm.js",
       "default": "./icons/CameraIcon/dist/keystone-ui-icons-icons-CameraIcon.cjs.js"
     },
     "./icons/ChromeIcon": {
+      "types": "./icons/ChromeIcon/dist/keystone-ui-icons-icons-ChromeIcon.cjs.js",
       "module": "./icons/ChromeIcon/dist/keystone-ui-icons-icons-ChromeIcon.esm.js",
       "default": "./icons/ChromeIcon/dist/keystone-ui-icons-icons-ChromeIcon.cjs.js"
     },
     "./icons/CircleIcon": {
+      "types": "./icons/CircleIcon/dist/keystone-ui-icons-icons-CircleIcon.cjs.js",
       "module": "./icons/CircleIcon/dist/keystone-ui-icons-icons-CircleIcon.esm.js",
       "default": "./icons/CircleIcon/dist/keystone-ui-icons-icons-CircleIcon.cjs.js"
     },
     "./icons/CoffeeIcon": {
+      "types": "./icons/CoffeeIcon/dist/keystone-ui-icons-icons-CoffeeIcon.cjs.js",
       "module": "./icons/CoffeeIcon/dist/keystone-ui-icons-icons-CoffeeIcon.esm.js",
       "default": "./icons/CoffeeIcon/dist/keystone-ui-icons-icons-CoffeeIcon.cjs.js"
     },
     "./icons/DeleteIcon": {
+      "types": "./icons/DeleteIcon/dist/keystone-ui-icons-icons-DeleteIcon.cjs.js",
       "module": "./icons/DeleteIcon/dist/keystone-ui-icons-icons-DeleteIcon.esm.js",
       "default": "./icons/DeleteIcon/dist/keystone-ui-icons-icons-DeleteIcon.cjs.js"
     },
     "./icons/DivideIcon": {
+      "types": "./icons/DivideIcon/dist/keystone-ui-icons-icons-DivideIcon.cjs.js",
       "module": "./icons/DivideIcon/dist/keystone-ui-icons-icons-DivideIcon.esm.js",
       "default": "./icons/DivideIcon/dist/keystone-ui-icons-icons-DivideIcon.cjs.js"
     },
     "./icons/EyeOffIcon": {
+      "types": "./icons/EyeOffIcon/dist/keystone-ui-icons-icons-EyeOffIcon.cjs.js",
       "module": "./icons/EyeOffIcon/dist/keystone-ui-icons-icons-EyeOffIcon.esm.js",
       "default": "./icons/EyeOffIcon/dist/keystone-ui-icons-icons-EyeOffIcon.cjs.js"
     },
     "./icons/FilterIcon": {
+      "types": "./icons/FilterIcon/dist/keystone-ui-icons-icons-FilterIcon.cjs.js",
       "module": "./icons/FilterIcon/dist/keystone-ui-icons-icons-FilterIcon.esm.js",
       "default": "./icons/FilterIcon/dist/keystone-ui-icons-icons-FilterIcon.cjs.js"
     },
     "./icons/FolderIcon": {
+      "types": "./icons/FolderIcon/dist/keystone-ui-icons-icons-FolderIcon.cjs.js",
       "module": "./icons/FolderIcon/dist/keystone-ui-icons-icons-FolderIcon.esm.js",
       "default": "./icons/FolderIcon/dist/keystone-ui-icons-icons-FolderIcon.cjs.js"
     },
     "./icons/FramerIcon": {
+      "types": "./icons/FramerIcon/dist/keystone-ui-icons-icons-FramerIcon.cjs.js",
       "module": "./icons/FramerIcon/dist/keystone-ui-icons-icons-FramerIcon.esm.js",
       "default": "./icons/FramerIcon/dist/keystone-ui-icons-icons-FramerIcon.cjs.js"
     },
     "./icons/GithubIcon": {
+      "types": "./icons/GithubIcon/dist/keystone-ui-icons-icons-GithubIcon.cjs.js",
       "module": "./icons/GithubIcon/dist/keystone-ui-icons-icons-GithubIcon.esm.js",
       "default": "./icons/GithubIcon/dist/keystone-ui-icons-icons-GithubIcon.cjs.js"
     },
     "./icons/GitlabIcon": {
+      "types": "./icons/GitlabIcon/dist/keystone-ui-icons-icons-GitlabIcon.cjs.js",
       "module": "./icons/GitlabIcon/dist/keystone-ui-icons-icons-GitlabIcon.esm.js",
       "default": "./icons/GitlabIcon/dist/keystone-ui-icons-icons-GitlabIcon.cjs.js"
     },
     "./icons/ItalicIcon": {
+      "types": "./icons/ItalicIcon/dist/keystone-ui-icons-icons-ItalicIcon.cjs.js",
       "module": "./icons/ItalicIcon/dist/keystone-ui-icons-icons-ItalicIcon.esm.js",
       "default": "./icons/ItalicIcon/dist/keystone-ui-icons-icons-ItalicIcon.cjs.js"
     },
     "./icons/LayersIcon": {
+      "types": "./icons/LayersIcon/dist/keystone-ui-icons-icons-LayersIcon.cjs.js",
       "module": "./icons/LayersIcon/dist/keystone-ui-icons-icons-LayersIcon.esm.js",
       "default": "./icons/LayersIcon/dist/keystone-ui-icons-icons-LayersIcon.cjs.js"
     },
     "./icons/LayoutIcon": {
+      "types": "./icons/LayoutIcon/dist/keystone-ui-icons-icons-LayoutIcon.cjs.js",
       "module": "./icons/LayoutIcon/dist/keystone-ui-icons-icons-LayoutIcon.esm.js",
       "default": "./icons/LayoutIcon/dist/keystone-ui-icons-icons-LayoutIcon.cjs.js"
     },
     "./icons/LoaderIcon": {
+      "types": "./icons/LoaderIcon/dist/keystone-ui-icons-icons-LoaderIcon.cjs.js",
       "module": "./icons/LoaderIcon/dist/keystone-ui-icons-icons-LoaderIcon.esm.js",
       "default": "./icons/LoaderIcon/dist/keystone-ui-icons-icons-LoaderIcon.cjs.js"
     },
     "./icons/LogOutIcon": {
+      "types": "./icons/LogOutIcon/dist/keystone-ui-icons-icons-LogOutIcon.cjs.js",
       "module": "./icons/LogOutIcon/dist/keystone-ui-icons-icons-LogOutIcon.esm.js",
       "default": "./icons/LogOutIcon/dist/keystone-ui-icons-icons-LogOutIcon.cjs.js"
     },
     "./icons/MapPinIcon": {
+      "types": "./icons/MapPinIcon/dist/keystone-ui-icons-icons-MapPinIcon.cjs.js",
       "module": "./icons/MapPinIcon/dist/keystone-ui-icons-icons-MapPinIcon.esm.js",
       "default": "./icons/MapPinIcon/dist/keystone-ui-icons-icons-MapPinIcon.cjs.js"
     },
     "./icons/MicOffIcon": {
+      "types": "./icons/MicOffIcon/dist/keystone-ui-icons-icons-MicOffIcon.cjs.js",
       "module": "./icons/MicOffIcon/dist/keystone-ui-icons-icons-MicOffIcon.esm.js",
       "default": "./icons/MicOffIcon/dist/keystone-ui-icons-icons-MicOffIcon.cjs.js"
     },
     "./icons/PocketIcon": {
+      "types": "./icons/PocketIcon/dist/keystone-ui-icons-icons-PocketIcon.cjs.js",
       "module": "./icons/PocketIcon/dist/keystone-ui-icons-icons-PocketIcon.esm.js",
       "default": "./icons/PocketIcon/dist/keystone-ui-icons-icons-PocketIcon.cjs.js"
     },
     "./icons/RepeatIcon": {
+      "types": "./icons/RepeatIcon/dist/keystone-ui-icons-icons-RepeatIcon.cjs.js",
       "module": "./icons/RepeatIcon/dist/keystone-ui-icons-icons-RepeatIcon.esm.js",
       "default": "./icons/RepeatIcon/dist/keystone-ui-icons-icons-RepeatIcon.cjs.js"
     },
     "./icons/RewindIcon": {
+      "types": "./icons/RewindIcon/dist/keystone-ui-icons-icons-RewindIcon.cjs.js",
       "module": "./icons/RewindIcon/dist/keystone-ui-icons-icons-RewindIcon.esm.js",
       "default": "./icons/RewindIcon/dist/keystone-ui-icons-icons-RewindIcon.cjs.js"
     },
     "./icons/SearchIcon": {
+      "types": "./icons/SearchIcon/dist/keystone-ui-icons-icons-SearchIcon.cjs.js",
       "module": "./icons/SearchIcon/dist/keystone-ui-icons-icons-SearchIcon.esm.js",
       "default": "./icons/SearchIcon/dist/keystone-ui-icons-icons-SearchIcon.cjs.js"
     },
     "./icons/ServerIcon": {
+      "types": "./icons/ServerIcon/dist/keystone-ui-icons-icons-ServerIcon.cjs.js",
       "module": "./icons/ServerIcon/dist/keystone-ui-icons-icons-ServerIcon.esm.js",
       "default": "./icons/ServerIcon/dist/keystone-ui-icons-icons-ServerIcon.cjs.js"
     },
     "./icons/Share2Icon": {
+      "types": "./icons/Share2Icon/dist/keystone-ui-icons-icons-Share2Icon.cjs.js",
       "module": "./icons/Share2Icon/dist/keystone-ui-icons-icons-Share2Icon.esm.js",
       "default": "./icons/Share2Icon/dist/keystone-ui-icons-icons-Share2Icon.cjs.js"
     },
     "./icons/ShieldIcon": {
+      "types": "./icons/ShieldIcon/dist/keystone-ui-icons-icons-ShieldIcon.cjs.js",
       "module": "./icons/ShieldIcon/dist/keystone-ui-icons-icons-ShieldIcon.esm.js",
       "default": "./icons/ShieldIcon/dist/keystone-ui-icons-icons-ShieldIcon.cjs.js"
     },
     "./icons/SquareIcon": {
+      "types": "./icons/SquareIcon/dist/keystone-ui-icons-icons-SquareIcon.cjs.js",
       "module": "./icons/SquareIcon/dist/keystone-ui-icons-icons-SquareIcon.esm.js",
       "default": "./icons/SquareIcon/dist/keystone-ui-icons-icons-SquareIcon.cjs.js"
     },
     "./icons/SunsetIcon": {
+      "types": "./icons/SunsetIcon/dist/keystone-ui-icons-icons-SunsetIcon.cjs.js",
       "module": "./icons/SunsetIcon/dist/keystone-ui-icons-icons-SunsetIcon.esm.js",
       "default": "./icons/SunsetIcon/dist/keystone-ui-icons-icons-SunsetIcon.cjs.js"
     },
     "./icons/TabletIcon": {
+      "types": "./icons/TabletIcon/dist/keystone-ui-icons-icons-TabletIcon.cjs.js",
       "module": "./icons/TabletIcon/dist/keystone-ui-icons-icons-TabletIcon.esm.js",
       "default": "./icons/TabletIcon/dist/keystone-ui-icons-icons-TabletIcon.cjs.js"
     },
     "./icons/TargetIcon": {
+      "types": "./icons/TargetIcon/dist/keystone-ui-icons-icons-TargetIcon.cjs.js",
       "module": "./icons/TargetIcon/dist/keystone-ui-icons-icons-TargetIcon.esm.js",
       "default": "./icons/TargetIcon/dist/keystone-ui-icons-icons-TargetIcon.cjs.js"
     },
     "./icons/Trash2Icon": {
+      "types": "./icons/Trash2Icon/dist/keystone-ui-icons-icons-Trash2Icon.cjs.js",
       "module": "./icons/Trash2Icon/dist/keystone-ui-icons-icons-Trash2Icon.esm.js",
       "default": "./icons/Trash2Icon/dist/keystone-ui-icons-icons-Trash2Icon.cjs.js"
     },
     "./icons/TrelloIcon": {
+      "types": "./icons/TrelloIcon/dist/keystone-ui-icons-icons-TrelloIcon.cjs.js",
       "module": "./icons/TrelloIcon/dist/keystone-ui-icons-icons-TrelloIcon.esm.js",
       "default": "./icons/TrelloIcon/dist/keystone-ui-icons-icons-TrelloIcon.cjs.js"
     },
     "./icons/TwitchIcon": {
+      "types": "./icons/TwitchIcon/dist/keystone-ui-icons-icons-TwitchIcon.cjs.js",
       "module": "./icons/TwitchIcon/dist/keystone-ui-icons-icons-TwitchIcon.esm.js",
       "default": "./icons/TwitchIcon/dist/keystone-ui-icons-icons-TwitchIcon.cjs.js"
     },
     "./icons/UnlockIcon": {
+      "types": "./icons/UnlockIcon/dist/keystone-ui-icons-icons-UnlockIcon.cjs.js",
       "module": "./icons/UnlockIcon/dist/keystone-ui-icons-icons-UnlockIcon.esm.js",
       "default": "./icons/UnlockIcon/dist/keystone-ui-icons-icons-UnlockIcon.cjs.js"
     },
     "./icons/UploadIcon": {
+      "types": "./icons/UploadIcon/dist/keystone-ui-icons-icons-UploadIcon.cjs.js",
       "module": "./icons/UploadIcon/dist/keystone-ui-icons-icons-UploadIcon.esm.js",
       "default": "./icons/UploadIcon/dist/keystone-ui-icons-icons-UploadIcon.cjs.js"
     },
     "./icons/VolumeIcon": {
+      "types": "./icons/VolumeIcon/dist/keystone-ui-icons-icons-VolumeIcon.cjs.js",
       "module": "./icons/VolumeIcon/dist/keystone-ui-icons-icons-VolumeIcon.esm.js",
       "default": "./icons/VolumeIcon/dist/keystone-ui-icons-icons-VolumeIcon.cjs.js"
     },
     "./icons/ZapOffIcon": {
+      "types": "./icons/ZapOffIcon/dist/keystone-ui-icons-icons-ZapOffIcon.cjs.js",
       "module": "./icons/ZapOffIcon/dist/keystone-ui-icons-icons-ZapOffIcon.esm.js",
       "default": "./icons/ZapOffIcon/dist/keystone-ui-icons-icons-ZapOffIcon.cjs.js"
     },
     "./icons/ZoomInIcon": {
+      "types": "./icons/ZoomInIcon/dist/keystone-ui-icons-icons-ZoomInIcon.cjs.js",
       "module": "./icons/ZoomInIcon/dist/keystone-ui-icons-icons-ZoomInIcon.esm.js",
       "default": "./icons/ZoomInIcon/dist/keystone-ui-icons-icons-ZoomInIcon.cjs.js"
     },
     "./icons/AirplayIcon": {
+      "types": "./icons/AirplayIcon/dist/keystone-ui-icons-icons-AirplayIcon.cjs.js",
       "module": "./icons/AirplayIcon/dist/keystone-ui-icons-icons-AirplayIcon.esm.js",
       "default": "./icons/AirplayIcon/dist/keystone-ui-icons-icons-AirplayIcon.cjs.js"
     },
     "./icons/ArchiveIcon": {
+      "types": "./icons/ArchiveIcon/dist/keystone-ui-icons-icons-ArchiveIcon.cjs.js",
       "module": "./icons/ArchiveIcon/dist/keystone-ui-icons-icons-ArchiveIcon.esm.js",
       "default": "./icons/ArchiveIcon/dist/keystone-ui-icons-icons-ArchiveIcon.cjs.js"
     },
     "./icons/ArrowUpIcon": {
+      "types": "./icons/ArrowUpIcon/dist/keystone-ui-icons-icons-ArrowUpIcon.cjs.js",
       "module": "./icons/ArrowUpIcon/dist/keystone-ui-icons-icons-ArrowUpIcon.esm.js",
       "default": "./icons/ArrowUpIcon/dist/keystone-ui-icons-icons-ArrowUpIcon.cjs.js"
     },
     "./icons/BatteryIcon": {
+      "types": "./icons/BatteryIcon/dist/keystone-ui-icons-icons-BatteryIcon.cjs.js",
       "module": "./icons/BatteryIcon/dist/keystone-ui-icons-icons-BatteryIcon.esm.js",
       "default": "./icons/BatteryIcon/dist/keystone-ui-icons-icons-BatteryIcon.cjs.js"
     },
     "./icons/BellOffIcon": {
+      "types": "./icons/BellOffIcon/dist/keystone-ui-icons-icons-BellOffIcon.cjs.js",
       "module": "./icons/BellOffIcon/dist/keystone-ui-icons-icons-BellOffIcon.esm.js",
       "default": "./icons/BellOffIcon/dist/keystone-ui-icons-icons-BellOffIcon.cjs.js"
     },
     "./icons/CodepenIcon": {
+      "types": "./icons/CodepenIcon/dist/keystone-ui-icons-icons-CodepenIcon.cjs.js",
       "module": "./icons/CodepenIcon/dist/keystone-ui-icons-icons-CodepenIcon.esm.js",
       "default": "./icons/CodepenIcon/dist/keystone-ui-icons-icons-CodepenIcon.cjs.js"
     },
     "./icons/ColumnsIcon": {
+      "types": "./icons/ColumnsIcon/dist/keystone-ui-icons-icons-ColumnsIcon.cjs.js",
       "module": "./icons/ColumnsIcon/dist/keystone-ui-icons-icons-ColumnsIcon.esm.js",
       "default": "./icons/ColumnsIcon/dist/keystone-ui-icons-icons-ColumnsIcon.cjs.js"
     },
     "./icons/CommandIcon": {
+      "types": "./icons/CommandIcon/dist/keystone-ui-icons-icons-CommandIcon.cjs.js",
       "module": "./icons/CommandIcon/dist/keystone-ui-icons-icons-CommandIcon.esm.js",
       "default": "./icons/CommandIcon/dist/keystone-ui-icons-icons-CommandIcon.cjs.js"
     },
     "./icons/CompassIcon": {
+      "types": "./icons/CompassIcon/dist/keystone-ui-icons-icons-CompassIcon.cjs.js",
       "module": "./icons/CompassIcon/dist/keystone-ui-icons-icons-CompassIcon.esm.js",
       "default": "./icons/CompassIcon/dist/keystone-ui-icons-icons-CompassIcon.cjs.js"
     },
     "./icons/DropletIcon": {
+      "types": "./icons/DropletIcon/dist/keystone-ui-icons-icons-DropletIcon.cjs.js",
       "module": "./icons/DropletIcon/dist/keystone-ui-icons-icons-DropletIcon.esm.js",
       "default": "./icons/DropletIcon/dist/keystone-ui-icons-icons-DropletIcon.cjs.js"
     },
     "./icons/FeatherIcon": {
+      "types": "./icons/FeatherIcon/dist/keystone-ui-icons-icons-FeatherIcon.cjs.js",
       "module": "./icons/FeatherIcon/dist/keystone-ui-icons-icons-FeatherIcon.esm.js",
       "default": "./icons/FeatherIcon/dist/keystone-ui-icons-icons-FeatherIcon.cjs.js"
     },
     "./icons/HexagonIcon": {
+      "types": "./icons/HexagonIcon/dist/keystone-ui-icons-icons-HexagonIcon.cjs.js",
       "module": "./icons/HexagonIcon/dist/keystone-ui-icons-icons-HexagonIcon.esm.js",
       "default": "./icons/HexagonIcon/dist/keystone-ui-icons-icons-HexagonIcon.cjs.js"
     },
     "./icons/MonitorIcon": {
+      "types": "./icons/MonitorIcon/dist/keystone-ui-icons-icons-MonitorIcon.cjs.js",
       "module": "./icons/MonitorIcon/dist/keystone-ui-icons-icons-MonitorIcon.esm.js",
       "default": "./icons/MonitorIcon/dist/keystone-ui-icons-icons-MonitorIcon.cjs.js"
     },
     "./icons/OctagonIcon": {
+      "types": "./icons/OctagonIcon/dist/keystone-ui-icons-icons-OctagonIcon.cjs.js",
       "module": "./icons/OctagonIcon/dist/keystone-ui-icons-icons-OctagonIcon.esm.js",
       "default": "./icons/OctagonIcon/dist/keystone-ui-icons-icons-OctagonIcon.cjs.js"
     },
     "./icons/PackageIcon": {
+      "types": "./icons/PackageIcon/dist/keystone-ui-icons-icons-PackageIcon.cjs.js",
       "module": "./icons/PackageIcon/dist/keystone-ui-icons-icons-PackageIcon.esm.js",
       "default": "./icons/PackageIcon/dist/keystone-ui-icons-icons-PackageIcon.cjs.js"
     },
     "./icons/PenToolIcon": {
+      "types": "./icons/PenToolIcon/dist/keystone-ui-icons-icons-PenToolIcon.cjs.js",
       "module": "./icons/PenToolIcon/dist/keystone-ui-icons-icons-PenToolIcon.esm.js",
       "default": "./icons/PenToolIcon/dist/keystone-ui-icons-icons-PenToolIcon.cjs.js"
     },
     "./icons/PercentIcon": {
+      "types": "./icons/PercentIcon/dist/keystone-ui-icons-icons-PercentIcon.cjs.js",
       "module": "./icons/PercentIcon/dist/keystone-ui-icons-icons-PercentIcon.esm.js",
       "default": "./icons/PercentIcon/dist/keystone-ui-icons-icons-PercentIcon.cjs.js"
     },
     "./icons/PrinterIcon": {
+      "types": "./icons/PrinterIcon/dist/keystone-ui-icons-icons-PrinterIcon.cjs.js",
       "module": "./icons/PrinterIcon/dist/keystone-ui-icons-icons-PrinterIcon.esm.js",
       "default": "./icons/PrinterIcon/dist/keystone-ui-icons-icons-PrinterIcon.cjs.js"
     },
     "./icons/ShuffleIcon": {
+      "types": "./icons/ShuffleIcon/dist/keystone-ui-icons-icons-ShuffleIcon.cjs.js",
       "module": "./icons/ShuffleIcon/dist/keystone-ui-icons-icons-ShuffleIcon.esm.js",
       "default": "./icons/ShuffleIcon/dist/keystone-ui-icons-icons-ShuffleIcon.cjs.js"
     },
     "./icons/SidebarIcon": {
+      "types": "./icons/SidebarIcon/dist/keystone-ui-icons-icons-SidebarIcon.cjs.js",
       "module": "./icons/SidebarIcon/dist/keystone-ui-icons-icons-SidebarIcon.esm.js",
       "default": "./icons/SidebarIcon/dist/keystone-ui-icons-icons-SidebarIcon.cjs.js"
     },
     "./icons/SlidersIcon": {
+      "types": "./icons/SlidersIcon/dist/keystone-ui-icons-icons-SlidersIcon.cjs.js",
       "module": "./icons/SlidersIcon/dist/keystone-ui-icons-icons-SlidersIcon.esm.js",
       "default": "./icons/SlidersIcon/dist/keystone-ui-icons-icons-SlidersIcon.cjs.js"
     },
     "./icons/SpeakerIcon": {
+      "types": "./icons/SpeakerIcon/dist/keystone-ui-icons-icons-SpeakerIcon.cjs.js",
       "module": "./icons/SpeakerIcon/dist/keystone-ui-icons-icons-SpeakerIcon.esm.js",
       "default": "./icons/SpeakerIcon/dist/keystone-ui-icons-icons-SpeakerIcon.cjs.js"
     },
     "./icons/SunriseIcon": {
+      "types": "./icons/SunriseIcon/dist/keystone-ui-icons-icons-SunriseIcon.cjs.js",
       "module": "./icons/SunriseIcon/dist/keystone-ui-icons-icons-SunriseIcon.esm.js",
       "default": "./icons/SunriseIcon/dist/keystone-ui-icons-icons-SunriseIcon.cjs.js"
     },
     "./icons/TwitterIcon": {
+      "types": "./icons/TwitterIcon/dist/keystone-ui-icons-icons-TwitterIcon.cjs.js",
       "module": "./icons/TwitterIcon/dist/keystone-ui-icons-icons-TwitterIcon.esm.js",
       "default": "./icons/TwitterIcon/dist/keystone-ui-icons-icons-TwitterIcon.cjs.js"
     },
     "./icons/Volume1Icon": {
+      "types": "./icons/Volume1Icon/dist/keystone-ui-icons-icons-Volume1Icon.cjs.js",
       "module": "./icons/Volume1Icon/dist/keystone-ui-icons-icons-Volume1Icon.esm.js",
       "default": "./icons/Volume1Icon/dist/keystone-ui-icons-icons-Volume1Icon.cjs.js"
     },
     "./icons/Volume2Icon": {
+      "types": "./icons/Volume2Icon/dist/keystone-ui-icons-icons-Volume2Icon.cjs.js",
       "module": "./icons/Volume2Icon/dist/keystone-ui-icons-icons-Volume2Icon.esm.js",
       "default": "./icons/Volume2Icon/dist/keystone-ui-icons-icons-Volume2Icon.cjs.js"
     },
     "./icons/VolumeXIcon": {
+      "types": "./icons/VolumeXIcon/dist/keystone-ui-icons-icons-VolumeXIcon.cjs.js",
       "module": "./icons/VolumeXIcon/dist/keystone-ui-icons-icons-VolumeXIcon.esm.js",
       "default": "./icons/VolumeXIcon/dist/keystone-ui-icons-icons-VolumeXIcon.cjs.js"
     },
     "./icons/WifiOffIcon": {
+      "types": "./icons/WifiOffIcon/dist/keystone-ui-icons-icons-WifiOffIcon.cjs.js",
       "module": "./icons/WifiOffIcon/dist/keystone-ui-icons-icons-WifiOffIcon.esm.js",
       "default": "./icons/WifiOffIcon/dist/keystone-ui-icons-icons-WifiOffIcon.cjs.js"
     },
     "./icons/XCircleIcon": {
+      "types": "./icons/XCircleIcon/dist/keystone-ui-icons-icons-XCircleIcon.cjs.js",
       "module": "./icons/XCircleIcon/dist/keystone-ui-icons-icons-XCircleIcon.esm.js",
       "default": "./icons/XCircleIcon/dist/keystone-ui-icons-icons-XCircleIcon.cjs.js"
     },
     "./icons/XSquareIcon": {
+      "types": "./icons/XSquareIcon/dist/keystone-ui-icons-icons-XSquareIcon.cjs.js",
       "module": "./icons/XSquareIcon/dist/keystone-ui-icons-icons-XSquareIcon.esm.js",
       "default": "./icons/XSquareIcon/dist/keystone-ui-icons-icons-XSquareIcon.cjs.js"
     },
     "./icons/YoutubeIcon": {
+      "types": "./icons/YoutubeIcon/dist/keystone-ui-icons-icons-YoutubeIcon.cjs.js",
       "module": "./icons/YoutubeIcon/dist/keystone-ui-icons-icons-YoutubeIcon.esm.js",
       "default": "./icons/YoutubeIcon/dist/keystone-ui-icons-icons-YoutubeIcon.cjs.js"
     },
     "./icons/ZoomOutIcon": {
+      "types": "./icons/ZoomOutIcon/dist/keystone-ui-icons-icons-ZoomOutIcon.cjs.js",
       "module": "./icons/ZoomOutIcon/dist/keystone-ui-icons-icons-ZoomOutIcon.esm.js",
       "default": "./icons/ZoomOutIcon/dist/keystone-ui-icons-icons-ZoomOutIcon.cjs.js"
     },
     "./icons/ActivityIcon": {
+      "types": "./icons/ActivityIcon/dist/keystone-ui-icons-icons-ActivityIcon.cjs.js",
       "module": "./icons/ActivityIcon/dist/keystone-ui-icons-icons-ActivityIcon.esm.js",
       "default": "./icons/ActivityIcon/dist/keystone-ui-icons-icons-ActivityIcon.cjs.js"
     },
     "./icons/ApertureIcon": {
+      "types": "./icons/ApertureIcon/dist/keystone-ui-icons-icons-ApertureIcon.cjs.js",
       "module": "./icons/ApertureIcon/dist/keystone-ui-icons-icons-ApertureIcon.esm.js",
       "default": "./icons/ApertureIcon/dist/keystone-ui-icons-icons-ApertureIcon.cjs.js"
     },
     "./icons/BarChartIcon": {
+      "types": "./icons/BarChartIcon/dist/keystone-ui-icons-icons-BarChartIcon.cjs.js",
       "module": "./icons/BarChartIcon/dist/keystone-ui-icons-icons-BarChartIcon.esm.js",
       "default": "./icons/BarChartIcon/dist/keystone-ui-icons-icons-BarChartIcon.cjs.js"
     },
     "./icons/BookOpenIcon": {
+      "types": "./icons/BookOpenIcon/dist/keystone-ui-icons-icons-BookOpenIcon.cjs.js",
       "module": "./icons/BookOpenIcon/dist/keystone-ui-icons-icons-BookOpenIcon.esm.js",
       "default": "./icons/BookOpenIcon/dist/keystone-ui-icons-icons-BookOpenIcon.cjs.js"
     },
     "./icons/BookmarkIcon": {
+      "types": "./icons/BookmarkIcon/dist/keystone-ui-icons-icons-BookmarkIcon.cjs.js",
       "module": "./icons/BookmarkIcon/dist/keystone-ui-icons-icons-BookmarkIcon.esm.js",
       "default": "./icons/BookmarkIcon/dist/keystone-ui-icons-icons-BookmarkIcon.cjs.js"
     },
     "./icons/CalendarIcon": {
+      "types": "./icons/CalendarIcon/dist/keystone-ui-icons-icons-CalendarIcon.cjs.js",
       "module": "./icons/CalendarIcon/dist/keystone-ui-icons-icons-CalendarIcon.esm.js",
       "default": "./icons/CalendarIcon/dist/keystone-ui-icons-icons-CalendarIcon.cjs.js"
     },
     "./icons/CloudOffIcon": {
+      "types": "./icons/CloudOffIcon/dist/keystone-ui-icons-icons-CloudOffIcon.cjs.js",
       "module": "./icons/CloudOffIcon/dist/keystone-ui-icons-icons-CloudOffIcon.esm.js",
       "default": "./icons/CloudOffIcon/dist/keystone-ui-icons-icons-CloudOffIcon.cjs.js"
     },
     "./icons/DatabaseIcon": {
+      "types": "./icons/DatabaseIcon/dist/keystone-ui-icons-icons-DatabaseIcon.cjs.js",
       "module": "./icons/DatabaseIcon/dist/keystone-ui-icons-icons-DatabaseIcon.esm.js",
       "default": "./icons/DatabaseIcon/dist/keystone-ui-icons-icons-DatabaseIcon.cjs.js"
     },
     "./icons/DownloadIcon": {
+      "types": "./icons/DownloadIcon/dist/keystone-ui-icons-icons-DownloadIcon.cjs.js",
       "module": "./icons/DownloadIcon/dist/keystone-ui-icons-icons-DownloadIcon.esm.js",
       "default": "./icons/DownloadIcon/dist/keystone-ui-icons-icons-DownloadIcon.cjs.js"
     },
     "./icons/DribbbleIcon": {
+      "types": "./icons/DribbbleIcon/dist/keystone-ui-icons-icons-DribbbleIcon.cjs.js",
       "module": "./icons/DribbbleIcon/dist/keystone-ui-icons-icons-DribbbleIcon.esm.js",
       "default": "./icons/DribbbleIcon/dist/keystone-ui-icons-icons-DribbbleIcon.cjs.js"
     },
     "./icons/FacebookIcon": {
+      "types": "./icons/FacebookIcon/dist/keystone-ui-icons-icons-FacebookIcon.cjs.js",
       "module": "./icons/FacebookIcon/dist/keystone-ui-icons-icons-FacebookIcon.esm.js",
       "default": "./icons/FacebookIcon/dist/keystone-ui-icons-icons-FacebookIcon.cjs.js"
     },
     "./icons/FilePlusIcon": {
+      "types": "./icons/FilePlusIcon/dist/keystone-ui-icons-icons-FilePlusIcon.cjs.js",
       "module": "./icons/FilePlusIcon/dist/keystone-ui-icons-icons-FilePlusIcon.esm.js",
       "default": "./icons/FilePlusIcon/dist/keystone-ui-icons-icons-FilePlusIcon.cjs.js"
     },
     "./icons/FileTextIcon": {
+      "types": "./icons/FileTextIcon/dist/keystone-ui-icons-icons-FileTextIcon.cjs.js",
       "module": "./icons/FileTextIcon/dist/keystone-ui-icons-icons-FileTextIcon.esm.js",
       "default": "./icons/FileTextIcon/dist/keystone-ui-icons-icons-FileTextIcon.cjs.js"
     },
     "./icons/GitMergeIcon": {
+      "types": "./icons/GitMergeIcon/dist/keystone-ui-icons-icons-GitMergeIcon.cjs.js",
       "module": "./icons/GitMergeIcon/dist/keystone-ui-icons-icons-GitMergeIcon.esm.js",
       "default": "./icons/GitMergeIcon/dist/keystone-ui-icons-icons-GitMergeIcon.cjs.js"
     },
     "./icons/LifeBuoyIcon": {
+      "types": "./icons/LifeBuoyIcon/dist/keystone-ui-icons-icons-LifeBuoyIcon.cjs.js",
       "module": "./icons/LifeBuoyIcon/dist/keystone-ui-icons-icons-LifeBuoyIcon.esm.js",
       "default": "./icons/LifeBuoyIcon/dist/keystone-ui-icons-icons-LifeBuoyIcon.cjs.js"
     },
     "./icons/LinkedinIcon": {
+      "types": "./icons/LinkedinIcon/dist/keystone-ui-icons-icons-LinkedinIcon.cjs.js",
       "module": "./icons/LinkedinIcon/dist/keystone-ui-icons-icons-LinkedinIcon.esm.js",
       "default": "./icons/LinkedinIcon/dist/keystone-ui-icons-icons-LinkedinIcon.cjs.js"
     },
     "./icons/MaximizeIcon": {
+      "types": "./icons/MaximizeIcon/dist/keystone-ui-icons-icons-MaximizeIcon.cjs.js",
       "module": "./icons/MaximizeIcon/dist/keystone-ui-icons-icons-MaximizeIcon.esm.js",
       "default": "./icons/MaximizeIcon/dist/keystone-ui-icons-icons-MaximizeIcon.cjs.js"
     },
     "./icons/MinimizeIcon": {
+      "types": "./icons/MinimizeIcon/dist/keystone-ui-icons-icons-MinimizeIcon.cjs.js",
       "module": "./icons/MinimizeIcon/dist/keystone-ui-icons-icons-MinimizeIcon.esm.js",
       "default": "./icons/MinimizeIcon/dist/keystone-ui-icons-icons-MinimizeIcon.cjs.js"
     },
     "./icons/PhoneOffIcon": {
+      "types": "./icons/PhoneOffIcon/dist/keystone-ui-icons-icons-PhoneOffIcon.cjs.js",
       "module": "./icons/PhoneOffIcon/dist/keystone-ui-icons-icons-PhoneOffIcon.esm.js",
       "default": "./icons/PhoneOffIcon/dist/keystone-ui-icons-icons-PhoneOffIcon.cjs.js"
     },
     "./icons/PieChartIcon": {
+      "types": "./icons/PieChartIcon/dist/keystone-ui-icons-icons-PieChartIcon.cjs.js",
       "module": "./icons/PieChartIcon/dist/keystone-ui-icons-icons-PieChartIcon.esm.js",
       "default": "./icons/PieChartIcon/dist/keystone-ui-icons-icons-PieChartIcon.cjs.js"
     },
     "./icons/RotateCwIcon": {
+      "types": "./icons/RotateCwIcon/dist/keystone-ui-icons-icons-RotateCwIcon.cjs.js",
       "module": "./icons/RotateCwIcon/dist/keystone-ui-icons-icons-RotateCwIcon.esm.js",
       "default": "./icons/RotateCwIcon/dist/keystone-ui-icons-icons-RotateCwIcon.cjs.js"
     },
     "./icons/ScissorsIcon": {
+      "types": "./icons/ScissorsIcon/dist/keystone-ui-icons-icons-ScissorsIcon.cjs.js",
       "module": "./icons/ScissorsIcon/dist/keystone-ui-icons-icons-ScissorsIcon.esm.js",
       "default": "./icons/ScissorsIcon/dist/keystone-ui-icons-icons-ScissorsIcon.cjs.js"
     },
     "./icons/SettingsIcon": {
+      "types": "./icons/SettingsIcon/dist/keystone-ui-icons-icons-SettingsIcon.cjs.js",
       "module": "./icons/SettingsIcon/dist/keystone-ui-icons-icons-SettingsIcon.esm.js",
       "default": "./icons/SettingsIcon/dist/keystone-ui-icons-icons-SettingsIcon.cjs.js"
     },
     "./icons/SkipBackIcon": {
+      "types": "./icons/SkipBackIcon/dist/keystone-ui-icons-icons-SkipBackIcon.cjs.js",
       "module": "./icons/SkipBackIcon/dist/keystone-ui-icons-icons-SkipBackIcon.esm.js",
       "default": "./icons/SkipBackIcon/dist/keystone-ui-icons-icons-SkipBackIcon.cjs.js"
     },
     "./icons/TerminalIcon": {
+      "types": "./icons/TerminalIcon/dist/keystone-ui-icons-icons-TerminalIcon.cjs.js",
       "module": "./icons/TerminalIcon/dist/keystone-ui-icons-icons-TerminalIcon.esm.js",
       "default": "./icons/TerminalIcon/dist/keystone-ui-icons-icons-TerminalIcon.cjs.js"
     },
     "./icons/ThumbsUpIcon": {
+      "types": "./icons/ThumbsUpIcon/dist/keystone-ui-icons-icons-ThumbsUpIcon.cjs.js",
       "module": "./icons/ThumbsUpIcon/dist/keystone-ui-icons-icons-ThumbsUpIcon.esm.js",
       "default": "./icons/ThumbsUpIcon/dist/keystone-ui-icons-icons-ThumbsUpIcon.cjs.js"
     },
     "./icons/TriangleIcon": {
+      "types": "./icons/TriangleIcon/dist/keystone-ui-icons-icons-TriangleIcon.cjs.js",
       "module": "./icons/TriangleIcon/dist/keystone-ui-icons-icons-TriangleIcon.esm.js",
       "default": "./icons/TriangleIcon/dist/keystone-ui-icons-icons-TriangleIcon.cjs.js"
     },
     "./icons/UmbrellaIcon": {
+      "types": "./icons/UmbrellaIcon/dist/keystone-ui-icons-icons-UmbrellaIcon.cjs.js",
       "module": "./icons/UmbrellaIcon/dist/keystone-ui-icons-icons-UmbrellaIcon.esm.js",
       "default": "./icons/UmbrellaIcon/dist/keystone-ui-icons-icons-UmbrellaIcon.cjs.js"
     },
     "./icons/UserPlusIcon": {
+      "types": "./icons/UserPlusIcon/dist/keystone-ui-icons-icons-UserPlusIcon.cjs.js",
       "module": "./icons/UserPlusIcon/dist/keystone-ui-icons-icons-UserPlusIcon.esm.js",
       "default": "./icons/UserPlusIcon/dist/keystone-ui-icons-icons-UserPlusIcon.cjs.js"
     },
     "./icons/VideoOffIcon": {
+      "types": "./icons/VideoOffIcon/dist/keystone-ui-icons-icons-VideoOffIcon.cjs.js",
       "module": "./icons/VideoOffIcon/dist/keystone-ui-icons-icons-VideoOffIcon.esm.js",
       "default": "./icons/VideoOffIcon/dist/keystone-ui-icons-icons-VideoOffIcon.cjs.js"
     },
     "./icons/XOctagonIcon": {
+      "types": "./icons/XOctagonIcon/dist/keystone-ui-icons-icons-XOctagonIcon.cjs.js",
       "module": "./icons/XOctagonIcon/dist/keystone-ui-icons-icons-XOctagonIcon.esm.js",
       "default": "./icons/XOctagonIcon/dist/keystone-ui-icons-icons-XOctagonIcon.cjs.js"
     },
     "./icons/AlignLeftIcon": {
+      "types": "./icons/AlignLeftIcon/dist/keystone-ui-icons-icons-AlignLeftIcon.cjs.js",
       "module": "./icons/AlignLeftIcon/dist/keystone-ui-icons-icons-AlignLeftIcon.esm.js",
       "default": "./icons/AlignLeftIcon/dist/keystone-ui-icons-icons-AlignLeftIcon.cjs.js"
     },
     "./icons/ArrowDownIcon": {
+      "types": "./icons/ArrowDownIcon/dist/keystone-ui-icons-icons-ArrowDownIcon.cjs.js",
       "module": "./icons/ArrowDownIcon/dist/keystone-ui-icons-icons-ArrowDownIcon.esm.js",
       "default": "./icons/ArrowDownIcon/dist/keystone-ui-icons-icons-ArrowDownIcon.cjs.js"
     },
     "./icons/ArrowLeftIcon": {
+      "types": "./icons/ArrowLeftIcon/dist/keystone-ui-icons-icons-ArrowLeftIcon.cjs.js",
       "module": "./icons/ArrowLeftIcon/dist/keystone-ui-icons-icons-ArrowLeftIcon.esm.js",
       "default": "./icons/ArrowLeftIcon/dist/keystone-ui-icons-icons-ArrowLeftIcon.cjs.js"
     },
     "./icons/BarChart2Icon": {
+      "types": "./icons/BarChart2Icon/dist/keystone-ui-icons-icons-BarChart2Icon.cjs.js",
       "module": "./icons/BarChart2Icon/dist/keystone-ui-icons-icons-BarChart2Icon.esm.js",
       "default": "./icons/BarChart2Icon/dist/keystone-ui-icons-icons-BarChart2Icon.cjs.js"
     },
     "./icons/BluetoothIcon": {
+      "types": "./icons/BluetoothIcon/dist/keystone-ui-icons-icons-BluetoothIcon.cjs.js",
       "module": "./icons/BluetoothIcon/dist/keystone-ui-icons-icons-BluetoothIcon.esm.js",
       "default": "./icons/BluetoothIcon/dist/keystone-ui-icons-icons-BluetoothIcon.cjs.js"
     },
     "./icons/BriefcaseIcon": {
+      "types": "./icons/BriefcaseIcon/dist/keystone-ui-icons-icons-BriefcaseIcon.cjs.js",
       "module": "./icons/BriefcaseIcon/dist/keystone-ui-icons-icons-BriefcaseIcon.esm.js",
       "default": "./icons/BriefcaseIcon/dist/keystone-ui-icons-icons-BriefcaseIcon.cjs.js"
     },
     "./icons/CameraOffIcon": {
+      "types": "./icons/CameraOffIcon/dist/keystone-ui-icons-icons-CameraOffIcon.cjs.js",
       "module": "./icons/CameraOffIcon/dist/keystone-ui-icons-icons-CameraOffIcon.esm.js",
       "default": "./icons/CameraOffIcon/dist/keystone-ui-icons-icons-CameraOffIcon.cjs.js"
     },
     "./icons/ChevronUpIcon": {
+      "types": "./icons/ChevronUpIcon/dist/keystone-ui-icons-icons-ChevronUpIcon.cjs.js",
       "module": "./icons/ChevronUpIcon/dist/keystone-ui-icons-icons-ChevronUpIcon.esm.js",
       "default": "./icons/ChevronUpIcon/dist/keystone-ui-icons-icons-ChevronUpIcon.cjs.js"
     },
     "./icons/ClipboardIcon": {
+      "types": "./icons/ClipboardIcon/dist/keystone-ui-icons-icons-ClipboardIcon.cjs.js",
       "module": "./icons/ClipboardIcon/dist/keystone-ui-icons-icons-ClipboardIcon.esm.js",
       "default": "./icons/ClipboardIcon/dist/keystone-ui-icons-icons-ClipboardIcon.cjs.js"
     },
     "./icons/CloudRainIcon": {
+      "types": "./icons/CloudRainIcon/dist/keystone-ui-icons-icons-CloudRainIcon.cjs.js",
       "module": "./icons/CloudRainIcon/dist/keystone-ui-icons-icons-CloudRainIcon.esm.js",
       "default": "./icons/CloudRainIcon/dist/keystone-ui-icons-icons-CloudRainIcon.cjs.js"
     },
     "./icons/CloudSnowIcon": {
+      "types": "./icons/CloudSnowIcon/dist/keystone-ui-icons-icons-CloudSnowIcon.cjs.js",
       "module": "./icons/CloudSnowIcon/dist/keystone-ui-icons-icons-CloudSnowIcon.esm.js",
       "default": "./icons/CloudSnowIcon/dist/keystone-ui-icons-icons-CloudSnowIcon.cjs.js"
     },
     "./icons/CrosshairIcon": {
+      "types": "./icons/CrosshairIcon/dist/keystone-ui-icons-icons-CrosshairIcon.cjs.js",
       "module": "./icons/CrosshairIcon/dist/keystone-ui-icons-icons-CrosshairIcon.esm.js",
       "default": "./icons/CrosshairIcon/dist/keystone-ui-icons-icons-CrosshairIcon.cjs.js"
     },
     "./icons/FileMinusIcon": {
+      "types": "./icons/FileMinusIcon/dist/keystone-ui-icons-icons-FileMinusIcon.cjs.js",
       "module": "./icons/FileMinusIcon/dist/keystone-ui-icons-icons-FileMinusIcon.esm.js",
       "default": "./icons/FileMinusIcon/dist/keystone-ui-icons-icons-FileMinusIcon.cjs.js"
     },
     "./icons/GitBranchIcon": {
+      "types": "./icons/GitBranchIcon/dist/keystone-ui-icons-icons-GitBranchIcon.cjs.js",
       "module": "./icons/GitBranchIcon/dist/keystone-ui-icons-icons-GitBranchIcon.esm.js",
       "default": "./icons/GitBranchIcon/dist/keystone-ui-icons-icons-GitBranchIcon.cjs.js"
     },
     "./icons/GitCommitIcon": {
+      "types": "./icons/GitCommitIcon/dist/keystone-ui-icons-icons-GitCommitIcon.cjs.js",
       "module": "./icons/GitCommitIcon/dist/keystone-ui-icons-icons-GitCommitIcon.esm.js",
       "default": "./icons/GitCommitIcon/dist/keystone-ui-icons-icons-GitCommitIcon.cjs.js"
     },
     "./icons/HardDriveIcon": {
+      "types": "./icons/HardDriveIcon/dist/keystone-ui-icons-icons-HardDriveIcon.cjs.js",
       "module": "./icons/HardDriveIcon/dist/keystone-ui-icons-icons-HardDriveIcon.esm.js",
       "default": "./icons/HardDriveIcon/dist/keystone-ui-icons-icons-HardDriveIcon.cjs.js"
     },
     "./icons/InstagramIcon": {
+      "types": "./icons/InstagramIcon/dist/keystone-ui-icons-icons-InstagramIcon.cjs.js",
       "module": "./icons/InstagramIcon/dist/keystone-ui-icons-icons-InstagramIcon.esm.js",
       "default": "./icons/InstagramIcon/dist/keystone-ui-icons-icons-InstagramIcon.cjs.js"
     },
     "./icons/Maximize2Icon": {
+      "types": "./icons/Maximize2Icon/dist/keystone-ui-icons-icons-Maximize2Icon.cjs.js",
       "module": "./icons/Maximize2Icon/dist/keystone-ui-icons-icons-Maximize2Icon.esm.js",
       "default": "./icons/Maximize2Icon/dist/keystone-ui-icons-icons-Maximize2Icon.cjs.js"
     },
     "./icons/Minimize2Icon": {
+      "types": "./icons/Minimize2Icon/dist/keystone-ui-icons-icons-Minimize2Icon.cjs.js",
       "module": "./icons/Minimize2Icon/dist/keystone-ui-icons-icons-Minimize2Icon.esm.js",
       "default": "./icons/Minimize2Icon/dist/keystone-ui-icons-icons-Minimize2Icon.cjs.js"
     },
     "./icons/PaperclipIcon": {
+      "types": "./icons/PaperclipIcon/dist/keystone-ui-icons-icons-PaperclipIcon.cjs.js",
       "module": "./icons/PaperclipIcon/dist/keystone-ui-icons-icons-PaperclipIcon.esm.js",
       "default": "./icons/PaperclipIcon/dist/keystone-ui-icons-icons-PaperclipIcon.cjs.js"
     },
     "./icons/PhoneCallIcon": {
+      "types": "./icons/PhoneCallIcon/dist/keystone-ui-icons-icons-PhoneCallIcon.cjs.js",
       "module": "./icons/PhoneCallIcon/dist/keystone-ui-icons-icons-PhoneCallIcon.esm.js",
       "default": "./icons/PhoneCallIcon/dist/keystone-ui-icons-icons-PhoneCallIcon.cjs.js"
     },
     "./icons/RefreshCwIcon": {
+      "types": "./icons/RefreshCwIcon/dist/keystone-ui-icons-icons-RefreshCwIcon.cjs.js",
       "module": "./icons/RefreshCwIcon/dist/keystone-ui-icons-icons-RefreshCwIcon.esm.js",
       "default": "./icons/RefreshCwIcon/dist/keystone-ui-icons-icons-RefreshCwIcon.cjs.js"
     },
     "./icons/RotateCcwIcon": {
+      "types": "./icons/RotateCcwIcon/dist/keystone-ui-icons-icons-RotateCcwIcon.cjs.js",
       "module": "./icons/RotateCcwIcon/dist/keystone-ui-icons-icons-RotateCcwIcon.esm.js",
       "default": "./icons/RotateCcwIcon/dist/keystone-ui-icons-icons-RotateCcwIcon.cjs.js"
     },
     "./icons/ShieldOffIcon": {
+      "types": "./icons/ShieldOffIcon/dist/keystone-ui-icons-icons-ShieldOffIcon.cjs.js",
       "module": "./icons/ShieldOffIcon/dist/keystone-ui-icons-icons-ShieldOffIcon.esm.js",
       "default": "./icons/ShieldOffIcon/dist/keystone-ui-icons-icons-ShieldOffIcon.cjs.js"
     },
     "./icons/UnderlineIcon": {
+      "types": "./icons/UnderlineIcon/dist/keystone-ui-icons-icons-UnderlineIcon.cjs.js",
       "module": "./icons/UnderlineIcon/dist/keystone-ui-icons-icons-UnderlineIcon.esm.js",
       "default": "./icons/UnderlineIcon/dist/keystone-ui-icons-icons-UnderlineIcon.cjs.js"
     },
     "./icons/UserCheckIcon": {
+      "types": "./icons/UserCheckIcon/dist/keystone-ui-icons-icons-UserCheckIcon.cjs.js",
       "module": "./icons/UserCheckIcon/dist/keystone-ui-icons-icons-UserCheckIcon.esm.js",
       "default": "./icons/UserCheckIcon/dist/keystone-ui-icons-icons-UserCheckIcon.cjs.js"
     },
     "./icons/UserMinusIcon": {
+      "types": "./icons/UserMinusIcon/dist/keystone-ui-icons-icons-UserMinusIcon.cjs.js",
       "module": "./icons/UserMinusIcon/dist/keystone-ui-icons-icons-UserMinusIcon.esm.js",
       "default": "./icons/UserMinusIcon/dist/keystone-ui-icons-icons-UserMinusIcon.cjs.js"
     },
     "./icons/VoicemailIcon": {
+      "types": "./icons/VoicemailIcon/dist/keystone-ui-icons-icons-VoicemailIcon.cjs.js",
       "module": "./icons/VoicemailIcon/dist/keystone-ui-icons-icons-VoicemailIcon.esm.js",
       "default": "./icons/VoicemailIcon/dist/keystone-ui-icons-icons-VoicemailIcon.cjs.js"
     },
     "./icons/AlignRightIcon": {
+      "types": "./icons/AlignRightIcon/dist/keystone-ui-icons-icons-AlignRightIcon.cjs.js",
       "module": "./icons/AlignRightIcon/dist/keystone-ui-icons-icons-AlignRightIcon.esm.js",
       "default": "./icons/AlignRightIcon/dist/keystone-ui-icons-icons-AlignRightIcon.cjs.js"
     },
     "./icons/ArrowRightIcon": {
+      "types": "./icons/ArrowRightIcon/dist/keystone-ui-icons-icons-ArrowRightIcon.cjs.js",
       "module": "./icons/ArrowRightIcon/dist/keystone-ui-icons-icons-ArrowRightIcon.esm.js",
       "default": "./icons/ArrowRightIcon/dist/keystone-ui-icons-icons-ArrowRightIcon.cjs.js"
     },
     "./icons/ChevronsUpIcon": {
+      "types": "./icons/ChevronsUpIcon/dist/keystone-ui-icons-icons-ChevronsUpIcon.cjs.js",
       "module": "./icons/ChevronsUpIcon/dist/keystone-ui-icons-icons-ChevronsUpIcon.esm.js",
       "default": "./icons/ChevronsUpIcon/dist/keystone-ui-icons-icons-ChevronsUpIcon.cjs.js"
     },
     "./icons/CreditCardIcon": {
+      "types": "./icons/CreditCardIcon/dist/keystone-ui-icons-icons-CreditCardIcon.cjs.js",
       "module": "./icons/CreditCardIcon/dist/keystone-ui-icons-icons-CreditCardIcon.esm.js",
       "default": "./icons/CreditCardIcon/dist/keystone-ui-icons-icons-CreditCardIcon.cjs.js"
     },
     "./icons/DollarSignIcon": {
+      "types": "./icons/DollarSignIcon/dist/keystone-ui-icons-icons-DollarSignIcon.cjs.js",
       "module": "./icons/DollarSignIcon/dist/keystone-ui-icons-icons-DollarSignIcon.esm.js",
       "default": "./icons/DollarSignIcon/dist/keystone-ui-icons-icons-DollarSignIcon.cjs.js"
     },
     "./icons/FolderPlusIcon": {
+      "types": "./icons/FolderPlusIcon/dist/keystone-ui-icons-icons-FolderPlusIcon.cjs.js",
       "module": "./icons/FolderPlusIcon/dist/keystone-ui-icons-icons-FolderPlusIcon.esm.js",
       "default": "./icons/FolderPlusIcon/dist/keystone-ui-icons-icons-FolderPlusIcon.cjs.js"
     },
     "./icons/HeadphonesIcon": {
+      "types": "./icons/HeadphonesIcon/dist/keystone-ui-icons-icons-HeadphonesIcon.cjs.js",
       "module": "./icons/HeadphonesIcon/dist/keystone-ui-icons-icons-HeadphonesIcon.esm.js",
       "default": "./icons/HeadphonesIcon/dist/keystone-ui-icons-icons-HeadphonesIcon.cjs.js"
     },
     "./icons/HelpCircleIcon": {
+      "types": "./icons/HelpCircleIcon/dist/keystone-ui-icons-icons-HelpCircleIcon.cjs.js",
       "module": "./icons/HelpCircleIcon/dist/keystone-ui-icons-icons-HelpCircleIcon.esm.js",
       "default": "./icons/HelpCircleIcon/dist/keystone-ui-icons-icons-HelpCircleIcon.cjs.js"
     },
     "./icons/NavigationIcon": {
+      "types": "./icons/NavigationIcon/dist/keystone-ui-icons-icons-NavigationIcon.cjs.js",
       "module": "./icons/NavigationIcon/dist/keystone-ui-icons-icons-NavigationIcon.esm.js",
       "default": "./icons/NavigationIcon/dist/keystone-ui-icons-icons-NavigationIcon.cjs.js"
     },
     "./icons/PlayCircleIcon": {
+      "types": "./icons/PlayCircleIcon/dist/keystone-ui-icons-icons-PlayCircleIcon.cjs.js",
       "module": "./icons/PlayCircleIcon/dist/keystone-ui-icons-icons-PlayCircleIcon.esm.js",
       "default": "./icons/PlayCircleIcon/dist/keystone-ui-icons-icons-PlayCircleIcon.cjs.js"
     },
     "./icons/PlusCircleIcon": {
+      "types": "./icons/PlusCircleIcon/dist/keystone-ui-icons-icons-PlusCircleIcon.cjs.js",
       "module": "./icons/PlusCircleIcon/dist/keystone-ui-icons-icons-PlusCircleIcon.esm.js",
       "default": "./icons/PlusCircleIcon/dist/keystone-ui-icons-icons-PlusCircleIcon.cjs.js"
     },
     "./icons/PlusSquareIcon": {
+      "types": "./icons/PlusSquareIcon/dist/keystone-ui-icons-icons-PlusSquareIcon.cjs.js",
       "module": "./icons/PlusSquareIcon/dist/keystone-ui-icons-icons-PlusSquareIcon.esm.js",
       "default": "./icons/PlusSquareIcon/dist/keystone-ui-icons-icons-PlusSquareIcon.cjs.js"
     },
     "./icons/RefreshCcwIcon": {
+      "types": "./icons/RefreshCcwIcon/dist/keystone-ui-icons-icons-RefreshCcwIcon.cjs.js",
       "module": "./icons/RefreshCcwIcon/dist/keystone-ui-icons-icons-RefreshCcwIcon.esm.js",
       "default": "./icons/RefreshCcwIcon/dist/keystone-ui-icons-icons-RefreshCcwIcon.cjs.js"
     },
     "./icons/SmartphoneIcon": {
+      "types": "./icons/SmartphoneIcon/dist/keystone-ui-icons-icons-SmartphoneIcon.cjs.js",
       "module": "./icons/SmartphoneIcon/dist/keystone-ui-icons-icons-SmartphoneIcon.esm.js",
       "default": "./icons/SmartphoneIcon/dist/keystone-ui-icons-icons-SmartphoneIcon.cjs.js"
     },
     "./icons/StopCircleIcon": {
+      "types": "./icons/StopCircleIcon/dist/keystone-ui-icons-icons-StopCircleIcon.cjs.js",
       "module": "./icons/StopCircleIcon/dist/keystone-ui-icons-icons-StopCircleIcon.esm.js",
       "default": "./icons/StopCircleIcon/dist/keystone-ui-icons-icons-StopCircleIcon.cjs.js"
     },
     "./icons/ThumbsDownIcon": {
+      "types": "./icons/ThumbsDownIcon/dist/keystone-ui-icons-icons-ThumbsDownIcon.cjs.js",
       "module": "./icons/ThumbsDownIcon/dist/keystone-ui-icons-icons-ThumbsDownIcon.esm.js",
       "default": "./icons/ThumbsDownIcon/dist/keystone-ui-icons-icons-ThumbsDownIcon.cjs.js"
     },
     "./icons/ToggleLeftIcon": {
+      "types": "./icons/ToggleLeftIcon/dist/keystone-ui-icons-icons-ToggleLeftIcon.cjs.js",
       "module": "./icons/ToggleLeftIcon/dist/keystone-ui-icons-icons-ToggleLeftIcon.esm.js",
       "default": "./icons/ToggleLeftIcon/dist/keystone-ui-icons-icons-ToggleLeftIcon.cjs.js"
     },
     "./icons/TrendingUpIcon": {
+      "types": "./icons/TrendingUpIcon/dist/keystone-ui-icons-icons-TrendingUpIcon.cjs.js",
       "module": "./icons/TrendingUpIcon/dist/keystone-ui-icons-icons-TrendingUpIcon.esm.js",
       "default": "./icons/TrendingUpIcon/dist/keystone-ui-icons-icons-TrendingUpIcon.cjs.js"
     },
     "./icons/AlertCircleIcon": {
+      "types": "./icons/AlertCircleIcon/dist/keystone-ui-icons-icons-AlertCircleIcon.cjs.js",
       "module": "./icons/AlertCircleIcon/dist/keystone-ui-icons-icons-AlertCircleIcon.esm.js",
       "default": "./icons/AlertCircleIcon/dist/keystone-ui-icons-icons-AlertCircleIcon.cjs.js"
     },
     "./icons/AlignCenterIcon": {
+      "types": "./icons/AlignCenterIcon/dist/keystone-ui-icons-icons-AlignCenterIcon.cjs.js",
       "module": "./icons/AlignCenterIcon/dist/keystone-ui-icons-icons-AlignCenterIcon.esm.js",
       "default": "./icons/AlignCenterIcon/dist/keystone-ui-icons-icons-AlignCenterIcon.cjs.js"
     },
     "./icons/ArrowUpLeftIcon": {
+      "types": "./icons/ArrowUpLeftIcon/dist/keystone-ui-icons-icons-ArrowUpLeftIcon.cjs.js",
       "module": "./icons/ArrowUpLeftIcon/dist/keystone-ui-icons-icons-ArrowUpLeftIcon.esm.js",
       "default": "./icons/ArrowUpLeftIcon/dist/keystone-ui-icons-icons-ArrowUpLeftIcon.cjs.js"
     },
     "./icons/CheckCircleIcon": {
+      "types": "./icons/CheckCircleIcon/dist/keystone-ui-icons-icons-CheckCircleIcon.cjs.js",
       "module": "./icons/CheckCircleIcon/dist/keystone-ui-icons-icons-CheckCircleIcon.esm.js",
       "default": "./icons/CheckCircleIcon/dist/keystone-ui-icons-icons-CheckCircleIcon.cjs.js"
     },
     "./icons/CheckSquareIcon": {
+      "types": "./icons/CheckSquareIcon/dist/keystone-ui-icons-icons-CheckSquareIcon.cjs.js",
       "module": "./icons/CheckSquareIcon/dist/keystone-ui-icons-icons-CheckSquareIcon.esm.js",
       "default": "./icons/CheckSquareIcon/dist/keystone-ui-icons-icons-CheckSquareIcon.cjs.js"
     },
     "./icons/ChevronDownIcon": {
+      "types": "./icons/ChevronDownIcon/dist/keystone-ui-icons-icons-ChevronDownIcon.cjs.js",
       "module": "./icons/ChevronDownIcon/dist/keystone-ui-icons-icons-ChevronDownIcon.esm.js",
       "default": "./icons/ChevronDownIcon/dist/keystone-ui-icons-icons-ChevronDownIcon.cjs.js"
     },
     "./icons/ChevronLeftIcon": {
+      "types": "./icons/ChevronLeftIcon/dist/keystone-ui-icons-icons-ChevronLeftIcon.cjs.js",
       "module": "./icons/ChevronLeftIcon/dist/keystone-ui-icons-icons-ChevronLeftIcon.esm.js",
       "default": "./icons/ChevronLeftIcon/dist/keystone-ui-icons-icons-ChevronLeftIcon.cjs.js"
     },
     "./icons/CodesandboxIcon": {
+      "types": "./icons/CodesandboxIcon/dist/keystone-ui-icons-icons-CodesandboxIcon.cjs.js",
       "module": "./icons/CodesandboxIcon/dist/keystone-ui-icons-icons-CodesandboxIcon.esm.js",
       "default": "./icons/CodesandboxIcon/dist/keystone-ui-icons-icons-CodesandboxIcon.cjs.js"
     },
     "./icons/FastForwardIcon": {
+      "types": "./icons/FastForwardIcon/dist/keystone-ui-icons-icons-FastForwardIcon.cjs.js",
       "module": "./icons/FastForwardIcon/dist/keystone-ui-icons-icons-FastForwardIcon.esm.js",
       "default": "./icons/FastForwardIcon/dist/keystone-ui-icons-icons-FastForwardIcon.cjs.js"
     },
     "./icons/FolderMinusIcon": {
+      "types": "./icons/FolderMinusIcon/dist/keystone-ui-icons-icons-FolderMinusIcon.cjs.js",
       "module": "./icons/FolderMinusIcon/dist/keystone-ui-icons-icons-FolderMinusIcon.esm.js",
       "default": "./icons/FolderMinusIcon/dist/keystone-ui-icons-icons-FolderMinusIcon.cjs.js"
     },
     "./icons/MinusCircleIcon": {
+      "types": "./icons/MinusCircleIcon/dist/keystone-ui-icons-icons-MinusCircleIcon.cjs.js",
       "module": "./icons/MinusCircleIcon/dist/keystone-ui-icons-icons-MinusCircleIcon.esm.js",
       "default": "./icons/MinusCircleIcon/dist/keystone-ui-icons-icons-MinusCircleIcon.cjs.js"
     },
     "./icons/MinusSquareIcon": {
+      "types": "./icons/MinusSquareIcon/dist/keystone-ui-icons-icons-MinusSquareIcon.cjs.js",
       "module": "./icons/MinusSquareIcon/dist/keystone-ui-icons-icons-MinusSquareIcon.esm.js",
       "default": "./icons/MinusSquareIcon/dist/keystone-ui-icons-icons-MinusSquareIcon.cjs.js"
     },
     "./icons/Navigation2Icon": {
+      "types": "./icons/Navigation2Icon/dist/keystone-ui-icons-icons-Navigation2Icon.cjs.js",
       "module": "./icons/Navigation2Icon/dist/keystone-ui-icons-icons-Navigation2Icon.esm.js",
       "default": "./icons/Navigation2Icon/dist/keystone-ui-icons-icons-Navigation2Icon.cjs.js"
     },
     "./icons/PauseCircleIcon": {
+      "types": "./icons/PauseCircleIcon/dist/keystone-ui-icons-icons-PauseCircleIcon.cjs.js",
       "module": "./icons/PauseCircleIcon/dist/keystone-ui-icons-icons-PauseCircleIcon.esm.js",
       "default": "./icons/PauseCircleIcon/dist/keystone-ui-icons-icons-PauseCircleIcon.cjs.js"
     },
     "./icons/PhoneMissedIcon": {
+      "types": "./icons/PhoneMissedIcon/dist/keystone-ui-icons-icons-PhoneMissedIcon.cjs.js",
       "module": "./icons/PhoneMissedIcon/dist/keystone-ui-icons-icons-PhoneMissedIcon.esm.js",
       "default": "./icons/PhoneMissedIcon/dist/keystone-ui-icons-icons-PhoneMissedIcon.cjs.js"
     },
     "./icons/ShoppingBagIcon": {
+      "types": "./icons/ShoppingBagIcon/dist/keystone-ui-icons-icons-ShoppingBagIcon.cjs.js",
       "module": "./icons/ShoppingBagIcon/dist/keystone-ui-icons-icons-ShoppingBagIcon.esm.js",
       "default": "./icons/ShoppingBagIcon/dist/keystone-ui-icons-icons-ShoppingBagIcon.cjs.js"
     },
     "./icons/SkipForwardIcon": {
+      "types": "./icons/SkipForwardIcon/dist/keystone-ui-icons-icons-SkipForwardIcon.cjs.js",
       "module": "./icons/SkipForwardIcon/dist/keystone-ui-icons-icons-SkipForwardIcon.esm.js",
       "default": "./icons/SkipForwardIcon/dist/keystone-ui-icons-icons-SkipForwardIcon.cjs.js"
     },
     "./icons/ThermometerIcon": {
+      "types": "./icons/ThermometerIcon/dist/keystone-ui-icons-icons-ThermometerIcon.cjs.js",
       "module": "./icons/ThermometerIcon/dist/keystone-ui-icons-icons-ThermometerIcon.esm.js",
       "default": "./icons/ThermometerIcon/dist/keystone-ui-icons-icons-ThermometerIcon.cjs.js"
     },
     "./icons/ToggleRightIcon": {
+      "types": "./icons/ToggleRightIcon/dist/keystone-ui-icons-icons-ToggleRightIcon.cjs.js",
       "module": "./icons/ToggleRightIcon/dist/keystone-ui-icons-icons-ToggleRightIcon.esm.js",
       "default": "./icons/ToggleRightIcon/dist/keystone-ui-icons-icons-ToggleRightIcon.cjs.js"
     },
     "./icons/UploadCloudIcon": {
+      "types": "./icons/UploadCloudIcon/dist/keystone-ui-icons-icons-UploadCloudIcon.cjs.js",
       "module": "./icons/UploadCloudIcon/dist/keystone-ui-icons-icons-UploadCloudIcon.esm.js",
       "default": "./icons/UploadCloudIcon/dist/keystone-ui-icons-icons-UploadCloudIcon.cjs.js"
     },
     "./icons/AlertOctagonIcon": {
+      "types": "./icons/AlertOctagonIcon/dist/keystone-ui-icons-icons-AlertOctagonIcon.cjs.js",
       "module": "./icons/AlertOctagonIcon/dist/keystone-ui-icons-icons-AlertOctagonIcon.esm.js",
       "default": "./icons/AlertOctagonIcon/dist/keystone-ui-icons-icons-AlertOctagonIcon.cjs.js"
     },
     "./icons/AlignJustifyIcon": {
+      "types": "./icons/AlignJustifyIcon/dist/keystone-ui-icons-icons-AlignJustifyIcon.cjs.js",
       "module": "./icons/AlignJustifyIcon/dist/keystone-ui-icons-icons-AlignJustifyIcon.esm.js",
       "default": "./icons/AlignJustifyIcon/dist/keystone-ui-icons-icons-AlignJustifyIcon.cjs.js"
     },
     "./icons/ArrowUpRightIcon": {
+      "types": "./icons/ArrowUpRightIcon/dist/keystone-ui-icons-icons-ArrowUpRightIcon.cjs.js",
       "module": "./icons/ArrowUpRightIcon/dist/keystone-ui-icons-icons-ArrowUpRightIcon.esm.js",
       "default": "./icons/ArrowUpRightIcon/dist/keystone-ui-icons-icons-ArrowUpRightIcon.cjs.js"
     },
     "./icons/ChevronRightIcon": {
+      "types": "./icons/ChevronRightIcon/dist/keystone-ui-icons-icons-ChevronRightIcon.cjs.js",
       "module": "./icons/ChevronRightIcon/dist/keystone-ui-icons-icons-ChevronRightIcon.esm.js",
       "default": "./icons/ChevronRightIcon/dist/keystone-ui-icons-icons-ChevronRightIcon.cjs.js"
     },
     "./icons/ChevronsDownIcon": {
+      "types": "./icons/ChevronsDownIcon/dist/keystone-ui-icons-icons-ChevronsDownIcon.cjs.js",
       "module": "./icons/ChevronsDownIcon/dist/keystone-ui-icons-icons-ChevronsDownIcon.esm.js",
       "default": "./icons/ChevronsDownIcon/dist/keystone-ui-icons-icons-ChevronsDownIcon.cjs.js"
     },
     "./icons/ChevronsLeftIcon": {
+      "types": "./icons/ChevronsLeftIcon/dist/keystone-ui-icons-icons-ChevronsLeftIcon.cjs.js",
       "module": "./icons/ChevronsLeftIcon/dist/keystone-ui-icons-icons-ChevronsLeftIcon.esm.js",
       "default": "./icons/ChevronsLeftIcon/dist/keystone-ui-icons-icons-ChevronsLeftIcon.cjs.js"
     },
     "./icons/CloudDrizzleIcon": {
+      "types": "./icons/CloudDrizzleIcon/dist/keystone-ui-icons-icons-CloudDrizzleIcon.cjs.js",
       "module": "./icons/CloudDrizzleIcon/dist/keystone-ui-icons-icons-CloudDrizzleIcon.esm.js",
       "default": "./icons/CloudDrizzleIcon/dist/keystone-ui-icons-icons-CloudDrizzleIcon.cjs.js"
     },
     "./icons/CornerLeftUpIcon": {
+      "types": "./icons/CornerLeftUpIcon/dist/keystone-ui-icons-icons-CornerLeftUpIcon.cjs.js",
       "module": "./icons/CornerLeftUpIcon/dist/keystone-ui-icons-icons-CornerLeftUpIcon.esm.js",
       "default": "./icons/CornerLeftUpIcon/dist/keystone-ui-icons-icons-CornerLeftUpIcon.cjs.js"
     },
     "./icons/CornerUpLeftIcon": {
+      "types": "./icons/CornerUpLeftIcon/dist/keystone-ui-icons-icons-CornerUpLeftIcon.cjs.js",
       "module": "./icons/CornerUpLeftIcon/dist/keystone-ui-icons-icons-CornerUpLeftIcon.esm.js",
       "default": "./icons/CornerUpLeftIcon/dist/keystone-ui-icons-icons-CornerUpLeftIcon.cjs.js"
     },
     "./icons/DivideCircleIcon": {
+      "types": "./icons/DivideCircleIcon/dist/keystone-ui-icons-icons-DivideCircleIcon.cjs.js",
       "module": "./icons/DivideCircleIcon/dist/keystone-ui-icons-icons-DivideCircleIcon.esm.js",
       "default": "./icons/DivideCircleIcon/dist/keystone-ui-icons-icons-DivideCircleIcon.cjs.js"
     },
     "./icons/DivideSquareIcon": {
+      "types": "./icons/DivideSquareIcon/dist/keystone-ui-icons-icons-DivideSquareIcon.cjs.js",
       "module": "./icons/DivideSquareIcon/dist/keystone-ui-icons-icons-DivideSquareIcon.esm.js",
       "default": "./icons/DivideSquareIcon/dist/keystone-ui-icons-icons-DivideSquareIcon.cjs.js"
     },
     "./icons/ExternalLinkIcon": {
+      "types": "./icons/ExternalLinkIcon/dist/keystone-ui-icons-icons-ExternalLinkIcon.cjs.js",
       "module": "./icons/ExternalLinkIcon/dist/keystone-ui-icons-icons-ExternalLinkIcon.esm.js",
       "default": "./icons/ExternalLinkIcon/dist/keystone-ui-icons-icons-ExternalLinkIcon.cjs.js"
     },
     "./icons/MoreVerticalIcon": {
+      "types": "./icons/MoreVerticalIcon/dist/keystone-ui-icons-icons-MoreVerticalIcon.cjs.js",
       "module": "./icons/MoreVerticalIcon/dist/keystone-ui-icons-icons-MoreVerticalIcon.esm.js",
       "default": "./icons/MoreVerticalIcon/dist/keystone-ui-icons-icons-MoreVerticalIcon.cjs.js"
     },
     "./icons/MousePointerIcon": {
+      "types": "./icons/MousePointerIcon/dist/keystone-ui-icons-icons-MousePointerIcon.cjs.js",
       "module": "./icons/MousePointerIcon/dist/keystone-ui-icons-icons-MousePointerIcon.esm.js",
       "default": "./icons/MousePointerIcon/dist/keystone-ui-icons-icons-MousePointerIcon.cjs.js"
     },
     "./icons/ShoppingCartIcon": {
+      "types": "./icons/ShoppingCartIcon/dist/keystone-ui-icons-icons-ShoppingCartIcon.cjs.js",
       "module": "./icons/ShoppingCartIcon/dist/keystone-ui-icons-icons-ShoppingCartIcon.esm.js",
       "default": "./icons/ShoppingCartIcon/dist/keystone-ui-icons-icons-ShoppingCartIcon.cjs.js"
     },
     "./icons/TrendingDownIcon": {
+      "types": "./icons/TrendingDownIcon/dist/keystone-ui-icons-icons-TrendingDownIcon.cjs.js",
       "module": "./icons/TrendingDownIcon/dist/keystone-ui-icons-icons-TrendingDownIcon.esm.js",
       "default": "./icons/TrendingDownIcon/dist/keystone-ui-icons-icons-TrendingDownIcon.cjs.js"
     },
     "./icons/AlertTriangleIcon": {
+      "types": "./icons/AlertTriangleIcon/dist/keystone-ui-icons-icons-AlertTriangleIcon.cjs.js",
       "module": "./icons/AlertTriangleIcon/dist/keystone-ui-icons-icons-AlertTriangleIcon.esm.js",
       "default": "./icons/AlertTriangleIcon/dist/keystone-ui-icons-icons-AlertTriangleIcon.cjs.js"
     },
     "./icons/ArrowDownLeftIcon": {
+      "types": "./icons/ArrowDownLeftIcon/dist/keystone-ui-icons-icons-ArrowDownLeftIcon.cjs.js",
       "module": "./icons/ArrowDownLeftIcon/dist/keystone-ui-icons-icons-ArrowDownLeftIcon.esm.js",
       "default": "./icons/ArrowDownLeftIcon/dist/keystone-ui-icons-icons-ArrowDownLeftIcon.cjs.js"
     },
     "./icons/ArrowUpCircleIcon": {
+      "types": "./icons/ArrowUpCircleIcon/dist/keystone-ui-icons-icons-ArrowUpCircleIcon.cjs.js",
       "module": "./icons/ArrowUpCircleIcon/dist/keystone-ui-icons-icons-ArrowUpCircleIcon.esm.js",
       "default": "./icons/ArrowUpCircleIcon/dist/keystone-ui-icons-icons-ArrowUpCircleIcon.cjs.js"
     },
     "./icons/ChevronsRightIcon": {
+      "types": "./icons/ChevronsRightIcon/dist/keystone-ui-icons-icons-ChevronsRightIcon.cjs.js",
       "module": "./icons/ChevronsRightIcon/dist/keystone-ui-icons-icons-ChevronsRightIcon.esm.js",
       "default": "./icons/ChevronsRightIcon/dist/keystone-ui-icons-icons-ChevronsRightIcon.cjs.js"
     },
     "./icons/CornerRightUpIcon": {
+      "types": "./icons/CornerRightUpIcon/dist/keystone-ui-icons-icons-CornerRightUpIcon.cjs.js",
       "module": "./icons/CornerRightUpIcon/dist/keystone-ui-icons-icons-CornerRightUpIcon.esm.js",
       "default": "./icons/CornerRightUpIcon/dist/keystone-ui-icons-icons-CornerRightUpIcon.cjs.js"
     },
     "./icons/CornerUpRightIcon": {
+      "types": "./icons/CornerUpRightIcon/dist/keystone-ui-icons-icons-CornerUpRightIcon.cjs.js",
       "module": "./icons/CornerUpRightIcon/dist/keystone-ui-icons-icons-CornerUpRightIcon.esm.js",
       "default": "./icons/CornerUpRightIcon/dist/keystone-ui-icons-icons-CornerUpRightIcon.cjs.js"
     },
     "./icons/DownloadCloudIcon": {
+      "types": "./icons/DownloadCloudIcon/dist/keystone-ui-icons-icons-DownloadCloudIcon.cjs.js",
       "module": "./icons/DownloadCloudIcon/dist/keystone-ui-icons-icons-DownloadCloudIcon.esm.js",
       "default": "./icons/DownloadCloudIcon/dist/keystone-ui-icons-icons-DownloadCloudIcon.cjs.js"
     },
     "./icons/MessageCircleIcon": {
+      "types": "./icons/MessageCircleIcon/dist/keystone-ui-icons-icons-MessageCircleIcon.cjs.js",
       "module": "./icons/MessageCircleIcon/dist/keystone-ui-icons-icons-MessageCircleIcon.esm.js",
       "default": "./icons/MessageCircleIcon/dist/keystone-ui-icons-icons-MessageCircleIcon.cjs.js"
     },
     "./icons/MessageSquareIcon": {
+      "types": "./icons/MessageSquareIcon/dist/keystone-ui-icons-icons-MessageSquareIcon.cjs.js",
       "module": "./icons/MessageSquareIcon/dist/keystone-ui-icons-icons-MessageSquareIcon.esm.js",
       "default": "./icons/MessageSquareIcon/dist/keystone-ui-icons-icons-MessageSquareIcon.cjs.js"
     },
     "./icons/PhoneIncomingIcon": {
+      "types": "./icons/PhoneIncomingIcon/dist/keystone-ui-icons-icons-PhoneIncomingIcon.cjs.js",
       "module": "./icons/PhoneIncomingIcon/dist/keystone-ui-icons-icons-PhoneIncomingIcon.esm.js",
       "default": "./icons/PhoneIncomingIcon/dist/keystone-ui-icons-icons-PhoneIncomingIcon.cjs.js"
     },
     "./icons/PhoneOutgoingIcon": {
+      "types": "./icons/PhoneOutgoingIcon/dist/keystone-ui-icons-icons-PhoneOutgoingIcon.cjs.js",
       "module": "./icons/PhoneOutgoingIcon/dist/keystone-ui-icons-icons-PhoneOutgoingIcon.esm.js",
       "default": "./icons/PhoneOutgoingIcon/dist/keystone-ui-icons-icons-PhoneOutgoingIcon.cjs.js"
     },
     "./icons/ArrowDownRightIcon": {
+      "types": "./icons/ArrowDownRightIcon/dist/keystone-ui-icons-icons-ArrowDownRightIcon.cjs.js",
       "module": "./icons/ArrowDownRightIcon/dist/keystone-ui-icons-icons-ArrowDownRightIcon.esm.js",
       "default": "./icons/ArrowDownRightIcon/dist/keystone-ui-icons-icons-ArrowDownRightIcon.cjs.js"
     },
     "./icons/CloudLightningIcon": {
+      "types": "./icons/CloudLightningIcon/dist/keystone-ui-icons-icons-CloudLightningIcon.cjs.js",
       "module": "./icons/CloudLightningIcon/dist/keystone-ui-icons-icons-CloudLightningIcon.esm.js",
       "default": "./icons/CloudLightningIcon/dist/keystone-ui-icons-icons-CloudLightningIcon.cjs.js"
     },
     "./icons/CornerDownLeftIcon": {
+      "types": "./icons/CornerDownLeftIcon/dist/keystone-ui-icons-icons-CornerDownLeftIcon.cjs.js",
       "module": "./icons/CornerDownLeftIcon/dist/keystone-ui-icons-icons-CornerDownLeftIcon.esm.js",
       "default": "./icons/CornerDownLeftIcon/dist/keystone-ui-icons-icons-CornerDownLeftIcon.cjs.js"
     },
     "./icons/CornerLeftDownIcon": {
+      "types": "./icons/CornerLeftDownIcon/dist/keystone-ui-icons-icons-CornerLeftDownIcon.cjs.js",
       "module": "./icons/CornerLeftDownIcon/dist/keystone-ui-icons-icons-CornerLeftDownIcon.esm.js",
       "default": "./icons/CornerLeftDownIcon/dist/keystone-ui-icons-icons-CornerLeftDownIcon.cjs.js"
     },
     "./icons/GitPullRequestIcon": {
+      "types": "./icons/GitPullRequestIcon/dist/keystone-ui-icons-icons-GitPullRequestIcon.cjs.js",
       "module": "./icons/GitPullRequestIcon/dist/keystone-ui-icons-icons-GitPullRequestIcon.esm.js",
       "default": "./icons/GitPullRequestIcon/dist/keystone-ui-icons-icons-GitPullRequestIcon.cjs.js"
     },
     "./icons/MoreHorizontalIcon": {
+      "types": "./icons/MoreHorizontalIcon/dist/keystone-ui-icons-icons-MoreHorizontalIcon.cjs.js",
       "module": "./icons/MoreHorizontalIcon/dist/keystone-ui-icons-icons-MoreHorizontalIcon.esm.js",
       "default": "./icons/MoreHorizontalIcon/dist/keystone-ui-icons-icons-MoreHorizontalIcon.cjs.js"
     },
     "./icons/PhoneForwardedIcon": {
+      "types": "./icons/PhoneForwardedIcon/dist/keystone-ui-icons-icons-PhoneForwardedIcon.cjs.js",
       "module": "./icons/PhoneForwardedIcon/dist/keystone-ui-icons-icons-PhoneForwardedIcon.esm.js",
       "default": "./icons/PhoneForwardedIcon/dist/keystone-ui-icons-icons-PhoneForwardedIcon.cjs.js"
     },
     "./icons/ArrowDownCircleIcon": {
+      "types": "./icons/ArrowDownCircleIcon/dist/keystone-ui-icons-icons-ArrowDownCircleIcon.cjs.js",
       "module": "./icons/ArrowDownCircleIcon/dist/keystone-ui-icons-icons-ArrowDownCircleIcon.esm.js",
       "default": "./icons/ArrowDownCircleIcon/dist/keystone-ui-icons-icons-ArrowDownCircleIcon.cjs.js"
     },
     "./icons/ArrowLeftCircleIcon": {
+      "types": "./icons/ArrowLeftCircleIcon/dist/keystone-ui-icons-icons-ArrowLeftCircleIcon.cjs.js",
       "module": "./icons/ArrowLeftCircleIcon/dist/keystone-ui-icons-icons-ArrowLeftCircleIcon.esm.js",
       "default": "./icons/ArrowLeftCircleIcon/dist/keystone-ui-icons-icons-ArrowLeftCircleIcon.cjs.js"
     },
     "./icons/BatteryChargingIcon": {
+      "types": "./icons/BatteryChargingIcon/dist/keystone-ui-icons-icons-BatteryChargingIcon.cjs.js",
       "module": "./icons/BatteryChargingIcon/dist/keystone-ui-icons-icons-BatteryChargingIcon.esm.js",
       "default": "./icons/BatteryChargingIcon/dist/keystone-ui-icons-icons-BatteryChargingIcon.cjs.js"
     },
     "./icons/CornerDownRightIcon": {
+      "types": "./icons/CornerDownRightIcon/dist/keystone-ui-icons-icons-CornerDownRightIcon.cjs.js",
       "module": "./icons/CornerDownRightIcon/dist/keystone-ui-icons-icons-CornerDownRightIcon.esm.js",
       "default": "./icons/CornerDownRightIcon/dist/keystone-ui-icons-icons-CornerDownRightIcon.cjs.js"
     },
     "./icons/CornerRightDownIcon": {
+      "types": "./icons/CornerRightDownIcon/dist/keystone-ui-icons-icons-CornerRightDownIcon.cjs.js",
       "module": "./icons/CornerRightDownIcon/dist/keystone-ui-icons-icons-CornerRightDownIcon.esm.js",
       "default": "./icons/CornerRightDownIcon/dist/keystone-ui-icons-icons-CornerRightDownIcon.cjs.js"
     },
     "./icons/ArrowRightCircleIcon": {
+      "types": "./icons/ArrowRightCircleIcon/dist/keystone-ui-icons-icons-ArrowRightCircleIcon.cjs.js",
       "module": "./icons/ArrowRightCircleIcon/dist/keystone-ui-icons-icons-ArrowRightCircleIcon.esm.js",
       "default": "./icons/ArrowRightCircleIcon/dist/keystone-ui-icons-icons-ArrowRightCircleIcon.cjs.js"
     },
