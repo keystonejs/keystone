@@ -149,18 +149,16 @@ function ItemForm ({
         </VStack>
 
         <StickySidebar>
-          <Box marginTop="xlarge">
-            <Fields
-              view='itemView'
-              position="sidebar"
-              fields={list.fields}
-              groups={list.groups}
-              forceValidation={forceValidation}
-              invalidFields={invalidFields}
-              onChange={useCallback(value => setValue(value), [setValue])}
-              value={value}
-            />
-          </Box>
+          <Fields
+            view='itemView'
+            position="sidebar"
+            fields={list.fields}
+            groups={list.groups}
+            forceValidation={forceValidation}
+            invalidFields={invalidFields}
+            onChange={useCallback(value => setValue(value), [setValue])}
+            value={value}
+          />
         </StickySidebar>
 
         <BaseToolbar>
@@ -333,15 +331,15 @@ function ItemPage ({ listKey }: ItemPageProps) {
         </VStack>
       ) : (
         <ColumnLayout>
-          <Box marginY="xlarge">
-            <GraphQLErrorNotice
-              errors={[
-                error?.networkError,
-                ...error?.graphQLErrors ?? []
-              ]}
-            />
-            {data?.item == null ? (
-              list.isSingleton ? (
+          <GraphQLErrorNotice
+            errors={[
+              error?.networkError,
+              ...error?.graphQLErrors ?? []
+            ]}
+          />
+          {data?.item == null ? (
+            <Box marginY="xlarge">
+              {list.isSingleton ? (
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
@@ -356,16 +354,16 @@ function ItemPage ({ listKey }: ItemPageProps) {
                 <ItemNotFound>
                   <Text>The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access to it.</Text>
                 </ItemNotFound>
-              )
-            ) : (
-              <ItemForm
-                listKey={listKey}
-                selectedFields={selectedFields}
-                showDelete={!data.keystone.adminMeta.list!.hideDelete}
-                item={data.item}
-              />
-            )}
-          </Box>
+              )}
+            </Box>
+          ) : (
+            <ItemForm
+              listKey={listKey}
+              selectedFields={selectedFields}
+              showDelete={!data.keystone.adminMeta.list!.hideDelete}
+              item={data.item}
+            />
+          )}
         </ColumnLayout>
       )}
     </PageContainer>
