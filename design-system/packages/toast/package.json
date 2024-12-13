@@ -12,8 +12,8 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@types/react": "^18.3.3",
-    "react": "^18.3.1"
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
@@ -21,7 +21,7 @@
     "@keystone-ui/icons": "workspace:^"
   },
   "peerDependencies": {
-    "react": "^18.3.1"
+    "react": "^19.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/toast"
 }
