@@ -20,7 +20,7 @@ export default config({
   },
   lists,
   server: {
-    maxFileSize: bytes('8Mb')
+    maxFileSize: bytes('8Mb')!,
   },
   storage: {
     my_images: {

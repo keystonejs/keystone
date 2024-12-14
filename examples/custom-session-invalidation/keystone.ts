@@ -67,7 +67,7 @@ function withSessionInvalidation (config: Config<Session>) {
 
 export default withSessionInvalidation(
   withAuth(
-    config<TypeInfo>({
+    config({
       db: {
         provider: 'sqlite',
         url: process.env.DATABASE_URL || 'file:./keystone-example.db',
@@ -80,4 +80,4 @@ export default withSessionInvalidation(
       session: statelessSessions<Session>(),
     })
   )
-)
+) as any as TypeInfo;
