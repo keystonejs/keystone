@@ -44,7 +44,7 @@ function setup (options?: any) {
         }),
       },
       session: statelessSessions(),
-    })
+    } as any) as any
   })
 }
 
@@ -114,7 +114,7 @@ describe('Auth testing', () => {
           },
 
           session: statelessSessions(),
-        }),
+        } as any) as any,
       })
     ).rejects.toMatchInlineSnapshot(
       `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique'\` to the field at User.email]`

@@ -2,7 +2,7 @@ import { type GraphQLNamedType, GraphQLSchema } from 'graphql'
 
 import { graphql } from '../types/schema'
 import {
-  type __ResolvedKeystoneConfig
+  type ResolvedKeystoneConfig
 } from '../types'
 import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
@@ -98,7 +98,7 @@ function collectTypes (
 }
 
 export function createGraphQLSchema (
-  config: __ResolvedKeystoneConfig,
+  config: ResolvedKeystoneConfig,
   lists: Record<string, InitialisedList>,
   adminMeta: AdminMetaRootVal | null,
   sudo: boolean
