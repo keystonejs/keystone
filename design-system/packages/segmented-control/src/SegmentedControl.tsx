@@ -82,8 +82,8 @@ export const SegmentedControl = ({
   // Animate the selected segment indicator
   useEffect(() => {
     if (animate && rootRef.current instanceof HTMLElement) {
-      let nodes = Array.from(rootRef.current.children)
-      let selected = selectedIndex !== undefined && nodes[selectedIndex]
+      const nodes = Array.from(rootRef.current.children)
+      const selected = selectedIndex !== undefined && nodes[selectedIndex]
       let rootRect
       let nodeRect = { height: 0, width: 0, left: 0, top: 0 }
       let offsetLeft

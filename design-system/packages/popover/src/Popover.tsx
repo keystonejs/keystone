@@ -262,7 +262,7 @@ type UseClickOutsideProps = {
 const useClickOutside = ({ handler, elements, listenWhen }: UseClickOutsideProps) => {
   useEffect(() => {
     if (listenWhen) {
-      let handleMouseDown = (event: MouseEvent) => {
+      const handleMouseDown = (event: MouseEvent) => {
         // bail on mouse down "inside" any of the provided elements
         if (elements.some(el => el && el.contains(event.target as Node))) {
           return
@@ -300,8 +300,8 @@ const useKeyPress = ({
 
   // add event listeners
   useEffect(() => {
-    let target = targetElement || document.body
-    let onDown = (event: KeyboardEvent) => {
+    const target = targetElement || document.body
+    const onDown = (event: KeyboardEvent) => {
       if (event.key === targetKey) {
         setKeyPressed(true)
 
@@ -310,7 +310,7 @@ const useKeyPress = ({
         }
       }
     }
-    let onUp = (event: KeyboardEvent) => {
+    const onUp = (event: KeyboardEvent) => {
       if (event.key === targetKey) {
         setKeyPressed(false)
 

@@ -7,6 +7,7 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: Release
     steps:
       - uses: actions/checkout@main

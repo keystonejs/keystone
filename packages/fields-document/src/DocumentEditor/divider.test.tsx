@@ -4,7 +4,7 @@
 import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a divider with a shortcut works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

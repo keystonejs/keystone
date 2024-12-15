@@ -84,7 +84,9 @@ export function statelessSessions<Session> ({
       if (!token) return
       try {
         return await Iron.unseal(token, secret, ironOptions)
-      } catch (err) {}
+      } catch (err) {
+        // do nothing
+      }
     },
     async end ({ context }) {
       if (!context?.res) return

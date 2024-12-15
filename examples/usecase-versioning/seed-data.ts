@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context'
 import { posts } from '../example-data'
 import config from './keystone'
-import * as PrismaModule from '.myprisma/client'
+import * as PrismaModule from 'myprisma'
 
 async function main () {
   const context = getContext(config, PrismaModule)
@@ -19,7 +19,7 @@ async function main () {
   }
 
   console.log(`✅ Seed data inserted`)
-  console.log(`👋 Please start the process with \`yarn dev\` or \`npm run dev\``)
+  console.log(`👋 Please start the process with \`npm run dev\``)
 }
 
 main()

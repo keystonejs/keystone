@@ -91,7 +91,7 @@ function FloatInput ({
         if (raw === '') {
           return null
         }
-        let parsed = parseFloat(raw)
+        const parsed = parseFloat(raw)
         if (Number.isFinite(parsed)) {
           return parsed
         }
@@ -157,7 +157,7 @@ export const Field = ({
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + ''
+  const value = item[field.path] + ''
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
 }
 Cell.supportsLinkTo = true
@@ -199,10 +199,10 @@ export const controller = (
           <TextInput
             onChange={event => {
               if (type === 'in' || type === 'not_in') {
-                onChange(event.target.value.replace(/[^\d\.,\s-]/g, ''))
+                onChange(event.target.value.replace(/[^\d.,\s-]/g, ''))
                 return
               }
-              onChange(event.target.value.replace(/[^\d\.\s-]/g, ''))
+              onChange(event.target.value.replace(/[^\d.\s-]/g, ''))
             }}
             value={value}
             autoFocus={autoFocus}

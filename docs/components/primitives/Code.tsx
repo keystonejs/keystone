@@ -1,7 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Highlight, Prism } from 'prism-react-renderer'
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
+import { Highlight, Prism, type LineOutputProps, type TokenOutputProps } from 'prism-react-renderer'
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import theme from '../../lib/prism-theme'
@@ -10,14 +11,14 @@ type Range = { start: number, end: number }
 type CollapseRange = Range & { isCollapsed: boolean }
 
 const getRanges = (lines: string): Range[] => {
-  let ranges: Range[] = []
+  const ranges: Range[] = []
 
-  lines.split(',').forEach(lineRange => {
+  lines.split(',').forEach((lineRange) => {
     if (lineRange.length) {
       const [range1, range2] = lineRange.split('-')
 
       let parsedRange1 = parseInt(range1)
-      let parsedRange2 = parseInt(range2)
+      const parsedRange2 = parseInt(range2)
 
       if (isNaN(parsedRange1)) {
         throw new Error(`When trying to do highlighting, error in {${lines}}`)
@@ -40,24 +41,24 @@ const getRanges = (lines: string): Range[] => {
 const parseClassName = (
   className?: string
 ): { highlightRanges: Range[], collapseRanges: CollapseRange[], language: string } => {
-  let trimmedLanguage = (className || '').replace(/language-/, '')
+  const trimmedLanguage = (className || '').replace(/language-/, '')
   let language, highlights, collapses
 
   if (
     !trimmedLanguage.includes('[') ||
     trimmedLanguage.indexOf('{') < trimmedLanguage.indexOf('[')
   ) {
-    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('{')
+    const [scopedLanguage, modifiers = ''] = trimmedLanguage.split('{')
 
-    let [scopedHighlights, scopedCollapses] = modifiers.split('[')
+    const [scopedHighlights, scopedCollapses] = modifiers.split('[')
 
     language = scopedLanguage
     highlights = scopedHighlights
     collapses = scopedCollapses
   } else {
-    let [scopedLanguage, modifiers = ''] = trimmedLanguage.split('[')
+    const [scopedLanguage, modifiers = ''] = trimmedLanguage.split('[')
 
-    let [scopedCollapses, scopedHighlights] = modifiers.split('{')
+    const [scopedCollapses, scopedHighlights] = modifiers.split('{')
 
     language = scopedLanguage
     highlights = scopedHighlights
@@ -67,7 +68,7 @@ const parseClassName = (
   return {
     language: (language as any) || 'typescript',
     highlightRanges: getRanges(highlights?.replace('}', '') || ''),
-    collapseRanges: getRanges(collapses?.replace(']', '') || '').map(range => ({
+    collapseRanges: getRanges(collapses?.replace(']', '') || '').map((range) => ({
       ...range,
       isCollapsed: true,
     })),
@@ -91,7 +92,7 @@ export function CodeBlock (props: { children: string, className?: string }) {
 }
 
 export function Code ({ children, className }: { children: string, className?: string }) {
-  let { language, highlightRanges, collapseRanges } = useMemo(
+  const { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
     [className]
   )
@@ -119,7 +120,7 @@ export function Code ({ children, className }: { children: string, className?: s
                   <button
                     key={i}
                     onClick={() => {
-                      let updated = collapseState.map(item =>
+                      const updated = collapseState.map((item) =>
                         item.start === i ? { ...item, isCollapsed: false } : item
                       )
 
@@ -142,10 +143,13 @@ export function Code ({ children, className }: { children: string, className?: s
                 return undefined
               }
 
+              // Need to extract the key from lineProps, React not happy about spreading a key on an element
+              const lineProps = getLineProps({ line, key: i })
+              const { key, ...restLineProps } = lineProps
               return (
                 <div
                   key={i}
-                  {...getLineProps({ line, key: i })}
+                  {...restLineProps}
                   css={{
                     ...(findRange(highlightRanges, i) && {
                       backgroundColor: 'var(--info-bg)',
@@ -167,7 +171,11 @@ export function Code ({ children, className }: { children: string, className?: s
                     if (token.content === 'document' && token.types[0] === 'imports') {
                       token.types = ['imports']
                     }
-                    return <span key={key} {...getTokenProps({ token, key })} />
+                    
+                    // Need to extract the key from lineProps, React not happy about spreading a key on an element
+                    const tokenProps = getTokenProps({ token, key })
+                    const { key: k, ...restTokenProps } = tokenProps
+                    return <span key={key} {...restTokenProps} />
                   })}
                 </div>
               )

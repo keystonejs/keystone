@@ -1,7 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { useRouter } from 'next/router'
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 import { Type } from './primitives/Type'
@@ -10,9 +11,10 @@ type Path = { title: string, href: string }
 
 export function Breadcrumbs () {
   const router = useRouter()
+  const pathname = usePathname()
 
   // remove anchor and split path
-  const linkPath = new URL(router.asPath, 'https://keystonejs.com').pathname.split('/')
+  const linkPath = new URL(pathname || '', 'https://keystonejs.com').pathname.split('/')
   linkPath.shift()
 
   const breadcrumbs = linkPath.map((path, i): Path => {

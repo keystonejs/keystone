@@ -104,7 +104,7 @@ export function withMarks (
             // https://github.com/swc-project/swc/issues/2622
             const startOfBlock = getStartOfBlock(editor)
 
-            let startOfBlockToEndOfShortcutString = Editor.string(editor, {
+            const startOfBlockToEndOfShortcutString = Editor.string(editor, {
               anchor: editor.selection.anchor,
               focus: startOfBlock,
             })

@@ -20,19 +20,19 @@ export function resolveDbNullable (
 export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
   meta: FieldData,
   config: {
-    label?: string,
+    label?: string
     db?: {
       isNullable?: boolean
-    },
+    }
     graphql?: {
       isNonNull?: {
         read?: boolean
       }
-    },
+    }
     validation?: {
       isRequired?: boolean
       [key: string]: unknown
-    },
+    }
   },
   f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', ListTypeInfo['fields']>
 ) {

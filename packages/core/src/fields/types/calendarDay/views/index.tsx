@@ -86,7 +86,7 @@ function validate (
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path]
+  const value = item[field.path]
   return linkTo ? (
     <CellLink {...linkTo}>{formatOutput(value)}</CellLink>
   ) : (

@@ -11,10 +11,10 @@ import { type FieldProps } from '@keystone-6/core/types'
 import { type controller } from '.'
 
 function useObjectURL (fileData: File | undefined) {
-  let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
+  const [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (fileData) {
-      let url = URL.createObjectURL(fileData)
+      const url = URL.createObjectURL(fileData)
       setObjectURL(url)
       return () => {
         URL.revokeObjectURL(url)

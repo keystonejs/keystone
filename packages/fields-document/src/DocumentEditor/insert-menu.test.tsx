@@ -5,7 +5,7 @@ import { Transforms } from 'slate'
 import { jsx, makeEditor } from './tests/utils'
 
 test('insertMenu mark is removed when cursor is outside with a forced normalize', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text insertMenu>/something</text>
@@ -36,7 +36,7 @@ test('insertMenu mark is removed when cursor is outside with a forced normalize'
 })
 
 test('insertMenu mark is not removed when cursor is in the text', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
         <text insertMenu>
@@ -68,7 +68,7 @@ test('insertMenu mark is not removed when cursor is in the text', () => {
 })
 
 test('insertMenu mark is normalized away when / is not the first character', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
         <text insertMenu>
@@ -99,7 +99,7 @@ test('insertMenu mark is normalized away when / is not the first character', () 
 })
 
 test('insertMenu mark is normalized away when / is not the first character and then a character is inserted, the mark is removed from Editor.marks', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
         <text insertMenu>
@@ -126,7 +126,7 @@ test('insertMenu mark is normalized away when / is not the first character and t
 })
 
 test('insertMenu mark is removed when text is inserted else where in the document', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text insertMenu>/something</text>
@@ -156,7 +156,7 @@ test('insertMenu mark is removed when text is inserted else where in the documen
 })
 
 test('insertMenu mark is removed when whitespace is inserted', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
         <text insertMenu>
@@ -183,7 +183,7 @@ test('insertMenu mark is removed when whitespace is inserted', () => {
 })
 
 test('insertMenu mark is removed when the cursor is moved outside of the text node', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
         <text insertMenu>
@@ -216,7 +216,7 @@ test('insertMenu mark is removed when the cursor is moved outside of the text no
 })
 
 test('insertMenu mark is added when inserting / at the start of a block', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -248,7 +248,7 @@ test('insertMenu mark is added when inserting / at the start of a block', () => 
 })
 
 test('insertMenu mark is added when inserting / after whitespace', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -283,7 +283,7 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
 })
 
 test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -322,7 +322,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
 })
 
 test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor in a different text node', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -363,7 +363,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
 })
 
 test('insertMenu thing typing', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>

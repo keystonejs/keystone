@@ -1,0 +1,5 @@
+title: Custom Admin UI Logo
+url: https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-logo
+kind: standalone
+description: >
+  Adds a custom logo component in the Admin UI.

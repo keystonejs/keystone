@@ -4,9 +4,9 @@
 import { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
 
-import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core'
+import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
-import { Checkbox, TextInput } from '@keystone-ui/fields'
+import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { type FieldMeta } from '@keystone-6/core/types'
 import isDeepEqual from 'fast-deep-equal'
 
@@ -22,22 +22,27 @@ import {
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
 import { SigninContainer } from '../components/SigninContainer'
-import { useRedirect } from '../lib/useFromRedirect'
 
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
+const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
 
 function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
-  const [subscribe, setSubscribe] = useState(false)
+  const [subscribe, setSubscribe] = useState<{ keystone: boolean, thinkmill: boolean}>(
+    {
+      keystone: false,
+      thinkmill: false,
+    }
+  )
   const [email, setEmail] = useState<string>(guessEmailFromValue(value))
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const { adminPath } = useKeystone()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setError(null)
 
     // Check if user wants to subscribe and a valid email address
-    if (subscribe) {
+    if (subscribe.keystone || subscribe.thinkmill) {
       setLoading(true)
 
       if (!validEmail(email)) {
@@ -45,15 +50,18 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
         return
       }
 
+      const tags = ['source:@keystone-6/auth']
+      if (subscribe.keystone) tags.push('list:keystone')
+      if (subscribe.thinkmill) tags.push('list:thinkmill')
+
       const res = await fetch(signupURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: value.username,
           email,
-          source: '@keystone-6/auth InitPage',
+          tags,
         }),
       })
 
@@ -76,7 +84,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   }
 
   return (
-    <Stack gap="large">
+    <Stack gap="medium">
       <Stack
         gap="small"
         align="center"
@@ -88,7 +96,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       >
         <H1>Welcome</H1>
         <Stack across gap="small">
-          <IconTwitter 
+          <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
             title="Twitter Logo"
@@ -102,43 +110,63 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       </Stack>
 
       <p css={{ margin: 0 }}>
-        Thanks for installing KeystoneJS. While you're getting started, check out the docs at{' '}
+        Thanks for installing Keystone, for help getting started see our documentation at{' '}
         <a href="https://keystonejs.com">keystonejs.com</a>
       </p>
-      <div>
-        If you'd like to stay up to date with the exciting things we have planned, join our mailing
-        list (just useful announcements, no spam!)
-      </div>
-      <div>
-        <Checkbox
-          checked={subscribe}
-          onChange={() => {
-            setError(null)
-            setSubscribe(!subscribe)
-          }}
-        >
-          sign up to our mailing list
-        </Checkbox>
-      </div>
+
+      <p>
+        To stay connected to the latest Keystone and <a href="https://thinkmill.com.au" target='_blank'>Thinkmill</a> news, signup to our newsletters:
+      </p>
+
       <form onSubmit={onSubmit}>
-        <VisuallyHidden as="label" htmlFor="email-field">
-          Email Address
-        </VisuallyHidden>
-        <TextInput
-          id="email-field"
-          disabled={!subscribe}
-          autoFocus
-          placeholder={'Email'}
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
+        <Stack gap="medium">
+          <FieldLabel htmlFor="email-field">Email</FieldLabel>
+          <TextInput
+            id="email-field"
+            autoFocus
+            required={subscribe.keystone || subscribe.thinkmill}
+            placeholder={'example@gmail.com'}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          <Inline gap="medium">
+            <Checkbox
+              size='small'
+              checked={subscribe.keystone}
+              onChange={() => {
+                setError(null)
+                setSubscribe((prevState) => ({ ...prevState, keystone: !subscribe.keystone }))
+              }}
+            >
+              Keystone news
+            </Checkbox>
+            <Checkbox
+              size='small'
+              checked={subscribe.thinkmill}
+              onChange={() => {
+                setError(null)
+                setSubscribe((prevState) => ({ ...prevState, thinkmill: !subscribe.thinkmill }))
+              }}
+            >
+              Thinkmill news (
+                <a
+                  href="https://www.thinkmill.com.au/newsletter/tailwind-for-designers-multi-brand-design-systems-and-a-search-tool-for-public-domain-content"
+                  target="_blank"
+                  aria-label="Thinkmill (Opens in new tab)"
+                >
+                  example
+                </a>
+              )
+            </Checkbox>
+          </Inline>
+        </Stack>
         <p css={{ color: 'red' }}>{error}</p>
         <Inline gap="medium" align="center">
           <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
             {error ? 'Try again' : 'Continue'}
           </Button>
           {error && (
-            <Button as={Link} href={'/'} tone="active">
+            <Button as={Link} href={adminPath || '/'} tone="active">
               Continue
             </Button>
           )}
@@ -157,7 +185,7 @@ function InitPage ({
   fieldPaths: string[]
   enableWelcome: boolean
 }) {
-  const { adminMeta } = useKeystone()
+  const { adminMeta, adminPath } = useKeystone()
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
     fieldPaths.forEach(fieldPath => {
@@ -167,7 +195,7 @@ function InitPage ({
   }, [fieldPaths, adminMeta.lists, listKey])
 
   const [value, setValue] = useState(() => {
-    let state: Record<string, any> = {}
+    const state: Record<string, any> = {}
     Object.keys(fields).forEach(fieldPath => {
       state[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue }
     })
@@ -190,7 +218,6 @@ function InitPage ({
   }`)
   const reinitContext = useReinitContext()
   const router = useRouter()
-  const redirect = useRedirect()
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -229,11 +256,11 @@ function InitPage ({
     await reinitContext()
 
     if (enableWelcome) return setMode('welcome')
-    router.push(redirect)
+    router.push(adminPath || '/')
   }
 
   const onComplete = () => {
-    router.push(redirect)
+    router.push(adminPath || '/')
   }
 
   return mode === 'init' ? (

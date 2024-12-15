@@ -21,7 +21,7 @@ const sizeMap = {
 }
 
 export const createIcon = (children: ReactNode, name: string) => {
-  let Icon = forwardRef<SVGSVGElement, IconProps>(
+  const Icon = forwardRef<SVGSVGElement, IconProps>(
     ({ size = 'medium', color, ...props }: IconProps, ref: any) => {
       const resolvedSize = typeof size === 'number' ? size : mapResponsiveProp(size, sizeMap)
 

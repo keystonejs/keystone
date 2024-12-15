@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-assets-local",
-  "version": "0.0.8",
+  "verison": null,
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,11 +10,13 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@keystone-6/core": "^6.3.1",
+    "@prisma/client": "5.19.0",
+    "bytes": "^3.1.1"
   },
   "devDependencies": {
-    "prisma": "catalog:",
-    "typescript": "catalog:"
+    "@types/bytes": "^3.1.1",
+    "prisma": "5.19.0",
+    "typescript": "^5.5.0"
   }
 }

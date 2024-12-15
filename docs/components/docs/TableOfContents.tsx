@@ -1,7 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+
+'use client'
+
 import { useState, useEffect } from 'react'
-import { jsx } from '@emotion/react'
 
 import { useMediaQuery } from '../../lib/media'
 import { Type } from '../primitives/Type'
@@ -31,8 +32,8 @@ export function TableOfContents ({
   container: React.RefObject<HTMLElement | null>
   headings: Heading[]
 }) {
-  let [visibleIds, setVisibleIds] = useState<Array<string | null>>([])
-  let [lastVisibleId, setLastVisbleId] = useState<string | null>(null)
+  const [visibleIds, setVisibleIds] = useState<Array<string | null>>([])
+  const [lastVisibleId, setLastVisbleId] = useState<string | null>(null)
 
   const mq = useMediaQuery()
 
@@ -40,7 +41,7 @@ export function TableOfContents ({
 
   useEffect(() => {
     if (container.current) {
-      let allIds = headings.map(h => h.id)
+      const allIds = headings.map(h => h.id)
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId: string | null = entry.target.getAttribute('id')
@@ -61,7 +62,7 @@ export function TableOfContents ({
   }, [container, headings])
 
   // catch if we're in a long gap between headings and resolve to the last available.
-  let activeId = visibleIds[0] || lastVisibleId
+  const activeId = visibleIds[0] || lastVisibleId
 
   return (
     <div id="toc">
@@ -86,7 +87,7 @@ export function TableOfContents ({
         </Type>
         <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {headings.map((h: Heading, i: number) => {
-            let isActive = activeId === h.id
+            const isActive = activeId === h.id
             const slug = `#${h.id}`
             return (
               <li

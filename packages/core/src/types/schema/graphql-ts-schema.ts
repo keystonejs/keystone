@@ -40,6 +40,7 @@ export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend, wrap } from '@graphql-ts/extend'
 import { field as fieldd } from './schema-api-with-context'
+import { type InputType, type Arg } from '@graphql-ts/schema'
 export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
 
 // TODO: remove when we use { graphql } from '.keystone'
@@ -72,7 +73,7 @@ type FieldFuncResolve<
       ? {
           resolve?: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
             Type,
             Context
           >
@@ -80,7 +81,7 @@ type FieldFuncResolve<
       : {
           resolve: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
             Type,
             Context
           >
@@ -88,7 +89,7 @@ type FieldFuncResolve<
     : {
         resolve: graphqlTsSchema.FieldResolver<
           Source,
-          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+          SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
           Type,
           Context
         >
@@ -113,7 +114,7 @@ type FieldFunc = <
   Type extends OutputType,
   Key extends string,
   Context extends KeystoneContext<any>,
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {}
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object
 >(
   field: FieldFuncArgs<Source, Args, Type, Key, Context>
 ) => graphqlTsSchema.Field<Source, Args, Type, Key, Context>
@@ -161,7 +162,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('Decimal only accepts values as strings')
       }
-      let decimal = new DecimalValue(value.value)
+      const decimal = new DecimalValue(value.value)
       if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite')
       }
@@ -177,7 +178,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       if (typeof value !== 'string') {
         throw new GraphQLError('Decimal only accepts values as strings')
       }
-      let decimal = new DecimalValue(value)
+      const decimal = new DecimalValue(value)
       if (!decimal.isFinite()) {
         throw new GraphQLError('Decimal values must be finite')
       }
@@ -190,24 +191,16 @@ export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
   new GraphQLScalarType({
     name: 'BigInt',
     serialize (value) {
-      if (typeof value !== 'bigint') {
-        throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`)
-      }
+      if (typeof value !== 'bigint') throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`)
       return value.toString()
     },
     parseLiteral (value) {
-      if (value.kind !== 'StringValue') {
-        throw new GraphQLError('BigInt only accepts values as strings')
-      }
+      if (value.kind !== 'StringValue') throw new GraphQLError('BigInt only accepts values as strings')
       return globalThis.BigInt(value.value)
     },
     parseValue (value) {
-      if (typeof value === 'bigint') {
-        return value
-      }
-      if (typeof value !== 'string') {
-        throw new GraphQLError('BigInt only accepts values as strings')
-      }
+      if (typeof value === 'bigint') return value
+      if (typeof value !== 'string') throw new GraphQLError('BigInt only accepts values as strings')
       return globalThis.BigInt(value)
     },
   })
@@ -220,15 +213,11 @@ const RFC_3339_REGEX =
 
 function parseDate (input: string): Date {
   if (!RFC_3339_REGEX.test(input)) {
-    throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
-    )
+    throw new GraphQLError('DateTime scalars must be in the form of a full ISO 8601 date-time string')
   }
   const parsed = new Date(input)
   if (isNaN(parsed.valueOf())) {
-    throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
-    )
+    throw new GraphQLError('DateTime scalars must be in the form of a full ISO 8601 date-time string')
   }
   return parsed
 }
@@ -250,9 +239,7 @@ export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
       return parseDate(value.value)
     },
     parseValue (value: unknown) {
-      if (value instanceof Date) {
-        return value
-      }
+      if (value instanceof Date) return value
       if (typeof value !== 'string') {
         throw new GraphQLError('DateTime only accepts values as strings')
       }
@@ -265,9 +252,7 @@ const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]
 
 function validateCalendarDay (input: string) {
   if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
-    throw new GraphQLError(
-      'CalendarDay scalars must be in the form of a full-date ISO 8601 string'
-    )
+    throw new GraphQLError('CalendarDay scalars must be in the form of a full-date ISO 8601 string')
   }
 }
 
@@ -295,6 +280,15 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
       validateCalendarDay(value)
       return value
     },
+  })
+)
+
+export const Empty = graphqlTsSchema.graphql.scalar(
+  new GraphQLScalarType({
+    name: 'Empty',
+    serialize (value) { return null },
+    parseLiteral (value) { return {} },
+    parseValue (value) { return {} },
   })
 )
 

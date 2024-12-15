@@ -11,6 +11,7 @@ jobs:
   publish_snapshot:
     name: Publish (Snapshot)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: Release
     steps:
       - uses: actions/checkout@main

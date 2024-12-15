@@ -1,6 +1,8 @@
 {
   "name": "@keystone-6/example-framework-remix",
+  "version": null,
   "private": true,
+  "license": "MIT",
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
@@ -9,20 +11,20 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:",
-    "@remix-run/node": "^1.15.0",
-    "@remix-run/react": "^1.15.0",
-    "@remix-run/serve": "^1.15.0",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "@keystone-6/core": "^6.3.1",
+    "@prisma/client": "5.19.0",
+    "@remix-run/node": "^1.18.0",
+    "@remix-run/react": "^1.18.0",
+    "@remix-run/serve": "^1.18.0",
+    "isbot": "^5.1.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.15.0",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
-    "prisma": "catalog:",
-    "typescript": "catalog:"
-  },
-  "version": null
+    "@remix-run/dev": "^1.18.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "prisma": "5.19.0",
+    "typescript": "^5.5.0"
+  }
 }

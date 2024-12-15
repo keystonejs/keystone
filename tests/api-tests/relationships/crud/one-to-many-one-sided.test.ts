@@ -228,7 +228,7 @@ describe(`One-to-many relationships`, () => {
 
     test('With create', runner(async ({ context }) => {
       const { companies } = await createInitialData(context)
-      let company = companies[0]
+      const company = companies[0]
       const locationName = sampleOne(alphanumGenerator)
       const _company = await context.query.Company.updateOne({
         where: { id: company.id },

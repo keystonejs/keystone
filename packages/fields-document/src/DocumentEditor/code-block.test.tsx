@@ -5,7 +5,7 @@ import { Editor } from 'slate'
 import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a code block with a shortcut works', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <paragraph>
         <text>
@@ -34,7 +34,7 @@ test('inserting a code block with a shortcut works', () => {
 })
 
 test('insertBreak inserts a soft break', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <code>
         <text>
@@ -70,7 +70,7 @@ test('insertBreak inserts a soft break', () => {
 })
 
 test('non-text is removed from code blocks', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor marks={{ bold: true }}>
       <code>
         <paragraph>
@@ -136,7 +136,7 @@ test('non-text is removed from code blocks', () => {
 })
 
 test('insertBreak when at end with \n as last character exits code block', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <code>
         <text>
@@ -173,7 +173,7 @@ test('insertBreak when at end with \n as last character exits code block', () =>
 })
 
 test('insertBreak in the middle of the text when there is a break at the end of the text', () => {
-  let editor = makeEditor(
+  const editor = makeEditor(
     <editor>
       <code>
         <text>

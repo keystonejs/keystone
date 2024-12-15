@@ -111,7 +111,7 @@ describe('Image - Crud special tests', () => {
     `,
     })
 
-  for (let matrixValue of testMatrix) {
+  for (const matrixValue of testMatrix) {
     const getConfig = (): StorageConfig => ({
       ...(matrixValue === 's3'
         ? { ...s3DefaultStorage, type: 'image', preserve: false }
@@ -133,7 +133,7 @@ describe('Image - Crud special tests', () => {
 
     describe(matrixValue, () => {
       describe('Create - upload', () => {
-        for (let matrixValue of testMatrix) {
+        for (const matrixValue of testMatrix) {
           test(
             'upload values should match expected',
             getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {

@@ -1,0 +1,6 @@
+title: Blog
+kind: standalone
+url: https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog
+description: >
+  A basic Blog schema with Posts and Authors. Use this as a starting place for
+  learning how to use Keystone. It’s also a starter for other feature projects.

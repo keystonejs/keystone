@@ -21,8 +21,8 @@ type State =
 
 const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
   Option: ({ children, ...props }) => {
-    let theme = useTheme()
-    let iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim
+    const theme = useTheme()
+    const iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim
     return (
       <OptionPrimitive {...props}>
         <span>{children}</span>

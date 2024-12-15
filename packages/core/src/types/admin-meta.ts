@@ -26,7 +26,7 @@ export type CreateViewFieldModes =
 
 export type AdminConfig = {
   components?: {
-    Logo?: (props: {}) => ReactElement
+    Logo?: (props: object) => ReactElement
     Navigation?: (props: NavigationProps) => ReactElement
   }
 }
@@ -111,14 +111,13 @@ export type ListMeta = {
   singular: string
   plural: string
 
-  /** @deprecated */
-  gqlNames: InitialisedList['graphql']['names']
-
   fields: { [path: string]: FieldMeta }
   groups: FieldGroupMeta[]
+  gqlNames: InitialisedList['graphql']['names'] /** deprecated */
 
   pageSize: number
   initialColumns: string[]
+  initialSearchFields: string[]
   initialSort: null | { direction: 'ASC' | 'DESC', field: string }
   isSingleton: boolean
 }

@@ -2,12 +2,13 @@
 /** @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy'
-import { useRouter } from 'next/router'
 import {
   Fragment,
   type HTMLAttributes,
   memo,
   type ReactElement,
+  type Usable,
+  use,
   useCallback,
   useEffect,
   useMemo,
@@ -37,15 +38,19 @@ import {
 } from '../../../../admin-ui/utils'
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
+import { useRouter } from '../../../../admin-ui/router'
 
 type ItemPageProps = {
-  listKey: string
+  params: Usable<{ 
+    id: string 
+    listKey: string
+  }>
 }
 
 function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
@@ -153,7 +158,7 @@ function ItemForm ({
       })
   })
   const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
-  const itemId = state.item.data?.id!
+  const itemId = state.item.data?.id
   const hasChangedFields = !!changedFields.size
   usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]))
   return (
@@ -267,6 +272,7 @@ function DeleteButton ({
   itemId: string
   list: ListMeta
 }) {
+  const { adminPath } = useKeystone()
   const toasts = useToasts()
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
@@ -307,7 +313,7 @@ function DeleteButton ({
                   tone: 'negative',
                 })
               }
-              router.push(list.isSingleton ? '/' : `/${list.path}`)
+              router.push(`${adminPath}/${list.isSingleton ? '' : `${list.path}`}`)
               return toasts.addToast({
                 title: itemLabel,
                 message: `Deleted ${list.singular} item successfully`,
@@ -330,11 +336,12 @@ function DeleteButton ({
   )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
-
-function ItemPage ({ listKey }: ItemPageProps) {
+export function ItemPage ({ params }: ItemPageProps) {
+  const { listsKeyByPath } = useKeystone()
+ const _params = use<{listKey: string, id: string}>(params)
+  const listKey = listsKeyByPath[_params.listKey]
   const list = useList(listKey)
-  const id = useRouter().query.id as string
+  const id = _params.id as string
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)

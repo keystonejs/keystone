@@ -30,6 +30,7 @@ import { RelationshipSelect } from '../RelationshipSelect'
 import { useItemState } from './useItemState'
 import { InlineEdit } from './InlineEdit'
 import { InlineCreate } from './InlineCreate'
+import { useKeystone } from '../../../../../admin-ui'
 
 type CardContainerProps = {
   children: ReactNode
@@ -106,7 +107,7 @@ export function Cards ({
     id,
     field,
   })
-
+  const { adminPath } = useKeystone()
   const client = useApolloClient()
 
   const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false)
@@ -264,7 +265,7 @@ export function Cards ({
                           tone="active"
                           css={{ textDecoration: 'none' }}
                           as={Link}
-                          href={`/${foreignList.path}/${id}`}
+                          href={`${adminPath}/${foreignList.path}/${id}`}
                         >
                           View {foreignList.singular} details
                         </Button>
@@ -323,8 +324,8 @@ export function Cards ({
                       if (isMountedRef.current) {
                         const dataGetters = makeDataGetter(data, errors)
                         const itemsDataGetter = dataGetters.get('items')
-                        let newItems = { ...items }
-                        let newCurrentIds = field.many
+                        const newItems = { ...items }
+                        const newCurrentIds = field.many
                           ? new Set(value.currentIds)
                           : new Set<string>()
                         if (Array.isArray(itemsDataGetter.data)) {
@@ -352,7 +353,7 @@ export function Cards ({
                   }
                 },
                 value: (() => {
-                  let options: { label: string, id: string }[] = []
+                  const options: { label: string, id: string }[] = []
                   Object.keys(items).forEach(id => {
                     if (value.currentIds.has(id)) {
                       options.push({ id, label: id })

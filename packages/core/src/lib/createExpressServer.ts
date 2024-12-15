@@ -87,7 +87,6 @@ export async function createExpressServer (
     formatError: formatError(config.graphql),
     includeStacktraceInErrorResponses: config.graphql.debug,
     ...apolloConfig,
-
     schema: context.graphql.schema,
     plugins:
       config.graphql.playground === 'apollo'

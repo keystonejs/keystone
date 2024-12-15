@@ -37,7 +37,7 @@ const runner = setupTestRunner({
 test(
   'to-one relationship query batching',
   runner(async ({ context }) => {
-    let prevConsoleLog = console.log
+    const prevConsoleLog = console.log
     console.log = () => {}
     try {
       await context.query.User.createMany({

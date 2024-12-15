@@ -18,6 +18,7 @@ jobs:
   linting:
     name: Linting
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
@@ -31,9 +32,21 @@ jobs:
       - name: Prisma Filters
         run: pnpm test:filters
 
+  linting-examples:
+    name: Linting
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup-examples
+
+      - name: TypeScript
+        run: pnpm test:types
+
   unit_tests:
     name: Package Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
@@ -44,9 +57,10 @@ jobs:
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -69,6 +83,7 @@ jobs:
   graphql_api_tests_sqlite:
     name: API Tests SQLite
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -85,9 +100,10 @@ jobs:
   graphql_api_tests_mysql:
     name: API Tests MySQL
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     services:
       mysql:
-        image: mariadb:11.4
+        image: mariadb:11.6
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -108,9 +124,10 @@ jobs:
   field_crud_tests_postgresql:
     name: Field CRUD Tests PostgreSQL
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -139,6 +156,7 @@ jobs:
   field_crud_tests_sqlite:
     name: Field CRUD Tests SQLite
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
@@ -161,9 +179,10 @@ jobs:
   field_crud_tests_mysql:
     name: Field CRUD Tests MySQL
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     services:
       mysql:
-        image: mariadb:11.4
+        image: mariadb:11.6
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -190,6 +209,7 @@ jobs:
   examples_tests:
     name: Testing example project
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup-examples
@@ -200,6 +220,7 @@ jobs:
   examples_next_app_build:
     name: Ensure Next in App directory builds
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup-examples
@@ -210,6 +231,7 @@ jobs:
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
     strategy:
@@ -251,6 +273,7 @@ jobs:
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       DATABASE_URL: file:./test.db
     strategy:

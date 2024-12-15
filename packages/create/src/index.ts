@@ -59,8 +59,6 @@ async function normalizeArgs () {
     'schema.ts',
     'package.json',
     'tsconfig.json',
-    'schema.graphql',
-    'schema.prisma',
     'keystone.ts',
     'auth.ts',
     'README.md',
@@ -92,14 +90,9 @@ async function normalizeArgs () {
 
   ${c.bold('Next steps:')}
 
-  - Read ${c.bold(
-    `${relativeProjectDir}${path.sep}README.md`
-  )} for additional getting started details.
-  - Edit ${c.bold(
-    `${relativeProjectDir}${path.sep}keystone.ts`
-  )} to customize your app.
+  - Read ${c.bold(`${relativeProjectDir}${path.sep}README.md`)} for additional getting started details.
+  - Edit ${c.bold(`${relativeProjectDir}${path.sep}keystone.ts`)} to customize your app.
   - Star Keystone on GitHub (https://github.com/keystonejs/keystone)
-  )}
 `)
 })().catch((err) => {
   if (err instanceof UserError) {

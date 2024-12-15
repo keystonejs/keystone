@@ -51,7 +51,7 @@ export const DrawerBase = ({
   const uniqueKey = makeId('drawer', id)
 
   // sync drawer state
-  let drawerDepth = useDrawerManager(uniqueKey)
+  const drawerDepth = useDrawerManager(uniqueKey)
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -71,7 +71,7 @@ export const DrawerBase = ({
   let Tag: 'div' | 'form' = 'div'
   if (onSubmit) {
     Tag = 'form'
-    let oldOnSubmit = onSubmit
+    const oldOnSubmit = onSubmit
     // @ts-expect-error
     onSubmit = (event: any) => {
       if (!event.defaultPrevented) {
@@ -134,8 +134,8 @@ export const DrawerBase = ({
 // ------------------------------
 
 function getDialogTransition (depth: number) {
-  let scaleInc = 0.05
-  let transformValue = `scale(${1 - scaleInc * depth}) translateX(-${depth * 40}px)`
+  const scaleInc = 0.05
+  const transformValue = `scale(${1 - scaleInc * depth}) translateX(-${depth * 40}px)`
 
   return {
     entering: { transform: 'translateX(100%)' },

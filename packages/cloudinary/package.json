@@ -22,16 +22,16 @@
     "@keystone-ui/fields": "workspace:^",
     "@keystone-ui/pill": "workspace:^",
     "cloudinary": "^2.0.0",
-    "react": "catalog:"
+    "react": "^18.3.1"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "workspace:^",
-    "@types/express": "catalog:",
-    "@types/react": "catalog:",
-    "graphql": "catalog:",
+    "@keystone-6/core": "^6.1.0",
+    "@types/express": "^4.17.14",
+    "@types/react": "^18.3.3",
+    "graphql": "^16.8.1",
     "graphql-upload": "^15.0.2"
   },
   "preconstruct": {

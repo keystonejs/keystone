@@ -1,0 +1,6 @@
+url: https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-ts
+title: Extend GraphQL Schema with GraphQL TS
+kind: standalone
+description: >
+  Demonstrates how to extend the GraphQL API provided by Keystone with custom queries and
+  mutations using graphql-ts.

@@ -1,6 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react'
+/** @jsxImportSource @emotion/react */
+
 import Link from 'next/link'
 // import { useRouter } from 'next/router';
 import { Fragment, useEffect, type ReactNode, type MouseEvent } from 'react'
@@ -49,6 +48,7 @@ export function MobileMenu ({ handleClose }: MobileMenuProps) {
             <NavItem href="/for-developers">For Developers</NavItem>
             <NavItem href="/for-organisations">For Organisations</NavItem>
             <NavItem href="/for-content-management">For Content Management</NavItem>
+            <NavItem href="/roadmap">Roadmap</NavItem>
             <NavItem href="/enterprise">For Enterprise</NavItem>
           </div>
           <div
@@ -57,9 +57,7 @@ export function MobileMenu ({ handleClose }: MobileMenuProps) {
               borderBottom: '1px solid var(--border)',
             }}
           >
-            {/* <NavItem href="/updates">Updates</NavItem> */}
             <NavItem href="/blog">Blog</NavItem>
-            <NavItem href="/updates/roadmap">Roadmap</NavItem>
             <NavItem href="https://github.com/keystonejs/keystone/releases">
               GitHub Releases
             </NavItem>

@@ -106,7 +106,7 @@ export function orderableFilterTests (
   isNullable: boolean
 ) {
   equalityFilterTests(match, valuesInAscendingOrder, isNullable)
-  let values = isNullable ? [...valuesInAscendingOrder, null] : valuesInAscendingOrder
+  const values = isNullable ? [...valuesInAscendingOrder, null] : valuesInAscendingOrder
 
   match(values, { gt: values[1] }, [2, 3, 4])
   match(values, { lt: values[2] }, [0, 1])
@@ -120,7 +120,7 @@ export function equalityFilterTests (
   inputValues: readonly [unknown, unknown, unknown, unknown, unknown],
   isNullable: boolean
 ) {
-  let values = isNullable ? [...inputValues, null] : inputValues
+  const values = isNullable ? [...inputValues, null] : inputValues
   const addExpectNull = isNullable ? [5] : []
   if (isNullable) {
     match(values, { equals: null }, [5])

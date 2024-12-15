@@ -27,7 +27,7 @@ export function useChangedFieldsAndDataForUpdate (
   return useMemo(() => {
     const changedFields = new Set<string>()
     Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
+      const isEqual = isDeepEqual(
         serializedFieldValues[fieldKey],
         serializedValuesFromItem[fieldKey]
       )

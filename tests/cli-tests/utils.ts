@@ -6,11 +6,11 @@ import fsp from 'node:fs/promises'
 import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
+import ms from 'ms'
 
 import { cli } from '@keystone-6/core/scripts/cli'
 
-// these tests spawn processes and it's all pretty slow
-jest.setTimeout(1000 * 20)
+jest.setTimeout(ms('30 seconds'))
 
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
@@ -25,7 +25,7 @@ export const schemas = {
 }
 
 export function recordConsole () {
-  let oldConsole = { ...console }
+  const oldConsole = { ...console }
   const contents: string[] = []
   const log = (...args: any[]) => {
     contents.push(format(...args).replace(/[^ -~\n]+/g, '?'))

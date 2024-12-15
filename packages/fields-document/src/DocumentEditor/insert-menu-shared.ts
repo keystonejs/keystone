@@ -18,7 +18,7 @@ function findPathWithInsertMenu (node: Node, path: Path): Path | undefined {
 
   for (const [index, child] of node.children.entries()) {
     if (nodesWithoutInsertMenu.has(child)) continue
-    let maybePath = findPathWithInsertMenu(child, [...path, index])
+    const maybePath = findPathWithInsertMenu(child, [...path, index])
     if (maybePath) {
       return maybePath
     }

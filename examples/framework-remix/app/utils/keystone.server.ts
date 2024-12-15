@@ -1,6 +1,6 @@
 import { getContext } from '@keystone-6/core/context'
 import config from '../../keystone'
-import * as PrismaModule from '.myprisma/client'
+import * as PrismaModule from 'myprisma'
 import type { Context } from '.keystone/types'
 
 // Making sure multiple prisma clients are not created during hot reloading
