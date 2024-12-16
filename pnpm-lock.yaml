@@ -246,8 +246,8 @@ importers:
         specifier: ^18.3.3
         version: 18.3.16
       '@types/react-transition-group':
-        specifier: 4.4.11
-        version: 4.4.11
+        specifier: 4.4.12
+        version: 4.4.12(@types/react@18.3.16)
 
   design-system/packages/notice:
     dependencies:
@@ -6511,6 +6511,11 @@ packages:
 
   '@types/react-transition-group@4.4.11':
     resolution: {integrity: sha512-RM05tAniPZ5DZPzzNFP+DmrcOdD0efDUxMy3145oljWSl3x9ZV5vhme98gTxFrj2lhXvmGNnUiuDyJgY9IKkNA==}
+
+  '@types/react-transition-group@4.4.12':
+    resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
+    peerDependencies:
+      '@types/react': '*'
 
   '@types/react@18.3.16':
     resolution: {integrity: sha512-oh8AMIC4Y2ciKufU8hnKgs+ufgbA/dhPTACaZPM86AbwX9QwnFtSoPWEeRUj8fge+v6kFt78BXcDhAU1SrrAsw==}
@@ -17844,6 +17849,10 @@ snapshots:
       '@types/react': 18.3.16
 
   '@types/react-transition-group@4.4.11':
+    dependencies:
+      '@types/react': 18.3.16
+
+  '@types/react-transition-group@4.4.12(@types/react@18.3.16)':
     dependencies:
       '@types/react': 18.3.16
 

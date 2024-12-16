@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
-    "@types/react-transition-group": "4.4.11"
+    "@types/react-transition-group": "4.4.12"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
