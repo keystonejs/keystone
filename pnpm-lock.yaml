@@ -1987,8 +1987,8 @@ importers:
         specifier: ^16.8.1
         version: 16.10.0
       graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
+        specifier: ^17.0.0
+        version: 17.0.0(@types/express@4.17.21)(graphql@16.10.0)
 
   packages/core:
     dependencies:
@@ -2146,8 +2146,8 @@ importers:
         specifier: ^16.8.1
         version: 16.10.0
       graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
+        specifier: ^17.0.0
+        version: 17.0.0(@types/express@4.17.21)(graphql@16.10.0)
       image-size:
         specifier: ^1.0.0
         version: 1.1.1
@@ -8307,6 +8307,10 @@ packages:
     resolution: {integrity: sha512-nKcE1UduoSKX27NSZlg879LdQc94OtbOsEmKMN2MBNudXREvijRKx2GEBsTMTfws+BrbkJoEuynbGSVRSpauvw==}
     engines: {node: '>=10'}
 
+  fs-capacitor@8.0.0:
+    resolution: {integrity: sha512-+Lk6iSKajdGw+7XYxUkwIzreJ2G1JFlYOdnKJv5PzwFLVsoJYBpCuS7WPIUSNT1IbQaEWT1nhYU63Ud03DyzLA==}
+    engines: {node: ^14.17.0 || >=16.0.0}
+
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
 
@@ -8503,6 +8507,19 @@ packages:
     engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
     peerDependencies:
       '@types/express': ^4.0.29
+      '@types/koa': ^2.11.4
+      graphql: ^16.3.0
+    peerDependenciesMeta:
+      '@types/express':
+        optional: true
+      '@types/koa':
+        optional: true
+
+  graphql-upload@17.0.0:
+    resolution: {integrity: sha512-AI42S1UR1mdqg+LQ7KqGbrgcf4l9gpPu/R0drM4vSA5C94NfIjYyCeCdpktEledvZoAL8JURLLeB53++WACo1w==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=22.0.0}
+    peerDependencies:
+      '@types/express': 4.0.29 - 5
       '@types/koa': ^2.11.4
       graphql: ^16.3.0
     peerDependenciesMeta:
@@ -20142,6 +20159,8 @@ snapshots:
 
   fs-capacitor@6.2.0: {}
 
+  fs-capacitor@8.0.0: {}
+
   fs-constants@1.0.0: {}
 
   fs-extra@10.1.0:
@@ -20371,6 +20390,19 @@ snapshots:
       '@types/object-path': 0.11.4
       busboy: 1.6.0
       fs-capacitor: 6.2.0
+      graphql: 16.10.0
+      http-errors: 2.0.0
+      object-path: 0.11.8
+    optionalDependencies:
+      '@types/express': 4.17.21
+
+  graphql-upload@17.0.0(@types/express@4.17.21)(graphql@16.10.0):
+    dependencies:
+      '@types/busboy': 1.5.4
+      '@types/node': 22.10.2
+      '@types/object-path': 0.11.4
+      busboy: 1.6.0
+      fs-capacitor: 8.0.0
       graphql: 16.10.0
       http-errors: 2.0.0
       object-path: 0.11.8

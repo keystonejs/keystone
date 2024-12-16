@@ -228,7 +228,7 @@
     "file-type": "^19.0.0",
     "fs-extra": "^11.0.0",
     "graphql": "^16.8.1",
-    "graphql-upload": "^15.0.2",
+    "graphql-upload": "^17.0.0",
     "image-size": "^1.0.0",
     "inflection": "^3.0.0",
     "intersection-observer": "^0.12.0",
