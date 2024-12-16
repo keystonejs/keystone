@@ -2086,8 +2086,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       apollo-upload-client:
-        specifier: ^17.0.0
-        version: 17.0.0(@apollo/client@3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.10.0)
+        specifier: ^18.0.0
+        version: 18.0.1(@apollo/client@3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.10.0)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2189,8 +2189,8 @@ importers:
         specifier: workspace:^
         version: 'link:'
       '@types/apollo-upload-client':
-        specifier: 17.0.5
-        version: 17.0.5(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 18.0.0
+        version: 18.0.0(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/bcryptjs':
         specifier: ^2.4.2
         version: 2.4.6
@@ -6263,8 +6263,8 @@ packages:
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
 
-  '@types/apollo-upload-client@17.0.5':
-    resolution: {integrity: sha512-rPKHaE4QNd06LNtBgz6hfntVO+pOQMS2yTcynrzBPg9+a/nbtJ2gus5KgzRp2rqfzmnKEc/sRGjLen/9Ot0Z2A==}
+  '@types/apollo-upload-client@18.0.0':
+    resolution: {integrity: sha512-cMgITNemktxasqvp6jiPj15dv84n3FTMvMoYBP1+xonDS+0l6JygIJrj2LJh85rShRzTOOkrElrAsCXXARa3KA==}
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -6819,11 +6819,11 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
-  apollo-upload-client@17.0.0:
-    resolution: {integrity: sha512-pue33bWVbdlXAGFPkgz53TTmxVMrKeQr0mdRcftNY+PoHIdbGZD0hoaXHvO6OePJAkFz7OiCFUf98p1G/9+Ykw==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >= 16.0.0}
+  apollo-upload-client@18.0.1:
+    resolution: {integrity: sha512-OQvZg1rK05VNI79D658FUmMdoI2oB/KJKb6QGMa2Si25QXOaAvLMBFUEwJct7wf+19U8vk9ILhidBOU1ZWv6QA==}
+    engines: {node: ^18.15.0 || >=20.4.0}
     peerDependencies:
-      '@apollo/client': ^3.0.0
+      '@apollo/client': ^3.8.0
       graphql: 14 - 16
 
   apply-ref@1.0.0:
@@ -8120,9 +8120,9 @@ packages:
     resolution: {integrity: sha512-Nmb6QXkELsuBr24CJSkilo6UHHgbekK5UiZgfE6UHD3Eb27YC6oD+bhcT+tJ6cl8dmsgdQxnWlcry8ksBIBLpw==}
     engines: {node: '>=0.10.0'}
 
-  extract-files@11.0.0:
-    resolution: {integrity: sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==}
-    engines: {node: ^12.20 || >= 14.13}
+  extract-files@13.0.0:
+    resolution: {integrity: sha512-FXD+2Tsr8Iqtm3QZy1Zmwscca7Jx3mMC5Crr+sEP1I303Jy1CYMuYCm7hRTplFNg3XdUavErkxnTzpaqdSoi6g==}
+    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
 
   extract-files@9.0.0:
     resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
@@ -17557,7 +17557,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.6
 
-  '@types/apollo-upload-client@17.0.5(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@types/apollo-upload-client@18.0.0(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@apollo/client': 3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/extract-files': 13.0.1
@@ -18256,10 +18256,10 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apollo-upload-client@17.0.0(@apollo/client@3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.10.0):
+  apollo-upload-client@18.0.1(@apollo/client@3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.10.0):
     dependencies:
       '@apollo/client': 3.12.3(@types/react@18.3.16)(graphql-ws@5.16.0(graphql@16.10.0))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      extract-files: 11.0.0
+      extract-files: 13.0.0
       graphql: 16.10.0
 
   apply-ref@1.0.0: {}
@@ -19925,7 +19925,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  extract-files@11.0.0: {}
+  extract-files@13.0.0:
+    dependencies:
+      is-plain-obj: 4.1.0
 
   extract-files@9.0.0: {}
 
