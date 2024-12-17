@@ -23,16 +23,21 @@ export function GraphQLErrorNotice ({
 }) {
   const errors = errors_.filter((x): x is NonNullable<typeof x> => !!x)
   if (!errors.length) return null
-  if (errors.length === 1) return <Notice tone="critical">{errors[0].message}</Notice>
 
   return (
     <Notice tone="critical">
       <Heading>Errors</Heading>
       <Content>
         <VStack elementType="ul" gap="large">
-          {errors.map((err, i) => (
-            <Text elementType="li" key={i}>{err.message}</Text>
-          ))}
+          {[...function* () {
+            let i = 0
+            for (const error of errors) {
+              const lines = error.message.split('\n')
+              for (const line of lines) {
+                yield <Text elementType="li" key={i++}>{line}</Text>
+              }
+            }
+          }()]}
         </VStack>
       </Content>
     </Notice>
