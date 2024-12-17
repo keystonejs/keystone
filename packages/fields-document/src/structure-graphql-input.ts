@@ -422,7 +422,7 @@ type _UpdateValueType = Exclude<
   null | undefined
 >
 
-const missingItem = (operation: string, uniqueWhere: Record<string, any>) => {
+function missingItem (operation: string, uniqueWhere: Record<string, any>) {
   throw new Error(
     `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
       uniqueWhere

@@ -5,7 +5,7 @@ import type { InitialisedList } from '../initialise-lists'
 import { isRejected, isFulfilled } from '../utils'
 import { userInputError } from '../graphql-errors'
 import type { NestedMutationState } from './'
-import { checkUniqueItemExists } from './access-control'
+import { checkUniqueItemExists } from '../access-control'
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
