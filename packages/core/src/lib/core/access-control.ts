@@ -1,19 +1,19 @@
 import { assertInputObjectType } from 'graphql'
-import {
-  type BaseItem,
-  type BaseListTypeInfo,
-  type CreateListItemAccessControl,
-  type DeleteListItemAccessControl,
-  type FieldAccessControl,
-  type FieldCreateItemAccessArgs,
-  type FieldReadItemAccessArgs,
-  type FieldUpdateItemAccessArgs,
-  type IndividualFieldAccessControl,
-  type KeystoneContext,
-  type ListAccessControl,
-  type ListFilterAccessControl,
-  type ListOperationAccessControl,
-  type UpdateListItemAccessControl,
+import type {
+  BaseItem,
+  BaseListTypeInfo,
+  CreateListItemAccessControl,
+  DeleteListItemAccessControl,
+  FieldAccessControl,
+  FieldCreateItemAccessArgs,
+  FieldReadItemAccessArgs,
+  FieldUpdateItemAccessArgs,
+  IndividualFieldAccessControl,
+  KeystoneContext,
+  ListAccessControl,
+  ListFilterAccessControl,
+  ListOperationAccessControl,
+  UpdateListItemAccessControl,
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
@@ -22,8 +22,12 @@ import {
   accessReturnError,
   extensionError
 } from './graphql-errors'
-import { type InitialisedList } from './initialise-lists'
-import { type InputFilter } from './where-inputs'
+import type { InitialisedList } from './initialise-lists'
+import {
+  type InputFilter,
+  type UniqueInputFilter,
+  resolveUniqueWhereInput,
+} from './where-inputs'
 
 export function cannotForItem (operation: string, list: InitialisedList) {
   if (operation === 'create') return `You cannot ${operation} that ${list.listKey}`
@@ -401,4 +405,22 @@ export function parseListAccessControl (
       delete: item?.delete ?? allowAll,
     },
   }
+}
+
+export async function checkUniqueItemExists (
+  uniqueInput: UniqueInputFilter,
+  foreignList: InitialisedList,
+  context: KeystoneContext,
+  operation: string
+) {
+  // Validate and resolve the input filter
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context)
+
+  // Check whether the item exists (from this users POV).
+  try {
+    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
+    if (item !== null) return uniqueWhere
+  } catch (err) {}
+
+  throw accessDeniedError(cannotForItem(operation, foreignList))
 }
