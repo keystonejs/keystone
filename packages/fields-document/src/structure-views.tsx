@@ -77,14 +77,12 @@ export function controller (
     defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.schema) },
     validate: value => clientSideValidateProp(config.customViews.schema, value.value),
     deserialize: data => {
-      console.log('sv', data)
       return {
         kind: 'update',
         value: data[`${config.path}`]?.json ?? null,
       }
     },
     serialize: value => {
-      console.log('sv serializeValue', config.customViews.schema, value)
       return {
         [config.path]: serializeValue(config.customViews.schema, value.value, value.kind),
       }
