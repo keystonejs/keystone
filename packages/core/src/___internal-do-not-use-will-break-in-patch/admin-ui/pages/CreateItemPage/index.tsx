@@ -31,50 +31,45 @@ function CreateItemPage ({
       title={`Create ${list.singular}`}
       header={<ItemPageHeader list={list} label="Create" title={`Create ${list.singular}`} />}
     >
-      {createViewFieldModes.state === 'loading' ? (
-        <LoadingDots label="preparing form" />
-      ) : (
-        <ColumnLayout>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault()
+      <ColumnLayout>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
 
-              const item = await createItem.create()
-              if (!item) return
+            const item = await createItem.create()
+            if (!item) return
 
-              router.push(`/${list.path}/${item.id}`)
-            }}
-            style={{ display: 'contents' }}
-          >
-            {/*
-              Workaround for react-aria "bug" where pressing enter in a form field
-              moves focus to the submit button.
-              See: https://github.com/adobe/react-spectrum/issues/5940
-            */}
-            <button type="submit" style={{ display: 'none' }} />
-            <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
-              <GraphQLErrorNotice
-                errors={[
-                  ...(createViewFieldModes.state === 'error' ? [createViewFieldModes.error].flat() : []),
-                  createItem?.error?.networkError,
-                  ...createItem?.error?.graphQLErrors ?? []
-                ]}
-              />
-              <Fields view='createView' {...createItem.props} />
-            </VStack>
+            router.push(`/${list.path}/${item.id}`)
+          }}
+          style={{ display: 'contents' }}
+        >
+          {/*
+            Workaround for react-aria "bug" where pressing enter in a form field
+            moves focus to the submit button.
+            See: https://github.com/adobe/react-spectrum/issues/5940
+          */}
+          <button type="submit" style={{ display: 'none' }} />
+          <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
+            <GraphQLErrorNotice
+              errors={[
+                createItem?.error?.networkError,
+                ...createItem?.error?.graphQLErrors ?? []
+              ]}
+            />
+            <Fields {...createItem.props} />
+          </VStack>
 
-            <BaseToolbar>
-              <Button
-                isPending={createItem.state === 'loading'}
-                prominence="high"
-                type="submit"
-              >
-                Create
-              </Button>
-            </BaseToolbar>
-          </form>
-        </ColumnLayout>
-      )}
+          <BaseToolbar>
+            <Button
+              isPending={createItem.state === 'loading'}
+              prominence="high"
+              type="submit"
+            >
+              Create
+            </Button>
+          </BaseToolbar>
+        </form>
+      </ColumnLayout>
     </PageContainer>
   )
 }
