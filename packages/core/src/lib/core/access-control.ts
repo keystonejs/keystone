@@ -39,9 +39,7 @@ export function cannotForItemFields (
   list: InitialisedList,
   fieldsDenied: string[]
 ) {
-  return `You cannot ${operation} that ${
-    list.listKey
-  } - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
+  return `You cannot ${operation} that ${list.listKey} - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
 }
 
 export async function getOperationFieldAccess (

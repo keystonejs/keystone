@@ -28,7 +28,9 @@ async function handleCreateAndUpdate (
 ) {
   if (value.connect) {
     return { connect: await checkUniqueItemExists(value.connect, foreignList, context, 'connect') }
-  } else if (value.create) {
+  }
+
+  if (value.create) {
     const { id } = await nestedMutationState.create(value.create, foreignList)
     return { connect: { id } }
   }
@@ -42,9 +44,7 @@ export function resolveRelateToOneForCreateInput (
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length
     if (numOfKeys !== 1) {
-      throw userInputError(
-        `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
-      )
+      throw userInputError(`You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`)
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList)
   }
@@ -57,14 +57,14 @@ export function resolveRelateToOneForUpdateInput (
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
-      throw userInputError(
-        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
-      )
+      throw userInputError(`You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`)
     }
 
     if (value.connect || value.create) {
       return handleCreateAndUpdate(value, nestedMutationState, context, foreignList)
-    } else if (value.disconnect) {
+    }
+
+    if (value.disconnect) {
       return { disconnect: true }
     }
   }
