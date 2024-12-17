@@ -95,18 +95,25 @@ export async function fetchRelationshipData (
   const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : []
   if (!ids.length) return []
 
-  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey]
-  const val = (await context.graphql.run({
-    query: `query($ids: [ID!]!) {items:${
-      context.__internal.lists[listKey].graphql.names.listQueryName
-    }(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
+  const {
+    graphql: {
+      names: {
+        listQueryName
+      },
+    },
+    ui: {
+      labelField
+    }
+  } = context.__internal.lists[listKey]
+  const value = (await context.graphql.run({
+    query: `query($ids: [ID!]!) {items:${listQueryName}(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
       selection || ''
     }}}`,
     variables: { ids },
   })) as { items: { [idFieldAlias]: string | number, [labelFieldAlias]: string }[] }
 
-  return Array.isArray(val.items)
-    ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
+  return Array.isArray(value.items)
+    ? value.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
         return { id, label, data }
       })
     : []
@@ -122,24 +129,30 @@ async function fetchDataForOne (
   const id = data?.id
   if (id == null) return null
 
-  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey]
-
   // An exception here indicates something wrong with either the system or the
   // configuration (e.g. a bad selection field). These will surface as system
   // errors from the GraphQL field resolver.
-  const val = (await context.graphql.run({
-    query: `query($id: ID!) {item:${
-      context.__internal.lists[listKey].graphql.names.itemQueryName
-    }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
+  const {
+    graphql: {
+      names: {
+        itemQueryName
+      },
+    },
+    ui: {
+      labelField
+    }
+  } = context.__internal.lists[listKey]
+  const value = (await context.graphql.run({
+    query: `query($id: ID!) {item:${itemQueryName}(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
     variables: { id },
   })) as { item: Record<string, any> | null }
 
-  if (val.item === null) return { id, data: undefined, label: undefined }
+  if (value.item === null) return { id, data: undefined, label: undefined }
   return {
     id,
-    label: val.item[labelFieldAlias],
+    label: value.item[labelFieldAlias],
     data: (() => {
-      const { [labelFieldAlias]: _ignore, ...otherData } = val.item
+      const { [labelFieldAlias]: _ignore, ...otherData } = value.item
       return otherData
     })(),
   }
@@ -147,17 +160,13 @@ async function fetchDataForOne (
 
 export async function addRelationshipDataToComponentProps (
   schema: ComponentSchema,
-  val: any,
+  value: any,
   fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
 ): Promise<any> {
   switch (schema.kind) {
-    case 'child':
-    case 'form': {
-      return val
-    }
-    case 'relationship': {
-      return fetchData(schema, val)
-    }
+    case 'child': return value
+    case 'form': return value
+    case 'relationship': return fetchData(schema, value)
     case 'object': {
       return Object.fromEntries(
         await Promise.all(
@@ -168,26 +177,26 @@ export async function addRelationshipDataToComponentProps (
             // we're intentionally not just magically adding it because we may want to
             // have a more optimised strategy of hydrating relationships so we don't
             // want to add something unrelated that requires the current "traverse everything" strategy
-            val[key] === undefined
+            value[key] === undefined
               ? undefined
-              : await addRelationshipDataToComponentProps(schema.fields[key], val[key], fetchData),
+              : await addRelationshipDataToComponentProps(schema.fields[key], value[key], fetchData),
           ])
         )
       )
     }
     case 'conditional': {
       return {
-        discriminant: val.discriminant,
+        discriminant: value.discriminant,
         value: await addRelationshipDataToComponentProps(
-          schema.values[val.discriminant],
-          val.value,
+          schema.values[value.discriminant],
+          value.value,
           fetchData
         ),
       }
     }
     case 'array': {
       return await Promise.all(
-        (val as any[]).map(async innerVal =>
+        (value as any[]).map(async innerVal =>
           addRelationshipDataToComponentProps(schema.element, innerVal, fetchData)
         )
       )
@@ -195,30 +204,3 @@ export async function addRelationshipDataToComponentProps (
   }
   assertNever(schema)
 }
-
-const document = parse(`
-  query {
-    keystone {
-      adminMeta {
-        lists {
-          key
-          labelField
-        }
-      }
-    }
-  }
-`)
-
-export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists (
-  schema: GraphQLSchema
-): Record<string, string> {
-  const { data, errors } = executeSync({
-    schema,
-    document,
-    contextValue: { isAdminUIBuildProcess: true },
-  }) as ExecutionResult<{
-    keystone: { adminMeta: { lists: { key: string, labelField: string }[] } }
-  }>
-  if (errors?.length) throw errors[0]
-  return Object.fromEntries(data!.keystone.adminMeta.lists.map(x => [x.key, x.labelField]))
-})
