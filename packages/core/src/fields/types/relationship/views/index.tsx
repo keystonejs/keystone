@@ -121,15 +121,18 @@ export function Field (props: FieldProps<typeof controller>) {
             <BuildItemDialog
               listKey={foreignList.key}
               onChange={builtItemData => {
+                const id = `_____internal_${Math.random().toString()}`
+                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? '<New>'
                 setDialogOpen(false)
+
                 if (value.kind === 'many') {
                   onChange({
                     ...value,
                     value: [
                       ...value.value,
                       {
-                        id: `_____internal_${Math.random().toString()}`,
-                        label: `<new>`,
+                        id,
+                        label,
                         data: builtItemData,
                         built: true
                       }
@@ -139,8 +142,8 @@ export function Field (props: FieldProps<typeof controller>) {
                   onChange({
                     ...value,
                     value: {
-                      id: `_____internal_${Math.random().toString()}`,
-                      label: `<new>`,
+                      id,
+                      label,
                       data: builtItemData,
                       built: true
                     }
@@ -157,7 +160,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
 // NOTE: temp fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
-function renderItem(item: { id: string; href: string; label: string }) {
+function renderItem (item: { id: string; href: string; label: string }) {
   return <Item href={item.href}>{item.label}</Item>
 }
 
