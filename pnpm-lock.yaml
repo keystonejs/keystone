@@ -448,8 +448,8 @@ importers:
         specifier: ^1.4.3
         version: 1.4.6
       next:
-        specifier: ^14.2.0
-        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^15.0.0
+        version: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -489,13 +489,13 @@ importers:
         version: 0.4.0
       '@keystar/ui':
         specifier: ^0.7.6
-        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.7.14(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystatic/core':
         specifier: ^0.5.24
-        version: 0.5.42(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.5.42(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystatic/next':
         specifier: ^5.0.1
-        version: 5.0.1(@keystatic/core@0.5.42(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.0.1(@keystatic/core@0.5.42(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../packages/fields-document
@@ -542,8 +542,8 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       next:
-        specifier: ^14.2.0
-        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^15.0.0
+        version: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-compose-plugins:
         specifier: ^2.2.1
         version: 2.2.1
@@ -592,7 +592,7 @@ importers:
         version: 0.0.32
       next-sitemap:
         specifier: ^4.0.0
-        version: 4.2.3(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        version: 4.2.3(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       typescript:
         specifier: ^5.5.0
         version: 5.7.2
@@ -980,7 +980,7 @@ importers:
         version: 5.19.0(prisma@5.19.0)
       next-auth:
         specifier: ^4.22.1
-        version: 4.24.11(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.11(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       prisma:
         specifier: 5.19.0
@@ -2161,8 +2161,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
       next:
-        specifier: ^14.2.0
-        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^15.0.0
+        version: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       pluralize:
         specifier: ^8.0.0
         version: 8.0.0
@@ -4909,8 +4909,17 @@ packages:
   '@next/env@14.2.20':
     resolution: {integrity: sha512-JfDpuOCB0UBKlEgEy/H6qcBSzHimn/YWjUHzKl1jMeUO+QVRdzmTTl8gFJaNO87c8DXmVKhFCtwxQ9acqB3+Pw==}
 
+  '@next/env@15.1.0':
+    resolution: {integrity: sha512-UcCO481cROsqJuszPPXJnb7GGuLq617ve4xuAyyNG4VSSocJNtMU5Fsx+Lp6mlN8c7W58aZLc5y6D/2xNmaK+w==}
+
   '@next/swc-darwin-arm64@14.2.20':
     resolution: {integrity: sha512-WDfq7bmROa5cIlk6ZNonNdVhKmbCv38XteVFYsxea1vDJt3SnYGgxLGMTXQNfs5OkFvAhmfKKrwe7Y0Hs+rWOg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@next/swc-darwin-arm64@15.1.0':
+    resolution: {integrity: sha512-ZU8d7xxpX14uIaFC3nsr4L++5ZS/AkWDm1PzPO6gD9xWhFkOj2hzSbSIxoncsnlJXB1CbLOfGVN4Zk9tg83PUw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -4921,8 +4930,20 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@next/swc-darwin-x64@15.1.0':
+    resolution: {integrity: sha512-DQ3RiUoW2XC9FcSM4ffpfndq1EsLV0fj0/UY33i7eklW5akPUCo6OX2qkcLXZ3jyPdo4sf2flwAED3AAq3Om2Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
   '@next/swc-linux-arm64-gnu@14.2.20':
     resolution: {integrity: sha512-pnzBrHTPXIMm5QX3QC8XeMkpVuoAYOmyfsO4VlPn+0NrHraNuWjdhe+3xLq01xR++iCvX+uoeZmJDKcOxI201Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@next/swc-linux-arm64-gnu@15.1.0':
+    resolution: {integrity: sha512-M+vhTovRS2F//LMx9KtxbkWk627l5Q7AqXWWWrfIzNIaUFiz2/NkOFkxCFyNyGACi5YbA8aekzCLtbDyfF/v5Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -4933,8 +4954,20 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@next/swc-linux-arm64-musl@15.1.0':
+    resolution: {integrity: sha512-Qn6vOuwaTCx3pNwygpSGtdIu0TfS1KiaYLYXLH5zq1scoTXdwYfdZtwvJTpB1WrLgiQE2Ne2kt8MZok3HlFqmg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
   '@next/swc-linux-x64-gnu@14.2.20':
     resolution: {integrity: sha512-ao5HCbw9+iG1Kxm8XsGa3X174Ahn17mSYBQlY6VGsdsYDAbz/ZP13wSLfvlYoIDn1Ger6uYA+yt/3Y9KTIupRg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@next/swc-linux-x64-gnu@15.1.0':
+    resolution: {integrity: sha512-yeNh9ofMqzOZ5yTOk+2rwncBzucc6a1lyqtg8xZv0rH5znyjxHOWsoUtSq4cUTeeBIiXXX51QOOe+VoCjdXJRw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -4945,8 +4978,20 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@next/swc-linux-x64-musl@15.1.0':
+    resolution: {integrity: sha512-t9IfNkHQs/uKgPoyEtU912MG6a1j7Had37cSUyLTKx9MnUpjj+ZDKw9OyqTI9OwIIv0wmkr1pkZy+3T5pxhJPg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
   '@next/swc-win32-arm64-msvc@14.2.20':
     resolution: {integrity: sha512-upJn2HGQgKNDbXVfIgmqT2BN8f3z/mX8ddoyi1I565FHbfowVK5pnMEwauvLvaJf4iijvuKq3kw/b6E9oIVRWA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@next/swc-win32-arm64-msvc@15.1.0':
+    resolution: {integrity: sha512-WEAoHyG14t5sTavZa1c6BnOIEukll9iqFRTavqRVPfYmfegOAd5MaZfXgOGG6kGo1RduyGdTHD4+YZQSdsNZXg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -4959,6 +5004,12 @@ packages:
 
   '@next/swc-win32-x64-msvc@14.2.20':
     resolution: {integrity: sha512-AFmqeLW6LtxeFTuoB+MXFeM5fm5052i3MU6xD0WzJDOwku6SkZaxb1bxjBaRC8uNqTRTSPl0yMFtjNowIVI67w==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@next/swc-win32-x64-msvc@15.1.0':
+    resolution: {integrity: sha512-J1YdKuJv9xcixzXR24Dv+4SaDKc2jj31IVUEMdO5xJivMTXuE6MAdIi4qPjSymHuFG8O5wbfWKnhJUcHHpj5CA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -10143,6 +10194,27 @@ packages:
       sass:
         optional: true
 
+  next@15.1.0:
+    resolution: {integrity: sha512-QKhzt6Y8rgLNlj30izdMbxAwjHMFANnLwDwZ+WQh5sMhyt4lEBqDK9QpvWHtIM4rINKPoJ8aiRZKg5ULSybVHw==}
+    engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@opentelemetry/api': ^1.1.0
+      '@playwright/test': ^1.41.2
+      babel-plugin-react-compiler: '*'
+      react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      react-dom: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      sass: ^1.3.0
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@playwright/test':
+        optional: true
+      babel-plugin-react-compiler:
+        optional: true
+      sass:
+        optional: true
+
   nexus@1.3.0:
     resolution: {integrity: sha512-w/s19OiNOs0LrtP7pBmD9/FqJHvZLmCipVRt6v1PM8cRUYIbhEswyNKGHVoC4eHZGPSnD+bOf5A3+gnbt0A5/A==}
     peerDependencies:
@@ -11651,6 +11723,19 @@ packages:
       '@babel/core': '*'
       babel-plugin-macros: '*'
       react: '>= 16.8.0 || 17.x.x || ^18.0.0-0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      babel-plugin-macros:
+        optional: true
+
+  styled-jsx@5.1.6:
+    resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      babel-plugin-macros: '*'
+      react: '>= 16.8.0 || 17.x.x || ^18.0.0-0 || ^19.0.0-0'
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -14895,14 +14980,14 @@ snapshots:
   '@graphql-tools/optimize@1.4.0(graphql@16.10.0)':
     dependencies:
       graphql: 16.10.0
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   '@graphql-tools/relay-operation-optimizer@6.5.18(graphql@16.10.0)':
     dependencies:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.10.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.10.0)
       graphql: 16.10.0
-      tslib: 2.4.1
+      tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -15322,7 +15407,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@keystar/ui@0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@keystar/ui@0.7.14(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@emotion/css': 11.13.5
@@ -15415,11 +15500,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
-      next: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@keystatic/core@0.5.42(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@keystatic/core@0.5.42(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@braintree/sanitize-url': 6.0.4
@@ -15427,7 +15512,7 @@ snapshots:
       '@emotion/weak-memoize': 0.3.1
       '@floating-ui/react': 0.24.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@internationalized/string': 3.2.5
-      '@keystar/ui': 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@keystar/ui': 0.7.14(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@markdoc/markdoc': 0.4.0(@types/react@18.3.16)(react@18.3.1)
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
@@ -15498,13 +15583,13 @@ snapshots:
       - next
       - supports-color
 
-  '@keystatic/next@5.0.1(@keystatic/core@0.5.42(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@keystatic/next@5.0.1(@keystatic/core@0.5.42(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.0
-      '@keystatic/core': 0.5.42(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@keystatic/core': 0.5.42(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react': 18.3.16
       chokidar: 3.6.0
-      next: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       server-only: 0.0.1
@@ -15535,31 +15620,57 @@ snapshots:
 
   '@next/env@14.2.20': {}
 
+  '@next/env@15.1.0': {}
+
   '@next/swc-darwin-arm64@14.2.20':
+    optional: true
+
+  '@next/swc-darwin-arm64@15.1.0':
     optional: true
 
   '@next/swc-darwin-x64@14.2.20':
     optional: true
 
+  '@next/swc-darwin-x64@15.1.0':
+    optional: true
+
   '@next/swc-linux-arm64-gnu@14.2.20':
+    optional: true
+
+  '@next/swc-linux-arm64-gnu@15.1.0':
     optional: true
 
   '@next/swc-linux-arm64-musl@14.2.20':
     optional: true
 
+  '@next/swc-linux-arm64-musl@15.1.0':
+    optional: true
+
   '@next/swc-linux-x64-gnu@14.2.20':
+    optional: true
+
+  '@next/swc-linux-x64-gnu@15.1.0':
     optional: true
 
   '@next/swc-linux-x64-musl@14.2.20':
     optional: true
 
+  '@next/swc-linux-x64-musl@15.1.0':
+    optional: true
+
   '@next/swc-win32-arm64-msvc@14.2.20':
+    optional: true
+
+  '@next/swc-win32-arm64-msvc@15.1.0':
     optional: true
 
   '@next/swc-win32-ia32-msvc@14.2.20':
     optional: true
 
   '@next/swc-win32-x64-msvc@14.2.20':
+    optional: true
+
+  '@next/swc-win32-x64-msvc@15.1.0':
     optional: true
 
   '@noble/hashes@1.6.1': {}
@@ -18800,7 +18911,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   camelcase-keys@6.2.2:
     dependencies:
@@ -18821,7 +18932,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   capture-exit@2.0.0:
@@ -18878,7 +18989,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   char-regex@1.0.2: {}
 
@@ -19080,7 +19191,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case: 2.0.2
 
   content-disposition@0.5.4:
@@ -20575,7 +20686,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   hex-rgb@4.3.0: {}
 
@@ -20888,7 +20999,7 @@ snapshots:
 
   is-lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-module@1.0.0: {}
 
@@ -20958,7 +21069,7 @@ snapshots:
 
   is-upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   is-windows@1.0.2: {}
 
@@ -21621,11 +21732,11 @@ snapshots:
 
   lower-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   lowercase-keys@2.0.0: {}
 
@@ -22707,13 +22818,13 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next-auth@4.24.11(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.11(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.0
       '@panva/hkdf': 1.2.1
       cookie: 0.7.2
       jose: 4.15.9
-      next: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.7.1
       preact: 10.25.2
@@ -22724,13 +22835,13 @@ snapshots:
 
   next-compose-plugins@2.2.1: {}
 
-  next-sitemap@4.2.3(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+  next-sitemap@4.2.3(next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
     dependencies:
       '@corex/deepmerge': 4.0.43
       '@next/env': 13.5.7
       fast-glob: 3.3.2
       minimist: 1.2.8
-      next: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -22753,6 +22864,31 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 14.2.20
       '@next/swc-win32-ia32-msvc': 14.2.20
       '@next/swc-win32-x64-msvc': 14.2.20
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
+  next@15.1.0(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@next/env': 15.1.0
+      '@swc/counter': 0.1.3
+      '@swc/helpers': 0.5.15
+      busboy: 1.6.0
+      caniuse-lite: 1.0.30001688
+      postcss: 8.4.31
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      styled-jsx: 5.1.6(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react@18.3.1)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.1.0
+      '@next/swc-darwin-x64': 15.1.0
+      '@next/swc-linux-arm64-gnu': 15.1.0
+      '@next/swc-linux-arm64-musl': 15.1.0
+      '@next/swc-linux-x64-gnu': 15.1.0
+      '@next/swc-linux-x64-musl': 15.1.0
+      '@next/swc-win32-arm64-msvc': 15.1.0
+      '@next/swc-win32-x64-msvc': 15.1.0
+      sharp: 0.33.5
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
@@ -23030,7 +23166,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   parent-module@1.0.1:
     dependencies:
@@ -23104,7 +23240,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   pascalcase@0.1.1: {}
 
@@ -23131,7 +23267,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   path-exists@3.0.0: {}
 
@@ -24081,7 +24217,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   serve-static@1.16.2:
@@ -24401,7 +24537,7 @@ snapshots:
 
   sponge-case@1.0.1:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   sprintf-js@1.0.3: {}
 
@@ -24516,6 +24652,14 @@ snapshots:
       '@babel/core': 7.26.0
       babel-plugin-macros: 3.1.0
 
+  styled-jsx@5.1.6(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react@18.3.1):
+    dependencies:
+      client-only: 0.0.1
+      react: 18.3.1
+    optionalDependencies:
+      '@babel/core': 7.26.0
+      babel-plugin-macros: 3.1.0
+
   stylis@4.2.0: {}
 
   superagent@8.1.2:
@@ -24568,7 +24712,7 @@ snapshots:
 
   swap-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   symbol-observable@4.0.0: {}
 
@@ -24645,7 +24789,7 @@ snapshots:
 
   title-case@3.0.3:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   tmp@0.0.33:
     dependencies:
@@ -24966,11 +25110,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:

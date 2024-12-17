@@ -233,7 +233,7 @@
     "inflection": "^3.0.0",
     "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
-    "next": "^14.2.0",
+    "next": "^15.0.0",
     "pluralize": "^8.0.0",
     "prisma": "5.22.0",
     "prompts": "^2.4.2",
