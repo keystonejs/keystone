@@ -47,7 +47,7 @@ export function BuildItemDialog ({
           }}
         >
           <Box paddingY="xlarge">
-            <Fields view="createView" {...buildItem.props} />
+            <Fields {...buildItem.props} />
           </Box>
         </form>
       </Content>
@@ -56,7 +56,6 @@ export function BuildItemDialog ({
         <Button onPress={dialogState.dismiss}>Cancel</Button>
         <Button
           form={formId}
-          isPending={buildItem.state === 'loading'}
           prominence="high"
           type="submit"
          >
