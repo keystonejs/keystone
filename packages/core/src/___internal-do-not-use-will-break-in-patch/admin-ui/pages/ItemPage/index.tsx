@@ -61,11 +61,13 @@ function ItemForm ({
   item,
   selectedFields,
   showDelete,
+  onSaveSuccess,
 }: {
   listKey: string
   item: Record<string, unknown>
   selectedFields: string
   showDelete: boolean
+  onSaveSuccess: Function
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
@@ -109,6 +111,8 @@ function ItemForm ({
     toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {
       timeout: 5000,
     })
+
+    onSaveSuccess()
   })
 
   const itemId = (value.id ?? '') as (string | number)
@@ -265,16 +269,13 @@ function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
   const [id] = Array.isArray(id_) ? id_ : [id_]
-
   const { query, selectedFields } = useMemo(() => {
-    const selectedFields = Object.entries(list.fields)
-      .filter(([fieldKey, field]) => {
-        if (fieldKey === 'id') return true
+    const selectedFields = Object.values(list.fields)
+      .filter((field) => {
+        if (field.path === 'id') return true
         return field.itemView.fieldMode !== 'hidden'
       })
-      .map(([fieldKey]) => {
-        return list.fields[fieldKey].controller.graphqlSelection
-      })
+      .map((field) => field.controller.graphqlSelection)
       .join('\n')
 
     return {
@@ -304,7 +305,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
     }
   }, [list])
 
-  const { data, error, loading } = useQuery(query, {
+  const { data, error, loading, refetch } = useQuery(query, {
     variables: { id, listKey },
     errorPolicy: 'all',
     skip: id === undefined,
@@ -362,6 +363,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
               selectedFields={selectedFields}
               showDelete={!data.keystone.adminMeta.list!.hideDelete}
               item={data.item}
+              onSaveSuccess={refetch}
             />
           )}
         </ColumnLayout>
