@@ -11,12 +11,13 @@ import {
 import { toastQueue } from '@keystar/ui/toast'
 
 import type { ListMeta } from '../../types'
-import { type ApolloError, gql, useMutation } from '../apollo'
-import { useKeystone } from '../context'
+import {
+  type ApolloError,
+  gql,
+  useMutation
+} from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
 import type { Fields } from '.'
-
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
@@ -27,7 +28,6 @@ type CreateItemHookResult = {
 }
 
 export function useCreateItem (list: ListMeta): CreateItemHookResult {
-  const { createViewFieldModes } = useKeystone()
   const router = useRouter()
   const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
@@ -40,12 +40,9 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
 
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => {
-    const value: ValueWithoutServerSideErrors = {}
+    const value: Record<string, unknown> = {}
     for (const fieldPath in list.fields) {
-      value[fieldPath] = {
-        kind: 'value',
-        value: list.fields[fieldPath].controller.defaultValue
-      }
+      value[fieldPath] = list.fields[fieldPath].controller.defaultValue
     }
     return value
   })
@@ -54,13 +51,15 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     const invalidFields = new Set<string>()
 
     for (const fieldPath in value) {
-      const val = value[fieldPath].value
-      const validateFn = list.fields[fieldPath].controller.validate
+      const { controller } = list.fields[fieldPath]
+      const fieldValue = value[fieldPath]
+
+      const validateFn = controller.validate
       if (!validateFn) continue
-      const result = validateFn(val)
-      if (result === false) {
-        invalidFields.add(fieldPath)
-      }
+
+      const valid = validateFn(fieldValue)
+      if (valid) continue
+      invalidFields.add(fieldPath)
     }
 
     return invalidFields
@@ -69,10 +68,12 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const data: Record<string, any> = {}
   for (const fieldPath in list.fields) {
     const { controller } = list.fields[fieldPath]
-    const serialized = controller.serialize(value[fieldPath].value)
-    if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-      Object.assign(data, serialized)
-    }
+    const fieldValue = value[fieldPath]
+
+    const serialized = controller.serialize(fieldValue)
+    if (isDeepEqual(serialized, controller.serialize(controller.defaultValue))) continue
+
+    Object.assign(data, serialized)
   }
 
   const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
@@ -88,13 +89,13 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     shouldPreventNavigation,
     error,
     props: {
+      view: 'createView',
       fields: list.fields,
       groups: list.groups,
-      fieldModes: createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
       forceValidation,
       invalidFields,
       value,
-      onChange: (newItemValue) => setValue(newItemValue as ValueWithoutServerSideErrors)
+      onChange: (newItemValue) => setValue(newItemValue)
     },
     async create (): Promise<{ id: string, label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
@@ -148,16 +149,11 @@ type BuildItemHookResult = {
 }
 
 export function useBuildItem (list: ListMeta): BuildItemHookResult {
-  const { createViewFieldModes } = useKeystone()
-
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => {
-    const value: ValueWithoutServerSideErrors = {}
+    const value: Record<string, unknown> = {}
     for (const fieldPath in list.fields) {
-      value[fieldPath] = {
-        kind: 'value',
-        value: list.fields[fieldPath].controller.defaultValue
-      }
+      value[fieldPath] = list.fields[fieldPath].controller.defaultValue
     }
     return value
   })
@@ -166,37 +162,41 @@ export function useBuildItem (list: ListMeta): BuildItemHookResult {
     const invalidFields = new Set<string>()
 
     for (const fieldPath in value) {
-      const val = value[fieldPath].value
-      const validateFn = list.fields[fieldPath].controller.validate
+      const { controller } = list.fields[fieldPath]
+      const fieldValue = value[fieldPath]
+
+      const validateFn = controller.validate
       if (!validateFn) continue
-      const result = validateFn(val)
-      if (result === false) {
-        invalidFields.add(fieldPath)
-      }
+
+      const valid = validateFn(fieldValue)
+      if (valid) continue
+      invalidFields.add(fieldPath)
     }
 
     return invalidFields
   }, [list, value])
 
-  const data: Record<string, any> = {}
+  const data: Record<string, unknown> = {}
   for (const fieldPath in list.fields) {
     const { controller } = list.fields[fieldPath]
-    const serialized = controller.serialize(value[fieldPath].value)
-    if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-      Object.assign(data, serialized)
-    }
+    const fieldValue = value[fieldPath]
+
+    const serialized = controller.serialize(fieldValue)
+    if (isDeepEqual(serialized, controller.serialize(controller.defaultValue))) continue
+
+    Object.assign(data, serialized)
   }
 
   return {
     state: 'editing',
     props: {
+      view: 'createView',
       fields: list.fields,
       groups: list.groups,
-      fieldModes: createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
       forceValidation,
       invalidFields,
       value,
-      onChange: (newItemValue) => setValue(newItemValue as ValueWithoutServerSideErrors)
+      onChange: (newItemValue) => setValue(newItemValue)
     },
     async build () {
       const newForceValidation = invalidFields.size !== 0
