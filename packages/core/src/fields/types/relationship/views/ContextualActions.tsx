@@ -96,17 +96,10 @@ function useRelatedItem({
 
   switch (value.kind) {
     case 'count': {
-      if (!value.count) {
-        return null
-      }
-
-      // TODO: handle count if possible
-      return null
+      return null // TODO
     }
     case 'many': {
-      if (!value.value.length) {
-        return null
-      }
+      if (!value.value.length) return null
 
       const query =
         field.refFieldKey && value.id
@@ -123,9 +116,7 @@ function useRelatedItem({
       }
     }
     case 'one': {
-      if (!value.value) {
-        return null
-      }
+      if (!value.value) return null
 
       return {
         href: `/${foreignList.path}/${value.value.id}`,

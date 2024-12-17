@@ -18,7 +18,10 @@ import { BuildItemDialog } from '../../../../admin-ui/components'
 import { ContextualActions } from './ContextualActions'
 import { ComboboxMany } from './ComboboxMany'
 import { ComboboxSingle } from './ComboboxSingle'
-import type { RelationshipController } from './types'
+import type {
+  RelationshipController,
+  RelationshipValue,
+} from './types'
 
 export function Field (props: FieldProps<typeof controller>) {
   const {
@@ -78,8 +81,8 @@ export function Field (props: FieldProps<typeof controller>) {
               state={{
                 kind: 'one',
                 value: value.value,
-                onChange(newVal) {
-                  onChange?.({ ...value, value: newVal })
+                onChange(newItem) {
+                  onChange?.({ ...value, value: newItem })
                 },
               }}
             />
@@ -298,17 +301,21 @@ export function controller (
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id))
         const initialIds = new Set(state.initialValue.map(x => x.id))
-        const disconnect = state.initialValue
-          .filter(x => !newAllIds.has(x.id))
-          .map(x => ({ id: x.id }))
-        const connect = state.value.filter(x => !initialIds.has(x.id)).map(x => ({ id: x.id }))
-        if (disconnect.length || connect.length) {
-          const output: any = {}
-
-          if (disconnect.length) output.disconnect = disconnect
-          if (connect.length) output.connect = connect
-          return { [config.path]: output }
+        const disconnect = state.initialValue.filter(x => !newAllIds.has(x.id)) .map(x => ({ id: x.id }))
+        const connect = state.value.filter(x => !x.built && !initialIds.has(x.id)).map(x => ({ id: x.id }))
+        const create = state.value.filter(x => x.built).map(x => x.data)
+        const output = {
+          ...(disconnect.length ? { disconnect } : {}),
+          ...(connect.length ? { connect } : {}),
+          ...(create.length ? { create } : {}),
         }
+
+        if (Object.keys(output).length) {
+          return {
+            [config.path]: output
+          }
+        }
+
       } else if (state.kind === 'one') {
         if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
         if (state.value?.built) {
