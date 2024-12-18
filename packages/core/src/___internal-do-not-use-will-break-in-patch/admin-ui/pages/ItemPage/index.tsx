@@ -23,9 +23,15 @@ import type { ListMeta } from '../../../../types'
 import {
   Fields,
   useInvalidFields,
+  deserializeItemToValue,
+  serializeValueToOperationItem,
+  useHasChanges,
 } from '../../../../admin-ui/utils'
-import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
-import { useList } from '../../../../admin-ui/context'
+import { gql, useMutation } from '../../../../admin-ui/apollo'
+import {
+  useList,
+  useListItem,
+} from '../../../../admin-ui/context'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
@@ -36,10 +42,6 @@ import {
   ItemPageHeader,
   StickySidebar
 } from './common'
-import {
-  deserializeItemToValue,
-  useChanges,
-} from './utils'
 
 type ItemPageProps = {
   listKey: string
@@ -56,13 +58,117 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
   return cb as any
 }
 
+function DeleteButton ({
+  itemLabel,
+  itemId,
+  list,
+}: {
+  itemLabel: string
+  itemId: string
+  list: ListMeta
+}) {
+  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const router = useRouter()
+  const [deleteItem] = useMutation(
+    gql`mutation ($id: ID!) {
+      ${list.graphql.names.deleteMutationName}(where: { id: $id }) {
+        id
+      }
+    }`,
+    { variables: { id: itemId } }
+  )
+
+  return (
+    <Fragment>
+      <DialogTrigger>
+        <Button tone="critical">
+          Delete
+        </Button>
+        <AlertDialog
+          tone="critical"
+          title="Delete item"
+          cancelLabel="Cancel"
+          primaryActionLabel="Yes, delete"
+          onPrimaryAction={async () => {
+            try {
+              await deleteItem()
+            } catch (err: any) {
+              toastQueue.critical('Unable to delete item.', {
+                actionLabel: 'Details',
+                onAction: () => {
+                  setErrorDialogValue(err)
+                },
+                shouldCloseOnAction: true,
+              })
+              return
+            }
+
+            toastQueue.neutral(`${list.singular} deleted.`, {
+              timeout: 5000,
+            })
+            router.push(list.isSingleton ? '/' : `/${list.path}`)
+          }}
+        >
+          <Text>
+            Are you sure you want to delete <strong>“{itemLabel}”</strong>?
+            This action cannot be undone.
+          </Text>
+        </AlertDialog>
+      </DialogTrigger>
+
+      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
+        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      </DialogContainer>
+    </Fragment>
+  )
+}
+
+function ItemNotFound (props: PropsWithChildren) {
+  return (
+    <VStack
+      alignItems="center"
+      backgroundColor="surface"
+      borderRadius="medium"
+      gap="large"
+      justifyContent="center"
+      minHeight="scale.3000"
+      padding="xlarge"
+    >
+      <Icon src={fileWarningIcon} color="neutralEmphasis" size="large" />
+      <Heading align="center">Not found</Heading>
+      <SlotProvider slots={{ text: { align:'center', maxWidth: 'scale.5000' } }}>
+        {props.children}
+      </SlotProvider>
+    </VStack>
+  )
+}
+
+function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
+  return (
+    <DialogTrigger>
+      <Button tone="accent" isDisabled={!props.hasChanges}>
+        Reset
+      </Button>
+      <AlertDialog
+        title="Reset changes"
+        cancelLabel="Cancel"
+        primaryActionLabel="Yes, reset"
+        autoFocusButton="primary"
+        onPrimaryAction={props.onReset}
+      >
+        Are you sure? Lost changes cannot be recovered.
+      </AlertDialog>
+    </DialogTrigger>
+  )
+}
+
 function ItemForm ({
   listKey,
-  item,
+  initialValue,
   onSaveSuccess,
 }: {
   listKey: string
-  item: Record<string, unknown>
+  initialValue: Record<string, unknown>
   onSaveSuccess: Function
 }) {
   const list = useList(listKey)
@@ -76,15 +182,11 @@ function ItemForm ({
     { errorPolicy: 'all' }
   )
 
-  const [value, setValue] = useState(() => {
-    return deserializeItemToValue(list.fields, item)
-  })
-
+  const [value, setValue] = useState(() => initialValue)
   function resetValueState () {
-    setValue(state => deserializeItemToValue(list.fields, item))
+    setValue(() => initialValue)
   }
-
-  useEffect(() => resetValueState(), [item])
+  useEffect(() => resetValueState(), [initialValue])
 
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
@@ -96,7 +198,7 @@ function ItemForm ({
 
     const { errors } = await update({
       variables: {
-        data: itemForUpdate,
+        data: serializeValueToOperationItem('update', list.fields, value, initialValue),
         id: itemId
       }
     })
@@ -119,10 +221,7 @@ function ItemForm ({
 
   const itemId = (value.id ?? '') as (string | number)
   const labelFieldValue = list.isSingleton ? list.label : (value[list.labelField] as string)
-  const {
-    hasChangedFields,
-    itemForUpdate
-  } = useChanges(list.fields, item, value)
+  const hasChangedFields = useHasChanges('update', list.fields, value, initialValue)
 
   return (
     <Fragment>
@@ -198,106 +297,26 @@ function ItemForm ({
   )
 }
 
-function DeleteButton ({
-  itemLabel,
-  itemId,
-  list,
-}: {
-  itemLabel: string
-  itemId: string
-  list: ListMeta
-}) {
-  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-  const router = useRouter()
-  const [deleteItem] = useMutation(
-    gql`mutation ($id: ID!) {
-      ${list.graphql.names.deleteMutationName}(where: { id: $id }) {
-        id
-      }
-    }`,
-    { variables: { id: itemId } }
-  )
-
-  return (
-    <Fragment>
-      <DialogTrigger>
-        <Button tone="critical">
-          Delete
-        </Button>
-        <AlertDialog
-          tone="critical"
-          title="Delete item"
-          cancelLabel="Cancel"
-          primaryActionLabel="Yes, delete"
-          onPrimaryAction={async () => {
-            try {
-              await deleteItem()
-            } catch (err: any) {
-              toastQueue.critical('Unable to delete item.', {
-                actionLabel: 'Details',
-                onAction: () => {
-                  setErrorDialogValue(err)
-                },
-                shouldCloseOnAction: true,
-              })
-              return
-            }
-
-            toastQueue.neutral(`${list.singular} deleted.`, {
-              timeout: 5000,
-            })
-            router.push(list.isSingleton ? '/' : `/${list.path}`)
-          }}
-        >
-          <Text>
-            Are you sure you want to delete <strong>“{itemLabel}”</strong>?
-            This action cannot be undone.
-          </Text>
-        </AlertDialog>
-      </DialogTrigger>
-
-      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
-        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
-      </DialogContainer>
-    </Fragment>
-  )
-}
-
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
 function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
   const [id] = Array.isArray(id_) ? id_ : [id_]
-  const { query } = useMemo(() => {
-    const selectedFields = Object.values(list.fields)
-      .filter((field) => {
-        if (field.path === 'id') return true
-        return field.itemView.fieldMode !== 'hidden'
-      })
-      .map((field) => field.controller.graphqlSelection)
-      .join('\n')
-
-    return {
-      query: gql`
-        query ItemPage($id: ID!, $listKey: String!) {
-          item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
-            ${selectedFields}
-          }
-        }
-      `,
-    }
-  }, [list])
-
-  const { data, error, loading, refetch } = useQuery(query, {
-    variables: { id, listKey },
-    errorPolicy: 'all',
-    skip: id === undefined,
-  })
+  const {
+    data,
+    error,
+    loading,
+    refetch
+  } = useListItem(listKey, id ?? null)
 
   const pageLoading = loading || id === undefined
   const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
   const pageTitle: string = list.isSingleton ? list.label : pageLoading ? undefined : pageLabel
+  const initialValue = useMemo(() => {
+    const { item = null } = data ?? {}
+    return deserializeItemToValue(list.fields, item)
+  }, [list.fields, data?.item])
 
   return (
     <PageContainer
@@ -342,57 +361,15 @@ function ItemPage ({ listKey }: ItemPageProps) {
               )
             )}
           </Box>
-          {data?.item && (
+          {initialValue && (
             <ItemForm
               listKey={listKey}
-              item={data.item}
+              initialValue={initialValue}
               onSaveSuccess={refetch}
             />
           )}
         </ColumnLayout>
       )}
     </PageContainer>
-  )
-}
-
-// Styled Components
-// ------------------------------
-
-function ItemNotFound (props: PropsWithChildren) {
-  return (
-    <VStack
-      alignItems="center"
-      backgroundColor="surface"
-      borderRadius="medium"
-      gap="large"
-      justifyContent="center"
-      minHeight="scale.3000"
-      padding="xlarge"
-    >
-      <Icon src={fileWarningIcon} color="neutralEmphasis" size="large" />
-      <Heading align="center">Not found</Heading>
-      <SlotProvider slots={{ text: { align:'center', maxWidth: 'scale.5000' } }}>
-        {props.children}
-      </SlotProvider>
-    </VStack>
-  )
-}
-
-function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
-  return (
-    <DialogTrigger>
-      <Button tone="accent" isDisabled={!props.hasChanges}>
-        Reset
-      </Button>
-      <AlertDialog
-        title="Reset changes"
-        cancelLabel="Cancel"
-        primaryActionLabel="Yes, reset"
-        autoFocusButton="primary"
-        onPrimaryAction={props.onReset}
-      >
-        Are you sure? Lost changes cannot be recovered.
-      </AlertDialog>
-    </DialogTrigger>
   )
 }
