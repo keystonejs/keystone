@@ -59,12 +59,10 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
 function ItemForm ({
   listKey,
   item,
-  showDelete,
   onSaveSuccess,
 }: {
   listKey: string
   item: Record<string, unknown>
-  showDelete: boolean
   onSaveSuccess: Function
 }) {
   const list = useList(listKey)
@@ -183,7 +181,7 @@ function ItemForm ({
             onReset={resetValueState}
           />
           <Box flex />
-          {showDelete ? (
+          {!list.hideDelete ? (
             <DeleteButton
               list={list}
               itemLabel={labelFieldValue ?? itemId.toString()}
@@ -318,19 +316,19 @@ function ItemPage ({ listKey }: ItemPageProps) {
         </VStack>
       ) : (
         <ColumnLayout>
-          <GraphQLErrorNotice
-            errors={[
-              error?.networkError,
-              ...error?.graphQLErrors ?? []
-            ]}
-          />
-          {data?.item == null ? (
-            <Box marginY="xlarge">
-              {list.isSingleton ? (
+          <Box marginY="xlarge">
+            <GraphQLErrorNotice
+              errors={[
+                error?.networkError,
+                ...error?.graphQLErrors ?? []
+              ]}
+            />
+            {data?.item == null && (
+              list.isSingleton ? (
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
-                    {!data.keystone.adminMeta.list!.hideCreate && <CreateButtonLink list={list} />}
+                    {!list!.hideCreate && <CreateButtonLink list={list} />}
                   </ItemNotFound>
                 ) : (
                   <ItemNotFound>
@@ -341,12 +339,12 @@ function ItemPage ({ listKey }: ItemPageProps) {
                 <ItemNotFound>
                   <Text>The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access to it.</Text>
                 </ItemNotFound>
-              )}
-            </Box>
-          ) : (
+              )
+            )}
+          </Box>
+          {data?.item && (
             <ItemForm
               listKey={listKey}
-              showDelete={!data.keystone.adminMeta.list!.hideDelete}
               item={data.item}
               onSaveSuccess={refetch}
             />
