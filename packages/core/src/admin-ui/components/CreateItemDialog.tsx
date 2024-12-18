@@ -21,7 +21,7 @@ export function BuildItemDialog ({
   onChange: (subItem: Record<string, unknown>) => void
 }) {
   const list = useList(listKey)
-  const buildItem = useBuildItem(list)
+  const builder = useBuildItem(list)
   const dialogState = useDialogContainer()
   const formId = useId()
 
@@ -39,7 +39,7 @@ export function BuildItemDialog ({
             // parent form being submitted.
             e.stopPropagation()
 
-            const subItem = await buildItem.build()
+            const subItem = await builder.build()
             if (!subItem) return
 
             onChange(subItem)
@@ -47,7 +47,7 @@ export function BuildItemDialog ({
           }}
         >
           <Box paddingY="xlarge">
-            <Fields {...buildItem.props} />
+            <Fields {...builder.props} />
           </Box>
         </form>
       </Content>
