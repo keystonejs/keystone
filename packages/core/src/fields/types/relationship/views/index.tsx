@@ -94,7 +94,7 @@ export function Field (props: FieldProps<typeof controller>) {
             items={value.value.map(item => ({
               id: item.id.toString() ?? '',
               label: item.label ?? '',
-              href: `/${foreignList.path}/${item.id}`,
+              href: item.built ? '' : `/${foreignList.path}/${item.id}`,
             }))}
             maxRows={2}
             onRemove={keys => {
@@ -124,7 +124,7 @@ export function Field (props: FieldProps<typeof controller>) {
               listKey={foreignList.key}
               onChange={builtItemData => {
                 const id = `_____internal_${Math.random().toString()}`
-                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? '<New>'
+                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? `[${foreignList.singular} #1]`
                 setDialogOpen(false)
 
                 if (value.kind === 'many') {
@@ -160,9 +160,10 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-// NOTE: temp fix for `TagGroup` perf issue, should typically be okay to just
+// NOTE: fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
 function renderItem (item: { id: string; href: string; label: string }) {
+  if (item.href === '') return <Item>{item.label}</Item>
   return <Item href={item.href}>{item.label}</Item>
 }
 
