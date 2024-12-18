@@ -79,13 +79,6 @@ export const lists = {
       tags: relationship({
         ref: 'Tag.posts',
         many: true, // a Post can have many Tags, not just one
-
-        // TODO: restore after breaking change
-//          ui: {
-//            inlineCreate: {
-//              fields: ['name']
-//            }
-//          }
       }),
     },
   }),

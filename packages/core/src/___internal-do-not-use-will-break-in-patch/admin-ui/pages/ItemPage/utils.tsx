@@ -36,7 +36,7 @@ function serializeValueToItem (
   return result
 }
 
-export function useChangedFieldsAndDataForUpdate (
+export function useChanges (
   fields: Record<string, FieldMeta>,
   item: Record<string, unknown>,
   value: Record<string, unknown>,
@@ -48,32 +48,28 @@ export function useChangedFieldsAndDataForUpdate (
   }, [fields, item])
 
   return useMemo(() => {
-    const changedFields = new Set<string>()
+    const itemForUpdate: Record<string, unknown> = {}
+
     for (const fieldKey in serializedItem) {
-      const isEqual = isDeepEqual(
-        serializedItem[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      )
-      if (!isEqual) {
-        changedFields.add(fieldKey)
-      }
+      const fieldValue = serializedItem[fieldKey]
+      const fieldValueFromItem = serializedValuesFromItem[fieldKey]
+      const isEqual = isDeepEqual(fieldValue, fieldValueFromItem)
+      if (isEqual) continue
+
+      Object.assign(itemForUpdate, serializedItem[fieldKey])
     }
 
-    const dataForUpdate: Record<string, any> = {}
-    for (const fieldKey of changedFields) {
-      Object.assign(dataForUpdate, serializedItem[fieldKey])
-    }
-
+    // add any fields that are always required
+    const hasChangedFields = Object.keys(itemForUpdate).length > 0
     Object.keys(serializedItem)
       .filter(fieldKey => fields[fieldKey].graphql.isNonNull?.includes('update'))
-      .filter(fieldKey => !changedFields.has(fieldKey))
       .forEach(fieldKey => {
-        Object.assign(dataForUpdate, serializedItem[fieldKey])
+        Object.assign(itemForUpdate, serializedItem[fieldKey])
       })
 
     return {
-      hasChangedFields: changedFields.size > 0,
-      dataForUpdate
+      hasChangedFields,
+      itemForUpdate
     }
   }, [serializedItem, serializedValuesFromItem, fields])
 }
