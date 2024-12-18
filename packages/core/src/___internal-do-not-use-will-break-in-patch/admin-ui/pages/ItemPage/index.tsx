@@ -59,14 +59,13 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
 }
 
 function DeleteButton ({
-  itemLabel,
-  itemId,
   list,
+  value,
 }: {
-  itemLabel: string
-  itemId: string
   list: ListMeta
+  value: Record<string, unknown>
 }) {
+  const itemId = ((value.id ?? '') as (string | number)).toString()
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const router = useRouter()
   const [deleteItem] = useMutation(
@@ -95,9 +94,7 @@ function DeleteButton ({
             } catch (err: any) {
               toastQueue.critical('Unable to delete item.', {
                 actionLabel: 'Details',
-                onAction: () => {
-                  setErrorDialogValue(err)
-                },
+                onAction: () => setErrorDialogValue(err),
                 shouldCloseOnAction: true,
               })
               return
@@ -110,7 +107,7 @@ function DeleteButton ({
           }}
         >
           <Text>
-            Are you sure you want to delete <strong>“{itemLabel}”</strong>?
+            Are you sure you want to delete <strong>{list.singular} {itemId}</strong>?
             This action cannot be undone.
           </Text>
         </AlertDialog>
@@ -174,7 +171,7 @@ function ItemForm ({
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const [update, { loading, error }] = useMutation(
-    gql`mutation ($data: ${list.graphql.names.updateInputName}!, $id: ID!) {
+    gql`mutation ($id: ID!, $data: ${list.graphql.names.updateInputName}!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
         id
       }
@@ -198,8 +195,8 @@ function ItemForm ({
 
     const { errors } = await update({
       variables: {
+        id: initialValue.id,
         data: serializeValueToOperationItem('update', list.fields, value, initialValue),
-        id: itemId
       }
     })
 
@@ -219,8 +216,6 @@ function ItemForm ({
     onSaveSuccess()
   })
 
-  const itemId = (value.id ?? '') as (string | number)
-  const labelFieldValue = list.isSingleton ? list.label : (value[list.labelField] as string)
   const hasChangedFields = useHasChanges('update', list.fields, value, initialValue)
 
   return (
@@ -283,8 +278,7 @@ function ItemForm ({
           {!list.hideDelete ? (
             <DeleteButton
               list={list}
-              itemLabel={labelFieldValue ?? itemId.toString()}
-              itemId={itemId.toString()}
+              value={value}
             />
           ) : null}
         </BaseToolbar>
