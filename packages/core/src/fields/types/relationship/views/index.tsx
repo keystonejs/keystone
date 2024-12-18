@@ -20,7 +20,6 @@ import { ComboboxMany } from './ComboboxMany'
 import { ComboboxSingle } from './ComboboxSingle'
 import type {
   RelationshipController,
-  RelationshipValue,
 } from './types'
 
 export function Field (props: FieldProps<typeof controller>) {

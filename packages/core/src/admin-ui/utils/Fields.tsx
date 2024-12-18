@@ -20,7 +20,7 @@ import type {
 
 export function Fields ({
   view,
-  position = 'form',
+  position,
   fields,
   groups = [],
   forceValidation,
@@ -29,7 +29,7 @@ export function Fields ({
   value: itemValue,
 }: {
   view: 'createView' | 'itemView'
-  position?: 'form' | 'sidebar'
+  position: 'form' | 'sidebar'
   fields: Record<string, FieldMeta>
   forceValidation: boolean
   groups?: FieldGroupMeta[]

@@ -10,12 +10,13 @@ import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
 import type { FieldMeta } from '@keystone-6/core/types'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter, Link } from '@keystone-6/core/admin-ui/router'
 import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
 import {
   Fields,
-  useInvalidFields,
+  serializeValueToOperationItem,
+  useBuildItem,
 } from '@keystone-6/core/admin-ui/utils'
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
@@ -176,18 +177,6 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   )
 }
 
-function serializeItemValue (
-  fields: Record<string, FieldMeta>,
-  state: Record<string, unknown>
-) {
-  const result: Record<string, unknown> = {}
-  for (const field of Object.values(fields)) {
-    if (field.path === 'id') continue // cannot be used
-    result[field.path] = field.controller.serialize(state[field.path])?.[field.path]
-  }
-  return result
-}
-
 function InitPage ({
   fieldPaths,
   listKey,
@@ -197,30 +186,19 @@ function InitPage ({
   fieldPaths: string[]
   enableWelcome: boolean
 }) {
-  const { adminMeta } = useKeystone()
   const router = useRouter()
   const redirect = useRedirect()
-  const lists = adminMeta?.lists ?? {}
-  const list = lists[listKey]
+  const list = useList(listKey)
 
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}
     for (const fieldPath of fieldPaths) {
-      fields[fieldPath] = list?.fields[fieldPath]
+      fields[fieldPath] = list.fields[fieldPath]
     }
     return fields
   }, [list, fieldPaths])
 
-  const [itemState, setItemState] = useState(() => {
-    const state: Record<string, any> = {}
-    for (const fieldPath in fields) {
-      state[fieldPath] = fields[fieldPath].controller.defaultValue
-    }
-    return state
-  })
-
-  const invalidFields = useInvalidFields(fields, itemState)
-  const [forceValidation, setForceValidation] = useState(false)
+  const builder = useBuildItem(list)
   const [mode, setMode] = useState<'init' | 'welcome'>('init')
 
   const [createFirstItem, { loading, error, data }] =
@@ -234,17 +212,20 @@ function InitPage ({
     }
   }`)
 
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-    const newForceValidation = invalidFields.size !== 0
-    setForceValidation(newForceValidation)
-    if (newForceValidation) return
+    // NOTE: React events bubble through portals, this prevents the
+    // parent form being submitted.
+    e.stopPropagation()
+
+    const builtValue = await builder.build()
+    if (!builtValue) return
 
     try {
       await createFirstItem({
         variables: {
-          data: serializeItemValue(fields, itemState)
+          data: serializeValueToOperationItem('create', fields, builtValue)
         },
       })
     } catch (e) {
@@ -269,15 +250,7 @@ function InitPage ({
               ...error?.graphQLErrors ?? []
             ]}
           />
-          <Fields
-            view="createView"
-            fields={fields}
-            forceValidation={forceValidation}
-            invalidFields={invalidFields}
-            onChange={setItemState}
-            value={itemState}
-            position="form"
-          />
+          <Fields {...builder.props} />
           <Button
             isLoading={loading || data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`}
             type="submit"
@@ -291,7 +264,7 @@ function InitPage ({
     </SigninContainer>
   ) : (
     <SigninContainer>
-      <Welcome value={itemState} onContinue={onComplete} />
+      <Welcome value={builder.props.value} onContinue={onComplete} />
     </SigninContainer>
   )
 }
