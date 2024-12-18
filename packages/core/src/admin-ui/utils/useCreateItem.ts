@@ -1,9 +1,7 @@
-import isDeepEqual from 'fast-deep-equal'
 import { useRouter } from 'next/router'
 import {
   type ComponentProps,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -18,6 +16,12 @@ import {
 } from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
 import type { Fields } from '.'
+import {
+  serializeValueToOperationItem,
+  makeDefaultValueState,
+  useHasChanges,
+  useInvalidFields,
+} from '../../admin-ui/utils'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
@@ -39,44 +43,11 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   )
 
   const [forceValidation, setForceValidation] = useState(false)
-  const [value, setValue] = useState(() => {
-    const value: Record<string, unknown> = {}
-    for (const fieldPath in list.fields) {
-      value[fieldPath] = list.fields[fieldPath].controller.defaultValue
-    }
-    return value
-  })
+  const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
+  const invalidFields = useInvalidFields(list.fields, value)
 
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>()
-
-    for (const fieldPath in value) {
-      const { controller } = list.fields[fieldPath]
-      const fieldValue = value[fieldPath]
-
-      const validateFn = controller.validate
-      if (!validateFn) continue
-
-      const valid = validateFn(fieldValue)
-      if (valid) continue
-      invalidFields.add(fieldPath)
-    }
-
-    return invalidFields
-  }, [list, value])
-
-  const data: Record<string, any> = {}
-  for (const fieldPath in list.fields) {
-    const { controller } = list.fields[fieldPath]
-    const fieldValue = value[fieldPath]
-
-    const serialized = controller.serialize(fieldValue)
-    if (isDeepEqual(serialized, controller.serialize(controller.defaultValue))) continue
-
-    Object.assign(data, serialized)
-  }
-
-  const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
+  const hasChangedFields = useHasChanges('create', list.fields, value, makeDefaultValueState(list.fields))
+  const shouldPreventNavigation = !returnedData?.item && hasChangedFields
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
 
   useEffect(() => {
@@ -90,6 +61,7 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     error,
     props: {
       view: 'createView',
+      position: 'form',
       fields: list.fields,
       groups: list.groups,
       forceValidation,
@@ -101,12 +73,14 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
 
-      if (newForceValidation) return undefined
+      if (newForceValidation) return
 
       let outputData: { item: { id: string, label: string | null } }
       try {
         outputData = await tryCreateItem({
-          variables: { data },
+          variables: {
+            data: serializeValueToOperationItem('create', list.fields, value)
+          },
           update (cache, { data }) {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
@@ -123,7 +97,7 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
         // to handle that too, should they be combined? does this code path
         // even happen?
         toastQueue.critical(`Unable to create ${list.singular.toLocaleLowerCase()}`)
-        return undefined
+        return
       }
 
       shouldPreventNavigationRef.current = false
@@ -150,47 +124,14 @@ type BuildItemHookResult = {
 
 export function useBuildItem (list: ListMeta): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
-  const [value, setValue] = useState(() => {
-    const value: Record<string, unknown> = {}
-    for (const fieldPath in list.fields) {
-      value[fieldPath] = list.fields[fieldPath].controller.defaultValue
-    }
-    return value
-  })
-
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>()
-
-    for (const fieldPath in value) {
-      const { controller } = list.fields[fieldPath]
-      const fieldValue = value[fieldPath]
-
-      const validateFn = controller.validate
-      if (!validateFn) continue
-
-      const valid = validateFn(fieldValue)
-      if (valid) continue
-      invalidFields.add(fieldPath)
-    }
-
-    return invalidFields
-  }, [list, value])
-
-  const data: Record<string, unknown> = {}
-  for (const fieldPath in list.fields) {
-    const { controller } = list.fields[fieldPath]
-    const fieldValue = value[fieldPath]
-
-    const serialized = controller.serialize(fieldValue)
-    if (isDeepEqual(serialized, controller.serialize(controller.defaultValue))) continue
-
-    Object.assign(data, serialized)
-  }
+  const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
+  const invalidFields = useInvalidFields(list.fields, value)
 
   return {
     state: 'editing',
     props: {
       view: 'createView',
+      position: 'form',
       fields: list.fields,
       groups: list.groups,
       forceValidation,
@@ -201,8 +142,8 @@ export function useBuildItem (list: ListMeta): BuildItemHookResult {
     async build () {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
-      if (newForceValidation) return undefined
-      return data
+      if (newForceValidation) return
+      return serializeValueToOperationItem('create', list.fields, value)
     },
   }
 }

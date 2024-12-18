@@ -34,6 +34,7 @@ import {
   adminMetaQuery
 } from './admin-meta-graphql'
 import {
+  gql,
   ApolloProvider,
   ApolloClient,
   InMemoryCache,
@@ -245,4 +246,35 @@ export function useField (listKey: string, fieldKey: string) {
   const field = list.fields[fieldKey]
   if (!field) throw new Error(`Unknown field ${listKey}.${fieldKey}`)
   return field
+}
+
+// TODO useContext
+export function useListItem (listKey: string, itemId: string | null) {
+  const list = useList(listKey)
+  const query = useMemo(() => {
+    const selectedFields = Object.values(list.fields)
+      .filter((field) => {
+        if (field.path === 'id') return true
+        return field.itemView.fieldMode !== 'hidden'
+      })
+      .map((field) => field.controller.graphqlSelection)
+      .join('\n')
+
+    return gql`
+      query ItemPage($id: ID!) {
+        item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
+          ${selectedFields}
+        }
+      }
+    `
+  }, [list])
+
+  return useQuery(query, {
+    errorPolicy: 'all',
+    skip: itemId === null,
+    variables: {
+//       listKey,
+      id: itemId,
+    },
+  })
 }
