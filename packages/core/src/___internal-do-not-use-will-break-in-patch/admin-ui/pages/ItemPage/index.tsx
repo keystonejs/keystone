@@ -38,7 +38,7 @@ import {
 } from './common'
 import {
   deserializeItemToValue,
-  useChangedFieldsAndDataForUpdate,
+  useChanges,
 } from './utils'
 
 type ItemPageProps = {
@@ -59,22 +59,20 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
 function ItemForm ({
   listKey,
   item,
-  selectedFields,
   showDelete,
   onSaveSuccess,
 }: {
   listKey: string
   item: Record<string, unknown>
-  selectedFields: string
   showDelete: boolean
   onSaveSuccess: Function
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-  const [update, { loading, error, data }] = useMutation(
+  const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.graphql.names.updateInputName}!, $id: ID!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
-        ${selectedFields}
+        id
       }
     }`,
     { errorPolicy: 'all' }
@@ -83,6 +81,12 @@ function ItemForm ({
   const [value, setValue] = useState(() => {
     return deserializeItemToValue(list.fields, item)
   })
+
+  function resetValueState () {
+    setValue(state => deserializeItemToValue(list.fields, item))
+  }
+
+  useEffect(() => resetValueState(), [item])
 
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
@@ -94,7 +98,7 @@ function ItemForm ({
 
     const { errors } = await update({
       variables: {
-        data: dataForUpdate,
+        data: itemForUpdate,
         id: itemId
       }
     })
@@ -119,8 +123,8 @@ function ItemForm ({
   const labelFieldValue = list.isSingleton ? list.label : (value[list.labelField] as string)
   const {
     hasChangedFields,
-    dataForUpdate
-  } = useChangedFieldsAndDataForUpdate(list.fields, item, value)
+    itemForUpdate
+  } = useChanges(list.fields, item, value)
 
   return (
     <Fragment>
@@ -176,9 +180,7 @@ function ItemForm ({
           </Button>
           <ResetButton
             hasChanges={hasChangedFields}
-            onReset={useEventCallback(() => {
-              setValue(state => deserializeItemToValue(list.fields, data))
-            })}
+            onReset={resetValueState}
           />
           <Box flex />
           {showDelete ? (
@@ -269,7 +271,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
   const [id] = Array.isArray(id_) ? id_ : [id_]
-  const { query, selectedFields } = useMemo(() => {
+  const { query } = useMemo(() => {
     const selectedFields = Object.values(list.fields)
       .filter((field) => {
         if (field.path === 'id') return true
@@ -279,26 +281,10 @@ function ItemPage ({ listKey }: ItemPageProps) {
       .join('\n')
 
     return {
-      selectedFields,
       query: gql`
         query ItemPage($id: ID!, $listKey: String!) {
           item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
             ${selectedFields}
-          }
-          keystone {
-            adminMeta {
-              list(key: $listKey) {
-                hideCreate
-                hideDelete
-                fields {
-                  path
-                  itemView(id: $id) {
-                    fieldMode
-                    fieldPosition
-                  }
-                }
-              }
-            }
           }
         }
       `,
@@ -360,7 +346,6 @@ function ItemPage ({ listKey }: ItemPageProps) {
           ) : (
             <ItemForm
               listKey={listKey}
-              selectedFields={selectedFields}
               showDelete={!data.keystone.adminMeta.list!.hideDelete}
               item={data.item}
               onSaveSuccess={refetch}

@@ -78,14 +78,14 @@ export type FieldMeta = {
     isNonNull: ('read' | 'create' | 'update')[]
   }
   createView: {
-    fieldMode: 'edit' | 'hidden' | null
+    fieldMode: 'edit' | 'hidden'
   }
   itemView: {
-    fieldMode: 'edit' | 'read' | 'hidden' | null
-    fieldPosition: 'form' | 'sidebar' | null
+    fieldMode: 'edit' | 'read' | 'hidden'
+    fieldPosition: 'form' | 'sidebar'
   }
   listView: {
-    fieldMode: 'read' | 'hidden' | null
+    fieldMode: 'read' | 'hidden'
   }
 
   isFilterable: boolean

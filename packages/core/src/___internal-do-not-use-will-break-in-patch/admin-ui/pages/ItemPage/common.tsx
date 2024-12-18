@@ -67,7 +67,7 @@ export function ColumnLayout (props: HTMLAttributes<HTMLDivElement>) {
         {...props}
       />
     </Container>
-  )
+ )
 }
 
 export function StickySidebar (props: HTMLAttributes<HTMLDivElement>) {
