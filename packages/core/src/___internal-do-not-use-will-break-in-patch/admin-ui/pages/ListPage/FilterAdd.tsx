@@ -60,6 +60,11 @@ export function FilterAdd ({
     setForceValidation(true)
 
     if (state.kind !== 'filter-value') return
+
+    // TODO: Special "empty" types need to be documented somewhere. Filters that
+    // have no editable value, basically `null` or `!null`. Which offers:
+    // * better DX — we can avoid weird nullable types and UIs that don't make sense
+    // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
     if ((state.filterType !== 'empty' && state.filterType !== 'not_empty') && state.filterValue == null) {
       return
     }
@@ -146,7 +151,7 @@ export function FilterAdd ({
           <ButtonGroup>
             <Button onPress={resetState}>Cancel</Button>
             <Button prominence="high" type="submit" form={formId}>
-              Save
+              Add
             </Button>
           </ButtonGroup>
         </Dialog>
@@ -186,9 +191,9 @@ export function FilterAdd ({
   )
 }
 
+// TODO: broken if user uses the same filter twice
 function useFilterFields (listKey: string) {
   const list = useList(listKey)
-  const router = useRouter()
   const fieldsWithFilters = useMemo(() => {
     const fieldsWithFilters: Record<
       string,
@@ -207,20 +212,14 @@ function useFilterFields (listKey: string) {
     const filtersByFieldThenType: Record<string, Record<string, string>> = {}
     for (const fieldPath in fieldsWithFilters) {
       const field = fieldsWithFilters[fieldPath]
-      let hasUnusedFilters = false
       const filters: Record<string, string> = {}
       for (const filterType in field.controller.filter.types) {
-        if (router.query[`!${fieldPath}_${filterType}`] === undefined) {
-          hasUnusedFilters = true
-          filters[filterType] = field.controller.filter.types[filterType].label
-        }
+        filters[filterType] = field.controller.filter.types[filterType].label
       }
-      if (hasUnusedFilters) {
-        filtersByFieldThenType[fieldPath] = filters
-      }
+      filtersByFieldThenType[fieldPath] = filters
     }
     return filtersByFieldThenType
-  }, [router.query, fieldsWithFilters])
+  }, [fieldsWithFilters])
 
   return {
     fieldsWithFilters,
