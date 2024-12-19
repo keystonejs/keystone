@@ -39,6 +39,7 @@ export function Field (props: FieldProps<typeof controller>) {
   const [dialogIsOpen, setDialogOpen] = useState(false)
   const description = field.description || undefined
   const isReadOnly = onChange === undefined
+  const [counter, setCounter] = useState(1)
 
   if (value.kind === 'count') {
     return (
@@ -129,9 +130,10 @@ export function Field (props: FieldProps<typeof controller>) {
             <BuildItemDialog
               listKey={foreignList.key}
               onChange={builtItemData => {
-                const id = `_____internal_${Math.random().toString()}`
-                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? `[${foreignList.singular} #1]`
+                const id = `_____temporary_${counter}`
+                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? `[Unnamed ${foreignList.singular} ${counter}]`
                 setDialogOpen(false)
+                setCounter(counter + 1)
 
                 if (value.kind === 'many') {
                   onChange({
