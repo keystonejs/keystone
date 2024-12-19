@@ -91,6 +91,10 @@ function FilterDialog ({
   const onSubmit = (event: FormEvent) => {
     event.preventDefault()
 
+    // TODO: Special "empty" types need to be documented somewhere. Filters that
+    // have no editable value, basically `null` or `!null`. Which offers:
+    // * better DX — we can avoid weird nullable types and UIs that don't make sense
+    // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
     if ((filter.type !== 'empty' && filter.type !== 'not_empty') && value == null) {
       return
     }
