@@ -1,14 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
 
-import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
+import { Stack, Inline } from '@keystone-ui/core'
 import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
-import type { FieldMeta } from '@keystone-6/core/types'
 
+import type { FieldMeta } from '@keystone-6/core/types'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter, Link } from '@keystone-6/core/admin-ui/router'
@@ -18,6 +14,11 @@ import {
   serializeValueToOperationItem,
   useBuildItem,
 } from '@keystone-6/core/admin-ui/utils'
+
+import { Button } from '@keystar/ui/button'
+import { VStack } from '@keystar/ui/layout'
+import { Heading, Text } from '@keystar/ui/typography'
+
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
 import { SigninContainer } from '../components/SigninContainer'
@@ -85,8 +86,8 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   }
 
   return (
-    <Stack gap="medium">
-      <Stack
+    <VStack gap="medium">
+      <VStack
         gap="small"
         align="center"
         across
@@ -95,8 +96,8 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
           justifyContent: 'space-between',
         }}
       >
-        <H1>Welcome</H1>
-        <Stack across gap="small">
+        <Heading>Welcome</Heading>
+        <VStack across gap="small">
           <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
@@ -107,8 +108,8 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
             target="_blank"
             title="Github"
           />
-        </Stack>
-      </Stack>
+        </VStack>
+      </VStack>
 
       <p css={{ margin: 0 }}>
         Thanks for installing Keystone, for help getting started see our documentation at{' '}
@@ -173,7 +174,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
           )}
         </Inline>
       </form>
-    </Stack>
+    </VStack>
   )
 }
 
@@ -238,10 +239,11 @@ function InitPage ({
   }
 
   const onComplete = () => router.push(redirect)
+  const pending = loading || data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
   return mode === 'init' ? (
     <SigninContainer title="Welcome to KeystoneJS">
-      <H1>Welcome to KeystoneJS</H1>
-      <p>Create your first user to get started</p>
+      <Heading>Welcome to KeystoneJS</Heading>
+      <Text>Create your first user to get started</Text>
       <form onSubmit={onSubmit}>
         <Stack gap="large">
           <GraphQLErrorNotice
@@ -252,10 +254,9 @@ function InitPage ({
           />
           <Fields {...builder.props} />
           <Button
-            isLoading={loading || data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`}
+            isPending={pending}
+            prominence="high"
             type="submit"
-            weight="bold"
-            tone="active"
           >
             Get started
           </Button>
