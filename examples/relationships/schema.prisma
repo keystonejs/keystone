@@ -13,20 +13,23 @@ generator client {
 }
 
 model Post {
-  id                String     @id @default(cuid())
-  title             String     @default("")
-  category          Category[] @relation("Category_posts")
-  tags              Tag[]      @relation("Post_tags")
-  related           Post[]     @relation("Post_related")
-  recommendations   String     @default("[]")
-  bundles           String     @default("[]")
-  from_Post_related Post[]     @relation("Post_related")
+  id                String    @id @default(cuid())
+  title             String    @default("")
+  category          Category? @relation("Post_category", fields: [categoryId], references: [id])
+  categoryId        String?   @map("category")
+  tags              Tag[]     @relation("Post_tags")
+  related           Post[]    @relation("Post_related")
+  recommendations   String    @default("[]")
+  bundles           String    @default("[]")
+  from_Post_related Post[]    @relation("Post_related")
+
+  @@index([categoryId])
 }
 
 model Category {
   id    String @id @default(cuid())
   name  String @default("")
-  posts Post[] @relation("Category_posts")
+  posts Post[] @relation("Post_category")
 }
 
 model Tag {
