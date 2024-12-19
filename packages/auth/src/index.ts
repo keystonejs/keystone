@@ -34,7 +34,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   passwordResetLink,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
-  const gqlNames: AuthGqlNames = {
+  const authGqlNames: AuthGqlNames = {
     // Core
     authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
     ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
@@ -115,7 +115,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
-        src: signinTemplate({ listKey, gqlNames, identityField, secretField }),
+        src: signinTemplate({ authGqlNames, identityField, secretField }),
         outputPath: 'pages/signin.js',
       },
       {
@@ -127,7 +127,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     if (initFirstItem) {
       filesToWrite.push({
         mode: 'write',
-        src: initTemplate({ listKey, initFirstItem }),
+        src: initTemplate({ authGqlNames, listKey, initFirstItem }),
         outputPath: 'pages/init.js',
       })
     }
@@ -143,7 +143,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     identityField,
     listKey,
     secretField,
-    gqlNames,
+    gqlNames: authGqlNames,
     initFirstItem,
     passwordResetLink,
     magicAuthLink,

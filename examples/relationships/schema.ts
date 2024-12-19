@@ -7,6 +7,7 @@ import type { Lists } from '.keystone/types'
 import { schema as recommendationsStructureSchema } from './structure-relationships'
 import { schema as bundlesStructureSchema } from './structure-relationships-2'
 
+// TODO: add descriptions, better than comments
 export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
