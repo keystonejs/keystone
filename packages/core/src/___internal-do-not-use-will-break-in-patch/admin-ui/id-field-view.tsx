@@ -2,6 +2,9 @@ import React, {
   useCallback,
   useState,
 } from 'react'
+import {
+  useListFormatter
+} from '@react-aria/i18n'
 import copyToClipboard from 'clipboard-copy'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -101,7 +104,17 @@ export function controller (
           />
         )
       },
+      Label ({ label, value, type }) {
+        const listFormatter = useListFormatter({
+          style: 'short',
+          type: 'disjunction',
+        })
 
+        if (['in', 'not_in'].includes(type)) {
+          return `${label.toLowerCase()} (${listFormatter.format(value.split(','))})`
+        }
+        return `${label.toLowerCase()} ${value}`
+      },
       graphql: ({ type, value }) => {
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         const valueWithoutWhitespace = value.replace(/\s/g, '')
@@ -114,13 +127,6 @@ export function controller (
               : valueWithoutWhitespace,
           },
         }
-      },
-      Label ({ label, value, type }) {
-        let renderedValue = value.replace(/\s/g, '')
-        if (['in', 'not_in'].includes(type)) {
-          renderedValue = value.split(',').join(', ')
-        }
-        return `${label.toLowerCase()}: ${renderedValue}`
       },
       types: {
         is: { label: 'Is exactly', initialValue: '' },
