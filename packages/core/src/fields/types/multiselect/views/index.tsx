@@ -1,5 +1,8 @@
-import { useFilter, useListFormatter } from '@react-aria/i18n';
 import React, { useState } from 'react'
+import {
+  useFilter,
+  useListFormatter
+} from '@react-aria/i18n'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
 import { Combobox, Item } from '@keystar/ui/combobox'
@@ -9,11 +12,11 @@ import { ListView } from '@keystar/ui/list-view'
 import { TagGroup } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
 export function Field (props: FieldProps<typeof controller>) {
@@ -201,7 +204,9 @@ export function controller (
         return listView
       },
       graphql: ({ type, value: options }) => ({
-        [config.path]: { [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => x.value) },
+        [config.path]: {
+          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => x.value)
+        },
       }),
       Label ({ type, value }) {
         const listFormatter = useListFormatter({
