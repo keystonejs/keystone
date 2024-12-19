@@ -20,31 +20,58 @@ export const lists = {
         },
 
         hooks: {
-          resolveInput: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
-            console.log('Post.content.hooks.resolveInput', {
+          resolveInput: {
+            create: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
+              console.log('Post.content.hooks.resolveInput.create', {
+                resolvedData,
+                operation,
+                inputData,
+                item,
+                fieldKey,
+              })
+              return resolvedData[fieldKey]
+            },
+            update: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
+              console.log('Post.content.hooks.resolveInput.update', {
+                resolvedData,
+                operation,
+                inputData,
+                item,
+                fieldKey,
+              })
+              return resolvedData[fieldKey]
+            },
+          },
+          validate: {
+            create: async ({
               resolvedData,
-              operation,
               inputData,
               item,
+              addValidationError,
               fieldKey,
-            })
-            return resolvedData[fieldKey]
-          },
-
-          validateInput: async ({
-            resolvedData,
-            inputData,
-            item,
-            addValidationError,
-            fieldKey,
-          }) => {
-            console.log('Post.content.hooks.validateInput', {
+            }) => {
+              console.log('Post.content.hooks.validateInput.create', {
+                resolvedData,
+                inputData,
+                item,
+                fieldKey,
+              })
+            },
+            update: async ({
               resolvedData,
               inputData,
               item,
+              addValidationError,
               fieldKey,
-            })
-          },
+            }) => {
+              console.log('Post.content.hooks.validateInput.update', {
+                resolvedData,
+                inputData,
+                item,
+                fieldKey,
+              })
+            },
+          }
         },
       }),
       rating: stars({
@@ -100,13 +127,22 @@ export const lists = {
         },
       },
 
-      validateInput: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
-        console.log('Post.hooks.validateInput', { resolvedData, operation, inputData, item })
+      validate: {
+        create: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
+          console.log('Post.hooks.validateInput.create', { resolvedData, operation, inputData, item })
 
-        if (Math.random() > 0.95) {
-          addValidationError('oh oh, try again, this is part of the example')
-        }
-      },
+          if (Math.random() > 0.95) {
+            addValidationError('oh oh, try again, this is part of the example')
+          }
+        },
+        update: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
+          console.log('Post.hooks.validateInput.update', { resolvedData, operation, inputData, item })
+
+          if (Math.random() > 0.95) {
+            addValidationError('oh oh, try again, this is part of the example')
+          }
+        },
+      }
     },
   }),
 } satisfies Lists

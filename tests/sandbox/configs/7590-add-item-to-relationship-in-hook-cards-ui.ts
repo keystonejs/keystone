@@ -17,12 +17,22 @@ export const lists = {
         },
         hooks: {
           // every time you save, add a random number
-          async resolveInput (args) {
-            return {
-              ...args.resolvedData[args.fieldKey],
-              create: {
-                value: Math.floor(Math.random() * 100000).toString(),
-              },
+          resolveInput: {
+            create (args) {
+              return {
+                ...args.resolvedData[args.fieldKey],
+                create: {
+                  value: Math.floor(Math.random() * 100000).toString(),
+                },
+              }
+            },
+            update (args) {
+              return {
+                ...args.resolvedData[args.fieldKey],
+                create: {
+                  value: Math.floor(Math.random() * 100000).toString(),
+                },
+              }
             }
           },
         },

@@ -37,13 +37,22 @@ export const stars =
         ...config.hooks,
         // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
         // This hook is the key difference on the backend between the stars field type and the integer field type.
-        async validateInput (args) {
-          const val = args.resolvedData[meta.fieldKey]
-          if (!(val == null || (val >= 0 && val <= maxStars))) {
-            args.addValidationError(`The value must be within the range of 0-${maxStars}`)
+        validate: {
+          async create (args) {
+            const val = args.resolvedData[meta.fieldKey]
+            if (!(val == null || (val >= 0 && val <= maxStars))) {
+              args.addValidationError(`The value must be within the range of 0-${maxStars}`)
+            }
+            await config.hooks?.validate?.create?.(args)
+          },
+          async update (args) {
+            const val = args.resolvedData[meta.fieldKey]
+            if (!(val == null || (val >= 0 && val <= maxStars))) {
+              args.addValidationError(`The value must be within the range of 0-${maxStars}`)
+            }
+            await config.hooks?.validate?.update?.(args)
           }
-          await config.hooks?.validateInput?.(args)
-        },
+        }        
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {

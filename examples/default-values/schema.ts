@@ -17,17 +17,30 @@ export const lists = {
           { label: 'High', value: 'high' },
         ],
         hooks: {
-          resolveInput ({ resolvedData, inputData }) {
-            if (inputData.priority === null) {
-              // default to high if "urgent" is in the label
-              if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
-                return 'high'
-              } else {
-                return 'low'
+          resolveInput: {
+            create ({ resolvedData, inputData }) {
+              if (inputData.priority === null) {
+                // default to high if "urgent" is in the label
+                if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
+                  return 'high'
+                } else {
+                  return 'low'
+                }
               }
-            }
-            return resolvedData.priority
-          },
+              return resolvedData.priority
+            },
+            update ({ resolvedData, inputData }) {
+              if (inputData.priority === null) {
+                // default to high if "urgent" is in the label
+                if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
+                  return 'high'
+                } else {
+                  return 'low'
+                }
+              }
+              return resolvedData.priority
+            },
+          }
         },
       }),
 
@@ -39,33 +52,58 @@ export const lists = {
         many: false,
         hooks: {
           // dynamic default: if unassigned, find an anonymous user and assign the task to them
-          async resolveInput ({ context, operation, resolvedData }) {
-            if (resolvedData.assignedTo === null) {
-              const [user] = await context.db.Person.findMany({
-                where: { name: { equals: 'Anonymous' } },
-              })
-
-              if (user) {
-                return { connect: { id: user.id } }
+          resolveInput: {
+            async create ({ context, operation, resolvedData }) {
+              if (resolvedData.assignedTo === null) {
+                const [user] = await context.db.Person.findMany({
+                  where: { name: { equals: 'Anonymous' } },
+                })
+  
+                if (user) {
+                  return { connect: { id: user.id } }
+                }
               }
-            }
-
-            return resolvedData.assignedTo
-          },
+  
+              return resolvedData.assignedTo
+            },
+            async update ({ context, operation, resolvedData }) {
+              if (resolvedData.assignedTo === null) {
+                const [user] = await context.db.Person.findMany({
+                  where: { name: { equals: 'Anonymous' } },
+                })
+  
+                if (user) {
+                  return { connect: { id: user.id } }
+                }
+              }
+  
+              return resolvedData.assignedTo
+            },
+          }
         },
       }),
 
       // dynamic default: we set the due date to be 7 days in the future
       finishBy: timestamp({
         hooks: {
-          resolveInput ({ resolvedData, inputData, operation }) {
-            if (inputData.finishBy == null) {
-              const date = new Date()
-              date.setUTCDate(new Date().getUTCDate() + 7)
-              return date
-            }
-            return resolvedData.finishBy
-          },
+          resolveInput: {
+            create ({ resolvedData, inputData, operation }) {
+              if (inputData.finishBy == null) {
+                const date = new Date()
+                date.setUTCDate(new Date().getUTCDate() + 7)
+                return date
+              }
+              return resolvedData.finishBy
+            },
+            update ({ resolvedData, inputData, operation }) {
+              if (inputData.finishBy == null) {
+                const date = new Date()
+                date.setUTCDate(new Date().getUTCDate() + 7)
+                return date
+              }
+              return resolvedData.finishBy
+            },
+          }
         },
       }),
 
