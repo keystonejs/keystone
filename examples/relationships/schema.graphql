@@ -4,8 +4,7 @@
 type Post {
   id: ID!
   title: String
-  category(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
-  categoryCount(where: CategoryWhereInput! = {}): Int
+  category: Category
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   related(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
@@ -34,7 +33,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
-  category: CategoryManyRelationFilter
+  category: CategoryWhereInput
   tags: TagManyRelationFilter
   related: PostManyRelationFilter
 }
@@ -78,12 +77,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input CategoryManyRelationFilter {
-  every: CategoryWhereInput
-  some: CategoryWhereInput
-  none: CategoryWhereInput
-}
-
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
@@ -108,18 +101,17 @@ enum OrderDirection {
 
 input PostUpdateInput {
   title: String
-  category: CategoryRelateToManyForUpdateInput
+  category: CategoryRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   related: PostRelateToManyForUpdateInput
   recommendations: [PostRelateToOneForUpdateInput]
   bundles: [PostRelateToManyForUpdateInput]
 }
 
-input CategoryRelateToManyForUpdateInput {
-  disconnect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CategoryRelateToOneForUpdateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+  disconnect: Boolean
 }
 
 input TagRelateToManyForUpdateInput {
@@ -149,16 +141,16 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
-  category: CategoryRelateToManyForCreateInput
+  category: CategoryRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   related: PostRelateToManyForCreateInput
   recommendations: [PostRelateToOneForCreateInput]
   bundles: [PostRelateToManyForCreateInput]
 }
 
-input CategoryRelateToManyForCreateInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CategoryRelateToOneForCreateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
 }
 
 input TagRelateToManyForCreateInput {
