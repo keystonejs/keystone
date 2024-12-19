@@ -366,7 +366,7 @@ export function controller (
         }
 
         console.log(value)
-        const prefix = type === 'not_some' ? `does not include any of` : `includes any of`
+        const prefix = type === 'not_some' ? `is not one of` : `is one of`
         return `${prefix} (${listFormatter.format(value)})`
       },
       graphql: ({ type, value }) => {
