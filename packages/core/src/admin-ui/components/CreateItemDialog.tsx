@@ -1,17 +1,14 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
+import React, { useId } from 'react'
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, useDialogContainer } from '@keystar/ui/dialog'
+import { Box } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { Heading } from '@keystar/ui/typography'
 
-import { jsx, Box } from '@keystone-ui/core'
 import { useList } from '../context'
 
 import { Fields } from '../utils/Fields'
 import { useBuildItem } from '../utils/useCreateItem'
-import { useId } from 'react'
 
 export function BuildItemDialog ({
   listKey,
