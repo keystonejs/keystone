@@ -17,7 +17,7 @@ export const lists = {
 
       category: relationship({
         ref: 'Category.posts',
-        many: true, // a Post can have one Category
+        // many: false, // a Post can have one Category
       }),
 
       // with this field, you can add some Tags to Posts
