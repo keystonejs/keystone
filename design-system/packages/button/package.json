@@ -19,7 +19,6 @@
     "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
-    "@keystone-ui/loading": "workspace:^",
     "react": "^18.3.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/button"
