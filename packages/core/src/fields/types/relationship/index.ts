@@ -111,8 +111,8 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         if (config.ui?.displayMode === 'count') {
           return {
             displayMode: 'count',
-            refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
+            refFieldKey: foreignFieldKey,
             many,
             hideCreate,
             refLabelField,
@@ -126,8 +126,8 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         throwIfMissingFields(localListMeta, foreignListMeta, specificRefLabelField, specificRefSearchFields)
         return {
           displayMode: 'select',
-          refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
+          refFieldKey: foreignFieldKey,
           many,
           hideCreate,
           refLabelField: specificRefLabelField,

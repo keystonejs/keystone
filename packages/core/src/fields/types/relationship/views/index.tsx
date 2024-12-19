@@ -1,4 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React, {
+  Fragment,
+  useState
+} from 'react'
+import {
+  useListFormatter
+} from '@react-aria/i18n'
 
 import { DialogContainer } from '@keystar/ui/dialog'
 import { VStack } from '@keystar/ui/layout'
@@ -336,6 +342,71 @@ export function controller (
         }
       }
       return {}
+    },
+    filter: {
+      Filter (props) {
+        return null // TODO
+      },
+      Label ({ label, type, value }) {
+        const listFormatter = useListFormatter({
+          style: 'short',
+          type: 'disjunction',
+        })
+
+        if (value === null) {
+          if (type === 'empty') return `is empty`
+          if (type === 'not_empty') return `is not empty`
+          value = '' // shouldnt happen
+        }
+
+        if (typeof value === 'string') {
+          if (type === 'is') return `is ${value}`
+          if (type === 'not_is') return `is not ${value}`
+          value = [value] // shouldnt happen
+        }
+
+        console.log(value)
+        const prefix = type === 'not_some' ? `does not include any of` : `includes any of`
+        return `${prefix} (${listFormatter.format(value)})`
+      },
+      graphql: ({ type, value }) => {
+        if (type === 'empty') return { [config.path]: { equals: null } }
+        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'is') return { [config.path]: { id: { equals: value } } }
+        if (type === 'not_is') return { [config.path]: { not: { id: { equals: value } } } }
+        if (type === 'some') return { [config.path]: { some: { id: { in: value } } } }
+        if (type === 'not_some') return { [config.path]: { not: { some: { id: { in: value } } } } }
+        return { [config.path]: { [type]: value } } // uh
+      },
+      types: {
+        ...(many ? {
+          some: {
+            label: 'Includes',
+            initialValue: [],
+          },
+          not_some: {
+            label: 'Does not include',
+            initialValue: [],
+          },
+        } : {
+          empty: {
+            label: 'Is empty',
+            initialValue: null,
+          },
+          not_empty: {
+            label: 'Is not empty',
+            initialValue: null,
+          },
+          is: {
+            label: 'Is',
+            initialValue: null,
+          },
+          not_is: {
+            label: 'Is not',
+            initialValue: null,
+          },
+        }),
+      },
     },
   }
 }

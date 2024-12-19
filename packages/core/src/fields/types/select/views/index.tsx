@@ -162,9 +162,7 @@ export type AdminSelectFieldMeta = {
 }
 
 type Config = FieldControllerConfig<AdminSelectFieldMeta>
-
 type Option = { label: string, value: string }
-
 type Value =
   | { value: Option | null, kind: 'create' }
   | { value: Option | null, initial: Option | null, kind: 'update' }
@@ -286,7 +284,9 @@ export function controller (
         return listView
       },
       graphql: ({ type, value: options }) => ({
-        [config.path]: { [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value)) },
+        [config.path]: {
+          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value))
+        },
       }),
       Label ({ type, value }) {
         const listFormatter = useListFormatter({

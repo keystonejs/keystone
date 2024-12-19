@@ -29,7 +29,7 @@ export type CountRelationshipValue = {
 
 export type RelationshipController = FieldController<
   ManyRelationshipValue | SingleRelationshipValue | CountRelationshipValue,
-  string
+  string[] | (string | null) // | number // TODO: count
 > & {
   display: 'select' | 'count'
   listKey: string
