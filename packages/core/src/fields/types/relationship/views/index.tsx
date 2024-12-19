@@ -187,7 +187,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const overflow = items.length < 3 ? 0 : items.length - 2
 
   return (
-    <Fragment>
+    <Text>
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
@@ -197,7 +197,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
-    </Fragment>
+    </Text>
   )
 }
 
