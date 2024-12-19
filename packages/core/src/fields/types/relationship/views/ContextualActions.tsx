@@ -103,10 +103,8 @@ function useRelatedItem({
 
       const query =
         field.refFieldKey
-          ? `!${field.refFieldKey}_is="${value.id}"`
-          : `!id_in="${value.value
-              .map(item => item.id)
-              .join(',')}"`
+          ? `!${field.refFieldKey}_some=["${value.id}"]`
+          : `!id_in=[${value.value.map(x => `"${x.id}"`).join(',')}]`
 
       return {
         href: `/${foreignList.path}?${query}`,
