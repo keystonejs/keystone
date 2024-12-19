@@ -353,21 +353,9 @@ export function controller (
           type: 'disjunction',
         })
 
-        if (value === null) {
-          if (type === 'empty') return `is empty`
-          if (type === 'not_empty') return `is not empty`
-          value = '' // shouldnt happen
-        }
-
-        if (typeof value === 'string') {
-          if (type === 'is') return `is ${value}`
-          if (type === 'not_is') return `is not ${value}`
-          value = [value] // shouldnt happen
-        }
-
-        console.log(value)
-        const prefix = type === 'not_some' ? `is not one of` : `is one of`
-        return `${prefix} (${listFormatter.format(value)})`
+        if (['empty', 'not_empty'].includes(type)) return label.toLowerCase()
+        if (['is', 'not_is'].includes(type)) return `${label.toLowerCase()} ${value}`
+        return `${label.toLowerCase()} (${listFormatter.format(value || [''])})`
       },
       graphql: ({ type, value }) => {
         if (type === 'empty') return { [config.path]: { equals: null } }
@@ -380,31 +368,13 @@ export function controller (
       },
       types: {
         ...(many ? {
-          some: {
-            label: 'Includes',
-            initialValue: [],
-          },
-          not_some: {
-            label: 'Does not include',
-            initialValue: [],
-          },
+          some: { label: 'Is one of', initialValue: [], },
+          not_some: { label: 'Is not one of', initialValue: [], },
         } : {
-          empty: {
-            label: 'Is empty',
-            initialValue: null,
-          },
-          not_empty: {
-            label: 'Is not empty',
-            initialValue: null,
-          },
-          is: {
-            label: 'Is',
-            initialValue: null,
-          },
-          not_is: {
-            label: 'Is not',
-            initialValue: null,
-          },
+          empty: { label: 'Is empty', initialValue: null, },
+          not_empty: { label: 'Is not empty', initialValue: null, },
+          is: { label: 'Is', initialValue: null, },
+          not_is: { label: 'Is not', initialValue: null, },
         }),
       },
     },
