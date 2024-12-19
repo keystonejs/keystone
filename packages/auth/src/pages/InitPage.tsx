@@ -1,28 +1,42 @@
+import NextHead from 'next/head'
 import React, { useMemo, useState } from 'react'
 import fetch from 'cross-fetch'
 
 import { Stack, Inline } from '@keystone-ui/core'
-import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
+import {
+  Checkbox,
+  FieldLabel,
+  TextInput
+} from '@keystone-ui/fields'
 
 import type { FieldMeta } from '@keystone-6/core/types'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { useRouter, Link } from '@keystone-6/core/admin-ui/router'
-import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import {
   Fields,
   serializeValueToOperationItem,
   useBuildItem,
 } from '@keystone-6/core/admin-ui/utils'
+import {
+  GraphQLErrorNotice,
+  PageWrapper
+} from '@keystone-6/core/admin-ui/components'
 
 import { Button } from '@keystar/ui/button'
-import { VStack } from '@keystar/ui/layout'
+import {
+  Box,
+  VStack
+} from '@keystar/ui/layout'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
-import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
+
+import type {
+  AuthGqlNames,
+} from '../types'
 
 const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
 
@@ -89,15 +103,13 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
     <VStack gap="medium">
       <VStack
         gap="small"
-        align="center"
-        across
-        css={{
+        style={{
           width: '100%',
           justifyContent: 'space-between',
         }}
       >
         <Heading>Welcome</Heading>
-        <VStack across gap="small">
+        <VStack gap="small">
           <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
@@ -111,7 +123,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
         </VStack>
       </VStack>
 
-      <p css={{ margin: 0 }}>
+      <p style={{ margin: 0 }}>
         Thanks for installing Keystone, for help getting started see our documentation at{' '}
         <a href="https://keystonejs.com">keystonejs.com</a>
       </p>
@@ -162,15 +174,17 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
             </Checkbox>
           </Inline>
         </Stack>
-        <p css={{ color: 'red' }}>{error}</p>
+        <p style={{ color: 'red' }}>{error}</p>
         <Inline gap="medium" align="center">
-          <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
+          <Button
+            prominence="high"
+            type="submit"
+            isPending={loading}
+          >
             {error ? 'Try again' : 'Continue'}
           </Button>
           {error && (
-            <Button as={Link} href={'/'} tone="active">
-              Continue
-            </Button>
+            <a href='/'>Continue</a>
           )}
         </Inline>
       </form>
@@ -179,10 +193,12 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
 }
 
 function InitPage ({
-  fieldPaths,
+  authGqlNames,
   listKey,
-  enableWelcome
+  fieldPaths,
+  enableWelcome,
 }: {
+  authGqlNames: AuthGqlNames
   listKey: string
   fieldPaths: string[]
   enableWelcome: boolean
@@ -202,16 +218,21 @@ function InitPage ({
   const builder = useBuildItem(list)
   const [mode, setMode] = useState<'init' | 'welcome'>('init')
 
-  const [createFirstItem, { loading, error, data }] =
-    useMutation(gql`mutation($data: CreateInitial${listKey}Input!) {
-    authenticate: createInitial${listKey}(data: $data) {
-      ... on ${listKey}AuthenticationWithPasswordSuccess {
-        item {
-          id
+  const {
+    createInitialItem,
+    CreateInitialInput,
+    ItemAuthenticationWithPasswordSuccess: successTypename,
+  } = authGqlNames
+  const [tryCreateItem, { loading, error, data }] = useMutation(gql`
+    mutation($data: ${CreateInitialInput}!) {
+      authenticate: ${createInitialItem}(data: $data) {
+        ... on ${successTypename} {
+          item {
+            id
+          }
         }
       }
-    }
-  }`)
+    }`)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -224,7 +245,7 @@ function InitPage ({
     if (!builtValue) return
 
     try {
-      await createFirstItem({
+      await tryCreateItem({
         variables: {
           data: serializeValueToOperationItem('create', fields, builtValue)
         },
@@ -239,33 +260,40 @@ function InitPage ({
   }
 
   const onComplete = () => router.push(redirect)
-  const pending = loading || data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
-  return mode === 'init' ? (
-    <SigninContainer title="Welcome to KeystoneJS">
-      <Heading>Welcome to KeystoneJS</Heading>
-      <Text>Create your first user to get started</Text>
-      <form onSubmit={onSubmit}>
-        <Stack gap="large">
-          <GraphQLErrorNotice
-            errors={[
-              error?.networkError,
-              ...error?.graphQLErrors ?? []
-            ]}
-          />
-          <Fields {...builder.props} />
-          <Button
-            isPending={pending}
-            prominence="high"
-            type="submit"
-          >
-            Get started
-          </Button>
-        </Stack>
-      </form>
-    </SigninContainer>
-  ) : (
-    <SigninContainer>
-      <Welcome value={builder.props.value} onContinue={onComplete} />
-    </SigninContainer>
+  const pending = loading || data?.authenticate?.__typename === successTypename
+
+  return (
+    <PageWrapper>
+      <NextHead>
+        <title key="title">Welcome to KeystoneJS</title>
+      </NextHead>
+      {(mode === 'init' ? (
+        <VStack alignItems="center">
+          <Box padding="large">
+            <Text>Create your first user to get started</Text>
+            <form onSubmit={onSubmit}>
+              <Stack gap="large">
+                <GraphQLErrorNotice
+                  errors={[
+                    error?.networkError,
+                    ...error?.graphQLErrors ?? []
+                  ]}
+                />
+                <Fields {...builder.props} />
+                <Button
+                  isPending={pending}
+                  prominence="high"
+                  type="submit"
+                >
+                  Get started
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </VStack>
+      ) : (
+        <Welcome value={builder.props.value} onContinue={onComplete} />
+      ))}
+    </PageWrapper>
   )
 }

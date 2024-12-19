@@ -2,7 +2,6 @@ import NextHead from 'next/head'
 import React, {
   type HTMLAttributes,
   type ReactNode,
-  Fragment,
   useState
 } from 'react'
 
@@ -16,23 +15,21 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { Logo } from './Logo'
 import { Navigation } from './Navigation'
 
-const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
+export function PageWrapper (props: HTMLAttributes<HTMLElement>) {
   return (
-    <Fragment>
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateRows: `repeat(2, ${tokenSchema.size.element.large}) auto`,
-          height: '100vh',
-          isolation: 'isolate',
-          [breakpointQueries.above.mobile]: {
-            gridTemplateColumns: `${tokenSchema.size.scale[3600]} minmax(0, 1fr)`,
-            gridTemplateRows: `${tokenSchema.size.element.xlarge} auto`,
-          },
-        })}
-        {...props}
-      />
-    </Fragment>
+    <div
+      className={css({
+        display: 'grid',
+        gridTemplateRows: `repeat(2, ${tokenSchema.size.element.large}) auto`,
+        height: '100vh',
+        isolation: 'isolate',
+        [breakpointQueries.above.mobile]: {
+          gridTemplateColumns: `${tokenSchema.size.scale[3600]} minmax(0, 1fr)`,
+          gridTemplateRows: `${tokenSchema.size.element.xlarge} auto`,
+        },
+      })}
+      {...props}
+    />
   )
 }
 

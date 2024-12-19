@@ -19,7 +19,10 @@ export {
 // importing this type from @keystone-6/core/admin-ui/components is probably intuitive for a user
 export type { NavigationProps } from '../../types'
 
-export { PageContainer } from './PageContainer'
+export {
+  PageContainer,
+  PageWrapper
+} from './PageContainer'
 export { BuildItemDialog } from './CreateItemDialog'
 export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 export { Pagination, PaginationLabel, usePaginationParams } from './Pagination'

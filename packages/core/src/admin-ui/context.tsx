@@ -18,8 +18,6 @@ import {
   tokenSchema
 } from '@keystar/ui/style'
 
-import { Center } from '@keystone-ui/core'
-import { LoadingDots } from '@keystone-ui/loading'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { DrawerProvider } from '@keystone-ui/modals'
 import { ToastProvider } from '@keystone-ui/toast'
@@ -167,12 +165,8 @@ function InternalKeystoneProvider ({
     })
   }, [])
 
-  if (loading) {
-    return (<Center fillView>
-      <LoadingDots label='Loading Admin Metadata' size='large' />
-    </Center>)
-  }
-
+  // TODO
+  if (!meta && loading) return null
   return (
     <KeystarProvider router={keystarRouter}>
       <ClientSideOnlyDocumentElement bodyBackground='surface' />

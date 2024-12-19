@@ -1,43 +1,54 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import {
+import React, {
   type FormEvent,
-  Fragment,
   useEffect,
   useRef,
   useState,
 } from 'react'
 
-import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
+import { Button } from '@keystar/ui/button'
 import { TextInput } from '@keystone-ui/fields'
-import { Notice } from '@keystone-ui/notice'
+import { VStack } from '@keystar/ui/layout'
+import {
+  Heading,
+  Text,
+} from '@keystar/ui/typography'
 
 import {
   useMutation,
   gql
 } from '@keystone-6/core/admin-ui/apollo'
+import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
 import { SigninContainer } from '../components/SigninContainer'
+
+import type {
+  AuthGqlNames,
+} from '../types'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
-export function SigninPage ({
+function SigninPage ({
   identityField,
   secretField,
-  mutationName,
-  successTypename,
-  failureTypename,
+  authGqlNames,
 }: {
   identityField: string
   secretField: string
-  mutationName: string
-  successTypename: string
-  failureTypename: string
+  authGqlNames: AuthGqlNames
 }) {
-  const mutation = gql`
+  const [state, setState] = useState({ identity: '', secret: '' })
+  const identityFieldRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    identityFieldRef.current?.focus()
+  }, [])
+
+  const {
+    authenticateItemWithPassword: mutationName,
+    ItemAuthenticationWithPasswordSuccess: successTypename,
+    ItemAuthenticationWithPasswordFailure: failureTypename,
+  } = authGqlNames
+  const [tryAuthenticate, { error, loading, data }] = useMutation(gql`
     mutation ($identity: String!, $secret: String!) {
-      authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${mutationName}${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
             id
@@ -47,16 +58,8 @@ export function SigninPage ({
           message
         }
       }
-    }
-  `
+    }`)
 
-  const [state, setState] = useState({ identity: '', secret: '' })
-  const identityFieldRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    identityFieldRef.current?.focus()
-  }, [])
-
-  const [tryAuthenticate, { error, loading, data }] = useMutation(mutation)
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -73,20 +76,23 @@ export function SigninPage ({
     }
   }
 
+  const pending = loading || data?.authenticate?.__typename === successTypename
   return (
     <SigninContainer title='Keystone - Sign in'>
-      <Stack gap='xlarge' as='form' onSubmit={onSubmit}>
-        <H1>Sign in</H1>
-        {error ? <Notice title='Error' tone='negative'>{error.message}</Notice> : null}
-        {data?.authenticate?.__typename === failureTypename && (
-          <Notice title='Error' tone='negative'>
+      <VStack gap='xlarge' as='form' onSubmit={onSubmit}>
+        <Heading>Sign in</Heading>
+        <GraphQLErrorNotice
+          errors={[
+            error?.networkError,
+            ...error?.graphQLErrors ?? []
+          ]}
+        />
+        {/* TODO: FIXME, bad UI */ data?.authenticate?.__typename === failureTypename && (
+          <Text>
             {data?.authenticate.message}
-          </Notice>
+          </Text>
         )}
-        <Stack gap='medium'>
-          <VisuallyHidden as='label' htmlFor='identity'>
-            {identityField}
-          </VisuallyHidden>
+        <VStack gap='medium'>
           <TextInput
             id='identity'
             name='identity'
@@ -95,36 +101,26 @@ export function SigninPage ({
             placeholder={identityField}
             ref={identityFieldRef}
           />
-          <Fragment>
-            <VisuallyHidden as='label' htmlFor='password'>
-              {secretField}
-            </VisuallyHidden>
-            <TextInput
-              id='password'
-              name='password'
-              value={state.secret}
-              onChange={e => setState({ ...state, secret: e.target.value })}
-              placeholder={secretField}
-              type='password'
-            />
-          </Fragment>
-        </Stack>
+          <TextInput
+            id='password'
+            name='password'
+            value={state.secret}
+            onChange={e => setState({ ...state, secret: e.target.value })}
+            placeholder={secretField}
+            type='password'
+          />
+        </VStack>
 
-        <Stack gap='medium' across>
+        <VStack gap='medium'>
           <Button
-            weight='bold'
-            tone='active'
-            isLoading={
-              loading ||
-              // this is for while the page is loading but the mutation has finished successfully
-              data?.authenticate?.__typename === successTypename
-            }
-            type='submit'
+            prominence="high"
+            type="submit"
+            isPending={pending}
           >
             Sign in
           </Button>
-        </Stack>
-      </Stack>
+        </VStack>
+      </VStack>
     </SigninContainer>
   )
 }
