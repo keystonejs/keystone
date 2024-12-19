@@ -13,11 +13,11 @@ import { Flex, VStack } from '@keystar/ui/layout'
 import { TextField } from '@keystar/ui/text-field'
 import { Text, VisuallyHidden } from '@keystar/ui/typography'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
 function validate (value: Value, validation: Validation, fieldLabel: string): string | undefined {
