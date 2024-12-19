@@ -6,12 +6,13 @@ import { NumberField } from '@keystar/ui/number-field'
 
 import { Heading, Text } from '@keystar/ui/typography'
 
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
+// TODO: extract
 const TYPE_OPERATOR_MAP = {
   equals: '=',
   not: '≠',
@@ -81,6 +82,8 @@ export function controller (
     },
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value }),
+    hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
+    validate: value => validate(value) === undefined,
     filter: {
       Filter (props) {
         const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
@@ -152,9 +155,6 @@ export function controller (
         },
       },
     },
-
-    hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
-    validate: value => validate(value) === undefined,
   }
 }
 

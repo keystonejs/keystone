@@ -102,10 +102,9 @@ function useRelatedItem({
       if (!value.value.length) return null
 
       const query =
-        field.refFieldKey && value.id
-          ? `!${field.refFieldKey}_matches="${value.id}"`
+        field.refFieldKey
+          ? `!${field.refFieldKey}_is="${value.id}"`
           : `!id_in="${value.value
-              .slice(0, 100) // where does 100 come from?
               .map(item => item.id)
               .join(',')}"`
 
