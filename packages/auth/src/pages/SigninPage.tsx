@@ -1,13 +1,16 @@
+import NextHead from 'next/head'
 import React, {
   type FormEvent,
-  useEffect,
-  useRef,
   useState,
 } from 'react'
 
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { Button } from '@keystar/ui/button'
-import { TextInput } from '@keystone-ui/fields'
-import { VStack } from '@keystar/ui/layout'
+import { TextField } from '@keystar/ui/text-field'
+import {
+  Box,
+  VStack,
+} from '@keystar/ui/layout'
 import {
   Heading,
   Text,
@@ -17,8 +20,10 @@ import {
   useMutation,
   gql
 } from '@keystone-6/core/admin-ui/apollo'
-import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
-import { SigninContainer } from '../components/SigninContainer'
+import {
+  GraphQLErrorNotice,
+  PageWrapper
+} from '@keystone-6/core/admin-ui/components'
 
 import type {
   AuthGqlNames,
@@ -35,12 +40,8 @@ function SigninPage ({
   secretField: string
   authGqlNames: AuthGqlNames
 }) {
+  const router = useRouter()
   const [state, setState] = useState({ identity: '', secret: '' })
-  const identityFieldRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    identityFieldRef.current?.focus()
-  }, [])
-
   const {
     authenticateItemWithPassword: mutationName,
     ItemAuthenticationWithPasswordSuccess: successTypename,
@@ -48,7 +49,7 @@ function SigninPage ({
   } = authGqlNames
   const [tryAuthenticate, { error, loading, data }] = useMutation(gql`
     mutation ($identity: String!, $secret: String!) {
-      authenticate: ${mutationName}${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
             id
@@ -64,12 +65,16 @@ function SigninPage ({
     event.preventDefault()
 
     try {
-      await tryAuthenticate({
+      const { data } = await tryAuthenticate({
         variables: {
           identity: state.identity,
           secret: state.secret,
         },
       })
+
+      if (data.authenticate.item) {
+        router.push('/')
+      }
     } catch (e) {
       console.error(e)
       return
@@ -77,50 +82,55 @@ function SigninPage ({
   }
 
   const pending = loading || data?.authenticate?.__typename === successTypename
-  return (
-    <SigninContainer title='Keystone - Sign in'>
-      <VStack gap='xlarge' as='form' onSubmit={onSubmit}>
-        <Heading>Sign in</Heading>
-        <GraphQLErrorNotice
-          errors={[
-            error?.networkError,
-            ...error?.graphQLErrors ?? []
-          ]}
-        />
-        {/* TODO: FIXME, bad UI */ data?.authenticate?.__typename === failureTypename && (
-          <Text>
-            {data?.authenticate.message}
-          </Text>
-        )}
-        <VStack gap='medium'>
-          <TextInput
-            id='identity'
-            name='identity'
-            value={state.identity}
-            onChange={e => setState({ ...state, identity: e.target.value })}
-            placeholder={identityField}
-            ref={identityFieldRef}
-          />
-          <TextInput
-            id='password'
-            name='password'
-            value={state.secret}
-            onChange={e => setState({ ...state, secret: e.target.value })}
-            placeholder={secretField}
-            type='password'
-          />
-        </VStack>
 
-        <VStack gap='medium'>
-          <Button
-            prominence="high"
-            type="submit"
-            isPending={pending}
-          >
-            Sign in
-          </Button>
-        </VStack>
+  return (
+    <PageWrapper>
+      <NextHead>
+        <title key="title">Keystone - Sign in</title>
+      </NextHead>
+      <VStack gap='xlarge'>
+        <Box padding="xlarge">
+          <Heading>Sign in</Heading>
+          <GraphQLErrorNotice
+            errors={[
+              error?.networkError,
+              ...error?.graphQLErrors ?? []
+            ]}
+          />
+          {/* TODO: FIXME, use notice */ data?.authenticate?.__typename === failureTypename && (
+            <Text>
+              {data?.authenticate.message}
+            </Text>
+          )}
+          <form onSubmit={onSubmit}>
+            <VStack padding='medium' gap='medium'>
+              <TextField
+                id='identity'
+                name='identity'
+                autoFocus
+                value={state.identity}
+                onChange={v => setState({ ...state, identity: v })}
+                placeholder={identityField}
+              />
+              <TextField
+                type='password'
+                id='password'
+                name='password'
+                value={state.secret}
+                onChange={v => setState({ ...state, secret: v })}
+                placeholder={secretField}
+              />
+              <Button
+                isPending={pending}
+                prominence="high"
+                type="submit"
+              >
+                Sign in
+              </Button>
+            </VStack>
+          </form>
+        </Box>
       </VStack>
-    </SigninContainer>
+    </PageWrapper>
   )
 }
