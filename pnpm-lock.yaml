@@ -92,9 +92,6 @@ importers:
       '@keystone-ui/icons':
         specifier: workspace:^
         version: link:../icons
-      '@keystone-ui/loading':
-        specifier: workspace:^
-        version: link:../loading
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -199,22 +196,6 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
 
-  design-system/packages/loading:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.16
-
   design-system/packages/modals:
     dependencies:
       '@babel/runtime':
@@ -249,69 +230,6 @@ importers:
         specifier: 4.4.12
         version: 4.4.12(@types/react@18.3.16)
 
-  design-system/packages/notice:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/button':
-        specifier: workspace:^
-        version: link:../button
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      '@keystone-ui/icons':
-        specifier: workspace:^
-        version: link:../icons
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.16
-
-  design-system/packages/options:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../fields
-      '@keystone-ui/icons':
-        specifier: workspace:^
-        version: link:../icons
-      react-select:
-        specifier: ^5.2.1
-        version: 5.9.0(@types/react@18.3.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    devDependencies:
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-
-  design-system/packages/pill:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      '@keystone-ui/icons':
-        specifier: workspace:^
-        version: link:../icons
-    devDependencies:
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-
   design-system/packages/popover:
     dependencies:
       '@babel/runtime':
@@ -336,22 +254,6 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-
-  design-system/packages/segmented-control:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.16
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
 
   design-system/packages/toast:
     dependencies:
@@ -394,76 +296,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
-  design-system/website:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/button':
-        specifier: workspace:^
-        version: link:../packages/button
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../packages/fields
-      '@keystone-ui/loading':
-        specifier: workspace:^
-        version: link:../packages/loading
-      '@keystone-ui/modals':
-        specifier: workspace:^
-        version: link:../packages/modals
-      '@keystone-ui/notice':
-        specifier: workspace:^
-        version: link:../packages/notice
-      '@keystone-ui/options':
-        specifier: workspace:^
-        version: link:../packages/options
-      '@keystone-ui/pill':
-        specifier: workspace:^
-        version: link:../packages/pill
-      '@keystone-ui/popover':
-        specifier: workspace:^
-        version: link:../packages/popover
-      '@keystone-ui/segmented-control':
-        specifier: workspace:^
-        version: link:../packages/segmented-control
-      '@keystone-ui/toast':
-        specifier: workspace:^
-        version: link:../packages/toast
-      '@keystone-ui/tooltip':
-        specifier: workspace:^
-        version: link:../packages/tooltip
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.16
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.5(@types/react@18.3.16)
-      '@types/tinycolor2':
-        specifier: ^1.4.3
-        version: 1.4.6
-      next:
-        specifier: ^14.2.0
-        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      tinycolor2:
-        specifier: ^1.4.2
-        version: 1.6.0
-    devDependencies:
-      typescript:
-        specifier: ^5.5.0
-        version: 5.7.2
-
   docs:
     dependencies:
       '@babel/runtime':
@@ -488,7 +320,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@keystar/ui':
-        specifier: ^0.7.6
+        specifier: ^0.7.13
         version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystatic/core':
         specifier: ^0.5.24
@@ -740,6 +572,9 @@ importers:
 
   examples/custom-admin-ui-navigation:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -759,6 +594,9 @@ importers:
 
   examples/custom-admin-ui-pages:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -803,6 +641,9 @@ importers:
 
   examples/custom-field:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1293,6 +1134,9 @@ importers:
       '@graphql-tools/schema':
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.10.0)
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1672,6 +1516,22 @@ importers:
         specifier: ^5.5.0
         version: 5.7.2
 
+  examples/number-fields:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.3.1
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 5.19.0
+        version: 5.19.0(prisma@5.19.0)
+    devDependencies:
+      prisma:
+        specifier: 5.19.0
+        version: 5.19.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.7.2
+
   examples/omit:
     dependencies:
       '@keystone-6/core':
@@ -1937,6 +1797,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -1946,12 +1809,6 @@ importers:
       '@keystone-ui/fields':
         specifier: workspace:^
         version: link:../../design-system/packages/fields
-      '@keystone-ui/loading':
-        specifier: workspace:^
-        version: link:../../design-system/packages/loading
-      '@keystone-ui/notice':
-        specifier: workspace:^
-        version: link:../../design-system/packages/notice
       cross-fetch:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1961,6 +1818,9 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.10.0
+      next:
+        specifier: ^14.2.0
+        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -1983,9 +1843,6 @@ importers:
       '@keystone-ui/fields':
         specifier: workspace:^
         version: link:../../design-system/packages/fields
-      '@keystone-ui/pill':
-        specifier: workspace:^
-        version: link:../../design-system/packages/pill
       cloudinary:
         specifier: ^2.0.0
         version: 2.5.1
@@ -2050,6 +1907,12 @@ importers:
       '@hapi/iron':
         specifier: ^7.0.0
         version: 7.0.1
+      '@internationalized/date':
+        specifier: ^3.5.5
+        version: 3.6.0
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-ui/button':
         specifier: workspace:^
         version: link:../../design-system/packages/button
@@ -2062,27 +1925,12 @@ importers:
       '@keystone-ui/icons':
         specifier: workspace:^
         version: link:../../design-system/packages/icons
-      '@keystone-ui/loading':
-        specifier: workspace:^
-        version: link:../../design-system/packages/loading
       '@keystone-ui/modals':
         specifier: workspace:^
         version: link:../../design-system/packages/modals
-      '@keystone-ui/notice':
-        specifier: workspace:^
-        version: link:../../design-system/packages/notice
-      '@keystone-ui/options':
-        specifier: workspace:^
-        version: link:../../design-system/packages/options
-      '@keystone-ui/pill':
-        specifier: workspace:^
-        version: link:../../design-system/packages/pill
       '@keystone-ui/popover':
         specifier: workspace:^
         version: link:../../design-system/packages/popover
-      '@keystone-ui/segmented-control':
-        specifier: workspace:^
-        version: link:../../design-system/packages/segmented-control
       '@keystone-ui/toast':
         specifier: workspace:^
         version: link:../../design-system/packages/toast
@@ -2101,6 +1949,18 @@ importers:
       '@prisma/migrate':
         specifier: 5.22.0
         version: 5.22.0(@prisma/generator-helper@5.22.0)(@prisma/internals@5.22.0)
+      '@react-aria/i18n':
+        specifier: ^3.12.1
+        version: 3.12.4(react@18.3.1)
+      '@react-aria/label':
+        specifier: ^3.7.10
+        version: 3.7.13(react@18.3.1)
+      '@react-aria/utils':
+        specifier: ^3.25.1
+        version: 3.26.0(react@18.3.1)
+      '@react-stately/data':
+        specifier: ^3.11.6
+        version: 3.12.0(react@18.3.1)
       '@sindresorhus/slugify':
         specifier: ^1.1.2
         version: 1.1.2
@@ -2294,6 +2154,9 @@ importers:
       '@emotion/weak-memoize':
         specifier: ^0.4.0
         version: 0.4.0
+      '@keystar/ui':
+        specifier: ^0.7.14
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
@@ -6574,9 +6437,6 @@ packages:
 
   '@types/supertest@2.0.16':
     resolution: {integrity: sha512-6c2ogktZ06tr2ENoZivgm7YnprnhYE4ZoXGMY+oA7IuAf17M8FWvujXZGmxLv8y0PTyts4x5A+erSwVUFA8XSg==}
-
-  '@types/tinycolor2@1.4.6':
-    resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
@@ -11781,9 +11641,6 @@ packages:
 
   tiny-warning@1.0.3:
     resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
-
-  tinycolor2@1.6.0:
-    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
 
   tinyexec@0.3.1:
     resolution: {integrity: sha512-WiCJLEECkO18gwqIp6+hJg0//p23HXp4S+gGtAKu3mI2F2/sXC4FvHvXvB0zJVVaTPhx1/tOwdbRsa1sOBIKqQ==}
@@ -17920,8 +17777,6 @@ snapshots:
   '@types/supertest@2.0.16':
     dependencies:
       '@types/superagent': 4.1.24
-
-  '@types/tinycolor2@1.4.6': {}
 
   '@types/tough-cookie@4.0.5': {}
 
@@ -24660,8 +24515,6 @@ snapshots:
   tiny-invariant@1.3.1: {}
 
   tiny-warning@1.0.3: {}
-
-  tinycolor2@1.6.0: {}
 
   tinyexec@0.3.1: {}
 
