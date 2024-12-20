@@ -4,29 +4,19 @@ import React, {
   useState,
 } from 'react'
 
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { Button } from '@keystar/ui/button'
+import { Grid, HStack, VStack } from '@keystar/ui/layout'
+import { Notice } from '@keystar/ui/notice'
+import { PasswordField } from '@keystar/ui/password-field'
+import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
-import {
-  Box,
-  VStack,
-} from '@keystar/ui/layout'
-import {
-  Heading,
-  Text,
-} from '@keystar/ui/typography'
+import { Heading, Text } from '@keystar/ui/typography'
 
-import {
-  useMutation,
-  gql
-} from '@keystone-6/core/admin-ui/apollo'
-import {
-  GraphQLErrorNotice,
-} from '@keystone-6/core/admin-ui/components'
+import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-import type {
-  AuthGqlNames,
-} from '../types'
+import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
@@ -83,53 +73,87 @@ function SigninPage ({
   const pending = loading || data?.authenticate?.__typename === successTypename
 
   return (
-    <PageWrapper>
+    <>
       <NextHead>
         <title key="title">Keystone - Sign in</title>
       </NextHead>
-      <VStack gap='xlarge'>
-        <Box padding="xlarge">
-          <Heading>Sign in</Heading>
+      <Grid
+        alignItems="center"
+        marginX="auto"
+        maxWidth="100%"
+        minHeight="100vh"
+        minWidth={0}
+        paddingX="xlarge"
+        rows="auto 1fr"
+        width="container.xsmall"
+      >
+        <HStack paddingY="xlarge">
+          <Logo />
+        </HStack>
+
+        <VStack
+          elementType='form'
+          onSubmit={onSubmit}
+          // styles
+          flex
+          gap="xxlarge"
+          paddingY="xlarge"
+        >
+          <Heading elementType='h1' size='regular'>Sign in</Heading>
+
           <GraphQLErrorNotice
             errors={[
               error?.networkError,
               ...error?.graphQLErrors ?? []
             ]}
           />
-          {/* TODO: FIXME, use notice */ data?.authenticate?.__typename === failureTypename && (
-            <Text>
-              {data?.authenticate.message}
-            </Text>
+
+          {data?.authenticate?.__typename === failureTypename && (
+            <Notice tone="critical">
+              <Content>
+                <Text>
+                  {data?.authenticate.message}
+                </Text>
+              </Content>
+            </Notice>
           )}
-          <form onSubmit={onSubmit}>
-            <VStack padding='medium' gap='medium'>
-              <TextField
-                id='identity'
-                name='identity'
-                autoFocus
-                value={state.identity}
-                onChange={v => setState({ ...state, identity: v })}
-                placeholder={identityField}
-              />
-              <TextField
-                type='password'
-                id='password'
-                name='password'
-                value={state.secret}
-                onChange={v => setState({ ...state, secret: v })}
-                placeholder={secretField}
-              />
-              <Button
-                isPending={pending}
-                prominence="high"
-                type="submit"
-              >
-                Sign in
-              </Button>
-            </VStack>
-          </form>
-        </Box>
-      </VStack>
-    </PageWrapper>
+
+          <VStack gap="large">
+            <TextField
+              autoFocus
+              id='identity'
+              isRequired
+              label={capitalizeFirstLetter(identityField)}
+              name='identity'
+              onChange={v => setState({ ...state, identity: v })}
+              value={state.identity}
+            />
+            <PasswordField
+              id='password'
+              isRequired
+              label={capitalizeFirstLetter(secretField)}
+              // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
+              name='password'
+              onChange={v => setState({ ...state, secret: v })}
+              type='password'
+              value={state.secret}
+            />
+          </VStack>
+
+          <Button
+            isPending={pending}
+            prominence="high"
+            type="submit"
+            alignSelf="start"
+          >
+            Sign in
+          </Button>
+        </VStack>
+      </Grid>
+    </>
   )
+}
+
+function capitalizeFirstLetter (value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }
