@@ -2,13 +2,6 @@ import NextHead from 'next/head'
 import React, { useState } from 'react'
 import fetch from 'cross-fetch'
 
-import { Stack, Inline } from '@keystone-ui/core'
-import {
-  Checkbox,
-  FieldLabel,
-  TextInput
-} from '@keystone-ui/fields'
-
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
@@ -22,8 +15,11 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 
 import { Button } from '@keystar/ui/button'
+import { Checkbox } from '@keystar/ui/checkbox'
+import { TextField } from '@keystar/ui/text-field'
 import {
   Box,
+  HStack,
   VStack
 } from '@keystar/ui/layout'
 import { Heading, Text } from '@keystar/ui/typography'
@@ -131,20 +127,19 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       </p>
 
       <form onSubmit={onSubmit}>
-        <Stack gap="medium">
-          <FieldLabel htmlFor="email-field">Email</FieldLabel>
-          <TextInput
-            id="email-field"
+        <VStack padding='medium' gap='medium'>
+          <TextField
+            id='email-field'
+            name='email'
             autoFocus
-            required={subscribe.keystone || subscribe.thinkmill}
-            placeholder={'example@gmail.com'}
+            isRequired={subscribe.keystone || subscribe.thinkmill}
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={v => setEmail(v)}
+            placeholder={'example@gmail.com'}
           />
-          <Inline gap="medium">
+          <HStack gap="medium">
             <Checkbox
-              size='small'
-              checked={subscribe.keystone}
+              isSelected={subscribe.keystone}
               onChange={() => {
                 setError(null)
                 setSubscribe((prevState) => ({ ...prevState, keystone: !subscribe.keystone }))
@@ -153,8 +148,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
               Keystone news
             </Checkbox>
             <Checkbox
-              size='small'
-              checked={subscribe.thinkmill}
+              isSelected={subscribe.thinkmill}
               onChange={() => {
                 setError(null)
                 setSubscribe((prevState) => ({ ...prevState, thinkmill: !subscribe.thinkmill }))
@@ -170,21 +164,19 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
                 </a>
               )
             </Checkbox>
-          </Inline>
-        </Stack>
+          </HStack>
+        </VStack>
         <p style={{ color: 'red' }}>{error}</p>
-        <Inline gap="medium" align="center">
-          <Button
-            prominence="high"
-            type="submit"
-            isPending={loading}
-          >
-            {error ? 'Try again' : 'Continue'}
-          </Button>
-          {error && (
-            <a href='/'>Continue</a>
-          )}
-        </Inline>
+        <Button
+          prominence="high"
+          type="submit"
+          isPending={loading}
+        >
+          {error ? 'Try again' : 'Continue'}
+        </Button>
+        {/* TODO: FIXME */ error && (
+          <a href='/'>Continue</a>
+        )}
       </form>
     </VStack>
   )
@@ -262,7 +254,7 @@ function InitPage ({
           <Box padding="xlarge">
             <Text>Create your first user to get started</Text>
             <form onSubmit={onSubmit}>
-              <Stack gap="large">
+              <VStack padding='medium' gap="large">
                 <GraphQLErrorNotice
                   errors={[
                     error?.networkError,
@@ -277,7 +269,7 @@ function InitPage ({
                 >
                   Get started
                 </Button>
-              </Stack>
+              </VStack>
             </form>
           </Box>
         </VStack>
