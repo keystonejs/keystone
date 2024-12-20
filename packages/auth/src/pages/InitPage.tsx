@@ -12,7 +12,6 @@ import {
 import {
   GraphQLErrorNotice,
   Logo,
-  PageWrapper
 } from '@keystone-6/core/admin-ui/components'
 
 import { Button } from '@keystar/ui/button'

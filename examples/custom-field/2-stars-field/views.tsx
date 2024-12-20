@@ -1,10 +1,10 @@
 import React, { InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
 
 // this is the component shown in the create modal and item page

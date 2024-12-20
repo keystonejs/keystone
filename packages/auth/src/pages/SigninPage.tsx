@@ -22,7 +22,6 @@ import {
 } from '@keystone-6/core/admin-ui/apollo'
 import {
   GraphQLErrorNotice,
-  PageWrapper
 } from '@keystone-6/core/admin-ui/components'
 
 import type {
