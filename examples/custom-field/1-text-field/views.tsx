@@ -1,10 +1,10 @@
 import React from 'react'
 import { TextField } from '@keystar/ui/text-field'
 
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
 
 export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {

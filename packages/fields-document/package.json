@@ -101,7 +101,6 @@
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/fields": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
     "@keystone-ui/modals": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
