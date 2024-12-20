@@ -7,9 +7,10 @@ import { ActionButton, ToggleButton } from '@keystar/ui/button'
 import { Checkbox } from '@keystar/ui/checkbox'
 import { FieldLabel, FieldMessage } from '@keystar/ui/field'
 import { Icon } from '@keystar/ui/icon'
-import { eyeIcon } from '@keystar/ui/icon/icons/eyeIcon';
+import { eyeIcon } from '@keystar/ui/icon/icons/eyeIcon'
 import { asteriskIcon } from '@keystar/ui/icon/icons/asteriskIcon'
 import { Flex, VStack } from '@keystar/ui/layout'
+import { containerQueries, css } from '@keystar/ui/style'
 import { TextField } from '@keystar/ui/text-field'
 import { Text, VisuallyHidden } from '@keystar/ui/typography'
 
@@ -136,7 +137,11 @@ export function Field (props: FieldProps<typeof controller>) {
           {field.label.toLocaleLowerCase()}
         </ActionButton>
       ) : (
-        <Flex gap="regular" direction={{ mobile: 'column', tablet: 'row' }}>
+        <Flex gap="regular" UNSAFE_className={css({
+          [containerQueries.below.tablet]: {
+            flexDirection: 'column',
+          }
+        })}>
           <TextField
             autoFocus
             aria-label={`new ${field.label}`}
@@ -172,7 +177,11 @@ export function Field (props: FieldProps<typeof controller>) {
               onPress={() => setSecureTextEntry(bool => !bool)}
             >
               <Icon src={eyeIcon} />
-              <Text isHidden={{ above: 'mobile' }}>Show</Text>
+              <Text UNSAFE_className={css({
+                [containerQueries.above.mobile]: {
+                  display: 'none',
+                }
+              })}>Show</Text>
             </ToggleButton>
             <ActionButton onPress={cancelEditing}>
               Cancel
