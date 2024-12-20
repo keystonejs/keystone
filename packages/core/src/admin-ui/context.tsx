@@ -71,6 +71,7 @@ function InternalKeystoneProvider ({
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery)
+  console.error({ data })
   const lists = data?.keystone?.adminMeta?.lists
   const meta = useMemo(() => {
     if (!lists) return
@@ -166,7 +167,8 @@ function InternalKeystoneProvider ({
   }, [])
 
   // TODO
-  if (!meta) return null
+  if (loading) return null
+//   if (!meta) return null
   return (
     <KeystarProvider router={keystarRouter}>
       <ClientSideOnlyDocumentElement bodyBackground='surface' />
@@ -186,7 +188,7 @@ function InternalKeystoneProvider ({
         <DrawerProvider>
           <KeystoneContext.Provider value={{
             adminConfig,
-            adminMeta: meta,
+            adminMeta: meta ?? null,
             fieldViews,
             apiPath,
           }}>

@@ -25,4 +25,3 @@ export {
 } from './PageContainer'
 export { BuildItemDialog } from './CreateItemDialog'
 export { GraphQLErrorNotice } from './GraphQLErrorNotice'
-export { Pagination, PaginationLabel, usePaginationParams } from './Pagination'
