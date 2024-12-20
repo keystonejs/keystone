@@ -1,14 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { jsx, Stack, useTheme } from '@keystone-ui/core'
-import { useEffect, useMemo, useRef, useState } from 'react'
-
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
-import { Pill } from '@keystone-ui/pill'
-import { Button } from '@keystone-ui/button'
-import { type FieldProps } from '@keystone-6/core/types'
-import { type controller } from '.'
+import { VStack } from '@keystar-ui/layout'
+import { Button } from '@keystar-ui/button'
+import { Notice } from '@keystar-ui/notice'
+import type { FieldProps } from '@keystone-6/core/types'
+import type { controller } from '.'
 
 function useObjectURL (fileData: File | undefined) {
   const [objectURL, setObjectURL] = useState<string | undefined>(undefined)
@@ -31,14 +27,10 @@ export function Field ({
   onChange,
 }: FieldProps<typeof controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null)
-
   const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined
 
-  const imagePathFromUpload = useObjectURL(
-    errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
-  )
-  const imagePath =
-    value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload
+  const imagePathFromUpload = useObjectURL(errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined)
+  const imagePath = value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload
 
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
@@ -50,10 +42,10 @@ export function Field ({
       <FieldLabel>{field.label}</FieldLabel>
       <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {value.kind === 'from-server' || value.kind === 'upload' ? (
-        <Stack gap="small">
+        <VStack gap="small">
           {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}
           {onChange && (
-            <Stack across gap="small" align="center">
+            <VStack gap="small" alignItems="center">
               <Button
                 size="small"
                 onClick={() => {
@@ -85,21 +77,21 @@ export function Field ({
                 </Button>
               )}
               {errorMessage ? (
-                <Pill tone="negative" weight="light">
+                <Notice tone="critical">
                   {errorMessage}
-                </Pill>
+                </Notice>
               ) : (
                 value.kind === 'upload' && (
-                  <Pill weight="light" tone="positive">
+                  <Notice tone="critical">
                     Save to upload this image
-                  </Pill>
+                  </Notice>
                 )
               )}
-            </Stack>
+            </VStack>
           )}
-        </Stack>
+        </VStack>
       ) : (
-        <Stack css={{ alignItems: 'center' }} gap="small" across>
+        <VStack alignItems="center" gap="small">
           <Button
             size="small"
             disabled={onChange === undefined}
@@ -127,11 +119,11 @@ export function Field ({
             //   Save to remove this image
             // </Pill>
             null}
-        </Stack>
+        </VStack>
       )}
 
       <input
-        css={{ display: 'none' }}
+        style={{ display: 'none' }}
         autoComplete="off"
         autoFocus={autoFocus}
         ref={inputRef}

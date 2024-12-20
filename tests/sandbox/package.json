@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/sandbox",
-  "version": "1.0.0",
+  "version": null,
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -14,7 +14,6 @@
     "@keystone-6/fields-document": "workspace:^",
     "@keystone-ui/button": "workspace:^",
     "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/fields": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
     "@prisma/client": "5.19.0",

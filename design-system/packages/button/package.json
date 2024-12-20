@@ -6,6 +6,7 @@
   "module": "dist/keystone-ui-button.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-ui-button.cjs.js",
       "module": "./dist/keystone-ui-button.esm.js",
       "default": "./dist/keystone-ui-button.cjs.js"
     },
@@ -18,7 +19,6 @@
     "@babel/runtime": "^7.24.7",
     "@keystone-ui/core": "workspace:^",
     "@keystone-ui/icons": "workspace:^",
-    "@keystone-ui/loading": "workspace:^",
     "react": "^18.3.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/button"

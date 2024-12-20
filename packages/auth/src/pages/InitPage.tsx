@@ -1,30 +1,40 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useMemo, useState } from 'react'
+import NextHead from 'next/head'
+import React, { useState } from 'react'
 import fetch from 'cross-fetch'
 
-import { jsx, H1, Stack, Inline } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
-import { Checkbox, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { type FieldMeta } from '@keystone-6/core/types'
-import isDeepEqual from 'fast-deep-equal'
-
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context'
-import { useRouter, Link } from '@keystone-6/core/admin-ui/router'
-import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
+import { useList } from '@keystone-6/core/admin-ui/context'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import {
   Fields,
-  serializeValueToObjByFieldKey,
-  useInvalidFields,
+  useBuildItem,
 } from '@keystone-6/core/admin-ui/utils'
+import {
+  GraphQLErrorNotice,
+  Logo,
+} from '@keystone-6/core/admin-ui/components'
+
+import { Button } from '@keystar/ui/button'
+import { Checkbox } from '@keystar/ui/checkbox'
+import { TextField } from '@keystar/ui/text-field'
+import {
+  Grid,
+  HStack,
+  VStack
+} from '@keystar/ui/layout'
+import { Heading, Text } from '@keystar/ui/typography'
+
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
-import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
+import type {
+  AuthGqlNames,
+} from '../types'
+
 const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
+
+export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
 function Welcome ({ value, onContinue }: { value: any, onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState<{ keystone: boolean, thinkmill: boolean}>(
@@ -84,18 +94,16 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
   }
 
   return (
-    <Stack gap="medium">
-      <Stack
+    <VStack gap="medium">
+      <VStack
         gap="small"
-        align="center"
-        across
-        css={{
+        style={{
           width: '100%',
           justifyContent: 'space-between',
         }}
       >
-        <H1>Welcome</H1>
-        <Stack across gap="small">
+        <Heading>Welcome</Heading>
+        <VStack gap="small">
           <IconTwitter
             href="https://twitter.com/keystonejs"
             target="_blank"
@@ -106,10 +114,10 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
             target="_blank"
             title="Github"
           />
-        </Stack>
-      </Stack>
+        </VStack>
+      </VStack>
 
-      <p css={{ margin: 0 }}>
+      <p style={{ margin: 0 }}>
         Thanks for installing Keystone, for help getting started see our documentation at{' '}
         <a href="https://keystonejs.com">keystonejs.com</a>
       </p>
@@ -119,20 +127,19 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       </p>
 
       <form onSubmit={onSubmit}>
-        <Stack gap="medium">
-          <FieldLabel htmlFor="email-field">Email</FieldLabel>
-          <TextInput
-            id="email-field"
+        <VStack padding='medium' gap='medium'>
+          <TextField
+            id='email-field'
+            name='email'
             autoFocus
-            required={subscribe.keystone || subscribe.thinkmill}
-            placeholder={'example@gmail.com'}
+            isRequired={subscribe.keystone || subscribe.thinkmill}
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={v => setEmail(v)}
+            placeholder={'example@gmail.com'}
           />
-          <Inline gap="medium">
+          <HStack gap="medium">
             <Checkbox
-              size='small'
-              checked={subscribe.keystone}
+              isSelected={subscribe.keystone}
               onChange={() => {
                 setError(null)
                 setSubscribe((prevState) => ({ ...prevState, keystone: !subscribe.keystone }))
@@ -141,8 +148,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
               Keystone news
             </Checkbox>
             <Checkbox
-              size='small'
-              checked={subscribe.thinkmill}
+              isSelected={subscribe.thinkmill}
               onChange={() => {
                 setError(null)
                 setSubscribe((prevState) => ({ ...prevState, thinkmill: !subscribe.thinkmill }))
@@ -158,95 +164,72 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
                 </a>
               )
             </Checkbox>
-          </Inline>
-        </Stack>
-        <p css={{ color: 'red' }}>{error}</p>
-        <Inline gap="medium" align="center">
-          <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
-            {error ? 'Try again' : 'Continue'}
-          </Button>
-          {error && (
-            <Button as={Link} href={'/'} tone="active">
-              Continue
-            </Button>
-          )}
-        </Inline>
+          </HStack>
+        </VStack>
+        <p style={{ color: 'red' }}>{error}</p>
+        <Button
+          prominence="high"
+          type="submit"
+          isPending={loading}
+        >
+          {error ? 'Try again' : 'Continue'}
+        </Button>
+        {/* TODO: FIXME */ error && (
+          <a href='/'>Continue</a>
+        )}
       </form>
-    </Stack>
+    </VStack>
   )
 }
 
 function InitPage ({
-  fieldPaths,
+  authGqlNames,
   listKey,
-  enableWelcome
+  fieldPaths,
+  enableWelcome,
 }: {
+  authGqlNames: AuthGqlNames
   listKey: string
   fieldPaths: string[]
   enableWelcome: boolean
 }) {
-  const { adminMeta } = useKeystone()
-  const fields = useMemo(() => {
-    const fields: Record<string, FieldMeta> = {}
-    fieldPaths.forEach(fieldPath => {
-      fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath]
-    })
-    return fields
-  }, [fieldPaths, adminMeta.lists, listKey])
-
-  const [value, setValue] = useState(() => {
-    const state: Record<string, any> = {}
-    Object.keys(fields).forEach(fieldPath => {
-      state[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue }
-    })
-    return state
-  })
-
-  const invalidFields = useInvalidFields(fields, value)
-  const [forceValidation, setForceValidation] = useState(false)
-  const [mode, setMode] = useState<'init' | 'welcome'>('init')
-
-  const [createFirstItem, { loading, error, data }] =
-    useMutation(gql`mutation($data: CreateInitial${listKey}Input!) {
-    authenticate: createInitial${listKey}(data: $data) {
-      ... on ${listKey}AuthenticationWithPasswordSuccess {
-        item {
-          id
-        }
-      }
-    }
-  }`)
-  const reinitContext = useReinitContext()
   const router = useRouter()
   const redirect = useRedirect()
+  const list = useList(listKey)
 
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    // Check if there are any invalidFields
-    const newForceValidation = invalidFields.size !== 0
-    setForceValidation(newForceValidation)
+  const builder = useBuildItem(list)
+  const [mode, setMode] = useState<'init' | 'welcome'>('init')
 
-    // if yes, don't submit the form
-    if (newForceValidation) return
-
-    // If not we serialize the data
-    const data: Record<string, any> = {}
-    const allSerializedValues = serializeValueToObjByFieldKey(fields, value)
-
-    for (const fieldPath of Object.keys(allSerializedValues)) {
-      const { controller } = fields[fieldPath]
-      const serialized = allSerializedValues[fieldPath]
-      // we check the serialized values against the default values on the controller
-      if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-        // if they're different add them to the data object.
-        Object.assign(data, serialized)
+  const {
+    createInitialItem,
+    CreateInitialInput,
+    ItemAuthenticationWithPasswordSuccess: successTypename,
+  } = authGqlNames
+  const [tryCreateItem, { loading, error, data }] = useMutation(gql`
+    mutation($data: ${CreateInitialInput}!) {
+      authenticate: ${createInitialItem}(data: $data) {
+        ... on ${successTypename} {
+          item {
+            id
+          }
+        }
       }
-    }
+    }`)
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // NOTE: React events bubble through portals, this prevents the
+    // parent form being submitted.
+    e.stopPropagation()
+
+    const builtItem = await builder.build()
+    if (!builtItem) return
 
     try {
-      await createFirstItem({
+      await tryCreateItem({
         variables: {
-          data,
+          data: builtItem
         },
       })
     } catch (e) {
@@ -254,51 +237,62 @@ function InitPage ({
       return
     }
 
-    await reinitContext()
-
     if (enableWelcome) return setMode('welcome')
     router.push(redirect)
   }
 
-  const onComplete = () => {
-    router.push(redirect)
-  }
+  const onComplete = () => router.push(redirect)
+  const pending = loading || data?.authenticate?.__typename === successTypename
 
-  return mode === 'init' ? (
-    <SigninContainer title="Welcome to KeystoneJS">
-      <H1>Welcome to KeystoneJS</H1>
-      <p>Create your first user to get started</p>
-      <form onSubmit={onSubmit}>
-        <Stack gap="large">
-          {error && (
-            <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
-          )}
-          <Fields
-            fields={fields}
-            forceValidation={forceValidation}
-            invalidFields={invalidFields}
-            onChange={setValue}
-            value={value}
-          />
-          <Button
-            isLoading={
-              loading ||
-              data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
-            }
-            type="submit"
-            weight="bold"
-            tone="active"
+  return (
+    <>
+      <NextHead>
+        <title key="title">Welcome to KeystoneJS</title>
+      </NextHead>
+      {(mode === 'init' ? (
+        <Grid
+          alignItems="center"
+          marginX="auto"
+          maxWidth="100%"
+          minHeight="100vh"
+          minWidth={0}
+          paddingX="xlarge"
+          rows="auto 1fr"
+          width="container.xsmall"
+        >
+          <HStack paddingY="xlarge">
+            <Logo />
+          </HStack>
+
+          <VStack
+            elementType='form'
+            onSubmit={onSubmit}
+            // styles
+            flex
+            gap="xxlarge"
+            paddingY="xlarge"
           >
-            Get started
-          </Button>
-        </Stack>
-      </form>
-    </SigninContainer>
-  ) : (
-    <SigninContainer>
-      <Welcome value={value} onContinue={onComplete} />
-    </SigninContainer>
+            <Heading elementType='h1' size='regular'>Create your first user</Heading>
+            <GraphQLErrorNotice
+              errors={[
+                error?.networkError,
+                ...error?.graphQLErrors ?? []
+              ]}
+            />
+            <Fields {...builder.props} />
+            <Button
+              alignSelf="start"
+              isPending={pending}
+              prominence="high"
+              type="submit"
+            >
+              Get started
+            </Button>
+          </VStack>
+        </Grid>
+      ) : (
+        <Welcome value={builder.props.value} onContinue={onComplete} />
+      ))}
+    </>
   )
 }
-
-export const getInitPage = (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />

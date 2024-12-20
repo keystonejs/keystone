@@ -6,10 +6,12 @@
   "module": "dist/keystone-6-cloudinary.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-cloudinary.cjs.js",
       "module": "./dist/keystone-6-cloudinary.esm.js",
       "default": "./dist/keystone-6-cloudinary.cjs.js"
     },
     "./views": {
+      "types": "./views/dist/keystone-6-cloudinary-views.cjs.js",
       "module": "./views/dist/keystone-6-cloudinary-views.esm.js",
       "default": "./views/dist/keystone-6-cloudinary-views.cjs.js"
     },
@@ -17,10 +19,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystone-ui/button": "workspace:^",
-    "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/fields": "workspace:^",
-    "@keystone-ui/pill": "workspace:^",
+    "@keystar/ui": "^0.7.13",
     "cloudinary": "^2.0.0",
     "react": "^18.3.1"
   },
