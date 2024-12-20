@@ -166,7 +166,7 @@ function InternalKeystoneProvider ({
   }, [])
 
   // TODO
-  if (!meta && loading) return null
+  if (!meta) return null
   return (
     <KeystarProvider router={keystarRouter}>
       <ClientSideOnlyDocumentElement bodyBackground='surface' />
@@ -186,7 +186,7 @@ function InternalKeystoneProvider ({
         <DrawerProvider>
           <KeystoneContext.Provider value={{
             adminConfig,
-            adminMeta: meta ?? null,
+            adminMeta: meta,
             fieldViews,
             apiPath,
           }}>
