@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import fetch from 'cross-fetch'
 
 import { Stack, Inline } from '@keystone-ui/core'
@@ -9,13 +9,11 @@ import {
   TextInput
 } from '@keystone-ui/fields'
 
-import type { FieldMeta } from '@keystone-6/core/types'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import {
   Fields,
-  serializeValueToOperationItem,
   useBuildItem,
 } from '@keystone-6/core/admin-ui/utils'
 import {
@@ -207,14 +205,6 @@ function InitPage ({
   const redirect = useRedirect()
   const list = useList(listKey)
 
-  const fields = useMemo(() => {
-    const fields: Record<string, FieldMeta> = {}
-    for (const fieldPath of fieldPaths) {
-      fields[fieldPath] = list.fields[fieldPath]
-    }
-    return fields
-  }, [list, fieldPaths])
-
   const builder = useBuildItem(list)
   const [mode, setMode] = useState<'init' | 'welcome'>('init')
 
@@ -241,13 +231,13 @@ function InitPage ({
     // parent form being submitted.
     e.stopPropagation()
 
-    const builtValue = await builder.build()
-    if (!builtValue) return
+    const builtItem = await builder.build()
+    if (!builtItem) return
 
     try {
       await tryCreateItem({
         variables: {
-          data: serializeValueToOperationItem('create', fields, builtValue)
+          data: builtItem
         },
       })
     } catch (e) {
