@@ -125,43 +125,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
-  design-system/packages/fields:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.0
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      '@keystone-ui/icons':
-        specifier: workspace:^
-        version: link:../icons
-      '@keystone-ui/popover':
-        specifier: workspace:^
-        version: link:../popover
-      date-fns:
-        specifier: ^4.0.0
-        version: 4.1.0
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-day-picker:
-        specifier: ^9.0.0
-        version: 9.4.3(react@18.3.1)
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      react-focus-lock:
-        specifier: ^2.7.1
-        version: 2.13.5(@types/react@18.3.16)(react@18.3.1)
-      react-select:
-        specifier: ^5.2.1
-        version: 5.9.0(@types/react@18.3.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.16
-
   design-system/packages/icons:
     dependencies:
       '@babel/runtime':
@@ -647,52 +610,9 @@ importers:
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
-      '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: link:../../design-system/packages/fields
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
-    devDependencies:
-      prisma:
-        specifier: 5.19.0
-        version: 5.19.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.7.2
-
-  examples/custom-field-view:
-    dependencies:
-      '@emotion/css':
-        specifier: ^11.7.1
-        version: 11.13.5
-      '@keystone-6/core':
-        specifier: ^6.3.1
-        version: link:../../packages/core
-      '@keystone-ui/button':
-        specifier: ^7.0.2
-        version: link:../../design-system/packages/button
-      '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: link:../../design-system/packages/fields
-      '@keystone-ui/icons':
-        specifier: ^6.0.2
-        version: link:../../design-system/packages/icons
-      '@prisma/client':
-        specifier: 5.19.0
-        version: 5.19.0(prisma@5.19.0)
-      next:
-        specifier: ^14.2.0
-        version: 14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
     devDependencies:
       prisma:
         specifier: 5.19.0
@@ -965,9 +885,6 @@ importers:
       '@keystone-ui/core':
         specifier: ^5.0.1
         version: link:../../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: link:../../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: ^6.0.1
         version: link:../../../design-system/packages/icons
@@ -1146,9 +1063,6 @@ importers:
       '@keystone-ui/core':
         specifier: ^5.0.2
         version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: ^7.2.0
-        version: link:../../design-system/packages/fields
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
@@ -1806,9 +1720,6 @@ importers:
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../../design-system/packages/fields
       cross-fetch:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1834,15 +1745,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.0
-      '@keystone-ui/button':
-        specifier: workspace:^
-        version: link:../../design-system/packages/button
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../../design-system/packages/fields
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       cloudinary:
         specifier: ^2.0.0
         version: 2.5.1
@@ -1919,12 +1824,6 @@ importers:
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../../design-system/packages/fields
-      '@keystone-ui/icons':
-        specifier: workspace:^
-        version: link:../../design-system/packages/icons
       '@keystone-ui/modals':
         specifier: workspace:^
         version: link:../../design-system/packages/modals
@@ -2166,9 +2065,6 @@ importers:
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: workspace:^
         version: link:../../design-system/packages/icons
@@ -2523,9 +2419,6 @@ importers:
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: workspace:^
-        version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: workspace:^
         version: link:../../design-system/packages/icons
@@ -3641,9 +3534,6 @@ packages:
 
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
-
-  '@date-fns/tz@1.2.0':
-    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
 
   '@dnd-kit/accessibility@3.1.1':
     resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
@@ -6393,9 +6283,6 @@ packages:
     resolution: {integrity: sha512-P4t6saawp+b/dFrUr2cvkVsfvPguwsxtH6dNIYRllMsefqFzkZk5UIjzyDOv5g1dXIPdG4Sp1yCR4Z6RCUsG/Q==}
     peerDependencies:
       '@types/react': ^18.0.0
-
-  '@types/react-transition-group@4.4.11':
-    resolution: {integrity: sha512-RM05tAniPZ5DZPzzNFP+DmrcOdD0efDUxMy3145oljWSl3x9ZV5vhme98gTxFrj2lhXvmGNnUiuDyJgY9IKkNA==}
 
   '@types/react-transition-group@4.4.12':
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
@@ -9573,9 +9460,6 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  memoize-one@6.0.0:
-    resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
-
   meow@9.0.0:
     resolution: {integrity: sha512-+obSblOQmRhcyBt62furQqRAQpNyWXo8BuQ5bN7dG8wmwQ+vwHKp/rCFD4CrTP8CsDQD1sjoZ94K417XEUk8IQ==}
     engines: {node: '>=10'}
@@ -10727,12 +10611,6 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
-  react-day-picker@9.4.3:
-    resolution: {integrity: sha512-kQmn7lBR6fHCjaDhW6ByzTMeZUgsBSvIKJLaUKq5xTuJcg2UqHiFAjrPLk/owQS/NzsnSgyGL/bhoi0Z7g+r3w==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      react: '>=16.8.0'
-
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
@@ -10802,12 +10680,6 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       react: '>=16.8'
-
-  react-select@5.9.0:
-    resolution: {integrity: sha512-nwRKGanVHGjdccsnzhFte/PULziueZxGD8LL2WojON78Mvnq7LdAMEtu2frrwld1fr3geixg3iiMBIc/LLAZpw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
@@ -11993,15 +11865,6 @@ packages:
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
-  use-isomorphic-layout-effect@1.2.0:
-    resolution: {integrity: sha512-q6ayo8DWoPZT0VdG4u3D3uxcgONP3Mevx2i2b0434cwWBoL+aelL1DzkXI6w3PhTZzUeR2kaVlZn70iCiseP6w==}
-    peerDependencies:
-      '@types/react': '*'
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -14152,8 +14015,6 @@ snapshots:
       '@babel/parser': 7.26.3
 
   '@corex/deepmerge@4.0.43': {}
-
-  '@date-fns/tz@1.2.0': {}
 
   '@dnd-kit/accessibility@3.1.1(react@18.3.1)':
     dependencies:
@@ -17724,10 +17585,6 @@ snapshots:
   '@types/range-parser@1.2.7': {}
 
   '@types/react-dom@18.3.5(@types/react@18.3.16)':
-    dependencies:
-      '@types/react': 18.3.16
-
-  '@types/react-transition-group@4.4.11':
     dependencies:
       '@types/react': 18.3.16
 
@@ -21888,8 +21745,6 @@ snapshots:
 
   media-typer@0.3.0: {}
 
-  memoize-one@6.0.0: {}
-
   meow@9.0.0:
     dependencies:
       '@types/minimist': 1.2.5
@@ -23376,12 +23231,6 @@ snapshots:
       '@babel/runtime': 7.26.0
       react: 18.3.1
 
-  react-day-picker@9.4.3(react@18.3.1):
-    dependencies:
-      '@date-fns/tz': 1.2.0
-      date-fns: 4.1.0
-      react: 18.3.1
-
   react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
@@ -23448,23 +23297,6 @@ snapshots:
     dependencies:
       '@remix-run/router': 1.7.2
       react: 18.3.1
-
-  react-select@5.9.0(@types/react@18.3.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@babel/runtime': 7.26.0
-      '@emotion/cache': 11.14.0
-      '@emotion/react': 11.14.0(@types/react@18.3.16)(react@18.3.1)
-      '@floating-ui/dom': 1.6.12
-      '@types/react-transition-group': 4.4.11
-      memoize-one: 6.0.0
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      use-isomorphic-layout-effect: 1.2.0(@types/react@18.3.16)(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
 
   react-style-singleton@2.2.3(@types/react@18.3.16)(react@18.3.1):
     dependencies:
@@ -24870,12 +24702,6 @@ snapshots:
     dependencies:
       react: 18.3.1
       tslib: 2.8.1
-    optionalDependencies:
-      '@types/react': 18.3.16
-
-  use-isomorphic-layout-effect@1.2.0(@types/react@18.3.16)(react@18.3.1):
-    dependencies:
-      react: 18.3.1
     optionalDependencies:
       '@types/react': 18.3.16
 
