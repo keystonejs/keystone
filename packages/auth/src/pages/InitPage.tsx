@@ -11,6 +11,7 @@ import {
 } from '@keystone-6/core/admin-ui/utils'
 import {
   GraphQLErrorNotice,
+  Logo,
   PageWrapper
 } from '@keystone-6/core/admin-ui/components'
 
@@ -18,7 +19,7 @@ import { Button } from '@keystar/ui/button'
 import { Checkbox } from '@keystar/ui/checkbox'
 import { TextField } from '@keystar/ui/text-field'
 import {
-  Box,
+  Grid,
   HStack,
   VStack
 } from '@keystar/ui/layout'
@@ -245,37 +246,54 @@ function InitPage ({
   const pending = loading || data?.authenticate?.__typename === successTypename
 
   return (
-    <PageWrapper>
+    <>
       <NextHead>
         <title key="title">Welcome to KeystoneJS</title>
       </NextHead>
       {(mode === 'init' ? (
-        <VStack alignItems="center">
-          <Box padding="xlarge">
-            <Text>Create your first user to get started</Text>
-            <form onSubmit={onSubmit}>
-              <VStack padding='medium' gap="large">
-                <GraphQLErrorNotice
-                  errors={[
-                    error?.networkError,
-                    ...error?.graphQLErrors ?? []
-                  ]}
-                />
-                <Fields {...builder.props} />
-                <Button
-                  isPending={pending}
-                  prominence="high"
-                  type="submit"
-                >
-                  Get started
-                </Button>
-              </VStack>
-            </form>
-          </Box>
-        </VStack>
+        <Grid
+          alignItems="center"
+          marginX="auto"
+          maxWidth="100%"
+          minHeight="100vh"
+          minWidth={0}
+          paddingX="xlarge"
+          rows="auto 1fr"
+          width="container.xsmall"
+        >
+          <HStack paddingY="xlarge">
+            <Logo />
+          </HStack>
+
+          <VStack
+            elementType='form'
+            onSubmit={onSubmit}
+            // styles
+            flex
+            gap="xxlarge"
+            paddingY="xlarge"
+          >
+            <Heading elementType='h1' size='regular'>Create your first user</Heading>
+            <GraphQLErrorNotice
+              errors={[
+                error?.networkError,
+                ...error?.graphQLErrors ?? []
+              ]}
+            />
+            <Fields {...builder.props} />
+            <Button
+              alignSelf="start"
+              isPending={pending}
+              prominence="high"
+              type="submit"
+            >
+              Get started
+            </Button>
+          </VStack>
+        </Grid>
       ) : (
         <Welcome value={builder.props.value} onContinue={onComplete} />
       ))}
-    </PageWrapper>
+    </>
   )
 }
