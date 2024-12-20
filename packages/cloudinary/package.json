@@ -19,9 +19,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystone-ui/button": "workspace:^",
-    "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/fields": "workspace:^",
+    "@keystar/ui": "^0.7.13",
     "cloudinary": "^2.0.0",
     "react": "^18.3.1"
   },

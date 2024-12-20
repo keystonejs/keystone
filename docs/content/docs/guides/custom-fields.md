@@ -146,26 +146,21 @@ The `Field` export is a React component which is used in the **item view** and t
 ```tsx
 // view.tsx
 
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { FieldProps } from '@keystone-6/core/types'
+import { TextField } from '@keystar/ui/text-field'
 
 export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
-  return <FieldContainer>
-    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-    {onChange ? (
-      <TextInput
-        id={field.path}
-        autoFocus={autoFocus}
-        type="number"
-        onChange={event => {
-          onChange(event.target.value.replace(/[^\d-]/g, ''))
-        }}
-        value={value}
-      />
-    ) : (
-      value
-    )}
-  </FieldContainer>
+  const disabled = onChange === undefined
+
+  return (
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      isDisabled={disabled}
+      onChange={x => onChange?.(x === '' ? null : x)}
+      value={value ?? ''}
+    />
+  )
 }
 ```
 
