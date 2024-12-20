@@ -1,27 +1,31 @@
 import React, {
   type ReactNode,
-  type PropsWithChildren
+  type PropsWithChildren,
+  useState
 } from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionButton } from '@keystar/ui/button'
+import { DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { bookTextIcon } from '@keystar/ui/icon/icons/bookTextIcon'
 import { constructionIcon } from '@keystar/ui/icon/icons/constructionIcon'
-import { githubIcon } from '@keystar/ui/icon/icons/githubIcon'
 import { fileJson2Icon } from '@keystar/ui/icon/icons/fileJson2Icon'
+import { githubIcon } from '@keystar/ui/icon/icons/githubIcon'
+import { heartHandshakeIcon } from '@keystar/ui/icon/icons/heartHandshakeIcon'
 import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
 import { Divider, HStack, VStack } from '@keystar/ui/layout'
 import {
+  type NavListProps,
   NavList as KeystarNavList,
   NavItem as KeystarNavItem,
-  NavListProps
 } from '@keystar/ui/nav-list'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
 import type { ListMeta } from '../../types'
 import { useKeystone } from '../context'
+import { WelcomeDialog } from './WelcomeDialog'
 
 type NavItemProps = {
   /**
@@ -120,31 +124,45 @@ export function NavFooter (props: PropsWithChildren) {
 /** A footer item in the navigation. */
 export function DeveloperResourcesMenu () {
   const { apiPath } = useKeystone()
+  const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
   if (process.env.NODE_ENV === 'production') return null
   if (!apiPath) return null // TODO: FIXME: ?
   return (
-    <MenuTrigger>
-      <TooltipTrigger>
-        <ActionButton aria-label='Developer resources'>
-          <Icon src={constructionIcon} />
-        </ActionButton>
-        <Tooltip>Developer resources</Tooltip>
-      </TooltipTrigger>
-      <Menu>
-        <Item href={apiPath} textValue='API explorer'>
-          <Icon src={fileJson2Icon} />
-          <Text>API explorer</Text>
-        </Item>
-        <Item target='_blank' href='https://github.com/keystonejs/keystone' textValue='GitHub repository'>
-          <Icon src={githubIcon} />
-          <Text>GitHub repository</Text>
-        </Item>
-        <Item target='_blank' href='https://keystonejs.com' textValue='Documentation'>
-          <Icon src={bookTextIcon} />
-          <Text>Documentation</Text>
-        </Item>
-      </Menu>
-    </MenuTrigger>
+    <>
+      <MenuTrigger>
+        <TooltipTrigger>
+          <ActionButton aria-label='Developer resources'>
+            <Icon src={constructionIcon} />
+          </ActionButton>
+          <Tooltip>Developer resources</Tooltip>
+        </TooltipTrigger>
+        <Menu onAction={(key) => {
+          if (key === 'community') {
+            setDialogIsOpen(true)
+          }
+        }}>
+          <Item href={apiPath} textValue='API explorer'>
+            <Icon src={fileJson2Icon} />
+            <Text>API explorer</Text>
+          </Item>
+          <Item target='_blank' href='https://github.com/keystonejs/keystone' textValue='GitHub repository'>
+            <Icon src={githubIcon} />
+            <Text>GitHub repository</Text>
+          </Item>
+          <Item target='_blank' href='https://keystonejs.com' textValue='Documentation'>
+            <Icon src={bookTextIcon} />
+            <Text>Documentation</Text>
+          </Item>
+          <Item key="community" textValue='Community'>
+            <Icon src={heartHandshakeIcon} />
+            <Text>Community</Text>
+          </Item>
+        </Menu>
+      </MenuTrigger>
+      <DialogContainer onDismiss={() => setDialogIsOpen(false)}>
+        {dialogIsOpen && <WelcomeDialog value="test" onContinue={() => setDialogIsOpen(false)} />}
+      </DialogContainer>
+    </>
   )
 }
