@@ -259,7 +259,7 @@ function InitPage ({
       </NextHead>
       {(mode === 'init' ? (
         <VStack alignItems="center">
-          <Box padding="large">
+          <Box padding="xlarge">
             <Text>Create your first user to get started</Text>
             <form onSubmit={onSubmit}>
               <Stack gap="large">
