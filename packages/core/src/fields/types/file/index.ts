@@ -7,7 +7,10 @@ import {
   fieldType,
 } from '../../../types'
 import { graphql } from '../../..'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import {
+  type InternalFieldHooks,
+  mergeFieldHooks,
+} from '../../resolve-hooks'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

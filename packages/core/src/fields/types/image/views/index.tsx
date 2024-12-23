@@ -1,11 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
+import React from 'react'
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
 } from '../../../../types'
 import { validateImage } from './Field'
 
@@ -15,7 +12,7 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null
   return (
     <div
-      css={{
+      style={{
         alignItems: 'center',
         display: 'flex',
         height: 24,
@@ -23,7 +20,7 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
         width: 24,
       }}
     >
-      <img alt={value.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
+      <img alt={value.filename} style={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
     </div>
   )
 }

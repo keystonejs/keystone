@@ -27,9 +27,9 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { css } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
-import { type FieldProps } from '../../../../types'
-import { type FileValue } from './index'
-import { type controller } from '.'
+import type { FieldProps } from '../../../../types'
+import type { FileValue } from './index'
+import type { controller } from '.'
 
 export function Field (props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
