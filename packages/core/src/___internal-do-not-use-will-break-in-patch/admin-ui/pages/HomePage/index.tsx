@@ -25,11 +25,18 @@ import {
 
 export function HomePage () {
   const { adminMeta } = useKeystone()
-  const lists = adminMeta?.lists
+  const lists = adminMeta?.lists ?? {}
   const LIST_COUNTS_QUERY = useMemo(() => gql(`
-    query GetListCounts {
+    query KsFetchListCounts {
+      keystone {
+        adminMeta {
+          lists {
+            key
+          }
+        }
+      }
       ${[...function* () {
-        for (const list of Object.values(lists ?? [])) {
+        for (const list of Object.values(lists)) {
           yield `${list.key}: ${list.graphql.names.listQueryCountName}`
         }
       }()].join('\n')}
@@ -57,7 +64,7 @@ export function HomePage () {
           )`}
           gap="large"
         >
-          {Object.values(lists ?? []).map((list) => {
+          {Object.values(lists).map((list) => {
             return <ListCard
               key={list.key}
               listKey={list.key}
