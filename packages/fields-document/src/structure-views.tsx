@@ -1,8 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useEffect, useMemo, useRef } from 'react'
-import { jsx } from '@keystone-ui/core'
+import React, { useEffect, useMemo, useRef } from 'react'
 import type {
   CellComponent,
   FieldController,
