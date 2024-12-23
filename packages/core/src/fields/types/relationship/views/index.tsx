@@ -24,6 +24,8 @@ import { BuildItemDialog } from '../../../../admin-ui/components'
 import { ContextualActions } from './ContextualActions'
 import { ComboboxMany } from './ComboboxMany'
 import { ComboboxSingle } from './ComboboxSingle'
+
+export { ComboboxSingle, ComboboxMany }
 import type {
   RelationshipController,
 } from './types'
@@ -70,7 +72,7 @@ export function Field (props: FieldProps<typeof controller>) {
               state={{
                 kind: 'many',
                 value: value.value,
-                onChange(newItems) {
+                onChange (newItems) {
                   onChange?.({ ...value, value: newItems })
                 },
               }}
@@ -87,7 +89,7 @@ export function Field (props: FieldProps<typeof controller>) {
               state={{
                 kind: 'one',
                 value: value.value,
-                onChange(newItem) {
+                onChange (newItem) {
                   onChange?.({ ...value, value: newItem })
                 },
               }}

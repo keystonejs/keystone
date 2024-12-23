@@ -8,13 +8,13 @@ import { useSlateStatic as useStaticEditor } from 'slate-react'
 
 import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 
 import { ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
+import { ComboboxSingle } from '@keystone-6/core/fields/types/relationship/views'
 
-import { type Relationships } from './relationship-shared'
-export { type Relationships } from './relationship-shared'
+import type { Relationships } from './relationship-shared'
+export type { Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
 
@@ -87,23 +87,22 @@ export function RelationshipElement ({
         }}
       >
         {relationship ? (
-          <RelationshipSelect
-            isDisabled={false}
-            list={list}
+          <ComboboxSingle
             labelField={list.labelField}
             searchFields={searchFields}
+            list={list}
             state={{
               kind: 'one',
               value:
                 element.data === null
                   ? null
                   : { id: element.data.id, label: element.data.label || element.data.id },
-              onChange (value) {
+              onChange (newItem) {
                 const at = ReactEditor.findPath(editor, element)
-                if (value === null) {
+                if (newItem === null) {
                   Transforms.removeNodes(editor, { at })
                 } else {
-                  Transforms.setNodes(editor, { data: value }, { at })
+                  Transforms.setNodes(editor, { data: newItem }, { at })
                 }
               },
             }}
