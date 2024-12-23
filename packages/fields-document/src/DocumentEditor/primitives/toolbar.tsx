@@ -1,10 +1,18 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import { tokenSchema } from '@keystar/ui/style'
 
-import { type ButtonHTMLAttributes, type HTMLAttributes, createContext, useContext, type ReactNode } from 'react'
-import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
+import React, {
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type ReactNode,
+  createContext,
+  useContext,
+} from 'react'
+import {
+  type MarginProps,
+  Box,
+  forwardRefWithAs,
+  useTheme
+} from '@keystone-ui/core'
 
 // Spacers and Separators
 // ------------------------------
@@ -12,14 +20,14 @@ import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keyston
 export const ToolbarSpacer = () => {
   const { spacing } = useTheme()
 
-  return <span css={{ display: 'inline-block', width: spacing.large }} />
+  return <span style={{ display: 'inline-block', width: spacing.large }} />
 }
 export const ToolbarSeparator = () => {
   const { spacing } = useTheme()
 
   return (
     <span
-      css={{
+      style={{
         alignSelf: 'stretch',
         background: tokenSchema.color.border.neutral,
         display: 'inline-block',
@@ -53,7 +61,7 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
       <ToolbarGroupContext.Provider value={{ direction }}>
         <Box
           ref={ref}
-          css={{
+          style={{
             display: 'flex',
             gap: spacing.xxsmall,
             flexDirection: direction,
@@ -173,7 +181,7 @@ export function KeyboardInTooltip ({ children }: { children: ReactNode }) {
   const theme = useTheme()
   return (
     <kbd
-      css={{
+      style={{
         margin: 2,
         padding: theme.spacing.xxsmall,
         fontFamily: 'inherit',
