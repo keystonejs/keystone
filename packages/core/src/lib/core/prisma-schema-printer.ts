@@ -1,10 +1,10 @@
-import {
-  type ScalarDBField,
-  type ScalarDBFieldDefault
+import type {
+  ScalarDBField,
+  ScalarDBFieldDefault
 } from '../../types'
-import { type ResolvedDBField } from './resolve-relationships'
-import { type InitialisedList } from './initialise-lists'
-import { type ResolvedKeystoneConfig } from '../../types'
+import type { ResolvedDBField } from './resolve-relationships'
+import type { InitialisedList } from './initialise-lists'
+import type { ResolvedKeystoneConfig } from '../../types'
 import { areArraysEqual, getDBFieldKeyForFieldOnMultiField } from './utils'
 
 const modifiers = {
