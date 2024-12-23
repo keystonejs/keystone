@@ -1,14 +1,13 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
 import Link from 'next/link'
-import { jsx, H3 } from '@keystone-ui/core'
+import { Heading } from '@keystar/ui/typography'
 
 export function CustomLogo () {
   return (
-    <H3>
+    <Heading>
       <Link
         href="/"
-        css={{
+        style={{
           // TODO: we don't have colors in our design-system for this.
           backgroundImage: `linear-gradient(to right, #0ea5e9, #6366f1)`,
           backgroundClip: 'text',
@@ -21,6 +20,6 @@ export function CustomLogo () {
       >
         LegendBoulder After
       </Link>
-    </H3>
+    </Heading>
   )
 }
