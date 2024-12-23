@@ -2261,8 +2261,8 @@ importers:
         specifier: ^7.24.7
         version: 7.26.0
       '@braintree/sanitize-url':
-        specifier: 7.0.4
-        version: 7.0.4
+        specifier: 7.1.1
+        version: 7.1.1
       '@dnd-kit/core':
         specifier: ^6.0.6
         version: 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3679,8 +3679,8 @@ packages:
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
 
-  '@braintree/sanitize-url@7.0.4':
-    resolution: {integrity: sha512-hPYRrKFoI+nuckPgDJfyYAkybFvheo4usS0Vw0HNAe+fmGBQA5Az37b/yStO284atBoqqdOUhKJ3d9Zw3PQkcQ==}
+  '@braintree/sanitize-url@7.1.1':
+    resolution: {integrity: sha512-i1L7noDNxtFyL5DmZafWy1wRVhGehQmzZaz1HiN5e7iylJMSZR7ekOV7NsIqa5qBldlLrsKv4HbgFUVlQrz8Mw==}
 
   '@changesets/apply-release-plan@7.0.7':
     resolution: {integrity: sha512-qnPOcmmmnD0MfMg9DjU1/onORFyRpDXkMMl2IJg9mECY6RnxL3wN0TCCc92b2sXt1jt8DgjAUUsZYGUGTdYIXA==}
@@ -14097,7 +14097,7 @@ snapshots:
 
   '@braintree/sanitize-url@6.0.4': {}
 
-  '@braintree/sanitize-url@7.0.4': {}
+  '@braintree/sanitize-url@7.1.1': {}
 
   '@changesets/apply-release-plan@7.0.7':
     dependencies:
