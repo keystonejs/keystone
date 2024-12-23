@@ -11,13 +11,13 @@ import { TextField } from '@keystar/ui/text-field'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
-import { type Value } from './utils'
+import type { Value } from './utils'
 
 export function Field (props: FieldProps<typeof controller>) {
   const { field, value, forceValidation, onChange } = props

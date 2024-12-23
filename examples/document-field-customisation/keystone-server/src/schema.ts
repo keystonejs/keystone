@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text, timestamp } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
-import { componentBlocks } from './component-blocks'
+import * as ComponentBlocks from './component-blocks/schemas'
 
 import type { Lists } from '.keystone/types'
 
@@ -33,7 +33,7 @@ export const lists = {
         ui: {
           views: './src/component-blocks',
         },
-        componentBlocks,
+        componentBlocks: ComponentBlocks,
       }),
       publishDate: timestamp({ defaultValue: { kind: 'now' } }),
       author: relationship({ ref: 'User.posts', many: false }),

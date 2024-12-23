@@ -1,10 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
+import React, { useMemo, Fragment } from 'react'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { useMemo, Fragment } from 'react'
 import { Transforms } from 'slate'
-import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon'
+
+import { Icon } from '@keystar/ui/icon'
+import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
 import { ToolbarButton, KeyboardInTooltip } from './primitives'
 import { useToolbarState } from './toolbar-state'
 
@@ -31,7 +30,7 @@ function CodeButton ({ attrs }: { attrs: object }) {
         }}
         {...attrs}
       >
-        <CodeIcon size="small" />
+        <Icon src={codeIcon} />
       </ToolbarButton>
     ),
     [isDisabled, isSelected, attrs, editor]

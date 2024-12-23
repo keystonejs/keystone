@@ -1,13 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Icon } from '@keystar/ui/icon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { useControlledPopover } from '@keystone-ui/popover'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { type ReactNode } from 'react'
-import { type RenderElementProps } from 'slate-react'
+import type { ReactNode } from 'react'
+import type { RenderElementProps } from 'slate-react'
 import { InlineDialog, ToolbarButton } from '../primitives'
-import { type ComponentBlock, type PreviewPropsForToolbar, type ObjectField, type ComponentSchema } from './api'
+import type {
+  ComponentBlock,
+  PreviewPropsForToolbar,
+  ObjectField,
+  ComponentSchema
+} from './api'
 
 export function ChromelessComponentBlockElement (props: {
   renderedBlock: ReactNode
@@ -60,7 +66,7 @@ function DefaultToolbarWithoutChrome ({
           }}
           {...attrs}
         >
-          <Trash2Icon size="small" />
+          <Icon src={trash2Icon} />
         </ToolbarButton>
       )}
     </Tooltip>

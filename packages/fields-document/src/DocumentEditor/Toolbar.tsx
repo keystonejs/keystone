@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import { tokenSchema } from '@keystar/ui/style'
 
-import {
+import React, {
   type ReactNode,
   type HTMLAttributes,
   Fragment,
@@ -15,19 +12,20 @@ import {
 import { Editor, Transforms } from 'slate'
 import { applyRefs } from 'apply-ref'
 
-import { jsx, useTheme } from '@keystone-ui/core'
+import { useTheme } from '@keystone-ui/core'
 import { useControlledPopover } from '@keystone-ui/popover'
 import { Tooltip } from '@keystone-ui/tooltip'
 
-import { BoldIcon } from '@keystone-ui/icons/icons/BoldIcon'
-import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon'
-import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
-import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon'
-import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon'
-import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
+import { Icon } from '@keystar/ui/icon'
+import { boldIcon } from '@keystar/ui/icon/icons/boldIcon'
+import { italicIcon } from '@keystar/ui/icon/icons/italicIcon'
+import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
+import { maximize2Icon } from '@keystar/ui/icon/icons/maximize2Icon'
+import { minimize2Icon } from '@keystar/ui/icon/icons/minimize2Icon'
+import { moreHorizontalIcon } from '@keystar/ui/icon/icons/moreHorizontalIcon'
 
-import { type DocumentFeatures } from '../views-shared'
+import type { DocumentFeatures } from '../views-shared'
 import {
   InlineDialog,
   KeyboardInTooltip,
@@ -119,7 +117,7 @@ export function Toolbar ({
         {!!hasBlockItems && <InsertBlockMenu />}
       </ToolbarGroup>
       {useMemo(() => {
-        const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon
+        const expandIcon = viewState?.expanded ? minimize2Icon : maximize2Icon
         return (
           viewState && (
             <ToolbarGroup>
@@ -133,7 +131,7 @@ export function Toolbar ({
                     }}
                     {...attrs}
                   >
-                    <ExpandIcon size="small" />
+                    <Icon src={expandIcon} />
                   </ToolbarButton>
                 )}
               </Tooltip>
@@ -183,7 +181,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
 
   return (
     <div
-      css={{
+      style={{
         borderBottom: `1px solid ${tokenSchema.color.border.neutral}`,
         background: tokenSchema.color.background.surface,
         position: 'sticky',
@@ -194,7 +192,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
       }}
     >
       <div
-        css={{
+        style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -209,8 +207,6 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
     </div>
   )
 }
-
-const downIcon = <ChevronDownIcon size="small" />
 
 function HeadingButton ({
   trigger,
@@ -238,8 +234,8 @@ function HeadingButton ({
         style={{ textAlign: 'left', width: 116 }}
         {...trigger.props}
       >
-        <span css={{ flex: 1 }}>{buttonLabel}</span>
-        {downIcon}
+        <span style={{ flex: 1 }}>{buttonLabel}</span>
+        <Icon src={chevronDownIcon} />
       </ToolbarButton>
     ),
     [buttonLabel, trigger, showMenu, onToggleShowMenu, isDisabled]
@@ -272,7 +268,7 @@ const HeadingMenu = ({
 
   return (
     <div
-      css={{
+      style={{
         display: 'inline-block',
         position: 'relative',
       }}
@@ -361,7 +357,7 @@ function InsertBlockMenu () {
 
   return (
     <div
-      css={{
+      style={{
         display: 'inline-block',
         position: 'relative',
       }}
@@ -385,8 +381,8 @@ function InsertBlockMenu () {
             {...trigger.props}
             {...attrs}
           >
-            <PlusIcon size="small" style={{ strokeWidth: 3 }} />
-            <ChevronDownIcon size="small" />
+            <Icon src={plusIcon} />
+            <Icon src={chevronDownIcon} />
           </ToolbarButton>
         )}
       </Tooltip>
@@ -435,7 +431,7 @@ function InlineMarks ({ marks }: { marks: DocumentFeatures['formatting']['inline
         >
           {attrs => (
             <MarkButton type="bold" {...attrs}>
-              <BoldIcon size="small" style={{ strokeWidth: 3 }} />
+              <Icon src={boldIcon} />
             </MarkButton>
           )}
         </Tooltip>
@@ -452,7 +448,7 @@ function InlineMarks ({ marks }: { marks: DocumentFeatures['formatting']['inline
         >
           {attrs => (
             <MarkButton type="italic" {...attrs}>
-              <ItalicIcon size="small" />
+              <Icon src={italicIcon} />
             </MarkButton>
           )}
         </Tooltip>
@@ -540,7 +536,7 @@ function ContentInButtonWithShortcut ({ content, shortcut }: { content: string, 
   const theme = useTheme()
   return (
     <span
-      css={{
+      style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -549,7 +545,7 @@ function ContentInButtonWithShortcut ({ content, shortcut }: { content: string, 
     >
       <span>{content}</span>
       <kbd
-        css={{
+        style={{
           fontFamily: 'inherit',
           marginLeft: theme.spacing.small,
           padding: theme.spacing.xxsmall,
@@ -599,7 +595,7 @@ function MoreFormattingButton ({
         {...attrs}
         ref={applyRefs(attrs.ref, trigger.ref)}
       >
-        <MoreHorizontalIcon size="small" />
+        <Icon src={moreHorizontalIcon} />
       </ToolbarButton>
     ),
     [isActive, onToggle, isOpen, trigger, attrs]

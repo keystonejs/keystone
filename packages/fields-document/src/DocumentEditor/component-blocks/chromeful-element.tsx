@@ -1,7 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Icon } from '@keystar/ui/icon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { Tooltip } from '@keystone-ui/tooltip'
 import {
   type ReactNode,
@@ -29,10 +30,10 @@ import {
   NotEditable,
 } from './api'
 import { clientSideValidateProp } from './utils'
-import { type GenericPreviewProps } from './api'
+import type { GenericPreviewProps } from './api'
 import {
-  FormValueContentFromPreviewProps,
   type NonChildFieldComponentSchema,
+  FormValueContentFromPreviewProps,
 } from './form-from-preview'
 
 export function ChromefulComponentBlockElement (props: {
@@ -148,7 +149,7 @@ function DefaultToolbarWithChrome ({
             }}
             {...attrs}
           >
-            <Trash2Icon size="small" />
+            <Icon src={trash2Icon} />
           </ToolbarButton>
         )}
       </Tooltip>

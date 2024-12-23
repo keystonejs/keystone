@@ -1,7 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
+import {
+  type RenderElementProps,
+  ReactEditor,
+  useFocused,
+  useSelected
+} from 'slate-react'
 import { Transforms } from 'slate'
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
@@ -9,9 +14,10 @@ import { useSlateStatic as useStaticEditor } from 'slate-react'
 import { jsx, useTheme } from '@keystone-ui/core'
 import { useControlledPopover } from '@keystone-ui/popover'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
-import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon'
+import { Icon } from '@keystar/ui/icon'
+import { linkIcon } from '@keystar/ui/icon/icons/linkIcon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
+import { externalLinkIcon } from '@keystar/ui/icon/icons/externalLinkIcon'
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import { useToolbarState } from './toolbar-state'
@@ -123,11 +129,11 @@ export function LinkElement ({
                     variant="action"
                     {...attrs}
                   >
-                    {externalLinkIcon}
+                    <Icon src={externalLinkIcon} />
                   </ToolbarButton>
                 )}
               </Tooltip>
-              {separator}
+              <ToolbarSeparator />
               <UnlinkButton onUnlink={unlink} />
             </ToolbarGroup>
             {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
@@ -137,9 +143,6 @@ export function LinkElement ({
     </span>
   )
 }
-
-const separator = <ToolbarSeparator />
-const externalLinkIcon = <ExternalLinkIcon size="small" />
 
 const UnlinkButton = memo(function UnlinkButton ({ onUnlink }: { onUnlink: () => void }) {
   return (
@@ -153,14 +156,12 @@ const UnlinkButton = memo(function UnlinkButton ({ onUnlink }: { onUnlink: () =>
           }}
           {...attrs}
         >
-          <Trash2Icon size="small" />
+          <Icon src={trash2Icon} />
         </ToolbarButton>
       )}
     </Tooltip>
   )
 })
-
-const linkIcon = <LinkIcon size="small" />
 
 const LinkButton = forwardRef<HTMLButtonElement>(function LinkButton (props, ref) {
   const {
@@ -179,7 +180,7 @@ const LinkButton = forwardRef<HTMLButtonElement>(function LinkButton (props, ref
         }}
         {...props}
       >
-        {linkIcon}
+        <Icon src={linkIcon} />
       </ToolbarButton>
     ),
     [isSelected, isDisabled, editor, props, ref]
