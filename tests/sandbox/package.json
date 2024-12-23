@@ -9,13 +9,10 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
+    "@keystar/ui": "^0.7.13",
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
-    "@keystone-ui/button": "workspace:^",
-    "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/icons": "workspace:^",
-    "@keystone-ui/tooltip": "workspace:^",
     "@prisma/client": "5.19.0",
     "react": "^18.3.1"
   },

@@ -1,7 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react'
 import {
   useSensors,
   useSensor,
@@ -20,8 +22,8 @@ import {
 } from '@dnd-kit/sortable'
 import { createContext, type ReactNode, useContext } from 'react'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import { Button } from '@keystone-ui/button'
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Button } from '@keystar/ui/button'
 
 const RemoveContext = createContext<null |((index: number) => void)>(null)
 
@@ -73,7 +75,7 @@ export function OrderableList (props: {
           strategy={verticalListSortingStrategy}
         >
           <ul
-            css={{
+            style={{
               isolation: 'isolate',
               display: 'flex',
               gap: 8,
@@ -121,19 +123,17 @@ export function OrderableItem (props: { elementKey: string, children: ReactNode 
     >
       <li
         ref={setNodeRef}
-        css={{
+        style={{
+          ...style,
           transform: `translateX(var(--translate-x, 0)) translateY(var(--translate-y, 0))`,
           listStyle: 'none',
         }}
-        style={style}
       >
         <div
           style={{
             pointerEvents: isDragging ? 'none' : undefined,
             transform: `scale(${isDragging ? '1.02' : '1'})`,
             border: '1px solid #DFDFE7',
-          }}
-          css={{
             backgroundColor: 'white',
             borderRadius: 8,
             padding: '8px',
@@ -156,9 +156,7 @@ export function RemoveButton () {
 
   return (
     <Button
-      weight="none"
-      css={{ padding: 7 }}
-      onClick={() => onRemove(sortable.index)}
+      onPress={() => onRemove(sortable.index)}
       aria-label="Remove"
     >
       <Trash2Icon size="small" />
@@ -176,9 +174,6 @@ export function DragHandle () {
     <Button
       {...sortable.attributes}
       {...sortable.listeners}
-      css={{ cursor: sortable.isDragging ? 'grabbing' : undefined, padding: 7 }}
-      weight="none"
-      size="small"
       aria-label="Drag handle"
     >
       {dragIcon}
@@ -187,7 +182,7 @@ export function DragHandle () {
 }
 
 export const dragIcon = (
-  <span css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
     <svg width="20" height="21" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M6 4h3v3H6V4Zm5 0h3v3h-3V4ZM9 9H6v3h3V9Zm2 0h3v3h-3V9Zm-2 5H6v3h3v-3Zm2 0h3v3h-3v-3Z"

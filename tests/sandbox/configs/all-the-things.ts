@@ -19,7 +19,6 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import { document, structure } from '@keystone-6/fields-document'
-import { componentBlocks } from '../component-blocks'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
@@ -161,7 +160,6 @@ export const lists: any = {
         ],
         links: true,
         dividers: true,
-        componentBlocks,
       }),
     },
     ui: {
