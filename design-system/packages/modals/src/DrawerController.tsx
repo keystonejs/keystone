@@ -24,10 +24,11 @@ export const useDrawerControllerContext = () => {
 }
 
 export const DrawerController = ({ isOpen, children }: DrawerControllerProps) => {
+  const nodeRef = React.useRef(null)
   return (
-    <Transition appear mountOnEnter unmountOnExit in={isOpen} timeout={150}>
+    <Transition appear mountOnEnter unmountOnExit in={isOpen} timeout={150} nodeRef={nodeRef}>
       {transitionState => (
-        <DrawerControllerContextProvider value={transitionState}>
+        <DrawerControllerContextProvider value={transitionState} ref={nodeRef}>
           {children}
         </DrawerControllerContextProvider>
       )}
