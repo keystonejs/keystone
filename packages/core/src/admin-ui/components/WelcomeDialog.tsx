@@ -1,6 +1,5 @@
 import { useId } from '@react-aria/utils'
 import React, { useState } from 'react'
-import fetch from 'cross-fetch'
 
 import { Button, ButtonGroup } from '@keystar/ui/button'
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
@@ -11,8 +10,12 @@ import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
 import { Emoji, Heading, Text } from '@keystar/ui/typography'
 
-const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
+const newsletterUrl = 'https://endpoints.thinkmill.com.au/newsletter'
 const emailValidationMessage = 'Please enter a valid email address.'
+
+function validateEmail (value: string) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value)
+}
 
 export function WelcomeDialog () {
   const [subscribe, setSubscribe] = useState(['keystone'])
@@ -38,7 +41,7 @@ export function WelcomeDialog () {
       const tags = ['source:@keystone-6/auth']
       subscribe.forEach((list) => tags.push(`list:${list}`))
 
-      const res = await fetch(signupURL, {
+      const res = await fetch(newsletterUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,8 +125,4 @@ export function WelcomeDialog () {
       </ButtonGroup>
     </Dialog>
   )
-}
-
-function validateEmail(value: string) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value)
 }
