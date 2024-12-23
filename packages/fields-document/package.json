@@ -100,7 +100,6 @@
     "@keystar/ui": "^0.7.14",
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/icons": "workspace:^",
     "@keystone-ui/popover": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
     "@react-aria/i18n": "^3.12.1",

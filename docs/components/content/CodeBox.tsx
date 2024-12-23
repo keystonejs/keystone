@@ -1,9 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes, useEffect, useState } from 'react'
+import {
+  type HTMLAttributes,
+  useEffect,
+  useState
+} from 'react'
 import copy from 'clipboard-copy'
 
-import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'
+import { Icon } from '@keystar/ui/icon'
+import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
 import { Copy } from '../icons/Copy'
 
 type CodeBoxProps = {
@@ -64,7 +69,7 @@ export function CodeBox ({ code, ...props }: CodeBoxProps) {
           alignItems: 'center',
         }}
       >
-        {didJustCopy ? <CheckIcon color="green" /> : <Copy css={{ height: '1.5rem' }} />}
+        {didJustCopy ? <Icon src={checkIcon} /> : <Copy css={{ height: '1.5rem' }} />}
       </button>
     </div>
   )
