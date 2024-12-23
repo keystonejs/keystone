@@ -37,7 +37,7 @@ function SigninPage ({
     ItemAuthenticationWithPasswordFailure: failureTypename,
   } = authGqlNames
   const [tryAuthenticate, { error, loading, data }] = useMutation(gql`
-    mutation ($identity: String!, $secret: String!) {
+    mutation KsAuthSignin ($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
@@ -48,7 +48,11 @@ function SigninPage ({
           message
         }
       }
-    }`)
+    }`, {
+      refetchQueries: [
+        'KsFetchAdminMeta'
+      ]
+    })
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
