@@ -22,7 +22,8 @@ import {
 } from '@dnd-kit/sortable'
 import { createContext, type ReactNode, useContext } from 'react'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Icon } from '@keystar/ui/icon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { Button } from '@keystar/ui/button'
 
 const RemoveContext = createContext<null |((index: number) => void)>(null)
@@ -159,7 +160,7 @@ export function RemoveButton () {
       onPress={() => onRemove(sortable.index)}
       aria-label="Remove"
     >
-      <Trash2Icon size="small" />
+      <Icon src={trash2Icon} />
     </Button>
   )
 }

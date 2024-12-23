@@ -5,15 +5,20 @@ import { tokenSchema } from '@keystar/ui/style'
 import { Prose } from '@keystar/ui/typography'
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useContext,
+  useState
+} from 'react'
 import isHotkey from 'is-hotkey'
 import { useCallback, useMemo } from 'react'
 import {
   type Descendant,
   type NodeEntry,
+  type Range,
   Editor,
   Node,
-  type Range,
   Transforms,
   Element,
   Text,
@@ -26,9 +31,9 @@ import {
   useSlate,
 } from 'slate-react'
 
-import { type EditableProps } from 'slate-react/dist/components/editable'
-import { type ComponentBlock } from '../component-blocks'
-import { type DocumentFeatures } from '../views'
+import type { EditableProps } from 'slate-react/dist/components/editable'
+import type { ComponentBlock } from '../component-blocks'
+import type { DocumentFeatures } from '../views'
 import { wrapLink } from './link-shared'
 import { clearFormatting, type Mark } from './utils'
 import { Toolbar } from './Toolbar'
@@ -36,7 +41,7 @@ import { renderElement } from './render-element'
 import { nestList, unnestList } from './lists-shared'
 import { ComponentBlockContext } from './component-blocks'
 import { getPlaceholderTextForPropPath } from './component-blocks/utils'
-import { type Relationships } from './relationship'
+import type { Relationships } from './relationship'
 import { renderLeaf } from './leaf'
 import { ToolbarStateProvider } from './toolbar-state'
 

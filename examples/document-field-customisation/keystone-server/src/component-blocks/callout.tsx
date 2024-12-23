@@ -2,49 +2,33 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
+import { component, NotEditable } from '@keystone-6/fields-document/component-blocks'
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
 } from '@keystone-6/fields-document/primitives'
-import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
-import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
-import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Icon } from '@keystar/ui/icon'
+import { infoIcon } from '@keystar/ui/icon/icons/infoIcon'
+import { alertTriangleIcon } from '@keystar/ui/icon/icons/alertTriangleIcon'
+import { alertOctagonIcon } from '@keystar/ui/icon/icons/alertOctagonIcon'
+import { checkCircleIcon } from '@keystar/ui/icon/icons/checkCircleIcon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { Tooltip } from '@keystone-ui/tooltip'
 
+import { callout as CalloutSchema } from './schemas'
+
 const calloutIconMap = {
-  info: InfoIcon,
-  error: AlertOctagonIcon,
-  warning: AlertTriangleIcon,
-  success: CheckCircleIcon,
+  info: <Icon src={infoIcon} />,
+  error: <Icon src={alertOctagonIcon} />,
+  warning: <Icon src={alertTriangleIcon} />,
+  success: <Icon src={checkCircleIcon} />,
 }
 
 export const callout = component({
   label: 'Callout',
   chromeless: true,
-  schema: {
-    intent: fields.select({
-      label: 'Intent',
-      options: [
-        { value: 'info', label: 'Info' },
-        { value: 'warning', label: 'Warning' },
-        { value: 'error', label: 'Error' },
-        { value: 'success', label: 'Success' },
-      ] as const,
-      defaultValue: 'info',
-    }),
-    content: fields.child({
-      kind: 'block',
-      placeholder: '',
-      formatting: 'inherit',
-      dividers: 'inherit',
-      links: 'inherit',
-      relationships: 'inherit',
-    }),
-  },
+  schema: CalloutSchema.schema,
   preview: function Callout (props) {
     const { palette, radii, spacing } = useTheme()
     const intentMap = {
@@ -69,7 +53,7 @@ export const callout = component({
         icon: calloutIconMap.success,
       },
     }
-    const intentConfig = intentMap[props.fields.intent.value]
+    const intentConfig = intentMap[props.fields.intent.value] as any
 
     return (
       <div
@@ -102,8 +86,6 @@ export const callout = component({
     return (
       <ToolbarGroup>
         {props.fields.intent.options.map(opt => {
-          const Icon = calloutIconMap[opt.value]
-
           return (
             <Tooltip key={opt.value} content={opt.label} weight="subtle">
               {attrs => (
@@ -114,7 +96,7 @@ export const callout = component({
                   }}
                   {...attrs}
                 >
-                  <Icon size="small" />
+                  <Icon src={calloutIconMap[opt.value]} />
                 </ToolbarButton>
               )}
             </Tooltip>
@@ -126,7 +108,7 @@ export const callout = component({
         <Tooltip content="Remove" weight="subtle">
           {attrs => (
             <ToolbarButton variant="destructive" onClick={onRemove} {...attrs}>
-              <Trash2Icon size="small" />
+              <Icon src={trash2Icon} />
             </ToolbarButton>
           )}
         </Tooltip>
