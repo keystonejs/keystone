@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { type ChildProcess } from 'node:child_process'
+import type { ChildProcess } from 'node:child_process'
 
 import { printSchema } from 'graphql'
 import { getGenerators, formatSchema } from '@prisma/internals'
