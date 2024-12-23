@@ -2,4 +2,4 @@
 "@keystone-6/auth": minor
 ---
 
-Changed type of `withAuth` input to `ResolvedKeystoneConfig` instead of `KeystoneConfig`
+Change the type of `withAuth`'s first parameter to be a `ResolvedKeystoneConfig`, rather than `KeystoneConfig`
