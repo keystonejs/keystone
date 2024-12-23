@@ -712,12 +712,12 @@ importers:
 
   examples/custom-admin-ui-logo:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.13
+        version: 0.7.14(next@14.2.20(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
-      '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: link:../../design-system/packages/core
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
@@ -762,9 +762,6 @@ importers:
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
-      '@keystone-ui/core':
-        specifier: ^5.0.2
-        version: link:../../design-system/packages/core
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
