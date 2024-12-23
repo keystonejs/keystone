@@ -22,6 +22,7 @@ import {
   getHrefFromList
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 export default ({ labelField }: { labelField: string }) => (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
 
@@ -37,7 +38,7 @@ function Navigation ({
       id: string
     }
   }>(useMemo(() => gql`
-    query Session {
+    query KsAuthFetchSession {
       authenticatedItem {
         id
         label: ${labelField}
@@ -68,7 +69,7 @@ function Navigation ({
 }
 
 const END_SESSION = gql`
-  mutation EndSession {
+  mutation KsAuthEndSession {
     endSession
   }
 `
@@ -78,10 +79,11 @@ function SignoutButton ({
 }: {
   authItemLabel: string
 }) {
+  const router = useRouter()
   const [endSession, { data }] = useMutation(END_SESSION)
   useEffect(() => {
     if (data?.endSession) {
-      window.location.reload()
+      router.push('/signin')
     }
   }, [data])
 
