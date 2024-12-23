@@ -1,5 +1,4 @@
 export { CellContainer } from './CellContainer'
-export { CellLink } from './CellLink'
 export { InlineCode } from './InlineCode'
 export { NullableFieldWrapper } from './NullableFieldWrapper'
 

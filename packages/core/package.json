@@ -226,7 +226,6 @@
     "@hapi/iron": "^7.0.0",
     "@internationalized/date": "^3.5.5",
     "@keystar/ui": "^0.7.13",
-    "@keystone-ui/core": "workspace:^",
     "@nodelib/fs.walk": "^3.0.0",
     "@prisma/client": "5.22.0",
     "@prisma/internals": "5.22.0",

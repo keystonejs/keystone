@@ -1,14 +1,11 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
+import React from 'react'
 import { TextField } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
 function stringify (value: unknown) {
