@@ -25,22 +25,29 @@ import {
   generateTypes,
   getFormattedGraphQLSchema,
 } from '../artifacts'
-import { type ResolvedKeystoneConfig } from '../types'
+import type { ResolvedKeystoneConfig } from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { pkgDir } from '../pkg-dir'
 import {
   ExitError,
   importBuiltKeystoneConfiguration,
 } from './utils'
-import { type Flags } from './cli'
-import { noop } from '../lib/defaults'
+import type { Flags } from './cli'
+
+async function noop () {}
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
 function stripExtendHttpServer (config: ResolvedKeystoneConfig): ResolvedKeystoneConfig {
   const { server, ...rest } = config
   const { extendHttpServer, ...restServer } = server
-  return { ...rest, server: { ... restServer, extendHttpServer: noop } }
+  return {
+    ...rest,
+    server: {
+      ...restServer,
+      extendHttpServer: noop
+    }
+  }
 }
 
 function resolvablePromise<T> () {

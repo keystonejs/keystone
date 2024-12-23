@@ -1,14 +1,12 @@
 import path from 'node:path'
 import { randomBytes } from 'node:crypto'
-import {
-  type KeystoneConfig,
-  type FieldData,
-  type ResolvedKeystoneConfig
+import type {
+  FieldData,
+  ResolvedKeystoneConfig
 } from '../types'
 import { GraphQLError } from 'graphql'
 
 import { allowAll } from '../access'
-import { resolveDefaults } from './defaults'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
@@ -26,7 +24,7 @@ function posixify (s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths (cwd: string, config: KeystoneConfig | ResolvedKeystoneConfig) {
+export function getSystemPaths (cwd: string, config: ResolvedKeystoneConfig) {
   const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
     ? null
     : config.db.prismaClientPath
@@ -200,8 +198,7 @@ function formatUrl (provider: ResolvedKeystoneConfig['db']['provider'], url: str
   return url
 }
 
-export function createSystem (config_: KeystoneConfig | ResolvedKeystoneConfig) {
-  const config = resolveDefaults(config_ as KeystoneConfig, true)
+export function createSystem (config: ResolvedKeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)

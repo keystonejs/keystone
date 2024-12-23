@@ -5,8 +5,8 @@ import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
-import { type KeystoneContext } from '../context'
-import { type JSONValue } from '../utils'
+import type { KeystoneContext } from '../context'
+import type { JSONValue } from '../utils'
 export {
   Boolean,
   Float,
@@ -40,7 +40,7 @@ export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend, wrap } from '@graphql-ts/extend'
 import { field as fieldd } from './schema-api-with-context'
-import { type InputType, type Arg } from '@graphql-ts/schema'
+import type { InputType, Arg } from '@graphql-ts/schema'
 export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
 
 // TODO: remove when we use { graphql } from '.keystone'
