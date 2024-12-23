@@ -3,7 +3,6 @@ import isDeepEqual from 'fast-deep-equal'
 import type {
   FieldMeta,
 } from '../../../types'
-import weakMemoize from '@emotion/weak-memoize'
 import {
   type FragmentDefinitionNode,
   type SelectionSetNode,
@@ -23,18 +22,13 @@ function extractRootFields (selectedFields: Set<string>, selectionSet: Selection
   })
 }
 
-export const getRootGraphQLFieldsFromFieldController = weakMemoize(
-  (controller: FieldController<any, any>) => {
-    const ast = parse(`fragment X on Y {
-  id
-  ${controller.graphqlSelection}
-  }`)
-    const selectedFields = new Set<string>()
-    const fragmentNode = ast.definitions[0] as FragmentDefinitionNode
-    extractRootFields(selectedFields, fragmentNode.selectionSet)
-    return [...selectedFields]
-  }
-)
+export function getRootGraphQLFieldsFromFieldController (controller: FieldController<any, any>) {
+  const ast = parse(`fragment X on Y { id, ${controller.graphqlSelection} }`)
+  const selectedFields = new Set<string>()
+  const fragmentNode = ast.definitions[0] as FragmentDefinitionNode
+  extractRootFields(selectedFields, fragmentNode.selectionSet)
+  return [...selectedFields]
+}
 
 export function useInvalidFields (
   fields: Record<string, FieldMeta>,
