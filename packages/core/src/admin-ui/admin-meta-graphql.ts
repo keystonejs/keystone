@@ -9,13 +9,10 @@ import type {
 import { gql } from './apollo'
 
 export const adminMetaQuery = gql`
-  query AdminMeta {
+  query KsFetchAdminMeta {
     keystone {
-      __typename
       adminMeta {
-        __typename
         lists {
-          __typename
           key
           path
           description
@@ -26,7 +23,6 @@ export const adminMetaQuery = gql`
           plural
 
           fields {
-            __typename
             path
             label
             description
@@ -52,7 +48,6 @@ export const adminMetaQuery = gql`
           }
 
           groups {
-            __typename
             label
             description
             fields {
@@ -92,7 +87,6 @@ export const adminMetaQuery = gql`
           initialColumns
           initialSearchFields
           initialSort {
-            __typename
             field
             direction
           }
@@ -111,20 +105,13 @@ export const adminMetaQuery = gql`
 // TODO: duplicate, reference core/src/lib/create-admin-meta.ts
 export type AdminMetaQuery = {
   keystone: {
-    __typename: 'KeystoneMeta'
     adminMeta: {
-      __typename: 'KeystoneAdminMeta'
       lists: (ListMeta & {
-        __typename: 'KeystoneAdminUIListMeta'
         fields: (Omit<FieldMeta, 'graphql'> & {
-          __typename: 'KeystoneAdminUIFieldMeta'
           isNonNull: FieldMeta['graphql']['isNonNull'] // TODO: FIXME: flattened?
         })[]
         groups: (FieldGroupMeta & {
-          __typename: 'KeystoneAdminUIFieldGroupMeta'
-          fields: (FieldMeta & {
-            __typename: 'KeystoneAdminUIFieldMeta'
-          })[]
+          fields: FieldMeta[]
         })[]
         graphql: {
           names: GraphQLNames
@@ -133,9 +120,7 @@ export type AdminMetaQuery = {
         pageSize: number
         initialColumns: string[]
         initialSearchFields: string[]
-        initialSort: ({
-          __typename: 'KeystoneAdminUISort'
-        } & ListMeta['initialSort']) | null
+        initialSort: ListMeta['initialSort'] | null
         isSingleton: boolean
 
         hideNavigation: boolean

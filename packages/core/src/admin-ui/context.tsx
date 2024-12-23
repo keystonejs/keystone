@@ -71,7 +71,6 @@ function InternalKeystoneProvider ({
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery)
-  console.error({ data })
   const lists = data?.keystone?.adminMeta?.lists
   const meta = useMemo(() => {
     if (!lists) return
@@ -257,7 +256,7 @@ export function useListItem (listKey: string, itemId: string | null) {
       .join('\n')
 
     return gql`
-      query ItemPage($id: ID!) {
+      query KsFetchItem ($id: ID!) {
         item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
           ${selectedFields}
         }

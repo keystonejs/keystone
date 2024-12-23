@@ -22,7 +22,7 @@ import {
   HStack,
   VStack
 } from '@keystar/ui/layout'
-import { Heading, Text } from '@keystar/ui/typography'
+import { Heading } from '@keystar/ui/typography'
 
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics'
 import { IconTwitter, IconGithub } from '../components/Icons'
@@ -32,7 +32,7 @@ import type {
   AuthGqlNames,
 } from '../types'
 
-const signupURL = 'https://endpoints.thinkmill.com.au/newsletter'
+const newsletterUrl = 'https://endpoints.thinkmill.com.au/newsletter'
 
 export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
@@ -64,7 +64,7 @@ function Welcome ({ value, onContinue }: { value: any, onContinue: () => void })
       if (subscribe.keystone) tags.push('list:keystone')
       if (subscribe.thinkmill) tags.push('list:thinkmill')
 
-      const res = await fetch(signupURL, {
+      const res = await fetch(newsletterUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ function InitPage ({
     ItemAuthenticationWithPasswordSuccess: successTypename,
   } = authGqlNames
   const [tryCreateItem, { loading, error, data }] = useMutation(gql`
-    mutation($data: ${CreateInitialInput}!) {
+    mutation KsAuthCreateFirstItem ($data: ${CreateInitialInput}!) {
       authenticate: ${createInitialItem}(data: $data) {
         ... on ${successTypename} {
           item {
