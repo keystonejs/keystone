@@ -19,7 +19,6 @@ import {
 } from '@keystar/ui/style'
 
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-import { DrawerProvider } from '@keystone-ui/modals'
 import { ToastProvider } from '@keystone-ui/toast'
 
 import type {
@@ -184,16 +183,14 @@ function InternalKeystoneProvider ({
       </NextHead>
 
       <ToastProvider>
-        <DrawerProvider>
-          <KeystoneContext.Provider value={{
-            adminConfig,
-            adminMeta: meta ?? null,
-            fieldViews,
-            apiPath,
-          }}>
-            {children}
-          </KeystoneContext.Provider>
-        </DrawerProvider>
+        <KeystoneContext.Provider value={{
+          adminConfig,
+          adminMeta: meta ?? null,
+          fieldViews,
+          apiPath,
+        }}>
+          {children}
+        </KeystoneContext.Provider>
       </ToastProvider>
       <Toaster />
     </KeystarProvider>
