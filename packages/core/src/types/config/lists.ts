@@ -68,10 +68,10 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   description?: string // the description displayed below the field in the Admin UI
 
   /**
-   * Excludes this list from the Admin UI
+   * Hides this list from the Admin UI navigation, it only hides the list, you can still navigate directly.
    * @default false
    */
-  isHidden?: MaybeSessionFunction<boolean, ListTypeInfo>
+  hideNavigation?: MaybeSessionFunction<boolean, ListTypeInfo>
   /**
    * Hides the create button in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
@@ -177,7 +177,7 @@ export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session']
-      item: ListTypeInfo['item']
+      item: ListTypeInfo['item'] | null
     }) => MaybePromise<T>)
 
 export type ListGraphQLConfig = {

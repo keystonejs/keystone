@@ -49,11 +49,11 @@ type PageContainerProps = {
 };
 ```
 
-To match the header style applied to all Admin UI standard pages, we use the `Heading` component from `@keystone-ui/core` as an `h3` element.
+To match the header style applied to all Admin UI standard pages, we use the `Heading` component from `@keystar/ui/typography` as an `h3` element.
 
 ```tsx
 import { PageContainer } from '@keystone-6/core/admin-ui/component';
-import { Heading } from '@keystone-ui/core';
+import { Heading } from '@keystar/ui/typography';
 
 export default () => {
   return (

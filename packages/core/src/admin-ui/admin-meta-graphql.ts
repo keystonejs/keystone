@@ -1,37 +1,53 @@
-import {
-  type GraphQLNames,
-  type JSONValue,
+import type {
+  GraphQLNames,
 } from '../types/utils'
+import type {
+  ListMeta,
+  FieldMeta,
+  FieldGroupMeta,
+} from '../types'
 import { gql } from './apollo'
 
-export const staticAdminMetaQuery = gql`
-  query StaticAdminMeta {
+export const adminMetaQuery = gql`
+  query KsFetchAdminMeta {
     keystone {
-      __typename
       adminMeta {
-        __typename
         lists {
-          __typename
           key
-          itemQueryName
-          listQueryName
           path
+          description
+
           label
+          labelField
           singular
           plural
-          description
-          initialColumns
-          initialSearchFields
-          initialSort {
-            __typename
-            field
-            direction
+
+          fields {
+            path
+            label
+            description
+            fieldMeta
+            isOrderable
+            isFilterable
+
+            viewsIndex
+            customViewsIndex
+
+            search
+            isNonNull
+            createView {
+              fieldMode
+            }
+            itemView {
+              fieldMode
+              fieldPosition
+            }
+            listView {
+              fieldMode
+            }
           }
-          pageSize
-          labelField
-          isSingleton
+
           groups {
-            __typename
             label
             description
             fields {
@@ -66,93 +82,51 @@ export const staticAdminMetaQuery = gql`
               deleteManyMutationName
             }
           }
-          fields {
-            __typename
-            path
-            label
-            description
-            fieldMeta
-            viewsIndex
-            customViewsIndex
-            search
-            isNonNull
-            itemView {
-              fieldMode
-            }
+
+          pageSize
+          initialColumns
+          initialSearchFields
+          initialSort {
+            field
+            direction
           }
+          isSingleton
+
+          hideNavigation
+          hideCreate
+          hideDelete
         }
       }
     }
   }
 `
 
-export type StaticAdminMetaQuery = {
+// TODO: FIXME: should use DeepNullable
+// TODO: duplicate, reference core/src/lib/create-admin-meta.ts
+export type AdminMetaQuery = {
   keystone: {
-    __typename: 'KeystoneMeta'
     adminMeta: {
-      __typename: 'KeystoneAdminMeta'
-      lists: Array<{
-        __typename: 'KeystoneAdminUIListMeta'
-        key: string
-        path: string
-        description: string | null
-
-        label: string
-        labelField: string
-        singular: string
-        plural: string
-
-        fields: Array<{
-          __typename: 'KeystoneAdminUIFieldMeta'
-          path: string
-          label: string
-          description: string | null
-          fieldMeta: JSONValue | null
-          viewsIndex: number
-          customViewsIndex: number | null
-          search: QueryMode | null
-          isNonNull: ('read' | 'create' | 'update')[]
-          itemView: {
-            __typename: 'KeystoneAdminUIFieldMetaItemView'
-            fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition | null
-            fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null
-          } | null
-        }>
-        groups: Array<{
-          __typename: 'KeystoneAdminUIFieldGroupMeta'
-          label: string
-          description: string | null
-          fields: Array<{
-            __typename: 'KeystoneAdminUIFieldMeta'
-            path: string
-          }>
-        }>
+      lists: (ListMeta & {
+        fields: (Omit<FieldMeta, 'graphql'> & {
+          isNonNull: FieldMeta['graphql']['isNonNull'] // TODO: FIXME: flattened?
+        })[]
+        groups: (FieldGroupMeta & {
+          fields: FieldMeta[]
+        })[]
         graphql: {
           names: GraphQLNames
         }
 
         pageSize: number
-        initialColumns: Array<string>
-        initialSearchFields: Array<string>
-        initialSort: {
-          __typename: 'KeystoneAdminUISort'
-          field: string
-          direction: KeystoneAdminUISortDirection
-        } | null
+        initialColumns: string[]
+        initialSearchFields: string[]
+        initialSort: ListMeta['initialSort'] | null
         isSingleton: boolean
 
-        // TODO: probably remove this
-        itemQueryName: string
-        listQueryName: string
-      }>
+        hideNavigation: boolean
+        hideCreate: boolean
+        hideDelete: boolean
+      })[]
     }
   }
 }
-
-type QueryMode = 'default' | 'insensitive'
-
-type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden'
-
-type KeystoneAdminUIFieldMetaItemViewFieldPosition = 'form' | 'sidebar'
-
-type KeystoneAdminUISortDirection = 'ASC' | 'DESC'

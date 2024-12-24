@@ -23,12 +23,11 @@ export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     schema: ComponentSchemaForGraphQL
   }
 
-export const structure =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    schema,
-    ...config
-  }: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function structure <ListTypeInfo extends BaseListTypeInfo>({
+  schema,
+  ...config
+}: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type structure")
     }
@@ -40,7 +39,6 @@ export const structure =
     }
 
     const defaultValue = getInitialPropsValue(schema)
-
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
@@ -107,25 +105,21 @@ export const structure =
                   }),
                 },
                 resolve ({ value }, args, context) {
-                  if (args.hydrateRelationships) {
-                    return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
-                      fetchRelationshipData(
-                        context,
-                        schema.listKey,
-                        schema.many,
-                        schema.selection || '',
-                        value
-                      )
+                  if (!args.hydrateRelationships) return value
+                  return addRelationshipDataToComponentProps(schema, value, (schema, value) => {
+                    return fetchRelationshipData(
+                      context,
+                      schema.listKey,
+                      schema.many,
+                      schema.selection || '',
+                      value
                     )
-                  }
-                  return value
+                  })
                 },
               }),
             },
           }),
-          resolve (source) {
-            return source
-          },
+          resolve (source) { return source },
         }),
         __ksTelemetryFieldTypeName: '@keystone-6/structure',
         views: '@keystone-6/fields-document/structure-views',
@@ -142,3 +136,4 @@ export const structure =
       }
     )
   }
+}

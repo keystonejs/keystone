@@ -193,7 +193,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
           fieldMode: 'hidden',
         },
         itemView: {
-          fieldMode: 'hidden',
+          fieldPosition: 'sidebar'
         },
       },
     })

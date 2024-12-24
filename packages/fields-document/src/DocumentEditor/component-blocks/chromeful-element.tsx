@@ -1,13 +1,27 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { Icon } from '@keystar/ui/icon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { type ReactNode, useMemo, useState, useCallback, Fragment } from 'react'
-import { type RenderElementProps, useSelected } from 'slate-react'
+import {
+  type ReactNode,
+  useMemo,
+  useState,
+  useCallback,
+  Fragment
+} from 'react'
+import {
+  type RenderElementProps,
+  useSelected
+} from 'slate-react'
 import { Stack } from '@keystone-ui/core'
-import { Button as KeystoneUIButton } from '@keystone-ui/button'
-import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives'
+import { Button } from '@keystar/ui/button'
+import {
+  ToolbarGroup,
+  ToolbarButton,
+  ToolbarSeparator
+} from '../primitives'
 import {
   type PreviewPropsForToolbar,
   type ObjectField,
@@ -16,10 +30,10 @@ import {
   NotEditable,
 } from './api'
 import { clientSideValidateProp } from './utils'
-import { type GenericPreviewProps } from './api'
+import type { GenericPreviewProps } from './api'
 import {
-  FormValueContentFromPreviewProps,
   type NonChildFieldComponentSchema,
+  FormValueContentFromPreviewProps,
 } from './form-from-preview'
 
 export function ChromefulComponentBlockElement (props: {
@@ -33,7 +47,6 @@ export function ChromefulComponentBlockElement (props: {
 }) {
   const selected = useSelected()
   const { colors, fields, spacing, typography } = useTheme()
-
   const isValid = useMemo(
     () =>
       clientSideValidateProp(
@@ -45,13 +58,8 @@ export function ChromefulComponentBlockElement (props: {
   )
 
   const [editMode, setEditMode] = useState(false)
-  const onCloseEditMode = useCallback(() => {
-    setEditMode(false)
-  }, [])
-  const onShowEditMode = useCallback(() => {
-    setEditMode(true)
-  }, [])
-
+  const onCloseEditMode = useCallback(() => { setEditMode(false) }, [])
+  const onShowEditMode = useCallback(() => { setEditMode(true) }, [])
   const ChromefulToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithChrome
   return (
     <div
@@ -141,7 +149,7 @@ function DefaultToolbarWithChrome ({
             }}
             {...attrs}
           >
-            <Trash2Icon size="small" />
+            <Icon src={trash2Icon} />
           </ToolbarButton>
         )}
       </Tooltip>
@@ -178,20 +186,12 @@ function FormValue ({
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContentFromPreviewProps {...props} forceValidation={forceValidation} />
-      <KeystoneUIButton
-        size="small"
-        tone="active"
-        weight="bold"
-        onClick={() => {
-          if (isValid) {
-            onClose()
-          } else {
-            setForceValidation(true)
-          }
-        }}
-      >
+      <Button onPress={() => {
+        if (isValid) return onClose()
+        setForceValidation(true)
+      }} >
         Done
-      </KeystoneUIButton>
+      </Button>
     </Stack>
   )
 }

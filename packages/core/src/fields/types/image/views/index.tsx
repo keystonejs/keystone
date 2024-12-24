@@ -1,24 +1,18 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
+import React from 'react'
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
 } from '../../../../types'
-import { validateImage, ImageWrapper } from './Field'
+import { validateImage } from './Field'
 
 export { Field } from './Field'
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path]
-  if (!data) return null
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  if (!value) return null
   return (
     <div
-      css={{
+      style={{
         alignItems: 'center',
         display: 'flex',
         height: 24,
@@ -26,22 +20,8 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
+      <img alt={value.filename} style={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
     </div>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && (
-        <ImageWrapper>
-          <img css={{ width: '100%' }} alt={data.filename} src={data.url} />
-        </ImageWrapper>
-      )}
-    </FieldContainer>
   )
 }
 

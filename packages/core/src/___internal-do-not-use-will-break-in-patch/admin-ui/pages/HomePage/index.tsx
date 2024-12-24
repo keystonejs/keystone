@@ -1,17 +1,82 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, {
+  type PropsWithChildren,
+  useId,
+  useMemo,
+  useRef
+} from 'react'
 
-import { useMemo } from 'react'
-
-import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
-import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
-import { LoadingDots } from '@keystone-ui/loading'
-
-import { makeDataGetter } from '../../../../admin-ui/utils'
-import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { gql, useQuery } from '../../../../admin-ui/apollo'
-import { useKeystone, useList } from '../../../../admin-ui/context'
-import { Link, type LinkProps } from '../../../../admin-ui/router'
+
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
+import { Grid, VStack } from '@keystar/ui/layout'
+import { useLink } from '@keystar/ui/link'
+import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Heading, Text } from '@keystar/ui/typography'
+
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer'
+import {
+  useKeystone,
+  useList,
+} from '../../../../admin-ui/context'
+
+export function HomePage () {
+  const { adminMeta } = useKeystone()
+  const lists = adminMeta?.lists ?? {}
+  const LIST_COUNTS_QUERY = useMemo(() => gql(`
+    query KsFetchListCounts {
+      keystone {
+        adminMeta {
+          lists {
+            key
+          }
+        }
+      }
+      ${[...function* () {
+        for (const list of Object.values(lists)) {
+          yield `${list.key}: ${list.graphql.names.listQueryCountName}`
+        }
+      }()].join('\n')}
+    }`,
+  ), [lists])
+  const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
+
+  return (
+    <PageContainer header={<Heading elementType="h1" size="small">Dashboard</Heading>}>
+      <Text elementType="h2" visuallyHidden>Lists</Text>
+      <VStack paddingY="xlarge">
+        <GraphQLErrorNotice
+          errors={[
+            error?.networkError,
+            // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+            // which are handled seperately and do not indicate a failure to update the item
+            ...error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []
+          ]}
+        />
+        <Grid
+          autoRows="element.xlarge"
+          columns={`repeat(
+            auto-fill,
+            minmax(${tokenSchema.size.scale[3000]}, 1fr)
+          )`}
+          gap="large"
+        >
+          {Object.values(lists).map((list) => {
+            return <ListCard
+              key={list.key}
+              listKey={list.key}
+              count={data?.[list.key] ?? null}
+              hideCreate={list.hideCreate ?? false}
+            />
+          }) ?? [] }
+        </Grid>
+      </VStack>
+    </PageContainer>
+  )
+}
 
 function ListCard ({
   listKey,
@@ -19,170 +84,97 @@ function ListCard ({
   hideCreate
 }: {
   listKey: string
+  count: number | null
   hideCreate: boolean
-  count:
-    | { type: 'success', count: number }
-    | { type: 'no-access' }
-    | { type: 'error', message: string }
-    | { type: 'loading' }
 }) {
-  const { colors, palette, radii, spacing } = useTheme()
   const list = useList(listKey)
+  const countElementId = useId()
+  const countElement = (() => {
+    if (list.isSingleton) return null
+    if (count === null) return <Text id={countElementId} color="neutralTertiary">Unknown</Text>
+    return (
+      <Text id={countElementId} color="neutralSecondary">
+        {count} item{count !== 1 ? 's' : ''}
+      </Text>
+    )
+  })()
+
   return (
-    <div css={{ position: 'relative' }}>
-      <Link
-        href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
-        css={{
-          backgroundColor: colors.background,
-          borderColor: colors.border,
-          borderRadius: radii.medium,
-          borderWidth: 1,
-          // boxShadow: shadow.s100,
-          display: 'inline-block',
-          minWidth: 280,
-          padding: spacing.large,
+    <Grid
+      backgroundColor="canvas"
+      borderRadius="medium"
+      columns="minmax(0, 1fr) auto"
+      gap="regular"
+      padding="large"
+      position="relative"
+    >
+      <VStack gap="regular">
+        <Heading elementType="h3" size="small" truncate>
+          <CardLink aria-describedby={countElementId} href={`/${list.path}${list.isSingleton ? '/1' : ''}`}>
+            {list.label}
+          </CardLink>
+        </Heading>
+
+        {countElement}
+      </VStack>
+
+      {hideCreate === false && !list.isSingleton && (
+        <TooltipTrigger>
+          <ActionButton aria-label="add" href={`/${list.path}/create`}>
+            <Icon src={plusIcon} />
+          </ActionButton>
+          <Tooltip>Add {list.singular.toLowerCase()}</Tooltip>
+        </TooltipTrigger>
+      )}
+    </Grid>
+  )
+}
+
+function CardLink (props: PropsWithChildren<{ href: string }>) {
+  const ref = useRef<HTMLAnchorElement>(null)
+  const { isPressed, linkProps } = useLink(props, ref)
+  return (
+    <FocusRing>
+      <a
+        ref={ref}
+        {...props}
+        {...linkProps}
+        data-pressed={isPressed}
+        className={css({
+          color: tokenSchema.color.foreground.neutral,
+          outline: 'none',
           textDecoration: 'none',
 
-          ':hover': {
-            borderColor: palette.blue400,
+          '&:hover': {
+            color: tokenSchema.color.foreground.neutralEmphasis,
+
+            '::before': {
+              backgroundColor: tokenSchema.color.alias.backgroundIdle,
+              borderColor: tokenSchema.color.border.neutral,
+            },
           },
-          ':hover h3': {
-            textDecoration: 'underline',
+          '&[data-pressed=true]': {
+            '::before': {
+              backgroundColor: tokenSchema.color.alias.backgroundHovered,
+              borderColor: tokenSchema.color.alias.borderHovered,
+            },
           },
-        }}
-      >
-        <h3 css={{ margin: `0 0 ${spacing.small}px 0` }}>{list.label} </h3>
-        {list.isSingleton ? null : count.type === 'success' ? (
-          <span css={{ color: colors.foreground, textDecoration: 'none' }}>
-            {count.count} item{count.count !== 1 ? 's' : ''}
-          </span>
-        ) : count.type === 'error' ? (
-          count.message
-        ) : count.type === 'loading' ? (
-          <LoadingDots label={`Loading count of ${list.plural}`} size="small" tone="passive" />
-        ) : (
-          'No access'
-        )}
-      </Link>
-      {hideCreate === false && !list.isSingleton && (
-        <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
-          <PlusIcon size="large" />
-          <VisuallyHidden>Create {list.singular}</VisuallyHidden>
-        </CreateButton>
-      )}
-    </div>
-  )
-}
+          '&[data-focus=visible]::before': {
+            outline: `${tokenSchema.size.alias.focusRing} solid ${tokenSchema.color.alias.focusRing}`,
+            outlineOffset: tokenSchema.size.alias.focusRingGap,
+          },
 
-function CreateButton (props: LinkProps) {
-  const theme = useTheme()
-  return (
-    <Link
-      css={{
-        alignItems: 'center',
-        backgroundColor: theme.palette.neutral400,
-        border: 0,
-        borderRadius: theme.radii.xsmall,
-        color: 'white',
-        cursor: 'pointer',
-        display: 'flex',
-        height: 32,
-        justifyContent: 'center',
-        outline: 0,
-        position: 'absolute',
-        right: theme.spacing.large,
-        top: theme.spacing.large,
-        transition: 'background-color 80ms linear',
-        width: 32,
-        '&:hover, &:focus': {
-          color: 'white',
-          backgroundColor: theme.tones.positive.fill[0],
-        },
-      }}
-      {...props}
-    />
-  )
-}
-
-export function HomePage () {
-  const {
-    adminMeta: { lists },
-    visibleLists,
-  } = useKeystone()
-  const query = useMemo(
-    () => gql`
-    query {
-      keystone {
-        adminMeta {
-          lists {
-            key
-            hideCreate
-          }
-        }
-      }
-      ${Object.values(lists)
-        .filter(list => !list.isSingleton)
-        .map(list => `${list.key}: ${list.gqlNames.listQueryCountName}`)
-        .join('\n')}
-    }`,
-    [lists]
-  )
-  const { data, error } = useQuery(query, { errorPolicy: 'all' })
-
-  const dataGetter = makeDataGetter(data, error?.graphQLErrors)
-
-  return (
-    <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
-      {visibleLists.state === 'loading' ? (
-        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <LoadingDots label="Loading lists" size="large" tone="passive" />
-        </Center>
-      ) : (
-        <Inline
-          as="ul"
-          gap="large"
-          paddingY="xlarge"
-          css={{
-            paddingLeft: '0px',
-            marginBottom: '0px',
-          }}
-        >
-          {(() => {
-            if (visibleLists.state === 'error') {
-              return (
-                <span css={{ color: 'red' }}>
-                  {visibleLists.error instanceof Error
-                    ? visibleLists.error.message
-                    : visibleLists.error[0].message}
-                </span>
-              )
-            }
-            return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
-                return null
-              }
-              const result = dataGetter.get(key)
-              return (
-                <ListCard
-                  count={
-                    data
-                      ? result.errors
-                        ? { type: 'error', message: result.errors[0].message }
-                        : { type: 'success', count: data[key] }
-                      : { type: 'loading' }
-                  }
-                  hideCreate={
-                    data?.keystone.adminMeta.lists.find((list: any) => list.key === key)
-                      ?.hideCreate ?? false
-                  }
-                  key={key}
-                  listKey={key}
-                />
-              )
-            })
-          })()}
-        </Inline>
-      )}
-    </PageContainer>
+          // fill available space so the entire card is clickable
+          '&::before': {
+            border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.muted}`,
+            borderRadius: tokenSchema.size.radius.medium,
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            transition: transition(['background-color', 'border-color']),
+          },
+        })}
+      />
+    </FocusRing>
   )
 }

@@ -1,16 +1,24 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { tokenSchema } from '@keystar/ui/style'
+import { Prose } from '@keystar/ui/typography'
+
 import { jsx, useTheme } from '@keystone-ui/core'
-import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useContext,
+  useState
+} from 'react'
 import isHotkey from 'is-hotkey'
 import { useCallback, useMemo } from 'react'
 import {
   type Descendant,
   type NodeEntry,
+  type Range,
   Editor,
   Node,
-  type Range,
   Transforms,
   Element,
   Text,
@@ -23,9 +31,9 @@ import {
   useSlate,
 } from 'slate-react'
 
-import { type EditableProps } from 'slate-react/dist/components/editable'
-import { type ComponentBlock } from '../component-blocks'
-import { type DocumentFeatures } from '../views'
+import type { EditableProps } from 'slate-react/dist/components/editable'
+import type { ComponentBlock } from '../component-blocks'
+import type { DocumentFeatures } from '../views'
 import { wrapLink } from './link-shared'
 import { clearFormatting, type Mark } from './utils'
 import { Toolbar } from './Toolbar'
@@ -33,7 +41,7 @@ import { renderElement } from './render-element'
 import { nestList, unnestList } from './lists-shared'
 import { ComponentBlockContext } from './component-blocks'
 import { getPlaceholderTextForPropPath } from './component-blocks/utils'
-import { type Relationships } from './relationship'
+import type { Relationships } from './relationship'
 import { renderLeaf } from './leaf'
 import { ToolbarStateProvider } from './toolbar-state'
 
@@ -144,7 +152,7 @@ export function DocumentEditor ({
   documentFeatures: DocumentFeatures
   initialExpanded?: boolean
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const { radii, colors, spacing, fields } = useTheme()
+  const { radii, spacing } = useTheme()
   const [expanded, setExpanded] = useState(initialExpanded)
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships, {
@@ -157,7 +165,7 @@ export function DocumentEditor ({
   return (
     <div
       css={{
-        border: `1px solid ${colors.border}`,
+        border: `1px solid ${tokenSchema.color.border.neutral}`,
         borderRadius: radii.small,
       }}
     >
@@ -197,25 +205,29 @@ export function DocumentEditor ({
           [expanded, documentFeatures, onChange]
         )}
 
-        <DocumentEditorEditable
-          css={[
-            {
-              borderRadius: 'inherit',
-              background: fields.focus.inputBackground,
-              borderColor: fields.inputBorderColor,
-              paddingLeft: spacing.medium,
-              paddingRight: spacing.medium,
-              minHeight: 120,
-              scrollbarGutter: 'stable',
-              // the !important is necessary to override the width set by resizing as an inline style
-              height: expanded ? 'auto !important' : 224,
-              resize: expanded ? undefined : 'vertical',
-              overflowY: 'auto',
-            },
-          ]}
-          {...props}
-          readOnly={onChange === undefined}
-        />
+        <Prose size="regular">
+          <DocumentEditorEditable
+            css={[
+              {
+                borderBottomLeftRadius: radii.small,
+                borderBottomRightRadius: radii.small,
+                background: tokenSchema.color.background.canvas,
+                borderColor: tokenSchema.color.alias.borderIdle,
+                outline: 0,
+                paddingBlock: spacing.small,
+                paddingInline: spacing.medium,
+                minHeight: 120,
+                scrollbarGutter: 'stable',
+                // the !important is necessary to override the width set by resizing as an inline style
+                height: expanded ? 'auto !important' : 224,
+                resize: expanded ? undefined : 'vertical',
+                overflowY: 'auto',
+              },
+            ]}
+            {...props}
+            readOnly={onChange === undefined}
+          />
+        </Prose>
       </DocumentEditorProvider>
     </div>
   )

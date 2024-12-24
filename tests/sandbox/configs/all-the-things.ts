@@ -19,17 +19,15 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import { document, structure } from '@keystone-6/fields-document'
-import { componentBlocks } from '../component-blocks'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
 import { localStorageConfig, trackingFields } from '../utils'
 //  import { type Lists } from '.keystone/types' // TODO
 
-const description =
-  'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
+const description = 'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
 
-export const lists = {
+export const lists: any = {
   Thing: list({
     access: allowAll,
     fields: {
@@ -66,26 +64,12 @@ export const lists = {
         ref: 'User',
         ui: {
           description,
-          displayMode: 'cards',
-          cardFields: ['name', 'email'],
-          inlineConnect: {
-            labelField: 'email',
-          },
-          inlineCreate: { fields: ['name', 'email'] },
-          linkToItem: true,
-          inlineEdit: { fields: ['name', 'email'] },
         },
       }),
       toManyRelationshipCard: relationship({
         ref: 'Todo',
         ui: {
           description,
-          displayMode: 'cards',
-          cardFields: ['label', 'isComplete', 'assignedTo'],
-          inlineConnect: true,
-          inlineCreate: { fields: ['label', 'isComplete', 'assignedTo'] },
-          linkToItem: true,
-          inlineEdit: { fields: ['label', 'isComplete', 'assignedTo'] },
         },
         many: true,
       }),
@@ -176,7 +160,6 @@ export const lists = {
         ],
         links: true,
         dividers: true,
-        componentBlocks,
       }),
     },
     ui: {

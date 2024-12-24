@@ -1,17 +1,19 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
-import { AlignLeftIcon } from '@keystone-ui/icons/icons/AlignLeftIcon'
-import { AlignRightIcon } from '@keystone-ui/icons/icons/AlignRightIcon'
-import { AlignCenterIcon } from '@keystone-ui/icons/icons/AlignCenterIcon'
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
+import React, {
+  type ComponentProps,
+  useState,
+  useMemo
+} from 'react'
+import { Icon } from '@keystar/ui/icon'
+import { alignLeftIcon } from '@keystar/ui/icon/icons/alignLeftIcon'
+import { alignRightIcon } from '@keystar/ui/icon/icons/alignRightIcon'
+import { alignCenterIcon } from '@keystar/ui/icon/icons/alignCenterIcon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { useControlledPopover } from '@keystone-ui/popover'
 import { Tooltip } from '@keystone-ui/tooltip'
 import { applyRefs } from 'apply-ref'
-import { useState, type ComponentProps, useMemo } from 'react'
 import { Transforms } from 'slate'
 
-import { type DocumentFeatures } from '../views-shared'
+import type { DocumentFeatures } from '../views-shared'
 import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives'
 import { useToolbarState } from './toolbar-state'
 
@@ -41,7 +43,7 @@ export function TextAlignMenu ({
 
   return (
     <div
-      css={{
+      style={{
         display: 'inline-block',
         position: 'relative',
       }}
@@ -70,6 +72,12 @@ export function TextAlignMenu ({
       ) : null}
     </div>
   )
+}
+
+const ALIGNMENT_ICONS = {
+  start: <Icon src={alignLeftIcon} />,
+  center: <Icon src={alignCenterIcon} />,
+  end: <Icon src={alignRightIcon} />,
 }
 
 function TextAlignDialog ({
@@ -113,19 +121,13 @@ function TextAlignDialog ({
               }}
               {...attrs}
             >
-              {alignmentIcons[alignment]}
+              {ALIGNMENT_ICONS[alignment]}
             </ToolbarButton>
           )}
         </Tooltip>
       ))}
     </ToolbarGroup>
   )
-}
-
-const alignmentIcons = {
-  start: <AlignLeftIcon size="small" />,
-  center: <AlignCenterIcon size="small" />,
-  end: <AlignRightIcon size="small" />,
 }
 
 function TextAlignButton (props: {
@@ -150,12 +152,10 @@ function TextAlignButton (props: {
         {...props.trigger.props}
         ref={applyRefs(props.attrs.ref, props.trigger.ref)}
       >
-        {alignmentIcons[selected]}
-        {downIcon}
+        {ALIGNMENT_ICONS[selected]}
+        <Icon src={chevronDownIcon} size="small" />
       </ToolbarButton>
     ),
     [isDisabled, selected, props]
   )
 }
-
-const downIcon = <ChevronDownIcon size="small" />

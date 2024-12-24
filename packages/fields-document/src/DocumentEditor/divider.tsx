@@ -1,13 +1,16 @@
-import React, { type ComponentProps, Fragment, useMemo } from 'react'
+import React, {
+  type ComponentProps,
+  Fragment,
+  useMemo
+} from 'react'
 
-import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon'
+import { Icon } from '@keystar/ui/icon'
+import { minusIcon } from '@keystar/ui/icon/icons/minusIcon'
 import { Tooltip } from '@keystone-ui/tooltip'
 
 import { KeyboardInTooltip, ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
 import { insertDivider } from './divider-shared'
-
-const minusIcon = <MinusIcon size="small" />
 
 function DividerButton ({
   attrs,
@@ -28,7 +31,7 @@ function DividerButton ({
         }}
         {...attrs}
       >
-        {minusIcon}
+        <Icon src={minusIcon} />
       </ToolbarButton>
     ),
     [editor, isDisabled, attrs]

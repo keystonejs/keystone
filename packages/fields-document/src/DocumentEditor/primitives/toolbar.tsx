@@ -1,8 +1,18 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import { tokenSchema } from '@keystar/ui/style'
 
-import { type ButtonHTMLAttributes, type HTMLAttributes, createContext, useContext, type ReactNode } from 'react'
-import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
+import React, {
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type ReactNode,
+  createContext,
+  useContext,
+} from 'react'
+import {
+  type MarginProps,
+  Box,
+  forwardRefWithAs,
+  useTheme
+} from '@keystone-ui/core'
 
 // Spacers and Separators
 // ------------------------------
@@ -10,16 +20,16 @@ import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keyston
 export const ToolbarSpacer = () => {
   const { spacing } = useTheme()
 
-  return <span css={{ display: 'inline-block', width: spacing.large }} />
+  return <span style={{ display: 'inline-block', width: spacing.large }} />
 }
 export const ToolbarSeparator = () => {
-  const { colors, spacing } = useTheme()
+  const { spacing } = useTheme()
 
   return (
     <span
-      css={{
+      style={{
         alignSelf: 'stretch',
-        background: colors.border,
+        background: tokenSchema.color.border.neutral,
         display: 'inline-block',
         marginLeft: spacing.xsmall,
         marginRight: spacing.xsmall,
@@ -51,7 +61,7 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
       <ToolbarGroupContext.Provider value={{ direction }}>
         <Box
           ref={ref}
-          css={{
+          style={{
             display: 'flex',
             gap: spacing.xxsmall,
             flexDirection: direction,
@@ -85,7 +95,7 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
 ) {
   const extraProps: any = {}
   const { direction: groupDirection } = useToolbarGroupContext()
-  const { colors, palette, radii, sizing, spacing, typography } = useTheme()
+  const { radii, sizing, spacing, typography } = useTheme()
 
   if (Tag === 'button') {
     extraProps.type = 'button'
@@ -93,12 +103,20 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
 
   const variants = {
     default: {
-      bgHover: palette.neutral200,
-      bgActive: palette.neutral300,
-      fg: palette.neutral800,
+      bgHover: tokenSchema.color.alias.backgroundHovered,
+      bgActive: tokenSchema.color.alias.backgroundPressed,
+      fg: tokenSchema.color.alias.foregroundIdle,
     },
-    action: { bgHover: palette.blue50, bgActive: palette.blue100, fg: palette.blue600 },
-    destructive: { bgHover: palette.red50, bgActive: palette.red100, fg: palette.red600 },
+    action: {
+      bgHover: tokenSchema.color.scale.indigo3,
+      bgActive: tokenSchema.color.scale.indigo4,
+      fg: tokenSchema.color.foreground.accent
+    },
+    destructive: {
+      bgHover: tokenSchema.color.scale.red3,
+      bgActive: tokenSchema.color.scale.red4,
+      fg: tokenSchema.color.foreground.critical
+    },
   }
   const style = variants[variant]
 
@@ -131,7 +149,7 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
         },
 
         '&:disabled': {
-          color: colors.foregroundDisabled,
+          color: tokenSchema.color.alias.foregroundDisabled,
           pointerEvents: 'none',
         },
 
@@ -139,8 +157,8 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
           background: style.bgActive,
         },
         '&[data-selected=true]': {
-          background: colors.foregroundMuted,
-          color: colors.background,
+          background: tokenSchema.color.alias.backgroundSelected,
+          color: tokenSchema.color.alias.foregroundSelected,
         },
 
         // alternate styles within button group
@@ -163,7 +181,7 @@ export function KeyboardInTooltip ({ children }: { children: ReactNode }) {
   const theme = useTheme()
   return (
     <kbd
-      css={{
+      style={{
         margin: 2,
         padding: theme.spacing.xxsmall,
         fontFamily: 'inherit',

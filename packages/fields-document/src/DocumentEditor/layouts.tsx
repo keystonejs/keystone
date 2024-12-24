@@ -9,16 +9,17 @@ import {
   ReactEditor,
   useFocused,
   useSelected,
-  useSlateStatic as useStaticEditor
+  useSlateStatic,
 } from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
-import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon'
+import { Icon } from '@keystar/ui/icon'
+import { columnsIcon } from '@keystar/ui/icon/icons/columnsIcon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { useControlledPopover } from '@keystone-ui/popover'
 
-import { type DocumentFeatures } from '../views-shared'
+import type { DocumentFeatures } from '../views-shared'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import { isElementActive, } from './utils'
 import { useToolbarState } from './toolbar-state'
@@ -38,7 +39,7 @@ export function LayoutContainer ({
   const { spacing } = useTheme()
   const focused = useFocused()
   const selected = useSelected()
-  const editor = useStaticEditor()
+  const editor = useSlateStatic()
 
   const layout = element.layout
   const layoutOptions = useContext(LayoutOptionsContext)
@@ -101,7 +102,7 @@ export function LayoutContainer ({
                   }}
                   {...attrs}
                 >
-                  <Trash2Icon size="small" />
+                  <Icon src={trash2Icon} />
                 </ToolbarButton>
               )}
             </Tooltip>
@@ -152,8 +153,6 @@ function makeLayoutIcon (ratios: number[]) {
   return element
 }
 
-const layoutsIcon = <ColumnsIcon size="small" />
-
 export function LayoutsButton ({ layouts }: { layouts: DocumentFeatures['layouts'] }) {
   const {
     editor,
@@ -177,7 +176,7 @@ export function LayoutsButton ({ layouts }: { layouts: DocumentFeatures['layouts
             }}
             {...attrs}
           >
-            {layoutsIcon}
+            <Icon src={columnsIcon} />
           </ToolbarButton>
         )}
       </Tooltip>

@@ -1,8 +1,8 @@
 import {
   type BaseListTypeInfo,
-  fieldType,
-  type FieldTypeFunc,
   type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 
@@ -40,12 +40,8 @@ export function pair<ListTypeInfo extends BaseListTypeInfo> (
   }
 
   function resolveWhere (value: null | { equals: string | null | undefined }) {
-    if (value === null) {
-      throw new Error('PairFilter cannot be null')
-    }
-    if (value.equals === undefined) {
-      return {}
-    }
+    if (value === null) throw new Error('PairFilter cannot be null')
+    if (value.equals === undefined) return {}
     const { left, right } = resolveInput(value.equals)
     return {
       left: { equals: left },
