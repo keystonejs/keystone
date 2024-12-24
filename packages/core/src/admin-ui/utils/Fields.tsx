@@ -116,7 +116,7 @@ export function Fields ({
         continue
       }
       rendered.push(
-        <FieldGroup label={group.label} description={group.description}>
+        <FieldGroup key={group.label} label={group.label} description={group.description}>
           {renderedFieldsInGroup}
         </FieldGroup>
       )

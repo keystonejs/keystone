@@ -42,7 +42,7 @@ export function ComponentBlockRender ({
 
   const childrenByPath: Record<string, ReactElement> = {}
   let maybeChild: ReactElement | undefined
-  children.forEach((child: ReactElement) => {
+  children.forEach((child: ReactElement<any>) => {
     const propPath = child.props.children.props.element.propPath
     if (propPath === undefined) {
       maybeChild = child
