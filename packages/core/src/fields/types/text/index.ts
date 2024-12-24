@@ -8,7 +8,7 @@ import {
 import { graphql } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { filters } from '../../filters'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -142,7 +142,14 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate: {
+          ...config.hooks?.validate,
+          create: merge(validate, config.hooks?.validate?.create),
+          update: merge(validate, config.hooks?.validate?.update),
+        },
+      },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
         where: {
