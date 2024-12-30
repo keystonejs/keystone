@@ -232,7 +232,7 @@
     "image-size": "^1.0.0",
     "inflection": "^3.0.0",
     "intersection-observer": "^0.12.0",
-    "meow": "^9.0.0",
+    "meow": "^13.0.0",
     "next": "^14.2.0",
     "pluralize": "^8.0.0",
     "prisma": "5.22.0",
