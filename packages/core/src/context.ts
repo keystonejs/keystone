@@ -1,7 +1,7 @@
-import {
-  type BaseKeystoneTypeInfo,
-  type ResolvedKeystoneConfig,
-  type KeystoneContext
+import type {
+  BaseKeystoneTypeInfo,
+  ResolvedKeystoneConfig,
+  KeystoneContext
 } from './types'
 import { createSystem } from './lib/createSystem'
 

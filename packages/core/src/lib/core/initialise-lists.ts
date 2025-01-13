@@ -1,4 +1,4 @@
-import { type CacheHint } from '@apollo/cache-control-types'
+import type { CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
 import {
   type BaseItem,
@@ -19,20 +19,20 @@ import {
   __getNames,
 } from '../../types/utils'
 import { graphql } from '../..'
-import {
-  type FieldHooks,
-  type ResolvedListHooks,
-  type ResolvedFieldHooks
+import type {
+  FieldHooks,
+  ResolvedListHooks,
+  ResolvedFieldHooks
 } from '../../types/config/hooks'
 import {
   Empty,
 } from '../../types/schema/graphql-ts-schema'
-import {
-  type FilterOrderArgs
+import type {
+  FilterOrderArgs
 } from '../../types/config/fields'
-import {
-  type MaybeItemFunction,
-  type MaybeSessionFunction
+import type {
+  MaybeItemFunction,
+  MaybeSessionFunction
 } from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,

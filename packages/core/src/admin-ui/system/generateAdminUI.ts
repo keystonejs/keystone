@@ -3,14 +3,14 @@ import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import resolve from 'resolve'
-import { type GraphQLSchema } from 'graphql'
+import type { GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
-import {
-  type AdminFileToWrite,
-  type ResolvedKeystoneConfig
+import type {
+  AdminFileToWrite,
+  ResolvedKeystoneConfig
 } from '../../types'
 import { writeAdminFiles } from '../templates'
-import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
