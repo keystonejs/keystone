@@ -9,11 +9,11 @@ import type { Options as BodyParserOptions } from 'body-parser'
 import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
-import {
-  type IdFieldConfig,
-  type ListConfig,
-  type MaybeItemFunction,
-  type MaybeSessionFunction,
+import type {
+  IdFieldConfig,
+  ListConfig,
+  MaybeItemFunction,
+  MaybeSessionFunction,
 } from './lists'
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'

@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core'
 import type { KeystoneConfig } from '@keystone-6/core/types'
 import { seedDatabase } from './src/seed'
 import { lists } from './src/schema'
-import { type Context, type TypeInfo } from '.keystone/types'
+import type { Context, TypeInfo } from '.keystone/types'
 
 const db: KeystoneConfig<TypeInfo>['db'] = {
   provider: 'sqlite',
