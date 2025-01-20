@@ -380,7 +380,7 @@ export async function dev (
       }
 
       const { pathname } = url.parse(req.url)
-      if (expressServer && pathname === (config.graphql?.path || '/api/graphql')) {
+      if (expressServer && pathname === (config.graphql?.path ?? '/api/graphql')) {
         return expressServer(req, res, next)
       }
 
@@ -391,7 +391,7 @@ export async function dev (
       port: 3000,
     }
 
-    if (config?.server && 'port' in config.server) {
+    if (config?.server && 'port' in config.server && typeof config.server?.port === 'number') {
       httpOptions.port = config.server.port
     }
 
@@ -401,12 +401,12 @@ export async function dev (
 
     // preference env.PORT if supplied
     if ('PORT' in process.env) {
-      httpOptions.port = parseInt(process.env.PORT || '')
+      httpOptions.port = parseInt(process.env.PORT ?? '')
     }
 
     // preference env.HOST if supplied
     if ('HOST' in process.env) {
-      httpOptions.host = process.env.HOST || ''
+      httpOptions.host = process.env.HOST ?? ''
     }
 
     const server = httpServer.listen(httpOptions, (err?: any) => {
@@ -416,11 +416,11 @@ export async function dev (
         ? 'localhost'
         : httpOptions.host
       console.log(
-        `⭐️ Server listening on ${httpOptions.host || ''}:${
+        `⭐️ Server listening on ${httpOptions.host ?? ''}:${
           httpOptions.port
         } (http://${easyHost}:${httpOptions.port}/)`
       )
-      console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql'}`)
+      console.log(`⭐️ GraphQL API available at ${config.graphql?.path ?? '/api/graphql'}`)
 
       // Don't start initialising Keystone until the dev server is ready,
       // otherwise it slows down the first response significantly
