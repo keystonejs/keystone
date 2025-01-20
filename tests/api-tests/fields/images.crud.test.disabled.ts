@@ -10,7 +10,7 @@ import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
 import { text, image } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import type { ResolvedKeystoneConfig, StorageConfig } from '@keystone-6/core/types'
+import type { KeystoneConfig, StorageConfig } from '@keystone-6/core/types'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectSingleResolverError } from '../utils'
@@ -51,7 +51,7 @@ function getRunner ({
   fields,
 }: {
   storage: Record<string, StorageConfig>
-  fields: ResolvedKeystoneConfig['lists'][string]['fields']
+  fields: KeystoneConfig['lists'][string]['fields']
 }) {
   return setupTestRunner({
     config: ({

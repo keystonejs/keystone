@@ -17,7 +17,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type {
   KeystoneContext,
-  ResolvedKeystoneConfig,
+  KeystoneConfig,
 } from '../types'
 
 /*
@@ -28,7 +28,7 @@ The Admin UI takes a while to build for dev, and is created separately
 so the CLI can bring up the dev server early to handle GraphQL requests.
 */
 
-function formatError (graphqlConfig: ResolvedKeystoneConfig['graphql']) {
+function formatError (graphqlConfig: KeystoneConfig['graphql']) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
     let debug = graphqlConfig.debug
     if (debug === undefined) {
@@ -50,7 +50,7 @@ function formatError (graphqlConfig: ResolvedKeystoneConfig['graphql']) {
 }
 
 export async function createExpressServer (
-  config: Pick<ResolvedKeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express

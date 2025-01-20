@@ -1,19 +1,19 @@
 import type { CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
-import {
-  type BaseItem,
-  type BaseListTypeInfo,
-  type CacheHintArgs,
-  type FindManyArgs,
-  type GraphQLTypesForList,
-  type ListGraphQLTypes,
-  type ListHooks,
-  type ResolvedKeystoneConfig,
-  type MaybePromise,
-  type NextFieldType,
-  type FieldTypeFunc,
-  QueryMode
+import type {
+  BaseItem,
+  BaseListTypeInfo,
+  CacheHintArgs,
+  FindManyArgs,
+  GraphQLTypesForList,
+  ListGraphQLTypes,
+  ListHooks,
+  KeystoneConfig,
+  MaybePromise,
+  NextFieldType,
+  FieldTypeFunc,
 } from '../../types'
+import { QueryMode } from '../../types'
 import {
   type GraphQLNames,
   __getNames,
@@ -153,7 +153,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
 }
 
-type ListConfigType = ResolvedKeystoneConfig['lists'][string]
+type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
@@ -374,7 +374,7 @@ function parseFieldHooks (
 }
 
 function getListsWithInitialisedFields (
-  config: ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   listsRef: Record<string, InitialisedList>,
 ) {
   const { storage: configStorage, lists: listsConfig, db: { provider } } = config
@@ -874,7 +874,7 @@ function graphqlForOutputField (field: InitialisedField) {
   })
 }
 
-export function initialiseLists (config: ResolvedKeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: KeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
 

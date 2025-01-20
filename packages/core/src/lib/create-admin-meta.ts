@@ -6,7 +6,7 @@ import type {
   MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
-  ResolvedKeystoneConfig,
+  KeystoneConfig,
 } from '../types'
 import type {
   GraphQLNames
@@ -86,7 +86,7 @@ export type AdminMetaRootVal = {
 }
 
 export function createAdminMeta (
-  config: ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
   const { lists } = config

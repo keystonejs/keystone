@@ -3,10 +3,10 @@ import type {
   BaseKeystoneTypeInfo,
   BaseListTypeInfo,
   IdFieldConfig,
-  KeystoneConfig,
+  KeystoneConfigPre,
   KeystoneContext,
   ListConfig,
-  ResolvedKeystoneConfig,
+  KeystoneConfig,
 } from './types'
 
 import type { ListenOptions } from 'node:net'
@@ -14,7 +14,7 @@ import {
   idFieldType
 } from './lib/id-field'
 
-function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) {
+function injectDefaults (config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -26,7 +26,7 @@ function injectDefaults (config: KeystoneConfig, defaultIdField: IdFieldConfig) 
     }
   }
 
-  const updated: ResolvedKeystoneConfig['lists'] = {}
+  const updated: KeystoneConfig['lists'] = {}
 
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.isSingleton) {
@@ -82,7 +82,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
 async function noop () {}
 function identity<T> (x: T) { return x }
 
-export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): ResolvedKeystoneConfig<TypeInfo> {
+export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfigPre<TypeInfo>): KeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }

@@ -1,12 +1,12 @@
 import type {
   BaseKeystoneTypeInfo,
-  ResolvedKeystoneConfig,
+  KeystoneConfig,
   KeystoneContext
 } from './types'
 import { createSystem } from './lib/createSystem'
 
 export function getContext<TypeInfo extends BaseKeystoneTypeInfo> (
-  config: ResolvedKeystoneConfig<TypeInfo>,
+  config: KeystoneConfig<TypeInfo>,
   PrismaModule: unknown
 ): KeystoneContext<TypeInfo> {
   const system = createSystem(config)

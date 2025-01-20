@@ -97,7 +97,7 @@ type PrismaLogDefinition = {
   emit: 'stdout' | 'event'
 }
 
-export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types?: {
     path: string
   }
@@ -251,27 +251,27 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   }
 }
 
-export type ResolvedKeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  types: KeystoneConfig<TypeInfo>['types']
-  db: Omit<Required<KeystoneConfig<TypeInfo>['db']>, 'enableLogging'> & {
+export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+  types: KeystoneConfigPre<TypeInfo>['types']
+  db: Omit<Required<KeystoneConfigPre<TypeInfo>['db']>, 'enableLogging'> & {
     enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
   }
-  graphql: NonNullable<KeystoneConfig<TypeInfo>['graphql']> & {
-    path: Exclude<KeystoneConfig<TypeInfo>['graphql'], undefined>
+  graphql: NonNullable<KeystoneConfigPre<TypeInfo>['graphql']> & {
+    path: Exclude<KeystoneConfigPre<TypeInfo>['graphql'], undefined>
   }
   lists: {
     [listKey: string]: {
       listKey: string
-    } & KeystoneConfig<TypeInfo>['lists'][string]
+    } & KeystoneConfigPre<TypeInfo>['lists'][string]
   }
-  server: Omit<Required<NonNullable<KeystoneConfig<TypeInfo>['server']>>, 'cors' | 'port'> & {
+  server: Omit<Required<NonNullable<KeystoneConfigPre<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
     options: ListenOptions
   }
-  session: KeystoneConfig<TypeInfo>['session']
-  storage: NonNullable<KeystoneConfig<TypeInfo>['storage']>
+  session: KeystoneConfigPre<TypeInfo>['session']
+  storage: NonNullable<KeystoneConfigPre<TypeInfo>['storage']>
   telemetry: boolean
-  ui: NonNullable<Required<KeystoneConfig<TypeInfo>['ui']>>
+  ui: NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>
 }
 
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }

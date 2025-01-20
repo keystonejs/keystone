@@ -1,9 +1,9 @@
 import { randomBytes } from 'node:crypto'
 import imageSize from 'image-size'
 
-import {
-  type ImagesContext,
-  type ResolvedKeystoneConfig,
+import type {
+  ImagesContext,
+  KeystoneConfig,
 } from '../../types'
 import type { ImageAdapter } from './types'
 import { localImageAssetsAPI } from './local'
@@ -33,7 +33,7 @@ async function getImageMetadataFromBuffer (buffer: Buffer) {
   return { width, height, filesize: buffer.length, extension }
 }
 
-export function createImagesContext (config: ResolvedKeystoneConfig): ImagesContext {
+export function createImagesContext (config: KeystoneConfig): ImagesContext {
   const imageAssetsAPIs = new Map<string, ImageAdapter>()
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
     if (storageConfig.type === 'image') {

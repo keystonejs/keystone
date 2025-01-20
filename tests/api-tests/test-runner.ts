@@ -29,7 +29,7 @@ import {
 
 import type {
   BaseKeystoneTypeInfo,
-  KeystoneConfig,
+  KeystoneConfigPre,
 } from '@keystone-6/core/types'
 import { dbProvider } from './utils'
 
@@ -85,8 +85,8 @@ afterAll(async () => {
   }
 })
 
-type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfig<TypeInfo>, 'db'> & {
-  db?: Omit<KeystoneConfig<TypeInfo>['db'], 'provider' | 'url'>
+type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfigPre<TypeInfo>, 'db'> & {
+  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'url'>
 }
 
 export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (

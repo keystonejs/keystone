@@ -2,7 +2,7 @@ import path from 'node:path'
 import { randomBytes } from 'node:crypto'
 import type {
   FieldData,
-  ResolvedKeystoneConfig
+  KeystoneConfig
 } from '../types'
 import { GraphQLError } from 'graphql'
 
@@ -24,7 +24,7 @@ function posixify (s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths (cwd: string, config: ResolvedKeystoneConfig) {
+export function getSystemPaths (cwd: string, config: KeystoneConfig) {
   const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
     ? null
     : config.db.prismaClientPath
@@ -62,7 +62,7 @@ export function getSystemPaths (cwd: string, config: ResolvedKeystoneConfig) {
   }
 }
 
-function getSudoGraphQLSchema (config: ResolvedKeystoneConfig) {
+function getSudoGraphQLSchema (config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
   //  * All list level access control is disabled
@@ -74,7 +74,7 @@ function getSudoGraphQLSchema (config: ResolvedKeystoneConfig) {
   // operations that can be run.
   //
   // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
-  const transformedConfig: ResolvedKeystoneConfig = {
+  const transformedConfig: KeystoneConfig = {
     ...config,
     ui: {
       ...config.ui,
@@ -181,7 +181,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
   return prismaClient
 }
 
-function formatUrl (provider: ResolvedKeystoneConfig['db']['provider'], url: string) {
+function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
   if (url.startsWith('file:')) {
     const parsed = new URL(url)
     if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
@@ -198,7 +198,7 @@ function formatUrl (provider: ResolvedKeystoneConfig['db']['provider'], url: str
   return url
 }
 
-export function createSystem (config: ResolvedKeystoneConfig) {
+export function createSystem (config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)

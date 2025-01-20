@@ -2,7 +2,7 @@ import fsp from 'node:fs/promises'
 import path from 'node:path'
 import url from 'node:url'
 import { createServer } from 'node:http'
-import { type ListenOptions } from 'node:net'
+import type { ListenOptions } from 'node:net'
 
 import chalk from 'chalk'
 import esbuild, { type BuildResult } from 'esbuild'
@@ -25,7 +25,7 @@ import {
   generateTypes,
   getFormattedGraphQLSchema,
 } from '../artifacts'
-import type { ResolvedKeystoneConfig } from '../types'
+import type { KeystoneConfig } from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { pkgDir } from '../pkg-dir'
 import {
@@ -38,7 +38,7 @@ async function noop () {}
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
-function stripExtendHttpServer (config: ResolvedKeystoneConfig): ResolvedKeystoneConfig {
+function stripExtendHttpServer (config: KeystoneConfig): KeystoneConfig {
   const { server, ...rest } = config
   const { extendHttpServer, ...restServer } = server
   return {

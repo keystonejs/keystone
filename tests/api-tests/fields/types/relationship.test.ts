@@ -1,5 +1,5 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
-import type { KeystoneConfig } from '@keystone-6/core/types'
+import type { KeystoneConfigPre } from '@keystone-6/core/types'
 
 import { config, list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
@@ -135,7 +135,7 @@ describe('Type Generation', () => {
 })
 
 describe('Reference errors', () => {
-  function tryf (lists: KeystoneConfig['lists']) {
+  function tryf (lists: KeystoneConfigPre['lists']) {
     return createSystem(
       config({
         db: { url: 'file:./thing.db', provider: 'sqlite' },

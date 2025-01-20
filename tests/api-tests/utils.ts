@@ -4,7 +4,7 @@ import {
 import type {
   BaseKeystoneTypeInfo,
   KeystoneContext,
-  KeystoneConfig,
+  KeystoneConfigPre,
 } from '@keystone-6/core/types'
 import {
   createSystem,
@@ -207,7 +207,7 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> ({ lists }: { lists: KeystoneConfig<TypeInfo>['lists'] }) {
+export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> ({ lists }: { lists: KeystoneConfigPre<TypeInfo>['lists'] }) {
   const system = createSystem(config({
     lists,
     db: {

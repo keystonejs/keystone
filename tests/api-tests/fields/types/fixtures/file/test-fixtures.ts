@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
 import { file } from '@keystone-6/core/fields'
-import type { ResolvedKeystoneConfig } from '@keystone-6/core/types'
+import type { KeystoneConfig } from '@keystone-6/core/types'
 
 export function prepareFile (filePath_: string) {
   const filePath = path.resolve(`${__dirname}/test-files/${filePath_}`)
@@ -27,7 +27,7 @@ if (process.env.S3_BUCKET_NAME) {
 
 export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'))
 
-export function getRootConfig (matrixValue: MatrixValue): Partial<ResolvedKeystoneConfig> {
+export function getRootConfig (matrixValue: MatrixValue): Partial<KeystoneConfig> {
   if (matrixValue === 'local') {
     return {
       storage: {

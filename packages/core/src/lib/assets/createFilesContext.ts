@@ -1,8 +1,8 @@
 import { randomBytes } from 'node:crypto'
 
-import {
-  type FilesContext,
-  type ResolvedKeystoneConfig,
+import type {
+  FilesContext,
+  KeystoneConfig,
 } from '../../types'
 import { localFileAssetsAPI } from './local'
 import { s3FileAssetsAPI } from './s3'
@@ -21,7 +21,7 @@ function defaultTransformName (path: string) {
   return `${urlSafeName}-${id}`
 }
 
-export function createFilesContext (config: ResolvedKeystoneConfig): FilesContext {
+export function createFilesContext (config: KeystoneConfig): FilesContext {
   const adaptersMap = new Map<string, FileAdapter>()
 
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
