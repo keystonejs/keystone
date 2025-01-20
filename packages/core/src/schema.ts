@@ -82,7 +82,7 @@ function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) 
 async function noop () {}
 function identity<T> (x: T) { return x }
 
-function resolveDefaults<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): ResolvedKeystoneConfig<TypeInfo> {
+export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>): ResolvedKeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -156,10 +156,6 @@ function resolveDefaults<TypeInfo extends BaseKeystoneTypeInfo> (config: Keyston
       publicPages:config.ui?.publicPages ?? [],
     },
   }
-}
-
-export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>) {
-  return resolveDefaults(config)
 }
 
 let i = 0

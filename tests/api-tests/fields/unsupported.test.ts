@@ -48,31 +48,29 @@ if (unsupportedModules.length > 0) {
           await expect(
             async () =>
               await setupTestEnv({
-                config: {
-                  lists: {
-                    [listKey]: list({
-                      access: allowAll,
-                      fields: { name: text(), ...mod.getTestFields(matrixValue) },
-                    }),
-                  },
-                  storage: {
-                    test_image: {
-                      kind: 'local',
-                      type: 'image',
-                      storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                      generateUrl: path => `http://localhost:3000/images${path}`,
-                      serverRoute: {
-                        path: '/images',
-                      },
+                lists: {
+                  [listKey]: list({
+                    access: allowAll,
+                    fields: { name: text(), ...mod.getTestFields(matrixValue) },
+                  }),
+                },
+                storage: {
+                  test_image: {
+                    kind: 'local',
+                    type: 'image',
+                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                    generateUrl: path => `http://localhost:3000/images${path}`,
+                    serverRoute: {
+                      path: '/images',
                     },
-                    test_file: {
-                      kind: 'local',
-                      type: 'file',
-                      storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                      generateUrl: path => `http://localhost:3000/files${path}`,
-                      serverRoute: {
-                        path: '/files',
-                      },
+                  },
+                  test_file: {
+                    kind: 'local',
+                    type: 'file',
+                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                    generateUrl: path => `http://localhost:3000/files${path}`,
+                    serverRoute: {
+                      path: '/files',
                     },
                   },
                 },

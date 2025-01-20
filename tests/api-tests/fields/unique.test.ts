@@ -150,40 +150,38 @@ for (const modulePath of testModules) {
         let erroredOut = false
         try {
           await setupTestEnv({
-            config: ({
-              lists: {
-                Test: list({
-                  access: allowAll,
-                  fields: {
-                    name: text(),
-                    testField: mod.typeFunction({
-                      isIndexed: 'unique',
-                      ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                    }),
-                  },
-                }),
-              },
-              storage: {
-                test_image: {
-                  kind: 'local',
-                  type: 'image',
-                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                  generateUrl: path => `http://localhost:3000/images${path}`,
-                  serverRoute: {
-                    path: '/images',
-                  },
+            lists: {
+              Test: list({
+                access: allowAll,
+                fields: {
+                  name: text(),
+                  testField: mod.typeFunction({
+                    isIndexed: 'unique',
+                    ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                  }),
                 },
-                test_file: {
-                  kind: 'local',
-                  type: 'file',
-                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                  generateUrl: path => `http://localhost:3000/images${path}`,
-                  serverRoute: {
-                    path: '/images',
-                  },
+              }),
+            },
+            storage: {
+              test_image: {
+                kind: 'local',
+                type: 'image',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                generateUrl: path => `http://localhost:3000/images${path}`,
+                serverRoute: {
+                  path: '/images',
                 },
               },
-            }),
+              test_file: {
+                kind: 'local',
+                type: 'file',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                generateUrl: path => `http://localhost:3000/images${path}`,
+                serverRoute: {
+                  path: '/images',
+                },
+              },
+            },
           })
         } catch (error: any) {
           expect(error.message).toMatch(

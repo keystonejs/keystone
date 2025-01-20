@@ -99,23 +99,20 @@ describe('Auth testing', () => {
       sessionData: 'id',
     })
     await expect(
-      setupTestEnv({
-        config: auth.withAuth({
-          db: {} as any,
-          lists: {
-            User: list({
-              access: allowAll,
-              fields: {
-                name: text(),
-                email: text(),
-                password: password(),
-              },
-            }),
-          },
+      setupTestEnv(auth.withAuth({
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text(),
+              email: text(),
+              password: password(),
+            },
+          }),
+        },
 
-          session: statelessSessions(),
-        } as any) as any,
-      })
+        session: statelessSessions(),
+      } as any) as any),
     ).rejects.toMatchInlineSnapshot(
       `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique'\` to the field at User.email]`
     )

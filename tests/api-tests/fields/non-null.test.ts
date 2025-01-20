@@ -49,37 +49,35 @@ testModules
 
         const getSchema = async (fieldConfig: TextFieldConfig) => {
           const { context } = await setupTestEnv({
-            config: {
-              lists: {
-                Test: list({
-                  access: allowAll,
-                  fields: {
-                    name: text(),
-                    testField: mod.typeFunction({
-                      ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                      ...fieldConfig,
-                    }),
-                  },
-                }),
-              },
-              storage: {
-                test_image: {
-                  kind: 'local',
-                  type: 'image',
-                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                  generateUrl: path => `http://localhost:3000/images${path}`,
-                  serverRoute: {
-                    path: '/images',
-                  },
+            lists: {
+              Test: list({
+                access: allowAll,
+                fields: {
+                  name: text(),
+                  testField: mod.typeFunction({
+                    ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                    ...fieldConfig,
+                  }),
                 },
-                test_file: {
-                  kind: 'local',
-                  type: 'file',
-                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                  generateUrl: path => `http://localhost:3000/files${path}`,
-                  serverRoute: {
-                    path: '/files',
-                  },
+              }),
+            },
+            storage: {
+              test_image: {
+                kind: 'local',
+                type: 'image',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                generateUrl: path => `http://localhost:3000/images${path}`,
+                serverRoute: {
+                  path: '/images',
+                },
+              },
+              test_file: {
+                kind: 'local',
+                type: 'file',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                generateUrl: path => `http://localhost:3000/files${path}`,
+                serverRoute: {
+                  path: '/files',
                 },
               },
             },

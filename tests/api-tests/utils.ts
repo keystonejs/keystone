@@ -1,7 +1,10 @@
 import {
-  type BaseKeystoneTypeInfo,
-  type KeystoneConfig,
-  type KeystoneContext
+  config,
+} from '@keystone-6/core'
+import type {
+  BaseKeystoneTypeInfo,
+  KeystoneContext,
+  KeystoneConfig,
 } from '@keystone-6/core/types'
 import {
   createSystem,
@@ -23,20 +26,6 @@ const workerId = process.env.JEST_WORKER_ID
 if (workerId === undefined) {
   throw new Error('expected JEST_WORKER_ID to be set')
 }
-
-export type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfig<TypeInfo>, 'db'> & {
-  db?: Omit<KeystoneConfig<TypeInfo>['db'], 'provider' | 'url'>
-}
-
-export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<
-  infer TypeInfo
->
-  ? TypeInfo
-  : never
-
-export type ContextFromConfig<Config extends KeystoneConfig<any>> = KeystoneContext<
-  TypeInfoFromConfig<Config>
->
 
 export type ContextFromRunner<Runner extends ReturnType<typeof setupTestRunner>> = Parameters<
   Parameters<Runner>[0]
@@ -149,7 +138,7 @@ export function expectFilterDenied (
   )
 }
 
-export function expectResolverError (
+function expectResolverError (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[], messages: string[], debug: any[] }[]
 ) {
@@ -176,10 +165,10 @@ export const expectSingleResolverError = (
     },
   ])
 
-export const expectRelationshipError = (
+function expectRelationshipError (
   errors: readonly any[] | undefined,
   args: { path: (string | number)[], messages: string[], debug: any[] }[]
-) => {
+) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages, debug }) => {
@@ -189,12 +178,12 @@ export const expectRelationshipError = (
   )
 }
 
-export const expectSingleRelationshipError = (
+export function expectSingleRelationshipError (
   errors: readonly any[] | undefined,
   path: string,
   fieldPath: string,
   message: string
-) =>
+) {
   expectRelationshipError(errors, [
     {
       path: [path],
@@ -202,6 +191,7 @@ export const expectSingleRelationshipError = (
       debug: [{ message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) }],
     },
   ])
+}
 
 export async function seed<T extends Record<keyof T, Record<string, unknown>[]>> (
   context: KeystoneContext,
@@ -217,23 +207,17 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export function testConfig <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>): KeystoneConfig {
-  return {
-    ...config,
+export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> ({ lists }: { lists: KeystoneConfig<TypeInfo>['lists'] }) {
+  const system = createSystem(config({
+    lists,
     db: {
       provider: dbProvider,
       url: '',
-      ...config.db,
     },
     // default to a disabled UI
     ui: {
       isDisabled: true,
-      ...config.ui
     },
-  }
-}
-
-export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> (config: FloatingConfig<TypeInfo>) {
-  const system = createSystem(testConfig(config))
+  }))
   return (await getArtifacts(system)).prisma
 }

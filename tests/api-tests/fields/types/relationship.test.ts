@@ -1,5 +1,5 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
-import { type KeystoneConfig } from '@keystone-6/core/types'
+import type { KeystoneConfig } from '@keystone-6/core/types'
 
 import { config, list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
