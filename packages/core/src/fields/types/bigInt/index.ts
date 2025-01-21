@@ -65,7 +65,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
         throw new Error(`${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`)
       }
     }
-    if (defaultValue !== null && typeof defaultValue !== 'bigint') {
+    if (defaultValue !== null && defaultValue !== 'autoincrement' && typeof defaultValue !== 'bigint') {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
     }
     if (min !== undefined && !Number.isInteger(min)) {
