@@ -72,11 +72,23 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
         justifyContent: 'space-between',
         margin: spacing.xlarge,
         marginBottom: 0,
+        gap: spacing.xlarge,
       }}
     >
       {item && item.state === 'authenticated' ? (
-        <div css={{ fontSize: typography.fontSize.small }}>
-          Signed in as <strong css={{ display: 'block' }}>{item.label}</strong>
+        <div 
+          css={{ 
+            fontSize: typography.fontSize.small, 
+            overflow: 'hidden', 
+          }
+        }>
+          Signed in as <strong 
+            css={{ 
+              display: 'block', 
+              textOverflow: 'ellipsis', 
+              overflow: 'hidden',
+            }}
+          >{item.label}</strong>
         </div>
       ) : (
         process.env.NODE_ENV !== 'production' && (
