@@ -2,7 +2,7 @@ import fsp from 'node:fs/promises'
 import path from 'node:path'
 import url from 'node:url'
 import { createServer } from 'node:http'
-import { type ListenOptions } from 'node:net'
+import type { ListenOptions } from 'node:net'
 
 import chalk from 'chalk'
 import esbuild, { type BuildResult } from 'esbuild'
@@ -25,24 +25,29 @@ import {
   generateTypes,
   getFormattedGraphQLSchema,
 } from '../artifacts'
-import { type KeystoneConfig } from '../types'
+import type { KeystoneConfig } from '../types'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { pkgDir } from '../pkg-dir'
 import {
   ExitError,
   importBuiltKeystoneConfiguration,
 } from './utils'
-import { type Flags } from './cli'
+import type { Flags } from './cli'
+
+async function noop () {}
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
 function stripExtendHttpServer (config: KeystoneConfig): KeystoneConfig {
   const { server, ...rest } = config
-  if (server) {
-    const { extendHttpServer, ...restServer } = server
-    return { ...rest, server: restServer }
+  const { extendHttpServer, ...restServer } = server
+  return {
+    ...rest,
+    server: {
+      ...restServer,
+      extendHttpServer: noop
+    }
   }
-  return rest
 }
 
 function resolvablePromise<T> () {
@@ -375,7 +380,7 @@ export async function dev (
       }
 
       const { pathname } = url.parse(req.url)
-      if (expressServer && pathname === (config.graphql?.path || '/api/graphql')) {
+      if (expressServer && pathname === (config.graphql?.path ?? '/api/graphql')) {
         return expressServer(req, res, next)
       }
 
@@ -386,7 +391,7 @@ export async function dev (
       port: 3000,
     }
 
-    if (config?.server && 'port' in config.server) {
+    if (config?.server && 'port' in config.server && typeof config.server?.port === 'number') {
       httpOptions.port = config.server.port
     }
 
@@ -396,12 +401,12 @@ export async function dev (
 
     // preference env.PORT if supplied
     if ('PORT' in process.env) {
-      httpOptions.port = parseInt(process.env.PORT || '')
+      httpOptions.port = parseInt(process.env.PORT ?? '')
     }
 
     // preference env.HOST if supplied
     if ('HOST' in process.env) {
-      httpOptions.host = process.env.HOST || ''
+      httpOptions.host = process.env.HOST ?? ''
     }
 
     const server = httpServer.listen(httpOptions, (err?: any) => {
@@ -411,11 +416,11 @@ export async function dev (
         ? 'localhost'
         : httpOptions.host
       console.log(
-        `⭐️ Server listening on ${httpOptions.host || ''}:${
+        `⭐️ Server listening on ${httpOptions.host ?? ''}:${
           httpOptions.port
         } (http://${easyHost}:${httpOptions.port}/)`
       )
-      console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql'}`)
+      console.log(`⭐️ GraphQL API available at ${config.graphql?.path ?? '/api/graphql'}`)
 
       // Don't start initialising Keystone until the dev server is ready,
       // otherwise it slows down the first response significantly

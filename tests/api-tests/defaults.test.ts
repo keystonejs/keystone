@@ -1,12 +1,12 @@
 import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { type BaseFields } from '@keystone-6/core/types'
+import type { BaseFields } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from './test-runner'
 
-const setupList = (fields: BaseFields<any>) =>
-  setupTestRunner({
+function setupList (fields: BaseFields<any>) {
+  return setupTestRunner({
     config: ({
       lists: {
         User: list({
@@ -16,6 +16,7 @@ const setupList = (fields: BaseFields<any>) =>
       },
     }),
   })
+}
 
 describe('defaultValue field config', () => {
   test(

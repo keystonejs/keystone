@@ -1,6 +1,6 @@
-import {
-  type IncomingMessage,
-  type ServerResponse
+import type {
+  IncomingMessage,
+  ServerResponse
 } from 'http'
 import {
   type ExecutionResult,
@@ -8,10 +8,10 @@ import {
   graphql,
   print
 } from 'graphql'
-import {
-  type KeystoneContext,
-  type KeystoneGraphQLAPI,
-  type __ResolvedKeystoneConfig,
+import type {
+  KeystoneContext,
+  KeystoneGraphQLAPI,
+  KeystoneConfig,
 } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'
@@ -27,7 +27,7 @@ export function createContext ({
   prismaClient,
   prismaTypes
 }: {
-  config: __ResolvedKeystoneConfig
+  config: KeystoneConfig
   lists: Record<string, InitialisedList>
   graphQLSchema: GraphQLSchema
   graphQLSchemaSudo: GraphQLSchema

@@ -1,5 +1,5 @@
-import { text, timestamp, password } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
+import { text, timestamp, password } from '@keystone-6/core/fields'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
@@ -23,9 +23,7 @@ function setup (options?: any) {
   })
 
   return setupTestRunner({
-    serve: true,
     config: withAuth({
-      db: {} as any,
       lists: {
         Post: list({
           access: allowAll,
@@ -44,7 +42,8 @@ function setup (options?: any) {
         }),
       },
       session: statelessSessions(),
-    })
+    } as any) as any,
+    serve: true,
   })
 }
 
@@ -99,23 +98,20 @@ describe('Auth testing', () => {
       sessionData: 'id',
     })
     await expect(
-      setupTestEnv({
-        config: auth.withAuth({
-          db: {} as any,
-          lists: {
-            User: list({
-              access: allowAll,
-              fields: {
-                name: text(),
-                email: text(),
-                password: password(),
-              },
-            }),
-          },
+      setupTestEnv(auth.withAuth({
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text(),
+              email: text(),
+              password: password(),
+            },
+          }),
+        },
 
-          session: statelessSessions(),
-        }),
-      })
+        session: statelessSessions(),
+      } as any) as any),
     ).rejects.toMatchInlineSnapshot(
       `[Error: createAuth was called with an identityField of email on the list User but that field doesn't allow being searched uniquely with a String or ID. You should likely add \`isIndexed: 'unique'\` to the field at User.email]`
     )

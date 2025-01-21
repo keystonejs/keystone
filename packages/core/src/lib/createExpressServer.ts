@@ -1,19 +1,23 @@
-import { createServer, type Server } from 'http'
+import {
+  type Server,
+  createServer,
+} from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
+import type { GraphQLFormattedError } from 'graphql'
 import {
-  type GraphQLFormattedError,
-} from 'graphql'
-import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
+  type ApolloServerOptions,
+  ApolloServer,
+} from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import {
-  type KeystoneContext,
-  type __ResolvedKeystoneConfig,
+import type {
+  KeystoneContext,
+  KeystoneConfig,
 } from '../types'
 
 /*
@@ -24,7 +28,7 @@ The Admin UI takes a while to build for dev, and is created separately
 so the CLI can bring up the dev server early to handle GraphQL requests.
 */
 
-function formatError (graphqlConfig: __ResolvedKeystoneConfig['graphql']) {
+function formatError (graphqlConfig: KeystoneConfig['graphql']) {
   return (formattedError: GraphQLFormattedError, error: unknown) => {
     let debug = graphqlConfig.debug
     if (debug === undefined) {
@@ -46,7 +50,7 @@ function formatError (graphqlConfig: __ResolvedKeystoneConfig['graphql']) {
 }
 
 export async function createExpressServer (
-  config: Pick<__ResolvedKeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express

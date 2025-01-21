@@ -1,20 +1,20 @@
 import path from 'node:path'
-import {
-  type BaseListTypeInfo,
-  type JSONValue,
-  type KeystoneContext,
-  type MaybeItemFunction,
-  type MaybePromise,
-  type MaybeSessionFunction,
-  type __ResolvedKeystoneConfig,
+import type {
+  BaseListTypeInfo,
+  JSONValue,
+  KeystoneContext,
+  MaybeItemFunction,
+  MaybePromise,
+  MaybeSessionFunction,
+  KeystoneConfig,
 } from '../types'
-import {
-  type GraphQLNames
+import type {
+  GraphQLNames
 } from '../types/utils'
-import { type FilterOrderArgs } from '../types/config/fields'
+import type { FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
-import { type InitialisedList } from './core/initialise-lists'
+import type { InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
@@ -86,7 +86,7 @@ export type AdminMetaRootVal = {
 }
 
 export function createAdminMeta (
-  config: __ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
   const { lists } = config
@@ -272,10 +272,7 @@ export function createAdminMeta (
 let currentAdminMeta: undefined | AdminMetaRootVal
 
 export function getAdminMetaForRelationshipField () {
-  if (currentAdminMeta === undefined) {
-    throw new Error('unexpected call to getAdminMetaInRelationshipField')
-  }
-
+  if (currentAdminMeta === undefined) throw new Error('Unexpected call to getAdminMetaInRelationshipField')
   return currentAdminMeta
 }
 

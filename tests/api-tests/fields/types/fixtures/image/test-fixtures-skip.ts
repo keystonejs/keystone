@@ -4,11 +4,11 @@ import fs from 'fs-extra'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
-import { type KeystoneConfig } from '@keystone-6/core/types'
+import type { KeystoneConfig } from '@keystone-6/core/types'
 import { image } from '@keystone-6/core/fields'
 
-export const prepareFile = (_filePath: string) => {
-  const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`)
+export function prepareFile (filePath_: string) {
+  const filePath = path.resolve(`${__dirname}/../test-files/${filePath_}`)
   const upload = new Upload()
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
@@ -31,7 +31,7 @@ export const fieldConfig = () => ({ storage: 'test_image' })
 
 export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'))
 
-export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig> => {
+export function getRootConfig (matrixValue: MatrixValue): Partial<KeystoneConfig> {
   if (matrixValue === 'local') {
     return {
       storage: {

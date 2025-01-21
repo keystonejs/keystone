@@ -1,10 +1,10 @@
 import type {
   AdminFileToWrite,
   BaseListTypeInfo,
-  KeystoneConfig,
   KeystoneContext,
   SessionStrategy,
   BaseKeystoneTypeInfo,
+  KeystoneConfig,
 } from '@keystone-6/core/types'
 import { password, timestamp } from '@keystone-6/core/fields'
 

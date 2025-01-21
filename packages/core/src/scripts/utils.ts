@@ -1,4 +1,5 @@
 import { getBuiltKeystoneConfigurationPath } from '../lib/createSystem'
+import type { KeystoneConfig } from '../types'
 import fs from 'node:fs/promises'
 
 export class ExitError extends Error {
@@ -10,7 +11,7 @@ export class ExitError extends Error {
 }
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-export async function importBuiltKeystoneConfiguration (cwd: string) {
+export async function importBuiltKeystoneConfiguration (cwd: string): Promise<KeystoneConfig> {
   const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
   if (!(await fs.stat(builtConfigPath).catch(() => null))) {
     console.error('🚨 keystone build has not been run')

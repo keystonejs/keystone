@@ -3,14 +3,14 @@ import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import resolve from 'resolve'
-import { type GraphQLSchema } from 'graphql'
+import type { GraphQLSchema } from 'graphql'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
-import {
-  type AdminFileToWrite,
-  type __ResolvedKeystoneConfig
+import type {
+  AdminFileToWrite,
+  KeystoneConfig
 } from '../../types'
 import { writeAdminFiles } from '../templates'
-import { type AdminMetaRootVal } from '../../lib/create-admin-meta'
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
@@ -66,7 +66,7 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
 const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
 export async function generateAdminUI (
-  config: __ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,

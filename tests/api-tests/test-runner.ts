@@ -18,16 +18,20 @@ import {
 } from '@prisma/client/runtime/library'
 
 import {
+  config,
+} from '@keystone-6/core'
+import {
   createExpressServer,
   createSystem,
   generateArtifacts,
   withMigrate
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
-import {
-  type BaseKeystoneTypeInfo,
+import type {
+  BaseKeystoneTypeInfo,
+  KeystoneConfigPre,
 } from '@keystone-6/core/types'
-import { dbProvider, type FloatingConfig } from './utils'
+import { dbProvider } from './utils'
 
 // prisma checks
 {
@@ -81,15 +85,15 @@ afterAll(async () => {
   }
 })
 
-export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
-  config: config_,
-  serve = false,
-  identifier,
-}: {
-  config: FloatingConfig<TypeInfo>
-  serve?: boolean
-  identifier?: string
-}) {
+type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfigPre<TypeInfo>, 'db'> & {
+  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'url'>
+}
+
+export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
+  config_: FloatingConfig<TypeInfo>,
+  serve: boolean = false,
+  identifier?: string,
+) {
   const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
   const cwd = join(tmpdir(), `ks6-tests-${random}`)
   await fs.mkdir(cwd)
@@ -113,7 +117,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
     dbUrl = parsed.toString()
   }
 
-  const system = createSystem({
+  const system = createSystem(config({
     ...config_,
     db: {
       provider: dbProvider,
@@ -134,7 +138,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       isDisabled: true,
       ...config_.ui,
     },
-  })
+  }))
 
   const artifacts = await generateArtifacts(cwd, system)
   const paths = system.getPaths(cwd)
@@ -209,7 +213,7 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   identifier?: string
 }) {
   return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
-    const result = await setupTestEnv({ config: config_, serve, identifier })
+    const result = await setupTestEnv(config_, serve, identifier)
 
     await result.connect()
     try {
@@ -230,7 +234,7 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   serve?: boolean
   identifier?: string
 }) {
-  const result = setupTestEnv({ config: config_, serve, identifier })
+  const result = setupTestEnv(config_, serve, identifier)
   const connectPromise = result.then((x) => {
     x.connect()
     return x

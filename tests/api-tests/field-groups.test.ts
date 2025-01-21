@@ -1,11 +1,11 @@
-import { group, list } from '@keystone-6/core'
+import { config, list, group } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'
 import { integer, text } from '@keystone-6/core/fields'
 
 test('errors with nested field groups', () => {
   expect(() =>
-    getContext({
+    getContext(config({
       db: {
         provider: 'sqlite',
         url: 'file://'
@@ -26,16 +26,16 @@ test('errors with nested field groups', () => {
                 }),
               },
             }),
-          },
+          } as any,
         }),
       },
-    }, {})
+    }), {})
   ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`)
 })
 
 test('errors if you write a group manually differently to the group function', () => {
   expect(() =>
-    getContext({
+    getContext(config({
       db: {
         provider: 'sqlite',
         url: 'file://'
@@ -50,9 +50,9 @@ test('errors if you write a group manually differently to the group function', (
               label: 'Group 1',
               description: null,
             } as any,
-          },
+          } as any,
         }),
       }
-    }, {})
+    }), {})
   ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`)
 })

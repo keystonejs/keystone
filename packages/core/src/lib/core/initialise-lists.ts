@@ -1,38 +1,38 @@
-import { type CacheHint } from '@apollo/cache-control-types'
+import type { CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
-import {
-  type BaseItem,
-  type BaseListTypeInfo,
-  type CacheHintArgs,
-  type FindManyArgs,
-  type GraphQLTypesForList,
-  type ListGraphQLTypes,
-  type ListHooks,
-  type __ResolvedKeystoneConfig,
-  type MaybePromise,
-  type NextFieldType,
-  type FieldTypeFunc,
-  QueryMode
+import type {
+  BaseItem,
+  BaseListTypeInfo,
+  CacheHintArgs,
+  FindManyArgs,
+  GraphQLTypesForList,
+  ListGraphQLTypes,
+  ListHooks,
+  KeystoneConfig,
+  MaybePromise,
+  NextFieldType,
+  FieldTypeFunc,
 } from '../../types'
+import { QueryMode } from '../../types'
 import {
   type GraphQLNames,
   __getNames,
 } from '../../types/utils'
 import { graphql } from '../..'
-import {
-  type FieldHooks,
-  type ResolvedListHooks,
-  type ResolvedFieldHooks
+import type {
+  FieldHooks,
+  ResolvedListHooks,
+  ResolvedFieldHooks
 } from '../../types/config/hooks'
 import {
   Empty,
 } from '../../types/schema/graphql-ts-schema'
-import {
-  type FilterOrderArgs
+import type {
+  FilterOrderArgs
 } from '../../types/config/fields'
-import {
-  type MaybeItemFunction,
-  type MaybeSessionFunction
+import type {
+  MaybeItemFunction,
+  MaybeSessionFunction
 } from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,
@@ -153,7 +153,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
 }
 
-type ListConfigType = __ResolvedKeystoneConfig['lists'][string]
+type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
@@ -374,7 +374,7 @@ function parseFieldHooks (
 }
 
 function getListsWithInitialisedFields (
-  config: __ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   listsRef: Record<string, InitialisedList>,
 ) {
   const { storage: configStorage, lists: listsConfig, db: { provider } } = config
@@ -874,7 +874,7 @@ function graphqlForOutputField (field: InitialisedField) {
   })
 }
 
-export function initialiseLists (config: __ResolvedKeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: KeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
 

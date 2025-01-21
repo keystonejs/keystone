@@ -299,24 +299,22 @@ describe('Document field type', () => {
   test("an inline relationship to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: ({
-          lists: {
-            Post: list({
-              access: allowAll,
-              fields: {
-                content: document({
-                  relationships: {
-                    mention: {
-                      listKey: 'Author',
-                      label: 'Mention',
-                      selection: 'id name',
-                    },
+        lists: {
+          Post: list({
+            access: allowAll,
+            fields: {
+              content: document({
+                relationships: {
+                  mention: {
+                    listKey: 'Author',
+                    label: 'Mention',
+                    selection: 'id name',
                   },
-                }),
-              },
-            }),
-          },
-        }),
+                },
+              }),
+            },
+          }),
+        },
       })
     ).rejects.toMatchInlineSnapshot(
       `[Error: An inline relationship Mention (mention) in the field at Post.content has listKey set to "Author" but no list named "Author" exists.]`
@@ -325,34 +323,32 @@ describe('Document field type', () => {
   test("an relationship on a component block prop to a list that doesn't exist throws an error", async () => {
     await expect(
       setupTestEnv({
-        config: ({
-          lists: {
-            Post: list({
-              access: allowAll,
-              fields: {
-                content: document({
-                  componentBlocks: {
-                    someBlock: component({
-                      preview: () => null,
-                      label: 'Some Block',
-                      schema: {
-                        something: fields.object({
-                          blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
-                            false: fields.empty(),
-                            true: fields.relationship({
-                              label: 'Some Relationship',
-                              listKey: 'Author',
-                            }),
+        lists: {
+          Post: list({
+            access: allowAll,
+            fields: {
+              content: document({
+                componentBlocks: {
+                  someBlock: component({
+                    preview: () => null,
+                    label: 'Some Block',
+                    schema: {
+                      something: fields.object({
+                        blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
+                          false: fields.empty(),
+                          true: fields.relationship({
+                            label: 'Some Relationship',
+                            listKey: 'Author',
                           }),
                         }),
-                      },
-                    }),
-                  },
-                }),
-              },
-            }),
-          },
-        }),
+                      }),
+                    },
+                  }),
+                },
+              }),
+            },
+          }),
+        },
       })
     ).rejects.toMatchInlineSnapshot(
       `[Error: Component block someBlock in Post.content: The relationship field at "object.something.object.blah.conditional.true" has the listKey "Author" but no list named "Author" exists.]`

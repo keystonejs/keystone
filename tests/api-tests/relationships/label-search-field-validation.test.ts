@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { config, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { getContext } from '@keystone-6/core/context'
 import { integer, relationship, text } from '@keystone-6/core/fields'
@@ -15,7 +15,7 @@ const Thing = list({
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
   expect(() =>
     getContext(
-      ({
+      config({
         db: {
           provider: 'sqlite',
           url: 'file://'
@@ -35,7 +35,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
           Thing,
         },
       }),
-      {} as any
+      {}
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
@@ -43,7 +43,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
 test("labelField that doesn't exist is rejected with displayMode: cards", () => {
   expect(() =>
     getContext(
-      ({
+      config({
         db: {
           provider: 'sqlite',
           url: 'file://'
@@ -65,7 +65,7 @@ test("labelField that doesn't exist is rejected with displayMode: cards", () => 
           Thing,
         },
       }),
-      {} as any
+      {}
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
@@ -73,7 +73,7 @@ test("labelField that doesn't exist is rejected with displayMode: cards", () => 
 test("searchFields that don't exist are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
-      ({
+      config({
         db: {
           provider: 'sqlite',
           url: 'file://'
@@ -93,7 +93,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
           Thing,
         },
       }),
-      {} as any
+      {}
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
@@ -101,7 +101,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
 test("searchFields that don't exist are rejected with displayMode: cards", () => {
   expect(() =>
     getContext(
-      ({
+      config({
         db: {
           provider: 'sqlite',
           url: 'file://'
@@ -123,7 +123,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
           Thing,
         },
       }),
-      {} as any
+      {}
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
