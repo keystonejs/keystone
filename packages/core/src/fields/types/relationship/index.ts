@@ -111,9 +111,10 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
   ref,
   ...config
 }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  const { many = false } = config
+  const [foreignListKey, foreignFieldKey] = ref.split('.')
+
   return ({ fieldKey, listKey, lists }) => {
-    const { many = false } = config
-    const [foreignListKey, foreignFieldKey] = ref.split('.')
     const foreignList = lists[foreignListKey]
     if (!foreignList) throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
 

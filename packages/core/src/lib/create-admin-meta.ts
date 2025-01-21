@@ -272,10 +272,7 @@ export function createAdminMeta (
 let currentAdminMeta: undefined | AdminMetaRootVal
 
 export function getAdminMetaForRelationshipField () {
-  if (currentAdminMeta === undefined) {
-    throw new Error('unexpected call to getAdminMetaInRelationshipField')
-  }
-
+  if (currentAdminMeta === undefined) throw new Error('Unexpected call to getAdminMetaInRelationshipField')
   return currentAdminMeta
 }
 
