@@ -19,7 +19,7 @@ import type { Lists } from '.keystone/types'
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists = {
+export const lists: Lists<Session> = {
   Todo: list({
     /*
       SPEC
@@ -116,7 +116,7 @@ export const lists = {
           if (session?.data.role?.canEditOtherPeople) return 'edit'
 
           // edit themselves
-          if (session?.itemId === item.id) return 'edit'
+          if (session?.itemId === item?.id) return 'edit'
 
           // else, default all fields to read mode
           return 'read'
