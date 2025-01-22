@@ -2,6 +2,7 @@ import path from 'node:path'
 import type {
   BaseListTypeInfo,
   KeystoneContext,
+  MaybeFieldFunction,
   MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
@@ -15,7 +16,6 @@ import type {
   FieldGroupMeta,
   ListMeta,
 } from '../types/admin-meta'
-import type { FilterOrderArgs } from '../types/config/fields'
 
 import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
@@ -271,11 +271,9 @@ function normalizeMaybeSessionFunction<Return extends string | boolean> (
   return context => input({ context, session: context.session })
 }
 
-type BaseOrderFilterArgs = { listKey: string, fieldKey: string }
-
 function normalizeIsOrderFilter (
-  input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
-  baseOrderFilterArgs: BaseOrderFilterArgs
+  input: MaybeFieldFunction<BaseListTypeInfo>,
+  baseOrderFilterArgs: { listKey: string, fieldKey: string }
 ): ContextFunction<boolean> {
   if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session, ...baseOrderFilterArgs })

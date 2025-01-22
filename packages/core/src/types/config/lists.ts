@@ -4,7 +4,7 @@ import type { BaseListTypeInfo } from '../type-info'
 import type { KeystoneContext } from '../context'
 import type { ListHooks } from './hooks'
 import type { ListAccessControl } from './access-control'
-import type { BaseFields, FilterOrderArgs } from './fields'
+import type { BaseFields } from './fields'
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean
@@ -37,12 +37,12 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The default value to use for graphql.isEnabled.filter on all fields for this list
    */
-  defaultIsFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
+  defaultIsFilterable?: MaybeFieldFunction<ListTypeInfo>
 
   /**
    * The default value to use for graphql.isEnabled.orderBy on all fields for this list
    */
-  defaultIsOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
+  defaultIsOrderable?: MaybeFieldFunction<ListTypeInfo>
 }
 
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
@@ -161,6 +161,17 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    */
   path?: string
 }
+
+export type MaybeFieldFunction<
+  ListTypeInfo extends BaseListTypeInfo
+> =
+  | boolean
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session']
+      listKey: ListTypeInfo['key']
+      fieldKey: ListTypeInfo['fields']
+    }) => MaybePromise<boolean>)
 
 export type MaybeSessionFunction<
   T extends string | boolean,

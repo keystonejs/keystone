@@ -1,5 +1,5 @@
-import type { Server } from 'http'
-import type { ListenOptions } from 'net'
+import type { Server } from 'node:http'
+import type { ListenOptions } from 'node:net'
 import type { ApolloServerOptions } from '@apollo/server'
 import type { CorsOptions } from 'cors'
 import type express from 'express'
@@ -18,6 +18,10 @@ import type {
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
 import type { ListHooks, FieldHooks } from './hooks'
+
+export type * from './access-control'
+export type * from './fields'
+export type * from './lists'
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
@@ -286,16 +290,3 @@ export type {
   FieldHooks,
   FieldAccessControl
 }
-export type {
-  FieldCreateItemAccessArgs,
-  FieldReadItemAccessArgs,
-  FieldUpdateItemAccessArgs,
-  IndividualFieldAccessControl,
-  CreateListItemAccessControl,
-  UpdateListItemAccessControl,
-  DeleteListItemAccessControl,
-  ListOperationAccessControl,
-  ListFilterAccessControl,
-} from './access-control'
-export type { CommonFieldConfig } from './fields'
-export type { CacheHintArgs, IdFieldConfig } from './lists'
