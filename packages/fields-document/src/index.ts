@@ -63,7 +63,7 @@ type FormattingConfig = {
 export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     relationships?: RelationshipsConfig
-    componentBlocks?: Record<string, ComponentBlock>
+    componentBlocks?: Record<string, Pick<ComponentBlock, 'schema'>>
     formatting?: true | FormattingConfig
     links?: true
     dividers?: true

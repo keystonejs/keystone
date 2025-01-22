@@ -230,7 +230,7 @@ type ResolvedAuthorUpdateInput = {
 }
 
 export declare namespace Lists {
-  export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>>
+  export type Post<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Post.TypeInfo<Session>>
   namespace Post {
     export type Item = import('./node_modules/myprisma').Post
     export type TypeInfo<Session = any> = {
@@ -252,7 +252,7 @@ export declare namespace Lists {
       all: __TypeInfo<Session>
     }
   }
-  export type Author<Session = any> = import('@keystone-6/core').ListConfig<Lists.Author.TypeInfo<Session>>
+  export type Author<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Author.TypeInfo<Session>>
   namespace Author {
     export type Item = import('./node_modules/myprisma').Author
     export type TypeInfo<Session = any> = {
@@ -290,7 +290,7 @@ export type TypeInfo<Session = any> = {
 type __TypeInfo<Session = any> = TypeInfo<Session>
 
 export type Lists<Session = any> = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>
-} & Record<string, import('@keystone-6/core').ListConfig<any>>
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>
+} & Record<string, import('@keystone-6/core/types').ListConfig<any>>
 
 export {}
