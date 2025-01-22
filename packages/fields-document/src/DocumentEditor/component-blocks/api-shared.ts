@@ -1,7 +1,7 @@
-import { type graphql } from '@keystone-6/core'
-import {
-  type ReactElement,
-  type ReactNode,
+import type { graphql } from '@keystone-6/core'
+import type {
+  ReactElement,
+  ReactNode,
 } from 'react'
 
 export type FormFieldValue =
@@ -128,8 +128,10 @@ export interface ObjectField<
 }
 
 export type ConditionalField<
-  DiscriminantField extends FormField<string | boolean, any>,
+  DiscriminantField extends { defaultValue: any },
   ConditionalValues extends {
+    [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema
+  } = {
     [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema
   }
 > = {
@@ -151,7 +153,7 @@ export type ComponentSchema =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
+  | ConditionalField<any, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
   | ArrayFieldInComponentSchema
 
@@ -246,7 +248,7 @@ export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentS
     : never
 
 type ConditionalFieldPreviewProps<
-  Schema extends ConditionalField<FormField<string | boolean, any>, any>,
+  Schema extends ConditionalField<any, any>,
   ChildFieldElement
 > = {
   readonly [Key in keyof Schema['values']]: {
@@ -286,7 +288,7 @@ type ArrayFieldPreviewProps<Schema extends ArrayField<ComponentSchema>, ChildFie
 }
 
 type DiscriminantStringToDiscriminantValue<
-  DiscriminantField extends FormField<any, any>,
+  DiscriminantField extends { defaultValue: any },
   DiscriminantString extends PropertyKey
 > = DiscriminantField['defaultValue'] extends boolean
   ? 'true' extends DiscriminantString

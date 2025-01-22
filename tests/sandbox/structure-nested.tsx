@@ -1,19 +1,21 @@
 import {
   type ArrayField,
-  type ComponentSchemaForGraphQL,
+  type ConditionalField,
   fields,
 } from '@keystone-6/fields-document/component-blocks'
 
-export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
+const leafSelect = fields.select({
+  defaultValue: 'leaf',
+  label: 'Type',
+  options: [
+    { label: 'Leaf', value: 'leaf' },
+    { label: 'Group', value: 'group' },
+  ] as const,
+})
+
+export const schema: ArrayField<ConditionalField<typeof leafSelect>> = fields.array(
   fields.conditional(
-    fields.select({
-      defaultValue: 'leaf',
-      label: 'Type',
-      options: [
-        { label: 'Leaf', value: 'leaf' },
-        { label: 'Group', value: 'group' },
-      ] as const,
-    }),
+    leafSelect,
     {
       leaf: fields.object({
         label: fields.text({ label: 'Label' }),

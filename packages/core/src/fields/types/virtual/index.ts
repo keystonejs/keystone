@@ -63,7 +63,7 @@ export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
       output: graphql.field({
         ...(usableField as any),
         resolve ({ item }, ...args) {
-          return usableField.resolve!(item as any, ...args)
+          return usableField.resolve!(item, ...args)
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',

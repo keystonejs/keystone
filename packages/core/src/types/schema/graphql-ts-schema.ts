@@ -1,12 +1,15 @@
-import type { ReadStream } from 'fs'
+import type { ReadStream } from 'node:fs'
+import type { InputType, Arg } from '@graphql-ts/schema'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
+import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
-import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
 import type { KeystoneContext } from '../context'
 import type { JSONValue } from '../utils'
+import { field as fieldd } from './schema-api-with-context'
+
 export {
   Boolean,
   Float,
@@ -39,13 +42,11 @@ export type {
 export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend, wrap } from '@graphql-ts/extend'
-import { field as fieldd } from './schema-api-with-context'
-import type { InputType, Arg } from '@graphql-ts/schema'
 export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
 
 // TODO: remove when we use { graphql } from '.keystone'
 type SomeTypeThatIsntARecordOfArgs = string
-type FieldFuncResolve<
+export type FieldFuncResolve<
   Source,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType,
