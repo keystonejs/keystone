@@ -161,7 +161,7 @@ export function printGeneratedTypes (
         const listTypeInfoName = `Lists.${listKey}.TypeInfo`
 
         yield [
-          `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>>`,
+          `export type ${listKey}<Session = any> = import('@keystone-6/core/types').ListConfig<${listTypeInfoName}<Session>>`,
           `namespace ${listKey} {`,
           `  export type Item = import('${prismaClientPath}').${listKey}`,
           `  export type TypeInfo<Session = any> = {`,
@@ -208,8 +208,8 @@ export function printGeneratedTypes (
     `type __TypeInfo<Session = any> = TypeInfo<Session>`,
     ``,
     `export type Lists<Session = any> = {`,
-    `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>`,
-    `} & Record<string, import('@keystone-6/core').ListConfig<any>>`,
+    `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>`,
+    `} & Record<string, import('@keystone-6/core/types').ListConfig<any>>`,
     ``,
     `export {}`,
     ``,
