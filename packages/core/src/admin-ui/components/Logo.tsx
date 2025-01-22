@@ -7,7 +7,7 @@ import { useKeystone } from '../context'
 
 export function Logo () {
   const { adminConfig } = useKeystone()
-  if (adminConfig.components?.Logo) return <adminConfig.components.Logo />
+  if (adminConfig?.components?.Logo) return <adminConfig.components.Logo />
   return <DefaultLogo />
 }
 

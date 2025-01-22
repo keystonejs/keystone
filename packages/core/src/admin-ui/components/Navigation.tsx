@@ -161,7 +161,7 @@ export function DeveloperResourcesMenu () {
         </Menu>
       </MenuTrigger>
       <DialogContainer onDismiss={() => setDialogIsOpen(false)}>
-        {dialogIsOpen && <WelcomeDialog value="test" onContinue={() => setDialogIsOpen(false)} />}
+        {dialogIsOpen && <WelcomeDialog />}
       </DialogContainer>
     </>
   )
