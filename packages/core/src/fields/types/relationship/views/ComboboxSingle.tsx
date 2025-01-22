@@ -3,8 +3,8 @@ import React from 'react'
 import { Combobox, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
-import { type ListMeta } from '../../../../types'
-import { type RelationshipValue } from './types'
+import type { ListMeta } from '../../../../types'
+import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
 export function ComboboxSingle ({
@@ -50,7 +50,7 @@ export function ComboboxSingle ({
   // not the related list, or some items on the list)
   if (error) return <span>Error</span>
 
-  const items = data?.items ?? []
+  const items = data?.items?.map(x => ({ ...x, built: false }))  ?? []
   return (
     <Combobox
       autoFocus={autoFocus}
