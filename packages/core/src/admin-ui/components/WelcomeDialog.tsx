@@ -46,10 +46,7 @@ export function WelcomeDialog () {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          tags,
-        }),
+        body: JSON.stringify({ email, tags, }),
       })
 
       try {
