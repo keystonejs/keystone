@@ -31,10 +31,7 @@ import {
   useQuery,
 } from '../../../../admin-ui/apollo'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import {
-  useList,
-  useKeystone
-} from '../../../../admin-ui/context'
+import { useList } from '../../../../admin-ui/context'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
@@ -102,7 +99,6 @@ function useQueryParamsFromLocalStorage (listKey: string) {
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 function ListPage ({ listKey }: ListPageProps) {
-  const { adminMeta } = useKeystone()
   const list = useList(listKey)
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
@@ -113,7 +109,7 @@ function ListPage ({ listKey }: ListPageProps) {
   const filters = useFilters(list)
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, setSearchString] = useState(searchParam)
-  const search = useSearchFilter(searchParam, list, list.initialSearchFields, adminMeta?.lists ?? {})
+  const search = useSearchFilter(searchParam, list, list.initialSearchFields)
 
   const selectedFields = useSelectedFields(list)
   const {
