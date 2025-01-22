@@ -1,4 +1,7 @@
 import { useMemo } from 'react'
+import {
+  useKeystone
+} from '../../../../admin-ui/context'
 
 import type { ListMeta } from '../../../../types'
 
@@ -26,10 +29,9 @@ export function useSearchFilter (
   value: string,
   list: ListMeta,
   searchFields: string[],
-  lists: {
-    [list: string]: ListMeta
-  }
 ) {
+  const { adminMeta } = useKeystone()
+  const { lists = {} } = adminMeta ?? {}
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }

@@ -4,8 +4,7 @@ import {
   useState
 } from 'react'
 
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
-import { type ListMeta } from '../../../../types'
+import type { ListMeta } from '../../../../types'
 import {
   type TypedDocumentNode,
   ApolloClient,
@@ -39,7 +38,6 @@ export function useApolloQuery (args: {
     | { kind: 'one', value: RelationshipValue | null }
 }) {
   const { labelField, list, searchFields, state } = args
-  const keystone = useKeystone()
   const [search, setSearch] = useState(() => {
     if (state.kind === 'one' && state.value?.label) return state.value?.label
     return ''
@@ -63,7 +61,7 @@ export function useApolloQuery (args: {
     state.kind === 'one' && state.value?.label === debouncedSearch
       ? ''
       : debouncedSearch
-  const where = useSearchFilter(manipulatedSearch, list, searchFields, keystone.adminMeta.lists)
+  const where = useSearchFilter(manipulatedSearch, list, searchFields)
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies
