@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { Text } from '@keystar/ui/typography'
 import { TextField } from '@keystar/ui/text-field'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
 
 export function Field ({
@@ -39,10 +39,10 @@ export function Field ({
 }
 
 export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
-  const discriminant = item?.[field.dependency.field]?.value ?? Infinity
+  const discriminant = (item as any)?.[field.dependency.field]?.value ?? Infinity
   const hidden = discriminant > field.dependency.minimumValue
   if (hidden) return <Text><i>hidden</i></Text>
-  return <Text>{item[field.path]}</Text>
+  return <Text>{(item as any)[field.path]}</Text>
 }
 
 export function controller (

@@ -99,23 +99,20 @@ function validate (
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
-  if (value.kind === 'update' && value.initial === null && isEmpty) {
-    return undefined
-  }
+  if (value.kind === 'update' && value.initial === null && isEmpty) return
 
   if (
     value.kind === 'create' &&
     isEmpty &&
     ((typeof fieldMeta.defaultValue === 'object' && fieldMeta.defaultValue?.kind === 'now') ||
       fieldMeta.updatedAt)
-  ) {
-    return undefined
-  }
+  ) return
 
   if (fieldMeta.isRequired && isEmpty) return `${label} is required`
+
   // TODO: update field in "@keystar/ui" to use new validation APIs, for more
   // granular validation messages
-  return undefined
+  return
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
@@ -165,10 +162,7 @@ export function controller (
         const { autoFocus, context, forceValidation, typeLabel, onChange, value, type, ...otherProps } = props
         const [isDirty, setDirty] = useState(false)
 
-        if (type === 'empty' || type === 'not_empty') {
-          return null;
-        }
-
+        if (type === 'empty' || type === 'not_empty') return null
         const parsedValue = value ? parseAbsoluteToLocal(value) : null
 
         return (
