@@ -2,7 +2,7 @@ import Path from 'path'
 import resolve from 'resolve'
 
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
-import type { __ResolvedKeystoneConfig } from '../../types'
+import type { KeystoneConfig } from '../../types'
 
 function doesConfigExist (path: string[]) {
   try {
@@ -19,7 +19,7 @@ function doesConfigExist (path: string[]) {
 }
 
 export function appTemplate (
-  config: __ResolvedKeystoneConfig,
+  config: KeystoneConfig,
   adminMetaRootVal: AdminMetaRootVal,
 ) {
   const allViews = adminMetaRootVal.views.map(viewRelativeToProject => {
