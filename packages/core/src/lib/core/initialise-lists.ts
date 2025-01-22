@@ -9,7 +9,7 @@ import type {
   ListGraphQLTypes,
   ListHooks,
   KeystoneConfig,
-  MaybePromise,
+  MaybeFieldFunction,
   NextFieldType,
   FieldTypeFunc,
 } from '../../types'
@@ -27,9 +27,6 @@ import type {
 import {
   Empty,
 } from '../../types/schema/graphql-ts-schema'
-import type {
-  FilterOrderArgs
-} from '../../types/config/fields'
 import type {
   MaybeItemFunction,
   MaybeSessionFunction
@@ -59,8 +56,8 @@ export type InitialisedField = {
       read: boolean
       create: boolean
       update: boolean
-      filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-      orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
+      filter: MaybeFieldFunction<BaseListTypeInfo>
+      orderBy: MaybeFieldFunction<BaseListTypeInfo>
     }
     isNonNull: {
       read: boolean
@@ -117,7 +114,15 @@ export type InitialisedList = {
     types: GraphQLTypesForList
     names: GraphQLNames
     namePlural: string // TODO: remove
-    isEnabled: IsListEnabled
+    isEnabled: {
+      type: boolean
+      query: boolean
+      create: boolean
+      update: boolean
+      delete: boolean
+      filter: MaybeFieldFunction<BaseListTypeInfo>
+      orderBy: MaybeFieldFunction<BaseListTypeInfo>
+    }
   }
 
   prisma: {
@@ -138,16 +143,6 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
 }
 
-type IsListEnabled = {
-  type: boolean
-  query: boolean
-  create: boolean
-  update: boolean
-  delete: boolean
-  filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-  orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-}
-
 function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return
   throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
@@ -155,7 +150,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
 
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
-type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
+type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
 function getIsEnabled (listKey: string, listConfig: ListConfigType) {
