@@ -66,8 +66,6 @@ export const fields = {
         input: graphql.String,
         output: graphql.field({
           type: graphql.String,
-          // TODO: FIXME why is this required
-          resolve ({ value }) { return value },
         }),
       },
     }
@@ -92,8 +90,6 @@ export const fields = {
         input: graphql.Int,
         output: graphql.field({
           type: graphql.Int,
-          // TODO: FIXME why is this required
-          resolve ({ value }) { return value },
         }),
       },
     }
