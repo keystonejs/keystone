@@ -37,7 +37,7 @@ type InputArgs<T> = {
 }
 
 export const fields = {
-text ({
+  text ({
     label,
     defaultValue = '',
   }: {

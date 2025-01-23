@@ -27,13 +27,16 @@ import { localStorageConfig, trackingFields } from '../utils'
 
 const description = 'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
 
-export const lists: any = {
+export const lists = {
   Thing: list({
     access: allowAll,
     fields: {
       text: text({ ui: { description } }),
       timestamp: timestamp({ ui: { description } }),
-      structure: structure({ schema: structureSchema, ui: { views: './structure' } }),
+      structure: structure({
+        schema: structureSchema,
+        ui: { views: './structure' }
+      }),
       structureNested: structure({
         schema: structureNestedSchema,
         ui: { views: './structure-nested' },
