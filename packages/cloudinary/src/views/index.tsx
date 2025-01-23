@@ -4,6 +4,7 @@ import type {
   FieldControllerConfig,
 } from '@keystone-6/core/types'
 import {
+  type ImageValue,
   validateImage
 } from '@keystone-6/core/fields/types/image/views'
 
@@ -22,15 +23,12 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
       }}
     >
       <img
-        alt={value.filename}
         style={{ maxHeight: '100%', maxWidth: '100%' }}
         src={value.url}
       />
     </div>
   )
 }
-
-import { ImageValue } from '@keystone-6/core/fields/types/image/views'
 
 export function controller (config: FieldControllerConfig) {
   const extensions = ['jpg', 'png', 'webp', 'gif'] // TODO: dynamic
