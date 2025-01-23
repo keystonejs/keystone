@@ -96,13 +96,13 @@ export function RelationshipElement ({
               value:
                 element.data === null
                   ? null
-                  : { id: element.data.id, label: element.data.label || element.data.id },
+                  : { id: element.data.id, label: element.data.label, built: undefined },
               onChange (newItem) {
                 const at = ReactEditor.findPath(editor, element)
                 if (newItem === null) {
                   Transforms.removeNodes(editor, { at })
                 } else {
-                  Transforms.setNodes(editor, { data: newItem }, { at })
+                  Transforms.setNodes(editor, { data: { id: newItem.id, label: newItem.label, data: newItem.data } }, { at })
                 }
               },
             }}

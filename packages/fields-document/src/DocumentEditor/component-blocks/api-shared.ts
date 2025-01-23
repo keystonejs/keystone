@@ -42,13 +42,7 @@ export type FormField<Value extends FormFieldValue, Options> = {
    * a potentially malicious client
    */
   validate(value: unknown): boolean
-}
-
-export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = FormField<
-  Value,
-  Options
-> & {
-  graphql: {
+  graphql?: {
     input: graphql.NullableInputType
     output: graphql.Field<
       { value: Value },
@@ -156,22 +150,6 @@ export type ComponentSchema =
   | ArrayFieldInComponentSchema
   | RelationshipField<boolean>
   | ConditionalField<any, { [key: string]: ComponentSchema }>
-
-// this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
-type ArrayFieldInComponentSchemaForGraphQL = {
-  kind: 'array'
-  element: ComponentSchemaForGraphQL
-  // this is written with unknown to avoid typescript being annoying about circularity or variance things
-  itemLabel?(props: unknown): string
-  label?: string
-}
-
-export type ComponentSchemaForGraphQL =
-  | FormFieldWithGraphQLField<any, any>
-  | ObjectField<Record<string, ComponentSchemaForGraphQL>>
-  | ArrayFieldInComponentSchemaForGraphQL
-  | RelationshipField<boolean>
-  | ConditionalField<any, { [key: string]: ComponentSchema }> // TODO: FIXME
 
 type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
   readonly element: ChildFieldElement

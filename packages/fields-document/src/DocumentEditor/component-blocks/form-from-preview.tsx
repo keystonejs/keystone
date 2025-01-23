@@ -11,7 +11,7 @@ import { Field } from '@keystar/ui/field'
 import { Heading, Text } from '@keystar/ui/typography'
 import { Icon } from '@keystar/ui/icon'
 import { Item, ListView } from '@keystar/ui/list-view'
-import { ItemDropTarget, useDragAndDrop } from '@keystar/ui/drag-and-drop'
+import { type ItemDropTarget, useDragAndDrop } from '@keystar/ui/drag-and-drop'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { move } from '@keystar/ui/drag-and-drop'
@@ -432,7 +432,7 @@ const fieldRenderers = {
 
 export const FormValueContentFromPreviewProps: MemoExoticComponent<
   (
-    props: GenericPreviewProps<NonChildFieldComponentSchema, unknown> & {
+    props: GenericPreviewProps<ComponentSchema, unknown> & {
       autoFocus?: boolean
       forceValidation?: boolean
     }
@@ -455,7 +455,7 @@ function useEventCallback<Func extends (...args: any) => any>(
   return cb as any
 }
 
-function ArrayFieldListView<Element extends ComponentSchema>(
+function ArrayFieldListView<Element extends ComponentSchema> (
   props: GenericPreviewProps<ArrayField<Element>, unknown> & {
     'aria-label': string
     onOpenItem: (index: number) => void
@@ -472,7 +472,7 @@ function ArrayFieldListView<Element extends ComponentSchema>(
 
   const dragType = useMemo(() => Math.random().toString(36), [])
   const { dragAndDropHooks } = useDragAndDrop({
-    getItems(keys) {
+    getItems (keys) {
       // Use a drag type so the items can only be reordered within this list
       // and not dragged elsewhere.
       return [...keys].map(key => {
@@ -483,8 +483,8 @@ function ArrayFieldListView<Element extends ComponentSchema>(
         }
       })
     },
-    getAllowedDropOperations() { return ['move', 'cancel'] },
-    async onDrop(e) {
+    getAllowedDropOperations () { return ['move', 'cancel'] },
+    async onDrop (e) {
       if (e.target.type !== 'root' && e.target.dropPosition !== 'on') {
         let keys = []
         for (let item of e.items) {
@@ -504,7 +504,7 @@ function ArrayFieldListView<Element extends ComponentSchema>(
         onMove(keys, e.target)
       }
     },
-    getDropOperation(target) {
+    getDropOperation (target) {
       if (target.type === 'root' || target.dropPosition === 'on') return 'cancel'
       return 'move'
     },

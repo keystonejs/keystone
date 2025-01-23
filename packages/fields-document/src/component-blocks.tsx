@@ -9,7 +9,6 @@ export type {
   ChildField,
   ComponentBlock,
   ComponentSchema,
-  ComponentSchemaForGraphQL,
   ConditionalField,
   FormField,
   InferRenderersForComponentBlocks,
