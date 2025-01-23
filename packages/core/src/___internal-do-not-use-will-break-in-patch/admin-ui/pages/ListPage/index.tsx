@@ -577,7 +577,7 @@ function ListTable ({
 }) {
   const list = useList(listKey)
   const { query } = useRouter()
-  const shouldShowLinkIcon = selectedFields.keys().some((k, i) => !list.fields[k].views.Cell.supportsLinkTo && i === 0)
+  const shouldShowLinkIcon = [...selectedFields].some((k, i) => !list.fields[k].views.Cell.supportsLinkTo && i === 0)
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
