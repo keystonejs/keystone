@@ -1,10 +1,9 @@
 import React from 'react'
 import type {
   CellComponent,
-  FieldController,
   FieldControllerConfig,
 } from '../../../../types'
-import { validateImage } from './Field'
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 
 export { Field } from './Field'
 
@@ -25,20 +24,18 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
   )
 }
 
-type ImageData = {
-  src: string
-  height: number
-  width: number
-  filesize: number
-  extension: string
-  id: string
-}
-
 export type ImageValue =
   | { kind: 'empty' }
   | {
       kind: 'from-server'
-      data: ImageData
+      data: {
+        id: string
+        url: string
+        extension: string
+        filesize: number
+        width: number
+        height: number
+      }
     }
   | {
       kind: 'upload'
@@ -50,46 +47,46 @@ export type ImageValue =
     }
   | { kind: 'remove', previous?: Exclude<ImageValue, { kind: 'remove' }> }
 
-type ImageController = FieldController<ImageValue>
+export function validateImage (extensions: string[], v: ImageValue) {
+  if (v.kind !== 'upload') return
+  if (!v.data.validity.valid) return 'Something went wrong, please reload and try again.'
 
-export const controller = (config: FieldControllerConfig): ImageController => {
+  // check if the file is actually an image
+  if (!v.data.file.type.includes('image')) {
+    return `Sorry, that file type isn't accepted. Please try ${extensions.join(', ')}`
+  }
+}
+
+export function controller (config: FieldControllerConfig) {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: `${config.path} {
-        url
-        id
-        extension
-        width
-        height
-        filesize
-      }`,
+      id
+      url
+      extension
+      filesize
+      width
+      height
+    }`,
     defaultValue: { kind: 'empty' },
-    deserialize (item) {
+    extensions: SUPPORTED_IMAGE_EXTENSIONS,
+    deserialize (item: any): ImageValue {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
-        data: {
-          src: value.url,
-          id: value.id,
-          extension: value.extension,
-          ref: value.ref,
-          width: value.width,
-          height: value.height,
-          filesize: value.filesize,
-        },
+        data: value,
       }
     },
-    validate (value): boolean {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined
+    validate (value: ImageValue): boolean {
+      return validateImage(SUPPORTED_IMAGE_EXTENSIONS, value) === undefined
     },
-    serialize (value) {
+    serialize (value: ImageValue) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } }
       }
-
       if (value.kind === 'remove') {
         return { [config.path]: null }
       }

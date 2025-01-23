@@ -1,12 +1,13 @@
 import React from 'react'
 import type {
   CellComponent,
-  FieldController,
   FieldControllerConfig,
 } from '@keystone-6/core/types'
-import { validateImage } from './Field'
+import {
+  validateImage
+} from '@keystone-6/core/fields/types/image/views'
 
-export { Field } from './Field'
+export { Field } from '@keystone-6/core/fields/types/image/views'
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null
@@ -29,42 +30,24 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
   )
 }
 
-type ImageData = {
-  id: string
-  filename: string
-  publicUrlTransformed: string
-}
+import { ImageValue } from '@keystone-6/core/fields/types/image/views'
 
-type CloudinaryImageValue =
-  | { kind: 'empty' }
-  | {
-      kind: 'from-server'
-      data: ImageData
-    }
-  | {
-      kind: 'upload'
-      data: {
-        file: File
-        validity: ValidityState
-      }
-      previous: CloudinaryImageValue
-    }
-  | { kind: 'remove', previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> }
-
-type CloudinaryImageController = FieldController<CloudinaryImageValue>
-
-export function controller (config: FieldControllerConfig): CloudinaryImageController {
+export function controller (config: FieldControllerConfig) {
+  const extensions = ['jpg', 'png', 'webp', 'gif'] // TODO: dynamic
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: `${config.path} {
-        id
-        filename
-        publicUrlTransformed(transformation: { width: "120" crop: "limit" })
-      }`,
+      id
+      url: publicUrlTransformed(transformation: { width: "120" crop: "limit" })
+      filesize
+      width
+      height
+    }`,
     defaultValue: { kind: 'empty' },
-    deserialize (item) {
+    extensions,
+    deserialize (item: any): ImageValue {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -72,10 +55,10 @@ export function controller (config: FieldControllerConfig): CloudinaryImageContr
         data: value,
       }
     },
-    validate (value) {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined
+    validate (value: ImageValue): boolean {
+      return validateImage(extensions, value) === undefined
     },
-    serialize (value) {
+    serialize (value: ImageValue) {
       if (value.kind === 'upload') {
         return { [config.path]: value.data.file }
       }

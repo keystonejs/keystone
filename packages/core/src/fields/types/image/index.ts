@@ -1,15 +1,18 @@
-import {
-  type BaseListTypeInfo,
-  type FieldTypeFunc,
-  type CommonFieldConfig,
-  type ImageData,
-  type ImageExtension,
-  type KeystoneContext,
-  fieldType,
+import type {
+  BaseListTypeInfo,
+  FieldTypeFunc,
+  CommonFieldConfig,
+  ImageData,
+  ImageExtension,
+  KeystoneContext,
 } from '../../../types'
+import { fieldType, } from '../../../types'
 import { graphql } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
-import { mergeFieldHooks, type InternalFieldHooks } from '../../resolve-hooks'
+import {
+  type InternalFieldHooks,
+  mergeFieldHooks,
+} from '../../resolve-hooks'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -19,6 +22,7 @@ export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
+// TODO: dynamic
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
   values: graphql.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
@@ -37,16 +41,16 @@ const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
   name: 'ImageFieldOutput',
   fields: {
     id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve (data, args, context) {
         return context.images(data.storage).getUrl(data.id, data.extension)
       },
     }),
+    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
   },
 })
 
@@ -58,10 +62,10 @@ async function inputResolver (
   if (data === null || data === undefined) {
     return {
       id: data,
+      extension: data,
       filesize: data,
       width: data,
       height: data,
-      extension: data,
     }
   }
 
@@ -97,7 +101,7 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
           const extensionKey = `${fieldKey}_extension`
           const extension = args.item[extensionKey]
 
-          // This will occur on an update where an image already existed but has been
+          // this will occur on an update where an image already existed but has been
           // changed, or on a delete, where there is no longer an item
           if (
             (args.operation === 'delete' ||
@@ -118,10 +122,10 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
       extendPrismaSchema: config.db?.extendPrismaSchema,
       fields: {
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
@@ -141,18 +145,18 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
         resolve ({
           value: {
             id,
+            extension,
             filesize,
             width,
             height,
-            extension,
           }
         }) {
           if (id === null) return null
+          if (extension === null) return null
           if (filesize === null) return null
           if (width === null) return null
           if (height === null) return null
-          if (extension === null) return null
-          if (!isValidImageExtension(extension)) return null
+          if (!isValidImageExtension(extension)) return null // TODO: dynamic
 
           return {
             id,

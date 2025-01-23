@@ -9,13 +9,16 @@ type Post {
 }
 
 type CloudinaryImage_File {
-  id: ID
+  id: ID!
   filename: String
   originalFilename: String
   mimetype: String
   encoding: String
   publicUrl: String
   publicUrlTransformed(transformation: CloudinaryImageFormat): String
+  filesize: Int!
+  width: Int!
+  height: Int!
 }
 
 """
