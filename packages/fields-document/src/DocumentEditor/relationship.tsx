@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { createContext, Fragment, useContext } from 'react'
+import { createContext, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms } from 'slate'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
@@ -9,8 +9,6 @@ import { useSlateStatic as useStaticEditor } from 'slate-react'
 import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
 
-import { ToolbarButton } from './primitives'
-import { useToolbarState } from './toolbar-state'
 import { ComboboxSingle } from '@keystone-6/core/fields/types/relationship/views'
 
 import type { Relationships } from './relationship-shared'
@@ -23,38 +21,6 @@ export function useDocumentFieldRelationships () {
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
-
-export function RelationshipButton ({ onClose }: { onClose: () => void }) {
-  const {
-    editor,
-    relationships: { isDisabled },
-  } = useToolbarState()
-  const relationships = useContext(DocumentFieldRelationshipsContext)!
-  return (
-    <Fragment>
-      {Object.entries(relationships).map(([key, relationship]) => {
-        return (
-          <ToolbarButton
-            key={key}
-            isDisabled={isDisabled}
-            onMouseDown={event => {
-              event.preventDefault()
-              Transforms.insertNodes(editor, {
-                type: 'relationship',
-                relationship: key,
-                data: null,
-                children: [{ text: '' }],
-              })
-              onClose()
-            }}
-          >
-            {relationship.label}
-          </ToolbarButton>
-        )
-      })}
-    </Fragment>
-  )
-}
 
 export function RelationshipElement ({
   attributes,

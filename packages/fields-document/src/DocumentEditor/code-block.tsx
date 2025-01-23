@@ -1,15 +1,17 @@
-import React, { useMemo, Fragment } from 'react'
-import { Tooltip } from '@keystone-ui/tooltip'
+import React, { useMemo } from 'react'
 import { Transforms } from 'slate'
 
 import { Icon } from '@keystar/ui/icon'
 import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
-import { ToolbarButton, KeyboardInTooltip } from './primitives'
 import { useToolbarState } from './toolbar-state'
+import { ActionButton } from '@keystar/ui/button'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Kbd, Text } from '@keystar/ui/typography'
+import { ReactEditor } from 'slate-react'
 
 export * from './code-block-shared'
 
-function CodeButton ({ attrs }: { attrs: object }) {
+function CodeButton () {
   const {
     editor,
     code: { isDisabled, isSelected },
@@ -17,35 +19,37 @@ function CodeButton ({ attrs }: { attrs: object }) {
 
   return useMemo(
     () => (
-      <ToolbarButton
+      <ActionButton
         isSelected={isSelected}
         isDisabled={isDisabled}
-        onMouseDown={event => {
-          event.preventDefault()
+        prominence="low"
+        onPress={() => {
           if (isSelected) {
-            Transforms.unwrapNodes(editor, { match: node => node.type === 'code' })
+            Transforms.unwrapNodes(editor, {
+              match: node => node.type === 'code',
+            })
           } else {
-            Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] })
+            Transforms.wrapNodes(editor, {
+              type: 'code',
+              children: [{ text: '' }],
+            })
           }
+          ReactEditor.focus(editor)
         }}
-        {...attrs}
       >
         <Icon src={codeIcon} />
-      </ToolbarButton>
+      </ActionButton>
     ),
-    [isDisabled, isSelected, attrs, editor]
+    [isDisabled, isSelected, editor]
   )
 }
 
 export const codeButton = (
-  <Tooltip
-    weight="subtle"
-    content={
-      <Fragment>
-        Code block <KeyboardInTooltip>```</KeyboardInTooltip>
-      </Fragment>
-    }
-  >
-    {attrs => <CodeButton attrs={attrs} />}
-  </Tooltip>
+  <TooltipTrigger>
+    <CodeButton />
+    <Tooltip>
+      <Text>Code block</Text>
+      <Kbd>```</Kbd>
+    </Tooltip>
+  </TooltipTrigger>
 )

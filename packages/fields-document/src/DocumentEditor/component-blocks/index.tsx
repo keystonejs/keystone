@@ -21,7 +21,6 @@ import {
 
 import { jsx, useTheme } from '@keystone-ui/core'
 
-import { ToolbarButton } from '../primitives'
 import { type ComponentBlock } from './api-shared'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
@@ -63,35 +62,12 @@ export function insertComponentBlock (
   }
 }
 
-export function BlockComponentsButtons ({ onClose }: { onClose: () => void }) {
-  const editor = useStaticEditor()
-  const blockComponents = useContext(ComponentBlockContext)!
-  return (
-    <Fragment>
-      {Object.keys(blockComponents).map(key => (
-        <ToolbarButton
-          key={key}
-          onMouseDown={event => {
-            event.preventDefault()
-            insertComponentBlock(editor, blockComponents, key)
-            onClose()
-          }}
-        >
-          {blockComponents[key].label}
-        </ToolbarButton>
-      ))}
-    </Fragment>
-  )
-}
-
 export function ComponentBlocksElement ({
   attributes,
   children,
   element: __elementToGetPath,
 }: RenderElementProps & { element: { type: 'component-block' } }) {
   const editor = useStaticEditor()
-  const focused = useFocused()
-  const selected = useSelected()
   const [currentElement, setElement] = useElementWithSetNodes(editor, __elementToGetPath)
   const { spacing } = useTheme()
   const blockComponents = useContext(ComponentBlockContext)!
@@ -169,8 +145,8 @@ Content:`}
       attributes={attributes}
       renderedBlock={renderedBlock}
       componentBlock={componentBlock}
-      isOpen={focused && selected}
       onRemove={onRemove}
+      element={__elementToGetPath}
       previewProps={toolbarPreviewProps}
     />
   ) : (

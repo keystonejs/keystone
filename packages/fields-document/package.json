@@ -100,9 +100,11 @@
     "@keystar/ui": "^0.7.14",
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/popover": "workspace:^",
-    "@keystone-ui/tooltip": "workspace:^",
     "@react-aria/i18n": "^3.12.1",
+    "@react-aria/overlays": "^3.23.2",
+    "@react-stately/list": "^3.10.8",
+    "@react-stately/overlays": "^3.6.10",
+    "@react-aria/utils": "^3.25.1",
     "@types/react": "^18.3.3",
     "apply-ref": "^1.0.0",
     "graphql": "^16.8.1",
@@ -133,11 +135,6 @@
     "@keystone-6/core": "^6.0.0"
   },
   "imports": {
-    "#primitives-for-export": {
-      "node": "./src/DocumentEditor/primitives/empty.ts",
-      "react-server": "./src/DocumentEditor/primitives/empty.ts",
-      "default": "./src/DocumentEditor/primitives/index.tsx"
-    },
     "#fields-ui": {
       "node": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
       "react-server": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
