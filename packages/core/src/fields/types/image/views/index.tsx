@@ -19,7 +19,11 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
         width: 24,
       }}
     >
-      <img alt={value.filename} style={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
+      <img
+        alt={value.filename}
+        style={{ maxHeight: '100%', maxWidth: '100%' }}
+        src={value.url}
+      />
     </div>
   )
 }
