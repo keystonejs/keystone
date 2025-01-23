@@ -1,33 +1,34 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import {
   type RenderElementProps,
   ReactEditor,
-  useFocused,
-  useSelected
 } from 'slate-react'
-import { Transforms } from 'slate'
-import { forwardRef, memo, useEffect, useMemo, useState } from 'react'
+import { Node, Transforms } from 'slate'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
 
-import { jsx, useTheme } from '@keystone-ui/core'
-import { useControlledPopover } from '@keystone-ui/popover'
-import { Tooltip } from '@keystone-ui/tooltip'
 import { Icon } from '@keystar/ui/icon'
 import { linkIcon } from '@keystar/ui/icon/icons/linkIcon'
-import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { externalLinkIcon } from '@keystar/ui/icon/icons/externalLinkIcon'
+import { editIcon } from '@keystar/ui/icon/icons/editIcon'
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import { useToolbarState } from './toolbar-state'
 import {
+  focusWithPreviousSelection,
   useElementWithSetNodes,
   useEventCallback,
   useForceValidation,
 } from './utils-hooks'
 import { isValidURL } from './isValidURL'
 import { wrapLink } from './link-shared'
+import { BlockPopover, BlockPopoverTrigger, useActiveBlockPopover } from './primitives/BlockPopover'
+import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
+import { Dialog, DialogContainer, useDialogContainer } from '@keystar/ui/dialog'
+import { Flex } from '@keystar/ui/layout'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
+import { Heading, Text } from '@keystar/ui/typography'
+import { TextField } from '#fields-ui'
+import { Content } from '@keystar/ui/slots'
+import { unlinkIcon } from '@keystar/ui/icon/icons/unlinkIcon'
 
 export * from './link-shared'
 
@@ -36,159 +37,174 @@ export function LinkElement ({
   children,
   element: __elementForGettingPath,
 }: RenderElementProps & { element: { type: 'link' } }) {
-  const { typography } = useTheme()
   const editor = useStaticEditor()
   const [currentElement, setNode] = useElementWithSetNodes(editor, __elementForGettingPath)
   const href = currentElement.href
 
-  const selected = useSelected()
-  const focused = useFocused()
-  const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false)
-  // we want to show the link dialog when the editor is focused and the link element is selected
-  // or when the input inside the dialog is focused so you would think that would look like this:
-  // (selected && focused) || focusedInInlineDialog
-  // this doesn't work though because the blur will happen before the focus is inside the inline dialog
-  // so this component would be rendered and focused would be false so the input would be removed so it couldn't be focused
-  // to fix this, we delay our reading of the updated `focused` value so that we'll still render the dialog
-  // immediately after the editor is blurred but before the input has been focused
-  const [delayedFocused, setDelayedFocused] = useState(false)
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setDelayedFocused(focused)
-    }, 0)
-    return () => {
-      clearTimeout(id)
-    }
-  }, [focused])
   const [localForceValidation, setLocalForceValidation] = useState(false)
-  const { dialog, trigger } = useControlledPopover(
-    {
-      isOpen: (selected && focused) || focusedInInlineDialog,
-      onClose: () => {},
-    },
-    {
-      placement: 'bottom-start',
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const activePopoverElement = useActiveBlockPopover()
+  const selected = activePopoverElement === __elementForGettingPath
+
+  useEffect(() => {
+    if (selected && !href) {
+      setDialogOpen(true)
     }
-  )
+  }, [href, selected])
+
   const unlink = useEventCallback(() => {
     Transforms.unwrapNodes(editor, {
       at: ReactEditor.findPath(editor, __elementForGettingPath),
     })
   })
   const forceValidation = useForceValidation()
+  // TODO: show the invalid state
   const showInvalidState = isValidURL(href) ? false : forceValidation || localForceValidation
   return (
-    <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
-      <a
-        {...trigger.props}
-        css={{ color: showInvalidState ? 'red' : undefined }}
-        ref={trigger.ref}
-        href={href}
-      >
-        {children}
-      </a>
-      {((selected && delayedFocused) || focusedInInlineDialog) && (
-        <InlineDialog
-          {...dialog.props}
-          ref={dialog.ref}
-          onFocus={() => {
-            setFocusedInInlineDialog(true)
-          }}
-          onBlur={() => {
-            setFocusedInInlineDialog(false)
-            setLocalForceValidation(true)
-          }}
-        >
-          <div css={{ display: 'flex', flexDirection: 'column' }}>
-            <ToolbarGroup>
-              <input
-                css={{ fontSize: typography.fontSize.small, width: 240 }}
-                value={href}
-                onChange={event => {
-                  setNode({ href: event.target.value })
+    <>
+      <BlockPopoverTrigger element={__elementForGettingPath}>
+        <a href={href} {...attributes}>
+          {children}
+        </a>
+        <BlockPopover placement="bottom start">
+          <Flex gap="small" padding="regular">
+            <TooltipTrigger>
+              <ActionButton
+                prominence="low"
+                onPress={() => setDialogOpen(true)}
+              >
+                <Icon src={editIcon} />
+              </ActionButton>
+              <Tooltip>Edit</Tooltip>
+            </TooltipTrigger>
+            <TooltipTrigger>
+              <ActionButton
+                prominence="low"
+                onPress={() => {
+                  window.open(href, '_blank', 'noopener,noreferrer')
                 }}
-              />
-              <Tooltip content="Open link in new tab" weight="subtle">
-                {attrs => (
-                  <ToolbarButton
-                    as="a"
-                    onMouseDown={event => {
-                      event.preventDefault()
-                    }}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                    variant="action"
-                    {...attrs}
-                  >
-                    <Icon src={externalLinkIcon} />
-                  </ToolbarButton>
-                )}
+              >
+                <Icon src={externalLinkIcon} />
+              </ActionButton>
+              <Tooltip>
+                <Text truncate={3}>{href}</Text>
               </Tooltip>
-              <ToolbarSeparator />
-              <UnlinkButton onUnlink={unlink} />
-            </ToolbarGroup>
-            {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
-          </div>
-        </InlineDialog>
-      )}
-    </span>
+            </TooltipTrigger>
+            <TooltipTrigger>
+              <ActionButton prominence="low" onPress={unlink}>
+                <Icon src={unlinkIcon} />
+              </ActionButton>
+              {/* TODO: needs localization */}
+              <Tooltip>Unlink</Tooltip>
+            </TooltipTrigger>
+          </Flex>
+        </BlockPopover>
+
+    </BlockPopoverTrigger>
+    <DialogContainer
+        onDismiss={() => {
+          setDialogOpen(false)
+          focusWithPreviousSelection(editor)
+        }}
+      >
+        {dialogOpen && (
+          <LinkDialog
+            text={Node.string(currentElement)}
+            href={href}
+            onSubmit={({ href }) => {
+              setNode({ href })
+            }}
+          />
+        )}
+      </DialogContainer>
+</>
   )
 }
 
-const UnlinkButton = memo(function UnlinkButton ({ onUnlink }: { onUnlink: () => void }) {
-  return (
-    <Tooltip content="Unlink" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          variant="destructive"
-          onMouseDown={event => {
-            event.preventDefault()
-            onUnlink()
-          }}
-          {...attrs}
-        >
-          <Icon src={trash2Icon} />
-        </ToolbarButton>
-      )}
-    </Tooltip>
-  )
-})
+function LinkDialog ({
+  onSubmit,
+  ...props
+}: {
+  href?: string
+  text?: string
+  onSubmit: (value: { href: string }) => void
+}) {
+  let [href, setHref] = useState(props.href || '')
+  let [touched, setTouched] = useState(false)
 
-const LinkButton = forwardRef<HTMLButtonElement>(function LinkButton (props, ref) {
+  let { dismiss } = useDialogContainer()
+  const showInvalidState = touched && !isValidURL(href)
+
+  return (
+    <Dialog size="small">
+      <form
+        style={{ display: 'contents' }}
+        onSubmit={event => {
+          if (event.target !== event.currentTarget) return
+          event.preventDefault()
+          if (!showInvalidState) {
+            dismiss()
+            onSubmit({ href })
+          }
+        }}
+      >
+        <Heading>{props.href ? 'Edit' : 'Add'} link</Heading>
+        <Content>
+          <Flex gap="large" direction="column">
+            <TextField label="Text" value={props.text} isReadOnly />
+            <TextField
+              autoFocus
+              isRequired
+              onBlur={() => setTouched(true)}
+              label="Link"
+              onChange={setHref}
+              value={href}
+              errorMessage={showInvalidState && 'Please provide a valid URL.'}
+            />
+          </Flex>
+        </Content>
+        <ButtonGroup>
+          <Button onPress={dismiss}>Cancel</Button>
+          <Button prominence="high" type="submit">
+            Save
+          </Button>
+        </ButtonGroup>
+      </form>
+    </Dialog>
+  )
+}
+
+
+let _linkIcon = <Icon src={linkIcon} />
+
+function LinkButton () {
   const {
     editor,
     links: { isDisabled, isSelected },
   } = useToolbarState()
   return useMemo(
     () => (
-      <ToolbarButton
-        ref={ref}
+      <ActionButton
+        prominence="low"
         isDisabled={isDisabled}
         isSelected={isSelected}
-        onMouseDown={event => {
-          event.preventDefault()
+        onPress={() => {
           wrapLink(editor, '')
+          ReactEditor.focus(editor)
         }}
-        {...props}
       >
-        <Icon src={linkIcon} />
-      </ToolbarButton>
+        {_linkIcon}
+      </ActionButton>
     ),
-    [isSelected, isDisabled, editor, props, ref]
+    [isSelected, isDisabled, editor]
   )
-})
+}
 
 export const linkButton = (
-  <Tooltip content="Link" weight="subtle">
-    {attrs => <LinkButton {...attrs} />}
-  </Tooltip>
+  <TooltipTrigger>
+    <LinkButton />
+    <Tooltip>
+      <Text>Link</Text>
+    </Tooltip>
+  </TooltipTrigger>
 )

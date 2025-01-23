@@ -1911,15 +1911,21 @@ importers:
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../../design-system/packages/core
-      '@keystone-ui/popover':
-        specifier: workspace:^
-        version: link:../../design-system/packages/popover
-      '@keystone-ui/tooltip':
-        specifier: workspace:^
-        version: link:../../design-system/packages/tooltip
       '@react-aria/i18n':
         specifier: ^3.12.1
         version: 3.12.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/overlays':
+        specifier: ^3.23.2
+        version: 3.25.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/utils':
+        specifier: ^3.25.1
+        version: 3.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-stately/list':
+        specifier: ^3.10.8
+        version: 3.11.2(react@18.3.1)
+      '@react-stately/overlays':
+        specifier: ^3.6.10
+        version: 3.6.13(react@18.3.1)
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.18

@@ -5,6 +5,7 @@ import {
 } from 'slate'
 import { ReactEditor } from 'slate-react'
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react'
+import { css } from '@keystar/ui/style'
 
 // this ensures that when changes happen, they are immediately shown
 // this stops the problem of a cursor resetting to the end when a change is made
@@ -60,3 +61,22 @@ export const ForceValidationProvider = ForceValidationContext.Provider
 export function useForceValidation () {
   return useContext(ForceValidationContext)
 }
+
+export function focusWithPreviousSelection (editor: Editor) {
+  const selection = window.getSelection()
+  if (selection) {
+    selection.removeAllRanges()
+    selection.addRange(ReactEditor.toDOMRange(editor, editor.selection!))
+  }
+  ReactEditor.focus(editor)
+}
+
+export const blockElementSpacing = css({
+  marginBlock: '0.75em',
+  '&:first-child': {
+    marginBlockStart: 0,
+  },
+  '&:last-child': {
+    marginBlockEnd: 0,
+  },
+})

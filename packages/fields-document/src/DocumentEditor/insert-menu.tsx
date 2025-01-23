@@ -1,14 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Portal } from '@keystone-ui/core'
-import { useControlledPopover } from '@keystone-ui/popover'
-import {
+import React, {
   type ReactNode,
   Fragment,
   useContext,
   useEffect,
-  useRef,
-  useState
+  useRef
 } from 'react'
 import {
   type Text,
@@ -20,7 +15,6 @@ import { matchSorter } from 'match-sorter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
 import { type ComponentBlock } from './component-blocks/api-shared'
-import { InlineDialog, ToolbarButton } from './primitives'
 import { type Relationships } from './relationship-shared'
 import { useDocumentFieldRelationships } from './relationship'
 import { useToolbarState } from './toolbar-state'
@@ -28,9 +22,15 @@ import { type ToolbarState, } from './toolbar-state-shared'
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils'
 import { insertLayout } from './layouts-shared'
 
-export * from './insert-menu-shared'
+import { useOverlayTrigger } from '@react-aria/overlays'
+import { useListState } from '@react-stately/list'
+import { useOverlayTriggerState } from '@react-stately/overlays'
+import { Popover } from '@keystar/ui/overlays'
+import { Item, ListBoxBase, useListBoxLayout } from '@keystar/ui/listbox'
+import { css, tokenSchema } from '@keystar/ui/style'
 
-function noop () {}
+
+export * from './insert-menu-shared'
 
 type Option = {
   label: string
@@ -146,63 +146,47 @@ function insertOption (editor: Editor, text: Text, option: Option) {
   option.insert(editor)
 }
 
-// TODO: the changing width of the menu when searching isn't great
-export function InsertMenu ({ children, text }: { children: ReactNode, text: Text }) {
+export function InsertMenu ({
+  children,
+  text,
+}: {
+  children: ReactNode
+  text: Text
+}) {
   const toolbarState = useToolbarState()
-  const {
-    editor,
-    relationships: { isDisabled: relationshipsDisabled },
-  } = toolbarState
-  const { dialog, trigger } = useControlledPopover(
-    { isOpen: true, onClose: noop },
-    { placement: 'bottom-start' }
-  )
+  const { editor } = toolbarState
   const componentBlocks = useContext(ComponentBlockContext)
   const relationships = useDocumentFieldRelationships()
+
   const options = matchSorter(
-    getOptions(toolbarState, componentBlocks, relationshipsDisabled ? {} : relationships),
+    getOptions(toolbarState, componentBlocks, relationships),
     text.text.slice(1),
     {
       keys: ['label', 'keywords'],
     }
-  )
+  ).map((option, index) => ({ ...option, index }))
 
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  if (options.length && selectedIndex >= options.length) {
-    setSelectedIndex(0)
-  }
-
-  const stateRef = useRef({ selectedIndex, options, text })
+  const stateRef = useRef({ options, text })
 
   useEffect(() => {
-    stateRef.current = { selectedIndex, options, text }
+    stateRef.current = { options, text }
   })
 
-  const dialogRef = useRef<HTMLDivElement>(null)
-
+  const listenerRef = useRef((_event: KeyboardEvent) => {})
   useEffect(() => {
-    const element = dialogRef.current?.children?.[selectedIndex]
-    if (dialogRef.current && element) {
-      scrollIntoView(element, {
-        scrollMode: 'if-needed',
-        boundary: dialogRef.current,
-        block: 'nearest',
-      })
-    }
-  }, [selectedIndex])
-
-  useEffect(() => {
-    const domNode = ReactEditor.toDOMNode(editor, editor)
-    const listener = (event: KeyboardEvent) => {
+    listenerRef.current = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return
       switch (event.key) {
         case 'ArrowDown': {
           if (stateRef.current.options.length) {
             event.preventDefault()
-            setSelectedIndex(
-              stateRef.current.selectedIndex === stateRef.current.options.length - 1
+            state.selectionManager.setFocused(true)
+            state.selectionManager.setFocusedKey(
+              (Number(state.selectionManager.focusedKey) ===
+              stateRef.current.options.length - 1
                 ? 0
-                : stateRef.current.selectedIndex + 1
+                : Number(state.selectionManager.focusedKey) + 1
+              ).toString()
             )
           }
           return
@@ -210,16 +194,19 @@ export function InsertMenu ({ children, text }: { children: ReactNode, text: Tex
         case 'ArrowUp': {
           if (stateRef.current.options.length) {
             event.preventDefault()
-            setSelectedIndex(
-              stateRef.current.selectedIndex === 0
+            state.selectionManager.setFocused(true)
+            state.selectionManager.setFocusedKey(
+              (state.selectionManager.focusedKey === '0'
                 ? stateRef.current.options.length - 1
-                : stateRef.current.selectedIndex - 1
+                : Number(state.selectionManager.focusedKey) - 1
+              ).toString()
             )
           }
           return
         }
         case 'Enter': {
-          const option = stateRef.current.options[stateRef.current.selectedIndex]
+          const option =
+            stateRef.current.options[Number(state.selectionManager.focusedKey)]
           if (option) {
             insertOption(editor, stateRef.current.text, option)
             event.preventDefault()
@@ -234,48 +221,87 @@ export function InsertMenu ({ children, text }: { children: ReactNode, text: Tex
         }
       }
     }
+  })
+
+  useEffect(() => {
+    const domNode = ReactEditor.toDOMNode(editor, editor)
+    let listener = (event: KeyboardEvent) => listenerRef.current(event)
     domNode.addEventListener('keydown', listener)
     return () => {
       domNode.removeEventListener('keydown', listener)
     }
   }, [editor])
-  const DIALOG_HEIGHT = 300
+  const triggerRef = useRef<HTMLSpanElement>(null)
+  const overlayState = useOverlayTriggerState({ isOpen: true })
+  const {
+    triggerProps: { onPress, ...triggerProps },
+    overlayProps,
+  } = useOverlayTrigger({ type: 'listbox' }, overlayState, triggerRef)
+  let state = useListState({
+    items: options,
+    children: item => <Item key={item.index}>{item.label}</Item>,
+  })
+
+  useEffect(() => {
+    if (!state.selectionManager.isFocused && state.collection.size) {
+      state.selectionManager.setFocused(true)
+      state.selectionManager.setFocusedKey('0')
+    }
+  }, [state])
+  const scrollableRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = scrollableRef.current?.querySelector(
+      '[role="listbox"] [role="presentation"]'
+    )?.children[state.selectionManager.focusedKey as number]
+    if (element) {
+      scrollIntoView(element, {
+        scrollMode: 'if-needed',
+        boundary: scrollableRef.current,
+        block: 'nearest',
+      })
+    }
+  }, [state.selectionManager.focusedKey])
+  const listboxRef = useRef(null)
+  let layout = useListBoxLayout()
   return (
     <Fragment>
-      <span {...trigger.props} css={{ color: 'blue' }} ref={trigger.ref}>
+      <span
+        {...triggerProps}
+        role="button"
+        className={css({
+          color: tokenSchema.color.foreground.accent,
+          fontWeight: tokenSchema.typography.fontWeight.medium,
+        })}
+        ref={triggerRef}
+      >
         {children}
       </span>
-      <Portal>
-        <InlineDialog
-          contentEditable={false}
-          {...dialog.props}
-          css={{
-            display: options.length ? undefined : 'none',
-            userSelect: 'none',
-            maxHeight: DIALOG_HEIGHT,
-            zIndex: 3,
-          }}
-          ref={dialog.ref}
+      <Popover
+        width="alias.singleLineWidth"
+        placement="bottom start"
+        isNonModal
+        hideArrow
+        {...overlayProps}
+        state={overlayState}
+        triggerRef={triggerRef}
+      >
+        <div
+          className={css({ overflow: 'scroll', maxHeight: 300 })}
+          ref={scrollableRef}
         >
-          <div ref={dialogRef} css={{ overflowY: 'auto', maxHeight: DIALOG_HEIGHT - 8 * 2 }}>
-            {options.map((option, index) => (
-              <ToolbarButton
-                key={option.label}
-                isPressed={index === selectedIndex}
-                onMouseEnter={() => {
-                  setSelectedIndex(index)
-                }}
-                onMouseDown={event => {
-                  event.preventDefault()
-                  insertOption(editor, text, option)
-                }}
-              >
-                {option.label}
-              </ToolbarButton>
-            ))}
-          </div>
-        </InlineDialog>
-      </Portal>
+          <ListBoxBase
+            aria-label="Insert block"
+            state={state}
+            shouldUseVirtualFocus
+            layout={layout}
+            ref={listboxRef}
+            onAction={key => {
+              insertOption(editor, text, options[key as number])
+            }}
+          />
+        </div>
+      </Popover>
     </Fragment>
   )
 }

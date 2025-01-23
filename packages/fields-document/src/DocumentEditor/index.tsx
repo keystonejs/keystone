@@ -48,6 +48,7 @@ import { ToolbarStateProvider } from './toolbar-state'
 import {
   createDocumentEditor
 } from './editor-shared'
+import { ActiveBlockPopoverProvider } from './primitives/BlockPopover'
 
 const styles = {
   flex: 1,
@@ -288,52 +289,54 @@ export function DocumentEditorEditable (props: EditableProps) {
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor])
 
   return (
-    <Editable
-      decorate={useCallback(
-        ([node, path]: NodeEntry<Node>) => {
-          const decorations: Range[] = []
-          if (node.type === 'component-block') {
-            if (
-              node.children.length === 1 &&
-              Element.isElement(node.children[0]) &&
-              node.children[0].type === 'component-inline-prop' &&
-              node.children[0].propPath === undefined
-            ) {
-              return decorations
-            }
-            node.children.forEach((child, index) => {
+    <ActiveBlockPopoverProvider editor={editor}>
+      <Editable
+        decorate={useCallback(
+          ([node, path]: NodeEntry<Node>) => {
+            const decorations: Range[] = []
+            if (node.type === 'component-block') {
               if (
-                Node.string(child) === '' &&
-                Element.isElement(child) &&
-                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
-                child.propPath !== undefined
+                node.children.length === 1 &&
+                Element.isElement(node.children[0]) &&
+                node.children[0].type === 'component-inline-prop' &&
+                node.children[0].propPath === undefined
               ) {
-                const start = Editor.start(editor, [...path, index])
-                const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath,
-                  componentBlocks[node.component].schema,
-                  node.props
-                )
-                if (placeholder) {
-                  decorations.push({
-                    placeholder,
-                    anchor: start,
-                    focus: start,
-                  })
-                }
+                return decorations
               }
-            })
-          }
-          return decorations
-        },
-        [editor, componentBlocks]
-      )}
-      css={styles}
-      onKeyDown={onKeyDown}
-      renderElement={renderElement}
-      renderLeaf={renderLeaf}
-      {...props}
-    />
+              node.children.forEach((child, index) => {
+                if (
+                  Node.string(child) === '' &&
+                  Element.isElement(child) &&
+                  (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
+                  child.propPath !== undefined
+                ) {
+                  const start = Editor.start(editor, [...path, index])
+                  const placeholder = getPlaceholderTextForPropPath(
+                    child.propPath,
+                    componentBlocks[node.component].schema,
+                    node.props
+                  )
+                  if (placeholder) {
+                    decorations.push({
+                      placeholder,
+                      anchor: start,
+                      focus: start,
+                    })
+                  }
+                }
+              })
+            }
+            return decorations
+          },
+          [editor, componentBlocks]
+        )}
+        css={styles}
+        onKeyDown={onKeyDown}
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+        {...props}
+      />
+    </ActiveBlockPopoverProvider>
   )
 }
 

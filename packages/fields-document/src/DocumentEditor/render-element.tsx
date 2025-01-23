@@ -10,6 +10,7 @@ import { LinkElement } from './link'
 import { HeadingElement } from './heading'
 import { BlockquoteElement } from './blockquote'
 import { RelationshipElement } from './relationship'
+import { tokenSchema } from '@keystar/ui/style'
 
 // some of the renderers read properties of the element
 // and TS doesn't understand the type narrowing when doing a spread for some reason
@@ -108,25 +109,15 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
   )
 }
 
-const DividerElement = ({ attributes, children }: RenderElementProps) => {
-  const { colors, spacing } = useTheme()
+function DividerElement ({ attributes, children }: RenderElementProps) {
   const selected = useSelected()
   return (
-    <div
-      {...attributes}
-      css={{
-        paddingBottom: spacing.medium,
-        paddingTop: spacing.medium,
-        marginBottom: spacing.medium,
-        marginTop: spacing.medium,
-        caretColor: 'transparent',
-      }}
-    >
+    <div {...attributes} style={{ caretColor: 'transparent' }}>
       <hr
-        css={{
-          backgroundColor: selected ? colors.linkColor : colors.border,
-          border: 0,
-          height: 2,
+        style={{
+          backgroundColor: selected
+            ? tokenSchema.color.alias.borderSelected
+            : tokenSchema.color.alias.borderIdle,
         }}
       />
       {children}
