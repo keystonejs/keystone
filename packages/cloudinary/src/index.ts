@@ -2,7 +2,8 @@ import { randomBytes } from 'node:crypto'
 import type { CommonFieldConfig, BaseListTypeInfo, FieldTypeFunc } from '@keystone-6/core/types'
 import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import cloudinary from 'cloudinary'
+import type Cloudinary from 'cloudinary'
+import { v2 as cloudinary } from 'cloudinary'
 
 type StoredFile = {
   id: string
@@ -10,7 +11,7 @@ type StoredFile = {
   originalFilename: string
   mimetype: any
   encoding: any
-  _meta: cloudinary.UploadApiResponse
+  _meta: Cloudinary.UploadApiResponse
 }
 
 type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -66,40 +67,45 @@ const CloudinaryImageFormat = graphql.inputObject({
 })
 
 type CloudinaryImage_File = {
-  id: string | null
-  filename: string | null
-  originalFilename: string | null
-  mimetype: string | null
-  encoding: string | null
-  publicUrl: string | null
+  id: string
+  filename: string
+  originalFilename: string
+  mimetype: string
+  encoding: string
+  publicUrl: string
   publicUrlTransformed: (args: {
     transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>
-  }) => string | null
+  }) => string
+  filesize: number
+  width: number
+  height: number
 }
 
-// TODO: lvalue type required by pnpm :(
-export const outputType: graphql.ObjectType<CloudinaryImage_File> =
-  graphql.object<CloudinaryImage_File>()({
-    name: 'CloudinaryImage_File',
-    fields: {
-      id: graphql.field({ type: graphql.ID }),
-      // path: types.field({ type: types.String }),
-      filename: graphql.field({ type: graphql.String }),
-      originalFilename: graphql.field({ type: graphql.String }),
-      mimetype: graphql.field({ type: graphql.String }),
-      encoding: graphql.field({ type: graphql.String }),
-      publicUrl: graphql.field({ type: graphql.String }),
-      publicUrlTransformed: graphql.field({
-        args: {
-          transformation: graphql.arg({ type: CloudinaryImageFormat }),
-        },
-        type: graphql.String,
-        resolve (rootVal, args) {
-          return rootVal.publicUrlTransformed(args)
-        },
-      }),
-    },
-  })
+// WARNING: should mimic keystone-6/core native images
+const outputType = graphql.object<CloudinaryImage_File>()({
+  name: 'CloudinaryImage_File',
+  fields: {
+    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+    // path: types.field({ type: types.String }),
+    filename: graphql.field({ type: graphql.String }),
+    originalFilename: graphql.field({ type: graphql.String }),
+    mimetype: graphql.field({ type: graphql.String }),
+    encoding: graphql.field({ type: graphql.String }),
+    publicUrl: graphql.field({ type: graphql.String }),
+    publicUrlTransformed: graphql.field({
+      args: {
+        transformation: graphql.arg({ type: CloudinaryImageFormat }),
+      },
+      type: graphql.String,
+      resolve (data, args) {
+        return data.publicUrlTransformed(args)
+      },
+    }),
+    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  },
+})
 
 // TODO: no delete support
 export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
@@ -114,25 +120,19 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
     const inputArg = graphql.arg({ type: graphql.Upload })
     async function resolveInput (
       uploadData: graphql.InferValueFromArg<typeof inputArg>
-    ): Promise<StoredFile | undefined | null | 'DbNull'> {
-      if (uploadData === null) {
-        return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null
-      }
-      if (uploadData === undefined) {
-        return undefined
-      }
+    ): Promise<StoredFile | undefined | null> {
+      if (uploadData === null) return null
+      if (uploadData === undefined) return
 
       const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData
       const stream = createReadStream()
 
       // TODO: FIXME: stream can be null
-      if (!stream) {
-        return undefined
-      }
+      if (!stream) return
 
       const id = randomBytes(20).toString('base64url')
-      const _meta = await new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
-        const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
+      const _meta = await new Promise<Cloudinary.UploadApiResponse>((resolve, reject) => {
+        const cloudinaryStream = cloudinary.uploader.upload_stream(
           {
             public_id: id,
             folder: cloudinaryConfig.folder,
@@ -141,9 +141,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
             cloud_name: cloudinaryConfig.cloudName,
           },
           (error, result) => {
-            if (error || !result) {
-              return reject(error)
-            }
+            if (error || !result) return reject(error)
             resolve(result)
           }
         )
@@ -173,11 +171,12 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
         output: graphql.field({
           type: outputType,
           resolve ({ value }) {
-            if (value === null) {
-              return null
-            }
+            if (value === null) return null
             const val = value as any
             return {
+              width: val?._meta.width,
+              height: val?._meta.width,
+              filesize: val?._meta.bytes,
               publicUrl: val?._meta?.secure_url ?? null,
               publicUrlTransformed: ({
                 transformation,
@@ -191,14 +190,11 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
                 const { prettyName, ...rest } = transformation ?? {}
 
                 // no formatting options provided, return the publicUrl field
-                if (!Object.keys(rest).length) {
-                  return val?._meta?.secure_url ?? null
-                }
+                if (!Object.keys(rest).length) return val?._meta?.secure_url ?? null
 
                 const { public_id, format } = val._meta
 
                 // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
-                // @ts-expect-error
                 return cloudinary.url(public_id, {
                   type: 'upload',
                   format,

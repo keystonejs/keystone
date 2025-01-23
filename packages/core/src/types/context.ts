@@ -202,17 +202,13 @@ export type FilesContext = (storage: string) => {
 // Images API
 
 export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif'
-
-export type ImageMetadata = {
+export type ImageData = {
+  id: string
   extension: ImageExtension
   filesize: number
   width: number
   height: number
 }
-
-export type ImageData = {
-  id: string
-} & ImageMetadata
 
 export type ImagesContext = (storage: string) => {
   getUrl: (id: string, extension: ImageExtension) => Promise<string>
