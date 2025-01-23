@@ -199,16 +199,21 @@ export function clientSideValidateProp (schema: ComponentSchema, value: unknown)
   if (value === null) return false
   switch (schema.kind) {
     case 'conditional': {
+      if  (!('discriminant' in value) || !('value' in value)) return false
       if (!schema.discriminant.validate(value.discriminant)) return false
-      return clientSideValidateProp(schema.values[value.discriminant], value.value)
+      return clientSideValidateProp(schema.values[
+        // not actually gonna always be a string but just let property access do the coercion
+        value.discriminant as string
+      ], value.value)
     }
     case 'object': {
       for (const [key, childProp] of Object.entries(schema.fields)) {
-        if (!clientSideValidateProp(childProp, value[key])) return false
+        if (!clientSideValidateProp(childProp, (value as any)[key])) return false
       }
       return true
     }
     case 'array': {
+      if (!Array.isArray(value)) return false
       for (const innerVal of value) {
         if (!clientSideValidateProp(schema.element, innerVal)) return false
       }
