@@ -49,13 +49,13 @@ export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = F
   Options
 > & {
   graphql: {
+    input: graphql.NullableInputType
     output: graphql.Field<
       { value: Value },
       Record<string, graphql.Arg<graphql.InputType, boolean>>,
       graphql.OutputType,
       'value'
     >
-    input: graphql.NullableInputType
   }
 }
 
@@ -104,6 +104,13 @@ export type ChildField = {
       }
 }
 
+export interface ObjectField<
+  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
+> {
+  kind: 'object'
+  fields: Fields
+}
+
 export type ArrayField<ElementField extends ComponentSchema> = {
   kind: 'array'
   element: ElementField
@@ -118,13 +125,6 @@ export type RelationshipField<Many extends boolean> = {
   label: string
   many: Many
   selection?: string
-}
-
-export interface ObjectField<
-  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
-> {
-  kind: 'object'
-  fields: Fields
 }
 
 export type ConditionalField<
@@ -153,9 +153,9 @@ export type ComponentSchema =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<any, { [key: string]: ComponentSchema }>
-  | RelationshipField<boolean>
   | ArrayFieldInComponentSchema
+  | RelationshipField<boolean>
+  | ConditionalField<any, { [key: string]: ComponentSchema }>
 
 // this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
 type ArrayFieldInComponentSchemaForGraphQL = {
@@ -169,12 +169,9 @@ type ArrayFieldInComponentSchemaForGraphQL = {
 export type ComponentSchemaForGraphQL =
   | FormFieldWithGraphQLField<any, any>
   | ObjectField<Record<string, ComponentSchemaForGraphQL>>
-  | ConditionalField<
-      FormFieldWithGraphQLField<any, any>,
-      { [key: string]: ComponentSchemaForGraphQL }
-    >
-  | RelationshipField<boolean>
   | ArrayFieldInComponentSchemaForGraphQL
+  | RelationshipField<boolean>
+  | ConditionalField<any, { [key: string]: ComponentSchema }> // TODO: FIXME
 
 type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
   readonly element: ChildFieldElement

@@ -1,14 +1,14 @@
 import {
   type BaseListTypeInfo,
-  type FieldTypeFunc,
   type CommonFieldConfig,
-  jsonFieldTypePolyfilledForSQLite,
+  type FieldTypeFunc,
   type JSONValue,
+  jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { getOutputGraphQLField } from './structure-graphql-output'
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import {
   getGraphQLInputType,
   getValueForCreate,

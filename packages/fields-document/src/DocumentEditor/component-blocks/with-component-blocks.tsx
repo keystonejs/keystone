@@ -1,21 +1,30 @@
-import { Editor, Element, Transforms, Range, type NodeEntry, Path, Node, Text } from 'slate'
+import {
+  type NodeEntry,
+  Editor,
+  Element,
+  Transforms,
+  Range,
+  Path,
+  Node,
+  Text
+} from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import {
-  type ArrayField,
-  type ChildField,
-  type ComponentBlock,
-  type ComponentSchema
+import type {
+  ArrayField,
+  ChildField,
+  ComponentBlock,
+  ComponentSchema
 } from './api-shared'
 import { assert, moveChildren } from '../utils'
-import { type DocumentFeatures } from '../../views-shared'
+import type { DocumentFeatures } from '../../views-shared'
 import {
   areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization'
-import { type Relationships } from '../relationship-shared'
+import type { Relationships } from '../relationship-shared'
 import {
   type DocumentFeaturesForChildField,
   type ReadonlyPropPath,
@@ -68,9 +77,8 @@ function normalizeNodeWithinComponentProp (
     alreadyNormalizedNodes = new WeakSet()
     alreadyNormalizedThings.set(fieldOptions, alreadyNormalizedNodes)
   }
-  if (alreadyNormalizedNodes.has(node)) {
-    return false
-  }
+  if (alreadyNormalizedNodes.has(node)) return false
+
   let didNormalization = false
   if (fieldOptions.inlineMarks !== 'inherit' && Text.isText(node)) {
     didNormalization = normalizeTextBasedOnInlineMarksAndSoftBreaks(
@@ -115,22 +123,28 @@ function normalizeNodeWithinComponentProp (
 function canSchemaContainChildField (rootSchema: ComponentSchema) {
   const queue = new Set<ComponentSchema>([rootSchema])
   for (const schema of queue) {
-    if (schema.kind === 'form' || schema.kind === 'relationship') {
-    } else if (schema.kind === 'child') {
-      return true
-    } else if (schema.kind === 'array') {
+    if (schema.kind === 'form' || schema.kind === 'relationship') continue
+    if (schema.kind === 'child') return true
+    if (schema.kind === 'array') {
       queue.add(schema.element)
-    } else if (schema.kind === 'object') {
+      continue
+    }
+
+    if (schema.kind === 'object') {
       for (const innerProp of Object.values(schema.fields)) {
         queue.add(innerProp)
       }
-    } else if (schema.kind === 'conditional') {
+      continue
+    }
+
+    if (schema.kind === 'conditional') {
       for (const innerProp of Object.values(schema.values)) {
         queue.add(innerProp)
       }
-    } else {
-      assertNever(schema)
+      continue
     }
+
+    assertNever(schema)
   }
   return false
 }
@@ -139,27 +153,33 @@ function doesSchemaOnlyEverContainASingleChildField (rootSchema: ComponentSchema
   const queue = new Set<ComponentSchema>([rootSchema])
   let hasFoundChildField = false
   for (const schema of queue) {
-    if (schema.kind === 'form' || schema.kind === 'relationship') {
-    } else if (schema.kind === 'child') {
-      if (hasFoundChildField) {
-        return false
-      }
+    if (schema.kind === 'form' || schema.kind === 'relationship') continue
+    if (schema.kind === 'child') {
+      if (hasFoundChildField) return false
       hasFoundChildField = true
-    } else if (schema.kind === 'array') {
-      if (canSchemaContainChildField(schema.element)) {
-        return false
-      }
-    } else if (schema.kind === 'object') {
+      continue
+    }
+
+    if (schema.kind === 'array') {
+      if (canSchemaContainChildField(schema.element)) return false
+      continue
+    }
+
+    if (schema.kind === 'object') {
       for (const innerProp of Object.values(schema.fields)) {
         queue.add(innerProp)
       }
-    } else if (schema.kind === 'conditional') {
+      continue
+    }
+
+    if (schema.kind === 'conditional') {
       for (const innerProp of Object.values(schema.values)) {
         queue.add(innerProp)
       }
-    } else {
-      assertNever(schema)
+      continue
     }
+
+    assertNever(schema)
   }
   return hasFoundChildField
 }
