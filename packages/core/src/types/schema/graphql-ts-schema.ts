@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import type { ReadStream } from 'node:fs'
-import type { InputType, Arg } from '@graphql-ts/schema'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
@@ -74,7 +74,7 @@ export type FieldFuncResolve<
       ? {
           resolve?: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
           >
@@ -82,7 +82,7 @@ export type FieldFuncResolve<
       : {
           resolve: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
           >
@@ -90,7 +90,7 @@ export type FieldFuncResolve<
     : {
         resolve: graphqlTsSchema.FieldResolver<
           Source,
-          SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
           Type,
           Context
         >
