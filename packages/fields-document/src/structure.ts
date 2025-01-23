@@ -8,7 +8,7 @@ import {
 import { graphql } from '@keystone-6/core'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { getOutputGraphQLField } from './structure-graphql-output'
-import type { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import {
   getGraphQLInputType,
   getValueForCreate,
@@ -20,10 +20,10 @@ import { addRelationshipDataToComponentProps, fetchRelationshipData } from './re
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string }
-    schema: ComponentSchemaForGraphQL
+    schema: ComponentSchema
   }
 
-export function structure <ListTypeInfo extends BaseListTypeInfo>({
+export function structure <ListTypeInfo extends BaseListTypeInfo> ({
   schema,
   ...config
 }: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -33,7 +33,7 @@ export function structure <ListTypeInfo extends BaseListTypeInfo>({
     }
     const lists = new Set(Object.keys(meta.lists))
     try {
-      assertValidComponentSchema(schema, lists)
+      assertValidComponentSchema(schema, lists, 'structure')
     } catch (err) {
       throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`)
     }

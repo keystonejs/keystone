@@ -1,6 +1,6 @@
 import { graphql } from '@keystone-6/core'
 import { type FieldData } from '@keystone-6/core/types'
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api-shared'
+import { type ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 
 function wrapGraphQLFieldInResolver<InputSource, OutputSource> (
@@ -42,9 +42,9 @@ type OutputField = graphql.Field<
 
 export function getOutputGraphQLField (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   interfaceImplementations: graphql.ObjectType<unknown>[],
-  cache: Map<ComponentSchemaForGraphQL, OutputField>,
+  cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ) {
   if (!cache.has(schema)) {
@@ -56,12 +56,15 @@ export function getOutputGraphQLField (
 
 function getOutputGraphQLFieldInner (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   interfaceImplementations: graphql.ObjectType<unknown>[],
-  cache: Map<ComponentSchemaForGraphQL, OutputField>,
+  cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ): OutputField {
   if (schema.kind === 'form') {
+    if (!schema.graphql) {
+      throw new Error(`Field at ${name} is missing a graphql field`)
+    }
     return wrapGraphQLFieldInResolver(schema.graphql.output, x => x.value)
   }
   if (schema.kind === 'object') {
@@ -191,6 +194,10 @@ function getOutputGraphQLFieldInner (
         })
       },
     })
+  }
+
+  if (schema.kind === 'child') {
+    throw new Error('Child fields are not supported in the structure field')
   }
 
   assertNever(schema)

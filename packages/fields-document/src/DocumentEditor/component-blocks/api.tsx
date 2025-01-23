@@ -17,6 +17,7 @@ import type {
   InlineMarksConfig,
   ObjectField,
   RelationshipField,
+  FormField,
 } from './api-shared'
 import {
   makeIntegerFieldInput,
@@ -43,7 +44,7 @@ export const fields = {
   }: {
     label: string
     defaultValue?: string
-  }) {
+  }): FormField<string, undefined> {
     return {
       kind: 'form' as const,
       Input ({
@@ -77,7 +78,7 @@ export const fields = {
   }: {
     label: string
     defaultValue?: number
-  }) {
+  }): FormField<number, undefined> {
     const validate = (value: unknown) => {
       return typeof value === 'number' && Number.isFinite(value)
     }
@@ -103,7 +104,7 @@ export const fields = {
   }: {
     label: string
     defaultValue?: string
-  }) {
+  }): FormField<string, undefined> {
     const validate = (value: unknown) => {
       return typeof value === 'string' && (value === '' || isValidURL(value))
     }
@@ -117,8 +118,6 @@ export const fields = {
         input: graphql.String,
         output: graphql.field({
           type: graphql.String,
-          // TODO: FIXME why is this required
-          resolve ({ value }) { return value },
         }),
       },
     }
@@ -131,7 +130,7 @@ export const fields = {
     label: string
     options: readonly Option[]
     defaultValue: Option['value']
-  }) {
+  }): FormField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value))
     if (!optionValuesSet.has(defaultValue)) throw new Error(`A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`)
 
@@ -161,7 +160,7 @@ export const fields = {
     label: string
     options: readonly Option[]
     defaultValue: readonly Option['value'][]
-  }) {
+  }): FormField<readonly Option['value'][], readonly Option[]> {
     const valuesToOption = new Map(options.map(x => [x.value, x]))
     return {
       kind: 'form' as const,
@@ -188,7 +187,7 @@ export const fields = {
   }: {
     label: string
     defaultValue?: boolean
-  }) {
+  }): FormField<boolean, undefined> {
     return {
       kind: 'form' as const,
       Input ({ value, onChange, autoFocus }: InputArgs<boolean>) {
@@ -208,11 +207,7 @@ export const fields = {
       validate (value: unknown) { return typeof value === 'boolean' },
       graphql: {
         input: graphql.Boolean,
-        output: graphql.field({
-          type: graphql.Boolean,
-          // TODO: why is this required
-          resolve ({ value }) { return value },
-        }),
+        output: graphql.field({ type: graphql.Boolean }),
       },
     }
   },

@@ -1,12 +1,5 @@
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { type Descendant } from 'slate'
-import {
-  type ExecutionResult,
-  type GraphQLSchema,
-  executeSync,
-  parse,
-} from 'graphql'
-import weakMemoize from '@emotion/weak-memoize'
 
 import {
   type ComponentBlock,

@@ -8,7 +8,7 @@ import type {
 import { Field as KeystarField } from '@keystar/ui/field'
 
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import type { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
@@ -61,7 +61,7 @@ export const allowedExportsOnCustomViews = ['schema']
 export function controller (
   config: FieldControllerConfig
 ): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
-  schema: ComponentSchemaForGraphQL
+  schema: ComponentSchema
 } {
   if (!config.customViews.schema) throw new Error(`No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`)
   return {
@@ -119,6 +119,9 @@ function serializeValue (
       return { disconnect: true }
     }
     return { connect: { id: value.id }, }
+  }
+  if (schema.kind === 'child') {
+    throw new Error('Child fields are not supported in the structure field')
   }
   assertNever(schema)
 }

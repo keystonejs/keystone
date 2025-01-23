@@ -7,9 +7,7 @@ import type {
 } from '@keystone-6/core/types'
 import type { GraphQLResolveInfo } from 'graphql'
 
-import type {
-  ComponentSchemaForGraphQL,
-} from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import {
   type ReadonlyPropPath,
@@ -18,9 +16,9 @@ import {
 
 export function getGraphQLInputType (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchema, graphql.InputType>,
   meta: FieldData
 ) {
   if (!cache.has(schema)) {
@@ -32,12 +30,17 @@ export function getGraphQLInputType (
 
 function getGraphQLInputTypeInner (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchema, graphql.InputType>,
   meta: FieldData
 ): graphql.InputType {
-  if (schema.kind === 'form') return schema.graphql.input
+  if (schema.kind === 'form') {
+    if (!schema.graphql) {
+      throw new Error(`Field at ${name} is missing a graphql field`)
+    }
+    return schema.graphql.input
+  }
   if (schema.kind === 'object') {
     return graphql.inputObject({
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
@@ -93,12 +96,15 @@ function getGraphQLInputTypeInner (
     }
     return inputType
   }
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${name}`)
+  }
 
   assertNever(schema)
 }
 
 export async function getValueForUpdate (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   prevValue: any,
   context: KeystoneContext,
@@ -175,11 +181,15 @@ export async function getValueForUpdate (
     }
   }
 
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
+  }
+
   assertNever(schema)
 }
 
 export async function getValueForCreate (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   context: KeystoneContext,
   path: ReadonlyPropPath
@@ -247,6 +257,10 @@ export async function getValueForCreate (
         path.concat('value')
       ),
     }
+  }
+
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
   }
 
   assertNever(schema)
