@@ -1,6 +1,4 @@
 packages:
-  - 'design-system/packages/*'
-  - 'design-system/website'
   - 'docs'
   - 'examples/**'
   - 'packages/*'
