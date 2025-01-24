@@ -177,7 +177,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
       artifacts,
       connect,
       context,
-      system,
+      config: system.config,
       http,
       gql,
       gqlSuper,
@@ -194,7 +194,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     artifacts,
     connect,
     context,
-    system,
+    config: system.config,
     http: null as any, // TODO: FIXME
     express: null as any, // TODO: FIXME
     gql,
