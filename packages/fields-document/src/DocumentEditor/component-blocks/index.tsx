@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import {
+import React, {
   createContext,
   useContext,
   useMemo,
@@ -16,7 +13,7 @@ import {
   useSlateStatic as useStaticEditor
 } from 'slate-react'
 
-import { jsx, useTheme } from '@keystone-ui/core'
+import { css, tokenSchema } from '@keystar/ui/style'
 
 import { type ComponentBlock } from './api-shared'
 import {
@@ -66,7 +63,6 @@ export function ComponentBlocksElement ({
 }: RenderElementProps & { element: { type: 'component-block' } }) {
   const editor = useStaticEditor()
   const [currentElement, setElement] = useElementWithSetNodes(editor, __elementToGetPath)
-  const { spacing } = useTheme()
   const blockComponents = useContext(ComponentBlockContext)!
   const componentBlock = blockComponents[currentElement.component] as ComponentBlock | undefined
 
@@ -111,8 +107,11 @@ export function ComponentBlocksElement ({
 
   if (!componentBlock) {
     return (
-      <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
-        <pre contentEditable={false} css={{ userSelect: 'none' }}>
+      <div className={css({ border: 'red 4px solid', padding: tokenSchema.size.space.medium })}>
+        <pre
+          contentEditable={false}
+          className={css({ userSelect: 'none' })}
+        >
           {`The block "${currentElement.component}" no longer exists.
 
 Props:
