@@ -3,20 +3,18 @@
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { component, NotEditable } from '@keystone-6/fields-document/component-blocks'
-import {
-  ToolbarButton,
-  ToolbarGroup,
-  ToolbarSeparator,
-} from '@keystone-6/fields-document/primitives'
 import { Icon } from '@keystar/ui/icon'
 import { infoIcon } from '@keystar/ui/icon/icons/infoIcon'
 import { alertTriangleIcon } from '@keystar/ui/icon/icons/alertTriangleIcon'
 import { alertOctagonIcon } from '@keystar/ui/icon/icons/alertOctagonIcon'
 import { checkCircleIcon } from '@keystar/ui/icon/icons/checkCircleIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
-import { Tooltip } from '@keystone-ui/tooltip'
 
 import { callout as CalloutSchema } from './schemas'
+import { Flex } from '@keystar/ui/layout'
+import { EditorToolbarButton, EditorToolbarSeparator } from '@keystar/ui/editor'
+import { Button } from '@keystar/ui/button'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 
 const calloutIconMap = {
   info: <Icon src={infoIcon} />,
@@ -84,35 +82,32 @@ export const callout = component({
   },
   toolbar: function CalloutToolbar ({ props, onRemove }) {
     return (
-      <ToolbarGroup>
+      <Flex gap="regular">
         {props.fields.intent.options.map(opt => {
           return (
-            <Tooltip key={opt.value} content={opt.label} weight="subtle">
-              {attrs => (
-                <ToolbarButton
-                  isSelected={props.fields.intent.value === opt.value}
-                  onClick={() => {
-                    props.fields.intent.onChange(opt.value)
-                  }}
-                  {...attrs}
-                >
-                  <Icon src={calloutIconMap[opt.value]} />
-                </ToolbarButton>
-              )}
-            </Tooltip>
+            <TooltipTrigger key={opt.value}>
+              <EditorToolbarButton
+                isSelected={props.fields.intent.value === opt.value}
+                onPress={() => {
+                  props.fields.intent.onChange(opt.value)
+                }}
+              >
+                <Icon src={calloutIconMap[opt.value]} />
+              </EditorToolbarButton>
+              <Tooltip>{opt.label}</Tooltip>
+            </TooltipTrigger>
           )
         })}
 
-        <ToolbarSeparator />
+        <EditorToolbarSeparator />
 
-        <Tooltip content="Remove" weight="subtle">
-          {attrs => (
-            <ToolbarButton variant="destructive" onClick={onRemove} {...attrs}>
-              <Icon src={trash2Icon} />
-            </ToolbarButton>
-          )}
-        </Tooltip>
-      </ToolbarGroup>
+        <TooltipTrigger>
+          <Button tone="critical" onPress={onRemove}>
+            <Icon src={trash2Icon} />
+          </Button>
+          <Tooltip>Remove</Tooltip>
+        </TooltipTrigger>
+      </Flex>
     )
   },
 })

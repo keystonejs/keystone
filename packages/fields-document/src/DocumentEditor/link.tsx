@@ -16,7 +16,6 @@ import {
   focusWithPreviousSelection,
   useElementWithSetNodes,
   useEventCallback,
-  useForceValidation,
 } from './utils-hooks'
 import { isValidURL } from './isValidURL'
 import { wrapLink } from './link-shared'
@@ -41,7 +40,7 @@ export function LinkElement ({
   const [currentElement, setNode] = useElementWithSetNodes(editor, __elementForGettingPath)
   const href = currentElement.href
 
-  const [localForceValidation, setLocalForceValidation] = useState(false)
+  // const [localForceValidation, setLocalForceValidation] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const activePopoverElement = useActiveBlockPopover()
   const selected = activePopoverElement === __elementForGettingPath
@@ -57,9 +56,9 @@ export function LinkElement ({
       at: ReactEditor.findPath(editor, __elementForGettingPath),
     })
   })
-  const forceValidation = useForceValidation()
+  // const forceValidation = useForceValidation()
   // TODO: show the invalid state
-  const showInvalidState = isValidURL(href) ? false : forceValidation || localForceValidation
+  // const showInvalidState = isValidURL(href) ? false : forceValidation || localForceValidation
   return (
     <>
       <BlockPopoverTrigger element={__elementForGettingPath}>

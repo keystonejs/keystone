@@ -1,4 +1,4 @@
-import { fields } from '@keystone-6/fields-document/component-blocks'
+import { component, fields } from '@keystone-6/fields-document/component-blocks'
 
 export { carousel } from './carousel'
 export { hero } from './hero'
@@ -6,7 +6,11 @@ export { quote } from './quote'
 export { tweet } from './tweet'
 export { youtubeVideo } from './youtube-video'
 
-export const callout = {
+export const callout = component({
+  label: 'Callout',
+  preview() {
+    return null
+  },
   schema: {
     intent: fields.select({
       label: 'Intent',
@@ -27,4 +31,4 @@ export const callout = {
       relationships: 'inherit',
     }),
   },
-}
+})

@@ -62,7 +62,7 @@ export function RelationshipElement ({
               value:
                 element.data === null
                   ? null
-                  : { id: element.data.id, label: element.data.label, built: undefined },
+                  : { id: element.data.id, label: element.data.label ?? null, built: undefined },
               onChange (newItem) {
                 const at = ReactEditor.findPath(editor, element)
                 if (newItem === null) {

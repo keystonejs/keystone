@@ -5,9 +5,9 @@ import { minusIcon } from '@keystar/ui/icon/icons/minusIcon'
 
 import { useToolbarState } from './toolbar-state'
 import { insertDivider } from './divider-shared'
-import { ActionButton } from '@keystar/ui/button'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Kbd, Text } from '@keystar/ui/typography'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 const DividerButton = () => {
   const {
@@ -16,15 +16,14 @@ const DividerButton = () => {
   } = useToolbarState()
   return useMemo(
     () => (
-      <ActionButton
-        prominence="low"
+      <EditorToolbarButton
         isDisabled={isDisabled}
         onPress={() => {
           insertDivider(editor)
         }}
       >
         <Icon src={minusIcon} />
-      </ActionButton>
+      </EditorToolbarButton>
     ),
     [editor, isDisabled]
   )

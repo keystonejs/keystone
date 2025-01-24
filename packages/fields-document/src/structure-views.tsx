@@ -87,7 +87,7 @@ export function controller (
 }
 
 function serializeValue (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   kind: 'update' | 'create'
 ): any {

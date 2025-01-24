@@ -281,7 +281,7 @@ export type HydratedRelationshipData = {
 
 export type RelationshipData = {
   id: string | number
-  label: string | null
+  label: string | null | undefined
   data?: Record<string, unknown>
 }
 

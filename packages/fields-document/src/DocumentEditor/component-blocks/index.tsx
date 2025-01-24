@@ -2,7 +2,6 @@
 /** @jsx jsx */
 
 import {
-  Fragment,
   createContext,
   useContext,
   useMemo,
@@ -14,8 +13,6 @@ import { Editor, Transforms } from 'slate'
 import {
   type RenderElementProps,
   ReactEditor,
-  useFocused,
-  useSelected,
   useSlateStatic as useStaticEditor
 } from 'slate-react'
 

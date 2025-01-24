@@ -28,6 +28,7 @@ import { ActionButton } from '@keystar/ui/button'
 import { Flex } from '@keystar/ui/layout'
 import { Item } from '@keystar/ui/tag'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 const LayoutOptionsContext = createContext<[number, ...number[]][]>([])
 
@@ -164,8 +165,7 @@ export const LayoutsButton = ({
   return useMemo(
     () => (
       <TooltipTrigger>
-        <ActionButton
-          prominence="low"
+        <EditorToolbarButton
           isSelected={isSelected}
           onPress={() => {
             if (isElementActive(editor, 'layout')) {
@@ -179,7 +179,7 @@ export const LayoutsButton = ({
           }}
         >
           {layoutsIcon}
-        </ActionButton>
+        </EditorToolbarButton>
         <Tooltip>Layouts</Tooltip>
       </TooltipTrigger>
     ),
