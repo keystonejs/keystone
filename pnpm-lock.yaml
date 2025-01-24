@@ -131,28 +131,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
-  design-system/packages/tooltip:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.7
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../core
-      '@keystone-ui/popover':
-        specifier: workspace:^
-        version: link:../popover
-      apply-ref:
-        specifier: ^1.0.0
-        version: 1.0.0
-    devDependencies:
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-
   docs:
     dependencies:
       '@babel/runtime':
@@ -375,7 +353,7 @@ importers:
     dependencies:
       '@keystar/ui':
         specifier: ^0.7.15
-        version: 0.7.15(next@14.2.23(@babel/core@7.26.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.7.15(next@14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@keystone-6/auth':
         specifier: ^8.1.0
         version: link:../../packages/auth
@@ -776,9 +754,6 @@ importers:
       '@keystone-ui/core':
         specifier: ^5.0.1
         version: link:../../../design-system/packages/core
-      '@keystone-ui/tooltip':
-        specifier: ^6.0.1
-        version: link:../../../design-system/packages/tooltip
       '@prisma/client':
         specifier: 5.19.0
         version: 5.19.0(prisma@5.19.0)
