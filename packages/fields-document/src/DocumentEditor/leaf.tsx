@@ -1,18 +1,23 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx, useTheme } from '@keystone-ui/core'
-import { type ReactNode, useState } from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { type RenderLeafProps } from 'slate-react'
 import { InsertMenu } from './insert-menu'
+import { css } from '@keystar/ui/style'
 
-function Placeholder ({ placeholder, children }: { placeholder: string, children: ReactNode }) {
+function Placeholder ({
+  placeholder,
+  children,
+}: {
+  placeholder: string
+  children: ReactNode
+}) {
   const [width, setWidth] = useState(0)
   return (
-    <span css={{ position: 'relative', display: 'inline-block', width }}>
+    <span
+      className={css({ position: 'relative', display: 'inline-block', width })}
+    >
       <span
         contentEditable={false}
-        style={{
+        className={css({
           position: 'absolute',
           pointerEvents: 'none',
           display: 'inline-block',
@@ -26,7 +31,7 @@ function Placeholder ({ placeholder, children }: { placeholder: string, children
           fontWeight: 'normal',
           textDecoration: 'none',
           textAlign: 'left',
-        }}
+        })}
       >
         <span
           ref={node => {
@@ -47,7 +52,6 @@ function Placeholder ({ placeholder, children }: { placeholder: string, children
 }
 
 const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
-  const { colors, radii, spacing, typography } = useTheme()
   const {
     underline,
     strikethrough,
@@ -70,20 +74,7 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
   }
 
   if (code) {
-    children = (
-      <code
-        css={{
-          backgroundColor: colors.backgroundDim,
-          borderRadius: radii.xsmall,
-          display: 'inline-block',
-          fontFamily: typography.fontFamily.monospace,
-          fontSize: typography.fontSize.small,
-          padding: `0 ${spacing.xxsmall}px`,
-        }}
-      >
-        {children}
-      </code>
-    )
+    children = <code>{children}</code>
   }
   if (bold) {
     children = <strong>{children}</strong>
