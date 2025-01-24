@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
+import React from 'react'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
+import { css } from '@keystar/ui/style'
 
 export const youtubeVideo = component({
   label: 'YouTube Video',
@@ -32,13 +30,13 @@ export const youtubeVideo = component({
     return (
       <NotEditable>
         <div
-          css={{
+          className={css({
             overflow: 'hidden',
             paddingBottom: '56.25%',
             position: 'relative',
             height: 0,
             ' iframe': { left: 0, top: 0, height: '100%', width: '100%', position: 'absolute' },
-          }}
+          })}
         >
           <iframe
             width="853"

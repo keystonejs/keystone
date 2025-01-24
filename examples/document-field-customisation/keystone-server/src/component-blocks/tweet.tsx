@@ -1,8 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useRef, useEffect } from 'react'
-import { jsx } from '@keystone-ui/core'
+import React, { useRef, useEffect } from 'react'
+import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 export const tweet = component({
@@ -25,7 +22,7 @@ export const tweet = component({
 
     return (
       <NotEditable>
-        <div css={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={css({ display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
           <blockquote ref={wrapper} className="twitter-tweet" data-conversation="none">
             <a href={props.fields.url.value}>Loading tweet...</a>
           </blockquote>
