@@ -41,7 +41,7 @@ function serialize (nodes: Node[]) {
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null
-  return <Text>{serialize(value).slice(0, 60)}</Text>
+  return <Text>{serialize(value.document).slice(0, 60)}</Text>
 }
 
 export const allowedExportsOnCustomViews = ['componentBlocks']
