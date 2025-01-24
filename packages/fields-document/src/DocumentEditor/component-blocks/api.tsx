@@ -119,7 +119,7 @@ export const fields = {
       },
     }
   },
-  select<Option extends { label: string, value: string }> ({
+  select<const Option extends { label: string, value: string }> ({
     label,
     options,
     defaultValue,

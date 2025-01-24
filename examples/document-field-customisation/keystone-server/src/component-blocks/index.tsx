@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import { carousel } from './carousel'
 import { hero } from './hero'
 import { callout } from './callout'
