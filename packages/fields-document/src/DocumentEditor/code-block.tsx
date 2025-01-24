@@ -4,10 +4,10 @@ import { Transforms } from 'slate'
 import { Icon } from '@keystar/ui/icon'
 import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
 import { useToolbarState } from './toolbar-state'
-import { ActionButton } from '@keystar/ui/button'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Kbd, Text } from '@keystar/ui/typography'
 import { ReactEditor } from 'slate-react'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 export * from './code-block-shared'
 
@@ -19,10 +19,9 @@ function CodeButton () {
 
   return useMemo(
     () => (
-      <ActionButton
+      <EditorToolbarButton
         isSelected={isSelected}
         isDisabled={isDisabled}
-        prominence="low"
         onPress={() => {
           if (isSelected) {
             Transforms.unwrapNodes(editor, {
@@ -38,7 +37,7 @@ function CodeButton () {
         }}
       >
         <Icon src={codeIcon} />
-      </ActionButton>
+      </EditorToolbarButton>
     ),
     [isDisabled, isSelected, editor]
   )

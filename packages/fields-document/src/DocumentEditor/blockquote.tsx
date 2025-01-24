@@ -8,11 +8,11 @@ import { jsx, useTheme } from '@keystone-ui/core'
 
 import { useToolbarState } from './toolbar-state'
 import { insertBlockquote } from './blockquote-shared'
-import { ActionButton } from '@keystar/ui/button'
 import { quoteIcon } from '@keystar/ui/icon/icons/quoteIcon'
 import { Icon } from '@keystar/ui/icon'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Kbd, Text } from '@keystar/ui/typography'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 export * from './blockquote-shared'
 
@@ -40,8 +40,7 @@ const BlockquoteButton = () => {
   } = useToolbarState()
   return useMemo(
     () => (
-      <ActionButton
-        prominence="low"
+      <EditorToolbarButton
         isSelected={isSelected}
         isDisabled={isDisabled}
         onPress={() => {
@@ -50,7 +49,7 @@ const BlockquoteButton = () => {
         }}
       >
         <Icon src={quoteIcon} />
-      </ActionButton>
+      </EditorToolbarButton>
     ),
     [editor, isDisabled, isSelected]
   )

@@ -28,6 +28,8 @@ import { clientSideValidateProp } from './utils'
 import type { GenericPreviewProps } from './api'
 import {
   FormValueContentFromPreviewProps,
+  previewPropsOnChange,
+  previewPropsToValue,
 } from './form-from-preview'
 import { DialogContainer, Dialog } from '@keystar/ui/dialog'
 import { FieldMessage } from '@keystar/ui/field'
@@ -35,7 +37,6 @@ import { Flex } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
-import { useLocalizedStringFormatter } from '@react-aria/i18n'
 import { blockElementSpacing } from '../utils-hooks'
 import { createGetPreviewProps } from './preview-props'
 
@@ -221,11 +222,10 @@ function FormValue ({
           onSubmit={event => {
             if (event.target !== event.currentTarget) return
             event.preventDefault()
-            if (!clientSideValidateProp(props.schema, state, undefined)) {
+            if (!clientSideValidateProp(props.schema, state)) {
               setForceValidation(true)
             } else {
-              console.log(valueToUpdater(state, props.schema))
-              setValueToPreviewProps(state, props)
+              previewPropsOnChange(state, props)
               onClose()
             }
           }}
@@ -239,7 +239,7 @@ function FormValue ({
         </Flex>
       </Content>
       <ButtonGroup>
-        <Button onPress={onClose}>{stringFormatter.format('cancel')}</Button>
+        <Button onPress={onClose}>Cancel</Button>
         <Button form={formId} prominence="high" type="submit">
           Done
         </Button>

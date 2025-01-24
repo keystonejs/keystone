@@ -106,7 +106,7 @@ const valueToUpdaters: {
   relationship (value) { return value },
 }
 
-function previewPropsToValue<Schema extends ComponentSchema> (
+export function previewPropsToValue<Schema extends ComponentSchema> (
   props: GenericPreviewProps<ComponentSchema, unknown>
 ): ValueForComponentSchema<Schema> {
   return (previewPropsToValueConverter[props.schema.kind] as any)(props)
@@ -127,7 +127,7 @@ function isKind<Kind extends ComponentSchema['kind']> (
   return props.schema.kind === kind
 }
 
-function previewPropsOnChange<Schema extends ComponentSchema> (
+export function previewPropsOnChange<Schema extends ComponentSchema> (
   value: ValueForComponentSchema<Schema>,
   props: GenericPreviewProps<ComponentSchema, unknown>
 ) {

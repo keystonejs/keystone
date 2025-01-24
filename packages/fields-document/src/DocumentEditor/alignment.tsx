@@ -8,12 +8,12 @@ import { Transforms } from 'slate'
 
 import type { DocumentFeatures } from '../views-shared'
 import { useToolbarState } from './toolbar-state'
-import { ActionButton } from '@keystar/ui/button'
 import { MenuTrigger, Menu } from '@keystar/ui/menu'
 import { Item } from '@keystar/ui/tag'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { ReactEditor } from 'slate-react'
 import { Text } from '@keystar/ui/typography'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 const values = {
   start: {
@@ -52,10 +52,10 @@ export const TextAlignMenu = ({
     () => (
       <MenuTrigger>
         <TooltipTrigger>
-          <ActionButton prominence="low">
+          <EditorToolbarButton>
             {values[toolbarState.alignment.selected].icon}
             <Icon src={chevronDownIcon} />
-          </ActionButton>
+          </EditorToolbarButton>
           <Tooltip>
             <Text>Text Alignment</Text>
           </Tooltip>

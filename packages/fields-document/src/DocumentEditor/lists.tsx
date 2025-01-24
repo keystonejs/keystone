@@ -7,13 +7,13 @@ import { jsx } from '@keystone-ui/core'
 
 import { useToolbarState } from './toolbar-state'
 import { toggleList } from './lists-shared'
-import { ActionGroup } from '@keystar/ui/action-group'
 import { Icon } from '@keystar/ui/icon'
-import { Item } from '@keystar/ui/tag'
 import { Kbd, Text } from '@keystar/ui/typography'
 import { listIcon } from '@keystar/ui/icon/icons/listIcon'
 import { listOrderedIcon } from '@keystar/ui/icon/icons/listOrderedIcon'
 import { ReactEditor } from 'slate-react'
+import { EditorToolbarGroup, EditorToolbarItem } from '@keystar/ui/editor'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 
 export const isListType = (type: string | undefined) =>
   type === 'ordered-list' || type === 'unordered-list'
@@ -26,49 +26,54 @@ export function ListButtons (props: {
   lists: { ordered: boolean, unordered: boolean }
 }) {
   const { editor, lists } = useToolbarState()
+
+  const items = useMemo(() => {
+    return [
+      !!props.lists.unordered && {
+        label: 'Bullet list',
+        key: 'unordered_list',
+        shortcut: '-⎵',
+        icon: listIcon,
+      },
+      !!props.lists.unordered && {
+        label: 'Numbered list',
+        key: 'ordered_list',
+        shortcut: '1.⎵',
+        icon: listOrderedIcon,
+      },
+    ].filter(removeFalse)
+  }, [props.lists])
+
   return useMemo(() => {
     const disabledKeys: string[] = []
     if (lists.ordered.isDisabled) disabledKeys.push('ordered')
     if (lists.unordered.isDisabled) disabledKeys.push('unordered')
-    const selectedKeys: string[] = []
-    if (lists.ordered.isSelected) selectedKeys.push('ordered')
-    if (lists.unordered.isSelected) selectedKeys.push('unordered')
+    const activeListType = lists.ordered.isSelected ? 'ordered' : lists.unordered.isSelected ? 'unordered' : null
 
     return (
-      <ActionGroup
-        flexShrink={0}
+      <EditorToolbarGroup
         aria-label="Lists"
-        selectionMode="single"
-        buttonLabelBehavior="hide"
-        density="compact"
-        // overflowMode="collapse"
-        prominence="low"
-        summaryIcon={<Icon src={listIcon} />}
-        selectedKeys={selectedKeys}
+        value={activeListType}
         disabledKeys={disabledKeys}
-        onAction={key => {
+        onChange={key => {
           const format = `${key as 'ordered' | 'unordered'}-list` as const
           toggleList(editor, format)
           ReactEditor.focus(editor)
         }}
+        selectionMode='single'
       >
-        {[
-          props.lists.unordered && (
-            <Item key="unordered" textValue="Bullet List (- )">
-              <Icon src={listIcon} />
-              <Text>Bullet List</Text>
-              <Kbd>-⎵</Kbd>
-            </Item>
-          ),
-          props.lists.ordered && (
-            <Item key="ordered" textValue="Numbered List (1.)">
-              <Icon src={listOrderedIcon} />
-              <Text>Numbered List</Text>
-              <Kbd>1.⎵</Kbd>
-            </Item>
-          ),
-        ].filter((x): x is Exclude<typeof x, false> => x !== false)}
-      </ActionGroup>
+        {items.map(item => (
+          <TooltipTrigger key={item.key}>
+            <EditorToolbarItem value={item.key} aria-label={item.label}>
+              <Icon src={item.icon} />
+            </EditorToolbarItem>
+            <Tooltip>
+              <Text>{item.label}</Text>
+              <Kbd>{item.shortcut}</Kbd>
+            </Tooltip>
+          </TooltipTrigger>
+        ))}
+      </EditorToolbarGroup>
     )
   }, [
     editor,
@@ -79,4 +84,9 @@ export function ListButtons (props: {
     props.lists.ordered,
     props.lists.unordered,
   ])
+}
+
+
+function removeFalse<T> (val: T): val is Exclude<T, false> {
+  return val !== false
 }

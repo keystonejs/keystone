@@ -18,6 +18,7 @@ import type {
   ObjectField,
   RelationshipField,
   FormField,
+  ArrayField,
 } from './api-shared'
 import {
   makeIntegerFieldInput,
@@ -322,7 +323,7 @@ export const fields = {
       itemLabel?: (props: GenericPreviewProps<ElementField, unknown>) => string
       label?: string
     }
-  ) {
+  ): ArrayField<ElementField> {
     return {
       kind: 'array' as const,
       element,

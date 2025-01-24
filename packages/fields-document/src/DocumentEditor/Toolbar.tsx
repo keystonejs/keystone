@@ -23,6 +23,7 @@ import { underlineIcon } from '@keystar/ui/icon/icons/underlineIcon'
 import { maximizeIcon } from '@keystar/ui/icon/icons/maximizeIcon'
 import { minimizeIcon } from '@keystar/ui/icon/icons/minimizeIcon'
 import { Kbd, Text } from '@keystar/ui/typography'
+import { EditorToolbar, EditorToolbarButton, EditorToolbarGroup, EditorToolbarSeparator } from '@keystar/ui/editor'
 
 import type { DocumentFeatures } from '../views-shared'
 import { linkButton } from './link'
@@ -40,7 +41,7 @@ import { useToolbarState } from './toolbar-state'
 import { Item, Picker } from '@keystar/ui/picker'
 import { ReactEditor, useSlateStatic } from 'slate-react'
 import { ActionGroup } from '@keystar/ui/action-group'
-import { Box, Flex } from '@keystar/ui/layout'
+import { Flex } from '@keystar/ui/layout'
 import { ActionButton } from '@keystar/ui/button'
 import { MenuTrigger, Menu } from '@keystar/ui/menu'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
@@ -70,48 +71,52 @@ export function Toolbar ({
         {!!documentFeatures.formatting.headingLevels.length && (
           <HeadingMenu headingLevels={documentFeatures.formatting.headingLevels} />
         )}
-        {hasMarks && <InlineMarks marks={documentFeatures.formatting.inlineMarks} />}
-        {(hasAlignment || hasLists) && (
-          <ToolbarGroup>
-            {hasAlignment && (
-              <TextAlignMenu
-                alignment={documentFeatures.formatting.alignment}
-              />
-            )}
-            {hasLists && (
-              <ListButtons lists={documentFeatures.formatting.listTypes} />
-            )}
-          </ToolbarGroup>
-        )}
-        <ToolbarGroup>
-        {documentFeatures.dividers && dividerButton}
-        {documentFeatures.links && linkButton}
-        {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
-        {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
-        {documentFeatures.formatting.blockTypes.code && codeButton}</ToolbarGroup>
-        {useMemo(() => {
-          return (
-            viewState && (
-              <ToolbarGroup>
-                <TooltipTrigger>
-                  <ActionButton
-                    prominence="low"
-                    onPress={() => {
-                      viewState.toggle()
-                    }}
-                  >
-                    <Icon
-                      src={viewState.expanded ? minimizeIcon : maximizeIcon}
-                    />
-                  </ActionButton>
-                  <Tooltip>{viewState.expanded ? 'Collapse' : 'Expand'}</Tooltip>
-                </TooltipTrigger>
-              </ToolbarGroup>
+        <EditorToolbar aria-label="Formatting options">
+          {hasMarks && <>
+            <EditorToolbarSeparator />
+            <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
+          </>}
+          <EditorToolbarSeparator />
+          {(hasAlignment || hasLists) && (
+            <EditorToolbarGroup>
+              {hasAlignment && (
+                <TextAlignMenu
+                  alignment={documentFeatures.formatting.alignment}
+                />
+              )}
+              {hasLists && (
+                <ListButtons lists={documentFeatures.formatting.listTypes} />
+              )}
+            </EditorToolbarGroup>
+          )}
+          <EditorToolbarGroup>
+          {documentFeatures.dividers && dividerButton}
+          {documentFeatures.links && linkButton}
+          {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
+          {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
+          {documentFeatures.formatting.blockTypes.code && codeButton}</EditorToolbarGroup>
+          {useMemo(() => {
+            return (
+              viewState && (
+                <EditorToolbarGroup>
+                  <TooltipTrigger>
+                    <EditorToolbarButton
+                      onPress={() => {
+                        viewState.toggle()
+                      }}
+                    >
+                      <Icon
+                        src={viewState.expanded ? minimizeIcon : maximizeIcon}
+                      />
+                    </EditorToolbarButton>
+                    <Tooltip>{viewState.expanded ? 'Collapse' : 'Expand'}</Tooltip>
+                  </TooltipTrigger>
+                </EditorToolbarGroup>
+              )
             )
-          )
-        }, [viewState])}
+          }, [viewState])}
+        </EditorToolbar>
       </ToolbarScrollArea>
-  
       {!!hasBlockItems && <InsertBlockMenu />}
     </ToolbarWrapper>
   )
@@ -342,11 +347,6 @@ function useMemoStringified<T> (value: T): T {
 
 function useEntryLayoutSplitPaneContext () {
   return null 
-}
-
-/** Group buttons together that don't fit into an `ActionGroup` semantically. */
-const ToolbarGroup = ({ children }: { children: ReactNode }) => {
-  return <Flex gap="regular">{children}</Flex>
 }
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
