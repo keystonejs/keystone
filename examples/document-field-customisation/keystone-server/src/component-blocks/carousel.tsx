@@ -1,8 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { Box, jsx } from '@keystone-ui/core'
+import { Box } from '@keystar/ui/layout'
+import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
+import React from 'react'
 
 export const carousel = component({
   label: 'Carousel',
@@ -10,18 +9,18 @@ export const carousel = component({
     return (
       <NotEditable>
         <div
-          css={{
+          className={css({
             overflowY: 'scroll',
             display: 'flex',
             scrollSnapType: 'y mandatory',
-          }}
+          })}
         >
           {props.fields.items.elements.map(item => {
             return (
               <Box
                 key={item.key}
                 margin="xsmall"
-                css={{
+                className={css({
                   minWidth: '61.8%',
                   scrollSnapAlign: 'center',
                   scrollSnapStop: 'always',
@@ -30,27 +29,27 @@ export const carousel = component({
                   boxSizing: 'border-box',
                   borderRadius: 6,
                   background: '#eff3f6',
-                }}
+                })}
               >
                 <img
                   role="presentation"
                   src={item.fields.imageSrc.value}
-                  css={{
+                  className={css({
                     objectFit: 'cover',
                     objectPosition: 'center center',
                     height: 240,
                     width: '100%',
                     borderRadius: 4,
-                  }}
+                  })}
                 />
                 <h1
-                  css={{
+                  className={css({
                     '&&': {
                       fontSize: '1.25rem',
                       lineHeight: 'unset',
                       marginTop: 8,
                     },
-                  }}
+                  })}
                 >
                   {item.fields.title.value}
                 </h1>

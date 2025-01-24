@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
+import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
+import React from 'react'
 
 export const hero = component({
   label: 'Hero',
@@ -26,17 +24,17 @@ export const hero = component({
       <div>
         <NotEditable>
           <div
-            css={{
+            className={css({
               backgroundImage: `url(${props.fields.imageSrc.value})`,
               backgroundPosition: 'center',
               backgroundSize: 'cover',
               minHeight: 200,
               width: '100%',
-            }}
+            })}
           />
         </NotEditable>
         {props.fields.caption.discriminant ? (
-          <div css={{ textAlign: 'center' }}>{props.fields.caption.value.element}</div>
+          <div className={css({ textAlign: 'center' })}>{props.fields.caption.value.element}</div>
         ) : null}
       </div>
     )
