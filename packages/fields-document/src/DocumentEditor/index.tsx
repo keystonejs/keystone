@@ -1,10 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { tokenSchema } from '@keystar/ui/style'
+import { css, tokenSchema } from '@keystar/ui/style'
 import { Prose } from '@keystar/ui/typography'
 
-import { jsx, useTheme } from '@keystone-ui/core'
 import {
   type KeyboardEvent,
   type ReactNode,
@@ -12,7 +8,7 @@ import {
   useState
 } from 'react'
 import isHotkey from 'is-hotkey'
-import { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
   type Descendant,
   type NodeEntry,
@@ -50,8 +46,21 @@ import {
 } from './editor-shared'
 import { ActiveBlockPopoverProvider } from './primitives/BlockPopover'
 
-const styles = {
+const styles = css({
   flex: 1,
+  background: tokenSchema.color.background.canvas,
+  borderColor: tokenSchema.color.alias.borderIdle,
+  outline: 0,
+  padding: tokenSchema.size.space.medium,
+  minHeight: 120,
+  scrollbarGutter: 'stable',
+  overflowY: 'auto',
+  height:224,
+  '&[data-expanded=true]': {
+    // the !important is necessary to override the height set by resizing as an inline style 
+    height: 'auto !important',
+    resize: 'vertical',
+  },
   'ol ol ol ol ol ol ol ol ol': { listStyle: 'lower-roman' },
   'ol ol ol ol ol ol ol ol': { listStyle: 'lower-alpha' },
   'ol ol ol ol ol ol ol': { listStyle: 'decimal' },
@@ -70,7 +79,7 @@ const styles = {
   'ul ul ul': { listStyle: 'square' },
   'ul ul': { listStyle: 'circle' },
   'ul': { listStyle: 'disc' }
-} as const
+}) 
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -153,7 +162,6 @@ export function DocumentEditor ({
   documentFeatures: DocumentFeatures
   initialExpanded?: boolean
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const { radii, spacing } = useTheme()
   const [expanded, setExpanded] = useState(initialExpanded)
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships, {
@@ -165,10 +173,10 @@ export function DocumentEditor ({
 
   return (
     <div
-      css={{
-        border: `1px solid ${tokenSchema.color.border.neutral}`,
-        borderRadius: radii.small,
-      }}
+      className={css({
+        border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.neutral}`,
+        borderRadius: tokenSchema.size.radius.medium,
+      })}
     >
       <DocumentEditorProvider
         componentBlocks={componentBlocks}
@@ -208,23 +216,7 @@ export function DocumentEditor ({
 
         <Prose size="regular">
           <DocumentEditorEditable
-            css={[
-              {
-                borderBottomLeftRadius: radii.small,
-                borderBottomRightRadius: radii.small,
-                background: tokenSchema.color.background.canvas,
-                borderColor: tokenSchema.color.alias.borderIdle,
-                outline: 0,
-                paddingBlock: spacing.small,
-                paddingInline: spacing.medium,
-                minHeight: 120,
-                scrollbarGutter: 'stable',
-                // the !important is necessary to override the width set by resizing as an inline style
-                height: expanded ? 'auto !important' : 224,
-                resize: expanded ? undefined : 'vertical',
-                overflowY: 'auto',
-              },
-            ]}
+            data-expanded={expanded}
             {...props}
             readOnly={onChange === undefined}
           />
@@ -330,7 +322,7 @@ export function DocumentEditorEditable (props: EditableProps) {
           },
           [editor, componentBlocks]
         )}
-        css={styles}
+        className={`${styles} ${props.className ?? ''}`}
         onKeyDown={onKeyDown}
         renderElement={renderElement}
         renderLeaf={renderLeaf}

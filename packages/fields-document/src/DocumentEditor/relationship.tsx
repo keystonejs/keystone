@@ -1,17 +1,14 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms } from 'slate'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
 
-import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
 
 import { ComboboxSingle } from '@keystone-6/core/fields/types/relationship/views'
 
 import type { Relationships } from './relationship-shared'
+import { css } from '@keystar/ui/style'
 export type { Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
@@ -36,21 +33,21 @@ export function RelationshipElement ({
   return (
     <span
       {...attributes}
-      css={{
+      className={css({
         display: 'inline-flex',
         alignItems: 'center',
-      }}
+      })}
     >
       <span
         contentEditable={false}
-        css={{
+        className={css({
           userSelect: 'none',
           width: 200,
           display: 'inline-block',
           paddingLeft: 4,
           paddingRight: 4,
           flex: 1,
-        }}
+        })}
       >
         {relationship ? (
           <ComboboxSingle
@@ -77,7 +74,7 @@ export function RelationshipElement ({
           'Invalid relationship'
         )}
       </span>
-      <span css={{ flex: 0 }}>{children}</span>
+      <span className={css({ flex: 0 })}>{children}</span>
     </span>
   )
 }

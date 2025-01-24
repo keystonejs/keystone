@@ -1,7 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx, useTheme } from '@keystone-ui/core'
 import { type RenderElementProps, useSelected } from 'slate-react'
 
 import { LayoutArea, LayoutContainer } from './layouts'
@@ -11,6 +7,7 @@ import { HeadingElement } from './heading'
 import { BlockquoteElement } from './blockquote'
 import { RelationshipElement } from './relationship'
 import { tokenSchema } from '@keystar/ui/style'
+import React from 'react'
 
 // some of the renderers read properties of the element
 // and TS doesn't understand the type narrowing when doing a spread for some reason
@@ -79,7 +76,7 @@ export const renderElement = (props: RenderElementProps) => {
       return <DividerElement {...props} />
     default:
       return (
-        <p css={{ textAlign: props.element.textAlign }} {...props.attributes}>
+        <p style={{ textAlign: props.element.textAlign }} {...props.attributes}>
           {props.children}
         </p>
       )
@@ -89,22 +86,12 @@ export const renderElement = (props: RenderElementProps) => {
 /* Block Elements */
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
-  const { colors, radii, spacing, typography } = useTheme()
   return (
     <pre
       spellCheck="false"
-      css={{
-        backgroundColor: colors.backgroundDim,
-        border: `1px solid ${colors.border}`,
-        borderRadius: radii.xsmall,
-        fontFamily: typography.fontFamily.monospace,
-        fontSize: typography.fontSize.small,
-        padding: `${spacing.small}px ${spacing.medium}px`,
-        overflowX: 'auto',
-      }}
       {...attributes}
     >
-      <code css={{ fontFamily: 'inherit' }}>{children}</code>
+      <code>{children}</code>
     </pre>
   )
 }

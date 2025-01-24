@@ -1,10 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
-
-import { jsx, useTheme } from '@keystone-ui/core'
 
 import { useToolbarState } from './toolbar-state'
 import { insertBlockquote } from './blockquote-shared'
@@ -17,20 +12,7 @@ import { EditorToolbarButton } from '@keystar/ui/editor'
 export * from './blockquote-shared'
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
-  const { colors, spacing } = useTheme()
-  return (
-    <blockquote
-      css={{
-        borderLeft: '3px solid #CBD5E0',
-        color: colors.foregroundDim,
-        margin: 0,
-        padding: `0 ${spacing.xlarge}px`,
-      }}
-      {...attributes}
-    >
-      {children}
-    </blockquote>
-  )
+  return <blockquote {...attributes}>{children}</blockquote>
 }
 
 const BlockquoteButton = () => {
