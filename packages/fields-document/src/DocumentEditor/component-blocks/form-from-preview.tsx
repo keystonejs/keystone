@@ -1,8 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { Field as RelationshipFieldView } from '@keystone-6/core/fields/types/relationship/views'
-import { jsx } from '@keystone-ui/core'
 import { GroupIndicatorLine } from '@keystone-6/core/admin-ui/utils'
 
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
@@ -17,7 +14,7 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { move } from '@keystar/ui/drag-and-drop'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 
-import {
+import React, {
   type Key,
   type MemoExoticComponent,
   type ReactElement,

@@ -1858,9 +1858,6 @@ importers:
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
-      '@keystone-ui/core':
-        specifier: workspace:^
-        version: link:../../design-system/packages/core
       '@react-aria/i18n':
         specifier: ^3.12.1
         version: 3.12.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

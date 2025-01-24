@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 'use client'
 
-import { createContext, useContext, useMemo } from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 import { Transforms } from 'slate'
 import {
   type RenderElementProps,
@@ -10,7 +8,6 @@ import {
   useSlateStatic,
 } from 'slate-react'
 
-import { jsx  } from '@keystone-ui/core'
 import { Icon } from '@keystar/ui/icon'
 import { columnsIcon } from '@keystar/ui/icon/icons/columnsIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'

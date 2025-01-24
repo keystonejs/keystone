@@ -1,9 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { type Element, type Node } from 'slate'
-import { jsx } from '@keystone-ui/core'
 
 import { useToolbarState } from './toolbar-state'
 import { toggleList } from './lists-shared'
