@@ -149,7 +149,7 @@ export const fields = {
       },
     }
   },
-  multiselect<Option extends { label: string, value: string }> ({
+  multiselect<const Option extends { label: string, value: string }> ({
     label,
     options,
     defaultValue,
