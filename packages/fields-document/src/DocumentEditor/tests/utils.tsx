@@ -32,6 +32,7 @@ import { type Relationships } from '../relationship'
 import { ToolbarStateProvider } from '../toolbar-state'
 import { createToolbarState } from '../toolbar-state-shared'
 import { validateAndNormalizeDocument } from '../../validation'
+import { KeystarProvider } from '@keystar/ui/core'
 
 const oldConsoleError = console.error
 
@@ -179,19 +180,21 @@ function EditorComp ({
 }) {
   const [val, setVal] = useState(editor.children)
   return (
-    <Slate editor={editor} initialValue={val} onChange={setVal}>
-      <ToolbarStateProvider
-        componentBlocks={componentBlocks}
-        editorDocumentFeatures={documentFeatures}
-        relationships={relationships}
-      >
-        <DocumentEditorEditable
-          // the default implementation of scrollSelectionIntoView crashes in JSDOM for some reason
-          // so we just do nothing
-          scrollSelectionIntoView={() => {}}
-        />
-      </ToolbarStateProvider>
-    </Slate>
+    <KeystarProvider>
+      <Slate editor={editor} initialValue={val} onChange={setVal}>
+        <ToolbarStateProvider
+          componentBlocks={componentBlocks}
+          editorDocumentFeatures={documentFeatures}
+          relationships={relationships}
+        >
+          <DocumentEditorEditable
+            // the default implementation of scrollSelectionIntoView crashes in JSDOM for some reason
+            // so we just do nothing
+            scrollSelectionIntoView={() => {}}
+          />
+        </ToolbarStateProvider>
+      </Slate>
+    </KeystarProvider>
   )
 }
 

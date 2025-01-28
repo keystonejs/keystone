@@ -16,7 +16,7 @@ test('does not allow circular object', () => {
   expect(() => {
     assertValidComponentSchema(easilyCircularObject, new Set(), 'document')
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field "object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `[Error: The field "object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures.]`
   )
 })
 
@@ -24,7 +24,7 @@ test('does not allow a circular object within an array', () => {
   expect(() => {
     assertValidComponentSchema(fields.array(easilyCircularObject), new Set(), 'document')
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field "array.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `[Error: The field "array.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures.]`
   )
 })
 
@@ -40,7 +40,7 @@ test('does not allow a circular object within a value for a default discriminant
       'document'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field "conditional.false.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `[Error: The field "conditional.false.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures.]`
   )
 })
 
@@ -56,7 +56,7 @@ test('does not allow a circular object within a value for a non-default discrimi
       'document'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field "conditional.true.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `[Error: The field "conditional.true.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures.]`
   )
 })
 
@@ -88,7 +88,7 @@ test("does not allow a circular conditional if it's the default", () => {
   expect(() => {
     assertValidComponentSchema(conditional, new Set(), 'document')
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field "conditional.false" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `[Error: The field "conditional.false" is the same as it's ancestor. Use an array or conditional field for recursive structures.]`
   )
 })
 
@@ -125,7 +125,7 @@ test('does not allow a field that returns a different field from a getter each t
   expect(() => {
     assertValidComponentSchema(blah(), new Set(), 'document')
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Fields on an object field must not change over time but the field at "array.object.blah" changes between accesses"`
+    `[Error: Fields on an object field must not change over time but the field at "array.object.blah" changes between accesses]`
   )
 })
 
@@ -152,7 +152,7 @@ test('exceeds the call stack size for an infinitely recursive field where all fi
   }
   expect(() => {
     assertValidComponentSchema(blah(), new Set(), 'document')
-  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`)
+  }).toThrowErrorMatchingInlineSnapshot(`[RangeError: Maximum call stack size exceeded]`)
 })
 
 test('relationship field where no list exists with that name', () => {
@@ -163,7 +163,7 @@ test('relationship field where no list exists with that name', () => {
       'document'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The relationship field at "object.a" has the listKey "Blah" but no list named "Blah" exists."`
+    `[Error: The relationship field at "object.a" has the listKey "Blah" but no list named "Blah" exists.]`
   )
 })
 
@@ -183,7 +183,7 @@ test('does not allow a child field in a structure field', () => {
       'structure'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-  )
+  `[Error: There is a child field at "object.a" but child fields are not allowed in structure fields.]`)
 })
 
 
@@ -207,5 +207,5 @@ test('does not allow a custom form field without a graphql field in a structure 
       'structure'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-  )
+  `[Error: There is a form field without a configured GraphQL schema at "object.a", fields used in the structure field must have a GraphQL schema.]`)
 })

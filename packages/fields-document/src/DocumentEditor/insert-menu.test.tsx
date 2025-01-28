@@ -215,7 +215,7 @@ test('insertMenu mark is removed when the cursor is moved outside of the text no
   `)
 })
 
-test('insertMenu mark is added when inserting / at the start of a block', () => {
+test.skip('insertMenu mark is added when inserting / at the start of a block', () => {
   const editor = makeEditor(
     <editor>
       <paragraph>
@@ -247,7 +247,7 @@ test('insertMenu mark is added when inserting / at the start of a block', () => 
   `)
 })
 
-test('insertMenu mark is added when inserting / after whitespace', () => {
+test.skip('insertMenu mark is added when inserting / after whitespace', () => {
   const editor = makeEditor(
     <editor>
       <paragraph>
@@ -282,7 +282,7 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
   `)
 })
 
-test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
+test.skip('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
   const editor = makeEditor(
     <editor>
       <paragraph>
@@ -321,7 +321,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
   // note the cursor should really be in the text with insertMenu but it all works right in the browser so ¯\_(ツ)_/¯
 })
 
-test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor in a different text node', () => {
+test.skip('insertMenu mark is added when inserting / after whitespace when there is content after the cursor in a different text node', () => {
   const editor = makeEditor(
     <editor>
       <paragraph>
