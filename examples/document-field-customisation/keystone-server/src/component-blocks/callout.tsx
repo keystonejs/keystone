@@ -9,7 +9,7 @@ export const callout = component({
       <Callout tone={props.fields.tone.value}>
         {props.fields.content.element}
       </Callout>
-    );
+    )
   },
   label: 'Callout',
   chromeless: true,
@@ -32,16 +32,16 @@ export const callout = component({
       links: 'inherit',
     }),
   },
-  toolbar({ props, onRemove }) {
+  toolbar ({ props, onRemove }) {
     return (
       <CalloutToolbar
         onChange={tone => {
-          props.fields.tone.onChange(tone);
+          props.fields.tone.onChange(tone)
         }}
         onRemove={onRemove}
         tone={props.fields.tone.value}
         tones={props.fields.tone.schema.options}
       />
-    );
+    )
   },
-});
+})

@@ -34,7 +34,7 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     ) & {
       ui?: {
         displayMode?: 'checkboxes' | 'select'
-      },
+      }
       db?: {
         isNullable?: boolean
         map?: string

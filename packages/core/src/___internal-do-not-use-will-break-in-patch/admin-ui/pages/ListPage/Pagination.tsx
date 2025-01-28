@@ -36,7 +36,7 @@ export function Pagination (props: PaginationProps) {
 
   const limit = Math.ceil(total / pageSize)
   const pageItems = useMemo(() => {
-    let result: PageItem[] = []
+    const result: PageItem[] = []
     for (let page = minPage; page <= limit; page++) {
       result.push({
         id: page,

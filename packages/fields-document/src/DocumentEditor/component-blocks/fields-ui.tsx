@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useFilter } from '@react-aria/i18n'
 
-import { FormField } from './api-shared'
+import { type FormField } from './api-shared'
 import { NumberField } from '@keystar/ui/number-field'
 import { tokenSchema } from '@keystar/ui/style'
 import { Item as PickerItem, Picker } from '@keystar/ui/picker'
@@ -17,7 +17,7 @@ export { Text } from '@keystar/ui/typography'
 export { Checkbox } from '@keystar/ui/checkbox'
 
 export function makeIntegerFieldInput (opts: { label: string, validate: (value: number) => boolean }): FormField<number, unknown>['Input'] {
-  return function IntegerFieldInput({ autoFocus, forceValidation, onChange, value }) {
+  return function IntegerFieldInput ({ autoFocus, forceValidation, onChange, value }) {
     const [isDirty, setDirty] = useState(false)
     return (
       <NumberField
@@ -34,7 +34,7 @@ export function makeIntegerFieldInput (opts: { label: string, validate: (value: 
 }
 
 export function makeUrlFieldInput (opts: { label: string, validate: (value: string) => boolean }): FormField<string, unknown>['Input'] {
-  return function UrlFieldInput({ autoFocus, forceValidation, onChange, value }) {
+  return function UrlFieldInput ({ autoFocus, forceValidation, onChange, value }) {
     const [isDirty, setDirty] = useState(false)
     return <TextField
       autoFocus={autoFocus}
@@ -51,11 +51,11 @@ export function makeSelectFieldInput ({
   label,
   options
 }: {
-  label: string,
+  label: string
   options: readonly { label: string, value: string }[]
 }): FormField<string, unknown>['Input'] {
   const longestLabelLength = options.reduce((a, item) => Math.max(a, item.label.length), 0)
-  return function PickerFieldInput({ autoFocus, forceValidation, onChange, value }) {
+  return function PickerFieldInput ({ autoFocus, forceValidation, onChange, value }) {
     return (
       <Picker
         autoFocus={autoFocus}
@@ -86,10 +86,10 @@ export function makeMultiselectFieldInput ({
   label,
   options
 }: {
-  label: string,
+  label: string
   options: readonly { label: string, value: string }[]
 }): FormField<string[], unknown>['Input'] {
-  return function ComboFieldInput({ autoFocus, forceValidation, onChange, value }) {
+  return function ComboFieldInput ({ autoFocus, forceValidation, onChange, value }) {
     const [filterText, setFilterText] = useState('')
     const { contains } = useFilter({ sensitivity: 'base' })
     const items = options.filter(option => !value.some(x => x === option.value))

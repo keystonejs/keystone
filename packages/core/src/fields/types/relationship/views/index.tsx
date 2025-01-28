@@ -172,7 +172,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
 // NOTE: fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
-function renderItem (item: { id: string; href: string; label: string }) {
+function renderItem (item: { id: string, href: string, label: string }) {
   if (item.href === '') return <Item>{item.label}</Item>
   return <Item href={item.href}>{item.label}</Item>
 }
@@ -272,7 +272,7 @@ export function controller (
           value: null,
           initialValue: null
         },
-    validate() { return true },
+    validate () { return true },
     deserialize: (data) => {
       if (displayMode === 'count') {
         return {

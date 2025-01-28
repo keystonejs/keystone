@@ -88,7 +88,7 @@ function ContextualActionsMenu (props: RelationshipProps) {
   )
 }
 
-function useRelatedItem({
+function useRelatedItem ({
   field,
   value,
 }: FieldProps<() => RelationshipController>) {

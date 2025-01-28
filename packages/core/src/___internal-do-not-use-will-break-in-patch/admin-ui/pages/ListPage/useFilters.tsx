@@ -7,8 +7,8 @@ import type {
 } from '../../../../types'
 
 export type Filter = {
-  field: string,
-  type: string,
+  field: string
+  type: string
   value: JSONValue
 }
 

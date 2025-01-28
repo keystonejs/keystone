@@ -10,7 +10,7 @@ export default function ({
   initFirstItem
 }: {
   authGqlNames: AuthGqlNames
-  listKey: string,
+  listKey: string
   initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>
 }) {
   return `import makeSigninPage from '@keystone-6/auth/pages/InitPage'
