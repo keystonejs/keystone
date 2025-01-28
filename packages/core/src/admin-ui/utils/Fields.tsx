@@ -197,7 +197,7 @@ function FieldGroup ({
   )
 }
 
-export function GroupIndicatorLine() {
+export function GroupIndicatorLine () {
   return (
     <HStack justifyContent="center" width="element.small">
       <div

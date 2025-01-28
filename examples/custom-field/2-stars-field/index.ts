@@ -17,7 +17,7 @@ type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig
   maxStars?: number
 }
 
-export function stars <ListTypeInfo extends BaseListTypeInfo>({
+export function stars <ListTypeInfo extends BaseListTypeInfo> ({
   isIndexed,
   maxStars = 5,
   ...config

@@ -32,7 +32,7 @@ export function Field (props: FieldProps<typeof controller>) {
   // placeholder text is shown, and the toggle button is hidden
   if (!onChange) {
     return (
-      <Grid columns={!!parsedValue ? 'minmax(0, 1fr) auto' : undefined} gap="regular" alignItems="end">
+      <Grid columns={parsedValue ? 'minmax(0, 1fr) auto' : undefined} gap="regular" alignItems="end">
         <TextField
           label={field.label}
           description={field.description}

@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react'
+import React, { type InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'
 import type {
@@ -8,7 +8,7 @@ import type {
 } from '@keystone-6/core/types'
 
 // this is the component shown in the create modal and item page
-export function Field({
+export function Field ({
   autoFocus,
   field,
   onChange,
@@ -34,11 +34,11 @@ export function Field({
   )
 }
 
-function MyCustomInput(props: InputHTMLAttributes<HTMLInputElement>) {
+function MyCustomInput (props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} style={{ fontSize: 32, padding: 8 }} />
 }
 
-export function controller(
+export function controller (
   // the type parameter here needs to align with what is returned from `getAdminMeta`
   // in the server-side portion of the field type
   config: FieldControllerConfig<{ maxStars: number }>

@@ -62,10 +62,10 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       throw new Error('The decimal field does not support sqlite')
     }
     if (!Number.isInteger(scale)) {
-      throw new TypeError( `The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
+      throw new TypeError(`The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
     }
     if (!Number.isInteger(precision)) {
-      throw new TypeError( `The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
+      throw new TypeError(`The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
     }
     if (scale > precision) {
       throw new Error(

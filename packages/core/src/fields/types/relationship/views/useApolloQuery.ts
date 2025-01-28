@@ -14,7 +14,7 @@ import {
   useQuery,
 } from '../../../../admin-ui/apollo'
 import { useSearchFilter } from './useFilter'
-import { RelationshipValue } from './types'
+import { type RelationshipValue } from './types'
 
 function useDebouncedValue<T> (value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
@@ -44,8 +44,8 @@ export function useApolloQuery (args: {
   })
 
   const QUERY: TypedDocumentNode<
-    { items: { id: string; label: string | null }[]; count: number },
-    { where: Record<string, any>; take: number; skip: number }
+    { items: { id: string, label: string | null }[], count: number },
+    { where: Record<string, any>, take: number, skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -160,7 +160,7 @@ export function useApolloQuery (args: {
   }
 }
 
-function getLoadingState(options: {
+function getLoadingState (options: {
   loading: boolean
   search: string
 }): LoadingState {

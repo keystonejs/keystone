@@ -44,7 +44,7 @@ type NavItemProps = {
   isSelected?: boolean
 }
 
-export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
+export function getHrefFromList (list: Pick<ListMeta, 'path' | 'isSingleton'>) {
   return `/${list.path}${list.isSingleton ? '/1' : ''}`
 }
 
