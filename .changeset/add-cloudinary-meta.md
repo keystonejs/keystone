@@ -2,4 +2,4 @@
 "@keystone-6/cloudinary": minor
 ---
 
-Add the width, height and filesize to the GraphQL output type
+Adds the pre-existing meta `width`, `height` and `filesize` to the `CloudinaryImage_File` GraphQL output type
