@@ -41,10 +41,10 @@ model Thing {
   bigInt                            BigInt?   @unique
   float                             Float?
   image_id                          String?
+  image_extension                   String?
   image_filesize                    Int?
   image_width                       Int?
   image_height                      Int?
-  image_extension                   String?
   file_filesize                     Int?
   file_filename                     String?
   document                          Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
