@@ -53,7 +53,6 @@ function getRunner ({
 }) {
   return setupTestRunner({
     config: {
-      db: {},
       storage,
       lists: {
         Test: list({

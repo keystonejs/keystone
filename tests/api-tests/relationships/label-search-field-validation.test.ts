@@ -12,6 +12,15 @@ const Thing = list({
   },
 })
 
+const emptyPrismaModule = {
+  PrismaClient: class PrismaClient {
+    $extends () {
+      return this
+    }
+  },
+  Prisma: {}
+}
+
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
   expect(() =>
     getContext(
@@ -35,7 +44,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
@@ -63,7 +72,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
@@ -91,7 +100,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
   ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
 })
