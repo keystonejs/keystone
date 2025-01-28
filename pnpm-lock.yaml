@@ -81,31 +81,6 @@ importers:
         specifier: ^8.0.0
         version: 8.21.0(eslint@9.19.0)(typescript@5.7.3)
 
-  design-system/packages/core:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.24.7
-        version: 7.26.7
-      '@emotion/react':
-        specifier: ^11.7.1
-        version: 11.14.0(@types/react@18.3.18)(react@18.3.1)
-      '@types/facepaint':
-        specifier: ^1.2.2
-        version: 1.2.5
-      facepaint:
-        specifier: ^1.2.1
-        version: 1.2.1
-    devDependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.18
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-
   docs:
     dependencies:
       '@babel/runtime':
