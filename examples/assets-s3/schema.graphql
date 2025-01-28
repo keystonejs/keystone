@@ -11,11 +11,11 @@ type Post {
 
 type ImageFieldOutput {
   id: ID!
+  url: String!
+  extension: ImageExtension!
   filesize: Int!
   width: Int!
   height: Int!
-  extension: ImageExtension!
-  url: String!
 }
 
 enum ImageExtension {
