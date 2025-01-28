@@ -55,7 +55,6 @@ function getRunner ({
 }) {
   return setupTestRunner({
     config: ({
-      db: {},
       storage,
       lists: {
         Test: list({
@@ -136,7 +135,10 @@ describe('Image - Crud special tests', () => {
         for (const matrixValue of testMatrix) {
           test(
             'upload values should match expected',
-            getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
+            getRunner({
+              fields,
+              storage: { test_image: config }
+            })(async ({ context }) => {
               const filenames = ['keystone.jpg']
               for (const filename of filenames) {
                 const fileHash = createHash('sha1')
@@ -167,7 +169,10 @@ describe('Image - Crud special tests', () => {
           )
           test(
             'if not image file, throw',
-            getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
+            getRunner({
+              fields,
+              storage: { test_image: config }
+            })(async ({ context }) => {
               const { data, errors } = await context.graphql.raw({
                 query: `
                     mutation ($item: TestCreateInput!) {
@@ -189,7 +194,10 @@ describe('Image - Crud special tests', () => {
           describe('After Operation Hook', () => {
             test(
               'with preserve: true',
-              getRunner({ fields, storage: { test_image: { ...config, preserve: true } } })(
+              getRunner({
+                fields,
+                storage: { test_image: { ...config, preserve: true } }
+              })(
                 async ({ context }) => {
                   const ogFilename = 'keystone.jpeg'
 

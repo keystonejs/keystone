@@ -123,6 +123,7 @@ type KeystoneAdminUIListMeta {
   graphql: KeystoneAdminUIGraphQL!
   pageSize: Int!
   initialColumns: [String!]!
+  initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
   isSingleton: Boolean!
   hideNavigation: Boolean!

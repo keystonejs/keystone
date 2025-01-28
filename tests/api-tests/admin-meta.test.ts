@@ -56,16 +56,20 @@ test(
     const data = await context.sudo().graphql.run({ query: adminMetaQuery })
     expect(data).toEqual({
       keystone: {
-        __typename: 'KeystoneMeta',
         adminMeta: {
-          __typename: 'KeystoneAdminMeta',
           lists: [
             {
-              __typename: 'KeystoneAdminUIListMeta',
               description: null,
               fields: [
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'hidden',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'hidden',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -74,7 +78,8 @@ test(
                   },
                   isNonNull: [],
                   itemView: {
-                    fieldMode: 'hidden',
+                    fieldMode: 'read',
+                    fieldPosition: 'sidebar',
                   },
                   label: 'Id',
                   path: 'id',
@@ -82,7 +87,14 @@ test(
                   viewsIndex: 0,
                 },
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'edit',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'read',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -102,6 +114,7 @@ test(
                   isNonNull: [],
                   itemView: {
                     fieldMode: 'hidden',
+                    fieldPosition: 'form',
                   },
                   label: 'Name',
                   path: 'name',
@@ -109,7 +122,14 @@ test(
                   viewsIndex: 1,
                 },
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'hidden',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'hidden',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -123,6 +143,7 @@ test(
                   isNonNull: [],
                   itemView: {
                     fieldMode: 'read',
+                    fieldPosition: 'form',
                   },
                   label: 'Something',
                   path: 'something',
@@ -155,14 +176,15 @@ test(
                 },
               },
               groups: [],
+              hideCreate: false,
+              hideDelete: false,
+              hideNavigation: false,
               initialColumns: ['name', 'something'],
               initialSearchFields: ['name'],
               initialSort: null,
-              itemQueryName: 'User',
               key: 'User',
               label: 'Users',
               labelField: 'name',
-              listQueryName: 'Users',
               pageSize: 50,
               path: 'users',
               plural: 'Users',

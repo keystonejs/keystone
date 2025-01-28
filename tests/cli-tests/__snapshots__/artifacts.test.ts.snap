@@ -117,7 +117,7 @@ type ResolvedTodoUpdateInput = {
 }
 
 export declare namespace Lists {
-  export type Todo<Session = any> = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo<Session>>
+  export type Todo<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Todo.TypeInfo<Session>>
   namespace Todo {
     export type Item = import('@prisma/client').Todo
     export type TypeInfo<Session = any> = {
@@ -154,8 +154,8 @@ export type TypeInfo<Session = any> = {
 type __TypeInfo<Session = any> = TypeInfo<Session>
 
 export type Lists<Session = any> = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>
-} & Record<string, import('@keystone-6/core').ListConfig<any>>
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>
+} & Record<string, import('@keystone-6/core/types').ListConfig<any>>
 
 export {}
 

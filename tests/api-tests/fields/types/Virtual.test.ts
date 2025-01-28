@@ -179,15 +179,6 @@ describe('Virtual field type', () => {
           }),
         },
       })
-    ).rejects.toMatchInlineSnapshot(`
-            [Error: The virtual field at Post.virtual requires a selection for the Admin UI but ui.query is unspecified and ui.listView.fieldMode and ui.itemView.fieldMode are not both set to 'hidden'.
-            Either set ui.query with what the Admin UI should fetch or hide the field from the Admin UI by setting ui.listView.fieldMode and ui.itemView.fieldMode to 'hidden'.
-            When setting ui.query, it is interpolated into a GraphQL query like this:
-            query {
-              post(where: { id: "..." }) {
-                virtual\${ui.query}
-              }
-            }]
-          `)
+    ).rejects.toMatchInlineSnapshot(`[Error: Post.virtual requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden']`)
   })
 })

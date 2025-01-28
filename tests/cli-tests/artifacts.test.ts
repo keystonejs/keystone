@@ -73,3 +73,17 @@ describe('postinstall', () => {
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
 })
+
+
+
+// uncomment when you need to update the schemas in the fixture
+// import fs from 'node:fs/promises'
+// test.only('update', async () => {
+//   const cwd = await testdir({
+//     ...symlinkKeystoneDeps,
+//     'keystone.js': basicKeystoneConfig,
+//   })
+//   await cliMock(cwd, ['build', '--no-ui'])
+//   await fs.cp(`${cwd}/schema.graphql`, `${__dirname}/fixtures/basic-project/schema.graphql`)
+//   await fs.cp(`${cwd}/schema.prisma`, `${__dirname}/fixtures/basic-project/schema.prisma`)
+// })

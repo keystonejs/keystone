@@ -18,7 +18,7 @@ export const dbProvider = function () {
   if (dbUrl.startsWith('file:')) return 'sqlite' as const
   if (dbUrl.startsWith('postgres:')) return 'postgresql' as const
   if (dbUrl.startsWith('mysql:')) return 'mysql' as const
-  throw new Error(`Unknown database type: for ${dbUrl}`)
+  throw new Error(`Unsupported environment DATABASE_URL="${dbUrl}"`)
 }()
 
 const workerId = process.env.JEST_WORKER_ID
