@@ -55,11 +55,12 @@ const styles = css({
   minHeight: 120,
   scrollbarGutter: 'stable',
   overflowY: 'auto',
-  height:224,
+  height: 224,
+  resize: 'vertical',
   '&[data-expanded=true]': {
     // the !important is necessary to override the height set by resizing as an inline style 
     height: 'auto !important',
-    resize: 'vertical',
+    resize: 'none',
   },
   'ol ol ol ol ol ol ol ol ol': { listStyle: 'lower-roman' },
   'ol ol ol ol ol ol ol ol': { listStyle: 'lower-alpha' },

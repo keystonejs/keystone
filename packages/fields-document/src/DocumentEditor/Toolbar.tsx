@@ -101,6 +101,7 @@ export function Toolbar ({
                 <EditorToolbarGroup>
                   <TooltipTrigger>
                     <EditorToolbarButton
+                      isSelected={viewState.expanded}
                       onPress={() => {
                         viewState.toggle()
                       }}
