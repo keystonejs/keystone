@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "allowImportingTsExtensions": true
   },
   "include": ["**/*"],
   "exclude": ["docs/", "**/node_modules/**/*", "packages/create/starter"]

@@ -1,11 +1,5 @@
 import meow from 'meow'
 import { ExitError } from './utils'
-import { build } from './build'
-import { dev } from './dev'
-import { prisma } from './prisma'
-import { start } from './start'
-import { migrateCreate, migrateApply } from './migrate'
-import { telemetry } from './telemetry'
 
 export type Flags = {
   dbPush: boolean
@@ -83,36 +77,36 @@ export async function cli (cwd: string, argv: string[]) {
   const command = input.join(' ') || 'dev'
 
   if (command === 'dev') {
-    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
+    return (await import('./dev.ts')).dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
   }
 
   if (command === 'migrate create') {
-    return migrateCreate(cwd, defaultFlags(flags, { ui: false }))
+    return (await import('./migrate.ts')).migrateCreate(cwd, defaultFlags(flags, { ui: false }))
   }
 
   if (command === 'migrate apply') {
-    return migrateApply(cwd, defaultFlags(flags, { ui: false }))
+    return (await import('./migrate.ts')).migrateApply(cwd, defaultFlags(flags, { ui: false }))
   }
 
   if (command === 'build') {
-    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }))
+    return (await import('./build.ts')).build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }))
   }
 
   if (command === 'start') {
-    return start(cwd, defaultFlags(flags, { server: true, ui: true, withMigrations: false }))
+    return (await import('./start.ts')).start(cwd, defaultFlags(flags, { server: true, ui: true, withMigrations: false }))
   }
 
   if (command.startsWith('prisma')) {
-    return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
+    return (await import('./prisma.ts')).prisma(cwd, argv.slice(1), Boolean(flags.frozen))
   }
 
   if (command.startsWith('telemetry')) {
-    return telemetry(cwd, argv[1])
+    return (await import('./telemetry.ts')).telemetry(cwd, argv[1])
   }
 
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
-    return build(cwd, { frozen: true, prisma: true, ui: false })
+    return (await import('./build.ts')).build(cwd, { frozen: true, prisma: true, ui: false })
   }
 
   console.log(`${command} is an unknown command`)

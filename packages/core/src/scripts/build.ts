@@ -1,5 +1,4 @@
 import esbuild from 'esbuild'
-import nextBuild from 'next/dist/build'
 import { generateAdminUI } from '../admin-ui/system'
 import {
   createSystem,
@@ -42,6 +41,7 @@ export async function build (
   await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
   console.log('✨ Building Admin UI')
+  const nextBuild = (await import('next/dist/build')).default
   await nextBuild(
     paths.admin,
     undefined,
