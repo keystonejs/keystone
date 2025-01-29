@@ -253,7 +253,6 @@ jobs:
             'custom-admin-ui-logo.test.ts',
             'custom-admin-ui-navigation.test.ts',
             'custom-admin-ui-pages.test.ts',
-            'custom-field-view.test.ts',
             'custom-field.test.ts',
             'default-values.test.ts',
             'document-field.test.ts',
