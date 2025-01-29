@@ -65,7 +65,7 @@ function throwIfMissingFields (
 
   for (const searchFieldKey of refSearchFields) {
     const field = foreignListMeta.fieldsByKey[searchFieldKey]
-    if (!field) throw new Error(`"${refSearchFields}" is not a field of list "${foreignListMeta.key}"`)
+    if (!field) throw new Error(`"${searchFieldKey}" is not a field of list "${foreignListMeta.key}"`)
 
     // @ts-expect-error TODO: fix fieldMeta type for relationship fields
     if (field.fieldMeta?.refSearchFields) continue
