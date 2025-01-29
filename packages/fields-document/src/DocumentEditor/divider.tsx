@@ -18,6 +18,7 @@ const DividerButton = () => {
     () => (
       <EditorToolbarButton
         isDisabled={isDisabled}
+        isSelected={false}
         onPress={() => {
           insertDivider(editor)
         }}
