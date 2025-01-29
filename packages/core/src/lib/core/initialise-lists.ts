@@ -804,6 +804,12 @@ function getListsWithInitialisedFields (
 }
 
 function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
+  const namesOfRelationInputs = new Set<string>()
+  for (const list of Object.values(lists)) {
+    const { types } = list.graphql
+    namesOfRelationInputs.add(types.where.graphQLType.name)
+    namesOfRelationInputs.add(types.relateTo.many.where.graphQLType.name)
+  }
   for (const list of Object.values(lists)) {
     const {
       listKey,
@@ -815,16 +821,17 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
     }
 
     const whereInputFields = list.graphql.types.where.graphQLType.getFields()
-    for (const fieldKey of Object.keys(list.fields)) {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
       const filterType = whereInputFields[fieldKey]?.type
       const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined
+      const filterTypeName = isInputObjectType(filterType) ? filterType.name : undefined
       if (fieldFilterFields?.contains?.type === GraphQLString) {
         searchableFields.set(
           fieldKey,
           fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
         )
-      } else {
-        // TODO: throw?
+      } else if (field.dbField.kind === 'relation' && filterTypeName !== undefined && namesOfRelationInputs.has(filterTypeName)) {
+        searchableFields.set(fieldKey, 'default')
       }
     }
 

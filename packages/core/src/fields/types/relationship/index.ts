@@ -57,20 +57,18 @@ function throwIfMissingFields (
   localListMeta: ListMetaRootVal,
   foreignListMeta: ListMetaRootVal,
   refLabelField: string,
-  refSearchFields: string[]
+  refSearchFields: string[],
+  fieldKey: string
 ) {
   if (!(refLabelField in foreignListMeta.fieldsByKey)) {
-    throw new Error(`"${refLabelField}" is not a field of list "${foreignListMeta.key}"`)
+    throw new Error(`"${refLabelField}" is not a field of list "${foreignListMeta.key}", configured as labelField for "${localListMeta.key}.${fieldKey}"`)
   }
 
   for (const searchFieldKey of refSearchFields) {
     const field = foreignListMeta.fieldsByKey[searchFieldKey]
-    if (!field) throw new Error(`"${searchFieldKey}" is not a field of list "${foreignListMeta.key}"`)
+    if (!field) throw new Error(`"${searchFieldKey}" is not a field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`)
 
-    // @ts-expect-error TODO: fix fieldMeta type for relationship fields
-    if (field.fieldMeta?.refSearchFields) continue
-
-    if (field.search === null) throw new Error(`"${searchFieldKey}" is not a searchable field of list "${foreignListMeta.key}"`)
+    if (field.search === null) throw new Error(`"${searchFieldKey}" is not a searchable field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`)
   }
 }
 
@@ -102,7 +100,7 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
       views: '@keystone-6/core/fields/types/relationship/views',
       getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => {
         const adminMetaRoot = getAdminMetaForRelationshipField()
-        const localListMeta = adminMetaRoot.listsByKey[foreignListKey]
+        const localListMeta = adminMetaRoot.listsByKey[listKey]
         const foreignListMeta = adminMetaRoot.listsByKey[foreignListKey]
 
         if (!foreignListMeta) {
@@ -128,7 +126,7 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         // prefer the local definition to the foreign list, if provided
         const specificRefLabelField = config.ui?.labelField || refLabelField
         const specificRefSearchFields = config.ui?.searchFields || refSearchFields
-        throwIfMissingFields(localListMeta, foreignListMeta, specificRefLabelField, specificRefSearchFields)
+        throwIfMissingFields(localListMeta, foreignListMeta, specificRefLabelField, specificRefSearchFields, fieldKey)
         return {
           displayMode: 'select',
           refListKey: foreignListKey,
