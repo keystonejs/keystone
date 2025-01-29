@@ -38,14 +38,12 @@ const treeKill = promisify(_treeKill)
 export function initFirstItemTest (getPage: () => playwright.Page) {
   test('init first item', async () => {
     const page = getPage()
-    await page.fill('label:has-text("Name") >> .. >> input', 'Admin')
-    await page.click('button:has-text("Set Password")')
-    await page.fill('[placeholder="New Password"]', 'password')
-    await page.fill('[placeholder="Confirm Password"]', 'password')
-    await page.click('button:has-text("Get started")')
-    await page.uncheck('input[type="checkbox"]', { force: true })
-    await page.click('text=Continue')
-    await page.waitForSelector('text=Signed in as Admin')
+    await page.getByLabel('Name').fill('Admin')
+    await page.getByText('Set Password').click()
+    await page.getByPlaceholder('New').fill('password')
+    await page.getByPlaceholder('Confirm').fill('password')
+    await page.getByRole('button', { name: 'Get started' }).click()
+    await page.getByRole('button', { name: 'Sign out' }).waitFor()
   })
 }
 
