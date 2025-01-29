@@ -57,6 +57,8 @@ const styles = css({
   overflowY: 'auto',
   height: 224,
   resize: 'vertical',
+  borderBottomLeftRadius: tokenSchema.size.radius.medium,
+  borderBottomRightRadius: tokenSchema.size.radius.medium,
   '&[data-expanded=true]': {
     // the !important is necessary to override the height set by resizing as an inline style 
     height: 'auto !important',
