@@ -102,5 +102,5 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
       }),
       emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
+  ).toThrowErrorMatchingInlineSnapshot(`""notText" is not a searchable field of list "Thing""`)
 })
