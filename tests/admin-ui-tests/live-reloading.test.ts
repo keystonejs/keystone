@@ -6,7 +6,6 @@ import {
   chromium
 } from 'playwright'
 import { parse, print } from 'graphql'
-import fetch from 'node-fetch'
 import ms from 'ms'
 
 import {

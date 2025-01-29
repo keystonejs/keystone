@@ -1,5 +1,4 @@
 import { type Browser, type Page } from 'playwright'
-import fetch from 'node-fetch'
 import { exampleProjectTests, loadIndex } from './utils'
 
 exampleProjectTests('extend-express-app', browserType => {

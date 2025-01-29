@@ -4,7 +4,6 @@ import {
 } from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
-import fetch from 'node-fetch'
 
 import { type ExecaChildProcess } from 'execa'
 import * as playwright from 'playwright'

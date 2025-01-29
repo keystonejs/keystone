@@ -3,7 +3,6 @@ import fsp from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
-import fetch from 'node-fetch'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
@@ -67,7 +66,7 @@ function getRunner ({
   })
 }
 
-function sha1 (x: Buffer) {
+function sha1 (x: Uint8Array) {
   return createHash('sha1').update(x).digest('hex')
 }
 
@@ -76,7 +75,7 @@ async function getFileHash (
   config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) {
   if (config.matrixValue === 's3') {
-    return sha1(await fetch(url).then(x => x.buffer()))
+    return sha1(await fetch(url).then(async x => new Uint8Array(await x.arrayBuffer())))
   }
 
   return sha1(await fsp.readFile(path.join(config.folder, url)))

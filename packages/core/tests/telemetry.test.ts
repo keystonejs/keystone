@@ -303,11 +303,6 @@ describe('Telemetry tests', () => {
       // this is a nightmare, don't touch it
       jest.resetAllMocks()
       jest.resetModules()
-      jest.mock('node-fetch', () => {
-        return jest.fn().mockImplementation(async () => {
-          throw new Error('Uh oh')
-        })
-      })
       runTelemetryThrows = require('../src/lib/telemetry').runTelemetry
     })
 
