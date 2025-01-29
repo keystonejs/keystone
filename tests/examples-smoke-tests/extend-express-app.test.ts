@@ -12,7 +12,7 @@ exampleProjectTests('extend-express-app', browserType => {
   })
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Posts")')])
-    await page.waitForSelector('a:has-text("Create Post")')
+    await page.waitForSelector('a:has-text("New Post")')
   })
   test('Get Posts', async () => {
     const tasks = await fetch('http://localhost:3000/rest/posts', {
