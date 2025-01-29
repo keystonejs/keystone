@@ -157,6 +157,12 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     disconnect
   } = system.getKeystone(await getTestPrismaModule(paths.schema.prisma, artifacts.prisma))
 
+  if (dbProvider === 'sqlite') {
+    await connect()
+    await context.prisma.$queryRaw`PRAGMA journal_mode=WAL;`
+    await disconnect()
+  }
+
   if (serve) {
     const {
       expressServer: express,
