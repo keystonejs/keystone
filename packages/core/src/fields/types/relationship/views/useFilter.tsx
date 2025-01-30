@@ -73,6 +73,8 @@ export function useSearchFilter (
         for (const refFieldKey of refSearchFields) {
           const refField = refList.fields[refFieldKey]
           if (!refField.search) continue // WARNING: we dont support depth > 2
+          // @ts-expect-error TODO: fix fieldMeta type for relationship fields
+          if (refField.fieldMeta?.refSearchFields) continue // WARNING: we dont support depth > 2
 
           if (many) {
             conditions.push({
