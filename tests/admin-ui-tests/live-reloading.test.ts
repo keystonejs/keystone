@@ -79,9 +79,8 @@ test('changing the label of a field updates in the Admin UI', async () => {
 })
 
 test('adding a virtual field', async () => {
-  const element = await page.waitForSelector('label:has-text("Virtual") >> ..')
-  const value = await element.textContent()
-  expect(value).toBe('Virtualblah')
+  const virtualFieldTextbox = page.getByRole('textbox', { name: 'Virtual' })
+  expect(await virtualFieldTextbox.getAttribute('value')).toBe('blah')
 })
 
 test('the generated schema includes schema updates', async () => {

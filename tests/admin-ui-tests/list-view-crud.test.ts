@@ -27,17 +27,13 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
       }
     `
     await makeGqlRequest(query)
-    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')])
-    await page.waitForSelector('tbody tr:first-of-type td:first-of-type label')
-    await page.click('tbody tr:first-of-type td:first-of-type label')
-    await page.waitForSelector('button:has-text("Delete")')
-    await page.click('button:has-text("Delete")')
-    await page.click('div[role="dialog"] button:has-text("Delete")')
-    await page.waitForSelector(
-      'div[role="alert"] h3:has-text("Deleted 1 of 1 Tasks successfully")'
-    )
-    const dialogs = await page.$$('div[role="alert"] > div')
-    expect(dialogs.length).toBe(1)
+    await page.goto('http://localhost:3000/tasks')
+    await page.getByRole('checkbox', { name: 'Select you can delete me' }).click()
+    await page.getByRole('button', { name: 'Delete' }).click()
+    await page.getByRole('button', { name: 'Yes, delete' }).click()
+    const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
+    await alertDialog.waitFor()
+    expect(await alertDialog.innerText()).toBe('Deleted 1 item.')
   })
 
   test('Complete deletion failure, only shows the successful failure prompt', async () => {
@@ -52,13 +48,13 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
       }
     `
     await makeGqlRequest(query)
-    await Promise.all([page.waitForNavigation(), page.goto('http://localhost:3000/tasks')])
-    await page.click('tbody tr:first-of-type td:first-of-type label')
-    await page.click('button:has-text("Delete")')
-    await page.click('div[role="dialog"] button:has-text("Delete")')
-    await page.waitForSelector('div[role="alert"] h3:has-text("Failed to delete 1 of 1 Tasks")')
-    const dialogs = await page.$$('div[role="alert"] > div')
-    expect(dialogs.length).toBe(1)
+    await page.goto('http://localhost:3000/tasks')
+    await page.getByRole('checkbox', { name: 'Select do not delete' }).click()
+    await page.getByRole('button', { name: 'Delete' }).click()
+    await page.getByRole('button', { name: 'Yes, delete' }).click()
+    const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
+    await alertDialog.waitFor()
+    expect(await alertDialog.innerText()).toBe('Unable to delete 1 item.')
   })
 
   test('Partial deletion failure', async () => {
@@ -86,19 +82,15 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
       }),
     }
     await makeGqlRequest(query, variables)
-    await Promise.all([
-      page.waitForNavigation(),
-      page.goto('http://localhost:3000/tasks?sortBy=label&page=1'),
-    ])
-    await page.click('thead th:first-of-type label')
-    await page.click('button:has-text("Delete")')
-    await page.click('div[role="dialog"] button:has-text("Delete")')
-    await page.waitForSelector('div[role="alert"] h3:has-text("Failed to delete 25 of 50 Tasks")')
-    await page.waitForSelector(
-      'div[role="alert"] h3:has-text("Deleted 25 of 50 Tasks successfully")'
-    )
-    const dialogs = await page.$$('div[role="alert"] > div')
-    expect(dialogs.length).toBe(2)
+    await page.goto('http://localhost:3000/tasks?sortBy=label&page=1')
+    await page.getByRole('checkbox', { name: 'Select All' }).click()
+    await page.getByRole('button', { name: 'Delete' }).click()
+    await page.getByRole('button', { name: 'Yes, delete' }).click()
+    const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
+    await alertDialog.waitFor()
+    expect(await alertDialog.innerText()).toBe('Unable to delete 25 items.')
+    await alertDialog.getByRole('button', { name: 'Close' }).click()
+    await page.locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 items.")').waitFor()
   })
   afterAll(async () => {
     await browser.close()
