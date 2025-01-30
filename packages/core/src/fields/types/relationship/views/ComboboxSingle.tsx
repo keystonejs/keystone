@@ -50,7 +50,19 @@ export function ComboboxSingle ({
   // not the related list, or some items on the list)
   if (error) return <span>Error</span>
 
-  const items = data?.items?.map(x => ({ ...x, built: false }))  ?? []
+  const items: RelationshipValue[] = data?.items?.map(x => ({ ...x, built: false })) ?? []
+
+  if (state.value?.built) {
+    items.push(state.value)
+  }
+
+  const [lastSeenStateValue, setLastSeenStateValue] = React.useState(state.value)
+
+  if (state.value !== lastSeenStateValue) {
+    setLastSeenStateValue(state.value)
+    setSearch(state.value?.label ?? '')
+  }
+
   return (
     <Combobox
       autoFocus={autoFocus}
