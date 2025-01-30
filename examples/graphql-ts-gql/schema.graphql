@@ -4,25 +4,8 @@
 type Post {
   id: ID!
   title: String
-  status: PostStatusType
-  isPublished: Boolean
-  content: String
-  counts: PostCounts
-  excerpt(length: Int! = 200): String
   publishDate: DateTime
   author: Author
-  authorName: String
-}
-
-enum PostStatusType {
-  draft
-  published
-}
-
-type PostCounts {
-  words: Int
-  sentences: Int
-  paragraphs: Int
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -37,9 +20,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
-  status: PostStatusTypeNullableFilter
-  content: StringFilter
-  publishDate: DateTimeNullableFilter
+  publishDate: DateTimeFilter
   author: AuthorWhereInput
 }
 
@@ -82,14 +63,7 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input PostStatusTypeNullableFilter {
-  equals: PostStatusType
-  in: [PostStatusType!]
-  notIn: [PostStatusType!]
-  not: PostStatusTypeNullableFilter
-}
-
-input DateTimeNullableFilter {
+input DateTimeFilter {
   equals: DateTime
   in: [DateTime!]
   notIn: [DateTime!]
@@ -97,14 +71,12 @@ input DateTimeNullableFilter {
   lte: DateTime
   gt: DateTime
   gte: DateTime
-  not: DateTimeNullableFilter
+  not: DateTimeFilter
 }
 
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
-  status: OrderDirection
-  content: OrderDirection
   publishDate: OrderDirection
 }
 
@@ -115,8 +87,6 @@ enum OrderDirection {
 
 input PostUpdateInput {
   title: String
-  status: PostStatusType
-  content: String
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
 }
@@ -134,8 +104,6 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
-  status: PostStatusType
-  content: String
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
 }
@@ -148,7 +116,6 @@ input AuthorRelateToOneForCreateInput {
 type Author {
   id: ID!
   name: String
-  email: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   latestPost: Post
@@ -156,7 +123,6 @@ type Author {
 
 input AuthorWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input AuthorWhereInput {
@@ -165,7 +131,6 @@ input AuthorWhereInput {
   NOT: [AuthorWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
   posts: PostManyRelationFilter
 }
 
@@ -178,12 +143,10 @@ input PostManyRelationFilter {
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
 }
 
 input AuthorUpdateInput {
   name: String
-  email: String
   posts: PostRelateToManyForUpdateInput
 }
 
@@ -201,7 +164,6 @@ input AuthorUpdateArgs {
 
 input AuthorCreateInput {
   name: String
-  email: String
   posts: PostRelateToManyForCreateInput
 }
 

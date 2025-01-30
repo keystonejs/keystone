@@ -1,7 +1,6 @@
 ## Feature Example - Graphql types with ts-gql
 
 This project demonstrates how to generate GraphQL types using ts-gql for `context.graphql` in a Keystone project
-It builds on the [Virtual Field](../virtual-field) starter project.
 
 ## Instructions
 
@@ -19,40 +18,6 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to use `context.graphql` with [ts-gql](https://github.com/Thinkmill/ts-gql).
-It uses the `graphql` export from `@keystone-6/core` to define the GraphQL schema used by the virtual fields.
-
-### `authorName`
-
-The `authorName` field shows how to use the `virtual` field to return some derived data from `context.graphql.run` with the correct type returned.
-
-```ts
-authorName: virtual({
-  field: graphql.field({
-    type: graphql.String,
-    async resolve(item, args, _context) {
-      const context = _context as Context;
-      const POST_AUTHOR_QUERY = gql`
-        query POST_AUTHOR_QUERY($id: ID!) {
-          post(where: { id: $id }) {
-            id
-            author {
-              id
-              name
-            }
-          }
-        }
-      ` as import('./__generated__/ts-gql/POST_AUTHOR_QUERY').type;
-      // data here is strongly typed
-      const data = await context.graphql.run({
-        query: POST_AUTHOR_QUERY,
-        variables: { id: item.id },
-      });
-      const author = data?.post?.author;
-      return author && author.name;
-    },
-  }),
-}),
-```
 
 ## Try it out in CodeSandbox 🧪
 

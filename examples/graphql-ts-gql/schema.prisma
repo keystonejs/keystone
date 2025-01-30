@@ -13,13 +13,11 @@ generator client {
 }
 
 model Post {
-  id          String    @id @default(cuid())
-  title       String    @default("")
-  status      String?
-  content     String    @default("")
-  publishDate DateTime?
-  author      Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId    String?   @map("author")
+  id          String   @id @default(cuid())
+  title       String   @default("")
+  publishDate DateTime @default(now())
+  author      Author?  @relation("Post_author", fields: [authorId], references: [id])
+  authorId    String?  @map("author")
 
   @@index([authorId])
 }
@@ -27,6 +25,5 @@ model Post {
 model Author {
   id    String @id @default(cuid())
   name  String @default("")
-  email String @unique @default("")
   posts Post[] @relation("Post_author")
 }
