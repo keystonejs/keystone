@@ -114,6 +114,8 @@ function useRelatedItem ({
     }
     case 'one': {
       if (!value.value) return null
+      // the related item isn't actually created yet so we can't view it
+      if (value.value.built) return null
 
       return {
         href: `/${foreignList.path}/${value.value.id}`,
