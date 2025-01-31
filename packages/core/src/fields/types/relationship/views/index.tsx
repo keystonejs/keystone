@@ -28,6 +28,7 @@ import { ComboboxSingle } from './ComboboxSingle'
 export { ComboboxSingle, ComboboxMany }
 import type {
   RelationshipController,
+  RelationshipValue,
 } from './types'
 
 export function Field (props: FieldProps<typeof controller>) {
@@ -349,7 +350,68 @@ export function controller (
     },
     filter: {
       Filter (props) {
-        return null // TODO
+        const foreignList = useList(refListKey)
+        if (props.type === 'empty' || props.type === 'not_empty') return null
+        // TODO: show labels rather than ids
+        if (props.type === 'is' || props.type === 'not_is') {
+          return (
+            <ComboboxSingle
+              autoFocus
+              aria-label={label}
+              isReadOnly={false}
+              labelField={refLabelField}
+              searchFields={refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'one',
+                value: typeof props.value === 'string'? { id: props.value, label: props.value, built: false } : null,
+                onChange (newItem) {
+                  props.onChange(newItem === null ? null : newItem.id.toString())
+                },
+              }}
+            />
+          )
+        }
+        const ids = Array.isArray(props.value) ? props.value : []
+        const value = ids.map((id): RelationshipValue => ({ id, label: id, built: false }))
+        return (
+          <VStack gap="medium">
+            <ComboboxMany
+              autoFocus
+              aria-label={label}
+              isReadOnly={false}
+              labelField={refLabelField}
+              searchFields={refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'many',
+                value,
+                onChange (newItem) {
+                  props.onChange(newItem.map(x => x.id.toString()))
+                },
+              }}
+            />
+            <TagGroup
+              aria-label={`related ${foreignList.plural}`}
+              items={value.map(item => ({
+                id: item.id.toString() ?? '',
+                label: item.label ?? '',
+                href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+              }))}
+              maxRows={2}
+              onRemove={keys => {
+                props.onChange(ids.filter(id => !keys.has(id)))
+              }}  
+              renderEmptyState={() => (
+                <Text color="neutralSecondary" size="small">
+                  Select related {foreignList.plural.toLowerCase()}…
+                </Text>
+              )}
+            >
+              {renderItem}
+            </TagGroup>
+          </VStack>
+        )
       },
       Label ({ label, type, value }) {
         const listFormatter = useListFormatter({
