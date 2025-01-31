@@ -8,17 +8,12 @@ import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
 export function ComboboxSingle ({
-  autoFocus,
-  description,
-  isDisabled,
-  isLoading,
-  isReadOnly,
-  label,
   labelField,
   searchFields,
   list,
-  placeholder,
   state,
+  isLoading,
+  ...props
 }: {
   autoFocus?: boolean
   description?: string
@@ -65,12 +60,8 @@ export function ComboboxSingle ({
 
   return (
     <Combobox
-      autoFocus={autoFocus}
-      description={description}
-      isDisabled={isDisabled}
-      isReadOnly={isReadOnly}
+      {...props}
       items={data?.items ?? []}
-      label={label}
       loadingState={loading || isLoading ? 'loading' : 'idle'}
       onInputChange={input => {
         setSearch(input)
@@ -80,7 +71,6 @@ export function ComboboxSingle ({
       }}
       inputValue={search}
       onLoadMore={onLoadMore}
-      placeholder={placeholder}
       selectedKey={state.value ? state.value.id.toString() : null}
       onSelectionChange={key => {
         const [selectedItem = null] = items.filter(item => key === item.id.toString())

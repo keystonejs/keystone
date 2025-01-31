@@ -8,18 +8,15 @@ import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
 export function ComboboxMany ({
-  autoFocus,
-  description,
   isDisabled,
   isLoading,
   isReadOnly,
-  label,
   labelField,
   searchFields,
   list,
-  placeholder,
   state,
   extraSelection = '',
+  ...props
 }: {
   autoFocus?: boolean
   description?: string
@@ -27,6 +24,7 @@ export function ComboboxMany ({
   isLoading?: boolean
   isReadOnly?: boolean
   label?: string
+  'aria-label'?: string
   labelField: string
   searchFields: string[]
   list: ListMeta
@@ -55,16 +53,13 @@ export function ComboboxMany ({
   const items = data?.items?.map(x => ({ ...x, built: false }))  ?? []
   return (
     <ComboboxMulti
-      autoFocus={autoFocus}
-      description={description}
+      {...props}
       isDisabled={isDisabled || isReadOnly}
       items={items}
-      label={label}
       loadingState={loadingState}
       onInputChange={setSearch}
       inputValue={search}
       onLoadMore={onLoadMore}
-      placeholder={placeholder}
       selectedKeys={state.value?.map(item => item.id.toString())}
       onSelectionChange={selection => {
         // TODO
