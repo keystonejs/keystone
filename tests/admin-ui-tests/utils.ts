@@ -13,7 +13,9 @@ import ms from 'ms'
 jest.setTimeout(ms('20 minutes'))
 
 export async function loadIndex (page: playwright.Page) {
-  await page.goto('http://localhost:3000')
+  try {
+    await page.goto('http://localhost:3000')
+  } catch {}
   try {
     // sometimes Next will fail to load the page the first time
     // this is probably because Keystone is fetching the API route to compile Keystone
@@ -90,8 +92,9 @@ export function adminUITests (
   })
 }
 
-export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullStreams, content: string) {
-  return await new Promise<string>((resolve, reject) => {
+export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullStreams, content: string, timeout = 10000) {
+  const signal = AbortSignal.timeout(timeout)
+  return new Promise<string>((resolve, reject) => {
     let output = ''
     function listener (chunk: Buffer) {
       output += chunk.toString('utf8')
@@ -105,7 +108,16 @@ export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullS
 
     p.stdout!.on('data', listener)
     p.stderr!.on('data', listener)
-    p.on('error', err => reject(err))
+    p.on('error', err => {
+      p.stdout!.off('data', listener)
+      p.stderr!.off('data', listener)
+      reject(err)
+    })
+    signal.addEventListener('abort', () => {
+      p.stdout!.off('data', listener)
+      p.stderr!.off('data', listener)
+      reject(signal.reason)
+    })
   })
 }
 
