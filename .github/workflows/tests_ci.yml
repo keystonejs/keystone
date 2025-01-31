@@ -309,4 +309,4 @@ jobs:
         run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
+        run: pnpm jest --ci --runInBand --forceExit tests/admin-ui-tests/${{ matrix.test }}

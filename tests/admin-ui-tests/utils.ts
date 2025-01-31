@@ -100,7 +100,7 @@ export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullS
       output += chunk.toString('utf8')
       if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
-
+      signal.removeEventListener('abort', abortListener)
       p.stdout!.off('data', listener)
       p.stderr!.off('data', listener)
       resolve(output)
@@ -111,13 +111,15 @@ export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullS
     p.on('error', err => {
       p.stdout!.off('data', listener)
       p.stderr!.off('data', listener)
+      signal.removeEventListener('abort', abortListener)
       reject(err)
     })
-    signal.addEventListener('abort', () => {
+    const abortListener = () => {
       p.stdout!.off('data', listener)
       p.stderr!.off('data', listener)
       reject(signal.reason)
-    })
+    }
+    signal.addEventListener('abort', abortListener, { once: true })
   })
 }
 
