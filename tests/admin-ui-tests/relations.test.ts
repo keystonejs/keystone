@@ -1,4 +1,5 @@
 import { type Browser, type Page } from 'playwright'
+import { expect } from 'playwright/test'
 import { adminUITests } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {
@@ -10,14 +11,14 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage()
   })
 
-  test('Creating relation items inline does not submit main form', async () => {
+  test('Creating related item does not submit main form', async () => {
     await page.goto('http://localhost:3000/tasks/create')
     await page.fill('label:has-text("Label")', 'Buy beer')
-    await page.click('button:has-text("Create related Person")')
-    await page.waitForSelector('h1:has-text("Create Person")')
-    await page.fill('label:has-text("Name")', 'Geralt')
-    await page.click('button:has-text("Create Person")')
-    await page.waitForSelector('legend:has-text("Assigned To") ~ div:has-text("Geralt")')
+    await page.getByRole('button', { name: 'Actions for Assigned To' }).click()
+    await page.getByText('Add person').click()
+    await page.getByRole('textbox', { name: 'Name' }).fill('Geralt')
+    await page.getByRole('button', { name: 'Add' }).click()
+    await expect(page.getByRole('combobox', { name: 'Assigned To' })).toHaveValue('Geralt')
     expect(page.url()).toBe('http://localhost:3000/tasks/create')
   })
 
