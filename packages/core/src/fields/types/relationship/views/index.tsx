@@ -362,8 +362,10 @@ export function controller (
         return `${label.toLowerCase()} (${listFormatter.format(value || [''])})`
       },
       graphql: ({ type, value }) => {
-        if (type === 'empty') return { [config.path]: { equals: null } }
-        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'empty' && !many) return { [config.path]: { equals: null } }
+        if (type === 'empty' && many) return { [config.path]: { none: {} } }
+        if (type === 'not_empty' && !many) return { [config.path]: { not: { equals: null } } }
+        if (type === 'not_empty' && many) return { [config.path]: { some: {} } }
         if (type === 'is') return { [config.path]: { id: { equals: value } } }
         if (type === 'not_is') return { [config.path]: { not: { id: { equals: value } } } }
         if (type === 'some') return { [config.path]: { some: { id: { in: value } } } }
@@ -371,12 +373,12 @@ export function controller (
         return { [config.path]: { [type]: value } } // uh
       },
       types: {
+        empty: { label: 'Is empty', initialValue: null, },
+        not_empty: { label: 'Is not empty', initialValue: null, },
         ...(many ? {
           some: { label: 'Is one of', initialValue: [], },
           not_some: { label: 'Is not one of', initialValue: [], },
         } : {
-          empty: { label: 'Is empty', initialValue: null, },
-          not_empty: { label: 'Is not empty', initialValue: null, },
           is: { label: 'Is', initialValue: null, },
           not_is: { label: 'Is not', initialValue: null, },
         }),
