@@ -2,6 +2,8 @@ name: 'CI setup'
 runs:
   using: 'composite'
   steps:
+    - run: npm i -g corepack@0.31.0
+      shell: bash
     - run: corepack enable
       shell: bash
 
@@ -19,7 +21,6 @@ runs:
       shell: bash
       env:
         PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
-        COREPACK_DEFAULT_TO_LATEST: 0
 
     - run: pnpm run build
       shell: bash
