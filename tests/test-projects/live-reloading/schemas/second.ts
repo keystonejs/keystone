@@ -1,4 +1,4 @@
-import { graphql, list } from '@keystone-6/core'
+import { g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, virtual } from '@keystone-6/core/fields'
 
@@ -10,8 +10,8 @@ export const lists = {
     fields: {
       text: text({ label: 'Very Important Text' }),
       virtual: virtual({
-        field: graphql.field({
-          type: graphql.String,
+        field: g.field({
+          type: g.String,
           resolve (item) {
             return item.text
           },
@@ -21,11 +21,11 @@ export const lists = {
   }),
 } satisfies Lists
 
-export const extendGraphqlSchema = graphql.extend(() => {
+export const extendGraphqlSchema = g.extend(() => {
   return {
     query: {
-      someNumber: graphql.field({
-        type: graphql.nonNull(graphql.Int),
+      someNumber: g.field({
+        type: g.nonNull(g.Int),
         resolve: () => 1,
       }),
     },

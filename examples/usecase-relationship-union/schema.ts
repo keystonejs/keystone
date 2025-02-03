@@ -1,4 +1,4 @@
-import { list, group, graphql } from '@keystone-6/core'
+import { list, group, g } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
@@ -39,8 +39,8 @@ export const lists: Lists = {
     },
     fields: {
       label: virtual({
-        field: graphql.field({
-          type: graphql.String,
+        field: g.field({
+          type: g.String,
           resolve: async (item, _, context) => {
             const { postId, linkId } = item
             if (postId) {

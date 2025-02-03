@@ -7,7 +7,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -140,22 +140,22 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       })({
         ...commonConfig,
         input: {
-          uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+          uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Int }) } : undefined,
           where: {
-            arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
+            arg: g.arg({ type: filters[meta.provider].Int[mode] }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
           },
           create: {
-            arg: graphql.arg({
-              type: graphql.Int,
+            arg: g.arg({
+              type: g.Int,
               defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
             }),
             resolve: resolveCreate,
           },
-          update: { arg: graphql.arg({ type: graphql.Int }) },
-          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+          update: { arg: g.arg({ type: g.Int }) },
+          orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
         },
-        output: graphql.field({ type: graphql.Int }),
+        output: g.field({ type: g.Int }),
       })
     }
 
@@ -163,9 +163,9 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`
       const enumValues = options.map(x => `${x.value}`)
 
-      const graphQLType = graphql.enum({
+      const graphQLType = g.enum({
         name: enumName,
-        values: graphql.enumValues(enumValues),
+        values: g.enumValues(enumValues),
       })
       return fieldType(
         meta.provider === 'sqlite'
@@ -180,22 +180,22 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
         ...commonConfig,
         input: {
           uniqueWhere:
-            isIndexed === 'unique' ? { arg: graphql.arg({ type: graphQLType }) } : undefined,
+            isIndexed === 'unique' ? { arg: g.arg({ type: graphQLType }) } : undefined,
           where: {
-            arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
+            arg: g.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
           },
           create: {
-            arg: graphql.arg({
+            arg: g.arg({
               type: graphQLType,
               defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
             }),
             resolve: resolveCreate,
           },
-          update: { arg: graphql.arg({ type: graphQLType }) },
-          orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+          update: { arg: g.arg({ type: graphQLType }) },
+          orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
         },
-        output: graphql.field({ type: graphQLType }),
+        output: g.field({ type: graphQLType }),
       })
     }
 
@@ -203,22 +203,22 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       ...commonConfig,
       input: {
         uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
+          isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].String[mode] }),
+          arg: g.arg({ type: filters[meta.provider].String[mode] }),
           resolve: mode === 'required' ? undefined : filters.resolveString,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.String,
+          arg: g.arg({
+            type: g.String,
             defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
           resolve: resolveCreate,
         },
-        update: { arg: graphql.arg({ type: graphql.String }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.String }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.String }),
+      output: g.field({ type: g.String }),
     })
   }
 }

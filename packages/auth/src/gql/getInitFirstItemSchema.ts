@@ -1,8 +1,8 @@
-import {
-  type BaseItem,
-  type KeystoneContext,
+import type {
+  BaseItem,
+  KeystoneContext
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
 import {
   type AuthGqlNames,
@@ -24,17 +24,17 @@ export function getInitFirstItemSchema ({
   defaultItemData: InitFirstItemConfig<any>['itemData']
   gqlNames: AuthGqlNames
   graphQLSchema: GraphQLSchema
-  ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
+  ItemAuthenticationWithPasswordSuccess: g.ObjectType<{
     item: BaseItem
     sessionToken: string
   }>
   // TODO: return type required by pnpm :(
-}): graphql.Extension {
+}): g.Extension {
   const createInputConfig = assertInputObjectType(
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig()
   const fieldsSet = new Set(fields)
-  const initialCreateInput = graphql.wrap.inputObject(
+  const initialCreateInput = g.wrap.inputObject(
     new GraphQLInputObjectType({
       ...createInputConfig,
       fields: Object.fromEntries(Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))),
@@ -44,9 +44,9 @@ export function getInitFirstItemSchema ({
 
   return {
     mutation: {
-      [gqlNames.createInitialItem]: graphql.field({
-        type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
-        args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
+      [gqlNames.createInitialItem]: g.field({
+        type: g.nonNull(ItemAuthenticationWithPasswordSuccess),
+        args: { data: g.arg({ type: g.nonNull(initialCreateInput) }) },
         async resolve (rootVal, { data }, context: KeystoneContext) {
           if (!context.sessionStrategy) throw new Error('No session strategy on context')
 

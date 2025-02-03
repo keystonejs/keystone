@@ -6,7 +6,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../types'
-import { graphql } from '../types/schema'
+import { g } from '../types/schema'
 import { userInputError } from './core/graphql-errors'
 
 type IDType = string | number | null
@@ -40,33 +40,33 @@ function isUuid (x: IDType) {
 }
 
 const nonCircularFields = {
-  equals: graphql.arg({ type: graphql.ID }),
-  in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
-  notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.ID)) }),
-  lt: graphql.arg({ type: graphql.ID }),
-  lte: graphql.arg({ type: graphql.ID }),
-  gt: graphql.arg({ type: graphql.ID }),
-  gte: graphql.arg({ type: graphql.ID }),
+  equals: g.arg({ type: g.ID }),
+  in: g.arg({ type: g.list(g.nonNull(g.ID)) }),
+  notIn: g.arg({ type: g.list(g.nonNull(g.ID)) }),
+  lt: g.arg({ type: g.ID }),
+  lte: g.arg({ type: g.ID }),
+  gt: g.arg({ type: g.ID }),
+  gte: g.arg({ type: g.ID }),
 }
 
-type IDFilterType = graphql.InputObjectType<
+type IDFilterType = g.InputObjectType<
   typeof nonCircularFields & {
-    not: graphql.Arg<typeof IDFilter>
+    not: g.Arg<typeof IDFilter>
   }
 >
 
-const IDFilter: IDFilterType = graphql.inputObject({
+const IDFilter: IDFilterType = g.inputObject({
   name: 'IDFilter',
   fields: () => ({
     ...nonCircularFields,
-    not: graphql.arg({ type: IDFilter }),
+    not: g.arg({ type: IDFilter }),
   }),
 })
 
-const filterArg = graphql.arg({ type: IDFilter })
+const filterArg = g.arg({ type: IDFilter })
 
 function resolveInput (
-  input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
+  input: Exclude<g.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ) {
   const where: any = {}
@@ -177,11 +177,11 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
             return resolveInput(val, parse)
           },
         },
-        uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parse },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        uniqueWhere: { arg: g.arg({ type: g.ID }), resolve: parse },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.nonNull(graphql.ID),
+      output: g.field({
+        type: g.nonNull(g.ID),
         resolve ({ value }) {
           return value.toString()
         },

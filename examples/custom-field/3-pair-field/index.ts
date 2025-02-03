@@ -4,20 +4,20 @@ import {
   type FieldTypeFunc,
   fieldType,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>
 
 type PairInput = string
 type PairOutput = string
 
-const PairInput = graphql.String
-const PairOutput = graphql.String
+const PairInput = g.String
+const PairOutput = g.String
 
-const PairFilter = graphql.inputObject({
+const PairFilter = g.inputObject({
   name: 'PairFilter',
   fields: {
-    equals: graphql.arg({ type: graphql.String }),
+    equals: g.arg({ type: g.String }),
   },
 })
 
@@ -68,25 +68,25 @@ export function pair<ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       input: {
         where: {
-          arg: graphql.arg({ type: PairFilter }),
+          arg: g.arg({ type: PairFilter }),
           resolve (value, context) {
             return resolveWhere(value)
           },
         },
         create: {
-          arg: graphql.arg({ type: PairInput }),
+          arg: g.arg({ type: PairInput }),
           resolve (value, context) {
             return resolveInput(value)
           },
         },
         update: {
-          arg: graphql.arg({ type: PairInput }),
+          arg: g.arg({ type: PairInput }),
           resolve (value, context) {
             return resolveInput(value)
           },
         },
       },
-      output: graphql.field({
+      output: g.field({
         type: PairOutput,
         resolve ({ value, item }, args, context, info) {
           return resolveOutput(value)

@@ -4,7 +4,7 @@ import {
   type CommonFieldConfig,
   fieldType
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import {
   type ListMetaRootVal,
   getAdminMetaForRelationshipField
@@ -151,37 +151,37 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         ...commonConfig,
         input: {
           where: {
-            arg: graphql.arg({ type: foreignListTypes.relateTo.many.where }),
+            arg: g.arg({ type: foreignListTypes.relateTo.many.where }),
             resolve (value, context, resolve) {
               return resolve(value)
             },
           },
           create: {
-            arg: graphql.arg({ type: foreignListTypes.relateTo.many.create }),
+            arg: g.arg({ type: foreignListTypes.relateTo.many.create }),
             async resolve (value, context, resolve) {
               return resolve(value)
             },
           },
           update: {
-            arg: graphql.arg({ type: foreignListTypes.relateTo.many.update }),
+            arg: g.arg({ type: foreignListTypes.relateTo.many.update }),
             async resolve (value, context, resolve) {
               return resolve(value)
             },
           },
         },
-        output: graphql.field({
+        output: g.field({
           args: foreignListTypes.findManyArgs,
-          type: graphql.list(graphql.nonNull(foreignListTypes.output)),
+          type: g.list(g.nonNull(foreignListTypes.output)),
           resolve ({ value }, args) {
             return value.findMany(args)
           },
         }),
         extraOutputFields: {
-          [`${fieldKey}Count`]: graphql.field({
-            type: graphql.Int,
+          [`${fieldKey}Count`]: g.field({
+            type: g.Int,
             args: {
-              where: graphql.arg({
-                type: graphql.nonNull(foreignListTypes.where),
+              where: g.arg({
+                type: g.nonNull(foreignListTypes.where),
                 defaultValue: {},
               }),
             },
@@ -206,26 +206,26 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
       ...commonConfig,
       input: {
         where: {
-          arg: graphql.arg({ type: foreignListTypes.where }),
+          arg: g.arg({ type: foreignListTypes.where }),
           resolve (value, context, resolve) {
             return resolve(value)
           },
         },
         create: foreignListTypes.relateTo.one.create && {
-          arg: graphql.arg({ type: foreignListTypes.relateTo.one.create }),
+          arg: g.arg({ type: foreignListTypes.relateTo.one.create }),
           async resolve (value, context, resolve) {
             return resolve(value)
           },
         },
 
         update: foreignListTypes.relateTo.one.update && {
-          arg: graphql.arg({ type: foreignListTypes.relateTo.one.update }),
+          arg: g.arg({ type: foreignListTypes.relateTo.one.update }),
           async resolve (value, context, resolve) {
             return resolve(value)
           },
         },
       },
-      output: graphql.field({
+      output: g.field({
         type: foreignListTypes.output,
         resolve ({ value }) {
           return value()

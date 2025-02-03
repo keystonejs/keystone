@@ -12,7 +12,7 @@ import type {
   GraphQLNames,
 } from '../types/utils'
 import { QueryMode } from '../types'
-import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
+import { g as graphqlBoundToKeystoneContext } from '../types/schema'
 import type {
   AdminMetaRootVal,
   FieldGroupMetaRootVal,

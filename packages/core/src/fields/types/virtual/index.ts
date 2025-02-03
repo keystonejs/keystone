@@ -8,19 +8,19 @@ import {
   type ListGraphQLTypes,
   fieldType,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 
 type VirtualFieldGraphQLField<
   Item extends BaseItem,
   Context extends KeystoneContext
-> = graphql.Field<Item, any, graphql.OutputType, string, Context>
+> = g.Field<Item, any, g.OutputType, string, Context>
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
       | ((lists: Record<string, ListGraphQLTypes>) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
-    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
+    unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<any>[]
     ui?: {
       /**
        * This can be used by the AdminUI to fetch the relevant sub-fields
@@ -47,7 +47,7 @@ export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
     const hasRequiredArgs =
       usableField.args &&
       Object.values(
-        usableField.args as Record<string, graphql.Arg<graphql.InputType, boolean>>
+        usableField.args as Record<string, g.Arg<g.InputType, boolean>>
       ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined)
 
     if (
@@ -60,7 +60,7 @@ export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
 
     return fieldType({ kind: 'none', })({
       ...config,
-      output: graphql.field({
+      output: g.field({
         ...(usableField as any),
         resolve ({ item }, ...args) {
           return usableField.resolve!(item, ...args)

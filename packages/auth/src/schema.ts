@@ -7,9 +7,9 @@ import {
   parse,
   validate,
 } from 'graphql'
-import { graphql } from '@keystone-6/core'
-import { getGqlNames } from '@keystone-6/core/types'
 
+import { g } from '@keystone-6/core'
+import { getGqlNames } from '@keystone-6/core/types'
 import type {
   AuthGqlNames,
   AuthTokenTypeConfig,
@@ -60,7 +60,7 @@ export const getSchemaExtension = ({
   magicAuthLink?: AuthTokenTypeConfig
   sessionData: string
 }) =>
-  graphql.extend(base => {
+  g.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(base.schema.getType(`${listKey}WhereUniqueInput`))
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (

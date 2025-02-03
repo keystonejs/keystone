@@ -1,4 +1,4 @@
-import { list, graphql, config, group } from '@keystone-6/core'
+import { list, g, config, group } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import {
   bigInt,
@@ -79,8 +79,8 @@ export const lists = {
       calendarDay: calendarDay({ ui: { description } }),
       randomNumberVirtual: virtual({
         ui: { description },
-        field: graphql.field({
-          type: graphql.Float,
+        field: g.field({
+          type: g.Float,
           resolve () {
             return Math.random() * 1000
           },

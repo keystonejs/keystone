@@ -7,7 +7,7 @@ import type {
   KeystoneContext,
 } from '../../../types'
 import { fieldType, } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import {
   type InternalFieldHooks,
@@ -23,40 +23,40 @@ export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   }
 
 // TODO: dynamic
-const ImageExtensionEnum = graphql.enum({
+const ImageExtensionEnum = g.enum({
   name: 'ImageExtension',
-  values: graphql.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
+  values: g.enumValues(SUPPORTED_IMAGE_EXTENSIONS),
 })
 
-const ImageFieldInput = graphql.inputObject({
+const ImageFieldInput = g.inputObject({
   name: 'ImageFieldInput',
   fields: {
-    upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
+    upload: g.arg({ type: g.nonNull(g.Upload) }),
   },
 })
 
-const inputArg = graphql.arg({ type: ImageFieldInput })
+const inputArg = g.arg({ type: ImageFieldInput })
 
-const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
+const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
   name: 'ImageFieldOutput',
   fields: {
-    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
-    url: graphql.field({
-      type: graphql.nonNull(graphql.String),
+    id: g.field({ type: g.nonNull(g.ID) }),
+    url: g.field({
+      type: g.nonNull(g.String),
       resolve (data, args, context) {
         return context.images(data.storage).getUrl(data.id, data.extension)
       },
     }),
-    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    extension: g.field({ type: g.nonNull(ImageExtensionEnum) }),
+    filesize: g.field({ type: g.nonNull(g.Int) }),
+    width: g.field({ type: g.nonNull(g.Int) }),
+    height: g.field({ type: g.nonNull(g.Int) }),
   },
 })
 
 async function inputResolver (
   storage: string,
-  data: graphql.InferValueFromArg<typeof inputArg>,
+  data: g.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) {
@@ -140,7 +140,7 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
       },
-      output: graphql.field({
+      output: g.field({
         type: ImageFieldOutput,
         resolve ({
           value: {

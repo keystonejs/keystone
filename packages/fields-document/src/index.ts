@@ -7,7 +7,7 @@ import {
   type JSONValue,
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 import type { Relationships } from './DocumentEditor/relationship-shared'
 import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
 import { validateAndNormalizeDocument } from './validation'
@@ -115,7 +115,7 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
         __ksTelemetryFieldTypeName: '@keystone-6/document',
         input: {
           create: {
-            arg: graphql.arg({ type: graphql.JSON }),
+            arg: g.arg({ type: g.JSON }),
             resolve (val) {
               if (val === undefined) {
                 val = [{ type: 'paragraph', children: [{ text: '' }] }]
@@ -123,20 +123,20 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
               return inputResolver(val)
             },
           },
-          update: { arg: graphql.arg({ type: graphql.JSON }), resolve: inputResolver },
+          update: { arg: g.arg({ type: g.JSON }), resolve: inputResolver },
         },
-        output: graphql.field({
-          type: graphql.object<{ document: JSONValue }>()({
+        output: g.field({
+          type: g.object<{ document: JSONValue }>()({
             name: `${meta.listKey}_${meta.fieldKey}_Document`,
             fields: {
-              document: graphql.field({
+              document: g.field({
                 args: {
-                  hydrateRelationships: graphql.arg({
-                    type: graphql.nonNull(graphql.Boolean),
+                  hydrateRelationships: g.arg({
+                    type: g.nonNull(g.Boolean),
                     defaultValue: false,
                   }),
                 },
-                type: graphql.nonNull(graphql.JSON),
+                type: g.nonNull(g.JSON),
                 resolve ({ document }, { hydrateRelationships }, context) {
                   return hydrateRelationships
                     ? addRelationshipData(document as any, context, relationships, componentBlocks)

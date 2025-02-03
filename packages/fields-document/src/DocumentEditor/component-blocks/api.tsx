@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 import type {
   HTMLAttributes,
@@ -64,9 +64,9 @@ export const fields = {
       defaultValue,
       validate (value: unknown) { return typeof value === 'string' },
       graphql: {
-        input: graphql.String,
-        output: graphql.field({
-          type: graphql.String,
+        input: g.String,
+        output: g.field({
+          type: g.String,
         }),
       },
     }
@@ -88,9 +88,9 @@ export const fields = {
       defaultValue,
       validate,
       graphql: {
-        input: graphql.Int,
-        output: graphql.field({
-          type: graphql.Int,
+        input: g.Int,
+        output: g.field({
+          type: g.Int,
         }),
       },
     }
@@ -112,9 +112,9 @@ export const fields = {
       defaultValue,
       validate,
       graphql: {
-        input: graphql.String,
-        output: graphql.field({
-          type: graphql.String,
+        input: g.String,
+        output: g.field({
+          type: g.String,
         }),
       },
     }
@@ -140,9 +140,9 @@ export const fields = {
         return typeof value === 'string' && optionValuesSet.has(value)
       },
       graphql: {
-        input: graphql.String,
-        output: graphql.field({
-          type: graphql.String,
+        input: g.String,
+        output: g.field({
+          type: g.String,
           // TODO: FIXME why is this required
           resolve ({ value }) { return value },
         }),
@@ -169,9 +169,9 @@ export const fields = {
           && value.every(value => typeof value === 'string' && valuesToOption.has(value))
       },
       graphql: {
-        input: graphql.list(graphql.nonNull(graphql.String)),
-        output: graphql.field({
-          type: graphql.list(graphql.nonNull(graphql.String)),
+        input: g.list(g.nonNull(g.String)),
+        output: g.field({
+          type: g.list(g.nonNull(g.String)),
           // TODO: why is this required
           resolve ({ value }) { return value },
         }),
@@ -203,8 +203,8 @@ export const fields = {
       defaultValue,
       validate (value: unknown) { return typeof value === 'boolean' },
       graphql: {
-        input: graphql.Boolean,
-        output: graphql.field({ type: graphql.Boolean }),
+        input: g.Boolean,
+        output: g.field({ type: g.Boolean }),
       },
     }
   },

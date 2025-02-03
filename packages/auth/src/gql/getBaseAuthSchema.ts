@@ -2,7 +2,7 @@ import type {
   BaseItem,
   KeystoneContext
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 import type {
   AuthGqlNames,
   SecretFieldImpl,
@@ -26,25 +26,25 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
   secretField: S
   gqlNames: AuthGqlNames
   secretFieldImpl: SecretFieldImpl
-  base: graphql.BaseSchemaMeta
+  base: g.BaseSchemaMeta
 }) {
-  const ItemAuthenticationWithPasswordSuccess = graphql.object<{
+  const ItemAuthenticationWithPasswordSuccess = g.object<{
     sessionToken: string
     item: BaseItem
   }>()({
     name: gqlNames.ItemAuthenticationWithPasswordSuccess,
     fields: {
-      sessionToken: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      item: graphql.field({ type: graphql.nonNull(base.object(listKey)) }),
+      sessionToken: g.field({ type: g.nonNull(g.String) }),
+      item: g.field({ type: g.nonNull(base.object(listKey)) }),
     },
   })
-  const ItemAuthenticationWithPasswordFailure = graphql.object<{ message: string }>()({
+  const ItemAuthenticationWithPasswordFailure = g.object<{ message: string }>()({
     name: gqlNames.ItemAuthenticationWithPasswordFailure,
     fields: {
-      message: graphql.field({ type: graphql.nonNull(graphql.String) }),
+      message: g.field({ type: g.nonNull(g.String) }),
     },
   })
-  const AuthenticationResult = graphql.union({
+  const AuthenticationResult = g.union({
     name: gqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
     resolveType (val) {
@@ -55,7 +55,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 
   const extension = {
     query: {
-      authenticatedItem: graphql.field({
+      authenticatedItem: g.field({
         type: base.object(listKey),
         resolve (root, args, context: KeystoneContext) {
           const { session } = context
@@ -70,18 +70,18 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
       }),
     },
     mutation: {
-      endSession: graphql.field({
-        type: graphql.nonNull(graphql.Boolean),
+      endSession: g.field({
+        type: g.nonNull(g.Boolean),
         async resolve (rootVal, args, context) {
           await context.sessionStrategy?.end({ context })
           return true
         },
       }),
-      [gqlNames.authenticateItemWithPassword]: graphql.field({
+      [gqlNames.authenticateItemWithPassword]: g.field({
         type: AuthenticationResult,
         args: {
-          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-          [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          [identityField]: g.arg({ type: g.nonNull(g.String) }),
+          [secretField]: g.arg({ type: g.nonNull(g.String) }),
         },
         async resolve (root, {
           [identityField]: identity,

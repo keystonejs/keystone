@@ -1,4 +1,4 @@
-import { graphql, list } from '@keystone-6/core'
+import { g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, integer, relationship, timestamp, virtual } from '@keystone-6/core/fields'
 import {
@@ -6,10 +6,10 @@ import {
   type Lists
 } from '.keystone/types'
 
-export const extendGraphqlSchema = graphql.extend(base => {
+export const extendGraphqlSchema = g.extend(base => {
   return {
     mutation: {
-      submitOrder: graphql.field({
+      submitOrder: g.field({
         type: base.object('Order'),
         args: {},
         async resolve (source, {}, context: Context) {
@@ -84,8 +84,8 @@ export const lists = {
       value: integer(),
 
       available: virtual({
-        field: graphql.field({
-          type: graphql.Int,
+        field: g.field({
+          type: g.Int,
           resolve (item, args, context) {
             return context.db.Item.count({
               where: {

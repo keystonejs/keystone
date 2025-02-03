@@ -6,7 +6,7 @@ import {
   orderDirectionEnum,
   Decimal,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -126,14 +126,14 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Decimal }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Decimal[mode] }),
+          arg: g.arg({ type: filters[meta.provider].Decimal[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.Decimal,
+          arg: g.arg({
+            type: g.Decimal,
             defaultValue: parsedDefaultValue,
           }),
           resolve (val) {
@@ -141,11 +141,11 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
             return val
           },
         },
-        update: { arg: graphql.arg({ type: graphql.Decimal }), },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.Decimal }), },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Decimal,
+      output: g.field({
+        type: g.Decimal,
         resolve ({ value }) {
           if (value === null) return null
           const val: Decimal & { scaleToPrint?: number } = new Decimal(value)

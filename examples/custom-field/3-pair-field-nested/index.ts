@@ -4,7 +4,7 @@ import {
   type FieldTypeFunc,
   fieldType,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>
 
@@ -14,26 +14,26 @@ type PairInput = {
 }
 type PairOutput = PairInput
 
-const PairInput = graphql.inputObject({
+const PairInput = g.inputObject({
   name: 'PairNestedInput',
   fields: {
-    left: graphql.arg({ type: graphql.String }),
-    right: graphql.arg({ type: graphql.String }),
+    left: g.arg({ type: g.String }),
+    right: g.arg({ type: g.String }),
   },
 })
 
-const PairOutput = graphql.object<PairOutput>()({
+const PairOutput = g.object<PairOutput>()({
   name: 'PairNestedOutput',
   fields: {
-    left: graphql.field({ type: graphql.String }),
-    right: graphql.field({ type: graphql.String }),
+    left: g.field({ type: g.String }),
+    right: g.field({ type: g.String }),
   },
 })
 
-const PairFilter = graphql.inputObject({
+const PairFilter = g.inputObject({
   name: 'PairNestedFilter',
   fields: {
-    equals: graphql.arg({
+    equals: g.arg({
       type: PairInput,
     }),
   },
@@ -81,25 +81,25 @@ export function pair<ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       input: {
         where: {
-          arg: graphql.arg({ type: PairFilter }),
+          arg: g.arg({ type: PairFilter }),
           resolve (value, context) {
             return resolveWhere(value)
           },
         },
         create: {
-          arg: graphql.arg({ type: PairInput }),
+          arg: g.arg({ type: PairInput }),
           resolve (value, context) {
             return resolveInput(value)
           },
         },
         update: {
-          arg: graphql.arg({ type: PairInput }),
+          arg: g.arg({ type: PairInput }),
           resolve (value, context) {
             return resolveInput(value)
           },
         },
       },
-      output: graphql.field({
+      output: g.field({
         type: PairOutput,
         resolve ({ value, item }, args, context, info) {
           return resolveOutput(value)

@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
@@ -47,7 +47,7 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
         create: {
-          arg: graphql.arg({ type: graphql.Int }),
+          arg: g.arg({ type: g.Int }),
           // this field type doesn't need to do anything special
           // but field types can specify resolvers for inputs like they can for their output GraphQL field
           // this function can be omitted, it is here purely to show how you could change it
@@ -67,11 +67,11 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
             return val
           },
         },
-        update: { arg: graphql.arg({ type: graphql.Int }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.Int }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.Int,
+      output: g.field({
+        type: g.Int,
         // like the input resolvers, providing the resolver is unnecessary if you're just returning the value
         // it is shown here to show what you could do
         resolve ({ value, item }, args, context, info) {

@@ -5,7 +5,7 @@ import {
   type JSONValue,
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { getOutputGraphQLField } from './structure-graphql-output'
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
@@ -39,7 +39,7 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
     }
 
     const defaultValue = getInitialPropsValue(schema)
-    const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = []
+    const unreferencedConcreteInterfaceImplementations: g.ObjectType<any>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
     return jsonFieldTypePolyfilledForSQLite(
@@ -72,7 +72,7 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
         },
         input: {
           create: {
-            arg: graphql.arg({
+            arg: g.arg({
               type: getGraphQLInputType(name, schema, 'create', new Map(), meta),
             }),
             async resolve (val, context) {
@@ -80,13 +80,13 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
             },
           },
           update: {
-            arg: graphql.arg({
+            arg: g.arg({
               type: getGraphQLInputType(name, schema, 'update', new Map(), meta),
             }),
           },
         },
-        output: graphql.field({
-          type: graphql.object<{ value: JSONValue }>()({
+        output: g.field({
+          type: g.object<{ value: JSONValue }>()({
             name: `${name}Output`,
             fields: {
               structure: getOutputGraphQLField(
@@ -96,11 +96,11 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
                 new Map(),
                 meta
               ),
-              json: graphql.field({
-                type: graphql.JSON,
+              json: g.field({
+                type: g.JSON,
                 args: {
-                  hydrateRelationships: graphql.arg({
-                    type: graphql.nonNull(graphql.Boolean),
+                  hydrateRelationships: g.arg({
+                    type: g.nonNull(g.Boolean),
                     defaultValue: false,
                   }),
                 },

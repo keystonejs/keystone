@@ -6,7 +6,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
 import { filters } from '../../filters'
 
@@ -43,10 +43,10 @@ export function checkbox <ListTypeInfo extends BaseListTypeInfo> (
     })({
       ...config,
       input: {
-        where: { arg: graphql.arg({ type: filters[meta.provider].Boolean.required }) },
+        where: { arg: g.arg({ type: filters[meta.provider].Boolean.required }) },
         create: {
-          arg: graphql.arg({
-            type: graphql.Boolean,
+          arg: g.arg({
+            type: g.Boolean,
             defaultValue: typeof defaultValue === 'boolean' ? defaultValue : undefined,
           }),
           resolve (val) {
@@ -55,15 +55,15 @@ export function checkbox <ListTypeInfo extends BaseListTypeInfo> (
           },
         },
         update: {
-          arg: graphql.arg({ type: graphql.Boolean }),
+          arg: g.arg({ type: g.Boolean }),
           resolve (val) {
             if (val === null) throw userInputError('Checkbox fields cannot be set to null')
             return val
           },
         },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Boolean, }),
+      output: g.field({ type: g.Boolean, }),
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),

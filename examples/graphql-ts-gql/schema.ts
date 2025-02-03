@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { list, graphql } from '@keystone-6/core'
+import { list, g } from '@keystone-6/core'
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { gql } from '@ts-gql/tag/no-transform'
@@ -20,8 +20,8 @@ export const lists = {
       }),
       // A virtual field returning a value derived from the item data.
       isPublished: virtual({
-        field: graphql.field({
-          type: graphql.Boolean,
+        field: g.field({
+          type: g.Boolean,
           resolve (item: any) {
             return item.status === 'published'
           },
@@ -34,17 +34,17 @@ export const lists = {
           itemView: { fieldMode: 'hidden' },
           listView: { fieldMode: 'hidden' },
         },
-        field: graphql.field({
-          type: graphql.object<{
+        field: g.field({
+          type: g.object<{
             words: number
             sentences: number
             paragraphs: number
           }>()({
             name: 'PostCounts',
             fields: {
-              words: graphql.field({ type: graphql.Int }),
-              sentences: graphql.field({ type: graphql.Int }),
-              paragraphs: graphql.field({ type: graphql.Int }),
+              words: g.field({ type: g.Int }),
+              sentences: g.field({ type: g.Int }),
+              paragraphs: g.field({ type: g.Int }),
             },
           }),
           resolve (item) {
@@ -59,10 +59,10 @@ export const lists = {
       }),
       // A virtual field which accepts GraphQL arguments.
       excerpt: virtual({
-        field: graphql.field({
-          type: graphql.String,
+        field: g.field({
+          type: g.String,
           args: {
-            length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
+            length: g.arg({ type: g.nonNull(g.Int), defaultValue: 200 }),
           },
           resolve (item, { length }) {
             if (!item.content) {
@@ -82,8 +82,8 @@ export const lists = {
       author: relationship({ ref: 'Author.posts', many: false }),
       // A virtual field which uses `item` and `context` to query data.
       authorName: virtual({
-        field: graphql.field({
-          type: graphql.String,
+        field: g.field({
+          type: g.String,
           async resolve (item, args, context) {
             const POST_AUTHOR_QUERY = gql`
               query POST_AUTHOR_QUERY($id: ID!) {
@@ -116,7 +116,7 @@ export const lists = {
       // A virtual field which returns a type derived from a Keystone list.
       latestPost: virtual({
         field: lists =>
-          graphql.field({
+          g.field({
             type: lists.Post.types.output,
             async resolve (item, args, context) {
               const LATEST_POST_QUERY = gql`
