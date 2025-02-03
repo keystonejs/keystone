@@ -7,22 +7,54 @@
   "module": "dist/keystone-6-fields-document.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/keystone-6-fields-document.cjs.js",
+      "node": {
+        "module": "./dist/keystone-6-fields-document.node.esm.js",
+        "default": "./dist/keystone-6-fields-document.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./dist/keystone-6-fields-document.node.esm.js",
+        "default": "./dist/keystone-6-fields-document.node.cjs.js"
+      },
       "module": "./dist/keystone-6-fields-document.esm.js",
       "default": "./dist/keystone-6-fields-document.cjs.js"
     },
     "./views": {
+      "types": "./views/dist/keystone-6-fields-document-views.cjs.js",
+      "node": {
+        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
+        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./views/dist/keystone-6-fields-document-views.node.esm.js",
+        "default": "./views/dist/keystone-6-fields-document-views.node.cjs.js"
+      },
       "module": "./views/dist/keystone-6-fields-document-views.esm.js",
       "default": "./views/dist/keystone-6-fields-document-views.cjs.js"
     },
-    "./primitives": {
-      "module": "./primitives/dist/keystone-6-fields-document-primitives.esm.js",
-      "default": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js"
-    },
     "./structure-views": {
+      "types": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js",
+      "node": {
+        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
+        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./structure-views/dist/keystone-6-fields-document-structure-views.node.esm.js",
+        "default": "./structure-views/dist/keystone-6-fields-document-structure-views.node.cjs.js"
+      },
       "module": "./structure-views/dist/keystone-6-fields-document-structure-views.esm.js",
       "default": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js"
     },
     "./component-blocks": {
+      "types": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js",
+      "node": {
+        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
+        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
+      },
+      "react-server": {
+        "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.esm.js",
+        "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.node.cjs.js"
+      },
       "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
       "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
     },
@@ -39,7 +71,6 @@
     "entrypoints": [
       "component-blocks.tsx",
       "index.ts",
-      "primitives.ts",
       "views.tsx",
       "structure-views.tsx"
     ]
@@ -48,20 +79,15 @@
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@braintree/sanitize-url": "7.0.4",
-    "@dnd-kit/core": "^6.0.6",
-    "@dnd-kit/modifiers": "^9.0.0",
-    "@dnd-kit/sortable": "^10.0.0",
     "@emotion/weak-memoize": "^0.4.0",
+    "@keystar/ui": "^0.7.14",
     "@keystone-6/document-renderer": "workspace:^",
-    "@keystone-ui/button": "workspace:^",
-    "@keystone-ui/core": "workspace:^",
-    "@keystone-ui/fields": "workspace:^",
-    "@keystone-ui/icons": "workspace:^",
-    "@keystone-ui/modals": "workspace:^",
-    "@keystone-ui/popover": "workspace:^",
-    "@keystone-ui/tooltip": "workspace:^",
+    "@react-aria/i18n": "^3.12.1",
+    "@react-aria/overlays": "^3.23.2",
+    "@react-stately/list": "^3.10.8",
+    "@react-stately/overlays": "^3.6.10",
+    "@react-aria/utils": "^3.25.1",
     "@types/react": "^18.3.3",
-    "apply-ref": "^1.0.0",
     "graphql": "^16.8.1",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^8.0.0",
@@ -88,5 +114,12 @@
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"
+  },
+  "imports": {
+    "#fields-ui": {
+      "node": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
+      "react-server": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
+      "default": "./src/DocumentEditor/component-blocks/fields-ui.tsx"
+    }
   }
 }

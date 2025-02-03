@@ -1,38 +1,43 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import NextHead from 'next/head'
+import React, {
+  type FormEvent,
+  useState,
+} from 'react'
 
-import { useState, Fragment, type FormEvent, useRef, useEffect } from 'react'
+import { Button } from '@keystar/ui/button'
+import { Grid, HStack, VStack } from '@keystar/ui/layout'
+import { Notice } from '@keystar/ui/notice'
+import { PasswordField } from '@keystar/ui/password-field'
+import { Content } from '@keystar/ui/slots'
+import { TextField } from '@keystar/ui/text-field'
+import { Heading, Text } from '@keystar/ui/typography'
 
-import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core'
-import { Button } from '@keystone-ui/button'
-import { TextInput } from '@keystone-ui/fields'
-import { Notice } from '@keystone-ui/notice'
-
-import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
-import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
+import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-import { SigninContainer } from '../components/SigninContainer'
-import { useRedirect } from '../lib/useFromRedirect'
 
-type SigninPageProps = {
-  identityField: string
-  secretField: string
-  mutationName: string
-  successTypename: string
-  failureTypename: string
-}
+import type { AuthGqlNames } from '../types'
 
-export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />
+export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
-export function SigninPage ({
+function SigninPage ({
   identityField,
   secretField,
-  mutationName,
-  successTypename,
-  failureTypename,
-}: SigninPageProps) {
-  const mutation = gql`
-    mutation($identity: String!, $secret: String!) {
+  authGqlNames,
+}: {
+  identityField: string
+  secretField: string
+  authGqlNames: AuthGqlNames
+}) {
+  const router = useRouter()
+  const [state, setState] = useState({ identity: '', secret: '' })
+  const {
+    authenticateItemWithPassword: mutationName,
+    ItemAuthenticationWithPasswordSuccess: successTypename,
+    ItemAuthenticationWithPasswordFailure: failureTypename,
+  } = authGqlNames
+  const [tryAuthenticate, { error, loading, data }] = useMutation(gql`
+    mutation KsAuthSignin ($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
@@ -43,140 +48,116 @@ export function SigninPage ({
           message
         }
       }
-    }
-  `
-
-  const [mode, setMode] = useState<'signin' | 'forgot password'>('signin')
-  const [state, setState] = useState({ identity: '', secret: '' })
-  const [submitted, setSubmitted] = useState(false)
-
-  const identityFieldRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    identityFieldRef.current?.focus()
-  }, [mode])
-
-  const [mutate, { error, loading, data }] = useMutation(mutation)
-  const reinitContext = useReinitContext()
-  const router = useRouter()
-  const rawKeystone = useRawKeystone()
-  const redirect = useRedirect()
-
-  // if we are signed in, redirect immediately
-  useEffect(() => {
-    if (submitted) return
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(redirect)
-    }
-  }, [rawKeystone.authenticatedItem, router, redirect, submitted])
-
-  useEffect(() => {
-    if (!submitted) return
-
-    // TODO: this is horrible, we need to resolve this mess
-    // @ts-expect-error
-    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      router.push('/no-access')
-      return
-    }
-
-    router.push(redirect)
-  }, [rawKeystone.adminMeta, router, redirect, submitted])
+    }`, {
+      refetchQueries: [
+        'KsFetchAdminMeta'
+      ]
+    })
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (mode !== 'signin') return
-
     try {
-      const { data } = await mutate({
+      const { data } = await tryAuthenticate({
         variables: {
           identity: state.identity,
           secret: state.secret,
         },
       })
-      if (data.authenticate?.__typename !== successTypename) return
+
+      if (data.authenticate.item) {
+        router.push('/')
+      }
     } catch (e) {
       console.error(e)
       return
     }
-
-    await reinitContext()
-    setSubmitted(true)
   }
 
-  return (
-    <SigninContainer title="Keystone - Sign in">
-      <Stack gap="xlarge" as="form" onSubmit={onSubmit}>
-        <H1>Sign In</H1>
-        {error && (
-          <Notice title="Error" tone="negative">
-            {error.message}
-          </Notice>
-        )}
-        {data?.authenticate?.__typename === failureTypename && (
-          <Notice title="Error" tone="negative">
-            {data?.authenticate.message}
-          </Notice>
-        )}
-        <Stack gap="medium">
-          <VisuallyHidden as="label" htmlFor="identity">
-            {identityField}
-          </VisuallyHidden>
-          <TextInput
-            id="identity"
-            name="identity"
-            value={state.identity}
-            onChange={e => setState({ ...state, identity: e.target.value })}
-            placeholder={identityField}
-            ref={identityFieldRef}
-          />
-          {mode === 'signin' && (
-            <Fragment>
-              <VisuallyHidden as="label" htmlFor="password">
-                {secretField}
-              </VisuallyHidden>
-              <TextInput
-                id="password"
-                name="password"
-                value={state.secret}
-                onChange={e => setState({ ...state, secret: e.target.value })}
-                placeholder={secretField}
-                type="password"
-              />
-            </Fragment>
-          )}
-        </Stack>
+  const pending = loading || data?.authenticate?.__typename === successTypename
 
-        {mode === 'forgot password' ? (
-          <Stack gap="medium" across>
-            <Button type="submit" weight="bold" tone="active">
-              Log reset link
-            </Button>
-            <Button weight="none" tone="active" onClick={() => setMode('signin')}>
-              Go back
-            </Button>
-          </Stack>
-        ) : (
-          <Stack gap="medium" across>
-            <Button
-              weight="bold"
-              tone="active"
-              isLoading={
-                loading ||
-                // this is for while the page is loading but the mutation has finished successfully
-                data?.authenticate?.__typename === successTypename
-              }
-              type="submit"
-            >
-              Sign in
-            </Button>
-            {/* Disabled until we come up with a complete password reset workflow */}
-            {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
-              Forgot your password?
-            </Button> */}
-          </Stack>
-        )}
-      </Stack>
-    </SigninContainer>
+  return (
+    <>
+      <NextHead>
+        <title key="title">Keystone - Sign in</title>
+      </NextHead>
+      <Grid
+        alignItems="center"
+        marginX="auto"
+        maxWidth="100%"
+        minHeight="100vh"
+        minWidth={0}
+        paddingX="xlarge"
+        rows="auto 1fr"
+        width="container.xsmall"
+      >
+        <HStack paddingY="xlarge">
+          <Logo />
+        </HStack>
+
+        <VStack
+          elementType='form'
+          onSubmit={onSubmit}
+          // styles
+          flex
+          gap="xxlarge"
+          paddingY="xlarge"
+        >
+          <Heading elementType='h1' size='regular'>Sign in</Heading>
+
+          <GraphQLErrorNotice
+            errors={[
+              error?.networkError,
+              ...error?.graphQLErrors ?? []
+            ]}
+          />
+
+          {data?.authenticate?.__typename === failureTypename && (
+            <Notice tone="critical">
+              <Content>
+                <Text>
+                  {data?.authenticate.message}
+                </Text>
+              </Content>
+            </Notice>
+          )}
+
+          <VStack gap="large">
+            <TextField
+              autoFocus
+              id='identity'
+              isRequired
+              label={capitalizeFirstLetter(identityField)}
+              name='identity'
+              onChange={v => setState({ ...state, identity: v })}
+              value={state.identity}
+            />
+            <PasswordField
+              id='password'
+              isRequired
+              label={capitalizeFirstLetter(secretField)}
+              // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
+              name='password'
+              onChange={v => setState({ ...state, secret: v })}
+              type='password'
+              value={state.secret}
+            />
+          </VStack>
+
+          <Button
+            isPending={pending}
+            prominence="high"
+            type="submit"
+            alignSelf="start"
+          >
+            Sign in
+          </Button>
+        </VStack>
+      </Grid>
+    </>
   )
+}
+
+function capitalizeFirstLetter (value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }

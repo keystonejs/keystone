@@ -21,7 +21,7 @@ export default config<TypeInfo<Session>>({
   session,
 
   server: {
-    extendExpressApp(app, context) {
+    extendExpressApp (app, context) {
       app.use(passportMiddleware(context))
     },
   },

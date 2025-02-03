@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
+import { Text } from '@keystar/ui/typography'
+import { TextField } from '@keystar/ui/text-field'
 
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
 
 export function Field ({
@@ -28,40 +27,25 @@ export function Field ({
 
   const disabled = onChange === undefined
   return (
-    <FieldContainer as="fieldset">
-      <FieldLabel>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      <div>
-        <TextInput
-          type="text"
-          onChange={event => {
-            onChange?.(event.target.value)
-          }}
-          disabled={disabled}
-          value={value || ''}
-          autoFocus={autoFocus}
-        />
-      </div>
-    </FieldContainer>
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      isDisabled={disabled}
+      onChange={x => onChange?.(x === '' ? null : x)}
+      value={value ?? ''}
+    />
   )
 }
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + ''
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
-}
-Cell.supportsLinkTo = true
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  )
+export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
+  const discriminant = (item as any)?.[field.dependency.field]?.value ?? Infinity
+  const hidden = discriminant > field.dependency.minimumValue
+  if (hidden) return <Text><i>hidden</i></Text>
+  return <Text>{(item as any)[field.path]}</Text>
 }
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{
     dependency: {
       field: string
@@ -73,7 +57,7 @@ export const controller = (
     field: string
     minimumValue: number
   }
-} => {
+} {
   return {
     path: config.path,
     label: config.label,

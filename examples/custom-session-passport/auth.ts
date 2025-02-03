@@ -4,7 +4,7 @@ import { type KeystoneContext } from '@keystone-6/core/types'
 
 import { Passport } from 'passport'
 import { type VerifyCallback } from 'passport-oauth2'
-import { Strategy, StrategyOptions, Profile } from 'passport-github2'
+import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
 import { type Author } from 'myprisma'
 import { type TypeInfo } from '.keystone/types'

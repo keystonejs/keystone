@@ -1,6 +1,6 @@
 import pluralize from 'pluralize'
 import { humanize } from '../lib/utils'
-import { type KeystoneConfig } from '../types'
+import type { KeystoneConfig } from '../types'
 
 export type JSONValue =
   | string

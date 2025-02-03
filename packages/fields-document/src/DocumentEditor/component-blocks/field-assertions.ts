@@ -1,8 +1,8 @@
 import { type ComponentSchema } from './api-shared'
 import { assertNever } from './utils'
 
-export function assertValidComponentSchema (schema: ComponentSchema, lists: ReadonlySet<string>) {
-  assertValidComponentSchemaInner(schema, [], [], new Set(), lists)
+export function assertValidComponentSchema (schema: ComponentSchema, lists: ReadonlySet<string>, mode: 'structure' | 'document') {
+  assertValidComponentSchemaInner(schema, [], [], new Set(), lists, mode)
 }
 
 // recursive things can exist but they have to either be:
@@ -15,9 +15,23 @@ function assertValidComponentSchemaInner (
   schemaAncestors: ComponentSchema[],
   propPath: string[],
   seenProps: Set<ComponentSchema>,
-  lists: ReadonlySet<string>
+  lists: ReadonlySet<string>,
+  mode: 'structure' | 'document'
 ) {
-  if (schema.kind === 'form' || schema.kind === 'child') {
+  if (schema.kind === 'form') {
+    if (mode === 'structure' && !schema.graphql) {
+      throw new Error(
+        `There is a form field without a configured GraphQL schema at "${propPath.join('.')}", fields used in the structure field must have a GraphQL schema.`
+      )
+    }
+    return
+  }
+  if (schema.kind === 'child') {
+    if (mode === 'structure') {
+      throw new Error(
+        `There is a child field at "${propPath.join('.')}" but child fields are not allowed in structure fields.`
+      )
+    }
     return
   }
   if (schema.kind === 'relationship') {
@@ -45,7 +59,7 @@ function assertValidComponentSchemaInner (
   try {
     seenProps.add(schema)
     if (schema.kind === 'array') {
-      assertValidComponentSchemaInner(schema.element, [], propPath, seenProps, lists)
+      assertValidComponentSchemaInner(schema.element, [], propPath, seenProps, lists, mode)
       return
     }
     if (schema.kind === 'object') {
@@ -59,7 +73,7 @@ function assertValidComponentSchemaInner (
             )}" changes between accesses`
           )
         }
-        assertValidComponentSchemaInner(innerProp, schemaAncestors, propPath, seenProps, lists)
+        assertValidComponentSchemaInner(innerProp, schemaAncestors, propPath, seenProps, lists, mode)
         propPath.pop()
       }
       schemaAncestors.pop()
@@ -82,7 +96,8 @@ function assertValidComponentSchemaInner (
           key === stringifiedDefaultDiscriminant ? schemaAncestors : [],
           propPath,
           seenProps,
-          lists
+          lists,
+          mode
         )
         propPath.pop()
       }

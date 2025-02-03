@@ -21,21 +21,20 @@ const auth = createAuth({
   identityField: 'email',
   secretField: 'password',
   sessionData: 'id name',
-  initFirstItem: { fields: ['email', 'password'], itemData: { name: 'First User' } },
+  initFirstItem: {
+    fields: ['email', 'password'],
+    itemData: { name: 'First User' }
+  },
   magicAuthLink: {
     sendToken: async ({ identity, token }) => {
-      if (identity === 'bad@keystonejs.com') {
-        throw new Error('Error in sendToken')
-      }
+      if (identity === 'bad@keystonejs.com') throw new Error('Error in sendToken')
       MAGIC_TOKEN = token
     },
     tokensValidForMins: 60,
   },
   passwordResetLink: {
     sendToken: async ({ identity, token }) => {
-      if (identity === 'bad@keystonejs.com') {
-        throw new Error('Error in sendToken')
-      }
+      if (identity === 'bad@keystonejs.com') throw new Error('Error in sendToken')
       MAGIC_TOKEN = token
     },
     tokensValidForMins: 60,
@@ -44,8 +43,7 @@ const auth = createAuth({
 
 const runner = setupTestRunner({
   serve: true,
-  config: auth.withAuth({
-    db: {} as any,
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -53,11 +51,14 @@ const runner = setupTestRunner({
           name: text(),
           email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
           password: password(),
+          noRead: text({ access: { read: () => false } }),
+          yesRead: text({ access: { read: () => true } }),
         },
       }),
     },
     session: statelessSessions(),
-  } as any) as any,
+  },
+  wrap: config => auth.withAuth(config)
 })
 
 async function authenticateWithPassword (
@@ -357,7 +358,7 @@ describe('Auth testing', () => {
           `,
           variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         })
-        // Veryify we get back a token for the expected user.
+        // verify we get back a token for the expected user
 
         const user = await context.sudo().query.User.findOne({
           where: { email: 'boris@keystonejs.com' },
@@ -367,7 +368,8 @@ describe('Auth testing', () => {
         expect(body.data).toEqual({
           redeemUserMagicAuthToken: { token: expect.any(String), item: { id: user.id } },
         })
-        // Verify that we've set a redemption time
+
+        // verify that we've set a redemption time
         expect(user).toEqual({
           id: user.id,
           magicAuthToken: { isSet: true },
@@ -1153,3 +1155,33 @@ describe('Auth testing', () => {
     )
   })
 })
+
+test(
+  'authenticatedItem',
+  runner(async ({ context }) => {
+    const user = (await context.db.User.createOne({
+      data: {
+        name: 'test',
+        email: 'test@',
+        yesRead: 'yes',
+        noRead: 'no'
+      },
+    }))
+
+    const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`
+    const context_ = context.withSession({
+      itemId: user.id,
+      listKey: 'User',
+      data: user,
+    })
+    const { data, errors } = await context_.graphql.raw({ query })
+    expect(data).toEqual({
+      authenticatedItem: {
+        id: user.id,
+        yesRead: user.yesRead,
+        noRead: null
+      },
+    })
+    expect(errors).toBe(undefined)
+  })
+)

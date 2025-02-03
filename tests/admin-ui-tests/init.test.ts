@@ -1,6 +1,6 @@
 import {
   type Browser,
-  type Page
+  type Page,
 } from 'playwright'
 import {
   adminUITests,
@@ -24,12 +24,12 @@ adminUITests('./tests/test-projects/basic', browserType => {
   })
   test('Clicking on the logo should return you to the Dashboard route', async () => {
     await page.goto('http://localhost:3000/tasks')
-    await page.waitForSelector('h3 a:has-text("Keystone 6")')
+    await page.waitForSelector('a:has-text("Keystone")')
     await Promise.all([
       page.waitForNavigation({
         url: 'http://localhost:3000',
       }),
-      page.click('h3 a:has-text("Keystone 6")'),
+      page.click('a:has-text("Keystone")'),
     ])
   })
   test('Should see a 404 on request of the /init route', async () => {
@@ -39,6 +39,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   })
   describe('List View', () => {
     beforeEach(async () => {
+      await deleteAllData('./tests/test-projects/basic')
       const gql = String.raw
       const query = gql`
         mutation Create_Tasks_Mutation($data: [TaskCreateInput!]!) {
@@ -54,39 +55,29 @@ adminUITests('./tests/test-projects/basic', browserType => {
         ),
       }
       await makeGqlRequest(query, variables)
-      await page.goto('http://localhost:3000/tasks?page=6&pageSize=10')
-    })
-    afterEach(async () => {
-      await deleteAllData('./tests/test-projects/basic')
+      await page.goto('http://localhost:3000/tasks?page=6&pageSize=10&sortBy=label')
     })
     test('If all items are deleted from the last page, users should be redirected to the previous page if one exists', async () => {
-      await page.waitForSelector('thead th:first-of-type label')
-      await page.click('thead th:first-of-type label')
+      await page.getByRole('checkbox', { name: 'Select Test Task: 8' }).check()
+      await page.getByRole('checkbox', { name: 'Select Test Task: 9' }).check()
       await page.click('button:has-text("Delete")')
-      await Promise.all([
-        page.waitForNavigation({
-          url: /localhost:3000\/tasks\?.*(page=5)/,
-        }),
-        page.click('div[role="dialog"] button:has-text("Delete")'),
-      ])
+      await page.getByRole('button', { name: 'Yes, delete' }).click()
+      await page.waitForURL(/localhost:3000\/tasks\?.*(page=5)/)
     })
-    test('The page users are redirected to on complete deleletion of the last page, should have items', async () => {
-      await page.waitForSelector('thead th:first-of-type label')
-      await page.click('thead th:first-of-type label')
+    test('The page users are redirected to on complete deletion of the last page, should have items', async () => {
+      await page.getByRole('checkbox', { name: 'Select Test Task: 8' }).check()
+      await page.getByRole('checkbox', { name: 'Select Test Task: 9' }).check()
       await page.click('button:has-text("Delete")')
-      await Promise.all([
-        page.waitForNavigation({
-          url: /localhost:3000\/tasks\?.*(page=5)/,
-        }),
-        page.click('div[role="dialog"] button:has-text("Delete")'),
-      ])
-      await page.waitForSelector('table tbody')
-      const elements = page.locator('table tbody tr')
-      await expect(elements.evaluateAll((tr, min) => tr.length > min, 0)).resolves.toBe(true)
+      await page.getByRole('button', { name: 'Yes, delete' }).click()
+      await page.waitForURL(/localhost:3000\/tasks\?.*(page=5)/)
+      await page.getByText('Test Task: 45').waitFor()
     })
   })
 
   afterAll(async () => {
     await browser.close()
+  })
+  afterAll(async () => {
+    await deleteAllData('./tests/test-projects/basic')
   })
 })

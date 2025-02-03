@@ -4,7 +4,7 @@ import type { BaseListTypeInfo } from '../type-info'
 import type { KeystoneContext } from '../context'
 import type { ListHooks } from './hooks'
 import type { ListAccessControl } from './access-control'
-import type { BaseFields, FilterOrderArgs } from './fields'
+import type { BaseFields } from './fields'
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean
@@ -37,12 +37,12 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The default value to use for graphql.isEnabled.filter on all fields for this list
    */
-  defaultIsFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
+  defaultIsFilterable?: MaybeFieldFunction<ListTypeInfo>
 
   /**
    * The default value to use for graphql.isEnabled.orderBy on all fields for this list
    */
-  defaultIsOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>)
+  defaultIsOrderable?: MaybeFieldFunction<ListTypeInfo>
 }
 
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
@@ -68,10 +68,10 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   description?: string // the description displayed below the field in the Admin UI
 
   /**
-   * Excludes this list from the Admin UI
+   * Hides this list from the Admin UI navigation, it only hides the list, you can still navigate directly.
    * @default false
    */
-  isHidden?: MaybeSessionFunction<boolean, ListTypeInfo>
+  hideNavigation?: MaybeSessionFunction<boolean, ListTypeInfo>
   /**
    * Hides the create button in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
@@ -162,6 +162,17 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   path?: string
 }
 
+export type MaybeFieldFunction<
+  ListTypeInfo extends BaseListTypeInfo
+> =
+  | boolean
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session']
+      listKey: ListTypeInfo['key']
+      fieldKey: ListTypeInfo['fields']
+    }) => MaybePromise<boolean>)
+
 export type MaybeSessionFunction<
   T extends string | boolean,
   ListTypeInfo extends BaseListTypeInfo
@@ -177,7 +188,7 @@ export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session']
-      item: ListTypeInfo['item']
+      item: ListTypeInfo['item'] | null
     }) => MaybePromise<T>)
 
 export type ListGraphQLConfig = {

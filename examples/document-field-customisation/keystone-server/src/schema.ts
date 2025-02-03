@@ -33,7 +33,7 @@ export const lists = {
         ui: {
           views: './src/component-blocks',
         },
-        componentBlocks,
+        componentBlocks
       }),
       publishDate: timestamp({ defaultValue: { kind: 'now' } }),
       author: relationship({ ref: 'User.posts', many: false }),

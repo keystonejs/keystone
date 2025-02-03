@@ -1,161 +1,99 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
-import { AlignLeftIcon } from '@keystone-ui/icons/icons/AlignLeftIcon'
-import { AlignRightIcon } from '@keystone-ui/icons/icons/AlignRightIcon'
-import { AlignCenterIcon } from '@keystone-ui/icons/icons/AlignCenterIcon'
-import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
-import { useControlledPopover } from '@keystone-ui/popover'
-import { Tooltip } from '@keystone-ui/tooltip'
-import { applyRefs } from 'apply-ref'
-import { useState, type ComponentProps, useMemo } from 'react'
+import React, { useMemo } from 'react'
+import { Icon } from '@keystar/ui/icon'
+import { alignLeftIcon } from '@keystar/ui/icon/icons/alignLeftIcon'
+import { alignRightIcon } from '@keystar/ui/icon/icons/alignRightIcon'
+import { alignCenterIcon } from '@keystar/ui/icon/icons/alignCenterIcon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { Transforms } from 'slate'
 
-import { type DocumentFeatures } from '../views-shared'
-import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives'
+import type { DocumentFeatures } from '../views-shared'
 import { useToolbarState } from './toolbar-state'
+import { MenuTrigger, Menu } from '@keystar/ui/menu'
+import { Item } from '@keystar/ui/tag'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { ReactEditor } from 'slate-react'
+import { Text } from '@keystar/ui/typography'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
-export function TextAlignMenu ({
+const values = {
+  start: {
+    key: 'start',
+    label: 'Align Start',
+    icon: <Icon src={alignLeftIcon} />,
+  },
+  center: {
+    key: 'center',
+    label: 'Align Center',
+    icon: <Icon src={alignCenterIcon} />,
+  },
+  end: {
+    key: 'end',
+    label: 'Align End',
+    icon: <Icon src={alignRightIcon} />,
+  },
+}
+
+export const TextAlignMenu = ({
   alignment,
 }: {
   alignment: DocumentFeatures['formatting']['alignment']
-}) {
-  const [showMenu, setShowMenu] = useState(false)
-  const { dialog, trigger } = useControlledPopover(
-    {
-      isOpen: showMenu,
-      onClose: () => setShowMenu(false),
-    },
-    {
-      placement: 'bottom-start',
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    }
+}) => {
+  const toolbarState = useToolbarState()
+  const items = useMemo(
+    () => [
+      values.start,
+      ...(Object.keys(alignment) as Array<keyof typeof alignment>).map(
+        x => values[x]
+      ),
+    ],
+    [alignment]
   )
-
-  return (
-    <div
-      css={{
-        display: 'inline-block',
-        position: 'relative',
-      }}
-    >
-      <Tooltip content="Text alignment" weight="subtle">
-        {attrs => (
-          <TextAlignButton
-            attrs={attrs}
-            onToggle={() => {
-              setShowMenu(x => !x)
-            }}
-            trigger={trigger}
-            showMenu={showMenu}
-          />
-        )}
-      </Tooltip>
-      {showMenu ? (
-        <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <TextAlignDialog
-            alignment={alignment}
-            onClose={() => {
-              setShowMenu(false)
-            }}
-          />
-        </InlineDialog>
-      ) : null}
-    </div>
-  )
-}
-
-function TextAlignDialog ({
-  alignment,
-  onClose,
-}: {
-  alignment: DocumentFeatures['formatting']['alignment']
-  onClose: () => void
-}) {
-  const {
-    alignment: { selected },
-    editor,
-  } = useToolbarState()
-  const alignments = [
-    'start',
-    ...(Object.keys(alignment) as (keyof typeof alignment)[]).filter(key => alignment[key]),
-  ] as const
-  return (
-    <ToolbarGroup>
-      {alignments.map(alignment => (
-        <Tooltip key={alignment} content={`Align ${alignment}`} weight="subtle">
-          {attrs => (
-            <ToolbarButton
-              isSelected={selected === alignment}
-              onMouseDown={event => {
-                event.preventDefault()
-                if (alignment === 'start') {
-                  Transforms.unsetNodes(editor, 'textAlign', {
-                    match: node => node.type === 'paragraph' || node.type === 'heading',
-                  })
-                } else {
-                  Transforms.setNodes(
-                    editor,
-                    { textAlign: alignment },
-                    {
-                      match: node => node.type === 'paragraph' || node.type === 'heading',
-                    }
-                  )
-                }
-                onClose()
-              }}
-              {...attrs}
-            >
-              {alignmentIcons[alignment]}
-            </ToolbarButton>
-          )}
-        </Tooltip>
-      ))}
-    </ToolbarGroup>
-  )
-}
-
-const alignmentIcons = {
-  start: <AlignLeftIcon size="small" />,
-  center: <AlignCenterIcon size="small" />,
-  end: <AlignRightIcon size="small" />,
-}
-
-function TextAlignButton (props: {
-  onToggle: () => void
-  trigger: ReturnType<typeof useControlledPopover>['trigger']
-  showMenu: boolean
-  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0]
-}) {
-  const {
-    alignment: { isDisabled, selected },
-  } = useToolbarState()
   return useMemo(
     () => (
-      <ToolbarButton
-        isDisabled={isDisabled}
-        isPressed={props.showMenu}
-        onMouseDown={event => {
-          event.preventDefault()
-          props.onToggle()
-        }}
-        {...props.attrs}
-        {...props.trigger.props}
-        ref={applyRefs(props.attrs.ref, props.trigger.ref)}
-      >
-        {alignmentIcons[selected]}
-        {downIcon}
-      </ToolbarButton>
+      <MenuTrigger>
+        <TooltipTrigger>
+          <EditorToolbarButton>
+            {values[toolbarState.alignment.selected].icon}
+            <Icon src={chevronDownIcon} />
+          </EditorToolbarButton>
+          <Tooltip>
+            <Text>Text Alignment</Text>
+          </Tooltip>
+        </TooltipTrigger>
+        <Menu
+          selectionMode="single"
+          selectedKeys={[toolbarState.alignment.selected]}
+          items={items}
+          onAction={key => {
+            if (key === 'start') {
+              Transforms.unsetNodes(toolbarState.editor, 'textAlign', {
+                match: node =>
+                  node.type === 'paragraph' || node.type === 'heading',
+              })
+            } else {
+              Transforms.setNodes(
+                toolbarState.editor,
+                { textAlign: key as 'center' | 'end' },
+                {
+                  match: node =>
+                    node.type === 'paragraph' || node.type === 'heading',
+                }
+              )
+            }
+            ReactEditor.focus(toolbarState.editor)
+          }}
+        >
+          {item => {
+            return (
+              <Item key={item.key} textValue={item.label}>
+                <Text>{item.label}</Text>
+                {item.icon}
+              </Item>
+            )
+          }}
+        </Menu>
+      </MenuTrigger>
     ),
-    [isDisabled, selected, props]
+    [items, toolbarState.alignment.selected, toolbarState.editor]
   )
 }
-
-const downIcon = <ChevronDownIcon size="small" />

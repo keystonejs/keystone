@@ -11,7 +11,7 @@ exampleProjectTests('extend-graphql-schema-graphql-tools', browserType => {
   })
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')])
-    await page.waitForSelector('a:has-text("Create Author")')
+    await page.waitForSelector('a:has-text("New Author")')
   })
   afterAll(async () => {
     await browser.close()

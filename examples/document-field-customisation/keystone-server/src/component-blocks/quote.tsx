@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
+import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
+import React from 'react'
 
 export const quote = component({
   label: 'Quote',
@@ -18,7 +16,7 @@ export const quote = component({
   preview: function Quote (props) {
     return (
       <div
-        css={{
+        className={css({
           paddingLeft: 16,
           backgroundColor: '#f3f5f6',
           padding: '4px 12px 16px 48px',
@@ -31,10 +29,10 @@ export const quote = component({
             left: 16,
             fontSize: '4rem',
           },
-        }}
+        })}
       >
-        <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content.element}</div>
-        <div css={{ fontWeight: 'bold', color: '#47546b' }}>
+        <div className={css({ fontStyle: 'italic', color: '#4A5568' })}>{props.fields.content.element}</div>
+        <div className={css({ fontWeight: 'bold', color: '#47546b' })}>
           <NotEditable>— </NotEditable>
           {props.fields.attribution.element}
         </div>

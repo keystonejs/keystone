@@ -1,21 +1,21 @@
-import {
-  type IncomingMessage,
-  type ServerResponse
+import type {
+  IncomingMessage,
+  ServerResponse
 } from 'http'
-import { type Readable } from 'stream'
-import {
-  type DocumentNode,
-  type ExecutionResult,
-  type GraphQLSchema,
+import type { Readable } from 'stream'
+import type {
+  DocumentNode,
+  ExecutionResult,
+  GraphQLSchema,
 } from 'graphql'
-import { type TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { type InitialisedList } from '../lib/core/initialise-lists'
-import { type SessionStrategy } from './session'
-import {
-  type BaseKeystoneTypeInfo,
-  type BaseListTypeInfo,
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import type { InitialisedList } from '../lib/core/initialise-lists'
+import type { SessionStrategy } from './session'
+import type {
+  BaseKeystoneTypeInfo,
+  BaseListTypeInfo,
 } from './type-info'
-import { type MaybePromise } from './utils'
+import type { MaybePromise } from './utils'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
@@ -202,17 +202,13 @@ export type FilesContext = (storage: string) => {
 // Images API
 
 export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif'
-
-export type ImageMetadata = {
+export type ImageData = {
+  id: string
   extension: ImageExtension
   filesize: number
   width: number
   height: number
 }
-
-export type ImageData = {
-  id: string
-} & ImageMetadata
 
 export type ImagesContext = (storage: string) => {
   getUrl: (id: string, extension: ImageExtension) => Promise<string>

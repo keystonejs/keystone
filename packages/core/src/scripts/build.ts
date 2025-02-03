@@ -39,7 +39,7 @@ export async function build (
 
   console.log('✨ Generating Admin UI code')
   const paths = system.getPaths(cwd)
-  await generateAdminUI(system.config, system.graphQLSchema, system.adminMeta, paths.admin, false)
+  await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
   console.log('✨ Building Admin UI')
   await nextBuild(

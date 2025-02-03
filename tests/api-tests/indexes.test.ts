@@ -5,7 +5,7 @@ import { setupTestEnv } from './test-runner'
 import { dbProvider } from './utils'
 
 test('isIndexed: true and db.map on a text field generates a valid Prisma schema', async () => {
-  const { artifacts, system } = await setupTestEnv({
+  const { artifacts, config } = await setupTestEnv({
     lists: {
       Test: list({
         access: allowAll,
@@ -29,7 +29,7 @@ datasource ${dbProvider} {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "${system.config.db.prismaClientPath}"
+  output   = "${config.db.prismaClientPath}"
 }
 
 model Test {
@@ -45,7 +45,7 @@ model Test {
 if (dbProvider === 'postgresql') {
   // scalar and enum fields are printed slightly differently so that's why we're also testing an enum select field
   test('isIndexed: true and db.map on an enum select field generates a valid Prisma schema', async () => {
-    const { artifacts, system } = await setupTestEnv({
+    const { artifacts, config } = await setupTestEnv({
       lists: {
         Test: list({
           access: allowAll,
@@ -74,7 +74,7 @@ datasource postgresql {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "${system.config.db.prismaClientPath}"
+  output   = "${config.db.prismaClientPath}"
 }
 
 model Test {

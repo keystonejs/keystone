@@ -29,6 +29,7 @@ import {
 
 import type {
   BaseKeystoneTypeInfo,
+  KeystoneConfig,
   KeystoneConfigPre,
 } from '@keystone-6/core/types'
 import { dbProvider } from './utils'
@@ -93,6 +94,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
   config_: FloatingConfig<TypeInfo>,
   serve: boolean = false,
   identifier?: string,
+  wrap: (config: KeystoneConfig) => KeystoneConfig = (x) => x
 ) {
   const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
   const cwd = join(tmpdir(), `ks6-tests-${random}`)
@@ -117,7 +119,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     dbUrl = parsed.toString()
   }
 
-  const system = createSystem(config({
+  const system = createSystem(wrap(config({
     ...config_,
     db: {
       provider: dbProvider,
@@ -138,7 +140,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
       isDisabled: true,
       ...config_.ui,
     },
-  }))
+  })))
 
   const artifacts = await generateArtifacts(cwd, system)
   const paths = system.getPaths(cwd)
@@ -154,6 +156,12 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     connect,
     disconnect
   } = system.getKeystone(await getTestPrismaModule(paths.schema.prisma, artifacts.prisma))
+
+  if (dbProvider === 'sqlite') {
+    await connect()
+    await context.prisma.$queryRaw`PRAGMA journal_mode=WAL;`
+    await disconnect()
+  }
 
   if (serve) {
     const {
@@ -177,7 +185,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
       artifacts,
       connect,
       context,
-      system,
+      config: system.config,
       http,
       gql,
       gqlSuper,
@@ -194,7 +202,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     artifacts,
     connect,
     context,
-    system,
+    config: system.config,
     http: null as any, // TODO: FIXME
     express: null as any, // TODO: FIXME
     gql,
@@ -207,13 +215,15 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
   identifier,
+  wrap,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
   identifier?: string
+  wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
   return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
-    const result = await setupTestEnv(config_, serve, identifier)
+    const result = await setupTestEnv(config_, serve, identifier, wrap)
 
     await result.connect()
     try {
@@ -229,12 +239,14 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   config: config_,
   serve = false,
   identifier,
+  wrap,
 }: {
   config: FloatingConfig<TypeInfo>
   serve?: boolean
   identifier?: string
+  wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
-  const result = setupTestEnv(config_, serve, identifier)
+  const result = setupTestEnv(config_, serve, identifier, wrap)
   const connectPromise = result.then((x) => {
     x.connect()
     return x

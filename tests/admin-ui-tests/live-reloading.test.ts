@@ -5,8 +5,8 @@ import {
   type Page,
   chromium
 } from 'playwright'
+import { expect as playwrightExpect } from 'playwright/test'
 import { parse, print } from 'graphql'
-import fetch from 'node-fetch'
 import ms from 'ms'
 
 import {
@@ -42,7 +42,7 @@ test('start keystone', async () => {
   } = await spawnCommand3(testProjectPath, ['dev']))
   browser = await chromium.launch()
   page = await browser.newPage()
-
+  await waitForIO(ksProcess, 'Admin UI ready')
   await loadIndex(page)
 })
 
@@ -58,10 +58,7 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   `)
 
   await page.goto(`http://localhost:3000/somethings/${id}`)
-  await page.waitForSelector('label:has-text("Text")')
-  const element = await page.waitForSelector('label:has-text("Initial Label For Text") >> .. >> input')
-  const value = await element.inputValue()
-  expect(value).toBe('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue('blah')
 })
 
 test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
@@ -74,15 +71,12 @@ test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second.ts')
   await waitForIO(ksProcess, 'compiled successfully')
 
-  const element = await page.waitForSelector('label:has-text("Very Important Text") >> .. >> input')
-  const value = await element.inputValue()
-  expect(value).toBe('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Very Important Text' })).toHaveValue('blah')
 })
 
 test('adding a virtual field', async () => {
-  const element = await page.waitForSelector('label:has-text("Virtual") >> ..')
-  const value = await element.textContent()
-  expect(value).toBe('Virtualblah')
+  const virtualFieldTextbox = page.getByRole('textbox', { name: 'Virtual' })
+  expect(await virtualFieldTextbox.getAttribute('value')).toBe('blah')
 })
 
 test('the generated schema includes schema updates', async () => {
@@ -125,9 +119,7 @@ test("a runtime error is shown and doesn't crash the process", async () => {
 test('errors can be recovered from', async () => {
   await replaceSchema('initial.ts')
 
-  const element = await page.waitForSelector('label:has-text("Initial Label For Text") >> .. >> input')
-  const value = await element.inputValue()
-  expect(value).toBe('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue('blah')
 })
 
 afterAll(async () => {

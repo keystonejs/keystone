@@ -44,7 +44,7 @@ jobs:
         run: pnpm test:types
 
   unit_tests:
-    name: Package Unit Tests
+    name: Package Unit Tests (Jest)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -52,7 +52,18 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: DATABASE_URL=file:./test.db pnpm jest --ci --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        run: DATABASE_URL=file:./test.db pnpm jest --ci packages/core/tests/telemetry.test.ts tests/cli-tests
+
+  vitest:
+    name: Package Unit Tests (Vitest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: pnpm vitest
 
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
@@ -242,7 +253,6 @@ jobs:
             'custom-admin-ui-logo.test.ts',
             'custom-admin-ui-navigation.test.ts',
             'custom-admin-ui-pages.test.ts',
-            'custom-field-view.test.ts',
             'custom-field.test.ts',
             'default-values.test.ts',
             'document-field.test.ts',
@@ -299,4 +309,4 @@ jobs:
         run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
+        run: pnpm jest --ci --runInBand --forceExit tests/admin-ui-tests/${{ matrix.test }}

@@ -1,23 +1,11 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
+import { type PropsWithChildren } from 'react'
+import { type BoxProps, Box } from '@keystar/ui/layout'
 
-import { type ComponentPropsWithoutRef } from 'react'
-import { jsx } from '@keystone-ui/core'
-
-/**
- * NOTE: should probably come from the DS?
- */
-type ContainerProps = ComponentPropsWithoutRef<'div'>
-export const Container = ({ children, ...props }: ContainerProps) => (
-  <div
-    css={{
-      minWidth: 0, // fix flex text truncation
-      maxWidth: 1080,
-      // marginLeft: 'auto',
-      // marginRight: 'auto',
-    }}
+export function Container (props: PropsWithChildren<BoxProps>) {
+  return <Box
+    minWidth={0} // fix flex overflow issues
+    maxWidth="container.large"
     {...props}
-  >
-    {children}
-  </div>
-)
+  />
+}

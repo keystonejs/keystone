@@ -1,72 +1,42 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React from 'react'
 
-import { jsx, useTheme } from '@keystone-ui/core'
-import { Checkbox, FieldContainer, FieldLabel, FieldDescription } from '@keystone-ui/fields'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import { Checkbox } from '@keystar/ui/checkbox'
+import { Icon } from '@keystar/ui/icon'
+import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
+import { Text, VisuallyHidden } from '@keystar/ui/typography'
+
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
-import { CellContainer } from '../../../../admin-ui/components'
 
 export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
-  const { fields, typography, spacing } = useTheme()
   return (
-    <FieldContainer>
-      <Checkbox
-        autoFocus={autoFocus}
-        disabled={onChange === undefined}
-        onChange={event => {
-          onChange?.(event.target.checked)
-        }}
-        checked={value}
-        aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-      >
-        <span
-          css={{
-            color: fields.labelColor,
-            display: 'block',
-            fontWeight: typography.fontWeight.semibold,
-            marginBottom: spacing.xsmall,
-            minWidth: 120,
-          }}
-        >
-          {field.label}
-        </span>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      </Checkbox>
-    </FieldContainer>
+    <Checkbox
+      autoFocus={autoFocus}
+      isReadOnly={onChange == null}
+      isSelected={value}
+      onChange={onChange}
+    >
+      <Text>{field.label}</Text>
+      {field.description && <Text slot="description">{field.description}</Text>}
+    </Checkbox>
   )
 }
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const value = !!item[field.path]
-  return (
-    <CellContainer>
-      <Checkbox disabled checked={value} size="small">
-        <span css={{}}>{value ? 'True' : 'False'}</span>
-      </Checkbox>
-    </CellContainer>
-  )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path] + ''}
-    </FieldContainer>
-  )
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  return value
+    ? <Icon src={checkIcon} aria-label="true" />
+    : <VisuallyHidden>false</VisuallyHidden>
 }
 
 type CheckboxController = FieldController<boolean, boolean>
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{ defaultValue: boolean }>
-): CheckboxController => {
+): CheckboxController {
   return {
     path: config.path,
     label: config.label,
@@ -77,28 +47,31 @@ export const controller = (
       const value = item[config.path]
       return typeof value === 'boolean' ? value : false
     },
-    serialize (value) {
-      return {
-        [config.path]: value,
-      }
-    },
+    serialize (value) { return { [config.path]: value, } },
     filter: {
-      Filter () {
-        return null
+      Filter (props) {
+        const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
+        return (
+          <Checkbox autoFocus={autoFocus} onChange={onChange} isSelected={value} {...otherProps}>
+            {typeLabel} {config.label.toLocaleLowerCase()}
+          </Checkbox>
+        )
       },
-      graphql ({ type }) {
-        return { [config.path]: { equals: type === 'is' } }
-      },
-      Label ({ label }) {
-        return label.toLowerCase()
+      Label ({ label, type, value }) { return `${label.toLowerCase()} ${value ? 'true' : 'false'}` },
+      graphql ({ type, value }) {
+        return {
+          [config.path]: {
+            equals: type === 'not' ? !value : value,
+          }
+        }
       },
       types: {
         is: {
-          label: 'is',
+          label: 'Is',
           initialValue: true,
         },
         not: {
-          label: 'is not',
+          label: 'Is not',
           initialValue: true,
         },
       },

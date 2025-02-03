@@ -1,8 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import {
-  Fragment,
+import React, {
   createContext,
   useContext,
   useMemo,
@@ -14,14 +10,11 @@ import { Editor, Transforms } from 'slate'
 import {
   type RenderElementProps,
   ReactEditor,
-  useFocused,
-  useSelected,
   useSlateStatic as useStaticEditor
 } from 'slate-react'
 
-import { jsx, useTheme } from '@keystone-ui/core'
+import { css, tokenSchema } from '@keystar/ui/style'
 
-import { ToolbarButton } from '../primitives'
 import { type ComponentBlock } from './api-shared'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
@@ -63,37 +56,13 @@ export function insertComponentBlock (
   }
 }
 
-export function BlockComponentsButtons ({ onClose }: { onClose: () => void }) {
-  const editor = useStaticEditor()
-  const blockComponents = useContext(ComponentBlockContext)!
-  return (
-    <Fragment>
-      {Object.keys(blockComponents).map(key => (
-        <ToolbarButton
-          key={key}
-          onMouseDown={event => {
-            event.preventDefault()
-            insertComponentBlock(editor, blockComponents, key)
-            onClose()
-          }}
-        >
-          {blockComponents[key].label}
-        </ToolbarButton>
-      ))}
-    </Fragment>
-  )
-}
-
 export function ComponentBlocksElement ({
   attributes,
   children,
   element: __elementToGetPath,
 }: RenderElementProps & { element: { type: 'component-block' } }) {
   const editor = useStaticEditor()
-  const focused = useFocused()
-  const selected = useSelected()
   const [currentElement, setElement] = useElementWithSetNodes(editor, __elementToGetPath)
-  const { spacing } = useTheme()
   const blockComponents = useContext(ComponentBlockContext)!
   const componentBlock = blockComponents[currentElement.component] as ComponentBlock | undefined
 
@@ -138,8 +107,11 @@ export function ComponentBlocksElement ({
 
   if (!componentBlock) {
     return (
-      <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
-        <pre contentEditable={false} css={{ userSelect: 'none' }}>
+      <div className={css({ border: 'red 4px solid', padding: tokenSchema.size.space.medium })}>
+        <pre
+          contentEditable={false}
+          className={css({ userSelect: 'none' })}
+        >
           {`The block "${currentElement.component}" no longer exists.
 
 Props:
@@ -169,8 +141,8 @@ Content:`}
       attributes={attributes}
       renderedBlock={renderedBlock}
       componentBlock={componentBlock}
-      isOpen={focused && selected}
       onRemove={onRemove}
+      element={__elementToGetPath}
       previewProps={toolbarPreviewProps}
     />
   ) : (

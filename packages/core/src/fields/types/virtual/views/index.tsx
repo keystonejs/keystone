@@ -1,54 +1,52 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import React from 'react'
+import { TextField } from '@keystar/ui/text-field'
+import { Text } from '@keystar/ui/typography'
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
-import { PrettyData } from './PrettyData'
+function stringify (value: unknown) {
+  if (typeof value === 'string') return value
+  if (value === undefined || value === null) return ''
+  if (typeof value !== 'object') return JSON.stringify(value)
 
-export const Field = ({ field, value }: FieldProps<typeof controller>) =>
-  value === createViewValue ? null : (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      <PrettyData data={value} />
-    </FieldContainer>
-  )
-
-export const Cell: CellComponent = ({ item, field }) => {
-  return <PrettyData data={item[field.path]} />
+  const omitTypename = (key: string, value: any) => (key === '__typename' ? undefined : value)
+  const dataWithoutTypename = JSON.parse(JSON.stringify(value), omitTypename)
+  return JSON.stringify(dataWithoutTypename, null, 2)
 }
 
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <PrettyData data={item[field.path]} />
-    </FieldContainer>
-  )
+export function Field (props: FieldProps<typeof controller>) {
+  const { autoFocus, field, value } = props
+  if (value === createViewValue) return null
+
+  return <TextField
+    autoFocus={autoFocus}
+    description={field.description}
+    label={field.label}
+    isReadOnly={true}
+    value={stringify(value)}
+  />
+}
+
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  return value != null ? <Text>{stringify(value)}</Text> : null
 }
 
 const createViewValue = Symbol('create view virtual field value')
 
-export const controller = (
+export function controller (
   config: FieldControllerConfig<{ query: string }>
-): FieldController<any> => {
+): FieldController<unknown> {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: `${config.path}${config.fieldMeta.query}`,
     defaultValue: createViewValue,
-    deserialize: data => {
-      return data[config.path]
-    },
+    deserialize: data => data[config.path],
     serialize: () => ({}),
   }
 }

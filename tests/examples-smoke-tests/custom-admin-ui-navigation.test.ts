@@ -24,12 +24,6 @@ exampleProjectTests('custom-admin-ui-navigation', browserType => {
     const href = await navElement?.getAttribute('href')
     expect(href).toBe('/people')
   })
-  test('Has a nav link to the Keystone docs', async () => {
-    const navElement = await page.waitForSelector('text="Keystone Docs"')
-    const href = await navElement?.getAttribute('href')
-    console.log(href)
-    expect(href).toBe('https://keystonejs.com')
-  })
   afterAll(async () => {
     await browser.close()
   })

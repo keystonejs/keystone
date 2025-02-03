@@ -9,7 +9,7 @@ import type {
   ListGraphQLTypes,
   ListHooks,
   KeystoneConfig,
-  MaybePromise,
+  MaybeFieldFunction,
   NextFieldType,
   FieldTypeFunc,
 } from '../../types'
@@ -27,9 +27,6 @@ import type {
 import {
   Empty,
 } from '../../types/schema/graphql-ts-schema'
-import type {
-  FilterOrderArgs
-} from '../../types/config/fields'
 import type {
   MaybeItemFunction,
   MaybeSessionFunction
@@ -59,8 +56,8 @@ export type InitialisedField = {
       read: boolean
       create: boolean
       update: boolean
-      filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-      orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
+      filter: MaybeFieldFunction<BaseListTypeInfo>
+      orderBy: MaybeFieldFunction<BaseListTypeInfo>
     }
     isNonNull: {
       read: boolean
@@ -102,9 +99,9 @@ export type InitialisedList = {
 
   fields: Record<string, InitialisedField>
   groups: {
-    fields: BaseListTypeInfo['fields'][]
     label: string
     description: string | null
+    fields: BaseListTypeInfo['fields'][]
   }[]
 
   hooks: ResolvedListHooks<BaseListTypeInfo>
@@ -117,7 +114,15 @@ export type InitialisedList = {
     types: GraphQLTypesForList
     names: GraphQLNames
     namePlural: string // TODO: remove
-    isEnabled: IsListEnabled
+    isEnabled: {
+      type: boolean
+      query: boolean
+      create: boolean
+      update: boolean
+      delete: boolean
+      filter: MaybeFieldFunction<BaseListTypeInfo>
+      orderBy: MaybeFieldFunction<BaseListTypeInfo>
+    }
   }
 
   prisma: {
@@ -138,16 +143,6 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
 }
 
-type IsListEnabled = {
-  type: boolean
-  query: boolean
-  create: boolean
-  update: boolean
-  delete: boolean
-  filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-  orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
-}
-
 function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return
   throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
@@ -155,7 +150,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
 
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
-type PartiallyInitialisedList1 = { graphql: { isEnabled: IsListEnabled } }
+type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
 function getIsEnabled (listKey: string, listConfig: ListConfigType) {
@@ -743,7 +738,7 @@ function getListsWithInitialisedFields (
       }
     }
 
-    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
+    // default labelField to `name`, `label`, or `title`; fallback to `id`
     const labelField =
       listConfig.ui?.labelField ??
       (listConfig.fields.label
@@ -800,6 +795,7 @@ function getListsWithInitialisedFields (
         if (cacheHint !== undefined) return () => cacheHint
         return undefined
       })(),
+
       isSingleton: listConfig.isSingleton ?? false,
     }
   }
@@ -808,6 +804,12 @@ function getListsWithInitialisedFields (
 }
 
 function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
+  const namesOfRelationInputs = new Set<string>()
+  for (const list of Object.values(lists)) {
+    const { types } = list.graphql
+    namesOfRelationInputs.add(types.where.graphQLType.name)
+    namesOfRelationInputs.add(types.relateTo.many.where.graphQLType.name)
+  }
   for (const list of Object.values(lists)) {
     const {
       listKey,
@@ -819,16 +821,17 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
     }
 
     const whereInputFields = list.graphql.types.where.graphQLType.getFields()
-    for (const fieldKey of Object.keys(list.fields)) {
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
       const filterType = whereInputFields[fieldKey]?.type
       const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined
+      const filterTypeName = isInputObjectType(filterType) ? filterType.name : undefined
       if (fieldFilterFields?.contains?.type === GraphQLString) {
         searchableFields.set(
           fieldKey,
           fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
         )
-      } else {
-        // TODO: throw?
+      } else if (field.dbField.kind === 'relation' && filterTypeName !== undefined && namesOfRelationInputs.has(filterTypeName)) {
+        searchableFields.set(fieldKey, 'default')
       }
     }
 

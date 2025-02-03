@@ -1,24 +1,20 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
+import React from 'react'
+import type {
+  CellComponent,
+  FieldControllerConfig,
 } from '@keystone-6/core/types'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-import { validateImage } from './Field'
+import {
+  type ImageValue,
+  validateImage
+} from '@keystone-6/core/fields/types/image/views'
 
-export { Field } from './Field'
+export { Field } from '@keystone-6/core/fields/types/image/views'
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path]
-  if (!data) return null
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  if (!value) return null
   return (
     <div
-      css={{
+      style={{
         alignItems: 'center',
         display: 'flex',
         height: 24,
@@ -27,60 +23,29 @@ export const Cell: CellComponent = ({ item, field }) => {
       }}
     >
       <img
-        alt={data.filename}
-        css={{ maxHeight: '100%', maxWidth: '100%' }}
-        src={data.publicUrlTransformed}
+        style={{ maxHeight: '100%', maxWidth: '100%' }}
+        src={value.url}
       />
     </div>
   )
 }
 
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
-    </FieldContainer>
-  )
-}
-
-type ImageData = {
-  id: string
-  filename: string
-  publicUrlTransformed: string
-}
-
-type CloudinaryImageValue =
-  | { kind: 'empty' }
-  | {
-      kind: 'from-server'
-      data: ImageData
-    }
-  | {
-      kind: 'upload'
-      data: {
-        file: File
-        validity: ValidityState
-      }
-      previous: CloudinaryImageValue
-    }
-  | { kind: 'remove', previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> }
-
-type CloudinaryImageController = FieldController<CloudinaryImageValue>
-
-export const controller = (config: FieldControllerConfig): CloudinaryImageController => {
+export function controller (config: FieldControllerConfig) {
+  const extensions = ['jpg', 'png', 'webp', 'gif'] // TODO: dynamic
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: `${config.path} {
-        id
-        filename
-        publicUrlTransformed(transformation: { width: "120" crop: "limit" })
-      }`,
+      id
+      url: publicUrlTransformed(transformation: { width: "120" crop: "limit" })
+      filesize
+      width
+      height
+    }`,
     defaultValue: { kind: 'empty' },
-    deserialize (item) {
+    extensions,
+    deserialize (item: any): ImageValue {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -88,10 +53,10 @@ export const controller = (config: FieldControllerConfig): CloudinaryImageContro
         data: value,
       }
     },
-    validate (value) {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined
+    validate (value: ImageValue): boolean {
+      return validateImage(extensions, value) === undefined
     },
-    serialize (value) {
+    serialize (value: ImageValue) {
       if (value.kind === 'upload') {
         return { [config.path]: value.data.file }
       }

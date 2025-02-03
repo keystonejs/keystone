@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
+import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
 import { dbProvider } from './utils'
 
 const runner = setupTestRunner({
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
 test(
   'non-sudo context does not bypass isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const res = await context.graphql.raw({ query: staticAdminMetaQuery })
+    const res = await context.graphql.raw({ query: adminMetaQuery })
     expect(res).toMatchInlineSnapshot(`
       {
         "data": null,
@@ -53,19 +53,23 @@ test(
 test(
   'sudo context bypasses isAccessAllowed for admin meta',
   runner(async ({ context }) => {
-    const data = await context.sudo().graphql.run({ query: staticAdminMetaQuery })
+    const data = await context.sudo().graphql.run({ query: adminMetaQuery })
     expect(data).toEqual({
       keystone: {
-        __typename: 'KeystoneMeta',
         adminMeta: {
-          __typename: 'KeystoneAdminMeta',
           lists: [
             {
-              __typename: 'KeystoneAdminUIListMeta',
               description: null,
               fields: [
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'hidden',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'hidden',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -74,7 +78,8 @@ test(
                   },
                   isNonNull: [],
                   itemView: {
-                    fieldMode: 'hidden',
+                    fieldMode: 'read',
+                    fieldPosition: 'sidebar',
                   },
                   label: 'Id',
                   path: 'id',
@@ -82,7 +87,14 @@ test(
                   viewsIndex: 0,
                 },
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'edit',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'read',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -102,6 +114,7 @@ test(
                   isNonNull: [],
                   itemView: {
                     fieldMode: 'hidden',
+                    fieldPosition: 'form',
                   },
                   label: 'Name',
                   path: 'name',
@@ -109,7 +122,14 @@ test(
                   viewsIndex: 1,
                 },
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  createView: {
+                    fieldMode: 'hidden',
+                  },
+                  isFilterable: true,
+                  isOrderable: true,
+                  listView: {
+                    fieldMode: 'hidden',
+                  },
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -123,6 +143,7 @@ test(
                   isNonNull: [],
                   itemView: {
                     fieldMode: 'read',
+                    fieldPosition: 'form',
                   },
                   label: 'Something',
                   path: 'something',
@@ -155,14 +176,15 @@ test(
                 },
               },
               groups: [],
+              hideCreate: false,
+              hideDelete: false,
+              hideNavigation: false,
               initialColumns: ['name', 'something'],
               initialSearchFields: ['name'],
               initialSort: null,
-              itemQueryName: 'User',
               key: 'User',
               label: 'Users',
               labelField: 'name',
-              listQueryName: 'Users',
               pageSize: 50,
               path: 'users',
               plural: 'Users',

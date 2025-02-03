@@ -1,13 +1,22 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core'
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
-import { Tooltip } from '@keystone-ui/tooltip'
-import { type ReactNode, useMemo, useState, useCallback, Fragment } from 'react'
-import { type RenderElementProps, useSelected } from 'slate-react'
-import { Stack } from '@keystone-ui/core'
-import { Button as KeystoneUIButton } from '@keystone-ui/button'
-import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives'
+import { Icon } from '@keystar/ui/icon'
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
+import React, {
+  type ReactNode,
+  useMemo,
+  useState,
+  useCallback,
+  Fragment,
+  forwardRef,
+  type PropsWithChildren,
+  type Ref,
+  useId
+} from 'react'
+import {
+  type RenderElementProps,
+  useSelected
+} from 'slate-react'
+import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
+import { Heading, Text } from '@keystar/ui/typography'
 import {
   type PreviewPropsForToolbar,
   type ObjectField,
@@ -16,23 +25,33 @@ import {
   NotEditable,
 } from './api'
 import { clientSideValidateProp } from './utils'
-import { type GenericPreviewProps } from './api'
+import type { GenericPreviewProps } from './api'
 import {
   FormValueContentFromPreviewProps,
-  type NonChildFieldComponentSchema,
+  previewPropsOnChange,
+  previewPropsToValue,
 } from './form-from-preview'
+import { DialogContainer, Dialog } from '@keystar/ui/dialog'
+import { FieldMessage } from '@keystar/ui/field'
+import { Flex } from '@keystar/ui/layout'
+import { Content } from '@keystar/ui/slots'
+import { css, tokenSchema } from '@keystar/ui/style'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { blockElementSpacing } from '../utils-hooks'
+import { createGetPreviewProps } from './preview-props'
 
 export function ChromefulComponentBlockElement (props: {
   children: ReactNode
   renderedBlock: ReactNode
   componentBlock: ComponentBlock & { chromeless?: false }
-  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>
+  previewProps: PreviewPropsForToolbar<
+    ObjectField<Record<string, ComponentSchema>>
+  >
   elementProps: Record<string, unknown>
   onRemove: () => void
   attributes: RenderElementProps['attributes']
 }) {
   const selected = useSelected()
-  const { colors, fields, spacing, typography } = useTheme()
 
   const isValid = useMemo(
     () =>
@@ -52,22 +71,80 @@ export function ChromefulComponentBlockElement (props: {
     setEditMode(true)
   }, [])
 
-  const ChromefulToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithChrome
+  const ChromefulToolbar =
+    props.componentBlock.toolbar ?? DefaultToolbarWithChrome
+  return (
+    <BlockPrimitive selected={selected} {...props.attributes}>
+      <Flex gap="medium" direction="column">
+        <NotEditable>
+          <Text
+            casing="uppercase"
+            color="neutralSecondary"
+            weight="medium"
+            size="small"
+          >
+            {props.componentBlock.label}
+          </Text>
+        </NotEditable>
+        <Fragment>
+          {props.renderedBlock}
+          <ChromefulToolbar
+            isValid={isValid}
+            onRemove={props.onRemove}
+            props={props.previewProps}
+            onShowEditMode={onShowEditMode}
+          />
+          <DialogContainer onDismiss={() => onCloseEditMode()}>
+            {(() => {
+              if (!editMode) {
+                return
+              }
+              return (
+                <Dialog>
+                  <Heading>Edit {props.componentBlock.label}</Heading>
+                  <FormValue
+                    props={props.previewProps}
+                    onClose={onCloseEditMode}
+                  />
+                </Dialog>
+              )
+            })()}
+          </DialogContainer>
+        </Fragment>
+      </Flex>
+    </BlockPrimitive>
+  )
+}
+
+/**
+ * Wrap block content, delimiting it from surrounding content, and provide a
+ * focus indicator because the cursor may not be present.
+ */
+const BlockPrimitive = forwardRef(function BlockPrimitive (
+  {
+    children,
+    selected,
+    ...attributes
+  }: PropsWithChildren<
+    Omit<RenderElementProps['attributes'], 'ref'> & { selected: boolean }
+  >,
+  ref: Ref<any>
+) {
   return (
     <div
-      {...props.attributes}
-      css={{
-        marginBottom: spacing.xlarge,
-        marginTop: spacing.xlarge,
-        paddingLeft: spacing.xlarge,
+      {...attributes}
+      ref={ref}
+      className={css(blockElementSpacing, {
         position: 'relative',
-        ':before': {
+        paddingInlineStart: tokenSchema.size.space.xlarge,
+        marginBottom: tokenSchema.size.space.xlarge,
+
+        '::before': {
+          display: 'block',
           content: '" "',
           backgroundColor: selected
-            ? colors.focusRing
-            : editMode
-            ? colors.linkColor
-            : colors.border,
+            ? tokenSchema.color.alias.borderSelected
+            : tokenSchema.color.alias.borderIdle,
           borderRadius: 4,
           width: 4,
           position: 'absolute',
@@ -76,40 +153,12 @@ export function ChromefulComponentBlockElement (props: {
           bottom: 0,
           zIndex: 1,
         },
-      }}
+      })}
     >
-      <NotEditable
-        css={{
-          color: fields.legendColor,
-          display: 'block',
-          fontSize: typography.fontSize.small,
-          fontWeight: typography.fontWeight.bold,
-          lineHeight: 1,
-          marginBottom: spacing.small,
-          textTransform: 'uppercase',
-        }}
-      >
-        {props.componentBlock.label}
-      </NotEditable>
-      {editMode ? (
-        <Fragment>
-          <FormValue isValid={isValid} props={props.previewProps} onClose={onCloseEditMode} />
-          <div css={{ display: 'none' }}>{props.children}</div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          {props.renderedBlock}
-          <ChromefulToolbar
-            isValid={isValid}
-            onRemove={props.onRemove}
-            onShowEditMode={onShowEditMode}
-            props={props.previewProps}
-          />
-        </Fragment>
-      )}
+      {children}
     </div>
   )
-}
+})
 
 function DefaultToolbarWithChrome ({
   onShowEditMode,
@@ -121,77 +170,80 @@ function DefaultToolbarWithChrome ({
   props: any
   isValid: boolean
 }) {
-  const theme = useTheme()
   return (
-    <ToolbarGroup as={NotEditable} marginTop="small">
-      <ToolbarButton
-        onClick={() => {
-          onShowEditMode()
-        }}
-      >
-        Edit
-      </ToolbarButton>
-      <ToolbarSeparator />
-      <Tooltip content="Remove" weight="subtle">
-        {attrs => (
-          <ToolbarButton
-            variant="destructive"
-            onClick={() => {
-              onRemove()
-            }}
-            {...attrs}
-          >
-            <Trash2Icon size="small" />
-          </ToolbarButton>
+    <NotEditable>
+      <Flex direction="column" gap="medium">
+        <Flex
+          alignItems="center"
+          gap="regular"
+          UNSAFE_style={{ userSelect: 'none' }}
+        >
+          <ActionButton onPress={() => onShowEditMode()}>
+            Edit
+          </ActionButton>
+          <TooltipTrigger>
+            <ActionButton prominence="low" onPress={onRemove}>
+              <Icon src={trash2Icon} />
+            </ActionButton>
+            <Tooltip tone="critical">
+              Delete
+            </Tooltip>
+          </TooltipTrigger>
+        </Flex>
+        {!isValid && (
+          <FieldMessage>Contains invalid fields. Please edit.</FieldMessage>
         )}
-      </Tooltip>
-      {!isValid && (
-        <Fragment>
-          <ToolbarSeparator />
-          <span
-            css={{
-              color: theme.palette.red500,
-              display: 'flex',
-              alignItems: 'center',
-              paddingLeft: theme.spacing.small,
-            }}
-          >
-            Please edit the form, there are invalid fields.
-          </span>
-        </Fragment>
-      )}
-    </ToolbarGroup>
+      </Flex>
+    </NotEditable>
   )
 }
 
 function FormValue ({
   onClose,
   props,
-  isValid,
 }: {
-  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>
+  props: GenericPreviewProps<ComponentSchema, unknown>
   onClose(): void
-  isValid: boolean
 }) {
+  const formId = useId()
   const [forceValidation, setForceValidation] = useState(false)
+  const [state, setState] = useState(() => previewPropsToValue(props))
+  const previewProps = useMemo(
+    () => createGetPreviewProps(props.schema, setState, () => undefined),
+    [props.schema]
+  )(state)
 
   return (
-    <Stack gap="xlarge" contentEditable={false}>
-      <FormValueContentFromPreviewProps {...props} forceValidation={forceValidation} />
-      <KeystoneUIButton
-        size="small"
-        tone="active"
-        weight="bold"
-        onClick={() => {
-          if (isValid) {
-            onClose()
-          } else {
-            setForceValidation(true)
-          }
-        }}
-      >
-        Done
-      </KeystoneUIButton>
-    </Stack>
+    <>
+      <Content>
+        <Flex
+          id={formId}
+          elementType="form"
+          onSubmit={event => {
+            if (event.target !== event.currentTarget) return
+            event.preventDefault()
+            if (!clientSideValidateProp(props.schema, state)) {
+              setForceValidation(true)
+            } else {
+              previewPropsOnChange(state, props)
+              onClose()
+            }
+          }}
+          direction="column"
+          gap="xxlarge"
+        >
+          <FormValueContentFromPreviewProps
+            {...previewProps}
+            forceValidation={forceValidation}
+          />
+        </Flex>
+      </Content>
+      <ButtonGroup>
+        <Button onPress={onClose}>Cancel</Button>
+        <Button form={formId} prominence="high" type="submit">
+          Done
+        </Button>
+      </ButtonGroup>
+    </>
   )
 }

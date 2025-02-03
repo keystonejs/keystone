@@ -56,7 +56,7 @@ export default tseslint.config(
       ],
       '@typescript-eslint/consistent-type-imports': ['error', {
         disallowTypeAnnotations: true,
-        fixStyle: 'inline-type-imports',
+        fixStyle: 'separate-type-imports',
         prefer: 'type-imports',
       }],
       '@typescript-eslint/no-explicit-any': 'off',

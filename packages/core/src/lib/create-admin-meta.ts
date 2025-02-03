@@ -1,68 +1,58 @@
 import path from 'node:path'
 import type {
   BaseListTypeInfo,
-  JSONValue,
   KeystoneContext,
+  MaybeFieldFunction,
   MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
   KeystoneConfig,
 } from '../types'
 import type {
-  GraphQLNames
+  GraphQLNames,
 } from '../types/utils'
-import type { FilterOrderArgs } from '../types/config/fields'
+import type {
+  FieldMeta,
+  FieldGroupMeta,
+  ListMeta,
+} from '../types/admin-meta'
 
 import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
-export type FieldMetaRootVal = {
+type FieldMetaRootVal_ = {
   key: string
-  /**
-   * @deprecated use .key, not .path
-   */
-  path: string
-  label: string
-  description: string | null
-  fieldMeta: JSONValue | null
-  viewsIndex: number
-  customViewsIndex: number | null
   listKey: string
-  search: 'default' | 'insensitive' | null
   isOrderable: ContextFunction<boolean>
   isFilterable: ContextFunction<boolean>
-  isNonNull: ('read' | 'create' | 'update')[]
-  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> }
-  // itemView is intentionally special because static values are special cased
-  // and fetched when fetching the static admin ui
+
+  isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
+  createView: {
+    fieldMode: ContextFunction<'edit' | 'hidden'>
+  }
   itemView: {
     fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>
     fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>
   }
-  listView: { fieldMode: ContextFunction<'read' | 'hidden'> }
+  listView: {
+    fieldMode: ContextFunction<'read' | 'hidden'>
+  }
 }
 
-export type FieldGroupMeta = {
-  label: string
-  description: string | null
-  fields: Array<FieldMetaRootVal>
+export type FieldMetaRootVal = FieldMetaRootVal_
+  & Omit<FieldMeta, keyof FieldMetaRootVal_ | 'controller' | 'graphql' | 'views'>
+
+type FieldGroupMetaRootVal_ = {
+  fields: FieldMetaRootVal[]
 }
+export type FieldGroupMetaRootVal = FieldGroupMetaRootVal_ & Omit<FieldGroupMeta, keyof FieldGroupMetaRootVal_>
 
-export type ListMetaRootVal = {
-  key: string
-  path: string
-  description: string | null
-
-  label: string
-  labelField: string
-  singular: string
-  plural: string
-
+type ListMetaRootVal_ = {
   fields: FieldMetaRootVal[]
   fieldsByKey: Record<string, FieldMetaRootVal>
-  groups: Array<FieldGroupMeta>
+  groups: FieldGroupMetaRootVal[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
@@ -70,19 +60,17 @@ export type ListMetaRootVal = {
   initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
-  // TODO: probably remove this
-  itemQueryName: string
-  listQueryName: string
-  isHidden: ContextFunction<boolean>
+  hideNavigation: ContextFunction<boolean>
   hideCreate: ContextFunction<boolean>
   hideDelete: ContextFunction<boolean>
 }
+export type ListMetaRootVal = ListMetaRootVal_ & Omit<ListMeta, keyof ListMetaRootVal_>
 
 export type AdminMetaRootVal = {
   lists: ListMetaRootVal[]
   listsByKey: Record<string, ListMetaRootVal>
   views: string[]
-  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>)
+  isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
 
 export function createAdminMeta (
@@ -162,13 +150,9 @@ export function createAdminMeta (
           | undefined) ?? null,
       isSingleton: list.isSingleton,
 
-      // TODO: probably remove this
-      itemQueryName: listKey,
-      listQueryName: list.graphql.namePlural, // TODO: remove
-
+      hideNavigation: normalizeMaybeSessionFunction(listConfig.ui?.hideNavigation ?? false),
       hideCreate: normalizeMaybeSessionFunction(listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create),
       hideDelete: normalizeMaybeSessionFunction(listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete),
-      isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
     }
 
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
@@ -198,18 +182,25 @@ export function createAdminMeta (
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
       const isNonNull = (['read', 'create', 'update'] as const).filter(operation => field.graphql.isNonNull[operation])
       const fieldMeta = {
-        key: fieldKey,
+        path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
+        fieldMeta: null,
+
+        key: fieldKey,
+        listKey: listKey,
+        isFilterable: normalizeIsOrderFilter(field.input?.where ? field.graphql.isEnabled.filter : false, baseOrderFilterArgs),
+        isOrderable: normalizeIsOrderFilter(field.input?.orderBy ? field.graphql.isEnabled.orderBy : false, baseOrderFilterArgs),
+
         viewsIndex: getViewId(field.views),
         customViewsIndex:
           field.ui.views === null
             ? null
             : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
               getViewId(field.ui.views)),
-        fieldMeta: null,
-        listKey: listKey,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
+
+        isNonNull,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.createView.fieldMode),
         },
@@ -220,30 +211,17 @@ export function createAdminMeta (
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),
         },
-        isFilterable: normalizeIsOrderFilter(
-          field.input?.where ? field.graphql.isEnabled.filter : false,
-          baseOrderFilterArgs
-        ),
-        isOrderable: normalizeIsOrderFilter(
-          field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
-          baseOrderFilterArgs
-        ),
-        isNonNull,
-
-        // TODO: deprecated, remove in breaking change
-        path: fieldKey,
       }
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
     }
+
     for (const group of list.groups) {
       adminMetaRoot.listsByKey[listKey].groups.push({
         label: group.label,
         description: group.description,
-        fields: group.fields.map(
-          fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
-        ),
+        fields: group.fields.map(fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]),
       })
     }
   }
@@ -272,41 +250,31 @@ export function createAdminMeta (
 let currentAdminMeta: undefined | AdminMetaRootVal
 
 export function getAdminMetaForRelationshipField () {
-  if (currentAdminMeta === undefined) throw new Error('Unexpected call to getAdminMetaInRelationshipField')
-  return currentAdminMeta
+  if (currentAdminMeta) return currentAdminMeta
+  throw new Error('unexpected call to getAdminMetaInRelationshipField')
 }
 
 function assertValidView (view: string, location: string) {
   if (view.includes('\\')) {
-    throw new Error(
-      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
+    throw new Error(`${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
   }
 
   if (path.isAbsolute(view)) {
-    throw new Error(
-      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
+    throw new Error(`${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
   }
 }
 
 function normalizeMaybeSessionFunction<Return extends string | boolean> (
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): ContextFunction<Return> {
-  if (typeof input !== 'function') {
-    return () => input
-  }
+  if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session })
 }
 
-type BaseOrderFilterArgs = { listKey: string, fieldKey: string }
-
 function normalizeIsOrderFilter (
-  input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
-  baseOrderFilterArgs: BaseOrderFilterArgs
+  input: MaybeFieldFunction<BaseListTypeInfo>,
+  baseOrderFilterArgs: { listKey: string, fieldKey: string }
 ): ContextFunction<boolean> {
-  if (typeof input !== 'function') {
-    return () => input
-  }
+  if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session, ...baseOrderFilterArgs })
 }

@@ -1,14 +1,14 @@
 import {
   type BaseListTypeInfo,
-  type FieldTypeFunc,
   type CommonFieldConfig,
-  jsonFieldTypePolyfilledForSQLite,
+  type FieldTypeFunc,
   type JSONValue,
+  jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { getOutputGraphQLField } from './structure-graphql-output'
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import {
   getGraphQLInputType,
   getValueForCreate,
@@ -20,27 +20,25 @@ import { addRelationshipDataToComponentProps, fetchRelationshipData } from './re
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string }
-    schema: ComponentSchemaForGraphQL
+    schema: ComponentSchema
   }
 
-export const structure =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    schema,
-    ...config
-  }: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function structure <ListTypeInfo extends BaseListTypeInfo> ({
+  schema,
+  ...config
+}: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type structure")
     }
     const lists = new Set(Object.keys(meta.lists))
     try {
-      assertValidComponentSchema(schema, lists)
+      assertValidComponentSchema(schema, lists, 'structure')
     } catch (err) {
       throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`)
     }
 
     const defaultValue = getInitialPropsValue(schema)
-
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
@@ -107,25 +105,21 @@ export const structure =
                   }),
                 },
                 resolve ({ value }, args, context) {
-                  if (args.hydrateRelationships) {
-                    return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
-                      fetchRelationshipData(
-                        context,
-                        schema.listKey,
-                        schema.many,
-                        schema.selection || '',
-                        value
-                      )
+                  if (!args.hydrateRelationships) return value
+                  return addRelationshipDataToComponentProps(schema, value, (schema, value) => {
+                    return fetchRelationshipData(
+                      context,
+                      schema.listKey,
+                      schema.many,
+                      schema.selection || '',
+                      value
                     )
-                  }
-                  return value
+                  })
                 },
               }),
             },
           }),
-          resolve (source) {
-            return source
-          },
+          resolve (source) { return source },
         }),
         __ksTelemetryFieldTypeName: '@keystone-6/structure',
         views: '@keystone-6/fields-document/structure-views',
@@ -142,3 +136,4 @@ export const structure =
       }
     )
   }
+}

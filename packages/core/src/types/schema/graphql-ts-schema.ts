@@ -1,12 +1,15 @@
-import type { ReadStream } from 'fs'
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { ReadStream } from 'node:fs'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
+import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
-import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
 import type { KeystoneContext } from '../context'
 import type { JSONValue } from '../utils'
+import { field as fieldd } from './schema-api-with-context'
+
 export {
   Boolean,
   Float,
@@ -39,13 +42,11 @@ export type {
 export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend, wrap } from '@graphql-ts/extend'
-import { field as fieldd } from './schema-api-with-context'
-import type { InputType, Arg } from '@graphql-ts/schema'
 export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
 
 // TODO: remove when we use { graphql } from '.keystone'
 type SomeTypeThatIsntARecordOfArgs = string
-type FieldFuncResolve<
+export type FieldFuncResolve<
   Source,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType,
@@ -73,7 +74,7 @@ type FieldFuncResolve<
       ? {
           resolve?: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
           >
@@ -81,7 +82,7 @@ type FieldFuncResolve<
       : {
           resolve: graphqlTsSchema.FieldResolver<
             Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
           >
@@ -89,7 +90,7 @@ type FieldFuncResolve<
     : {
         resolve: graphqlTsSchema.FieldResolver<
           Source,
-          SomeTypeThatIsntARecordOfArgs extends Args ? Record<string, Arg<InputType>> : Args,
+          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
           Type,
           Context
         >
@@ -149,39 +150,25 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
   new GraphQLScalarType({
     name: 'Decimal',
     serialize (value) {
-      if (!DecimalValue.isDecimal(value)) {
-        throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
-      }
+      if (!DecimalValue.isDecimal(value)) throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
       const cast = value as DecimalValue & { scaleToPrint?: number }
-      if (cast.scaleToPrint !== undefined) {
-        return value.toFixed(cast.scaleToPrint)
-      }
+      if (cast.scaleToPrint !== undefined) return value.toFixed(cast.scaleToPrint)
       return value.toString()
     },
     parseLiteral (value) {
-      if (value.kind !== 'StringValue') {
-        throw new GraphQLError('Decimal only accepts values as strings')
-      }
+      if (value.kind !== 'StringValue') throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value.value)
-      if (!decimal.isFinite()) {
-        throw new GraphQLError('Decimal values must be finite')
-      }
+      if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
     },
     parseValue (value) {
       if (DecimalValue.isDecimal(value)) {
-        if (!value.isFinite()) {
-          throw new GraphQLError('Decimal values must be finite')
-        }
+        if (!value.isFinite()) throw new GraphQLError('Decimal values must be finite')
         return value
       }
-      if (typeof value !== 'string') {
-        throw new GraphQLError('Decimal only accepts values as strings')
-      }
+      if (typeof value !== 'string') throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value)
-      if (!decimal.isFinite()) {
-        throw new GraphQLError('Decimal values must be finite')
-      }
+      if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
     },
   })

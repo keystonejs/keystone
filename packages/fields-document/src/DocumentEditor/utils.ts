@@ -123,15 +123,11 @@ export function EditorAfterButIgnoringingPointsWithNoContent (
   for (const p of Editor.positions(editor, {
     at: range,
   })) {
-    if (d > distance) {
-      break
-    }
+    if (d > distance) break
 
     // this is the important change
     const node = Node.get(editor, p.path) as Text
-    if (node.text.length === p.offset) {
-      continue
-    }
+    if (node.text.length === p.offset) continue
 
     if (d !== 0) {
       target = p
@@ -155,7 +151,5 @@ export function nodeTypeMatcher<Type extends Element['type'][]> (
 }
 
 export function assert (condition: boolean): asserts condition {
-  if (!condition) {
-    throw new Error('failed assert')
-  }
+  if (!condition) throw new Error('failed assert')
 }

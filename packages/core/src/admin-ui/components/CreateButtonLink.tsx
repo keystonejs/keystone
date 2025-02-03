@@ -1,26 +1,18 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Button } from '@keystone-ui/button'
-import { jsx } from '@keystone-ui/core'
-import type { ListMeta } from '../../types'
-import { Link } from '../router'
+import React from 'react'
+import { Button } from '@keystar/ui/button'
+import { Text } from '@keystar/ui/typography'
 
-export function CreateButtonLink (props: { list: ListMeta }) {
+import type { ListMeta } from '../../types'
+
+export function CreateButtonLink (props: { children?: string, list: ListMeta }) {
+  const { list, children = `Create ${list.singular}` } = props
   return (
     <Button
-      css={{
-        textDecoration: 'none',
-        ':hover': {
-          color: 'white',
-        },
-      }}
-      as={Link}
-      href={`/${props.list.path}/create`}
-      tone="active"
-      size="small"
-      weight="bold"
+      aria-label={`New ${props.list.singular}`}
+      href={`/${list.path}/create`}
+      prominence='high'
     >
-      Create {props.list.singular}
+      <Text>{children}</Text>
     </Button>
   )
 }

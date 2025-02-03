@@ -1,4 +1,3 @@
-import retry from 'async-retry'
 import { type Browser, type Page, type BrowserContext } from 'playwright'
 import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
 
@@ -15,7 +14,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   })
 
   describe('relationship filters', () => {
-    afterEach(async () => {
+    beforeEach(async () => {
       await context.clearCookies()
       await page.evaluate(() => {
         window.localStorage.clear()
@@ -57,26 +56,19 @@ adminUITests('./tests/test-projects/basic', browserType => {
         ),
       })
       await page.goto('http://localhost:3000/tasks')
-      await page.waitForSelector('table tbody tr')
-      const elements = await page.$$('table tbody tr')
-      expect(elements.length).toBe(21)
+      await page.getByText('21 Tasks').waitFor()
       // apply filter
-      await page.click('button[aria-haspopup=true]:has-text("Filter List")')
-      await page.click('div div div div div div div:has-text("Assigned To")')
-      await page.click('div div div div div:has-text("Select...")')
-      await page.click('div div div div div:has-text("James Joyce")')
-      await Promise.all([
-        page.waitForNavigation({
-          url: `http://localhost:3000/tasks?%21assignedTo_matches="${assignedTask.assignedTo.id}"`,
-        }),
-        page.click('button[type="submit"]:has-text("Apply")'),
-      ])
+      await page.getByRole('button', { name: 'Filter' }).click()
+      await page.getByRole('menuitem', { name: 'Assigned To' }).click()
+      await page.getByRole('button', { name: 'Is empty filter type' }).click()
+      await page.getByRole('option', { name: 'Is', exact: true }).click()
+      await page.getByLabel('Show suggestions').click()
+      await page.getByRole('option', { name: 'James Joyce' }).click()
+      await page.getByRole('button', { name: 'Add' }).click()
+      await page.waitForURL(`http://localhost:3000/tasks?%21assignedTo_is="${assignedTask.assignedTo.id}"`)
 
       // Assert that there's only one result.
-      await page.waitForSelector('table tbody tr')
-      await page.waitForSelector('text=Task-not-assigned-0', { state: 'detached' })
-      const filteredElements = await page.$$('table tbody tr')
-      expect(filteredElements.length).toBe(1)
+      await page.getByText('1 Task').waitFor()
     })
 
     test('Deeplinking a url with the appropriate relationship filter query params will apply the filter', async () => {
@@ -114,20 +106,10 @@ adminUITests('./tests/test-projects/basic', browserType => {
           20
         ),
       })
-      await retry(async () => {
-        await page.goto('http://localhost:3000/tasks')
-        await page.waitForSelector('table tbody tr')
-        const elements = await page.$$('table tbody tr')
-        expect(elements.length).toBe(21)
-
-        await page.goto(
-          `http://localhost:3000/tasks?!assignedTo_matches="${assignedTask.assignedTo.id}"`
-        )
-
-        await page.waitForSelector('table tbody tr')
-        const filteredElements = await page.$$('table tbody tr')
-        expect(filteredElements.length).toBe(1)
-      })
+      await page.goto('http://localhost:3000/tasks')
+      await page.getByText('21 Tasks').waitFor()
+      await page.goto(`http://localhost:3000/tasks?!assignedTo_is="${assignedTask.assignedTo.id}"`)
+      await page.getByText('1 Task').waitFor()
     })
   })
 

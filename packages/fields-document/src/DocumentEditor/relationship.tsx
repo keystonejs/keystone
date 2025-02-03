@@ -1,20 +1,15 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { createContext, Fragment, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms } from 'slate'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
 
-import { jsx } from '@keystone-ui/core'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 
-import { ToolbarButton } from './primitives'
-import { useToolbarState } from './toolbar-state'
+import { ComboboxSingle } from '@keystone-6/core/fields/types/relationship/views'
 
-import { type Relationships } from './relationship-shared'
-export { type Relationships } from './relationship-shared'
+import type { Relationships } from './relationship-shared'
+import { css } from '@keystar/ui/style'
+export type { Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
 
@@ -23,38 +18,6 @@ export function useDocumentFieldRelationships () {
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
-
-export function RelationshipButton ({ onClose }: { onClose: () => void }) {
-  const {
-    editor,
-    relationships: { isDisabled },
-  } = useToolbarState()
-  const relationships = useContext(DocumentFieldRelationshipsContext)!
-  return (
-    <Fragment>
-      {Object.entries(relationships).map(([key, relationship]) => {
-        return (
-          <ToolbarButton
-            key={key}
-            isDisabled={isDisabled}
-            onMouseDown={event => {
-              event.preventDefault()
-              Transforms.insertNodes(editor, {
-                type: 'relationship',
-                relationship: key,
-                data: null,
-                children: [{ text: '' }],
-              })
-              onClose()
-            }}
-          >
-            {relationship.label}
-          </ToolbarButton>
-        )
-      })}
-    </Fragment>
-  )
-}
 
 export function RelationshipElement ({
   attributes,
@@ -70,42 +33,39 @@ export function RelationshipElement ({
   return (
     <span
       {...attributes}
-      css={{
+      className={css({
         display: 'inline-flex',
         alignItems: 'center',
-      }}
+      })}
     >
       <span
         contentEditable={false}
-        css={{
+        className={css({
           userSelect: 'none',
           width: 200,
           display: 'inline-block',
           paddingLeft: 4,
           paddingRight: 4,
           flex: 1,
-        }}
+        })}
       >
         {relationship ? (
-          <RelationshipSelect
-            controlShouldRenderValue
-            isDisabled={false}
-            list={list}
+          <ComboboxSingle
             labelField={list.labelField}
             searchFields={searchFields}
-            portalMenu
+            list={list}
             state={{
               kind: 'one',
               value:
                 element.data === null
                   ? null
-                  : { id: element.data.id, label: element.data.label || element.data.id },
-              onChange (value) {
+                  : { id: element.data.id, label: element.data.label ?? null, built: undefined },
+              onChange (newItem) {
                 const at = ReactEditor.findPath(editor, element)
-                if (value === null) {
+                if (newItem === null) {
                   Transforms.removeNodes(editor, { at })
                 } else {
-                  Transforms.setNodes(editor, { data: value }, { at })
+                  Transforms.setNodes(editor, { data: { id: newItem.id, label: newItem.label, data: newItem.data } }, { at })
                 }
               },
             }}
@@ -114,7 +74,7 @@ export function RelationshipElement ({
           'Invalid relationship'
         )}
       </span>
-      <span css={{ flex: 0 }}>{children}</span>
+      <span className={css({ flex: 0 })}>{children}</span>
     </span>
   )
 }

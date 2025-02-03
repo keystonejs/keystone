@@ -1,49 +1,41 @@
-import React, { type ComponentProps, Fragment, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
-import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon'
-import { Tooltip } from '@keystone-ui/tooltip'
+import { Icon } from '@keystar/ui/icon'
+import { minusIcon } from '@keystar/ui/icon/icons/minusIcon'
 
-import { KeyboardInTooltip, ToolbarButton } from './primitives'
 import { useToolbarState } from './toolbar-state'
 import { insertDivider } from './divider-shared'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
+import { Kbd, Text } from '@keystar/ui/typography'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
-const minusIcon = <MinusIcon size="small" />
-
-function DividerButton ({
-  attrs,
-}: {
-  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0]
-}) {
+const DividerButton = () => {
   const {
     editor,
     dividers: { isDisabled },
   } = useToolbarState()
   return useMemo(
     () => (
-      <ToolbarButton
+      <EditorToolbarButton
         isDisabled={isDisabled}
-        onMouseDown={event => {
-          event.preventDefault()
+        isSelected={false}
+        onPress={() => {
           insertDivider(editor)
         }}
-        {...attrs}
       >
-        {minusIcon}
-      </ToolbarButton>
+        <Icon src={minusIcon} />
+      </EditorToolbarButton>
     ),
-    [editor, isDisabled, attrs]
+    [editor, isDisabled]
   )
 }
 
 export const dividerButton = (
-  <Tooltip
-    content={
-      <Fragment>
-        Divider<KeyboardInTooltip>---</KeyboardInTooltip>
-      </Fragment>
-    }
-    weight="subtle"
-  >
-    {attrs => <DividerButton attrs={attrs} />}
-  </Tooltip>
+  <TooltipTrigger delay={200}>
+    <DividerButton />
+    <Tooltip>
+      <Text>Divider</Text>
+      <Kbd>---</Kbd>
+    </Tooltip>
+  </TooltipTrigger>
 )

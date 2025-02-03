@@ -1,16 +1,24 @@
 import { graphql } from '@keystone-6/core'
-import { type BaseItem, type FieldData, type GraphQLTypesForList, type KeystoneContext } from '@keystone-6/core/types'
-import { type GraphQLResolveInfo } from 'graphql'
+import type {
+  BaseItem,
+  FieldData,
+  GraphQLTypesForList,
+  KeystoneContext
+} from '@keystone-6/core/types'
+import type { GraphQLResolveInfo } from 'graphql'
 
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
+import {
+  type ReadonlyPropPath,
+  assertNever,
+} from './DocumentEditor/component-blocks/utils'
 
 export function getGraphQLInputType (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchema, graphql.InputType>,
   meta: FieldData
 ) {
   if (!cache.has(schema)) {
@@ -22,12 +30,15 @@ export function getGraphQLInputType (
 
 function getGraphQLInputTypeInner (
   name: string,
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchema, graphql.InputType>,
   meta: FieldData
 ): graphql.InputType {
   if (schema.kind === 'form') {
+    if (!schema.graphql) {
+      throw new Error(`Field at ${name} is missing a graphql field`)
+    }
     return schema.graphql.input
   }
   if (schema.kind === 'object') {
@@ -85,36 +96,31 @@ function getGraphQLInputTypeInner (
     }
     return inputType
   }
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${name}`)
+  }
 
   assertNever(schema)
 }
 
 export async function getValueForUpdate (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   prevValue: any,
   context: KeystoneContext,
   path: ReadonlyPropPath
 ): Promise<any> {
-  if (value === undefined) {
-    return prevValue
-  }
+  if (value === undefined) return prevValue
   if (prevValue === undefined) {
     prevValue = getInitialPropsValue(schema)
   }
 
   if (schema.kind === 'form') {
-    if (schema.validate(value)) {
-      return value
-    }
+    if (schema.validate(value)) return value
     throw new Error(`The value of the form field at '${path.join('.')}' is invalid`)
   }
   if (value === null) {
-    throw new Error(
-      `${
-        schema.kind[0].toUpperCase() + schema.kind.slice(1)
-      } fields cannot be set to null but the field at '${path.join('.')}' is null`
-    )
+    throw new Error(`${ schema.kind[0].toUpperCase() + schema.kind.slice(1) } fields cannot be set to null but the field at '${path.join('.')}' is null`)
   }
   if (schema.kind === 'object') {
     return Object.fromEntries(
@@ -175,23 +181,23 @@ export async function getValueForUpdate (
     }
   }
 
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
+  }
+
   assertNever(schema)
 }
 
 export async function getValueForCreate (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   context: KeystoneContext,
   path: ReadonlyPropPath
 ): Promise<any> {
   // If value is undefined, get the specified defaultValue
-  if (value === undefined) {
-    return getInitialPropsValue(schema)
-  }
+  if (value === undefined) return getInitialPropsValue(schema)
   if (schema.kind === 'form') {
-    if (schema.validate(value)) {
-      return value
-    }
+    if (schema.validate(value)) return value
     throw new Error(`The value of the form field at '${path.join('.')}' is invalid`)
   }
   if (value === null) {
@@ -233,13 +239,9 @@ export async function getValueForCreate (
     }
   }
   if (schema.kind === 'conditional') {
-    if (value === null) {
-      throw new Error()
-    }
+    if (value === null) throw new Error()
     const conditionalValueKeys = Object.keys(value)
-    if (conditionalValueKeys.length !== 1) {
-      throw new Error()
-    }
+    if (conditionalValueKeys.length !== 1) throw new Error()
     const key = conditionalValueKeys[0]
     let discriminant: string | boolean = key
     if ((key === 'true' || key === 'false') && !schema.discriminant.validate(key)) {
@@ -255,6 +257,10 @@ export async function getValueForCreate (
         path.concat('value')
       ),
     }
+  }
+
+  if (schema.kind === 'child') {
+    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
   }
 
   assertNever(schema)
@@ -387,12 +393,9 @@ export async function resolveRelateToManyForUpdateInput (
   const errors = [...connectResult, ...createResult, ...disconnectResult, ...setResult].filter(
     isRejected
   )
-  if (errors.length) {
-    throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag: '' })))
-  }
+  if (errors.length) throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag: '' })))
 
   let values = prevVal
-
   if (value.set) {
     values = setResult.filter(isFulfilled).map(x => x.value)
   }
@@ -422,7 +425,7 @@ type _UpdateValueType = Exclude<
   null | undefined
 >
 
-const missingItem = (operation: string, uniqueWhere: Record<string, any>) => {
+function missingItem (operation: string, uniqueWhere: Record<string, any>) {
   throw new Error(
     `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
       uniqueWhere
@@ -438,9 +441,7 @@ export async function checkUniqueItemExists (
 ) {
   // Check whether the item exists (from this users POV).
   const item = await context.db[listKey].findOne({ where: uniqueInput })
-  if (item === null) {
-    throw missingItem(operation, uniqueInput)
-  }
+  if (item === null) throw missingItem(operation, uniqueInput)
 
   return { id: item.id.toString() }
 }
@@ -450,11 +451,8 @@ async function handleCreateAndUpdate (
   context: KeystoneContext,
   foreignListKey: string
 ) {
-  if (value.connect) {
-    return checkUniqueItemExists(value.connect, foreignListKey, context, 'connect')
-  } else if (value.create) {
-    return resolveCreateMutation(value, context, foreignListKey)
-  }
+  if (value.connect) return checkUniqueItemExists(value.connect, foreignListKey, context, 'connect')
+  return resolveCreateMutation(value, context, foreignListKey)
 }
 
 async function resolveCreateMutation (value: any, context: KeystoneContext, foreignListKey: string) {
@@ -479,11 +477,7 @@ export function resolveRelateToOneForCreateInput (
   foreignListKey: string
 ) {
   const numOfKeys = Object.keys(value).length
-  if (numOfKeys !== 1) {
-    throw new Error(
-      `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
-    )
-  }
+  if (numOfKeys !== 1) throw new Error(`You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`)
   return handleCreateAndUpdate(value, context, foreignListKey)
 }
 
@@ -492,15 +486,8 @@ export function resolveRelateToOneForUpdateInput (
   context: KeystoneContext,
   foreignListKey: string
 ) {
-  if (Object.keys(value).length !== 1) {
-    throw new Error(
-      `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
-    )
-  }
+  if (Object.keys(value).length !== 1) throw new Error(`You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`)
 
-  if (value.connect || value.create) {
-    return handleCreateAndUpdate(value, context, foreignListKey)
-  } else if (value.disconnect) {
-    return null
-  }
+  if (value.connect || value.create) return handleCreateAndUpdate(value, context, foreignListKey)
+  if (value.disconnect) return null
 }

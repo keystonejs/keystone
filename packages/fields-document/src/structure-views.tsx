@@ -1,19 +1,14 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import React, { useEffect, useMemo, useRef } from 'react'
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '@keystone-6/core/types'
-import { useEffect, useMemo, useRef } from 'react'
+import { Field as KeystarField } from '@keystar/ui/field'
+
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
@@ -33,29 +28,32 @@ export function Field ({
     return createGetPreviewProps(
       field.schema,
       getNewVal => {
-        onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) })
+        onChange?.({
+          kind: valueRef.current.kind,
+          value: getNewVal(valueRef.current.value)
+        })
       },
       () => undefined
     )
   }, [field.schema, onChange])
   return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      <FormValueContentFromPreviewProps
-        forceValidation={forceValidation}
-        autoFocus={autoFocus}
-        {...createPreviewProps(value.value)}
-      />
-    </FieldContainer>
+    <KeystarField
+      label={field.label}
+      description={field.description}
+    >
+      {(inputProps) => (
+        <FormValueContentFromPreviewProps
+          autoFocus={autoFocus}
+          forceValidation={forceValidation}
+          {...createPreviewProps(value.value)}
+        />
+      )}
+    </KeystarField>
   )
 }
 
-export const Cell: CellComponent = () => {
+export const Cell: CellComponent<typeof controller> = () => {
   return null
-}
-
-export const CardValue: CardValueComponent = () => {
-  return null as any
 }
 
 export const allowedExportsOnCustomViews = ['schema']
@@ -63,13 +61,9 @@ export const allowedExportsOnCustomViews = ['schema']
 export function controller (
   config: FieldControllerConfig
 ): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
-  schema: ComponentSchemaForGraphQL
+  schema: ComponentSchema
 } {
-  if (!config.customViews.schema) {
-    throw new Error(
-      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
-    )
-  }
+  if (!config.customViews.schema) throw new Error(`No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`)
   return {
     path: config.path,
     label: config.label,
@@ -93,7 +87,7 @@ export function controller (
 }
 
 function serializeValue (
-  schema: ComponentSchemaForGraphQL,
+  schema: ComponentSchema,
   value: any,
   kind: 'update' | 'create'
 ): any {
@@ -103,11 +97,10 @@ function serializeValue (
     }
   }
   if (schema.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(schema.element, a, kind))
+    if (value === null) return []
+    return value.map((x: any) => serializeValue(schema.element, x, kind))
   }
-  if (schema.kind === 'form') {
-    return value
-  }
+  if (schema.kind === 'form') return value
   if (schema.kind === 'object') {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, val]) => {
@@ -122,14 +115,13 @@ function serializeValue (
       }
     }
     if (value === null) {
-      if (kind === 'create') {
-        return undefined
-      }
+      if (kind === 'create') return
       return { disconnect: true }
     }
-    return {
-      connect: { id: value.id },
-    }
+    return { connect: { id: value.id }, }
+  }
+  if (schema.kind === 'child') {
+    throw new Error('Child fields are not supported in the structure field')
   }
   assertNever(schema)
 }

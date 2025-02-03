@@ -11,7 +11,7 @@ exampleProjectTests('custom-field', browserType => {
   })
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Posts")')])
-    await page.waitForSelector('a:has-text("Create Post")')
+    await page.waitForSelector('a:has-text("New Post")')
   })
   afterAll(async () => {
     await browser.close()

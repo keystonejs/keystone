@@ -1,7 +1,7 @@
-import { type graphql } from '@keystone-6/core'
-import {
-  type ReactElement,
-  type ReactNode,
+import type { graphql } from '@keystone-6/core'
+import type {
+  ReactElement,
+  ReactNode,
 } from 'react'
 
 export type FormFieldValue =
@@ -42,20 +42,14 @@ export type FormField<Value extends FormFieldValue, Options> = {
    * a potentially malicious client
    */
   validate(value: unknown): boolean
-}
-
-export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = FormField<
-  Value,
-  Options
-> & {
-  graphql: {
+  graphql?: {
+    input: graphql.NullableInputType
     output: graphql.Field<
       { value: Value },
       Record<string, graphql.Arg<graphql.InputType, boolean>>,
       graphql.OutputType,
       'value'
     >
-    input: graphql.NullableInputType
   }
 }
 
@@ -104,6 +98,13 @@ export type ChildField = {
       }
 }
 
+export interface ObjectField<
+  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
+> {
+  kind: 'object'
+  fields: Fields
+}
+
 export type ArrayField<ElementField extends ComponentSchema> = {
   kind: 'array'
   element: ElementField
@@ -115,21 +116,16 @@ export type ArrayField<ElementField extends ComponentSchema> = {
 export type RelationshipField<Many extends boolean> = {
   kind: 'relationship'
   listKey: string
-  selection: string | undefined
   label: string
   many: Many
-}
-
-export interface ObjectField<
-  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
-> {
-  kind: 'object'
-  fields: Fields
+  selection?: string
 }
 
 export type ConditionalField<
-  DiscriminantField extends FormField<string | boolean, any>,
+  DiscriminantField extends { defaultValue: any },
   ConditionalValues extends {
+    [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema
+  } = {
     [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema
   }
 > = {
@@ -151,28 +147,9 @@ export type ComponentSchema =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
-  | RelationshipField<boolean>
   | ArrayFieldInComponentSchema
-
-// this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
-type ArrayFieldInComponentSchemaForGraphQL = {
-  kind: 'array'
-  element: ComponentSchemaForGraphQL
-  // this is written with unknown to avoid typescript being annoying about circularity or variance things
-  itemLabel?(props: unknown): string
-  label?: string
-}
-
-export type ComponentSchemaForGraphQL =
-  | FormFieldWithGraphQLField<any, any>
-  | ObjectField<Record<string, ComponentSchemaForGraphQL>>
-  | ConditionalField<
-      FormFieldWithGraphQLField<any, any>,
-      { [key: string]: ComponentSchemaForGraphQL }
-    >
   | RelationshipField<boolean>
-  | ArrayFieldInComponentSchemaForGraphQL
+  | ConditionalField<any, { [key: string]: ComponentSchema }>
 
 type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
   readonly element: ChildFieldElement
@@ -246,7 +223,7 @@ export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentS
     : never
 
 type ConditionalFieldPreviewProps<
-  Schema extends ConditionalField<FormField<string | boolean, any>, any>,
+  Schema extends ConditionalField<any, any>,
   ChildFieldElement
 > = {
   readonly [Key in keyof Schema['values']]: {
@@ -286,7 +263,7 @@ type ArrayFieldPreviewProps<Schema extends ArrayField<ComponentSchema>, ChildFie
 }
 
 type DiscriminantStringToDiscriminantValue<
-  DiscriminantField extends FormField<any, any>,
+  DiscriminantField extends { defaultValue: any },
   DiscriminantString extends PropertyKey
 > = DiscriminantField['defaultValue'] extends boolean
   ? 'true' extends DiscriminantString
@@ -297,15 +274,15 @@ type DiscriminantStringToDiscriminantValue<
   : DiscriminantString
 
 export type HydratedRelationshipData = {
-  id: string
-  label: string
-  data: Record<string, any>
+  id: string | number
+  label: string | null
+  data?: Record<string, unknown>
 }
 
 export type RelationshipData = {
-  id: string
-  label?: string
-  data?: Record<string, any>
+  id: string | number
+  label: string | null | undefined
+  data?: Record<string, unknown>
 }
 
 type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =

@@ -1,12 +1,12 @@
-import { type DocumentFeatures } from '../../views-shared'
-import { type DocumentFeaturesForNormalization } from '../document-features-normalization'
+import type { DocumentFeatures } from '../../views-shared'
+import type { DocumentFeaturesForNormalization } from '../document-features-normalization'
 import {
   type Mark,
   assert,
 } from '../utils'
-import {
-  type ComponentSchema,
-  type ChildField
+import type {
+  ComponentSchema,
+  ChildField
 } from './api-shared'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
@@ -191,22 +191,29 @@ export function getSchemaAtPropPath (
   })
 }
 
-export function clientSideValidateProp (schema: ComponentSchema, value: any): boolean {
+export function clientSideValidateProp (schema: ComponentSchema, value: unknown): boolean {
+  if (schema.kind === 'child') return true
+  if (schema.kind === 'relationship') return true
+  if (schema.kind === 'form') return schema.validate(value)
+  if (typeof value !== 'object') return false
+  if (value === null) return false
   switch (schema.kind) {
-    case 'child':
-    case 'relationship': return true
-    case 'form': return schema.validate(value)
     case 'conditional': {
+      if  (!('discriminant' in value) || !('value' in value)) return false
       if (!schema.discriminant.validate(value.discriminant)) return false
-      return clientSideValidateProp(schema.values[value.discriminant], value.value)
+      return clientSideValidateProp(schema.values[
+        // not actually gonna always be a string but just let property access do the coercion
+        value.discriminant as string
+      ], value.value)
     }
     case 'object': {
       for (const [key, childProp] of Object.entries(schema.fields)) {
-        if (!clientSideValidateProp(childProp, value[key])) return false
+        if (!clientSideValidateProp(childProp, (value as any)[key])) return false
       }
       return true
     }
     case 'array': {
+      if (!Array.isArray(value)) return false
       for (const innerVal of value) {
         if (!clientSideValidateProp(schema.element, innerVal)) return false
       }

@@ -1,16 +1,20 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import { css, tokenSchema } from '@keystar/ui/style'
+import { Prose } from '@keystar/ui/typography'
 
-import { jsx, useTheme } from '@keystone-ui/core'
-import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useContext,
+  useState
+} from 'react'
 import isHotkey from 'is-hotkey'
-import { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
   type Descendant,
   type NodeEntry,
+  type Range,
   Editor,
   Node,
-  type Range,
   Transforms,
   Element,
   Text,
@@ -23,9 +27,9 @@ import {
   useSlate,
 } from 'slate-react'
 
-import { type EditableProps } from 'slate-react/dist/components/editable'
-import { type ComponentBlock } from '../component-blocks'
-import { type DocumentFeatures } from '../views'
+import type { EditableProps } from 'slate-react/dist/components/editable'
+import type { ComponentBlock } from '../component-blocks'
+import type { DocumentFeatures } from '../views'
 import { wrapLink } from './link-shared'
 import { clearFormatting, type Mark } from './utils'
 import { Toolbar } from './Toolbar'
@@ -33,16 +37,33 @@ import { renderElement } from './render-element'
 import { nestList, unnestList } from './lists-shared'
 import { ComponentBlockContext } from './component-blocks'
 import { getPlaceholderTextForPropPath } from './component-blocks/utils'
-import { type Relationships } from './relationship'
+import type { Relationships } from './relationship'
 import { renderLeaf } from './leaf'
 import { ToolbarStateProvider } from './toolbar-state'
 
 import {
   createDocumentEditor
 } from './editor-shared'
+import { ActiveBlockPopoverProvider } from './primitives/BlockPopover'
 
-const styles = {
+const styles = css({
   flex: 1,
+  background: tokenSchema.color.background.canvas,
+  borderColor: tokenSchema.color.alias.borderIdle,
+  outline: 0,
+  padding: tokenSchema.size.space.medium,
+  minHeight: 120,
+  scrollbarGutter: 'stable',
+  overflowY: 'auto',
+  height: 224,
+  resize: 'vertical',
+  borderBottomLeftRadius: tokenSchema.size.radius.medium,
+  borderBottomRightRadius: tokenSchema.size.radius.medium,
+  '&[data-expanded=true]': {
+    // the !important is necessary to override the height set by resizing as an inline style 
+    height: 'auto !important',
+    resize: 'none',
+  },
   'ol ol ol ol ol ol ol ol ol': { listStyle: 'lower-roman' },
   'ol ol ol ol ol ol ol ol': { listStyle: 'lower-alpha' },
   'ol ol ol ol ol ol ol': { listStyle: 'decimal' },
@@ -61,7 +82,7 @@ const styles = {
   'ul ul ul': { listStyle: 'square' },
   'ul ul': { listStyle: 'circle' },
   'ul': { listStyle: 'disc' }
-} as const
+}) 
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -144,7 +165,6 @@ export function DocumentEditor ({
   documentFeatures: DocumentFeatures
   initialExpanded?: boolean
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const { radii, colors, spacing, fields } = useTheme()
   const [expanded, setExpanded] = useState(initialExpanded)
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships, {
@@ -156,10 +176,10 @@ export function DocumentEditor ({
 
   return (
     <div
-      css={{
-        border: `1px solid ${colors.border}`,
-        borderRadius: radii.small,
-      }}
+      className={css({
+        border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.neutral}`,
+        borderRadius: tokenSchema.size.radius.medium,
+      })}
     >
       <DocumentEditorProvider
         componentBlocks={componentBlocks}
@@ -197,25 +217,13 @@ export function DocumentEditor ({
           [expanded, documentFeatures, onChange]
         )}
 
-        <DocumentEditorEditable
-          css={[
-            {
-              borderRadius: 'inherit',
-              background: fields.focus.inputBackground,
-              borderColor: fields.inputBorderColor,
-              paddingLeft: spacing.medium,
-              paddingRight: spacing.medium,
-              minHeight: 120,
-              scrollbarGutter: 'stable',
-              // the !important is necessary to override the width set by resizing as an inline style
-              height: expanded ? 'auto !important' : 224,
-              resize: expanded ? undefined : 'vertical',
-              overflowY: 'auto',
-            },
-          ]}
-          {...props}
-          readOnly={onChange === undefined}
-        />
+        <Prose size="regular">
+          <DocumentEditorEditable
+            data-expanded={expanded}
+            {...props}
+            readOnly={onChange === undefined}
+          />
+        </Prose>
       </DocumentEditorProvider>
     </div>
   )
@@ -276,52 +284,54 @@ export function DocumentEditorEditable (props: EditableProps) {
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor])
 
   return (
-    <Editable
-      decorate={useCallback(
-        ([node, path]: NodeEntry<Node>) => {
-          const decorations: Range[] = []
-          if (node.type === 'component-block') {
-            if (
-              node.children.length === 1 &&
-              Element.isElement(node.children[0]) &&
-              node.children[0].type === 'component-inline-prop' &&
-              node.children[0].propPath === undefined
-            ) {
-              return decorations
-            }
-            node.children.forEach((child, index) => {
+    <ActiveBlockPopoverProvider editor={editor}>
+      <Editable
+        decorate={useCallback(
+          ([node, path]: NodeEntry<Node>) => {
+            const decorations: Range[] = []
+            if (node.type === 'component-block') {
               if (
-                Node.string(child) === '' &&
-                Element.isElement(child) &&
-                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
-                child.propPath !== undefined
+                node.children.length === 1 &&
+                Element.isElement(node.children[0]) &&
+                node.children[0].type === 'component-inline-prop' &&
+                node.children[0].propPath === undefined
               ) {
-                const start = Editor.start(editor, [...path, index])
-                const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath,
-                  componentBlocks[node.component].schema,
-                  node.props
-                )
-                if (placeholder) {
-                  decorations.push({
-                    placeholder,
-                    anchor: start,
-                    focus: start,
-                  })
-                }
+                return decorations
               }
-            })
-          }
-          return decorations
-        },
-        [editor, componentBlocks]
-      )}
-      css={styles}
-      onKeyDown={onKeyDown}
-      renderElement={renderElement}
-      renderLeaf={renderLeaf}
-      {...props}
-    />
+              node.children.forEach((child, index) => {
+                if (
+                  Node.string(child) === '' &&
+                  Element.isElement(child) &&
+                  (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
+                  child.propPath !== undefined
+                ) {
+                  const start = Editor.start(editor, [...path, index])
+                  const placeholder = getPlaceholderTextForPropPath(
+                    child.propPath,
+                    componentBlocks[node.component].schema,
+                    node.props
+                  )
+                  if (placeholder) {
+                    decorations.push({
+                      placeholder,
+                      anchor: start,
+                      focus: start,
+                    })
+                  }
+                }
+              })
+            }
+            return decorations
+          },
+          [editor, componentBlocks]
+        )}
+        className={`${styles} ${props.className ?? ''}`}
+        onKeyDown={onKeyDown}
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+        {...props}
+      />
+    </ActiveBlockPopoverProvider>
   )
 }
 

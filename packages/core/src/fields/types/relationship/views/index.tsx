@@ -1,359 +1,209 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { Fragment, useState } from 'react'
-
-import { Button } from '@keystone-ui/button'
-import { jsx, Stack, useTheme } from '@keystone-ui/core'
-import { FieldContainer, FieldDescription, FieldLabel, FieldLegend } from '@keystone-ui/fields'
-import { DrawerController } from '@keystone-ui/modals'
+import React, {
+  Fragment,
+  useState
+} from 'react'
 import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-  type ListMeta,
+  useListFormatter
+} from '@react-aria/i18n'
+
+import { DialogContainer } from '@keystar/ui/dialog'
+import { VStack } from '@keystar/ui/layout'
+import { TextLink } from '@keystar/ui/link'
+import { TagGroup, Item } from '@keystar/ui/tag'
+import { TextField } from '@keystar/ui/text-field'
+import { Numeral, Text } from '@keystar/ui/typography'
+
+import type {
+  CellComponent,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
-import { Link } from '../../../../admin-ui/router'
-import { useKeystone, useList } from '../../../../admin-ui/context'
-import { gql, useQuery } from '../../../../admin-ui/apollo'
-import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components'
+import { useList } from '../../../../admin-ui/context'
+import { BuildItemDialog } from '../../../../admin-ui/components'
 
-import { Cards } from './cards'
-import { RelationshipSelect } from './RelationshipSelect'
+import { ContextualActions } from './ContextualActions'
+import { ComboboxMany } from './ComboboxMany'
+import { ComboboxSingle } from './ComboboxSingle'
 
-function LinkToRelatedItems ({
-  itemId,
-  value,
-  list,
-  refFieldKey,
-}: {
-  itemId: string | null
-  value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
-  list: ListMeta
-  refFieldKey?: string
-}) {
-  function constructQuery ({
-    refFieldKey,
-    itemId,
+export { ComboboxSingle, ComboboxMany }
+import type {
+  RelationshipController,
+  RelationshipValue,
+} from './types'
+
+export function Field (props: FieldProps<typeof controller>) {
+  const {
+    autoFocus,
+    field,
+    onChange,
     value,
-  }: {
-    refFieldKey?: string
-    itemId: string | null
-    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
-  }) {
-    if (!!refFieldKey && itemId) {
-      return `!${refFieldKey}_matches="${itemId}"`
-    }
-    return `!id_in="${(value?.value as { id: string, label: string }[])
-      .slice(0, 100)
-      .map(({ id }: { id: string }) => id)
-      .join(',')}"`
-  }
-  const commonProps = {
-    size: 'small',
-    tone: 'active',
-    weight: 'link',
-  } as const
-
-  if (value.kind === 'many') {
-    const query = constructQuery({ refFieldKey, value, itemId })
-    return (
-      <Button {...commonProps} as={Link} href={`/${list.path}?${query}`}>
-        View related {list.plural}
-      </Button>
-    )
-  }
-
-  return (
-    <Button {...commonProps} as={Link} href={`/${list.path}/${value.value?.id}`}>
-      View {list.singular} details
-    </Button>
-  )
-}
-
-export const Field = ({
-  field,
-  value,
-  itemValue,
-  autoFocus,
-  onChange,
-  forceValidation,
-}: FieldProps<typeof controller>) => {
-  const keystone = useKeystone()
+  } = props
   const foreignList = useList(field.refListKey)
-  const localList = useList(field.listKey)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-
-  if (value.kind === 'cards-view') {
-    return (
-      <FieldContainer as="fieldset">
-        <FieldLegend>{field.label}</FieldLegend>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-        <Cards
-          forceValidation={forceValidation}
-          field={field}
-          id={value.id}
-          value={value}
-          itemValue={itemValue}
-          onChange={onChange}
-          foreignList={foreignList}
-          localList={localList}
-        />
-      </FieldContainer>
-    )
-  }
+  const [dialogIsOpen, setDialogOpen] = useState(false)
+  const description = field.description || undefined
+  const isReadOnly = onChange === undefined
+  const [counter, setCounter] = useState(1)
 
   if (value.kind === 'count') {
     return (
-      <Stack as="fieldset" gap="medium">
-        <FieldLegend>{field.label}</FieldLegend>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-        <div>
-          {value.count === 1
-            ? `There is 1 ${foreignList.singular} `
-            : `There are ${value.count} ${foreignList.plural} `}
-          linked to this {localList.singular}
-        </div>
-      </Stack>
+      <TextField
+        autoFocus={autoFocus}
+        label={field.label}
+        description={description}
+        isReadOnly
+        value={value.count.toString()}
+        width="alias.singleLineWidth"
+      />
     )
   }
 
-  const authenticatedItem = keystone.authenticatedItem
-
   return (
-    <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-      <Fragment>
-        <Stack gap="medium">
-          <RelationshipSelect
-            controlShouldRenderValue
-            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
-            autoFocus={autoFocus}
-            isDisabled={onChange === undefined}
-            labelField={field.refLabelField}
-            searchFields={field.refSearchFields}
-            list={foreignList}
-            portalMenu
-            state={
-              value.kind === 'many'
-                ? {
-                    kind: 'many',
-                    value: value.value,
-                    onChange (newItems) {
-                      onChange?.({
-                        ...value,
-                        value: newItems,
-                      })
-                    },
-                  }
-                : {
-                    kind: 'one',
-                    value: value.value,
-                    onChange (newVal) {
-                      if (value.kind === 'one') {
-                        onChange?.({
-                          ...value,
-                          value: newVal,
-                        })
-                      }
-                    },
-                  }
-            }
-          />
-          <Stack across gap="small">
-            {onChange !== undefined && !field.hideCreate && (
-              <Button
-                size="small"
-                disabled={isDrawerOpen}
-                onClick={() => {
-                  setIsDrawerOpen(true)
-                }}
-              >
-                Create related {foreignList.singular}
-              </Button>
-            )}
-            {onChange !== undefined &&
-              authenticatedItem.state === 'authenticated' &&
-              authenticatedItem.listKey === field.refListKey &&
-              (value.kind === 'many'
-                ? value.value.find(x => x.id === authenticatedItem.id) === undefined
-                : value.value?.id !== authenticatedItem.id) && (
-                <Button
-                  size="small"
-                  onClick={() => {
-                    const val = {
-                      label: authenticatedItem.label,
-                      id: authenticatedItem.id,
-                    }
-                    if (value.kind === 'many') {
-                      onChange({
-                        ...value,
-                        value: [...value.value, val],
-                      })
-                    } else {
-                      onChange({
-                        ...value,
-                        value: val,
-                      })
-                    }
-                  }}
-                >
-                  {value.kind === 'many' ? 'Add ' : 'Set as '}
-                  {authenticatedItem.label}
-                </Button>
-              )}
-            {!!(value.kind === 'many'
-              ? value.value.length
-              : value.kind === 'one' && value.value) && (
-              <LinkToRelatedItems
-                itemId={value.id}
-                refFieldKey={field.refFieldKey}
-                list={foreignList}
-                value={value}
-              />
-            )}
-          </Stack>
-        </Stack>
-        {onChange !== undefined && (
-          <DrawerController isOpen={isDrawerOpen}>
-            <CreateItemDrawer
-              listKey={foreignList.key}
-              onClose={() => {
-                setIsDrawerOpen(false)
+    <Fragment>
+      <VStack gap="medium">
+        <ContextualActions onAdd={() => setDialogOpen(true)} {...props} >
+          {value.kind === 'many' ? (
+            <ComboboxMany
+              autoFocus={autoFocus}
+              label={field.label}
+              description={description}
+              isReadOnly={isReadOnly}
+              labelField={field.refLabelField}
+              searchFields={field.refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'many',
+                value: value.value,
+                onChange (newItems) {
+                  onChange?.({ ...value, value: newItems })
+                },
               }}
-              onCreate={val => {
-                setIsDrawerOpen(false)
+            />
+          ) : (
+            <ComboboxSingle
+              autoFocus={autoFocus}
+              label={field.label}
+              description={description}
+              isReadOnly={isReadOnly}
+              labelField={field.refLabelField}
+              searchFields={field.refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'one',
+                value: value.value,
+                onChange (newItem) {
+                  onChange?.({ ...value, value: newItem })
+                },
+              }}
+            />
+          )}
+        </ContextualActions>
+
+        {value.kind === 'many' && (
+          <TagGroup
+            aria-label={`related ${foreignList.plural}`}
+            items={value.value.map(item => ({
+              id: item.id.toString() ?? '',
+              label: item.label ?? '',
+              href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+            }))}
+            maxRows={2}
+            onRemove={keys => {
+              const [key] = [...keys]
+              const item = value.value.find(item => item.id.toString() === key)
+              if (!item) return
+              onChange?.({
+                ...value,
+                value: value.value.filter(item2 => item2 !== item),
+              })
+            }}
+            renderEmptyState={() => (
+              <Text color="neutralSecondary" size="small">
+                No related {foreignList.plural.toLowerCase()}…
+              </Text>
+            )}
+          >
+            {renderItem}
+          </TagGroup>
+        )}
+      </VStack>
+
+      {!isReadOnly && (
+        <DialogContainer onDismiss={() => setDialogOpen(false)}>
+          {dialogIsOpen && (
+            <BuildItemDialog
+              listKey={foreignList.key}
+              onChange={builtItemData => {
+                const id = `_____temporary_${counter}`
+                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? `[Unnamed ${foreignList.singular} ${counter}]`
+                setDialogOpen(false)
+                setCounter(counter + 1)
+
                 if (value.kind === 'many') {
                   onChange({
                     ...value,
-                    value: [...value.value, val],
+                    value: [
+                      ...value.value,
+                      {
+                        id,
+                        label,
+                        data: builtItemData,
+                        built: true
+                      }
+                    ],
                   })
                 } else if (value.kind === 'one') {
                   onChange({
                     ...value,
-                    value: val,
+                    value: {
+                      id,
+                      label,
+                      data: builtItemData,
+                      built: true
+                    }
                   })
                 }
               }}
             />
-          </DrawerController>
-        )}
-      </Fragment>
-    </FieldContainer>
+          )}
+        </DialogContainer>
+      )}
+    </Fragment>
   )
+}
+
+// NOTE: fix for `TagGroup` perf issue, should typically be okay to just
+// inline the render function
+function renderItem (item: { id: string, href: string, label: string }) {
+  if (item.href === '') return <Item>{item.label}</Item>
+  return <Item href={item.href}>{item.label}</Item>
 }
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
-  const { colors } = useTheme()
 
   if (field.display === 'count') {
-    const count = item[`${field.path}Count`] ?? 0
-    return (
-      <CellContainer>
-        {count} {count === 1 ? list.singular : list.plural}
-      </CellContainer>
-    )
+    const count = item[`${field.path}Count`] as number
+    return count != null ? <Numeral value={count} abbreviate /> : null
   }
 
   const data = item[field.path]
-  const items = (Array.isArray(data) ? data : [data]).filter(item => item)
-  const displayItems = items.length < 5 ? items : items.slice(0, 3)
-  const overflow = items.length < 5 ? 0 : items.length - 3
-  const styles = {
-    color: colors.foreground,
-    textDecoration: 'none',
-
-    ':hover': {
-      textDecoration: 'underline',
-    },
-  } as const
+  const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
+  const displayItems = items.length < 3 ? items : items.slice(0, 2)
+  const overflow = items.length < 3 ? 0 : items.length - 2
 
   return (
-    <CellContainer>
+    <Text>
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`} css={styles}>
+          <TextLink href={`/${list.path}/${item.id}`}>
             {item.label || item.id}
-          </Link>
+          </TextLink>
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
-    </CellContainer>
+    </Text>
   )
-}
-
-export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
-  const list = useList(field.refListKey)
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {(Array.isArray(data) ? data : [data])
-        .filter(item => item)
-        .map((item, index) => (
-          <Fragment key={item.id}>
-            {index ? ', ' : ''}
-            <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`}>
-              {item.label || item.id}
-            </Link>
-          </Fragment>
-        ))}
-    </FieldContainer>
-  )
-}
-
-type SingleRelationshipValue = {
-  kind: 'one'
-  id: null | string
-  initialValue: { label: string, id: string } | null
-  value: { label: string, id: string } | null
-}
-type ManyRelationshipValue = {
-  kind: 'many'
-  id: null | string
-  initialValue: { label: string, id: string }[]
-  value: { label: string, id: string }[]
-}
-type CardsRelationshipValue = {
-  kind: 'cards-view'
-  id: null | string
-  itemsBeingEdited: ReadonlySet<string>
-  itemBeingCreated: boolean
-  initialIds: ReadonlySet<string>
-  currentIds: ReadonlySet<string>
-  displayOptions: CardsDisplayModeOptions
-}
-type CountRelationshipValue = {
-  kind: 'count'
-  id: null | string
-  count: number
-}
-type CardsDisplayModeOptions = {
-  cardFields: readonly string[]
-  linkToItem: boolean
-  removeMode: 'disconnect' | 'none'
-  inlineCreate: { fields: readonly string[] } | null
-  inlineEdit: { fields: readonly string[] } | null
-  inlineConnect: boolean
-}
-
-type RelationshipController = FieldController<
-  ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue,
-  string
-> & {
-  display: 'count' | 'cards-or-select'
-  listKey: string
-  refListKey: string
-  refFieldKey?: string
-  refLabelField: string
-  refSearchFields: string[]
-  hideCreate: boolean
-  many: boolean
 }
 
 export function controller (
@@ -366,105 +216,73 @@ export function controller (
       refLabelField: string
       refSearchFields: string[]
     } & (
-      | {
-          displayMode: 'select'
-        }
-      | {
-          displayMode: 'cards'
-          cardFields: readonly string[]
-          linkToItem: boolean
-          removeMode: 'disconnect' | 'none'
-          inlineCreate: { fields: readonly string[] } | null
-          inlineEdit: { fields: readonly string[] } | null
-          inlineConnect: boolean
-        }
-      | {
-          displayMode: 'count'
-        }
+      | { displayMode: 'select' }
+      | { displayMode: 'count' }
     )
   >
 ): RelationshipController {
-  const cardsDisplayOptions =
-    config.fieldMeta.displayMode === 'cards'
-      ? {
-          cardFields: config.fieldMeta.cardFields,
-          inlineCreate: config.fieldMeta.inlineCreate,
-          inlineEdit: config.fieldMeta.inlineEdit,
-          linkToItem: config.fieldMeta.linkToItem,
-          removeMode: config.fieldMeta.removeMode,
-          inlineConnect: config.fieldMeta.inlineConnect,
-        }
-      : undefined
-
-  const refLabelField = config.fieldMeta.refLabelField
-  const refSearchFields = config.fieldMeta.refSearchFields
+  const {
+    listKey,
+    path: fieldKey,
+    label,
+    description,
+  } = config
+  const {
+    displayMode,
+    hideCreate,
+    many,
+    refFieldKey,
+    refLabelField,
+    refListKey,
+    refSearchFields,
+  } = config.fieldMeta
 
   return {
-    refFieldKey: config.fieldMeta.refFieldKey,
-    many: config.fieldMeta.many,
-    listKey: config.listKey,
-    path: config.path,
-    label: config.label,
-    description: config.description,
-    display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
+    refFieldKey,
+    many,
+    listKey,
+    path: fieldKey,
+    label,
+    description,
+    display: displayMode,
     refLabelField,
     refSearchFields,
-    refListKey: config.fieldMeta.refListKey,
+    refListKey,
     graphqlSelection:
-      config.fieldMeta.displayMode === 'count'
-        ? `${config.path}Count`
-        : `${config.path} {
+      displayMode === 'count'
+        ? `${fieldKey}Count`
+        : `${fieldKey} {
               id
               label: ${refLabelField}
             }`,
-    hideCreate: config.fieldMeta.hideCreate,
+    hideCreate,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
     // but that's not a problem here since we're creating a new item so we might as well them a better UI
-    defaultValue:
-      cardsDisplayOptions !== undefined
-        ? {
-            kind: 'cards-view',
-            currentIds: new Set(),
-            id: null,
-            initialIds: new Set(),
-            itemBeingCreated: false,
-            itemsBeingEdited: new Set(),
-            displayOptions: cardsDisplayOptions,
-          }
-        : config.fieldMeta.many
-        ? {
-            id: null,
-            kind: 'many',
-            initialValue: [],
-            value: [],
-          }
-        : { id: null, kind: 'one', value: null, initialValue: null },
-    deserialize: data => {
-      if (config.fieldMeta.displayMode === 'count') {
-        return { id: data.id, kind: 'count', count: data[`${config.path}Count`] ?? 0 }
-      }
-      if (cardsDisplayOptions !== undefined) {
-        const initialIds = new Set<string>(
-          (Array.isArray(data[config.path])
-            ? data[config.path]
-            : data[config.path]
-            ? [data[config.path]]
-            : []
-          ).map((x: any) => x.id)
-        )
+    defaultValue: many
+      ? {
+          kind: 'many',
+          id: null,
+          initialValue: [],
+          value: [],
+        }
+      : {
+          kind: 'one',
+          id: null,
+          value: null,
+          initialValue: null
+        },
+    validate () { return true },
+    deserialize: (data) => {
+      if (displayMode === 'count') {
         return {
-          kind: 'cards-view',
           id: data.id,
-          itemsBeingEdited: new Set(),
-          itemBeingCreated: false,
-          initialIds,
-          currentIds: initialIds,
-          displayOptions: cardsDisplayOptions,
+          kind: 'count',
+          count: data[`${config.path}Count`] ?? 0,
         }
       }
-      if (config.fieldMeta.many) {
+      if (many) {
         const value = (data[config.path] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,
@@ -490,114 +308,35 @@ export function controller (
         initialValue: value,
       }
     },
-    filter: {
-      Filter: ({ onChange, value }) => {
-        const foreignList = useList(config.fieldMeta.refListKey)
-        const { filterValues, loading } = useRelationshipFilterValues({
-          value,
-          list: foreignList,
-        })
-        const state: {
-          kind: 'many'
-          value: { label: string, id: string }[]
-          onChange: (newItems: { label: string, id: string }[]) => void
-        } = {
-          kind: 'many',
-          value: filterValues,
-          onChange (newItems) {
-            onChange(newItems.map(item => item.id).join(','))
-          },
-        }
-        return (
-          <RelationshipSelect
-            controlShouldRenderValue
-            list={foreignList}
-            labelField={refLabelField}
-            searchFields={refSearchFields}
-            isLoading={loading}
-            isDisabled={onChange === undefined}
-            state={state}
-          />
-        )
-      },
-      graphql: ({ value }) => {
-        const foreignIds = getForeignIds(value)
-        if (config.fieldMeta.many) {
-          return {
-            [config.path]: {
-              some: {
-                id: {
-                  in: foreignIds,
-                },
-              },
-            },
-          }
-        }
-        return {
-          [config.path]: {
-            id: {
-              in: foreignIds,
-            },
-          },
-        }
-      },
-      Label ({ value }) {
-        const foreignList = useList(config.fieldMeta.refListKey)
-        const { filterValues } = useRelationshipFilterValues({
-          value,
-          list: foreignList,
-        })
-
-        if (!filterValues.length) {
-          return `has no value`
-        }
-        if (filterValues.length > 1) {
-          const values = filterValues.map((i: any) => i.label).join(', ')
-          return `is in [${values}]`
-        }
-        const optionLabel = filterValues[0].label
-        return `is ${optionLabel}`
-      },
-      types: {
-        matches: {
-          label: 'Matches',
-          initialValue: '',
-        },
-      },
-    },
-    validate (value) {
-      return (
-        value.kind !== 'cards-view' ||
-        (value.itemsBeingEdited.size === 0 && !value.itemBeingCreated)
-      )
-    },
-    serialize: state => {
+    serialize: (state) => {
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id))
         const initialIds = new Set(state.initialValue.map(x => x.id))
-        const disconnect = state.initialValue
-          .filter(x => !newAllIds.has(x.id))
-          .map(x => ({ id: x.id }))
-        const connect = state.value.filter(x => !initialIds.has(x.id)).map(x => ({ id: x.id }))
-        if (disconnect.length || connect.length) {
-          const output: any = {}
+        const disconnect = state.initialValue.filter(x => !newAllIds.has(x.id)) .map(x => ({ id: x.id }))
+        const connect = state.value.filter(x => !x.built && !initialIds.has(x.id)).map(x => ({ id: x.id }))
+        const create = state.value.filter(x => x.built).map(x => x.data)
+        const output = {
+          ...(disconnect.length ? { disconnect } : {}),
+          ...(connect.length ? { connect } : {}),
+          ...(create.length ? { create } : {}),
+        }
 
-          if (disconnect.length) {
-            output.disconnect = disconnect
-          }
-
-          if (connect.length) {
-            output.connect = connect
-          }
-
+        if (Object.keys(output).length) {
           return {
-            [config.path]: output,
+            [config.path]: output
           }
         }
+
       } else if (state.kind === 'one') {
-        if (state.initialValue && !state.value) {
-          return { [config.path]: { disconnect: true } }
-        } else if (state.value && state.value.id !== state.initialValue?.id) {
+        if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
+        if (state.value?.built) {
+          return {
+            [config.path]: {
+              create: state.value.data
+            },
+          }
+        }
+        if (state.value && state.value.id !== state.initialValue?.id) {
           return {
             [config.path]: {
               connect: {
@@ -606,72 +345,106 @@ export function controller (
             },
           }
         }
-      } else if (state.kind === 'cards-view') {
-        const disconnect = [...state.initialIds]
-          .filter(id => !state.currentIds.has(id))
-          .map(id => ({ id }))
-        const connect = [...state.currentIds]
-          .filter(id => !state.initialIds.has(id))
-          .map(id => ({ id }))
-
-        if (config.fieldMeta.many) {
-          if (disconnect.length || connect.length) {
-            return {
-              [config.path]: {
-                connect: connect.length ? connect : undefined,
-                disconnect: disconnect.length ? disconnect : undefined,
-              },
-            }
-          }
-        } else if (connect.length) {
-          return {
-            [config.path]: {
-              connect: connect[0],
-            },
-          }
-        } else if (disconnect.length) {
-          return { [config.path]: { disconnect: true } }
-        }
       }
       return {}
     },
-  }
-}
-
-function useRelationshipFilterValues ({ value, list }: { value: string, list: ListMeta }) {
-  const foreignIds = getForeignIds(value)
-  const where = { id: { in: foreignIds } }
-
-  const query = gql`
-    query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
-      items: ${list.gqlNames.listQueryName}(where: $where) {
-        id
-        ${list.labelField}
-      }
-    }
-  `
-
-  const { data, loading } = useQuery(query, {
-    variables: {
-      where,
-    },
-  })
-
-  return {
-    filterValues:
-      data?.items?.map((item: any) => {
-        return {
-          id: item.id,
-          label: item[list.labelField] || item.id,
+    filter: {
+      Filter (props) {
+        const foreignList = useList(refListKey)
+        if (props.type === 'empty' || props.type === 'not_empty') return null
+        // TODO: show labels rather than ids
+        if (props.type === 'is' || props.type === 'not_is') {
+          return (
+            <ComboboxSingle
+              autoFocus
+              aria-label={label}
+              isReadOnly={false}
+              labelField={refLabelField}
+              searchFields={refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'one',
+                value: typeof props.value === 'string'? { id: props.value, label: props.value, built: false } : null,
+                onChange (newItem) {
+                  props.onChange(newItem === null ? null : newItem.id.toString())
+                },
+              }}
+            />
+          )
         }
-      }) || foreignIds.map(f => ({ label: f, id: f })),
-    loading: loading,
-  }
-}
+        const ids = Array.isArray(props.value) ? props.value : []
+        const value = ids.map((id): RelationshipValue => ({ id, label: id, built: false }))
+        return (
+          <VStack gap="medium">
+            <ComboboxMany
+              autoFocus
+              aria-label={label}
+              isReadOnly={false}
+              labelField={refLabelField}
+              searchFields={refSearchFields}
+              list={foreignList}
+              state={{
+                kind: 'many',
+                value,
+                onChange (newItem) {
+                  props.onChange(newItem.map(x => x.id.toString()))
+                },
+              }}
+            />
+            <TagGroup
+              aria-label={`related ${foreignList.plural}`}
+              items={value.map(item => ({
+                id: item.id.toString() ?? '',
+                label: item.label ?? '',
+                href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+              }))}
+              maxRows={2}
+              onRemove={keys => {
+                props.onChange(ids.filter(id => !keys.has(id)))
+              }}  
+              renderEmptyState={() => (
+                <Text color="neutralSecondary" size="small">
+                  Select related {foreignList.plural.toLowerCase()}…
+                </Text>
+              )}
+            >
+              {renderItem}
+            </TagGroup>
+          </VStack>
+        )
+      },
+      Label ({ label, type, value }) {
+        const listFormatter = useListFormatter({
+          style: 'short',
+          type: 'disjunction',
+        })
 
-function getForeignIds (value: string) {
-  if (typeof value === 'string' && value.length > 0) {
-    return value.split(',')
+        if (['empty', 'not_empty'].includes(type)) return label.toLowerCase()
+        if (['is', 'not_is'].includes(type)) return `${label.toLowerCase()} ${value}`
+        return `${label.toLowerCase()} (${listFormatter.format(value || [''])})`
+      },
+      graphql: ({ type, value }) => {
+        if (type === 'empty' && !many) return { [config.path]: { equals: null } }
+        if (type === 'empty' && many) return { [config.path]: { none: {} } }
+        if (type === 'not_empty' && !many) return { [config.path]: { not: { equals: null } } }
+        if (type === 'not_empty' && many) return { [config.path]: { some: {} } }
+        if (type === 'is') return { [config.path]: { id: { equals: value } } }
+        if (type === 'not_is') return { [config.path]: { not: { id: { equals: value } } } }
+        if (type === 'some') return { [config.path]: { some: { id: { in: value } } } }
+        if (type === 'not_some') return { [config.path]: { not: { some: { id: { in: value } } } } }
+        return { [config.path]: { [type]: value } } // uh
+      },
+      types: {
+        empty: { label: 'Is empty', initialValue: null, },
+        not_empty: { label: 'Is not empty', initialValue: null, },
+        ...(many ? {
+          some: { label: 'Is one of', initialValue: [], },
+          not_some: { label: 'Is not one of', initialValue: [], },
+        } : {
+          is: { label: 'Is', initialValue: null, },
+          not_is: { label: 'Is not', initialValue: null, },
+        }),
+      },
+    },
   }
-  return []
 }

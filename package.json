@@ -11,6 +11,7 @@
   "scripts": {
     "coverage": "jest --coverage",
     "test": "jest",
+    "vitest": "vitest",
     "test:filters": "cd prisma-utils && pnpm verify",
     "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest",
@@ -35,9 +36,9 @@
     "@stylistic/eslint-plugin-ts": "^3.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": "^22.0.0",
-    "@types/node-fetch": "^2.5.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "vitest": "^3.0.4",
     "esbuild": "^0.24.0",
     "esbuild-jest": "^0.5.0",
     "eslint": "^9.2.0",
@@ -53,7 +54,8 @@
     ],
     "exports": true,
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
-      "keepDynamicImportAsDynamicImportInCommonJS": true
+      "keepDynamicImportAsDynamicImportInCommonJS": true,
+      "importsConditions": true
     }
   },
   "jest": {

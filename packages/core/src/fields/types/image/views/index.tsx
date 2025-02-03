@@ -1,24 +1,17 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-import {
-  type CardValueComponent,
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
+import React from 'react'
+import type {
+  CellComponent,
+  FieldControllerConfig,
 } from '../../../../types'
-import { validateImage, ImageWrapper } from './Field'
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 
 export { Field } from './Field'
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path]
-  if (!data) return null
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  if (!value) return null
   return (
     <div
-      css={{
+      style={{
         alignItems: 'center',
         display: 'flex',
         height: 24,
@@ -26,39 +19,26 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
+      <img
+        style={{ maxHeight: '100%', maxWidth: '100%' }}
+        src={value.url}
+      />
     </div>
   )
-}
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {data && (
-        <ImageWrapper>
-          <img css={{ width: '100%' }} alt={data.filename} src={data.url} />
-        </ImageWrapper>
-      )}
-    </FieldContainer>
-  )
-}
-
-type ImageData = {
-  src: string
-  height: number
-  width: number
-  filesize: number
-  extension: string
-  id: string
 }
 
 export type ImageValue =
   | { kind: 'empty' }
   | {
       kind: 'from-server'
-      data: ImageData
+      data: {
+        id: string
+        url: string
+        extension: string
+        filesize: number
+        width: number
+        height: number
+      }
     }
   | {
       kind: 'upload'
@@ -70,46 +50,46 @@ export type ImageValue =
     }
   | { kind: 'remove', previous?: Exclude<ImageValue, { kind: 'remove' }> }
 
-type ImageController = FieldController<ImageValue>
+export function validateImage (extensions: string[], v: ImageValue) {
+  if (v.kind !== 'upload') return
+  if (!v.data.validity.valid) return 'Something went wrong, please reload and try again.'
 
-export const controller = (config: FieldControllerConfig): ImageController => {
+  // check if the file is actually an image
+  if (!v.data.file.type.includes('image')) {
+    return `Sorry, that file type isn't accepted. Please try ${extensions.join(', ')}`
+  }
+}
+
+export function controller (config: FieldControllerConfig) {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: `${config.path} {
-        url
-        id
-        extension
-        width
-        height
-        filesize
-      }`,
+      id
+      url
+      extension
+      filesize
+      width
+      height
+    }`,
     defaultValue: { kind: 'empty' },
-    deserialize (item) {
+    extensions: SUPPORTED_IMAGE_EXTENSIONS,
+    deserialize (item: any): ImageValue {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
-        data: {
-          src: value.url,
-          id: value.id,
-          extension: value.extension,
-          ref: value.ref,
-          width: value.width,
-          height: value.height,
-          filesize: value.filesize,
-        },
+        data: value,
       }
     },
-    validate (value): boolean {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined
+    validate (value: ImageValue): boolean {
+      return validateImage(SUPPORTED_IMAGE_EXTENSIONS, value) === undefined
     },
-    serialize (value) {
+    serialize (value: ImageValue) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } }
       }
-
       if (value.kind === 'remove') {
         return { [config.path]: null }
       }

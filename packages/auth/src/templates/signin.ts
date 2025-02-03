@@ -1,24 +1,22 @@
-import { type AuthGqlNames } from '../types'
+import type {
+  AuthGqlNames
+} from '../types'
 
-export const signinTemplate = ({
-  gqlNames,
+export default function ({
+  authGqlNames,
   identityField,
   secretField,
 }: {
-  gqlNames: AuthGqlNames
+  authGqlNames: AuthGqlNames
   identityField: string
   secretField: string
-}) => {
-  // -- TEMPLATE START
-  return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'
+}) {
+  return `import makeSigninPage from '@keystone-6/auth/pages/SigninPage'
 
-export default getSigninPage(${JSON.stringify({
-    identityField: identityField,
-    secretField: secretField,
-    mutationName: gqlNames.authenticateItemWithPassword,
-    successTypename: gqlNames.ItemAuthenticationWithPasswordSuccess,
-    failureTypename: gqlNames.ItemAuthenticationWithPasswordFailure,
-  })});
+export default makeSigninPage(${JSON.stringify({
+  authGqlNames,
+  identityField,
+  secretField,
+})})
 `
-  // -- TEMPLATE END
 }

@@ -1,7 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { useState } from 'react'
+
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
-import { jsx, Heading } from '@keystone-ui/core'
+import { Heading } from '@keystar/ui/typography'
 import {
   ApolloClient,
   gql,
@@ -12,8 +12,6 @@ import {
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { css } from '@emotion/css'
-
-import { useState } from 'react'
 
 const styles = {
   container: css`
@@ -26,7 +24,7 @@ const styles = {
     padding: 1rem;
   `,
 }
-// Setup the TIME subscription
+// Setup the Time subscription
 const TIME = gql`
   subscription TIME {
     time {

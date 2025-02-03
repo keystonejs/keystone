@@ -30,20 +30,19 @@ import {
   CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
 
 export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
-  };
+    isIndexed?: boolean | 'unique'
+  }
 
-export const myInt =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    isIndexed,
-    ...config
-  }: MyIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta =>
+export function myInt <ListTypeInfo extends BaseListTypeInfo>({
+  isIndexed,
+  ...config
+}: MyIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta =>
     fieldType({
       kind: 'scalar',
       mode: 'optional',
@@ -58,7 +57,8 @@ export const myInt =
       },
       output: graphql.field({ type: graphql.Int }),
       views: './view',
-    });
+    })
+}
 ```
 
 ### DB Field
@@ -102,7 +102,7 @@ A resolver can also be provided:
 output: graphql.field({
   type: graphql.Int,
   resolve({ value, item }, args, context, info) {
-    return value;
+    return value
   }
 })
 ```
@@ -131,12 +131,12 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
     graphqlSelection: config.path,
     defaultValue: '',
     deserialize: data => {
-      const value = data[config.path];
-      return typeof value === 'number' ? value + '' : '';
+      const value = data[config.path]
+      return typeof value === 'number' ? value + '' : ''
     },
     serialize: value => ({ [config.path]: value === '' ? null : parseInt(value, 10) }),
-  };
-};
+  }
+}
 ```
 
 ### Field
@@ -146,66 +146,38 @@ The `Field` export is a React component which is used in the **item view** and t
 ```tsx
 // view.tsx
 
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { FieldProps } from '@keystone-6/core/types';
+import { TextField } from '@keystar/ui/text-field'
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-    {onChange ? (
-      <TextInput
-        id={field.path}
-        autoFocus={autoFocus}
-        type="number"
-        onChange={event => {
-          onChange(event.target.value.replace(/[^\d-]/g, ''));
-        }}
-        value={value}
-      />
-    ) : (
-      value
-    )}
-  </FieldContainer>
-);
+export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
+  const disabled = onChange === undefined
+
+  return (
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      isDisabled={disabled}
+      onChange={x => onChange?.(x === '' ? null : x)}
+      value={value ?? ''}
+    />
+  )
+}
 ```
 
 ### Cell
 
-The `Cell` export is a React component which is shown in the table on the **list view**.
-Note it does not allow modifying the value.
+The `Cell` export is an optional custom React component for formatting the field value as shown in the table on the **list view**.
+This component does not allow modifying the value.
 
 ```tsx
 // view.tsx
 
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
-import { CellComponent } from '@keystone-6/core/types';
+import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
+import { CellComponent } from '@keystone-6/core/types'
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
-```
-
-### CardValue
-
-The `CardValue` export is a React component which is shown on the **item view** in relationship fields with `displayMode: 'cards'` when the related item is not being edited.
-Note it does not allow modifying the value.
-
-```tsx
-// view.tsx
-
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { CardValueComponent } from '@keystone-6/core/types';
-
-export const CardValue: CardValueComponent = ({ item, field }) => {
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {item[field.path]}
-    </FieldContainer>
-  );
-};
+export const Cell: CellComponent<typeof controller> = ({ value }) => {
+  return <CellContainer>{value}</CellContainer>
+}
 ```
 
 ## Related resources

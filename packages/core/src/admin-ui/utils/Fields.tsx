@@ -1,210 +1,214 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx, Stack, useTheme, Text } from '@keystone-ui/core'
-import { memo, type ReactNode, useContext, useId, useMemo } from 'react'
-import { FieldDescription } from '@keystone-ui/fields'
-import { ButtonContext } from '@keystone-ui/button'
-import { type FieldGroupMeta, type FieldMeta } from '../../types'
-import { type Value } from '.'
+import { useSlotId } from '@react-aria/utils'
+import React, {
+  type ReactNode,
+  useId,
+} from 'react'
 
-type RenderFieldProps = {
-  field: FieldMeta
-  value: unknown
-  itemValue: unknown
-  onChange?(value: (value: Value) => Value): void
-  autoFocus?: boolean
-  forceValidation?: boolean
-}
+import { FieldButton } from '@keystar/ui/button'
+import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
+import { Icon } from '@keystar/ui/icon'
+import { HStack, VStack } from '@keystar/ui/layout'
+import { css, tokenSchema } from '@keystar/ui/style'
+import { Text } from '@keystar/ui/typography'
 
-const RenderField = memo(function RenderField ({
-  field,
-  value,
-  itemValue,
-  autoFocus,
-  forceValidation,
-  onChange,
-}: RenderFieldProps) {
-  return (
-    <field.views.Field
-      field={field.controller}
-      onChange={useMemo(() => {
-        if (onChange === undefined) return undefined
-        return value => {
-          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }))
-        }
-      }, [onChange, field.controller.path])}
-      value={value}
-      itemValue={itemValue}
-      autoFocus={autoFocus}
-      forceValidation={forceValidation}
-    />
-  )
-})
-
-type FieldsProps = {
-  fields: Record<string, FieldMeta>
-  groups?: FieldGroupMeta[]
-  value: Value
-  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
-  fieldPositions?: Record<string, 'form' | 'sidebar'> | null
-  forceValidation: boolean
-  position?: 'form' | 'sidebar'
-  invalidFields: ReadonlySet<string>
-  onChange(value: (value: Value) => Value): void
-}
+import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
+import { EmptyState } from '../components/EmptyState'
+import type {
+  FieldGroupMeta,
+  FieldMeta,
+} from '../../types'
 
 export function Fields ({
+  view,
+  position,
   fields,
-  value,
-  fieldModes = null,
-  fieldPositions = null,
+  groups = [],
   forceValidation,
   invalidFields,
-  position = 'form',
-  groups = [],
   onChange,
-}: FieldsProps) {
-  const renderedFields = Object.fromEntries(
-    Object.keys(fields).map((fieldKey, index) => {
-      const field = fields[fieldKey]
-      const val = value[fieldKey]
-      const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldKey]
-      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldKey]
-      if (fieldMode === 'hidden') return [fieldKey, null]
-      if (fieldPosition !== position) return [fieldKey, null]
-      if (val.kind === 'error') {
-        return [
-          fieldKey,
-          <div key={fieldKey}>
-            {field.label}: <span css={{ color: 'red' }}>{val.errors[0].message}</span>
-          </div>,
-        ]
-      }
-      return [
-        fieldKey,
-        <RenderField
-          key={fieldKey}
-          field={field}
-          value={val.value}
-          itemValue={value}
-          forceValidation={forceValidation && invalidFields.has(fieldKey)}
-          onChange={fieldMode === 'edit' ? onChange : undefined}
-          autoFocus={index === 0}
-        />,
-      ]
-    })
-  )
-  const rendered: ReactNode[] = []
-  const fieldGroups = new Map<string, { rendered: boolean, group: FieldGroupMeta }>()
+  value: itemValue,
+}: {
+  view: 'createView' | 'itemView'
+  position: 'form' | 'sidebar'
+  fields: Record<string, FieldMeta>
+  forceValidation: boolean
+  groups?: FieldGroupMeta[]
+  invalidFields: ReadonlySet<string>
+  onChange(value: Record<string, unknown>): void
+  value: Record<string, unknown>
+}) {
+  const fieldDomByKey: Record<string, ReactNode> = {}
+  let focused = false
+  for (const fieldKey in fields) {
+    const field = fields[fieldKey]
+    if (view === 'itemView' && field.itemView.fieldPosition !== position) continue
+
+    const { fieldMode } = field[view]
+    if (fieldMode === 'hidden') continue
+
+    const fieldValue = itemValue[fieldKey]
+    const autoFocus = focused === false // not great, but focuses the first field
+    focused = true
+
+    fieldDomByKey[fieldKey] =
+      <field.views.Field
+        key={fieldKey}
+        autoFocus={autoFocus}
+        forceValidation={forceValidation && invalidFields.has(fieldKey)}
+        field={field.controller}
+        onChange={(newFieldValue) => {
+          if (fieldMode !== 'edit') return
+          if (onChange === undefined) return
+          onChange({
+            ...itemValue,
+            [field.controller.path]: newFieldValue,
+          })
+        }}
+        value={fieldValue}
+        itemValue={itemValue}
+      />
+  }
+
+  const groupByFieldKey: Record<string, FieldGroupMeta> = {}
   for (const group of groups) {
-    const state = { group, rendered: false }
-    for (const field of group.fields) {
-      fieldGroups.set(field.path, state)
+    for (const { path: fieldKey } of group.fields) {
+      groupByFieldKey[fieldKey] = group
     }
   }
-  for (const field of Object.values(fields)) {
-    const fieldKey = field.path
-    if (fieldGroups.has(fieldKey)) {
-      const groupState = fieldGroups.get(field.path)!
-      if (groupState.rendered) {
-        continue
-      }
-      groupState.rendered = true
-      const { group } = groupState
-      const renderedFieldsInGroup = group.fields.map(field => renderedFields[field.path])
-      if (renderedFieldsInGroup.every(field => field === null)) {
-        continue
-      }
-      rendered.push(
-        <FieldGroup label={group.label} description={group.description}>
-          {renderedFieldsInGroup}
-        </FieldGroup>
-      )
-      continue
-    }
-    if (renderedFields[fieldKey] === null) {
-      continue
-    }
-    rendered.push(renderedFields[fieldKey])
+
+  // TODO: not sure what to do about the sidebar case. i think it's fine to
+  // just render nothing for now, but we should revisit this.
+  if (Object.keys(fieldDomByKey).length === 0 && position === 'form') {
+    return (
+      <EmptyState
+        icon={textCursorInputIcon}
+        title="No fields"
+        message="There are no fields to be shown."
+      />
+    )
   }
 
   return (
-    <Stack gap="xlarge">
-      {rendered.length === 0 ? 'There are no fields that you can read or edit' : rendered}
-    </Stack>
+    // the "inline" container allows fields to react to the width of their column
+    <VStack gap="xlarge" UNSAFE_style={{ containerType: 'inline-size' }}>
+    {[...function* () {
+      const rendered: Record<string, true> = {}
+      for (const fieldKey in fields) {
+        if (fieldKey in rendered) continue
+
+        const group = groupByFieldKey[fieldKey]
+        if (group) {
+          yield <FieldGroup key={group.label} label={group.label} description={group.description}>
+            {[...function* () {
+              for (const { path: fieldKey } of group.fields) {
+                if (fieldKey in rendered) continue
+                yield (fieldDomByKey[fieldKey] ?? null)
+                rendered[fieldKey] = true
+              }
+            }()]}
+          </FieldGroup>
+          continue
+        }
+
+        yield (fieldDomByKey[fieldKey] ?? null)
+        rendered[fieldKey] = true
+      }
+    }()]}
+    </VStack>
   )
 }
 
-function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {
-  const descriptionId = useId()
+function FieldGroup ({
+  description,
+  label,
+  children,
+}: {
+  label: string
+  description: string | null
+  children: ReactNode
+}) {
   const labelId = useId()
-  const theme = useTheme()
-  const buttonSize = 24
-  const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext)
-  const buttonStyles = useButtonStyles({ tokens: useButtonTokens(defaults) })
-  const divider = (
-    <div
-      css={{
-        height: '100%',
-        width: 2,
-        backgroundColor: theme.colors.border,
-      }}
-    />
-  )
+  const descriptionId = useSlotId([Boolean(description)])
+
   return (
-    <div
-      role="group"
-      aria-labelledby={labelId}
-      aria-describedby={props.description === null ? undefined : descriptionId}
-    >
-      <details open>
-        <summary
-          css={{ listStyle: 'none', outline: 0, '::-webkit-details-marker': { display: 'none' } }}
+    <details aria-labelledby={labelId} aria-describedby={descriptionId} open>
+      <HStack
+        gap="medium"
+        alignItems="center"
+        elementType="summary"
+        UNSAFE_className={css({
+          listStyle: 'none',
+          outline: 0,
+          '::-webkit-details-marker': { display: 'none' },
+        })}
+      >
+        <FieldButton
+          // @ts-expect-error — this works, it's just not exposed in the public types
+          elementType="div"
+          // the <summary/> (above) is the focusable element
+          excludeFromTabOrder
+          prominence="low"
+          height="element.small"
+          width="element.small"
+          minWidth="auto"
+          UNSAFE_className={css({
+            'details[open] &': {
+              transform: 'rotate(90deg)',
+            },
+          })}
         >
-          <Stack across gap="medium">
-            <div // this is a div rather than a button because the interactive element here is the <summary> above
-              css={{
-                ...buttonStyles,
-                'summary:focus &': buttonStyles[':focus'],
-                padding: 0,
-                height: buttonSize,
-                width: buttonSize,
-                'details[open] &': {
-                  transform: 'rotate(90deg)',
-                },
-              }}
-            >
-              {downChevron}
-            </div>
-            {divider}
-            <Text id={labelId} size="large" weight="bold" css={{ position: 'relative' }}>
-              {props.label}
+          <Icon src={chevronRightIcon} size="medium" />
+        </FieldButton>
+        <VStack
+          gap="regular"
+          UNSAFE_className={css({
+            cursor: 'default',
+            userSelect: 'none',
+          })}
+        >
+          <Text
+            color="neutralEmphasis"
+            size="large"
+            weight="medium"
+            id={labelId}
+            position="relative"
+          >
+            {label}
+          </Text>
+          {!!description && (
+            <Text id={descriptionId} size="regular" color="neutralSecondary">
+              {description}
             </Text>
-          </Stack>
-        </summary>
-        <div css={{ display: 'flex' }}>
-          <div css={{ display: 'flex' }}>
-            <Stack across gap="medium">
-              <div css={{ width: buttonSize }} />
-              {divider}
-            </Stack>
-          </div>
-          <Stack marginLeft="medium" css={{ width: '100%' }}>
-            {props.description !== null && (
-              <FieldDescription id={descriptionId}>{props.description}</FieldDescription>
-            )}
-            <Stack marginTop="large" gap="xlarge">
-              {props.children}
-            </Stack>
-          </Stack>
-        </div>
-      </details>
-    </div>
+          )}
+        </VStack>
+      </HStack>
+
+      {/*
+        Padding is applied here because `<details>` doesn't accept flex/grid
+        layout, prefer "gap" in most cases.
+      */}
+      <HStack gap="medium" paddingTop="medium">
+        <GroupIndicatorLine />
+        <VStack gap="xlarge" flex>
+          {children}
+        </VStack>
+      </HStack>
+    </details>
   )
 }
 
-const downChevron = (
-  <svg width="16" height="16" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5 3L8.75 6L5 9L5 3Z" fill="currentColor" />
-  </svg>
-)
+export function GroupIndicatorLine () {
+  return (
+    <HStack justifyContent="center" width="element.small">
+      <div
+        className={css({
+          height: '100%',
+          width: tokenSchema.size.alias.focusRing,
+          borderRadius: tokenSchema.size.alias.focusRing,
+          backgroundColor: tokenSchema.color.border.neutral,
+          flexShrink: 0,
+        })}
+      />
+    </HStack>
+  )
+}

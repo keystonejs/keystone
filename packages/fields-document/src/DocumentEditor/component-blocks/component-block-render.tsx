@@ -1,12 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
 import React, { useContext } from 'react'
 import { useMemo, type ReactElement } from 'react'
 import { type Element } from 'slate'
 import { type ComponentBlock } from './api-shared'
 import { createGetPreviewProps, getKeysForArrayValue } from './preview-props'
 import { type ReadonlyPropPath } from './utils'
+import { css } from '@keystar/ui/style'
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({})
 
@@ -62,7 +60,7 @@ export function ComponentBlockRender ({
         [previewProps, ComponentBlockPreview]
       )}
       <span
-        css={{ caretColor: 'transparent', '& ::selection': { backgroundColor: 'transparent' } }}
+        className={css({ caretColor: 'transparent', '& ::selection': { backgroundColor: 'transparent' } })}
       >
         {maybeChild}
       </span>

@@ -18,12 +18,15 @@ function hasSession ({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
-function isAdminOrSameUser ({ session, item }: { session?: Session, item: Lists.User.Item }) {
+function isAdminOrSameUser ({ session, item }: { session?: Session, item: Lists.User.Item | null }) {
   // you need to have a session to do this
   if (!session) return false
 
   // admins can do anything
   if (session.data.isAdmin) return true
+
+  // no item? then no
+  if (!item) return false
 
   // the authenticated user needs to be equal to the user we are updating
   return session.itemId === item.id

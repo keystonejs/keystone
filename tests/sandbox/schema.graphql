@@ -72,11 +72,11 @@ scalar BigInt
 
 type ImageFieldOutput {
   id: ID!
+  url: String!
+  extension: ImageExtension!
   filesize: Int!
   width: Int!
   height: Int!
-  extension: ImageExtension!
-  url: String!
 }
 
 enum ImageExtension {
@@ -479,19 +479,8 @@ input TodoWhereInput {
   isComplete: BooleanFilter
   assignedTo: UserWhereInput
   finishBy: DateTimeNullableFilter
-  createdAt: DateTimeFilter
-  updatedAt: DateTimeFilter
-}
-
-input DateTimeFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
 }
 
 input TodoOrderByInput {
@@ -546,8 +535,8 @@ input UserWhereInput {
   email: StringFilter
   password: PasswordFilter
   tasks: TodoManyRelationFilter
-  createdAt: DateTimeFilter
-  updatedAt: DateTimeFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
 }
 
 input UserOrderByInput {
@@ -683,24 +672,22 @@ type KeystoneAdminMeta {
 type KeystoneAdminUIListMeta {
   key: String!
   path: String!
+  description: String
   label: String!
+  labelField: String!
   singular: String!
   plural: String!
-  description: String
-  pageSize: Int!
-  labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
   graphql: KeystoneAdminUIGraphQL!
+  pageSize: Int!
   initialColumns: [String!]!
   initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
   isSingleton: Boolean!
+  hideNavigation: Boolean!
   hideCreate: Boolean!
   hideDelete: Boolean!
-  isHidden: Boolean!
-  itemQueryName: String!
-  listQueryName: String!
 }
 
 type KeystoneAdminUIFieldMeta {

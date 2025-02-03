@@ -1,16 +1,17 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core'
-import { Tooltip } from '@keystone-ui/tooltip'
-import { useMemo, Fragment } from 'react'
+import React, { useMemo } from 'react'
 import { Transforms } from 'slate'
-import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon'
-import { ToolbarButton, KeyboardInTooltip } from './primitives'
+
+import { Icon } from '@keystar/ui/icon'
+import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
 import { useToolbarState } from './toolbar-state'
+import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Kbd, Text } from '@keystar/ui/typography'
+import { ReactEditor } from 'slate-react'
+import { EditorToolbarButton } from '@keystar/ui/editor'
 
 export * from './code-block-shared'
 
-function CodeButton ({ attrs }: { attrs: object }) {
+function CodeButton () {
   const {
     editor,
     code: { isDisabled, isSelected },
@@ -18,35 +19,36 @@ function CodeButton ({ attrs }: { attrs: object }) {
 
   return useMemo(
     () => (
-      <ToolbarButton
+      <EditorToolbarButton
         isSelected={isSelected}
         isDisabled={isDisabled}
-        onMouseDown={event => {
-          event.preventDefault()
+        onPress={() => {
           if (isSelected) {
-            Transforms.unwrapNodes(editor, { match: node => node.type === 'code' })
+            Transforms.unwrapNodes(editor, {
+              match: node => node.type === 'code',
+            })
           } else {
-            Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] })
+            Transforms.wrapNodes(editor, {
+              type: 'code',
+              children: [{ text: '' }],
+            })
           }
+          ReactEditor.focus(editor)
         }}
-        {...attrs}
       >
-        <CodeIcon size="small" />
-      </ToolbarButton>
+        <Icon src={codeIcon} />
+      </EditorToolbarButton>
     ),
-    [isDisabled, isSelected, attrs, editor]
+    [isDisabled, isSelected, editor]
   )
 }
 
 export const codeButton = (
-  <Tooltip
-    weight="subtle"
-    content={
-      <Fragment>
-        Code block <KeyboardInTooltip>```</KeyboardInTooltip>
-      </Fragment>
-    }
-  >
-    {attrs => <CodeButton attrs={attrs} />}
-  </Tooltip>
+  <TooltipTrigger>
+    <CodeButton />
+    <Tooltip>
+      <Text>Code block</Text>
+      <Kbd>```</Kbd>
+    </Tooltip>
+  </TooltipTrigger>
 )

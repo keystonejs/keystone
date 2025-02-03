@@ -12,6 +12,15 @@ const Thing = list({
   },
 })
 
+const emptyPrismaModule = {
+  PrismaClient: class PrismaClient {
+    $extends () {
+      return this
+    }
+  },
+  Prisma: {}
+}
+
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
   expect(() =>
     getContext(
@@ -35,39 +44,9 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
-})
-
-test("labelField that doesn't exist is rejected with displayMode: cards", () => {
-  expect(() =>
-    getContext(
-      config({
-        db: {
-          provider: 'sqlite',
-          url: 'file://'
-        },
-        lists: {
-          A: list({
-            access: allowAll,
-            fields: {
-              something: relationship({
-                ref: 'Thing',
-                ui: {
-                  displayMode: 'cards',
-                  cardFields: ['name'],
-                  inlineConnect: { labelField: 'doesNotExist' },
-                },
-              }),
-            },
-          }),
-          Thing,
-        },
-      }),
-      {}
-    )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
+  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing", configured as labelField for "A.something""`)
 })
 
 test("searchFields that don't exist are rejected with displayMode: select", () => {
@@ -93,12 +72,12 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
+  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing", configured as searchField for "A.something""`)
 })
 
-test("searchFields that don't exist are rejected with displayMode: cards", () => {
+test("searchFields that aren't searchable are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
       config({
@@ -113,9 +92,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
               something: relationship({
                 ref: 'Thing',
                 ui: {
-                  displayMode: 'cards',
-                  cardFields: ['name'],
-                  inlineConnect: { labelField: 'name', searchFields: ['doesNotExist'] },
+                  searchFields: ['notText'],
                 },
               }),
             },
@@ -123,7 +100,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
           Thing,
         },
       }),
-      {}
+      emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing""`)
+  ).toThrowErrorMatchingInlineSnapshot(`""notText" is not a searchable field of list "Thing", configured as searchField for "A.something""`)
 })

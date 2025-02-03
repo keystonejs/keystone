@@ -3,7 +3,6 @@ import fsp from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
-import fetch from 'node-fetch'
 
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
@@ -55,7 +54,6 @@ function getRunner ({
 }) {
   return setupTestRunner({
     config: ({
-      db: {},
       storage,
       lists: {
         Test: list({
@@ -70,7 +68,7 @@ function getRunner ({
   })
 }
 
-function sha1 (x: Buffer) {
+function sha1 (x: Uint8Array) {
   return createHash('sha1').update(x).digest('hex')
 }
 
@@ -79,7 +77,7 @@ async function getFileHash (
   config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) {
   if (config.matrixValue === 's3') {
-    return sha1(await fetch(url).then(x => x.buffer()))
+    return sha1(await fetch(url).then(async x => new Uint8Array(await x.arrayBuffer())))
   }
 
   return sha1(await fsp.readFile(path.join(config.folder, url)))
@@ -136,7 +134,10 @@ describe('Image - Crud special tests', () => {
         for (const matrixValue of testMatrix) {
           test(
             'upload values should match expected',
-            getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
+            getRunner({
+              fields,
+              storage: { test_image: config }
+            })(async ({ context }) => {
               const filenames = ['keystone.jpg']
               for (const filename of filenames) {
                 const fileHash = createHash('sha1')
@@ -167,7 +168,10 @@ describe('Image - Crud special tests', () => {
           )
           test(
             'if not image file, throw',
-            getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
+            getRunner({
+              fields,
+              storage: { test_image: config }
+            })(async ({ context }) => {
               const { data, errors } = await context.graphql.raw({
                 query: `
                     mutation ($item: TestCreateInput!) {
@@ -189,7 +193,10 @@ describe('Image - Crud special tests', () => {
           describe('After Operation Hook', () => {
             test(
               'with preserve: true',
-              getRunner({ fields, storage: { test_image: { ...config, preserve: true } } })(
+              getRunner({
+                fields,
+                storage: { test_image: { ...config, preserve: true } }
+              })(
                 async ({ context }) => {
                   const ogFilename = 'keystone.jpeg'
 
