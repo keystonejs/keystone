@@ -123,7 +123,7 @@ type FieldFunc = <
 export const field = fieldd as FieldFunc
 // TODO: remove when we use { graphql } from '.keystone'
 
-export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(
+export const JSON = graphqlTsSchema.g.scalar<JSONValue>(
   new GraphQLScalarType({
     name: 'JSON',
     description:
@@ -140,7 +140,7 @@ type FileUpload = {
   createReadStream(): ReadStream
 }
 
-export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload)
+export const Upload = graphqlTsSchema.g.scalar<Promise<FileUpload>>(GraphQLUpload)
 
 // - Decimal.js throws on invalid inputs
 // - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal,
@@ -209,7 +209,7 @@ function parseDate (input: string): Date {
   return parsed
 }
 
-export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
+export const DateTime = graphqlTsSchema.g.scalar<Date>(
   new GraphQLScalarType({
     name: 'DateTime',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
@@ -243,7 +243,7 @@ function validateCalendarDay (input: string) {
   }
 }
 
-export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
+export const CalendarDay = graphqlTsSchema.g.scalar<string>(
   new GraphQLScalarType({
     name: 'CalendarDay',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
@@ -270,7 +270,7 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   })
 )
 
-export const Empty = graphqlTsSchema.graphql.scalar(
+export const Empty = graphqlTsSchema.g.scalar(
   new GraphQLScalarType({
     name: 'Empty',
     serialize (value) { return null },
