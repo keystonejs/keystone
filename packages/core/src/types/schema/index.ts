@@ -1,1 +1,2 @@
-export * as graphql from './graphql-ts-schema'
+export * as g from './graphql-ts-schema'
+export * from './legacy-alias'
