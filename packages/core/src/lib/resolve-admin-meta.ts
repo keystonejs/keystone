@@ -20,69 +20,69 @@ import type {
   ListMetaRootVal,
 } from './create-admin-meta'
 
-const graphql = {
+const g = {
   ...graphqlBoundToKeystoneContext,
   ...graphqlBoundToKeystoneContext.bindGraphQLSchemaAPIToContext<Context>(),
 }
 
-const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
+const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
   name: 'KeystoneAdminUIFieldMeta',
   fields: {
-    path: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    description: graphql.field({ type: graphql.String }),
-    ...contextFunctionField('isOrderable', graphql.Boolean),
-    ...contextFunctionField('isFilterable', graphql.Boolean),
-    isNonNull: graphql.field({
-      type: graphql.list(
-        graphql.nonNull(
-          graphql.enum({
+    path: g.field({ type: g.nonNull(g.String) }),
+    label: g.field({ type: g.nonNull(g.String) }),
+    description: g.field({ type: g.String }),
+    ...contextFunctionField('isOrderable', g.Boolean),
+    ...contextFunctionField('isFilterable', g.Boolean),
+    isNonNull: g.field({
+      type: g.list(
+        g.nonNull(
+          g.enum({
             name: 'KeystoneAdminUIFieldMetaIsNonNull',
-            values: graphql.enumValues(['read', 'create', 'update']),
+            values: g.enumValues(['read', 'create', 'update']),
           })
         )
       ),
     }),
-    fieldMeta: graphql.field({ type: graphql.JSON }),
-    viewsIndex: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    customViewsIndex: graphql.field({ type: graphql.Int }),
-    createView: graphql.field({
-      type: graphql.nonNull(
-        graphql.object<FieldMetaRootVal['createView']>()({
+    fieldMeta: g.field({ type: g.JSON }),
+    viewsIndex: g.field({ type: g.nonNull(g.Int) }),
+    customViewsIndex: g.field({ type: g.Int }),
+    createView: g.field({
+      type: g.nonNull(
+        g.object<FieldMetaRootVal['createView']>()({
           name: 'KeystoneAdminUIFieldMetaCreateView',
           fields: contextFunctionField(
             'fieldMode',
-            graphql.enum({
+            g.enum({
               name: 'KeystoneAdminUIFieldMetaCreateViewFieldMode',
-              values: graphql.enumValues(['edit', 'hidden']),
+              values: g.enumValues(['edit', 'hidden']),
             })
           ),
         })
       ),
     }),
-    listView: graphql.field({
-      type: graphql.nonNull(
-        graphql.object<FieldMetaRootVal['listView']>()({
+    listView: g.field({
+      type: g.nonNull(
+        g.object<FieldMetaRootVal['listView']>()({
           name: 'KeystoneAdminUIFieldMetaListView',
           fields: contextFunctionField(
             'fieldMode',
-            graphql.enum({
+            g.enum({
               name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
-              values: graphql.enumValues(['read', 'hidden']),
+              values: g.enumValues(['read', 'hidden']),
             })
           ),
         })
       ),
     }),
-    itemView: graphql.field({
-      args: { id: graphql.arg({ type: graphql.ID, }) },
+    itemView: g.field({
+      args: { id: g.arg({ type: g.ID, }) },
       resolve: ({ itemView, listKey }, { id }) => ({
         listKey,
         fieldMode: itemView.fieldMode,
         itemId: id ?? null,
         fieldPosition: itemView.fieldPosition,
       }),
-      type: graphql.object<{
+      type: g.object<{
         listKey: string
         fieldMode: FieldMetaRootVal['itemView']['fieldMode']
         fieldPosition: FieldMetaRootVal['itemView']['fieldPosition']
@@ -90,10 +90,10 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {
-          fieldMode: graphql.field({
-            type: graphql.enum({
+          fieldMode: g.field({
+            type: g.enum({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-              values: graphql.enumValues(['edit', 'read', 'hidden']),
+              values: g.enumValues(['edit', 'read', 'hidden']),
             }),
             async resolve ({ fieldMode, itemId, listKey }, args, context, info) {
               if (typeof fieldMode !== 'function') return fieldMode
@@ -106,10 +106,10 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               })
             },
           }),
-          fieldPosition: graphql.field({
-            type: graphql.enum({
+          fieldPosition: g.field({
+            type: g.enum({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
-              values: graphql.enumValues(['form', 'sidebar']),
+              values: g.enumValues(['form', 'sidebar']),
             }),
             async resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
               if (typeof fieldPosition !== 'function') return fieldPosition
@@ -125,116 +125,116 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
         },
       }),
     }),
-    search: graphql.field({
+    search: g.field({
       type: QueryMode,
     }),
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMetaRootVal>()({
+const KeystoneAdminUIFieldGroupMeta = g.object<FieldGroupMetaRootVal>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
-    label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    description: graphql.field({ type: graphql.String }),
-    fields: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
+    label: g.field({ type: g.nonNull(g.String) }),
+    description: g.field({ type: g.String }),
+    fields: g.field({
+      type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))),
     }),
   },
 })
 
-const KeystoneAdminUISort = graphql.object<NonNullable<ListMetaRootVal['initialSort']>>()({
+const KeystoneAdminUISort = g.object<NonNullable<ListMetaRootVal['initialSort']>>()({
   name: 'KeystoneAdminUISort',
   fields: {
-    field: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    direction: graphql.field({
-      type: graphql.nonNull(
-        graphql.enum({
+    field: g.field({ type: g.nonNull(g.String) }),
+    direction: g.field({
+      type: g.nonNull(
+        g.enum({
           name: 'KeystoneAdminUISortDirection',
-          values: graphql.enumValues(['ASC', 'DESC']),
+          values: g.enumValues(['ASC', 'DESC']),
         })
       ),
     }),
   },
 })
 
-const KeystoneAdminUIGraphQLNames = graphql.object<GraphQLNames>()({
+const KeystoneAdminUIGraphQLNames = g.object<GraphQLNames>()({
   name: 'KeystoneAdminUIGraphQLNames',
   fields: {
-    outputTypeName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    whereInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    whereUniqueInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    outputTypeName: g.field({ type: g.nonNull(g.String) }),
+    whereInputName: g.field({ type: g.nonNull(g.String) }),
+    whereUniqueInputName: g.field({ type: g.nonNull(g.String) }),
 
     // create
-    createInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    createMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    createManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    relateToOneForCreateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    relateToManyForCreateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    createInputName: g.field({ type: g.nonNull(g.String) }),
+    createMutationName: g.field({ type: g.nonNull(g.String) }),
+    createManyMutationName: g.field({ type: g.nonNull(g.String) }),
+    relateToOneForCreateInputName: g.field({ type: g.nonNull(g.String) }),
+    relateToManyForCreateInputName: g.field({ type: g.nonNull(g.String) }),
 
     // read
-    itemQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    listOrderName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    listQueryCountName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    listQueryName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    itemQueryName: g.field({ type: g.nonNull(g.String) }),
+    listOrderName: g.field({ type: g.nonNull(g.String) }),
+    listQueryCountName: g.field({ type: g.nonNull(g.String) }),
+    listQueryName: g.field({ type: g.nonNull(g.String) }),
 
     // update
-    updateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    updateMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    updateManyInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    updateManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    relateToOneForUpdateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    relateToManyForUpdateInputName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    updateInputName: g.field({ type: g.nonNull(g.String) }),
+    updateMutationName: g.field({ type: g.nonNull(g.String) }),
+    updateManyInputName: g.field({ type: g.nonNull(g.String) }),
+    updateManyMutationName: g.field({ type: g.nonNull(g.String) }),
+    relateToOneForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
+    relateToManyForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
 
     // delete
-    deleteMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    deleteManyMutationName: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    deleteMutationName: g.field({ type: g.nonNull(g.String) }),
+    deleteManyMutationName: g.field({ type: g.nonNull(g.String) }),
   }
 })
 
-const KeystoneAdminUIGraphQL = graphql.object<any>()({
+const KeystoneAdminUIGraphQL = g.object<any>()({
   name: 'KeystoneAdminUIGraphQL',
   fields: {
-    names: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQLNames) }),
+    names: g.field({ type: g.nonNull(KeystoneAdminUIGraphQLNames) }),
   }
 })
 
-const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
+const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
-    key: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    path: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    description: graphql.field({ type: graphql.String }),
+    key: g.field({ type: g.nonNull(g.String) }),
+    path: g.field({ type: g.nonNull(g.String) }),
+    description: g.field({ type: g.String }),
 
-    label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    labelField: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    singular: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    plural: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    label: g.field({ type: g.nonNull(g.String) }),
+    labelField: g.field({ type: g.nonNull(g.String) }),
+    singular: g.field({ type: g.nonNull(g.String) }),
+    plural: g.field({ type: g.nonNull(g.String) }),
 
-    fields: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))), }),
-    groups: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))), }),
-    graphql: graphql.field({ type: graphql.nonNull(KeystoneAdminUIGraphQL) }),
+    fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))), }),
+    groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))), }),
+    graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
 
-    pageSize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    initialColumns: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))), }),
-    initialSearchFields: graphql.field({ type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))), }),
-    initialSort: graphql.field({ type: KeystoneAdminUISort }),
-    isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+    pageSize: g.field({ type: g.nonNull(g.Int) }),
+    initialColumns: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))), }),
+    initialSearchFields: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))), }),
+    initialSort: g.field({ type: KeystoneAdminUISort }),
+    isSingleton: g.field({ type: g.nonNull(g.Boolean) }),
 
-    ...contextFunctionField('hideNavigation', graphql.Boolean),
-    ...contextFunctionField('hideCreate', graphql.Boolean),
-    ...contextFunctionField('hideDelete', graphql.Boolean),
+    ...contextFunctionField('hideNavigation', g.Boolean),
+    ...contextFunctionField('hideCreate', g.Boolean),
+    ...contextFunctionField('hideDelete', g.Boolean),
   },
 })
 
-const adminMeta = graphql.object<AdminMetaRootVal>()({
+const adminMeta = g.object<AdminMetaRootVal>()({
   name: 'KeystoneAdminMeta',
   fields: {
-    lists: graphql.field({
-      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListMeta))),
+    lists: g.field({
+      type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIListMeta))),
     }),
-    list: graphql.field({
+    list: g.field({
       type: KeystoneAdminUIListMeta,
-      args: { key: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
+      args: { key: g.arg({ type: g.nonNull(g.String) }) },
       resolve (rootVal, { key }) {
         return rootVal.listsByKey[key]
       },
@@ -242,11 +242,11 @@ const adminMeta = graphql.object<AdminMetaRootVal>()({
   },
 })
 
-export const KeystoneMeta = graphql.object<{ adminMeta: AdminMetaRootVal }>()({
+export const KeystoneMeta = g.object<{ adminMeta: AdminMetaRootVal }>()({
   name: 'KeystoneMeta',
   fields: {
-    adminMeta: graphql.field({
-      type: graphql.nonNull(adminMeta),
+    adminMeta: g.field({
+      type: g.nonNull(adminMeta),
       resolve ({ adminMeta }, args, context, info) {
         return Promise.resolve(adminMeta.isAccessAllowed(context)).then(isAllowed => {
           if (isAllowed) return adminMeta
@@ -291,8 +291,8 @@ function contextFunctionField<Key extends string, Type extends string | boolean>
   type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
 ) {
   return {
-    [key]: graphql.field({
-      type: graphql.nonNull(type),
+    [key]: g.field({
+      type: g.nonNull(type),
       resolve (source: {
         [_ in Key]: (context: Context) => MaybePromise<Type>
       }, args, context, info) {
