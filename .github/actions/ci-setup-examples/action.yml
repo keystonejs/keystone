@@ -2,6 +2,8 @@ name: 'CI setup (w/ examples)'
 runs:
   using: 'composite'
   steps:
+    - run: npm i -g corepack@0.31.0
+      shell: bash
     - run: corepack enable
       shell: bash
 
