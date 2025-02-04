@@ -90,11 +90,11 @@ export const lists = {
 //
 // The `requestAuthToken` mutation always returns `true` to prevent user enumeration.
 // We ensure that authentication tokens are randomly generated, short-lived (e.g. 5 minutes expiry), and hashed in the database (using the Keystone password field).
-// The out of band delivery code and database lookup & update is run asynchronously to mitigate timing attacks.
+// The out of band delivery code and database lookup & update is run asynchronously to reduce timing attacks.
 // The delivery of the one-time-token is out of band (e.g. by email or SMS), the exact implementation of ths is left up to you, with console.log used for this example.
 //
 // The `requestAuthToken` mutation returns `true` only if the token is equal and not passed the expiry.
-// The user provided token is hashed as part of the comparison, and an approximately constant-time approach is used to mitigate timing attacks.
+// The user provided token is hashed as part of the comparison, and an approximately constant-time approach is used to reduce timing attacks.
 // We ensure that authentication tokens are randomly generated, short-lived (e.g. 5 minutes expiry), and hashed in the database (using the Keystone password field).
 //
 // References
@@ -108,7 +108,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         args: { userId: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
 
         async resolve (args, { userId }, context: Context) {
-          // run asynchronously to mitigate timing attacks
+          // run asynchronously to reduce timing attacks
           ;(async function () {
             const ott = randomBytes(16).toString('base64url')
             const sudoContext = context.sudo()
@@ -158,15 +158,11 @@ export const extendGraphqlSchema = graphql.extend(base => {
             return false
           }
 
-          // TODO: could the expiry be checked before the hashing operation?
+          // TODO: could the expiry be checked before the hashing operation? timing?
           const result = await kdf.compare(token, oneTimeToken)
           if (Date.now() > expiry) return false
 
-          // out of band
-          ;(async function () {
-            if (!user) return
-            if (!result) return
-
+          if (result) {
             // reset
             await sudoContext.db.User.updateOne({
               where: { id: user.id },
@@ -175,9 +171,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
                 oneTimeTokenCreatedAt: null,
               },
             })
-          }())
 
-          if (result) {
             await context.sessionStrategy.start({
               context,
               data: {
