@@ -82,16 +82,33 @@ export const lists = {
   }),
 } satisfies Lists<Session>
 
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+//
+// This example should follow the OWASP guidance for the flow of a password reset, as the outcome is the same (a user is authenticated out of band).
+//
+// The `requestAuthToken` mutation always returns `true` to prevent user enumeration.
+// We ensure that authentication tokens are randomly generated, short-lived (e.g. 5 minutes expiry), and hashed in the database (using the Keystone password field).
+// The out of band delivery code and database lookup & update is run asynchronously to mitigate timing attacks.
+// The delivery of the one-time-token is out of band (e.g. by email or SMS), the exact implementation of ths is left up to you, with console.log used for this example.
+//
+// The `requestAuthToken` mutation returns `true` only if the token is equal and not passed the expiry.
+// The user provided token is hashed as part of the comparison, and an approximately constant-time approach is used to mitigate timing attacks.
+// We ensure that authentication tokens are randomly generated, short-lived (e.g. 5 minutes expiry), and hashed in the database (using the Keystone password field).
+//
+// References
+//   https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
+
 export const extendGraphqlSchema = graphql.extend(base => {
   return {
     mutation: {
-      // https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
       requestAuthToken: graphql.field({
         type: graphql.nonNull(graphql.Boolean), // always true
         args: { userId: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
 
         async resolve (args, { userId }, context: Context) {
-          // out of band
+          // run asynchronously to mitigate timing attacks
           ;(async function () {
             const ott = randomBytes(16).toString('base64url')
             const sudoContext = context.sudo()
@@ -109,7 +126,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
 
             // you could send this one time token as is
             //   or embedded in a "magic link" (or similar)
-            console.log(`your code is ${ott}`)
+            console.log(`DEBUGGING: the one time token for ${user.id} is ${ott}`)
           }())
 
           // always return true, lest we leak information
@@ -128,7 +145,6 @@ export const extendGraphqlSchema = graphql.extend(base => {
           if (!context.sessionStrategy) throw new Error('No session implementation available on context')
 
           const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions?.keystoneSecretField
-
           const sudoContext = context.sudo()
           const user = await sudoContext.db.User.findOne({ where: { id: userId } })
           const {
@@ -142,6 +158,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
             return false
           }
 
+          // TODO: could the expiry be checked before the hashing operation?
           const result = await kdf.compare(token, oneTimeToken)
           if (Date.now() > expiry) return false
 
