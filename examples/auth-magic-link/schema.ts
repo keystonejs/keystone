@@ -147,19 +147,15 @@ export const extendGraphqlSchema = graphql.extend(base => {
           const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions?.keystoneSecretField
           const sudoContext = context.sudo()
           const user = await sudoContext.db.User.findOne({ where: { id: userId } })
-          const {
-            oneTimeToken,
-            oneTimeTokenCreatedAt,
-          } = user ?? {}
-          const expiry = (oneTimeTokenCreatedAt?.getTime() ?? 0) + 300000 /* 5 minutes */
+          const expiry = (user?.oneTimeTokenCreatedAt?.getTime() ?? 0) + 300000 /* 5 minutes */
 
-          if (!oneTimeToken) {
+          if (!user?.oneTimeToken) {
             await kdf.generateHash('simulated-password-to-counter-timing-attack')
             return false
           }
 
           // TODO: could the expiry be checked before the hashing operation? timing?
-          const result = await kdf.compare(token, oneTimeToken)
+          const result = await kdf.compare(token, user.oneTimeToken)
           if (Date.now() > expiry) return false
 
           if (result) {
