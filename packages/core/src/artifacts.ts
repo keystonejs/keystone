@@ -82,7 +82,7 @@ export async function generateArtifacts (cwd: string, system: System) {
 
 export async function generateTypes (cwd: string, system: System) {
   const paths = getSystemPaths(cwd, system.config)
-  const schema = printGeneratedTypes(paths.types.relativePrismaPath, system.graphQLSchema, system.lists)
+  const schema = printGeneratedTypes(paths.types.relativePrismaPath, system.graphQLSchemaSudo, system.lists)
   await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
   await fs.writeFile(paths.schema.types, schema)
 }

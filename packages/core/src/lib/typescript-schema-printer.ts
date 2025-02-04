@@ -13,6 +13,8 @@ import type { InitialisedList } from './core/initialise-lists'
 
 const introspectionTypesSet = new Set(introspectionTypes)
 
+// note this is the types for scalars as _input_ types
+// and before scalar parsing
 const SCALARS = {
   ID: 'string',
   Boolean: 'boolean',
@@ -21,6 +23,7 @@ const SCALARS = {
   Float: 'number',
   JSON: `import('@keystone-6/core/types').JSONValue`,
   Decimal: `import('@keystone-6/core/types').Decimal | string`,
+  Empty: `{}`,
 } as const
 
 function stringify (x: string) {
@@ -143,21 +146,15 @@ export function printGeneratedTypes (
     // Resolved* types
     ...(function* () {
       for (const list of Object.values(lists)) {
-        if (list.graphql.isEnabled.create) yield printInterimType(prismaClientPath, list, 'create')
-        if (list.graphql.isEnabled.update) yield printInterimType(prismaClientPath, list, 'update')
+        yield printInterimType(prismaClientPath, list, 'create')
+        yield printInterimType(prismaClientPath, list, 'update')
       }
     }()),
     '',
     'export declare namespace Lists {',
     ...(function* () {
       for (const [listKey, list] of Object.entries(lists)) {
-        const {
-          whereInputName,
-          whereUniqueInputName,
-          createInputName,
-          updateInputName,
-          listOrderName,
-        } = list.prisma.types
+        const { createInputName, updateInputName } = list.prisma.types
         const listTypeInfoName = `Lists.${listKey}.TypeInfo`
 
         yield [
@@ -170,15 +167,15 @@ export function printGeneratedTypes (
           `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
           `    item: Item`,
           `    inputs: {`,
-          `      where: ${list.graphql.isEnabled.query ? whereInputName : 'never'}`,
-          `      uniqueWhere: ${list.graphql.isEnabled.query ? whereUniqueInputName : 'never'}`,
-          `      create: ${list.graphql.isEnabled.create ? list.graphql.names.createInputName : 'never'}`,
-          `      update: ${list.graphql.isEnabled.update ? list.graphql.names.updateInputName : 'never'}`,
-          `      orderBy: ${list.graphql.isEnabled.query ? listOrderName : 'never'}`,
+          `      where: ${printTypeReferenceWithoutNullable(list.graphql.types.where.graphQLType)}`,
+          `      uniqueWhere: ${printTypeReferenceWithoutNullable(list.graphql.types.uniqueWhere.graphQLType)}`,
+          `      create: ${printTypeReferenceWithoutNullable(list.graphql.types.create.graphQLType)}`,
+          `      update: ${printTypeReferenceWithoutNullable(list.graphql.types.update.graphQLType)}`,
+          `      orderBy: ${printTypeReferenceWithoutNullable(list.graphql.types.orderBy.graphQLType)}`,
           `    }`,
           `    prisma: {`,
-          `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'}`,
-          `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'}`,
+          `      create: Resolved${createInputName}`,
+          `      update: Resolved${updateInputName}`,
           `    }`,
           `    all: __TypeInfo<Session>`,
           `  }`,
