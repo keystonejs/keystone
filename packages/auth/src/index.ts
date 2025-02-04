@@ -6,9 +6,9 @@ import type {
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
-import {
-  type AuthConfig,
-  type AuthGqlNames
+import type {
+  AuthConfig,
+  AuthGqlNames
 } from './types'
 
 import { getSchemaExtension } from './schema'
