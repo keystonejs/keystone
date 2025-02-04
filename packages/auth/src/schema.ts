@@ -1,8 +1,6 @@
-import { getGqlNames } from '@keystone-6/core/types'
-
 import {
-  assertObjectType,
   type GraphQLSchema,
+  assertObjectType,
   assertInputObjectType,
   GraphQLString,
   GraphQLID,
@@ -10,6 +8,8 @@ import {
   validate,
 } from 'graphql'
 import { graphql } from '@keystone-6/core'
+import { getGqlNames } from '@keystone-6/core/types'
+
 import type {
   AuthGqlNames,
   AuthTokenTypeConfig,
@@ -18,8 +18,6 @@ import type {
 } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema'
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema'
 
 function assertSecretFieldImpl (
   impl: any,
@@ -51,8 +49,6 @@ export const getSchemaExtension = ({
   secretField,
   gqlNames,
   initFirstItem,
-  passwordResetLink,
-  magicAuthLink,
   sessionData,
 }: {
   identityField: string
@@ -65,9 +61,7 @@ export const getSchemaExtension = ({
   sessionData: string
 }) =>
   graphql.extend(base => {
-    const uniqueWhereInputType = assertInputObjectType(
-      base.schema.getType(`${listKey}WhereUniqueInput`)
-    )
+    const uniqueWhereInputType = assertInputObjectType(base.schema.getType(`${listKey}WhereUniqueInput`))
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (
       base.schema.extensions.sudo &&
@@ -115,32 +109,10 @@ export const getSchemaExtension = ({
         getInitFirstItemSchema({
           listKey,
           fields: initFirstItem.fields,
-          itemData: initFirstItem.itemData,
+          defaultItemData: initFirstItem.itemData,
           gqlNames,
           graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
-        }),
-      passwordResetLink &&
-        getPasswordResetSchema({
-          identityField,
-          listKey,
-          secretField,
-          passwordResetLink,
-          gqlNames,
-          passwordResetTokenSecretFieldImpl: getSecretFieldImpl(
-            base.schema,
-            listKey,
-            'passwordResetToken'
-          ),
-        }),
-      magicAuthLink &&
-        getMagicAuthLinkSchema({
-          identityField,
-          listKey,
-          magicAuthLink,
-          gqlNames,
-          magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),
-          base,
         }),
     ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined)
   })

@@ -6,9 +6,11 @@ import type {
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
-import { password, timestamp } from '@keystone-6/core/fields'
+import type {
+  AuthConfig,
+  AuthGqlNames
+} from './types'
 
-import type { AuthConfig, AuthGqlNames } from './types'
 import { getSchemaExtension } from './schema'
 import configTemplate from './templates/config'
 import signinTemplate from './templates/signin'
@@ -30,8 +32,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   secretField,
   initFirstItem,
   identityField,
-  magicAuthLink,
-  passwordResetLink,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
   const authGqlNames: AuthGqlNames = {
@@ -43,52 +43,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     // Initial data
     CreateInitialInput: `CreateInitial${listKey}Input`,
     createInitialItem: `createInitial${listKey}`,
-    // Password reset
-    sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
-    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
-    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
-    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
-    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
-    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
-    // Magic auth
-    sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
-    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
-    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
-    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
-  }
-
-  /**
-   * fields
-   *
-   * Fields added to the auth list.
-   */
-  const fieldConfig = {
-    access: () => false,
-    ui: {
-      createView: { fieldMode: 'hidden' },
-      itemView: { fieldMode: 'hidden' },
-      listView: { fieldMode: 'hidden' },
-    },
-  } as const
-
-  const authFields = {
-    ...(passwordResetLink
-      ? {
-          passwordResetToken: password({ ...fieldConfig }),
-          passwordResetIssuedAt: timestamp({ ...fieldConfig }),
-          passwordResetRedeemedAt: timestamp({ ...fieldConfig }),
-        }
-      : null),
-
-    ...(magicAuthLink
-      ? {
-          magicAuthToken: password({ ...fieldConfig }),
-          magicAuthIssuedAt: timestamp({ ...fieldConfig }),
-          magicAuthRedeemedAt: timestamp({ ...fieldConfig }),
-        }
-      : null),
   }
 
   /**
@@ -145,8 +99,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     secretField,
     gqlNames: authGqlNames,
     initFirstItem,
-    passwordResetLink,
-    magicAuthLink,
     sessionData,
   })
 
@@ -320,7 +272,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
           ...authListConfig,
           fields: {
             ...authListConfig.fields,
-            ...authFields,
           },
         },
       },

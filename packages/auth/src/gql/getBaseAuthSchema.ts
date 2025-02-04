@@ -8,7 +8,10 @@ import type {
   SecretFieldImpl,
 } from '../types'
 
-import { validateSecret } from '../lib/validateSecret'
+const AUTHENTICATION_FAILURE = {
+  code: 'FAILURE',
+  message: 'Authentication failed.'
+} as const
 
 export function getBaseAuthSchema<I extends string, S extends string> ({
   listKey,
@@ -24,15 +27,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
   gqlNames: AuthGqlNames
   secretFieldImpl: SecretFieldImpl
   base: graphql.BaseSchemaMeta
-
-  // TODO: return type required by pnpm :(
-}): {
-  extension: graphql.Extension
-  ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
-    sessionToken: string
-    item: BaseItem
-  }>
-} {
+}) {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
     sessionToken: string
     item: BaseItem
@@ -88,44 +83,46 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve (root, { [identityField]: identity, [secretField]: secret }, context: KeystoneContext) {
-          if (!context.sessionStrategy) throw new Error('No session implementation available on context')
+        async resolve (root, {
+          [identityField]: identity,
+          [secretField]: secret
+        }, context: KeystoneContext) {
+          if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
-          const dbItemAPI = context.sudo().db[listKey]
-          const result = await validateSecret(
-            secretFieldImpl,
-            identityField,
-            identity,
-            secretField,
-            secret,
-            dbItemAPI
-          )
+          const item = await context.sudo().db[listKey].findOne({
+            where: { [identityField]: identity }
+          })
 
-          if (!result.success) {
-            return { code: 'FAILURE', message: 'Authentication failed.' }
+          if ((typeof item?.[secretField] !== 'string')) {
+            await secretFieldImpl.generateHash('simulated-password-to-counter-timing-attack')
+            return AUTHENTICATION_FAILURE
           }
 
-          // Update system state
+          const equal = await secretFieldImpl.compare(secret, item[secretField])
+          if (!equal) return AUTHENTICATION_FAILURE
+
           const sessionToken = await context.sessionStrategy.start({
             data: {
-              itemId: result.item.id,
+              itemId: item.id,
             },
             context,
           })
 
-          // return Failure if sessionStrategy.start() is incompatible
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
-            return { code: 'FAILURE', message: 'Failed to start session.' }
+            return AUTHENTICATION_FAILURE
           }
 
           return {
             sessionToken,
-            item: result.item
+            item
           }
         },
       }),
     },
   }
 
-  return { extension, ItemAuthenticationWithPasswordSuccess }
+  return {
+    extension,
+    ItemAuthenticationWithPasswordSuccess
+  }
 }

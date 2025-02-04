@@ -3,7 +3,8 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import {
   type Session,
-  lists
+  lists,
+  extendGraphqlSchema,
 } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
@@ -38,16 +39,7 @@ const { withAuth } = createAuth({
   initFirstItem: {
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
-
-    // the following fields are configured by default for this item
-    itemData: {
-      // isAdmin is true, so the admin can pass isAccessAllowed (see below)
-      isAdmin: true,
-    },
   },
-
-  // add isAdmin to the session data
-  sessionData: 'isAdmin',
 })
 
 export default withAuth<TypeInfo<Session>>(
@@ -60,11 +52,8 @@ export default withAuth<TypeInfo<Session>>(
       prismaClientPath: 'node_modules/myprisma',
     },
     lists,
-    ui: {
-      // only admins can view the AdminUI
-      isAccessAllowed: (context) => {
-        return context.session?.data?.isAdmin ?? false
-      },
+    graphql: {
+      extendGraphqlSchema,
     },
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
     session: statelessSessions({
