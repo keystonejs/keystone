@@ -197,7 +197,7 @@ export function Field (props: FieldProps<typeof controller>) {
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
-  return value.isSet
+  return value !== null
     ? (
       <div aria-label="is set" style={{display:'flex'}}>
         <Icon src={asteriskIcon} size="small" />
@@ -249,11 +249,11 @@ type Value =
       confirm: string
     }
 
-type PasswordController = FieldController<Value, boolean> & { validation: Validation }
-
-export const controller = (
+export function controller (
   config: FieldControllerConfig<PasswordFieldMeta>
-): PasswordController => {
+): FieldController<Value, boolean | null> & {
+  validation: Validation
+} {
   const validation: Validation = {
     ...config.fieldMeta.validation,
     match:
@@ -288,9 +288,22 @@ export const controller = (
         ? undefined
         : {
             Filter (props) {
-              const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
+              const {
+                autoFocus,
+                context,
+                typeLabel,
+                onChange,
+                value,
+                type,
+                ...otherProps
+              } = props
               return (
-                <Checkbox autoFocus={autoFocus} onChange={onChange} isSelected={value} {...otherProps}>
+                <Checkbox
+                  autoFocus={autoFocus}
+                  onChange={onChange}
+                  isSelected={value ?? false}
+                  {...otherProps}
+                >
                   {typeLabel} set
                 </Checkbox>
               )
