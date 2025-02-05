@@ -27,13 +27,13 @@ export function ListButtons (props: {
     return [
       !!props.lists.unordered && {
         label: 'Bullet list',
-        key: 'unordered_list',
+        key: 'unordered',
         shortcut: '-⎵',
         icon: listIcon,
       },
       !!props.lists.unordered && {
         label: 'Numbered list',
-        key: 'ordered_list',
+        key: 'ordered',
         shortcut: '1.⎵',
         icon: listOrderedIcon,
       },
