@@ -201,7 +201,7 @@ export type FilesContext = (storage: string) => {
 
 // Images API
 
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif'
+export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif' // TODO: remove in breaking change
 export type ImageData = {
   id: string
   extension: ImageExtension
