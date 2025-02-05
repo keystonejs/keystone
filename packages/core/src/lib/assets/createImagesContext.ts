@@ -16,13 +16,11 @@ function defaultTransformName (path: string) {
 
 async function getImageMetadataFromBuffer (buffer: Buffer) {
   const fileType = await (await import('file-type')).fileTypeFromBuffer(buffer)
-  if (!fileType) {
-    throw new Error('File type not found')
-  }
+  if (!fileType) throw new Error('File type not found')
 
-  const { ext: extension } = fileType
-  if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
-    throw new Error(`${extension} is not a supported image type`)
+  const { ext } = fileType
+  if (ext !== 'jpg' && ext !== 'png' && ext !== 'webp' && ext !== 'gif') {
+    throw new Error(`${ext} is not a supported image type`)
   }
 
   const { height, width } = imageSize(buffer)
@@ -30,7 +28,12 @@ async function getImageMetadataFromBuffer (buffer: Buffer) {
     throw new Error('Height and width could not be found for image')
   }
 
-  return { width, height, filesize: buffer.length, extension }
+  return {
+    width,
+    height,
+    filesize: buffer.length,
+    extension: ext
+  } as const
 }
 
 export function createImagesContext (config: KeystoneConfig): ImagesContext {
