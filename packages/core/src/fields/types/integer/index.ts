@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import {
   resolveDbNullable,
@@ -120,14 +120,14 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Int }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
+          arg: g.arg({ type: filters[meta.provider].Int[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.Int,
+          arg: g.arg({
+            type: g.Int,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
           resolve (value) {
@@ -138,10 +138,10 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
             return value
           },
         },
-        update: { arg: graphql.arg({ type: graphql.Int }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.Int }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Int, }),
+      output: g.field({ type: g.Int, }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta () {

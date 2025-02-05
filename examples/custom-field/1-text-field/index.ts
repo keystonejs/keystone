@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
   isIndexed?: boolean | 'unique'
@@ -25,16 +25,16 @@ export function text<ListTypeInfo extends BaseListTypeInfo> ({
       ...config,
       input: {
         create: {
-          arg: graphql.arg({ type: graphql.String }),
+          arg: g.arg({ type: g.String }),
           resolve (value, context) {
             return value
           },
         },
-        update: { arg: graphql.arg({ type: graphql.String }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.String }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.String,
+      output: g.field({
+        type: g.String,
         resolve ({ value, item }, args, context, info) {
           return value
         },

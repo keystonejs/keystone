@@ -1,4 +1,4 @@
-import type { graphql } from '@keystone-6/core'
+import type { g } from '@keystone-6/core'
 import type {
   ReactElement,
   ReactNode,
@@ -43,11 +43,11 @@ export type FormField<Value extends FormFieldValue, Options> = {
    */
   validate(value: unknown): boolean
   graphql?: {
-    input: graphql.NullableInputType
-    output: graphql.Field<
+    input: g.NullableInputType
+    output: g.Field<
       { value: Value },
-      Record<string, graphql.Arg<graphql.InputType, boolean>>,
-      graphql.OutputType,
+      Record<string, g.Arg<g.InputType, boolean>>,
+      g.OutputType,
       'value'
     >
   }

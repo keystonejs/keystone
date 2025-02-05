@@ -8,7 +8,7 @@ import {
   type FieldTypeFunc,
   fieldType,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { type PasswordFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -37,17 +37,17 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     bcrypt?: Pick<typeof bcryptjs, 'compare' | 'hash'>
   }
 
-const PasswordState = graphql.object<{ isSet: boolean }>()({
+const PasswordState = g.object<{ isSet: boolean }>()({
   name: 'PasswordState',
   fields: {
-    isSet: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
+    isSet: g.field({ type: g.nonNull(g.Boolean) }),
   },
 })
 
-const PasswordFilter = graphql.inputObject({
+const PasswordFilter = g.inputObject({
   name: 'PasswordFilter',
   fields: {
-    isSet: graphql.arg({ type: graphql.nonNull(graphql.Boolean) }),
+    isSet: g.arg({ type: g.nonNull(g.Boolean) }),
   },
 })
 
@@ -143,7 +143,7 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
           mode === 'required'
             ? undefined
             : {
-                arg: graphql.arg({ type: PasswordFilter }),
+                arg: g.arg({ type: PasswordFilter }),
                 resolve (val) {
                   if (val === null) throw userInputError('Password filters cannot be set to null')
                   if (val.isSet) return { not: null }
@@ -151,14 +151,14 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
                 },
               },
         create: {
-          arg: graphql.arg({ type: graphql.String }),
+          arg: g.arg({ type: g.String }),
           resolve (val) {
             if (val === undefined) return null
             return inputResolver(val)
           },
         },
         update: {
-          arg: graphql.arg({ type: graphql.String }),
+          arg: g.arg({ type: g.String }),
           resolve: inputResolver,
         },
       },
@@ -182,7 +182,7 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
           },
         },
       }),
-      output: graphql.field({
+      output: g.field({
         type: PasswordState,
         resolve (val) {
           return { isSet: val.value !== null && bcryptHashRegex.test(val.value) }

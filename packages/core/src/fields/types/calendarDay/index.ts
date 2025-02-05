@@ -6,7 +6,7 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { type CalendarDayFieldMeta } from './views'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -34,7 +34,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
   return (meta) => {
     if (typeof defaultValue === 'string') {
       try {
-        graphql.CalendarDay.graphQLType.parseValue(defaultValue)
+        g.CalendarDay.graphQLType.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
@@ -79,12 +79,12 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
         uniqueWhere:
           isIndexed === 'unique'
             ? {
-                arg: graphql.arg({ type: graphql.CalendarDay }),
+                arg: g.arg({ type: g.CalendarDay }),
                 resolve: usesNativeDateType ? dateStringToDateObjectInUTC : undefined,
               }
             : undefined,
         where: {
-          arg: graphql.arg({
+          arg: g.arg({
             type: mode === 'optional' ? CalendarDayNullableFilter : CalendarDayFilter,
           }),
           resolve: usesNativeDateType
@@ -92,8 +92,8 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
             : commonResolveFilter,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.CalendarDay,
+          arg: g.arg({
+            type: g.CalendarDay,
             defaultValue,
           }),
           resolve (val: string | null | undefined) {
@@ -103,11 +103,11 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
             return resolveInput(val)
           },
         },
-        update: { arg: graphql.arg({ type: graphql.CalendarDay }), resolve: resolveInput },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.CalendarDay }), resolve: resolveInput },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.CalendarDay,
+      output: g.field({
+        type: g.CalendarDay,
         resolve ({ value }) {
           if (value instanceof Date) {
             return value.toISOString().slice(0, 10)
@@ -131,19 +131,19 @@ function dateStringToDateObjectInUTC (value: string) {
   return new Date(`${value}T00:00Z`)
 }
 
-type CalendarDayFilterType = graphql.InputObjectType<{
-  equals: graphql.Arg<typeof graphql.CalendarDay>
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>
-  lt: graphql.Arg<typeof graphql.CalendarDay>
-  lte: graphql.Arg<typeof graphql.CalendarDay>
-  gt: graphql.Arg<typeof graphql.CalendarDay>
-  gte: graphql.Arg<typeof graphql.CalendarDay>
-  not: graphql.Arg<CalendarDayFilterType>
+type CalendarDayFilterType = g.InputObjectType<{
+  equals: g.Arg<typeof g.CalendarDay>
+  in: g.Arg<g.ListType<g.NonNullType<typeof g.CalendarDay>>>
+  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.CalendarDay>>>
+  lt: g.Arg<typeof g.CalendarDay>
+  lte: g.Arg<typeof g.CalendarDay>
+  gt: g.Arg<typeof g.CalendarDay>
+  gte: g.Arg<typeof g.CalendarDay>
+  not: g.Arg<CalendarDayFilterType>
 }>
 
 function transformFilterDateStringsToDateObjects (
-  filter: graphql.InferValueFromInputType<CalendarDayFilterType>
+  filter: g.InferValueFromInputType<CalendarDayFilterType>
 ): Parameters<typeof filters.resolveCommon>[0] {
   if (filter === null) {
     return filter
@@ -165,22 +165,22 @@ function transformFilterDateStringsToDateObjects (
 }
 
 const filterFields = (nestedType: CalendarDayFilterType) => ({
-  equals: graphql.arg({ type: graphql.CalendarDay }),
-  in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.CalendarDay)) }),
-  notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.CalendarDay)) }),
-  lt: graphql.arg({ type: graphql.CalendarDay }),
-  lte: graphql.arg({ type: graphql.CalendarDay }),
-  gt: graphql.arg({ type: graphql.CalendarDay }),
-  gte: graphql.arg({ type: graphql.CalendarDay }),
-  not: graphql.arg({ type: nestedType }),
+  equals: g.arg({ type: g.CalendarDay }),
+  in: g.arg({ type: g.list(g.nonNull(g.CalendarDay)) }),
+  notIn: g.arg({ type: g.list(g.nonNull(g.CalendarDay)) }),
+  lt: g.arg({ type: g.CalendarDay }),
+  lte: g.arg({ type: g.CalendarDay }),
+  gt: g.arg({ type: g.CalendarDay }),
+  gte: g.arg({ type: g.CalendarDay }),
+  not: g.arg({ type: nestedType }),
 })
 
-const CalendarDayNullableFilter: CalendarDayFilterType = graphql.inputObject({
+const CalendarDayNullableFilter: CalendarDayFilterType = g.inputObject({
   name: 'CalendarDayNullableFilter',
   fields: () => filterFields(CalendarDayNullableFilter),
 })
 
-const CalendarDayFilter: CalendarDayFilterType = graphql.inputObject({
+const CalendarDayFilter: CalendarDayFilterType = g.inputObject({
   name: 'CalendarDayFilter',
   fields: () => filterFields(CalendarDayFilter),
 })

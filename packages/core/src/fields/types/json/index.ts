@@ -5,7 +5,7 @@ import {
   type CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -30,14 +30,14 @@ export const json =
         __ksTelemetryFieldTypeName: '@keystone-6/json',
         input: {
           create: {
-            arg: graphql.arg({ type: graphql.JSON }),
+            arg: g.arg({ type: g.JSON }),
             resolve (val) {
               return val === undefined ? defaultValue : val
             },
           },
-          update: { arg: graphql.arg({ type: graphql.JSON }) },
+          update: { arg: g.arg({ type: g.JSON }) },
         },
-        output: graphql.field({ type: graphql.JSON }),
+        output: g.field({ type: g.JSON }),
         views: '@keystone-6/core/fields/types/json/views',
         getAdminMeta: () => ({ defaultValue }),
       },

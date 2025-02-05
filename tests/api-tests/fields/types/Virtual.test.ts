@@ -1,5 +1,5 @@
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
-import { type BaseFields, list, graphql } from '@keystone-6/core'
+import { type BaseFields, list, g } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 
@@ -24,8 +24,8 @@ describe('Virtual field type', () => {
     'no args',
     makeRunner({
       foo: virtual({
-        field: graphql.field({
-          type: graphql.Int,
+        field: g.field({
+          type: g.Int,
           resolve () {
             return 42
           },
@@ -45,11 +45,11 @@ describe('Virtual field type', () => {
     'args',
     makeRunner({
       foo: virtual({
-        field: graphql.field({
-          type: graphql.Int,
+        field: g.field({
+          type: g.Int,
           args: {
-            x: graphql.arg({ type: graphql.Int }),
-            y: graphql.arg({ type: graphql.Int }),
+            x: g.arg({ type: g.Int }),
+            y: g.arg({ type: g.Int }),
           },
           resolve: (item, { x = 5, y = 6 }) => x! * y!,
         }),
@@ -91,8 +91,8 @@ describe('Virtual field type', () => {
               author: virtual({
                 ui: { listView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'hidden' } },
                 field: lists =>
-                  graphql.field({
-                    type: graphql.union({
+                  g.field({
+                    type: g.union({
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
@@ -166,11 +166,11 @@ describe('Virtual field type', () => {
             access: allowAll,
             fields: {
               virtual: virtual({
-                field: graphql.field({
-                  type: graphql.object<any>()({
+                field: g.field({
+                  type: g.object<any>()({
                     name: 'Something',
                     fields: {
-                      something: graphql.field({ type: graphql.String }),
+                      something: g.field({ type: g.String }),
                     },
                   }),
                 }),

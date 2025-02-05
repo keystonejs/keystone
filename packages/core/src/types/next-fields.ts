@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js'
-import { graphql } from '../types/schema'
+import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
 import type { CommonFieldConfig } from './config'
 import type { DatabaseProvider } from './core'
@@ -28,30 +28,30 @@ export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   data: FieldData
 ) => NextFieldType<
   DBField,
-  graphql.Arg<graphql.InputType> | undefined,
-  graphql.Arg<graphql.InputType>,
-  graphql.Arg<graphql.NullableInputType, false>,
-  graphql.Arg<graphql.NullableInputType, false>,
-  graphql.Arg<graphql.NullableInputType, false>,
+  g.Arg<g.InputType> | undefined,
+  g.Arg<g.InputType>,
+  g.Arg<g.NullableInputType, false>,
+  g.Arg<g.NullableInputType, false>,
+  g.Arg<g.NullableInputType, false>,
   ListTypeInfo
 >
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends graphql.Arg<graphql.InputType> | undefined =
-    | graphql.Arg<graphql.InputType>
+  CreateArg extends g.Arg<g.InputType> | undefined =
+    | g.Arg<g.InputType>
     | undefined,
-  UpdateArg extends graphql.Arg<graphql.InputType> = graphql.Arg<graphql.InputType>,
-  UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  UpdateArg extends g.Arg<g.InputType> = g.Arg<g.InputType>,
+  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
-  OrderByArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
-  FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
   ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
@@ -143,14 +143,14 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   values: readonly Value[]
 }
 
-export const orderDirectionEnum = graphql.enum({
+export const orderDirectionEnum = g.enum({
   name: 'OrderDirection',
-  values: graphql.enumValues(['asc', 'desc']),
+  values: g.enumValues(['asc', 'desc']),
 })
 
-export const QueryMode = graphql.enum({
+export const QueryMode = g.enum({
   name: 'QueryMode',
-  values: graphql.enumValues(['default', 'insensitive']),
+  values: g.enumValues(['default', 'insensitive']),
 })
 
 export type NoDBField = { kind: 'none' }
@@ -237,11 +237,11 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
   : never
 
-export type OrderByFieldInputArg<Val, TArg extends graphql.Arg<graphql.NullableInputType>> = {
+export type OrderByFieldInputArg<Val, TArg extends g.Arg<g.NullableInputType>> = {
   arg: TArg
 } & ResolveFunc<
   (
-    value: Exclude<graphql.InferValueFromArg<TArg>, null | undefined>,
+    value: Exclude<g.InferValueFromArg<TArg>, null | undefined>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >
@@ -265,12 +265,12 @@ type DBFieldFilters<TDBField extends DBField> =
 
 export type WhereFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any>
+  TArg extends g.Arg<g.InputType, any>
 > = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
-    Exclude<graphql.InferValueFromArg<TArg>, undefined>,
+    Exclude<g.InferValueFromArg<TArg>, undefined>,
     DBFieldFilters<TDBField>,
     any
     // i think this is broken because variance?
@@ -287,12 +287,12 @@ export type WhereFieldInputArg<
 
 export type UpdateFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any>
+  TArg extends g.Arg<g.InputType, any>
 > = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
-    graphql.InferValueFromArg<TArg>,
+    g.InferValueFromArg<TArg>,
     DBFieldToInputValue<TDBField>,
     any
     // i think this is broken because variance?
@@ -318,16 +318,16 @@ type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResol
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
-  TArg extends graphql.Arg<graphql.InputType, any> | undefined
+  TArg extends g.Arg<g.InputType, any> | undefined
 > = {
   arg: TArg
-} & (TArg extends graphql.Arg<graphql.InputType, any>
-  ? graphql.InferValueFromArg<TArg> extends DBFieldToInputValue<TDBField>
+} & (TArg extends g.Arg<g.InputType, any>
+  ? g.InferValueFromArg<TArg> extends DBFieldToInputValue<TDBField>
     ? {
-        resolve?: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>
+        resolve?: CreateFieldInputResolver<g.InferValueFromArg<TArg>, TDBField>
       }
     : {
-        resolve: CreateFieldInputResolver<graphql.InferValueFromArg<TArg>, TDBField>
+        resolve: CreateFieldInputResolver<g.InferValueFromArg<TArg>, TDBField>
       }
   : {
       resolve: CreateFieldInputResolver<undefined, TDBField>
@@ -340,19 +340,19 @@ type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
     ? { resolve?: Func }
     : { resolve: Func }
 
-export type UniqueWhereFieldInputArg<Val, TArg extends graphql.Arg<graphql.InputType>> = {
+export type UniqueWhereFieldInputArg<Val, TArg extends g.Arg<g.InputType>> = {
   arg: TArg
 } & ResolveFunc<
   (
-    value: Exclude<graphql.InferValueFromArg<TArg>, undefined | null>,
+    value: Exclude<g.InferValueFromArg<TArg>, undefined | null>,
     context: KeystoneContext
   ) => MaybePromise<Val>
 >
 
-type FieldTypeOutputField<TDBField extends DBField> = graphql.Field<
+type FieldTypeOutputField<TDBField extends DBField> = g.Field<
   { value: DBFieldToOutputValue<TDBField>, item: BaseItem },
   any,
-  graphql.OutputType,
+  g.OutputType,
   'value'
 >
 
@@ -366,20 +366,20 @@ type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends Scalaris
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends graphql.Arg<graphql.InputType> | undefined =
-    | graphql.Arg<graphql.InputType>
+  CreateArg extends g.Arg<g.InputType> | undefined =
+    | g.Arg<g.InputType>
     | undefined,
-  UpdateArg extends graphql.Arg<graphql.InputType> = graphql.Arg<graphql.InputType>,
-  UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  UpdateArg extends g.Arg<g.InputType> = g.Arg<g.InputType>,
+  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
-  OrderByArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
-  FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
-    graphql.NullableInputType,
+  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<
+    g.NullableInputType,
     false
   >,
   ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
@@ -395,78 +395,78 @@ export type FieldTypeWithoutDBField<
   views: string
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>
   getAdminMeta?: () => JSONValue
-  unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
+  unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<any>[]
   __ksTelemetryFieldTypeName?: string
 } & CommonFieldConfig<ListTypeInfo>
 
-type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>
+type AnyInputObj = g.InputObjectType<Record<string, g.Arg<g.InputType>>>
 
 export type GraphQLTypesForList = {
-  create: graphql.NullableInputType
-  update: graphql.NullableInputType
-  uniqueWhere: graphql.InputObjectType<{
-    id: graphql.Arg<typeof graphql.ID>
-    [key: string]: graphql.Arg<graphql.NullableInputType>
+  create: g.NullableInputType
+  update: g.NullableInputType
+  uniqueWhere: g.InputObjectType<{
+    id: g.Arg<typeof g.ID>
+    [key: string]: g.Arg<g.NullableInputType>
   }>
   where: AnyInputObj
   orderBy: AnyInputObj
-  output: graphql.ObjectType<BaseItem>
+  output: g.ObjectType<BaseItem>
   findManyArgs: FindManyArgs
   relateTo: {
     one: {
-      create: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
+      create: g.InputObjectType<{
+        create?: g.Arg<GraphQLTypesForList['create']>
+        connect: g.Arg<GraphQLTypesForList['uniqueWhere']>
       }>
-      update: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
-        disconnect: graphql.Arg<typeof graphql.Boolean>
+      update: g.InputObjectType<{
+        create?: g.Arg<GraphQLTypesForList['create']>
+        connect: g.Arg<GraphQLTypesForList['uniqueWhere']>
+        disconnect: g.Arg<typeof g.Boolean>
       }>
     }
     many: {
-      where: graphql.InputObjectType<{
-        every: graphql.Arg<AnyInputObj>
-        some: graphql.Arg<AnyInputObj>
-        none: graphql.Arg<AnyInputObj>
+      where: g.InputObjectType<{
+        every: g.Arg<AnyInputObj>
+        some: g.Arg<AnyInputObj>
+        none: g.Arg<AnyInputObj>
       }>
-      create: graphql.InputObjectType<{
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>
-        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+      create: g.InputObjectType<{
+        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['create']>>>
+        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
       }>
-      update: graphql.InputObjectType<{
-        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>
-        disconnect: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
-        set: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+      update: g.InputObjectType<{
+        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['create']>>>
+        disconnect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+        set: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
       }>
     }
   }
 }
 
 export type FindManyArgs = {
-  where: graphql.Arg<graphql.NonNullType<GraphQLTypesForList['where']>, true>
-  orderBy: graphql.Arg<
-    graphql.NonNullType<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['orderBy']>>>,
+  where: g.Arg<g.NonNullType<GraphQLTypesForList['where']>, true>
+  orderBy: g.Arg<
+    g.NonNullType<g.ListType<g.NonNullType<GraphQLTypesForList['orderBy']>>>,
     true
   >
-  take: graphql.Arg<typeof graphql.Int>
-  skip: graphql.Arg<graphql.NonNullType<typeof graphql.Int>, true>
-  cursor: graphql.Arg<GraphQLTypesForList['uniqueWhere']>
+  take: g.Arg<typeof g.Int>
+  skip: g.Arg<g.NonNullType<typeof g.Int>, true>
+  cursor: g.Arg<GraphQLTypesForList['uniqueWhere']>
 }
 
-export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>
+export type FindManyArgsValue = g.InferValueFromArgs<FindManyArgs>
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
 export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo> (
   dbField: TDBField
 ) {
   return function fieldTypeWrapper<
-    CreateArg extends graphql.Arg<graphql.InputType> | undefined,
-    UpdateArg extends graphql.Arg<graphql.InputType>,
-    UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
-    OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
-    FilterArg extends graphql.Arg<graphql.NullableInputType, false>
+    CreateArg extends g.Arg<g.InputType> | undefined,
+    UpdateArg extends g.Arg<g.InputType>,
+    UniqueWhereArg extends g.Arg<g.NullableInputType, false>,
+    OrderByArg extends g.Arg<g.NullableInputType, false>,
+    FilterArg extends g.Arg<g.NullableInputType, false>
   > (
     graphQLInfo: FieldTypeWithoutDBField<
       TDBField,

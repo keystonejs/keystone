@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -92,14 +92,14 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Float }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Float[mode] }),
+          arg: g.arg({ type: filters[meta.provider].Float[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.Float,
+          arg: g.arg({
+            type: g.Float,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
           resolve (value) {
@@ -107,10 +107,10 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
             return value
           },
         },
-        update: { arg: graphql.arg({ type: graphql.Float }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.Float }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Float, }),
+      output: g.field({ type: g.Float, }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
       getAdminMeta () {

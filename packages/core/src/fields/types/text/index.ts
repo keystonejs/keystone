@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { filters } from '../../filters'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -144,16 +144,16 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
         where: {
-          arg: graphql.arg({
+          arg: g.arg({
             type: filters[meta.provider].String[mode],
           }),
           resolve: mode === 'required' ? undefined : filters.resolveString,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.String,
+          arg: g.arg({
+            type: g.String,
             defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
           resolve (val) {
@@ -161,11 +161,11 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
             return defaultValue ?? null
           },
         },
-        update: { arg: graphql.arg({ type: graphql.String }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.String }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({
-        type: graphql.String,
+      output: g.field({
+        type: g.String,
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/text',
       views: '@keystone-6/core/fields/types/text/views',

@@ -7,7 +7,7 @@ import {
   type FieldData,
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
 
@@ -63,9 +63,9 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
       throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
 
-    const output = <T extends graphql.NullableOutputType>(type: T) => nonNullList(type)
-    const create = <T extends graphql.NullableInputType>(type: T) => {
-      return graphql.arg({ type: nonNullList(type) })
+    const output = <T extends g.NullableOutputType>(type: T) => nonNullList(type)
+    const create = <T extends g.NullableInputType>(type: T) => {
+      return g.arg({ type: nonNullList(type) })
     }
 
     const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] | null => {
@@ -124,11 +124,11 @@ export function multiselect <ListTypeInfo extends BaseListTypeInfo> (
         input: {
           create: { arg: create(transformedConfig.graphqlType), resolve: resolveCreate },
           update: {
-            arg: graphql.arg({ type: nonNullList(transformedConfig.graphqlType) }),
+            arg: g.arg({ type: nonNullList(transformedConfig.graphqlType) }),
             resolve: resolveUpdate,
           },
         },
-        output: graphql.field({
+        output: g.field({
           type: output(transformedConfig.graphqlType),
           resolve ({ value }) {
             return value as any
@@ -162,7 +162,7 @@ function configToOptionsAndGraphQLType (
     }
     return {
       type: 'integer' as const,
-      graphqlType: graphql.Int,
+      graphqlType: g.Int,
       options: config.options,
     }
   }
@@ -179,9 +179,9 @@ function configToOptionsAndGraphQLType (
 
   if (config.type === 'enum') {
     const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`
-    const graphqlType = graphql.enum({
+    const graphqlType = g.enum({
       name: enumName,
-      values: graphql.enumValues(options.map(x => x.value)),
+      values: g.enumValues(options.map(x => x.value)),
     })
     return {
       type: 'enum' as const,
@@ -191,9 +191,9 @@ function configToOptionsAndGraphQLType (
   }
   return {
     type: 'string' as const,
-    graphqlType: graphql.String,
+    graphqlType: g.String,
     options,
   }
 }
 
-const nonNullList = <T extends graphql.NullableType>(type: T) => graphql.list(graphql.nonNull(type))
+const nonNullList = <T extends g.NullableType>(type: T) => g.list(g.nonNull(type))

@@ -4,7 +4,7 @@ import {
 } from '../../../types'
 import { Empty, } from '../../../types/schema/graphql-ts-schema'
 import { type UniquePrismaFilter } from '../../../types/prisma'
-import { graphql } from '../../../types/schema'
+import { g } from '../../../types/schema'
 import { type ResolvedDBField } from '../resolve-relationships'
 import { type InitialisedList } from '../initialise-lists'
 import {
@@ -607,29 +607,29 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T
 }
 
-function nonNull <T> (t: graphql.NullableInputType) {
+function nonNull <T> (t: g.NullableInputType) {
   if (t === Empty) return t
-  return graphql.nonNull(t)
+  return g.nonNull(t)
 }
 
 export function getMutationsForList (list: InitialisedList) {
   const defaultUniqueWhereInput = list.isSingleton ? { id: '1' } : undefined
 
-  const createOne_ = graphql.field({
+  const createOne_ = g.field({
     type: list.graphql.types.output,
     args: {
-      data: graphql.arg({ type: nonNull(list.graphql.types.create) }),
+      data: g.arg({ type: nonNull(list.graphql.types.create) }),
     },
     resolve (_rootVal, { data }, context) {
       return createOne(data, list, context)
     },
   })
 
-  const createMany_ = graphql.field({
-    type: graphql.list(list.graphql.types.output),
+  const createMany_ = g.field({
+    type: g.list(list.graphql.types.output),
     args: {
-      data: graphql.arg({
-        type: graphql.nonNull(graphql.list(nonNull(list.graphql.types.create))),
+      data: g.arg({
+        type: g.nonNull(g.list(nonNull(list.graphql.types.create))),
       }),
     },
     async resolve (_rootVal, { data }, context) {
@@ -637,35 +637,35 @@ export function getMutationsForList (list: InitialisedList) {
     },
   })
 
-  const updateOne_ = graphql.field({
+  const updateOne_ = g.field({
     type: list.graphql.types.output,
     args: {
-      where: graphql.arg({
-        type: graphql.nonNull(list.graphql.types.uniqueWhere),
+      where: g.arg({
+        type: g.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
-      data: graphql.arg({ type: nonNull(list.graphql.types.update) }),
+      data: g.arg({ type: nonNull(list.graphql.types.update) }),
     },
     resolve (_rootVal, { where, data }, context) {
       return updateOne({ where, data }, list, context)
     },
   })
 
-  const updateManyInput = graphql.inputObject({
+  const updateManyInput = g.inputObject({
     name: list.graphql.names.updateManyInputName,
     fields: {
-      where: graphql.arg({
-        type: graphql.nonNull(list.graphql.types.uniqueWhere),
+      where: g.arg({
+        type: g.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
-      data: graphql.arg({ type: nonNull(list.graphql.types.update) }),
+      data: g.arg({ type: nonNull(list.graphql.types.update) }),
     },
   })
-  const updateMany_ = graphql.field({
-    type: graphql.list(list.graphql.types.output),
+  const updateMany_ = g.field({
+    type: g.list(list.graphql.types.output),
     args: {
-      data: graphql.arg({
-        type: graphql.nonNull(graphql.list(nonNull(updateManyInput)))
+      data: g.arg({
+        type: g.nonNull(g.list(nonNull(updateManyInput)))
       }),
     },
     async resolve (_rootVal, { data }, context) {
@@ -675,11 +675,11 @@ export function getMutationsForList (list: InitialisedList) {
     },
   })
 
-  const deleteOne_ = graphql.field({
+  const deleteOne_ = g.field({
     type: list.graphql.types.output,
     args: {
-      where: graphql.arg({
-        type: graphql.nonNull(list.graphql.types.uniqueWhere),
+      where: g.arg({
+        type: g.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
     },
@@ -688,11 +688,11 @@ export function getMutationsForList (list: InitialisedList) {
     },
   })
 
-  const deleteMany_ = graphql.field({
-    type: graphql.list(list.graphql.types.output),
+  const deleteMany_ = g.field({
+    type: g.list(list.graphql.types.output),
     args: {
-      where: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.uniqueWhere))),
+      where: g.arg({
+        type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
     async resolve (rootVal, { where }, context) {

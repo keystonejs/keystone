@@ -1,4 +1,4 @@
-import { graphql } from './schema'
+import { g } from './schema'
 import {
   type BaseItem,
   type CreateFieldInputArg,
@@ -13,14 +13,14 @@ import {
 import { type InputType, type Arg } from '@graphql-ts/schema'
 
 function mapOutputFieldToSQLite (
-  field: graphql.Field<{ value: JSONValue, item: BaseItem }, Record<string, Arg<InputType>>, any, 'value'>
+  field: g.Field<{ value: JSONValue, item: BaseItem }, Record<string, Arg<InputType>>, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value)
-  return graphql.fields<{
+  return g.fields<{
     value: string | null
     item: BaseItem
   }>()({
-    value: graphql.field({
+    value: g.field({
       type: field.type,
       args: field.args,
       deprecationReason: field.deprecationReason,
@@ -40,7 +40,7 @@ function mapOutputFieldToSQLite (
   }).value
 }
 
-function mapUpdateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, any>> (
+function mapUpdateInputArgToSQLite<Arg extends g.Arg<g.InputType, any>> (
   arg: UpdateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): UpdateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -49,7 +49,7 @@ function mapUpdateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
   return {
     arg: arg.arg,
     async resolve (
-      input: graphql.InferValueFromArg<Arg>,
+      input: g.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -65,7 +65,7 @@ function mapUpdateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
   } as any
 }
 
-function mapCreateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, any>> (
+function mapCreateInputArgToSQLite<Arg extends g.Arg<g.InputType, any>> (
   arg: CreateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): CreateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
@@ -74,7 +74,7 @@ function mapCreateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
   return {
     arg: arg.arg,
     async resolve (
-      input: graphql.InferValueFromArg<Arg>,
+      input: g.InferValueFromArg<Arg>,
       context: KeystoneContext,
       relationshipInputResolver: any
     ) {
@@ -91,16 +91,16 @@ function mapCreateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
 }
 
 export function jsonFieldTypePolyfilledForSQLite<
-  CreateArg extends graphql.Arg<graphql.InputType, any>,
-  UpdateArg extends graphql.Arg<graphql.InputType, any>
+  CreateArg extends g.Arg<g.InputType, any>,
+  UpdateArg extends g.Arg<g.InputType, any>
 > (
   provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<
     ScalarDBField<'Json', 'optional'>,
     CreateArg,
     UpdateArg,
-    graphql.Arg<graphql.NullableInputType, false>,
-    graphql.Arg<graphql.NullableInputType, false>
+    g.Arg<g.NullableInputType, false>,
+    g.Arg<g.NullableInputType, false>
   > & {
     input?: {
       uniqueWhere?: undefined

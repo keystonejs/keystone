@@ -1606,11 +1606,11 @@ importers:
         specifier: ^7.24.7
         version: 7.26.7
       '@graphql-ts/extend':
-        specifier: ^1.0.0
-        version: 1.0.0(@graphql-ts/schema@0.6.0(graphql@16.10.0))(graphql@16.10.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@graphql-ts/schema@0.6.1(graphql@16.10.0))(graphql@16.10.0)
       '@graphql-ts/schema':
-        specifier: ^0.6.0
-        version: 0.6.0(graphql@16.10.0)
+        specifier: ^0.6.1
+        version: 0.6.1(graphql@16.10.0)
       '@graphql-typed-document-node/core':
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.10.0)
@@ -4045,14 +4045,14 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-ts/extend@1.0.0':
-    resolution: {integrity: sha512-KdBgOEcTp08h86IVNZR6+DRrmqX8uRplB6qpcB3Jq9cC6tzjtGifIrkQOSx/GivuiWeE0kt8r+uxA+U86nERjw==}
+  '@graphql-ts/extend@1.0.1':
+    resolution: {integrity: sha512-cZ42snN+1UDYeD49YqnWrNGnRUKD8uoizM4yf2aIHudtZUdaR07eFDdwrr0wWzob53hPf3d3a73EnRTudwf5Dg==}
     peerDependencies:
       '@graphql-ts/schema': ^0.6.0
       graphql: 15 || 16
 
-  '@graphql-ts/schema@0.6.0':
-    resolution: {integrity: sha512-MO99ZdQ6GeLcW5up+hbGx8cLZhVrzl9/1kDH/FRyipq5isB0je6WKMdyzx2hnKrCPqVGIWsXykYzHxuIHJGb5A==}
+  '@graphql-ts/schema@0.6.1':
+    resolution: {integrity: sha512-ybYOJ4akmRKttA57nyi5/m6MRfcyXs5lirMVp0WOqXvSa3nGiIRP8106cGEvA8jMa33nE0hk+OqNJUIJmku1EA==}
     peerDependencies:
       graphql: 15 || 16
 
@@ -14381,13 +14381,13 @@ snapshots:
       graphql: 16.10.0
       tslib: 2.8.1
 
-  '@graphql-ts/extend@1.0.0(@graphql-ts/schema@0.6.0(graphql@16.10.0))(graphql@16.10.0)':
+  '@graphql-ts/extend@1.0.1(@graphql-ts/schema@0.6.1(graphql@16.10.0))(graphql@16.10.0)':
     dependencies:
       '@babel/runtime': 7.26.7
-      '@graphql-ts/schema': 0.6.0(graphql@16.10.0)
+      '@graphql-ts/schema': 0.6.1(graphql@16.10.0)
       graphql: 16.10.0
 
-  '@graphql-ts/schema@0.6.0(graphql@16.10.0)':
+  '@graphql-ts/schema@0.6.1(graphql@16.10.0)':
     dependencies:
       '@babel/runtime': 7.26.7
       graphql: 16.10.0

@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core'
+import { list, g } from '@keystone-6/core'
 import { text, checkbox, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 
@@ -14,8 +14,8 @@ export const lists = {
 
       // primitive GraphQL type
       isActive: virtual({
-        field: graphql.field({
-          type: graphql.Boolean,
+        field: g.field({
+          type: g.Boolean,
           resolve (item) {
             return item.title.length > 3 && item.content.length > 10 && item.listed === true
           },
@@ -24,17 +24,17 @@ export const lists = {
 
       // object GraphQL type
       counts: virtual({
-        field: graphql.field({
-          type: graphql.object<{
+        field: g.field({
+          type: g.object<{
             words: number
             sentences: number
             paragraphs: number
           }>()({
             name: 'PostCounts',
             fields: {
-              words: graphql.field({ type: graphql.Int }),
-              sentences: graphql.field({ type: graphql.Int }),
-              paragraphs: graphql.field({ type: graphql.Int }),
+              words: g.field({ type: g.Int }),
+              sentences: g.field({ type: g.Int }),
+              paragraphs: g.field({ type: g.Int }),
             },
           }),
           resolve (item) {
@@ -54,10 +54,10 @@ export const lists = {
 
       // accepts GraphQL arguments
       excerpt: virtual({
-        field: graphql.field({
-          type: graphql.String,
+        field: g.field({
+          type: g.String,
           args: {
-            length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 50 }),
+            length: g.arg({ type: g.nonNull(g.Int), defaultValue: 50 }),
           },
           resolve (item, { length }) {
             const { content = '' } = item
@@ -70,16 +70,16 @@ export const lists = {
 
       // using a context
       related: virtual({
-        field: graphql.field({
-          type: graphql.list(
-            graphql.object<{
+        field: g.field({
+          type: g.list(
+            g.object<{
               id: string
               title: string
             }>()({
               name: 'RelatedPosts',
               fields: {
-                id: graphql.field({ type: graphql.String }),
-                title: graphql.field({ type: graphql.String }),
+                id: g.field({ type: g.String }),
+                title: g.field({ type: g.String }),
               },
             })
           ),

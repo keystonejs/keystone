@@ -1,6 +1,6 @@
 import { type GraphQLNamedType, GraphQLSchema } from 'graphql'
 
-import { graphql } from '../types/schema'
+import { g } from '../types/schema'
 import type { KeystoneConfig } from '../types'
 import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaRootVal } from './create-admin-meta'
@@ -12,12 +12,12 @@ import { getMutationsForList } from './core/mutations'
 function getGraphQLSchema (
   lists: Record<string, InitialisedList>,
   extraFields: {
-    query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
-    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
+    query: Record<string, g.Field<unknown, any, g.OutputType, string>>
+    mutation: Record<string, g.Field<unknown, any, g.OutputType, string>>
   },
   sudo: boolean
 ) {
-  const query = graphql.object()({
+  const query = g.object()({
     name: 'Query',
     fields: Object.assign(
       {},
@@ -26,8 +26,8 @@ function getGraphQLSchema (
     ),
   })
 
-  const updateManyByList: Record<string, graphql.InputObjectType<any>> = {}
-  const mutation = graphql.object()({
+  const updateManyByList: Record<string, g.InputObjectType<any>> = {}
+  const mutation = g.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
@@ -53,7 +53,7 @@ function getGraphQLSchema (
 
 function collectTypes (
   lists: Record<string, InitialisedList>,
-  updateManyByList: Record<string, graphql.InputObjectType<any>>
+  updateManyByList: Record<string, g.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = []
   for (const list of Object.values(lists)) {
@@ -91,7 +91,7 @@ function collectTypes (
     }
   }
   // this is not necessary, just about ordering
-  collectedTypes.push(graphql.JSON.graphQLType)
+  collectedTypes.push(g.JSON.graphQLType)
   return collectedTypes
 }
 
@@ -107,8 +107,8 @@ export function createGraphQLSchema (
       mutation: {},
       query: adminMeta
         ? {
-            keystone: graphql.field({
-              type: graphql.nonNull(KeystoneMeta),
+            keystone: g.field({
+              type: g.nonNull(KeystoneMeta),
               resolve: () => ({ adminMeta }),
             }),
           }

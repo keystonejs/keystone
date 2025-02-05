@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import {
   resolveDbNullable,
@@ -124,14 +124,14 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.BigInt }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].BigInt[mode] }),
+          arg: g.arg({ type: filters[meta.provider].BigInt[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.BigInt,
+          arg: g.arg({
+            type: g.BigInt,
             defaultValue: typeof defaultValue === 'bigint' ? defaultValue : undefined,
           }),
           resolve (value) {
@@ -142,10 +142,10 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
             return value
           },
         },
-        update: { arg: graphql.arg({ type: graphql.BigInt }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.BigInt }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.BigInt, }),
+      output: g.field({ type: g.BigInt, }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta () {

@@ -1,4 +1,4 @@
-import { graphql, list } from '@keystone-6/core'
+import { g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
@@ -11,11 +11,11 @@ export const lists = {
   }),
 }
 
-export const extendGraphqlSchema = graphql.extend(() => {
+export const extendGraphqlSchema = g.extend(() => {
   return {
     query: {
-      someNumber: graphql.field({
-        type: graphql.Int,
+      someNumber: g.field({
+        type: g.Int,
         resolve: () => 1,
       }),
     },

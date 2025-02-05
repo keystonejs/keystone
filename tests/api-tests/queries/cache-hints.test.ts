@@ -1,6 +1,6 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import { text, relationship, integer } from '@keystone-6/core/fields'
-import { list, graphql } from '@keystone-6/core'
+import { list, g } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { type ContextFromRunner } from '../utils'
@@ -45,19 +45,19 @@ const runner = setupTestRunner({
       }),
     },
     graphql: {
-      extendGraphqlSchema: graphql.extend(() => {
-        const MyType = graphql.object<{ original: number }>()({
+      extendGraphqlSchema: g.extend(() => {
+        const MyType = g.object<{ original: number }>()({
           name: 'MyType',
           fields: {
-            original: graphql.field({ type: graphql.Int }),
-            double: graphql.field({ type: graphql.Int, resolve: ({ original }) => original * 2 }),
+            original: g.field({ type: g.Int }),
+            double: g.field({ type: g.Int, resolve: ({ original }) => original * 2 }),
           },
         })
         return {
           query: {
-            double: graphql.field({
+            double: g.field({
               type: MyType,
-              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+              args: { x: g.arg({ type: g.nonNull(g.Int) }) },
               resolve: (_, { x }, context, info) => {
                 maybeCacheControlFromInfo(info)?.setCacheHint({ maxAge: 100, scope: 'PUBLIC' })
                 return { original: x, double: x * 2 }
@@ -65,9 +65,9 @@ const runner = setupTestRunner({
             }),
           },
           mutation: {
-            triple: graphql.field({
-              type: graphql.Int,
-              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            triple: g.field({
+              type: g.Int,
+              args: { x: g.arg({ type: g.nonNull(g.Int) }) },
               resolve: (_, { x }) => x * 3,
             }),
           },

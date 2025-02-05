@@ -6,7 +6,7 @@ import {
   type FileMetadata,
   fieldType,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import {
   type InternalFieldHooks,
   mergeFieldHooks,
@@ -20,22 +20,22 @@ export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-const FileFieldInput = graphql.inputObject({
+const FileFieldInput = g.inputObject({
   name: 'FileFieldInput',
   fields: {
-    upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
+    upload: g.arg({ type: g.nonNull(g.Upload) }),
   },
 })
 
-const inputArg = graphql.arg({ type: FileFieldInput })
+const inputArg = g.arg({ type: FileFieldInput })
 
-const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
+const FileFieldOutput = g.object<FileMetadata & { storage: string }>()({
   name: 'FileFieldOutput',
   fields: {
-    filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    url: graphql.field({
-      type: graphql.nonNull(graphql.String),
+    filename: g.field({ type: g.nonNull(g.String) }),
+    filesize: g.field({ type: g.nonNull(g.Int) }),
+    url: g.field({
+      type: g.nonNull(g.String),
       resolve (data, args, context) {
         return context.files(data.storage).getUrl(data.filename)
       },
@@ -45,7 +45,7 @@ const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
 
 async function inputResolver (
   storage: string,
-  data: graphql.InferValueFromArg<typeof inputArg>,
+  data: g.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) return { filename: data, filesize: data }
@@ -107,7 +107,7 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
       },
-      output: graphql.field({
+      output: g.field({
         type: FileFieldOutput,
         resolve ({ value: { filesize, filename } }) {
           if (filename === null) return null

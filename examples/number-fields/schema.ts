@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core'
+import { list, g } from '@keystone-6/core'
 import {
   bigInt,
   float,
@@ -19,8 +19,8 @@ export const lists = {
       integer: integer(),
       integerDefaulted: integer({ defaultValue: 789 }),
       maximum: virtual({
-        field: graphql.field({
-          type: graphql.Int,
+        field: g.field({
+          type: g.Int,
           resolve (x) {
             return Math.max(
               x.float ?? 0,

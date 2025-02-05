@@ -18,7 +18,7 @@ import {
   type GraphQLNames,
   __getNames,
 } from '../../types/utils'
-import { graphql } from '../..'
+import { g } from '../..'
 import type {
   FieldHooks,
   ResolvedListHooks,
@@ -390,7 +390,7 @@ function getListsWithInitialisedFields (
       graphql: { names },
     } = __getNames(listKey, listConfig)
 
-    const output = graphql.object<BaseItem>()({
+    const output = g.object<BaseItem>()({
       name: names.outputTypeName,
       fields: () => {
         const { fields } = listsRef[listKey]
@@ -429,7 +429,7 @@ function getListsWithInitialisedFields (
       },
     })
 
-    const uniqueWhere = graphql.inputObject({
+    const uniqueWhere = g.inputObject({
       name: names.whereUniqueInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
@@ -448,20 +448,20 @@ function getListsWithInitialisedFields (
           ),
           // this is exactly what the id field will add
           // but this does it more explicitly so that typescript understands
-          id: graphql.arg({ type: graphql.ID }),
+          id: g.arg({ type: g.ID }),
         }
       },
     })
 
-    const where: GraphQLTypesForList['where'] = graphql.inputObject({
+    const where: GraphQLTypesForList['where'] = g.inputObject({
       name: names.whereInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
         return Object.assign(
           {
-            AND: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
-            OR: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
-            NOT: graphql.arg({ type: graphql.list(graphql.nonNull(where)) }),
+            AND: g.arg({ type: g.list(g.nonNull(where)) }),
+            OR: g.arg({ type: g.list(g.nonNull(where)) }),
+            NOT: g.arg({ type: g.list(g.nonNull(where)) }),
           },
           ...Object.entries(fields).map(
             ([fieldKey, field]) =>
@@ -473,11 +473,11 @@ function getListsWithInitialisedFields (
       },
     })
 
-    const create = graphql.inputObject({
+    const create = g.inputObject({
       name: names.createInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
-        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
+        const ret: Record<keyof typeof fields, g.Arg<g.InputType>> = {}
 
         for (const key in fields) {
           const arg = graphqlArgForInputField(fields[key], 'create', listsRef)
@@ -489,11 +489,11 @@ function getListsWithInitialisedFields (
       },
     })
 
-    const update = graphql.inputObject({
+    const update = g.inputObject({
       name: names.updateInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
-        const ret: Record<keyof typeof fields, graphql.Arg<graphql.InputType>> = {}
+        const ret: Record<keyof typeof fields, g.Arg<g.InputType>> = {}
 
         for (const key in fields) {
           const arg = graphqlArgForInputField(fields[key], 'update', listsRef)
@@ -505,7 +505,7 @@ function getListsWithInitialisedFields (
       },
     })
 
-    const orderBy = graphql.inputObject({
+    const orderBy = g.inputObject({
       name: names.listOrderName,
       fields: () => {
         const { fields } = listsRef[listKey]
@@ -524,92 +524,92 @@ function getListsWithInitialisedFields (
       },
     })
 
-    let take: any = graphql.arg({ type: graphql.Int })
+    let take: any = g.arg({ type: g.Int })
     if (listConfig.graphql?.maxTake !== undefined) {
-      take = graphql.arg({
-        type: graphql.nonNull(graphql.Int),
+      take = g.arg({
+        type: g.nonNull(g.Int),
         // WARNING: used by queries/resolvers.ts to enforce the limit
         defaultValue: listConfig.graphql.maxTake,
       })
     }
 
     const findManyArgs: FindManyArgs = {
-      where: graphql.arg({
-        type: graphql.nonNull(where),
+      where: g.arg({
+        type: g.nonNull(where),
         defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as object) : {},
       }),
-      orderBy: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
+      orderBy: g.arg({
+        type: g.nonNull(g.list(g.nonNull(orderBy))),
         defaultValue: [],
       }),
       take,
-      skip: graphql.arg({
-        type: graphql.nonNull(graphql.Int),
+      skip: g.arg({
+        type: g.nonNull(g.Int),
         defaultValue: 0
       }),
-      cursor: graphql.arg({ type: uniqueWhere }),
+      cursor: g.arg({ type: uniqueWhere }),
     }
 
-    const relateToOneForCreate = graphql.inputObject({
+    const relateToOneForCreate = g.inputObject({
       name: names.relateToOneForCreateInputName,
       fields: () => {
         const listRef = listsRef[listKey]
         return {
           ...(listRef.graphql.isEnabled.create && {
-            create: graphql.arg({ type: listRef.graphql.types.create })
+            create: g.arg({ type: listRef.graphql.types.create })
           }),
-          connect: graphql.arg({ type: listRef.graphql.types.uniqueWhere }),
+          connect: g.arg({ type: listRef.graphql.types.uniqueWhere }),
         }
       },
     })
 
-    const relateToOneForUpdate = graphql.inputObject({
+    const relateToOneForUpdate = g.inputObject({
       name: names.relateToOneForUpdateInputName,
       fields: () => {
         const listRef = listsRef[listKey]
         return {
           ...(listRef.graphql.isEnabled.create && {
-            create: graphql.arg({ type: listRef.graphql.types.create })
+            create: g.arg({ type: listRef.graphql.types.create })
           }),
-          connect: graphql.arg({ type: listRef.graphql.types.uniqueWhere }),
-          disconnect: graphql.arg({ type: graphql.Boolean }),
+          connect: g.arg({ type: listRef.graphql.types.uniqueWhere }),
+          disconnect: g.arg({ type: g.Boolean }),
         }
       },
     })
 
-    const relateToManyForCreate = graphql.inputObject({
+    const relateToManyForCreate = g.inputObject({
       name: names.relateToManyForCreateInputName,
       fields: () => {
         const listRef = listsRef[listKey]
         return {
           ...(listRef.graphql.isEnabled.create && {
-            create: graphql.arg({
-              type: graphql.list(graphql.nonNull(listRef.graphql.types.create))
+            create: g.arg({
+              type: g.list(g.nonNull(listRef.graphql.types.create))
             }),
           }),
-          connect: graphql.arg({
-            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          connect: g.arg({
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
           }),
         }
       },
     })
 
-    const relateToManyForUpdate = graphql.inputObject({
+    const relateToManyForUpdate = g.inputObject({
       name: names.relateToManyForUpdateInputName,
       fields: () => {
         const listRef = listsRef[listKey]
         return {
           // WARNING: the order of these fields reflects the order of mutations
-          disconnect: graphql.arg({
-            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          disconnect: g.arg({
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
           }),
-          set: graphql.arg({
-            type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere))
+          set: g.arg({
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
           }),
           ...(listRef.graphql.isEnabled.create && {
-            create: graphql.arg({ type: graphql.list(graphql.nonNull(listRef.graphql.types.create)) }),
+            create: g.arg({ type: g.list(g.nonNull(listRef.graphql.types.create)) }),
           }),
-          connect: graphql.arg({ type: graphql.list(graphql.nonNull(listRef.graphql.types.uniqueWhere)) }),
+          connect: g.arg({ type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)) }),
         }
       },
     })
@@ -629,12 +629,12 @@ function getListsWithInitialisedFields (
             update: relateToOneForUpdate
           },
           many: {
-            where: graphql.inputObject({
+            where: g.inputObject({
               name: `${listKey}ManyRelationFilter`,
               fields: {
-                every: graphql.arg({ type: where }),
-                some: graphql.arg({ type: where }),
-                none: graphql.arg({ type: where }),
+                every: g.arg({ type: where }),
+                some: g.arg({ type: where }),
+                none: g.arg({ type: where }),
               },
             }),
             create: relateToManyForCreate,
@@ -843,8 +843,8 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
   }
 }
 
-function stripDefaultValue (thing: graphql.Arg<graphql.InputType, boolean>) {
-  return graphql.arg({
+function stripDefaultValue (thing: g.Arg<g.InputType, boolean>) {
+  return g.arg({
     ...thing,
     defaultValue: undefined,
   })
@@ -859,9 +859,9 @@ function graphqlArgForInputField (field: InitialisedField, operation: 'create' |
   if (!field.graphql.isNonNull[operation]) return stripDefaultValue(input.arg)
   if (input.arg.type.kind === 'non-null') return input.arg
 
-  return graphql.arg({
+  return g.arg({
     ...input.arg,
-    type: graphql.nonNull(input.arg.type),
+    type: g.nonNull(input.arg.type),
   })
 }
 
@@ -871,9 +871,9 @@ function graphqlForOutputField (field: InitialisedField) {
   if (!field.graphql.isNonNull.read) return output
   if (output.type.kind === 'non-null') return output
 
-  return graphql.field({
+  return g.field({
     ...(output as any),
-    type: graphql.nonNull(output.type),
+    type: g.nonNull(output.type),
   })
 }
 

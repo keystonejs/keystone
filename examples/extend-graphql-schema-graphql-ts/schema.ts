@@ -1,4 +1,4 @@
-import { graphql, list } from '@keystone-6/core'
+import { g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
 import { type Context, type Lists } from '.keystone/types'
@@ -31,27 +31,27 @@ export const lists = {
   }),
 } satisfies Lists
 
-export const extendGraphqlSchema = graphql.extend(base => {
-  const Statistics = graphql.object<{ authorId: string }>()({
+export const extendGraphqlSchema = g.extend(base => {
+  const Statistics = g.object<{ authorId: string }>()({
     name: 'Statistics',
     fields: {
-      draft: graphql.field({
-        type: graphql.Int,
+      draft: g.field({
+        type: g.Int,
         resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
           })
         },
       }),
-      published: graphql.field({
-        type: graphql.Int,
+      published: g.field({
+        type: g.Int,
         resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
           })
         },
       }),
-      latest: graphql.field({
+      latest: g.field({
         type: base.object('Post'),
         async resolve ({ authorId }, args, context: Context) {
           const [post] = await context.db.Post.findMany({
@@ -67,11 +67,11 @@ export const extendGraphqlSchema = graphql.extend(base => {
 
   return {
     mutation: {
-      publishPost: graphql.field({
+      publishPost: g.field({
         // base.object will return an object type from the existing schema
         // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
-        args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+        args: { id: g.arg({ type: g.nonNull(g.ID) }) },
         resolve (source, { id }, context: Context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
@@ -87,9 +87,9 @@ export const extendGraphqlSchema = graphql.extend(base => {
       // only add this mutation for a sudo Context (this is not usable from the API)
       ...(base.schema.extensions.sudo
         ? {
-            banPost: graphql.field({
+            banPost: g.field({
               type: base.object('Post'),
-              args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+              args: { id: g.arg({ type: g.nonNull(g.ID) }) },
               resolve (source, { id }, context: Context) {
                 return context.db.Post.updateOne({
                   where: { id },
@@ -101,11 +101,11 @@ export const extendGraphqlSchema = graphql.extend(base => {
         : {}),
     },
     query: {
-      recentPosts: graphql.field({
-        type: graphql.list(graphql.nonNull(base.object('Post'))),
+      recentPosts: g.field({
+        type: g.list(g.nonNull(base.object('Post'))),
         args: {
-          id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),
-          seconds: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 600 }),
+          id: g.arg({ type: g.nonNull(g.ID) }),
+          seconds: g.arg({ type: g.nonNull(g.Int), defaultValue: 600 }),
         },
         resolve (source, { id, seconds }, context: Context) {
           const cutoff = new Date(Date.now() - seconds * 1000)
@@ -119,9 +119,9 @@ export const extendGraphqlSchema = graphql.extend(base => {
           })
         },
       }),
-      stats: graphql.field({
+      stats: g.field({
         type: Statistics,
-        args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+        args: { id: g.arg({ type: g.nonNull(g.ID) }) },
         resolve (source, { id }) {
           return { authorId: id }
         },

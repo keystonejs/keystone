@@ -5,7 +5,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
@@ -39,7 +39,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
   return (meta) => {
     if (typeof defaultValue === 'string') {
       try {
-        graphql.DateTime.graphQLType.parseValue(defaultValue)
+        g.DateTime.graphQLType.parseValue(defaultValue)
       } catch (err) {
         throw new Error(`${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`)
       }
@@ -47,7 +47,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
 
     const parsedDefaultValue =
       typeof defaultValue === 'string'
-        ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
+        ? (g.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue
     const {
       mode,
@@ -75,14 +75,14 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       hooks: mergeFieldHooks({ validate }, config.hooks),
       input: {
-        uniqueWhere: isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.DateTime }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
+          arg: g.arg({ type: filters[meta.provider].DateTime[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
-          arg: graphql.arg({
-            type: graphql.DateTime,
+          arg: g.arg({
+            type: g.DateTime,
             // TODO: add support for defaultValue of { kind: 'now' } in the GraphQL API
             defaultValue: parsedDefaultValue instanceof Date ? parsedDefaultValue : undefined,
           }),
@@ -98,10 +98,10 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
             return val
           },
         },
-        update: { arg: graphql.arg({ type: graphql.DateTime }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        update: { arg: g.arg({ type: g.DateTime }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.DateTime }),
+      output: g.field({ type: g.DateTime }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
       getAdminMeta (): TimestampFieldMeta {

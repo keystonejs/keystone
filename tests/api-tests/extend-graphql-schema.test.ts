@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core'
+import { list, g } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
@@ -33,24 +33,24 @@ const runner = setupTestRunner({
       }),
     },
     graphql: {
-      extendGraphqlSchema: graphql.extend(() => {
+      extendGraphqlSchema: g.extend(() => {
         return {
           mutation: {
-            triple: graphql.field({
-              type: graphql.Int,
-              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            triple: g.field({
+              type: g.Int,
+              args: { x: g.arg({ type: g.nonNull(g.Int) }) },
               resolve: withAccessCheck(true, (_, { x }: { x: number }) => 3 * x),
             }),
           },
           query: {
-            double: graphql.field({
-              type: graphql.Int,
-              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            double: g.field({
+              type: g.Int,
+              args: { x: g.arg({ type: g.nonNull(g.Int) }) },
               resolve: withAccessCheck(true, (_, { x }: { x: number }) => 2 * x),
             }),
-            quads: graphql.field({
-              type: graphql.Int,
-              args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            quads: g.field({
+              type: g.Int,
+              args: { x: g.arg({ type: g.nonNull(g.Int) }) },
               resolve: withAccessCheck(falseFn, (_, { x }: { x: number }) => 4 * x),
             }),
           },

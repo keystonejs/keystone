@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import type { CommonFieldConfig, BaseListTypeInfo, FieldTypeFunc } from '@keystone-6/core/types'
 import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 import type Cloudinary from 'cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
 
@@ -25,44 +25,44 @@ type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: { map?: string }
   }
 
-const CloudinaryImageFormat = graphql.inputObject({
+const CloudinaryImageFormat = g.inputObject({
   name: 'CloudinaryImageFormat',
   description:
     'Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).\n' +
     'All options are strings as they ultimately end up in a URL.',
   fields: {
-    prettyName: graphql.arg({
+    prettyName: g.arg({
       description: ' Rewrites the filename to be this pretty string. Do not include `/` or `.`',
-      type: graphql.String,
+      type: g.String,
     }),
-    width: graphql.arg({ type: graphql.String }),
-    height: graphql.arg({ type: graphql.String }),
-    crop: graphql.arg({ type: graphql.String }),
-    aspect_ratio: graphql.arg({ type: graphql.String }),
-    gravity: graphql.arg({ type: graphql.String }),
-    zoom: graphql.arg({ type: graphql.String }),
-    x: graphql.arg({ type: graphql.String }),
-    y: graphql.arg({ type: graphql.String }),
-    format: graphql.arg({ type: graphql.String }),
-    fetch_format: graphql.arg({ type: graphql.String }),
-    quality: graphql.arg({ type: graphql.String }),
-    radius: graphql.arg({ type: graphql.String }),
-    angle: graphql.arg({ type: graphql.String }),
-    effect: graphql.arg({ type: graphql.String }),
-    opacity: graphql.arg({ type: graphql.String }),
-    border: graphql.arg({ type: graphql.String }),
-    background: graphql.arg({ type: graphql.String }),
-    overlay: graphql.arg({ type: graphql.String }),
-    underlay: graphql.arg({ type: graphql.String }),
-    default_image: graphql.arg({ type: graphql.String }),
-    delay: graphql.arg({ type: graphql.String }),
-    color: graphql.arg({ type: graphql.String }),
-    color_space: graphql.arg({ type: graphql.String }),
-    dpr: graphql.arg({ type: graphql.String }),
-    page: graphql.arg({ type: graphql.String }),
-    density: graphql.arg({ type: graphql.String }),
-    flags: graphql.arg({ type: graphql.String }),
-    transformation: graphql.arg({ type: graphql.String }),
+    width: g.arg({ type: g.String }),
+    height: g.arg({ type: g.String }),
+    crop: g.arg({ type: g.String }),
+    aspect_ratio: g.arg({ type: g.String }),
+    gravity: g.arg({ type: g.String }),
+    zoom: g.arg({ type: g.String }),
+    x: g.arg({ type: g.String }),
+    y: g.arg({ type: g.String }),
+    format: g.arg({ type: g.String }),
+    fetch_format: g.arg({ type: g.String }),
+    quality: g.arg({ type: g.String }),
+    radius: g.arg({ type: g.String }),
+    angle: g.arg({ type: g.String }),
+    effect: g.arg({ type: g.String }),
+    opacity: g.arg({ type: g.String }),
+    border: g.arg({ type: g.String }),
+    background: g.arg({ type: g.String }),
+    overlay: g.arg({ type: g.String }),
+    underlay: g.arg({ type: g.String }),
+    default_image: g.arg({ type: g.String }),
+    delay: g.arg({ type: g.String }),
+    color: g.arg({ type: g.String }),
+    color_space: g.arg({ type: g.String }),
+    dpr: g.arg({ type: g.String }),
+    page: g.arg({ type: g.String }),
+    density: g.arg({ type: g.String }),
+    flags: g.arg({ type: g.String }),
+    transformation: g.arg({ type: g.String }),
   },
 })
 
@@ -74,7 +74,7 @@ type CloudinaryImage_File = {
   encoding: string
   publicUrl: string
   publicUrlTransformed: (args: {
-    transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>
+    transformation: g.InferValueFromArg<g.Arg<typeof CloudinaryImageFormat>>
   }) => string
   filesize: number
   width: number
@@ -82,28 +82,28 @@ type CloudinaryImage_File = {
 }
 
 // WARNING: should mimic keystone-6/core native images
-const outputType = graphql.object<CloudinaryImage_File>()({
+const outputType = g.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
-    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+    id: g.field({ type: g.nonNull(g.ID) }),
     // path: types.field({ type: types.String }),
-    filename: graphql.field({ type: graphql.String }),
-    originalFilename: graphql.field({ type: graphql.String }),
-    mimetype: graphql.field({ type: graphql.String }),
-    encoding: graphql.field({ type: graphql.String }),
-    publicUrl: graphql.field({ type: graphql.String }),
-    publicUrlTransformed: graphql.field({
+    filename: g.field({ type: g.String }),
+    originalFilename: g.field({ type: g.String }),
+    mimetype: g.field({ type: g.String }),
+    encoding: g.field({ type: g.String }),
+    publicUrl: g.field({ type: g.String }),
+    publicUrlTransformed: g.field({
       args: {
-        transformation: graphql.arg({ type: CloudinaryImageFormat }),
+        transformation: g.arg({ type: CloudinaryImageFormat }),
       },
-      type: graphql.String,
+      type: g.String,
       resolve (data, args) {
         return data.publicUrlTransformed(args)
       },
     }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    filesize: g.field({ type: g.nonNull(g.Int) }),
+    width: g.field({ type: g.nonNull(g.Int) }),
+    height: g.field({ type: g.nonNull(g.Int) }),
   },
 })
 
@@ -117,9 +117,9 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage")
     }
 
-    const inputArg = graphql.arg({ type: graphql.Upload })
+    const inputArg = g.arg({ type: g.Upload })
     async function resolveInput (
-      uploadData: graphql.InferValueFromArg<typeof inputArg>
+      uploadData: g.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null> {
       if (uploadData === null) return null
       if (uploadData === undefined) return
@@ -168,7 +168,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
           create: { arg: inputArg, resolve: resolveInput },
           update: { arg: inputArg, resolve: resolveInput },
         },
-        output: graphql.field({
+        output: g.field({
           type: outputType,
           resolve ({ value }) {
             if (value === null) return null
@@ -181,8 +181,8 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
               publicUrlTransformed: ({
                 transformation,
               }: {
-                transformation: graphql.InferValueFromArg<
-                  graphql.Arg<typeof CloudinaryImageFormat>
+                transformation: g.InferValueFromArg<
+                  g.Arg<typeof CloudinaryImageFormat>
                 >
               }) => {
                 if (!val._meta) return null

@@ -11,7 +11,7 @@ import type {
   GraphQLTypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types'
-import { graphql } from '../../..'
+import { g } from '../../..'
 import { getOperationFieldAccess, getOperationAccess, getAccessFilters } from '../access-control'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
 import type { InitialisedList } from '../initialise-lists'
@@ -162,7 +162,7 @@ export function outputTypeField (
 ) {
   const list = lists[listKey]
 
-  return graphql.field({
+  return g.field({
     type: output.type,
     deprecationReason: output.deprecationReason,
     description: output.description,
