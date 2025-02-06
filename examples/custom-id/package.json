@@ -13,7 +13,7 @@
   "dependencies": {
     "@keystone-6/core": "^6.3.1",
     "@paralleldrive/cuid2": "^2.2.1",
-    "@prisma/client": "5.19.0"
+    "@prisma/client": "6.3.1"
   },
   "devDependencies": {
     "prisma": "5.19.0",
