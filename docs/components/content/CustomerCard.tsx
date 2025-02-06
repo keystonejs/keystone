@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import type { HTMLAttributes } from 'react'
+import type { HTMLAttributes, JSX } from 'react'
 
 import { Type } from '../primitives/Type'
 import { type IconProps } from '../icons/util'
