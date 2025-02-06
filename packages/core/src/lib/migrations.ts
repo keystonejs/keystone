@@ -1,9 +1,7 @@
 import { toSchemasContainer } from '@prisma/internals'
 
-// @ts-expect-error
 import { Migrate } from '@prisma/migrate'
-
-import { type System } from './createSystem'
+import type { System } from './createSystem'
 
 function setOrRemoveEnvVariable (name: string, value: string | undefined) {
   if (value === undefined) {
@@ -61,9 +59,9 @@ export async function withMigrate<T> (
       }
     })
   } finally {
-    await migrate.engine.initPromise
+    await (migrate.engine as any).initPromise
     const closePromise = new Promise<void>(resolve => {
-      migrate.engine.child.once('exit', resolve)
+      (migrate.engine as any).child.once('exit', resolve)
     })
     migrate.stop()
     await closePromise
