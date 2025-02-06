@@ -1616,7 +1616,7 @@ importers:
         version: 7.26.7
       '@keystar/ui':
         specifier: ^0.7.13
-        version: 0.7.15(next@14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -1624,8 +1624,8 @@ importers:
         specifier: ^16.8.1
         version: 16.10.0
       next:
-        specifier: ^14.2.0
-        version: 14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^15.1.0
+        version: 15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
@@ -4751,28 +4751,13 @@ packages:
   '@next/env@13.5.8':
     resolution: {integrity: sha512-YmiG58BqyZ2FjrF2+5uZExL2BrLr8RTQzLXNDJ8pJr0O+rPlOeDPXp1p1/4OrR3avDidzZo3D8QO2cuDv1KCkw==}
 
-  '@next/env@14.2.23':
-    resolution: {integrity: sha512-CysUC9IO+2Bh0omJ3qrb47S8DtsTKbFidGm6ow4gXIG6reZybqxbkH2nhdEm1tC8SmgzDdpq3BIML0PWsmyUYA==}
-
   '@next/env@15.1.6':
     resolution: {integrity: sha512-d9AFQVPEYNr+aqokIiPLNK/MTyt3DWa/dpKveiAaVccUadFbhFEvY6FXYX2LJO2Hv7PHnLBu2oWwB4uBuHjr/w==}
-
-  '@next/swc-darwin-arm64@14.2.23':
-    resolution: {integrity: sha512-WhtEntt6NcbABA8ypEoFd3uzq5iAnrl9AnZt9dXdO+PZLACE32z3a3qA5OoV20JrbJfSJ6Sd6EqGZTrlRnGxQQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
 
   '@next/swc-darwin-arm64@15.1.6':
     resolution: {integrity: sha512-u7lg4Mpl9qWpKgy6NzEkz/w0/keEHtOybmIl0ykgItBxEM5mYotS5PmqTpo+Rhg8FiOiWgwr8USxmKQkqLBCrw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@next/swc-darwin-x64@14.2.23':
-    resolution: {integrity: sha512-vwLw0HN2gVclT/ikO6EcE+LcIN+0mddJ53yG4eZd0rXkuEr/RnOaMH8wg/sYl5iz5AYYRo/l6XX7FIo6kwbw1Q==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [darwin]
 
   '@next/swc-darwin-x64@15.1.6':
@@ -4781,20 +4766,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@14.2.23':
-    resolution: {integrity: sha512-uuAYwD3At2fu5CH1wD7FpP87mnjAv4+DNvLaR9kiIi8DLStWSW304kF09p1EQfhcbUI1Py2vZlBO2VaVqMRtpg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
   '@next/swc-linux-arm64-gnu@15.1.6':
     resolution: {integrity: sha512-jar9sFw0XewXsBzPf9runGzoivajeWJUc/JkfbLTC4it9EhU8v7tCRLH7l5Y1ReTMN6zKJO0kKAGqDk8YSO2bg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@next/swc-linux-arm64-musl@14.2.23':
-    resolution: {integrity: sha512-Mm5KHd7nGgeJ4EETvVgFuqKOyDh+UMXHXxye6wRRFDr4FdVRI6YTxajoV2aHE8jqC14xeAMVZvLqYqS7isHL+g==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -4805,20 +4778,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@14.2.23':
-    resolution: {integrity: sha512-Ybfqlyzm4sMSEQO6lDksggAIxnvWSG2cDWnG2jgd+MLbHYn2pvFA8DQ4pT2Vjk3Cwrv+HIg7vXJ8lCiLz79qoQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
   '@next/swc-linux-x64-gnu@15.1.6':
     resolution: {integrity: sha512-SpuDEXixM3PycniL4iVCLyUyvcl6Lt0mtv3am08sucskpG0tYkW1KlRhTgj4LI5ehyxriVVcfdoxuuP8csi3kQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@next/swc-linux-x64-musl@14.2.23':
-    resolution: {integrity: sha512-OSQX94sxd1gOUz3jhhdocnKsy4/peG8zV1HVaW6DLEbEmRRtUCUQZcKxUD9atLYa3RZA+YJx+WZdOnTkDuNDNA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -4829,28 +4790,10 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@14.2.23':
-    resolution: {integrity: sha512-ezmbgZy++XpIMTcTNd0L4k7+cNI4ET5vMv/oqNfTuSXkZtSA9BURElPFyarjjGtRgZ9/zuKDHoMdZwDZIY3ehQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-
   '@next/swc-win32-arm64-msvc@15.1.6':
     resolution: {integrity: sha512-s8w6EeqNmi6gdvM19tqKKWbCyOBvXFbndkGHl+c9YrzsLARRdCHsD9S1fMj8gsXm9v8vhC8s3N8rjuC/XrtkEg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
-    os: [win32]
-
-  '@next/swc-win32-ia32-msvc@14.2.23':
-    resolution: {integrity: sha512-zfHZOGguFCqAJ7zldTKg4tJHPJyJCOFhpoJcVxKL9BSUHScVDnMdDuOU1zPPGdOzr/GWxbhYTjyiEgLEpAoFPA==}
-    engines: {node: '>= 10'}
-    cpu: [ia32]
-    os: [win32]
-
-  '@next/swc-win32-x64-msvc@14.2.23':
-    resolution: {integrity: sha512-xCtq5BD553SzOgSZ7UH5LH+OATQihydObTrCTvVzOro8QiWYKdBVwcB2Mn2MLMo6DGW9yH1LSPw7jS7HhgJgjw==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [win32]
 
   '@next/swc-win32-x64-msvc@15.1.6':
@@ -6265,9 +6208,6 @@ packages:
 
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
-
-  '@swc/helpers@0.5.5':
-    resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
 
   '@szmarczak/http-timer@4.0.6':
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
@@ -10218,24 +10158,6 @@ packages:
     peerDependencies:
       next: '*'
 
-  next@14.2.23:
-    resolution: {integrity: sha512-mjN3fE6u/tynneLiEg56XnthzuYw+kD7mCujgVqioxyPqbmiotUCGJpIZGS/VaPg3ZDT1tvWxiVyRzeqJFm/kw==}
-    engines: {node: '>=18.17.0'}
-    hasBin: true
-    peerDependencies:
-      '@opentelemetry/api': ^1.1.0
-      '@playwright/test': ^1.41.2
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      sass: ^1.3.0
-    peerDependenciesMeta:
-      '@opentelemetry/api':
-        optional: true
-      '@playwright/test':
-        optional: true
-      sass:
-        optional: true
-
   next@15.1.6:
     resolution: {integrity: sha512-Hch4wzbaX0vKQtalpXvUiw5sYivBy4cm5rzUKrBnUB/y436LGrvOUqYvlSeNVCWFO/770gDlltR9gqZH62ct4Q==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
@@ -11743,19 +11665,6 @@ packages:
 
   style-to-object@0.4.4:
     resolution: {integrity: sha512-HYNoHZa2GorYNyqiCaBgsxvcJIn7OHq6inEga+E6Ke3m5JkoqpQbnFssk4jwe+K7AhGa2fcha4wSOf1Kn01dMg==}
-
-  styled-jsx@5.1.1:
-    resolution: {integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==}
-    engines: {node: '>= 12.0.0'}
-    peerDependencies:
-      '@babel/core': '*'
-      babel-plugin-macros: '*'
-      react: '>= 16.8.0 || 17.x.x || ^18.0.0-0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      babel-plugin-macros:
-        optional: true
 
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
@@ -15927,103 +15836,6 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@keystar/ui@0.7.15(next@14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      '@babel/runtime': 7.26.7
-      '@emotion/css': 11.13.5
-      '@floating-ui/react': 0.24.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@internationalized/date': 3.7.0
-      '@internationalized/string': 3.2.5
-      '@react-aria/actiongroup': 3.7.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/breadcrumbs': 3.5.20(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/button': 3.11.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/calendar': 3.7.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/checkbox': 3.15.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/combobox': 3.11.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/datepicker': 3.13.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/dialog': 3.5.21(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/dnd': 3.8.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/focus': 3.19.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/gridlist': 3.10.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/i18n': 3.12.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/interactions': 3.23.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/label': 3.7.14(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/link': 3.7.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/listbox': 3.14.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/live-announcer': 3.4.1
-      '@react-aria/menu': 3.17.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/meter': 3.4.19(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/numberfield': 3.11.10(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/overlays': 3.25.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/progress': 3.4.19(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/radio': 3.10.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/searchfield': 3.8.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/select': 3.15.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/selection': 3.22.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/separator': 3.4.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/ssr': 3.9.7(react@19.0.0)
-      '@react-aria/switch': 3.6.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/table': 3.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/tabs': 3.9.9(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/tag': 3.4.9(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/textfield': 3.16.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/toast': 3.0.0-beta.15(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/tooltip': 3.7.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/utils': 3.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/virtualizer': 4.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-aria/visually-hidden': 3.8.19(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-stately/calendar': 3.7.0(react@19.0.0)
-      '@react-stately/checkbox': 3.6.11(react@19.0.0)
-      '@react-stately/collections': 3.12.1(react@19.0.0)
-      '@react-stately/combobox': 3.10.2(react@19.0.0)
-      '@react-stately/data': 3.12.1(react@19.0.0)
-      '@react-stately/datepicker': 3.12.0(react@19.0.0)
-      '@react-stately/dnd': 3.5.1(react@19.0.0)
-      '@react-stately/form': 3.1.1(react@19.0.0)
-      '@react-stately/layout': 4.1.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-stately/list': 3.11.2(react@19.0.0)
-      '@react-stately/menu': 3.9.1(react@19.0.0)
-      '@react-stately/numberfield': 3.9.9(react@19.0.0)
-      '@react-stately/overlays': 3.6.13(react@19.0.0)
-      '@react-stately/radio': 3.10.10(react@19.0.0)
-      '@react-stately/searchfield': 3.5.9(react@19.0.0)
-      '@react-stately/select': 3.6.10(react@19.0.0)
-      '@react-stately/selection': 3.19.0(react@19.0.0)
-      '@react-stately/table': 3.13.1(react@19.0.0)
-      '@react-stately/tabs': 3.7.1(react@19.0.0)
-      '@react-stately/toast': 3.0.0-beta.5(react@19.0.0)
-      '@react-stately/toggle': 3.8.1(react@19.0.0)
-      '@react-stately/tooltip': 3.5.1(react@19.0.0)
-      '@react-stately/tree': 3.8.7(react@19.0.0)
-      '@react-stately/utils': 3.10.5(react@19.0.0)
-      '@react-stately/virtualizer': 4.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@react-types/actionbar': 3.1.12(react@19.0.0)
-      '@react-types/actiongroup': 3.4.14(react@19.0.0)
-      '@react-types/breadcrumbs': 3.7.10(react@19.0.0)
-      '@react-types/button': 3.10.2(react@19.0.0)
-      '@react-types/calendar': 3.6.0(react@19.0.0)
-      '@react-types/combobox': 3.13.2(react@19.0.0)
-      '@react-types/datepicker': 3.10.0(react@19.0.0)
-      '@react-types/grid': 3.2.11(react@19.0.0)
-      '@react-types/menu': 3.9.14(react@19.0.0)
-      '@react-types/numberfield': 3.8.8(react@19.0.0)
-      '@react-types/overlays': 3.8.12(react@19.0.0)
-      '@react-types/radio': 3.8.6(react@19.0.0)
-      '@react-types/select': 3.9.9(react@19.0.0)
-      '@react-types/shared': 3.27.0(react@19.0.0)
-      '@react-types/switch': 3.5.8(react@19.0.0)
-      '@react-types/table': 3.10.4(react@19.0.0)
-      '@react-types/tabs': 3.3.12(react@19.0.0)
-      '@types/react': 18.3.18
-      emery: 1.4.3
-      facepaint: 1.2.1
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
-    optionalDependencies:
-      next: 14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-    transitivePeerDependencies:
-      - supports-color
-
   '@keystar/ui@0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.26.7
@@ -16358,56 +16170,27 @@ snapshots:
 
   '@next/env@13.5.8': {}
 
-  '@next/env@14.2.23': {}
-
   '@next/env@15.1.6': {}
 
-  '@next/swc-darwin-arm64@14.2.23':
-    optional: true
-
   '@next/swc-darwin-arm64@15.1.6':
-    optional: true
-
-  '@next/swc-darwin-x64@14.2.23':
     optional: true
 
   '@next/swc-darwin-x64@15.1.6':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@14.2.23':
-    optional: true
-
   '@next/swc-linux-arm64-gnu@15.1.6':
-    optional: true
-
-  '@next/swc-linux-arm64-musl@14.2.23':
     optional: true
 
   '@next/swc-linux-arm64-musl@15.1.6':
     optional: true
 
-  '@next/swc-linux-x64-gnu@14.2.23':
-    optional: true
-
   '@next/swc-linux-x64-gnu@15.1.6':
-    optional: true
-
-  '@next/swc-linux-x64-musl@14.2.23':
     optional: true
 
   '@next/swc-linux-x64-musl@15.1.6':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@14.2.23':
-    optional: true
-
   '@next/swc-win32-arm64-msvc@15.1.6':
-    optional: true
-
-  '@next/swc-win32-ia32-msvc@14.2.23':
-    optional: true
-
-  '@next/swc-win32-x64-msvc@14.2.23':
     optional: true
 
   '@next/swc-win32-x64-msvc@15.1.6':
@@ -18442,11 +18225,6 @@ snapshots:
 
   '@swc/helpers@0.5.15':
     dependencies:
-      tslib: 2.8.1
-
-  '@swc/helpers@0.5.5':
-    dependencies:
-      '@swc/counter': 0.1.3
       tslib: 2.8.1
 
   '@szmarczak/http-timer@4.0.6':
@@ -23725,31 +23503,6 @@ snapshots:
       minimist: 1.2.8
       next: 15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
-  next@14.2.23(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
-    dependencies:
-      '@next/env': 14.2.23
-      '@swc/helpers': 0.5.5
-      busboy: 1.6.0
-      caniuse-lite: 1.0.30001696
-      graceful-fs: 4.2.11
-      postcss: 8.4.31
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
-      styled-jsx: 5.1.1(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react@19.0.0)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.23
-      '@next/swc-darwin-x64': 14.2.23
-      '@next/swc-linux-arm64-gnu': 14.2.23
-      '@next/swc-linux-arm64-musl': 14.2.23
-      '@next/swc-linux-x64-gnu': 14.2.23
-      '@next/swc-linux-x64-musl': 14.2.23
-      '@next/swc-win32-arm64-msvc': 14.2.23
-      '@next/swc-win32-ia32-msvc': 14.2.23
-      '@next/swc-win32-x64-msvc': 14.2.23
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-
   next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@next/env': 15.1.6
@@ -25558,14 +25311,6 @@ snapshots:
   style-to-object@0.4.4:
     dependencies:
       inline-style-parser: 0.1.1
-
-  styled-jsx@5.1.1(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react@19.0.0):
-    dependencies:
-      client-only: 0.0.1
-      react: 19.0.0
-    optionalDependencies:
-      '@babel/core': 7.26.7
-      babel-plugin-macros: 3.1.0
 
   styled-jsx@5.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react@19.0.0):
     dependencies:
