@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
-    "build": "keystone build",
-    "build:ts-gql": "ts-gql build",
+    "build": "keystone build && ts-gql build",
     "postinstall": "keystone postinstall && ts-gql build"
   },
   "dependencies": {
@@ -25,7 +24,8 @@
   },
   "ts-gql": {
     "schema": "schema.graphql",
-    "mode": "no-transform"
+    "mode": "no-transform",
+    "addTypename": false
   },
   "eslintConfig": {
     "plugins": [

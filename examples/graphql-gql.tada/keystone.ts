@@ -8,12 +8,10 @@ export default config({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     prismaClientPath: 'node_modules/myprisma',
-    async onConnect(args) {
-      // note this means you can skip running `ts-gql watch` because this will start by using `keystone dev`
+    async onConnect() {
       if (process.argv.includes('dev')) {
-        import('@ts-gql/compiler').then(({ watch }) => {
-          watch(process.cwd())
-        })
+        const { generateOutput } = await import('@gql.tada/cli-utils')
+        await generateOutput({ tsconfig: 'tsconfig.json', output: undefined })
       }
     },
   },

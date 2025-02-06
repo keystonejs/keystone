@@ -2,21 +2,20 @@
 import { list, g } from '@keystone-6/core'
 import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
-import { gql } from '@ts-gql/tag/no-transform'
+import { graphql } from './gql'
 
 import type { Lists } from '.keystone/types'
 
-const LatestPostQuery = gql`
+const LatestPostQuery = graphql(/* GraphQL */`
   query LastestPostQuery($id: ID!) {
     author(where: { id: $id }) {
       id
       posts(orderBy: { publishDate: desc }, take: 1) {
         id
-        title
       }
     }
   }
-` as import('./__generated__/ts-gql/LastestPostQuery').type
+`)
 
 export const lists = {
   Post: list({
