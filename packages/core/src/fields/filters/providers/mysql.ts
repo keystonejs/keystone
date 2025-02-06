@@ -13,6 +13,7 @@ type StringNullableFilterType = g.InputObjectType<{
   contains: g.Arg<typeof g.String>
   startsWith: g.Arg<typeof g.String>
   endsWith: g.Arg<typeof g.String>
+  search: g.Arg<typeof g.String>
   not: g.Arg<StringNullableFilterType> // can be null
 }>
 
@@ -29,6 +30,7 @@ const StringNullableFilter: StringNullableFilterType = g.inputObject({
     contains: g.arg({ type: g.String }),
     startsWith: g.arg({ type: g.String }),
     endsWith: g.arg({ type: g.String }),
+    search: g.arg({ type: g.String }),
     not: g.arg({ type: StringNullableFilter }), // can be null
   }),
 })
@@ -44,6 +46,7 @@ type StringFilterType = g.InputObjectType<{
   contains: g.Arg<typeof g.String>
   startsWith: g.Arg<typeof g.String>
   endsWith: g.Arg<typeof g.String>
+  search: g.Arg<typeof g.String>
   not: g.Arg<NestedStringFilterType>
 }>
 
@@ -60,6 +63,7 @@ const StringFilter: StringFilterType = g.inputObject({
     contains: g.arg({ type: g.String }),
     startsWith: g.arg({ type: g.String }),
     endsWith: g.arg({ type: g.String }),
+    search: g.arg({ type: g.String }),
     not: g.arg({ type: NestedStringFilter }),
   }),
 })
@@ -75,6 +79,7 @@ type NestedStringNullableFilterType = g.InputObjectType<{
   contains: g.Arg<typeof g.String>
   startsWith: g.Arg<typeof g.String>
   endsWith: g.Arg<typeof g.String>
+  search: g.Arg<typeof g.String>
   not: g.Arg<NestedStringNullableFilterType> // can be null
 }>
 
@@ -91,6 +96,7 @@ const NestedStringNullableFilter: NestedStringNullableFilterType = g.inputObject
     contains: g.arg({ type: g.String }),
     startsWith: g.arg({ type: g.String }),
     endsWith: g.arg({ type: g.String }),
+    search: g.arg({ type: g.String }),
     not: g.arg({ type: NestedStringNullableFilter }), // can be null
   }),
 })
@@ -106,6 +112,7 @@ type NestedStringFilterType = g.InputObjectType<{
   contains: g.Arg<typeof g.String>
   startsWith: g.Arg<typeof g.String>
   endsWith: g.Arg<typeof g.String>
+  search: g.Arg<typeof g.String>
   not: g.Arg<NestedStringFilterType>
 }>
 
@@ -122,6 +129,7 @@ const NestedStringFilter: NestedStringFilterType = g.inputObject({
     contains: g.arg({ type: g.String }),
     startsWith: g.arg({ type: g.String }),
     endsWith: g.arg({ type: g.String }),
+    search: g.arg({ type: g.String }),
     not: g.arg({ type: NestedStringFilter }),
   }),
 })

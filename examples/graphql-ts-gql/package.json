@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.3.1",
-    "@prisma/client": "5.19.0",
+    "@prisma/client": "6.3.1",
     "graphql": "^16.8.1"
   },
   "devDependencies": {
