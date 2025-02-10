@@ -18,6 +18,7 @@ model Post {
   publishDate DateTime @default(now())
   author      Author?  @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?  @map("author")
+  content     String   @default("")
 
   @@index([authorId])
 }

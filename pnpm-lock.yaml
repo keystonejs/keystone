@@ -1763,6 +1763,9 @@ importers:
       fs-extra:
         specifier: ^11.0.0
         version: 11.3.0
+      gql.tada:
+        specifier: ^1.8.10
+        version: 1.8.10(graphql@16.10.0)(typescript@5.7.3)
       graphql:
         specifier: ^16.8.1
         version: 16.10.0

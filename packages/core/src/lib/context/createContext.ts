@@ -18,6 +18,7 @@ import { type InitialisedList } from '../core/initialise-lists'
 import { createImagesContext } from '../assets/createImagesContext'
 import { createFilesContext } from '../assets/createFilesContext'
 import { getDbFactory, getQueryFactory } from './api'
+import { executeSourceToGraphQLFragment } from './executeSourceToGraphQLFragment'
 
 export function createContext ({
   config,
@@ -89,11 +90,15 @@ export function createContext ({
       return result.data as any
     }
 
+    const runGraphQLFields: KeystoneGraphQLAPI['fields'] = ({ fragment, source }) => {
+      return executeSourceToGraphQLFragment(schema, fragment, source, context) as any
+    }
+
     const context: KeystoneContext = {
       prisma,
       db: {},
       query: {},
-      graphql: { raw: rawGraphQL, run: runGraphQL, schema },
+      graphql: { raw: rawGraphQL, run: runGraphQL, schema, fields: runGraphQLFields },
 
       sudo: () => construct({ prisma, session, sudo: true, req, res }),
 
