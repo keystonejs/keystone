@@ -37,6 +37,16 @@ export const lists = {
           g.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
+              // this is not a good example of how to solve this use case
+              // the better solution would be:
+              // return (
+              //   await context.db.Post.findMany({
+              //     where: { author: { id: { equals: item.id } } },
+              //     orderBy: { publishDate: 'desc' },
+              //     take: 1,
+              //   })
+              // )[0]
+              // but this is to demonstrate using @graphql-codegen with keystone
               const data = await context.graphql.run({
                 query: LatestPostQuery,
                 variables: { id: item.id },

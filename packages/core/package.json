@@ -31,6 +31,11 @@
       "module": "./testing/dist/keystone-6-core-testing.esm.js",
       "default": "./testing/dist/keystone-6-core-testing.cjs.js"
     },
+    "./gql.tada": {
+      "types": "./gql.tada/dist/keystone-6-core-gql.tada.cjs.js",
+      "module": "./gql.tada/dist/keystone-6-core-gql.tada.esm.js",
+      "default": "./gql.tada/dist/keystone-6-core-gql.tada.cjs.js"
+    },
     "./scripts/cli": {
       "types": "./scripts/cli/dist/keystone-6-core-scripts-cli.cjs.js",
       "module": "./scripts/cli/dist/keystone-6-core-scripts-cli.esm.js",
@@ -299,7 +304,16 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/resolve": "^1.20.2",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "gql.tada": "^1.8.10"
+  },
+  "peerDependencies": {
+    "gql.tada": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "gql.tada": {
+      "optional": true
+    }
   },
   "preconstruct": {
     "entrypoints": [
@@ -324,7 +338,8 @@
       "fields/types/bytes/index.ts",
       "fields/types/*/views/index.tsx",
       "fields/types/{image,file}/utils.ts",
-      "types/index.ts"
+      "types/index.ts",
+      "gql.tada.ts"
     ],
     "exports": {
       "extra": {

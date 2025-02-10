@@ -6,13 +6,14 @@ import type { InitialisedList } from '../lib/core/initialise-lists'
 import type { SessionStrategy } from './session'
 import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info'
 import type { MaybePromise } from './utils'
+import type { GraphqlFields } from './graphql-fields'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
   res?: ServerResponse
   db: KeystoneDbAPI<TypeInfo['lists']>
   query: KeystoneListsAPI<TypeInfo['lists']>
-  graphql: KeystoneGraphQLAPI
+  graphql: KeystoneGraphQLAPI<TypeInfo['lists']>
   sudo: () => KeystoneContext<TypeInfo>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
@@ -147,7 +148,9 @@ export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>
 
 // GraphQL API
 
-export type KeystoneGraphQLAPI = {
+export type KeystoneGraphQLAPI<
+  ListsTypeInfo extends Record<string, BaseListTypeInfo> = Record<string, BaseListTypeInfo>,
+> = {
   schema: GraphQLSchema
   run: <TData, TVariables extends Record<string, any>>(
     args: GraphQLExecutionArguments<TData, TVariables>
@@ -155,7 +158,7 @@ export type KeystoneGraphQLAPI = {
   raw: <TData, TVariables extends Record<string, any>>(
     args: GraphQLExecutionArguments<TData, TVariables>
   ) => Promise<ExecutionResult<TData>>
-}
+} & GraphqlFields<ListsTypeInfo>
 
 type GraphQLExecutionArguments<TData, TVariables> = {
   query: string | DocumentNode | TypedDocumentNode<TData, TVariables>

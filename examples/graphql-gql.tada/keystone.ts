@@ -1,5 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
+import { extension } from './extend'
 
 export default config({
   db: {
@@ -16,4 +17,7 @@ export default config({
     },
   },
   lists,
+  graphql: {
+    extendGraphqlSchema: extension,
+  },
 })

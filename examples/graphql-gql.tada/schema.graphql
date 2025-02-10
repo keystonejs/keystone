@@ -200,6 +200,7 @@ type Query {
   authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  latestPostPublishDate: String
 }
 
 type KeystoneMeta {
