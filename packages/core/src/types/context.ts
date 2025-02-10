@@ -16,13 +16,14 @@ import type {
   BaseListTypeInfo,
 } from './type-info'
 import type { MaybePromise } from './utils'
+import type { ResultOf, TadaDocumentNode } from 'gql.tada'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
   res?: ServerResponse
   db: KeystoneDbAPI<TypeInfo['lists']>
   query: KeystoneListsAPI<TypeInfo['lists']>
-  graphql: KeystoneGraphQLAPI
+  graphql: KeystoneGraphQLAPI<TypeInfo['lists']>
   sudo: () => KeystoneContext<TypeInfo>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
@@ -167,7 +168,7 @@ export type KeystoneDbAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo>
 
 // GraphQL API
 
-export type KeystoneGraphQLAPI = {
+export type KeystoneGraphQLAPI<ListsTypeInfo extends Record<string, BaseListTypeInfo> = Record<string, BaseListTypeInfo>> = {
   schema: GraphQLSchema
   run: <TData, TVariables extends Record<string, any>>(
     args: GraphQLExecutionArguments<TData, TVariables>
@@ -175,6 +176,13 @@ export type KeystoneGraphQLAPI = {
   raw: <TData, TVariables extends Record<string, any>>(
     args: GraphQLExecutionArguments<TData, TVariables>
   ) => Promise<ExecutionResult<TData>>
+  fields: <Document extends TadaDocumentNode<any, {}, {
+    fragment: any
+    on: keyof ListsTypeInfo
+  }>>(args: {
+    fragment: Document
+    source: Document extends TadaDocumentNode<any, {}, { on:infer ListKey extends keyof ListsTypeInfo }> ? ListsTypeInfo[ListKey]['item'] : never
+  })=> Promise<ResultOf<Document>>
 }
 
 type GraphQLExecutionArguments<TData, TVariables> = {

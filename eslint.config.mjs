@@ -34,6 +34,7 @@ export default tseslint.config(
       '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-require-imports': 'off', // TODO: always
+      '@typescript-eslint/no-empty-object-type': 'off',
       // TODO: remove
 
       semi: ['error', 'never'],

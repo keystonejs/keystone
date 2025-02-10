@@ -6,6 +6,8 @@ type Post {
   title: String
   publishDate: DateTime
   author: Author
+  content: String
+  readingTime: Int
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -22,6 +24,7 @@ input PostWhereInput {
   title: StringFilter
   publishDate: DateTimeFilter
   author: AuthorWhereInput
+  content: StringFilter
 }
 
 input IDFilter {
@@ -78,6 +81,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   publishDate: OrderDirection
+  content: OrderDirection
 }
 
 enum OrderDirection {
@@ -89,6 +93,7 @@ input PostUpdateInput {
   title: String
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
+  content: String
 }
 
 input AuthorRelateToOneForUpdateInput {
@@ -106,6 +111,7 @@ input PostCreateInput {
   title: String
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
+  content: String
 }
 
 input AuthorRelateToOneForCreateInput {
@@ -200,6 +206,7 @@ type Query {
   authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  latestPostReadingTime: Int
 }
 
 type KeystoneMeta {

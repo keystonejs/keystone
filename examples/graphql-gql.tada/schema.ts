@@ -22,6 +22,13 @@ export const lists: Lists = {
       title: text({ validation: { isRequired: true } }),
       publishDate: timestamp({ validation: { isRequired: true }, defaultValue: { kind: 'now' } }),
       author: relationship({ ref: 'Author.posts', many: false }),
+      content: text({ ui: { displayMode: 'textarea' } }),
+      readingTime: virtual({
+        field: g.field({
+          type: g.Int,
+          resolve: item => item.content.split(' ').length
+        }),
+      }),
     },
   }),
   Author: list({
