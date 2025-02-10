@@ -1,5 +1,5 @@
 ---
-"@keystone-6/create": major
+"create-keystone-app": major
 ---
 
 Updates the `keystone-app` configuration to the newest major version
