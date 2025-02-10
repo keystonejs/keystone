@@ -1,5 +1,49 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20250210004303
+
+### Major Changes
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Replaces the type signature `boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)` with `MaybeFieldFunction`, like `MaybeSessionFunction`
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Renames `isHidden` to `hideNavigation` on the AdminMeta list GraphQL type
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes `authenticatedItem` from `@keystone-6/core/admin-ui/components` exports
+
+- [#9189](https://github.com/keystonejs/keystone/pull/9189) [`a2ee52e`](https://github.com/keystonejs/keystone/commit/a2ee52e93ad3d281035dac857519709f647048fe) Thanks [@gautamsi](https://github.com/gautamsi)! - Update the `config` function to default any missing values to what is used internally; compatible with the internal type `ResolvedKeystoneConfig`
+
+- [#9415](https://github.com/keystonejs/keystone/pull/9415) [`5b5aec1`](https://github.com/keystonejs/keystone/commit/5b5aec170b36fe69457be80449199ddca807e9ca) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrades Prisma major version to 6.3.1
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes `.itemQueryName` and `.listQueryName` from `KeystoneAdminUIListMeta`, use `.graphql.names.*QueryName` instead
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes the `@keystone-ui/*` design system, you should upgrade your custom components to `@keystar/ui`
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Changes `item` argument type in `field.*View.field*` functions to be nullable
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes the `EndSession` GraphQL mutation addition when `context.session.end` is defined, extend this yourself if required
+
+- [#9190](https://github.com/keystonejs/keystone/pull/9190) [`5410848`](https://github.com/keystonejs/keystone/commit/54108480451680f960f7e1c5c92418953a2c6dac) Thanks [@gautamsi](https://github.com/gautamsi)! - Remove the deprecated `--fix` flag from `keystone postinstall`
+
+### Minor Changes
+
+- [#9401](https://github.com/keystonejs/keystone/pull/9401) [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76) Thanks [@dcousens](https://github.com/dcousens)! - Add support for searching relationship fields in the list view
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Add support for `null` as a `defaultValue` on `bigint`, `decimal`, `float` and `integer`
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Changes the relationship field to only call the GraphQL `create` mutation when saving the item, not on blur
+
+- [#9460](https://github.com/keystonejs/keystone/pull/9460) [`c6ce0a7`](https://github.com/keystonejs/keystone/commit/c6ce0a7ea67d33deeba96173e729fec5fd2cd18e) Thanks [@emmatown](https://github.com/emmatown)! - Rename `graphql` export to `g` - `graphql` is still exported but is deprecated and may be removed in a future release
+
+### Patch Changes
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Fix AdminUI create view not supporting `{field}.graphql.isNonNull` for `create` operations
+
+- [#9401](https://github.com/keystonejs/keystone/pull/9401) [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76) Thanks [@dcousens](https://github.com/dcousens)! - Fix list view ignoring `.ui.listView.searchFields`
+
+- [#9453](https://github.com/keystonejs/keystone/pull/9453) [`5c99428`](https://github.com/keystonejs/keystone/commit/5c99428c5977dc5c27cc4ca66a4380f18fd64620) Thanks [@emmatown](https://github.com/emmatown)! - Fix Admin UI breaking in Safari because of usage of iterator helpers
+
+- [#9402](https://github.com/keystonejs/keystone/pull/9402) [`e5d7ace`](https://github.com/keystonejs/keystone/commit/e5d7ace4e472ac47b7f6ab9d98b2f58bab216b80) Thanks [@mikehazell](https://github.com/mikehazell)! - Fixes `context.db` missing types if they are omitted from GraphQL
+
 ## 6.3.1
 
 ### Patch Changes
