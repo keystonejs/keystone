@@ -58,7 +58,7 @@ function printInterimType<L extends InitialisedList> (
   const prismaType = `import('${prismaClientPath}').Prisma.${name}`
   return [
     `type Resolved${name} = {`,
-    ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
+    ...Object.entries(list.fields).map(([fieldKey, { dbField, graphql }]) => {
       if (dbField.kind === 'none') return `  ${fieldKey}?: undefined`
 
       // TODO: this could be elsewhere, maybe id-field.ts
@@ -78,18 +78,14 @@ function printInterimType<L extends InitialisedList> (
         return [
           `  ${fieldKey}: {`,
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
-            // TODO: untrue if a db defaultValue is set
-            //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?'
-            const optional = '?'
+            const optional = operation === 'create' && subDbField.mode === 'required' && !subDbField.default ? '' : '?'
             return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}']`
           }),
           `  }`,
         ].join('\n')
       }
 
-      // TODO: untrue if a db defaultValue is set
-      //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?'
-      const optional = '?'
+      const optional = (operation === 'create' && dbField.mode === 'required' && !dbField.default) || graphql.isNonNull[operation] ? '' : '?'
       return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}']`
     }),
     `}`,
