@@ -25,7 +25,7 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
       isNullable?: boolean
     }
     graphql?: {
-      isNonNull?: {
+      isNonNull?: boolean | {
         read?: boolean
       }
     }
@@ -75,7 +75,7 @@ export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo
   meta: FieldData,
   config: {
     graphql?: {
-      isNonNull?: {
+      isNonNull?: boolean | {
         read?: boolean
       }
     }
@@ -83,7 +83,8 @@ export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo
   dbNullable: boolean
 ) {
   if (!dbNullable) return
-  if (!config.graphql?.isNonNull?.read) return
+  if (!config.graphql?.isNonNull) return
+  if (typeof config.graphql?.isNonNull === 'object' && !config.graphql.isNonNull.read) return
 
   throw new Error(
     `${meta.listKey}.${meta.fieldKey} sets graphql.isNonNull.read: true, but not validation.isRequired: true (or db.isNullable: false)\n` +
