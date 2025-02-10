@@ -57,7 +57,7 @@ const getSchemaForType = weakMemoize((existingSchema:GraphQLSchema) => {
         fields: { [rawField]: { type: outputType } },
       }),
       assumeValid: true,
-      types: Object.values(existingSchema.getTypeMap()),
+      types: Object.values(existingSchema.getTypeMap()).filter(t => t.name !== 'Query'),
     })
   })
 })

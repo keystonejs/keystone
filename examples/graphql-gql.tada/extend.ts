@@ -10,10 +10,11 @@ export const extension = g.extend(schema => ({
         const x = await context.db.Post.findMany({where:{content:{contains:'something'}}})
         const result = await  context.graphql.fields({
           fragment:graphql(`fragment _ on Post {
-            content
+            readingTime
           }`),
           source: x[0]
         })
+        return result.readingTime
       }
     })
   }
