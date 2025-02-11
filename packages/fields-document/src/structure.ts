@@ -48,9 +48,10 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
         ...config,
         hooks: {
           ...config.hooks,
-          async resolveInput (args) {
-            let val = args.resolvedData[meta.fieldKey]
-            if (args.operation === 'update') {
+          resolveInput:{
+            ...config.hooks?.resolveInput,
+            update: async args => {
+              let val = args.resolvedData[meta.fieldKey]
               let prevVal = args.item[meta.fieldKey]
               if (meta.provider === 'sqlite') {
                 prevVal = JSON.parse(prevVal as any)
@@ -60,14 +61,13 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
               if (meta.provider === 'sqlite') {
                 val = JSON.stringify(val)
               }
-            }
-
-            return config.hooks?.resolveInput
-              ? config.hooks.resolveInput({
+              return config.hooks?.resolveInput?.update
+              ? config.hooks.resolveInput.update({
                   ...args,
                   resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
                 })
               : val
+            },
           },
         },
         input: {
