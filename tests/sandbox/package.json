@@ -9,7 +9,7 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystar/ui": "^0.7.13",
+    "@keystar/ui": "^0.7.16",
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",

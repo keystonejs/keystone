@@ -108,14 +108,14 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystatic/core':
-        specifier: ^0.5.42
-        version: 0.5.43(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.5.44
+        version: 0.5.44(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystatic/next':
-        specifier: ^5.0.1
-        version: 5.0.2(@keystatic/core@0.5.43(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^5.0.3
+        version: 5.0.3(@keystatic/core@0.5.44(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../packages/fields-document
@@ -342,8 +342,8 @@ importers:
   examples/cloudinary:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.15
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/auth':
         specifier: ^8.1.0
         version: link:../../packages/auth
@@ -370,8 +370,8 @@ importers:
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -401,8 +401,8 @@ importers:
   examples/custom-admin-ui-navigation:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -423,8 +423,8 @@ importers:
   examples/custom-admin-ui-pages:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -467,8 +467,8 @@ importers:
   examples/custom-field:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -733,8 +733,8 @@ importers:
   examples/document-field-customisation/keystone-server:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/auth':
         specifier: ^8.1.0
         version: link:../../../packages/auth
@@ -905,8 +905,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.10.0)
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/core':
         specifier: ^6.3.1
         version: link:../../packages/core
@@ -1615,8 +1615,8 @@ importers:
         specifier: ^7.24.7
         version: 7.26.7
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -1640,8 +1640,8 @@ importers:
         specifier: ^7.24.7
         version: 7.26.7
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       cloudinary:
         specifier: ^2.0.0
         version: 2.5.1
@@ -1704,8 +1704,8 @@ importers:
         specifier: ^3.5.5
         version: 3.7.0
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@nodelib/fs.walk':
         specifier: ^3.0.0
         version: 3.0.1
@@ -1918,8 +1918,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@keystar/ui':
-        specifier: ^0.7.14
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../document-renderer
@@ -2242,8 +2242,8 @@ importers:
   tests/sandbox:
     dependencies:
       '@keystar/ui':
-        specifier: ^0.7.13
-        version: 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.7.16
+        version: 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@keystone-6/auth':
         specifier: workspace:^
         version: link:../../packages/auth
@@ -4680,29 +4680,29 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@keystar/ui@0.7.15':
-    resolution: {integrity: sha512-yNJo8oEG/9guN648C/7ru7dApYFhb8T/wbrHVsGvDVygAqumKF43NgM70eaF4UoSSQWjh3LUxIw0rO/W6+BZqg==}
+  '@keystar/ui@0.7.16':
+    resolution: {integrity: sha512-gRliVC6g1TyC7eDmkoew55yMKLYG3dLNsTSSwaenDUFHjJjCdA+G0LqkV5uEUVU381KbLxR0j1RLz7dsRq+okQ==}
     peerDependencies:
       next: '>=14'
-      react: ^18.2.0
-      react-dom: ^18.2.0
+      react: ^18.2.0 || ^19.0.0
+      react-dom: ^18.2.0 || ^19.0.0
     peerDependenciesMeta:
       next:
         optional: true
 
-  '@keystatic/core@0.5.43':
-    resolution: {integrity: sha512-0bAUiiPgoLsz8oYfH0NvmUdreeXsn10ifPqotVDtBIthTi52kvBdbyHFP5i9FclTbcaegaxtlaJGdvBl9OFuTg==}
+  '@keystatic/core@0.5.44':
+    resolution: {integrity: sha512-4ejkVeI9kg8epUPtuu065aXO0oNKstnubU9ZlBBiAB4AIGY9AEdvgwo9mtRS4bUqBaR1BBQ2g9iEhQ2LG820HQ==}
     peerDependencies:
-      react: ^18.2.0
-      react-dom: ^18.2.0
+      react: ^18.2.0 || ^19.0.0
+      react-dom: ^18.2.0 || ^19.0.0
 
-  '@keystatic/next@5.0.2':
-    resolution: {integrity: sha512-Z9/dL0DduDuhEHYJD+YHQ7ByrFOcmEM4RqNEgQzl456tpGo20SfwGtz5Qiay4HMh3ku+VAoWNjWEMCyzmxk0Qg==}
+  '@keystatic/next@5.0.3':
+    resolution: {integrity: sha512-JAVuLI2GFWbBq+cXkrSs5OdtZn+n6TooCHKsoZ05p5eeXkGOZxIQJGHTx7WBXvaPcLMFRFQ8HPA2eXJ705pnLQ==}
     peerDependencies:
       '@keystatic/core': '*'
       next: '>=14'
-      react: ^18.2.0
-      react-dom: ^18.2.0
+      react: ^18.2.0 || ^19.0.0
+      react-dom: ^18.2.0 || ^19.0.0
 
   '@keystone-ui/button@7.0.2':
     resolution: {integrity: sha512-bFuT3WtLRFWXGP0lMPRIxYG22u2BEvjP9blSeGGXQSvl3hC5Zh2r/BlylHeYaWFChcaRYRU2G/2QSLoPAvyDGQ==}
@@ -6501,9 +6501,6 @@ packages:
   '@types/prompts@2.4.9':
     resolution: {integrity: sha512-qTxFi6Buiu8+50/+3DGIWLHM6QuWsEKugJnnP6iv2Mc4ncxE4A/OJkjuVOA+5X0X1S/nq5VJRa8Lu+nwcvbrKA==}
 
-  '@types/prop-types@15.7.14':
-    resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
-
   '@types/qs@6.9.18':
     resolution: {integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==}
 
@@ -6519,9 +6516,6 @@ packages:
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
     peerDependencies:
       '@types/react': '*'
-
-  '@types/react@18.3.18':
-    resolution: {integrity: sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==}
 
   '@types/react@19.0.8':
     resolution: {integrity: sha512-9P/o1IGdfmQxrujGbIMDyYaaCykhLKc0NGCtYcECNUr9UAaDe4gwvV9bR6tvd5Br1SG0j+PBpbKr2UYY8CwqSw==}
@@ -15836,7 +15830,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@keystar/ui@0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@keystar/ui@0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.26.7
       '@emotion/css': 11.13.5
@@ -15923,7 +15917,7 @@ snapshots:
       '@react-types/switch': 3.5.8(react@19.0.0)
       '@react-types/table': 3.10.4(react@19.0.0)
       '@react-types/tabs': 3.3.12(react@19.0.0)
-      '@types/react': 18.3.18
+      '@types/react': 19.0.8
       emery: 1.4.3
       facepaint: 1.2.1
       react: 19.0.0
@@ -15933,16 +15927,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@keystatic/core@0.5.43(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@keystatic/core@0.5.44(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.26.7
       '@braintree/sanitize-url': 6.0.4
-      '@emotion/css': 11.13.5
       '@emotion/weak-memoize': 0.3.1
       '@floating-ui/react': 0.24.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@internationalized/string': 3.2.5
-      '@keystar/ui': 0.7.15(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@markdoc/markdoc': 0.4.0(@types/react@18.3.18)(react@19.0.0)
+      '@keystar/ui': 0.7.16(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@markdoc/markdoc': 0.4.0(@types/react@19.0.8)(react@19.0.0)
       '@react-aria/focus': 3.19.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@react-aria/i18n': 3.12.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@react-aria/interactions': 3.23.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -15959,7 +15952,7 @@ snapshots:
       '@sindresorhus/slugify': 1.1.2
       '@toeverything/y-indexeddb': 0.10.0-canary.9(yjs@13.6.23)
       '@ts-gql/tag': 0.7.3(graphql@16.10.0)
-      '@types/react': 18.3.18
+      '@types/react': 19.0.8
       '@urql/core': 5.1.0(graphql@16.10.0)
       '@urql/exchange-auth': 2.2.0(@urql/core@5.1.0(graphql@16.10.0))
       '@urql/exchange-graphcache': 7.2.2(@urql/core@5.1.0(graphql@16.10.0))(graphql@16.10.0)
@@ -16012,11 +16005,11 @@ snapshots:
       - next
       - supports-color
 
-  '@keystatic/next@5.0.2(@keystatic/core@0.5.43(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@keystatic/next@5.0.3(@keystatic/core@0.5.44(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.26.7
-      '@keystatic/core': 0.5.43(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@types/react': 18.3.18
+      '@keystatic/core': 0.5.44(next@15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@types/react': 19.0.8
       chokidar: 3.6.0
       next: 15.1.6(@babel/core@7.26.7)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
@@ -16155,12 +16148,6 @@ snapshots:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
-
-  '@markdoc/markdoc@0.4.0(@types/react@18.3.18)(react@19.0.0)':
-    optionalDependencies:
-      '@types/markdown-it': 12.2.3
-      '@types/react': 18.3.18
-      react: 19.0.0
 
   '@markdoc/markdoc@0.4.0(@types/react@19.0.8)(react@19.0.0)':
     optionalDependencies:
@@ -18596,8 +18583,6 @@ snapshots:
       '@types/node': 22.13.0
       kleur: 3.0.3
 
-  '@types/prop-types@15.7.14': {}
-
   '@types/qs@6.9.18': {}
 
   '@types/range-parser@1.2.7': {}
@@ -18609,11 +18594,6 @@ snapshots:
   '@types/react-transition-group@4.4.12(@types/react@19.0.8)':
     dependencies:
       '@types/react': 19.0.8
-
-  '@types/react@18.3.18':
-    dependencies:
-      '@types/prop-types': 15.7.14
-      csstype: 3.1.3
 
   '@types/react@19.0.8':
     dependencies:

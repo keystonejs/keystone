@@ -80,7 +80,7 @@
     "@babel/runtime": "^7.24.7",
     "@braintree/sanitize-url": "7.0.4",
     "@emotion/weak-memoize": "^0.4.0",
-    "@keystar/ui": "^0.7.14",
+    "@keystar/ui": "^0.7.16",
     "@keystone-6/document-renderer": "workspace:^",
     "@react-aria/i18n": "^3.12.1",
     "@react-aria/overlays": "^3.23.2",
