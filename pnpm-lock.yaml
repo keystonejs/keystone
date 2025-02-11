@@ -120,8 +120,8 @@ importers:
         specifier: workspace:^
         version: link:../packages/fields-document
       '@markdoc/markdoc':
-        specifier: ^0.4.0
-        version: 0.4.0(@types/react@19.0.8)(react@19.0.0)
+        specifier: ^0.5.0
+        version: 0.5.0(@types/react@19.0.8)(react@19.0.0)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -4820,6 +4820,18 @@ packages:
       react:
         optional: true
 
+  '@markdoc/markdoc@0.5.0':
+    resolution: {integrity: sha512-iwWCZXTSQILGk1qznOB8mJ1WmloocijBKUBA1ZH8YIJWZmp0ZKHN0zzOMVtdmnSgMdwSfXoYSR+s5Lua60U4dQ==}
+    engines: {node: '>=14.7.0'}
+    peerDependencies:
+      '@types/react': '*'
+      react: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+
   '@next/env@13.5.8':
     resolution: {integrity: sha512-YmiG58BqyZ2FjrF2+5uZExL2BrLr8RTQzLXNDJ8pJr0O+rPlOeDPXp1p1/4OrR3avDidzZo3D8QO2cuDv1KCkw==}
 
@@ -6482,6 +6494,9 @@ packages:
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
+
+  '@types/linkify-it@3.0.5':
+    resolution: {integrity: sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw==}
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
@@ -16140,6 +16155,13 @@ snapshots:
       '@types/react': 19.0.8
       react: 19.0.0
 
+  '@markdoc/markdoc@0.5.0(@types/react@19.0.8)(react@19.0.0)':
+    optionalDependencies:
+      '@types/linkify-it': 3.0.5
+      '@types/markdown-it': 12.2.3
+      '@types/react': 19.0.8
+      react: 19.0.0
+
   '@next/env@13.5.8': {}
 
   '@next/env@15.1.6': {}
@@ -18471,6 +18493,9 @@ snapshots:
   '@types/keyv@3.1.4':
     dependencies:
       '@types/node': 22.13.0
+
+  '@types/linkify-it@3.0.5':
+    optional: true
 
   '@types/linkify-it@5.0.0':
     optional: true
