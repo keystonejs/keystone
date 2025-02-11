@@ -37,11 +37,19 @@ We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `pa
     passwordChangedAt: timestamp({
         access: () => false,
         hooks: {
-          resolveInput: ({ resolvedData }) => {
-            if (resolvedData.password) {
-              return new Date();
-            }
-            return;
+          resolveInput: {
+            create: ({ resolvedData }) => {
+              if (resolvedData.password) {
+                return new Date();
+              }
+              return;
+            },
+            update: ({ resolvedData }) => {
+              if (resolvedData.password) {
+                return new Date();
+              }
+              return;
+            },
           },
         },
         ui: {

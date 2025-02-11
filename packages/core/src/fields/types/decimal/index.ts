@@ -9,7 +9,7 @@ import {
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -124,7 +124,14 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate: {
+          ...config.hooks?.validate,
+          create: merge(validate, config.hooks?.validate?.create),
+          update: merge(validate, config.hooks?.validate?.update),
+        },
+      },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Decimal }) } : undefined,
         where: {
