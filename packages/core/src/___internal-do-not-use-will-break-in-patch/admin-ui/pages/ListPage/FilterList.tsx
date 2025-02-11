@@ -2,7 +2,8 @@ import { useRouter } from 'next/router'
 import React, {
   type FormEvent,
   useId,
-  useState
+  useState,
+  type ReactNode
 } from 'react'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
@@ -37,7 +38,7 @@ function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
     label: string
     type: string
     value: any
-  }) => JSX.Element
+  }) => ReactNode
   const onRemove = () => {
     const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query
     router.push({ pathname: router.pathname, query: queryToKeep })

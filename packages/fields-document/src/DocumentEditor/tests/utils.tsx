@@ -48,6 +48,9 @@ console.error = (...stuff: any[]) => {
     if (stuff[0].includes('inside a test was not wrapped in act')) {
       return
     }
+    if (stuff[0].startsWith('In HTML, %s cannot be a descendant of <%s>.\n')) {
+      return
+    }
   }
   oldConsoleError(...stuff)
   console.log(

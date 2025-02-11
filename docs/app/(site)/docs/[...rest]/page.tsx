@@ -19,7 +19,8 @@ export type Document = NonNullable<
 >
 
 export default async function DocPage ({ params }) {
-  const doc = await reader.collections.docs.read(params!.rest.join('/'), {
+  const _params = await params
+  const doc = await reader.collections.docs.read(_params!.rest.join('/'), {
     resolveLinkedFiles: true,
   })
   if (!doc) return notFound()
@@ -35,7 +36,7 @@ export default async function DocPage ({ params }) {
   ]
 
   return (
-    <DocsLayout headings={headings} editPath={`docs/${(params?.rest as string[]).join('/')}.md`}>
+    <DocsLayout headings={headings} editPath={`docs/${(_params?.rest as string[]).join('/')}.md`}>
       <PageClient document={JSON.parse(JSON.stringify(transformedDoc))} />
     </DocsLayout>
   )
@@ -43,7 +44,8 @@ export default async function DocPage ({ params }) {
 
 // Dynamic SEO page metadata
 export async function generateMetadata ({ params }) {
-  const doc = await reader.collections.docs.read(params!.rest.join('/'))
+  const _params = await params
+  const doc = await reader.collections.docs.read(_params!.rest.join('/'))
   return {
     title: doc?.title ? `${doc.title} - Keystone 6 Documentation` : 'Keystone 6 Documentation',
     description: doc?.description,
