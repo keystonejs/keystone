@@ -1638,8 +1638,8 @@ importers:
         specifier: ^6.1.0
         version: link:../core
       '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/react':
         specifier: ^19.0.0
         version: 19.0.8
@@ -1648,7 +1648,7 @@ importers:
         version: 16.10.0
       graphql-upload:
         specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
+        version: 15.0.2(@types/express@5.0.0)(graphql@16.10.0)
 
   packages/core:
     dependencies:
@@ -1780,7 +1780,7 @@ importers:
         version: 16.10.0
       graphql-upload:
         specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
+        version: 15.0.2(@types/express@5.0.0)(graphql@16.10.0)
       image-size:
         specifier: ^1.0.0
         version: 1.2.0
@@ -1840,8 +1840,8 @@ importers:
         specifier: ^2.8.13
         version: 2.8.17
       '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/fs-extra':
         specifier: ^11.0.0
         version: 11.0.4
@@ -6267,8 +6267,14 @@ packages:
   '@types/express-serve-static-core@4.19.6':
     resolution: {integrity: sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==}
 
+  '@types/express-serve-static-core@5.0.6':
+    resolution: {integrity: sha512-3xhRnjJPkULekpSzgtoNYYcTWgEZkp4myc+Saevii5JPnHNvHMRlBSHDbs7Bh1iPPoVTERHEZXyhyLbMEsExsA==}
+
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
+
+  '@types/express@5.0.0':
+    resolution: {integrity: sha512-DvZriSMehGHL1ZNLzi6MidnsDhUZM/x2pRdDIKdwbUNqqwHxMlRdkxtn6/EPKyqKpHqTl/4nRZsRNLpZxZRpPQ==}
 
   '@types/extract-files@13.0.1':
     resolution: {integrity: sha512-/fRbzc2lAd7jDJSSnxWiUyXWjdUZZ4HbISLJzVgt1AvrdOa7U49YRPcvuCUywkmURZ7uwJOheDjx19itbQ5KvA==}
@@ -10828,6 +10834,7 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qs@6.13.0:
@@ -18162,10 +18169,24 @@ snapshots:
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
+  '@types/express-serve-static-core@5.0.6':
+    dependencies:
+      '@types/node': 22.13.0
+      '@types/qs': 6.9.18
+      '@types/range-parser': 1.2.7
+      '@types/send': 0.17.4
+
   '@types/express@4.17.21':
     dependencies:
       '@types/body-parser': 1.19.5
       '@types/express-serve-static-core': 4.19.6
+      '@types/qs': 6.9.18
+      '@types/serve-static': 1.15.7
+
+  '@types/express@5.0.0':
+    dependencies:
+      '@types/body-parser': 1.19.5
+      '@types/express-serve-static-core': 5.0.6
       '@types/qs': 6.9.18
       '@types/serve-static': 1.15.7
 
@@ -20926,6 +20947,19 @@ snapshots:
       object-path: 0.11.8
     optionalDependencies:
       '@types/express': 4.17.21
+
+  graphql-upload@15.0.2(@types/express@5.0.0)(graphql@16.10.0):
+    dependencies:
+      '@types/busboy': 1.5.4
+      '@types/node': 22.13.0
+      '@types/object-path': 0.11.4
+      busboy: 1.6.0
+      fs-capacitor: 6.2.0
+      graphql: 16.10.0
+      http-errors: 2.0.0
+      object-path: 0.11.8
+    optionalDependencies:
+      '@types/express': 5.0.0
 
   graphql-ws@5.16.2(graphql@16.10.0):
     dependencies:
