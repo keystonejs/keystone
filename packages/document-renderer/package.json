@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "react": "^16.14.0 || 17 || 18"
+    "react": "^16.14.0 || 17 || 18 || 19"
   },
   "devDependencies": {
     "react": "^19.0.0"
