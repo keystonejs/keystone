@@ -24,6 +24,13 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
 }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const validateCreate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.create
   const validateUpdate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.update
+
+  function validate (v: unknown) {
+    if (v === null) return
+    if (v >= 0 && <= maxStars) return
+    return `The value must be within the range of 0-${maxStars}`
+  }
+
   return meta =>
     fieldType({
       // this configures what data is stored in the database
@@ -41,17 +48,13 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
         validate: {
           ...config.hooks?.validate,
           async create (args) {
-            const val = args.resolvedData[meta.fieldKey]
-            if (!(val == null || (val >= 0 && val <= maxStars))) {
-              args.addValidationError(`The value must be within the range of 0-${maxStars}`)
-            }
+            const err = validate(args.resolvedData[meta.fieldKey])
+            if (err) args.addValidationError(err)
             await validateCreate?.(args)
           },
           async update (args) {
-            const val = args.resolvedData[meta.fieldKey]
-            if (!(val == null || (val >= 0 && val <= maxStars))) {
-              args.addValidationError(`The value must be within the range of 0-${maxStars}`)
-            }
+            const err = validate(args.resolvedData[meta.fieldKey])
+            if (err) args.addValidationError(err)
             await validateUpdate?.(args)
           }
         }        
@@ -65,16 +68,12 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
           // this function can be omitted, it is here purely to show how you could change it
           resolve (val, context) {
             // if it's null, then the value will be set to null in the database
-            if (val === null) {
-              return null
-            }
+            if (val === null) return null
             // if it's undefined(which means that it was omitted in the request)
             // returning undefined will mean "don't change the existing value"
             // note that this means that this function is called on every update to an item
             // including when the field is not updated
-            if (val === undefined) {
-              return undefined
-            }
+            if (val === undefined) return undefined
             // if it's not null or undefined, it must be a number
             return val
           },
