@@ -11,7 +11,6 @@ import {
   resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
-import { merge } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -124,11 +123,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       ...config,
       hooks: {
         ...config.hooks,
-        validate: {
-          ...config.hooks?.validate,
-          create: merge(validate, config.hooks?.validate?.create),
-          update: merge(validate, config.hooks?.validate?.update),
-        }
+        validate
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.BigInt }) } : undefined,

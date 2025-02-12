@@ -8,7 +8,6 @@ import {
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { merge } from '../../resolve-hooks'
 import { type TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -75,11 +74,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       hooks: {
         ...config.hooks,
-        validate: {
-          ...config.hooks?.validate,
-          create: merge(validate, config.hooks?.validate?.create),
-          update: merge(validate, config.hooks?.validate?.update),
-        },
+        validate
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.DateTime }) } : undefined,

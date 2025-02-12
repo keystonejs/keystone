@@ -9,7 +9,6 @@ import {
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { merge } from '../../resolve-hooks'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -126,11 +125,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       ...config,
       hooks: {
         ...config.hooks,
-        validate: {
-          ...config.hooks?.validate,
-          create: merge(validate, config.hooks?.validate?.create),
-          update: merge(validate, config.hooks?.validate?.update),
-        },
+        validate
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Decimal }) } : undefined,

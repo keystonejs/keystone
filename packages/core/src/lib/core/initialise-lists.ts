@@ -44,6 +44,7 @@ import {
 } from './resolve-relationships'
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
+import { expandVoidHooks } from '../../fields/resolve-hooks'
 
 export type InitialisedField = {
   fieldKey: string
@@ -234,7 +235,6 @@ function getIsEnabledField (f: FieldConfigType, listKey: string, list: Partially
   }
 }
 
-function defaultOperationHook () {}
 function defaultListHooksResolveInput ({ resolvedData }: { resolvedData: any }) {
   return resolvedData
 }
@@ -242,24 +242,12 @@ function defaultListHooksResolveInput ({ resolvedData }: { resolvedData: any }) 
 function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: {
-      create: hooks.resolveInput?.create ?? defaultListHooksResolveInput,
-      update: hooks.resolveInput?.update ?? defaultListHooksResolveInput,
+      create: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.create ?? defaultListHooksResolveInput,
+      update: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.update ?? defaultListHooksResolveInput,
     },
-    validate: {
-      create: hooks.validate?.create ?? defaultOperationHook,
-      update: hooks.validate?.update ?? defaultOperationHook,
-      delete: hooks.validate?.delete ?? defaultOperationHook,
-    },
-    beforeOperation: {
-      create: hooks.beforeOperation?.create ?? defaultOperationHook,
-      update: hooks.beforeOperation?.update ?? defaultOperationHook,
-      delete: hooks.beforeOperation?.delete ?? defaultOperationHook,
-    },
-    afterOperation: {
-      create: hooks.afterOperation?.create ?? defaultOperationHook,
-      update: hooks.afterOperation?.update ?? defaultOperationHook,
-      delete: hooks.afterOperation?.delete ?? defaultOperationHook,
-    },
+    validate: expandVoidHooks(hooks.validate),
+    beforeOperation: expandVoidHooks(hooks.beforeOperation),
+    afterOperation: expandVoidHooks(hooks.afterOperation),
   }
 }
 
@@ -278,24 +266,12 @@ function parseFieldHooks (
 ): ResolvedFieldHooks<BaseListTypeInfo> {
   return {
     resolveInput: {
-      create: hooks.resolveInput?.create ?? defaultFieldHooksResolveInput,
-      update: hooks.resolveInput?.update ?? defaultFieldHooksResolveInput,
+      create: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.create ?? defaultFieldHooksResolveInput,
+      update: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.update ?? defaultFieldHooksResolveInput,
     },
-    validate: {
-      create: hooks.validate?.create ?? defaultOperationHook,
-      update: hooks.validate?.update ?? defaultOperationHook,
-      delete: hooks.validate?.delete ?? defaultOperationHook,
-    },
-    beforeOperation: {
-      create: hooks.beforeOperation?.create ?? defaultOperationHook,
-      update: hooks.beforeOperation?.update ?? defaultOperationHook,
-      delete: hooks.beforeOperation?.delete ?? defaultOperationHook,
-    },
-    afterOperation: {
-      create: hooks.afterOperation?.create ?? defaultOperationHook,
-      update: hooks.afterOperation?.update ?? defaultOperationHook,
-      delete: hooks.afterOperation?.delete ?? defaultOperationHook,
-    },
+    validate: expandVoidHooks(hooks.validate),
+    beforeOperation: expandVoidHooks(hooks.beforeOperation),
+    afterOperation: expandVoidHooks(hooks.afterOperation),
   }
 }
 

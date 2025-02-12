@@ -94,11 +94,10 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
         ? config.hooks
         : {
             ...config.hooks,
-            beforeOperation: {
-              ...config.hooks?.beforeOperation,
-              update: merge(config.hooks?.beforeOperation?.update, beforeOperationResolver),
-              delete: merge(config.hooks?.beforeOperation?.delete, beforeOperationResolver),
-            },
+            beforeOperation: merge(config.hooks?.beforeOperation, {
+              update: beforeOperationResolver,
+              delete: beforeOperationResolver,
+            })
           },
       input: {
         create: {

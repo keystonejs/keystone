@@ -22,6 +22,8 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
   maxStars = 5,
   ...config
 }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const validateCreate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.create
+  const validateUpdate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.update
   return meta =>
     fieldType({
       // this configures what data is stored in the database
@@ -34,22 +36,23 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
       ...config,
       hooks: {
         ...config.hooks,
-        // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
+        // We use the `validate` hooks to ensure that the user doesn't set an out of range value.
         // This hook is the key difference on the backend between the stars field type and the integer field type.
         validate: {
+          ...config.hooks?.validate,
           async create (args) {
             const val = args.resolvedData[meta.fieldKey]
             if (!(val == null || (val >= 0 && val <= maxStars))) {
               args.addValidationError(`The value must be within the range of 0-${maxStars}`)
             }
-            await config.hooks?.validate?.create?.(args)
+            await validateCreate?.(args)
           },
           async update (args) {
             const val = args.resolvedData[meta.fieldKey]
             if (!(val == null || (val >= 0 && val <= maxStars))) {
               args.addValidationError(`The value must be within the range of 0-${maxStars}`)
             }
-            await config.hooks?.validate?.update?.(args)
+            await validateUpdate?.(args)
           }
         }        
       },

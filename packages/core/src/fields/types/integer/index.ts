@@ -11,7 +11,6 @@ import {
   resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
-import { merge } from '../../resolve-hooks'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -120,11 +119,7 @@ export function integer <ListTypeInfo extends BaseListTypeInfo> (config: Integer
       ...config,
       hooks: {
         ...config.hooks,
-        validate: {
-          ...config.hooks?.validate,
-          create: merge(validate, config.hooks?.validate?.create),
-          update: merge(validate, config.hooks?.validate?.update),
-        },
+        validate
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Int }) } : undefined,
