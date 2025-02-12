@@ -143,16 +143,8 @@ export const lists = {
           if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
         },
       },
-      beforeOperation: {
-        create: ({ item, resolvedData, operation }) => {
-          console.log(`Post beforeOperation.${operation}`, resolvedData)
-        },
-        update: ({ item, resolvedData, operation }) => {
-          console.log(`Post beforeOperation.${operation}`, resolvedData)
-        },
-        delete: ({ item, operation }) => {
-          console.log(`Post beforeOperation.${operation}`, item)
-        },
+      beforeOperation: ({ item, resolvedData, operation }) => {
+        console.log(`Post beforeOperation.${operation}`, resolvedData)
       },
       afterOperation: {
         create: ({ inputData, item }) => {
