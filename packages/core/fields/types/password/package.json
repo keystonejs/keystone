@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-6-core-fields-types-password.cjs.js",
+  "module": "dist/keystone-6-core-fields-types-password.esm.js"
+}
