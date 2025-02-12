@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@main
-      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-setup-examples
 
       - run: pnpm install -w vercel@canary --ignore-scripts
       - run: pnpm vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
