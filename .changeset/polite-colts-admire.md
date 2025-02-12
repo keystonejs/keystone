@@ -3,4 +3,4 @@
 "@keystone-6/core": major
 ---
 
-Replace `bcrypt` and `workFactor` options to `password` field with generic `kdf` option
+Replace `bcrypt` and `workFactor` options for `password` field with new generic `kdf` option
