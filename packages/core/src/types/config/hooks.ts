@@ -51,37 +51,45 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: {
-    create?: ResolveInputListHook<ListTypeInfo, 'create'>
-    update?: ResolveInputListHook<ListTypeInfo, 'update'>
-  }
+  resolveInput?:
+    | ResolveInputListHook<ListTypeInfo, 'create' | 'update'>
+    | {
+        create?: ResolveInputListHook<ListTypeInfo, 'create'>
+        update?: ResolveInputListHook<ListTypeInfo, 'update'>
+      }
 
   /**
    * Used to **validate** if a create, update or delete operation is OK
    */
-  validate?: {
-    create?: ValidateHook<ListTypeInfo, 'create'>
-    update?: ValidateHook<ListTypeInfo, 'update'>
-    delete?: ValidateHook<ListTypeInfo, 'delete'>
-  }
+  validate?:
+    | ValidateHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: ValidateHook<ListTypeInfo, 'create'>
+        update?: ValidateHook<ListTypeInfo, 'update'>
+        delete?: ValidateHook<ListTypeInfo, 'delete'>
+      }
 
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: {
-    create?: BeforeOperationListHook<ListTypeInfo, 'create'>
-    update?: BeforeOperationListHook<ListTypeInfo, 'update'>
-    delete?: BeforeOperationListHook<ListTypeInfo, 'delete'>
-  }
+  beforeOperation?:
+    | BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: BeforeOperationListHook<ListTypeInfo, 'create'>
+        update?: BeforeOperationListHook<ListTypeInfo, 'update'>
+        delete?: BeforeOperationListHook<ListTypeInfo, 'delete'>
+      }
 
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: {
-    create?: AfterOperationListHook<ListTypeInfo, 'create'>
-    update?: AfterOperationListHook<ListTypeInfo, 'update'>
-    delete?: AfterOperationListHook<ListTypeInfo, 'delete'>
-  }
+  afterOperation?:
+    | AfterOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: AfterOperationListHook<ListTypeInfo, 'create'>
+        update?: AfterOperationListHook<ListTypeInfo, 'update'>
+        delete?: AfterOperationListHook<ListTypeInfo, 'delete'>
+      }
 }
 
 export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
@@ -113,37 +121,46 @@ export type FieldHooks<
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: {
-    create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
-    update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
-  }    
+  resolveInput?:
+    | ResolveInputFieldHook<ListTypeInfo, 'create' | 'update', FieldKey>
+    | {
+        create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
+      }
+  
 
   /**
    * Used to **validate** if a create, update or delete operation is OK
    */
-  validate?: {
-    create?: ValidateFieldHook<ListTypeInfo, 'create', FieldKey>
-    update?: ValidateFieldHook<ListTypeInfo, 'update', FieldKey>
-    delete?: ValidateFieldHook<ListTypeInfo, 'delete', FieldKey>
-  }
+  validate?: 
+    | ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+    | {
+        create?: ValidateFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: ValidateFieldHook<ListTypeInfo, 'update', FieldKey>
+        delete?: ValidateFieldHook<ListTypeInfo, 'delete', FieldKey>
+      }
 
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: {
-    create?: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldKey>
-    update?: BeforeOperationFieldHook<ListTypeInfo, 'update', FieldKey>
-    delete?: BeforeOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
-  }
+  beforeOperation?: 
+    | BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+    | {
+        create?: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: BeforeOperationFieldHook<ListTypeInfo, 'update', FieldKey>
+        delete?: BeforeOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
+      }
 
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: {
-    create?: AfterOperationFieldHook<ListTypeInfo, 'create', FieldKey>
-    update?: AfterOperationFieldHook<ListTypeInfo, 'update', FieldKey>
-    delete?: AfterOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
-  }
+  afterOperation?:
+    | AfterOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+    | {
+        create?: AfterOperationFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: AfterOperationFieldHook<ListTypeInfo, 'update', FieldKey>
+        delete?: AfterOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
+      }
 }
 
 export type ResolvedFieldHooks<
