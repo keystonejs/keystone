@@ -9,10 +9,7 @@ import type {
 import { fieldType, } from '../../../types'
 import { g } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
-import {
-  type InternalFieldHooks,
-  mergeFieldHooks,
-} from '../../resolve-hooks'
+import { merge } from '../../resolve-hooks'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -92,27 +89,24 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
       throw Error("isIndexed: 'unique' is not a supported option for field type image")
     }
 
-    const hooks: InternalFieldHooks<ListTypeInfo> = {}
-    if (!storage.preserve) {
-      hooks.beforeOperation = async (args) => {
-        if (args.operation === 'update' || args.operation === 'delete') {
-          const idKey = `${fieldKey}_id`
-          const id = args.item[idKey]
-          const extensionKey = `${fieldKey}_extension`
-          const extension = args.item[extensionKey]
+    async function beforeOperationResolver (args: any) { // TODO: types
+      if (args.operation === 'update' || args.operation === 'delete') {
+        const idKey = `${fieldKey}_id`
+        const id = args.item[idKey]
+        const extensionKey = `${fieldKey}_extension`
+        const extension = args.item[extensionKey]
 
-          // this will occur on an update where an image already existed but has been
-          // changed, or on a delete, where there is no longer an item
-          if (
-            (args.operation === 'delete' ||
-              typeof args.resolvedData[fieldKey].id === 'string' ||
-              args.resolvedData[fieldKey].id === null) &&
-            typeof id === 'string' &&
-            typeof extension === 'string' &&
-            isValidImageExtension(extension)
-          ) {
-            await args.context.images(config.storage).deleteAtSource(id, extension)
-          }
+        // this will occur on an update where an image already existed but has been
+        // changed, or on a delete, where there is no longer an item
+        if (
+          (args.operation === 'delete' ||
+            typeof args.resolvedData[fieldKey].id === 'string' ||
+            args.resolvedData[fieldKey].id === null) &&
+          typeof id === 'string' &&
+          typeof extension === 'string' &&
+          isValidImageExtension(extension)
+        ) {
+          await args.context.images(config.storage).deleteAtSource(id, extension)
         }
       }
     }
@@ -129,7 +123,15 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
       },
     })({
       ...config,
-      hooks: mergeFieldHooks(hooks, config.hooks),
+      hooks: storage.preserve
+        ? config.hooks
+        : {
+            ...config.hooks,
+            beforeOperation: merge(config.hooks?.beforeOperation, {
+              update: beforeOperationResolver,
+              delete: beforeOperationResolver,
+            }),
+          },
       input: {
         create: {
           arg: inputArg,

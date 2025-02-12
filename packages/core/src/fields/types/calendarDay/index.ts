@@ -9,7 +9,6 @@ import { type CalendarDayFieldMeta } from './views'
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -74,7 +73,10 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
       nativeType: usesNativeDateType ? 'Date' : undefined,
     })({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate
+      },
       input: {
         uniqueWhere:
           isIndexed === 'unique'

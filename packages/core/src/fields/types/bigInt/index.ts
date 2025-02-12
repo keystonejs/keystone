@@ -11,7 +11,6 @@ import {
   resolveDbNullable,
   makeValidateHook
 } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -122,7 +121,10 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate
+      },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.BigInt }) } : undefined,
         where: {

@@ -70,16 +70,6 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
       }
 
   /**
-   * @deprecated, replaced by validate^
-   */
-  validateInput?: ValidateHook<ListTypeInfo, 'create' | 'update'>
-
-  /**
-   * @deprecated, replaced by validate^
-   */
-  validateDelete?: ValidateHook<ListTypeInfo, 'delete'>
-
-  /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
   beforeOperation?:
@@ -133,16 +123,16 @@ export type FieldHooks<
    */
   resolveInput?:
     | ResolveInputFieldHook<ListTypeInfo, 'create' | 'update', FieldKey>
-// TODO: add in breaking change
-//      | {
-//          create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
-//          update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
-//        }
+    | {
+        create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
+      }
+  
 
   /**
    * Used to **validate** if a create, update or delete operation is OK
    */
-  validate?:
+  validate?: 
     | ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
     | {
         create?: ValidateFieldHook<ListTypeInfo, 'create', FieldKey>
@@ -151,26 +141,26 @@ export type FieldHooks<
       }
 
   /**
-   * @deprecated, replaced by validate^
-   * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
-   */
-  validateInput?: ValidateFieldHook<ListTypeInfo, 'create' | 'update', FieldKey>
-
-  /**
-   * @deprecated, replaced by validate^
-   * Used to **validate** that a delete operation can happen after access control has occurred
-   */
-  validateDelete?: ValidateFieldHook<ListTypeInfo, 'delete', FieldKey>
-
-  /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+  beforeOperation?: 
+    | BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+    | {
+        create?: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: BeforeOperationFieldHook<ListTypeInfo, 'update', FieldKey>
+        delete?: BeforeOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
+      }
 
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+  afterOperation?:
+    | AfterOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
+    | {
+        create?: AfterOperationFieldHook<ListTypeInfo, 'create', FieldKey>
+        update?: AfterOperationFieldHook<ListTypeInfo, 'update', FieldKey>
+        delete?: AfterOperationFieldHook<ListTypeInfo, 'delete', FieldKey>
+      }
 }
 
 export type ResolvedFieldHooks<

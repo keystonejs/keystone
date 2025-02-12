@@ -1,63 +1,63 @@
-import {
-  type BaseListTypeInfo,
-  type FieldHooks,
-  type MaybePromise
-} from '../types'
+import {  type MaybePromise } from '../types'
 
-// force new syntax for built-in fields
-//   and block hooks from using resolveInput, they should use GraphQL resolvers
-export type InternalFieldHooks<ListTypeInfo extends BaseListTypeInfo> =
-  Omit<FieldHooks<ListTypeInfo>, 'validateInput' | 'validateDelete' | 'resolveInput'>
-
-function merge <
-  R,
-  A extends (r: R) => MaybePromise<void>,
-  B extends (r: R) => MaybePromise<void>
-> (a?: A, b?: B) {
-  if (!a && !b) return undefined
-  return async (args: R) => {
+function mergeVoidFn <
+  Args,
+  A extends ((args: Args) => MaybePromise<void>) | undefined,
+  B extends ((args: Args) => MaybePromise<void>) | undefined
+> (a: A, b: B) {
+  if (!a) return b
+  if (!b) return a
+  return async (args: Args) => {
     await a?.(args)
     await b?.(args)
   }
 }
 
-/** @deprecated, TODO: remove in breaking change */
-function resolveValidateHooks <ListTypeInfo extends BaseListTypeInfo> ({
-  validate,
-  validateInput,
-  validateDelete
-}: FieldHooks<ListTypeInfo>): Exclude<FieldHooks<ListTypeInfo>['validate'], (...args: any) => any> | undefined {
-  if (!validate && !validateInput && !validateDelete) return
+type ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs> = {
+  create?: (args: CreateArgs) => MaybePromise<void>
+  update?: (args: UpdateArgs) => MaybePromise<void>
+  delete?: (args: DeleteArgs) => MaybePromise<void>
+}
+
+type Hooks<CreateArgs, UpdateArgs, DeleteArgs> =
+  | ((args: CreateArgs | UpdateArgs | DeleteArgs) => MaybePromise<void>)
+  | ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs>
+
+export function merge<CreateArgs, UpdateArgs, DeleteArgs> (
+  a: Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined,
+  b: Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined,
+): Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined {
+  if (!a) return b
+  if (!b) return a
+  if (typeof a === 'function' && typeof b === 'function') {
+    return mergeVoidFn(a, b)
+  }
+  const expandedA = expandHooks(a)
+  const expandedB = expandHooks(b)
   return {
-    create: merge(validateInput,  typeof validate === 'function' ? validate : validate?.create),
-    update: merge(validateInput,  typeof validate === 'function' ? validate : validate?.update),
-    delete: merge(validateDelete, typeof validate === 'function' ? validate : validate?.delete),
+    create: mergeVoidFn(expandedA.create, expandedB.create),
+    update: mergeVoidFn(expandedA.update, expandedB.update),
+    delete: mergeVoidFn(expandedA.delete, expandedB.delete),
   }
 }
 
-export function mergeFieldHooks <ListTypeInfo extends BaseListTypeInfo> (
-  builtin?: InternalFieldHooks<ListTypeInfo>,
-  hooks?: FieldHooks<ListTypeInfo>,
-) {
-  if (hooks === undefined) return builtin
-  if (builtin === undefined) return hooks
+function expandHooks<CreateArgs, UpdateArgs, DeleteArgs> (
+  fn: Hooks<CreateArgs, UpdateArgs, DeleteArgs>,
+): ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs> {
+  return typeof fn === 'function'
+    ? { create: fn, update: fn, delete: fn }
+    : (fn)
+}
 
-  const builtinValidate = resolveValidateHooks(builtin)
-  const hooksValidate = resolveValidateHooks(hooks)
+const emptyFn = () => {}
+
+export function expandVoidHooks<CreateArgs, UpdateArgs, DeleteArgs> (
+  hooks: Hooks<CreateArgs, UpdateArgs, DeleteArgs> | undefined,
+): Required<ExpandedHooks<CreateArgs, UpdateArgs, DeleteArgs>> {
+  const expanded = hooks ? expandHooks(hooks) : {}
   return {
-    ...hooks,
-    // WARNING: beforeOperation is _after_ a user beforeOperation hook, TODO: this is align with user expectations about when "operations" happen
-    //   our *Operation hooks are built-in, and should happen nearest to the database
-    beforeOperation: merge(hooks.beforeOperation, builtin.beforeOperation),
-    afterOperation: merge(builtin.afterOperation, hooks.afterOperation),
-    validate: (builtinValidate || hooksValidate) ? {
-      create: merge(builtinValidate?.create, hooksValidate?.create),
-      update: merge(builtinValidate?.update, hooksValidate?.update),
-      delete: merge(builtinValidate?.delete, hooksValidate?.delete)
-    } : undefined,
-
-    // TODO: remove in breaking change
-    validateInput: undefined, // prevent continuation
-    validateDelete: undefined, // prevent continuation
-  } satisfies FieldHooks<ListTypeInfo>
+    create: expanded.create ?? emptyFn,
+    update: expanded.update ?? emptyFn,
+    delete: expanded.delete ?? emptyFn
+  }
 }

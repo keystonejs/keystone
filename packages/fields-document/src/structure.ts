@@ -42,15 +42,17 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
     const unreferencedConcreteInterfaceImplementations: g.ObjectType<any>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
+    const innerUpdate = typeof config.hooks?.resolveInput === 'function' ? config.hooks.resolveInput : config.hooks?.resolveInput?.update
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
         hooks: {
           ...config.hooks,
-          async resolveInput (args) {
-            let val = args.resolvedData[meta.fieldKey]
-            if (args.operation === 'update') {
+          resolveInput: {
+            create: typeof config.hooks?.resolveInput === 'function' ? config.hooks.resolveInput : config.hooks?.resolveInput?.create,
+            update: async args => {
+              let val = args.resolvedData[meta.fieldKey]
               let prevVal = args.item[meta.fieldKey]
               if (meta.provider === 'sqlite') {
                 prevVal = JSON.parse(prevVal as any)
@@ -60,14 +62,13 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
               if (meta.provider === 'sqlite') {
                 val = JSON.stringify(val)
               }
-            }
-
-            return config.hooks?.resolveInput
-              ? config.hooks.resolveInput({
+              return innerUpdate
+              ? innerUpdate({
                   ...args,
                   resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
                 })
               : val
+            },
           },
         },
         input: {

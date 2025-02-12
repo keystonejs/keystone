@@ -22,6 +22,15 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
   maxStars = 5,
   ...config
 }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  const validateCreate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.create
+  const validateUpdate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.update
+
+  function validate (v: unknown) {
+    if (v === null) return
+    if (typeof v === 'number' && v >= 0 && v <= maxStars) return
+    return `The value must be within the range of 0-${maxStars}`
+  }
+
   return meta =>
     fieldType({
       // this configures what data is stored in the database
@@ -34,15 +43,21 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
       ...config,
       hooks: {
         ...config.hooks,
-        // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
+        // We use the `validate` hooks to ensure that the user doesn't set an out of range value.
         // This hook is the key difference on the backend between the stars field type and the integer field type.
-        async validateInput (args) {
-          const val = args.resolvedData[meta.fieldKey]
-          if (!(val == null || (val >= 0 && val <= maxStars))) {
-            args.addValidationError(`The value must be within the range of 0-${maxStars}`)
+        validate: {
+          ...config.hooks?.validate,
+          async create (args) {
+            const err = validate(args.resolvedData[meta.fieldKey])
+            if (err) args.addValidationError(err)
+            await validateCreate?.(args)
+          },
+          async update (args) {
+            const err = validate(args.resolvedData[meta.fieldKey])
+            if (err) args.addValidationError(err)
+            await validateUpdate?.(args)
           }
-          await config.hooks?.validateInput?.(args)
-        },
+        }        
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
@@ -53,16 +68,12 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
           // this function can be omitted, it is here purely to show how you could change it
           resolve (val, context) {
             // if it's null, then the value will be set to null in the database
-            if (val === null) {
-              return null
-            }
+            if (val === null) return null
             // if it's undefined(which means that it was omitted in the request)
             // returning undefined will mean "don't change the existing value"
             // note that this means that this function is called on every update to an item
             // including when the field is not updated
-            if (val === undefined) {
-              return undefined
-            }
+            if (val === undefined) return undefined
             // if it's not null or undefined, it must be a number
             return val
           },

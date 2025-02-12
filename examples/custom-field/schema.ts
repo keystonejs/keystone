@@ -31,14 +31,14 @@ export const lists = {
             return resolvedData[fieldKey]
           },
 
-          validateInput: async ({
+          validate: async ({
             resolvedData,
             inputData,
             item,
             addValidationError,
             fieldKey,
           }) => {
-            console.log('Post.content.hooks.validateInput', {
+            console.log('Post.content.hooks.validate', {
               resolvedData,
               inputData,
               item,
@@ -100,8 +100,8 @@ export const lists = {
         },
       },
 
-      validateInput: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
-        console.log('Post.hooks.validateInput', { resolvedData, operation, inputData, item })
+      validate: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
+        console.log('Post.hooks.validate', { resolvedData, operation, inputData, item })
 
         if (Math.random() > 0.95) {
           addValidationError('oh oh, try again, this is part of the example')

@@ -11,7 +11,6 @@ import {
 import { g } from '../../..'
 import { type PasswordFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
 import { isObjectType, type GraphQLSchema } from 'graphql'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -136,7 +135,10 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate
+      },
       input: {
         where:
           mode === 'required'

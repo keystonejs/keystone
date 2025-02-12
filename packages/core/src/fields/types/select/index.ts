@@ -10,7 +10,6 @@ import {
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
-import { mergeFieldHooks } from '../../resolve-hooks'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -95,7 +94,10 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       ...config,
       mode,
       ui,
-      hooks: mergeFieldHooks({ validate }, config.hooks),
+      hooks: {
+        ...config.hooks,
+        validate
+      },
       __ksTelemetryFieldTypeName: '@keystone-6/select',
       views: '@keystone-6/core/fields/types/select/views',
       getAdminMeta: () => ({
