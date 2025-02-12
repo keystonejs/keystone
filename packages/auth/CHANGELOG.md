@@ -1,5 +1,26 @@
 # @keystone-6/auth
 
+## 0.0.0-rc-20250212061115
+
+### Major Changes
+
+- [#9460](https://github.com/keystonejs/keystone/pull/9460) [`c6ce0a7`](https://github.com/keystonejs/keystone/commit/c6ce0a7ea67d33deeba96173e729fec5fd2cd18e) Thanks [@emmatown](https://github.com/emmatown)! - Prefer `g` instead of `graphql` when importing from `@keystone-6/core`
+
+- [#9471](https://github.com/keystonejs/keystone/pull/9471) [`e3e1f8d`](https://github.com/keystonejs/keystone/commit/e3e1f8d9eed94bfed0ff9542b5661c2eb2f4a7b2) Thanks [@emmatown](https://github.com/emmatown)! - Replace `bcrypt` and `workFactor` options for `password` field with new generic `kdf` option
+
+- [#9245](https://github.com/keystonejs/keystone/pull/9245) [`2672109`](https://github.com/keystonejs/keystone/commit/267210934cde5dde00b2a69a11f6793e920244a5) Thanks [@dcousens](https://github.com/dcousens)! - Remove `magicAuthLink` and `passwordResetLink` functionality from `@keystone-6/auth`
+
+### Minor Changes
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Adds the `EndSession` GraphQL mutation addition when `context.session.end` is defined
+
+- [#9189](https://github.com/keystonejs/keystone/pull/9189) [`a2ee52e`](https://github.com/keystonejs/keystone/commit/a2ee52e93ad3d281035dac857519709f647048fe) Thanks [@gautamsi](https://github.com/gautamsi)! - Change the type of `withAuth`'s first parameter to be a `ResolvedKeystoneConfig`, rather than `KeystoneConfig`
+
+### Patch Changes
+
+- Updated dependencies [[`7a4624f`](https://github.com/keystonejs/keystone/commit/7a4624fd472f9da31049e9a8a7bd8ba8f541a1e2), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`a2ee52e`](https://github.com/keystonejs/keystone/commit/a2ee52e93ad3d281035dac857519709f647048fe), [`c340760`](https://github.com/keystonejs/keystone/commit/c3407607cdd733b6555b02fe8264e4953af92256), [`5b5aec1`](https://github.com/keystonejs/keystone/commit/5b5aec170b36fe69457be80449199ddca807e9ca), [`c340760`](https://github.com/keystonejs/keystone/commit/c3407607cdd733b6555b02fe8264e4953af92256), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`77bfd2c`](https://github.com/keystonejs/keystone/commit/77bfd2c0b9cf2bcd14d10712dd40f7f5aeffac37), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76), [`5c99428`](https://github.com/keystonejs/keystone/commit/5c99428c5977dc5c27cc4ca66a4380f18fd64620), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`e3e1f8d`](https://github.com/keystonejs/keystone/commit/e3e1f8d9eed94bfed0ff9542b5661c2eb2f4a7b2), [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f), [`5410848`](https://github.com/keystonejs/keystone/commit/54108480451680f960f7e1c5c92418953a2c6dac), [`c6ce0a7`](https://github.com/keystonejs/keystone/commit/c6ce0a7ea67d33deeba96173e729fec5fd2cd18e), [`e5d7ace`](https://github.com/keystonejs/keystone/commit/e5d7ace4e472ac47b7f6ab9d98b2f58bab216b80)]:
+  - @keystone-6/core@0.0.0-rc-20250212061115
+
 ## 8.1.0
 
 ### Minor Changes
