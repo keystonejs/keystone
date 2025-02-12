@@ -2,5 +2,4 @@
 "@keystone-6/core": major
 ---
 
-Removed deprecated list and field hooks.
-Fixed field hooks of all the in built types
+Removed deprecated `validateInput` and `validateDelete` hooks and add object hook syntax to fields.
