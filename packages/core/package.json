@@ -86,6 +86,11 @@
       "module": "./admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js",
       "default": "./admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.js"
     },
+    "./fields/types/password": {
+      "types": "./fields/types/password/dist/keystone-6-core-fields-types-password.cjs.js",
+      "module": "./fields/types/password/dist/keystone-6-core-fields-types-password.esm.js",
+      "default": "./fields/types/password/dist/keystone-6-core-fields-types-password.cjs.js"
+    },
     "./fields/types/file/views": {
       "types": "./fields/types/file/views/dist/keystone-6-core-fields-types-file-views.cjs.js",
       "module": "./fields/types/file/views/dist/keystone-6-core-fields-types-file-views.esm.js",
@@ -305,6 +310,7 @@
       "admin-ui/image.tsx",
       "admin-ui/utils/index.ts",
       "fields/index.ts",
+      "fields/types/password/index.ts",
       "fields/types/*/views/index.tsx",
       "fields/types/{image,file}/utils.ts",
       "types/index.ts"

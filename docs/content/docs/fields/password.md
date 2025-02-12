@@ -18,8 +18,7 @@ Options:
   - `validation.match.regex`: The regular expression
   - `validation.match.explanation` (default: `${fieldLabel} must match ${validation.match.regex}`): A message shown in the Admin when a value doesn't match the regex and returned as a validation error from the GraphQL API
 - `validation.rejectCommon` (default: `false`): Rejects passwords from a list of commonly used passwords.
-- `bcrypt` (default: `require('bcryptjs')`): A module which implements the same interface as the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package, such as the native [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
-  This module will be used for all encryption routines in the `password` field.
+- `kdf` (default: `{ hash: (secret) => bcryptjs.hash(secret, 10), compare: (secret, hash) => bcryptjs.compare(secret, hash) }`): An object with `hash` and `compare` functions for hashing and comparing passwords.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -36,7 +35,6 @@ export default config({
             isRequired: true,
             rejectCommon: true,
           },
-          bcrypt: require('bcrypt'),
         }),
         /* ... */
       },

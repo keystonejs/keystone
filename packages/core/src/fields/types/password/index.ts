@@ -12,13 +12,10 @@ import { g } from '../../..'
 import { type PasswordFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
 import { mergeFieldHooks } from '../../resolve-hooks'
+import { isObjectType, type GraphQLSchema } from 'graphql'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    /**
-     * @default 10
-     */
-    workFactor?: number
     validation?: {
       isRequired?: boolean
       rejectCommon?: boolean
@@ -34,8 +31,13 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       map?: string
       extendPrismaSchema?: (field: string) => string
     }
-    bcrypt?: Pick<typeof bcryptjs, 'compare' | 'hash'>
+    kdf?: KDF
   }
+
+type KDF = {
+  compare(preImage: string, hash: string): Promise<boolean>
+  hash(preImage: string): Promise<string>
+}
 
 const PasswordState = g.object<{ isSet: boolean }>()({
   name: 'PasswordState',
@@ -51,12 +53,12 @@ const PasswordFilter = g.inputObject({
   },
 })
 
-const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[./A-Za-z0-9]{53}$/
-
 export function password <ListTypeInfo extends BaseListTypeInfo> (config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
-    bcrypt = bcryptjs, // TODO: rename to kdf in breaking change
-    workFactor = 10, // TODO: remove in breaking change, use a custom KDF
+    kdf = {
+      hash: (secret) => bcryptjs.hash(secret, 10),
+      compare: (secret, hash) => bcryptjs.compare(secret, hash),
+    },
     validation = {},
   } = config
   const {
@@ -92,13 +94,10 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
     ) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
     }
-    if (workFactor < 6 || workFactor > 31 || !Number.isInteger(workFactor)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey}: workFactor must be an integer between 6 and 31`)
-    }
 
     function inputResolver (val: string | null | undefined) {
       if (val == null) return val
-      return bcrypt.hash(val, workFactor)
+      return kdf.hash(val)
     }
 
     const hasAdditionalValidation = match || rejectCommon || min !== undefined || max !== undefined
@@ -185,19 +184,21 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
       output: g.field({
         type: PasswordState,
         resolve (val) {
-          return { isSet: val.value !== null && bcryptHashRegex.test(val.value) }
+          return { isSet: val.value !== null }
         },
         extensions: {
-          keystoneSecretField: {
-            generateHash: async (secret: string) => {
-              return bcrypt.hash(secret, workFactor)
-            },
-            compare: (secret: string, hash: string) => {
-              return bcrypt.compare(secret, hash)
-            },
-          },
+          keystoneKDF: kdf,
         },
       }),
     })
   }
+}
+
+
+export function getPasswordFieldKDF (schema: GraphQLSchema, listKey: string, fieldKey: string): KDF | null {
+  const gqlOutputType = schema.getType(listKey)
+  if (!isObjectType(gqlOutputType)) return null
+  const passwordField = gqlOutputType.getFields()[fieldKey]
+  if (!passwordField?.extensions.keystoneKDF) return null
+  return passwordField.extensions.keystoneKDF as KDF
 }
