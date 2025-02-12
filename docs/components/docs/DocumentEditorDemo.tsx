@@ -10,7 +10,7 @@ import {
   fields,
 } from '@keystone-6/fields-document/component-blocks'
 import { type document } from '@keystone-6/fields-document'
-import { Global, jsx } from '@emotion/react'
+import { Global } from '@emotion/react'
 
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
 import { DocumentEditor, } from '../../../packages/fields-document/src/DocumentEditor'
@@ -22,9 +22,11 @@ import {
 } from '../../../packages/fields-document/src/DocumentEditor/demo'
 import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
-import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks'
+import { componentBlocks as componentBlocksInExample } from '../../../examples/document-field-customisation/keystone-server/src/component-blocks'
 import { initialContent } from '../../lib/initialDocumentDemoContent'
 import { Code } from '../primitives/Code'
+import { KeystarProvider } from '@keystar/ui/core'
+import { useThemeContext } from '../../app/(site)/layout-client'
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const
 
@@ -86,11 +88,10 @@ type DocumentFeaturesFormValue = Parameters<
 const emptyObj = {}
 
 const componentBlocks = {
-  notice: componentBlocksInSandboxProject.notice,
-  hero: componentBlocksInSandboxProject.hero,
-  quote: componentBlocksInSandboxProject.quote,
-  checkboxList: componentBlocksInSandboxProject.checkboxList,
-  carousel: componentBlocksInSandboxProject.carousel,
+  callout: componentBlocksInExample.callout,
+  hero: componentBlocksInExample.hero,
+  quote: componentBlocksInExample.quote,
+  carousel: componentBlocksInExample.carousel,
 }
 
 type DocumentFieldConfig = Parameters<typeof document>[0]
@@ -297,6 +298,7 @@ export function DocumentEditorDemo () {
     setKey(x => x + 1)
   }, [documentFeatures])
 
+  const { theme } = useThemeContext()
   return (
     <div
       css={{
@@ -336,15 +338,17 @@ export function DocumentEditorDemo () {
           marginBottom: 'var(--space-xlarge)',
         }}
       >
-        <DocumentEditor
-          key={key}
-          value={value}
-          onChange={setValue}
-          componentBlocks={componentBlocks}
-          documentFeatures={documentFeatures}
-          relationships={emptyObj}
-          initialExpanded
-        />
+        <KeystarProvider colorScheme={theme}>
+          <DocumentEditor
+            key={key}
+            value={value}
+            onChange={setValue}
+            componentBlocks={componentBlocks}
+            documentFeatures={documentFeatures}
+            relationships={emptyObj}
+            initialExpanded
+          />
+        </KeystarProvider>
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
         <summary>View the Field Config</summary>

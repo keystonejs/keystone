@@ -122,9 +122,9 @@ export const initialContent = [
   },
   {
     type: 'component-block',
-    component: 'notice',
+    component: 'callout',
     props: {
-      intent: 'info',
+      tone: 'info',
     },
     children: [
       {
@@ -190,9 +190,9 @@ export const initialContent = [
   },
   {
     type: 'component-block',
-    component: 'notice',
+    component: 'callout',
     props: {
-      intent: 'success',
+      tone: 'positive',
     },
     children: [
       {
