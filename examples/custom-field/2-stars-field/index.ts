@@ -27,7 +27,7 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
 
   function validate (v: unknown) {
     if (v === null) return
-    if (v >= 0 && <= maxStars) return
+    if (v >= 0 && v <= maxStars) return
     return `The value must be within the range of 0-${maxStars}`
   }
 
