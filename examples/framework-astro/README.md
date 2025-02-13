@@ -11,7 +11,7 @@ To run the example for yourself you will perform the following step:
 
 - Clone the Repo
 - Run `pnpm install`
-- cd into the examples/framework-astro folder (`cd exmaples/framework-astro`)
+- cd into the examples/framework-astro folder (`cd examples/framework-astro`)
 - Run the Keystone Server to set up some posts:
   - Run `pnpm keystone dev`
   - Open a web browser at `http://localhost:4000`
