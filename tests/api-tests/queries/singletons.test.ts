@@ -135,10 +135,10 @@ describe('queries "work" on singletons', () => {
 
       const message =
         dbProvider === 'mysql'
-          ? 'Prisma error: Unique constraint failed on the constraint: `PRIMARY`'
-          : 'Prisma error: Unique constraint failed on the fields: (`id`)'
+          ? 'Unique constraint failed on the constraint: `PRIMARY`'
+          : 'Unique constraint failed on the fields: (`id`)'
 
-      expect(errors?.[0].message).toEqual(message)
+      expect(errors?.[0].message).toEqual(`\nInvalid \`prisma.singular.create()\` invocation:\n\n\n${message}`)
     })
   )
   test(

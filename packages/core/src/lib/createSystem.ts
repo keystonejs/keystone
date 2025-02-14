@@ -4,7 +4,6 @@ import type {
   FieldData,
   KeystoneConfig
 } from '../types'
-import { GraphQLError } from 'graphql'
 
 import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
@@ -146,37 +145,6 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
       })
     }
   }
-
-  prismaClient = (prismaClient as any).$extends({
-    query: {
-      async $allOperations ({ model, operation, args, query }: any) {
-        try {
-          return await query(args)
-        } catch (e: any) {
-          console.error(e)
-
-          if (e.code === undefined) {
-            return new GraphQLError(`Prisma error`, {
-              extensions: {
-                code: 'KS_PRISMA_ERROR',
-                debug: {
-                  message: e.message,
-                },
-              },
-            })
-          }
-
-          // TODO: remove e.message unless debug
-          return new GraphQLError(`Prisma error: ${e.message.split('\n').pop()?.trim()}`, {
-            extensions: {
-              code: 'KS_PRISMA_ERROR',
-              prisma: { ...e },
-            },
-          })
-        }
-      }
-    }
-  })
 
   return prismaClient
 }
