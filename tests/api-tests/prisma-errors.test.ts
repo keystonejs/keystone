@@ -4,6 +4,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from './test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
+import { dbProvider } from './utils'
 
 const extendGraphqlSchema = g.extend(base => ({
   mutation: {
@@ -68,7 +69,7 @@ for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaConte
 Invalid \`prisma.user.create()\` invocation:
 
 
-Unique constraint failed on the fields: (\`name\`)`
+Unique constraint failed on the ${dbProvider === 'mysql' ? 'constraint: `User_name_key`' : 'fields: (`name`)'}`
           },
           stacktrace: expect.any(Array),
           code: 'KS_PRISMA_ERROR'
