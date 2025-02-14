@@ -203,10 +203,13 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     connect,
     context,
     config: system.config,
-    http: null as any, // TODO: FIXME
-    express: null as any, // TODO: FIXME
+    // the non null assertions are wrong but better than casting as any or similar
+    // and it doesn't really matter much since it's in tests so if it fails
+    // the test fails and it's fine
+    http: null!,
+    express: null!,
     gql,
-    gqlSuper: null as any, // TODO: FIXME
+    gqlSuper: null!,
     disconnect,
   } as const
 }
