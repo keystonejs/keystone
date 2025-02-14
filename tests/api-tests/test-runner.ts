@@ -169,14 +169,14 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
       httpServer: http
     } = await createExpressServer(system.config, context)
 
-    function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
+    function gqlSuper (args:Parameters<typeof context.graphql.raw>[0]&{ operationName?: string }) {
       return supertest(express)
         .post(system.config.graphql?.path ?? '/api/graphql')
-        .send(...args)
+        .send(args)
         .set('Accept', 'application/json')
     }
 
-    async function gql (...args: Parameters<typeof context.graphql.raw>) {
+    async function gql (...args: Parameters<typeof gqlSuper>) {
       const { body } = await gqlSuper(...args)
       return body
     }
