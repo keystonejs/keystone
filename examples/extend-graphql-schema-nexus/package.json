@@ -17,6 +17,6 @@
     "nexus": "^1.3.0"
   },
   "devDependencies": {
-    "prisma": "5.19.0"
+    "prisma": "6.3.1"
   }
 }
