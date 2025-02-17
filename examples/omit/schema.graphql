@@ -4,6 +4,8 @@
 type Person {
   id: ID!
   name: String
+  priority(where: PriorityWhereInput! = {}, orderBy: [PriorityOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PriorityWhereUniqueInput): [Priority!]
+  priorityCount(where: PriorityWhereInput! = {}): Int
 }
 
 input PersonWhereUniqueInput {
@@ -16,6 +18,7 @@ input PersonWhereInput {
   NOT: [PersonWhereInput!]
   id: IDFilter
   name: StringFilter
+  priority: PriorityManyRelationFilter
 }
 
 input IDFilter {
@@ -57,6 +60,12 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PriorityManyRelationFilter {
+  every: PriorityWhereInput
+  some: PriorityWhereInput
+  none: PriorityWhereInput
+}
+
 input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -69,6 +78,13 @@ enum OrderDirection {
 
 input PersonUpdateInput {
   name: String
+  priority: PriorityRelateToManyForUpdateInput
+}
+
+input PriorityRelateToManyForUpdateInput {
+  disconnect: [PriorityWhereUniqueInput!]
+  set: [PriorityWhereUniqueInput!]
+  connect: [PriorityWhereUniqueInput!]
 }
 
 input PersonUpdateArgs {
@@ -78,6 +94,11 @@ input PersonUpdateArgs {
 
 input PersonCreateInput {
   name: String
+  priority: PriorityRelateToManyForCreateInput
+}
+
+input PriorityRelateToManyForCreateInput {
+  connect: [PriorityWhereUniqueInput!]
 }
 
 type Priority {
