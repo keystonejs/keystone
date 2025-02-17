@@ -19,7 +19,7 @@
     "@ts-gql/eslint-plugin": "^0.9.1",
     "@ts-gql/tag": "^0.7.3",
     "eslint": "^8.0.0",
-    "prisma": "5.19.0",
+    "prisma": "6.3.1",
     "typescript": "^5.5.0"
   },
   "ts-gql": {
