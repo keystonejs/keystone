@@ -39,9 +39,6 @@ function formatError (graphqlConfig: KeystoneConfig['graphql']) {
         ...formattedError,
         extensions: {
           ...formattedError.extensions,
-          debug: {
-            message: error.message,
-          },
           code: 'KS_PRISMA_ERROR',
         },
         message: 'Prisma error'
@@ -101,9 +98,9 @@ export async function createExpressServer (
 
   const apolloConfig = config.graphql.apolloConfig
   const serverConfig = {
-    formatError: formatError(config.graphql),
     includeStacktraceInErrorResponses: config.graphql.debug,
     ...apolloConfig,
+    formatError: formatError(config.graphql),
     schema: context.graphql.schema,
     plugins:
       config.graphql.playground === 'apollo'

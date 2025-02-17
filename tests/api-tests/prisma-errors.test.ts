@@ -33,96 +33,90 @@ const extendGraphqlSchema = g.extend(base => ({
   }
 }))
 
-const debugRunner = setupTestRunner({
-  serve: true,
-  config: {
-    lists: {
-      User: list({
-        access: allowAll,
-        fields: {
-          name: text({ isIndexed: 'unique' })
+for (const name of ['with custom formatError', 'without custom formatError'] as const) {
+  describe(name, () => {
+    const extraExtensions = name === 'with custom formatError' ? { someCustomThing: true } : {}
+    const runner = (debug: boolean) => setupTestRunner({
+      serve: true,
+      config: {
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text({ isIndexed: 'unique' })
+            },
+          }),
         },
-      }),
-    },
-    graphql: {
-      debug: true,
-      extendGraphqlSchema
+        graphql: {
+          debug,
+          extendGraphqlSchema,
+          apolloConfig: name ==='with custom formatError' ? {
+            formatError: (formattedError) => {
+              return { ...formattedError, extensions: { ...formattedError.extensions, ...extraExtensions } }
+            }
+          } : undefined
+        }
+      },
+    })
+
+    for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaContextQuery', 'createUserViaGraphQLRun']) {
+      test(`details of prisma error are shown in debug when debug is enabled with ${query}`, runner(true)(async ({ gql }) => {
+        const doc = `mutation { ${query}${query === 'createUser' ? '(data: { name: "User" })' : ''} { id } }`
+        expect(await gql({ query: doc })).toEqual({
+          data: {
+            [query]: { id: expect.any(String) }
+          }
+        })
+        const result = await gql({ query: doc })
+        expect(result).toEqual({
+          data: { [query]: null },
+          errors: [{
+            extensions: {
+              stacktrace: expect.any(Array),
+              code: 'KS_PRISMA_ERROR',
+              ...extraExtensions,
+            },
+            ...(query === 'createUser' || query === 'createUserViaGraphQLRun' ? { locations: [{ line: 1, column: 12 }] } : {}),
+            // interesting that it's always `createUser` here
+            // it makes sense since the error comes from there in all cases
+            // but weird that it's not an accurate path into the query the consumer
+            // actually runs
+            path: ['createUser'],
+            message: 'Prisma error'
+          }]
+        })
+        expect(result.errors[0].extensions.stacktrace.slice(0, 5)).toEqual([
+          'PrismaClientKnownRequestError: ',
+          'Invalid `prisma.user.create()` invocation:',
+          '',
+          '',
+          `Unique constraint failed on the ${dbProvider === 'mysql' ? 'constraint: `User_name_key`' : 'fields: (`name`)'}`,
+        ])
+      }))
     }
-  },
-})
 
-for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaContextQuery', 'createUserViaGraphQLRun']) {
-  test(`details of prisma error are shown in debug when debug is enabled with ${query}`, debugRunner(async ({ gql }) => {
-    const doc = `mutation { ${query}${query === 'createUser' ? '(data: { name: "User" })' : ''} { id } }`
-    expect(await gql({ query: doc })).toEqual({
-      data: {
-        [query]: { id: expect.any(String) }
-      }
-    })
-    const result = await gql({ query: doc })
-    expect(result).toEqual({
-      data: { [query]: null },
-      errors: [{
-        extensions: {
-          debug: {
-            message: `
-Invalid \`prisma.user.create()\` invocation:
-
-
-Unique constraint failed on the ${dbProvider === 'mysql' ? 'constraint: `User_name_key`' : 'fields: (`name`)'}`
-          },
-          stacktrace: expect.any(Array),
-          code: 'KS_PRISMA_ERROR'
-        },
-        ...(query === 'createUser' || query === 'createUserViaGraphQLRun' ? { locations: [{ line: 1, column: 12 }] } : {}),
-        // interesting that it's always `createUser` here
-        // it makes sense since the error comes from there in all cases
-        // but weird that it's not an accurate path into the query the consumer
-        // actually runs
-        path: ['createUser'],
-        message: 'Prisma error'
-      }]
-    })
-  }))
-}
-
-const prodRunner = setupTestRunner({
-  serve: true,
-  config: {
-    lists: {
-      User: list({
-        access: allowAll,
-        fields: {
-          name: text({ isIndexed: 'unique' })
-        },
-      }),
-    },
-    graphql: {
-      debug: false,
-      extendGraphqlSchema
+    for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaContextQuery', 'createUserViaGraphQLRun']) {
+      test(`no details of prisma error are shown beyond that it's a prima error when debug is disabled with ${query}`, runner(false)(async ({ gql }) => {
+        const doc = `mutation { ${query}${query === 'createUser' ? '(data: { name: "User" })' : ''} { id } }`
+        expect(await gql({ query: doc })).toEqual({
+          data: {
+            [query]: { id: expect.any(String) }
+          }
+        })
+        const result = await gql({ query: doc })
+        expect(result).toEqual({
+          data: { [query]: null },
+          errors: [{
+            extensions: {
+              code: 'KS_PRISMA_ERROR',
+              ...extraExtensions,
+            },
+            ...(query === 'createUser' || query === 'createUserViaGraphQLRun' ? { locations: [{ line: 1, column: 12 }] } : {}),
+            path: ['createUser'],
+            message: 'Prisma error'
+          }]
+        })
+      }))
     }
-  },
-})
-
-for (const query of ['createUser', 'createUserViaContextDb', 'createUserViaContextQuery', 'createUserViaGraphQLRun']) {
-  test(`no details of prisma error are shown beyond that it's a prima error when debug is disabled with ${query}`, prodRunner(async ({ gql }) => {
-    const doc = `mutation { ${query}${query === 'createUser' ? '(data: { name: "User" })' : ''} { id } }`
-    expect(await gql({ query: doc })).toEqual({
-      data: {
-        [query]: { id: expect.any(String) }
-      }
-    })
-    const result = await gql({ query: doc })
-    expect(result).toEqual({
-      data: { [query]: null },
-      errors: [{
-        extensions: {
-          code: 'KS_PRISMA_ERROR'
-        },
-        ...(query === 'createUser' || query === 'createUserViaGraphQLRun' ? { locations: [{ line: 1, column: 12 }] } : {}),
-        path: ['createUser'],
-        message: 'Prisma error'
-      }]
-    })
-  }))
+  })
 }
