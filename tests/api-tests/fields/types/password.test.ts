@@ -42,7 +42,7 @@ test('password longer than 72 characters is rejected', runner(async ({context}) 
   }
 }))
 
-test('password that is 72 utf-16 code units but 76 utf-8 code units is rejected', runner(async ({context}) => {
+test('password that is 72 utf-16 code units but >72 utf-8 code units is rejected', runner(async ({context}) => {
   const password = 'a'.repeat(70) + '❤️'
   expect(password.length).toBe(72)
   expect(new TextEncoder().encode(password).length).toBe(76)
