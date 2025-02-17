@@ -1,3 +1,4 @@
+import type { ScalarDBField } from '../types'
 import {
   type BaseListTypeInfo,
   type DatabaseProvider,
@@ -102,7 +103,7 @@ const NATIVE_TYPES: {
   },
 }
 
-function unpack (i: IdFieldConfig) {
+function unpack (i: IdFieldConfig): Pick<ScalarDBField<'String' | 'Int' | 'BigInt', 'required'>, 'scalar' | 'default'> {
   if (i.kind === 'random') {
     const { kind, bytes, encoding } = i
     if (typeof bytes === 'number') {
@@ -112,57 +113,58 @@ function unpack (i: IdFieldConfig) {
     }
 
     return {
-      kind,
-      type: 'String',
+      scalar: 'String',
       // our defaults are 32 bytes, as base64url
       //   256 / Math.log2(64) ~ 43 characters
       //
       // for case-insensitive databases that is
       //   225 bits ~ Math.log2((26 + 10 + 2) ** 43)
-      default_: {
+      default: {
         kind,
         bytes: bytes ?? 32,
         encoding: encoding ?? 'base64url',
       },
-    } as const
+    }
   }
   const { kind, type } = i
-  if (kind === 'cuid') return { kind: 'cuid', type: 'String', default_: { kind } } as const
-  if (kind === 'uuid') return { kind: 'uuid', type: 'String', default_: { kind } } as const
-  if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const
-  if (kind === 'number') return { kind: 'number', type: type ?? 'Int', default_: undefined } as const
-  if (kind === 'autoincrement') return { kind: 'autoincrement', type: type ?? 'Int', default_: { kind } } as const
+  if (kind === 'cuid') return { scalar: 'String', default: { kind, version: i.version } }
+  if (kind === 'uuid') return { scalar: 'String', default: { kind, version: i.version } }
+  if (kind === 'nanoid') return { scalar: 'String', default: { kind, length: i.length } }
+  if (kind === 'ulid') return { scalar: 'String', default: { kind } }
+  if (kind === 'string') return { scalar: 'String', default: undefined }
+  if (kind === 'number') return { scalar: type ?? 'Int', default: undefined }
+  if (kind === 'autoincrement') return { scalar: type ?? 'Int', default: { kind } }
   throw new Error(`Unknown id type ${kind}`)
 }
 
 export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> {
-  const { kind, type: type_, default_ } = unpack(config)
+  const kind = config.kind
+  const dbFieldOptions = unpack(config)
   const parseTypeFn = {
     Int: isInt,
     BigInt: isBigInt,
     String: isString,
     UUID: isUuid, // TODO: remove in breaking change
-  }[kind === 'uuid' ? 'UUID' : type_]
+  }[kind === 'uuid' ? 'UUID' : dbFieldOptions.scalar]
 
   function parse (value: IDType) {
     const result = parseTypeFn(value)
     if (result === undefined) {
-      throw userInputError(`Only a ${type_.toLowerCase()} can be passed to id filters`)
+      throw userInputError(`Only a ${dbFieldOptions.scalar.toLowerCase()} can be passed to id filters`)
     }
     return result
   }
 
-  return meta => {
-    if (meta.provider === 'sqlite' && kind === 'autoincrement' && type_ === 'BigInt') {
-      throw new Error(`{ kind: ${kind}, type: ${type_} } is not supported by SQLite`)
+  return (meta) => {
+    if (meta.provider === 'sqlite' && kind === 'autoincrement' && dbFieldOptions.scalar === 'BigInt') {
+      throw new Error(`{ kind: ${kind}, type: ${dbFieldOptions.scalar} } is not supported by SQLite`)
     }
 
     return fieldType({
+      ...dbFieldOptions,
       kind: 'scalar',
       mode: 'required',
-      scalar: type_,
       nativeType: NATIVE_TYPES[meta.provider]?.[kind],
-      default: default_,
     })({
       ...config,
 
@@ -187,7 +189,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
         },
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
-      getAdminMeta: () => ({ kind, type: type_ }),
+      getAdminMeta: () => ({ kind, type: dbFieldOptions.scalar }),
       ui: {
         createView: {
           fieldMode: 'hidden',

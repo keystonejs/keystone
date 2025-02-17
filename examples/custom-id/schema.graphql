@@ -333,6 +333,111 @@ input ProductCreateInput {
   sku: String
 }
 
+type Cuid2 {
+  id: ID!
+  name: String
+}
+
+input Cuid2WhereUniqueInput {
+  id: ID
+}
+
+input Cuid2WhereInput {
+  AND: [Cuid2WhereInput!]
+  OR: [Cuid2WhereInput!]
+  NOT: [Cuid2WhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input Cuid2OrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input Cuid2UpdateInput {
+  name: String
+}
+
+input Cuid2UpdateArgs {
+  where: Cuid2WhereUniqueInput!
+  data: Cuid2UpdateInput!
+}
+
+input Cuid2CreateInput {
+  name: String
+}
+
+type Ulid {
+  id: ID!
+  name: String
+}
+
+input UlidWhereUniqueInput {
+  id: ID
+}
+
+input UlidWhereInput {
+  AND: [UlidWhereInput!]
+  OR: [UlidWhereInput!]
+  NOT: [UlidWhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input UlidOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input UlidUpdateInput {
+  name: String
+}
+
+input UlidUpdateArgs {
+  where: UlidWhereUniqueInput!
+  data: UlidUpdateInput!
+}
+
+input UlidCreateInput {
+  name: String
+}
+
+type Nanoid {
+  id: ID!
+  name: String
+}
+
+input NanoidWhereUniqueInput {
+  id: ID
+}
+
+input NanoidWhereInput {
+  AND: [NanoidWhereInput!]
+  OR: [NanoidWhereInput!]
+  NOT: [NanoidWhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input NanoidOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input NanoidUpdateInput {
+  name: String
+}
+
+input NanoidUpdateArgs {
+  where: NanoidWhereUniqueInput!
+  data: NanoidUpdateInput!
+}
+
+input NanoidCreateInput {
+  name: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -369,6 +474,24 @@ type Mutation {
   updateProducts(data: [ProductUpdateArgs!]!): [Product]
   deleteProduct(where: ProductWhereUniqueInput!): Product
   deleteProducts(where: [ProductWhereUniqueInput!]!): [Product]
+  createCuid2(data: Cuid2CreateInput!): Cuid2
+  createCuid2s(data: [Cuid2CreateInput!]!): [Cuid2]
+  updateCuid2(where: Cuid2WhereUniqueInput!, data: Cuid2UpdateInput!): Cuid2
+  updateCuid2s(data: [Cuid2UpdateArgs!]!): [Cuid2]
+  deleteCuid2(where: Cuid2WhereUniqueInput!): Cuid2
+  deleteCuid2s(where: [Cuid2WhereUniqueInput!]!): [Cuid2]
+  createUlid(data: UlidCreateInput!): Ulid
+  createUlids(data: [UlidCreateInput!]!): [Ulid]
+  updateUlid(where: UlidWhereUniqueInput!, data: UlidUpdateInput!): Ulid
+  updateUlids(data: [UlidUpdateArgs!]!): [Ulid]
+  deleteUlid(where: UlidWhereUniqueInput!): Ulid
+  deleteUlids(where: [UlidWhereUniqueInput!]!): [Ulid]
+  createNanoid(data: NanoidCreateInput!): Nanoid
+  createNanoids(data: [NanoidCreateInput!]!): [Nanoid]
+  updateNanoid(where: NanoidWhereUniqueInput!, data: NanoidUpdateInput!): Nanoid
+  updateNanoids(data: [NanoidUpdateArgs!]!): [Nanoid]
+  deleteNanoid(where: NanoidWhereUniqueInput!): Nanoid
+  deleteNanoids(where: [NanoidWhereUniqueInput!]!): [Nanoid]
 }
 
 type Query {
@@ -387,6 +510,15 @@ type Query {
   product(where: ProductWhereUniqueInput!): Product
   products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
   productsCount(where: ProductWhereInput! = {}): Int
+  cuid2(where: Cuid2WhereUniqueInput!): Cuid2
+  cuid2s(where: Cuid2WhereInput! = {}, orderBy: [Cuid2OrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: Cuid2WhereUniqueInput): [Cuid2!]
+  cuid2sCount(where: Cuid2WhereInput! = {}): Int
+  ulid(where: UlidWhereUniqueInput!): Ulid
+  ulids(where: UlidWhereInput! = {}, orderBy: [UlidOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UlidWhereUniqueInput): [Ulid!]
+  ulidsCount(where: UlidWhereInput! = {}): Int
+  nanoid(where: NanoidWhereUniqueInput!): Nanoid
+  nanoids(where: NanoidWhereInput! = {}, orderBy: [NanoidOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NanoidWhereUniqueInput): [Nanoid!]
+  nanoidsCount(where: NanoidWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

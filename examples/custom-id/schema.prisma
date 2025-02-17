@@ -52,3 +52,18 @@ model Product {
   sku                 String  @unique @default("")
   from_Order_products Order[] @relation("Order_products")
 }
+
+model Cuid2 {
+  id   String @id @default(cuid(2))
+  name String @default("")
+}
+
+model Ulid {
+  id   String @id @default(ulid())
+  name String @default("")
+}
+
+model Nanoid {
+  id   String @id @default(nanoid(25))
+  name String @default("")
+}

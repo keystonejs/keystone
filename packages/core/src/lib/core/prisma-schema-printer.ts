@@ -25,25 +25,29 @@ function printNativeType (nativeType: string | undefined, datasourceName: string
   return nativeType === undefined ? '' : ` @${datasourceName}.${nativeType}`
 }
 
-function printScalarDefaultValue (defaultValue: ScalarDBFieldDefault) {
+function printScalarDefaultValue (defaultValue: ScalarDBFieldDefault): string {
   if (defaultValue.kind === 'literal') {
     if (typeof defaultValue.value === 'string') {
       return ` @default(${JSON.stringify(defaultValue.value)})`
     }
     return ` @default(${defaultValue.value.toString()})`
   }
-  if (
-    defaultValue.kind === 'now' ||
-    defaultValue.kind === 'autoincrement' ||
-    defaultValue.kind === 'cuid' ||
-    defaultValue.kind === 'uuid'
-  ) {
+  if (defaultValue.kind === 'cuid' || defaultValue.kind === 'uuid') {
+    return ` @default(${defaultValue.kind}(${defaultValue.version ?? ''}))`
+  }
+  if (defaultValue.kind === 'nanoid') {
+    return ` @default(nanoid(${defaultValue.length ?? ''}))`
+  }
+  if (defaultValue.kind === 'now' || defaultValue.kind === 'autoincrement' || defaultValue.kind === 'ulid') {
     return ` @default(${defaultValue.kind}())`
   }
   if (defaultValue.kind === 'dbgenerated') {
     return ` @default(dbgenerated(${JSON.stringify(defaultValue.value)}))`
   }
-  return ''
+  if (defaultValue.kind === 'random') {
+    return ''
+  }
+  assertNever(defaultValue)
 }
 
 function assertNever (arg: never): never {
