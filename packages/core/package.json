@@ -241,7 +241,7 @@
     "@react-stately/data": "^3.11.6",
     "@sindresorhus/slugify": "^1.1.2",
     "apollo-upload-client": "^17.0.0",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.0",
     "body-parser": "^1.20.1",
     "bytes": "^3.1.1",
     "chalk": "^4.1.2",
