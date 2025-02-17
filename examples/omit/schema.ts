@@ -10,12 +10,16 @@ export const lists = {
     fields: {
       // the person's name, publicly visible
       name: text({ validation: { isRequired: true } }),
+      // since create is omitted on the Priority list, the nested create doesn't exist for this field in the public GraphQL schema
+      priority: relationship({ ref: 'Priority.person', many: true }),
+      // since the Nice list is completely omitted, this field doesn't exist in the public GraphQL schema
+      nice: relationship({ ref: 'Nice.person', many: true }),
     },
   }),
   Priority: list({
     access: allowAll,
     fields: {
-      person: relationship({ ref: 'Person' }),
+      person: relationship({ ref: 'Person.priority' }),
     },
 
     // this list is partially omitted -> it will partially be in the public GraphQL schema
@@ -30,7 +34,7 @@ export const lists = {
   Nice: list({
     access: allowAll,
     fields: {
-      person: relationship({ ref: 'Person' }),
+      person: relationship({ ref: 'Person.nice' }),
     },
 
     // this list is completely omitted -> it won't be in the public GraphQL schema
