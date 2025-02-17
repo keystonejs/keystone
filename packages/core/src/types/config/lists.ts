@@ -238,7 +238,10 @@ export type IdFieldConfig =
       bytes?: number
       encoding?: 'hex' | 'base64url'
     }
-  | { kind: 'cuid' | 'uuid' | 'string', type?: 'String' }
+  | { kind: 'string' | 'ulid', type?: 'String' }
+  | { kind: 'cuid', version?: 1 | 2, type?: 'String' }
+  | { kind: 'uuid', version?: 4 | 7, type?: 'String' }
+  | { kind: 'nanoid', length?: number, type?: 'String' }
   | { kind: 'autoincrement', type?: 'Int' | 'BigInt' }
   | { kind: 'number', type: 'Int' | 'BigInt' }
 

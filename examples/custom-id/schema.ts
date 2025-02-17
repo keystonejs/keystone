@@ -75,4 +75,31 @@ export const lists = {
       sku: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
     },
   }),
+  Cuid2: list({
+    access: allowAll,
+    db: {
+      idField: { kind: 'cuid', version: 2 },
+    },
+    fields: {
+      name: text(),
+    },
+  }),
+  Ulid: list({
+    access: allowAll,
+    db: {
+      idField: { kind: 'ulid' },
+    },
+    fields: {
+      name: text(),
+    },
+  }),
+  Nanoid: list({
+    access: allowAll,
+    db: {
+      idField: { kind: 'nanoid', length: 25 },
+    },
+    fields: {
+      name: text(),
+    },
+  }),
 } satisfies Lists
