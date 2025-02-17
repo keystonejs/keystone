@@ -27,6 +27,11 @@ function printNativeType (nativeType: string | undefined, datasourceName: string
 
 function printScalarDefaultValue (defaultValue: ScalarDBFieldDefault): string {
   if (defaultValue.kind === 'literal') {
+    if (defaultValue instanceof Uint8Array) {
+      // can't find documentation for it but it seems the expected format for Bytes defaults in Prisma is base64
+      // https://github.com/prisma/prisma-engines/blob/11f45a26bee8dc9c91606fc5130d1025a6e22197/psl/psl-core/src/validate/validation_pipeline/validations/default_value.rs#L77
+      return ` @default("${Buffer.from(defaultValue).toString('base64')}")`
+    }
     if (typeof defaultValue.value === 'string') {
       return ` @default(${JSON.stringify(defaultValue.value)})`
     }

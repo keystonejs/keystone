@@ -76,6 +76,7 @@ type ScalarPrismaTypes = {
   BigInt: bigint
   Json: JSONValue
   Decimal: Decimal
+  Bytes: Uint8Array
 }
 
 type Literal<T> = {
@@ -104,6 +105,7 @@ export type ScalarDBFieldDefault<
           BigInt: Literal<bigint> | { kind: 'autoincrement' }
           DateTime: Literal<string> | { kind: 'now' }
           Decimal: Literal<string>
+          Bytes: Literal<Uint8Array>
         }[Scalar]
       | { kind: 'dbgenerated', value: string }
 
