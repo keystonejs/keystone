@@ -169,14 +169,14 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
       httpServer: http
     } = await createExpressServer(system.config, context)
 
-    function gqlSuper (...args: Parameters<typeof context.graphql.raw>) {
+    function gqlSuper (args:Parameters<typeof context.graphql.raw>[0]&{ operationName?: string }) {
       return supertest(express)
         .post(system.config.graphql?.path ?? '/api/graphql')
-        .send(...args)
+        .send(args)
         .set('Accept', 'application/json')
     }
 
-    async function gql (...args: Parameters<typeof context.graphql.raw>) {
+    async function gql (...args: Parameters<typeof gqlSuper>) {
       const { body } = await gqlSuper(...args)
       return body
     }
@@ -203,10 +203,13 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     connect,
     context,
     config: system.config,
-    http: null as any, // TODO: FIXME
-    express: null as any, // TODO: FIXME
+    // the non null assertions are wrong but better than casting as any or similar
+    // and it doesn't really matter much since it's in tests so if it fails
+    // the test fails and it's fine
+    http: null!,
+    express: null!,
     gql,
-    gqlSuper: null as any, // TODO: FIXME
+    gqlSuper: null!,
     disconnect,
   } as const
 }

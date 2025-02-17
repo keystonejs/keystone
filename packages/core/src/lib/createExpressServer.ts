@@ -6,7 +6,7 @@ import cors from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
-import type { GraphQLFormattedError } from 'graphql'
+import { GraphQLError, type GraphQLFormattedError } from 'graphql'
 import {
   type ApolloServerOptions,
   ApolloServer,
@@ -29,10 +29,20 @@ so the CLI can bring up the dev server early to handle GraphQL requests.
 */
 
 function formatError (graphqlConfig: KeystoneConfig['graphql']) {
+  let debug = graphqlConfig.debug
+  if (debug === undefined) {
+    debug = process.env.NODE_ENV !== 'production'
+  }
   return (formattedError: GraphQLFormattedError, error: unknown) => {
-    let debug = graphqlConfig.debug
-    if (debug === undefined) {
-      debug = process.env.NODE_ENV !== 'production'
+    if (error instanceof GraphQLError && error.originalError?.name.startsWith('Prisma')) {
+      formattedError = {
+        ...formattedError,
+        extensions: {
+          ...formattedError.extensions,
+          code: 'KS_PRISMA_ERROR',
+        },
+        message: 'Prisma error'
+      }
     }
 
     if (!debug && formattedError.extensions) {
@@ -88,9 +98,9 @@ export async function createExpressServer (
 
   const apolloConfig = config.graphql.apolloConfig
   const serverConfig = {
-    formatError: formatError(config.graphql),
     includeStacktraceInErrorResponses: config.graphql.debug,
     ...apolloConfig,
+    formatError: formatError(config.graphql),
     schema: context.graphql.schema,
     plugins:
       config.graphql.playground === 'apollo'
