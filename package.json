@@ -33,7 +33,7 @@
     "@changesets/get-release-plan": "^4.0.0",
     "@eslint/js": "^9.2.0",
     "@preconstruct/cli": "^2.8.9",
-    "@stylistic/eslint-plugin-ts": "^3.0.0",
+    "@stylistic/eslint-plugin-ts": "^4.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": "^22.0.0",
     "vitest": "^3.0.4",
