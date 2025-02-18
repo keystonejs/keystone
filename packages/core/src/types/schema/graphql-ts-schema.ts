@@ -132,6 +132,64 @@ export const JSON = graphqlTsSchema.g.scalar<JSONValue>(
   })
 )
 
+// avoiding using Buffer.from/etc. because we want a plain Uint8Array and that would be an extra conversion
+// when https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toHex and etc.
+// is available we should use that instead
+
+function hexToBytes(value: string): Uint8Array {
+  if (!/^[0-9a-fA-F]*$/.test(value)) {
+    throw new GraphQLError('Hex values must be a string of hexadecimal characters')
+  }
+  if (value.length % 2 !== 0) {
+    throw new GraphQLError('Hex values must have an even number of characters')
+  }
+  const bytes = new Uint8Array(value.length / 2)
+  for (let i = 0; i < bytes.byteLength; i += 1) {
+    const start = i * 2
+    bytes[i] = parseInt(value.slice(start, start + 2), 16)
+  }
+  return bytes
+}
+
+function bytesToHex(bytes: Uint8Array): string {
+  let str = ''
+  for (const byte of bytes) {
+    str += byte.toString(16).padStart(2, '0')
+  }
+  return str
+}
+
+export const Hex = graphqlTsSchema.g.scalar<Uint8Array>(
+  new GraphQLScalarType({
+    name: 'Hex',
+    description: 'The `Hex` scalar type represents bytes as a string of hexadecimal characters.',
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('Hex only accepts values as strings')
+      }
+      return hexToBytes(value.value)
+    },
+    parseValue(value) {
+      // so that when you're doing a mutation in a resolver, you can just pass in a Uint8Array directly
+      if (value instanceof Uint8Array) {
+        // duplicate it though to avoid any weirdness with the array being mutated
+        // + ensuring that if you pass in a Buffer, resolvers recieve a normal Uint8Array
+        return Uint8Array.from(value)
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError('Hex only accepts values as strings')
+      }
+      return hexToBytes(value)
+    },
+    serialize(value) {
+      if (!(value instanceof Uint8Array)) {
+        throw new GraphQLError(`unexpected value provided to Hex scalar: ${value}`)
+      }
+      return bytesToHex(value)
+    },
+  })
+)
+
 type FileUpload = {
   filename: string
   mimetype: string

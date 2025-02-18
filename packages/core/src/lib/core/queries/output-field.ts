@@ -15,7 +15,7 @@ import { g } from '../../..'
 import { getOperationFieldAccess, getOperationAccess, getAccessFilters } from '../access-control'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
 import type { InitialisedList } from '../initialise-lists'
-import { type IdType, getDBFieldKeyForFieldOnMultiField } from '../utils'
+import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils'
 import { accessControlledFilter } from './resolvers'
 import * as queries from './resolvers'
 
@@ -56,17 +56,6 @@ function getRelationVal(
         currentItemOwnsForeignKey ? 'id' : `${dbField.field}Id`
       )(currentItemOwnsForeignKey ? fk : id)
     }
-  }
-}
-
-function weakMemoize<Arg extends object, Return>(cb: (arg: Arg) => Return) {
-  const cache = new WeakMap<Arg, Return>()
-  return (arg: Arg) => {
-    if (!cache.has(arg)) {
-      const result = cb(arg)
-      cache.set(arg, result)
-    }
-    return cache.get(arg)!
   }
 }
 
