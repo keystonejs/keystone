@@ -55,7 +55,14 @@ const PasswordFilter = g.inputObject({
 export function password <ListTypeInfo extends BaseListTypeInfo> (config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   const {
     kdf = {
-      hash: (secret) => bcryptjs.hash(secret, 10),
+      hash: (secret) => {
+        // note this is slightly different to checking .length > 72 because
+        // bcrypt will truncate to 72 bytes after utf8 encoding
+        // not JS string length which may be different since that's the utf16 length
+        // (though using characters in the error message makes sense since users shouldn't have to think about bytes and it aligns with the validation messages below)
+        if (bcryptjs.truncates(secret)) throw new Error('value must be no longer than 72 characters')
+        return bcryptjs.hash(secret, 10) 
+      },
       compare: (secret, hash) => bcryptjs.compare(secret, hash),
     },
     validation = {},
