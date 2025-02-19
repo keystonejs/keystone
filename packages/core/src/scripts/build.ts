@@ -1,5 +1,4 @@
 import esbuild from 'esbuild'
-import nextBuild from 'next/dist/build'
 import { generateAdminUI } from '../admin-ui/system'
 import {
   createSystem,
@@ -42,6 +41,10 @@ export async function build (
   await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
   console.log('✨ Building Admin UI')
+
+  // do _NOT_ change this to a static import, it is intentionally like this
+  // to avoid loading it in the common case where the UI is not being built
+  const nextBuild = require('next/dist/build').default
   await nextBuild(
     paths.admin,
     undefined,
