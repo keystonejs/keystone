@@ -3,6 +3,8 @@ import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { graphql } from './tada'
 import type { Lists } from '.keystone/types'
+// this import will add support for using gql.tada fragments in `context.query`
+import type {} from '@keystone-6/core/gql.tada'
 
 const LatestPostQuery = graphql(`
   query LastestPostQuery($id: ID!) {
@@ -29,7 +31,24 @@ export const lists: Lists = {
     fields: {
       name: text({ validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      // A virtual field which returns a type derived from a Keystone list.
+      latestPostTitle: virtual({
+        field: g.field({
+          type: g.String,
+          async resolve(item, args, context) {
+            const data = await context.query.Post.findMany({
+              where: { author: { id: { equals: item.id } } },
+              orderBy: { publishDate: 'desc' },
+              query: graphql(`
+                fragment _ on Post {
+                  title
+                }
+              `),
+              take: 1,
+            })
+            return data[0]?.title
+          },
+        }),
+      }),
       latestPost: virtual({
         field: lists =>
           g.field({
