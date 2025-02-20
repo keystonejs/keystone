@@ -64,7 +64,7 @@ type ListAPI<ListTypeInfo extends BaseListTypeInfo> = {
       readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
     } & ResolveFields
   ): Promise<readonly Record<string, any>[]>
-  findOne(args: UniqueWhereInput<ListTypeInfo> & ResolveFields): Promise<Record<string, any>>
+  findOne(args: UniqueWhereInput<ListTypeInfo> & ResolveFields): Promise<Record<string, any> | null>
   count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
   updateOne(
     args: UniqueWhereInput<ListTypeInfo> & {
