@@ -1,4 +1,4 @@
-import { type GraphQLSchema } from 'graphql'
+import type { DocumentNode, GraphQLSchema } from 'graphql'
 import type { InitialisedList } from '../core/initialise-lists'
 import { type KeystoneContext } from '../../types'
 import { executeGraphQLFieldToSource } from './executeGraphQLFieldToSource'
@@ -9,7 +9,7 @@ export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
     const exec = executeGraphQLFieldWithSelection(schema, operation, fieldName)
     return (
       _args: {
-        query?: string
+        query?: string | DocumentNode
       } & Record<string, any> = {},
       context: KeystoneContext
     ) => {
