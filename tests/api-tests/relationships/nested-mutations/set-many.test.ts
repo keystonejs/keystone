@@ -206,7 +206,7 @@ describe('with access control', () => {
           where: { id: createUser.id },
           query: 'id notes { id }',
         })
-        expect(data.notes).toHaveLength(0)
+        expect(data!.notes).toHaveLength(0)
       })
     )
   })

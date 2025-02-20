@@ -33,10 +33,10 @@ const runner = setupTestRunner({
 })
 
 const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: IdType) =>
-  context.query.Teacher.findOne({
+  (await context.query.Teacher.findOne({
     where: { id: teacherId },
     query: 'id students { id }',
-  })
+  }))!
 
 const getStudent = async (context: ContextFromRunner<typeof runner>, studentId: IdType) => {
   type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } }

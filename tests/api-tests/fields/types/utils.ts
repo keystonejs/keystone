@@ -149,10 +149,10 @@ export function uniqueEqualityFilterTest(
 
       await Promise.all(
         values.map(async (testField, idx) => {
-          const { index } = await context.query.Test.findOne({
+          const { index } = (await context.query.Test.findOne({
             where: { testField },
             query: 'index',
-          })
+          }))!
           expect(index).toEqual(idx)
         })
       )

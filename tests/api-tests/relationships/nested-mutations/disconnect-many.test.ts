@@ -190,7 +190,7 @@ describe('with access control', () => {
           query: 'id notes { id }',
         })
 
-        expect(data.notes).toHaveLength(1)
+        expect(data!.notes).toHaveLength(1)
       })
     )
   })
