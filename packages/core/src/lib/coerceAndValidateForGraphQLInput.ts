@@ -6,7 +6,7 @@ import type {
 } from 'graphql'
 import { Kind } from 'graphql'
 import { getVariableValues } from 'graphql/execution/values'
-import { getTypeNodeForType } from './context/executeGraphQLFieldToRootVal'
+import { getTypeNodeForType } from './context/executeGraphQLFieldToSource'
 
 const argName = 'where'
 

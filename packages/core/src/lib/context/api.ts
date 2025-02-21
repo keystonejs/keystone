@@ -1,7 +1,7 @@
 import { type GraphQLSchema } from 'graphql'
 import type { InitialisedList } from '../core/initialise-lists'
 import { type KeystoneContext } from '../../types'
-import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal'
+import { executeGraphQLFieldToSource } from './executeGraphQLFieldToSource'
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection'
 
 export function getQueryFactory (list: InitialisedList, schema: GraphQLSchema) {
@@ -71,7 +71,7 @@ export function getDbFactory (list: InitialisedList, schema: GraphQLSchema) {
       }
     }
 
-    return executeGraphQLFieldToRootVal(field)
+    return executeGraphQLFieldToSource(field)
   }
 
   const fcache = {
