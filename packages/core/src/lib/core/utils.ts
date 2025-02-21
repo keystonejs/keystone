@@ -35,3 +35,14 @@ export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: st
 export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
   return a.length === b.length && a.every((x, i) => x === b[i])
 }
+
+export function weakMemoize<Arg extends object, Return>(cb: (arg: Arg) => Return) {
+  const cache = new WeakMap<Arg, Return>()
+  return (arg: Arg) => {
+    if (!cache.has(arg)) {
+      const result = cb(arg)
+      cache.set(arg, result)
+    }
+    return cache.get(arg)!
+  }
+}
