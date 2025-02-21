@@ -190,7 +190,7 @@ describe('Auth testing', () => {
         expectInternalServerError(body.errors, [
           {
             path: ['createInitialUser'],
-            message: 'Unexpected error value: \"Authentication failed.\"',
+            message: 'Unexpected error value: "Authentication failed."',
           },
         ])
         expect(body.data).toEqual(null)

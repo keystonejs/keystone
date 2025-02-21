@@ -32,8 +32,14 @@ jobs:
       - name: Prisma Filters
         run: pnpm test:filters
 
+      - name: Add back examples
+        run: git checkout -- examples tests/test-projects
+
+      - name: Formatting
+        run: pnpm format:check
+
   linting-examples:
-    name: Linting
+    name: TypeScript
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

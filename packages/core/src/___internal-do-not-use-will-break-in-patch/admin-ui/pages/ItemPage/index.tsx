@@ -166,7 +166,7 @@ function ItemForm ({
 }: {
   listKey: string
   initialValue: Record<string, unknown>
-  onSaveSuccess: Function
+  onSaveSuccess: () => void
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
