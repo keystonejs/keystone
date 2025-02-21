@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-6-core-gql.tada.cjs.js",
+  "module": "dist/keystone-6-core-gql.tada.esm.js"
+}

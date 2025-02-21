@@ -1,7 +1,6 @@
 import {
   type DocumentNode,
   execute,
-  type FragmentDefinitionNode,
   GraphQLList,
   GraphQLNonNull,
   type GraphQLOutputType,
@@ -40,11 +39,24 @@ export function executeGraphQLFieldWithSelection(
   }
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const rootName = getRootTypeName(field.type)
-  return async (args: Record<string, any>, query: string, context: KeystoneContext) => {
-    const selectionSet = (
-      parse(`fragment x on ${rootName} {${query}}`).definitions[0] as FragmentDefinitionNode
-    ).selectionSet
-
+  return async (
+    args: Record<string, any>,
+    query: string | DocumentNode,
+    context: KeystoneContext
+  ) => {
+    const fragmentDocumentNode =
+      typeof query === 'string' ? parse(`fragment x on ${rootName} {${query}}`) : query
+    if (fragmentDocumentNode.definitions[0].kind !== Kind.FRAGMENT_DEFINITION) {
+      throw new Error(
+        `The first definition in \`query\` passed to context.query.${rootName}.* must be a fragment`
+      )
+    }
+    if (fragmentDocumentNode.definitions[0].typeCondition.name.value !== rootName) {
+      throw new Error(
+        `The fragment in \`query\` passed to context.query.${rootName}.* must be on the type ${rootName}`
+      )
+    }
+    const fragmentName = fragmentDocumentNode.definitions[0].name.value
     const document: DocumentNode = {
       kind: Kind.DOCUMENT,
       definitions: [
@@ -59,12 +71,21 @@ export function executeGraphQLFieldWithSelection(
                 kind: Kind.FIELD,
                 name: { kind: Kind.NAME, value: field.name },
                 arguments: argumentNodes,
-                selectionSet: selectionSet,
+                selectionSet: {
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: Kind.FRAGMENT_SPREAD,
+                      name: { kind: Kind.NAME, value: fragmentName },
+                    },
+                  ],
+                },
               },
             ],
           },
           variableDefinitions,
         },
+        ...fragmentDocumentNode.definitions,
       ],
     }
 
