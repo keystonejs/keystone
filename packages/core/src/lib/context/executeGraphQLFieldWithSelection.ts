@@ -12,7 +12,7 @@ import {
   validate,
 } from 'graphql'
 import { type KeystoneContext } from '../../types'
-import { getVariablesForGraphQLField } from './executeGraphQLFieldToRootVal'
+import { getVariablesForGraphQLField } from './executeGraphQLFieldToSource'
 
 function getRootTypeName (type: GraphQLOutputType): string {
   if (type instanceof GraphQLNonNull) {

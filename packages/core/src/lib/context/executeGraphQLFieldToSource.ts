@@ -145,7 +145,7 @@ function getRootValGivenOutputType (originalType: OutputType, value: any): any {
   return value[rawField]
 }
 
-export function executeGraphQLFieldToRootVal (field: GraphQLField<any, unknown>) {
+export function executeGraphQLFieldToSource (field: GraphQLField<any, unknown>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,
