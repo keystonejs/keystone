@@ -7,3 +7,4 @@ examples/extend-graphql-schema-nexus/keystone-types.ts
 examples/extend-graphql-schema-nexus/nexus-types.ts
 examples/graphql-codegen/gql
 examples/graphql-gql.tada/tada.generated.d.ts
+examples/custom-output-paths/my-types.ts
