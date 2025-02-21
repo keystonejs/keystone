@@ -1,4 +1,4 @@
-import { controller, } from '../index'
+import { controller } from '../index'
 
 const STUBCONFIG = {
   listKey: 'timestamp',
@@ -16,13 +16,13 @@ describe('controller', () => {
         fieldMeta: {
           defaultValue: null,
           isRequired: false,
-          updatedAt: false
-        }
+          updatedAt: false,
+        },
       })
       expect(
         validate!({
           kind: 'create',
-          value: null
+          value: null,
         })
       ).toBe(true)
     })
@@ -32,13 +32,13 @@ describe('controller', () => {
         fieldMeta: {
           defaultValue: null,
           isRequired: true,
-          updatedAt: false
-        }
+          updatedAt: false,
+        },
       })
       expect(
         validate!({
           kind: 'create',
-          value: null
+          value: null,
         })
       ).toBe('foo is required')
     })
@@ -48,13 +48,13 @@ describe('controller', () => {
         fieldMeta: {
           defaultValue: null,
           isRequired: true,
-          updatedAt: false
-        }
+          updatedAt: false,
+        },
       })
       expect(
         validate!({
           kind: 'create',
-          value: new Date().toJSON()
+          value: new Date().toJSON(),
         })
       ).toBe(true)
     })

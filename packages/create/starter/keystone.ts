@@ -24,16 +24,21 @@ export default withAuth(
       url: 'file:./keystone.db',
     },
     apolloConfig: {
-      plugins: [{
-        async requestDidStart (requestContext) {
-          console.log('graphql operation', requestContext.request.operationName ?? '(unnamed operation)')
-          return {
-            async didEncounterErrors (requestContext) {
-              console.error(...requestContext.errors)
-            },
-          }
+      plugins: [
+        {
+          async requestDidStart(requestContext) {
+            console.log(
+              'graphql operation',
+              requestContext.request.operationName ?? '(unnamed operation)'
+            )
+            return {
+              async didEncounterErrors(requestContext) {
+                console.error(...requestContext.errors)
+              },
+            }
+          },
         },
-      }]
+      ],
     },
     lists,
     session,

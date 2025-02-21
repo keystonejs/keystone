@@ -72,13 +72,13 @@ const runner = setupTestRunner({
       DefaultFilterFunctionTruthy: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: () => ({} as any), // not actually allowed
+        defaultIsFilterable: () => ({}) as any, // not actually allowed
       }),
     },
   },
 })
 
-async function initialiseData ({ context }: { context: ContextFromRunner<typeof runner> }) {
+async function initialiseData({ context }: { context: ContextFromRunner<typeof runner> }) {
   // Use shuffled data to ensure that ordering is actually happening.
   for (const listKey of Object.keys(context.query) as Array<keyof (typeof context)['query']>) {
     if (listKey === 'User' || listKey === 'SecondaryList') continue

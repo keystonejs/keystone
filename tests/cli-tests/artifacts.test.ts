@@ -19,7 +19,9 @@ describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
     const recording = recordConsole()
     await expect(cliMock(cwd, command)).rejects.toEqual(new ExitError(1))
 
-    expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
+    expect(recording()).toMatchInlineSnapshot(
+      `"Your Prisma and GraphQL schemas are not up to date"`
+    )
   })
 })
 
@@ -32,9 +34,13 @@ describe('prisma migrate status', () => {
     await expect(cliMock(cwd, ['build', '--no-ui', '--frozen'])).rejects.toEqual(new ExitError(1))
 
     const recording = recordConsole()
-    await expect(cliMock(cwd, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(new ExitError(1))
+    await expect(cliMock(cwd, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(
+      new ExitError(1)
+    )
 
-    expect(recording()).toMatchInlineSnapshot(`"Your Prisma and GraphQL schemas are not up to date"`)
+    expect(recording()).toMatchInlineSnapshot(
+      `"Your Prisma and GraphQL schemas are not up to date"`
+    )
   })
 })
 
@@ -73,8 +79,6 @@ describe('postinstall', () => {
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`)
   })
 })
-
-
 
 // uncomment when you need to update the schemas in the fixture
 // import fs from 'node:fs/promises'

@@ -13,7 +13,7 @@ import { type controller, type DocumentFeatures } from './views-shared'
 export { controller } from './views-shared'
 export { type DocumentFeatures }
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
 
   return (
@@ -35,7 +35,7 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-function serialize (nodes: Node[]) {
+function serialize(nodes: Node[]) {
   return nodes.map((n: Node) => Node.string(n)).join('\n')
 }
 

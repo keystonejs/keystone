@@ -38,7 +38,7 @@ import { IntroHeading } from '../../../components/content/Intro'
 
 import adminUi from '../../../public/assets/admin-ui.png'
 
-export default function WhyKeystonePage () {
+export default function WhyKeystonePage() {
   const mq = useMediaQuery()
 
   return (

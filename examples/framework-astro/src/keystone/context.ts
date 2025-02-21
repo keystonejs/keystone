@@ -8,5 +8,5 @@ export const keystoneContext: Context =
   (globalThis as any).keystoneContext || getContext(config, PrismaModule)
 
 if (process.env.NODE_ENV !== 'production') {
-  (globalThis as any).keystoneContext = keystoneContext
+  ;(globalThis as any).keystoneContext = keystoneContext
 }

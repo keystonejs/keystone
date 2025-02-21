@@ -24,7 +24,7 @@ testModules
       name !== 'ID' && !unSupportedAdapterList.includes(dbProvider)
   )
   .forEach(mod => {
-    (mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
+    ;(mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {
       describe(`${mod.name} - ${matrixValue} - graphql.isNonNull`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {

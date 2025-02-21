@@ -15,7 +15,7 @@ export type MaybePromise<T> = T | Promise<T>
 // WARNING: may break in patch
 export type GraphQLNames = ReturnType<typeof getGqlNames>
 
-export function getGqlNames ({
+export function getGqlNames({
   listKey,
   pluralGraphQLName,
 }: {
@@ -60,10 +60,12 @@ const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase()
 const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
 // WARNING: may break in patch
-export function __getNames (listKey: string, list: KeystoneConfig['lists'][string]) {
+export function __getNames(listKey: string, list: KeystoneConfig['lists'][string]) {
   const { graphql, ui, isSingleton } = list
   if (ui?.path !== undefined && !/^[a-z-_][a-z0-9-_]*$/.test(ui.path)) {
-    throw new Error(`ui.path for ${listKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`)
+    throw new Error(
+      `ui.path for ${listKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`
+    )
   }
 
   const computedSingular = humanize(listKey)
@@ -73,7 +75,9 @@ export function __getNames (listKey: string, list: KeystoneConfig['lists'][strin
 
   const pluralGraphQLName = graphql?.plural || labelToClass(computedPlural)
   if (pluralGraphQLName === listKey) {
-    throw new Error(`The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`)
+    throw new Error(
+      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+    )
   }
 
   return {

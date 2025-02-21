@@ -4,7 +4,7 @@ import { siteBaseUrl } from '../../../lib/og-util'
 
 const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`
 
-const HeroImage = ({ title, type }: { title: string, type?: string }) => {
+const HeroImage = ({ title, type }: { title: string; type?: string }) => {
   const clippedTitle = title.length > 100 ? title.substring(0, 100) + '...' : title
   let titleFontSize = 96
   if (clippedTitle.length > 35) {
@@ -102,12 +102,12 @@ const HeroImage = ({ title, type }: { title: string, type?: string }) => {
 
 const interSemiBold = fetch(
   new URL('../../../public/assets/blog/font/Inter-SemiBold.ttf', import.meta.url)
-).then((res) => res.arrayBuffer())
+).then(res => res.arrayBuffer())
 const interExtraBold = fetch(
   new URL('../../../public/assets/blog/font/Inter-ExtraBold.ttf', import.meta.url)
-).then((res) => res.arrayBuffer())
+).then(res => res.arrayBuffer())
 
-export async function GET (req: NextRequest) {
+export async function GET(req: NextRequest) {
   const interSemiBoldData = await interSemiBold
   const interExtraBoldData = await interExtraBold
 

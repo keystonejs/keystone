@@ -6,6 +6,6 @@ export const metadata = {
     'How the Keystone developer experience gives you the power to design APIs on the fly, build custom editing experiences, and deliver content to any frontend framework. All in version controllable code.',
 }
 
-export default function ForDevelopers () {
+export default function ForDevelopers() {
   return <PageClient />
 }

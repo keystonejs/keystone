@@ -9,7 +9,7 @@ import {
 import { isListNode } from './lists-shared'
 import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils'
 
-type BasicToolbarItem = { isSelected: boolean, isDisabled: boolean }
+type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 
 // component blocks are not in the ToolbarState because they're inserted in the closest available place and the selected state is not shown in the toolbar
 
@@ -22,7 +22,7 @@ export type ToolbarState = {
     allowedHeadingLevels: (1 | 2 | 3 | 4 | 5 | 6)[]
   }
   marks: {
-    [key in Mark]: BasicToolbarItem;
+    [key in Mark]: BasicToolbarItem
   }
   clearFormatting: {
     isDisabled: boolean
@@ -31,7 +31,7 @@ export type ToolbarState = {
     selected: 'start' | 'center' | 'end'
     isDisabled: boolean
   }
-  lists: { ordered: BasicToolbarItem, unordered: BasicToolbarItem }
+  lists: { ordered: BasicToolbarItem; unordered: BasicToolbarItem }
   links: BasicToolbarItem
   blockquote: BasicToolbarItem
   // note that layouts can't be disabled because they are inserted
@@ -45,7 +45,7 @@ export type ToolbarState = {
   editorDocumentFeatures: DocumentFeatures
 }
 
-export function getAncestorComponentChildFieldDocumentFeatures (
+export function getAncestorComponentChildFieldDocumentFeatures(
   editor: Editor,
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>
@@ -252,14 +252,14 @@ export const createToolbarState = (
   }
 }
 
-function hasBlockThatClearsOnClearFormatting (editor: Editor) {
+function hasBlockThatClearsOnClearFormatting(editor: Editor) {
   const [node] = Editor.nodes(editor, {
     match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
   })
   return !!node
 }
 
-export function getListTypeAbove (editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
+export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
   const listAbove = Editor.above(editor, { match: isListNode })
   if (!listAbove) {
     return 'none'

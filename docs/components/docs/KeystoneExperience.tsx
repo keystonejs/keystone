@@ -13,8 +13,8 @@ import { Video } from '../icons/Video'
 import { useMediaQuery } from '../../lib/media'
 import { Type } from '../primitives/Type'
 
-export function KeystoneExperience () {
- const mq = useMediaQuery()
+export function KeystoneExperience() {
+  const mq = useMediaQuery()
   return (
     <>
       <Type as="h2" look="heading30" margin="0 0 1rem 0">

@@ -374,8 +374,8 @@ test('insertMenu thing typing', () => {
         <text />
       </paragraph>
     </editor>
-  );
-  [...'/thing'].forEach(char => {
+  )
+  ;[...'/thing'].forEach(char => {
     editor.insertText(char)
   })
   expect(editor).toMatchInlineSnapshot(`

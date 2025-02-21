@@ -3,16 +3,13 @@ import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
 import fse from 'fs-extra'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
-import type {
-  AdminFileToWrite,
-  KeystoneConfig
-} from '../../types'
+import type { AdminFileToWrite, KeystoneConfig } from '../../types'
 import { writeAdminFiles } from '../templates'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
-function serializePathForImport (path: string) {
+function serializePathForImport(path: string) {
   // JSON.stringify is important here because it will escape windows style paths(and any thing else that might potentially be in there)
   return JSON.stringify(
     path
@@ -22,11 +19,13 @@ function serializePathForImport (path: string) {
   )
 }
 
-export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: string) {
+export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath)
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
-      throw new Error(`An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`)
+      throw new Error(
+        `An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`
+      )
     }
     await fse.ensureDir(Path.dirname(outputFilename))
     // TODO: should we use copyFile or copy?
@@ -46,7 +45,7 @@ export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: 
 
 const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
-export async function generateAdminUI (
+export async function generateAdminUI(
   config: KeystoneConfig,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,
@@ -71,7 +70,9 @@ export async function generateAdminUI (
   // Write out the files configured by the user
   const userFiles = config.ui?.getAdditionalFiles?.map(x => x()) ?? []
   const userFilesToWrite = (await Promise.all(userFiles)).flat()
-  const savedFiles = await Promise.all(userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath)))
+  const savedFiles = await Promise.all(
+    userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))
+  )
   const uniqueFiles = new Set(savedFiles)
 
   // Add files to pages/ which point to any files which exist in admin/pages
@@ -102,7 +103,9 @@ export async function generateAdminUI (
     })
   }
 
-  adminFiles = adminFiles.filter(x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath))))
+  adminFiles = adminFiles.filter(
+    x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))
+  )
 
   await Promise.all(adminFiles.map(file => writeAdminFile(file, projectAdminPath)))
 
@@ -114,12 +117,14 @@ export async function generateAdminUI (
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
     const ignoredDir = Path.resolve(projectAdminPath, '.next')
-    const ignoredFiles = new Set([
-      ...adminFiles.map(x => x.outputPath),
-      ...uniqueFiles,
-      'next-env.d.ts',
-      'pages/api/__keystone_api_build.js',
-    ].map(x => Path.resolve(projectAdminPath, x)))
+    const ignoredFiles = new Set(
+      [
+        ...adminFiles.map(x => x.outputPath),
+        ...uniqueFiles,
+        'next-env.d.ts',
+        'pages/api/__keystone_api_build.js',
+      ].map(x => Path.resolve(projectAdminPath, x))
+    )
 
     const entries = await walk(projectAdminPath, {
       deepFilter: entry => entry.path !== ignoredDir,

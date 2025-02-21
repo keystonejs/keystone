@@ -11,7 +11,7 @@ import { EditorToolbarButton } from '@keystar/ui/editor'
 
 export * from './code-block-shared'
 
-function CodeButton () {
+function CodeButton() {
   const {
     editor,
     code: { isDisabled, isSelected },

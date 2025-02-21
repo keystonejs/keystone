@@ -11,7 +11,7 @@ type CustomerCardProps = {
   accessibleTitle?: string
 } & HTMLAttributes<HTMLElement>
 
-export function CustomerCard ({
+export function CustomerCard({
   icon: Icon,
   accessibleTitle,
   title,

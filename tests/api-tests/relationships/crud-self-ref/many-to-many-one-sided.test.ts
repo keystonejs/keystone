@@ -38,7 +38,7 @@ const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) =>
 }
 
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
-  type T = { data: { User: { id: IdType, friends: { id: IdType }[] }, Friend: { id: IdType } } }
+  type T = { data: { User: { id: IdType; friends: { id: IdType }[] }; Friend: { id: IdType } } }
   const result = (await context.graphql.raw({
     query: `
       {
@@ -79,7 +79,7 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -89,7 +89,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`Many-to-many relationships`, () => {
@@ -173,8 +173,8 @@ describe(`Many-to-many relationships`, () => {
         const _user = (await context.query.User.createOne({
           data: { friends: { connect: [{ id: user.id }] } },
           query: 'id friends { id }',
-        })) as { id: IdType, friends: { id: IdType }[] }
-        const createUser: { id: IdType, friends: { id: IdType }[] } = _user
+        })) as { id: IdType; friends: { id: IdType }[] }
+        const createUser: { id: IdType; friends: { id: IdType }[] } = _user
         expect(createUser.friends.map(({ id }) => id.toString())).toEqual([user.id])
 
         const { User, Friend } = await getUserAndFriend(context, _user.id, user.id)

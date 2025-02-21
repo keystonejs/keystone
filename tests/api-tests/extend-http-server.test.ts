@@ -12,7 +12,7 @@ const runner = setupTestRunner({
       User: list({
         access: allowAll,
         fields: {
-          name: text()
+          name: text(),
         },
       }),
     },
@@ -26,6 +26,9 @@ const runner = setupTestRunner({
   },
 })
 
-test('server extension', runner(async ({ http }) => {
-  await supertest(http).get('/anything').expect('test-header', 'test-header-value')
-}))
+test(
+  'server extension',
+  runner(async ({ http }) => {
+    await supertest(http).get('/anything').expect('test-header', 'test-header-value')
+  })
+)

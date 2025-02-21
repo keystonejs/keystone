@@ -87,16 +87,13 @@ export const renderElement = (props: RenderElementProps) => {
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
   return (
-    <pre
-      spellCheck="false"
-      {...attributes}
-    >
+    <pre spellCheck="false" {...attributes}>
       <code>{children}</code>
     </pre>
   )
 }
 
-function DividerElement ({ attributes, children }: RenderElementProps) {
+function DividerElement({ attributes, children }: RenderElementProps) {
   const selected = useSelected()
   return (
     <div {...attributes} style={{ caretColor: 'transparent' }}>

@@ -23,7 +23,7 @@ import { Page } from '../../../components/Page'
 
 const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos']
 
-function Divider () {
+function Divider() {
   return (
     <hr
       css={{
@@ -44,7 +44,7 @@ function Divider () {
   )
 }
 
-function Box () {
+function Box() {
   return (
     <div
       css={{
@@ -60,10 +60,10 @@ function Box () {
 type SwatchProps = {
   name?: string
   color?: string
-  gradient?: { grad1: string, grad2: string }
+  gradient?: { grad1: string; grad2: string }
 }
 
-function Swatch ({ name, color, gradient }: SwatchProps) {
+function Swatch({ name, color, gradient }: SwatchProps) {
   return (
     <div css={{ textAlign: 'center' }}>
       <div
@@ -92,7 +92,7 @@ function Swatch ({ name, color, gradient }: SwatchProps) {
   )
 }
 
-export default function DS () {
+export default function DS() {
   const [icon, setIcon] = useState<allIcons.IconGradient | null>(null)
   let firstGrad: string
 
@@ -262,7 +262,7 @@ export default function DS () {
       <Type id="type" as="h2" look="heading64" margin={'var(--space-large) 0'}>
         Type
       </Type>
-      {(Object.keys(styleMap) as Array<keyof typeof styleMap>).map((style) => (
+      {(Object.keys(styleMap) as Array<keyof typeof styleMap>).map(style => (
         <Type key={style} id="type" look={style} css={{ display: 'block' }}>
           Type {style}
         </Type>

@@ -19,7 +19,7 @@ import { type IdType, getDBFieldKeyForFieldOnMultiField } from '../utils'
 import { accessControlledFilter } from './resolvers'
 import * as queries from './resolvers'
 
-function getRelationVal (
+function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
   foreignList: InitialisedList,
@@ -59,7 +59,7 @@ function getRelationVal (
   }
 }
 
-function weakMemoize<Arg extends object, Return> (cb: (arg: Arg) => Return) {
+function weakMemoize<Arg extends object, Return>(cb: (arg: Arg) => Return) {
   const cache = new WeakMap<Arg, Return>()
   return (arg: Arg) => {
     if (!cache.has(arg)) {
@@ -70,7 +70,7 @@ function weakMemoize<Arg extends object, Return> (cb: (arg: Arg) => Return) {
   }
 }
 
-function memoize<Arg, Return> (cb: (arg: Arg) => Return) {
+function memoize<Arg, Return>(cb: (arg: Arg) => Return) {
   const cache = new Map<Arg, Return>()
   return (arg: Arg) => {
     if (!cache.has(arg)) {
@@ -93,7 +93,7 @@ const fetchRelatedItem = weakMemoize((context: KeystoneContext) =>
   )
 )
 
-async function fetchRelatedItems (
+async function fetchRelatedItems(
   context: KeystoneContext,
   foreignList: InitialisedList,
   idFieldKey: string,
@@ -122,7 +122,7 @@ async function fetchRelatedItems (
   return toFetch.map(id => resultsById.get(id))
 }
 
-function getValueForDBField (
+function getValueForDBField(
   rootVal: BaseItem,
   dbField: ResolvedDBField,
   id: IdType,
@@ -151,7 +151,7 @@ function getValueForDBField (
   }
 }
 
-export function outputTypeField (
+export function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
@@ -168,7 +168,7 @@ export function outputTypeField (
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    async resolve (rootVal: BaseItem, args, context, info) {
+    async resolve(rootVal: BaseItem, args, context, info) {
       const id = rootVal.id as IdType
       const fieldAccess = await getOperationFieldAccess(rootVal, list, fieldKey, context, 'read')
       if (!fieldAccess) return null

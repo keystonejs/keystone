@@ -73,8 +73,8 @@ const runner = setupTestRunner({
           },
         }
       }),
-    }
-  }
+    },
+  },
 })
 
 const addFixtures = async (context: ContextFromRunner<typeof runner>) => {

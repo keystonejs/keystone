@@ -9,7 +9,7 @@ import type { InitialisedList } from './core/initialise-lists'
 import { getQueriesForList } from './core/queries'
 import { getMutationsForList } from './core/mutations'
 
-function getGraphQLSchema (
+function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   extraFields: {
     query: Record<string, g.Field<unknown, any, g.OutputType, string>>
@@ -51,7 +51,7 @@ function getGraphQLSchema (
   })
 }
 
-function collectTypes (
+function collectTypes(
   lists: Record<string, InitialisedList>,
   updateManyByList: Record<string, g.InputObjectType<any>>
 ) {
@@ -72,7 +72,9 @@ function collectTypes (
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType))
+          collectedTypes.push(
+            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
+          )
         }
       }
       collectedTypes.push(list.graphql.types.where.graphQLType)
@@ -95,7 +97,7 @@ function collectTypes (
   return collectedTypes
 }
 
-export function createGraphQLSchema (
+export function createGraphQLSchema(
   config: KeystoneConfig,
   lists: Record<string, InitialisedList>,
   adminMeta: AdminMetaRootVal | null,

@@ -1,9 +1,5 @@
 import React from 'react'
-import type {
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-} from '../../../../types'
+import type { CellComponent, FieldController, FieldControllerConfig } from '../../../../types'
 
 import { validateFile } from './Field'
 
@@ -46,11 +42,11 @@ export type FileValue =
       }
       previous: FileValue
     }
-  | { kind: 'remove', previous?: Exclude<FileValue, { kind: 'remove' }> }
+  | { kind: 'remove'; previous?: Exclude<FileValue, { kind: 'remove' }> }
 
 type FileController = FieldController<FileValue>
 
-export function controller (config: FieldControllerConfig): FileController {
+export function controller(config: FieldControllerConfig): FileController {
   return {
     path: config.path,
     label: config.label,
@@ -61,7 +57,7 @@ export function controller (config: FieldControllerConfig): FileController {
         filesize
       }`,
     defaultValue: { kind: 'empty' },
-    deserialize (item) {
+    deserialize(item) {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -75,10 +71,10 @@ export function controller (config: FieldControllerConfig): FileController {
         },
       }
     },
-    validate (value): boolean {
+    validate(value): boolean {
       return value.kind !== 'upload' || validateFile(value.data) === undefined
     },
-    serialize (value) {
+    serialize(value) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } }
       }

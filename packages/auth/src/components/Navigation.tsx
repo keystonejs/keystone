@@ -1,34 +1,28 @@
-import React, {
-  useEffect,
-  useMemo
-} from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Divider } from '@keystar/ui/layout'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import {
-  useQuery,
-  useMutation,
-  gql,
-} from '@keystone-6/core/admin-ui/apollo'
+import { useQuery, useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
 import {
   DeveloperResourcesMenu,
   NavList,
   NavContainer,
   NavFooter,
   NavItem,
-  getHrefFromList
+  getHrefFromList,
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-export default ({ labelField }: { labelField: string }) => (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
+export default ({ labelField }: { labelField: string }) =>
+  (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
 
-function Navigation ({
+function Navigation({
   labelField,
-  lists
+  lists,
 }: {
   labelField: string
 } & NavigationProps) {
@@ -37,21 +31,26 @@ function Navigation ({
       label: string
       id: string
     }
-  }>(useMemo(() => gql`
+  }>(
+    useMemo(
+      () => gql`
     query KsAuthFetchSession {
       authenticatedItem {
         id
         label: ${labelField}
       }
     }
-  `, [labelField]))
+  `,
+      [labelField]
+    )
+  )
 
   return (
     <NavContainer>
       <NavList>
-        <NavItem href='/'>Dashboard</NavItem>
+        <NavItem href="/">Dashboard</NavItem>
         <Divider />
-        {lists.map((list) => (
+        {lists.map(list => (
           <NavItem key={list.key} href={getHrefFromList(list)}>
             {list.label}
           </NavItem>
@@ -59,9 +58,7 @@ function Navigation ({
       </NavList>
 
       <NavFooter>
-        {data?.authenticatedItem && (
-          <SignoutButton authItemLabel={data.authenticatedItem.label} />
-        )}
+        {data?.authenticatedItem && <SignoutButton authItemLabel={data.authenticatedItem.label} />}
         <DeveloperResourcesMenu />
       </NavFooter>
     </NavContainer>
@@ -74,11 +71,7 @@ const END_SESSION = gql`
   }
 `
 
-function SignoutButton ({
-  authItemLabel
-}: {
-  authItemLabel: string
-}) {
+function SignoutButton({ authItemLabel }: { authItemLabel: string }) {
   const router = useRouter()
   const [endSession, { data }] = useMutation(END_SESSION)
   useEffect(() => {
@@ -91,7 +84,9 @@ function SignoutButton ({
     <TooltipTrigger>
       <ActionButton onPress={() => endSession()}>Sign out</ActionButton>
       <Tooltip>
-        <Text>Signed in as <strong>{authItemLabel}</strong></Text>
+        <Text>
+          Signed in as <strong>{authItemLabel}</strong>
+        </Text>
       </Tooltip>
     </TooltipTrigger>
   )

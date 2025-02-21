@@ -14,11 +14,11 @@ const Thing = list({
 
 const emptyPrismaModule = {
   PrismaClient: class PrismaClient {
-    $extends () {
+    $extends() {
       return this
     }
   },
-  Prisma: {}
+  Prisma: {},
 }
 
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
@@ -27,7 +27,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://'
+          url: 'file://',
         },
         lists: {
           A: list({
@@ -46,7 +46,9 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
       }),
       emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing", configured as labelField for "A.something""`)
+  ).toThrowErrorMatchingInlineSnapshot(
+    `""doesNotExist" is not a field of list "Thing", configured as labelField for "A.something""`
+  )
 })
 
 test("searchFields that don't exist are rejected with displayMode: select", () => {
@@ -55,7 +57,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://'
+          url: 'file://',
         },
         lists: {
           A: list({
@@ -74,7 +76,9 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
       }),
       emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""doesNotExist" is not a field of list "Thing", configured as searchField for "A.something""`)
+  ).toThrowErrorMatchingInlineSnapshot(
+    `""doesNotExist" is not a field of list "Thing", configured as searchField for "A.something""`
+  )
 })
 
 test("searchFields that aren't searchable are rejected with displayMode: select", () => {
@@ -83,7 +87,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://'
+          url: 'file://',
         },
         lists: {
           A: list({
@@ -102,5 +106,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
       }),
       emptyPrismaModule
     )
-  ).toThrowErrorMatchingInlineSnapshot(`""notText" is not a searchable field of list "Thing", configured as searchField for "A.something""`)
+  ).toThrowErrorMatchingInlineSnapshot(
+    `""notText" is not a searchable field of list "Thing", configured as searchField for "A.something""`
+  )
 })

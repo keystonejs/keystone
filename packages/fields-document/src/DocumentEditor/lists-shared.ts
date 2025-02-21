@@ -11,8 +11,7 @@ export const isListNode = (
 
 export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-list') => {
   const listAbove = getListTypeAbove(editor)
-  const isActive =
-    isElementActive(editor, format) && (listAbove === 'none' || listAbove === format)
+  const isActive = isElementActive(editor, format) && (listAbove === 'none' || listAbove === format)
   Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
       match: isListNode,
@@ -32,7 +31,7 @@ export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-l
   })
 }
 
-function getAncestorList (editor: Editor) {
+function getAncestorList(editor: Editor) {
   if (editor.selection) {
     const listItem = Editor.above(editor, {
       match: nodeTypeMatcher('list-item'),
@@ -51,7 +50,7 @@ function getAncestorList (editor: Editor) {
   return { isInside: false } as const
 }
 
-export function withList (editor: Editor): Editor {
+export function withList(editor: Editor): Editor {
   const { insertBreak, normalizeNode, deleteBackward } = editor
   editor.deleteBackward = unit => {
     if (editor.selection) {
@@ -146,7 +145,7 @@ export function withList (editor: Editor): Editor {
   return editor
 }
 
-export function nestList (editor: Editor) {
+export function nestList(editor: Editor) {
   const block = Editor.above(editor, {
     match: n => Element.isElement(n) && Editor.isBlock(editor, n),
   })
@@ -187,7 +186,7 @@ export function nestList (editor: Editor) {
   return true
 }
 
-export function unnestList (editor: Editor) {
+export function unnestList(editor: Editor) {
   const block = Editor.above(editor, {
     match: n => Element.isElement(n) && Editor.isBlock(editor, n),
   })

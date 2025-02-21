@@ -1,9 +1,11 @@
 // WARNING: be careful not to import this file within next
 import esbuild, { type BuildOptions } from 'esbuild'
 
-function identity (x: BuildOptions) { return x }
+function identity(x: BuildOptions) {
+  return x
+}
 
-export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
+export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
   let esbuildFn: typeof identity | undefined
 
   try {
@@ -16,7 +18,7 @@ export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
         outfile: '.keystone/esbuild.js',
         format: 'cjs',
         platform: 'node',
-        logLevel: 'silent'
+        logLevel: 'silent',
       })
     } catch (e: any) {
       if (!e.errors?.some((err: any) => err.text.includes('Could not resolve'))) throw e
@@ -39,14 +41,17 @@ export async function getEsbuildConfig (cwd: string): Promise<BuildOptions> {
     plugins: [
       {
         name: 'external-node_modules',
-        setup (build) {
-          build.onResolve({
-            // don't bundle anything that is NOT a relative import
-            //   WARNING: we can't use a negative lookahead/lookbehind because esbuild uses Go
-            filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
-          }, ({ path }) => {
-            return { external: true, path }
-          })
+        setup(build) {
+          build.onResolve(
+            {
+              // don't bundle anything that is NOT a relative import
+              //   WARNING: we can't use a negative lookahead/lookbehind because esbuild uses Go
+              filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
+            },
+            ({ path }) => {
+              return { external: true, path }
+            }
+          )
         },
       },
     ],

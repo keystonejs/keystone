@@ -1,8 +1,5 @@
 import { useSlotId } from '@react-aria/utils'
-import React, {
-  type ReactNode,
-  useId,
-} from 'react'
+import React, { type ReactNode, useId } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
 import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
@@ -13,12 +10,9 @@ import { Text } from '@keystar/ui/typography'
 
 import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
 import { EmptyState } from '../components/EmptyState'
-import type {
-  FieldGroupMeta,
-  FieldMeta,
-} from '../../types'
+import type { FieldGroupMeta, FieldMeta } from '../../types'
 
-export function Fields ({
+export function Fields({
   view,
   position,
   fields,
@@ -50,13 +44,13 @@ export function Fields ({
     const autoFocus = focused === false // not great, but focuses the first field
     focused = true
 
-    fieldDomByKey[fieldKey] =
+    fieldDomByKey[fieldKey] = (
       <field.views.Field
         key={fieldKey}
         autoFocus={autoFocus}
         forceValidation={forceValidation && invalidFields.has(fieldKey)}
         field={field.controller}
-        onChange={(newFieldValue) => {
+        onChange={newFieldValue => {
           if (fieldMode !== 'edit') return
           if (onChange === undefined) return
           onChange({
@@ -67,6 +61,7 @@ export function Fields ({
         value={fieldValue}
         itemValue={itemValue}
       />
+    )
   }
 
   const groupByFieldKey: Record<string, FieldGroupMeta> = {}
@@ -91,34 +86,40 @@ export function Fields ({
   return (
     // the "inline" container allows fields to react to the width of their column
     <VStack gap="xlarge" UNSAFE_style={{ containerType: 'inline-size' }}>
-    {[...function* () {
-      const rendered: Record<string, true> = {}
-      for (const fieldKey in fields) {
-        if (fieldKey in rendered) continue
+      {[
+        ...(function* () {
+          const rendered: Record<string, true> = {}
+          for (const fieldKey in fields) {
+            if (fieldKey in rendered) continue
 
-        const group = groupByFieldKey[fieldKey]
-        if (group) {
-          yield <FieldGroup key={group.label} label={group.label} description={group.description}>
-            {[...function* () {
-              for (const { path: fieldKey } of group.fields) {
-                if (fieldKey in rendered) continue
-                yield (fieldDomByKey[fieldKey] ?? null)
-                rendered[fieldKey] = true
-              }
-            }()]}
-          </FieldGroup>
-          continue
-        }
+            const group = groupByFieldKey[fieldKey]
+            if (group) {
+              yield (
+                <FieldGroup key={group.label} label={group.label} description={group.description}>
+                  {[
+                    ...(function* () {
+                      for (const { path: fieldKey } of group.fields) {
+                        if (fieldKey in rendered) continue
+                        yield fieldDomByKey[fieldKey] ?? null
+                        rendered[fieldKey] = true
+                      }
+                    })(),
+                  ]}
+                </FieldGroup>
+              )
+              continue
+            }
 
-        yield (fieldDomByKey[fieldKey] ?? null)
-        rendered[fieldKey] = true
-      }
-    }()]}
+            yield fieldDomByKey[fieldKey] ?? null
+            rendered[fieldKey] = true
+          }
+        })(),
+      ]}
     </VStack>
   )
 }
 
-function FieldGroup ({
+function FieldGroup({
   description,
   label,
   children,
@@ -197,7 +198,7 @@ function FieldGroup ({
   )
 }
 
-export function GroupIndicatorLine () {
+export function GroupIndicatorLine() {
   return (
     <HStack justifyContent="center" width="element.small">
       <div

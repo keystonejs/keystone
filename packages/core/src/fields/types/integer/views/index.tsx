@@ -6,11 +6,7 @@ import { NumberField } from '@keystar/ui/number-field'
 
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type {
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types'
+import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
 
 // TODO: extract
 const TYPE_OPERATOR_MAP = {
@@ -23,8 +19,8 @@ const TYPE_OPERATOR_MAP = {
 } as const
 
 type Value =
-  | { kind: 'create', value: number | null }
-  | { kind: 'update', initial: number | null, value: number | null }
+  | { kind: 'create'; value: number | null }
+  | { kind: 'update'; initial: number | null; value: number | null }
 
 type Validation = {
   isRequired: boolean
@@ -32,27 +28,26 @@ type Validation = {
   max: number
 }
 
-function validate_ (
+function validate_(
   value: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const {
-    value: input,
-    kind,
-  } = value
+  const { value: input, kind } = value
   if (kind === 'create' && hasAutoIncrementDefault && input === null) return
   if (kind === 'update' && value.initial === null && input === null) return
   if (validation.isRequired && input === null) return `${label} is required`
   if (typeof input !== 'number') return
   const v = input
   if (!Number.isInteger(v)) return `${label} is not a valid integer`
-  if (validation.min !== undefined && v < validation.min) return `${label} must be greater than or equal to ${validation.min}`
-  if (validation.max !== undefined && v > validation.max) return `${label} must be less than or equal to ${validation.max}`
+  if (validation.min !== undefined && v < validation.min)
+    return `${label} must be greater than or equal to ${validation.min}`
+  if (validation.max !== undefined && v > validation.max)
+    return `${label} must be less than or equal to ${validation.max}`
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{
     validation: Validation
     defaultValue: number | null | 'autoincrement'
@@ -78,32 +73,45 @@ export function controller (
     validation: config.fieldMeta.validation,
     defaultValue: {
       kind: 'create',
-      value: config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
+      value:
+        config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
     },
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value }),
     hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
     validate: value => validate(value) === undefined,
     filter: {
-      Filter (props) {
-        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+      Filter(props) {
+        const {
+          autoFocus,
+          context,
+          forceValidation,
+          typeLabel,
+          onChange,
+          type,
+          value,
+          ...otherProps
+        } = props
         const [isDirty, setDirty] = useState(false)
         if (type === 'empty' || type === 'not_empty') return null
 
-        const labelProps = context === 'add'
-          ? { label: config.label, description: typeLabel }
-          : { label: typeLabel }
+        const labelProps =
+          context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
 
         return (
           <NumberField
             {...otherProps}
             {...labelProps}
             autoFocus={autoFocus}
-            errorMessage={(forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value }) ? 'Required' : null}
+            errorMessage={
+              (forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value })
+                ? 'Required'
+                : null
+            }
             step={1}
             width="auto"
             onBlur={() => setDirty(true)}
-            onChange={x => onChange?.((!Number.isFinite(x)) ? null : x)}
+            onChange={x => onChange?.(!Number.isFinite(x) ? null : x)}
             value={value ?? NaN}
           />
         )
@@ -115,7 +123,7 @@ export function controller (
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
       },
-      Label ({ label, type, value }) {
+      Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()
         const operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
         return `${operator} ${value}`
@@ -158,7 +166,7 @@ export function controller (
   }
 }
 
-export function Field ({
+export function Field({
   field,
   value,
   onChange,
@@ -175,7 +183,7 @@ export function Field ({
         description={field.description}
         label={field.label}
         isReadOnly
-        contextualHelp={(
+        contextualHelp={
           <ContextualHelp>
             <Heading>Auto increment</Heading>
             <Content>
@@ -184,18 +192,13 @@ export function Field ({
               </Text>
             </Content>
           </ContextualHelp>
-        )}
+        }
       />
     )
   }
 
   const validate = (value: Value) => {
-    return validate_(
-      value,
-      field.validation,
-      field.label,
-      field.hasAutoIncrementDefault
-    )
+    return validate_(value, field.validation, field.label, field.hasAutoIncrementDefault)
   }
 
   return (
@@ -208,7 +211,7 @@ export function Field ({
       isRequired={field.validation.isRequired}
       width="alias.singleLineWidth"
       onBlur={() => setDirty(true)}
-      onChange={x => onChange?.({ ...value, value: (!Number.isFinite(x)) ? null : x })}
+      onChange={x => onChange?.({ ...value, value: !Number.isFinite(x) ? null : x })}
       value={value.value ?? NaN}
     />
   )

@@ -4,7 +4,7 @@
  * @param {String} str The string to convert.
  * @returns The new string
  */
-export function humanize (str: string) {
+export function humanize(str: string) {
   return str
     .replace(/([a-z])([A-Z]+)/g, '$1 $2')
     .split(/\s|_|-/)

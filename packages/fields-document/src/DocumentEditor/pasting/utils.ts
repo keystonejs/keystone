@@ -11,7 +11,7 @@ const currentlyActiveMarks = new Set<Mark>()
 const currentlyDisabledMarks = new Set<Mark>()
 let currentLink: string | null = null
 
-export function addMarkToChildren<T> (mark: Mark, cb: () => T): T {
+export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
   const wasPreviouslyActive = currentlyActiveMarks.has(mark)
   currentlyActiveMarks.add(mark)
   try {
@@ -23,7 +23,7 @@ export function addMarkToChildren<T> (mark: Mark, cb: () => T): T {
   }
 }
 
-export function setLinkForChildren<T> (href: string, cb: () => T): T {
+export function setLinkForChildren<T>(href: string, cb: () => T): T {
   // we'll only use the outer link
   if (currentLink !== null) {
     return cb()
@@ -36,7 +36,7 @@ export function setLinkForChildren<T> (href: string, cb: () => T): T {
   }
 }
 
-export function addMarksToChildren<T> (marks: Set<Mark>, cb: () => T): T {
+export function addMarksToChildren<T>(marks: Set<Mark>, cb: () => T): T {
   const marksToRemove = new Set<Mark>()
   for (const mark of marks) {
     if (!currentlyActiveMarks.has(mark)) {
@@ -53,7 +53,7 @@ export function addMarksToChildren<T> (marks: Set<Mark>, cb: () => T): T {
   }
 }
 
-export function forceDisableMarkForChildren<T> (mark: Mark, cb: () => T): T {
+export function forceDisableMarkForChildren<T>(mark: Mark, cb: () => T): T {
   const wasPreviouslyDisabled = currentlyDisabledMarks.has(mark)
   currentlyDisabledMarks.add(mark)
   try {
@@ -75,11 +75,11 @@ export function forceDisableMarkForChildren<T> (mark: Mark, cb: () => T): T {
  * non-void inlines are probably always bad but that would imply changing the document
  * structure which would be such unnecessary breakage)
  */
-type StrictLink = { type: 'link', href: string, children: Text[] }
+type StrictLink = { type: 'link'; href: string; children: Text[] }
 // inline relationships are not here because we never create them from handling a paste from html or markdown
 export type InlineFromExternalPaste = Text | StrictLink
 
-export function getInlineNodes (
+export function getInlineNodes(
   text: string
 ): [InlineFromExternalPaste, ...InlineFromExternalPaste[]] {
   const node: Text = { text }

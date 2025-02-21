@@ -138,8 +138,8 @@ test('link shortcut then typing inserts text outside of the link', () => {
       </paragraph>
     </editor>
   )
-  editor.insertText(')');
-  [...'content'].forEach(char => editor.insertText(char))
+  editor.insertText(')')
+  ;[...'content'].forEach(char => editor.insertText(char))
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>

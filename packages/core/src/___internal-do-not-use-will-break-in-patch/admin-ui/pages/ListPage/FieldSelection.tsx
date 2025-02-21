@@ -1,7 +1,4 @@
-import React, {
-  type Key,
-  useMemo,
-} from 'react'
+import React, { type Key, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import isDeepEqual from 'fast-deep-equal'
 
@@ -14,13 +11,7 @@ import { Text } from '@keystar/ui/typography'
 import { useList } from '../../../../admin-ui/context'
 import { useSelectedFields } from './useSelectedFields'
 
-export function FieldSelection ({
-  listKey,
-  isDisabled,
-}: {
-  listKey: string
-  isDisabled?: boolean
-}) {
+export function FieldSelection({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
   const router = useRouter()
   const list = useList(listKey)
   const selectedFields = useSelectedFields(list)
@@ -64,9 +55,7 @@ export function FieldSelection ({
         selectionMode="multiple"
         selectedKeys={selectedFields}
       >
-        {item => (
-          <Item key={item.value} >{item.label}</Item>
-        )}
+        {item => <Item key={item.value}>{item.label}</Item>}
       </Menu>
     </MenuTrigger>
   )

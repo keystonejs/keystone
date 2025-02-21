@@ -51,7 +51,7 @@ export type FieldFuncResolve<
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType,
   Key extends string,
-  Context extends KeystoneContext<any>
+  Context extends KeystoneContext<any>,
 > =
   // the tuple is here because we _don't_ want this to be distributive
   // if this was distributive then it would optional when it should be required e.g.
@@ -101,7 +101,7 @@ type FieldFuncArgs<
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType,
   Key extends string,
-  Context extends KeystoneContext
+  Context extends KeystoneContext,
 > = {
   args?: Args
   type: Type
@@ -115,7 +115,7 @@ type FieldFunc = <
   Type extends OutputType,
   Key extends string,
   Context extends KeystoneContext<any>,
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object,
 >(
   field: FieldFuncArgs<Source, Args, Type, Key, Context>
 ) => graphqlTsSchema.Field<Source, Args, Type, Key, Context>
@@ -149,24 +149,27 @@ export const Upload = graphqlTsSchema.g.scalar<Promise<FileUpload>>(GraphQLUploa
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
-    serialize (value) {
-      if (!DecimalValue.isDecimal(value)) throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
+    serialize(value) {
+      if (!DecimalValue.isDecimal(value))
+        throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
       const cast = value as DecimalValue & { scaleToPrint?: number }
       if (cast.scaleToPrint !== undefined) return value.toFixed(cast.scaleToPrint)
       return value.toString()
     },
-    parseLiteral (value) {
-      if (value.kind !== 'StringValue') throw new GraphQLError('Decimal only accepts values as strings')
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue')
+        throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value.value)
       if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
     },
-    parseValue (value) {
+    parseValue(value) {
       if (DecimalValue.isDecimal(value)) {
         if (!value.isFinite()) throw new GraphQLError('Decimal values must be finite')
         return value
       }
-      if (typeof value !== 'string') throw new GraphQLError('Decimal only accepts values as strings')
+      if (typeof value !== 'string')
+        throw new GraphQLError('Decimal only accepts values as strings')
       const decimal = new DecimalValue(value)
       if (!decimal.isFinite()) throw new GraphQLError('Decimal values must be finite')
       return decimal
@@ -177,15 +180,17 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
 export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
   new GraphQLScalarType({
     name: 'BigInt',
-    serialize (value) {
-      if (typeof value !== 'bigint') throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`)
+    serialize(value) {
+      if (typeof value !== 'bigint')
+        throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`)
       return value.toString()
     },
-    parseLiteral (value) {
-      if (value.kind !== 'StringValue') throw new GraphQLError('BigInt only accepts values as strings')
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue')
+        throw new GraphQLError('BigInt only accepts values as strings')
       return globalThis.BigInt(value.value)
     },
-    parseValue (value) {
+    parseValue(value) {
       if (typeof value === 'bigint') return value
       if (typeof value !== 'string') throw new GraphQLError('BigInt only accepts values as strings')
       return globalThis.BigInt(value)
@@ -198,13 +203,17 @@ export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
 const RFC_3339_REGEX =
   /^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60))(\.\d{1,})?(([Z])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
-function parseDate (input: string): Date {
+function parseDate(input: string): Date {
   if (!RFC_3339_REGEX.test(input)) {
-    throw new GraphQLError('DateTime scalars must be in the form of a full ISO 8601 date-time string')
+    throw new GraphQLError(
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
+    )
   }
   const parsed = new Date(input)
   if (isNaN(parsed.valueOf())) {
-    throw new GraphQLError('DateTime scalars must be in the form of a full ISO 8601 date-time string')
+    throw new GraphQLError(
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
+    )
   }
   return parsed
 }
@@ -213,19 +222,19 @@ export const DateTime = graphqlTsSchema.g.scalar<Date>(
   new GraphQLScalarType({
     name: 'DateTime',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
-    serialize (value: unknown) {
+    serialize(value: unknown) {
       if (!(value instanceof Date) || isNaN(value.valueOf())) {
         throw new GraphQLError(`unexpected value provided to DateTime scalar: ${value}`)
       }
       return value.toISOString()
     },
-    parseLiteral (value) {
+    parseLiteral(value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('DateTime only accepts values as strings')
       }
       return parseDate(value.value)
     },
-    parseValue (value: unknown) {
+    parseValue(value: unknown) {
       if (value instanceof Date) return value
       if (typeof value !== 'string') {
         throw new GraphQLError('DateTime only accepts values as strings')
@@ -237,7 +246,7 @@ export const DateTime = graphqlTsSchema.g.scalar<Date>(
 
 const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
 
-function validateCalendarDay (input: string) {
+function validateCalendarDay(input: string) {
   if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
     throw new GraphQLError('CalendarDay scalars must be in the form of a full-date ISO 8601 string')
   }
@@ -247,20 +256,20 @@ export const CalendarDay = graphqlTsSchema.g.scalar<string>(
   new GraphQLScalarType({
     name: 'CalendarDay',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
-    serialize (value: unknown) {
+    serialize(value: unknown) {
       if (typeof value !== 'string') {
         throw new GraphQLError(`unexpected value provided to CalendarDay scalar: ${value}`)
       }
       return value
     },
-    parseLiteral (value) {
+    parseLiteral(value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('CalendarDay only accepts values as strings')
       }
       validateCalendarDay(value.value)
       return value.value
     },
-    parseValue (value: unknown) {
+    parseValue(value: unknown) {
       if (typeof value !== 'string') {
         throw new GraphQLError('CalendarDay only accepts values as strings')
       }
@@ -273,9 +282,15 @@ export const CalendarDay = graphqlTsSchema.g.scalar<string>(
 export const Empty = graphqlTsSchema.g.scalar(
   new GraphQLScalarType({
     name: 'Empty',
-    serialize (value) { return null },
-    parseLiteral (value) { return {} },
-    parseValue (value) { return {} },
+    serialize(value) {
+      return null
+    },
+    parseLiteral(value) {
+      return {}
+    },
+    parseValue(value) {
+      return {}
+    },
   })
 )
 
@@ -291,29 +306,29 @@ export type Field<
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType<Context>,
   Key extends string,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.Field<Source, Args, TType, Key, Context>
 export type FieldResolver<
   Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType<Context>,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.FieldResolver<Source, Args, TType, Context>
 export type ObjectType<
   Source,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.ObjectType<Source, Context>
 export type UnionType<
   Source,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.UnionType<Source, Context>
 export type InterfaceType<
   Source,
   Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType<Context>, Context>>,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.InterfaceType<Source, Fields, Context>
 export type InterfaceField<
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType<Context>,
-  Context extends KeystoneContext = KeystoneContext
+  Context extends KeystoneContext = KeystoneContext,
 > = graphqlTsSchema.InterfaceField<Args, TType, Context>

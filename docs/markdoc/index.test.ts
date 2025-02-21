@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react'
 import { isTag } from './isTag'
 import { transformContent } from '.'
 
-function renderableToReactElement (node: RenderableTreeNode, key = 1): ReactNode {
+function renderableToReactElement(node: RenderableTreeNode, key = 1): ReactNode {
   if (
     typeof node === 'string' ||
     typeof node === 'number' ||
@@ -26,10 +26,10 @@ function renderableToReactElement (node: RenderableTreeNode, key = 1): ReactNode
 }
 
 expect.addSnapshotSerializer({
-  test (val) {
+  test(val) {
     return typeof val === 'object' && val !== null && '$$mdtype' in val && val.$$mdtype === 'Tag'
   },
-  serialize (val, config, indentation, depth, refs, printer) {
+  serialize(val, config, indentation, depth, refs, printer) {
     return printer(renderableToReactElement(val), config, indentation, depth, refs)
   },
 })

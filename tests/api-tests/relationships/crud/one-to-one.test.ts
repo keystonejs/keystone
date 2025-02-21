@@ -78,8 +78,8 @@ const getCompanyAndLocation = async (
 ) => {
   type T = {
     data: {
-      Company: { id: IdType, location: { id: IdType } }
-      Location: { id: IdType, company: { id: IdType } }
+      Company: { id: IdType; location: { id: IdType } }
+      Location: { id: IdType; company: { id: IdType } }
     }
   }
   const { data } = (await context.graphql.raw({
@@ -93,7 +93,7 @@ const getCompanyAndLocation = async (
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Company: list({
         access: allowAll,
@@ -110,7 +110,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-one relationships`, () => {

@@ -1,11 +1,17 @@
-import { type ArrayField, type ConditionalField, fields, type FormField, type ObjectField } from './api'
+import {
+  type ArrayField,
+  type ConditionalField,
+  fields,
+  type FormField,
+  type ObjectField,
+} from './api'
 import { assertValidComponentSchema } from './field-assertions'
 
 type EasilyCircularObject = ObjectField<{
   x: EasilyCircularObject
 }>
 const easilyCircularObject: EasilyCircularObject = fields.object({
-  get x () {
+  get x() {
     return easilyCircularObject
   },
 })
@@ -63,10 +69,10 @@ test('does not allow a circular object within a value for a non-default discrimi
 test("does allow a circular conditional as long as it's not the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { true: Field, false: FormField<null, undefined> }
+    { true: Field; false: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
-    get true () {
+    get true() {
       return conditional
     },
     false: fields.empty(),
@@ -77,10 +83,10 @@ test("does allow a circular conditional as long as it's not the default", () => 
 test("does not allow a circular conditional if it's the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { false: Field, true: FormField<null, undefined> }
+    { false: Field; true: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
-    get false () {
+    get false() {
       return conditional
     },
     true: fields.empty(),
@@ -100,7 +106,7 @@ test("allows circularity if it's stopped by an array field", () => {
   >
   const blah: Field = fields.array(
     fields.object({
-      get blah () {
+      get blah() {
         return blah
       },
     })
@@ -117,7 +123,7 @@ test('does not allow a field that returns a different field from a getter each t
   const blah: () => Field = () =>
     fields.array(
       fields.object({
-        get blah () {
+        get blah() {
           return blah()
         },
       })
@@ -141,7 +147,7 @@ test('exceeds the call stack size for an infinitely recursive field where all fi
     let a: Field
     return fields.array(
       fields.object({
-        get blah () {
+        get blah() {
           if (!a) {
             a = blah()
           }
@@ -183,29 +189,30 @@ test('does not allow a child field in a structure field', () => {
       'structure'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-  `[Error: There is a child field at "object.a" but child fields are not allowed in structure fields.]`)
+    `[Error: There is a child field at "object.a" but child fields are not allowed in structure fields.]`
+  )
 })
-
 
 test('does not allow a custom form field without a graphql field in a structure field', () => {
   expect(() => {
     assertValidComponentSchema(
       fields.object({
         a: {
-          kind:'form',
-          defaultValue:'',
-          Input () {
+          kind: 'form',
+          defaultValue: '',
+          Input() {
             return null
           },
-          options:undefined,
-          validate (value) {
+          options: undefined,
+          validate(value) {
             return true
           },
-        }
+        },
       }),
       new Set(),
       'structure'
     )
   }).toThrowErrorMatchingInlineSnapshot(
-  `[Error: There is a form field without a configured GraphQL schema at "object.a", fields used in the structure field must have a GraphQL schema.]`)
+    `[Error: There is a form field without a configured GraphQL schema at "object.a", fields used in the structure field must have a GraphQL schema.]`
+  )
 })

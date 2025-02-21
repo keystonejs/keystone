@@ -1,10 +1,7 @@
 import { g, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, integer, relationship, timestamp, virtual } from '@keystone-6/core/fields'
-import {
-  type Context,
-  type Lists
-} from '.keystone/types'
+import { type Context, type Lists } from '.keystone/types'
 
 export const extendGraphqlSchema = g.extend(base => {
   return {
@@ -12,7 +9,7 @@ export const extendGraphqlSchema = g.extend(base => {
       submitOrder: g.field({
         type: base.object('Order'),
         args: {},
-        async resolve (source, {}, context: Context) {
+        async resolve(source, {}, context: Context) {
           // TODO: this should come from GraphQL arguments
           const orderInput = [
             { sku: '123', count: 1 },
@@ -20,7 +17,7 @@ export const extendGraphqlSchema = g.extend(base => {
             { sku: '125', count: 2 },
           ]
 
-          return await context.transaction(async (tx) => {
+          return await context.transaction(async tx => {
             const assigned = []
 
             for (const { sku, count } of orderInput) {
@@ -30,7 +27,7 @@ export const extendGraphqlSchema = g.extend(base => {
                   product: {
                     sku: {
                       equals: sku,
-                    }
+                    },
                   },
                   assignment: null,
                 },
@@ -43,9 +40,9 @@ export const extendGraphqlSchema = g.extend(base => {
             const order = await tx.db.Order.createOne({
               data: {
                 items: {
-                  connect: assigned.map((i) => ({ id: i.id }))
-                }
-              }
+                  connect: assigned.map(i => ({ id: i.id })),
+                },
+              },
             })
 
             return order
@@ -61,7 +58,7 @@ export const lists = {
     access: allowAll,
     fields: {
       items: relationship({ ref: 'Item.assignment', many: true }),
-      createdAt: timestamp()
+      createdAt: timestamp(),
     },
   }),
 
@@ -72,7 +69,7 @@ export const lists = {
       serialNumber: text(),
 
       assignment: relationship({ ref: 'Order.items', many: false }),
-      addedAt: timestamp({ defaultValue: { kind: 'now' } })
+      addedAt: timestamp({ defaultValue: { kind: 'now' } }),
     },
   }),
 
@@ -86,23 +83,23 @@ export const lists = {
       available: virtual({
         field: g.field({
           type: g.Int,
-          resolve (item, args, context) {
+          resolve(item, args, context) {
             return context.db.Item.count({
               where: {
                 product: {
                   id: {
                     equals: item.id,
-                  }
+                  },
                 },
-                assignment: null
-              }
+                assignment: null,
+              },
             })
-          }
+          },
         }),
       }),
     },
     ui: {
-      labelField: 'description'
+      labelField: 'description',
     },
   }),
 }

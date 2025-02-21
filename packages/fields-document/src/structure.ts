@@ -23,7 +23,7 @@ export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     schema: ComponentSchema
   }
 
-export function structure <ListTypeInfo extends BaseListTypeInfo> ({
+export function structure<ListTypeInfo extends BaseListTypeInfo>({
   schema,
   ...config
 }: StructureFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -42,7 +42,10 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
     const unreferencedConcreteInterfaceImplementations: g.ObjectType<any>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
-    const innerUpdate = typeof config.hooks?.resolveInput === 'function' ? config.hooks.resolveInput : config.hooks?.resolveInput?.update
+    const innerUpdate =
+      typeof config.hooks?.resolveInput === 'function'
+        ? config.hooks.resolveInput
+        : config.hooks?.resolveInput?.update
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
@@ -50,7 +53,10 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
         hooks: {
           ...config.hooks,
           resolveInput: {
-            create: typeof config.hooks?.resolveInput === 'function' ? config.hooks.resolveInput : config.hooks?.resolveInput?.create,
+            create:
+              typeof config.hooks?.resolveInput === 'function'
+                ? config.hooks.resolveInput
+                : config.hooks?.resolveInput?.create,
             update: async args => {
               let val = args.resolvedData[meta.fieldKey]
               let prevVal = args.item[meta.fieldKey]
@@ -63,11 +69,11 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
                 val = JSON.stringify(val)
               }
               return innerUpdate
-              ? innerUpdate({
-                  ...args,
-                  resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
-                })
-              : val
+                ? innerUpdate({
+                    ...args,
+                    resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
+                  })
+                : val
             },
           },
         },
@@ -76,7 +82,7 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
             arg: g.arg({
               type: getGraphQLInputType(name, schema, 'create', new Map(), meta),
             }),
-            async resolve (val, context) {
+            async resolve(val, context) {
               return await getValueForCreate(schema, val, context, [])
             },
           },
@@ -105,7 +111,7 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
                     defaultValue: false,
                   }),
                 },
-                resolve ({ value }, args, context) {
+                resolve({ value }, args, context) {
                   if (!args.hydrateRelationships) return value
                   return addRelationshipDataToComponentProps(schema, value, (schema, value) => {
                     return fetchRelationshipData(
@@ -120,7 +126,9 @@ export function structure <ListTypeInfo extends BaseListTypeInfo> ({
               }),
             },
           }),
-          resolve (source) { return source },
+          resolve(source) {
+            return source
+          },
         }),
         __ksTelemetryFieldTypeName: '@keystone-6/structure',
         views: '@keystone-6/fields-document/structure-views',

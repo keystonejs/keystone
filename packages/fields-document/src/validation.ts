@@ -1,15 +1,9 @@
-import {
-  Text,
-  Editor
-} from 'slate'
+import { Text, Editor } from 'slate'
 import {
   type ComponentBlock,
-  type ComponentSchema
+  type ComponentSchema,
 } from './DocumentEditor/component-blocks/api-shared'
-import {
-  type ReadonlyPropPath,
-  assertNever,
-} from './DocumentEditor/component-blocks/utils'
+import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils'
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
 import { type Relationships } from './DocumentEditor/relationship-shared'
 import {
@@ -22,13 +16,13 @@ import { type DocumentFeatures } from './views-shared'
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath
-  constructor (message: string, path: ReadonlyPropPath) {
+  constructor(message: string, path: ReadonlyPropPath) {
     super(message)
     this.path = path
   }
 }
 
-function validateComponentBlockProps (
+function validateComponentBlockProps(
   schema: ComponentSchema,
   value: unknown,
   relationships: Relationships,
@@ -134,7 +128,7 @@ function validateComponentBlockProps (
   assertNever(schema)
 }
 
-function isText (node: ElementFromValidation): node is TextWithMarks {
+function isText(node: ElementFromValidation): node is TextWithMarks {
   return Text.isText(node)
 }
 
@@ -142,7 +136,7 @@ function isText (node: ElementFromValidation): node is TextWithMarks {
 // as internal server error from the graphql api in prod
 // this is fine because these cases are pretty much all about
 // malicious content being inserted, not valid content
-export function getValidatedNodeWithNormalizedComponentFormProps (
+export function getValidatedNodeWithNormalizedComponentFormProps(
   node: ElementFromValidation,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
@@ -183,14 +177,16 @@ export function getValidatedNodeWithNormalizedComponentFormProps (
   }
 }
 
-export function validateAndNormalizeDocument (
+export function validateAndNormalizeDocument(
   value: unknown,
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
 ) {
   validateDocumentStructure(value)
-  const children = value.map(x => getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships))
+  const children = value.map(x =>
+    getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships)
+  )
   const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships)
   editor.children = children as any
   Editor.normalize(editor, { force: true })

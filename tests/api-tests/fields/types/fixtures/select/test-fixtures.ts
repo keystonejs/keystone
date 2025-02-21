@@ -25,14 +25,14 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
               { label: 'React', value: 'react' },
             ]
           : matrixValue === 'string'
-          ? [
-              { label: 'A string', value: 'a string' },
-              { label: 'Another string', value: 'another string' },
-              { label: '1number', value: '1number' },
-              { label: '@¯\\_(ツ)_/¯', value: '@¯\\_(ツ)_/¯' },
-              { label: 'something else', value: 'something else' },
-            ]
-          : [],
+            ? [
+                { label: 'A string', value: 'a string' },
+                { label: 'Another string', value: 'another string' },
+                { label: '1number', value: '1number' },
+                { label: '@¯\\_(ツ)_/¯', value: '@¯\\_(ツ)_/¯' },
+                { label: 'something else', value: 'something else' },
+              ]
+            : [],
     }
   }
   return {

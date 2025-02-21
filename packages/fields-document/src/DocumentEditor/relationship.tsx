@@ -13,13 +13,13 @@ export type { Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
 
-export function useDocumentFieldRelationships () {
+export function useDocumentFieldRelationships() {
   return useContext(DocumentFieldRelationshipsContext)
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
 
-export function RelationshipElement ({
+export function RelationshipElement({
   attributes,
   children,
   element,
@@ -60,12 +60,16 @@ export function RelationshipElement ({
                 element.data === null
                   ? null
                   : { id: element.data.id, label: element.data.label ?? null, built: undefined },
-              onChange (newItem) {
+              onChange(newItem) {
                 const at = ReactEditor.findPath(editor, element)
                 if (newItem === null) {
                   Transforms.removeNodes(editor, { at })
                 } else {
-                  Transforms.setNodes(editor, { data: { id: newItem.id, label: newItem.label, data: newItem.data } }, { at })
+                  Transforms.setNodes(
+                    editor,
+                    { data: { id: newItem.id, label: newItem.label, data: newItem.data } },
+                    { at }
+                  )
                 }
               },
             }}

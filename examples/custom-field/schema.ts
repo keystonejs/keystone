@@ -31,13 +31,7 @@ export const lists = {
             return resolvedData[fieldKey]
           },
 
-          validate: async ({
-            resolvedData,
-            inputData,
-            item,
-            addValidationError,
-            fieldKey,
-          }) => {
+          validate: async ({ resolvedData, inputData, item, addValidationError, fieldKey }) => {
             console.log('Post.content.hooks.validate', {
               resolvedData,
               inputData,

@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import {
-  useFilter,
-  useListFormatter
-} from '@react-aria/i18n'
+import { useFilter, useListFormatter } from '@react-aria/i18n'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
 import { Combobox, Item } from '@keystar/ui/combobox'
@@ -19,19 +16,17 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   if (props.field.displayMode === 'checkboxes') return <CheckboxesModeField {...props} />
   return <SelectModeField {...props} />
 }
 
-function SelectModeField (props: FieldProps<typeof controller>) {
+function SelectModeField(props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
   const [filterText, setFilterText] = useState('')
   const { contains } = useFilter({ sensitivity: 'base' })
   const items = field.options.filter(option => !value.some(x => x.value === option.value))
-  const filteredItems = filterText
-    ? items.filter(item => contains(item.label, filterText))
-    : items
+  const filteredItems = filterText ? items.filter(item => contains(item.label, filterText)) : items
 
   return (
     <VStack gap="regular">
@@ -50,16 +45,14 @@ function SelectModeField (props: FieldProps<typeof controller>) {
         }}
         width="auto"
       >
-        {item => (
-          <Item key={item.value}>{item.label}</Item>
-        )}
+        {item => <Item key={item.value}>{item.label}</Item>}
       </Combobox>
 
       <TagGroup
         aria-label={`${field.label} selected items`}
         items={value}
         maxRows={2}
-        onRemove={(keys) => {
+        onRemove={keys => {
           const key = keys.values().next().value
           onChange?.(value.filter(x => x.value !== key))
         }}
@@ -69,15 +62,13 @@ function SelectModeField (props: FieldProps<typeof controller>) {
           </Text>
         )}
       >
-        {item => (
-          <Item key={item.value}>{item.label}</Item>
-        )}
+        {item => <Item key={item.value}>{item.label}</Item>}
       </TagGroup>
     </VStack>
   )
 }
 
-function CheckboxesModeField (props: FieldProps<typeof controller>) {
+function CheckboxesModeField(props: FieldProps<typeof controller>) {
   const { field, onChange, value } = props
   return (
     <CheckboxGroup
@@ -113,19 +104,17 @@ export const Cell: CellComponent<typeof controller> = ({ value = [], field }) =>
 }
 
 export type AdminMultiSelectFieldMeta = {
-  options: readonly { label: string, value: string | number }[]
+  options: readonly { label: string; value: string | number }[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'checkboxes' | 'select'
   defaultValue: string[] | number[]
 }
 
 type Config = FieldControllerConfig<AdminMultiSelectFieldMeta>
-type Option = { label: string, value: string }
+type Option = { label: string; value: string }
 type Value = readonly Option[]
 
-export function controller (
-  config: Config
-): FieldController<Value, Option[]> & {
+export function controller(config: Config): FieldController<Value, Option[]> & {
   displayMode: 'checkboxes' | 'select'
   options: Option[]
   type: 'string' | 'integer' | 'enum'
@@ -136,8 +125,11 @@ export function controller (
     value: x.value.toString(),
   }))
 
-  const valuesToOptionsWithStringValues = Object.fromEntries(optionsWithStringValues.map(option => [option.value, option]))
-  const parseValue = (value: string) => config.fieldMeta.type === 'integer' ? parseInt(value) : value
+  const valuesToOptionsWithStringValues = Object.fromEntries(
+    optionsWithStringValues.map(option => [option.value, option])
+  )
+  const parseValue = (value: string) =>
+    config.fieldMeta.type === 'integer' ? parseInt(value) : value
 
   return {
     displayMode: config.fieldMeta.displayMode,
@@ -158,10 +150,11 @@ export function controller (
     },
     serialize: value => ({ [config.path]: value.map(x => parseValue(x.value)) }),
     filter: {
-      Filter (props) {
+      Filter(props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
         const densityLevels = ['spacious', 'regular', 'compact'] as const
-        const density = densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
+        const density =
+          densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
 
         const listView = (
           <ListView
@@ -180,20 +173,13 @@ export function controller (
             selectedKeys={value.map(x => x.value)}
             {...otherProps}
           >
-            {(item) => (
-              <Item key={item.value}>{item.label}</Item>
-            )}
+            {item => <Item key={item.value}>{item.label}</Item>}
           </ListView>
         )
 
         if (context === 'edit') {
           return (
-            <VStack
-              gap="medium"
-              flex
-              minHeight={0}
-              maxHeight="100%"
-            >
+            <VStack gap="medium" flex minHeight={0} maxHeight="100%">
               {/* intentionally not linked: the `ListView` has an explicit "aria-label" to avoid awkwardness with IDs and forked render */}
               <FieldLabel elementType="span">{typeLabel}</FieldLabel>
               {listView}
@@ -205,10 +191,10 @@ export function controller (
       },
       graphql: ({ type, value: options }) => ({
         [config.path]: {
-          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => x.value)
+          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => x.value),
         },
       }),
-      Label ({ type, value }) {
+      Label({ type, value }) {
         const listFormatter = useListFormatter({
           style: 'short',
           type: 'disjunction',

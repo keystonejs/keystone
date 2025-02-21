@@ -1,28 +1,16 @@
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react'
+import React, { createContext, useContext, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Editor, Transforms } from 'slate'
 import {
   type RenderElementProps,
   ReactEditor,
-  useSlateStatic as useStaticEditor
+  useSlateStatic as useStaticEditor,
 } from 'slate-react'
 
 import { css, tokenSchema } from '@keystar/ui/style'
 
 import { type ComponentBlock } from './api-shared'
-import {
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
-} from '../utils'
-import {
-  useElementWithSetNodes,
-  useEventCallback,
-} from '../utils-hooks'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
+import { useElementWithSetNodes, useEventCallback } from '../utils-hooks'
 import { getInitialValue } from './initial-values'
 import { createGetPreviewProps } from './preview-props'
 import { updateComponentBlockElementProps } from './update-element'
@@ -34,11 +22,11 @@ export { withComponentBlocks } from './with-component-blocks'
 
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({})
 
-export function ComponentInlineProp (props: RenderElementProps) {
+export function ComponentInlineProp(props: RenderElementProps) {
   return <span {...props.attributes}>{props.children}</span>
 }
 
-export function insertComponentBlock (
+export function insertComponentBlock(
   editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string
@@ -56,7 +44,7 @@ export function insertComponentBlock (
   }
 }
 
-export function ComponentBlocksElement ({
+export function ComponentBlocksElement({
   attributes,
   children,
   element: __elementToGetPath,
@@ -108,10 +96,7 @@ export function ComponentBlocksElement ({
   if (!componentBlock) {
     return (
       <div className={css({ border: 'red 4px solid', padding: tokenSchema.size.space.medium })}>
-        <pre
-          contentEditable={false}
-          className={css({ userSelect: 'none' })}
-        >
+        <pre contentEditable={false} className={css({ userSelect: 'none' })}>
           {`The block "${currentElement.component}" no longer exists.
 
 Props:

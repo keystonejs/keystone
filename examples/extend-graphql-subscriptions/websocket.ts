@@ -16,10 +16,7 @@ declare global {
 export const pubSub = global.graphqlSubscriptionPubSub || new PubSub()
 globalThis.graphqlSubscriptionPubSub = pubSub
 
-export function extendHttpServer (
-  httpServer: http.Server,
-  commonContext: Context,
-) {
+export function extendHttpServer(httpServer: http.Server, commonContext: Context) {
   // Setup WebSocket server using 'ws'
   const wss = new WebSocketServer({
     server: httpServer,

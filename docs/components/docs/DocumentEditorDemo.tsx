@@ -13,12 +13,12 @@ import { type document } from '@keystone-6/fields-document'
 import { Global } from '@emotion/react'
 
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'
-import { DocumentEditor, } from '../../../packages/fields-document/src/DocumentEditor'
+import { DocumentEditor } from '../../../packages/fields-document/src/DocumentEditor'
 import {
   createDocumentEditor,
   Editor,
   ReactEditor,
-  withReact
+  withReact,
 } from '../../../packages/fields-document/src/DocumentEditor/demo'
 import { FormValueContentFromPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/preview-props'
@@ -96,7 +96,7 @@ const componentBlocks = {
 
 type DocumentFieldConfig = Parameters<typeof document>[0]
 
-function documentFeaturesCodeExample (config: DocumentFieldConfig | DocumentFeatures) {
+function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
   return `import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
@@ -112,13 +112,13 @@ export default config({
       val === false
         ? undefined
         : // every value in an array on a new line looks real bad, especially for layouts
-        Array.isArray(val)
-        ? Array.isArray(val[0])
-          ? // this case is for layouts
-            val.map(x => `[${x.join(', ')}]`)
-          : // this case is for headingLevels
-            `[${val.join(', ')}]`
-        : val,
+          Array.isArray(val)
+          ? Array.isArray(val[0])
+            ? // this case is for layouts
+              val.map(x => `[${x.join(', ')}]`)
+            : // this case is for headingLevels
+              `[${val.join(', ')}]`
+          : val,
     2
   )
     .replace(/"/g, '')
@@ -140,7 +140,7 @@ export default config({
 `
 }
 
-function documentFeaturesToShorthand (documentFeatures: DocumentFeatures): DocumentFieldConfig {
+function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): DocumentFieldConfig {
   return {
     formatting: objToShorthand({
       alignment: objToShorthand({
@@ -156,8 +156,8 @@ function documentFeaturesToShorthand (documentFeatures: DocumentFeatures): Docum
         documentFeatures.formatting.headingLevels.length === 6
           ? true
           : documentFeatures.formatting.headingLevels.length === 0
-          ? undefined
-          : documentFeatures.formatting.headingLevels,
+            ? undefined
+            : documentFeatures.formatting.headingLevels,
       blockTypes: objToShorthand({
         code: boolToTrueOrUndefined(documentFeatures.formatting.blockTypes.code),
         blockquote: boolToTrueOrUndefined(documentFeatures.formatting.blockTypes.blockquote),
@@ -175,8 +175,8 @@ function documentFeaturesToShorthand (documentFeatures: DocumentFeatures): Docum
 }
 
 function objToShorthand<
-  Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
-> (obj: Obj): Obj | true | undefined {
+  Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>,
+>(obj: Obj): Obj | true | undefined {
   const values = Object.values(obj)
   const state: (typeof values)[number] = values[0]!
   for (const val of values) {
@@ -187,7 +187,7 @@ function objToShorthand<
   return state as any
 }
 
-function boolToTrueOrUndefined (bool: boolean): true | undefined {
+function boolToTrueOrUndefined(bool: boolean): true | undefined {
   return bool ? true : undefined
 }
 
@@ -195,7 +195,7 @@ const fromEntriesButTypedWell: <Key extends string | number | symbol, Val>(
   iterable: Iterable<readonly [Key, Val]>
 ) => Record<Key, Val> = Object.fromEntries
 
-function documentFeaturesFormToValue (formValue: DocumentFeaturesFormValue): DocumentFeatures {
+function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): DocumentFeatures {
   return {
     formatting: {
       alignment: {
@@ -238,10 +238,10 @@ function documentFeaturesFormToValue (formValue: DocumentFeaturesFormValue): Doc
 const DocumentFeaturesContext = React.createContext<{
   documentFeatures: DocumentFeatures
   formValue: DocumentFeaturesFormValue
-  setFormValue:(value: DocumentFeaturesFormValue) => void
+  setFormValue: (value: DocumentFeaturesFormValue) => void
 }>({} as any)
 
-export function DocumentFeaturesProvider ({ children }: { children: ReactNode }) {
+export function DocumentFeaturesProvider({ children }: { children: ReactNode }) {
   const [formValue, setFormValue] = useState<DocumentFeaturesFormValue>(() =>
     getInitialPropsValue(documentFeaturesProp)
   )
@@ -261,7 +261,7 @@ export function DocumentFeaturesProvider ({ children }: { children: ReactNode })
   )
 }
 
-export function DocumentFeaturesFormAndCode () {
+export function DocumentFeaturesFormAndCode() {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext)
   return (
     <div>
@@ -278,7 +278,7 @@ export function DocumentFeaturesFormAndCode () {
   )
 }
 
-export function DocumentEditorDemo () {
+export function DocumentEditorDemo() {
   const [value, setValue] = useState(initialContent as any)
   const [key, setKey] = useState(0)
   const { documentFeatures, formValue } = useContext(DocumentFeaturesContext)
@@ -288,7 +288,7 @@ export function DocumentEditorDemo () {
     // that no invalid things exist after a user changes something
     const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj, {
       ReactEditor: ReactEditor as any, // TODO: somehow incompatible
-      withReact
+      withReact,
     })
     editor.children = value
     Editor.normalize(editor, { force: true })

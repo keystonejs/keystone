@@ -20,8 +20,8 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        * Makes the field disallow null values and require a string at least 1 character long
        */
       isRequired?: boolean
-      match?: { regex: RegExp, explanation?: string }
-      length?: { min?: number, max?: number }
+      match?: { regex: RegExp; explanation?: string }
+      length?: { min?: number; max?: number }
     }
     defaultValue?: string | null
     db?: {
@@ -58,83 +58,88 @@ export type TextFieldMeta = {
   isNullable: boolean
   validation: {
     isRequired: boolean
-    match: { regex: { source: string, flags: string }, explanation: string | null } | null
-    length: { min: number | null, max: number | null }
+    match: { regex: { source: string; flags: string }; explanation: string | null } | null
+    length: { min: number | null; max: number | null }
   }
   defaultValue: string | null
 }
 
-export function text <ListTypeInfo extends BaseListTypeInfo> (
+export function text<ListTypeInfo extends BaseListTypeInfo>(
   config: TextFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  const {
-    defaultValue: defaultValue_,
-    isIndexed,
-    validation = {}
-  } = config
+  const { defaultValue: defaultValue_, isIndexed, validation = {} } = config
 
   config.db ??= {}
   config.db.isNullable ??= false // TODO: sigh, remove in breaking change?
 
   const isRequired = validation.isRequired ?? false
   const match = validation.match
-  const min = validation.isRequired ? validation.length?.min ?? 1 : validation.length?.min
+  const min = validation.isRequired ? (validation.length?.min ?? 1) : validation.length?.min
   const max = validation.length?.max
 
-  return (meta) => {
+  return meta => {
     if (min !== undefined && (!Number.isInteger(min) || min < 0)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.length.min: ${min} but it must be a positive integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.length.min: ${min} but it must be a positive integer`
+      )
     }
     if (max !== undefined && (!Number.isInteger(max) || max < 0)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.length.max: ${max} but it must be a positive integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.length.max: ${max} but it must be a positive integer`
+      )
     }
     if (isRequired && min !== undefined && min === 0) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.min: 0, this is not allowed because validation.isRequired implies at least a min length of 1`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.min: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
+      )
     }
     if (isRequired && max !== undefined && max === 0) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.max: 0, this is not allowed because validation.isRequired implies at least a max length of 1`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.max: 0, this is not allowed because validation.isRequired implies at least a max length of 1`
+      )
     }
-    if (
-      min !== undefined &&
-      max !== undefined &&
-      min > max
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
+    if (min !== undefined && max !== undefined && min > max) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+      )
     }
 
     // defaulted to false as a zero length string is preferred to null
     const isNullable = config.db?.isNullable ?? false
     const defaultValue = isNullable ? (defaultValue_ ?? null) : (defaultValue_ ?? '')
     const hasAdditionalValidation = match || min !== undefined || max !== undefined
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      hasAdditionalValidation
+        ? ({ resolvedData, operation, addValidationError }) => {
+            if (operation === 'delete') return
 
-      const value = resolvedData[meta.fieldKey]
-      if (value != null) {
-        if (min !== undefined && value.length < min) {
-          if (min === 1) {
-            addValidationError(`value must not be empty`)
-          } else {
-            addValidationError(`value must be at least ${min} characters long`)
+            const value = resolvedData[meta.fieldKey]
+            if (value != null) {
+              if (min !== undefined && value.length < min) {
+                if (min === 1) {
+                  addValidationError(`value must not be empty`)
+                } else {
+                  addValidationError(`value must be at least ${min} characters long`)
+                }
+              }
+              if (max !== undefined && value.length > max) {
+                addValidationError(`value must be no longer than ${max} characters`)
+              }
+              if (match && !match.regex.test(value)) {
+                addValidationError(match.explanation ?? `value must match ${match.regex}`)
+              }
+            }
           }
-        }
-        if (max !== undefined && value.length > max) {
-          addValidationError(`value must be no longer than ${max} characters`)
-        }
-        if (match && !match.regex.test(value)) {
-          addValidationError(match.explanation ?? `value must match ${match.regex}`)
-        }
-      }
-    } : undefined)
+        : undefined
+    )
 
     return fieldType({
       kind: 'scalar',
       mode,
       scalar: 'String',
-      default: (defaultValue === null) ? undefined : { kind: 'literal', value: defaultValue },
+      default: defaultValue === null ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
       nativeType: config.db?.nativeType,
@@ -143,7 +148,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
@@ -158,7 +163,7 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
             type: g.String,
             defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
-          resolve (val) {
+          resolve(val) {
             if (val !== undefined) return val
             return defaultValue ?? null
           },
@@ -171,22 +176,24 @@ export function text <ListTypeInfo extends BaseListTypeInfo> (
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/text',
       views: '@keystone-6/core/fields/types/text/views',
-      getAdminMeta (): TextFieldMeta {
+      getAdminMeta(): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',
           shouldUseModeInsensitive: meta.provider === 'postgresql',
           validation: {
             isRequired,
-            match: match ? {
-              regex: {
-                source: match.regex.source,
-                flags: match.regex.flags,
-              },
-              explanation: match.explanation ?? `value must match ${match.regex}`,
-            } : null,
+            match: match
+              ? {
+                  regex: {
+                    source: match.regex.source,
+                    flags: match.regex.flags,
+                  },
+                  explanation: match.explanation ?? `value must match ${match.regex}`,
+                }
+              : null,
             length: {
               max: max ?? null,
-              min: min ?? null
+              min: min ?? null,
             },
           },
           defaultValue: defaultValue ?? (isNullable ? null : ''),

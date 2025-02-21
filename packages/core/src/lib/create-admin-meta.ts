@@ -8,14 +8,8 @@ import type {
   MaybeSessionFunction,
   KeystoneConfig,
 } from '../types'
-import type {
-  GraphQLNames,
-} from '../types/utils'
-import type {
-  FieldMeta,
-  FieldGroupMeta,
-  ListMeta,
-} from '../types/admin-meta'
+import type { GraphQLNames } from '../types/utils'
+import type { FieldMeta, FieldGroupMeta, ListMeta } from '../types/admin-meta'
 
 import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
@@ -41,13 +35,14 @@ type FieldMetaRootVal_ = {
   }
 }
 
-export type FieldMetaRootVal = FieldMetaRootVal_
-  & Omit<FieldMeta, keyof FieldMetaRootVal_ | 'controller' | 'graphql' | 'views'>
+export type FieldMetaRootVal = FieldMetaRootVal_ &
+  Omit<FieldMeta, keyof FieldMetaRootVal_ | 'controller' | 'graphql' | 'views'>
 
 type FieldGroupMetaRootVal_ = {
   fields: FieldMetaRootVal[]
 }
-export type FieldGroupMetaRootVal = FieldGroupMetaRootVal_ & Omit<FieldGroupMeta, keyof FieldGroupMetaRootVal_>
+export type FieldGroupMetaRootVal = FieldGroupMetaRootVal_ &
+  Omit<FieldGroupMeta, keyof FieldGroupMetaRootVal_>
 
 type ListMetaRootVal_ = {
   fields: FieldMetaRootVal[]
@@ -57,7 +52,7 @@ type ListMetaRootVal_ = {
   pageSize: number
   initialColumns: string[]
   initialSearchFields: string[]
-  initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
+  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
   hideNavigation: ContextFunction<boolean>
@@ -73,7 +68,7 @@ export type AdminMetaRootVal = {
   isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
 
-export function createAdminMeta (
+export function createAdminMeta(
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
@@ -100,7 +95,6 @@ export function createAdminMeta (
     if (listConfig.ui?.listView?.initialColumns) {
       // if they've asked for a particular thing, give them that thing
       initialColumns = listConfig.ui.listView.initialColumns as string[]
-
     } else {
       // otherwise, we'll start with the labelfield on the left and then add
       // 2 more fields to the right of that. We don't include the 'id' field
@@ -146,13 +140,17 @@ export function createAdminMeta (
       initialSearchFields,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
-          | { field: string, direction: 'ASC' | 'DESC' }
+          | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
       isSingleton: list.isSingleton,
 
       hideNavigation: normalizeMaybeSessionFunction(listConfig.ui?.hideNavigation ?? false),
-      hideCreate: normalizeMaybeSessionFunction(listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create),
-      hideDelete: normalizeMaybeSessionFunction(listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete),
+      hideCreate: normalizeMaybeSessionFunction(
+        listConfig.ui?.hideCreate ?? !list.graphql.isEnabled.create
+      ),
+      hideDelete: normalizeMaybeSessionFunction(
+        listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete
+      ),
     }
 
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
@@ -160,7 +158,7 @@ export function createAdminMeta (
 
   let uniqueViewCount = -1
   const stringViewsToIndex: Record<string, number> = {}
-  function getViewId (view: string) {
+  function getViewId(view: string) {
     if (stringViewsToIndex[view] !== undefined) return stringViewsToIndex[view]
 
     uniqueViewCount++
@@ -177,10 +175,15 @@ export function createAdminMeta (
       // if the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
       if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
-      assertValidView(field.views, `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`)
+      assertValidView(
+        field.views,
+        `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
+      )
 
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
-      const isNonNull = (['read', 'create', 'update'] as const).filter(operation => field.graphql.isNonNull[operation])
+      const isNonNull = (['read', 'create', 'update'] as const).filter(
+        operation => field.graphql.isNonNull[operation]
+      )
       const fieldMeta = {
         path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
@@ -189,8 +192,14 @@ export function createAdminMeta (
 
         key: fieldKey,
         listKey: listKey,
-        isFilterable: normalizeIsOrderFilter(field.input?.where ? field.graphql.isEnabled.filter : false, baseOrderFilterArgs),
-        isOrderable: normalizeIsOrderFilter(field.input?.orderBy ? field.graphql.isEnabled.orderBy : false, baseOrderFilterArgs),
+        isFilterable: normalizeIsOrderFilter(
+          field.input?.where ? field.graphql.isEnabled.filter : false,
+          baseOrderFilterArgs
+        ),
+        isOrderable: normalizeIsOrderFilter(
+          field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
+          baseOrderFilterArgs
+        ),
 
         viewsIndex: getViewId(field.views),
         customViewsIndex:
@@ -221,7 +230,9 @@ export function createAdminMeta (
       adminMetaRoot.listsByKey[listKey].groups.push({
         label: group.label,
         description: group.description,
-        fields: group.fields.map(fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]),
+        fields: group.fields.map(
+          fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
+        ),
       })
     }
   }
@@ -249,31 +260,35 @@ export function createAdminMeta (
 
 let currentAdminMeta: undefined | AdminMetaRootVal
 
-export function getAdminMetaForRelationshipField () {
+export function getAdminMetaForRelationshipField() {
   if (currentAdminMeta) return currentAdminMeta
   throw new Error('unexpected call to getAdminMetaInRelationshipField')
 }
 
-function assertValidView (view: string, location: string) {
+function assertValidView(view: string, location: string) {
   if (view.includes('\\')) {
-    throw new Error(`${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
+    throw new Error(
+      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
+    )
   }
 
   if (path.isAbsolute(view)) {
-    throw new Error(`${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`)
+    throw new Error(
+      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
+    )
   }
 }
 
-function normalizeMaybeSessionFunction<Return extends string | boolean> (
+function normalizeMaybeSessionFunction<Return extends string | boolean>(
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): ContextFunction<Return> {
   if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session })
 }
 
-function normalizeIsOrderFilter (
+function normalizeIsOrderFilter(
   input: MaybeFieldFunction<BaseListTypeInfo>,
-  baseOrderFilterArgs: { listKey: string, fieldKey: string }
+  baseOrderFilterArgs: { listKey: string; fieldKey: string }
 ): ContextFunction<boolean> {
   if (typeof input !== 'function') return () => input
   return context => input({ context, session: context.session, ...baseOrderFilterArgs })

@@ -15,7 +15,7 @@ type StackProps = {
   orientation?: 'vertical' | 'horizontal'
 } & HTMLAttributes<HTMLElement>
 
-export function Stack ({ gap = 4, orientation = 'vertical', block, ...props }: StackProps) {
+export function Stack({ gap = 4, orientation = 'vertical', block, ...props }: StackProps) {
   return (
     <div
       css={{

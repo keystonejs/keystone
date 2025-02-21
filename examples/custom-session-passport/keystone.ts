@@ -3,11 +3,7 @@ import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { type TypeInfo } from '.keystone/types'
 import { lists } from './schema'
-import {
-  type Session,
-  session,
-  passportMiddleware
-} from './auth'
+import { type Session, session, passportMiddleware } from './auth'
 
 export default config<TypeInfo<Session>>({
   db: {
@@ -21,7 +17,7 @@ export default config<TypeInfo<Session>>({
   session,
 
   server: {
-    extendExpressApp (app, context) {
+    extendExpressApp(app, context) {
       app.use(passportMiddleware(context))
     },
   },

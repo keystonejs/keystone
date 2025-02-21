@@ -19,7 +19,7 @@ const runner = setupTestRunner({
   },
 })
 
-async function initialise ({ context }: { context: KeystoneContext }) {
+async function initialise({ context }: { context: KeystoneContext }) {
   await context.db.Singular.createOne({ data: {} })
 }
 
@@ -138,7 +138,9 @@ describe('queries "work" on singletons', () => {
           ? 'Unique constraint failed on the constraint: `PRIMARY`'
           : 'Unique constraint failed on the fields: (`id`)'
 
-      expect(errors?.[0].message).toEqual(`\nInvalid \`prisma.singular.create()\` invocation:\n\n\n${message}`)
+      expect(errors?.[0].message).toEqual(
+        `\nInvalid \`prisma.singular.create()\` invocation:\n\n\n${message}`
+      )
     })
   )
   test(

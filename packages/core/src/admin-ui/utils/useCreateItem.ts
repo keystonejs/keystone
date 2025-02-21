@@ -1,19 +1,10 @@
 import { useRouter } from 'next/router'
-import {
-  type ComponentProps,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type ComponentProps, useEffect, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
 
 import type { ListMeta } from '../../types'
-import {
-  type ApolloError,
-  gql,
-  useMutation
-} from '../apollo'
+import { type ApolloError, gql, useMutation } from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
 import type { Fields } from '.'
 import {
@@ -28,10 +19,10 @@ type CreateItemHookResult = {
   shouldPreventNavigation: boolean
   error?: ApolloError
   props: ComponentProps<typeof Fields>
-  create: () => Promise<{ id: string, label: string | null } | undefined>
+  create: () => Promise<{ id: string; label: string | null } | undefined>
 }
 
-export function useCreateItem (list: ListMeta): CreateItemHookResult {
+export function useCreateItem(list: ListMeta): CreateItemHookResult {
   const router = useRouter()
   const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
@@ -46,7 +37,12 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
   const invalidFields = useInvalidFields(list.fields, value)
 
-  const hasChangedFields = useHasChanges('create', list.fields, value, makeDefaultValueState(list.fields))
+  const hasChangedFields = useHasChanges(
+    'create',
+    list.fields,
+    value,
+    makeDefaultValueState(list.fields)
+  )
   const shouldPreventNavigation = !returnedData?.item && hasChangedFields
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
 
@@ -67,21 +63,21 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
       forceValidation,
       invalidFields,
       value,
-      onChange: (newItemValue) => setValue(newItemValue)
+      onChange: newItemValue => setValue(newItemValue),
     },
-    async create (): Promise<{ id: string, label: string | null } | undefined> {
+    async create(): Promise<{ id: string; label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
 
       if (newForceValidation) return
 
-      let outputData: { item: { id: string, label: string | null } }
+      let outputData: { item: { id: string; label: string | null } }
       try {
         outputData = await tryCreateItem({
           variables: {
-            data: serializeValueToOperationItem('create', list.fields, value)
+            data: serializeValueToOperationItem('create', list.fields, value),
           },
-          update (cache, { data }) {
+          update(cache, { data }) {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
                 id: 'ROOT_QUERY',
@@ -122,7 +118,7 @@ type BuildItemHookResult = {
   build: () => Promise<Record<string, unknown> | undefined>
 }
 
-export function useBuildItem (list: ListMeta): BuildItemHookResult {
+export function useBuildItem(list: ListMeta): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
   const invalidFields = useInvalidFields(list.fields, value)
@@ -137,9 +133,9 @@ export function useBuildItem (list: ListMeta): BuildItemHookResult {
       forceValidation,
       invalidFields,
       value,
-      onChange: (newItemValue) => setValue(newItemValue)
+      onChange: newItemValue => setValue(newItemValue),
     },
-    async build () {
+    async build() {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
       if (newForceValidation) return

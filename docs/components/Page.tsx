@@ -15,7 +15,7 @@ import { Header } from './Header'
 import { Footer } from './Footer'
 import { type HeadingType } from './Markdoc'
 
-export function BlogPage ({
+export function BlogPage({
   children,
   headings = [],
   noRightNav,
@@ -98,7 +98,7 @@ export function BlogPage ({
   )
 }
 
-export function Page ({ children }: { children: ReactNode }) {
+export function Page({ children }: { children: ReactNode }) {
   return (
     <Fragment>
       <div

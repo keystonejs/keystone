@@ -6,7 +6,7 @@ import { allOperations, allowAll } from '@keystone-6/core/access'
 import { expectSingleRelationshipError } from '../../utils'
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Group: list({
         access: allowAll,
@@ -99,7 +99,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('no access control', () => {
@@ -229,7 +229,7 @@ describe('non-matching filter', () => {
 })
 
 describe('with access control', () => {
-  (
+  ;(
     [
       { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
       { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },

@@ -11,7 +11,7 @@ type PostProps = {
   content: string
 }
 
-async function main () {
+async function main() {
   const context = getContext(config, PrismaModule)
 
   console.log(`🌱 Inserting seed data`)

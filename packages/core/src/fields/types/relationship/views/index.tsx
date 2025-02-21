@@ -1,10 +1,5 @@
-import React, {
-  Fragment,
-  useState
-} from 'react'
-import {
-  useListFormatter
-} from '@react-aria/i18n'
+import React, { Fragment, useState } from 'react'
+import { useListFormatter } from '@react-aria/i18n'
 
 import { DialogContainer } from '@keystar/ui/dialog'
 import { VStack } from '@keystar/ui/layout'
@@ -13,11 +8,7 @@ import { TagGroup, Item } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
-import type {
-  CellComponent,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types'
+import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
 
@@ -26,18 +17,10 @@ import { ComboboxMany } from './ComboboxMany'
 import { ComboboxSingle } from './ComboboxSingle'
 
 export { ComboboxSingle, ComboboxMany }
-import type {
-  RelationshipController,
-  RelationshipValue,
-} from './types'
+import type { RelationshipController, RelationshipValue } from './types'
 
-export function Field (props: FieldProps<typeof controller>) {
-  const {
-    autoFocus,
-    field,
-    onChange,
-    value,
-  } = props
+export function Field(props: FieldProps<typeof controller>) {
+  const { autoFocus, field, onChange, value } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
   const description = field.description || undefined
@@ -60,7 +43,7 @@ export function Field (props: FieldProps<typeof controller>) {
   return (
     <Fragment>
       <VStack gap="medium">
-        <ContextualActions onAdd={() => setDialogOpen(true)} {...props} >
+        <ContextualActions onAdd={() => setDialogOpen(true)} {...props}>
           {value.kind === 'many' ? (
             <ComboboxMany
               autoFocus={autoFocus}
@@ -73,7 +56,7 @@ export function Field (props: FieldProps<typeof controller>) {
               state={{
                 kind: 'many',
                 value: value.value,
-                onChange (newItems) {
+                onChange(newItems) {
                   onChange?.({ ...value, value: newItems })
                 },
               }}
@@ -90,7 +73,7 @@ export function Field (props: FieldProps<typeof controller>) {
               state={{
                 kind: 'one',
                 value: value.value,
-                onChange (newItem) {
+                onChange(newItem) {
                   onChange?.({ ...value, value: newItem })
                 },
               }}
@@ -134,7 +117,9 @@ export function Field (props: FieldProps<typeof controller>) {
               listKey={foreignList.key}
               onChange={builtItemData => {
                 const id = `_____temporary_${counter}`
-                const label = (builtItemData?.[foreignList.labelField] as string | null) ?? `[Unnamed ${foreignList.singular} ${counter}]`
+                const label =
+                  (builtItemData?.[foreignList.labelField] as string | null) ??
+                  `[Unnamed ${foreignList.singular} ${counter}]`
                 setDialogOpen(false)
                 setCounter(counter + 1)
 
@@ -147,8 +132,8 @@ export function Field (props: FieldProps<typeof controller>) {
                         id,
                         label,
                         data: builtItemData,
-                        built: true
-                      }
+                        built: true,
+                      },
                     ],
                   })
                 } else if (value.kind === 'one') {
@@ -158,8 +143,8 @@ export function Field (props: FieldProps<typeof controller>) {
                       id,
                       label,
                       data: builtItemData,
-                      built: true
-                    }
+                      built: true,
+                    },
                   })
                 }
               }}
@@ -173,7 +158,7 @@ export function Field (props: FieldProps<typeof controller>) {
 
 // NOTE: fix for `TagGroup` perf issue, should typically be okay to just
 // inline the render function
-function renderItem (item: { id: string, href: string, label: string }) {
+function renderItem(item: { id: string; href: string; label: string }) {
   if (item.href === '') return <Item>{item.label}</Item>
   return <Item href={item.href}>{item.label}</Item>
 }
@@ -196,9 +181,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          <TextLink href={`/${list.path}/${item.id}`}>
-            {item.label || item.id}
-          </TextLink>
+          <TextLink href={`/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
@@ -206,7 +189,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   )
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<
     {
       refFieldKey?: string
@@ -215,27 +198,12 @@ export function controller (
       hideCreate: boolean
       refLabelField: string
       refSearchFields: string[]
-    } & (
-      | { displayMode: 'select' }
-      | { displayMode: 'count' }
-    )
+    } & ({ displayMode: 'select' } | { displayMode: 'count' })
   >
 ): RelationshipController {
-  const {
-    listKey,
-    path: fieldKey,
-    label,
-    description,
-  } = config
-  const {
-    displayMode,
-    hideCreate,
-    many,
-    refFieldKey,
-    refLabelField,
-    refListKey,
-    refSearchFields,
-  } = config.fieldMeta
+  const { listKey, path: fieldKey, label, description } = config
+  const { displayMode, hideCreate, many, refFieldKey, refLabelField, refListKey, refSearchFields } =
+    config.fieldMeta
 
   return {
     refFieldKey,
@@ -271,10 +239,12 @@ export function controller (
           kind: 'one',
           id: null,
           value: null,
-          initialValue: null
+          initialValue: null,
         },
-    validate () { return true },
-    deserialize: (data) => {
+    validate() {
+      return true
+    },
+    deserialize: data => {
       if (displayMode === 'count') {
         return {
           id: data.id,
@@ -308,12 +278,16 @@ export function controller (
         initialValue: value,
       }
     },
-    serialize: (state) => {
+    serialize: state => {
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id))
         const initialIds = new Set(state.initialValue.map(x => x.id))
-        const disconnect = state.initialValue.filter(x => !newAllIds.has(x.id)) .map(x => ({ id: x.id }))
-        const connect = state.value.filter(x => !x.built && !initialIds.has(x.id)).map(x => ({ id: x.id }))
+        const disconnect = state.initialValue
+          .filter(x => !newAllIds.has(x.id))
+          .map(x => ({ id: x.id }))
+        const connect = state.value
+          .filter(x => !x.built && !initialIds.has(x.id))
+          .map(x => ({ id: x.id }))
         const create = state.value.filter(x => x.built).map(x => x.data)
         const output = {
           ...(disconnect.length ? { disconnect } : {}),
@@ -323,16 +297,15 @@ export function controller (
 
         if (Object.keys(output).length) {
           return {
-            [config.path]: output
+            [config.path]: output,
           }
         }
-
       } else if (state.kind === 'one') {
         if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
         if (state.value?.built) {
           return {
             [config.path]: {
-              create: state.value.data
+              create: state.value.data,
             },
           }
         }
@@ -349,7 +322,7 @@ export function controller (
       return {}
     },
     filter: {
-      Filter (props) {
+      Filter(props) {
         const foreignList = useList(refListKey)
         if (props.type === 'empty' || props.type === 'not_empty') return null
         // TODO: show labels rather than ids
@@ -364,8 +337,11 @@ export function controller (
               list={foreignList}
               state={{
                 kind: 'one',
-                value: typeof props.value === 'string'? { id: props.value, label: props.value, built: false } : null,
-                onChange (newItem) {
+                value:
+                  typeof props.value === 'string'
+                    ? { id: props.value, label: props.value, built: false }
+                    : null,
+                onChange(newItem) {
                   props.onChange(newItem === null ? null : newItem.id.toString())
                 },
               }}
@@ -386,7 +362,7 @@ export function controller (
               state={{
                 kind: 'many',
                 value,
-                onChange (newItem) {
+                onChange(newItem) {
                   props.onChange(newItem.map(x => x.id.toString()))
                 },
               }}
@@ -401,7 +377,7 @@ export function controller (
               maxRows={2}
               onRemove={keys => {
                 props.onChange(ids.filter(id => !keys.has(id)))
-              }}  
+              }}
               renderEmptyState={() => (
                 <Text color="neutralSecondary" size="small">
                   Select related {foreignList.plural.toLowerCase()}…
@@ -413,7 +389,7 @@ export function controller (
           </VStack>
         )
       },
-      Label ({ label, type, value }) {
+      Label({ label, type, value }) {
         const listFormatter = useListFormatter({
           style: 'short',
           type: 'disjunction',
@@ -435,15 +411,17 @@ export function controller (
         return { [config.path]: { [type]: value } } // uh
       },
       types: {
-        empty: { label: 'Is empty', initialValue: null, },
-        not_empty: { label: 'Is not empty', initialValue: null, },
-        ...(many ? {
-          some: { label: 'Is one of', initialValue: [], },
-          not_some: { label: 'Is not one of', initialValue: [], },
-        } : {
-          is: { label: 'Is', initialValue: null, },
-          not_is: { label: 'Is not', initialValue: null, },
-        }),
+        empty: { label: 'Is empty', initialValue: null },
+        not_empty: { label: 'Is not empty', initialValue: null },
+        ...(many
+          ? {
+              some: { label: 'Is one of', initialValue: [] },
+              not_some: { label: 'Is not one of', initialValue: [] },
+            }
+          : {
+              is: { label: 'Is', initialValue: null },
+              not_is: { label: 'Is not', initialValue: null },
+            }),
       },
     },
   }

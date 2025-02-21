@@ -11,8 +11,7 @@ import { Button } from '../../../components/primitives/Button'
 import { ArrowR } from '../../../components/icons'
 import { KeystoneExperience } from '../../../components/docs/KeystoneExperience'
 
-export default function DocsPageClient ({ featuredExamples, featuredDocs }) {
-  
+export default function DocsPageClient({ featuredExamples, featuredDocs }) {
   return (
     <>
       <Type as="h1" look="heading64">

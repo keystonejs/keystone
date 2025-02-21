@@ -13,7 +13,7 @@ type TagProps = {
 }
 
 // TODO: move to @keystar/ui and implement properly
-export function Tag (props: TagProps) {
+export function Tag(props: TagProps) {
   const { children, onRemove } = props
   const rootId = useId()
   const textId = composeId(rootId, 'label')
@@ -38,9 +38,7 @@ export function Tag (props: TagProps) {
         paddingInlineEnd: 0,
       })}
     >
-      <SlotProvider slots={{ text: { id: textId }}}>
-        {children}
-      </SlotProvider>
+      <SlotProvider slots={{ text: { id: textId } }}>{children}</SlotProvider>
 
       {onRemove && (
         <span

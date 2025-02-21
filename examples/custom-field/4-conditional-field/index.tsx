@@ -15,7 +15,7 @@ type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   }
 }
 
-export function feedback<ListTypeInfo extends BaseListTypeInfo> ({
+export function feedback<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
   dependency,
   ...config
@@ -31,7 +31,7 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo> ({
       input: {
         create: {
           arg: g.arg({ type: g.String }),
-          resolve (value, context) {
+          resolve(value, context) {
             return value
           },
         },
@@ -40,12 +40,12 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo> ({
       },
       output: g.field({
         type: g.String,
-        resolve ({ value, item }, args, context, info) {
+        resolve({ value, item }, args, context, info) {
           return value
         },
       }),
       views: './4-conditional-field/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {
           dependency,
         }

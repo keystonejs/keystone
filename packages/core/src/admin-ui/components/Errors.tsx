@@ -9,7 +9,6 @@ import { Content, SlotProvider } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading, Text } from '@keystar/ui/typography'
 
-
 type ErrorBoundaryProps = {
   children: ReactNode
 }
@@ -21,20 +20,25 @@ type ErrorBoundaryState = {
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false, isReloading: false }
-  static getDerivedStateFromError (error: any) {
+  static getDerivedStateFromError(error: any) {
     return { error, hasError: true }
   }
   reloadPage = () => {
     this.setState({ isReloading: true })
     window.location.reload()
   }
-  render () {
+  render() {
     if (this.state.hasError) {
       return (
         <ErrorContainer>
           <Icon color="neutral" src={alertTriangleIcon} size="large" />
-          <Heading elementType="h1" margin={0}>Unknown error</Heading>
-          <Text>Something went wrong, please try reloading the page. If the problem persists contact your system administrator.</Text>
+          <Heading elementType="h1" margin={0}>
+            Unknown error
+          </Heading>
+          <Text>
+            Something went wrong, please try reloading the page. If the problem persists contact
+            your system administrator.
+          </Text>
           <Button
             // isPending={this.state.isReloading}
             prominence="high"
@@ -56,10 +60,10 @@ type ErrorContainerProps = {
 
 const errorContainerSlots = {
   heading: { align: 'center', margin: 0 },
-  text: { align: 'center' }
+  text: { align: 'center' },
 } as const
 
-export function ErrorContainer ({ children }: ErrorContainerProps) {
+export function ErrorContainer({ children }: ErrorContainerProps) {
   return (
     <Grid minHeight="100vh" minWidth="100vw" alignItems="center" justifyContent="center">
       <VStack
@@ -73,19 +77,14 @@ export function ErrorContainer ({ children }: ErrorContainerProps) {
         maxWidth="container.small"
         padding="xxlarge"
       >
-        <SlotProvider slots={errorContainerSlots}>
-          {children}
-        </SlotProvider>
+        <SlotProvider slots={errorContainerSlots}>{children}</SlotProvider>
       </VStack>
     </Grid>
   )
 }
 
-export function ErrorDetailsDialog ({ error }: { error: Error }) {
-  const {
-    message,
-    stack,
-  } = error
+export function ErrorDetailsDialog({ error }: { error: Error }) {
+  const { message, stack } = error
   return (
     <Dialog>
       <Heading>Error details</Heading>
@@ -105,7 +104,7 @@ export function ErrorDetailsDialog ({ error }: { error: Error }) {
                 color="critical"
                 trim={false}
                 UNSAFE_className={css({
-                  fontFamily: tokenSchema.typography.fontFamily.code
+                  fontFamily: tokenSchema.typography.fontFamily.code,
                 })}
               >
                 {stack}

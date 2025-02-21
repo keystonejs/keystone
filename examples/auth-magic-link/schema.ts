@@ -9,11 +9,11 @@ export type Session = {
   itemId: string
 }
 
-function hasSession ({ session }: { session?: Session }) {
+function hasSession({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
-function isSameUserFilter ({ session }: { session?: Session }) {
+function isSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false
 
@@ -73,11 +73,11 @@ export const lists = {
       }),
       password: password({
         validation: {
-          isRequired: true
-        }
+          isRequired: true,
+        },
       }),
-      oneTimeToken: password({ ...hiddenField, }),
-      oneTimeTokenCreatedAt: timestamp({ ...hiddenField, }),
+      oneTimeToken: password({ ...hiddenField }),
+      oneTimeTokenCreatedAt: timestamp({ ...hiddenField }),
     },
   }),
 } satisfies Lists<Session>
@@ -107,7 +107,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         type: graphql.nonNull(graphql.Boolean), // always true
         args: { userId: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
 
-        async resolve (args, { userId }, context: Context) {
+        async resolve(args, { userId }, context: Context) {
           // run asynchronously to reduce timing attacks
           ;(async function () {
             const ott = randomBytes(16).toString('base64url')
@@ -127,7 +127,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
             // you could send this one time token as is
             //   or embedded in a "magic link" (or similar)
             console.log(`DEBUGGING: the one time token for ${user.id} is ${ott}`)
-          }())
+          })()
 
           // always return true, lest we leak information
           return true
@@ -141,10 +141,12 @@ export const extendGraphqlSchema = graphql.extend(base => {
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
 
-        async resolve (args, { userId, token }, context: Context) {
-          if (!context.sessionStrategy) throw new Error('No session implementation available on context')
+        async resolve(args, { userId, token }, context: Context) {
+          if (!context.sessionStrategy)
+            throw new Error('No session implementation available on context')
 
-          const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions?.keystoneSecretField
+          const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions
+            ?.keystoneSecretField
           const sudoContext = context.sudo()
           const user = await sudoContext.db.User.findOne({ where: { id: userId } })
           const expiry = (user?.oneTimeTokenCreatedAt?.getTime() ?? 0) + 300000 /* 5 minutes */

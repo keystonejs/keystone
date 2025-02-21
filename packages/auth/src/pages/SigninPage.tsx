@@ -1,8 +1,5 @@
 import NextHead from 'next/head'
-import React, {
-  type FormEvent,
-  useState,
-} from 'react'
+import React, { type FormEvent, useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
@@ -20,7 +17,7 @@ import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
 
-function SigninPage ({
+function SigninPage({
   identityField,
   secretField,
   authGqlNames,
@@ -36,7 +33,8 @@ function SigninPage ({
     ItemAuthenticationWithPasswordSuccess: successTypename,
     ItemAuthenticationWithPasswordFailure: failureTypename,
   } = authGqlNames
-  const [tryAuthenticate, { error, loading, data }] = useMutation(gql`
+  const [tryAuthenticate, { error, loading, data }] = useMutation(
+    gql`
     mutation KsAuthSignin ($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
@@ -48,11 +46,11 @@ function SigninPage ({
           message
         }
       }
-    }`, {
-      refetchQueries: [
-        'KsFetchAdminMeta'
-      ]
-    })
+    }`,
+    {
+      refetchQueries: ['KsFetchAdminMeta'],
+    }
+  )
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -96,28 +94,23 @@ function SigninPage ({
         </HStack>
 
         <VStack
-          elementType='form'
+          elementType="form"
           onSubmit={onSubmit}
           // styles
           flex
           gap="xxlarge"
           paddingY="xlarge"
         >
-          <Heading elementType='h1' size='regular'>Sign in</Heading>
+          <Heading elementType="h1" size="regular">
+            Sign in
+          </Heading>
 
-          <GraphQLErrorNotice
-            errors={[
-              error?.networkError,
-              ...error?.graphQLErrors ?? []
-            ]}
-          />
+          <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
 
           {data?.authenticate?.__typename === failureTypename && (
             <Notice tone="critical">
               <Content>
-                <Text>
-                  {data?.authenticate.message}
-                </Text>
+                <Text>{data?.authenticate.message}</Text>
               </Content>
             </Notice>
           )}
@@ -125,31 +118,26 @@ function SigninPage ({
           <VStack gap="large">
             <TextField
               autoFocus
-              id='identity'
+              id="identity"
               isRequired
               label={capitalizeFirstLetter(identityField)}
-              name='identity'
+              name="identity"
               onChange={v => setState({ ...state, identity: v })}
               value={state.identity}
             />
             <PasswordField
-              id='password'
+              id="password"
               isRequired
               label={capitalizeFirstLetter(secretField)}
               // @ts-expect-error — valid prop, types need to be fixed in "@keystar/ui"
-              name='password'
+              name="password"
               onChange={v => setState({ ...state, secret: v })}
-              type='password'
+              type="password"
               value={state.secret}
             />
           </VStack>
 
-          <Button
-            isPending={pending}
-            prominence="high"
-            type="submit"
-            alignSelf="start"
-          >
+          <Button isPending={pending} prominence="high" type="submit" alignSelf="start">
             Sign in
           </Button>
         </VStack>
@@ -158,6 +146,6 @@ function SigninPage ({
   )
 }
 
-function capitalizeFirstLetter (value: string) {
+function capitalizeFirstLetter(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1)
 }

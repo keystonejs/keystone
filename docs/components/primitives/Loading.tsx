@@ -25,7 +25,7 @@ const commonStyles = {
 
 type LoadingProps = HTMLAttributes<HTMLElement>
 
-export function Loading (props: LoadingProps) {
+export function Loading(props: LoadingProps) {
   return (
     <div
       aria-live="polite"

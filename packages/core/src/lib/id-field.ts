@@ -12,14 +12,14 @@ import { userInputError } from './core/graphql-errors'
 
 type IDType = string | number | null
 
-function isInt (x: IDType) {
+function isInt(x: IDType) {
   if (x === null) return
   if (x === '') return
   const nom = typeof x === 'string' ? Number(x) : x
   if (Number.isInteger(nom)) return nom
 }
 
-function isBigInt (x: IDType) {
+function isBigInt(x: IDType) {
   if (x === null) return
   if (x === '') return
   try {
@@ -27,14 +27,14 @@ function isBigInt (x: IDType) {
   } catch {}
 }
 
-function isString (x: IDType) {
+function isString(x: IDType) {
   if (typeof x !== 'string') return
   if (x === '') return
   return x
 }
 
 // TODO: this should be on the user, remove in breaking change?
-function isUuid (x: IDType) {
+function isUuid(x: IDType) {
   if (typeof x !== 'string') return
   if (x === '') return
   return x.toLowerCase()
@@ -66,7 +66,7 @@ const IDFilter: IDFilterType = g.inputObject({
 
 const filterArg = g.arg({ type: IDFilter })
 
-function resolveInput (
+function resolveInput(
   input: Exclude<g.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ) {
@@ -95,15 +95,17 @@ function resolveInput (
 
 const NATIVE_TYPES: {
   [k in DatabaseProvider]?: {
-    [ku in IdFieldConfig['kind']]?: string;
-  };
+    [ku in IdFieldConfig['kind']]?: string
+  }
 } = {
   postgresql: {
     uuid: 'Uuid' as const,
   },
 }
 
-function unpack (i: IdFieldConfig): Pick<ScalarDBField<'String' | 'Int' | 'BigInt', 'required'>, 'scalar' | 'default'> {
+function unpack(
+  i: IdFieldConfig
+): Pick<ScalarDBField<'String' | 'Int' | 'BigInt', 'required'>, 'scalar' | 'default'> {
   if (i.kind === 'random') {
     const { kind, bytes, encoding } = i
     if (typeof bytes === 'number') {
@@ -137,7 +139,7 @@ function unpack (i: IdFieldConfig): Pick<ScalarDBField<'String' | 'Int' | 'BigIn
   throw new Error(`Unknown id type ${kind}`)
 }
 
-export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> {
+export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> {
   const kind = config.kind
   const dbFieldOptions = unpack(config)
   const parseTypeFn = {
@@ -147,17 +149,25 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
     UUID: isUuid, // TODO: remove in breaking change
   }[kind === 'uuid' ? 'UUID' : dbFieldOptions.scalar]
 
-  function parse (value: IDType) {
+  function parse(value: IDType) {
     const result = parseTypeFn(value)
     if (result === undefined) {
-      throw userInputError(`Only a ${dbFieldOptions.scalar.toLowerCase()} can be passed to id filters`)
+      throw userInputError(
+        `Only a ${dbFieldOptions.scalar.toLowerCase()} can be passed to id filters`
+      )
     }
     return result
   }
 
-  return (meta) => {
-    if (meta.provider === 'sqlite' && kind === 'autoincrement' && dbFieldOptions.scalar === 'BigInt') {
-      throw new Error(`{ kind: ${kind}, type: ${dbFieldOptions.scalar} } is not supported by SQLite`)
+  return meta => {
+    if (
+      meta.provider === 'sqlite' &&
+      kind === 'autoincrement' &&
+      dbFieldOptions.scalar === 'BigInt'
+    ) {
+      throw new Error(
+        `{ kind: ${kind}, type: ${dbFieldOptions.scalar} } is not supported by SQLite`
+      )
     }
 
     return fieldType({
@@ -175,7 +185,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
       input: {
         where: {
           arg: filterArg,
-          resolve (val) {
+          resolve(val) {
             return resolveInput(val, parse)
           },
         },
@@ -184,7 +194,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
       },
       output: g.field({
         type: g.nonNull(g.ID),
-        resolve ({ value }) {
+        resolve({ value }) {
           return value.toString()
         },
       }),
@@ -195,7 +205,7 @@ export function idFieldType (config: IdFieldConfig): FieldTypeFunc<BaseListTypeI
           fieldMode: 'hidden',
         },
         itemView: {
-          fieldPosition: 'sidebar'
+          fieldPosition: 'sidebar',
         },
       },
     })

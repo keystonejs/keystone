@@ -7,7 +7,7 @@ import { Markdoc } from '../../Markdoc'
 import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../FeaturedCard'
 import { type FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map'
 
-export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: FeaturedDocsMap }) {
+export function FeaturedDocsClient({ featuredDocsMap }: { featuredDocsMap: FeaturedDocsMap }) {
   if (!featuredDocsMap) return null
 
   // Separating the first group/item for featured UI treatment
@@ -73,7 +73,7 @@ export function FeaturedDocsClient ({ featuredDocsMap }: { featuredDocsMap: Feat
             ))}
           </SplitCardContainer>
         </div>
-        ))}
+      ))}
     </>
   )
 }

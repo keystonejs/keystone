@@ -16,7 +16,7 @@ type SubscriptFormProps = {
   stacked?: boolean
 } & HTMLAttributes<HTMLFormElement>
 
-export function SubscribeForm ({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
+export function SubscribeForm({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
   const pathname = usePathname()
   const mq = useMediaQuery()
   const [isPending, startTransition] = useTransition()
@@ -27,7 +27,7 @@ export function SubscribeForm ({ autoFocus, stacked, children, ...props }: Subsc
   // Augment the server action with the pathname
   const subscribeToButtondownWithPathname = subscribeToButtondown.bind(null, pathname)
 
-  async function submitAction (formData: FormData) {
+  async function submitAction(formData: FormData) {
     startTransition(async () => {
       const response = await subscribeToButtondownWithPathname(formData)
       if (response.error) return setError(response.error)

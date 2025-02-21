@@ -1,6 +1,4 @@
-import {
-  fields,
-} from '@keystone-6/fields-document/component-blocks'
+import { fields } from '@keystone-6/fields-document/component-blocks'
 
 export const schema = fields.array(
   fields.relationship({

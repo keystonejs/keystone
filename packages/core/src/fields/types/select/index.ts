@@ -19,7 +19,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
            * When a value is provided as just a string, it will be formatted in the same way
            * as field labels are to create the label.
            */
-          options: readonly ({ label: string, value: string } | string)[]
+          options: readonly ({ label: string; value: string } | string)[]
           /**
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
@@ -27,7 +27,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
           defaultValue?: string
         }
       | {
-          options: readonly { label: string, value: number }[]
+          options: readonly { label: string; value: number }[]
           type: 'integer'
           defaultValue?: number
         }
@@ -54,15 +54,12 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const MAX_INT = 2147483647
 const MIN_INT = -2147483648
 
-export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
-  const {
-    isIndexed,
-    ui: { displayMode = 'select', ...ui } = {},
-    defaultValue,
-    validation,
-  } = config
+export function select<ListTypeInfo extends BaseListTypeInfo>(
+  config: SelectFieldConfig<ListTypeInfo>
+): FieldTypeFunc<ListTypeInfo> {
+  const { isIndexed, ui: { displayMode = 'select', ...ui } = {}, defaultValue, validation } = config
 
-  return (meta) => {
+  return meta => {
     const options = config.options.map(option => {
       if (typeof option === 'string') {
         return {
@@ -78,17 +75,18 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       throw new Error(`${meta.listKey}.${meta.fieldKey}: duplicate options, this is not allowed`)
     }
 
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, ({ resolvedData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      ({ resolvedData, operation, addValidationError }) => {
+        if (operation === 'delete') return
 
-      const value = resolvedData[meta.fieldKey]
-      if (value != null && !accepted.has(value)) {
-        addValidationError(`value is not an accepted option`)
+        const value = resolvedData[meta.fieldKey]
+        if (value != null && !accepted.has(value)) {
+          addValidationError(`value is not an accepted option`)
+        }
       }
-    })
+    )
 
     const commonConfig = {
       ...config,
@@ -96,7 +94,7 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       ui,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       __ksTelemetryFieldTypeName: '@keystone-6/select',
       views: '@keystone-6/core/fields/types/select/views',
@@ -133,7 +131,9 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
           ({ value }) => !Number.isInteger(value) || value > MAX_INT || value < MIN_INT
         )
       ) {
-        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32-bit signed integer`)
+        throw new Error(
+          `${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32-bit signed integer`
+        )
       }
       return fieldType({
         kind: 'scalar',
@@ -181,8 +181,7 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
       )({
         ...commonConfig,
         input: {
-          uniqueWhere:
-            isIndexed === 'unique' ? { arg: g.arg({ type: graphQLType }) } : undefined,
+          uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: graphQLType }) } : undefined,
           where: {
             arg: g.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
@@ -204,8 +203,7 @@ export function select <ListTypeInfo extends BaseListTypeInfo> (config: SelectFi
     return fieldType({ kind: 'scalar', scalar: 'String', ...commonDbFieldConfig })({
       ...commonConfig,
       input: {
-        uniqueWhere:
-          isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
+        uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.String }) } : undefined,
         where: {
           arg: g.arg({ type: filters[meta.provider].String[mode] }),
           resolve: mode === 'required' ? undefined : filters.resolveString,

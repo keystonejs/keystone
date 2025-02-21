@@ -8,7 +8,7 @@ import { Highlight } from '../../components/primitives/Highlight'
 import { Type } from '../../components/primitives/Type'
 import { Page } from '../../components/Page'
 
-function ConstructionIllustration () {
+function ConstructionIllustration() {
   return (
     <div
       css={{
@@ -40,9 +40,9 @@ export const metadata = {
   description: 'The page you are looking for could not be found.',
 }
 
-export default function NotFoundPage () {
+export default function NotFoundPage() {
   const pathname = usePathname()
-  const tryV5Link = v5PathList.some((x) => pathname.startsWith(x))
+  const tryV5Link = v5PathList.some(x => pathname.startsWith(x))
   return (
     <Page>
       <div

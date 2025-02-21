@@ -1,21 +1,7 @@
-import {
-  type NodeEntry,
-  Editor,
-  Element,
-  Transforms,
-  Range,
-  Path,
-  Node,
-  Text
-} from 'slate'
+import { type NodeEntry, Editor, Element, Transforms, Range, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import type {
-  ArrayField,
-  ChildField,
-  ComponentBlock,
-  ComponentSchema
-} from './api-shared'
+import type { ArrayField, ChildField, ComponentBlock, ComponentSchema } from './api-shared'
 import { assert, moveChildren } from '../utils'
 import type { DocumentFeatures } from '../../views-shared'
 import {
@@ -39,7 +25,7 @@ import {
 import { getInitialPropsValue } from './initial-values'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 
-function getAncestorComponentBlock (editor: Editor) {
+function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
     const ancestorEntry = Editor.above(editor, {
       match: node =>
@@ -66,7 +52,7 @@ function getAncestorComponentBlock (editor: Editor) {
 
 const alreadyNormalizedThings: WeakMap<DocumentFeaturesForChildField, WeakSet<Node>> = new WeakMap()
 
-function normalizeNodeWithinComponentProp (
+function normalizeNodeWithinComponentProp(
   [node, path]: NodeEntry,
   editor: Editor,
   fieldOptions: DocumentFeaturesForChildField,
@@ -120,7 +106,7 @@ function normalizeNodeWithinComponentProp (
   return didNormalization
 }
 
-function canSchemaContainChildField (rootSchema: ComponentSchema) {
+function canSchemaContainChildField(rootSchema: ComponentSchema) {
   const queue = new Set<ComponentSchema>([rootSchema])
   for (const schema of queue) {
     if (schema.kind === 'form' || schema.kind === 'relationship') continue
@@ -149,7 +135,7 @@ function canSchemaContainChildField (rootSchema: ComponentSchema) {
   return false
 }
 
-function doesSchemaOnlyEverContainASingleChildField (rootSchema: ComponentSchema): boolean {
+function doesSchemaOnlyEverContainASingleChildField(rootSchema: ComponentSchema): boolean {
   const queue = new Set<ComponentSchema>([rootSchema])
   let hasFoundChildField = false
   for (const schema of queue) {
@@ -184,7 +170,7 @@ function doesSchemaOnlyEverContainASingleChildField (rootSchema: ComponentSchema
   return hasFoundChildField
 }
 
-function findArrayFieldsWithSingleChildField (schema: ComponentSchema, value: unknown) {
+function findArrayFieldsWithSingleChildField(schema: ComponentSchema, value: unknown) {
   const propPaths: [ReadonlyPropPath, ArrayField<ComponentSchema>][] = []
   traverseProps(schema, value, (schema, value, path) => {
     if (schema.kind === 'array' && doesSchemaOnlyEverContainASingleChildField(schema.element)) {
@@ -194,7 +180,7 @@ function findArrayFieldsWithSingleChildField (schema: ComponentSchema, value: un
   return propPaths
 }
 
-function isEmptyChildFieldNode (
+function isEmptyChildFieldNode(
   element: Element & ({ type: 'component-block-prop' } | { type: 'component-inline-prop' })
 ) {
   const firstChild = element.children[0]
@@ -211,7 +197,7 @@ function isEmptyChildFieldNode (
   )
 }
 
-export function withComponentBlocks (
+export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock | undefined>,
   editorDocumentFeatures: DocumentFeatures,
   relationships: Relationships,
@@ -368,7 +354,7 @@ export function withComponentBlocks (
           }
           const nodesWithin: [
             number,
-            Element & { type: 'component-block-prop' | 'component-inline-prop' }
+            Element & { type: 'component-block-prop' | 'component-inline-prop' },
           ][] = []
           for (const [idx, childNode] of node.children.entries()) {
             if (
@@ -470,7 +456,7 @@ export function withComponentBlocks (
 
         const stringifiedInlinePropPaths: Record<
           string,
-          { options: ChildField['options'], index: number } | undefined
+          { options: ChildField['options']; index: number } | undefined
         > = {}
         findChildPropPaths(node.props, blockComponents[node.component]!.schema).forEach(
           (x, index) => {
@@ -536,12 +522,12 @@ export function withComponentBlocks (
 }
 
 // the only thing that this will fix is a new field being added to an object field, nothing else.
-function addMissingFields (value: unknown, schema: ComponentSchema): unknown {
+function addMissingFields(value: unknown, schema: ComponentSchema): unknown {
   if (schema.kind === 'child' || schema.kind === 'form' || schema.kind === 'relationship') {
     return value
   }
   if (schema.kind === 'conditional') {
-    const conditionalValue = value as { discriminant: string | boolean, value: unknown }
+    const conditionalValue = value as { discriminant: string | boolean; value: unknown }
     const updatedInnerValue = addMissingFields(
       conditionalValue.value,
       schema.values[conditionalValue.discriminant.toString()]

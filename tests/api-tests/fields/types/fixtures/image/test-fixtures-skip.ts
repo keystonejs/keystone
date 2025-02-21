@@ -7,7 +7,7 @@ import mime from 'mime'
 import type { KeystoneConfig } from '@keystone-6/core/types'
 import { image } from '@keystone-6/core/fields'
 
-export function prepareFile (filePath_: string) {
+export function prepareFile(filePath_: string) {
   const filePath = path.resolve(`${__dirname}/../test-files/${filePath_}`)
   const upload = new Upload()
   upload.resolve({
@@ -31,7 +31,7 @@ export const fieldConfig = () => ({ storage: 'test_image' })
 
 export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'))
 
-export function getRootConfig (matrixValue: MatrixValue): Partial<KeystoneConfig> {
+export function getRootConfig(matrixValue: MatrixValue): Partial<KeystoneConfig> {
   if (matrixValue === 'local') {
     return {
       storage: {

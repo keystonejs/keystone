@@ -19,14 +19,12 @@ export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function checkbox <ListTypeInfo extends BaseListTypeInfo> (
+export function checkbox<ListTypeInfo extends BaseListTypeInfo>(
   config: CheckboxFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  const {
-    defaultValue = false,
-  } = config
+  const { defaultValue = false } = config
 
-  return (meta) => {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw TypeError("isIndexed: 'unique' is not a supported option for field type checkbox")
     }
@@ -49,21 +47,21 @@ export function checkbox <ListTypeInfo extends BaseListTypeInfo> (
             type: g.Boolean,
             defaultValue: typeof defaultValue === 'boolean' ? defaultValue : undefined,
           }),
-          resolve (val) {
+          resolve(val) {
             if (val === null) throw userInputError('Checkbox fields cannot be set to null')
             return val ?? defaultValue
           },
         },
         update: {
           arg: g.arg({ type: g.Boolean }),
-          resolve (val) {
+          resolve(val) {
             if (val === null) throw userInputError('Checkbox fields cannot be set to null')
             return val
           },
         },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({ type: g.Boolean, }),
+      output: g.field({ type: g.Boolean }),
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),

@@ -10,7 +10,7 @@ import {
   SplitCardContainer,
 } from '../../../../components/docs/FeaturedCard'
 
-export default function Docs ({
+export default function Docs({
   quickstart,
   walkthroughs,
 }: {
@@ -54,12 +54,8 @@ export default function Docs ({
       </Type>
 
       <SplitCardContainer>
-        {walkthroughs.map((item) => (
-          <FeaturedCard
-          label={item.label}
-          href={item.href}
-          description={item.description}
-        />
+        {walkthroughs.map(item => (
+          <FeaturedCard label={item.label} href={item.href} description={item.description} />
         ))}
       </SplitCardContainer>
     </>

@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'react'
 
 import { useMediaQuery } from '../../lib/media'
 
-export function Section (props: HTMLAttributes<HTMLElement>) {
+export function Section(props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery()
 
   return (
@@ -21,7 +21,7 @@ type SideBySideSectionProps = {
   reverse?: boolean
 } & HTMLAttributes<HTMLElement>
 
-export function SideBySideSection ({ reverse, children, ...props }: SideBySideSectionProps) {
+export function SideBySideSection({ reverse, children, ...props }: SideBySideSectionProps) {
   const mq = useMediaQuery()
 
   return (

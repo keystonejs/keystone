@@ -17,9 +17,9 @@ type EmptyStateProps =
 
 const emptyStateSlots = {
   heading: { align: 'center', margin: 0 },
-  text: { align: 'center' }
+  text: { align: 'center' },
 } as const
-export function EmptyState (props: EmptyStateProps) {
+export function EmptyState(props: EmptyStateProps) {
   return (
     <Flex
       alignItems="center"
@@ -35,18 +35,14 @@ export function EmptyState (props: EmptyStateProps) {
           props.children
         ) : (
           <>
-            {props.icon && (
-              <Icon src={props.icon} size="large" color="neutral" />
+            {props.icon && <Icon src={props.icon} size="large" color="neutral" />}
+            {props.title && <Heading size="medium">{props.title}</Heading>}
+            {props.message && isReactText(props.message) ? (
+              <Text>{props.message}</Text>
+            ) : (
+              props.message
             )}
-            {props.title && (
-              <Heading size="medium">
-                {props.title}
-              </Heading>
-            )}
-            {props.message && isReactText(props.message)
-              ? <Text>{props.message}</Text>
-              : props.message}
-            
+
             {props.actions}
           </>
         )}

@@ -1,41 +1,31 @@
-import React, {
-  useCallback,
-  useState,
-} from 'react'
-import {
-  useListFormatter
-} from '@react-aria/i18n'
+import React, { useCallback, useState } from 'react'
+import { useListFormatter } from '@react-aria/i18n'
 import copyToClipboard from 'clipboard-copy'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { clipboardIcon } from '@keystar/ui/icon/icons/clipboardIcon'
-import { Grid, } from '@keystar/ui/layout'
+import { Grid } from '@keystar/ui/layout'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { TextField } from '@keystar/ui/text-field'
 
-import type {
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-  IdFieldConfig,
-} from '../../types'
+import type { FieldController, FieldControllerConfig, FieldProps, IdFieldConfig } from '../../types'
 
 const COPY_TOOLTIP_CONTENT = {
   neutral: 'Copy ID',
   positive: 'Copied to clipboard',
   critical: 'Unable to copy',
 }
-type TooltipState = { isOpen?: boolean, tone: keyof typeof COPY_TOOLTIP_CONTENT }
+type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
 
-export function Field ({
+export function Field({
   field,
   value,
   onChange,
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) {
-  const [tooltipState, setTooltipState] = useState<TooltipState>({ tone:'neutral' })
+  const [tooltipState, setTooltipState] = useState<TooltipState>({ tone: 'neutral' })
 
   const onCopy = useCallback(async () => {
     try {
@@ -64,19 +54,17 @@ export function Field ({
           if (target instanceof HTMLInputElement) target.select()
         }}
       />
-      <TooltipTrigger isOpen={tooltipState.isOpen} placement='top end'>
+      <TooltipTrigger isOpen={tooltipState.isOpen} placement="top end">
         <ActionButton aria-label="copy id" onPress={onCopy}>
           <Icon src={clipboardIcon} />
         </ActionButton>
-        <Tooltip tone={tooltipState.tone}>
-          {COPY_TOOLTIP_CONTENT[tooltipState.tone]}
-        </Tooltip>
+        <Tooltip tone={tooltipState.tone}>{COPY_TOOLTIP_CONTENT[tooltipState.tone]}</Tooltip>
       </TooltipTrigger>
     </Grid>
   )
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<IdFieldConfig>
 ): FieldController<string | null, string> {
   return {
@@ -88,11 +76,10 @@ export function controller (
     deserialize: data => data[config.path],
     serialize: value => ({ [config.path]: value }),
     filter: {
-      Filter (props) {
+      Filter(props) {
         const { autoFocus, context, onChange, type, typeLabel, value, ...otherProps } = props
-        const labelProps = context === 'add'
-          ? { label: config.label, description: typeLabel }
-          : { label: typeLabel }
+        const labelProps =
+          context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
 
         return (
           <TextField
@@ -104,7 +91,7 @@ export function controller (
           />
         )
       },
-      Label ({ label, value, type }) {
+      Label({ label, value, type }) {
         const listFormatter = useListFormatter({
           style: 'short',
           type: 'disjunction',

@@ -16,7 +16,7 @@ export const lists = {
       isActive: virtual({
         field: g.field({
           type: g.Boolean,
-          resolve (item) {
+          resolve(item) {
             return item.title.length > 3 && item.content.length > 10 && item.listed === true
           },
         }),
@@ -37,7 +37,7 @@ export const lists = {
               paragraphs: g.field({ type: g.Int }),
             },
           }),
-          resolve (item) {
+          resolve(item) {
             const content = item.content ?? ''
             return {
               words: content.split(' ').length,
@@ -59,7 +59,7 @@ export const lists = {
           args: {
             length: g.arg({ type: g.nonNull(g.Int), defaultValue: 50 }),
           },
-          resolve (item, { length }) {
+          resolve(item, { length }) {
             const { content = '' } = item
             if (content.length <= length) return content
             return content.slice(0, length) + '...'
@@ -84,7 +84,7 @@ export const lists = {
             })
           ),
 
-          async resolve (item, _, context) {
+          async resolve(item, _, context) {
             // TODO: this could probably be better
             const posts = await context.db.Post.findMany({
               where: {

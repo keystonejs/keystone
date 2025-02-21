@@ -1,7 +1,4 @@
-import {
-  type RenderElementProps,
-  ReactEditor,
-} from 'slate-react'
+import { type RenderElementProps, ReactEditor } from 'slate-react'
 import { Node, Transforms } from 'slate'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
@@ -12,11 +9,7 @@ import { externalLinkIcon } from '@keystar/ui/icon/icons/externalLinkIcon'
 import { editIcon } from '@keystar/ui/icon/icons/editIcon'
 
 import { useToolbarState } from './toolbar-state'
-import {
-  focusWithPreviousSelection,
-  useElementWithSetNodes,
-  useEventCallback,
-} from './utils-hooks'
+import { focusWithPreviousSelection, useElementWithSetNodes, useEventCallback } from './utils-hooks'
 import { isValidURL } from './isValidURL'
 import { wrapLink } from './link-shared'
 import { BlockPopover, BlockPopoverTrigger, useActiveBlockPopover } from './primitives/BlockPopover'
@@ -31,7 +24,7 @@ import { unlinkIcon } from '@keystar/ui/icon/icons/unlinkIcon'
 
 export * from './link-shared'
 
-export function LinkElement ({
+export function LinkElement({
   attributes,
   children,
   element: __elementForGettingPath,
@@ -68,10 +61,7 @@ export function LinkElement ({
         <BlockPopover placement="bottom start">
           <Flex gap="small" padding="regular">
             <TooltipTrigger>
-              <ActionButton
-                prominence="low"
-                onPress={() => setDialogOpen(true)}
-              >
+              <ActionButton prominence="low" onPress={() => setDialogOpen(true)}>
                 <Icon src={editIcon} />
               </ActionButton>
               <Tooltip>Edit</Tooltip>
@@ -98,9 +88,8 @@ export function LinkElement ({
             </TooltipTrigger>
           </Flex>
         </BlockPopover>
-
-    </BlockPopoverTrigger>
-    <DialogContainer
+      </BlockPopoverTrigger>
+      <DialogContainer
         onDismiss={() => {
           setDialogOpen(false)
           focusWithPreviousSelection(editor)
@@ -116,11 +105,11 @@ export function LinkElement ({
           />
         )}
       </DialogContainer>
-</>
+    </>
   )
 }
 
-function LinkDialog ({
+function LinkDialog({
   onSubmit,
   ...props
 }: {
@@ -173,10 +162,9 @@ function LinkDialog ({
   )
 }
 
-
 let _linkIcon = <Icon src={linkIcon} />
 
-function LinkButton () {
+function LinkButton() {
   const {
     editor,
     links: { isDisabled, isSelected },

@@ -6,21 +6,17 @@ import type { NestedMutationState } from './'
 import { checkUniqueItemExists } from '../access-control'
 
 type _CreateValueType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>>,
   null | undefined
 >
 type _UpdateValueType = Exclude<
   g.InferValueFromArg<
-    g.Arg<
-      g.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>
-    >
+    g.Arg<g.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>>
   >,
   null | undefined
 >
 
-async function handleCreateAndUpdate (
+async function handleCreateAndUpdate(
   value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
@@ -36,7 +32,7 @@ async function handleCreateAndUpdate (
   }
 }
 
-export function resolveRelateToOneForCreateInput (
+export function resolveRelateToOneForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList
@@ -44,20 +40,24 @@ export function resolveRelateToOneForCreateInput (
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length
     if (numOfKeys !== 1) {
-      throw userInputError(`You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`)
+      throw userInputError(
+        `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
+      )
     }
     return handleCreateAndUpdate(value, nestedMutationState, context, foreignList)
   }
 }
 
-export function resolveRelateToOneForUpdateInput (
+export function resolveRelateToOneForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {
-      throw userInputError(`You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`)
+      throw userInputError(
+        `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
+      )
     }
 
     if (value.connect || value.create) {

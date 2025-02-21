@@ -5,6 +5,6 @@ export const metadata = {
   description: 'Design System Components & Tokens for the KeystoneJS website',
 }
 
-export default function DS () {
- return <PageClient />
+export default function DS() {
+  return <PageClient />
 }

@@ -18,11 +18,11 @@ const defaultElementRenderers: CustomRendererProps['renderers'] = {
     // for eg. using React.Fragment wraps the component with nothing
     block: React.Fragment as any, // FIXME
     // customise blockquote elements with your own styles
-    blockquote ({ children }) {
+    blockquote({ children }) {
       return <blockquote className={styles.blockquote}>{children}</blockquote>
     },
     // block code ``` ```
-    code ({ children }) {
+    code({ children }) {
       return <pre className={styles.pre}>{children}</pre>
     },
     // and more - check out the types to see all available block elements
@@ -60,7 +60,7 @@ const customComponentRenderers: CustomRendererProps['componentBlocks'] = {
   },
 }
 
-export function CustomRenderer ({ document }: CustomRendererProps) {
+export function CustomRenderer({ document }: CustomRendererProps) {
   return (
     <DocumentRenderer
       renderers={defaultElementRenderers}

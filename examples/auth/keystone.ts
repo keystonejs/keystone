@@ -1,10 +1,7 @@
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import {
-  type Session,
-  lists
-} from './schema'
+import { type Session, lists } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -62,7 +59,7 @@ export default withAuth<TypeInfo<Session>>(
     lists,
     ui: {
       // only admins can view the AdminUI
-      isAccessAllowed: (context) => {
+      isAccessAllowed: context => {
         return context.session?.data?.isAdmin ?? false
       },
     },

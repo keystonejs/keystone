@@ -8,7 +8,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { type FieldTypeFunc, type BaseListTypeInfo } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
-function filterTestRunner (field: FieldTypeFunc<BaseListTypeInfo>) {
+function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
   return setupTestRunner({
     config: {
       lists: {
@@ -68,7 +68,7 @@ type Match = (
   expectedIndexes: readonly number[]
 ) => void
 
-export function filterTests (field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: Match) => void) {
+export function filterTests(field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: Match) => void) {
   for (const kind of ['without negation', 'with negation'] as const) {
     describe(kind, () => {
       const match: Match = (inputValues, where, expectedIndexes) =>
@@ -100,7 +100,7 @@ export function filterTests (field: FieldTypeFunc<BaseListTypeInfo>, cb: (match:
   }
 }
 
-export function orderableFilterTests (
+export function orderableFilterTests(
   match: Match,
   valuesInAscendingOrder: readonly [unknown, unknown, unknown, unknown, unknown],
   isNullable: boolean
@@ -115,7 +115,7 @@ export function orderableFilterTests (
   match(values, { gte: values[2] }, [2, 3, 4])
 }
 
-export function equalityFilterTests (
+export function equalityFilterTests(
   match: Match,
   inputValues: readonly [unknown, unknown, unknown, unknown, unknown],
   isNullable: boolean
@@ -135,7 +135,7 @@ export function equalityFilterTests (
   match(values, { notIn: [values[0], values[2], values[3]] }, [1, 4, ...addExpectNull])
 }
 
-export function uniqueEqualityFilterTest (
+export function uniqueEqualityFilterTest(
   field: FieldTypeFunc<BaseListTypeInfo>,
   values: readonly unknown[],
   isNullable: boolean

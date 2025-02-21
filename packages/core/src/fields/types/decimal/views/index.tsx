@@ -19,8 +19,8 @@ const TYPE_OPERATOR_MAP = {
 } as const
 
 type Value =
-  | { kind: 'create', value: string | null }
-  | { kind: 'update', initial: string | null, value: string | null }
+  | { kind: 'create'; value: string | null }
+  | { kind: 'update'; initial: string | null; value: string | null }
 
 type Validation = {
   isRequired: boolean
@@ -28,29 +28,24 @@ type Validation = {
   max: string
 }
 
-function validate_ (
-  value: Value,
-  validation: Validation,
-  label: string,
-): string | undefined {
-  const {
-    value: input,
-    kind,
-  } = value
+function validate_(value: Value, validation: Validation, label: string): string | undefined {
+  const { value: input, kind } = value
   if (kind === 'update' && value.initial === null && input === null) return
   if (validation.isRequired && input === null) return `${label} is required`
   if (typeof input !== 'string') return
   try {
     const v = new Decimal(input)
     if (!v.isFinite()) return `${label} is not finite`
-    if (validation.min && v.lessThan(new Decimal(validation.min))) return `${label} must be greater than or equal to ${validation.min}`
-    if (validation.max && v.greaterThan(new Decimal(validation.max))) return `${label} must be less than or equal to ${validation.max}`
+    if (validation.min && v.lessThan(new Decimal(validation.min)))
+      return `${label} must be greater than or equal to ${validation.min}`
+    if (validation.max && v.greaterThan(new Decimal(validation.max)))
+      return `${label} must be less than or equal to ${validation.max}`
   } catch (e: any) {
     return e?.message ?? 'error'
   }
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{
     validation: Validation
     defaultValue: string | null
@@ -59,11 +54,7 @@ export function controller (
   validation: Validation
 } {
   const validate = (value: Value) => {
-    return validate_(
-      value,
-      config.fieldMeta.validation,
-      config.label,
-    )
+    return validate_(value, config.fieldMeta.validation, config.label)
   }
 
   return {
@@ -72,25 +63,37 @@ export function controller (
     description: config.description,
     graphqlSelection: config.path,
     validation: config.fieldMeta.validation,
-    defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue, },
+    defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue },
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value }),
     filter: {
-      Filter (props) {
-        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+      Filter(props) {
+        const {
+          autoFocus,
+          context,
+          forceValidation,
+          typeLabel,
+          onChange,
+          type,
+          value,
+          ...otherProps
+        } = props
         const [isDirty, setDirty] = useState(false)
         if (type === 'empty' || type === 'not_empty') return null
 
-        const labelProps = context === 'add'
-          ? { label: config.label, description: typeLabel }
-          : { label: typeLabel }
+        const labelProps =
+          context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
 
         return (
           <TextField
             {...otherProps}
             {...labelProps}
             autoFocus={autoFocus}
-            errorMessage={(forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value }) ? 'Required' : null}
+            errorMessage={
+              (forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value })
+                ? 'Required'
+                : null
+            }
             inputMode="decimal"
             width="auto"
             onBlur={() => setDirty(true)}
@@ -106,7 +109,7 @@ export function controller (
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
       },
-      Label ({ label, type, value }) {
+      Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()
         const operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
         return `${operator} ${value}`
@@ -151,7 +154,7 @@ export function controller (
   }
 }
 
-export function Field ({
+export function Field({
   field,
   value,
   onChange,
@@ -162,11 +165,7 @@ export function Field ({
   const isReadOnly = !onChange
 
   const validate = (value: Value) => {
-    return validate_(
-      value,
-      field.validation,
-      field.label,
-    )
+    return validate_(value, field.validation, field.label)
   }
 
   return (

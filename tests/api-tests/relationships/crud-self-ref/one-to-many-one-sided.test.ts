@@ -66,7 +66,7 @@ const createComplexData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
-  type T = { data: { User: { id: IdType, friend: { id: IdType } }, Friend: { id: IdType } } }
+  type T = { data: { User: { id: IdType; friend: { id: IdType } }; Friend: { id: IdType } } }
   const { data } = (await context.graphql.raw({
     query: `
   {
@@ -309,7 +309,7 @@ describe(`One-to-many relationships`, () => {
             const _users = (await context.query.User.findMany({
               orderBy: { name: 'asc' },
               query: 'id name friend { id name }',
-            })) as { name: string, friend: { name: string } }[]
+            })) as { name: string; friend: { name: string } }[]
             const users = _users.filter(({ name }: { name: string }) => name.length === 1)
             const expected = [
               ['A', 'A1'],
@@ -366,7 +366,7 @@ describe(`One-to-many relationships`, () => {
             const _users = (await context.query.User.findMany({
               orderBy: { name: 'asc' },
               query: 'id name friend { id name }',
-            })) as { name: string, friend: { name: string } }[]
+            })) as { name: string; friend: { name: string } }[]
             const users = _users.filter(({ name }) => name.length === 1)
             expect(users[0].name).toEqual('A')
             if (name === 'A1') {

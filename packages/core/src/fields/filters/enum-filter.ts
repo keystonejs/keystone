@@ -31,7 +31,7 @@ type EnumNullableListFilterType<Enum extends g.EnumType<any>> = g.InputObjectTyp
   isEmpty: g.Arg<Enum>
 }>
 
-export function enumFilters<Enum extends g.EnumType<any>> (
+export function enumFilters<Enum extends g.EnumType<any>>(
   enumType: Enum
 ): {
   optional: EnumNullableFilter<Enum>

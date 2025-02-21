@@ -45,7 +45,7 @@ describe('update one to one relationship back reference', () => {
       const company = (await context.query.Company.findOne({
         where: { id: companyId },
         query: 'id location { id }',
-      })) as { id: any, location: { id: any } }
+      })) as { id: any; location: { id: any } }
       // Everything should now be connected. 1:1 has a single connection on the first list defined.
       expect(company.location.id.toString()).toBe(locationId.toString())
     })

@@ -7,7 +7,7 @@ export const metadata = {
     'Try Keystone’s powerful new Document field. Experiment with its config settings in real time to shape custom editing experiences.',
 }
 
-export default function DocumentFieldDemo () {
+export default function DocumentFieldDemo() {
   return (
     <DocsLayout
       noProse

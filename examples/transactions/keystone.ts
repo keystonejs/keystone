@@ -13,5 +13,5 @@ export default config({
   lists,
   graphql: {
     extendGraphqlSchema,
-  }
+  },
 })

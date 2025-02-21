@@ -3,18 +3,15 @@ import type {
   BaseItem,
   FieldData,
   GraphQLTypesForList,
-  KeystoneContext
+  KeystoneContext,
 } from '@keystone-6/core/types'
 import type { GraphQLResolveInfo } from 'graphql'
 
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import {
-  type ReadonlyPropPath,
-  assertNever,
-} from './DocumentEditor/component-blocks/utils'
+import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-blocks/utils'
 
-export function getGraphQLInputType (
+export function getGraphQLInputType(
   name: string,
   schema: ComponentSchema,
   operation: 'create' | 'update',
@@ -28,7 +25,7 @@ export function getGraphQLInputType (
   return cache.get(schema)!
 }
 
-function getGraphQLInputTypeInner (
+function getGraphQLInputTypeInner(
   name: string,
   schema: ComponentSchema,
   operation: 'create' | 'update',
@@ -46,18 +43,16 @@ function getGraphQLInputTypeInner (
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(schema.fields).map(
-            ([key, val]): [string, g.Arg<g.InputType>] => {
-              const type = getGraphQLInputType(
-                `${name}${key[0].toUpperCase()}${key.slice(1)}`,
-                val,
-                operation,
-                cache,
-                meta
-              )
-              return [key, g.arg({ type })]
-            }
-          )
+          Object.entries(schema.fields).map(([key, val]): [string, g.Arg<g.InputType>] => {
+            const type = getGraphQLInputType(
+              `${name}${key[0].toUpperCase()}${key.slice(1)}`,
+              val,
+              operation,
+              cache,
+              meta
+            )
+            return [key, g.arg({ type })]
+          })
         ),
     })
   }
@@ -70,18 +65,16 @@ function getGraphQLInputTypeInner (
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(schema.values).map(
-            ([key, val]): [string, g.Arg<g.InputType>] => {
-              const type = getGraphQLInputType(
-                `${name}${key[0].toUpperCase()}${key.slice(1)}`,
-                val,
-                operation,
-                cache,
-                meta
-              )
-              return [key, g.arg({ type })]
-            }
-          )
+          Object.entries(schema.values).map(([key, val]): [string, g.Arg<g.InputType>] => {
+            const type = getGraphQLInputType(
+              `${name}${key[0].toUpperCase()}${key.slice(1)}`,
+              val,
+              operation,
+              cache,
+              meta
+            )
+            return [key, g.arg({ type })]
+          })
         ),
     })
   }
@@ -103,7 +96,7 @@ function getGraphQLInputTypeInner (
   assertNever(schema)
 }
 
-export async function getValueForUpdate (
+export async function getValueForUpdate(
   schema: ComponentSchema,
   value: any,
   prevValue: any,
@@ -120,7 +113,9 @@ export async function getValueForUpdate (
     throw new Error(`The value of the form field at '${path.join('.')}' is invalid`)
   }
   if (value === null) {
-    throw new Error(`${ schema.kind[0].toUpperCase() + schema.kind.slice(1) } fields cannot be set to null but the field at '${path.join('.')}' is null`)
+    throw new Error(
+      `${schema.kind[0].toUpperCase() + schema.kind.slice(1)} fields cannot be set to null but the field at '${path.join('.')}' is null`
+    )
   }
   if (schema.kind === 'object') {
     return Object.fromEntries(
@@ -182,13 +177,15 @@ export async function getValueForUpdate (
   }
 
   if (schema.kind === 'child') {
-    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
+    throw new Error(
+      `Child fields are not supported in the structure field, found one at ${path.join('.')}`
+    )
   }
 
   assertNever(schema)
 }
 
-export async function getValueForCreate (
+export async function getValueForCreate(
   schema: ComponentSchema,
   value: any,
   context: KeystoneContext,
@@ -260,7 +257,9 @@ export async function getValueForCreate (
   }
 
   if (schema.kind === 'child') {
-    throw new Error(`Child fields are not supported in the structure field, found one at ${path.join('.')}`)
+    throw new Error(
+      `Child fields are not supported in the structure field, found one at ${path.join('.')}`
+    )
   }
 
   assertNever(schema)
@@ -268,28 +267,24 @@ export async function getValueForCreate (
 /** MANY */
 
 type _CreateValueManyType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>>,
   null | undefined
 >
 
 type _UpdateValueManyType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>>,
   null | undefined
 >
 
 export class RelationshipErrors extends Error {
-  errors: { error: Error, tag: string }[]
-  constructor (errors: { error: Error, tag: string }[]) {
+  errors: { error: Error; tag: string }[]
+  constructor(errors: { error: Error; tag: string }[]) {
     super('Multiple relationship errors')
     this.errors = errors
   }
 }
 
-function getResolvedUniqueWheres (
+function getResolvedUniqueWheres(
   uniqueInputs: Record<string, any>[],
   context: KeystoneContext,
   foreignListKey: string,
@@ -302,12 +297,12 @@ function getResolvedUniqueWheres (
 
 // these aren't here out of thinking this is better syntax(i do not think it is),
 // it's just because TS won't infer the arg is X bit
-export const isFulfilled = <T, >(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+export const isFulfilled = <T>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
   arg.status === 'fulfilled'
 export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
   arg.status === 'rejected'
 
-export async function resolveRelateToManyForCreateInput (
+export async function resolveRelateToManyForCreateInput(
   value: _CreateValueManyType,
   context: KeystoneContext,
   foreignListKey: string,
@@ -342,7 +337,7 @@ export async function resolveRelateToManyForCreateInput (
   return [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value)
 }
 
-export async function resolveRelateToManyForUpdateInput (
+export async function resolveRelateToManyForUpdateInput(
   value: _UpdateValueManyType,
   context: KeystoneContext,
   foreignListKey: string,
@@ -411,21 +406,17 @@ export async function resolveRelateToManyForUpdateInput (
 /** ONE */
 
 type _CreateValueType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>>,
   null | undefined
 >
 type _UpdateValueType = Exclude<
   g.InferValueFromArg<
-    g.Arg<
-      g.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>
-    >
+    g.Arg<g.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>>
   >,
   null | undefined
 >
 
-function missingItem (operation: string, uniqueWhere: Record<string, any>) {
+function missingItem(operation: string, uniqueWhere: Record<string, any>) {
   throw new Error(
     `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
       uniqueWhere
@@ -433,7 +424,7 @@ function missingItem (operation: string, uniqueWhere: Record<string, any>) {
   )
 }
 
-export async function checkUniqueItemExists (
+export async function checkUniqueItemExists(
   uniqueInput: Record<string, unknown>,
   listKey: string,
   context: KeystoneContext,
@@ -446,7 +437,7 @@ export async function checkUniqueItemExists (
   return { id: item.id.toString() }
 }
 
-async function handleCreateAndUpdate (
+async function handleCreateAndUpdate(
   value: _CreateValueType,
   context: KeystoneContext,
   foreignListKey: string
@@ -455,7 +446,7 @@ async function handleCreateAndUpdate (
   return resolveCreateMutation(value, context, foreignListKey)
 }
 
-async function resolveCreateMutation (value: any, context: KeystoneContext, foreignListKey: string) {
+async function resolveCreateMutation(value: any, context: KeystoneContext, foreignListKey: string) {
   const mutationType = context.graphql.schema.getMutationType()!
   const { id } = (await mutationType.getFields()[
     context.__internal.lists[foreignListKey].graphql.names.createMutationName
@@ -471,22 +462,28 @@ async function resolveCreateMutation (value: any, context: KeystoneContext, fore
   return { id: id.toString() }
 }
 
-export function resolveRelateToOneForCreateInput (
+export function resolveRelateToOneForCreateInput(
   value: _CreateValueType,
   context: KeystoneContext,
   foreignListKey: string
 ) {
   const numOfKeys = Object.keys(value).length
-  if (numOfKeys !== 1) throw new Error(`You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`)
+  if (numOfKeys !== 1)
+    throw new Error(
+      `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
+    )
   return handleCreateAndUpdate(value, context, foreignListKey)
 }
 
-export function resolveRelateToOneForUpdateInput (
+export function resolveRelateToOneForUpdateInput(
   value: _UpdateValueType,
   context: KeystoneContext,
   foreignListKey: string
 ) {
-  if (Object.keys(value).length !== 1) throw new Error(`You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`)
+  if (Object.keys(value).length !== 1)
+    throw new Error(
+      `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
+    )
 
   if (value.connect || value.create) return handleCreateAndUpdate(value, context, foreignListKey)
   if (value.disconnect) return null

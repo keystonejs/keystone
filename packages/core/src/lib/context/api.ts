@@ -4,8 +4,8 @@ import { type KeystoneContext } from '../../types'
 import { executeGraphQLFieldToSource } from './executeGraphQLFieldToSource'
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection'
 
-export function getQueryFactory (list: InitialisedList, schema: GraphQLSchema) {
-  function f (operation: 'query' | 'mutation', fieldName: string) {
+export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
+  function f(operation: 'query' | 'mutation', fieldName: string) {
     const exec = executeGraphQLFieldWithSelection(schema, operation, fieldName)
     return (
       _args: {
@@ -56,11 +56,11 @@ export function getQueryFactory (list: InitialisedList, schema: GraphQLSchema) {
   }
 }
 
-export function getDbFactory (list: InitialisedList, schema: GraphQLSchema) {
+export function getDbFactory(list: InitialisedList, schema: GraphQLSchema) {
   const queryType = schema.getQueryType()!
   const mutationType = schema.getMutationType()!
 
-  function f (operation: 'query' | 'mutation', fieldName: string) {
+  function f(operation: 'query' | 'mutation', fieldName: string) {
     const rootType = operation === 'query' ? queryType : mutationType
     const field = rootType.getFields()[fieldName]
     if (field === undefined) {

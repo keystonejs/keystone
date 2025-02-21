@@ -1,14 +1,9 @@
-import {
-  type BaseListTypeInfo,
-  type FieldData,
-} from '../types'
+import { type BaseListTypeInfo, type FieldData } from '../types'
 import type { FieldHooks } from '../types/config/hooks'
-import {
-  type ValidateFieldHook
-} from '../types/config/hooks'
+import { type ValidateFieldHook } from '../types/config/hooks'
 import { merge } from './resolve-hooks'
 
-export function resolveDbNullable (
+export function resolveDbNullable(
   validation: undefined | { isRequired?: boolean },
   db: undefined | { isNullable?: boolean }
 ): boolean {
@@ -19,7 +14,7 @@ export function resolveDbNullable (
   return true
 }
 
-export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
+export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
     label?: string
@@ -27,9 +22,11 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
       isNullable?: boolean
     }
     graphql?: {
-      isNonNull?: boolean | {
-        read?: boolean
-      }
+      isNonNull?:
+        | boolean
+        | {
+            read?: boolean
+          }
     }
     validation?: {
       isRequired?: boolean
@@ -54,35 +51,41 @@ export function makeValidateHook <ListTypeInfo extends BaseListTypeInfo> (
       if (valueRequired) {
         const value = resolvedData?.[meta.fieldKey]
         if (
-            (operation === 'create' && value === undefined)
-        || ((operation === 'create' || operation === 'update') && (value === null))
+          (operation === 'create' && value === undefined) ||
+          ((operation === 'create' || operation === 'update') && value === null)
         ) {
           addValidationError(`missing value`)
         }
       }
 
       await f?.(args)
-    } satisfies ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', ListTypeInfo['fields']>
+    } satisfies ValidateFieldHook<
+      ListTypeInfo,
+      'create' | 'update' | 'delete',
+      ListTypeInfo['fields']
+    >
 
     return {
       mode,
-      validate: merge(validate, config.hooks?.validate)
+      validate: merge(validate, config.hooks?.validate),
     }
   }
 
   return {
     mode,
-    validate: merge(f, config.hooks?.validate)
+    validate: merge(f, config.hooks?.validate),
   }
 }
 
-export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo> (
+export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
     graphql?: {
-      isNonNull?: boolean | {
-        read?: boolean
-      }
+      isNonNull?:
+        | boolean
+        | {
+            read?: boolean
+          }
     }
   },
   dbNullable: boolean

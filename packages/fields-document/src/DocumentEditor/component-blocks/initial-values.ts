@@ -1,11 +1,8 @@
-import {
-  type ComponentSchema,
-  type ComponentBlock
-} from './api-shared'
+import { type ComponentSchema, type ComponentBlock } from './api-shared'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 import { assertNever, findChildPropPaths } from './utils'
 
-export function getInitialValue (type: string, componentBlock: ComponentBlock) {
+export function getInitialValue(type: string, componentBlock: ComponentBlock) {
   const props = getInitialPropsValue({ kind: 'object', fields: componentBlock.schema })
   return {
     type: 'component-block' as const,
@@ -23,11 +20,14 @@ export function getInitialValue (type: string, componentBlock: ComponentBlock) {
   }
 }
 
-export function getInitialPropsValue (schema: ComponentSchema): any {
+export function getInitialPropsValue(schema: ComponentSchema): any {
   switch (schema.kind) {
-    case 'form': return schema.defaultValue
-    case 'child': return null
-    case 'relationship': return schema.many ? [] : null
+    case 'form':
+      return schema.defaultValue
+    case 'child':
+      return null
+    case 'relationship':
+      return schema.many ? [] : null
     case 'conditional': {
       const defaultValue = schema.discriminant.defaultValue
       return {
@@ -42,12 +42,13 @@ export function getInitialPropsValue (schema: ComponentSchema): any {
       }
       return obj
     }
-    case 'array': return []
+    case 'array':
+      return []
   }
   assertNever(schema)
 }
 
-export function getInitialPropsValueFromInitializer (
+export function getInitialPropsValueFromInitializer(
   schema: ComponentSchema,
   initializer: any
 ): any {
@@ -88,7 +89,7 @@ export function getInitialPropsValueFromInitializer (
   assertNever(schema)
 }
 
-export function updateValue (schema: ComponentSchema, currentValue: any, updater: any): any {
+export function updateValue(schema: ComponentSchema, currentValue: any, updater: any): any {
   if (updater === undefined) return currentValue
 
   switch (schema.kind) {
@@ -123,7 +124,7 @@ export function updateValue (schema: ComponentSchema, currentValue: any, updater
     }
     case 'array': {
       const currentArrVal = currentValue as unknown[]
-      const newVal = updater as { key: string | undefined, value: unknown }[]
+      const newVal = updater as { key: string | undefined; value: unknown }[]
       const uniqueKeys = new Set()
       for (const x of newVal) {
         if (x.key !== undefined) {

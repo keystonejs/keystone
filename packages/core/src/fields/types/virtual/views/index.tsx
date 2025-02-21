@@ -8,7 +8,7 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-function stringify (value: unknown) {
+function stringify(value: unknown) {
   if (typeof value === 'string') return value
   if (value === undefined || value === null) return ''
   if (typeof value !== 'object') return JSON.stringify(value)
@@ -18,17 +18,19 @@ function stringify (value: unknown) {
   return JSON.stringify(dataWithoutTypename, null, 2)
 }
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, value } = props
   if (value === createViewValue) return null
 
-  return <TextField
-    autoFocus={autoFocus}
-    description={field.description}
-    label={field.label}
-    isReadOnly={true}
-    value={stringify(value)}
-  />
+  return (
+    <TextField
+      autoFocus={autoFocus}
+      description={field.description}
+      label={field.label}
+      isReadOnly={true}
+      value={stringify(value)}
+    />
+  )
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
@@ -37,7 +39,7 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 
 const createViewValue = Symbol('create view virtual field value')
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{ query: string }>
 ): FieldController<unknown> {
   return {

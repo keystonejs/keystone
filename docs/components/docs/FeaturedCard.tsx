@@ -9,7 +9,7 @@ import { useMediaQuery } from '../../lib/media'
 import { type Gradient } from '../../keystatic/gradient-selector'
 import { RenderableTreeNode, type Tag } from '@markdoc/markdoc'
 
-export function FeaturedCard ({
+export function FeaturedCard({
   label,
   description,
   href,
@@ -23,14 +23,12 @@ export function FeaturedCard ({
   const id = useId()
   return (
     <Well heading={label} href={href} grad={gradient}>
-      {description?.children.map((child, i) => (
-        <Markdoc key={`${id}-${i}`} content={child} />
-      ))}
+      {description?.children.map((child, i) => <Markdoc key={`${id}-${i}`} content={child} />)}
     </Well>
   )
 }
 
-export function FullWidthCardContainer ({ children }: { children: React.ReactNode }) {
+export function FullWidthCardContainer({ children }: { children: React.ReactNode }) {
   const mq = useMediaQuery()
   return (
     <div
@@ -46,7 +44,7 @@ export function FullWidthCardContainer ({ children }: { children: React.ReactNod
   )
 }
 
-export function SplitCardContainer ({ children }: { children: React.ReactNode }) {
+export function SplitCardContainer({ children }: { children: React.ReactNode }) {
   const mq = useMediaQuery()
   return (
     <div

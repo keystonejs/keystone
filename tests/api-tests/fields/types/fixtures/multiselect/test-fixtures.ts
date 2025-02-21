@@ -8,14 +8,14 @@ export const exampleValue = (matrixValue: MatrixValue) =>
   matrixValue === 'enum'
     ? ['thinkmill', 'atlassian']
     : matrixValue === 'string'
-    ? ['something else', 'a string']
-    : [1, 3]
+      ? ['something else', 'a string']
+      : [1, 3]
 export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum'
     ? ['react', 'gelato']
     : matrixValue === 'string'
-    ? ['a string', '1number']
-    : [2, 4]
+      ? ['a string', '1number']
+      : [2, 4]
 export const supportsNullInput = false
 export const nonNullableDefault = true
 export const neverNull = false
@@ -36,14 +36,14 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
               { label: 'React', value: 'react' },
             ]
           : matrixValue === 'string'
-          ? [
-              { label: 'A string', value: 'a string' },
-              { label: 'Another string', value: 'another string' },
-              { label: '1number', value: '1number' },
-              { label: '@¯\\_(ツ)_/¯', value: '@¯\\_(ツ)_/¯' },
-              { label: 'something else', value: 'something else' },
-            ]
-          : [],
+            ? [
+                { label: 'A string', value: 'a string' },
+                { label: 'Another string', value: 'another string' },
+                { label: '1number', value: '1number' },
+                { label: '@¯\\_(ツ)_/¯', value: '@¯\\_(ツ)_/¯' },
+                { label: 'something else', value: 'something else' },
+              ]
+            : [],
     }
   }
   return {

@@ -12,7 +12,7 @@ type IdType = any
 const toStr = (items: any[]) => items.map(item => item.toString())
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Student: list({
         access: allowAll,
@@ -29,7 +29,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: IdType) =>
@@ -39,7 +39,7 @@ const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: 
   })
 
 const getStudent = async (context: ContextFromRunner<typeof runner>, studentId: IdType) => {
-  type T = { data: { student: { id: IdType, teachers: { id: IdType }[] } } }
+  type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } }
   const { data } = (await context.graphql.raw({
     query: `
       query getStudent($studentId: ID!){

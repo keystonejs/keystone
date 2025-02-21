@@ -15,7 +15,7 @@ type RelationshipProps = {
   onAdd: () => void
 } & FieldProps<() => RelationshipController>
 
-export function ContextualActions (props: PropsWithChildren<RelationshipProps>) {
+export function ContextualActions(props: PropsWithChildren<RelationshipProps>) {
   const { children, ...otherProps } = props
   return (
     <Grid gap="regular" alignItems="end" columns="minmax(0, 1fr) auto">
@@ -25,13 +25,8 @@ export function ContextualActions (props: PropsWithChildren<RelationshipProps>) 
   )
 }
 
-function ContextualActionsMenu (props: RelationshipProps) {
-  const {
-    field,
-    onAdd,
-    onChange,
-    value,
-  } = props
+function ContextualActionsMenu(props: RelationshipProps) {
+  const { field, onAdd, onChange, value } = props
 
   const foreignList = useList(field.refListKey)
   const relatedItem = useRelatedItem(props)
@@ -75,11 +70,7 @@ function ContextualActionsMenu (props: RelationshipProps) {
       onAction={onAction}
     >
       {item => (
-        <Item
-          key={item.key}
-          href={'href' in item ? item.href : undefined}
-          textValue={item.label}
-        >
+        <Item key={item.key} href={'href' in item ? item.href : undefined} textValue={item.label}>
           <Icon src={item.icon} />
           <Text>{item.label}</Text>
         </Item>
@@ -88,10 +79,7 @@ function ContextualActionsMenu (props: RelationshipProps) {
   )
 }
 
-function useRelatedItem ({
-  field,
-  value,
-}: FieldProps<() => RelationshipController>) {
+function useRelatedItem({ field, value }: FieldProps<() => RelationshipController>) {
   const foreignList = useList(field.refListKey)
 
   switch (value.kind) {
@@ -101,10 +89,9 @@ function useRelatedItem ({
     case 'many': {
       if (!value.value.length) return null
 
-      const query =
-        field.refFieldKey
-          ? `!${field.refFieldKey}_some=["${value.id}"]`
-          : `!id_in=[${value.value.map(x => `"${x.id}"`).join(',')}]`
+      const query = field.refFieldKey
+        ? `!${field.refFieldKey}_some=["${value.id}"]`
+        : `!id_in=[${value.value.map(x => `"${x.id}"`).join(',')}]`
 
       return {
         href: `/${foreignList.path}?${query}`,

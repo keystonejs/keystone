@@ -40,11 +40,11 @@ export const NavContextProvider = ({ children }: { children: ReactNode }) => {
     const expandSection = (title: string) => {
       const isSectionAlreadyExpanded = !collapsedSections.includes(title)
       if (!isSectionAlreadyExpanded) {
-        setCollapsedSections(collapsedSections.filter((cs) => cs !== title))
+        setCollapsedSections(collapsedSections.filter(cs => cs !== title))
       }
     }
     const isSectionCollapsed = (title: string) => {
-      return collapsedSections.some((cs) => cs === title)
+      return collapsedSections.some(cs => cs === title)
     }
 
     return { isSectionCollapsed, collapseSection, expandSection }
@@ -67,7 +67,7 @@ type NavSectionProps = {
   children: ReactNode
 }
 
-export function NavSection ({ title, children }: NavSectionProps) {
+export function NavSection({ title, children }: NavSectionProps) {
   const { isSectionCollapsed, collapseSection, expandSection } = useNavContext()
   const isCollapsed = isSectionCollapsed(title)
   return (
@@ -123,7 +123,7 @@ type NavItemProps = {
   alwaysVisible?: boolean
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function NavItem ({
+export function NavItem({
   href,
   isActive: _isActive,
   isPlaceholder,
@@ -162,7 +162,7 @@ type PrimaryNavItemProps = {
   children: ReactNode
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {
+export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   const pathname = usePathname()
   const isActive = pathname === href
   const ctx = useHeaderContext()
@@ -190,10 +190,6 @@ export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {
   )
 }
 
-export function DocsNavigation ({ docsNavigation }: { docsNavigation?: React.ReactNode }) {
-  return (
-    <NavContextProvider>
-      {docsNavigation}
-    </NavContextProvider>
-  )
+export function DocsNavigation({ docsNavigation }: { docsNavigation?: React.ReactNode }) {
+  return <NavContextProvider>{docsNavigation}</NavContextProvider>
 }

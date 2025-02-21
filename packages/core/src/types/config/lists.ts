@@ -126,7 +126,7 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
      */
     initialColumns?: readonly ('id' | keyof BaseFields<ListTypeInfo>)[]
     // was previously top-level defaultSort
-    initialSort?: { field: 'id' | keyof BaseFields<ListTypeInfo>, direction: 'ASC' | 'DESC' }
+    initialSort?: { field: 'id' | keyof BaseFields<ListTypeInfo>; direction: 'ASC' | 'DESC' }
     // was previously defaultPageSize
     pageSize?: number // default number of items to display per page on the list screen
   }
@@ -162,9 +162,7 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   path?: string
 }
 
-export type MaybeFieldFunction<
-  ListTypeInfo extends BaseListTypeInfo
-> =
+export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
   | boolean
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
@@ -175,7 +173,7 @@ export type MaybeFieldFunction<
 
 export type MaybeSessionFunction<
   T extends string | boolean,
-  ListTypeInfo extends BaseListTypeInfo
+  ListTypeInfo extends BaseListTypeInfo,
 > =
   | T
   | ((args: {
@@ -228,7 +226,7 @@ export type ListGraphQLConfig = {
       }
 }
 
-export type CacheHintArgs = { results: any, operationName?: string, meta: boolean }
+export type CacheHintArgs = { results: any; operationName?: string; meta: boolean }
 
 // TODO: duplicate, merge with next-fields?
 export type IdFieldConfig =
@@ -238,12 +236,12 @@ export type IdFieldConfig =
       bytes?: number
       encoding?: 'hex' | 'base64url'
     }
-  | { kind: 'string' | 'ulid', type?: 'String' }
-  | { kind: 'cuid', version?: 1 | 2, type?: 'String' }
-  | { kind: 'uuid', version?: 4 | 7, type?: 'String' }
-  | { kind: 'nanoid', length?: number, type?: 'String' }
-  | { kind: 'autoincrement', type?: 'Int' | 'BigInt' }
-  | { kind: 'number', type: 'Int' | 'BigInt' }
+  | { kind: 'string' | 'ulid'; type?: 'String' }
+  | { kind: 'cuid'; version?: 1 | 2; type?: 'String' }
+  | { kind: 'uuid'; version?: 4 | 7; type?: 'String' }
+  | { kind: 'nanoid'; length?: number; type?: 'String' }
+  | { kind: 'autoincrement'; type?: 'Int' | 'BigInt' }
+  | { kind: 'number'; type: 'Int' | 'BigInt' }
 
 export type ListDBConfig = {
   /**

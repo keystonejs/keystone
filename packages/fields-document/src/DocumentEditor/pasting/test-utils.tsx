@@ -3,7 +3,7 @@
 import { makeEditor, jsx } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 
-export function htmlToEditor (html: string) {
+export function htmlToEditor(html: string) {
   const editor = makeEditor(
     <editor>
       <paragraph>

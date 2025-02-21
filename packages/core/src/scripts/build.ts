@@ -1,8 +1,6 @@
 import esbuild from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
-import {
-  createSystem,
-} from '../lib/createSystem'
+import { createSystem } from '../lib/createSystem'
 import {
   generateArtifacts,
   generatePrismaClient,
@@ -13,7 +11,7 @@ import { getEsbuildConfig } from './esbuild'
 import type { Flags } from './cli'
 import { importBuiltKeystoneConfiguration } from './utils'
 
-export async function build (
+export async function build(
   cwd: string,
   { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
 ) {
@@ -54,6 +52,6 @@ export async function build (
     undefined,
     undefined,
     'default',
-    undefined,
+    undefined
   )
 }

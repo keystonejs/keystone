@@ -33,14 +33,14 @@ const FileFieldOutput = g.object<FileMetadata & { storage: string }>()({
     filesize: g.field({ type: g.nonNull(g.Int) }),
     url: g.field({
       type: g.nonNull(g.String),
-      resolve (data, args, context) {
+      resolve(data, args, context) {
         return context.files(data.storage).getUrl(data.filename)
       },
     }),
   },
 })
 
-async function inputResolver (
+async function inputResolver(
   storage: string,
   data: g.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
@@ -50,20 +50,24 @@ async function inputResolver (
   return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
-export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function file<ListTypeInfo extends BaseListTypeInfo>(
+  config: FileFieldConfig<ListTypeInfo>
+): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
-      throw new Error(`${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`)
+      throw new Error(
+        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+      )
     }
 
     if ('isIndexed' in config) {
       throw Error("isIndexed: 'unique' is not a supported option for field type file")
     }
 
-    async function beforeOperationResolver (args: any) {
+    async function beforeOperationResolver(args: any) {
       if (args.operation === 'update' || args.operation === 'delete') {
         const filenameKey = `${fieldKey}_filename`
         const filename = args.item[filenameKey]
@@ -97,7 +101,7 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
             beforeOperation: merge(config.hooks?.beforeOperation, {
               update: beforeOperationResolver,
               delete: beforeOperationResolver,
-            })
+            }),
           },
       input: {
         create: {
@@ -111,13 +115,13 @@ export function file <ListTypeInfo extends BaseListTypeInfo> (config: FileFieldC
       },
       output: g.field({
         type: FileFieldOutput,
-        resolve ({ value: { filesize, filename } }) {
+        resolve({ value: { filesize, filename } }) {
           if (filename === null) return null
           if (filesize === null) return null
           return {
             filename,
             filesize,
-            storage: config.storage
+            storage: config.storage,
           }
         },
       }),

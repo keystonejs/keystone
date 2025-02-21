@@ -18,7 +18,7 @@ export type BlogPost = NonNullable<
   }
 >
 
-export default async function Page ({ params }) {
+export default async function Page({ params }) {
   const _params = await params
   const post = await reader.collections.posts.read(_params!.post, {
     resolveLinkedFiles: true,
@@ -40,7 +40,7 @@ export default async function Page ({ params }) {
 }
 
 // Dynamic SEO page metadata
-export async function generateMetadata ({ params }): Promise<Metadata> {
+export async function generateMetadata({ params }): Promise<Metadata> {
   const _params = await params
   const post = await reader.collections.posts.read(_params!.post)
 
@@ -64,7 +64,7 @@ export async function generateMetadata ({ params }): Promise<Metadata> {
 }
 
 // Static HTML page generation for each document page
-export async function generateStaticParams () {
+export async function generateStaticParams() {
   const posts = await reader.collections.posts.list()
-  return posts.map((post) => ({ post }))
+  return posts.map(post => ({ post }))
 }

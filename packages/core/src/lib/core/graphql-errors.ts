@@ -13,7 +13,7 @@ export const validationFailureError = (messages: string[]) => {
   })
 }
 
-export const extensionError = (extension: string, things: { error: Error, tag: string }[]) => {
+export const extensionError = (extension: string, things: { error: Error; tag: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n')
   return new GraphQLError(`An error occurred while running "${extension}".\n${s}`, {
     extensions: {
@@ -23,7 +23,7 @@ export const extensionError = (extension: string, things: { error: Error, tag: s
   })
 }
 
-export const resolverError = (things: { error: Error, tag: string }[]) => {
+export const resolverError = (things: { error: Error; tag: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n')
   return new GraphQLError(`An error occurred while resolving input fields.\n${s}`, {
     extensions: {
@@ -33,7 +33,7 @@ export const resolverError = (things: { error: Error, tag: string }[]) => {
   })
 }
 
-export const relationshipError = (things: { error: Error, tag: string }[]) => {
+export const relationshipError = (things: { error: Error; tag: string }[]) => {
   const s = things
     .map(t => `  - ${t.tag}: ${t.error.message}`)
     .sort()
@@ -46,7 +46,7 @@ export const relationshipError = (things: { error: Error, tag: string }[]) => {
   })
 }
 
-export const accessReturnError = (things: { tag: string, returned: string }[]) => {
+export const accessReturnError = (things: { tag: string; returned: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: Returned: ${t.returned}. Expected: boolean.`).join('\n')
   return new GraphQLError(`Invalid values returned from access control function.\n${s}`, {
     extensions: {
@@ -55,7 +55,7 @@ export const accessReturnError = (things: { tag: string, returned: string }[]) =
   })
 }
 
-export const limitsExceededError = (args: { type: string, limit: number, list: string }) =>
+export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
   new GraphQLError('Your request exceeded server limits', {
     extensions: {
       code: 'KS_LIMITS_EXCEEDED',

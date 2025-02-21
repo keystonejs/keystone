@@ -8,17 +8,17 @@ type Children = Node | string | (Node | string)[]
 
 type OnlyChildren = { children: Children }
 
-type ComponentProp = { children: Children, propPath?: ReadonlyPropPath }
+type ComponentProp = { children: Children; propPath?: ReadonlyPropPath }
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
-      editor: { children: Children, marks?: { [Key in Mark | 'insertMenu']?: true } }
+      editor: { children: Children; marks?: { [Key in Mark | 'insertMenu']?: true } }
       text: { children?: Children } & { [Key in Mark | 'insertMenu']?: true }
       element: { [key: string]: any }
       cursor: { [key: string]: never }
       anchor: { [key: string]: never }
       focus: { [key: string]: never }
-      layout: { layout: [number, ...number[]], children: Children }
+      layout: { layout: [number, ...number[]]; children: Children }
       'layout-area': OnlyChildren
       blockquote: OnlyChildren
       paragraph: {

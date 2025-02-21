@@ -24,13 +24,11 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  const {
-    isIndexed,
-    validation,
-    defaultValue,
-  } = config
-  return (meta) => {
+export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
+  config: CalendarDayFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const { isIndexed, validation, defaultValue } = config
+  return meta => {
     if (typeof defaultValue === 'string') {
       try {
         g.CalendarDay.graphQLType.parseValue(defaultValue)
@@ -43,17 +41,14 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
 
     const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql'
 
-    function resolveInput (value: string | null | undefined) {
+    function resolveInput(value: string | null | undefined) {
       if (meta.provider === 'sqlite' || value == null) {
         return value
       }
       return dateStringToDateObjectInUTC(value)
     }
 
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config)
+    const { mode, validate } = makeValidateHook(meta, config)
     const commonResolveFilter = mode === 'optional' ? filters.resolveCommon : <T>(x: T) => x
 
     return fieldType({
@@ -75,7 +70,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere:
@@ -98,7 +93,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
             type: g.CalendarDay,
             defaultValue,
           }),
-          resolve (val: string | null | undefined) {
+          resolve(val: string | null | undefined) {
             if (val === undefined) {
               val = defaultValue ?? null
             }
@@ -110,7 +105,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
       },
       output: g.field({
         type: g.CalendarDay,
-        resolve ({ value }) {
+        resolve({ value }) {
           if (value instanceof Date) {
             return value.toISOString().slice(0, 10)
           }
@@ -119,7 +114,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
       views: '@keystone-6/core/fields/types/calendarDay/views',
-      getAdminMeta (): CalendarDayFieldMeta {
+      getAdminMeta(): CalendarDayFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
@@ -129,7 +124,7 @@ export function calendarDay <ListTypeInfo extends BaseListTypeInfo> (config: Cal
   }
 }
 
-function dateStringToDateObjectInUTC (value: string) {
+function dateStringToDateObjectInUTC(value: string) {
   return new Date(`${value}T00:00Z`)
 }
 
@@ -144,7 +139,7 @@ type CalendarDayFilterType = g.InputObjectType<{
   not: g.Arg<CalendarDayFilterType>
 }>
 
-function transformFilterDateStringsToDateObjects (
+function transformFilterDateStringsToDateObjects(
   filter: g.InferValueFromInputType<CalendarDayFilterType>
 ): Parameters<typeof filters.resolveCommon>[0] {
   if (filter === null) {

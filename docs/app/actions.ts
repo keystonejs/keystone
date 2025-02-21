@@ -3,14 +3,11 @@
 // ------------------------------
 // Buttondown subscription
 // ------------------------------
-export async function subscribeToButtondown (pathname: string, formData: FormData) {
+export async function subscribeToButtondown(pathname: string, formData: FormData) {
   try {
     const data = {
       email: formData.get('email'),
-      tags: [
-        ...formData.getAll('tags'),
-        `source:keystonejs.com${pathname}`.substring(0, 80),
-      ],
+      tags: [...formData.getAll('tags'), `source:keystonejs.com${pathname}`.substring(0, 80)],
     }
 
     const buttondownResponse = await fetch('https://api.buttondown.email/v1/subscribers', {

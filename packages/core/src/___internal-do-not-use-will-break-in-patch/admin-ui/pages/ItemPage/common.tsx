@@ -1,8 +1,4 @@
-import React, {
-  type HTMLAttributes,
-  type ReactNode,
-  Fragment,
-} from 'react'
+import React, { type HTMLAttributes, type ReactNode, Fragment } from 'react'
 import { useRouter } from 'next/router'
 
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
@@ -19,23 +15,21 @@ type ItemPageHeaderProps = {
   title: string
 }
 
-export function ItemPageHeader (props: ItemPageHeaderProps) {
+export function ItemPageHeader(props: ItemPageHeaderProps) {
   const { label, list, title = label } = props
   const router = useRouter()
 
   return (
     <Container flex>
       {list.isSingleton ? (
-        <Heading elementType="h1" size="small">{list.label}</Heading>
+        <Heading elementType="h1" size="small">
+          {list.label}
+        </Heading>
       ) : (
         <Fragment>
           <Breadcrumbs flex size="medium" minWidth="alias.singleLineWidth">
-            <Item href={`/${list.path}`}>
-              {list.label}
-            </Item>
-            <Item href={router.asPath}>
-              {label}
-            </Item>
+            <Item href={`/${list.path}`}>{list.label}</Item>
+            <Item href={router.asPath}>{label}</Item>
           </Breadcrumbs>
 
           {/* Every page must have an H1 for accessibility. */}
@@ -48,7 +42,7 @@ export function ItemPageHeader (props: ItemPageHeaderProps) {
   )
 }
 
-export function ColumnLayout (props: HTMLAttributes<HTMLDivElement>) {
+export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
   return (
     // this container must be relative to catch absolute children
     // particularly the "expanded" document-field, which needs a height of 100%
@@ -67,10 +61,10 @@ export function ColumnLayout (props: HTMLAttributes<HTMLDivElement>) {
         {...props}
       />
     </Container>
- )
+  )
 }
 
-export function StickySidebar (props: HTMLAttributes<HTMLDivElement>) {
+export function StickySidebar(props: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={css({
@@ -91,7 +85,7 @@ export function StickySidebar (props: HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-export function BaseToolbar (props: { children: ReactNode }) {
+export function BaseToolbar(props: { children: ReactNode }) {
   return (
     <Grid
       backgroundColor="surface"
@@ -109,7 +103,7 @@ export function BaseToolbar (props: { children: ReactNode }) {
             boxShadow: `0 -4px 4px 1px ${tokenSchema.color.background.surface}`,
             content: '""',
           },
-        }
+        },
       })}
     >
       <HStack
@@ -123,7 +117,7 @@ export function BaseToolbar (props: { children: ReactNode }) {
             backgroundColor: tokenSchema.color.background.surface,
             marginInline: `calc(${tokenSchema.size.alias.focusRing} * -1)`,
             paddingInline: tokenSchema.size.alias.focusRing,
-          }
+          },
         })}
       >
         {props.children}

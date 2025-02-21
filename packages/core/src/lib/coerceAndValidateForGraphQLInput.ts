@@ -1,20 +1,15 @@
-import type {
-  GraphQLSchema,
-  VariableDefinitionNode,
-  GraphQLInputType,
-  GraphQLError,
-} from 'graphql'
+import type { GraphQLSchema, VariableDefinitionNode, GraphQLInputType, GraphQLError } from 'graphql'
 import { Kind } from 'graphql'
 import { getVariableValues } from 'graphql/execution/values'
 import { getTypeNodeForType } from './context/executeGraphQLFieldToSource'
 
 const argName = 'where'
 
-export function coerceAndValidateForGraphQLInput (
+export function coerceAndValidateForGraphQLInput(
   schema: GraphQLSchema,
   type: GraphQLInputType,
   value: any
-): { kind: 'valid', value: any } | { kind: 'error', error: GraphQLError } {
+): { kind: 'valid'; value: any } | { kind: 'error'; error: GraphQLError } {
   const variableDefintions: VariableDefinitionNode[] = [
     {
       kind: Kind.VARIABLE_DEFINITION,

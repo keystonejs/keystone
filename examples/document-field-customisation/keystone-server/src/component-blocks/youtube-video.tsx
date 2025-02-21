@@ -14,7 +14,7 @@ export const youtubeVideo = component({
       defaultValue: 'Embedded YouTube video',
     }),
   },
-  preview: function YouTubeVideo (props) {
+  preview: function YouTubeVideo(props) {
     const url = props.fields.url.value
     let embedId = ''
     const parsedUrl = (url || '')

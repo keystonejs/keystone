@@ -10,14 +10,14 @@ import { fetchGraphQL, gql } from '../../utils'
 const renderers: DocumentRendererProps['renderers'] = {
   // Render heading blocks
   block: {
-    heading ({ level, children, textAlign }) {
+    heading({ level, children, textAlign }) {
       const Comp = `h${level}` as const
       return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>
     },
   },
   // Render inline relationships
   inline: {
-    relationship ({ relationship, data }) {
+    relationship({ relationship, data }) {
       // If there is more than one inline relationship defined on the document
       // field we need to handle each of them separately by checking the `relationship` argument.
       // It is good practice to include this check even if you only have a single inline relationship.
@@ -39,7 +39,7 @@ const renderers: DocumentRendererProps['renderers'] = {
   },
 }
 
-export default function Post ({ post }: { post: any }) {
+export default function Post({ post }: { post: any }) {
   return (
     <article>
       <h1>{post.title}</h1>
@@ -60,7 +60,7 @@ export default function Post ({ post }: { post: any }) {
   )
 }
 
-export async function getStaticPaths (): Promise<GetStaticPathsResult> {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const data = await fetchGraphQL(gql`
     query {
       posts {
@@ -74,7 +74,7 @@ export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   }
 }
 
-export async function getStaticProps ({ params }: GetStaticPropsContext) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
   // We use (hydrateRelationships: true) to ensure we have the data we need
   // to render the inline relationships.
   const data = await fetchGraphQL(

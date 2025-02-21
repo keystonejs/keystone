@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
-import type {
-  JSONValue,
-  ListMeta
-} from '../../../../types'
+import type { JSONValue, ListMeta } from '../../../../types'
 
 export type Filter = {
   field: string
@@ -12,17 +9,17 @@ export type Filter = {
   value: JSONValue
 }
 
-export function useFilters (list: ListMeta) {
+export function useFilters(list: ListMeta) {
   const { query } = useRouter()
   const possibleFilters = useMemo(() => {
-    const possibleFilters: Record<string, { type: string, field: string }> = {}
+    const possibleFilters: Record<string, { type: string; field: string }> = {}
 
     for (const [fieldPath, field] of Object.entries(list.fields)) {
       if (field.isFilterable && field.controller.filter) {
         for (const filterType in field.controller.filter.types) {
           possibleFilters[`!${fieldPath}_${filterType}`] = {
             type: filterType,
-            field: fieldPath
+            field: fieldPath,
           }
         }
       }

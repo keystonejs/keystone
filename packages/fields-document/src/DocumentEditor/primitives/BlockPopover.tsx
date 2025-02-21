@@ -5,10 +5,7 @@ import {
   useOverlayPosition,
 } from '@react-aria/overlays'
 import { mergeProps, useLayoutEffect } from '@react-aria/utils'
-import {
-  type OverlayTriggerState,
-  useOverlayTriggerState,
-} from '@react-stately/overlays'
+import { type OverlayTriggerState, useOverlayTriggerState } from '@react-stately/overlays'
 import React, {
   cloneElement,
   createContext,
@@ -42,33 +39,22 @@ const BlockPopoverContext = createContext<{
   triggerRef: React.MutableRefObject<HTMLElement | null>
 } | null>(null)
 
-function useBlockPopoverContext () {
+function useBlockPopoverContext() {
   const context = useContext(BlockPopoverContext)
   if (!context) {
-    throw new Error(
-      'useBlockPopoverContext must be used within a BlockPopoverTrigger'
-    )
+    throw new Error('useBlockPopoverContext must be used within a BlockPopoverTrigger')
   }
   return context
 }
 
-const typeMatcher = nodeTypeMatcher(
-  'code',
-  'component-block',
-  'layout',
-  'link',
-  'heading'
-)
+const typeMatcher = nodeTypeMatcher('code', 'component-block', 'layout', 'link', 'heading')
 
 const ActiveBlockPopoverContext = createContext<undefined | Element>(undefined)
-export function useActiveBlockPopover () {
+export function useActiveBlockPopover() {
   return useContext(ActiveBlockPopoverContext)
 }
 
-export function ActiveBlockPopoverProvider (props: {
-  children: ReactNode
-  editor: Editor
-}) {
+export function ActiveBlockPopoverProvider(props: { children: ReactNode; editor: Editor }) {
   const nodeWithPopover = Editor.above(props.editor, {
     match: typeMatcher,
   })
@@ -79,10 +65,7 @@ export function ActiveBlockPopoverProvider (props: {
   )
 }
 
-export const BlockPopoverTrigger = ({
-  children,
-  element,
-}: BlockPopoverTriggerProps) => {
+export const BlockPopoverTrigger = ({ children, element }: BlockPopoverTriggerProps) => {
   const [trigger, popover] = children
   const activePopoverElement = useActiveBlockPopover()
   const triggerRef = useRef(null)
@@ -101,7 +84,7 @@ export const BlockPopoverTrigger = ({
   )
 }
 
-export function BlockPopover (props: BlockPopoverProps) {
+export function BlockPopover(props: BlockPopoverProps) {
   const { state } = useBlockPopoverContext()
   let wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -184,17 +167,11 @@ const BlockPopoverWrapper = ({
  * Provides the behavior and accessibility implementation for a popover component.
  * A popover is an overlay element positioned relative to a trigger.
  */
-function useBlockPopover (
+function useBlockPopover(
   props: AriaPopoverProps,
   state: OverlayTriggerState
 ): PopoverAria & { updatePosition: () => void } {
-  let {
-    triggerRef,
-    popoverRef,
-    isNonModal,
-    isKeyboardDismissDisabled,
-    ...otherProps
-  } = props
+  let { triggerRef, popoverRef, isNonModal, isKeyboardDismissDisabled, ...otherProps } = props
 
   let [isSticky, setSticky] = useState(false)
 
@@ -214,16 +191,13 @@ function useBlockPopover (
   useEffect(() => {
     if (state.isOpen) {
       const checkForStickiness = () => {
-        const vh = Math.max(
-          document.documentElement.clientHeight || 0,
-          window.innerHeight || 0
-        )
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
         let popoverRect = popoverRef.current?.getBoundingClientRect()
         let triggerRect = triggerRef.current?.getBoundingClientRect()
         if (popoverRect && triggerRect) {
           setSticky(
-            triggerRect.bottom + popoverRect.height + containerPadding * 2 >
-              vh && triggerRect.top < vh
+            triggerRect.bottom + popoverRect.height + containerPadding * 2 > vh &&
+              triggerRect.top < vh
           )
         }
       }
@@ -252,9 +226,7 @@ function useBlockPopover (
   })
 
   // force update position when the trigger changes
-  let previousBoundingRect = usePrevious(
-    triggerRef.current?.getBoundingClientRect()
-  )
+  let previousBoundingRect = usePrevious(triggerRef.current?.getBoundingClientRect())
   useLayoutEffect(() => {
     if (previousBoundingRect) {
       const currentBoundingRect = triggerRef.current?.getBoundingClientRect()
@@ -298,7 +270,7 @@ function useBlockPopover (
   }
 }
 
-function usePrevious<T> (value: T) {
+function usePrevious<T>(value: T) {
   const ref = useRef<T>(undefined)
   useEffect(() => {
     ref.current = value

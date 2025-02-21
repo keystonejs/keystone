@@ -12,21 +12,26 @@ export default config<TypeInfo>({
   },
   graphql: {
     apolloConfig: {
-      formatError (formattedError, error) {
+      formatError(formattedError, error) {
         // you can customise the error returned to the client
         return formattedError
       },
-      plugins: [{
-        async requestDidStart(requestContext) {
-          console.log('graphql operation', requestContext.request.operationName ?? '(unnamed operation)')
-          return {
-            async didEncounterErrors(requestContext) {
-              console.error(...requestContext.errors)
-            },
-          }
+      plugins: [
+        {
+          async requestDidStart(requestContext) {
+            console.log(
+              'graphql operation',
+              requestContext.request.operationName ?? '(unnamed operation)'
+            )
+            return {
+              async didEncounterErrors(requestContext) {
+                console.error(...requestContext.errors)
+              },
+            }
+          },
         },
-      }]
-    }
+      ],
+    },
   },
   lists,
 })

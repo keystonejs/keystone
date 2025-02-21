@@ -97,7 +97,7 @@ const outputType = g.object<CloudinaryImage_File>()({
         transformation: g.arg({ type: CloudinaryImageFormat }),
       },
       type: g.String,
-      resolve (data, args) {
+      resolve(data, args) {
         return data.publicUrlTransformed(args)
       },
     }),
@@ -108,7 +108,7 @@ const outputType = g.object<CloudinaryImage_File>()({
 })
 
 // TODO: no delete support
-export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
+export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
   cloudinary: cloudinaryConfig,
   ...config
 }: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -118,7 +118,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
     }
 
     const inputArg = g.arg({ type: g.Upload })
-    async function resolveInput (
+    async function resolveInput(
       uploadData: g.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null> {
       if (uploadData === null) return null
@@ -170,7 +170,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
         },
         output: g.field({
           type: outputType,
-          resolve ({ value }) {
+          resolve({ value }) {
             if (value === null) return null
             const val = value as any
             return {
@@ -181,9 +181,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
               publicUrlTransformed: ({
                 transformation,
               }: {
-                transformation: g.InferValueFromArg<
-                  g.Arg<typeof CloudinaryImageFormat>
-                >
+                transformation: g.InferValueFromArg<g.Arg<typeof CloudinaryImageFormat>>
               }) => {
                 if (!val._meta) return null
 

@@ -11,7 +11,7 @@ export const tweet = component({
         'https://twitter.com/KeystoneJS/status/1558944015953068032?s=20&t=32A2Avz9kPlefEOcXIqOXQ',
     }),
   },
-  preview: function Tweet (props) {
+  preview: function Tweet(props) {
     const wrapper = useRef<HTMLQuoteElement>(null)
 
     useEffect(() => {

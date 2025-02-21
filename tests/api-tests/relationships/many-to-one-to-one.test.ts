@@ -82,7 +82,7 @@ const createCompanyAndLocation = async (context: ContextFromRunner<typeof runner
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Owner: list({
         access: allowAll,
@@ -115,7 +115,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-one relationships`, () => {

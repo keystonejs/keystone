@@ -7,7 +7,7 @@ import type { ListMeta } from '../../../../types'
 import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
-export function ComboboxSingle ({
+export function ComboboxSingle({
   labelField,
   searchFields,
   list,
@@ -31,13 +31,12 @@ export function ComboboxSingle ({
     onChange(value: RelationshipValue | null): void
   }
 }) {
-  const { data, loading, error, onLoadMore, search, setSearch } =
-    useApolloQuery({
-      labelField,
-      list,
-      searchFields,
-      state,
-    })
+  const { data, loading, error, onLoadMore, search, setSearch } = useApolloQuery({
+    labelField,
+    list,
+    searchFields,
+    state,
+  })
 
   // TODO: better error UI
   // TODO: Handle permission errors

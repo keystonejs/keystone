@@ -10,7 +10,7 @@ export default config({
     prismaClientPath: 'node_modules/myprisma',
   },
   graphql: {
-    extendGraphqlSchema
+    extendGraphqlSchema,
   },
   lists,
 })

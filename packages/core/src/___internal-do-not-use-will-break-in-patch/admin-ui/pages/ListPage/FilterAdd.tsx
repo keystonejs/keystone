@@ -1,12 +1,5 @@
 import { useRouter } from 'next/router'
-import React, {
-  type FormEvent,
-  Fragment,
-  useId,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -18,34 +11,21 @@ import { Picker } from '@keystar/ui/picker'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type {
-  FieldMeta,
-  JSONValue
-} from '../../../../types'
+import type { FieldMeta, JSONValue } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
 
 type State =
   | { kind: 'selecting-field' }
-  | { kind: 'filter-value', fieldPath: string, filterType: string, filterValue: JSONValue }
+  | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue }
 
-export function FilterAdd ({
-  listKey,
-  isDisabled
-}: {
-  listKey: string
-  isDisabled?: boolean
-}) {
+export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [state, setState] = useState<State>({ kind: 'selecting-field' })
   const [forceValidation, setForceValidation] = useState(false)
   const router = useRouter()
   const formId = useId()
 
-  const {
-    fieldsWithFilters,
-    filtersByFieldThenType,
-    list,
-  } = useFilterFields(listKey)
+  const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(listKey)
   const resetState = () => {
     setState({ kind: 'selecting-field' })
     setForceValidation(false)
@@ -65,7 +45,11 @@ export function FilterAdd ({
     // have no editable value, basically `null` or `!null`. Which offers:
     // * better DX — we can avoid weird nullable types and UIs that don't make sense
     // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
-    if ((state.filterType !== 'empty' && state.filterType !== 'not_empty') && state.filterValue == null) {
+    if (
+      state.filterType !== 'empty' &&
+      state.filterType !== 'not_empty' &&
+      state.filterValue == null
+    ) {
       return
     }
 
@@ -84,15 +68,18 @@ export function FilterAdd ({
     const filterTypes = filtersByFieldThenType[state.fieldPath]
     const typeLabel = filterTypes[state.filterType]
     return (
-      <DialogTrigger type="popover" mobileType="tray" defaultOpen onOpenChange={isOpen => !isOpen && resetState()}>
+      <DialogTrigger
+        type="popover"
+        mobileType="tray"
+        defaultOpen
+        onOpenChange={isOpen => !isOpen && resetState()}
+      >
         <ActionButton>
           <Text>Filter</Text>
           <Icon src={chevronDownIcon} />
         </ActionButton>
         <Dialog>
-          <Heading>
-            Filter by {fieldLabel.toLocaleLowerCase()}
-          </Heading>
+          <Heading>Filter by {fieldLabel.toLocaleLowerCase()}</Heading>
           <Content>
             <form onSubmit={onSubmit} id={formId}>
               {/*
@@ -182,9 +169,7 @@ export function FilterAdd ({
             })
           }}
         >
-          {item => (
-            <Item key={item.value} >{item.label}</Item>
-          )}
+          {item => <Item key={item.value}>{item.label}</Item>}
         </Menu>
       </MenuTrigger>
     </Fragment>
@@ -192,7 +177,7 @@ export function FilterAdd ({
 }
 
 // TODO: broken if user uses the same filter twice
-function useFilterFields (listKey: string) {
+function useFilterFields(listKey: string) {
   const list = useList(listKey)
   const fieldsWithFilters = useMemo(() => {
     const fieldsWithFilters: Record<

@@ -16,7 +16,7 @@ import { expectSingleResolverError } from '../utils'
 
 const fieldPath = path.resolve(__dirname, '../../..', 'packages/core/src/fields/types')
 
-export function prepareFile (_filePath: string, kind: 'image' | 'file') {
+export function prepareFile(_filePath: string, kind: 'image' | 'file') {
   const filePath = path.resolve(fieldPath, kind, 'test-files', _filePath)
   const upload = new Upload()
   upload.resolve({
@@ -45,7 +45,7 @@ const s3DefaultStorage = {
   forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
 } as const
 
-function getRunner ({
+function getRunner({
   storage,
   fields,
 }: {
@@ -53,7 +53,7 @@ function getRunner ({
   fields: KeystoneConfig['lists'][string]['fields']
 }) {
   return setupTestRunner({
-    config: ({
+    config: {
       storage,
       lists: {
         Test: list({
@@ -64,17 +64,17 @@ function getRunner ({
           },
         }),
       },
-    }),
+    },
   })
 }
 
-function sha1 (x: Uint8Array) {
+function sha1(x: Uint8Array) {
   return createHash('sha1').update(x).digest('hex')
 }
 
-async function getFileHash (
+async function getFileHash(
   url: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
 ) {
   if (config.matrixValue === 's3') {
     return sha1(await fetch(url).then(async x => new Uint8Array(await x.arrayBuffer())))
@@ -83,9 +83,9 @@ async function getFileHash (
   return sha1(await fsp.readFile(path.join(config.folder, url)))
 }
 
-async function checkFile (
+async function checkFile(
   filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
 ) {
   if (config.matrixValue === 's3') return await fetch(filename).then(x => x.status === 200)
   return Boolean(await fsp.stat(path.join(config.folder, filename)).catch(() => null))
@@ -136,7 +136,7 @@ describe('Image - Crud special tests', () => {
             'upload values should match expected',
             getRunner({
               fields,
-              storage: { test_image: config }
+              storage: { test_image: config },
             })(async ({ context }) => {
               const filenames = ['keystone.jpg']
               for (const filename of filenames) {
@@ -170,7 +170,7 @@ describe('Image - Crud special tests', () => {
             'if not image file, throw',
             getRunner({
               fields,
-              storage: { test_image: config }
+              storage: { test_image: config },
             })(async ({ context }) => {
               const { data, errors } = await context.graphql.raw({
                 query: `
@@ -195,30 +195,24 @@ describe('Image - Crud special tests', () => {
               'with preserve: true',
               getRunner({
                 fields,
-                storage: { test_image: { ...config, preserve: true } }
-              })(
-                async ({ context }) => {
-                  const ogFilename = 'keystone.jpeg'
+                storage: { test_image: { ...config, preserve: true } },
+              })(async ({ context }) => {
+                const ogFilename = 'keystone.jpeg'
 
-                  const { id, avatar } = await createItem(context, ogFilename)
+                const { id, avatar } = await createItem(context, ogFilename)
 
-                  await context.query.Test.updateOne({
-                    where: { id },
-                    data: { avatar: prepareFile('thinkmill.jpg', 'image') },
-                  })
+                await context.query.Test.updateOne({
+                  where: { id },
+                  data: { avatar: prepareFile('thinkmill.jpg', 'image') },
+                })
 
-                  expect(
-                    await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)
-                  ).toBeTruthy()
+                expect(await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)).toBeTruthy()
 
-                  await context.query.Test.deleteOne({ where: { id } })
+                await context.query.Test.deleteOne({ where: { id } })
 
-                  expect(
-                    await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)
-                  ).toBeTruthy()
-                  // TODO test that just nulling the field doesn't delete it
-                }
-              )
+                expect(await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)).toBeTruthy()
+                // TODO test that just nulling the field doesn't delete it
+              })
             )
 
             test(

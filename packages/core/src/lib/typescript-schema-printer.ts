@@ -26,19 +26,20 @@ const SCALARS = {
   Empty: `{}`,
 } as const
 
-function stringify (x: string) {
+function stringify(x: string) {
   return JSON.stringify(x).slice(1, -1)
 }
 
-function printTypeReference (type: GraphQLType): string {
+function printTypeReference(type: GraphQLType): string {
   if (type instanceof GraphQLNonNull) return printTypeReferenceWithoutNullable(type.ofType)
   return `${printTypeReferenceWithoutNullable(type)} | null`
 }
 
-function printTypeReferenceWithoutNullable (
-  type: GraphQLNamedType | GraphQLList<GraphQLType>,
+function printTypeReferenceWithoutNullable(
+  type: GraphQLNamedType | GraphQLList<GraphQLType>
 ): string {
-  if (type instanceof GraphQLList) return `ReadonlyArray<${printTypeReference(type.ofType)}> | ${printTypeReference(type.ofType)}`
+  if (type instanceof GraphQLList)
+    return `ReadonlyArray<${printTypeReference(type.ofType)}> | ${printTypeReference(type.ofType)}`
 
   const name = type.name
   if (type instanceof GraphQLScalarType) {
@@ -49,7 +50,7 @@ function printTypeReferenceWithoutNullable (
   return name
 }
 
-function printInterimType<L extends InitialisedList> (
+function printInterimType<L extends InitialisedList>(
   prismaClientPath: string,
   list: L,
   operation: 'create' | 'update'
@@ -78,21 +79,28 @@ function printInterimType<L extends InitialisedList> (
         return [
           `  ${fieldKey}: {`,
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
-            const optional = operation === 'create' && subDbField.mode === 'required' && !subDbField.default ? '' : '?'
+            const optional =
+              operation === 'create' && subDbField.mode === 'required' && !subDbField.default
+                ? ''
+                : '?'
             return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}']`
           }),
           `  }`,
         ].join('\n')
       }
 
-      const optional = (operation === 'create' && dbField.mode === 'required' && !dbField.default) || graphql.isNonNull[operation] ? '' : '?'
+      const optional =
+        (operation === 'create' && dbField.mode === 'required' && !dbField.default) ||
+        graphql.isNonNull[operation]
+          ? ''
+          : '?'
       return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}']`
     }),
     `}`,
   ].join('\n')
 }
 
-export function printGeneratedTypes (
+export function printGeneratedTypes(
   prismaClientPath: string,
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
@@ -102,42 +110,44 @@ export function printGeneratedTypes (
   return [
     '/* eslint-disable */',
     '',
-    [...(function* () {
-      for (const type of Object.values(graphQLSchema.getTypeMap())) {
-        // We don't want to print TS types for the built-in GraphQL introspection types
-        // they won't be used for anything we want to print here.
-        if (introspectionTypesSet.has(type)) continue
-        if (type instanceof GraphQLInputObjectType) {
-          yield [
-            `export type ${type.name} = {`,
-            ...(function* () {
-              for (const { name, type: type_ } of Object.values(type.getFields())) {
-                const maybe = type_ instanceof GraphQLNonNull ? '' : '?'
-                yield `  readonly ${name}${maybe}: ${printTypeReference(type_)}`
-              }
-            })(),
-            '}',
-          ].join('\n')
-          continue
-        }
+    [
+      ...(function* () {
+        for (const type of Object.values(graphQLSchema.getTypeMap())) {
+          // We don't want to print TS types for the built-in GraphQL introspection types
+          // they won't be used for anything we want to print here.
+          if (introspectionTypesSet.has(type)) continue
+          if (type instanceof GraphQLInputObjectType) {
+            yield [
+              `export type ${type.name} = {`,
+              ...(function* () {
+                for (const { name, type: type_ } of Object.values(type.getFields())) {
+                  const maybe = type_ instanceof GraphQLNonNull ? '' : '?'
+                  yield `  readonly ${name}${maybe}: ${printTypeReference(type_)}`
+                }
+              })(),
+              '}',
+            ].join('\n')
+            continue
+          }
 
-        if (type instanceof GraphQLEnumType) {
-          yield [
-            `export type ${type.name} =`,
-            type
-              .getValues()
-              .map(x => `  | '${stringify(x.name)}'`)
-              .join('\n'),
-          ].join('\n')
-          continue
-        }
+          if (type instanceof GraphQLEnumType) {
+            yield [
+              `export type ${type.name} =`,
+              type
+                .getValues()
+                .map(x => `  | '${stringify(x.name)}'`)
+                .join('\n'),
+            ].join('\n')
+            continue
+          }
 
-        if (type.name === 'Empty') {
-          yield `export type Empty = {}`
-          continue
+          if (type.name === 'Empty') {
+            yield `export type Empty = {}`
+            continue
+          }
         }
-      }
-    })()].join('\n\n'),
+      })(),
+    ].join('\n\n'),
     '',
     // Resolved* types
     ...(function* () {
@@ -145,7 +155,7 @@ export function printGeneratedTypes (
         yield printInterimType(prismaClientPath, list, 'create')
         yield printInterimType(prismaClientPath, list, 'update')
       }
-    }()),
+    })(),
     '',
     'export declare namespace Lists {',
     ...(function* () {
@@ -160,7 +170,9 @@ export function printGeneratedTypes (
           `  export type TypeInfo<Session = any> = {`,
           `    key: '${listKey}'`,
           `    isSingleton: ${list.isSingleton}`,
-          `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
+          `    fields: ${Object.keys(list.fields)
+            .map(x => `'${x}'`)
+            .join(' | ')}`,
           `    item: Item`,
           `    inputs: {`,
           `      where: ${printTypeReferenceWithoutNullable(list.graphql.types.where.graphQLType)}`,

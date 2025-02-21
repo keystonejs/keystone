@@ -59,7 +59,7 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none'
 }
 
-export function statelessSessions<Session> ({
+export function statelessSessions<Session>({
   secret = randomBytes(32).toString('base64url'),
   maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
@@ -75,7 +75,7 @@ export function statelessSessions<Session> ({
   }
 
   return {
-    async get ({ context }) {
+    async get({ context }) {
       if (!context?.req) return
 
       const cookies = cookie.parse(context.req.headers.cookie || '')
@@ -88,7 +88,7 @@ export function statelessSessions<Session> ({
         // do nothing
       }
     },
-    async end ({ context }) {
+    async end({ context }) {
       if (!context?.res) return
 
       context.res.setHeader(
@@ -104,7 +104,7 @@ export function statelessSessions<Session> ({
         })
       )
     },
-    async start ({ context, data }) {
+    async start({ context, data }) {
       if (!context?.res) return
 
       const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 })
@@ -126,7 +126,7 @@ export function statelessSessions<Session> ({
   } satisfies SessionStrategy<Session, any>
 }
 
-export function storedSessions<Session> ({
+export function storedSessions<Session>({
   store: storeFn,
   maxAge = 60 * 60 * 8, // 8 hours
   ...statelessSessionsOptions
@@ -137,18 +137,18 @@ export function storedSessions<Session> ({
   const store = storeFn({ maxAge })
 
   return {
-    async get ({ context }) {
+    async get({ context }) {
       const sessionId = await stateless.get({ context })
       if (!sessionId) return
 
       return store.get(sessionId)
     },
-    async start ({ context, data }) {
+    async start({ context, data }) {
       const sessionId = randomBytes(24).toString('base64url') // 192-bit
       await store.set(sessionId, data)
       return stateless.start({ context, data: sessionId }) || ''
     },
-    async end ({ context }) {
+    async end({ context }) {
       const sessionId = await stateless.get({ context })
       if (!sessionId) return
 

@@ -10,7 +10,7 @@ import { Type } from '../../../../components/primitives/Type'
 import { FeaturedCard, SplitCardContainer } from '../../../../components/docs/FeaturedCard'
 import { useMediaQuery } from '../../../../lib/media'
 
-export default function Docs ({
+export default function Docs({
   standaloneExamples,
   endToEndExamples,
   deploymentExamples,
@@ -40,7 +40,7 @@ export default function Docs ({
       </Type>
 
       <SplitCardContainer>
-        {standaloneExamples.map((example) => (
+        {standaloneExamples.map(example => (
           <FeaturedCard
             key={example.slug}
             label={example.entry.title}
@@ -60,7 +60,7 @@ export default function Docs ({
       </Type>
 
       <SplitCardContainer>
-        {endToEndExamples.map((example) => (
+        {endToEndExamples.map(example => (
           <FeaturedCard
             key={example.slug}
             label={example.entry.title}
@@ -82,7 +82,7 @@ export default function Docs ({
       </Type>
 
       <SplitCardContainer>
-        {deploymentExamples.map((example) => (
+        {deploymentExamples.map(example => (
           <FeaturedCard
             key={example.slug}
             label={example.entry.title}

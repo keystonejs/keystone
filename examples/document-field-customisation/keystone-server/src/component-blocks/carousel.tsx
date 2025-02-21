@@ -5,7 +5,7 @@ import React from 'react'
 
 export const carousel = component({
   label: 'Carousel',
-  preview: function Preview (props) {
+  preview: function Preview(props) {
     return (
       <NotEditable>
         <div

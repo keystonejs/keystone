@@ -3,7 +3,7 @@
 import { Edit } from '../../components/icons/Edit'
 import { Button } from './Button'
 
-export function EditButton ({
+export function EditButton({
   pathName,
   isIndexPage,
   editPath,

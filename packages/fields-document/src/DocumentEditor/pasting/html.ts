@@ -10,7 +10,7 @@ import {
   setLinkForChildren,
 } from './utils'
 
-function getAlignmentFromElement (element: globalThis.Element): 'center' | 'end' | undefined {
+function getAlignmentFromElement(element: globalThis.Element): 'center' | 'end' | undefined {
   const parent = element.parentElement
   // confluence
   const attribute = parent?.getAttribute('data-align')
@@ -56,7 +56,7 @@ const TEXT_TAGS: Record<string, Mark | undefined> = {
   KBD: 'keyboard',
 }
 
-function marksFromElementAttributes (element: globalThis.HTMLElement) {
+function marksFromElementAttributes(element: globalThis.HTMLElement) {
   const marks = new Set<Mark>()
   const style = element.style
   const { nodeName } = element
@@ -99,7 +99,7 @@ function marksFromElementAttributes (element: globalThis.HTMLElement) {
   return marks
 }
 
-export function deserializeHTML (html: string) {
+export function deserializeHTML(html: string) {
   const parsed = new DOMParser().parseFromString(html, 'text/html')
   return fixNodesForBlockChildren(deserializeNodes(parsed.body.childNodes))
 }
@@ -108,7 +108,7 @@ type DeserializedNode = InlineFromExternalPaste | Block
 
 type DeserializedNodes = [DeserializedNode, ...DeserializedNode[]]
 
-export function deserializeHTMLNode (el: globalThis.Node): DeserializedNode[] {
+export function deserializeHTMLNode(el: globalThis.Node): DeserializedNode[] {
   if (!(el instanceof globalThis.HTMLElement)) {
     const text = el.textContent
     if (!text) {
@@ -206,7 +206,7 @@ export function deserializeHTMLNode (el: globalThis.Node): DeserializedNode[] {
   })
 }
 
-function deserializeNodes (nodes: Iterable<globalThis.Node>): DeserializedNode[] {
+function deserializeNodes(nodes: Iterable<globalThis.Node>): DeserializedNode[] {
   const outputNodes: (InlineFromExternalPaste | Block)[] = []
   for (const node of nodes) {
     outputNodes.push(...deserializeHTMLNode(node))
@@ -214,7 +214,7 @@ function deserializeNodes (nodes: Iterable<globalThis.Node>): DeserializedNode[]
   return outputNodes
 }
 
-function fixNodesForBlockChildren (deserializedNodes: DeserializedNode[]): DeserializedNodes {
+function fixNodesForBlockChildren(deserializedNodes: DeserializedNode[]): DeserializedNodes {
   if (!deserializedNodes.length) {
     // Slate also gets unhappy if an element has no children
     // the empty text nodes will get normalized away if they're not needed

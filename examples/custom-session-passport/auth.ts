@@ -30,9 +30,7 @@ const options: StrategyOptions = {
   callbackURL: 'http://localhost:3000/auth/github/callback',
 }
 
-export function passportMiddleware (
-  commonContext: KeystoneContext<TypeInfo<Session>>
-): Router {
+export function passportMiddleware(commonContext: KeystoneContext<TypeInfo<Session>>): Router {
   const router = Router()
   const instance = new Passport()
   const strategy = new Strategy(

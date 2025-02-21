@@ -71,9 +71,7 @@ export type PostOrderByInput = {
   readonly publishDate?: OrderDirection | null
 }
 
-export type OrderDirection =
-  | 'asc'
-  | 'desc'
+export type OrderDirection = 'asc' | 'desc'
 
 export type PostUpdateInput = {
   readonly title?: string | null
@@ -92,35 +90,19 @@ export type PostCreateInput = {
   readonly publishDate?: any | null
 }
 
-export type KeystoneAdminUIFieldMetaIsNonNull =
-  | 'read'
-  | 'create'
-  | 'update'
+export type KeystoneAdminUIFieldMetaIsNonNull = 'read' | 'create' | 'update'
 
-export type KeystoneAdminUIFieldMetaCreateViewFieldMode =
-  | 'edit'
-  | 'hidden'
+export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden'
 
-export type KeystoneAdminUIFieldMetaListViewFieldMode =
-  | 'read'
-  | 'hidden'
+export type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden'
 
-export type KeystoneAdminUIFieldMetaItemViewFieldMode =
-  | 'edit'
-  | 'read'
-  | 'hidden'
+export type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden'
 
-export type KeystoneAdminUIFieldMetaItemViewFieldPosition =
-  | 'form'
-  | 'sidebar'
+export type KeystoneAdminUIFieldMetaItemViewFieldPosition = 'form' | 'sidebar'
 
-export type QueryMode =
-  | 'default'
-  | 'insensitive'
+export type QueryMode = 'default' | 'insensitive'
 
-export type KeystoneAdminUISortDirection =
-  | 'ASC'
-  | 'DESC'
+export type KeystoneAdminUISortDirection = 'ASC' | 'DESC'
 
 type ResolvedPostCreateInput = {
   id?: import('./node_modules/myprisma').Prisma.PostCreateInput['id']
@@ -136,7 +118,9 @@ type ResolvedPostUpdateInput = {
 }
 
 export declare namespace Lists {
-  export type Post<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Post.TypeInfo<Session>>
+  export type Post<Session = any> = import('@keystone-6/core/types').ListConfig<
+    Lists.Post.TypeInfo<Session>
+  >
   namespace Post {
     export type Item = import('./node_modules/myprisma').Post
     export type TypeInfo<Session = any> = {
@@ -159,8 +143,12 @@ export declare namespace Lists {
     }
   }
 }
-export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>
-export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>
+export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<
+  TypeInfo<Session>
+>
+export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<
+  TypeInfo<Session>
+>
 
 export type TypeInfo<Session = any> = {
   lists: {
@@ -173,7 +161,9 @@ export type TypeInfo<Session = any> = {
 type __TypeInfo<Session = any> = TypeInfo<Session>
 
 export type Lists<Session = any> = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<
+    TypeInfo<Session>['lists'][Key]
+  >
 } & Record<string, import('@keystone-6/core/types').ListConfig<any>>
 
 export {}

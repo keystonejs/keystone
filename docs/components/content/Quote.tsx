@@ -14,7 +14,7 @@ type QuoteProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6'
 } & HTMLAttributes<HTMLElement>
 
-export function Quote ({ name, title, img, grad, children, ...props }: QuoteProps) {
+export function Quote({ name, title, img, grad, children, ...props }: QuoteProps) {
   const mq = useMediaQuery()
 
   return (

@@ -1,31 +1,19 @@
-import type {
-  IncomingMessage,
-  ServerResponse
-} from 'http'
-import {
-  type ExecutionResult,
-  type GraphQLSchema,
-  graphql,
-  print
-} from 'graphql'
-import type {
-  KeystoneContext,
-  KeystoneGraphQLAPI,
-  KeystoneConfig,
-} from '../../types'
+import type { IncomingMessage, ServerResponse } from 'http'
+import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql'
+import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'
 import { createImagesContext } from '../assets/createImagesContext'
 import { createFilesContext } from '../assets/createFilesContext'
 import { getDbFactory, getQueryFactory } from './api'
 
-export function createContext ({
+export function createContext({
   config,
   lists,
   graphQLSchema,
   graphQLSchemaSudo,
   prismaClient,
-  prismaTypes
+  prismaTypes,
 }: {
   config: KeystoneConfig
   lists: Record<string, InitialisedList>
@@ -75,12 +63,12 @@ export function createContext ({
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query)
-      return await graphql({
+      return (await graphql({
         schema,
         source,
         contextValue: context,
         variableValues: variables,
-      }) as ExecutionResult<any>
+      })) as ExecutionResult<any>
     }
 
     const runGraphQL: KeystoneGraphQLAPI['run'] = async ({ query, variables }) => {
@@ -104,7 +92,7 @@ export function createContext ({
             session,
             sudo,
             req,
-            res
+            res,
           })
 
           return await f(newContext)
@@ -124,7 +112,9 @@ export function createContext ({
           req: newReq,
           res: newRes,
         })
-        return newContext.withSession(await config.session?.get({ context: newContext }) ?? undefined)
+        return newContext.withSession(
+          (await config.session?.get({ context: newContext })) ?? undefined
+        )
       },
 
       withSession: session => {
@@ -137,9 +127,9 @@ export function createContext ({
       __internal: {
         lists,
         prisma: {
-          ...prismaTypes
-        }
-      }
+          ...prismaTypes,
+        },
+      },
     }
 
     const _dbFactories = sudo ? dbFactoriesSudo : dbFactories
@@ -156,6 +146,6 @@ export function createContext ({
   return construct({
     prisma: prismaClient,
     session: undefined,
-    sudo: false
+    sudo: false,
   })
 }

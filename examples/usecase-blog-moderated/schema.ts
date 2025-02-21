@@ -15,20 +15,20 @@ export type Session = {
 }
 
 type Has<T, K extends keyof T> = {
-  [key in keyof T]: key extends K ? Exclude<T[key], null | undefined> : T[key];
+  [key in keyof T]: key extends K ? Exclude<T[key], null | undefined> : T[key]
 }
 
-function isAdmin<T extends Session> (session?: T): session is T & { admin: true } {
+function isAdmin<T extends Session>(session?: T): session is T & { admin: true } {
   return session?.admin === true
 }
-function isModerator<T extends Session> (session?: T): session is Has<T, 'moderator'> {
+function isModerator<T extends Session>(session?: T): session is Has<T, 'moderator'> {
   return session?.moderator !== null
 }
-function isContributor<T extends Session> (session?: T): session is Has<T, 'contributor'> {
+function isContributor<T extends Session>(session?: T): session is Has<T, 'contributor'> {
   return session?.contributor !== null
 }
 
-function forUsers<T> ({
+function forUsers<T>({
   admin,
   moderator,
   contributor,
@@ -66,7 +66,7 @@ const contributorsOrAbove = forUsers({
   default: denyAll,
 })
 
-function readOnlyBy (f: ({ session }: { session?: Session }) => boolean) {
+function readOnlyBy(f: ({ session }: { session?: Session }) => boolean) {
   return {
     read: f,
     create: denyAll,
@@ -74,7 +74,7 @@ function readOnlyBy (f: ({ session }: { session?: Session }) => boolean) {
   }
 }
 
-function viewOnlyBy (f: ({ session }: { session?: Session }) => boolean, mode: 'edit' | 'read') {
+function viewOnlyBy(f: ({ session }: { session?: Session }) => boolean, mode: 'edit' | 'read') {
   return {
     createView: {
       fieldMode: ({ session }: { session?: Session }) =>
@@ -89,11 +89,11 @@ function viewOnlyBy (f: ({ session }: { session?: Session }) => boolean, mode: '
   }
 }
 
-function readOnlyViewBy (f: ({ session }: { session?: Session }) => boolean) {
+function readOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
   return viewOnlyBy(f, 'read')
 }
 
-function editOnlyViewBy (f: ({ session }: { session?: Session }) => boolean) {
+function editOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
   return viewOnlyBy(f, 'edit')
 }
 

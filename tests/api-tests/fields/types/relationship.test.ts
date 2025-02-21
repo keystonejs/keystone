@@ -8,10 +8,7 @@ import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break
 
 const fieldKey = 'foo'
 
-function getSchema (field: {
-  ref: string
-  many?: boolean
-}) {
+function getSchema(field: { ref: string; many?: boolean }) {
   return createSystem(
     config({
       db: { url: 'file:./thing.db', provider: 'sqlite' },
@@ -135,7 +132,7 @@ describe('Type Generation', () => {
 })
 
 describe('Reference errors', () => {
-  function tryf (lists: KeystoneConfigPre['lists']) {
+  function tryf(lists: KeystoneConfigPre['lists']) {
     return createSystem(
       config({
         db: { url: 'file:./thing.db', provider: 'sqlite' },
@@ -150,8 +147,8 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' })
-          }
+            bar: relationship({ ref: 'Abc.def' }),
+          },
         }),
       },
       error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,

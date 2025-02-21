@@ -1,12 +1,7 @@
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Prose } from '@keystar/ui/typography'
 
-import {
-  type KeyboardEvent,
-  type ReactNode,
-  useContext,
-  useState
-} from 'react'
+import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
 import isHotkey from 'is-hotkey'
 import React, { useCallback, useMemo } from 'react'
 import {
@@ -19,13 +14,7 @@ import {
   Element,
   Text,
 } from 'slate'
-import {
-  Editable,
-  ReactEditor,
-  Slate,
-  withReact,
-  useSlate,
-} from 'slate-react'
+import { Editable, ReactEditor, Slate, withReact, useSlate } from 'slate-react'
 
 import type { EditableProps } from 'slate-react/dist/components/editable'
 import type { ComponentBlock } from '../component-blocks'
@@ -41,9 +30,7 @@ import type { Relationships } from './relationship'
 import { renderLeaf } from './leaf'
 import { ToolbarStateProvider } from './toolbar-state'
 
-import {
-  createDocumentEditor
-} from './editor-shared'
+import { createDocumentEditor } from './editor-shared'
 import { ActiveBlockPopoverProvider } from './primitives/BlockPopover'
 
 const styles = css({
@@ -60,7 +47,7 @@ const styles = css({
   borderBottomLeftRadius: tokenSchema.size.radius.medium,
   borderBottomRightRadius: tokenSchema.size.radius.medium,
   '&[data-expanded=true]': {
-    // the !important is necessary to override the height set by resizing as an inline style 
+    // the !important is necessary to override the height set by resizing as an inline style
     height: 'auto !important',
     resize: 'none',
   },
@@ -72,7 +59,7 @@ const styles = css({
   'ol ol ol ol': { listStyle: 'decimal' },
   'ol ol ol': { listStyle: 'lower-roman' },
   'ol ol': { listStyle: 'lower-alpha' },
-  'ol': { listStyle: 'decimal' },
+  ol: { listStyle: 'decimal' },
   'ul ul ul ul ul ul ul ul ul': { listStyle: 'square' },
   'ul ul ul ul ul ul ul ul': { listStyle: 'circle' },
   'ul ul ul ul ul ul ul': { listStyle: 'disc' },
@@ -81,8 +68,8 @@ const styles = css({
   'ul ul ul ul': { listStyle: 'disc' },
   'ul ul ul': { listStyle: 'square' },
   'ul ul': { listStyle: 'circle' },
-  'ul': { listStyle: 'disc' }
-}) 
+  ul: { listStyle: 'disc' },
+})
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -90,7 +77,7 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 }
 
-function isMarkActive (editor: Editor, mark: Mark) {
+function isMarkActive(editor: Editor, mark: Mark) {
   const marks = Editor.marks(editor)
   if (marks?.[mark]) {
     return true
@@ -149,7 +136,7 @@ const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
   }
 }
 
-export function DocumentEditor ({
+export function DocumentEditor({
   onChange,
   value,
   componentBlocks,
@@ -167,10 +154,11 @@ export function DocumentEditor ({
 } & Omit<EditableProps, 'value' | 'onChange'>) {
   const [expanded, setExpanded] = useState(initialExpanded)
   const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, {
-      ReactEditor,
-      withReact
-    }),
+    () =>
+      createDocumentEditor(documentFeatures, componentBlocks, relationships, {
+        ReactEditor,
+        withReact,
+      }),
     [documentFeatures, componentBlocks, relationships]
   )
 
@@ -229,7 +217,7 @@ export function DocumentEditor ({
   )
 }
 
-export function DocumentEditorProvider ({
+export function DocumentEditorProvider({
   children,
   editor,
   onChange,
@@ -278,7 +266,7 @@ export function DocumentEditorProvider ({
   )
 }
 
-export function DocumentEditorEditable (props: EditableProps) {
+export function DocumentEditorEditable(props: EditableProps) {
   const editor = useSlate()
   const componentBlocks = useContext(ComponentBlockContext)
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor])
@@ -302,7 +290,8 @@ export function DocumentEditorEditable (props: EditableProps) {
                 if (
                   Node.string(child) === '' &&
                   Element.isElement(child) &&
-                  (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
+                  (child.type === 'component-block-prop' ||
+                    child.type === 'component-inline-prop') &&
                   child.propPath !== undefined
                 ) {
                   const start = Editor.start(editor, [...path, index])

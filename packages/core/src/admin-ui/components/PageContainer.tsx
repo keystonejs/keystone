@@ -1,9 +1,5 @@
 import NextHead from 'next/head'
-import React, {
-  type HTMLAttributes,
-  type ReactNode,
-  useState
-} from 'react'
+import React, { type HTMLAttributes, type ReactNode, useState } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -15,7 +11,7 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { Logo } from './Logo'
 import { Navigation } from './Navigation'
 
-export function PageWrapper (props: HTMLAttributes<HTMLElement>) {
+export function PageWrapper(props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       className={css({
@@ -68,10 +64,10 @@ const Sidebar = ({
   )
 }
 
-function Content (props: HTMLAttributes<HTMLElement>) {
+function Content(props: HTMLAttributes<HTMLElement>) {
   return (
     <VStack
-      elementType='main'
+      elementType="main"
       minHeight={0}
       minWidth={0}
       paddingX="xlarge"
@@ -85,7 +81,7 @@ function Content (props: HTMLAttributes<HTMLElement>) {
         [breakpointQueries.above.mobile]: {
           // must be kept in-sync with the toolbar height
           scrollPaddingBlockEnd: tokenSchema.size.element.xlarge,
-        }
+        },
       })}
       {...props}
     />
@@ -98,7 +94,7 @@ type PageContainerProps = {
   title?: string
 }
 
-export function PageContainer ({ children, header, title }: PageContainerProps) {
+export function PageContainer({ children, header, title }: PageContainerProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
     <PageWrapper>
@@ -125,7 +121,7 @@ export function PageContainer ({ children, header, title }: PageContainerProps) 
         </ActionButton>
       </HStack>
       <HStack
-        elementType='header'
+        elementType="header"
         alignItems="center"
         borderBottom="neutral"
         justifyContent="space-between"

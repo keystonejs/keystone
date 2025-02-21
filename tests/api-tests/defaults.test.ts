@@ -5,16 +5,16 @@ import { allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from './test-runner'
 
-function setupList (fields: BaseFields<any>) {
+function setupList(fields: BaseFields<any>) {
   return setupTestRunner({
-    config: ({
+    config: {
       lists: {
         User: list({
           access: allowAll,
           fields,
         }),
       },
-    }),
+    },
   })
 }
 

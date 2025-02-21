@@ -3,14 +3,7 @@ import https from 'node:https'
 
 import ci from 'ci-info'
 import Conf from 'conf'
-import {
-  bold,
-  blue as b,
-  yellow as y,
-  red as r,
-  green as g,
-  grey,
-} from 'chalk'
+import { bold, blue as b, yellow as y, red as r, green as g, grey } from 'chalk'
 import {
   type Device,
   type Project,
@@ -22,7 +15,7 @@ import { type InitialisedList } from './core/initialise-lists'
 
 const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com/3/'
 
-function log (message: unknown) {
+function log(message: unknown) {
   if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
     console.log(`${message}`)
   }
@@ -32,7 +25,7 @@ type Telemetry = TelemetryVersion2
 type TelemetryOK = Exclude<Telemetry, false | undefined>
 type Configuration = ReturnType<typeof getTelemetryConfig>['userConfig']
 
-function getTelemetryConfig () {
+function getTelemetryConfig() {
   const userConfig = new Conf<{
     telemetry?: TelemetryVersion2
   }>({
@@ -40,7 +33,7 @@ function getTelemetryConfig () {
     projectSuffix: '',
     projectVersion: '3.0.0',
     migrations: {
-      '^2.0.0': (store) => {
+      '^2.0.0': store => {
         const existing = store.get('telemetry') as TelemetryVersion1
         if (!existing) return // skip non-configured or known opt-outs
 
@@ -69,7 +62,7 @@ function getTelemetryConfig () {
 
         store.set('telemetry', replacement satisfies TelemetryVersion2)
       },
-      '^3.0.0': (store) => {
+      '^3.0.0': store => {
         const existing = store.get('telemetry') as TelemetryVersion2
         if (!existing) return // skip non-configured or known opt-outs
 
@@ -87,7 +80,7 @@ function getTelemetryConfig () {
   }
 }
 
-function getDefault (telemetry: Telemetry) {
+function getDefault(telemetry: Telemetry) {
   if (telemetry) return telemetry
   return {
     informedAt: null,
@@ -100,7 +93,7 @@ function getDefault (telemetry: Telemetry) {
 
 const todaysDate = new Date().toISOString().slice(0, 10)
 
-function collectFieldCount (lists: Record<string, InitialisedList>) {
+function collectFieldCount(lists: Record<string, InitialisedList>) {
   const fields: Project['fields'] = { unknown: 0 }
 
   for (const list of Object.values(lists)) {
@@ -121,7 +114,7 @@ function collectFieldCount (lists: Record<string, InitialisedList>) {
   return fields
 }
 
-async function collectPackageVersions () {
+async function collectPackageVersions() {
   const packages: Project['packages'] = {
     '@keystone-6/core': '0.0.0', // "unknown"
   }
@@ -146,7 +139,7 @@ async function collectPackageVersions () {
   return packages
 }
 
-function printNext (telemetry: Telemetry) {
+function printNext(telemetry: Telemetry) {
   if (!telemetry) {
     console.log(`Telemetry data will ${r`not`} be sent by this system user`)
     return
@@ -154,7 +147,7 @@ function printNext (telemetry: Telemetry) {
   console.log(`Telemetry data will be sent the next time you run ${g`"keystone dev"`}`)
 }
 
-function printTelemetryStatus (telemetry: Telemetry, updated = false) {
+function printTelemetryStatus(telemetry: Telemetry, updated = false) {
   const auxverb = updated ? 'has been' : 'is'
 
   if (telemetry === undefined) {
@@ -176,21 +169,22 @@ function printTelemetryStatus (telemetry: Telemetry, updated = false) {
 
   console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`)
   for (const [projectPath, project] of Object.entries(telemetry.projects)) {
-    console.log(`  Project telemetry for "${y(projectPath)}" was last sent on ${project?.lastSentDate}`)
+    console.log(
+      `  Project telemetry for "${y(projectPath)}" was last sent on ${project?.lastSentDate}`
+    )
   }
 
   console.log()
   printNext(telemetry)
 }
 
-function inform (
-  telemetry: TelemetryOK,
-  userConfig: Configuration
-) {
+function inform(telemetry: TelemetryOK, userConfig: Configuration) {
   console.log() // gap to help visiblity
   console.log(`${bold('Keystone Telemetry')}`)
   console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
-  console.log(`You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`)
+  console.log(
+    `You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`
+  )
   if (telemetry.informedAt === null) {
     console.log()
     console.log(`No telemetry data has been sent as part of this notice`)
@@ -198,26 +192,32 @@ function inform (
   console.log()
   printNext(telemetry)
   console.log() // gap to help visiblity
-  console.log(`For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-20`})`)
+  console.log(
+    `For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-20`})`
+  )
 
   // update the informedAt
   telemetry.informedAt = new Date().toJSON()
   userConfig.set('telemetry', telemetry)
 }
 
-async function sendEvent (eventType: 'project', eventData: Project): Promise<void>
-async function sendEvent (eventType: 'device', eventData: Device): Promise<void>
-async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
+async function sendEvent(eventType: 'project', eventData: Project): Promise<void>
+async function sendEvent(eventType: 'device', eventData: Device): Promise<void>
+async function sendEvent(eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
-  await new Promise<void>((resolve) => {
-    const req = https.request(`${endpoint}${eventType}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  await new Promise<void>(resolve => {
+    const req = https.request(
+      `${endpoint}${eventType}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    }, () => resolve())
+      () => resolve()
+    )
 
-    req.once('error', (err) => {
+    req.once('error', err => {
       log(err?.message ?? err)
       resolve()
     })
@@ -227,7 +227,7 @@ async function sendEvent (eventType: 'project' | 'device', eventData: Project | 
   log(`sent ${eventType} report`)
 }
 
-async function sendProjectTelemetryEvent (
+async function sendProjectTelemetryEvent(
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider,
@@ -254,10 +254,7 @@ async function sendProjectTelemetryEvent (
   userConfig.set('telemetry', telemetry)
 }
 
-async function sendDeviceTelemetryEvent (
-  telemetry: TelemetryOK,
-  userConfig: Configuration
-) {
+async function sendDeviceTelemetryEvent(telemetry: TelemetryOK, userConfig: Configuration) {
   const { lastSentDate } = telemetry.device
   if (lastSentDate && lastSentDate === todaysDate) {
     log('device telemetry already sent today')
@@ -275,7 +272,7 @@ async function sendDeviceTelemetryEvent (
   userConfig.set('telemetry', telemetry)
 }
 
-export async function runTelemetry (
+export async function runTelemetry(
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
@@ -306,17 +303,17 @@ export async function runTelemetry (
   }
 }
 
-export function statusTelemetry (updated = false) {
+export function statusTelemetry(updated = false) {
   const { telemetry } = getTelemetryConfig()
   printTelemetryStatus(telemetry, updated)
 }
 
-export function informTelemetry () {
+export function informTelemetry() {
   const { userConfig } = getTelemetryConfig()
   inform(getDefault(false), userConfig)
 }
 
-export function enableTelemetry () {
+export function enableTelemetry() {
   const { telemetry, userConfig } = getTelemetryConfig()
   if (!telemetry) {
     userConfig.set('telemetry', getDefault(telemetry))
@@ -324,13 +321,13 @@ export function enableTelemetry () {
   statusTelemetry(true)
 }
 
-export function disableTelemetry () {
+export function disableTelemetry() {
   const { userConfig } = getTelemetryConfig()
   userConfig.set('telemetry', false)
   statusTelemetry(true)
 }
 
-export function resetTelemetry () {
+export function resetTelemetry() {
   const { userConfig } = getTelemetryConfig()
   userConfig.delete('telemetry')
   statusTelemetry(true)

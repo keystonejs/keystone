@@ -13,7 +13,7 @@ import { type Relationships } from './DocumentEditor/relationship-shared'
 const labelFieldAlias = '____document_field_relationship_item_label'
 const idFieldAlias = '____document_field_relationship_item_id'
 
-export function addRelationshipData (
+export function addRelationshipData(
   nodes: Descendant[],
   context: KeystoneContext,
   relationships: Relationships,
@@ -76,7 +76,7 @@ export function addRelationshipData (
   )
 }
 
-export async function fetchRelationshipData (
+export async function fetchRelationshipData(
   context: KeystoneContext,
   listKey: string,
   many: boolean,
@@ -90,20 +90,16 @@ export async function fetchRelationshipData (
 
   const {
     graphql: {
-      names: {
-        listQueryName
-      },
+      names: { listQueryName },
     },
-    ui: {
-      labelField
-    }
+    ui: { labelField },
   } = context.__internal.lists[listKey]
   const value = (await context.graphql.run({
     query: `query($ids: [ID!]!) {items:${listQueryName}(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
       selection || ''
     }}}`,
     variables: { ids },
-  })) as { items: { [idFieldAlias]: string | number, [labelFieldAlias]: string }[] }
+  })) as { items: { [idFieldAlias]: string | number; [labelFieldAlias]: string }[] }
 
   return Array.isArray(value.items)
     ? value.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
@@ -112,7 +108,7 @@ export async function fetchRelationshipData (
     : []
 }
 
-async function fetchDataForOne (
+async function fetchDataForOne(
   context: KeystoneContext,
   listKey: string,
   selection: string,
@@ -127,13 +123,9 @@ async function fetchDataForOne (
   // errors from the GraphQL field resolver.
   const {
     graphql: {
-      names: {
-        itemQueryName
-      },
+      names: { itemQueryName },
     },
-    ui: {
-      labelField
-    }
+    ui: { labelField },
   } = context.__internal.lists[listKey]
   const value = (await context.graphql.run({
     query: `query($id: ID!) {item:${itemQueryName}(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
@@ -151,15 +143,18 @@ async function fetchDataForOne (
   }
 }
 
-export async function addRelationshipDataToComponentProps (
+export async function addRelationshipDataToComponentProps(
   schema: ComponentSchema,
   value: any,
   fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
 ): Promise<any> {
   switch (schema.kind) {
-    case 'child': return value
-    case 'form': return value
-    case 'relationship': return fetchData(schema, value)
+    case 'child':
+      return value
+    case 'form':
+      return value
+    case 'relationship':
+      return fetchData(schema, value)
     case 'object': {
       return Object.fromEntries(
         await Promise.all(
@@ -172,7 +167,11 @@ export async function addRelationshipDataToComponentProps (
             // want to add something unrelated that requires the current "traverse everything" strategy
             value[key] === undefined
               ? undefined
-              : await addRelationshipDataToComponentProps(schema.fields[key], value[key], fetchData),
+              : await addRelationshipDataToComponentProps(
+                  schema.fields[key],
+                  value[key],
+                  fetchData
+                ),
           ])
         )
       )

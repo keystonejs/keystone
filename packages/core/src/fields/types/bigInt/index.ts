@@ -7,10 +7,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import {
-  resolveDbNullable,
-  makeValidateHook
-} from '../../non-null-graphql'
+import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -29,28 +26,25 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   }
 
 // for a signed 64-bit integer
-const MAX_INT =  9223372036854775807n
+const MAX_INT = 9223372036854775807n
 const MIN_INT = -9223372036854775808n
 
 // TODO: https://github.com/Thinkmill/keystatic/blob/main/design-system/pkg/src/number-field/NumberField.tsx
-export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  const {
-    defaultValue: defaultValue_ = null,
-    isIndexed,
-    validation = {},
-  } = config
+export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
+  config: BigIntFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const { defaultValue: defaultValue_ = null, isIndexed, validation = {} } = config
 
-  const {
-    isRequired = false,
-    min,
-    max
-  } = validation
-  const defaultValue = typeof defaultValue_ === 'bigint' ? defaultValue_ : (defaultValue_?.kind ?? null)
+  const { isRequired = false, min, max } = validation
+  const defaultValue =
+    typeof defaultValue_ === 'bigint' ? defaultValue_ : (defaultValue_?.kind ?? null)
 
-  return (meta) => {
+  return meta => {
     if (defaultValue === 'autoincrement') {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(`${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`)
+        throw new Error(
+          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
+        )
       }
       const isNullable = resolveDbNullable(validation, config.db)
       if (isNullable !== false) {
@@ -61,50 +55,67 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
         )
       }
       if (isRequired) {
-        throw new Error(`${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`)
+        throw new Error(
+          `${meta.listKey}.${meta.fieldKey} defaultValue: { kind: 'autoincrement' } conflicts with validation.isRequired: true`
+        )
       }
     }
-    if (defaultValue !== null && defaultValue !== 'autoincrement' && typeof defaultValue !== 'bigint') {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
+    if (
+      defaultValue !== null &&
+      defaultValue !== 'autoincrement' &&
+      typeof defaultValue !== 'bigint'
+    ) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
+      )
     }
     if (min !== undefined && !Number.isInteger(min)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be an integer`
+      )
     }
     if (max !== undefined && !Number.isInteger(max)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be an integer`
+      )
     }
     if (min !== undefined && (min > MAX_INT || min < MIN_INT)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} which is outside of the range of a 64-bit signed integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} which is outside of the range of a 64-bit signed integer`
+      )
     }
     if (max !== undefined && (max > MAX_INT || max < MIN_INT)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} which is outside of the range of a 64-bit signed integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} which is outside of the range of a 64-bit signed integer`
+      )
     }
-    if (
-      min !== undefined &&
-      max !== undefined &&
-      min > max
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
+    if (min !== undefined && max !== undefined && min > max) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+      )
     }
 
     const hasAdditionalValidation = min !== undefined || max !== undefined
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      hasAdditionalValidation
+        ? ({ resolvedData, operation, addValidationError }) => {
+            if (operation === 'delete') return
 
-      const value = resolvedData[meta.fieldKey]
-      if (typeof value === 'number') {
-        if (min !== undefined && value < min) {
-          addValidationError(`value must be greater than or equal to ${min}`)
-        }
+            const value = resolvedData[meta.fieldKey]
+            if (typeof value === 'number') {
+              if (min !== undefined && value < min) {
+                addValidationError(`value must be greater than or equal to ${min}`)
+              }
 
-        if (max !== undefined && value > max) {
-          addValidationError(`value must be less than or equal to ${max}`)
-        }
-      }
-    } : undefined)
+              if (max !== undefined && value > max) {
+                addValidationError(`value must be less than or equal to ${max}`)
+              }
+            }
+          }
+        : undefined
+    )
 
     return fieldType({
       kind: 'scalar',
@@ -114,7 +125,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       default:
         typeof defaultValue === 'bigint'
           ? { kind: 'literal', value: defaultValue }
-          : (defaultValue === 'autoincrement')
+          : defaultValue === 'autoincrement'
             ? { kind: 'autoincrement' }
             : undefined,
       map: config.db?.map,
@@ -123,7 +134,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.BigInt }) } : undefined,
@@ -136,7 +147,7 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
             type: g.BigInt,
             defaultValue: typeof defaultValue === 'bigint' ? defaultValue : undefined,
           }),
-          resolve (value) {
+          resolve(value) {
             if (value === undefined) {
               if (defaultValue === 'autoincrement') return null
               return defaultValue
@@ -147,20 +158,17 @@ export function bigInt <ListTypeInfo extends BaseListTypeInfo> (config: BigIntFi
         update: { arg: g.arg({ type: g.BigInt }) },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({ type: g.BigInt, }),
+      output: g.field({ type: g.BigInt }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {
           validation: {
             isRequired,
             min: min?.toString() ?? `${MIN_INT}`,
             max: max?.toString() ?? `${MAX_INT}`,
           },
-          defaultValue:
-            typeof defaultValue === 'bigint'
-              ? defaultValue.toString()
-              : defaultValue,
+          defaultValue: typeof defaultValue === 'bigint' ? defaultValue.toString() : defaultValue,
         }
       },
     })

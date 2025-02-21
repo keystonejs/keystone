@@ -26,30 +26,30 @@ export const lists = {
         ref: 'Tag.posts',
         many: true, // a Post can have many Tags, not just one
         ui: {
-          hideCreate: true
-        }
+          hideCreate: true,
+        },
       }),
 
       related: relationship({
         ref: 'Post',
         many: true,
         ui: {
-          hideCreate: true
-        }
+          hideCreate: true,
+        },
       }),
 
       recommendations: structure({
         schema: recommendationsStructureSchema,
         ui: {
           views: './structure-relationships',
-        }
+        },
       }),
 
       bundles: structure({
         schema: bundlesStructureSchema,
         ui: {
           views: './structure-relationships-2',
-        }
+        },
       }),
     },
   }),

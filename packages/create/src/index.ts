@@ -11,11 +11,13 @@ import ora from 'ora'
 
 import thisPackage from '../package.json'
 
-async function checkVersion () {
+async function checkVersion() {
   const { version: upstream } = await getPackageJson('create-keystone-app')
   if (upstream === thisPackage.version) return
 
-  console.error(`⚠️  You're running an old version of create-keystone-app, please update to ${upstream}`)
+  console.error(
+    `⚠️  You're running an old version of create-keystone-app, please update to ${upstream}`
+  )
 }
 
 class UserError extends Error {}
@@ -28,14 +30,14 @@ Usage
   $ create-keystone-app [directory]
 `)
 
-async function normalizeArgs () {
+async function normalizeArgs() {
   let directory = cli.input[0]
   if (!directory) {
-    ({ directory } = await enquirer.prompt({
+    ;({ directory } = await enquirer.prompt({
       type: 'input',
       name: 'directory',
       message: 'What directory should create-keystone-app generate your app into?',
-      validate: (x) => !!x,
+      validate: x => !!x,
     }))
     process.stdout.write('\n')
   }
@@ -45,7 +47,7 @@ async function normalizeArgs () {
   }
 }
 
-(async () => {
+;(async () => {
   process.stdout.write('\n')
   console.log(`✨ You're about to generate a project using ${c.bold('Keystone 6')} packages.`)
 
@@ -54,23 +56,27 @@ async function normalizeArgs () {
   const nextCwd = normalizedArgs.directory
 
   await fs.mkdir(nextCwd)
-  await Promise.all([
-    '_gitignore',
-    'schema.ts',
-    'package.json',
-    'tsconfig.json',
-    'keystone.ts',
-    'auth.ts',
-    'README.md',
-  ].map((filename) =>
-    fs.copyFile(
-      path.join(starterDir, filename),
-      path.join(normalizedArgs.directory, filename.replace(/^_/, '.'))
+  await Promise.all(
+    [
+      '_gitignore',
+      'schema.ts',
+      'package.json',
+      'tsconfig.json',
+      'keystone.ts',
+      'auth.ts',
+      'README.md',
+    ].map(filename =>
+      fs.copyFile(
+        path.join(starterDir, filename),
+        path.join(normalizedArgs.directory, filename.replace(/^_/, '.'))
+      )
     )
-  ))
+  )
 
   const [packageManager] = process.env.npm_config_user_agent?.split('/', 1) ?? ['npm']
-  const spinner = ora(`Installing dependencies with ${packageManager}. This may take a few minutes.`).start()
+  const spinner = ora(
+    `Installing dependencies with ${packageManager}. This may take a few minutes.`
+  ).start()
   try {
     await execa(packageManager, ['install'], { cwd: nextCwd })
     spinner.succeed(`Installed dependencies with ${packageManager}.`)
@@ -94,7 +100,7 @@ async function normalizeArgs () {
   - Edit ${c.bold(`${relativeProjectDir}${path.sep}keystone.ts`)} to customize your app.
   - Star Keystone on GitHub (https://github.com/keystonejs/keystone)
 `)
-})().catch((err) => {
+})().catch(err => {
   if (err instanceof UserError) {
     console.error(err.message)
   } else {

@@ -19,12 +19,12 @@ import type {
 } from '../../../../types'
 import type { Value } from './utils'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { field, value, forceValidation, onChange } = props
   const parsedValue = value.value ? parseAbsoluteToLocal(value.value) : null
 
   const [isDirty, setDirty] = useState(false)
-  const [isReadonlyUTC, toggleReadonlyUTC] = useReducer((prev) => !prev, false)
+  const [isReadonlyUTC, toggleReadonlyUTC] = useReducer(prev => !prev, false)
   const dateFormatter = useDateFormatter({ dateStyle: 'long', timeStyle: 'long' })
 
   // the read-only date field is deceptively interactive, better to render a
@@ -32,17 +32,22 @@ export function Field (props: FieldProps<typeof controller>) {
   // placeholder text is shown, and the toggle button is hidden
   if (!onChange) {
     return (
-      <Grid columns={parsedValue ? 'minmax(0, 1fr) auto' : undefined} gap="regular" alignItems="end">
+      <Grid
+        columns={parsedValue ? 'minmax(0, 1fr) auto' : undefined}
+        gap="regular"
+        alignItems="end"
+      >
         <TextField
           label={field.label}
           description={field.description}
           isDisabled={!parsedValue}
           isReadOnly
-          value={parsedValue
-            ? isReadonlyUTC
-              ? parsedValue.toAbsoluteString()
-              : dateFormatter.format(parsedValue.toDate())
-            : 'yyyy-mm-dd --:--:--'
+          value={
+            parsedValue
+              ? isReadonlyUTC
+                ? parsedValue.toAbsoluteString()
+                : dateFormatter.format(parsedValue.toDate())
+              : 'yyyy-mm-dd --:--:--'
           }
         />
         {!!parsedValue && (
@@ -88,11 +93,7 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-function validate (
-  value: Value,
-  fieldMeta: TimestampFieldMeta,
-  label: string
-): string | undefined {
+function validate(value: Value, fieldMeta: TimestampFieldMeta, label: string): string | undefined {
   const isEmpty = !value.value
 
   // if we recieve null initially on the item view and the current value is null,
@@ -106,7 +107,8 @@ function validate (
     isEmpty &&
     ((typeof fieldMeta.defaultValue === 'object' && fieldMeta.defaultValue?.kind === 'now') ||
       fieldMeta.updatedAt)
-  ) return
+  )
+    return
 
   if (fieldMeta.isRequired && isEmpty) return `${label} is required`
 
@@ -117,9 +119,7 @@ function validate (
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   const dateFormatter = useDateFormatter({ dateStyle: 'medium', timeStyle: 'short' })
-  return value
-    ? <Text>{dateFormatter.format(new Date(value))}</Text>
-    : null
+  return value ? <Text>{dateFormatter.format(new Date(value))}</Text> : null
 }
 
 export type TimestampFieldMeta = {
@@ -128,7 +128,7 @@ export type TimestampFieldMeta = {
   isRequired: boolean
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<TimestampFieldMeta>
 ): FieldController<Value, string | null> & { fieldMeta: TimestampFieldMeta } {
   return {
@@ -140,16 +140,14 @@ export function controller (
     defaultValue: {
       kind: 'create',
       value:
-        typeof config.fieldMeta.defaultValue === 'string'
-          ? config.fieldMeta.defaultValue
-          : null
+        typeof config.fieldMeta.defaultValue === 'string' ? config.fieldMeta.defaultValue : null,
     },
     deserialize: data => {
       const value = data[config.path]
       return {
         kind: 'update',
         initial: data[config.path],
-        value: value ?? null
+        value: value ?? null,
       }
     },
     serialize: ({ value }) => {
@@ -158,8 +156,17 @@ export function controller (
     },
     validate: value => validate(value, config.fieldMeta, config.label) === undefined,
     filter: {
-      Filter (props) {
-        const { autoFocus, context, forceValidation, typeLabel, onChange, value, type, ...otherProps } = props
+      Filter(props) {
+        const {
+          autoFocus,
+          context,
+          forceValidation,
+          typeLabel,
+          onChange,
+          value,
+          type,
+          ...otherProps
+        } = props
         const [isDirty, setDirty] = useState(false)
 
         if (type === 'empty' || type === 'not_empty') return null
@@ -188,7 +195,7 @@ export function controller (
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
       },
-      Label ({ label, type, value }) {
+      Label({ label, type, value }) {
         const dateFormatter = useDateFormatter({ dateStyle: 'short', timeStyle: 'short' })
         if (type === 'empty' || type === 'not_empty' || value == null) {
           return label.toLocaleLowerCase()

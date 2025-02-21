@@ -10,7 +10,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty()
 type IdType = any
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Note: list({
         access: allowAll,
@@ -56,20 +56,20 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 let afterOperationWasCalled = false
 
 const runner2 = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Note: list({
         fields: {
           content: text(),
         },
         hooks: {
-          afterOperation () {
+          afterOperation() {
             afterOperationWasCalled = true
           },
         },
@@ -83,7 +83,7 @@ const runner2 = setupTestRunner({
         access: allowAll,
       }),
     },
-  }),
+  },
 })
 
 test(
@@ -118,7 +118,7 @@ describe('no access control', () => {
       })
 
       // Create an item that does the nested create
-      type T = { id: IdType, notes: { id: IdType, content: string }[] }
+      type T = { id: IdType; notes: { id: IdType; content: string }[] }
 
       const user1 = (await context.query.User.createOne({
         data: {
@@ -173,7 +173,7 @@ describe('no access control', () => {
         notes: [{ id: expect.any(String), content: noteContent }],
       })
 
-      type T = { id: IdType, notes: { id: IdType, content: string }[] }
+      type T = { id: IdType; notes: { id: IdType; content: string }[] }
       const _user = (await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {

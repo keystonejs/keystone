@@ -13,7 +13,7 @@ export const quote = component({
     }),
     attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
   },
-  preview: function Quote (props) {
+  preview: function Quote(props) {
     return (
       <div
         className={css({
@@ -31,7 +31,9 @@ export const quote = component({
           },
         })}
       >
-        <div className={css({ fontStyle: 'italic', color: '#4A5568' })}>{props.fields.content.element}</div>
+        <div className={css({ fontStyle: 'italic', color: '#4A5568' })}>
+          {props.fields.content.element}
+        </div>
         <div className={css({ fontWeight: 'bold', color: '#47546b' })}>
           <NotEditable>— </NotEditable>
           {props.fields.attribution.element}

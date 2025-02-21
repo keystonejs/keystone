@@ -2,11 +2,7 @@ import type { CacheHint } from '@apollo/cache-control-types'
 import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
 import type { KeystoneContext } from '..'
-import type {
-  MaybeFieldFunction,
-  MaybeItemFunction,
-  MaybeSessionFunction
-} from './lists'
+import type { MaybeFieldFunction, MaybeItemFunction, MaybeSessionFunction } from './lists'
 import type { FieldHooks } from './hooks'
 import type { FieldAccessControl } from './access-control'
 
@@ -40,24 +36,24 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
     isNonNull?:
       | boolean
       | {
-        // whether this field is non-nullable on the {List} GraphQL type
-        read?: boolean
-        // whether this field is non-nullable on the {List}CreateInput GraphQL type
-        create?: boolean
-        // whether this field is non-nullable on the {List}UpdateInput GraphQL type
-        update?: boolean
-      }
+          // whether this field is non-nullable on the {List} GraphQL type
+          read?: boolean
+          // whether this field is non-nullable on the {List}CreateInput GraphQL type
+          create?: boolean
+          // whether this field is non-nullable on the {List}UpdateInput GraphQL type
+          update?: boolean
+        }
 
     omit?:
       | boolean
       | {
-        // whether this field is omitted from the {List} GraphQL type
-        read?: boolean
-        // whether this field is omitted from the {List}CreateInput GraphQL type
-        create?: boolean
-        // whether this field is omitted from the {List}UpdateInput GraphQL type
-        update?: boolean
-      }
+          // whether this field is omitted from the {List} GraphQL type
+          read?: boolean
+          // whether this field is omitted from the {List}CreateInput GraphQL type
+          create?: boolean
+          // whether this field is omitted from the {List}UpdateInput GraphQL type
+          update?: boolean
+        }
   }
   isFilterable?: MaybeFieldFunction<ListTypeInfo>
   isOrderable?: MaybeFieldFunction<ListTypeInfo>

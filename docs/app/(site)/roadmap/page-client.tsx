@@ -18,7 +18,7 @@ import { Gradient } from '../../../components/primitives/Gradient'
 import { InlineCode } from '../../../components/primitives/Code'
 import { Tick } from '../../../components/icons'
 
-function TimelineItem ({ children }: { children: ReactNode }) {
+function TimelineItem({ children }: { children: ReactNode }) {
   return (
     <div
       css={{
@@ -30,7 +30,7 @@ function TimelineItem ({ children }: { children: ReactNode }) {
   )
 }
 
-function TimelineMarker ({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
+function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
   return (
     <div
       css={{
@@ -61,7 +61,7 @@ function TimelineMarker ({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>
   )
 }
 
-function TimelineWeAreHere () {
+function TimelineWeAreHere() {
   const arrowSize = '0.4rem'
   const mq = useMediaQuery()
   return (
@@ -100,7 +100,7 @@ type TimelineContentProps = {
   children: ReactNode
 } & Pick<ComponentProps<typeof Highlight>, 'look'>
 
-function TimelineContent ({ title, look, children }: TimelineContentProps) {
+function TimelineContent({ title, look, children }: TimelineContentProps) {
   return (
     <div css={{ height: '100%' }}>
       <Type as="h3" look="heading20bold" margin="1rem 0">
@@ -117,7 +117,7 @@ type RoadmapListProps = {
   children: ReactNode
 }
 
-function RoadmapList ({ children }: RoadmapListProps) {
+function RoadmapList({ children }: RoadmapListProps) {
   const mq = useMediaQuery()
   return (
     <ul
@@ -170,7 +170,7 @@ type RoadmapItemProps = {
   children: ReactNode
 }
 
-function RoadmapItem ({ title, section, isReleased = false, children }: RoadmapItemProps) {
+function RoadmapItem({ title, section, isReleased = false, children }: RoadmapItemProps) {
   const Section = section ? roadmapItemSection[section] : null
   return (
     <li css={{ position: 'relative' }}>
@@ -197,7 +197,7 @@ function RoadmapItem ({ title, section, isReleased = false, children }: RoadmapI
   )
 }
 
-function Divider () {
+function Divider() {
   return (
     <hr
       css={{
@@ -210,7 +210,7 @@ function Divider () {
   )
 }
 
-export default function Roadmap () {
+export default function Roadmap() {
   const mq = useMediaQuery()
 
   return (
@@ -233,7 +233,8 @@ export default function Roadmap () {
               margin: '0.5rem 0.8rem 0.5rem 0',
             }}
           >
-            To see what we've recently shipped, checkout our <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
+            To see what we've recently shipped, checkout our{' '}
+            <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
           </span>
         </Alert>
 
@@ -387,7 +388,8 @@ export default function Roadmap () {
           <RoadmapItem title="Field Groups" section="admin ui" isReleased>
             <Fragment>
               It's often easier to work with content when the form is grouped into different
-              sections of related fields. <Link href="/docs/fields/overview#groups">Learn more</Link>
+              sections of related fields.{' '}
+              <Link href="/docs/fields/overview#groups">Learn more</Link>
             </Fragment>
           </RoadmapItem>
           <RoadmapItem title="Back-end APIs for Node.js apps" section="core" isReleased>

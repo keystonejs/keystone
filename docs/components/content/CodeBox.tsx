@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import {
-  type HTMLAttributes,
-  useEffect,
-  useState
-} from 'react'
+import { type HTMLAttributes, useEffect, useState } from 'react'
 import copy from 'clipboard-copy'
 
 import { Icon } from '@keystar/ui/icon'
@@ -15,7 +11,7 @@ type CodeBoxProps = {
   code: string
 } & HTMLAttributes<HTMLElement>
 
-export function CodeBox ({ code, ...props }: CodeBoxProps) {
+export function CodeBox({ code, ...props }: CodeBoxProps) {
   const [didJustCopy, setDidJustCopy] = useState(false)
   useEffect(() => {
     if (didJustCopy) {

@@ -9,19 +9,13 @@ import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
-import {
-  BaseToolbar,
-  ColumnLayout,
-  ItemPageHeader
-} from '../ItemPage/common'
+import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 
-export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => <CreateItemPage {...props} />
+export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
+  <CreateItemPage {...props} />
+)
 
-function CreateItemPage ({
-  listKey
-}: {
-  listKey: string
-}) {
+function CreateItemPage({ listKey }: { listKey: string }) {
   const list = useList(listKey)
   const createItem = useCreateItem(list)
   const router = useRouter()
@@ -33,7 +27,7 @@ function CreateItemPage ({
     >
       <ColumnLayout>
         <form
-          onSubmit={async (e) => {
+          onSubmit={async e => {
             e.preventDefault()
 
             const item = await createItem.create()
@@ -53,18 +47,14 @@ function CreateItemPage ({
             <GraphQLErrorNotice
               errors={[
                 createItem?.error?.networkError,
-                ...createItem?.error?.graphQLErrors ?? []
+                ...(createItem?.error?.graphQLErrors ?? []),
               ]}
             />
             <Fields {...createItem.props} />
           </VStack>
 
           <BaseToolbar>
-            <Button
-              isPending={createItem.state === 'loading'}
-              prominence="high"
-              type="submit"
-            >
+            <Button isPending={createItem.state === 'loading'} prominence="high" type="submit">
               Create
             </Button>
           </BaseToolbar>

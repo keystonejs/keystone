@@ -12,7 +12,7 @@ export const lists = {
       virtual: virtual({
         field: g.field({
           type: g.String,
-          resolve (item) {
+          resolve(item) {
             return item.text
           },
         }),

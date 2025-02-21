@@ -16,7 +16,7 @@ type WellProps = {
   children: ReactNode
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function Well ({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
+export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
   return (
     <Link
       href={href}

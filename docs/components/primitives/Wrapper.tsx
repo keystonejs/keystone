@@ -8,7 +8,7 @@ type WrapperProps = {
   as?: ElementType
 } & HTMLAttributes<HTMLElement>
 
-export function Wrapper ({ as: Tag = 'div', ...props }: WrapperProps) {
+export function Wrapper({ as: Tag = 'div', ...props }: WrapperProps) {
   const mq = useMediaQuery()
 
   return (

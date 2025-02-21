@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 
-import type {
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '../../../../types'
+import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
 import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import type { TextFieldMeta } from '..'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
 
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
@@ -30,9 +26,10 @@ export function Field (props: FieldProps<typeof controller>) {
       onChange={() => {
         if (!onChange) return
 
-        const inner = value.inner.kind === 'value'
-          ? { kind: 'null', prev: value.inner.value } as const
-          : { kind: 'value', value: value.inner.prev } as const
+        const inner =
+          value.inner.kind === 'value'
+            ? ({ kind: 'null', prev: value.inner.value } as const)
+            : ({ kind: 'value', value: value.inner.prev } as const)
 
         onChange({ ...value, inner })
       }}
@@ -52,21 +49,19 @@ export function Field (props: FieldProps<typeof controller>) {
         onBlur={() => {
           setShouldShowErrors(true)
         }}
-        onChange={(textValue) => {
+        onChange={textValue => {
           if (!onChange) return
           onChange({
             ...value,
             inner: {
               kind: 'value',
-              value: textValue
-            }
+              value: textValue,
+            },
           })
         }}
         // maintain the previous value when set to null in aid of continuity for
         // the user. it will be cleared when the item is saved
-        value={value.inner.kind === 'value'
-          ? value.inner.value
-          : value.inner.prev}
+        value={value.inner.kind === 'value' ? value.inner.value : value.inner.prev}
       />
     </NullableFieldWrapper>
   )
@@ -76,11 +71,11 @@ type Config = FieldControllerConfig<TextFieldMeta>
 
 type Validation = {
   isRequired: boolean
-  match: { regex: RegExp, explanation: string | null } | null
-  length: { min: number | null, max: number | null }
+  match: { regex: RegExp; explanation: string | null } | null
+  length: { min: number | null; max: number | null }
 }
 
-function validate (value: TextValue, validation: Validation, fieldLabel: string): string[] {
+function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
   // if the value is the same as the initial for an update, we don't want to block saving
   // since we're not gonna send it anyway if it's the same
   // and going "fix this thing that is unrelated to the thing you're doing" is bad
@@ -121,19 +116,17 @@ function validate (value: TextValue, validation: Validation, fieldLabel: string)
   return messages
 }
 
-type InnerTextValue = { kind: 'null', prev: string } | { kind: 'value', value: string }
+type InnerTextValue = { kind: 'null'; prev: string } | { kind: 'value'; value: string }
 type TextValue =
-  | { kind: 'create', inner: InnerTextValue }
-  | { kind: 'update', inner: InnerTextValue, initial: InnerTextValue }
+  | { kind: 'create'; inner: InnerTextValue }
+  | { kind: 'update'; inner: InnerTextValue; initial: InnerTextValue }
 
-function deserializeTextValue (value: string | null): InnerTextValue {
+function deserializeTextValue(value: string | null): InnerTextValue {
   if (value === null) return { kind: 'null', prev: '' }
   return { kind: 'value', value }
 }
 
-export function controller (
-  config: Config
-): FieldController<TextValue, string> & {
+export function controller(config: Config): FieldController<TextValue, string> & {
   displayMode: 'input' | 'textarea'
   validation: Validation
   isNullable: boolean
@@ -167,12 +160,11 @@ export function controller (
     validation,
     validate: val => validate(val, validation, config.label).length === 0,
     filter: {
-      Filter (props) {
+      Filter(props) {
         const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props
 
-        const labelProps = context === 'add'
-          ? { label: config.label, description: typeLabel }
-          : { label: typeLabel }
+        const labelProps =
+          context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
 
         // NOTE: "type" is a valid attribute for an input element, however the
         // prop represents a filter type in this context e.g. "contains_i", so
@@ -189,7 +181,7 @@ export function controller (
           />
         )
       },
-      Label ({ label, value }) {
+      Label({ label, value }) {
         const trimmedLabel = label.toLowerCase().replace(' exactly', '')
         return `${trimmedLabel} "${value}"`
       },

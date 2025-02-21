@@ -6,6 +6,6 @@ export const metadata = {
     'Build faster and scale further with the programmable open source GraphQL API back-end for structured content projects.',
 }
 
-export default function Page () {
+export default function Page() {
   return <PageClient />
 }

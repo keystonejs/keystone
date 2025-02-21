@@ -7,7 +7,7 @@ import mime from 'mime'
 import { file } from '@keystone-6/core/fields'
 import type { KeystoneConfig } from '@keystone-6/core/types'
 
-export function prepareFile (filePath_: string) {
+export function prepareFile(filePath_: string) {
   const filePath = path.resolve(`${__dirname}/test-files/${filePath_}`)
   const upload = new Upload()
   upload.resolve({
@@ -27,7 +27,7 @@ if (process.env.S3_BUCKET_NAME) {
 
 export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'))
 
-export function getRootConfig (matrixValue: MatrixValue): Partial<KeystoneConfig> {
+export function getRootConfig(matrixValue: MatrixValue): Partial<KeystoneConfig> {
   if (matrixValue === 'local') {
     return {
       storage: {

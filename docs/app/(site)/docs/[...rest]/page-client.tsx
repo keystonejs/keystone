@@ -2,11 +2,11 @@
 
 import { type Document } from './page'
 
-import {  Markdoc } from '../../../../components/Markdoc'
+import { Markdoc } from '../../../../components/Markdoc'
 
 import { Heading } from '../../../../components/docs/Heading'
 
-export default function PageClient ({ document }: { document: Document }) {
+export default function PageClient({ document }: { document: Document }) {
   return (
     <>
       <Heading level={1} id="title">

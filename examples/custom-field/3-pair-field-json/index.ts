@@ -39,21 +39,21 @@ const PairFilter = g.inputObject({
   },
 })
 
-export function pair<ListTypeInfo extends BaseListTypeInfo> (
+export function pair<ListTypeInfo extends BaseListTypeInfo>(
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  function resolveInput (value: PairInput | null | undefined) {
+  function resolveInput(value: PairInput | null | undefined) {
     if (value === undefined) return undefined
     const { left = null, right = null } = value ?? {}
     return JSON.stringify({ left, right })
   }
 
-  function resolveOutput (value: string | null) {
+  function resolveOutput(value: string | null) {
     if (value === null) return { left: null, right: null }
     return JSON.parse(value) as PairOutput
   }
 
-  function resolveWhere (value: null | { equals: PairInput | null | undefined }) {
+  function resolveWhere(value: null | { equals: PairInput | null | undefined }) {
     if (value === null) throw new Error('PairFilter cannot be null')
     if (value.equals === undefined) return {}
     const json = resolveInput(value.equals)
@@ -72,31 +72,31 @@ export function pair<ListTypeInfo extends BaseListTypeInfo> (
       input: {
         where: {
           arg: g.arg({ type: PairFilter }),
-          resolve (value, context) {
+          resolve(value, context) {
             return resolveWhere(value)
           },
         },
         create: {
           arg: g.arg({ type: PairInput }),
-          resolve (value, context) {
+          resolve(value, context) {
             return resolveInput(value)
           },
         },
         update: {
           arg: g.arg({ type: PairInput }),
-          resolve (value, context) {
+          resolve(value, context) {
             return resolveInput(value)
           },
         },
       },
       output: g.field({
         type: PairOutput,
-        resolve ({ value, item }, args, context, info) {
+        resolve({ value, item }, args, context, info) {
           return resolveOutput(value)
         },
       }),
       views: './3-pair-field-json/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {}
       },
     })

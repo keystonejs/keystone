@@ -1,8 +1,4 @@
-import {
-  type Editor,
-  type Element,
-  Transforms,
-} from 'slate'
+import { type Editor, type Element, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react'
 import { css } from '@keystar/ui/style'
@@ -10,7 +6,7 @@ import { css } from '@keystar/ui/style'
 // this ensures that when changes happen, they are immediately shown
 // this stops the problem of a cursor resetting to the end when a change is made
 // because the changes are applied asynchronously
-export function useElementWithSetNodes<TElement extends Element> (
+export function useElementWithSetNodes<TElement extends Element>(
   editor: Editor,
   element: TElement
 ) {
@@ -58,11 +54,11 @@ const ForceValidationContext = React.createContext(false)
 
 export const ForceValidationProvider = ForceValidationContext.Provider
 
-export function useForceValidation () {
+export function useForceValidation() {
   return useContext(ForceValidationContext)
 }
 
-export function focusWithPreviousSelection (editor: Editor) {
+export function focusWithPreviousSelection(editor: Editor) {
   const selection = window.getSelection()
   if (selection) {
     selection.removeAllRanges()

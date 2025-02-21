@@ -10,11 +10,11 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
   const roles = (await context.query.Role.createMany({
     data: [{ name: 'RoleA' }, { name: 'RoleB' }, { name: 'RoleC' }],
     query: 'id name',
-  })) as { id: IdType, name: string }[]
+  })) as { id: IdType; name: string }[]
   const companies = (await context.query.Company.createMany({
     data: [{ name: 'CompanyA' }, { name: 'CompanyB' }, { name: 'CompanyC' }],
     query: 'id name',
-  })) as { id: IdType, name: string }[]
+  })) as { id: IdType; name: string }[]
   const employees = (await context.query.Employee.createMany({
     data: [
       {
@@ -34,7 +34,7 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
       },
     ],
     query: 'id name',
-  })) as { id: IdType, name: string }[]
+  })) as { id: IdType; name: string }[]
   await context.query.Location.createMany({
     data: [
       {
@@ -92,7 +92,7 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Employee: list({
         access: allowAll,
@@ -125,7 +125,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 test(

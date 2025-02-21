@@ -41,7 +41,7 @@ for (const modulePath of testModules) {
         }
       })
       const runner = setupTestRunner({
-        config: ({
+        config: {
           lists: {
             Test: list({
               access: allowAll,
@@ -74,7 +74,7 @@ for (const modulePath of testModules) {
               },
             },
           },
-        }),
+        },
       })
       test(
         'uniqueness is enforced over multiple mutations',

@@ -1,11 +1,7 @@
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import {
-  type Session,
-  lists,
-  extendGraphqlSchema,
-} from './schema'
+import { type Session, lists, extendGraphqlSchema } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only

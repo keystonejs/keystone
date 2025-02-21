@@ -7,9 +7,9 @@ import Link from 'next/link'
 
 import { Type } from './primitives/Type'
 
-type Path = { title: string, href: string }
+type Path = { title: string; href: string }
 
-export function Breadcrumbs () {
+export function Breadcrumbs() {
   const router = useRouter()
   const pathname = usePathname()
 

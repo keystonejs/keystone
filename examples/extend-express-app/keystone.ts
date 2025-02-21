@@ -1,9 +1,7 @@
 import { config } from '@keystone-6/core'
 
 import { lists } from './schema'
-import {
-  type TypeInfo,
-} from '.keystone/types'
+import { type TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -35,7 +33,7 @@ export default config<TypeInfo>({
         const tasks = await context.query.Post.findMany({
           where: {
             draft: {
-              equals: isDraft
+              equals: isDraft,
             },
           },
           query: `
@@ -63,7 +61,7 @@ export default config<TypeInfo>({
 
         const task = await context.query.Post.findOne({
           where: {
-            id: req.url.slice('/rest/posts/'.length)
+            id: req.url.slice('/rest/posts/'.length),
           },
           query: `
             id

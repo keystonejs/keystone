@@ -1,12 +1,7 @@
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 
-import React, {
-  type ReactNode,
-  useMemo,
-  useContext,
-} from 'react'
+import React, { type ReactNode, useMemo, useContext } from 'react'
 import { Editor, type Element, Transforms } from 'slate'
-
 
 import { Icon } from '@keystar/ui/icon'
 import { boldIcon } from '@keystar/ui/icon/icons/boldIcon'
@@ -23,13 +18,17 @@ import { underlineIcon } from '@keystar/ui/icon/icons/underlineIcon'
 import { maximizeIcon } from '@keystar/ui/icon/icons/maximizeIcon'
 import { minimizeIcon } from '@keystar/ui/icon/icons/minimizeIcon'
 import { Kbd, Text } from '@keystar/ui/typography'
-import { EditorToolbar, EditorToolbarButton, EditorToolbarGroup, EditorToolbarSeparator } from '@keystar/ui/editor'
+import {
+  EditorToolbar,
+  EditorToolbarButton,
+  EditorToolbarGroup,
+  EditorToolbarSeparator,
+} from '@keystar/ui/editor'
 
 import type { DocumentFeatures } from '../views-shared'
 import { linkButton } from './link'
 import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
-import {
-  clearFormatting} from './utils'
+import { clearFormatting } from './utils'
 import { LayoutsButton } from './layouts'
 import { ListButtons } from './lists'
 import { blockquoteButton } from './blockquote'
@@ -46,12 +45,12 @@ import { ActionButton } from '@keystar/ui/button'
 import { MenuTrigger, Menu } from '@keystar/ui/menu'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 
-export function Toolbar ({
+export function Toolbar({
   documentFeatures,
   viewState,
 }: {
   documentFeatures: DocumentFeatures
-  viewState?: { expanded: boolean, toggle: () => void }
+  viewState?: { expanded: boolean; toggle: () => void }
 }) {
   const relationship = useContext(DocumentFieldRelationshipsContext)
   const blockComponent = useContext(ComponentBlockContext)
@@ -59,11 +58,9 @@ export function Toolbar ({
   const hasMarks = Object.values(documentFeatures.formatting.inlineMarks).some(x => x)
 
   const hasAlignment =
-    documentFeatures.formatting.alignment.center ||
-    documentFeatures.formatting.alignment.end
+    documentFeatures.formatting.alignment.center || documentFeatures.formatting.alignment.end
   const hasLists =
-    documentFeatures.formatting.listTypes.unordered ||
-    documentFeatures.formatting.listTypes.ordered
+    documentFeatures.formatting.listTypes.unordered || documentFeatures.formatting.listTypes.ordered
 
   return (
     <ToolbarWrapper>
@@ -72,29 +69,28 @@ export function Toolbar ({
           <HeadingMenu headingLevels={documentFeatures.formatting.headingLevels} />
         )}
         <EditorToolbar aria-label="Formatting options">
-          {hasMarks && <>
-            <EditorToolbarSeparator />
-            <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
-          </>}
+          {hasMarks && (
+            <>
+              <EditorToolbarSeparator />
+              <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
+            </>
+          )}
           <EditorToolbarSeparator />
           {(hasAlignment || hasLists) && (
             <EditorToolbarGroup>
-              {hasAlignment && (
-                <TextAlignMenu
-                  alignment={documentFeatures.formatting.alignment}
-                />
-              )}
-              {hasLists && (
-                <ListButtons lists={documentFeatures.formatting.listTypes} />
-              )}
+              {hasAlignment && <TextAlignMenu alignment={documentFeatures.formatting.alignment} />}
+              {hasLists && <ListButtons lists={documentFeatures.formatting.listTypes} />}
             </EditorToolbarGroup>
           )}
           <EditorToolbarGroup>
-          {documentFeatures.dividers && dividerButton}
-          {documentFeatures.links && linkButton}
-          {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
-          {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
-          {documentFeatures.formatting.blockTypes.code && codeButton}</EditorToolbarGroup>
+            {documentFeatures.dividers && dividerButton}
+            {documentFeatures.links && linkButton}
+            {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
+            {!!documentFeatures.layouts.length && (
+              <LayoutsButton layouts={documentFeatures.layouts} />
+            )}
+            {documentFeatures.formatting.blockTypes.code && codeButton}
+          </EditorToolbarGroup>
           {useMemo(() => {
             return (
               viewState && (
@@ -106,9 +102,7 @@ export function Toolbar ({
                         viewState.toggle()
                       }}
                     >
-                      <Icon
-                        src={viewState.expanded ? minimizeIcon : maximizeIcon}
-                      />
+                      <Icon src={viewState.expanded ? minimizeIcon : maximizeIcon} />
                     </EditorToolbarButton>
                     <Tooltip>{viewState.expanded ? 'Collapse' : 'Expand'}</Tooltip>
                   </TooltipTrigger>
@@ -123,10 +117,7 @@ export function Toolbar ({
   )
 }
 
-const headingMenuVals = new Map<
-  string | number,
-  'normal' | 1 | 2 | 3 | 4 | 5 | 6
->([
+const headingMenuVals = new Map<string | number, 'normal' | 1 | 2 | 3 | 4 | 5 | 6>([
   ['normal', 'normal'],
   ['1', 1],
   ['2', 2],
@@ -136,7 +127,7 @@ const headingMenuVals = new Map<
   ['6', 6],
 ])
 
-type HeadingItem = { name: string, id: string | number }
+type HeadingItem = { name: string; id: string | number }
 const HeadingMenu = ({
   headingLevels,
 }: {
@@ -181,8 +172,7 @@ const HeadingMenu = ({
               editor,
               { type: 'heading', level: key },
               {
-                match: node =>
-                  node.type === 'paragraph' || node.type === 'heading',
+                match: node => node.type === 'paragraph' || node.type === 'heading',
               }
             )
           }
@@ -196,17 +186,14 @@ const HeadingMenu = ({
   )
 }
 
-function InsertBlockMenu () {
+function InsertBlockMenu() {
   const editor = useSlateStatic()
   const componentBlocks = useContext(ComponentBlockContext)
 
   return (
     <MenuTrigger align="end">
       <TooltipTrigger>
-        <ActionButton
-          marginY="regular"
-          marginEnd="medium"
-        >
+        <ActionButton marginY="regular" marginEnd="medium">
           <Icon src={plusIcon} />
           <Icon src={chevronDownIcon} />
         </ActionButton>
@@ -273,7 +260,7 @@ const inlineMarks = [
   },
 ] as const
 
-function InlineMarks ({
+function InlineMarks({
   marks: _marksShown,
 }: {
   marks: DocumentFeatures['formatting']['inlineMarks']
@@ -286,9 +273,7 @@ function InlineMarks ({
   const marksShown = useMemoStringified(_marksShown)
 
   const selectedKeys = useMemoStringified(
-    Object.keys(marks).filter(
-      key => marks[key as keyof typeof marks].isSelected
-    )
+    Object.keys(marks).filter(key => marks[key as keyof typeof marks].isSelected)
   )
   const disabledKeys = useMemoStringified(
     Object.keys(marks)
@@ -297,9 +282,7 @@ function InlineMarks ({
   )
 
   return useMemo(() => {
-    const items = inlineMarks.filter(
-      item => item.key === 'clearFormatting' || marksShown[item.key]
-    )
+    const items = inlineMarks.filter(item => item.key === 'clearFormatting' || marksShown[item.key])
     return (
       <ActionGroup
         UNSAFE_className={css({
@@ -342,12 +325,12 @@ function InlineMarks ({
   }, [disabledKeys, editor, marksShown, selectedKeys])
 }
 
-function useMemoStringified<T> (value: T): T {
+function useMemoStringified<T>(value: T): T {
   return useMemo(() => value, [JSON.stringify(value)])
 }
 
-function useEntryLayoutSplitPaneContext () {
-  return null 
+function useEntryLayoutSplitPaneContext() {
+  return null
 }
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {

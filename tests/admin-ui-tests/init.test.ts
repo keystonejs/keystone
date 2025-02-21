@@ -1,14 +1,5 @@
-import {
-  type Browser,
-  type Page,
-} from 'playwright'
-import {
-  adminUITests,
-  deleteAllData,
-  generateDataArray,
-  loadIndex,
-  makeGqlRequest
-} from './utils'
+import { type Browser, type Page } from 'playwright'
+import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any

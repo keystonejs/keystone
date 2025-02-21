@@ -1,0 +1,15 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 100,
+  "trailingComma": "es5",
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": ".changeset/*.md",
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}

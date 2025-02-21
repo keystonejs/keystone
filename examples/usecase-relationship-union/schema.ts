@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 
-function ifUnsetHideUI (field: string) {
+function ifUnsetHideUI(field: string) {
   return {
     itemView: {
       fieldMode: ({ item }: any) => (item[field] ? 'edit' : 'read'),
@@ -84,18 +84,22 @@ export const lists: Lists = {
         create: async ({ operation, inputData, addValidationError }) => {
           const { post, link } = inputData
           const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length === 0) return addValidationError('A media type relationship is required')
-          if (values.length > 1) return addValidationError('Only one media type relationship can be selected')
+          if (values.length === 0)
+            return addValidationError('A media type relationship is required')
+          if (values.length > 1)
+            return addValidationError('Only one media type relationship can be selected')
         },
         update: async ({ operation, inputData, addValidationError }) => {
           const { post, link } = inputData
-          if ([post, link].some(x => x?.disconnect)) return addValidationError('Cannot change media type relationship type')
+          if ([post, link].some(x => x?.disconnect))
+            return addValidationError('Cannot change media type relationship type')
 
           const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length > 1) return addValidationError('Only one media type relationship can be selected')
+          if (values.length > 1)
+            return addValidationError('Only one media type relationship can be selected')
 
           // TODO: prevent item from changing types with implicit disconnect
-        }
+        },
       },
       resolveInput: {
         update: async ({ context, operation, resolvedData }) => {

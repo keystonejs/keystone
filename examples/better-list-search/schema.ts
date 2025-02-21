@@ -28,9 +28,9 @@ export const lists = {
       searchFields: [
         'title',
         'author', // WARNING: results in searching by post.*.name
-        'tags',   //   this is quite powerful, but may load your database
-      ]
-    }
+        'tags', //   this is quite powerful, but may load your database
+      ],
+    },
   }),
 
   Author: list({
@@ -42,10 +42,8 @@ export const lists = {
     },
 
     ui: {
-      searchFields: [
-        'name',
-      ]
-    }
+      searchFields: ['name'],
+    },
   }),
 
   Tag: list({
@@ -58,9 +56,7 @@ export const lists = {
     },
 
     ui: {
-      searchFields: [
-        'name',
-      ]
-    }
+      searchFields: ['name'],
+    },
   }),
 } satisfies Lists

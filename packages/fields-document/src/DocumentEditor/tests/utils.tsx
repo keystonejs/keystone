@@ -1,21 +1,6 @@
-import {
-  type MutableRefObject,
-  type ReactElement,
-  createElement,
-  useState
-} from 'react'
-import {
-  type Node,
-  type Path,
-  Editor,
-  Range,
-  Text,
-} from 'slate'
-import {
-  Slate,
-  ReactEditor,
-  withReact,
-} from 'slate-react'
+import { type MutableRefObject, type ReactElement, createElement, useState } from 'react'
+import { type Node, type Path, Editor, Range, Text } from 'slate'
+import { Slate, ReactEditor, withReact } from 'slate-react'
 
 import React from 'react'
 import { act, render } from '@testing-library/react'
@@ -71,7 +56,7 @@ console.error = (...stuff: any[]) => {
   process.exit(1)
 }
 
-function formatEditor (editor: Node) {
+function formatEditor(editor: Node) {
   return prettyFormat(editor, {
     plugins: [plugins.ReactElement, editorSerializer as Plugin],
   })
@@ -88,7 +73,7 @@ declare global {
 }
 
 expect.extend({
-  toEqualEditor (received: Editor, expected: Editor) {
+  toEqualEditor(received: Editor, expected: Editor) {
     const options = {
       comment: 'Slate Editor equality',
       isNot: this.isNot,
@@ -170,7 +155,7 @@ export const defaultDocumentFeatures: DocumentFeatures = {
   layouts: [[1], [1, 1], [1, 1, 1], [1, 2, 1]],
 }
 
-function EditorComp ({
+function EditorComp({
   editor,
   componentBlocks,
   documentFeatures,
@@ -201,7 +186,7 @@ function EditorComp ({
   )
 }
 
-export function makeEditor (
+export function makeEditor(
   node: Node,
   {
     documentFeatures = defaultDocumentFeatures,
@@ -223,7 +208,7 @@ export function makeEditor (
   }
   const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships, {
     ReactEditor,
-    withReact
+    withReact,
   })
 
   // for validation
@@ -297,7 +282,7 @@ export function makeEditor (
 
 // we're converting the slate tree to react elements because Jest
 // knows how to pretty-print react elements in snapshots
-function nodeToReactElement (
+function nodeToReactElement(
   editor: Editor,
   node: Node,
   selection: Range | null,
@@ -352,7 +337,9 @@ function nodeToReactElement (
       ...marks,
     })
   }
-  const children = node.children.map((x, i) => nodeToReactElement(editor, x, selection, path.concat(i)))
+  const children = node.children.map((x, i) =>
+    nodeToReactElement(editor, x, selection, path.concat(i))
+  )
   if (Editor.isEditor(node)) {
     const config = (editor as any).__config
     validateAndNormalizeDocument(
@@ -369,7 +356,7 @@ function nodeToReactElement (
     })
   }
   const { type, ...restNode } = node
-  const computedData: { '@@isVoid'?: true, '@@isInline'?: true } = {}
+  const computedData: { '@@isVoid'?: true; '@@isInline'?: true } = {}
   if (editor.isVoid(node)) {
     computedData['@@isVoid'] = true
   }
@@ -384,10 +371,10 @@ function nodeToReactElement (
 }
 
 const editorSerializer: Parameters<typeof expect.addSnapshotSerializer>[0] = {
-  test (val) {
+  test(val) {
     return Editor.isEditor(val)
   },
-  serialize (val, config, indentation, depth, refs, printer) {
+  serialize(val, config, indentation, depth, refs, printer) {
     return printer(
       nodeToReactElement(val, val, val.selection, []),
       config,

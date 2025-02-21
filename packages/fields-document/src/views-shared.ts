@@ -1,13 +1,5 @@
-import type {
-  FieldController,
-  FieldControllerConfig,
-} from '@keystone-6/core/types'
-import {
-  type Descendant,
-  type Node,
-  Editor,
-  Text
-} from 'slate'
+import type { FieldController, FieldControllerConfig } from '@keystone-6/core/types'
+import { type Descendant, type Node, Editor, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
@@ -48,7 +40,7 @@ export type DocumentFeatures = {
   layouts: [number, ...number[]][]
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{
     relationships: Relationships
     documentFeatures: DocumentFeatures
@@ -80,9 +72,7 @@ export function controller (
   }
   const clientSideComponentBlocksSet = new Set(Object.keys(componentBlocks))
   const componentBlocksOnlyBeingPassedOnTheServer =
-    config.fieldMeta.componentBlocksPassedOnServer.filter(
-      x => !clientSideComponentBlocksSet.has(x)
-    )
+    config.fieldMeta.componentBlocksPassedOnServer.filter(x => !clientSideComponentBlocksSet.has(x))
   if (componentBlocksOnlyBeingPassedOnTheServer.length) {
     throw new Error(
       `(${config.listKey}:${
@@ -93,7 +83,9 @@ export function controller (
     )
   }
   const validateNode = weakMemoize((node: Node): boolean => {
-    if (Text.isText(node)) { return true }
+    if (Text.isText(node)) {
+      return true
+    }
     if (node.type === 'component-block') {
       const componentBlock = componentBlocks[node.component as string]
       if (componentBlock) {
@@ -134,7 +126,7 @@ export function controller (
     serialize: value => ({
       [config.path]: value,
     }),
-    validate (value) {
+    validate(value) {
       return value.every(node => validateNode(node))
     },
   }

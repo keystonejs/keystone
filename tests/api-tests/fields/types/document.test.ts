@@ -9,7 +9,7 @@ import { type ContextFromRunner, expectInternalServerError } from '../../utils'
 
 const runner = setupTestRunner({
   serve: true,
-  config: ({
+  config: {
     lists: {
       Post: list({
         access: allowAll,
@@ -53,7 +53,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 const initData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
@@ -108,7 +108,7 @@ const initData = async ({ context }: { context: ContextFromRunner<typeof runner>
     },
   ]
   const dave = await context.query.Author.createOne({ data: { name: 'Dave', bio } })
-  type T = { id: string, label?: string, data?: Record<string, any> | null }
+  type T = { id: string; label?: string; data?: Record<string, any> | null }
   const content = [
     {
       type: 'paragraph',

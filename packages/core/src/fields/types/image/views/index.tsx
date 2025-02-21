@@ -1,8 +1,5 @@
 import React from 'react'
-import type {
-  CellComponent,
-  FieldControllerConfig,
-} from '../../../../types'
+import type { CellComponent, FieldControllerConfig } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 
 export { Field } from './Field'
@@ -19,10 +16,7 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
         width: 24,
       }}
     >
-      <img
-        style={{ maxHeight: '100%', maxWidth: '100%' }}
-        src={value.url}
-      />
+      <img style={{ maxHeight: '100%', maxWidth: '100%' }} src={value.url} />
     </div>
   )
 }
@@ -48,9 +42,9 @@ export type ImageValue =
       }
       previous: ImageValue
     }
-  | { kind: 'remove', previous?: Exclude<ImageValue, { kind: 'remove' }> }
+  | { kind: 'remove'; previous?: Exclude<ImageValue, { kind: 'remove' }> }
 
-export function validateImage (extensions: string[], v: ImageValue) {
+export function validateImage(extensions: string[], v: ImageValue) {
   if (v.kind !== 'upload') return
   if (!v.data.validity.valid) return 'Something went wrong, please reload and try again.'
 
@@ -60,7 +54,7 @@ export function validateImage (extensions: string[], v: ImageValue) {
   }
 }
 
-export function controller (config: FieldControllerConfig) {
+export function controller(config: FieldControllerConfig) {
   return {
     path: config.path,
     label: config.label,
@@ -75,7 +69,7 @@ export function controller (config: FieldControllerConfig) {
     }`,
     defaultValue: { kind: 'empty' },
     extensions: SUPPORTED_IMAGE_EXTENSIONS,
-    deserialize (item: any): ImageValue {
+    deserialize(item: any): ImageValue {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -83,10 +77,10 @@ export function controller (config: FieldControllerConfig) {
         data: value,
       }
     },
-    validate (value: ImageValue): boolean {
+    validate(value: ImageValue): boolean {
       return validateImage(SUPPORTED_IMAGE_EXTENSIONS, value) === undefined
     },
-    serialize (value: ImageValue) {
+    serialize(value: ImageValue) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } }
       }

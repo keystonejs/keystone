@@ -15,7 +15,7 @@ export default defineConfig({
         '@keystone-6/core',
         '@keystone-6/core/context',
         '@keystone-6/core/fields',
-        'myprisma'
+        'myprisma',
       ],
     },
   },

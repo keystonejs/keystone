@@ -17,24 +17,16 @@ import type {
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
-import {
-  accessDeniedError,
-  accessReturnError,
-  extensionError
-} from './graphql-errors'
+import { accessDeniedError, accessReturnError, extensionError } from './graphql-errors'
 import type { InitialisedList } from './initialise-lists'
-import {
-  type InputFilter,
-  type UniqueInputFilter,
-  resolveUniqueWhereInput,
-} from './where-inputs'
+import { type InputFilter, type UniqueInputFilter, resolveUniqueWhereInput } from './where-inputs'
 
-export function cannotForItem (operation: string, list: InitialisedList) {
+export function cannotForItem(operation: string, list: InitialisedList) {
   if (operation === 'create') return `You cannot ${operation} that ${list.listKey}`
   return `You cannot ${operation} that ${list.listKey} - it may not exist`
 }
 
-export function cannotForItemFields (
+export function cannotForItemFields(
   operation: string,
   list: InitialisedList,
   fieldsDenied: string[]
@@ -42,7 +34,7 @@ export function cannotForItemFields (
   return `You cannot ${operation} that ${list.listKey} - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
 }
 
-export async function getOperationFieldAccess (
+export async function getOperationFieldAccess(
   item: BaseItem,
   list: InitialisedList,
   fieldKey: string,
@@ -75,7 +67,7 @@ export async function getOperationFieldAccess (
   return result
 }
 
-export async function getOperationAccess (
+export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'query' | 'create' | 'update' | 'delete'
@@ -88,30 +80,28 @@ export async function getOperationAccess (
         operation,
         session: context.session,
         listKey,
-        context
+        context,
       })
     } else if (operation === 'create') {
       result = await list.access.operation.create({
         operation,
         session: context.session,
         listKey,
-        context
+        context,
       })
-
     } else if (operation === 'update') {
       result = await list.access.operation.update({
         operation,
         session: context.session,
         listKey,
-        context
+        context,
       })
-
     } else if (operation === 'delete') {
       result = await list.access.operation.delete({
         operation,
         session: context.session,
         listKey,
-        context
+        context,
       })
     }
   } catch (error: any) {
@@ -129,7 +119,7 @@ export async function getOperationAccess (
   return result
 }
 
-export async function getAccessFilters (
+export async function getAccessFilters(
   list: InitialisedList,
   context: KeystoneContext,
   operation: keyof typeof list.access.filter
@@ -174,12 +164,12 @@ export async function getAccessFilters (
   }
 }
 
-export async function enforceListLevelAccessControl (
+export async function enforceListLevelAccessControl(
   context: KeystoneContext,
   operation: 'create' | 'update' | 'delete',
   list: InitialisedList,
   inputData: Record<string, unknown>,
-  item: BaseItem | undefined,
+  item: BaseItem | undefined
 ) {
   let accepted: unknown // should be boolean, but dont trust, it might accidentally be a filter
   try {
@@ -234,16 +224,16 @@ export async function enforceListLevelAccessControl (
   throw accessDeniedError(cannotForItem(operation, list))
 }
 
-export async function enforceFieldLevelAccessControl (
+export async function enforceFieldLevelAccessControl(
   context: KeystoneContext,
   operation: 'create' | 'update',
   list: InitialisedList,
   inputData: Record<string, unknown>,
-  item: BaseItem | undefined,
+  item: BaseItem | undefined
 ) {
-  const nonBooleans: { tag: string, returned: string }[] = []
+  const nonBooleans: { tag: string; returned: string }[] = []
   const fieldsDenied: string[] = []
-  const accessErrors: { error: Error, tag: string }[] = []
+  const accessErrors: { error: Error; tag: string }[] = []
 
   await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {
@@ -310,14 +300,14 @@ export type ResolvedFieldAccessControl = {
   update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
 }
 
-export function parseFieldAccessControl (
+export function parseFieldAccessControl(
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'function') {
     return {
       read: access,
       create: access,
-      update: access
+      update: access,
     }
   }
 
@@ -349,7 +339,7 @@ export type ResolvedListAccessControl = {
   }
 }
 
-export function parseListAccessControl (
+export function parseListAccessControl(
   access: ListAccessControl<BaseListTypeInfo>
 ): ResolvedListAccessControl {
   if (typeof access === 'function') {
@@ -405,7 +395,7 @@ export function parseListAccessControl (
   }
 }
 
-export async function checkUniqueItemExists (
+export async function checkUniqueItemExists(
   uniqueInput: UniqueInputFilter,
   foreignList: InitialisedList,
   context: KeystoneContext,

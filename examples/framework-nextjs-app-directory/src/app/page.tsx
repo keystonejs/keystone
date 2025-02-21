@@ -2,7 +2,7 @@ import React from 'react'
 import { keystoneContext } from '../keystone/context'
 import { DocumentRender } from './DocumentRender'
 
-export default async function HomePage () {
+export default async function HomePage() {
   // WARNING: this does nothing for now
   //   you will probably use getServerSession from 'next/auth'
   //   https://next-auth.js.org/configuration/nextjs#in-app-directory

@@ -14,7 +14,7 @@ const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
 
 let _keystoneContext: Context = (globalThis as any)._keystoneContext
 
-async function getKeystoneContext () {
+async function getKeystoneContext() {
   if (_keystoneContext) return _keystoneContext
 
   // TODO: this could probably be better
@@ -26,7 +26,7 @@ async function getKeystoneContext () {
     // await import('@prisma/client') // <-- do this
   )
   if (process.env.NODE_ENV !== 'production') {
-    (globalThis as any)._keystoneContext = _keystoneContext
+    ;(globalThis as any)._keystoneContext = _keystoneContext
   }
   return _keystoneContext
 }
@@ -35,7 +35,7 @@ async function getKeystoneContext () {
 export const nextAuthOptions = {
   secret: sessionSecret,
   callbacks: {
-    async signIn ({ user }: { user: DefaultUser }) {
+    async signIn({ user }: { user: DefaultUser }) {
       // console.error('next-auth signIn', { user, account, profile });
       const sudoContext = (await getKeystoneContext()).sudo()
 
@@ -57,7 +57,7 @@ export const nextAuthOptions = {
       return true // accept the signin
     },
 
-    async session ({
+    async session({
       session,
       token,
     }: {
@@ -87,7 +87,7 @@ export type Session = {
 }
 
 export const nextAuthSessionStrategy = {
-  async get ({ context }: { context: Context }) {
+  async get({ context }: { context: Context }) {
     const { req, res } = context
     const { headers } = req ?? {}
     if (!headers?.cookie || !res) return
@@ -118,6 +118,6 @@ export const nextAuthSessionStrategy = {
   },
 
   // we don't need these as next-auth handle start and end for us
-  async start () {},
-  async end () {},
+  async start() {},
+  async end() {},
 }

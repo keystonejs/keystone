@@ -1,18 +1,8 @@
-import {
-  assertInputObjectType,
-  GraphQLString,
-  GraphQLID,
-  parse,
-  validate,
-} from 'graphql'
+import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql'
 
 import { g } from '@keystone-6/core'
 import { getGqlNames } from '@keystone-6/core/types'
-import type {
-  AuthGqlNames,
-  AuthTokenTypeConfig,
-  InitFirstItemConfig,
-} from './types'
+import type { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
 
@@ -34,7 +24,9 @@ export const getSchemaExtension = ({
   sessionData: string
 }) =>
   g.extend(base => {
-    const uniqueWhereInputType = assertInputObjectType(base.schema.getType(`${listKey}WhereUniqueInput`))
+    const uniqueWhereInputType = assertInputObjectType(
+      base.schema.getType(`${listKey}WhereUniqueInput`)
+    )
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (
       base.schema.extensions.sudo &&
@@ -67,12 +59,16 @@ export const getSchemaExtension = ({
     try {
       ast = parse(query)
     } catch (err) {
-      throw new Error(`The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`)
+      throw new Error(
+        `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`
+      )
     }
 
     const errors = validate(base.schema, ast)
     if (errors.length) {
-      throw new Error(`The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join('\n')}`)
+      throw new Error(
+        `The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join('\n')}`
+      )
     }
 
     return [

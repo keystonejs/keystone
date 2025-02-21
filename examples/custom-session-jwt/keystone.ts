@@ -14,7 +14,7 @@ type OurJWTClaims = {
   id: string
 }
 
-async function jwtSign (claims: OurJWTClaims) {
+async function jwtSign(claims: OurJWTClaims) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       claims,
@@ -30,7 +30,7 @@ async function jwtSign (claims: OurJWTClaims) {
   })
 }
 
-async function jwtVerify (token: string): Promise<OurJWTClaims | null> {
+async function jwtVerify(token: string): Promise<OurJWTClaims | null> {
   return new Promise(resolve => {
     jwt.verify(
       token,
@@ -49,7 +49,7 @@ async function jwtVerify (token: string): Promise<OurJWTClaims | null> {
 }
 
 const jwtSessionStrategy = {
-  async get ({ context }: { context: Context }): Promise<Session | undefined> {
+  async get({ context }: { context: Context }): Promise<Session | undefined> {
     if (!context.req) return
 
     const { cookie = '' } = context.req.headers
@@ -72,8 +72,8 @@ const jwtSessionStrategy = {
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start () {},
-  async end () {},
+  async start() {},
+  async end() {},
 }
 
 export default config<TypeInfo>({

@@ -17,15 +17,21 @@ type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig
   maxStars?: number
 }
 
-export function stars <ListTypeInfo extends BaseListTypeInfo> ({
+export function stars<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
   maxStars = 5,
   ...config
 }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  const validateCreate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.create
-  const validateUpdate = typeof config.hooks?.validate === 'function' ? config.hooks.validate : config.hooks?.validate?.update
+  const validateCreate =
+    typeof config.hooks?.validate === 'function'
+      ? config.hooks.validate
+      : config.hooks?.validate?.create
+  const validateUpdate =
+    typeof config.hooks?.validate === 'function'
+      ? config.hooks.validate
+      : config.hooks?.validate?.update
 
-  function validate (v: unknown) {
+  function validate(v: unknown) {
     if (v === null) return
     if (typeof v === 'number' && v >= 0 && v <= maxStars) return
     return `The value must be within the range of 0-${maxStars}`
@@ -47,17 +53,17 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
         // This hook is the key difference on the backend between the stars field type and the integer field type.
         validate: {
           ...config.hooks?.validate,
-          async create (args) {
+          async create(args) {
             const err = validate(args.resolvedData[meta.fieldKey])
             if (err) args.addValidationError(err)
             await validateCreate?.(args)
           },
-          async update (args) {
+          async update(args) {
             const err = validate(args.resolvedData[meta.fieldKey])
             if (err) args.addValidationError(err)
             await validateUpdate?.(args)
-          }
-        }        
+          },
+        },
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
@@ -66,7 +72,7 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
           // this field type doesn't need to do anything special
           // but field types can specify resolvers for inputs like they can for their output GraphQL field
           // this function can be omitted, it is here purely to show how you could change it
-          resolve (val, context) {
+          resolve(val, context) {
             // if it's null, then the value will be set to null in the database
             if (val === null) return null
             // if it's undefined(which means that it was omitted in the request)
@@ -85,12 +91,12 @@ export function stars <ListTypeInfo extends BaseListTypeInfo> ({
         type: g.Int,
         // like the input resolvers, providing the resolver is unnecessary if you're just returning the value
         // it is shown here to show what you could do
-        resolve ({ value, item }, args, context, info) {
+        resolve({ value, item }, args, context, info) {
           return value
         },
       }),
       views: './2-stars-field/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return { maxStars }
       },
     })

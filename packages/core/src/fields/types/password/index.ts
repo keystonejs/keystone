@@ -18,7 +18,7 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     validation?: {
       isRequired?: boolean
       rejectCommon?: boolean
-      match?: { regex: RegExp, explanation?: string }
+      match?: { regex: RegExp; explanation?: string }
       length?: {
         /** @default 8 */
         min?: number
@@ -52,87 +52,92 @@ const PasswordFilter = g.inputObject({
   },
 })
 
-export function password <ListTypeInfo extends BaseListTypeInfo> (config: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+export function password<ListTypeInfo extends BaseListTypeInfo>(
+  config: PasswordFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
   const {
     kdf = {
-      hash: (secret) => {
+      hash: secret => {
         // note this is slightly different to checking .length > 72 because
         // bcrypt will truncate to 72 bytes after utf8 encoding
         // not JS string length which may be different since that's the utf16 length
         // (though using characters in the error message makes sense since users shouldn't have to think about bytes and it aligns with the validation messages below)
-        if (bcryptjs.truncates(secret)) throw new Error('value must be no longer than 72 characters')
-        return bcryptjs.hash(secret, 10) 
+        if (bcryptjs.truncates(secret))
+          throw new Error('value must be no longer than 72 characters')
+        return bcryptjs.hash(secret, 10)
       },
       compare: (secret, hash) => bcryptjs.compare(secret, hash),
     },
     validation = {},
   } = config
-  const {
-    isRequired = false,
-    rejectCommon = false,
-    match,
-    length: {
-      max
-    } = {},
-  } = validation
-  const min = isRequired ? validation.length?.min ?? 8 : validation.length?.min
+  const { isRequired = false, rejectCommon = false, match, length: { max } = {} } = validation
+  const min = isRequired ? (validation.length?.min ?? 8) : validation.length?.min
 
-  return (meta) => {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type password")
     }
     if (min !== undefined && (!Number.isInteger(min) || min < 0)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.length.min: ${min} but it must be a positive integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.length.min: ${min} but it must be a positive integer`
+      )
     }
     if (max !== undefined && (!Number.isInteger(max) || max < 0)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.length.max: ${max} but it must be a positive integer`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.length.max: ${max} but it must be a positive integer`
+      )
     }
     if (isRequired && min !== undefined && min === 0) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.min: 0, this is not allowed because validation.isRequired implies at least a min length of 1`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.min: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
+      )
     }
     if (isRequired && max !== undefined && max === 0) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.max: 0, this is not allowed because validation.isRequired implies at least a max length of 1`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.max: 0, this is not allowed because validation.isRequired implies at least a max length of 1`
+      )
     }
-    if (
-      min !== undefined &&
-      max !== undefined &&
-      min > max
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`)
+    if (min !== undefined && max !== undefined && min > max) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+      )
     }
 
-    function inputResolver (val: string | null | undefined) {
+    function inputResolver(val: string | null | undefined) {
       if (val == null) return val
       return kdf.hash(val)
     }
 
     const hasAdditionalValidation = match || rejectCommon || min !== undefined || max !== undefined
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ inputData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      hasAdditionalValidation
+        ? ({ inputData, operation, addValidationError }) => {
+            if (operation === 'delete') return
 
-      const value = inputData[meta.fieldKey] // we use inputData, as resolveData is hashed
-      if (value != null) {
-        if (min !== undefined && value.length < min) {
-          if (min === 1) {
-            addValidationError(`value must not be empty`)
-          } else {
-            addValidationError(`value must be at least ${min} characters long`)
+            const value = inputData[meta.fieldKey] // we use inputData, as resolveData is hashed
+            if (value != null) {
+              if (min !== undefined && value.length < min) {
+                if (min === 1) {
+                  addValidationError(`value must not be empty`)
+                } else {
+                  addValidationError(`value must be at least ${min} characters long`)
+                }
+              }
+              if (max !== undefined && value.length > max) {
+                addValidationError(`value must be no longer than ${max} characters`)
+              }
+              if (match && !match.regex.test(value)) {
+                addValidationError(match.explanation ?? `value must match ${match.regex}`)
+              }
+              if (rejectCommon && dumbPasswords.check(value)) {
+                addValidationError(`value is too common and is not allowed`)
+              }
+            }
           }
-        }
-        if (max !== undefined && value.length > max) {
-          addValidationError(`value must be no longer than ${max} characters`)
-        }
-        if (match && !match.regex.test(value)) {
-          addValidationError(match.explanation ?? `value must match ${match.regex}`)
-        }
-        if (rejectCommon && dumbPasswords.check(value)) {
-          addValidationError(`value is too common and is not allowed`)
-        }
-      }
-    } : undefined)
+        : undefined
+    )
 
     return fieldType({
       kind: 'scalar',
@@ -144,7 +149,7 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         where:
@@ -152,7 +157,7 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
             ? undefined
             : {
                 arg: g.arg({ type: PasswordFilter }),
-                resolve (val) {
+                resolve(val) {
                   if (val === null) throw userInputError('Password filters cannot be set to null')
                   if (val.isSet) return { not: null }
                   return null
@@ -160,7 +165,7 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
               },
         create: {
           arg: g.arg({ type: g.String }),
-          resolve (val) {
+          resolve(val) {
             if (val === undefined) return null
             return inputResolver(val)
           },
@@ -177,22 +182,24 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
         validation: {
           isRequired,
           rejectCommon,
-          match: match ? {
-            regex: {
-              source: match.regex.source,
-              flags: match.regex.flags,
-            },
-            explanation: match.explanation ?? `value must match ${match.regex}`,
-          } : null,
+          match: match
+            ? {
+                regex: {
+                  source: match.regex.source,
+                  flags: match.regex.flags,
+                },
+                explanation: match.explanation ?? `value must match ${match.regex}`,
+              }
+            : null,
           length: {
             max: max ?? null,
-            min: min ?? 8
+            min: min ?? 8,
           },
         },
       }),
       output: g.field({
         type: PasswordState,
-        resolve (val) {
+        resolve(val) {
           return { isSet: val.value !== null }
         },
         extensions: {
@@ -203,8 +210,11 @@ export function password <ListTypeInfo extends BaseListTypeInfo> (config: Passwo
   }
 }
 
-
-export function getPasswordFieldKDF (schema: GraphQLSchema, listKey: string, fieldKey: string): KDF | null {
+export function getPasswordFieldKDF(
+  schema: GraphQLSchema,
+  listKey: string,
+  fieldKey: string
+): KDF | null {
   const gqlOutputType = schema.getType(listKey)
   if (!isObjectType(gqlOutputType)) return null
   const passwordField = gqlOutputType.getFields()[fieldKey]

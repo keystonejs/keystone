@@ -14,23 +14,11 @@ import type {
   FieldTypeFunc,
 } from '../../types'
 import { QueryMode } from '../../types'
-import {
-  type GraphQLNames,
-  __getNames,
-} from '../../types/utils'
+import { type GraphQLNames, __getNames } from '../../types/utils'
 import { g } from '../..'
-import type {
-  FieldHooks,
-  ResolvedListHooks,
-  ResolvedFieldHooks
-} from '../../types/config/hooks'
-import {
-  Empty,
-} from '../../types/schema/graphql-ts-schema'
-import type {
-  MaybeItemFunction,
-  MaybeSessionFunction
-} from '../../types/config/lists'
+import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks'
+import { Empty } from '../../types/schema/graphql-ts-schema'
+import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
@@ -38,10 +26,7 @@ import {
   parseFieldAccessControl,
 } from './access-control'
 import { areArraysEqual } from './utils'
-import {
-  type ResolvedDBField,
-  resolveRelationships
-} from './resolve-relationships'
+import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
@@ -134,7 +119,7 @@ export type InitialisedList = {
   }
 
   ui: {
-    labels: { label: string, singular: string, plural: string, path: string }
+    labels: { label: string; singular: string; plural: string; path: string }
     labelField: string
     searchFields: Set<string>
     searchableFields: Map<string, 'default' | 'insensitive' | null>
@@ -144,9 +129,11 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
 }
 
-function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
+function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return
-  throw new Error(`Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`)
+  throw new Error(
+    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`
+  )
 }
 
 type ListConfigType = KeystoneConfig['lists'][string]
@@ -154,12 +141,9 @@ type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
-function getIsEnabled (listKey: string, listConfig: ListConfigType) {
+function getIsEnabled(listKey: string, listConfig: ListConfigType) {
   const omit = listConfig.graphql?.omit ?? false
-  const {
-    defaultIsFilterable = true,
-    defaultIsOrderable = true
-  } = listConfig
+  const { defaultIsFilterable = true, defaultIsOrderable = true } = listConfig
 
   // TODO: check types in initConfig
   throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
@@ -189,7 +173,12 @@ function getIsEnabled (listKey: string, listConfig: ListConfigType) {
   }
 }
 
-function getIsEnabledField (f: FieldConfigType, listKey: string, list: PartiallyInitialisedList1, lists: Record<string, PartiallyInitialisedList1>) {
+function getIsEnabledField(
+  f: FieldConfigType,
+  listKey: string,
+  list: PartiallyInitialisedList1,
+  lists: Record<string, PartiallyInitialisedList1>
+) {
   const omit = f.graphql?.omit ?? false
   const {
     isFilterable = list.graphql.isEnabled.filter,
@@ -235,15 +224,21 @@ function getIsEnabledField (f: FieldConfigType, listKey: string, list: Partially
   }
 }
 
-function defaultListHooksResolveInput ({ resolvedData }: { resolvedData: any }) {
+function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
   return resolvedData
 }
 
-function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
+function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: {
-      create: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.create ?? defaultListHooksResolveInput,
-      update: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.update ?? defaultListHooksResolveInput,
+      create:
+        typeof hooks.resolveInput === 'function'
+          ? hooks.resolveInput
+          : (hooks.resolveInput?.create ?? defaultListHooksResolveInput),
+      update:
+        typeof hooks.resolveInput === 'function'
+          ? hooks.resolveInput
+          : (hooks.resolveInput?.update ?? defaultListHooksResolveInput),
     },
     validate: expandVoidHooks(hooks.validate),
     beforeOperation: expandVoidHooks(hooks.beforeOperation),
@@ -251,7 +246,7 @@ function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<
   }
 }
 
-function defaultFieldHooksResolveInput ({
+function defaultFieldHooksResolveInput({
   resolvedData,
   fieldKey,
 }: {
@@ -261,13 +256,19 @@ function defaultFieldHooksResolveInput ({
   return resolvedData[fieldKey]
 }
 
-function parseFieldHooks (
-  hooks: FieldHooks<BaseListTypeInfo>,
+function parseFieldHooks(
+  hooks: FieldHooks<BaseListTypeInfo>
 ): ResolvedFieldHooks<BaseListTypeInfo> {
   return {
     resolveInput: {
-      create: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.create ?? defaultFieldHooksResolveInput,
-      update: typeof hooks.resolveInput === 'function' ? hooks.resolveInput : hooks.resolveInput?.update ?? defaultFieldHooksResolveInput,
+      create:
+        typeof hooks.resolveInput === 'function'
+          ? hooks.resolveInput
+          : (hooks.resolveInput?.create ?? defaultFieldHooksResolveInput),
+      update:
+        typeof hooks.resolveInput === 'function'
+          ? hooks.resolveInput
+          : (hooks.resolveInput?.update ?? defaultFieldHooksResolveInput),
     },
     validate: expandVoidHooks(hooks.validate),
     beforeOperation: expandVoidHooks(hooks.beforeOperation),
@@ -275,19 +276,25 @@ function parseFieldHooks (
   }
 }
 
-function getListsWithInitialisedFields (
+function getListsWithInitialisedFields(
   config: KeystoneConfig,
-  listsRef: Record<string, InitialisedList>,
+  listsRef: Record<string, InitialisedList>
 ) {
-  const { storage: configStorage, lists: listsConfig, db: { provider } } = config
-  const intermediateLists = Object.fromEntries(Object.values(config.lists).map((listConfig) => [
-    listConfig.listKey,
-    {
-      graphql: {
-        isEnabled: getIsEnabled(listConfig.listKey, listConfig)
-      }
-    },
-  ]))
+  const {
+    storage: configStorage,
+    lists: listsConfig,
+    db: { provider },
+  } = config
+  const intermediateLists = Object.fromEntries(
+    Object.values(config.lists).map(listConfig => [
+      listConfig.listKey,
+      {
+        graphql: {
+          isEnabled: getIsEnabled(listConfig.listKey, listConfig),
+        },
+      },
+    ])
+  )
 
   const listGraphqlTypes: Record<string, ListGraphQLTypes> = {}
 
@@ -307,7 +314,8 @@ function getListsWithInitialisedFields (
               if (
                 !field.output ||
                 !field.graphql.isEnabled.read ||
-                (field.dbField.kind === 'relation' && !intermediateLists[field.dbField.list].graphql.isEnabled.query)
+                (field.dbField.kind === 'relation' &&
+                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
               ) {
                 return []
               }
@@ -452,7 +460,7 @@ function getListsWithInitialisedFields (
       take,
       skip: g.arg({
         type: g.nonNull(g.Int),
-        defaultValue: 0
+        defaultValue: 0,
       }),
       cursor: g.arg({ type: uniqueWhere }),
     }
@@ -463,7 +471,7 @@ function getListsWithInitialisedFields (
         const listRef = listsRef[listKey]
         return {
           ...(listRef.graphql.isEnabled.create && {
-            create: g.arg({ type: listRef.graphql.types.create })
+            create: g.arg({ type: listRef.graphql.types.create }),
           }),
           connect: g.arg({ type: listRef.graphql.types.uniqueWhere }),
         }
@@ -476,7 +484,7 @@ function getListsWithInitialisedFields (
         const listRef = listsRef[listKey]
         return {
           ...(listRef.graphql.isEnabled.create && {
-            create: g.arg({ type: listRef.graphql.types.create })
+            create: g.arg({ type: listRef.graphql.types.create }),
           }),
           connect: g.arg({ type: listRef.graphql.types.uniqueWhere }),
           disconnect: g.arg({ type: g.Boolean }),
@@ -491,11 +499,11 @@ function getListsWithInitialisedFields (
         return {
           ...(listRef.graphql.isEnabled.create && {
             create: g.arg({
-              type: g.list(g.nonNull(listRef.graphql.types.create))
+              type: g.list(g.nonNull(listRef.graphql.types.create)),
             }),
           }),
           connect: g.arg({
-            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)),
           }),
         }
       },
@@ -508,10 +516,10 @@ function getListsWithInitialisedFields (
         return {
           // WARNING: the order of these fields reflects the order of mutations
           disconnect: g.arg({
-            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)),
           }),
           set: g.arg({
-            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere))
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)),
           }),
           ...(listRef.graphql.isEnabled.create && {
             create: g.arg({ type: g.list(g.nonNull(listRef.graphql.types.create)) }),
@@ -533,7 +541,7 @@ function getListsWithInitialisedFields (
         relateTo: {
           one: {
             create: relateToOneForCreate,
-            update: relateToOneForUpdate
+            update: relateToOneForUpdate,
           },
           many: {
             where: g.inputObject({
@@ -592,7 +600,8 @@ function getListsWithInitialisedFields (
 
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
       const fieldModes = {
-        create: f.ui?.createView?.fieldMode ?? listConfig.ui?.createView?.defaultFieldMode ?? 'edit',
+        create:
+          f.ui?.createView?.fieldMode ?? listConfig.ui?.createView?.defaultFieldMode ?? 'edit',
         item: f.ui?.itemView?.fieldMode ?? listConfig.ui?.itemView?.defaultFieldMode ?? 'edit',
         list: f.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read',
       }
@@ -607,9 +616,18 @@ function getListsWithInitialisedFields (
           cacheHint: f.graphql?.cacheHint,
           isEnabled: isEnabledField,
           isNonNull: {
-            read: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.read ?? false,
-            create: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.create ?? false,
-            update: typeof f.graphql?.isNonNull === 'boolean' ? f.graphql.isNonNull : f.graphql?.isNonNull?.update ?? false,
+            read:
+              typeof f.graphql?.isNonNull === 'boolean'
+                ? f.graphql.isNonNull
+                : (f.graphql?.isNonNull?.read ?? false),
+            create:
+              typeof f.graphql?.isNonNull === 'boolean'
+                ? f.graphql.isNonNull
+                : (f.graphql?.isNonNull?.create ?? false),
+            update:
+              typeof f.graphql?.isNonNull === 'boolean'
+                ? f.graphql.isNonNull
+                : (f.graphql?.isNonNull?.update ?? false),
           },
         },
         ui: {
@@ -640,7 +658,8 @@ function getListsWithInitialisedFields (
         getAdminMeta: f.getAdminMeta,
         input: { ...f.input },
         output: { ...f.output },
-        unreferencedConcreteInterfaceImplementations: f.unreferencedConcreteInterfaceImplementations,
+        unreferencedConcreteInterfaceImplementations:
+          f.unreferencedConcreteInterfaceImplementations,
         views: f.views,
       }
     }
@@ -651,10 +670,10 @@ function getListsWithInitialisedFields (
       (listConfig.fields.label
         ? 'label'
         : listConfig.fields.name
-        ? 'name'
-        : listConfig.fields.title
-        ? 'title'
-        : 'id')
+          ? 'name'
+          : listConfig.fields.title
+            ? 'title'
+            : 'id')
 
     const searchFields = new Set(listConfig.ui?.searchFields ?? [])
     if (searchFields.has('id')) {
@@ -710,7 +729,7 @@ function getListsWithInitialisedFields (
   return result
 }
 
-function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
+function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   const namesOfRelationInputs = new Set<string>()
   for (const list of Object.values(lists)) {
     const { types } = list.graphql
@@ -724,7 +743,9 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
     } = list
 
     if (searchFields.has('id')) {
-      throw new Error(`The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`)
+      throw new Error(
+        `The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
+      )
     }
 
     const whereInputFields = list.graphql.types.where.graphQLType.getFields()
@@ -737,7 +758,11 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
           fieldKey,
           fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
         )
-      } else if (field.dbField.kind === 'relation' && filterTypeName !== undefined && namesOfRelationInputs.has(filterTypeName)) {
+      } else if (
+        field.dbField.kind === 'relation' &&
+        filterTypeName !== undefined &&
+        namesOfRelationInputs.has(filterTypeName)
+      ) {
         searchableFields.set(fieldKey, 'default')
       }
     }
@@ -750,14 +775,18 @@ function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
   }
 }
 
-function stripDefaultValue (thing: g.Arg<g.InputType, boolean>) {
+function stripDefaultValue(thing: g.Arg<g.InputType, boolean>) {
   return g.arg({
     ...thing,
     defaultValue: undefined,
   })
 }
 
-function graphqlArgForInputField (field: InitialisedField, operation: 'create' | 'update', listsRef: Record<string, InitialisedList>) {
+function graphqlArgForInputField(
+  field: InitialisedField,
+  operation: 'create' | 'update',
+  listsRef: Record<string, InitialisedList>
+) {
   const input = field.input?.[operation]
   if (!input?.arg || !field.graphql.isEnabled[operation]) return
   if (field.dbField.kind === 'relation') {
@@ -772,7 +801,7 @@ function graphqlArgForInputField (field: InitialisedField, operation: 'create' |
   })
 }
 
-function graphqlForOutputField (field: InitialisedField) {
+function graphqlForOutputField(field: InitialisedField) {
   const output = field.output
   if (!output || !field.graphql.isEnabled.read) return output
   if (!field.graphql.isNonNull.read) return output
@@ -784,7 +813,7 @@ function graphqlForOutputField (field: InitialisedField) {
   })
 }
 
-export function initialiseLists (config: KeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
 
@@ -793,27 +822,31 @@ export function initialiseLists (config: KeystoneConfig): Record<string, Initial
 
   // step 2
   const resolvedDBFieldsForLists = resolveRelationships(intermediateLists)
-  intermediateLists = Object.fromEntries(Object.values(intermediateLists).map((list) => [
-    list.listKey,
-    {
-      ...list,
-      resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
-    },
-  ]))
+  intermediateLists = Object.fromEntries(
+    Object.values(intermediateLists).map(list => [
+      list.listKey,
+      {
+        ...list,
+        resolvedDbFields: resolvedDBFieldsForLists[list.listKey],
+      },
+    ])
+  )
 
   // step 3
-  intermediateLists = Object.fromEntries(Object.values(intermediateLists).map((list) => {
-    const fields: Record<string, InitialisedField> = {}
+  intermediateLists = Object.fromEntries(
+    Object.values(intermediateLists).map(list => {
+      const fields: Record<string, InitialisedField> = {}
 
-    for (const [fieldKey, field] of Object.entries(list.fields)) {
-      fields[fieldKey] = {
-        ...field,
-        dbField: list.resolvedDbFields[fieldKey],
+      for (const [fieldKey, field] of Object.entries(list.fields)) {
+        fields[fieldKey] = {
+          ...field,
+          dbField: list.resolvedDbFields[fieldKey],
+        }
       }
-    }
 
-    return [list.listKey, { ...list, fields }]
-  }))
+      return [list.listKey, { ...list, fields }]
+    })
+  )
 
   for (const list of Object.values(intermediateLists)) {
     let hasAnEnabledCreateField = false

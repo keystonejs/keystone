@@ -30,25 +30,25 @@ type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent }
 
 interface Renderers {
   inline: {
-    link: Component<{ children: ReactNode, href: string }> | 'a'
+    link: Component<{ children: ReactNode; href: string }> | 'a'
     relationship: Component<{
       relationship: string
-      data: { id: string, label: string | undefined, data: Record<string, any> | undefined } | null
+      data: { id: string; label: string | undefined; data: Record<string, any> | undefined } | null
     }>
   } & MarkRenderers
   block: {
     block: OnlyChildrenComponent
-    paragraph: Component<{ children: ReactNode, textAlign: 'center' | 'end' | undefined }>
+    paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>
     blockquote: OnlyChildrenComponent
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements
-    layout: Component<{ layout: [number, ...number[]], children: ReactElement[] }>
+    layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>
     divider: Component<unknown> | keyof JSX.IntrinsicElements
     heading: Component<{
       level: 1 | 2 | 3 | 4 | 5 | 6
       children: ReactNode
       textAlign: 'center' | 'end' | undefined
     }>
-    list: Component<{ type: 'ordered' | 'unordered', children: ReactElement[] }>
+    list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>
   }
 }
 
@@ -106,7 +106,7 @@ export const defaultRenderers: Renderers = {
   },
 }
 
-function DocumentNode ({
+function DocumentNode({
   node: _node,
   componentBlocks,
   renderers,
@@ -117,8 +117,8 @@ function DocumentNode ({
   componentBlocks: Record<string, Component<any>>
 }): ReactElement {
   if (typeof _node.text === 'string') {
-    let child = <Fragment>{_node.text}</Fragment>;
-    (Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
+    let child = <Fragment>{_node.text}</Fragment>
+    ;(Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
       if (markName !== 'link' && markName !== 'relationship' && _node[markName]) {
         const Mark = renderers.inline[markName]
         child = <Mark>{child}</Mark>
@@ -200,7 +200,7 @@ function DocumentNode ({
   return <Fragment>{children}</Fragment>
 }
 
-function set (obj: Record<string, any>, propPath: (string | number)[], value: any) {
+function set(obj: Record<string, any>, propPath: (string | number)[], value: any) {
   if (propPath.length === 1) {
     obj[propPath[0]] = value
   } else {
@@ -209,7 +209,7 @@ function set (obj: Record<string, any>, propPath: (string | number)[], value: an
   }
 }
 
-function createComponentBlockProps (node: Element, children: ReactElement[]) {
+function createComponentBlockProps(node: Element, children: ReactElement[]) {
   const formProps = JSON.parse(JSON.stringify(node.props))
   node.children.forEach((child, i) => {
     if (child.propPath) {
@@ -221,14 +221,14 @@ function createComponentBlockProps (node: Element, children: ReactElement[]) {
 }
 
 export type DocumentRendererProps<
-  ComponentBlocks extends Record<string, Component<any>> = Record<string, Component<any>>
+  ComponentBlocks extends Record<string, Component<any>> = Record<string, Component<any>>,
 > = {
   document: Element[]
-  renderers?: { inline?: Partial<Renderers['inline']>, block?: Partial<Renderers['block']> }
+  renderers?: { inline?: Partial<Renderers['inline']>; block?: Partial<Renderers['block']> }
   componentBlocks?: ComponentBlocks
 }
 
-export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>> (
+export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>>(
   props: DocumentRendererProps<ComponentBlocks>
 ) {
   const renderers = {

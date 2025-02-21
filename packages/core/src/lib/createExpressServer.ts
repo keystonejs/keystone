@@ -1,24 +1,15 @@
-import {
-  type Server,
-  createServer,
-} from 'http'
+import { type Server, createServer } from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
 import { GraphQLError, type GraphQLFormattedError } from 'graphql'
-import {
-  type ApolloServerOptions,
-  ApolloServer,
-} from '@apollo/server'
+import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type {
-  KeystoneContext,
-  KeystoneConfig,
-} from '../types'
+import type { KeystoneContext, KeystoneConfig } from '../types'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -28,7 +19,7 @@ The Admin UI takes a while to build for dev, and is created separately
 so the CLI can bring up the dev server early to handle GraphQL requests.
 */
 
-function formatError (graphqlConfig: KeystoneConfig['graphql']) {
+function formatError(graphqlConfig: KeystoneConfig['graphql']) {
   let debug = graphqlConfig.debug
   if (debug === undefined) {
     debug = process.env.NODE_ENV !== 'production'
@@ -41,7 +32,7 @@ function formatError (graphqlConfig: KeystoneConfig['graphql']) {
           ...formattedError.extensions,
           code: 'KS_PRISMA_ERROR',
         },
-        message: 'Prisma error'
+        message: 'Prisma error',
       }
     }
 
@@ -59,7 +50,7 @@ function formatError (graphqlConfig: KeystoneConfig['graphql']) {
   }
 }
 
-export async function createExpressServer (
+export async function createExpressServer(
   config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
   context: KeystoneContext
 ): Promise<{
@@ -83,7 +74,7 @@ export async function createExpressServer (
       expressServer.use(
         val.serverRoute.path,
         express.static(val.storagePath, {
-          setHeaders (res) {
+          setHeaders(res) {
             if (val.type === 'file') {
               res.setHeader('Content-Type', 'application/octet-stream')
             }
@@ -106,9 +97,9 @@ export async function createExpressServer (
       config.graphql.playground === 'apollo'
         ? apolloConfig?.plugins
         : [
-           config.graphql.playground
-             ? ApolloServerPluginLandingPageLocalDefault()
-             : ApolloServerPluginLandingPageDisabled(),
+            config.graphql.playground
+              ? ApolloServerPluginLandingPageLocalDefault()
+              : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins ?? []),
           ],
   } as ApolloServerOptions<KeystoneContext> // TODO: satisfies

@@ -26,7 +26,7 @@ describe('cursor pagination', () => {
           },
         }),
       },
-    }
+    },
   })
 
   beforeAll(async () => {

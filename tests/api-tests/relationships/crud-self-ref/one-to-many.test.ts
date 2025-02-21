@@ -40,8 +40,8 @@ const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) =>
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
   type T = {
     data: {
-      User: { id: IdType, friends: { id: IdType }[] }
-      Friend: { id: IdType, friendOf: { id: IdType } }
+      User: { id: IdType; friends: { id: IdType }[] }
+      Friend: { id: IdType; friendOf: { id: IdType } }
     }
   }
   const { data } = (await context.graphql.raw({
@@ -79,7 +79,7 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -90,7 +90,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-many relationships`, () => {
@@ -209,7 +209,7 @@ describe(`One-to-many relationships`, () => {
         const _user = (await context.query.User.createOne({
           data: { friends: { connect: [{ id: user.id }] } },
           query: 'id friends { id  }',
-        })) as { id: IdType, friends: { id: IdType }[] }
+        })) as { id: IdType; friends: { id: IdType }[] }
 
         expect(_user.friends.map(({ id }) => id.toString())).toEqual([user.id])
 
@@ -262,13 +262,11 @@ describe(`One-to-many relationships`, () => {
           query: 'id friends { id friendOf { id } }',
         })) as {
           id: IdType
-          friends: { id: IdType, friendOf: { id: IdType } }[]
+          friends: { id: IdType; friendOf: { id: IdType } }[]
         }[]
 
         // The nested company should not have a location
-        expect(_users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(
-          User.id
-        )
+        expect(_users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(User.id)
         _users
           .filter(({ id }) => id !== User.id)
           .forEach(user => {
@@ -302,7 +300,7 @@ describe(`One-to-many relationships`, () => {
           query: 'id friends { id friendOf { id } }',
         })) as {
           id: IdType
-          friends: { id: IdType, friendOf: { id: IdType } }[]
+          friends: { id: IdType; friendOf: { id: IdType } }[]
         }[]
         expect(users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(User.id)
         users

@@ -53,8 +53,8 @@ const getCompanyAndLocation = async (
 ) => {
   type T = {
     data: {
-      Company: { id: IdType, locations: { id: IdType }[] }
-      Location: { id: IdType, companies: { id: IdType }[] }
+      Company: { id: IdType; locations: { id: IdType }[] }
+      Location: { id: IdType; companies: { id: IdType }[] }
     }
   }
   const { data } = (await context.graphql.raw({
@@ -94,7 +94,7 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Company: list({
         access: allowAll,
@@ -111,7 +111,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`Many-to-many relationships`, () => {
@@ -312,7 +312,7 @@ describe(`Many-to-many relationships`, () => {
 
         type T = {
           id: IdType
-          locations: { id: IdType, companies: { id: IdType }[] }[]
+          locations: { id: IdType; companies: { id: IdType }[] }[]
         }[]
 
         const _companies = (await context.query.Company.findMany({
@@ -359,7 +359,7 @@ describe(`Many-to-many relationships`, () => {
         // Both companies should have a location, and the location should have two companies
         type T = {
           id: IdType
-          locations: { id: IdType, companies: { id: IdType }[] }[]
+          locations: { id: IdType; companies: { id: IdType }[] }[]
         }[]
 
         const _companies = (await context.query.Company.findMany({

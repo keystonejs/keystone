@@ -6,7 +6,7 @@ import type {
   ImageExtension,
   KeystoneContext,
 } from '../../../types'
-import { fieldType, } from '../../../types'
+import { fieldType } from '../../../types'
 import { g } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { merge } from '../../resolve-hooks'
@@ -40,7 +40,7 @@ const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
     id: g.field({ type: g.nonNull(g.ID) }),
     url: g.field({
       type: g.nonNull(g.String),
-      resolve (data, args, context) {
+      resolve(data, args, context) {
         return context.images(data.storage).getUrl(data.id, data.extension)
       },
     }),
@@ -51,7 +51,7 @@ const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
   },
 })
 
-async function inputResolver (
+async function inputResolver(
   storage: string,
   data: g.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
@@ -72,24 +72,29 @@ async function inputResolver (
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS)
 
-function isValidImageExtension (extension: string): extension is ImageExtension {
+function isValidImageExtension(extension: string): extension is ImageExtension {
   return extensionsSet.has(extension)
 }
 
-export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function image<ListTypeInfo extends BaseListTypeInfo>(
+  config: ImageFieldConfig<ListTypeInfo>
+): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const { fieldKey } = meta
     const storage = meta.getStorage(config.storage)
 
     if (!storage) {
-      throw new Error(`${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`)
+      throw new Error(
+        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+      )
     }
 
     if ('isIndexed' in config) {
       throw Error("isIndexed: 'unique' is not a supported option for field type image")
     }
 
-    async function beforeOperationResolver (args: any) { // TODO: types
+    async function beforeOperationResolver(args: any) {
+      // TODO: types
       if (args.operation === 'update' || args.operation === 'delete') {
         const idKey = `${fieldKey}_id`
         const id = args.item[idKey]
@@ -144,15 +149,7 @@ export function image <ListTypeInfo extends BaseListTypeInfo> (config: ImageFiel
       },
       output: g.field({
         type: ImageFieldOutput,
-        resolve ({
-          value: {
-            id,
-            extension,
-            filesize,
-            width,
-            height,
-          }
-        }) {
+        resolve({ value: { id, extension, filesize, width, height } }) {
           if (id === null) return null
           if (extension === null) return null
           if (filesize === null) return null

@@ -2,11 +2,11 @@ import { Text, Transforms, Element, type NodeEntry, Editor, Node } from 'slate'
 import { type DocumentFeatures } from '../views-shared'
 import { type Relationships } from './relationship-shared'
 
-export function areArraysEqual (a: readonly unknown[], b: readonly unknown[]) {
+export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
   return a.length === b.length && a.every((x, i) => x === b[i])
 }
 
-export function normalizeTextBasedOnInlineMarksAndSoftBreaks (
+export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
   [node, path]: NodeEntry<Text>,
   editor: Editor,
   inlineMarks: DocumentFeatures['formatting']['inlineMarks'],
@@ -43,7 +43,7 @@ export type DocumentFeaturesForNormalization = Omit<DocumentFeatures, 'formattin
   relationships: boolean
 }
 
-export function normalizeInlineBasedOnLinksAndRelationships (
+export function normalizeInlineBasedOnLinksAndRelationships(
   [node, path]: NodeEntry<Element>,
   editor: Editor,
   links: boolean,
@@ -76,7 +76,7 @@ export function normalizeInlineBasedOnLinksAndRelationships (
   return false
 }
 
-export function normalizeElementBasedOnDocumentFeatures (
+export function normalizeElementBasedOnDocumentFeatures(
   [node, path]: NodeEntry<Element>,
   editor: Editor,
   {
@@ -124,7 +124,7 @@ export function normalizeElementBasedOnDocumentFeatures (
   )
 }
 
-export function withDocumentFeaturesNormalization (
+export function withDocumentFeaturesNormalization(
   documentFeatures: DocumentFeatures,
   relationships: Relationships,
   editor: Editor

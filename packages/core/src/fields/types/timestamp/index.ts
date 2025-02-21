@@ -26,21 +26,19 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
+export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
   config: TimestampFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  const {
-    isIndexed,
-    defaultValue,
-    validation,
-  } = config
+  const { isIndexed, defaultValue, validation } = config
 
-  return (meta) => {
+  return meta => {
     if (typeof defaultValue === 'string') {
       try {
         g.DateTime.graphQLType.parseValue(defaultValue)
       } catch (err) {
-        throw new Error(`${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`)
+        throw new Error(
+          `${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`
+        )
       }
     }
 
@@ -48,10 +46,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       typeof defaultValue === 'string'
         ? (g.DateTime.graphQLType.parseValue(defaultValue) as Date)
         : defaultValue
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config)
+    const { mode, validate } = makeValidateHook(meta, config)
 
     return fieldType({
       kind: 'scalar',
@@ -65,8 +60,8 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
               value: defaultValue,
             }
           : defaultValue === undefined
-          ? undefined
-          : { kind: 'now' },
+            ? undefined
+            : { kind: 'now' },
       updatedAt: config.db?.updatedAt,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
@@ -74,7 +69,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.DateTime }) } : undefined,
@@ -88,7 +83,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
             // TODO: add support for defaultValue of { kind: 'now' } in the GraphQL API
             defaultValue: parsedDefaultValue instanceof Date ? parsedDefaultValue : undefined,
           }),
-          resolve (val) {
+          resolve(val) {
             if (val === undefined) {
               if (parsedDefaultValue === undefined && config.db?.updatedAt) return undefined
               if (parsedDefaultValue instanceof Date || parsedDefaultValue === undefined) {
@@ -106,7 +101,7 @@ export function timestamp <ListTypeInfo extends BaseListTypeInfo> (
       output: g.field({ type: g.DateTime }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
-      getAdminMeta (): TimestampFieldMeta {
+      getAdminMeta(): TimestampFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
