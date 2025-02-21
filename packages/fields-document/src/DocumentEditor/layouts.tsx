@@ -2,18 +2,14 @@
 
 import React, { createContext, useContext, useMemo } from 'react'
 import { Transforms } from 'slate'
-import {
-  type RenderElementProps,
-  ReactEditor,
-  useSlateStatic,
-} from 'slate-react'
+import { type RenderElementProps, ReactEditor, useSlateStatic } from 'slate-react'
 
 import { Icon } from '@keystar/ui/icon'
 import { columnsIcon } from '@keystar/ui/icon/icons/columnsIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 
 import type { DocumentFeatures } from '../views-shared'
-import { isElementActive, } from './utils'
+import { isElementActive } from './utils'
 import { useToolbarState } from './toolbar-state'
 
 import { insertLayout } from './layouts-shared'
@@ -41,9 +37,7 @@ export const LayoutContainer = ({
 
   const layout = element.layout
   const layoutOptions = useContext(LayoutOptionsContext)
-  const currentLayoutIndex = layoutOptions.findIndex(
-    x => x.toString() === layout.toString()
-  )
+  const currentLayoutIndex = layoutOptions.findIndex(x => x.toString() === layout.toString())
 
   return (
     <div className={blockElementSpacing} {...attributes}>
@@ -66,16 +60,10 @@ export const LayoutContainer = ({
               onAction={key => {
                 const path = ReactEditor.findPath(editor, element)
                 const layoutOption = layoutOptions[key as number]
-                Transforms.setNodes(
-                  editor,
-                  { type: 'layout', layout: layoutOption },
-                  { at: path }
-                )
+                Transforms.setNodes(editor, { type: 'layout', layout: layoutOption }, { at: path })
                 ReactEditor.focus(editor)
               }}
-              selectedKeys={
-                currentLayoutIndex !== -1 ? [currentLayoutIndex.toString()] : []
-              }
+              selectedKeys={currentLayoutIndex !== -1 ? [currentLayoutIndex.toString()] : []}
             >
               {layoutOptions.map((layoutOption, i) => (
                 <Item key={i}>{makeLayoutIcon(layoutOption)}</Item>
@@ -117,7 +105,7 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
   )
 }
 
-function makeLayoutIcon (ratios: number[]) {
+function makeLayoutIcon(ratios: number[]) {
   const size = 16
 
   const element = (
@@ -150,11 +138,7 @@ function makeLayoutIcon (ratios: number[]) {
 
 const layoutsIcon = <Icon src={columnsIcon} />
 
-export const LayoutsButton = ({
-  layouts,
-}: {
-  layouts: DocumentFeatures['layouts']
-}) => {
+export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'] }) => {
   const {
     editor,
     layouts: { isSelected },

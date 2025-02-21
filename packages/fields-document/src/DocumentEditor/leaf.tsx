@@ -3,18 +3,10 @@ import { type RenderLeafProps } from 'slate-react'
 import { InsertMenu } from './insert-menu'
 import { css } from '@keystar/ui/style'
 
-function Placeholder ({
-  placeholder,
-  children,
-}: {
-  placeholder: string
-  children: ReactNode
-}) {
+function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
   const [width, setWidth] = useState(0)
   return (
-    <span
-      className={css({ position: 'relative', display: 'inline-block', width })}
-    >
+    <span className={css({ position: 'relative', display: 'inline-block', width })}>
       <span
         contentEditable={false}
         className={css({

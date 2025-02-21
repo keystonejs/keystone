@@ -90,7 +90,9 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
     await alertDialog.waitFor()
     expect(await alertDialog.innerText()).toBe('Unable to delete 25 items.')
     await alertDialog.getByRole('button', { name: 'Close' }).click()
-    await page.locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 items.")').waitFor()
+    await page
+      .locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 items.")')
+      .waitFor()
   })
   afterAll(async () => {
     await browser.close()

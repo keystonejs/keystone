@@ -30,7 +30,7 @@ export const lists = {
           resolveInput: {
             update: async ({ resolvedData, operation, item }) => {
               if (resolvedData.version !== item.version) throw new Error('Out of sync')
-  
+
               return item.version + 1
             },
           },

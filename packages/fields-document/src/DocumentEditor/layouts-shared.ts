@@ -1,11 +1,8 @@
 import { Editor, Element, Node, Transforms, Range, Point } from 'slate'
 import { paragraphElement } from './paragraphs'
-import {
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
-  moveChildren,
-} from './utils'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading, moveChildren } from './utils'
 
-export function insertLayout (editor: Editor, layout: [number, ...number[]]) {
+export function insertLayout(editor: Editor, layout: [number, ...number[]]) {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [
     {
       type: 'layout',
@@ -22,7 +19,7 @@ export function insertLayout (editor: Editor, layout: [number, ...number[]]) {
 }
 
 // Plugin
-export function withLayouts (editor: Editor): Editor {
+export function withLayouts(editor: Editor): Editor {
   const { normalizeNode, deleteBackward } = editor
   editor.deleteBackward = unit => {
     if (
@@ -100,4 +97,3 @@ export function withLayouts (editor: Editor): Editor {
   }
   return editor
 }
-

@@ -7,7 +7,7 @@ import type { Context, TypeInfo } from '.keystone/types'
 const db: KeystoneConfigPre<TypeInfo>['db'] = {
   provider: 'sqlite',
   url: process.env.DATABASE_URL || 'file:./database.db',
-  async onConnect (context: Context) {
+  async onConnect(context: Context) {
     if (process.argv.includes('--seed-database')) {
       await seedDatabase(context)
     }

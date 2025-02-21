@@ -9,7 +9,7 @@ import { type ListKeyFromRunner } from '../utils'
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Post: list({
         access: allowAll,
@@ -26,7 +26,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 type ListKey = ListKeyFromRunner<typeof runner>

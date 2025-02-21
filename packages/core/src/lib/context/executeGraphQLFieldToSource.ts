@@ -28,7 +28,7 @@ import {
 } from 'graphql'
 import { type KeystoneContext } from '../../types'
 
-function getNamedOrListTypeNodeForType (
+function getNamedOrListTypeNodeForType(
   type:
     | GraphQLScalarType
     | GraphQLObjectType<any, any>
@@ -44,14 +44,14 @@ function getNamedOrListTypeNodeForType (
   return { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: type.name } }
 }
 
-export function getTypeNodeForType (type: GraphQLType): TypeNode {
+export function getTypeNodeForType(type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
     return { kind: Kind.NON_NULL_TYPE, type: getNamedOrListTypeNodeForType(type.ofType) }
   }
   return getNamedOrListTypeNodeForType(type)
 }
 
-export function getVariablesForGraphQLField (field: GraphQLField<any, any>) {
+export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
   const variableDefinitions: VariableDefinitionNode[] = field.args.map(
     (arg): VariableDefinitionNode => ({
       kind: Kind.VARIABLE_DEFINITION,
@@ -60,7 +60,7 @@ export function getVariablesForGraphQLField (field: GraphQLField<any, any>) {
       defaultValue:
         arg.defaultValue === undefined
           ? undefined
-          : (astFromValue(arg.defaultValue, arg.type) as ConstValueNode) ?? undefined,
+          : ((astFromValue(arg.defaultValue, arg.type) as ConstValueNode) ?? undefined),
     })
   )
 
@@ -82,7 +82,7 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
   fields: {
     [rawField]: {
       type: RawScalar,
-      resolve (rootVal) {
+      resolve(rootVal) {
         return rootVal
       },
     },
@@ -96,12 +96,12 @@ type RequiredButStillAllowUndefined<
   // i can't find a place that explains this but the tldr is that
   // having the keyof T _inside_ the mapped type means TS will keep modifiers
   // like readonly and optionality and we want to remove those here
-  Key extends keyof T = keyof T
+  Key extends keyof T = keyof T,
 > = {
-  [K in Key]: T[K];
+  [K in Key]: T[K]
 }
 
-function argsToArgsConfig (args: readonly GraphQLArgument[]) {
+function argsToArgsConfig(args: readonly GraphQLArgument[]) {
   return Object.fromEntries(
     args.map(arg => {
       const argConfig: RequiredButStillAllowUndefined<GraphQLArgumentConfig> = {
@@ -124,7 +124,7 @@ type OutputType = OutputTypeWithoutNonNull | GraphQLNonNull<OutputTypeWithoutNon
 // note the GraphQLNonNull and GraphQLList constructors are incorrectly
 // not generic over their inner type which is why we have to use as
 // (the classes are generic but not the constructors)
-function getTypeForField (originalType: GraphQLOutputType): OutputType {
+function getTypeForField(originalType: GraphQLOutputType): OutputType {
   if (originalType instanceof GraphQLNonNull) {
     return new GraphQLNonNull(getTypeForField(originalType.ofType)) as OutputType
   }
@@ -134,7 +134,7 @@ function getTypeForField (originalType: GraphQLOutputType): OutputType {
   return ReturnRawValueObjectType
 }
 
-function getRootValGivenOutputType (originalType: OutputType, value: any): any {
+function getRootValGivenOutputType(originalType: OutputType, value: any): any {
   if (originalType instanceof GraphQLNonNull) {
     return getRootValGivenOutputType(originalType.ofType, value)
   }
@@ -145,7 +145,7 @@ function getRootValGivenOutputType (originalType: OutputType, value: any): any {
   return value[rawField]
 }
 
-export function executeGraphQLFieldToSource (field: GraphQLField<any, unknown>) {
+export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,

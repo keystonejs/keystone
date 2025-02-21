@@ -31,7 +31,7 @@ import type { FieldProps } from '../../../../types'
 import type { FileValue } from './index'
 import type { controller } from '.'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
 
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -58,11 +58,7 @@ export function Field (props: FieldProps<typeof controller>) {
   const inputKey = useMemo(() => Math.random(), [value])
 
   return (
-    <KeystarField
-      label={field.label}
-      description={field.description}
-      errorMessage={errorMessage}
-    >
+    <KeystarField label={field.label} description={field.description} errorMessage={errorMessage}>
       {inputProps => (
         <Fragment>
           <FileView
@@ -91,7 +87,7 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-function FileView (props: {
+function FileView(props: {
   onFileTrigger: () => void
   isInvalid?: boolean
   onChange?: (value: FileValue) => void
@@ -134,10 +130,7 @@ function FileView (props: {
 
       {!fileData && (
         <HStack gap="regular">
-          <ActionButton
-            isDisabled={onChange === undefined}
-            onPress={onFileTrigger}
-          >
+          <ActionButton isDisabled={onChange === undefined} onPress={onFileTrigger}>
             Upload
           </ActionButton>
           {value.kind === 'remove' && value.previous && (
@@ -158,7 +151,7 @@ function FileView (props: {
   )
 }
 
-function FileDetails (props: PropsWithChildren<FileData>) {
+function FileDetails(props: PropsWithChildren<FileData>) {
   const trimStartStyles = useTrimStartStyles()
 
   return (
@@ -196,11 +189,11 @@ function FileDetails (props: PropsWithChildren<FileData>) {
   )
 }
 
-export function formatBytes (size: number, options = defaultBytesOptions(size)) {
+export function formatBytes(size: number, options = defaultBytesOptions(size)) {
   return bytes(size, options)
 }
 
-function defaultBytesOptions (size: number): BytesOptions {
+function defaultBytesOptions(size: number): BytesOptions {
   // increase precision for larger files
   const GB = 1_000_000_000
   const MB = 1_000_000
@@ -215,7 +208,7 @@ type FileData = {
   size: number
 }
 
-function useFileData (value: FileValue): FileData | null {
+function useFileData(value: FileValue): FileData | null {
   switch (value.kind) {
     case 'from-server':
       return {
@@ -246,7 +239,7 @@ const FILE_TYPES = {
   video: new Set(['avi', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'ogg', 'webm', 'wmv']),
 }
 
-function getFileIcon (filename: string) {
+function getFileIcon(filename: string) {
   const extension = getExtension(filename)
 
   if (FILE_TYPES.audio.has(extension)) return fileAudioIcon
@@ -260,12 +253,12 @@ function getFileIcon (filename: string) {
 
   return fileIcon
 }
-function getExtension (filename: string) {
+function getExtension(filename: string) {
   // `extname` returns e.g. ".mov", remove leading dot to match "mov"
   return extname(filename).slice(1).toLowerCase()
 }
 
-export function useTrimStartStyles () {
+export function useTrimStartStyles() {
   const { direction } = useLocale()
   return {
     direction: direction === 'rtl' ? 'ltr' : 'rtl',
@@ -277,13 +270,13 @@ export function useTrimStartStyles () {
   } as const
 }
 
-function createErrorMessage (value: FileValue) {
+function createErrorMessage(value: FileValue) {
   if (value.kind === 'upload') {
     return validateFile(value.data)
   }
 }
 
-export function validateFile ({ validity }: { validity: ValidityState }) {
+export function validateFile({ validity }: { validity: ValidityState }) {
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.'
   }

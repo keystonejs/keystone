@@ -35,13 +35,13 @@ const readOnlyField = {
 // we use this function to show that completed is a boolean type
 //   which would be missing if the types were unrefined
 //   a common problem when re-using code
-function isTrue (b: boolean) {
+function isTrue(b: boolean) {
   return b === true
 }
 
 type ListsT = TypeInfo['lists']
 type FindListsWithField<K> = {
-  [key in keyof ListsT]: K extends ListsT[key]['fields'] ? ListsT[key] : never;
+  [key in keyof ListsT]: K extends ListsT[key]['fields'] ? ListsT[key] : never
 }[keyof ListsT]
 
 // alternatively, if you don't like type functions
@@ -51,43 +51,43 @@ type CompatibleLists = FindListsWithField<'completed'>
 //  type CompatibleLists = BaseListTypeInfo // nothing is refined, item is Record<string, unknown>
 
 function trackingByHooks<
-  ListTypeInfo extends CompatibleLists
+  ListTypeInfo extends CompatibleLists,
   //    FieldKey extends 'createdBy' | 'updatedBy' // TODO: refined types for the return types
-> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
+>(immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
     resolveInput: {
-      async create ({ context, operation, resolvedData, item, fieldKey }) {
+      async create({ context, operation, resolvedData, item, fieldKey }) {
         // TODO: refined types for the return types
         //   FIXME: CommonFieldConfig need not always be generalised
         return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
       },
-      async update ({ context, operation, resolvedData, item, fieldKey }) {
+      async update({ context, operation, resolvedData, item, fieldKey }) {
         if (immutable) return undefined
 
         // show we have refined types for compatible item.* fields
         if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
-  
+
         // TODO: refined types for the return types
         //   FIXME: CommonFieldConfig need not always be generalised
         return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
       },
-    }
+    },
   }
 }
 
 function trackingAtHooks<
-  ListTypeInfo extends CompatibleLists
+  ListTypeInfo extends CompatibleLists,
   //    FieldKey extends 'createdAt' | 'updatedAt' // TODO: refined types for the return types
-> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
+>(immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
     // TODO: switch to operation routing when supported for fields
     resolveInput: {
-      async create ({ context, operation, resolvedData, item, fieldKey }) {
+      async create({ context, operation, resolvedData, item, fieldKey }) {
         // TODO: refined types for the return types
         //   FIXME: CommonFieldConfig need not always be generalised
         return new Date() as any
       },
-      async update ({ context, operation, resolvedData, item, fieldKey }) {
+      async update({ context, operation, resolvedData, item, fieldKey }) {
         if (immutable) return undefined
 
         // show we have refined types for compatible item.* fields
@@ -97,11 +97,11 @@ function trackingAtHooks<
         //   FIXME: CommonFieldConfig need not always be generalised
         return new Date() as any
       },
-    }
+    },
   }
 }
 
-function trackingFields<ListTypeInfo extends CompatibleLists> () {
+function trackingFields<ListTypeInfo extends CompatibleLists>() {
   return {
     createdBy: text<ListTypeInfo>({
       ...readOnlyField,

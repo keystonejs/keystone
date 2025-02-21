@@ -10,13 +10,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 // see https://keystonejs.com/docs/fields/overview for the full list of fields
 //   this is a few common fields for an example
-import {
-  text,
-  relationship,
-  password,
-  timestamp,
-  select,
-} from '@keystone-6/core/fields'
+import { text, relationship, password, timestamp, select } from '@keystone-6/core/fields'
 
 // the document field is a more complicated field, so it has it's own package
 import { document } from '@keystone-6/fields-document'

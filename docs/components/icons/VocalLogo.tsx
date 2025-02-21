@@ -1,9 +1,8 @@
-
 import { jsx } from '@emotion/react'
 
 import { type IconProps } from './util'
 
-export function VocalLogo (props: IconProps) {
+export function VocalLogo(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

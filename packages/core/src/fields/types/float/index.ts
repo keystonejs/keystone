@@ -25,56 +25,57 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
-  const {
-    defaultValue: defaultValue_,
-    isIndexed,
-    validation = {},
-  } = config
+export function float<ListTypeInfo extends BaseListTypeInfo>(
+  config: FloatFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
+  const { defaultValue: defaultValue_, isIndexed, validation = {} } = config
 
-  const {
-    isRequired = false,
-    min,
-    max
-  } = validation
+  const { isRequired = false, min, max } = validation
   const defaultValue = defaultValue_ ?? null
 
-  return (meta) => {
+  return meta => {
     if (defaultValue !== null && !Number.isFinite(defaultValue)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
+      )
     }
     if (min !== undefined && !Number.isFinite(min)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`
+      )
     }
     if (max !== undefined && !Number.isFinite(max)) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`
+      )
     }
-    if (
-      min !== undefined &&
-      max !== undefined &&
-      min > max
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
+    if (min !== undefined && max !== undefined && min > max) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+      )
     }
 
     const hasAdditionalValidation = min !== undefined || max !== undefined
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      hasAdditionalValidation
+        ? ({ resolvedData, operation, addValidationError }) => {
+            if (operation === 'delete') return
 
-      const value = resolvedData[meta.fieldKey]
-      if (typeof value === 'number') {
-        if (min !== undefined && value < min) {
-          addValidationError(`value must be greater than or equal to ${min}`)
-        }
+            const value = resolvedData[meta.fieldKey]
+            if (typeof value === 'number') {
+              if (min !== undefined && value < min) {
+                addValidationError(`value must be greater than or equal to ${min}`)
+              }
 
-        if (max !== undefined && value > max) {
-          addValidationError(`value must be less than or equal to ${max}`)
-        }
-      }
-    } : undefined)
+              if (max !== undefined && value > max) {
+                addValidationError(`value must be less than or equal to ${max}`)
+              }
+            }
+          }
+        : undefined
+    )
 
     return fieldType({
       kind: 'scalar',
@@ -82,16 +83,14 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
       scalar: 'Float',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
-        typeof defaultValue === 'number'
-          ? { kind: 'literal', value: defaultValue }
-          : undefined,
+        typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Float }) } : undefined,
@@ -104,7 +103,7 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
             type: g.Float,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
-          resolve (value) {
+          resolve(value) {
             if (value === undefined) return defaultValue
             return value
           },
@@ -112,17 +111,17 @@ export function float <ListTypeInfo extends BaseListTypeInfo> (config: FloatFiel
         update: { arg: g.arg({ type: g.Float }) },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: g.field({ type: g.Float, }),
+      output: g.field({ type: g.Float }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {
           validation: {
             isRequired,
             min: min ?? null,
             max: max ?? null,
           },
-          defaultValue
+          defaultValue,
         }
       },
     })

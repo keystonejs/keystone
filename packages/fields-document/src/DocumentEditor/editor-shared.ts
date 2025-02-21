@@ -21,10 +21,7 @@ import { withLink } from './link-shared'
 import { withLayouts } from './layouts-shared'
 import { withHeading } from './heading-shared'
 import { withBlockquote } from './blockquote-shared'
-import {
-  type Relationships,
-  withRelationship
-} from './relationship-shared'
+import { type Relationships, withRelationship } from './relationship-shared'
 import { withDivider } from './divider-shared'
 import { withCodeBlock } from './code-block-shared'
 import { withMarks } from './marks'
@@ -90,13 +87,12 @@ export const editorSchema = {
   'list-item-content': inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
 } satisfies Record<Block['type'] | 'editor', BlockContainerSchema | InlineContainerSchema>
 
-
 type EditorSchema = typeof editorSchema
 type InlineContainingType = {
-  [Key in keyof EditorSchema]: { inlines: Key, blocks: never }[EditorSchema[Key]['kind']]
+  [Key in keyof EditorSchema]: { inlines: Key; blocks: never }[EditorSchema[Key]['kind']]
 }[keyof EditorSchema]
 
-function inlineContainer (args: {
+function inlineContainer(args: {
   invalidPositionHandleMode: 'unwrap' | 'move'
 }): InlineContainerSchema {
   return {
@@ -111,12 +107,12 @@ const inlineContainerTypes = new Set(
     .map(([type]) => type)
 )
 
-type InlineContainerSchema = { kind: 'inlines', invalidPositionHandleMode: 'unwrap' | 'move' }
+type InlineContainerSchema = { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
 
 type TypesWhichHaveNoExtraRequiredProps = {
-  [Type in Block['type']]: { type: Type, children: Descendant[] } extends Block & { type: Type }
+  [Type in Block['type']]: { type: Type; children: Descendant[] } extends Block & { type: Type }
     ? Type
-    : never;
+    : never
 }[Block['type']]
 
 type BlockContainerSchema = {
@@ -126,12 +122,11 @@ type BlockContainerSchema = {
   invalidPositionHandleMode: 'unwrap' | 'move'
 }
 
-
-export function isInlineContainer (node: Node): node is Block & { type: InlineContainingType } {
+export function isInlineContainer(node: Node): node is Block & { type: InlineContainingType } {
   return node.type !== undefined && inlineContainerTypes.has(node.type)
 }
 
-export function createDocumentEditor (
+export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships,
@@ -140,7 +135,7 @@ export function createDocumentEditor (
     ReactEditor: {
       focus: (editor: Editor) => void
     }
-  },
+  }
 ) {
   return withPasting(
     withSoftBreaks(
@@ -171,7 +166,9 @@ export function createDocumentEditor (
                                     withDocumentFeaturesNormalization(
                                       documentFeatures,
                                       relationships,
-                                      withHistory(slate?.withReact(createEditor()) ?? createEditor())
+                                      withHistory(
+                                        slate?.withReact(createEditor()) ?? createEditor()
+                                      )
                                     )
                                   )
                                 )
@@ -192,7 +189,7 @@ export function createDocumentEditor (
   )
 }
 
-function blockContainer (args: {
+function blockContainer(args: {
   allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...Block['type'][]]
   invalidPositionHandleMode: 'unwrap' | 'move'
 }): BlockContainerSchema {
@@ -208,11 +205,11 @@ const blockTypes: Set<string | undefined> = new Set(
   Object.keys(editorSchema).filter(x => x !== 'editor')
 )
 
-export function isBlock (node: Descendant): node is Block {
+export function isBlock(node: Descendant): node is Block {
   return blockTypes.has(node.type)
 }
 
-function withBlocksSchema (editor: Editor): Editor {
+function withBlocksSchema(editor: Editor): Editor {
   const { normalizeNode } = editor
   editor.normalizeNode = ([node, path]) => {
     if (!Text.isText(node) && node.type !== 'link' && node.type !== 'relationship') {
@@ -281,7 +278,7 @@ function withBlocksSchema (editor: Editor): Editor {
   return editor
 }
 
-function handleNodeInInvalidPosition (
+function handleNodeInInvalidPosition(
   editor: Editor,
   [node, path]: NodeEntry<Block>,
   parentPath: Path

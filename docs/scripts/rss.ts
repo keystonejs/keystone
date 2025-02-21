@@ -5,7 +5,7 @@ import { globby } from 'globby'
 import { extractBlogFrontmatter } from '../markdoc'
 import { siteBaseUrl } from '../lib/og-util'
 
-async function getPosts () {
+async function getPosts() {
   const files = await globby('*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
   })
@@ -29,7 +29,7 @@ async function getPosts () {
 
   return reverseChronologicallySortedPosts
 }
-export default async function generateRssFeed () {
+export default async function generateRssFeed() {
   const feedOptions = {
     title: 'Keystone Blog',
     description: 'Blog posts from the team maintaining Keystone.',
@@ -56,7 +56,7 @@ export default async function generateRssFeed () {
   return fs.writeFile('./public/feed.xml', feed.xml({ indent: true }))
 }
 
-(async () => {
+;(async () => {
   await generateRssFeed()
 })().catch(err => {
   console.error(err)

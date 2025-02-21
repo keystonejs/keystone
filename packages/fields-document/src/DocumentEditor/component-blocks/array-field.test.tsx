@@ -433,8 +433,8 @@ test('inserting an item from empty works', () => {
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  (editor.container!.querySelector('button[data-insert]') as HTMLButtonElement).click()
+  )
+  ;(editor.container!.querySelector('button[data-insert]') as HTMLButtonElement).click()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -487,8 +487,8 @@ test('removing an item using the preview props works', () => {
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  (editor.container!.querySelector('button[data-remove]') as HTMLButtonElement).click()
+  )
+  ;(editor.container!.querySelector('button[data-remove]') as HTMLButtonElement).click()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block

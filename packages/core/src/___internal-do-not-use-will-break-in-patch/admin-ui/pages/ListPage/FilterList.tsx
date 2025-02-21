@@ -1,10 +1,5 @@
 import { useRouter } from 'next/router'
-import React, {
-  type FormEvent,
-  useId,
-  useState,
-  type ReactNode
-} from 'react'
+import React, { type FormEvent, useId, useState, type ReactNode } from 'react'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -12,14 +7,11 @@ import { Flex } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type {
-  FieldMeta,
-  ListMeta
-} from '../../../../types'
+import type { FieldMeta, ListMeta } from '../../../../types'
 import { Tag } from './Tag'
 import type { Filter } from './useFilters'
 
-export function FilterList ({ filters, list }: { filters: Filter[], list: ListMeta }) {
+export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (
     <Flex gap="small" wrap>
       {filters.map(filter => {
@@ -30,7 +22,7 @@ export function FilterList ({ filters, list }: { filters: Filter[], list: ListMe
   )
 }
 
-function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
+function FilterTag({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter()
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
@@ -65,18 +57,12 @@ function FilterTag ({ filter, field }: { filter: Filter, field: FieldMeta }) {
   return (
     <DialogTrigger type="popover" mobileType="tray">
       {tagElement}
-      {onDismiss => (
-        <FilterDialog
-          onDismiss={onDismiss}
-          field={field}
-          filter={filter}
-        />
-      )}
+      {onDismiss => <FilterDialog onDismiss={onDismiss} field={field} filter={filter} />}
     </DialogTrigger>
   )
 }
 
-function FilterDialog ({
+function FilterDialog({
   filter,
   field,
   onDismiss,
@@ -96,7 +82,7 @@ function FilterDialog ({
     // have no editable value, basically `null` or `!null`. Which offers:
     // * better DX — we can avoid weird nullable types and UIs that don't make sense
     // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
-    if ((filter.type !== 'empty' && filter.type !== 'not_empty') && value == null) {
+    if (filter.type !== 'empty' && filter.type !== 'not_empty' && value == null) {
       return
     }
 
@@ -114,9 +100,7 @@ function FilterDialog ({
 
   return (
     <Dialog>
-      <Heading>
-        {field.label}
-      </Heading>
+      <Heading>{field.label}</Heading>
       <Content>
         <form onSubmit={onSubmit} id={formId}>
           <Filter
@@ -131,7 +115,9 @@ function FilterDialog ({
       </Content>
       <ButtonGroup>
         <Button onPress={onDismiss}>Cancel</Button>
-        <Button type="submit" prominence="high" form={formId}>Save</Button>
+        <Button type="submit" prominence="high" form={formId}>
+          Save
+        </Button>
       </ButtonGroup>
     </Dialog>
   )

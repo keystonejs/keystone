@@ -6,7 +6,7 @@ type YouTubeVideoProps = {
   altText: string
 }
 
-export function YouTubeVideo ({ url, altText = 'Embedded YouTube video' }: YouTubeVideoProps) {
+export function YouTubeVideo({ url, altText = 'Embedded YouTube video' }: YouTubeVideoProps) {
   const embedId = getYouTubeEmbedId(url)
 
   return (
@@ -26,7 +26,7 @@ export function YouTubeVideo ({ url, altText = 'Embedded YouTube video' }: YouTu
   )
 }
 
-function getYouTubeEmbedId (url: string) {
+function getYouTubeEmbedId(url: string) {
   let embedId = ''
   const parsedUrl = url.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
   if (parsedUrl[2] !== undefined) {

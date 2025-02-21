@@ -18,12 +18,9 @@ import { Text } from '@keystar/ui/typography'
 import type { FieldProps } from '../../../../types'
 import { formatBytes, useTrimStartStyles } from '../../file/views/Field'
 import type { ImageValue } from './index'
-import {
-  type controller,
-  validateImage
-} from '.'
+import { type controller, validateImage } from '.'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
   const inputRef = useRef<HTMLInputElement | null>(null)
   const errorMessage = validateImage(field.extensions, value)
@@ -48,19 +45,12 @@ export function Field (props: FieldProps<typeof controller>) {
   // the user selects the same file again)
   const inputKey = useMemo(() => Math.random(), [value])
   const accept = useMemo(
-    () =>
-      field.extensions.map(ext =>
-        [`.${ext}`, `image/${ext}`].join(', ')
-      ).join(', '),
+    () => field.extensions.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(', '),
     []
   )
 
   return (
-    <KeystarField
-      label={field.label}
-      description={field.description}
-      errorMessage={errorMessage}
-    >
+    <KeystarField label={field.label} description={field.description} errorMessage={errorMessage}>
       {inputProps => (
         <Fragment>
           <ImageView
@@ -88,7 +78,7 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-function ImageView (props: {
+function ImageView(props: {
   onFileTrigger: () => void
   isInvalid?: boolean
   onChange?: (value: ImageValue) => void
@@ -131,10 +121,7 @@ function ImageView (props: {
 
       {!imageData && (
         <HStack gap="regular" alignItems="center">
-          <ActionButton
-            isDisabled={onChange === undefined}
-            onPress={onFileTrigger}
-          >
+          <ActionButton isDisabled={onChange === undefined} onPress={onFileTrigger}>
             Upload
           </ActionButton>
           {value.kind === 'remove' && value.previous && (
@@ -155,7 +142,7 @@ function ImageView (props: {
   )
 }
 
-function useObjectURL (fileData: File | undefined) {
+function useObjectURL(fileData: File | undefined) {
   const [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (!fileData) return
@@ -173,7 +160,7 @@ function useObjectURL (fileData: File | undefined) {
 const SMALL_CONTAINER_MAX = `@container (max-width: 419px)`
 const SMALL_CONTAINER_MIN = `@container (min-width: 420px)`
 
-function ImageDetails (props: PropsWithChildren<ImageData>) {
+function ImageDetails(props: PropsWithChildren<ImageData>) {
   const trimStartStyles = useTrimStartStyles()
 
   // hide content until the uploaded image until it's available; use dimensions
@@ -256,7 +243,7 @@ type ImageData = {
   onLoad: (event: SyntheticEvent<HTMLImageElement>) => void
 }
 
-function useImageData (value: ImageValue): ImageData | null {
+function useImageData(value: ImageValue): ImageData | null {
   // only relevant for uploaded images, but we must observe the rules of hooks
   // so these can't be called conditionally.
   const imagePathFromUpload = useObjectURL(value.kind === 'upload' ? value.data.file : undefined)

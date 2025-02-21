@@ -16,8 +16,8 @@ type AsProp<Comp extends ElementType> = {
     Comp extends keyof ElementTagNameMap
       ? ElementTagNameMap[Comp]
       : Comp extends new (...args: any) => any
-      ? InstanceType<Comp>
-      : undefined
+        ? InstanceType<Comp>
+        : undefined
   >
 } & Omit<ComponentPropsWithoutRef<Comp>, 'as'>
 

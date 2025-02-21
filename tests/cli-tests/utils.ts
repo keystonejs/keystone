@@ -24,7 +24,7 @@ export const schemas = {
   'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
 }
 
-export function recordConsole () {
+export function recordConsole() {
   const oldConsole = { ...console }
   const contents: string[] = []
   const log = (...args: any[]) => {
@@ -57,13 +57,10 @@ export const symlinkKeystoneDeps = Object.fromEntries(
 )
 
 type Fixture = {
-  [key: string]:
-    | string
-    | Buffer
-    | { kind: 'symlink', path: string }
+  [key: string]: string | Buffer | { kind: 'symlink'; path: string }
 }
 
-export async function cliMock (cwd: string, args: string | string[]) {
+export async function cliMock(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args
   chalk.level = 0 // disable ANSI colouring for this
   const proc = await cli(cwd, argv)
@@ -72,31 +69,32 @@ export async function cliMock (cwd: string, args: string | string[]) {
   }
 }
 
-export async function spawnCommand (cwd: string, commands: string[]) {
+export async function spawnCommand(cwd: string, commands: string[]) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
     const p = spawn('node', [cliBinPath, ...commands], { cwd })
-    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
-    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.stdout.on('data', data => (output += data.toString('utf-8')))
+    p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
-      if (typeof exitCode === 'number' && exitCode !== 0) return reject(`${commands.join(' ')} returned ${exitCode}`)
+      if (typeof exitCode === 'number' && exitCode !== 0)
+        return reject(`${commands.join(' ')} returned ${exitCode}`)
       resolve(output)
     })
   })
 }
 
-export async function spawnCommand2 (cwd: string, commands: string[]) {
+export async function spawnCommand2(cwd: string, commands: string[]) {
   let output = ''
   return new Promise<{
     exitCode: number | null
     output: string
   }>((resolve, reject) => {
     const p = spawn('node', [cliBinPath, ...commands], { cwd })
-    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
-    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.stdout.on('data', data => (output += data.toString('utf-8')))
+    p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
-    p.on('exit', exitCode => (resolve({ exitCode, output })))
+    p.on('exit', exitCode => resolve({ exitCode, output }))
   })
 }
 
@@ -112,7 +110,7 @@ afterAll(async () => {
 })
 
 // from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
-export async function testdir (dir: Fixture) {
+export async function testdir(dir: Fixture) {
   const temp = await fsp.mkdtemp(__dirname)
   dirsToRemove.push(temp)
   await Promise.all(
@@ -122,7 +120,7 @@ export async function testdir (dir: Fixture) {
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
         await fse.outputFile(fullPath, output)
 
-      // symlink
+        // symlink
       } else {
         await fsp.mkdir(path.dirname(fullPath), { recursive: true })
         const targetPath = path.resolve(temp, output.path)
@@ -136,7 +134,7 @@ export async function testdir (dir: Fixture) {
 
 // from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 expect.addSnapshotSerializer({
-  print (_val) {
+  print(_val) {
     const val = _val as Record<string, string>
     const contentsByFilename: Record<string, string[]> = {}
     Object.entries(val).forEach(([filename, contents]) => {
@@ -151,7 +149,7 @@ expect.addSnapshotSerializer({
       })
       .join('\n')
   },
-  test (val) {
+  test(val) {
     return val && val[dirPrintingSymbol]
   },
 })
@@ -159,7 +157,7 @@ expect.addSnapshotSerializer({
 const dirPrintingSymbol = Symbol('dir printing symbol')
 
 // derived from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
-export async function getFiles (
+export async function getFiles(
   dir: string,
   glob: string[] = ['**', '!node_modules/**'],
   encoding: 'utf8' | null = 'utf8'
@@ -176,7 +174,7 @@ export async function getFiles (
   return result
 }
 
-export async function introspectDatabase (cwd: string, url: string) {
+export async function introspectDatabase(cwd: string, url: string) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
     const p = spawn('node', [require.resolve('prisma'), 'db', 'pull', '--print'], {
@@ -187,12 +185,13 @@ export async function introspectDatabase (cwd: string, url: string) {
         PRISMA_HIDE_UPDATE_MESSAGE: '1',
       },
     })
-    p.stdout.on('data', (data) => (output += data.toString('utf-8')))
-    p.stderr.on('data', (data) => (output += data.toString('utf-8')))
+    p.stdout.on('data', data => (output += data.toString('utf-8')))
+    p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
       if (output.includes('P4001')) return resolve('') // empty database
-      if (typeof exitCode === 'number' && exitCode !== 0) return reject(`Introspect process returned ${exitCode}`)
+      if (typeof exitCode === 'number' && exitCode !== 0)
+        return reject(`Introspect process returned ${exitCode}`)
       resolve(output)
     })
   })

@@ -1,8 +1,5 @@
-import {
-  type BaseItem,
-  type KeystoneContext
-} from '../../../types'
-import { Empty, } from '../../../types/schema/graphql-ts-schema'
+import { type BaseItem, type KeystoneContext } from '../../../types'
+import { Empty } from '../../../types/schema/graphql-ts-schema'
 import { type UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
 import { type ResolvedDBField } from '../resolve-relationships'
@@ -29,7 +26,7 @@ import {
   getOperationAccess,
   getAccessFilters,
   enforceListLevelAccessControl,
-  enforceFieldLevelAccessControl
+  enforceFieldLevelAccessControl,
 } from '../access-control'
 import { checkFilterOrderAccess } from '../filter-order-access'
 import { runSideEffectOnlyHook, validate } from '../hooks'
@@ -45,7 +42,7 @@ import {
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
 
-async function getFilteredItem (
+async function getFilteredItem(
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
@@ -69,27 +66,15 @@ async function getFilteredItem (
   throw accessDeniedError(cannotForItem(operation, list))
 }
 
-async function createSingle (
+async function createSingle(
   inputData: Record<string, unknown>,
   list: InitialisedList,
   context: KeystoneContext
 ) {
   // throw an accessDeniedError if not allowed
-  await enforceListLevelAccessControl(
-    context,
-    'create',
-    list,
-    inputData,
-    undefined,
-  )
+  await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
 
-  await enforceFieldLevelAccessControl(
-    context,
-    'create',
-    list,
-    inputData,
-    undefined,
-  )
+  await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
@@ -99,7 +84,7 @@ async function createSingle (
   )
 
   const item = await context.prisma[list.listKey].create({
-    data: list.isSingleton ? { ...data, id: 1 } : data
+    data: list.isSingleton ? { ...data, id: 1 } : data,
   })
 
   return { item, afterOperation }
@@ -108,10 +93,10 @@ async function createSingle (
 export class NestedMutationState {
   #afterOperations: (() => void | Promise<void>)[] = []
   #context: KeystoneContext
-  constructor (context: KeystoneContext) {
+  constructor(context: KeystoneContext) {
     this.#context = context
   }
-  async create (data: Record<string, unknown>, list: InitialisedList) {
+  async create(data: Record<string, unknown>, list: InitialisedList) {
     const context = this.#context
 
     const operationAccess = await getOperationAccess(list, context, 'create')
@@ -123,14 +108,14 @@ export class NestedMutationState {
     return { id: item.id as IdType }
   }
 
-  async afterOperation () {
+  async afterOperation() {
     await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x()))
   }
 }
 
 type InputData = Record<string, unknown> | null
 
-export async function createOne (
+export async function createOne(
   inputData: InputData,
   list: InitialisedList,
   context: KeystoneContext
@@ -147,7 +132,7 @@ export async function createOne (
   return item
 }
 
-export async function createMany (
+export async function createMany(
   inputDatas: InputData[],
   list: InitialisedList,
   context: KeystoneContext
@@ -173,11 +158,8 @@ type UpdateInput = {
   data: InputData
 }
 
-async function updateSingle (
-  {
-    where,
-    data: inputData
-  }: UpdateInput,
+async function updateSingle(
+  { where, data: inputData }: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
@@ -193,21 +175,9 @@ async function updateSingle (
   const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
 
   // throw an accessDeniedError if not allowed
-  await enforceListLevelAccessControl(
-    context,
-    'update',
-    list,
-    inputData ?? {},
-    item,
-  )
+  await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
 
-  await enforceFieldLevelAccessControl(
-    context,
-    'update',
-    list,
-    inputData ?? {},
-    item,
-  )
+  await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(
     list,
@@ -228,7 +198,7 @@ async function updateSingle (
   return updatedItem
 }
 
-export async function updateOne (
+export async function updateOne(
   updateInput: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext
@@ -242,7 +212,7 @@ export async function updateOne (
   return updateSingle(updateInput, list, context, accessFilters)
 }
 
-export async function updateMany (
+export async function updateMany(
   updateManyInput: UpdateInput[],
   list: InitialisedList,
   context: KeystoneContext
@@ -260,7 +230,7 @@ export async function updateMany (
   })
 }
 
-async function deleteSingle (
+async function deleteSingle(
   where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
@@ -277,13 +247,7 @@ async function deleteSingle (
   // apply access.filter.* controls
   const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
 
-  await enforceListLevelAccessControl(
-    context,
-    'delete',
-    list,
-    {},
-    item,
-  )
+  await enforceListLevelAccessControl(context, 'delete', list, {}, item)
 
   const hookArgs = {
     operation: 'delete' as const,
@@ -313,7 +277,7 @@ async function deleteSingle (
   return result
 }
 
-export async function deleteOne (
+export async function deleteOne(
   where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
@@ -327,7 +291,7 @@ export async function deleteOne (
   return deleteSingle(where, list, context, accessFilters)
 }
 
-export async function deleteMany (
+export async function deleteMany(
   wheres: UniqueInputFilter[],
   list: InitialisedList,
   context: KeystoneContext
@@ -345,20 +309,20 @@ export async function deleteMany (
   })
 }
 
-async function getResolvedData (
+async function getResolvedData(
   list: InitialisedList,
   hookArgs: {
     context: KeystoneContext
     listKey: string
     inputData: Record<string, any>
-  } & ({ operation: 'create', item: undefined } | { operation: 'update', item: BaseItem }),
+  } & ({ operation: 'create'; item: undefined } | { operation: 'update'; item: BaseItem }),
   nestedMutationState: NestedMutationState
 ) {
   const { context, operation } = hookArgs
   let resolvedData = hookArgs.inputData
 
   // apply non-relationship field type input resolvers
-  const resolverErrors: { error: Error, tag: string }[] = []
+  const resolverErrors: { error: Error; tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -366,18 +330,12 @@ async function getResolvedData (
 
         if (inputResolver && field.dbField.kind !== 'relation') {
           try {
-            return [
-              fieldKey,
-              await inputResolver(resolvedData[fieldKey], context, undefined)
-            ]
+            return [fieldKey, await inputResolver(resolvedData[fieldKey], context, undefined)]
           } catch (error: any) {
             resolverErrors.push({ error, tag: `${list.listKey}.${fieldKey}` })
           }
         }
-        return [
-          fieldKey,
-          resolvedData[fieldKey]
-        ] as const
+        return [fieldKey, resolvedData[fieldKey]] as const
       })
     )
   )
@@ -385,7 +343,7 @@ async function getResolvedData (
   if (resolverErrors.length) throw resolverError(resolverErrors)
 
   // apply relationship field type input resolvers
-  const relationshipErrors: { error: Error, tag: string }[] = []
+  const relationshipErrors: { error: Error; tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -427,19 +385,11 @@ async function getResolvedData (
                 }
 
                 if (field.dbField.mode === 'one' && operation === 'create') {
-                  return resolveRelateToOneForCreateInput(
-                    nestedMutationState,
-                    context,
-                    foreignList
-                  )
+                  return resolveRelateToOneForCreateInput(nestedMutationState, context, foreignList)
                 }
 
                 if (field.dbField.mode === 'one' && operation === 'update') {
-                  return resolveRelateToOneForUpdateInput(
-                    nestedMutationState,
-                    context,
-                    foreignList
-                  )
+                  return resolveRelateToOneForUpdateInput(nestedMutationState, context, foreignList)
                 }
 
                 throw new Error('Unknown relationship field type input mode or operation')
@@ -461,7 +411,7 @@ async function getResolvedData (
   if (relationshipErrors.length) throw relationshipError(relationshipErrors)
 
   // field hooks
-  const fieldsErrors: { error: Error, tag: string }[] = []
+  const fieldsErrors: { error: Error; tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -507,7 +457,7 @@ async function getResolvedData (
   return resolvedData
 }
 
-async function resolveInputForCreateOrUpdate (
+async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
   inputData: Record<string, unknown>,
@@ -551,7 +501,7 @@ async function resolveInputForCreateOrUpdate (
   }
 }
 
-function transformInnerDBField (
+function transformInnerDBField(
   dbField: Exclude<ResolvedDBField, { kind: 'multi' }>,
   context: KeystoneContext,
   value: unknown
@@ -562,13 +512,13 @@ function transformInnerDBField (
   return value
 }
 
-function transformForPrismaClient (
+function transformForPrismaClient(
   fields: Record<string, { dbField: ResolvedDBField }>,
   data: Record<string, any>,
   context: KeystoneContext
 ) {
-  return Object.fromEntries(
-    [...function* () {
+  return Object.fromEntries([
+    ...(function* () {
       for (const fieldKey in data) {
         const value = data[fieldKey]
         const { dbField } = fields[fieldKey]
@@ -587,8 +537,8 @@ function transformForPrismaClient (
 
         yield [fieldKey, transformInnerDBField(dbField, context, value)]
       }
-    }()]
-  )
+    })(),
+  ])
 }
 
 // This is not a thing that I really agree with but it's to make the behaviour consistent with old keystone.
@@ -597,7 +547,7 @@ function transformForPrismaClient (
 // That doesn't matter when they all resolve successfully because the order they resolve successfully in
 // doesn't affect anything, If some reject though, the order that they reject in will be the order in the errors array
 // and some of our tests rely on the order of the graphql errors array. They shouldn't, but they do.
-function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]> (promises: T): T {
+function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]>(promises: T): T {
   const resultsPromise = Promise.allSettled(promises)
   return promises.map(async (_, i) => {
     const result: PromiseSettledResult<Awaited<T>> = (await resultsPromise)[i] as any
@@ -607,12 +557,12 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T
 }
 
-function nonNull <T> (t: g.NullableInputType) {
+function nonNull<T>(t: g.NullableInputType) {
   if (t === Empty) return t
   return g.nonNull(t)
 }
 
-export function getMutationsForList (list: InitialisedList) {
+export function getMutationsForList(list: InitialisedList) {
   const defaultUniqueWhereInput = list.isSingleton ? { id: '1' } : undefined
 
   const createOne_ = g.field({
@@ -620,7 +570,7 @@ export function getMutationsForList (list: InitialisedList) {
     args: {
       data: g.arg({ type: nonNull(list.graphql.types.create) }),
     },
-    resolve (_rootVal, { data }, context) {
+    resolve(_rootVal, { data }, context) {
       return createOne(data, list, context)
     },
   })
@@ -632,7 +582,7 @@ export function getMutationsForList (list: InitialisedList) {
         type: g.nonNull(g.list(nonNull(list.graphql.types.create))),
       }),
     },
-    async resolve (_rootVal, { data }, context) {
+    async resolve(_rootVal, { data }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(await createMany(data, list, context))
     },
   })
@@ -646,7 +596,7 @@ export function getMutationsForList (list: InitialisedList) {
       }),
       data: g.arg({ type: nonNull(list.graphql.types.update) }),
     },
-    resolve (_rootVal, { where, data }, context) {
+    resolve(_rootVal, { where, data }, context) {
       return updateOne({ where, data }, list, context)
     },
   })
@@ -665,13 +615,11 @@ export function getMutationsForList (list: InitialisedList) {
     type: g.list(list.graphql.types.output),
     args: {
       data: g.arg({
-        type: g.nonNull(g.list(nonNull(updateManyInput)))
+        type: g.nonNull(g.list(nonNull(updateManyInput))),
       }),
     },
-    async resolve (_rootVal, { data }, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(
-        await updateMany(data, list, context)
-      )
+    async resolve(_rootVal, { data }, context) {
+      return promisesButSettledWhenAllSettledAndInOrder(await updateMany(data, list, context))
     },
   })
 
@@ -683,7 +631,7 @@ export function getMutationsForList (list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve (rootVal, { where }, context) {
+    resolve(rootVal, { where }, context) {
       return deleteOne(where, list, context)
     },
   })
@@ -695,10 +643,8 @@ export function getMutationsForList (list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve (rootVal, { where }, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(
-        await deleteMany(where, list, context)
-      )
+    async resolve(rootVal, { where }, context) {
+      return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
     },
   })
 

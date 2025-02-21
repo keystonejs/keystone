@@ -48,7 +48,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
   test(
     'Ordering: orderBy: { lastOnline: asc }',
     withKeystone(
-      ({ context, provider }: { context: KeystoneContext, provider: DatabaseProvider }) =>
+      ({ context, provider }: { context: KeystoneContext; provider: DatabaseProvider }) =>
         match(
           context,
           undefined,
@@ -79,7 +79,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
   test(
     'Ordering: orderBy: { lastOnline: desc }',
     withKeystone(
-      ({ context, provider }: { context: KeystoneContext, provider: DatabaseProvider }) =>
+      ({ context, provider }: { context: KeystoneContext; provider: DatabaseProvider }) =>
         match(
           context,
           undefined,

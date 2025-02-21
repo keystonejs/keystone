@@ -1,15 +1,6 @@
-import {
-  type Element,
-  Editor,
-  Transforms,
-  Range,
-  Point,
-  Path,
-  Node,
-  Text
-} from 'slate'
+import { type Element, Editor, Transforms, Range, Point, Path, Node, Text } from 'slate'
 
-export function withHeading (editor: Editor): Editor {
+export function withHeading(editor: Editor): Editor {
   const { insertBreak } = editor
   editor.insertBreak = () => {
     insertBreak()

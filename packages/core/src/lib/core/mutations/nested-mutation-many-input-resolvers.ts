@@ -8,28 +8,24 @@ import type { NestedMutationState } from './'
 import { checkUniqueItemExists } from '../access-control'
 
 type _CreateValueType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>>,
   null | undefined
 >
 
 type _UpdateValueType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>
-  >,
+  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>>,
   null | undefined
 >
 
 export class RelationshipErrors extends Error {
-  errors: { error: Error, tag: string }[]
-  constructor (errors: { error: Error, tag: string }[]) {
+  errors: { error: Error; tag: string }[]
+  constructor(errors: { error: Error; tag: string }[]) {
     super('Multiple relationship errors')
     this.errors = errors
   }
 }
 
-function getResolvedUniqueWheres (
+function getResolvedUniqueWheres(
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -40,7 +36,7 @@ function getResolvedUniqueWheres (
   )
 }
 
-export function resolveRelateToManyForCreateInput (
+export function resolveRelateToManyForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -48,33 +44,33 @@ export function resolveRelateToManyForCreateInput (
 ) {
   return async (value: _CreateValueType) => {
     if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
-      throw userInputError(`You must provide "connect" or "create" in to-many relationship inputs for "create" operations.`)
+      throw userInputError(
+        `You must provide "connect" or "create" in to-many relationship inputs for "create" operations.`
+      )
     }
 
     // Perform queries for the connections
-    const connects = Promise.allSettled(getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect'))
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
+    )
 
     // Perform nested mutations for the creations
-    const creates = Promise.allSettled((value.create || []).map(x => nestedMutationState.create(x, foreignList)))
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    )
     const [connectResult, createResult] = await Promise.all([connects, creates])
 
     // Collect all the errors
-    const errors = [
-      ...connectResult,
-      ...createResult
-    ].filter(isRejected)
+    const errors = [...connectResult, ...createResult].filter(isRejected)
     if (errors.length) throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag })))
 
     return {
-      connect: [
-        ...connectResult,
-        ...createResult
-      ].filter(isFulfilled).map(x => x.value),
+      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
     }
   }
 }
 
-export function resolveRelateToManyForUpdateInput (
+export function resolveRelateToManyForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -87,19 +83,31 @@ export function resolveRelateToManyForUpdateInput (
       !Array.isArray(value.disconnect) &&
       !Array.isArray(value.set)
     ) {
-      throw userInputError(`You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`)
+      throw userInputError(
+        `You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`
+      )
     }
     if (value.set && value.disconnect) {
-      throw userInputError(`The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`)
+      throw userInputError(
+        `The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`
+      )
     }
 
     // Perform queries for the connections
-    const connects = Promise.allSettled(getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect'))
-    const disconnects = Promise.allSettled(getResolvedUniqueWheres(value.disconnect || [], context, foreignList, 'disconnect'))
-    const sets = Promise.allSettled(getResolvedUniqueWheres(value.set || [], context, foreignList, 'set'))
+    const connects = Promise.allSettled(
+      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
+    )
+    const disconnects = Promise.allSettled(
+      getResolvedUniqueWheres(value.disconnect || [], context, foreignList, 'disconnect')
+    )
+    const sets = Promise.allSettled(
+      getResolvedUniqueWheres(value.set || [], context, foreignList, 'set')
+    )
 
     // Perform nested mutations for the creations
-    const creates = Promise.allSettled((value.create || []).map(x => nestedMutationState.create(x, foreignList)))
+    const creates = Promise.allSettled(
+      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+    )
     const [connectResult, createResult, disconnectResult, setResult] = await Promise.all([
       connects,
       creates,
@@ -108,12 +116,9 @@ export function resolveRelateToManyForUpdateInput (
     ])
 
     // Collect all the errors
-    const errors = [
-      ...connectResult,
-      ...createResult,
-      ...disconnectResult,
-      ...setResult
-    ].filter(isRejected)
+    const errors = [...connectResult, ...createResult, ...disconnectResult, ...setResult].filter(
+      isRejected
+    )
     if (errors.length) throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag })))
 
     return {

@@ -6,7 +6,7 @@ import { Heading } from '@keystar/ui/typography'
 // Please note that while this capability is driven by Next.js's pages directory
 // We do not currently support any of the auxillary methods that Next.js provides i.e. `getStaticProps`
 // Presently the only export from the directory that is supported is the page component itself.
-export default function CustomPage () {
+export default function CustomPage() {
   return (
     <PageContainer header={<Heading type="h3">Custom Page</Heading>}>
       <h1

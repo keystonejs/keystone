@@ -12,7 +12,7 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
+export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   return (
     <Checkbox
       autoFocus={autoFocus}
@@ -27,14 +27,12 @@ export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof 
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
-  return value
-    ? <Icon src={checkIcon} aria-label="true" />
-    : <VisuallyHidden>false</VisuallyHidden>
+  return value ? <Icon src={checkIcon} aria-label="true" /> : <VisuallyHidden>false</VisuallyHidden>
 }
 
 type CheckboxController = FieldController<boolean, boolean>
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{ defaultValue: boolean }>
 ): CheckboxController {
   return {
@@ -43,13 +41,15 @@ export function controller (
     description: config.description,
     graphqlSelection: config.path,
     defaultValue: config.fieldMeta.defaultValue,
-    deserialize (item) {
+    deserialize(item) {
       const value = item[config.path]
       return typeof value === 'boolean' ? value : false
     },
-    serialize (value) { return { [config.path]: value, } },
+    serialize(value) {
+      return { [config.path]: value }
+    },
     filter: {
-      Filter (props) {
+      Filter(props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
         return (
           <Checkbox autoFocus={autoFocus} onChange={onChange} isSelected={value} {...otherProps}>
@@ -57,12 +57,14 @@ export function controller (
           </Checkbox>
         )
       },
-      Label ({ label, type, value }) { return `${label.toLowerCase()} ${value ? 'true' : 'false'}` },
-      graphql ({ type, value }) {
+      Label({ label, type, value }) {
+        return `${label.toLowerCase()} ${value ? 'true' : 'false'}`
+      },
+      graphql({ type, value }) {
         return {
           [config.path]: {
             equals: type === 'not' ? !value : value,
-          }
+          },
         }
       },
       types: {

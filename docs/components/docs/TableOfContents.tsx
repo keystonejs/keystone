@@ -9,7 +9,7 @@ import { Type } from '../primitives/Type'
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
-function sortVisible (allIds: (string | null)[], targetId: string | null) {
+function sortVisible(allIds: (string | null)[], targetId: string | null) {
   return (ids: (string | null)[] | never[]): (string | null)[] | never[] =>
     [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1))
 }
@@ -25,7 +25,7 @@ interface Heading {
   depth: number
 }
 
-export function TableOfContents ({
+export function TableOfContents({
   container,
   headings,
 }: {

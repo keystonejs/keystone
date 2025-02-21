@@ -1,4 +1,3 @@
-
 /** @jsxImportSource @emotion/react */
 
 const statusMap = {
@@ -37,7 +36,7 @@ const statusMap = {
 type StatusProps = {
   look: keyof typeof statusMap
 }
-export function Status ({ look }: StatusProps) {
+export function Status({ look }: StatusProps) {
   const status = statusMap[look]
 
   return (

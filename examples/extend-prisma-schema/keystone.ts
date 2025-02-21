@@ -6,14 +6,16 @@ export default config({
     provider: 'sqlite',
     url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
 
-    extendPrismaSchema: (schema) => {
-      return schema
-        .replace(/(generator [^}]+)}/g, [
+    extendPrismaSchema: schema => {
+      return schema.replace(
+        /(generator [^}]+)}/g,
+        [
           '$1',
           '  binaryTargets = ["native", "linux-musl"]',
           '  previewFeatures = ["metrics"]',
-          '}'
-        ].join('\n'))
+          '}',
+        ].join('\n')
+      )
     },
 
     // WARNING: this is only needed for our monorepo examples, dont do this

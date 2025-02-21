@@ -5,54 +5,60 @@ import { integer, text } from '@keystone-6/core/fields'
 
 test('errors with nested field groups', () => {
   expect(() =>
-    getContext(config({
-      db: {
-        provider: 'sqlite',
-        url: 'file://'
-      },
-      lists: {
-        User: list({
-          access: allowAll,
-          fields: {
-            name: text(),
-            ...group({
-              label: 'Group 1',
-              fields: {
-                ...group({
-                  label: 'Group 2',
-                  fields: {
-                    something: integer(),
-                  },
-                }),
-              },
-            }),
-          } as any,
-        }),
-      },
-    }), {})
+    getContext(
+      config({
+        db: {
+          provider: 'sqlite',
+          url: 'file://',
+        },
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text(),
+              ...group({
+                label: 'Group 1',
+                fields: {
+                  ...group({
+                    label: 'Group 2',
+                    fields: {
+                      something: integer(),
+                    },
+                  }),
+                },
+              }),
+            } as any,
+          }),
+        },
+      }),
+      {}
+    )
   ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`)
 })
 
 test('errors if you write a group manually differently to the group function', () => {
   expect(() =>
-    getContext(config({
-      db: {
-        provider: 'sqlite',
-        url: 'file://'
-      },
-      lists: {
-        User: list({
-          access: allowAll,
-          fields: {
-            name: text(),
-            __group0: {
-              fields: ['name'],
-              label: 'Group 1',
-              description: null,
+    getContext(
+      config({
+        db: {
+          provider: 'sqlite',
+          url: 'file://',
+        },
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text(),
+              __group0: {
+                fields: ['name'],
+                label: 'Group 1',
+                description: null,
+              } as any,
             } as any,
-          } as any,
-        }),
-      }
-    }), {})
+          }),
+        },
+      }),
+      {}
+    )
   ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`)
 })

@@ -2,7 +2,7 @@ import { fields } from '@keystatic/core'
 
 export type Gradient = 'grad1' | 'grad2' | 'grad3' | 'grad4'
 
-export function gradientSelector ({ defaultValue = 'grad1' }: { defaultValue: Gradient }) {
+export function gradientSelector({ defaultValue = 'grad1' }: { defaultValue: Gradient }) {
   return fields.select({
     label: 'Gradient',
     description: 'The gradient to use for the group',

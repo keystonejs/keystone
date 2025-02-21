@@ -21,7 +21,7 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-function validate (value: Value, validation: Validation, fieldLabel: string): string | undefined {
+function validate(value: Value, validation: Validation, fieldLabel: string): string | undefined {
   if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
     return undefined
   }
@@ -52,7 +52,7 @@ function validate (value: Value, validation: Validation, fieldLabel: string): st
   return undefined
 }
 
-function readonlyCheckboxProps (isSet: null | undefined | boolean) {
+function readonlyCheckboxProps(isSet: null | undefined | boolean) {
   const isIndeterminate = isSet == null
   const isSelected = isSet == null ? undefined : isSet
   return {
@@ -64,7 +64,7 @@ function readonlyCheckboxProps (isSet: null | undefined | boolean) {
   }
 }
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
 
   const [secureTextEntry, setSecureTextEntry] = useState(true)
@@ -72,9 +72,10 @@ export function Field (props: FieldProps<typeof controller>) {
   const triggerRef = useRef<HTMLButtonElement>(null)
 
   const isReadOnly = onChange == null
-  const validationMessage = forceValidation || (touched.value && touched.confirm)
-    ? validate(value, field.validation, field.label)
-    : undefined
+  const validationMessage =
+    forceValidation || (touched.value && touched.confirm)
+      ? validate(value, field.validation, field.label)
+      : undefined
 
   const labelId = useId()
   const descriptionId = useSlotId([!!field.description, !!validationMessage])
@@ -137,11 +138,14 @@ export function Field (props: FieldProps<typeof controller>) {
           {field.label.toLocaleLowerCase()}
         </ActionButton>
       ) : (
-        <Flex gap="regular" UNSAFE_className={css({
-          [containerQueries.below.tablet]: {
-            flexDirection: 'column',
-          }
-        })}>
+        <Flex
+          gap="regular"
+          UNSAFE_className={css({
+            [containerQueries.below.tablet]: {
+              flexDirection: 'column',
+            },
+          })}
+        >
           <TextField
             autoFocus
             aria-label={`new ${field.label}`}
@@ -177,35 +181,35 @@ export function Field (props: FieldProps<typeof controller>) {
               onPress={() => setSecureTextEntry(bool => !bool)}
             >
               <Icon src={eyeIcon} />
-              <Text UNSAFE_className={css({
-                [containerQueries.above.mobile]: {
-                  display: 'none',
-                }
-              })}>Show</Text>
+              <Text
+                UNSAFE_className={css({
+                  [containerQueries.above.mobile]: {
+                    display: 'none',
+                  },
+                })}
+              >
+                Show
+              </Text>
             </ToggleButton>
-            <ActionButton onPress={cancelEditing}>
-              Cancel
-            </ActionButton>
+            <ActionButton onPress={cancelEditing}>Cancel</ActionButton>
           </Flex>
         </Flex>
       )}
-      {!!validationMessage && (
-        <FieldMessage id={messageId}>{validationMessage}</FieldMessage>
-      )}
+      {!!validationMessage && <FieldMessage id={messageId}>{validationMessage}</FieldMessage>}
     </VStack>
   )
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
-  return value !== null
-    ? (
-      <div aria-label="is set" style={{display:'flex'}}>
-        <Icon src={asteriskIcon} size="small" />
-        <Icon src={asteriskIcon} size="small" />
-        <Icon src={asteriskIcon} size="small" />
-      </div>
-    )
-    : <VisuallyHidden>not set</VisuallyHidden>
+  return value !== null ? (
+    <div aria-label="is set" style={{ display: 'flex' }}>
+      <Icon src={asteriskIcon} size="small" />
+      <Icon src={asteriskIcon} size="small" />
+      <Icon src={asteriskIcon} size="small" />
+    </div>
+  ) : (
+    <VisuallyHidden>not set</VisuallyHidden>
+  )
 }
 
 type Validation = {
@@ -227,7 +231,7 @@ export type PasswordFieldMeta = {
     isRequired: boolean
     rejectCommon: boolean
     match: {
-      regex: { source: string, flags: string }
+      regex: { source: string; flags: string }
       explanation: string
     } | null
     length: {
@@ -249,9 +253,10 @@ type Value =
       confirm: string
     }
 
-export function controller (
-  config: FieldControllerConfig<PasswordFieldMeta>
-): FieldController<Value, boolean | null> & {
+export function controller(config: FieldControllerConfig<PasswordFieldMeta>): FieldController<
+  Value,
+  boolean | null
+> & {
   validation: Validation
 } {
   const validation: Validation = {
@@ -287,16 +292,8 @@ export function controller (
       config.fieldMeta.isNullable === false
         ? undefined
         : {
-            Filter (props) {
-              const {
-                autoFocus,
-                context,
-                typeLabel,
-                onChange,
-                value,
-                type,
-                ...otherProps
-              } = props
+            Filter(props) {
+              const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
               return (
                 <Checkbox
                   autoFocus={autoFocus}
@@ -308,15 +305,15 @@ export function controller (
                 </Checkbox>
               )
             },
-            graphql ({ type, value }) {
+            graphql({ type, value }) {
               return {
                 [config.path]: {
                   isSet: type === 'not' ? !value : value,
-                }
+                },
               }
             },
-            Label ({ type, value }) {
-              if (type === 'is' && value || type === 'not' && !value) return `is set`
+            Label({ type, value }) {
+              if ((type === 'is' && value) || (type === 'not' && !value)) return `is set`
               return `is not set`
             },
             types: {

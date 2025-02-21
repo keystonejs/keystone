@@ -5,6 +5,6 @@ export const metadata = {
   description: "Discover where KeystoneJS is headed, and why we're going there.",
 }
 
-export default function ForOrganisations () {
+export default function ForOrganisations() {
   return <PageClient />
 }

@@ -65,7 +65,9 @@ adminUITests('./tests/test-projects/basic', browserType => {
       await page.getByLabel('Show suggestions').click()
       await page.getByRole('option', { name: 'James Joyce' }).click()
       await page.getByRole('button', { name: 'Add' }).click()
-      await page.waitForURL(`http://localhost:3000/tasks?%21assignedTo_is="${assignedTask.assignedTo.id}"`)
+      await page.waitForURL(
+        `http://localhost:3000/tasks?%21assignedTo_is="${assignedTask.assignedTo.id}"`
+      )
 
       // Assert that there's only one result.
       await page.getByText('1 Task').waitFor()

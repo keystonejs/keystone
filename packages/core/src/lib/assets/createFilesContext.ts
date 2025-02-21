@@ -1,15 +1,12 @@
 import { randomBytes } from 'node:crypto'
 
-import type {
-  FilesContext,
-  KeystoneConfig,
-} from '../../types'
+import type { FilesContext, KeystoneConfig } from '../../types'
 import { localFileAssetsAPI } from './local'
 import { s3FileAssetsAPI } from './s3'
 import type { FileAdapter } from './types'
 
 // appends a 128-bit random identifier to the filename to prevent guessing
-function defaultTransformName (path: string) {
+function defaultTransformName(path: string) {
   // this regex lazily matches for any characters that aren't a new line
   // it then optionally matches the last instance of a "." symbol
   // followed by any alphanumerical character before the end of the string
@@ -21,7 +18,7 @@ function defaultTransformName (path: string) {
   return `${urlSafeName}-${id}`
 }
 
-export function createFilesContext (config: KeystoneConfig): FilesContext {
+export function createFilesContext(config: KeystoneConfig): FilesContext {
   const adaptersMap = new Map<string, FileAdapter>()
 
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
@@ -47,7 +44,7 @@ export function createFilesContext (config: KeystoneConfig): FilesContext {
       },
       getDataFromStream: async (stream, originalFilename) => {
         const storageConfig = config.storage![storageString]
-        const { transformName = defaultTransformName } = storageConfig as (typeof storageConfig) & {
+        const { transformName = defaultTransformName } = storageConfig as typeof storageConfig & {
           type: 'file'
         }
 

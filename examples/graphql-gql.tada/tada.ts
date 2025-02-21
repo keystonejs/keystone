@@ -1,9 +1,9 @@
-import { initGraphQLTada } from 'gql.tada';
-import type { introspection } from './tada.generated';
+import { initGraphQLTada } from 'gql.tada'
+import type { introspection } from './tada.generated'
 
 export const graphql = initGraphQLTada<{
-  introspection: introspection;
+  introspection: introspection
   scalars: {
-    DateTime: string;
+    DateTime: string
   }
-}>();
+}>()

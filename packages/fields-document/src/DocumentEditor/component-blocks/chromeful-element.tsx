@@ -9,12 +9,9 @@ import React, {
   forwardRef,
   type PropsWithChildren,
   type Ref,
-  useId
+  useId,
 } from 'react'
-import {
-  type RenderElementProps,
-  useSelected
-} from 'slate-react'
+import { type RenderElementProps, useSelected } from 'slate-react'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Heading, Text } from '@keystar/ui/typography'
 import {
@@ -40,13 +37,11 @@ import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { blockElementSpacing } from '../utils-hooks'
 import { createGetPreviewProps } from './preview-props'
 
-export function ChromefulComponentBlockElement (props: {
+export function ChromefulComponentBlockElement(props: {
   children: ReactNode
   renderedBlock: ReactNode
   componentBlock: ComponentBlock & { chromeless?: false }
-  previewProps: PreviewPropsForToolbar<
-    ObjectField<Record<string, ComponentSchema>>
-  >
+  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>
   elementProps: Record<string, unknown>
   onRemove: () => void
   attributes: RenderElementProps['attributes']
@@ -71,18 +66,12 @@ export function ChromefulComponentBlockElement (props: {
     setEditMode(true)
   }, [])
 
-  const ChromefulToolbar =
-    props.componentBlock.toolbar ?? DefaultToolbarWithChrome
+  const ChromefulToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithChrome
   return (
     <BlockPrimitive selected={selected} {...props.attributes}>
       <Flex gap="medium" direction="column">
         <NotEditable>
-          <Text
-            casing="uppercase"
-            color="neutralSecondary"
-            weight="medium"
-            size="small"
-          >
+          <Text casing="uppercase" color="neutralSecondary" weight="medium" size="small">
             {props.componentBlock.label}
           </Text>
         </NotEditable>
@@ -102,10 +91,7 @@ export function ChromefulComponentBlockElement (props: {
               return (
                 <Dialog>
                   <Heading>Edit {props.componentBlock.label}</Heading>
-                  <FormValue
-                    props={props.previewProps}
-                    onClose={onCloseEditMode}
-                  />
+                  <FormValue props={props.previewProps} onClose={onCloseEditMode} />
                 </Dialog>
               )
             })()}
@@ -120,14 +106,12 @@ export function ChromefulComponentBlockElement (props: {
  * Wrap block content, delimiting it from surrounding content, and provide a
  * focus indicator because the cursor may not be present.
  */
-const BlockPrimitive = forwardRef(function BlockPrimitive (
+const BlockPrimitive = forwardRef(function BlockPrimitive(
   {
     children,
     selected,
     ...attributes
-  }: PropsWithChildren<
-    Omit<RenderElementProps['attributes'], 'ref'> & { selected: boolean }
-  >,
+  }: PropsWithChildren<Omit<RenderElementProps['attributes'], 'ref'> & { selected: boolean }>,
   ref: Ref<any>
 ) {
   return (
@@ -160,7 +144,7 @@ const BlockPrimitive = forwardRef(function BlockPrimitive (
   )
 })
 
-function DefaultToolbarWithChrome ({
+function DefaultToolbarWithChrome({
   onShowEditMode,
   onRemove,
   isValid,
@@ -173,32 +157,22 @@ function DefaultToolbarWithChrome ({
   return (
     <NotEditable>
       <Flex direction="column" gap="medium">
-        <Flex
-          alignItems="center"
-          gap="regular"
-          UNSAFE_style={{ userSelect: 'none' }}
-        >
-          <ActionButton onPress={() => onShowEditMode()}>
-            Edit
-          </ActionButton>
+        <Flex alignItems="center" gap="regular" UNSAFE_style={{ userSelect: 'none' }}>
+          <ActionButton onPress={() => onShowEditMode()}>Edit</ActionButton>
           <TooltipTrigger>
             <ActionButton prominence="low" onPress={onRemove}>
               <Icon src={trash2Icon} />
             </ActionButton>
-            <Tooltip tone="critical">
-              Delete
-            </Tooltip>
+            <Tooltip tone="critical">Delete</Tooltip>
           </TooltipTrigger>
         </Flex>
-        {!isValid && (
-          <FieldMessage>Contains invalid fields. Please edit.</FieldMessage>
-        )}
+        {!isValid && <FieldMessage>Contains invalid fields. Please edit.</FieldMessage>}
       </Flex>
     </NotEditable>
   )
 }
 
-function FormValue ({
+function FormValue({
   onClose,
   props,
 }: {
@@ -232,10 +206,7 @@ function FormValue ({
           direction="column"
           gap="xxlarge"
         >
-          <FormValueContentFromPreviewProps
-            {...previewProps}
-            forceValidation={forceValidation}
-          />
+          <FormValueContentFromPreviewProps {...previewProps} forceValidation={forceValidation} />
         </Flex>
       </Content>
       <ButtonGroup>

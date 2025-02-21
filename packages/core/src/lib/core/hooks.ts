@@ -1,7 +1,7 @@
 import { extensionError, validationFailureError } from './graphql-errors'
 import { type InitialisedList } from './initialise-lists'
 
-export async function validate ({
+export async function validate({
   list,
   hookArgs,
 }: {
@@ -12,13 +12,14 @@ export async function validate ({
   >
 }) {
   const messages: string[] = []
-  const fieldsErrors: { error: Error, tag: string }[] = []
+  const fieldsErrors: { error: Error; tag: string }[] = []
   const { operation } = hookArgs
 
   // field validation hooks
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
-      const addValidationError = (msg: string) => void messages.push(`${list.listKey}.${fieldKey}: ${msg}`)
+      const addValidationError = (msg: string) =>
+        void messages.push(`${list.listKey}.${fieldKey}: ${msg}`)
       const hook = field.hooks.validate[operation]
 
       try {
@@ -41,9 +42,7 @@ export async function validate ({
     try {
       await hook({ ...hookArgs, addValidationError } as never) // TODO: FIXME
     } catch (error: any) {
-      throw extensionError('validateInput', [
-        { error, tag: `${list.listKey}.hooks.validateInput` }
-      ])
+      throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }])
     }
 
     if (messages.length) {
@@ -56,8 +55,8 @@ export async function runSideEffectOnlyHook<
   HookName extends 'beforeOperation' | 'afterOperation',
   Args extends Parameters<
     NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
-  >[0]
-> (list: InitialisedList, hookName: HookName, args: Args) {
+  >[0],
+>(list: InitialisedList, hookName: HookName, args: Args) {
   const { operation } = args
 
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean
@@ -72,7 +71,7 @@ export async function runSideEffectOnlyHook<
   }
 
   // field hooks
-  const fieldsErrors: { error: Error, tag: string }[] = []
+  const fieldsErrors: { error: Error; tag: string }[] = []
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {

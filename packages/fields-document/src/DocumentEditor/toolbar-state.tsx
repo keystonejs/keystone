@@ -6,14 +6,11 @@ import { type ComponentBlock } from './component-blocks/api'
 import { LayoutOptionsProvider } from './layouts'
 import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship'
 
-import {
-  type ToolbarState,
-  createToolbarState
-} from './toolbar-state-shared'
+import { type ToolbarState, createToolbarState } from './toolbar-state-shared'
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null)
 
-export function useToolbarState () {
+export function useToolbarState() {
   const toolbarState = useContext(ToolbarStateContext)
   if (!toolbarState) {
     throw new Error('ToolbarStateProvider must be used to use useToolbarState')

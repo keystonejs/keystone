@@ -1,8 +1,4 @@
-export default function ({
-  labelField
-}: {
-  labelField: string
-}) {
+export default function ({ labelField }: { labelField: string }) {
   return `import { type AdminConfig } from '@keystone-6/core/types'
 import makeNavigation from '@keystone-6/auth/components/Navigation'
 

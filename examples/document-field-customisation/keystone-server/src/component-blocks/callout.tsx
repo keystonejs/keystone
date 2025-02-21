@@ -5,11 +5,7 @@ import { Callout, CalloutToolbar } from './callout-ui'
 
 export const callout = component({
   preview: function (props) {
-    return (
-      <Callout tone={props.fields.tone.value}>
-        {props.fields.content.element}
-      </Callout>
-    )
+    return <Callout tone={props.fields.tone.value}>{props.fields.content.element}</Callout>
   },
   label: 'Callout',
   chromeless: true,
@@ -32,7 +28,7 @@ export const callout = component({
       links: 'inherit',
     }),
   },
-  toolbar ({ props, onRemove }) {
+  toolbar({ props, onRemove }) {
     return (
       <CalloutToolbar
         onChange={tone => {

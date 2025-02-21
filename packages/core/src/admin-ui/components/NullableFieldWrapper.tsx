@@ -17,7 +17,7 @@ type NullableFieldWrapperProps = {
   /**
    * When `true`, the field is wrapped and the checkbox is shown. Otherwise, the
    * field is rendered directly.
-  */
+   */
   isAllowed?: boolean
   /** When `true`, you must disable the field to prevent conflicting user input. */
   isNull?: boolean
@@ -35,17 +35,17 @@ type NullableFieldWrapperProps = {
 /**
  * Wraps a field component with a "group" (ARIA `<fieldset>`), and
  * appends a checkbox to allow setting the value to `null`.
- * 
+ *
  * Prefer a more elegant solution where possible, like clearing the value or
  * deselecting an option.
-*/
-export function NullableFieldWrapper (props: NullableFieldWrapperProps) {
+ */
+export function NullableFieldWrapper(props: NullableFieldWrapperProps) {
   const { autoFocus, children, isAllowed, isNull, isReadOnly, label, onChange } = props
 
   if (!isAllowed) {
     return children
   }
-  
+
   return (
     <VStack aria-label={label} gap="medium" role="group">
       {children}
@@ -62,7 +62,9 @@ export function NullableFieldWrapper (props: NullableFieldWrapperProps) {
             marginTop: `calc(${tokenSchema.size.icon.small} / -2)`,
           }}
         >
-          <Text>Set to <InlineCode>null</InlineCode></Text>
+          <Text>
+            Set to <InlineCode>null</InlineCode>
+          </Text>
         </Checkbox>
       </HStack>
     </VStack>

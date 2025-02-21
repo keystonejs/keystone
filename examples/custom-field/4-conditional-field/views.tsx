@@ -9,7 +9,7 @@ import type {
   FieldProps,
 } from '@keystone-6/core/types'
 
-export function Field ({
+export function Field({
   field,
   value,
   itemValue,
@@ -41,11 +41,16 @@ export function Field ({
 export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
   const discriminant = (item as any)?.[field.dependency.field]?.value ?? Infinity
   const hidden = discriminant > field.dependency.minimumValue
-  if (hidden) return <Text><i>hidden</i></Text>
+  if (hidden)
+    return (
+      <Text>
+        <i>hidden</i>
+      </Text>
+    )
   return <Text>{(item as any)[field.path]}</Text>
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{
     dependency: {
       field: string

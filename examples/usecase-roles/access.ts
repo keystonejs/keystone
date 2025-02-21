@@ -22,7 +22,7 @@ type AccessArgs = {
 }
 
 // this function checks only that a session actually exists, nothing else
-export function isSignedIn ({ session }: AccessArgs) {
+export function isSignedIn({ session }: AccessArgs) {
   return Boolean(session)
 }
 

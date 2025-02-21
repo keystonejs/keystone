@@ -5,19 +5,15 @@ import { Heading } from '@keystar/ui/typography'
 
 import { useKeystone } from '../context'
 
-export function Logo () {
+export function Logo() {
   const { adminConfig } = useKeystone()
   if (adminConfig?.components?.Logo) return <adminConfig.components.Logo />
   return <DefaultLogo />
 }
 
-function DefaultLogo () {
+function DefaultLogo() {
   return (
-    <Heading
-      elementType="div"
-      size="small"
-      UNSAFE_className={css({ lineHeight: 1 })}
-    >
+    <Heading elementType="div" size="small" UNSAFE_className={css({ lineHeight: 1 })}>
       <Link
         href="/"
         className={css({
@@ -40,7 +36,7 @@ function DefaultLogo () {
           },
         })}
       >
-        <LogoMark className={css({ width: tokenSchema.size.element.small })}/>
+        <LogoMark className={css({ width: tokenSchema.size.element.small })} />
         <span>Keystone</span>
       </Link>
     </Heading>
@@ -49,9 +45,15 @@ function DefaultLogo () {
 
 const LogoMark = (props: SVGAttributes<SVGElement>) => (
   <svg viewBox="0 0 118 76" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <path d="M118.184 38.184 87 0H70l31.367 38.367-31.184 38.184L87 76.368l31.184-38.184Z" fill={tokenSchema.color.background.accentEmphasis}/>
-    <path d="M8 38.184 39.184 0h17L24.816 38.367 56 76.552l-16.816-.183L8 38.184Z" fill={tokenSchema.color.foreground.neutral}/>
-    <path d="M0 0h13v76H0V0Z" fill={tokenSchema.color.foreground.neutral}/>
+    <path
+      d="M118.184 38.184 87 0H70l31.367 38.367-31.184 38.184L87 76.368l31.184-38.184Z"
+      fill={tokenSchema.color.background.accentEmphasis}
+    />
+    <path
+      d="M8 38.184 39.184 0h17L24.816 38.367 56 76.552l-16.816-.183L8 38.184Z"
+      fill={tokenSchema.color.foreground.neutral}
+    />
+    <path d="M0 0h13v76H0V0Z" fill={tokenSchema.color.foreground.neutral} />
   </svg>
 )
 

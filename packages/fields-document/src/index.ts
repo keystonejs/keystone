@@ -13,17 +13,17 @@ import type { ComponentBlock } from './DocumentEditor/component-blocks/api-share
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import type {
-  DocumentFeatures,
-  controller,
-} from './views-shared'
+import type { DocumentFeatures, controller } from './views-shared'
 
-type RelationshipsConfig = Record<string, {
-  listKey: string
-  /** GraphQL fields to select when querying the field */
-  selection?: string
-  label: string
-}>
+type RelationshipsConfig = Record<
+  string,
+  {
+    listKey: string
+    /** GraphQL fields to select when querying the field */
+    selection?: string
+    label: string
+  }
+>
 
 type FormattingConfig = {
   inlineMarks?:
@@ -68,10 +68,10 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     links?: true
     dividers?: true
     layouts?: readonly (readonly [number, ...number[]])[]
-    db?: { map?: string, extendPrismaSchema?: (field: string) => string }
+    db?: { map?: string; extendPrismaSchema?: (field: string) => string }
   }
 
-export function document <ListTypeInfo extends BaseListTypeInfo> ({
+export function document<ListTypeInfo extends BaseListTypeInfo>({
   componentBlocks = {},
   dividers,
   formatting,
@@ -89,7 +89,8 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
     })
     const relationships = normaliseRelationships(configRelationships, meta)
     const inputResolver = (data: JSONValue | null | undefined): any => {
-      if (data === null) throw new GraphQLError('Input error: Document fields cannot be set to null')
+      if (data === null)
+        throw new GraphQLError('Input error: Document fields cannot be set to null')
       if (data === undefined) return data
 
       return validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships)
@@ -104,7 +105,9 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
       try {
         assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists, 'document')
       } catch (err) {
-        throw new Error(`Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`)
+        throw new Error(
+          `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
+        )
       }
     }
 
@@ -116,7 +119,7 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
         input: {
           create: {
             arg: g.arg({ type: g.JSON }),
-            resolve (val) {
+            resolve(val) {
               if (val === undefined) {
                 val = [{ type: 'paragraph', children: [{ text: '' }] }]
               }
@@ -137,7 +140,7 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
                   }),
                 },
                 type: g.nonNull(g.JSON),
-                resolve ({ document }, { hydrateRelationships }, context) {
+                resolve({ document }, { hydrateRelationships }, context) {
                   return hydrateRelationships
                     ? addRelationshipData(document as any, context, relationships, componentBlocks)
                     : (document as any)
@@ -145,13 +148,13 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
               }),
             },
           }),
-          resolve ({ value }) {
+          resolve({ value }) {
             if (value === null) return null
             return { document: value }
           },
         }),
         views: '@keystone-6/fields-document/views',
-        getAdminMeta (): Parameters<typeof controller>[0]['fieldMeta'] {
+        getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
           return {
             relationships,
             documentFeatures,
@@ -172,7 +175,7 @@ export function document <ListTypeInfo extends BaseListTypeInfo> ({
   }
 }
 
-function normaliseRelationships (
+function normaliseRelationships(
   configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
   meta: FieldData
 ) {
@@ -191,7 +194,7 @@ function normaliseRelationships (
   return relationships
 }
 
-function normaliseDocumentFeatures (
+function normaliseDocumentFeatures(
   config: Pick<
     DocumentFieldConfig<BaseListTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'
@@ -207,7 +210,7 @@ function normaliseDocumentFeatures (
           listTypes: true,
           softBreaks: true,
         }
-      : config.formatting ?? {}
+      : (config.formatting ?? {})
   const documentFeatures: DocumentFeatures = {
     formatting: {
       alignment:

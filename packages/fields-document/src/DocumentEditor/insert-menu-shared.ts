@@ -1,18 +1,10 @@
-import {
-  Editor,
-  Element,
-  Node,
-  Path,
-  Point,
-  Text,
-  Transforms,
-} from 'slate'
+import { Editor, Element, Node, Path, Point, Text, Transforms } from 'slate'
 
 const nodeListsWithoutInsertMenu = new WeakSet<Node[]>()
 
 const nodesWithoutInsertMenu = new WeakSet<Node>()
 
-function findPathWithInsertMenu (node: Node, path: Path): Path | undefined {
+function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
   if (Text.isText(node)) return node.insertMenu ? path : undefined
   if (nodeListsWithoutInsertMenu.has(node.children)) return
 
@@ -27,7 +19,7 @@ function findPathWithInsertMenu (node: Node, path: Path): Path | undefined {
   nodeListsWithoutInsertMenu.add(node.children)
 }
 
-function removeInsertMenuMarkWhenOutsideOfSelection (editor: Editor) {
+function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
   const path = findPathWithInsertMenu(editor, [])
   if (
     path &&
@@ -42,7 +34,7 @@ function removeInsertMenuMarkWhenOutsideOfSelection (editor: Editor) {
   return false
 }
 
-export function withInsertMenu (editor: Editor): Editor {
+export function withInsertMenu(editor: Editor): Editor {
   const { normalizeNode, apply, insertText } = editor
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node) && node.insertMenu) {

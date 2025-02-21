@@ -8,13 +8,7 @@ for (const isNullable of [true, false]) {
     filterTests(text({ db: { isNullable } }), match => {
       orderableFilterTests(match, basicValues, isNullable)
 
-      const differentCases = [
-        '',
-        'foobar',
-        'FOOBAR',
-        'fooBAR',
-        isNullable ? null : 'blah',
-      ] as const
+      const differentCases = ['', 'foobar', 'FOOBAR', 'fooBAR', isNullable ? null : 'blah'] as const
       if (dbProvider === 'postgresql' || dbProvider === 'sqlite') {
         match(differentCases, { equals: differentCases[3] }, [3])
         match(differentCases, { not: { equals: differentCases[3] } }, [0, 1, 2, 4])

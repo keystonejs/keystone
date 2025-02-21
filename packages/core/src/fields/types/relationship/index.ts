@@ -2,12 +2,12 @@ import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
   type CommonFieldConfig,
-  fieldType
+  fieldType,
 } from '../../../types'
 import { g } from '../../..'
 import {
   type ListMetaRootVal,
-  getAdminMetaForRelationshipField
+  getAdminMetaForRelationshipField,
 } from '../../../lib/create-admin-meta'
 import { type controller } from './views'
 
@@ -53,7 +53,7 @@ type ManyDbConfig = {
   }
 }
 
-function throwIfMissingFields (
+function throwIfMissingFields(
   localListMeta: ListMetaRootVal,
   foreignListMeta: ListMetaRootVal,
   refLabelField: string,
@@ -61,14 +61,22 @@ function throwIfMissingFields (
   fieldKey: string
 ) {
   if (!(refLabelField in foreignListMeta.fieldsByKey)) {
-    throw new Error(`"${refLabelField}" is not a field of list "${foreignListMeta.key}", configured as labelField for "${localListMeta.key}.${fieldKey}"`)
+    throw new Error(
+      `"${refLabelField}" is not a field of list "${foreignListMeta.key}", configured as labelField for "${localListMeta.key}.${fieldKey}"`
+    )
   }
 
   for (const searchFieldKey of refSearchFields) {
     const field = foreignListMeta.fieldsByKey[searchFieldKey]
-    if (!field) throw new Error(`"${searchFieldKey}" is not a field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`)
+    if (!field)
+      throw new Error(
+        `"${searchFieldKey}" is not a field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`
+      )
 
-    if (field.search === null) throw new Error(`"${searchFieldKey}" is not a searchable field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`)
+    if (field.search === null)
+      throw new Error(
+        `"${searchFieldKey}" is not a searchable field of list "${foreignListMeta.key}", configured as searchField for "${localListMeta.key}.${fieldKey}"`
+      )
   }
 }
 
@@ -82,7 +90,7 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CountDisplayConfig)
 
-export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
+export function relationship<ListTypeInfo extends BaseListTypeInfo>({
   ref,
   ...config
 }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -91,7 +99,8 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
 
   return ({ fieldKey, listKey, lists }) => {
     const foreignList = lists[foreignListKey]
-    if (!foreignList) throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
+    if (!foreignList)
+      throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`)
 
     const foreignListTypes = foreignList.types
     const commonConfig = {
@@ -110,10 +119,15 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         const refLabelField = foreignListMeta.labelField
         const refSearchFields = foreignListMeta.initialSearchFields
 
-        const hasOmittedCreate = !lists[foreignListKey].types.relateTo[many ? 'many' : 'one'].create.graphQLType.getFields().create
+        const hasOmittedCreate =
+          !lists[foreignListKey].types.relateTo[
+            many ? 'many' : 'one'
+          ].create.graphQLType.getFields().create
         const hideCreate = config.ui?.hideCreate ?? hasOmittedCreate
         if (!hideCreate && hasOmittedCreate) {
-          throw new Error(`${listKey}.${fieldKey} has ui.hideCreate: false, but the related list ${foreignListKey} has graphql.omit.create: true`)
+          throw new Error(
+            `${listKey}.${fieldKey} has ui.hideCreate: false, but the related list ${foreignListKey} has graphql.omit.create: true`
+          )
         }
 
         if (config.ui?.displayMode === 'count') {
@@ -131,7 +145,13 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         // prefer the local definition to the foreign list, if provided
         const specificRefLabelField = config.ui?.labelField || refLabelField
         const specificRefSearchFields = config.ui?.searchFields || refSearchFields
-        throwIfMissingFields(localListMeta, foreignListMeta, specificRefLabelField, specificRefSearchFields, fieldKey)
+        throwIfMissingFields(
+          localListMeta,
+          foreignListMeta,
+          specificRefLabelField,
+          specificRefSearchFields,
+          fieldKey
+        )
         return {
           displayMode: 'select',
           refListKey: foreignListKey,
@@ -157,19 +177,19 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         input: {
           where: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.where }),
-            resolve (value, context, resolve) {
+            resolve(value, context, resolve) {
               return resolve(value)
             },
           },
           create: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.create }),
-            async resolve (value, context, resolve) {
+            async resolve(value, context, resolve) {
               return resolve(value)
             },
           },
           update: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.update }),
-            async resolve (value, context, resolve) {
+            async resolve(value, context, resolve) {
               return resolve(value)
             },
           },
@@ -177,7 +197,7 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
         output: g.field({
           args: foreignListTypes.findManyArgs,
           type: g.list(g.nonNull(foreignListTypes.output)),
-          resolve ({ value }, args) {
+          resolve({ value }, args) {
             return value.findMany(args)
           },
         }),
@@ -190,7 +210,7 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
                 defaultValue: {},
               }),
             },
-            resolve ({ value }, args) {
+            resolve({ value }, args) {
               return value.count({
                 where: args.where,
               })
@@ -212,27 +232,27 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo> ({
       input: {
         where: {
           arg: g.arg({ type: foreignListTypes.where }),
-          resolve (value, context, resolve) {
+          resolve(value, context, resolve) {
             return resolve(value)
           },
         },
         create: foreignListTypes.relateTo.one.create && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.create }),
-          async resolve (value, context, resolve) {
+          async resolve(value, context, resolve) {
             return resolve(value)
           },
         },
 
         update: foreignListTypes.relateTo.one.update && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.update }),
-          async resolve (value, context, resolve) {
+          async resolve(value, context, resolve) {
             return resolve(value)
           },
         },
       },
       output: g.field({
         type: foreignListTypes.output,
-        resolve ({ value }) {
+        resolve({ value }) {
           return value()
         },
       }),

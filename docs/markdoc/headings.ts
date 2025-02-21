@@ -1,6 +1,3 @@
-
-
-
 import type { RenderableTreeNode, Tag } from '@markdoc/markdoc'
 import { isTag } from './isTag'
 
@@ -10,7 +7,7 @@ export type HeadingType = {
   label: string
 }
 
-export function extractHeadings (content: Tag): HeadingType[] {
+export function extractHeadings(content: Tag): HeadingType[] {
   const headings: HeadingType[] = []
   for (const child of content.children) {
     if (isTag(child) && child.name === 'Heading') {
@@ -24,7 +21,7 @@ export function extractHeadings (content: Tag): HeadingType[] {
   return headings
 }
 
-function stringifyDocContent (node: RenderableTreeNode): string {
+function stringifyDocContent(node: RenderableTreeNode): string {
   if (typeof node === 'string') {
     return node
   }

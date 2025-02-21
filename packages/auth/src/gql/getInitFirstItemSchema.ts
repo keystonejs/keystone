@@ -1,17 +1,11 @@
-import type {
-  BaseItem,
-  KeystoneContext
-} from '@keystone-6/core/types'
+import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
-import {
-  type AuthGqlNames,
-  type InitFirstItemConfig,
-} from '../types'
+import { type AuthGqlNames, type InitFirstItemConfig } from '../types'
 
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 
-export function getInitFirstItemSchema ({
+export function getInitFirstItemSchema({
   listKey,
   fields,
   defaultItemData,
@@ -37,7 +31,9 @@ export function getInitFirstItemSchema ({
   const initialCreateInput = g.wrap.inputObject(
     new GraphQLInputObjectType({
       ...createInputConfig,
-      fields: Object.fromEntries(Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))),
+      fields: Object.fromEntries(
+        Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
+      ),
       name: gqlNames.CreateInitialInput,
     })
   )
@@ -47,7 +43,7 @@ export function getInitFirstItemSchema ({
       [gqlNames.createInitialItem]: g.field({
         type: g.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: g.arg({ type: g.nonNull(initialCreateInput) }) },
-        async resolve (rootVal, { data }, context: KeystoneContext) {
+        async resolve(rootVal, { data }, context: KeystoneContext) {
           if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
           const sudoContext = context.sudo()
@@ -63,8 +59,8 @@ export function getInitFirstItemSchema ({
           const item = await sudoContext.db[listKey].createOne({
             data: {
               ...defaultItemData,
-              ...data
-            }
+              ...data,
+            },
           })
 
           const sessionToken = await context.sessionStrategy.start({
@@ -81,7 +77,7 @@ export function getInitFirstItemSchema ({
 
           return {
             sessionToken,
-            item
+            item,
           }
         },
       }),

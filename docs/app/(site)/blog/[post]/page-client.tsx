@@ -6,14 +6,14 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { parse, format } from 'date-fns'
 
-import {  Markdoc } from '../../../../components/Markdoc'
+import { Markdoc } from '../../../../components/Markdoc'
 import { BlogPage } from '../../../../components/Page'
 import { Heading } from '../../../../components/docs/Heading'
 import { Type } from '../../../../components/primitives/Type'
 import { type BlogPost } from './page'
 import { extractHeadings } from '../../../../markdoc/headings'
 
-export default function Page ({ post }: { post: BlogPost }) {
+export default function Page({ post }: { post: BlogPost }) {
   const params = useParams()
   const headings = [{ id: 'title', depth: 1, label: post.title }, ...extractHeadings(post.content)]
 

@@ -9,13 +9,10 @@ export const metadata = {
   description: 'Developer docs for KeystoneJS: The superpowered headless CMS for developers.',
 }
 
-export default function Docs () {
+export default function Docs() {
   return (
     <DocsLayout noRightNav noProse isIndexPage>
-      <PageClient
-        featuredExamples={<FeaturedExamples />}
-        featuredDocs={<FeaturedDocs />}
-      />
+      <PageClient featuredExamples={<FeaturedExamples />} featuredDocs={<FeaturedDocs />} />
     </DocsLayout>
   )
 }

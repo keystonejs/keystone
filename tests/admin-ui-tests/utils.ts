@@ -1,7 +1,4 @@
-import {
-  type ChildProcessWithoutNullStreams,
-  spawn,
-} from 'node:child_process'
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
 
@@ -12,7 +9,7 @@ import ms from 'ms'
 
 jest.setTimeout(ms('20 minutes'))
 
-export async function loadIndex (page: playwright.Page) {
+export async function loadIndex(page: playwright.Page) {
   try {
     await page.goto('http://localhost:3000')
   } catch {}
@@ -29,11 +26,11 @@ export async function loadIndex (page: playwright.Page) {
 
 const projectRoot = path.resolve(__dirname, '..', '..')
 
-export async function makeGqlRequest (query: string, variables?: Record<string, any>) {
+export async function makeGqlRequest(query: string, variables?: Record<string, any>) {
   const { data, errors } = await fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', },
-    body: JSON.stringify({ query, variables, }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
   }).then(res => res.json())
 
   if (errors) throw new Error(`graphql errors: ${errors.map((x: Error) => x.message).join('\n')}`)
@@ -41,17 +38,14 @@ export async function makeGqlRequest (query: string, variables?: Record<string, 
 }
 
 // Simple utility to create an Array of records given a map function and a range.
-export function generateDataArray (map: (key: number) => any, range: number) {
+export function generateDataArray(map: (key: number) => any, range: number) {
   return Array.from(Array(range).keys()).map(map)
 }
 
-export async function deleteAllData (projectDir: string) {
+export async function deleteAllData(projectDir: string) {
   const resolvedProjectDir = path.resolve(projectRoot, projectDir)
 
-  const { PrismaClient } = require(path.join(
-    resolvedProjectDir,
-    'node_modules/.testprisma/client'
-  ))
+  const { PrismaClient } = require(path.join(resolvedProjectDir, 'node_modules/.testprisma/client'))
   const prisma = new PrismaClient()
 
   await prisma.$transaction(
@@ -63,7 +57,7 @@ export async function deleteAllData (projectDir: string) {
   await prisma.$disconnect()
 }
 
-export function adminUITests (
+export function adminUITests(
   pathToTest: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) {
@@ -83,7 +77,9 @@ export function adminUITests (
   describe('production browser tests', () => {
     let exit: (() => Promise<void>) | undefined = undefined
     test('prepare keystone', async () => {
-      await (await spawnCommand3(projectDir, ['build'])).exited
+      await (
+        await spawnCommand3(projectDir, ['build'])
+      ).exited
       ;({ exit } = await spawnCommand3(projectDir, ['start'], 'Admin UI ready'))
     })
 
@@ -92,11 +88,15 @@ export function adminUITests (
   })
 }
 
-export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullStreams, content: string, timeout = 10000) {
+export async function waitForIO(
+  p: ExecaChildProcess | ChildProcessWithoutNullStreams,
+  content: string,
+  timeout = 10000
+) {
   const signal = AbortSignal.timeout(timeout)
   return new Promise<string>((resolve, reject) => {
     let output = ''
-    function listener (chunk: Buffer) {
+    function listener(chunk: Buffer) {
       output += chunk.toString('utf8')
       if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
@@ -125,7 +125,7 @@ export async function waitForIO (p: ExecaChildProcess | ChildProcessWithoutNullS
 
 const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
-export async function spawnCommand3 (cwd: string, commands: string[], waitOn: string | null = null) {
+export async function spawnCommand3(cwd: string, commands: string[], waitOn: string | null = null) {
   if (!fs.existsSync(cwd)) throw new Error(`No such file or directory ${cwd}`)
 
   const p = spawn('node', [cliBinPath, ...commands], { cwd })
@@ -135,7 +135,8 @@ export async function spawnCommand3 (cwd: string, commands: string[], waitOn: st
 
   const exitPromise = new Promise<void>((resolve, reject) => {
     p.on('exit', exitCode => {
-      if (typeof exitCode === 'number' && exitCode !== 0) return reject(new Error(`Error ${exitCode}`))
+      if (typeof exitCode === 'number' && exitCode !== 0)
+        return reject(new Error(`Error ${exitCode}`))
       resolve()
     })
   })
@@ -146,6 +147,6 @@ export async function spawnCommand3 (cwd: string, commands: string[], waitOn: st
       p.kill('SIGHUP')
       await exitPromise
     },
-    exited: exitPromise
+    exited: exitPromise,
   }
 }

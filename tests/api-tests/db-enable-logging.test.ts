@@ -11,7 +11,7 @@ const runner = (enableLogging: boolean) =>
         User: list({
           access: allowAll,
           fields: {
-            name: text()
+            name: text(),
           },
         }),
       },
@@ -29,10 +29,7 @@ test(
     try {
       expect(await context.query.User.findMany()).toEqual([])
       expect(logs).toEqual([
-        [
-          expect.stringContaining('prisma:query'),
-          expect.stringContaining('SELECT '),
-        ],
+        [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT ')],
       ])
     } finally {
       console.log = prevConsoleLog

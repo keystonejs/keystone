@@ -1,10 +1,7 @@
 import { Element, Editor, Node, Range, Transforms, Text } from 'slate'
 
 import { type DocumentFeatures } from '../views'
-import {
-  EditorAfterButIgnoringingPointsWithNoContent,
-  isElementActive,
-} from './utils'
+import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
 import { type ComponentBlock } from './component-blocks/api'
 import { isInlineContainer } from './editor-shared'
@@ -13,7 +10,7 @@ const isLinkActive = (editor: Editor) => {
   return isElementActive(editor, 'link')
 }
 
-export function wrapLink (editor: Editor, url: string) {
+export function wrapLink(editor: Editor, url: string) {
   if (isLinkActive(editor)) {
     Transforms.unwrapNodes(editor, { match: n => n.type === 'link' })
     return
@@ -43,7 +40,7 @@ export function wrapLink (editor: Editor, url: string) {
 
 const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/
 
-export function withLink (
+export function withLink(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor
@@ -136,7 +133,7 @@ export function withLink (
       }
     }
     if (isInlineContainer(node)) {
-      let lastMergableLink: { index: number, node: Node & { type: 'link' } } | null = null
+      let lastMergableLink: { index: number; node: Node & { type: 'link' } } | null = null
       for (const [idx, child] of node.children.entries()) {
         if (child.type === 'link' && child.href === lastMergableLink?.node.href) {
           const firstLinkPath = [...path, lastMergableLink.index]

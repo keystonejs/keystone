@@ -4,31 +4,19 @@ import React from 'react'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-import {
-  Fields,
-  useBuildItem,
-} from '@keystone-6/core/admin-ui/utils'
-import {
-  GraphQLErrorNotice,
-  Logo,
-} from '@keystone-6/core/admin-ui/components'
+import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'
+import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { Button } from '@keystar/ui/button'
-import {
-  Grid,
-  HStack,
-  VStack
-} from '@keystar/ui/layout'
+import { Grid, HStack, VStack } from '@keystar/ui/layout'
 import { Heading } from '@keystar/ui/typography'
 
 import { useRedirect } from '../lib/useFromRedirect'
 
-import type {
-  AuthGqlNames,
-} from '../types'
+import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
 
-function InitPage ({
+function InitPage({
   authGqlNames,
   listKey,
   fieldPaths,
@@ -73,7 +61,7 @@ function InitPage ({
     try {
       await tryCreateItem({
         variables: {
-          data: builtItem
+          data: builtItem,
         },
       })
     } catch (e) {
@@ -106,27 +94,19 @@ function InitPage ({
         </HStack>
 
         <VStack
-          elementType='form'
+          elementType="form"
           onSubmit={onSubmit}
           // styles
           flex
           gap="xxlarge"
           paddingY="xlarge"
         >
-          <Heading elementType='h1' size='regular'>Create your first user</Heading>
-          <GraphQLErrorNotice
-            errors={[
-              error?.networkError,
-              ...error?.graphQLErrors ?? []
-            ]}
-          />
+          <Heading elementType="h1" size="regular">
+            Create your first user
+          </Heading>
+          <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
           <Fields {...builder.props} />
-          <Button
-            alignSelf="start"
-            isPending={pending}
-            prominence="high"
-            type="submit"
-          >
+          <Button alignSelf="start" isPending={pending} prominence="high" type="submit">
             Get started
           </Button>
         </VStack>

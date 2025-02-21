@@ -11,7 +11,7 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
 })
 
-function prepareFile (path_: string) {
+function prepareFile(path_: string) {
   const path = resolve(`packages/cloudinary/src/test-files/${path_}`)
   const upload = new Upload()
   upload.resolve({

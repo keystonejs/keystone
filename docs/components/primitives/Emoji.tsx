@@ -41,7 +41,7 @@ type EmojiProps = {
   alt: string
 } & HTMLAttributes<HTMLElement>
 
-export function Emoji ({ symbol, alt, ...props }: EmojiProps) {
+export function Emoji({ symbol, alt, ...props }: EmojiProps) {
   const posRef = useRef<HTMLElement>(null)
   const [showOnTop, setShownTop] = useState(true)
 

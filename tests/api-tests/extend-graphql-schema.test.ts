@@ -7,10 +7,10 @@ import { expectInternalServerError } from './utils'
 
 const falseFn: (...args: any) => boolean = () => false
 
-function withAccessCheck <T, Args extends unknown[]> (
+function withAccessCheck<T, Args extends unknown[]>(
   access: boolean | ((...args: Args) => boolean),
   resolver: (...args: Args) => T
-): ((...args: Args) => T) {
+): (...args: Args) => T {
   return (...args: Args) => {
     if (typeof access === 'function') {
       if (!access(...args)) {
@@ -25,7 +25,7 @@ function withAccessCheck <T, Args extends unknown[]> (
 
 const runner = setupTestRunner({
   serve: true,
-  config: ({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -55,9 +55,9 @@ const runner = setupTestRunner({
             }),
           },
         }
-      })
-    }
-  }),
+      }),
+    },
+  },
 })
 
 describe('extendGraphqlSchema', () => {

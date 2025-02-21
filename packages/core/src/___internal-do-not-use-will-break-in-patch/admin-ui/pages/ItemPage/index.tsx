@@ -28,20 +28,12 @@ import {
   useHasChanges,
 } from '../../../../admin-ui/utils'
 import { gql, useMutation } from '../../../../admin-ui/apollo'
-import {
-  useList,
-  useListItem,
-} from '../../../../admin-ui/context'
+import { useList, useListItem } from '../../../../admin-ui/context'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
-import {
-  BaseToolbar,
-  ColumnLayout,
-  ItemPageHeader,
-  StickySidebar
-} from './common'
+import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
 
 type ItemPageProps = {
   listKey: string
@@ -58,14 +50,8 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
   return cb as any
 }
 
-function DeleteButton ({
-  list,
-  value,
-}: {
-  list: ListMeta
-  value: Record<string, unknown>
-}) {
-  const itemId = ((value.id ?? '') as (string | number)).toString()
+function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
+  const itemId = ((value.id ?? '') as string | number).toString()
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const router = useRouter()
   const [deleteItem] = useMutation(
@@ -80,9 +66,7 @@ function DeleteButton ({
   return (
     <Fragment>
       <DialogTrigger>
-        <Button tone="critical">
-          Delete
-        </Button>
+        <Button tone="critical">Delete</Button>
         <AlertDialog
           tone="critical"
           title="Delete item"
@@ -107,8 +91,11 @@ function DeleteButton ({
           }}
         >
           <Text>
-            Are you sure you want to delete <strong>{list.singular} {itemId}</strong>?
-            This action cannot be undone.
+            Are you sure you want to delete{' '}
+            <strong>
+              {list.singular} {itemId}
+            </strong>
+            ? This action cannot be undone.
           </Text>
         </AlertDialog>
       </DialogTrigger>
@@ -120,7 +107,7 @@ function DeleteButton ({
   )
 }
 
-function ItemNotFound (props: PropsWithChildren) {
+function ItemNotFound(props: PropsWithChildren) {
   return (
     <VStack
       alignItems="center"
@@ -133,14 +120,14 @@ function ItemNotFound (props: PropsWithChildren) {
     >
       <Icon src={fileWarningIcon} color="neutralEmphasis" size="large" />
       <Heading align="center">Not found</Heading>
-      <SlotProvider slots={{ text: { align:'center', maxWidth: 'scale.5000' } }}>
+      <SlotProvider slots={{ text: { align: 'center', maxWidth: 'scale.5000' } }}>
         {props.children}
       </SlotProvider>
     </VStack>
   )
 }
 
-function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
+function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
   return (
     <DialogTrigger>
       <Button tone="accent" isDisabled={!props.hasChanges}>
@@ -159,7 +146,7 @@ function ResetButton (props: { onReset: () => void, hasChanges?: boolean }) {
   )
 }
 
-function ItemForm ({
+function ItemForm({
   listKey,
   initialValue,
   onSaveSuccess,
@@ -180,14 +167,14 @@ function ItemForm ({
   )
 
   const [value, setValue] = useState(() => initialValue)
-  function resetValueState () {
+  function resetValueState() {
     setValue(() => initialValue)
   }
   useEffect(() => resetValueState(), [initialValue])
 
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
-  const onSave = useEventCallback(async (e) => {
+  const onSave = useEventCallback(async e => {
     e.preventDefault()
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
@@ -197,7 +184,7 @@ function ItemForm ({
       variables: {
         id: initialValue.id,
         data: serializeValueToOperationItem('update', list.fields, value, initialValue),
-      }
+      },
     })
 
     const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
@@ -233,11 +220,11 @@ function ItemForm ({
               error?.networkError,
               // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
               // which are handled seperately and do not indicate a failure to update the item
-              ...error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []
+              ...(error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []),
             ]}
           />
           <Fields
-            view='itemView'
+            view="itemView"
             position="form"
             fields={list.fields}
             groups={list.groups}
@@ -250,7 +237,7 @@ function ItemForm ({
 
         <StickySidebar>
           <Fields
-            view='itemView'
+            view="itemView"
             position="sidebar"
             fields={list.fields}
             groups={list.groups}
@@ -270,17 +257,9 @@ function ItemForm ({
           >
             Save
           </Button>
-          <ResetButton
-            hasChanges={hasChangedFields}
-            onReset={resetValueState}
-          />
+          <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
-          {!list.hideDelete ? (
-            <DeleteButton
-              list={list}
-              value={value}
-            />
-          ) : null}
+          {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
         </BaseToolbar>
       </form>
 
@@ -293,16 +272,11 @@ function ItemForm ({
 
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
-function ItemPage ({ listKey }: ItemPageProps) {
+function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
   const [id] = Array.isArray(id_) ? id_ : [id_]
-  const {
-    data,
-    error,
-    loading,
-    refetch
-  } = useListItem(listKey, id ?? null)
+  const { data, error, loading, refetch } = useListItem(listKey, id ?? null)
 
   const pageLoading = loading || id === undefined
   const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
@@ -325,19 +299,14 @@ function ItemPage ({ listKey }: ItemPageProps) {
     >
       {pageLoading ? (
         <VStack height="100%" alignItems="center" justifyContent="center">
-          <ProgressCircle aria-label="loading item data" size="large" isIndeterminate  />
+          <ProgressCircle aria-label="loading item data" size="large" isIndeterminate />
         </VStack>
       ) : (
         <ColumnLayout>
           <Box marginY="xlarge">
-            <GraphQLErrorNotice
-              errors={[
-                error?.networkError,
-                ...error?.graphQLErrors ?? []
-              ]}
-            />
-            {data?.item == null && (
-              list.isSingleton ? (
+            <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
+            {data?.item == null &&
+              (list.isSingleton ? (
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
@@ -345,22 +314,22 @@ function ItemPage ({ listKey }: ItemPageProps) {
                   </ItemNotFound>
                 ) : (
                   <ItemNotFound>
-                    <Text>An item with ID <strong>“{id}”</strong> does not exist.</Text>
+                    <Text>
+                      An item with ID <strong>“{id}”</strong> does not exist.
+                    </Text>
                   </ItemNotFound>
                 )
               ) : (
                 <ItemNotFound>
-                  <Text>The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access to it.</Text>
+                  <Text>
+                    The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access
+                    to it.
+                  </Text>
                 </ItemNotFound>
-              )
-            )}
+              ))}
           </Box>
           {initialValue && (
-            <ItemForm
-              listKey={listKey}
-              initialValue={initialValue}
-              onSaveSuccess={refetch}
-            />
+            <ItemForm listKey={listKey} initialValue={initialValue} onSaveSuccess={refetch} />
           )}
         </ColumnLayout>
       )}

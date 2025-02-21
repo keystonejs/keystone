@@ -4,10 +4,10 @@ export type TelemetryVersion1 =
   | undefined
   | false
   | {
-      device: { lastSentDate?: string, informedAt: string }
+      device: { lastSentDate?: string; informedAt: string }
       projects: {
-        default: { lastSentDate?: string, informedAt: string }
-        [projectPath: string]: { lastSentDate?: string, informedAt: string }
+        default: { lastSentDate?: string; informedAt: string }
+        [projectPath: string]: { lastSentDate?: string; informedAt: string }
       }
     }
 
@@ -15,16 +15,16 @@ export type TelemetryVersion2 =
   | undefined
   | false
   | {
-    informedAt: string | null
-    device: {
-      lastSentDate: string | null
-    }
-    projects: Partial<{
-      [projectPath: string]: {
-        lastSentDate: string
+      informedAt: string | null
+      device: {
+        lastSentDate: string | null
       }
-    }>
-  }
+      projects: Partial<{
+        [projectPath: string]: {
+          lastSentDate: string
+        }
+      }>
+    }
 
 export type Device = {
   lastSentDate: string | null // new Date().toISOString().slice(0, 10)

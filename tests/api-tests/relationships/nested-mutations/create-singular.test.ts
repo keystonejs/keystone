@@ -4,10 +4,7 @@ import { list } from '@keystone-6/core'
 import { allOperations, allowAll } from '@keystone-6/core/access'
 
 import { setupTestRunner } from '../../test-runner'
-import {
-  expectGraphQLValidationError,
-  expectSingleRelationshipError,
-} from '../../utils'
+import { expectGraphQLValidationError, expectSingleRelationshipError } from '../../utils'
 
 const runner = setupTestRunner({
   serve: true,
@@ -179,7 +176,7 @@ describe('no access control', () => {
 })
 
 describe('with access control', () => {
-  (
+  ;(
     [
       { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
       { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },

@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   title: 'Keystone Blog',
   description: 'Blog posts from the team maintaining Keystone.',
   openGraph: {
-    images: '/assets/blog/the-keystone-blog-cover.png' 
-  }
+    images: '/assets/blog/the-keystone-blog-cover.png',
+  },
 }
 
-export default async function Docs () {
+export default async function Docs() {
   const keystaticPosts = await reader.collections.posts.all()
 
-  const transformedPosts = keystaticPosts.map((post) => ({
+  const transformedPosts = keystaticPosts.map(post => ({
     slug: post.slug,
     frontmatter: { ...post.entry, content: null },
   }))
 
   // Reverse chronologically sorted
   const sortedPosts = transformedPosts
-    .map((p) => {
+    .map(p => {
       const publishedDate = p.frontmatter.publishDate
       const parsedDate = parse(publishedDate, 'yyyy-M-d', today)
       const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')

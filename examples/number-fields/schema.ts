@@ -1,10 +1,5 @@
 import { list, g } from '@keystone-6/core'
-import {
-  bigInt,
-  float,
-  integer,
-  virtual
-} from '@keystone-6/core/fields'
+import { bigInt, float, integer, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import type { Lists } from '.keystone/types'
 
@@ -21,12 +16,12 @@ export const lists = {
       maximum: virtual({
         field: g.field({
           type: g.Int,
-          resolve (x) {
+          resolve(x) {
             return Math.max(
               x.float ?? 0,
               x.floatDefaulted ?? 0,
               x.integer ?? 0,
-              x.integerDefaulted ?? 0,
+              x.integerDefaulted ?? 0
             )
           },
         }),

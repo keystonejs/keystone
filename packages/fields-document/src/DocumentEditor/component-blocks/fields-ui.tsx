@@ -16,52 +16,62 @@ export { TextField } from '@keystar/ui/text-field'
 export { Text } from '@keystar/ui/typography'
 export { Checkbox } from '@keystar/ui/checkbox'
 
-export function makeIntegerFieldInput (opts: { label: string, validate: (value: number) => boolean }): FormField<number, unknown>['Input'] {
-  return function IntegerFieldInput ({ autoFocus, forceValidation, onChange, value }) {
+export function makeIntegerFieldInput(opts: {
+  label: string
+  validate: (value: number) => boolean
+}): FormField<number, unknown>['Input'] {
+  return function IntegerFieldInput({ autoFocus, forceValidation, onChange, value }) {
     const [isDirty, setDirty] = useState(false)
     return (
       <NumberField
         autoFocus={autoFocus}
         label={opts.label}
-        errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'Invalid integer' : null}
+        errorMessage={
+          (forceValidation || isDirty) && !opts.validate(value) ? 'Invalid integer' : null
+        }
         step={1}
         onBlur={() => setDirty(true)}
-        onChange={x => onChange?.((!Number.isInteger(x)) ? NaN : x)}
+        onChange={x => onChange?.(!Number.isInteger(x) ? NaN : x)}
         value={value ?? NaN}
       />
     )
   }
 }
 
-export function makeUrlFieldInput (opts: { label: string, validate: (value: string) => boolean }): FormField<string, unknown>['Input'] {
-  return function UrlFieldInput ({ autoFocus, forceValidation, onChange, value }) {
+export function makeUrlFieldInput(opts: {
+  label: string
+  validate: (value: string) => boolean
+}): FormField<string, unknown>['Input'] {
+  return function UrlFieldInput({ autoFocus, forceValidation, onChange, value }) {
     const [isDirty, setDirty] = useState(false)
-    return <TextField
-      autoFocus={autoFocus}
-      label={opts.label}
-      errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'Invalid URL' : null}
-      onBlur={() => setDirty(true)}
-      onChange={x => onChange?.(x)}
-      value={value}
-    />
+    return (
+      <TextField
+        autoFocus={autoFocus}
+        label={opts.label}
+        errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'Invalid URL' : null}
+        onBlur={() => setDirty(true)}
+        onChange={x => onChange?.(x)}
+        value={value}
+      />
+    )
   }
 }
 
-export function makeSelectFieldInput ({
+export function makeSelectFieldInput({
   label,
-  options
+  options,
 }: {
   label: string
-  options: readonly { label: string, value: string }[]
+  options: readonly { label: string; value: string }[]
 }): FormField<string, unknown>['Input'] {
   const longestLabelLength = options.reduce((a, item) => Math.max(a, item.label.length), 0)
-  return function PickerFieldInput ({ autoFocus, forceValidation, onChange, value }) {
+  return function PickerFieldInput({ autoFocus, forceValidation, onChange, value }) {
     return (
       <Picker
         autoFocus={autoFocus}
         label={label}
         items={options}
-        onSelectionChange={(key) => {
+        onSelectionChange={key => {
           const newVal = options.find(option => option.value === key)?.value
           if (newVal) {
             onChange?.(newVal)
@@ -74,22 +84,20 @@ export function makeSelectFieldInput ({
           width: `clamp(${tokenSchema.size.alias.singleLineWidth}, calc(${longestLabelLength}ex + ${tokenSchema.size.icon.regular}), 100%)`,
         }}
       >
-        {item => (
-          <PickerItem key={item.value}>{item.label}</PickerItem>
-        )}
+        {item => <PickerItem key={item.value}>{item.label}</PickerItem>}
       </Picker>
     )
   }
 }
 
-export function makeMultiselectFieldInput ({
+export function makeMultiselectFieldInput({
   label,
-  options
+  options,
 }: {
   label: string
-  options: readonly { label: string, value: string }[]
+  options: readonly { label: string; value: string }[]
 }): FormField<string[], unknown>['Input'] {
-  return function ComboFieldInput ({ autoFocus, forceValidation, onChange, value }) {
+  return function ComboFieldInput({ autoFocus, forceValidation, onChange, value }) {
     const [filterText, setFilterText] = useState('')
     const { contains } = useFilter({ sensitivity: 'base' })
     const items = options.filter(option => !value.some(x => x === option.value))
@@ -113,16 +121,14 @@ export function makeMultiselectFieldInput ({
           }}
           width="auto"
         >
-          {item => (
-            <ComboboxItem key={item.value}>{item.label}</ComboboxItem>
-          )}
+          {item => <ComboboxItem key={item.value}>{item.label}</ComboboxItem>}
         </Combobox>
 
         <TagGroup
           aria-label={`${label} selected items`}
           items={value}
           maxRows={2}
-          onRemove={(keys) => {
+          onRemove={keys => {
             const key = keys.values().next().value
             onChange?.(value.filter(x => x !== key))
           }}
@@ -132,9 +138,7 @@ export function makeMultiselectFieldInput ({
             </Text>
           )}
         >
-          {item => (
-            <ComboboxItem key={item}>{item}</ComboboxItem>
-          )}
+          {item => <ComboboxItem key={item}>{item}</ComboboxItem>}
         </TagGroup>
       </VStack>
     )

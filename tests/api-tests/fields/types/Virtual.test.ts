@@ -3,9 +3,9 @@ import { type BaseFields, list, g } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 
-function makeRunner (fields: BaseFields<any>) {
+function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
-    config: ({
+    config: {
       lists: {
         Post: list({
           access: allowAll,
@@ -15,7 +15,7 @@ function makeRunner (fields: BaseFields<any>) {
           },
         }),
       },
-    }),
+    },
   })
 }
 
@@ -26,7 +26,7 @@ describe('Virtual field type', () => {
       foo: virtual({
         field: g.field({
           type: g.Int,
-          resolve () {
+          resolve() {
             return 42
           },
         }),
@@ -67,7 +67,7 @@ describe('Virtual field type', () => {
   test(
     'referencing other list type',
     setupTestRunner({
-      config: ({
+      config: {
         lists: {
           Organisation: list({
             access: allowAll,
@@ -96,7 +96,7 @@ describe('Virtual field type', () => {
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
-                    async resolve (rootVal, args, context) {
+                    async resolve(rootVal, args, context) {
                       const [personAuthors, organisationAuthors] = await Promise.all([
                         context.db.Person.findMany({
                           where: {
@@ -121,7 +121,7 @@ describe('Virtual field type', () => {
             },
           }),
         },
-      }),
+      },
     })(async ({ context }) => {
       const data = await context.query.Post.createOne({
         data: { personAuthor: { create: { name: 'person author' } } },
@@ -179,6 +179,8 @@ describe('Virtual field type', () => {
           }),
         },
       })
-    ).rejects.toMatchInlineSnapshot(`[Error: Post.virtual requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden']`)
+    ).rejects.toMatchInlineSnapshot(
+      `[Error: Post.virtual requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden']`
+    )
   })
 })

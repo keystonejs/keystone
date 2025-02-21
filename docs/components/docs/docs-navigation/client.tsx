@@ -6,7 +6,7 @@ import { type NavigationMap } from '.'
 import { Badge } from '../../primitives/Badge'
 import { NavItem, NavSection } from '../Navigation'
 
-function KeystaticNavItem ({ item }: { item: NonNullable<NavigationMap>[number]['items'][number] }) {
+function KeystaticNavItem({ item }: { item: NonNullable<NavigationMap>[number]['items'][number] }) {
   return (
     <NavItem href={item.href}>
       {item.label}
@@ -19,7 +19,7 @@ function KeystaticNavItem ({ item }: { item: NonNullable<NavigationMap>[number][
   )
 }
 
-export function DocsNavigationClient ({ navigationMap }: { navigationMap: NavigationMap }) {
+export function DocsNavigationClient({ navigationMap }: { navigationMap: NavigationMap }) {
   if (!navigationMap) return null
 
   return (
@@ -33,7 +33,9 @@ export function DocsNavigationClient ({ navigationMap }: { navigationMap: Naviga
           <div key={i}>
             {/* No collapsible section for the first group */}
             {i === 0 ? (
-              group.items.map((item, j) => <KeystaticNavItem key={`${item.label}-${j}`} item={item} />)
+              group.items.map((item, j) => (
+                <KeystaticNavItem key={`${item.label}-${j}`} item={item} />
+              ))
             ) : (
               <NavSection key={i} title={group.groupName}>
                 {group.items.map((item, j) => (

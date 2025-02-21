@@ -1,13 +1,6 @@
-import {
-  Editor,
-  Element,
-  Point,
-  Range,
-  Text,
-  Transforms,
-} from 'slate'
+import { Editor, Element, Point, Range, Text, Transforms } from 'slate'
 
-export function withCodeBlock (editor: Editor): Editor {
+export function withCodeBlock(editor: Editor): Editor {
   const { insertBreak, normalizeNode } = editor
 
   editor.insertBreak = () => {

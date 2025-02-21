@@ -21,8 +21,8 @@ const TYPE_OPERATOR_MAP = {
 } as const
 
 type Value =
-  | { kind: 'create', value: string | null }
-  | { kind: 'update', initial: string | null, value: string | null }
+  | { kind: 'create'; value: string | null }
+  | { kind: 'update'; initial: string | null; value: string | null }
 
 type Validation = {
   isRequired: boolean
@@ -30,30 +30,29 @@ type Validation = {
   max: string
 }
 
-function validate_ (
+function validate_(
   value: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const {
-    value: input,
-    kind,
-  } = value
+  const { value: input, kind } = value
   if (kind === 'create' && hasAutoIncrementDefault && input === null) return
   if (kind === 'update' && value.initial === null && input === null) return
   if (validation.isRequired && input === null) return `${label} is required`
   if (typeof input !== 'string') return
   try {
     const v = BigInt(input)
-    if (validation.min !== undefined && v < BigInt(validation.min)) return `${label} must be greater than or equal to ${validation.min}`
-    if (validation.max !== undefined && v > BigInt(validation.max)) return `${label} must be less than or equal to ${validation.max}`
+    if (validation.min !== undefined && v < BigInt(validation.min))
+      return `${label} must be greater than or equal to ${validation.min}`
+    if (validation.max !== undefined && v > BigInt(validation.max))
+      return `${label} must be less than or equal to ${validation.max}`
   } catch (e: any) {
     return `${label} is not a valid BigInt`
   }
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<{
     validation: Validation
     defaultValue: string | null | 'autoincrement'
@@ -79,26 +78,39 @@ export function controller (
     validation: config.fieldMeta.validation,
     defaultValue: {
       kind: 'create',
-      value: config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
+      value:
+        config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
     },
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value }),
     filter: {
-      Filter (props) {
-        const { autoFocus, context, forceValidation, typeLabel, onChange, type, value, ...otherProps } = props
+      Filter(props) {
+        const {
+          autoFocus,
+          context,
+          forceValidation,
+          typeLabel,
+          onChange,
+          type,
+          value,
+          ...otherProps
+        } = props
         const [isDirty, setDirty] = useState(false)
         if (type === 'empty' || type === 'not_empty') return null
 
-        const labelProps = context === 'add'
-          ? { label: config.label, description: typeLabel }
-          : { label: typeLabel }
+        const labelProps =
+          context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
 
         return (
           <TextField
             {...otherProps}
             {...labelProps}
             autoFocus={autoFocus}
-            errorMessage={(forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value }) ? 'Required' : null}
+            errorMessage={
+              (forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value })
+                ? 'Required'
+                : null
+            }
             inputMode="numeric"
             width="auto"
             onBlur={() => setDirty(true)}
@@ -114,7 +126,7 @@ export function controller (
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
       },
-      Label ({ label, type, value }) {
+      Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()
         const operator = TYPE_OPERATOR_MAP[type as keyof typeof TYPE_OPERATOR_MAP]
         return `${operator} ${value}`
@@ -160,7 +172,7 @@ export function controller (
   }
 }
 
-export function Field ({
+export function Field({
   field,
   value,
   onChange,
@@ -178,7 +190,7 @@ export function Field ({
         label={field.label}
         isReadOnly
         defaultValue="--"
-        contextualHelp={(
+        contextualHelp={
           <ContextualHelp>
             <Heading>Auto increment</Heading>
             <Content>
@@ -187,18 +199,13 @@ export function Field ({
               </Text>
             </Content>
           </ContextualHelp>
-        )}
+        }
       />
     )
   }
 
   const validate = (value: Value) => {
-    return validate_(
-      value,
-      field.validation,
-      field.label,
-      field.hasAutoIncrementDefault
-    )
+    return validate_(value, field.validation, field.label, field.hasAutoIncrementDefault)
   }
 
   return (

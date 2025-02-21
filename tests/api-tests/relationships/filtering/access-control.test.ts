@@ -9,7 +9,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty()
 const postNames = ['Post 1', 'Post 2', 'Post 3']
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       UserToPostLimitedRead: list({
         access: {
@@ -38,7 +38,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('relationship filtering with access control', () => {

@@ -43,8 +43,8 @@ const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) =>
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
   type T = {
     data: {
-      User: { id: IdType, friend: { id: IdType } }
-      Friend: { id: IdType, friendOf: { id: IdType } }
+      User: { id: IdType; friend: { id: IdType } }
+      Friend: { id: IdType; friendOf: { id: IdType } }
     }
   }
 
@@ -59,7 +59,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -70,7 +70,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-one relationships`, () => {
@@ -248,7 +248,7 @@ describe(`One-to-one relationships`, () => {
 
         const _users = (await context.query.User.findMany({
           query: 'id friend { id friendOf { id } }',
-        })) as { id: IdType, friend: { id: IdType, friendOf: { id: IdType } } }[]
+        })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[]
         // The nested company should not have a location
         expect(_users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id)
         _users
@@ -284,7 +284,7 @@ describe(`One-to-one relationships`, () => {
           query: 'id friend { id friendOf { id }}',
         })) as {
           id: IdType
-          friend: { id: IdType, friendOf: { id: IdType } }
+          friend: { id: IdType; friendOf: { id: IdType } }
         }[]
         expect(users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id)
         users

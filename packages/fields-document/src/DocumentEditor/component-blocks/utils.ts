@@ -1,26 +1,22 @@
 import type { DocumentFeatures } from '../../views-shared'
 import type { DocumentFeaturesForNormalization } from '../document-features-normalization'
-import {
-  type Mark,
-  assert,
-} from '../utils'
-import type {
-  ComponentSchema,
-  ChildField
-} from './api-shared'
+import { type Mark, assert } from '../utils'
+import type { ComponentSchema, ChildField } from './api-shared'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
-type PathToChildFieldWithOption = { path: ReadonlyPropPath, options: ChildField['options'] }
+type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] }
 
-export function findChildPropPathsForProp (
+export function findChildPropPathsForProp(
   value: any,
   schema: ComponentSchema,
   path: ReadonlyPropPath
 ): PathToChildFieldWithOption[] {
   switch (schema.kind) {
     case 'form':
-    case 'relationship': return []
-    case 'child': return [{ path: path, options: schema.options }]
+    case 'relationship':
+      return []
+    case 'child':
+      return [{ path: path, options: schema.options }]
     case 'conditional':
       return findChildPropPathsForProp(
         value.value,
@@ -35,8 +31,8 @@ export function findChildPropPathsForProp (
       return paths
     }
     case 'array': {
-      const paths: PathToChildFieldWithOption[] = [];
-      (value as any[]).forEach((val, i) => {
+      const paths: PathToChildFieldWithOption[] = []
+      ;(value as any[]).forEach((val, i) => {
         paths.push(...findChildPropPathsForProp(val, schema.element, path.concat(i)))
       })
       return paths
@@ -44,10 +40,10 @@ export function findChildPropPathsForProp (
   }
 }
 
-export function findChildPropPaths (
+export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentSchema>
-): { path: ReadonlyPropPath | undefined, options: ChildField['options'] }[] {
+): { path: ReadonlyPropPath | undefined; options: ChildField['options'] }[] {
   const propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, [])
   if (propPaths.length) return propPaths
 
@@ -59,7 +55,7 @@ export function findChildPropPaths (
   ]
 }
 
-export function assertNever (arg: never): never {
+export function assertNever(arg: never): never {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg))
 }
 
@@ -80,7 +76,7 @@ export type DocumentFeaturesForChildField =
       documentFeatures: DocumentFeaturesForNormalization
     }
 
-export function getDocumentFeaturesForChildField (
+export function getDocumentFeaturesForChildField(
   editorDocumentFeatures: DocumentFeatures,
   options: ChildField['options']
 ): DocumentFeaturesForChildField {
@@ -151,7 +147,7 @@ export function getDocumentFeaturesForChildField (
   }
 }
 
-function getSchemaAtPropPathInner (
+function getSchemaAtPropPathInner(
   path: (string | number)[],
   value: unknown,
   schema: ComponentSchema
@@ -162,7 +158,8 @@ function getSchemaAtPropPathInner (
   if (schema.kind === 'child' || schema.kind === 'form' || schema.kind === 'relationship') return
   if (schema.kind === 'conditional') {
     const key = path.shift()
-    if (key === 'discriminant') return getSchemaAtPropPathInner(path, (value as any).discriminant, schema.discriminant)
+    if (key === 'discriminant')
+      return getSchemaAtPropPathInner(path, (value as any).discriminant, schema.discriminant)
     if (key === 'value') {
       const propVal = schema.values[(value as any).discriminant]
       return getSchemaAtPropPathInner(path, (value as any).value, propVal)
@@ -180,7 +177,7 @@ function getSchemaAtPropPathInner (
   assertNever(schema)
 }
 
-export function getSchemaAtPropPath (
+export function getSchemaAtPropPath(
   path: ReadonlyPropPath,
   value: Record<string, unknown>,
   props: Record<string, ComponentSchema>
@@ -191,7 +188,7 @@ export function getSchemaAtPropPath (
   })
 }
 
-export function clientSideValidateProp (schema: ComponentSchema, value: unknown): boolean {
+export function clientSideValidateProp(schema: ComponentSchema, value: unknown): boolean {
   if (schema.kind === 'child') return true
   if (schema.kind === 'relationship') return true
   if (schema.kind === 'form') return schema.validate(value)
@@ -199,12 +196,15 @@ export function clientSideValidateProp (schema: ComponentSchema, value: unknown)
   if (value === null) return false
   switch (schema.kind) {
     case 'conditional': {
-      if  (!('discriminant' in value) || !('value' in value)) return false
+      if (!('discriminant' in value) || !('value' in value)) return false
       if (!schema.discriminant.validate(value.discriminant)) return false
-      return clientSideValidateProp(schema.values[
-        // not actually gonna always be a string but just let property access do the coercion
-        value.discriminant as string
-      ], value.value)
+      return clientSideValidateProp(
+        schema.values[
+          // not actually gonna always be a string but just let property access do the coercion
+          value.discriminant as string
+        ],
+        value.value
+      )
     }
     case 'object': {
       for (const [key, childProp] of Object.entries(schema.fields)) {
@@ -222,7 +222,7 @@ export function clientSideValidateProp (schema: ComponentSchema, value: unknown)
   }
 }
 
-export function getAncestorSchemas (
+export function getAncestorSchemas(
   rootSchema: ComponentSchema,
   path: ReadonlyPropPath,
   value: unknown
@@ -258,7 +258,7 @@ export function getAncestorSchemas (
 
 export type ReadonlyPropPath = readonly (string | number)[]
 
-export function getValueAtPropPath (value: unknown, inputPath: ReadonlyPropPath) {
+export function getValueAtPropPath(value: unknown, inputPath: ReadonlyPropPath) {
   const path = [...inputPath]
   while (path.length) {
     const key = path.shift()!
@@ -267,7 +267,7 @@ export function getValueAtPropPath (value: unknown, inputPath: ReadonlyPropPath)
   return value
 }
 
-export function traverseProps (
+export function traverseProps(
   schema: ComponentSchema,
   value: unknown,
   visitor: (schema: ComponentSchema, value: unknown, path: ReadonlyPropPath) => void,
@@ -305,7 +305,7 @@ export function traverseProps (
   assertNever(schema)
 }
 
-export function replaceValueAtPropPath (
+export function replaceValueAtPropPath(
   schema: ComponentSchema,
   value: unknown,
   newValue: unknown,
@@ -323,7 +323,7 @@ export function replaceValueAtPropPath (
   }
 
   if (schema.kind === 'conditional') {
-    const conditionalValue = value as { discriminant: string | boolean, value: unknown }
+    const conditionalValue = value as { discriminant: string | boolean; value: unknown }
     // replaceValueAtPropPath should not be used to only update the discriminant of a conditional field
     // if you want to update the discriminant of a conditional field, replace the value of the whole conditional field
     assert(key === 'value')
@@ -353,7 +353,7 @@ export function replaceValueAtPropPath (
   assertNever(schema)
 }
 
-export function getPlaceholderTextForPropPath (
+export function getPlaceholderTextForPropPath(
   propPath: ReadonlyPropPath,
   fields: Record<string, ComponentSchema>,
   formProps: Record<string, any>

@@ -43,23 +43,23 @@ PageContainer has the following types:
 
 ```typescript
 type PageContainerProps = {
-  header: ReactElement;
-  children: ReactNode;
-  title?: string;
-};
+  header: ReactElement
+  children: ReactNode
+  title?: string
+}
 ```
 
 To match the header style applied to all Admin UI standard pages, we use the `Heading` component from `@keystar/ui/typography` as an `h3` element.
 
 ```tsx
-import { PageContainer } from '@keystone-6/core/admin-ui/component';
-import { Heading } from '@keystar/ui/typography';
+import { PageContainer } from '@keystone-6/core/admin-ui/component'
+import { Heading } from '@keystar/ui/typography'
 
 export default () => {
   return (
     <PageContainer header={<Heading type="h3">Custom Page</Heading>}>{/* ... */}</PageContainer>
-  );
-};
+  )
+}
 ```
 
 ## Try it out in CodeSandbox 🧪

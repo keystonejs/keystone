@@ -23,7 +23,7 @@ import editor from '../../../public/assets/editor.png'
 import dataIntegrity from '../../../public/assets/data-integrity.png'
 import { EndCta } from '../../../components/content/EndCta'
 
-export default function ForOrganisations () {
+export default function ForOrganisations() {
   const mq = useMediaQuery()
 
   return (

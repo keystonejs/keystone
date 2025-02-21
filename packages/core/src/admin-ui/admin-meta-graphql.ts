@@ -1,11 +1,5 @@
-import type {
-  GraphQLNames,
-} from '../types/utils'
-import type {
-  ListMeta,
-  FieldMeta,
-  FieldGroupMeta,
-} from '../types'
+import type { GraphQLNames } from '../types/utils'
+import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types'
 import { gql } from './apollo'
 
 export const adminMetaQuery = gql`

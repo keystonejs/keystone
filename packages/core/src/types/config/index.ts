@@ -9,12 +9,7 @@ import type { Options as BodyParserOptions } from 'body-parser'
 import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
-import type {
-  IdFieldConfig,
-  ListConfig,
-  MaybeItemFunction,
-  MaybeSessionFunction,
-} from './lists'
+import type { IdFieldConfig, ListConfig, MaybeItemFunction, MaybeSessionFunction } from './lists'
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
 import type { ListHooks, FieldHooks } from './hooks'
@@ -25,7 +20,7 @@ export type * from './lists'
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
-  | { type: 'file', transformName?: (filename: string) => MaybePromise<string> }
+  | { type: 'file'; transformName?: (filename: string) => MaybePromise<string> }
   // return does not include extension, extension is handed over in case they want to use it
   | {
       type: 'image'
@@ -92,7 +87,8 @@ export type StorageConfig = (
         | 'bucket-owner-read'
         | 'bucket-owner-full-control'
     }
-) & FileOrImage
+) &
+  FileOrImage
 
 // copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`, as we dont have them
 type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
@@ -129,62 +125,62 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     cors?: CorsOptions
     bodyParser?: BodyParserOptions
     /**
-    * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
-    * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
-    * - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
-    * @default process.env.NODE_ENV !== 'production'
-    */
+     * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
+     * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
+     * - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
+     * @default process.env.NODE_ENV !== 'production'
+     */
     playground?: boolean | 'apollo'
     /**
-    *  Additional options to pass into the ApolloServer constructor.
-    *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
-    */
+     *  Additional options to pass into the ApolloServer constructor.
+     *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+     */
     apolloConfig?: Partial<ApolloServerOptions<KeystoneContext<TypeInfo>>>
     /**
-    * When an error is returned from the GraphQL API, Apollo can include a stacktrace
-    * indicating where the error occurred. When Keystone is processing mutations, it
-    * will sometimes captures more than one error at a time, and then group these into
-    * a single error returned from the GraphQL API. Each of these errors will include
-    * a stacktrace.
-    *
-    * In general both categories of stacktrace are useful for debugging while developing,
-    * but should not be exposed in production, and this is the default behaviour of Keystone.
-    *
-    * You can use the `debug` option to change this behaviour. A use case for this
-    * would be if you need to send the stacktraces to a log, but do not want to return them
-    * from the API. In this case you could set `debug: true` and use
-    * `apolloConfig.formatError` to log the stacktraces and then strip them out before
-    * returning the error.
-    *
-    * ```ts
-    * graphql: {
-    *   debug: true,
-    *   apolloConfig: {
-    *     formatError: err => {
-    *       console.error(err)
-    *       delete err.extensions?.errors
-    *       delete err.extensions?.exception?.errors
-    *       delete err.extensions?.exception?.stacktrace
-    *       return err
-    *     },
-    *   },
-    * }
-    * ```
-    *
-    * @default process.env.NODE_ENV !== 'production'
-    */
+     * When an error is returned from the GraphQL API, Apollo can include a stacktrace
+     * indicating where the error occurred. When Keystone is processing mutations, it
+     * will sometimes captures more than one error at a time, and then group these into
+     * a single error returned from the GraphQL API. Each of these errors will include
+     * a stacktrace.
+     *
+     * In general both categories of stacktrace are useful for debugging while developing,
+     * but should not be exposed in production, and this is the default behaviour of Keystone.
+     *
+     * You can use the `debug` option to change this behaviour. A use case for this
+     * would be if you need to send the stacktraces to a log, but do not want to return them
+     * from the API. In this case you could set `debug: true` and use
+     * `apolloConfig.formatError` to log the stacktraces and then strip them out before
+     * returning the error.
+     *
+     * ```ts
+     * graphql: {
+     *   debug: true,
+     *   apolloConfig: {
+     *     formatError: err => {
+     *       console.error(err)
+     *       delete err.extensions?.errors
+     *       delete err.extensions?.exception?.errors
+     *       delete err.extensions?.exception?.stacktrace
+     *       return err
+     *     },
+     *   },
+     * }
+     * ```
+     *
+     * @default process.env.NODE_ENV !== 'production'
+     */
     debug?: boolean
 
     /**
-    * The path to GraphQL schema
-    * @default 'schema.graphql'
-    */
+     * The path to GraphQL schema
+     * @default 'schema.graphql'
+     */
     schemaPath?: string
 
     /**
-    * A function that receives the Keystone GraphQL schema for the developer to extend
-    * @default 'schema.graphql'
-    */
+     * A function that receives the Keystone GraphQL schema for the developer to extend
+     * @default 'schema.graphql'
+     */
     extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
   }
 
@@ -203,10 +199,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     ) => MaybePromise<void>
 
     /** extend the node:http server used by Keystone */
-    extendHttpServer?: (
-      server: Server,
-      context: KeystoneContext<TypeInfo>,
-    ) => MaybePromise<void>
+    extendHttpServer?: (server: Server, context: KeystoneContext<TypeInfo>) => MaybePromise<void>
   } & (
     | {
         /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
@@ -251,7 +244,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       context: KeystoneContext<TypeInfo>
       wasAccessAllowed: boolean
       basePath: string
-    }) => MaybePromise<{ kind: 'redirect', to: string } | void>
+    }) => MaybePromise<{ kind: 'redirect'; to: string } | void>
   }
 }
 
@@ -281,12 +274,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 export type AdminFileToWrite =
-  | { mode: 'write', src: string, outputPath: string }
-  | { mode: 'copy', inputPath: string, outputPath: string }
+  | { mode: 'write'; src: string; outputPath: string }
+  | { mode: 'copy'; inputPath: string; outputPath: string }
 
-export type {
-  ListHooks,
-  ListAccessControl,
-  FieldHooks,
-  FieldAccessControl
-}
+export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }

@@ -13,8 +13,8 @@ export const lists = {
         ref: 'Category',
         many: true,
         graphql: {
-          omit: true
-        }
+          omit: true,
+        },
       }),
       // editable
       groups: relationship({ ref: 'Group', many: true }),
@@ -29,8 +29,8 @@ export const lists = {
   User: list({
     access: allowAll,
     fields: {
-      name: text()
-    }
+      name: text(),
+    },
   }),
 
   // empty, no fields
@@ -50,7 +50,7 @@ export const lists = {
   Tag: list({
     access: allowAll,
     graphql: {
-      omit: true
+      omit: true,
     },
     fields: {},
   }),
@@ -64,9 +64,9 @@ export const lists = {
         ref: 'User',
         // not in the GraphQL schema
         graphql: {
-          omit: true
-        }
-      })
+          omit: true,
+        },
+      }),
     },
   }),
 
@@ -78,7 +78,7 @@ export const lists = {
         // update: true, // prefer to omit `update` operations at the list if you can
         //   but that is not always acceptable
         delete: true,
-      }
+      },
     },
     fields: {
       message: text({
@@ -86,8 +86,8 @@ export const lists = {
           // ~somewhat immutable
           omit: {
             update: true,
-          }
-        }
+          },
+        },
       }),
 
       createdAt: timestamp({
@@ -100,7 +100,7 @@ export const lists = {
           omit: {
             create: true,
             update: true,
-          }
+          },
         },
       }),
     },
@@ -112,7 +112,7 @@ export const lists = {
             createdAt: new Date(),
           }
         },
-      }
-    }
+      },
+    },
   }),
 } satisfies Lists

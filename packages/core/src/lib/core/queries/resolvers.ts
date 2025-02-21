@@ -4,12 +4,9 @@ import {
   type BaseItem,
   type FindManyArgsValue,
   type KeystoneContext,
-  type OrderDirection
+  type OrderDirection,
 } from '../../../types'
-import {
-  type PrismaFilter,
-  type UniquePrismaFilter,
-} from '../../../types/prisma'
+import { type PrismaFilter, type UniquePrismaFilter } from '../../../types/prisma'
 
 import { getOperationAccess, getAccessFilters } from '../access-control'
 import {
@@ -27,7 +24,7 @@ import { checkFilterOrderAccess } from '../filter-order-access'
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere (uniqueWhere: UniquePrismaFilter) {
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
     where[key] = { equals: uniqueWhere[key] }
@@ -35,10 +32,10 @@ export function mapUniqueWhereToWhere (uniqueWhere: UniquePrismaFilter) {
   return where
 }
 
-function* traverse (
+function* traverse(
   list: InitialisedList,
   inputFilter: InputFilter
-): Generator<{ fieldKey: string, list: InitialisedList }, void, unknown> {
+): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
@@ -61,7 +58,7 @@ function* traverse (
   }
 }
 
-export async function accessControlledFilter (
+export async function accessControlledFilter(
   list: InitialisedList,
   context: KeystoneContext,
   resolvedWhere: PrismaFilter,
@@ -75,7 +72,7 @@ export async function accessControlledFilter (
   return resolvedWhere
 }
 
-export async function findOne (
+export async function findOne(
   args: { where: UniqueInputFilter },
   list: InitialisedList,
   context: KeystoneContext
@@ -105,7 +102,7 @@ export async function findOne (
   return await context.prisma[list.listKey].findFirst({ where: filter })
 }
 
-export async function findMany (
+export async function findMany(
   { where, take, skip, orderBy: rawOrderBy, cursor }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
@@ -142,17 +139,18 @@ export async function findMany (
   })
 
   if (list.cacheHint) {
-    maybeCacheControlFromInfo(info)
-      ?.setCacheHint(list.cacheHint({
+    maybeCacheControlFromInfo(info)?.setCacheHint(
+      list.cacheHint({
         results,
         operationName: info.operation.name?.value,
-        meta: false
-      }))
+        meta: false,
+      })
+    )
   }
   return results
 }
 
-async function resolveOrderBy (
+async function resolveOrderBy(
   orderBy: readonly Record<string, any>[],
   list: InitialisedList,
   context: KeystoneContext
@@ -208,7 +206,7 @@ async function resolveOrderBy (
   )
 }
 
-export async function count (
+export async function count(
   { where }: { where: Record<string, unknown> },
   list: InitialisedList,
   context: KeystoneContext,

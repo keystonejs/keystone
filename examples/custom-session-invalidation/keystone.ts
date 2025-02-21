@@ -1,10 +1,7 @@
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import {
-  type Session,
-  lists,
-} from './schema'
+import { type Session, lists } from './schema'
 import type { Config, Context, TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -35,14 +32,14 @@ const { withAuth } = createAuth({
   sessionData: 'passwordChangedAt',
 })
 
-function withSessionInvalidation (config: Config<Session>): Config<Session> {
+function withSessionInvalidation(config: Config<Session>): Config<Session> {
   const existingSessionStrategy = config.session!
 
   return {
     ...config,
     session: {
       ...existingSessionStrategy,
-      async get ({ context }: { context: Context }): Promise<Session | undefined> {
+      async get({ context }: { context: Context }): Promise<Session | undefined> {
         const session = await existingSessionStrategy.get({ context })
         if (!session) return
 
@@ -55,7 +52,7 @@ function withSessionInvalidation (config: Config<Session>): Config<Session> {
 
         return session
       },
-      async start ({ context, data }: { context: Context, data: Session }) {
+      async start({ context, data }: { context: Context; data: Session }) {
         return await existingSessionStrategy.start({
           context,
           data: {

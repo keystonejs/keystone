@@ -57,7 +57,7 @@ We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `pa
 The `withAuth` config stays the same.
 
 ```typescript
-import { createAuth } from '@keystone-6/auth';
+import { createAuth } from '@keystone-6/auth'
 
 const { withAuth } = createAuth({
   listKey: 'Person',
@@ -65,7 +65,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
   initFirstItem: { fields: ['name', 'email', 'password'] },
   sessionData: 'id passwordChangedAt',
-});
+})
 ```
 
 ### Session
@@ -73,46 +73,46 @@ const { withAuth } = createAuth({
 We can then change the default `statelessSessions` by passing in a new `start` and `get` functions. In the `start` function, we add the `startTime` to the session and start the session using keystone's `start` session function. we can then customize the `get` function to check this `startTime` on the session and compare it to the `passwordChangedAt` time stored in the `Person` table.
 
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session';
-const maxSessionAge = 60 * 60 * 8; // 8 hours, in seconds
+import { statelessSessions } from '@keystone-6/core/session'
+const maxSessionAge = 60 * 60 * 8 // 8 hours, in seconds
 
 const withTimeData = (
   _sessionStrategy: SessionStrategy<Record<string, any>>
 ): SessionStrategy<Record<string, any>> => {
-  const { get, start, ...sessionStrategy } = _sessionStrategy;
+  const { get, start, ...sessionStrategy } = _sessionStrategy
   return {
     ...sessionStrategy,
     get: async ({ req, createContext }) => {
-      const session = await get({ req, createContext });
-      if (!session || !session.startTime) return;
-      if (session.data.passwordChangedAt === null) return session;
+      const session = await get({ req, createContext })
+      if (!session || !session.startTime) return
+      if (session.data.passwordChangedAt === null) return session
       if (session.data.passwordChangedAt === undefined) {
-        throw new TypeError('passwordChangedAt is not listed in sessionData');
+        throw new TypeError('passwordChangedAt is not listed in sessionData')
       }
       if (session.data.passwordChangedAt > session.startTime) {
-        return;
+        return
       }
 
-      return session;
+      return session
     },
     start: async ({ res, data, createContext }) => {
       const withTimeData = {
         ...data,
         startTime: new Date(),
-      };
-      return await start({ res, data: withTimeData, createContext });
+      }
+      return await start({ res, data: withTimeData, createContext })
     },
-  };
-};
+  }
+}
 
 const myAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
   // Add the session strategy to the config
-  if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+  if (!keystoneConfig.session) throw new TypeError('Missing .session configuration')
   return {
     ...keystoneConfig,
     session: withTimeData(keystoneConfig.session),
-  };
-};
+  }
+}
 ```
 
 ### Wrapped config
@@ -132,7 +132,7 @@ export default myAuth(
       session,
     })
   )
-);
+)
 ```
 
 ## Try it out in CodeSandbox 🧪

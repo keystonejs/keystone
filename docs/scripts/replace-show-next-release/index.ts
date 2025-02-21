@@ -4,7 +4,7 @@ import { loadAllMarkdoc } from '../../markdoc/load-all'
 import { printValidationError } from '../../markdoc'
 import { removeNextReleaseConditions } from './markdoc'
 
-async function updateMarkdocFiles () {
+async function updateMarkdocFiles() {
   const docs = await loadAllMarkdoc()
   console.log(`updating ${docs.length} Markdoc files`)
 
@@ -29,6 +29,6 @@ async function updateMarkdocFiles () {
   }
 }
 
-(async () => {
+;(async () => {
   await updateMarkdocFiles()
 })()

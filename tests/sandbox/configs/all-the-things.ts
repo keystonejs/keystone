@@ -25,7 +25,8 @@ import { schema as structureRelationshipsSchema } from '../structure-relationshi
 import { localStorageConfig, trackingFields } from '../utils'
 //  import { type Lists } from '.keystone/types' // TODO
 
-const description = 'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
+const description =
+  'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
 
 export const lists = {
   Thing: list({
@@ -35,7 +36,7 @@ export const lists = {
       timestamp: timestamp({ ui: { description } }),
       structure: structure({
         schema: structureSchema,
-        ui: { views: './structure' }
+        ui: { views: './structure' },
       }),
       structureNested: structure({
         schema: structureNestedSchema,
@@ -81,7 +82,7 @@ export const lists = {
         ui: { description },
         field: g.field({
           type: g.Float,
-          resolve () {
+          resolve() {
             return Math.random() * 1000
           },
         }),
@@ -144,7 +145,7 @@ export const lists = {
       decimal: decimal({
         precision: 32,
         scale: 8,
-        ui: { description }
+        ui: { description },
       }),
       bigInt: bigInt({ isIndexed: 'unique', ui: { description } }),
       float: float({ ui: { description } }),

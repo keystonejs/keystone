@@ -2,7 +2,7 @@
 
 import { Alert } from '../primitives/Alert'
 
-export function ComingSoon () {
+export function ComingSoon() {
   return (
     <Alert>
       <p

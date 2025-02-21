@@ -28,7 +28,7 @@ export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-function safeParseDecimal (value: string | null | undefined) {
+function safeParseDecimal(value: string | null | undefined) {
   if (value === null || value === undefined) return value
   const result = new Decimal(value)
   if (!result.isFinite()) throw new Error(`"${value}" is not finite`)
@@ -36,7 +36,9 @@ function safeParseDecimal (value: string | null | undefined) {
 }
 
 // TODO: https://github.com/Thinkmill/keystatic/blob/main/design-system/pkg/src/number-field/NumberField.tsx
-export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+export function decimal<ListTypeInfo extends BaseListTypeInfo>(
+  config: DecimalFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
   const {
     defaultValue: defaultValue_,
     isIndexed,
@@ -45,26 +47,26 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
     validation = {},
   } = config
 
-  const {
-    isRequired = false,
-    min,
-    max
-  } = validation
+  const { isRequired = false, min, max } = validation
   const defaultValue = typeof defaultValue_ === 'string' ? defaultValue_ : null
 
   const parsedDefaultValue = safeParseDecimal(defaultValue)
   const parsedMax = safeParseDecimal(max) ?? undefined
   const parsedMin = safeParseDecimal(min) ?? undefined
 
-  return (meta) => {
+  return meta => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite')
     }
     if (!Number.isInteger(scale)) {
-      throw new TypeError(`The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
+      throw new TypeError(
+        `The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
+      )
     }
     if (!Number.isInteger(precision)) {
-      throw new TypeError(`The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`)
+      throw new TypeError(
+        `The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
+      )
     }
     if (scale > precision) {
       throw new Error(
@@ -73,41 +75,47 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       )
     }
     if (defaultValue !== null && !parsedDefaultValue) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
+      )
     }
     if (min !== undefined && !parsedMin) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.min: ${min} but it must be a valid finite number`
+      )
     }
     if (max !== undefined && !parsedMax) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies validation.max: ${max} but it must be a valid finite number`
+      )
     }
-    if (
-      min !== undefined &&
-      max !== undefined &&
-      parsedMin && parsedMax &&
-      parsedMin > parsedMax
-    ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`)
+    if (min !== undefined && max !== undefined && parsedMin && parsedMax && parsedMin > parsedMax) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+      )
     }
 
     const hasAdditionalValidation = min !== undefined || max !== undefined
-    const {
-      mode,
-      validate,
-    } = makeValidateHook(meta, config, hasAdditionalValidation ? ({ resolvedData, operation, addValidationError }) => {
-      if (operation === 'delete') return
+    const { mode, validate } = makeValidateHook(
+      meta,
+      config,
+      hasAdditionalValidation
+        ? ({ resolvedData, operation, addValidationError }) => {
+            if (operation === 'delete') return
 
-      const value = safeParseDecimal(resolvedData[meta.fieldKey])
-      if (value != null) {
-        if (parsedMin !== undefined && value.lessThan(parsedMin)) {
-          addValidationError(`value must be greater than or equal to ${min}`)
-        }
+            const value = safeParseDecimal(resolvedData[meta.fieldKey])
+            if (value != null) {
+              if (parsedMin !== undefined && value.lessThan(parsedMin)) {
+                addValidationError(`value must be greater than or equal to ${min}`)
+              }
 
-        if (parsedMax !== undefined && value.greaterThan(parsedMax)) {
-          addValidationError(`value must be less than or equal to ${max}`)
-        }
-      }
-    } : undefined)
+              if (parsedMax !== undefined && value.greaterThan(parsedMax)) {
+                addValidationError(`value must be less than or equal to ${max}`)
+              }
+            }
+          }
+        : undefined
+    )
 
     return fieldType({
       kind: 'scalar',
@@ -116,16 +124,14 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       nativeType: `Decimal(${precision}, ${scale})`,
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
-        typeof defaultValue === 'string'
-          ? { kind: 'literal', value: defaultValue }
-          : undefined,
+        typeof defaultValue === 'string' ? { kind: 'literal', value: defaultValue } : undefined,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {
         ...config.hooks,
-        validate
+        validate,
       },
       input: {
         uniqueWhere: isIndexed === 'unique' ? { arg: g.arg({ type: g.Decimal }) } : undefined,
@@ -138,17 +144,17 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
             type: g.Decimal,
             defaultValue: parsedDefaultValue,
           }),
-          resolve (val) {
+          resolve(val) {
             if (val === undefined) return parsedDefaultValue
             return val
           },
         },
-        update: { arg: g.arg({ type: g.Decimal }), },
+        update: { arg: g.arg({ type: g.Decimal }) },
         orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
       output: g.field({
         type: g.Decimal,
-        resolve ({ value }) {
+        resolve({ value }) {
           if (value === null) return null
           const val: Decimal & { scaleToPrint?: number } = new Decimal(value)
           val.scaleToPrint = scale
@@ -157,7 +163,7 @@ export function decimal <ListTypeInfo extends BaseListTypeInfo> (config: Decimal
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/decimal',
       views: '@keystone-6/core/fields/types/decimal/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {
           validation: {
             isRequired,

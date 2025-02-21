@@ -1,6 +1,4 @@
-import {
-  config,
-} from '@keystone-6/core'
+import { config } from '@keystone-6/core'
 import type {
   BaseKeystoneTypeInfo,
   KeystoneContext,
@@ -13,13 +11,13 @@ import {
 
 import { type setupTestRunner } from './test-runner'
 
-export const dbProvider = function () {
+export const dbProvider = (function () {
   const dbUrl = process.env.DATABASE_URL ?? ''
   if (dbUrl.startsWith('file:')) return 'sqlite' as const
   if (dbUrl.startsWith('postgres:')) return 'postgresql' as const
   if (dbUrl.startsWith('mysql:')) return 'mysql' as const
   throw new Error(`Unsupported environment DATABASE_URL="${dbUrl}"`)
-}()
+})()
 
 const workerId = process.env.JEST_WORKER_ID
 
@@ -37,13 +35,13 @@ export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>>
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked)
 
-function j (messages: string[]) {
+function j(messages: string[]) {
   return messages.map(m => `  - ${m}`).join('\n')
 }
 
-export function expectInternalServerError (
+export function expectInternalServerError(
   errors: readonly any[] | undefined,
-  args: { path: any[], message: string }[]
+  args: { path: any[]; message: string }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -57,7 +55,7 @@ export function expectInternalServerError (
   )
 }
 
-export function expectGraphQLValidationError (
+export function expectGraphQLValidationError(
   errors: readonly any[] | undefined,
   args: { message: string }[]
 ) {
@@ -67,9 +65,9 @@ export function expectGraphQLValidationError (
   )
 }
 
-export function expectAccessDenied (
+export function expectAccessDenied(
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[], msg: string }[]
+  args: { path: (string | number)[]; msg: string }[]
 ) {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
@@ -83,9 +81,9 @@ export function expectAccessDenied (
   )
 }
 
-export function expectValidationError (
+export function expectValidationError(
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[], messages: string[] }[]
+  args: { path: (string | number)[]; messages: string[] }[]
 ) {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
@@ -99,9 +97,9 @@ export function expectValidationError (
   )
 }
 
-export function expectBadUserInput (
+export function expectBadUserInput(
   errors: readonly any[] | undefined,
-  args: { path: any[], message: string }[]
+  args: { path: any[]; message: string }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -113,9 +111,9 @@ export function expectBadUserInput (
   )
 }
 
-export function expectAccessReturnError (
+export function expectAccessReturnError(
   errors: readonly any[] | undefined,
-  args: { path: any[], errors: { tag: string, returned: string }[] }[]
+  args: { path: any[]; errors: { tag: string; returned: string }[] }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -128,9 +126,9 @@ export function expectAccessReturnError (
   )
 }
 
-export function expectFilterDenied (
+export function expectFilterDenied(
   errors: readonly any[] | undefined,
-  args: { path: any[], message: string }[]
+  args: { path: any[]; message: string }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -138,9 +136,9 @@ export function expectFilterDenied (
   )
 }
 
-function expectResolverError (
+function expectResolverError(
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[], messages: string[], debug: any[] }[]
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -165,9 +163,9 @@ export const expectSingleResolverError = (
     },
   ])
 
-function expectRelationshipError (
+function expectRelationshipError(
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[], messages: string[], debug: any[] }[]
+  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
 ) {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -178,7 +176,7 @@ function expectRelationshipError (
   )
 }
 
-export function expectSingleRelationshipError (
+export function expectSingleRelationshipError(
   errors: readonly any[] | undefined,
   path: string,
   fieldPath: string,
@@ -193,7 +191,7 @@ export function expectSingleRelationshipError (
   ])
 }
 
-export async function seed<T extends Record<keyof T, Record<string, unknown>[]>> (
+export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>(
   context: KeystoneContext,
   initialData: T
 ) {
@@ -207,17 +205,23 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   return results as Record<keyof T, Record<string, unknown>[]>
 }
 
-export async function getPrismaSchema <TypeInfo extends BaseKeystoneTypeInfo> ({ lists }: { lists: KeystoneConfigPre<TypeInfo>['lists'] }) {
-  const system = createSystem(config({
-    lists,
-    db: {
-      provider: dbProvider,
-      url: '',
-    },
-    // default to a disabled UI
-    ui: {
-      isDisabled: true,
-    },
-  }))
+export async function getPrismaSchema<TypeInfo extends BaseKeystoneTypeInfo>({
+  lists,
+}: {
+  lists: KeystoneConfigPre<TypeInfo>['lists']
+}) {
+  const system = createSystem(
+    config({
+      lists,
+      db: {
+        provider: dbProvider,
+        url: '',
+      },
+      // default to a disabled UI
+      ui: {
+        isDisabled: true,
+      },
+    })
+  )
   return (await getArtifacts(system)).prisma
 }

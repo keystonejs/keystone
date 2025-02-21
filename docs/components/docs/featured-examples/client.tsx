@@ -8,7 +8,7 @@ import { Markdoc } from '../../Markdoc'
 import { type FeaturedExamples } from '.'
 import { Type } from '../../primitives/Type'
 
-export default function ExamplesList ({ featuredExamples }: { featuredExamples: FeaturedExamples }) {
+export default function ExamplesList({ featuredExamples }: { featuredExamples: FeaturedExamples }) {
   if (!featuredExamples) return null
   const mq = useMediaQuery()
   return (

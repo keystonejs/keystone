@@ -6,7 +6,7 @@ export const metadata = {
   description: 'Index for Keystone’s API reference docs.',
 }
 
-export default function Docs () {
+export default function Docs() {
   return (
     <DocsLayout noRightNav noProse isIndexPage>
       <PageClient />

@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { Heading } from '@keystar/ui/typography'
 
-export function CustomLogo () {
+export function CustomLogo() {
   return (
     <Heading>
       <Link

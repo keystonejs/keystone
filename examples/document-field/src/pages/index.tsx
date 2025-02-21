@@ -2,9 +2,9 @@ import Link from 'next/link'
 import React from 'react'
 import { fetchGraphQL, gql } from '../utils'
 
-type Author = { id: string, name: string, posts: { id: string, slug: string, title: string }[] }
+type Author = { id: string; name: string; posts: { id: string; slug: string; title: string }[] }
 
-export default function Index ({ authors }: { authors: Author[] }) {
+export default function Index({ authors }: { authors: Author[] }) {
   return (
     <>
       <h1>Keystone Blog Project - Home</h1>
@@ -28,7 +28,7 @@ export default function Index ({ authors }: { authors: Author[] }) {
   )
 }
 
-export async function getStaticProps () {
+export async function getStaticProps() {
   const data = await fetchGraphQL(gql`
     query {
       authors {

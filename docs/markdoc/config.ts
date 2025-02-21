@@ -49,7 +49,7 @@ export const baseMarkdocConfig: Config = {
       attributes: {
         kind: { type: String, required: true, matches: ['warn', 'tip', 'error'] },
       },
-      transform (node, config) {
+      transform(node, config) {
         const children = node.transformChildren(config)
         const attributes = node.transformAttributes(config)
         return children.map(child => {
@@ -95,7 +95,7 @@ export const baseMarkdocConfig: Config = {
   nodes: {
     document: {
       ...nodes.document,
-      validate (document) {
+      validate(document) {
         const errors: ValidationError[] = []
         // we want good stable ids so we require documentation authors write ids
         // when they could be ambiguous rather than just adding an index
@@ -149,7 +149,7 @@ export const baseMarkdocConfig: Config = {
         // process determines whether or not markdoc processes tags inside the content of the code block
         process: { type: Boolean, render: false, default: false },
       },
-      transform (node, config) {
+      transform(node, config) {
         const attributes = node.transformAttributes(config)
         const children = node.transformChildren(config)
         if (children.some(child => typeof child !== 'string')) {
@@ -168,7 +168,7 @@ export const baseMarkdocConfig: Config = {
         level: { type: Number, required: true },
         id: { type: String },
       },
-      validate (node) {
+      validate(node) {
         const errors: ValidationError[] = []
         if (node.attributes.level === 1) {
           errors.push({
@@ -189,7 +189,7 @@ export const baseMarkdocConfig: Config = {
         }
         return errors
       },
-      transform (node, config) {
+      transform(node, config) {
         const attributes = node.transformAttributes(config)
         const children = node.transformChildren(config)
         return new Tag(this.render, { ...attributes, id: getIdForHeading(node) }, children)
@@ -210,7 +210,7 @@ export const baseMarkdocConfig: Config = {
   },
 }
 
-function validateLink (node: Node, config: Config): ValidationError[] {
+function validateLink(node: Node, config: Config): ValidationError[] {
   const link = node.attributes.href
   if (
     /https?:\/\//.test(link) ||
@@ -249,7 +249,7 @@ function validateLink (node: Node, config: Config): ValidationError[] {
   return [{ id: 'invalid-link', level: 'error', message: 'Unknown link type' }]
 }
 
-export function getIdForHeading (node: Node): string {
+export function getIdForHeading(node: Node): string {
   if (typeof node.attributes.id === 'string') {
     return node.attributes.id
   }

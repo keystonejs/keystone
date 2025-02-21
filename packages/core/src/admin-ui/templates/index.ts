@@ -11,10 +11,7 @@ import { nextConfigTemplate } from './next-config'
 
 const pkgDir = path.dirname(require.resolve('@keystone-6/core/package.json'))
 
-export function writeAdminFiles (
-  config: KeystoneConfig,
-  adminMeta: AdminMetaRootVal,
-) {
+export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaRootVal) {
   return [
     {
       mode: 'write' as const,
@@ -29,7 +26,7 @@ export function writeAdminFiles (
     {
       mode: 'write' as const,
       src: noAccessTemplate(config.session),
-      outputPath: 'pages/no-access.js'
+      outputPath: 'pages/no-access.js',
     },
     {
       mode: 'write' as const,
@@ -40,7 +37,11 @@ export function writeAdminFiles (
     ...adminMeta.lists.flatMap(({ path, key }) => [
       { mode: 'write' as const, src: listTemplate(key), outputPath: `pages/${path}/index.js` },
       { mode: 'write' as const, src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
-      { mode: 'write' as const, src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
+      {
+        mode: 'write' as const,
+        src: createItemTemplate(key),
+        outputPath: `pages/${path}/create.js`,
+      },
     ]),
   ]
 }

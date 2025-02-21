@@ -1,25 +1,16 @@
 import path from 'path'
 import fs from 'fs/promises'
-import {
-  type Browser,
-  type Page,
-  chromium
-} from 'playwright'
+import { type Browser, type Page, chromium } from 'playwright'
 import { expect as playwrightExpect } from 'playwright/test'
 import { parse, print } from 'graphql'
 import ms from 'ms'
 
-import {
-  loadIndex,
-  makeGqlRequest,
-  spawnCommand3,
-  waitForIO,
-} from './utils'
+import { loadIndex, makeGqlRequest, spawnCommand3, waitForIO } from './utils'
 
 const gql = ([content]: TemplateStringsArray) => content
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')
 
-async function replaceSchema (schema: string) {
+async function replaceSchema(schema: string) {
   await fs.writeFile(
     path.join(testProjectPath, 'schema.ts'),
     await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))
@@ -36,10 +27,7 @@ let browser: Browser = undefined as any
 test('start keystone', async () => {
   // just in case a previous failing test run messed things up, let's reset it
   await replaceSchema('initial.ts')
-  ;({
-    process: ksProcess,
-    exit,
-  } = await spawnCommand3(testProjectPath, ['dev']))
+  ;({ process: ksProcess, exit } = await spawnCommand3(testProjectPath, ['dev']))
   browser = await chromium.launch()
   page = await browser.newPage()
   await waitForIO(ksProcess, 'Admin UI ready')
@@ -58,7 +46,9 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   `)
 
   await page.goto(`http://localhost:3000/somethings/${id}`)
-  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue(
+    'blah'
+  )
 })
 
 test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
@@ -71,7 +61,9 @@ test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second.ts')
   await waitForIO(ksProcess, 'compiled successfully')
 
-  await playwrightExpect(page.getByRole('textbox', { name: 'Very Important Text' })).toHaveValue('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Very Important Text' })).toHaveValue(
+    'blah'
+  )
 })
 
 test('adding a virtual field', async () => {
@@ -119,7 +111,9 @@ test("a runtime error is shown and doesn't crash the process", async () => {
 test('errors can be recovered from', async () => {
   await replaceSchema('initial.ts')
 
-  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue(
+    'blah'
+  )
 })
 
 afterAll(async () => {

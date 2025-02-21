@@ -10,7 +10,7 @@ import { Type } from '../../../components/primitives/Type'
 import { Highlight } from '../../../components/primitives/Highlight'
 import { useMediaQuery } from '../../../lib/media'
 
-export default function Docs ({ posts }) {
+export default function Docs({ posts }) {
   const mq = useMediaQuery()
 
   return (
@@ -59,7 +59,7 @@ export default function Docs ({ posts }) {
               marginBottom: 0,
             }}
           >
-            {posts.map((post) => {
+            {posts.map(post => {
               return (
                 <li
                   css={mq({

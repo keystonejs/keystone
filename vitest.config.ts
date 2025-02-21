@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  
   test: {
     globals: true,
     exclude: [
@@ -11,7 +10,7 @@ export default defineConfig({
       'tests/examples-smoke-tests',
       'tests/cli-tests',
       'examples/testing',
-      'packages/core/tests/telemetry.test.ts'
+      'packages/core/tests/telemetry.test.ts',
     ],
   },
 })

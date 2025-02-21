@@ -51,7 +51,7 @@ jest.mock('conf', () => {
     return mockTelemetryConfig
   })
 
-  return function Conf () {
+  return function Conf() {
     return {
       get: getMockTelemetryConfig,
       set: (key: string, newState: any) => {
@@ -139,13 +139,17 @@ describe('Telemetry tests', () => {
     },
   }
 
-  function expectDidSend (lastSentDate: string | null) {
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/3/project`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  function expectDidSend(lastSentDate: string | null) {
+    expect(https.request).toHaveBeenCalledWith(
+      `https://telemetry.keystonejs.com/3/project`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    }, expect.any(Function))
+      expect.any(Function)
+    )
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
         lastSentDate,
@@ -159,12 +163,16 @@ describe('Telemetry tests', () => {
       })
     )
 
-    expect(https.request).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/3/device`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    expect(https.request).toHaveBeenCalledWith(
+      `https://telemetry.keystonejs.com/3/device`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    }, expect.any(Function))
+      expect.any(Function)
+    )
     expect((https.request as any).end).toHaveBeenCalledWith(
       JSON.stringify({
         lastSentDate,
@@ -182,7 +190,7 @@ describe('Telemetry tests', () => {
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
       device: { lastSentDate: null },
-      projects: {}
+      projects: {},
     })
   })
 
@@ -197,8 +205,8 @@ describe('Telemetry tests', () => {
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
       device: { lastSentDate: today },
       projects: {
-        [mockProjectDir]: { lastSentDate: today }
-      }
+        [mockProjectDir]: { lastSentDate: today },
+      },
     })
   })
 
@@ -224,8 +232,8 @@ describe('Telemetry tests', () => {
       informedAt: expect.stringMatching(new RegExp(`^${mockYesterday}`)),
       device: { lastSentDate: today },
       projects: {
-        [mockProjectDir]: { lastSentDate: today }
-      }
+        [mockProjectDir]: { lastSentDate: today },
+      },
     })
   })
 

@@ -25,7 +25,7 @@ import contentManagement3 from '../../../public/assets/content-management-3.png'
 import contentManagement4 from '../../../public/assets/content-management-4.png'
 import { EndCta } from '../../../components/content/EndCta'
 
-export default function ForOrganisations () {
+export default function ForOrganisations() {
   const mq = useMediaQuery()
 
   return (

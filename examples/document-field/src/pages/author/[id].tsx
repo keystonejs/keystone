@@ -4,7 +4,7 @@ import React from 'react'
 import { DocumentRenderer } from '@keystone-6/document-renderer'
 import { fetchGraphQL, gql } from '../../utils'
 
-export default function Post ({ author }: { author: any }) {
+export default function Post({ author }: { author: any }) {
   return (
     <article>
       <h1>{author.name}</h1>
@@ -22,7 +22,7 @@ export default function Post ({ author }: { author: any }) {
   )
 }
 
-export async function getStaticPaths (): Promise<GetStaticPathsResult> {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const data = await fetchGraphQL(gql`
     query {
       authors {
@@ -36,7 +36,7 @@ export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   }
 }
 
-export async function getStaticProps ({ params }: GetStaticPropsContext) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
   const data = await fetchGraphQL(
     gql`
       query ($id: ID!) {

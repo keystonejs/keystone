@@ -5,6 +5,6 @@ export const metadata = {
   description: 'Keystones brand assets and guidelines',
 }
 
-export default function Brand () {
+export default function Brand() {
   return <PageClient />
 }

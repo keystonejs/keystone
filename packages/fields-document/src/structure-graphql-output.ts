@@ -3,7 +3,7 @@ import { type FieldData } from '@keystone-6/core/types'
 import { type ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 
-function wrapGraphQLFieldInResolver<InputSource, OutputSource> (
+function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
   inputField: g.Field<
     { value: InputSource },
     Record<string, g.Arg<g.InputType, boolean>>,
@@ -11,19 +11,14 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource> (
     'value'
   >,
   getVal: (outputSource: OutputSource) => InputSource
-): g.Field<
-  OutputSource,
-  Record<string, g.Arg<g.InputType, boolean>>,
-  g.OutputType,
-  string
-> {
+): g.Field<OutputSource, Record<string, g.Arg<g.InputType, boolean>>, g.OutputType, string> {
   return g.field({
     type: inputField.type,
     args: inputField.args,
     deprecationReason: inputField.deprecationReason,
     description: inputField.description,
     extensions: inputField.extensions as any,
-    resolve (value, args, context, info) {
+    resolve(value, args, context, info) {
       const val = getVal(value)
       if (!inputField.resolve) {
         return val
@@ -40,7 +35,7 @@ type OutputField = g.Field<
   string
 >
 
-export function getOutputGraphQLField (
+export function getOutputGraphQLField(
   name: string,
   schema: ComponentSchema,
   interfaceImplementations: g.ObjectType<unknown>[],
@@ -54,7 +49,7 @@ export function getOutputGraphQLField (
   return cache.get(schema)!
 }
 
-function getOutputGraphQLFieldInner (
+function getOutputGraphQLFieldInner(
   name: string,
   schema: ComponentSchema,
   interfaceImplementations: g.ObjectType<unknown>[],
@@ -74,7 +69,10 @@ function getOutputGraphQLFieldInner (
         fields: () =>
           Object.fromEntries(
             Object.entries(schema.fields).map(
-              ([key, val]): [string, g.Field<unknown, Record<string, g.Arg<g.InputType>>, g.OutputType, string>] => {
+              ([key, val]): [
+                string,
+                g.Field<unknown, Record<string, g.Arg<g.InputType>>, g.OutputType, string>,
+              ] => {
                 const field = getOutputGraphQLField(
                   `${name}${key[0].toUpperCase()}${key.slice(1)}`,
                   val,
@@ -87,7 +85,7 @@ function getOutputGraphQLFieldInner (
             )
           ),
       }),
-      resolve ({ value }) {
+      resolve({ value }) {
         return value
       },
     })
@@ -108,7 +106,7 @@ function getOutputGraphQLFieldInner (
       deprecationReason: innerField.deprecationReason,
       description: innerField.description,
       extensions: innerField.extensions,
-      resolve ({ value }, args, context, info) {
+      resolve({ value }, args, context, info) {
         if (!resolve) {
           return value as unknown[]
         }
@@ -131,7 +129,7 @@ function getOutputGraphQLFieldInner (
       }
       return discriminantField
     }
-    type SourceType = { discriminant: string | boolean, value: unknown }
+    type SourceType = { discriminant: string | boolean; value: unknown }
 
     const interfaceType = g.interface<SourceType>()({
       name,
@@ -166,7 +164,7 @@ function getOutputGraphQLFieldInner (
 
     return g.field({
       type: interfaceType,
-      resolve ({ value }) {
+      resolve({ value }) {
         return value as SourceType
       },
     })
@@ -176,7 +174,7 @@ function getOutputGraphQLFieldInner (
     const listOutputType = meta.lists[schema.listKey].types.output
     return g.field({
       type: schema.many ? g.list(listOutputType) : listOutputType,
-      resolve ({ value }, args, context) {
+      resolve({ value }, args, context) {
         if (Array.isArray(value)) {
           return context.db[schema.listKey].findMany({
             where: {

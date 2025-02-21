@@ -5,7 +5,7 @@ type TweetProps = {
   url: string
 }
 
-export function Tweet ({ url }: TweetProps) {
+export function Tweet({ url }: TweetProps) {
   const wrapper = React.useRef<HTMLQuoteElement>(null)
 
   React.useEffect(() => {

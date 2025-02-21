@@ -7,7 +7,7 @@ import {
   type FieldProps,
 } from '@keystone-6/core/types'
 
-export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
+export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const disabled = onChange === undefined
   const { left = null, right = null } = value ?? {}
 
@@ -33,9 +33,7 @@ export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof 
   )
 }
 
-export function controller (
-  config: FieldControllerConfig<{}>
-): FieldController<
+export function controller(config: FieldControllerConfig<{}>): FieldController<
   {
     left: string | null
     right: string | null

@@ -14,7 +14,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 const fieldPath = path.resolve(__dirname, './', 'types/fixtures')
 
-export function prepareFile (_filePath: string, kind: 'image' | 'file') {
+export function prepareFile(_filePath: string, kind: 'image' | 'file') {
   const filePath = path.resolve(fieldPath, kind, 'test-files', _filePath)
   const upload = new Upload()
   upload.resolve({
@@ -43,7 +43,7 @@ const s3DefaultStorage = {
   forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
 } as const
 
-function getRunner ({
+function getRunner({
   storage,
   fields,
 }: {
@@ -66,13 +66,13 @@ function getRunner ({
   })
 }
 
-function sha1 (x: Uint8Array) {
+function sha1(x: Uint8Array) {
   return createHash('sha1').update(x).digest('hex')
 }
 
-async function getFileHash (
+async function getFileHash(
   url: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
 ) {
   if (config.matrixValue === 's3') {
     return sha1(await fetch(url).then(async x => new Uint8Array(await x.arrayBuffer())))
@@ -81,9 +81,9 @@ async function getFileHash (
   return sha1(await fsp.readFile(path.join(config.folder, url)))
 }
 
-async function checkFile (
+async function checkFile(
   filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
 ) {
   if (config.matrixValue === 's3') return await fetch(filename).then(x => x.status === 200)
   return Boolean(await fsp.stat(path.join(config.folder, filename)).catch(() => null))
@@ -127,7 +127,7 @@ describe('File - Crud special tests', () => {
     describe(matrixValue, () => {
       describe('Create - upload', () => {
         const config = getConfig()
-        const hashConfig: { matrixValue: 'local', folder: string } | { matrixValue: 's3' } =
+        const hashConfig: { matrixValue: 'local'; folder: string } | { matrixValue: 's3' } =
           config.kind === 'local'
             ? { matrixValue: 'local', folder: `${config.storagePath}/`! }
             : { matrixValue: config.kind }

@@ -14,21 +14,18 @@ const leafSelect = fields.select({
 })
 
 export const schema: ArrayField<ConditionalField<typeof leafSelect>> = fields.array(
-  fields.conditional(
-    leafSelect,
-    {
-      leaf: fields.object({
-        label: fields.text({ label: 'Label' }),
-        url: fields.url({ label: 'URL' }),
-      }),
-      group: fields.object({
-        label: fields.text({ label: 'Label' }),
-        get children () {
-          return schema
-        },
-      }),
-    }
-  ),
+  fields.conditional(leafSelect, {
+    leaf: fields.object({
+      label: fields.text({ label: 'Label' }),
+      url: fields.url({ label: 'URL' }),
+    }),
+    group: fields.object({
+      label: fields.text({ label: 'Label' }),
+      get children() {
+        return schema
+      },
+    }),
+  }),
   {
     itemLabel: props =>
       `${

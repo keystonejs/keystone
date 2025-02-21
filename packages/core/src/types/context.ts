@@ -1,20 +1,10 @@
-import type {
-  IncomingMessage,
-  ServerResponse
-} from 'http'
+import type { IncomingMessage, ServerResponse } from 'http'
 import type { Readable } from 'stream'
-import type {
-  DocumentNode,
-  ExecutionResult,
-  GraphQLSchema,
-} from 'graphql'
+import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists'
 import type { SessionStrategy } from './session'
-import type {
-  BaseKeystoneTypeInfo,
-  BaseListTypeInfo,
-} from './type-info'
+import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info'
 import type { MaybePromise } from './utils'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
@@ -62,7 +52,7 @@ type UniqueWhereInput<ListTypeInfo extends BaseListTypeInfo> =
     ? { readonly where: ListTypeInfo['inputs']['uniqueWhere'] }
     : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] }
 
-type ListAPI <ListTypeInfo extends BaseListTypeInfo> = {
+type ListAPI<ListTypeInfo extends BaseListTypeInfo> = {
   findMany(
     args?: {
       readonly where?: ListTypeInfo['inputs']['where']
@@ -74,12 +64,8 @@ type ListAPI <ListTypeInfo extends BaseListTypeInfo> = {
       readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
     } & ResolveFields
   ): Promise<readonly Record<string, any>[]>
-  findOne(
-    args: UniqueWhereInput<ListTypeInfo> & ResolveFields
-  ): Promise<Record<string, any>>
-  count(args?: {
-    readonly where?: ListTypeInfo['inputs']['where']
-  }): Promise<number>
+  findOne(args: UniqueWhereInput<ListTypeInfo> & ResolveFields): Promise<Record<string, any>>
+  count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
   updateOne(
     args: UniqueWhereInput<ListTypeInfo> & {
       readonly data: ListTypeInfo['inputs']['update']
@@ -121,7 +107,7 @@ type ResolveFields = {
   readonly query?: string
 }
 
-type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
+type DbAPI<ListTypeInfo extends BaseListTypeInfo> = {
   findMany(args?: {
     readonly where?: ListTypeInfo['inputs']['where']
     readonly take?: number
@@ -131,12 +117,8 @@ type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
       | readonly ListTypeInfo['inputs']['orderBy'][]
     readonly cursor?: ListTypeInfo['inputs']['uniqueWhere']
   }): Promise<readonly ListTypeInfo['item'][]>
-  findOne(
-    args: UniqueWhereInput<ListTypeInfo>
-  ): Promise<ListTypeInfo['item'] | null>
-  count(args?: {
-    readonly where?: ListTypeInfo['inputs']['where']
-  }): Promise<number>
+  findOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item'] | null>
+  count(args?: { readonly where?: ListTypeInfo['inputs']['where'] }): Promise<number>
   updateOne(
     args: UniqueWhereInput<ListTypeInfo> & {
       readonly data: ListTypeInfo['inputs']['update']
@@ -153,9 +135,7 @@ type DbAPI <ListTypeInfo extends BaseListTypeInfo> = {
   createMany(args: {
     readonly data: readonly ListTypeInfo['inputs']['create'][]
   }): Promise<ListTypeInfo['item'][]>
-  deleteOne(
-    args: UniqueWhereInput<ListTypeInfo>
-  ): Promise<ListTypeInfo['item']>
+  deleteOne(args: UniqueWhereInput<ListTypeInfo>): Promise<ListTypeInfo['item']>
   deleteMany(args: {
     readonly where: readonly ListTypeInfo['inputs']['uniqueWhere'][]
   }): Promise<ListTypeInfo['item'][]>

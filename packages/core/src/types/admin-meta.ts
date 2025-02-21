@@ -1,8 +1,5 @@
 import type { ReactElement } from 'react'
-import type {
-  GraphQLNames,
-  JSONValue,
-} from './utils'
+import type { GraphQLNames, JSONValue } from './utils'
 
 export type NavigationProps = {
   lists: ListMeta[]
@@ -46,7 +43,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   validate?: (formState: FormState) => boolean
   filter?: {
     types: Record<string, FilterTypeDeclaration<FilterValue>>
-    graphql(type: { type: string, value: FilterValue }): Record<string, any>
+    graphql(type: { type: string; value: FilterValue }): Record<string, any>
     Label(type: FilterTypeToFormat<FilterValue>): string | ReactElement | null
     Filter(props: {
       autoFocus?: boolean
@@ -117,7 +114,7 @@ export type ListMeta = {
   pageSize: number
   initialColumns: string[]
   initialSearchFields: string[]
-  initialSort: null | { direction: 'ASC' | 'DESC', field: string }
+  initialSort: null | { direction: 'ASC' | 'DESC'; field: string }
   isSingleton: boolean
 
   hideNavigation: boolean
@@ -160,7 +157,7 @@ export type CellComponent<
   FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<
     any,
     any
-  >
+  >,
 > = {
   (props: {
     value: any // TODO: T

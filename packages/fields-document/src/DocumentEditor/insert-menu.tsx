@@ -1,15 +1,5 @@
-import React, {
-  type ReactNode,
-  Fragment,
-  useContext,
-  useEffect,
-  useRef
-} from 'react'
-import {
-  type Text,
-  Editor,
-  Transforms,
-} from 'slate'
+import React, { type ReactNode, Fragment, useContext, useEffect, useRef } from 'react'
+import { type Text, Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { matchSorter } from 'match-sorter'
 import scrollIntoView from 'scroll-into-view-if-needed'
@@ -18,7 +8,7 @@ import { type ComponentBlock } from './component-blocks/api-shared'
 import { type Relationships } from './relationship-shared'
 import { useDocumentFieldRelationships } from './relationship'
 import { useToolbarState } from './toolbar-state'
-import { type ToolbarState, } from './toolbar-state-shared'
+import { type ToolbarState } from './toolbar-state-shared'
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils'
 import { insertLayout } from './layouts-shared'
 
@@ -29,7 +19,6 @@ import { Popover } from '@keystar/ui/overlays'
 import { Item, ListBoxBase, useListBoxLayout } from '@keystar/ui/listbox'
 import { css, tokenSchema } from '@keystar/ui/style'
 
-
 export * from './insert-menu-shared'
 
 type Option = {
@@ -38,7 +27,7 @@ type Option = {
   insert: (editor: Editor) => void
 }
 
-function getOptions (
+function getOptions(
   toolbarState: ToolbarState,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
@@ -65,7 +54,7 @@ function getOptions (
       .filter(a => toolbarState.editorDocumentFeatures.formatting.headingLevels.includes(a))
       .map(level => ({
         label: `Heading ${level}`,
-        insert (editor: Editor) {
+        insert(editor: Editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'heading',
             level,
@@ -76,7 +65,7 @@ function getOptions (
     !toolbarState.blockquote.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.blockquote && {
         label: 'Blockquote',
-        insert (editor) {
+        insert(editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'blockquote',
             children: [{ text: '' }],
@@ -86,7 +75,7 @@ function getOptions (
     !toolbarState.code.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.code && {
         label: 'Code block',
-        insert (editor) {
+        insert(editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'code',
             children: [{ text: '' }],
@@ -96,7 +85,7 @@ function getOptions (
     !toolbarState.dividers.isDisabled &&
       toolbarState.editorDocumentFeatures.dividers && {
         label: 'Divider',
-        insert (editor) {
+        insert(editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'divider',
             children: [{ text: '' }],
@@ -105,7 +94,7 @@ function getOptions (
       },
     !!toolbarState.editorDocumentFeatures.layouts.length && {
       label: 'Layout',
-      insert (editor) {
+      insert(editor) {
         insertLayout(editor, toolbarState.editorDocumentFeatures.layouts[0])
       },
     },
@@ -113,7 +102,7 @@ function getOptions (
       toolbarState.editorDocumentFeatures.formatting.listTypes.ordered && {
         label: 'Numbered List',
         keywords: ['ordered list'],
-        insert (editor) {
+        insert(editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'ordered-list',
             children: [{ text: '' }],
@@ -124,7 +113,7 @@ function getOptions (
       toolbarState.editorDocumentFeatures.formatting.listTypes.unordered && {
         label: 'Bullet List',
         keywords: ['unordered list'],
-        insert (editor) {
+        insert(editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'unordered-list',
             children: [{ text: '' }],
@@ -135,7 +124,7 @@ function getOptions (
   return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean')
 }
 
-function insertOption (editor: Editor, text: Text, option: Option) {
+function insertOption(editor: Editor, text: Text, option: Option) {
   const path = ReactEditor.findPath(editor, text)
   Transforms.delete(editor, {
     at: {
@@ -146,13 +135,7 @@ function insertOption (editor: Editor, text: Text, option: Option) {
   option.insert(editor)
 }
 
-export function InsertMenu ({
-  children,
-  text,
-}: {
-  children: ReactNode
-  text: Text
-}) {
+export function InsertMenu({ children, text }: { children: ReactNode; text: Text }) {
   const toolbarState = useToolbarState()
   const { editor } = toolbarState
   const componentBlocks = useContext(ComponentBlockContext)
@@ -182,8 +165,7 @@ export function InsertMenu ({
             event.preventDefault()
             state.selectionManager.setFocused(true)
             state.selectionManager.setFocusedKey(
-              (Number(state.selectionManager.focusedKey) ===
-              stateRef.current.options.length - 1
+              (Number(state.selectionManager.focusedKey) === stateRef.current.options.length - 1
                 ? 0
                 : Number(state.selectionManager.focusedKey) + 1
               ).toString()
@@ -205,8 +187,7 @@ export function InsertMenu ({
           return
         }
         case 'Enter': {
-          const option =
-            stateRef.current.options[Number(state.selectionManager.focusedKey)]
+          const option = stateRef.current.options[Number(state.selectionManager.focusedKey)]
           if (option) {
             insertOption(editor, stateRef.current.text, option)
             event.preventDefault()
@@ -251,9 +232,8 @@ export function InsertMenu ({
   const scrollableRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const element = scrollableRef.current?.querySelector(
-      '[role="listbox"] [role="presentation"]'
-    )?.children[state.selectionManager.focusedKey as number]
+    const element = scrollableRef.current?.querySelector('[role="listbox"] [role="presentation"]')
+      ?.children[state.selectionManager.focusedKey as number]
     if (element) {
       scrollIntoView(element, {
         scrollMode: 'if-needed',
@@ -286,10 +266,7 @@ export function InsertMenu ({
         state={overlayState}
         triggerRef={triggerRef}
       >
-        <div
-          className={css({ overflow: 'scroll', maxHeight: 300 })}
-          ref={scrollableRef}
-        >
+        <div className={css({ overflow: 'scroll', maxHeight: 300 })} ref={scrollableRef}>
           <ListBoxBase
             aria-label="Insert block"
             state={state}

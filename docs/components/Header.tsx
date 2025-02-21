@@ -32,14 +32,14 @@ import { ArrowR } from './icons/ArrowR'
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean, desktopOpenState: number }
+type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number }
 const HeaderContext = createContext<HeaderContextType>({
   mobileNavIsOpen: false,
   desktopOpenState: -1,
 })
 export const useHeaderContext = () => useContext(HeaderContext)
 
-function Logo () {
+function Logo() {
   const mq = useMediaQuery()
 
   return (
@@ -75,7 +75,7 @@ function Logo () {
   )
 }
 
-function useCurrentSection () {
+function useCurrentSection() {
   const pathname = usePathname()
   const check = (candidate: string) => pathname?.startsWith(candidate)
   if (['/updates', '/releases'].some(check)) return '/updates'
@@ -84,7 +84,7 @@ function useCurrentSection () {
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem ({
+function LinkItem({
   children,
   href,
   target,
@@ -117,12 +117,12 @@ function LinkItem ({
   )
 }
 
-function useClickOutside (ref: RefObject<HTMLElement | null>, cb: () => void) {
+function useClickOutside(ref: RefObject<HTMLElement | null>, cb: () => void) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */
-    function handleClickOutside (event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         cb()
       }
@@ -134,19 +134,19 @@ function useClickOutside (ref: RefObject<HTMLElement | null>, cb: () => void) {
   }, [ref, cb])
 }
 
-function FlatMenu ({
+function FlatMenu({
   label,
   items = [],
 }: {
   label: string
-  items: Array<{ label: string, href: string }>
+  items: Array<{ label: string; href: string }>
 }) {
   const mq = useMediaQuery()
   const menuRef = useRef(null)
   const [showContent, setShowContent] = useState(false)
 
   const onClickHandler = useCallback(() => {
-    setShowContent((b) => !b)
+    setShowContent(b => !b)
   }, [setShowContent])
 
   const closeMenu = useCallback(() => {
@@ -234,7 +234,7 @@ function FlatMenu ({
     </div>
   )
 }
-export function Header () {
+export function Header() {
   const mq = useMediaQuery()
   const router = useRouter()
   const pathname = usePathname()
@@ -309,7 +309,7 @@ export function Header () {
     loadSearch(searchAttempt)
     // search - keyboard shortcut
     const keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
-    document.body.addEventListener('keydown', (event) => {
+    document.body.addEventListener('keydown', event => {
       // If we're typing in an input, don't ever focus the search input
       if (
         document.activeElement &&
@@ -324,7 +324,7 @@ export function Header () {
         document.getElementById('search-field')?.focus()
       }
     })
-    document.body.addEventListener('keyup', (event) => {
+    document.body.addEventListener('keyup', event => {
       delete keysPressed[event.key]
     })
   }, [])

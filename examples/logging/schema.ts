@@ -9,6 +9,6 @@ export const lists = {
     access: allowAll,
     fields: {
       title: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-    }
+    },
   }),
 } satisfies Lists

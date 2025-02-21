@@ -29,21 +29,19 @@ export const Field = (props: FieldProps<typeof controller>) => {
         textarea: {
           fontSize: tokenSchema.typography.text.small.size,
           fontFamily: tokenSchema.typography.fontFamily.code,
-        }
+        },
       })}
     />
   )
 }
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
-  return value
-    ? <Text>{JSON.stringify(value)}</Text>
-    : null
+  return value ? <Text>{JSON.stringify(value)}</Text> : null
 }
 
 type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
 
-export function controller (config: Config): FieldController<string, string> {
+export function controller(config: Config): FieldController<string, string> {
   return {
     path: config.path,
     label: config.label,

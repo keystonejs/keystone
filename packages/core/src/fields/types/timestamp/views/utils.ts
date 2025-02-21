@@ -1,4 +1,4 @@
-export function constructTimestamp ({
+export function constructTimestamp({
   dateValue,
   timeValue,
 }: {

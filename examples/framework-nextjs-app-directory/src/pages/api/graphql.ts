@@ -1,8 +1,5 @@
 import { createYoga } from 'graphql-yoga'
-import {
-  type NextApiRequest,
-  type NextApiResponse
-} from 'next'
+import { type NextApiRequest, type NextApiResponse } from 'next'
 import { keystoneContext } from '../../keystone/context'
 
 /*

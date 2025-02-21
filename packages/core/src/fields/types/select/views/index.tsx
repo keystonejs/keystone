@@ -19,10 +19,12 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value } = props
   const [isDirty, setDirty] = useState(false)
-  const [preNullValue, setPreNullValue] = useState(value.value || (value.kind === 'update' ? value.initial : null))
+  const [preNullValue, setPreNullValue] = useState(
+    value.value || (value.kind === 'update' ? value.initial : null)
+  )
   const longestLabelLength = useMemo(() => {
     return field.options.reduce((a, item) => Math.max(a, item.label.length), 0)
   }, [field.options])
@@ -32,9 +34,8 @@ export function Field (props: FieldProps<typeof controller>) {
   const isNull = isNullable && value.value?.value == null
   const isInvalid = !validate(value, field.isRequired)
   const isReadOnly = onChange == null
-  const errorMessage = isInvalid && (isDirty || forceValidation)
-    ? `${field.label} is required.`
-    : undefined
+  const errorMessage =
+    isInvalid && (isDirty || forceValidation) ? `${field.label} is required.` : undefined
 
   const onSelectionChange = (key: Key) => {
     if (!onChange) return
@@ -81,9 +82,7 @@ export function Field (props: FieldProps<typeof controller>) {
             value={selectedKey}
             textValue={field.options.find(item => item.value === selectedKey)?.label || ''}
           >
-            {item => (
-              <Item key={item.value}>{item.label}</Item>
-            )}
+            {item => <Item key={item.value}>{item.label}</Item>}
           </SegmentedControl>
         )
       case 'radio':
@@ -126,9 +125,7 @@ export function Field (props: FieldProps<typeof controller>) {
               width: `clamp(${tokenSchema.size.alias.singleLineWidth}, calc(${longestLabelLength}ex + ${tokenSchema.size.icon.regular}), 100%)`,
             }}
           >
-            {item => (
-              <Item key={item.value}>{item.label}</Item>
-            )}
+            {item => <Item key={item.value}>{item.label}</Item>}
           </Picker>
         )
     }
@@ -154,7 +151,7 @@ export const Cell: CellComponent<typeof controller> = ({ value, field }) => {
 }
 
 export type AdminSelectFieldMeta = {
-  options: readonly { label: string, value: string | number }[]
+  options: readonly { label: string; value: string | number }[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
   isRequired: boolean
@@ -162,12 +159,12 @@ export type AdminSelectFieldMeta = {
 }
 
 type Config = FieldControllerConfig<AdminSelectFieldMeta>
-type Option = { label: string, value: string }
+type Option = { label: string; value: string }
 type Value =
-  | { value: Option | null, kind: 'create' }
-  | { value: Option | null, initial: Option | null, kind: 'update' }
+  | { value: Option | null; kind: 'create' }
+  | { value: Option | null; initial: Option | null; kind: 'update' }
 
-function validate (value: Value, isRequired: boolean) {
+function validate(value: Value, isRequired: boolean) {
   if (isRequired) {
     // if you got null initially on the update screen, we want to allow saving
     // since the user probably doesn't have read access control
@@ -188,9 +185,7 @@ const FILTER_TYPES = {
   },
 }
 
-export function controller (
-  config: Config
-): FieldController<Value, Option[]> & {
+export function controller(config: Config): FieldController<Value, Option[]> & {
   options: Option[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
@@ -236,11 +231,12 @@ export function controller (
     serialize: value => ({ [config.path]: t(value.value?.value ?? null) }),
     validate: value => validate(value, config.fieldMeta.isRequired),
     filter: {
-      Filter (props) {
+      Filter(props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
 
         const densityLevels = ['spacious', 'regular', 'compact'] as const
-        const density = densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
+        const density =
+          densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
         const listView = (
           <ListView
             aria-label={typeLabel}
@@ -258,22 +254,13 @@ export function controller (
             selectedKeys={value.map(x => x.value)}
             {...otherProps}
           >
-            {(item) => (
-              <Item key={item.value}>
-                {item.label}
-              </Item>
-            )}
+            {item => <Item key={item.value}>{item.label}</Item>}
           </ListView>
         )
 
         if (context === 'edit') {
           return (
-            <VStack
-              gap="medium"
-              flex
-              minHeight={0}
-              maxHeight="100%"
-            >
+            <VStack gap="medium" flex minHeight={0} maxHeight="100%">
               {/* intentionally not linked: the `ListView` has an explicit "aria-label" to avoid awkwardness with IDs and forked render */}
               <FieldLabel elementType="span">{typeLabel}</FieldLabel>
               {listView}
@@ -285,10 +272,10 @@ export function controller (
       },
       graphql: ({ type, value: options }) => ({
         [config.path]: {
-          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value))
+          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value)),
         },
       }),
-      Label ({ type, value }) {
+      Label({ type, value }) {
         const listFormatter = useListFormatter({
           style: 'short',
           type: 'disjunction',

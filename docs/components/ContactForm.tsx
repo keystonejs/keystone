@@ -8,8 +8,10 @@ import { Field } from './primitives/Field'
 import { Stack } from './primitives/Stack'
 import { Type } from './primitives/Type'
 
-function validEmail (email: string) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email)
+function validEmail(email: string) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+    email
+  )
 }
 
 const enquiryUrl = 'https://endpoints.thinkmill.com.au/enquiry'
@@ -20,7 +22,7 @@ type ContactFormProps = {
   stacked?: boolean
 } & HTMLAttributes<HTMLFormElement>
 
-export function ContactForm ({ autoFocus, stacked, children, ...props }: ContactFormProps) {
+export function ContactForm({ autoFocus, stacked, children, ...props }: ContactFormProps) {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')

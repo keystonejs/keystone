@@ -7,7 +7,7 @@ type SidebarProps = {
   docsNavigation?: React.ReactNode
 }
 
-export function Sidebar ({ docsNavigation }: SidebarProps) {
+export function Sidebar({ docsNavigation }: SidebarProps) {
   const mq = useMediaQuery()
 
   return (

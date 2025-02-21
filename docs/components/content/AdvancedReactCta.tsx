@@ -12,7 +12,7 @@ import { ArrowR } from '../icons/ArrowR'
 import { Tick } from '../icons/Tick'
 import { Section } from './Section'
 
-export function AdvancedReactCta (props: HTMLAttributes<HTMLElement>) {
+export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery()
 
   return (

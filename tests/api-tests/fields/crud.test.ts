@@ -4,11 +4,7 @@ import { text } from '@keystone-6/core/fields'
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import {
-  dbProvider,
-  expectSingleResolverError,
-  expectValidationError
-} from '../utils'
+import { dbProvider, expectSingleResolverError, expectValidationError } from '../utils'
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -122,7 +118,7 @@ for (const modulePath of testModules) {
             items: readonly Record<string, any>[]
           }) => void | Promise<void>
         ) => {
-          return async ({ context, listKey }: { context: KeystoneContext, listKey: string }) => {
+          return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
             const items = await context.query[listKey].findMany({
               orderBy: { name: 'asc' },
               query,
@@ -161,9 +157,9 @@ for (const modulePath of testModules) {
                   query,
                 })
                 expect(data).not.toBe(null)
-                expect(
-                  subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
-                ).toEqual(subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName])
+                expect(subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]).toEqual(
+                  subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
+                )
               })
             )
           )
@@ -183,9 +179,7 @@ for (const modulePath of testModules) {
                   expect(data).not.toBe(null)
                   expect(
                     subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
-                  ).toEqual(
-                    updateReturnedValue ? updateReturnedValue : exampleValue2(matrixValue)
-                  )
+                  ).toEqual(updateReturnedValue ? updateReturnedValue : exampleValue2(matrixValue))
                 })
               )
             )
@@ -242,9 +236,7 @@ for (const modulePath of testModules) {
                   expect(data!.name).toBe('Updated value')
                   expect(
                     subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
-                  ).toEqual(
-                    subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
-                  )
+                  ).toEqual(subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName])
                 })
               )
             )
@@ -262,9 +254,9 @@ for (const modulePath of testModules) {
                 })
                 expect(data).not.toBe(null)
                 expect(data!.name).toBe(items[0].name)
-                expect(
-                  subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
-                ).toEqual(subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName])
+                expect(subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]).toEqual(
+                  subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
+                )
 
                 const allItems = await context.query[listKey].findMany({ query })
                 expect(allItems).toEqual(expect.not.arrayContaining([data]))

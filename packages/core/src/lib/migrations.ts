@@ -3,7 +3,7 @@ import { toSchemasContainer } from '@prisma/internals'
 import { Migrate } from '@prisma/migrate'
 import type { System } from './createSystem'
 
-function setOrRemoveEnvVariable (name: string, value: string | undefined) {
+function setOrRemoveEnvVariable(name: string, value: string | undefined) {
   if (value === undefined) {
     delete process.env[name]
     return
@@ -11,7 +11,7 @@ function setOrRemoveEnvVariable (name: string, value: string | undefined) {
   process.env[name] = value
 }
 
-export async function withMigrate<T> (
+export async function withMigrate<T>(
   prismaSchemaPath: string,
   system: {
     config: {
@@ -27,7 +27,7 @@ export async function withMigrate<T> (
   }) => Promise<T>
 ) {
   const migrate = new Migrate(prismaSchemaPath)
-  async function run <T> (f: () => T) {
+  async function run<T>(f: () => T) {
     // only required once - on child process start - but easiest to do this always
     const prevDBURLFromEnv = process.env.DATABASE_URL
     const prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL
@@ -46,22 +46,28 @@ export async function withMigrate<T> (
 
   try {
     return await cb({
-      async apply () { return run(() => migrate.applyMigrations()) },
-      async diagnostic () { return run(() => migrate.devDiagnostic()) },
-      async push (force) { return run(() => migrate.push({ force })) },
-      async reset () { return run(() => migrate.reset()) },
-      async schema (schema, force) {
-        const schemaContainer = toSchemasContainer([
-          [prismaSchemaPath, schema]
-        ])
+      async apply() {
+        return run(() => migrate.applyMigrations())
+      },
+      async diagnostic() {
+        return run(() => migrate.devDiagnostic())
+      },
+      async push(force) {
+        return run(() => migrate.push({ force }))
+      },
+      async reset() {
+        return run(() => migrate.reset())
+      },
+      async schema(schema, force) {
+        const schemaContainer = toSchemasContainer([[prismaSchemaPath, schema]])
 
         return run(() => migrate.engine.schemaPush({ force, schema: schemaContainer }))
-      }
+      },
     })
   } finally {
     await (migrate.engine as any).initPromise
     const closePromise = new Promise<void>(resolve => {
-      (migrate.engine as any).child.once('exit', resolve)
+      ;(migrate.engine as any).child.once('exit', resolve)
     })
     migrate.stop()
     await closePromise

@@ -9,7 +9,7 @@ export const metadata = {
     'Explore tutorials with step-by-step instruction on building solutions with Keystone.',
 }
 
-export default async function Docs () {
+export default async function Docs() {
   const docs = await getFeaturedDocsMap()
   if (!docs) throw new Error('No `featuredDocs` found')
   const featuredDocs = docs[0]

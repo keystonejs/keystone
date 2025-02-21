@@ -404,7 +404,7 @@ test('relationship many change', () => {
   expect(getPreviewProps(editor).fields.object.fields.many.value).toEqual(val)
 })
 
-function assert (condition: boolean): asserts condition {
+function assert(condition: boolean): asserts condition {
   if (!condition) {
     throw new Error('condition is false')
   }
@@ -418,9 +418,7 @@ test('relationship single change', () => {
   const val = { data: {}, id: 'some-id', label: 'some-id' }
   previewProps.fields.object.fields.conditional.value.onChange(val)
   expect((editor.children[0] as any).props.object.conditional.value).toEqual(val)
-  expect((getPreviewProps(editor).fields.object.fields.conditional.value as any).value).toEqual(
-    val
-  )
+  expect((getPreviewProps(editor).fields.object.fields.conditional.value as any).value).toEqual(val)
 })
 
 test('changing conditional with form inside', () => {

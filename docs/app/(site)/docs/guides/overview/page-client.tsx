@@ -7,7 +7,7 @@ import { Type } from '../../../../../components/primitives/Type'
 import { Well } from '../../../../../components/primitives/Well'
 import { useMediaQuery } from '../../../../../lib/media'
 
-export default function Docs () {
+export default function Docs() {
   const mq = useMediaQuery()
 
   return (

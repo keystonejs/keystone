@@ -282,12 +282,6 @@ const CURRENT = [
   },
 ]
 
-export default async function redirects () {
-  return [
-    ...SPLITBEE,
-    ...CURRENT,
-    ...ORIGINAL_NEXT,
-    ...KEYSTONE_5,
-    ...KEYSTONE_4
-  ]
+export default async function redirects() {
+  return [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4]
 }

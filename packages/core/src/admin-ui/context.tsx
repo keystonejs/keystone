@@ -1,41 +1,16 @@
-import React, {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo
-} from 'react'
+import React, { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 import NextHead from 'next/head'
 import { createUploadLink } from 'apollo-upload-client'
 
-import {
-  ClientSideOnlyDocumentElement,
-  KeystarProvider,
-} from '@keystar/ui/core'
+import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
 import { Toaster } from '@keystar/ui/toast'
-import {
-  injectGlobal,
-  tokenSchema
-} from '@keystar/ui/style'
+import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-import type {
-  AdminConfig,
-  AdminMeta,
-  FieldViews
-} from '../types'
-import {
-  type AdminMetaQuery,
-  adminMetaQuery
-} from './admin-meta-graphql'
-import {
-  gql,
-  ApolloProvider,
-  ApolloClient,
-  InMemoryCache,
-  useQuery
-} from './apollo'
+import type { AdminConfig, AdminMeta, FieldViews } from '../types'
+import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
+import { gql, ApolloProvider, ApolloClient, InMemoryCache, useQuery } from './apollo'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -60,7 +35,7 @@ type KeystoneProviderProps = {
 
 const expectedExports = new Set(['Field', 'controller'])
 
-function InternalKeystoneProvider ({
+function InternalKeystoneProvider({
   adminConfig,
   apiPath,
   fieldViews,
@@ -88,20 +63,23 @@ function InternalKeystoneProvider ({
       for (const field of list.fields) {
         for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
-            throw new Error(`The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`)
+            throw new Error(
+              `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
+            )
           }
         }
 
         const views = { ...fieldViews[field.viewsIndex] }
         const customViews: Record<string, any> = {}
         if (field.customViewsIndex !== null) {
-          const customViewsSource: FieldViews[number] & Record<string, any> = fieldViews[field.customViewsIndex]
+          const customViewsSource: FieldViews[number] & Record<string, any> =
+            fieldViews[field.customViewsIndex]
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews)
           for (const exportName in customViewsSource) {
             if (allowedExportsOnCustomViews.has(exportName)) {
               customViews[exportName] = customViewsSource[exportName]
             } else if (expectedExports.has(exportName)) {
-              (views as any)[exportName] = customViewsSource[exportName]
+              ;(views as any)[exportName] = customViewsSource[exportName]
             }
           }
         }
@@ -149,7 +127,7 @@ function InternalKeystoneProvider ({
   useEffect(() => {
     injectGlobal({
       body: {
-        fontFamily: tokenSchema.typography.fontFamily.base
+        fontFamily: tokenSchema.typography.fontFamily.base,
       },
 
       // [1] reset all box sizing to border-box
@@ -165,28 +143,26 @@ function InternalKeystoneProvider ({
 
   // TODO
   if (loading) return null
-//   if (!meta) return null
+  //   if (!meta) return null
   return (
     <KeystarProvider router={keystarRouter}>
-      <ClientSideOnlyDocumentElement bodyBackground='surface' />
+      <ClientSideOnlyDocumentElement bodyBackground="surface" />
       <NextHead>
-        <meta
-          key='viewport'
-          name='viewport'
-          content='width=device-width, initial-scale=1.0'
-        />
+        <meta key="viewport" name="viewport" content="width=device-width, initial-scale=1.0" />
         <link
-          href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
-          rel='stylesheet'
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
         />
       </NextHead>
 
-      <KeystoneContext.Provider value={{
-        adminConfig,
-        adminMeta: meta ?? null,
-        fieldViews,
-        apiPath,
-      }}>
+      <KeystoneContext.Provider
+        value={{
+          adminConfig,
+          adminMeta: meta ?? null,
+          fieldViews,
+          apiPath,
+        }}
+      >
         {children}
       </KeystoneContext.Provider>
       <Toaster />
@@ -194,15 +170,19 @@ function InternalKeystoneProvider ({
   )
 }
 
-export function KeystoneProvider (props: KeystoneProviderProps) {
-  const apolloClient = useMemo(() => new ApolloClient({
-    cache: new InMemoryCache(),
-    uri: props.apiPath,
-    link: createUploadLink({
-      uri: props.apiPath,
-      headers: { 'Apollo-Require-Preflight': 'true' },
-    }),
-  }), [props.apiPath])
+export function KeystoneProvider(props: KeystoneProviderProps) {
+  const apolloClient = useMemo(
+    () =>
+      new ApolloClient({
+        cache: new InMemoryCache(),
+        uri: props.apiPath,
+        link: createUploadLink({
+          uri: props.apiPath,
+          headers: { 'Apollo-Require-Preflight': 'true' },
+        }),
+      }),
+    [props.apiPath]
+  )
 
   return (
     <ApolloProvider client={apolloClient}>
@@ -211,18 +191,17 @@ export function KeystoneProvider (props: KeystoneProviderProps) {
   )
 }
 
-
-export function useRawKeystone () {
+export function useRawKeystone() {
   const value = useContext(KeystoneContext)
   if (!value) throw new Error('useRawKeystone must be called inside a KeystoneProvider component')
   return value
 }
 
-export function useKeystone () {
+export function useKeystone() {
   return useContext(KeystoneContext)
 }
 
-export function useList (listKey: string) {
+export function useList(listKey: string) {
   const { adminMeta } = useKeystone()
   const { lists } = adminMeta ?? {}
   const list = lists?.[listKey]
@@ -230,7 +209,7 @@ export function useList (listKey: string) {
   return list
 }
 
-export function useField (listKey: string, fieldKey: string) {
+export function useField(listKey: string, fieldKey: string) {
   const list = useList(listKey)
   const field = list.fields[fieldKey]
   if (!field) throw new Error(`Unknown field ${listKey}.${fieldKey}`)
@@ -238,15 +217,15 @@ export function useField (listKey: string, fieldKey: string) {
 }
 
 // TODO useContext
-export function useListItem (listKey: string, itemId: string | null) {
+export function useListItem(listKey: string, itemId: string | null) {
   const list = useList(listKey)
   const query = useMemo(() => {
     const selectedFields = Object.values(list.fields)
-      .filter((field) => {
+      .filter(field => {
         if (field.path === 'id') return true
         return field.itemView.fieldMode !== 'hidden'
       })
-      .map((field) => field.controller.graphqlSelection)
+      .map(field => field.controller.graphqlSelection)
       .join('\n')
 
     return gql`
@@ -262,7 +241,7 @@ export function useListItem (listKey: string, itemId: string | null) {
     errorPolicy: 'all',
     skip: itemId === null,
     variables: {
-//       listKey,
+      //       listKey,
       id: itemId,
     },
   })

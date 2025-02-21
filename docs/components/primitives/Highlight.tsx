@@ -34,7 +34,7 @@ type HighlightProps = {
   look?: keyof typeof styleMap
 } & HTMLAttributes<HTMLElement>
 
-export function Highlight ({ look = 'grad1', as: Tag = 'span', ...props }: HighlightProps) {
+export function Highlight({ look = 'grad1', as: Tag = 'span', ...props }: HighlightProps) {
   return (
     <Tag
       css={{

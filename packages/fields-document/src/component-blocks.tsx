@@ -1,9 +1,5 @@
 'use client'
-export {
-  NotEditable,
-  component,
-  fields
-} from './DocumentEditor/component-blocks/api'
+export { NotEditable, component, fields } from './DocumentEditor/component-blocks/api'
 export type {
   ArrayField,
   ChildField,

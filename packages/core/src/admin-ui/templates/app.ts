@@ -4,7 +4,7 @@ import resolve from 'resolve'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 import type { KeystoneConfig } from '../../types'
 
-function doesConfigExist (path: string[]) {
+function doesConfigExist(path: string[]) {
   try {
     const configPath = Path.join(process.cwd(), ...path)
     resolve.sync(configPath, {
@@ -18,13 +18,13 @@ function doesConfigExist (path: string[]) {
   }
 }
 
-export function appTemplate (
-  config: KeystoneConfig,
-  adminMetaRootVal: AdminMetaRootVal,
-) {
+export function appTemplate(config: KeystoneConfig, adminMetaRootVal: AdminMetaRootVal) {
   const allViews = adminMetaRootVal.views.map(viewRelativeToProject => {
-    const isRelativeToFile = viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
-    const viewRelativeToAppFile = isRelativeToFile ? '../../../' + viewRelativeToProject : viewRelativeToProject
+    const isRelativeToFile =
+      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
+    const viewRelativeToAppFile = isRelativeToFile
+      ? '../../../' + viewRelativeToProject
+      : viewRelativeToProject
 
     // we're not using serializePathForImport here because we want the thing you write for a view
     // to be exactly what you would put in an import in the project directory.
@@ -36,14 +36,16 @@ export function appTemplate (
 
 ${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
 
-${doesConfigExist(['.keystone', 'admin', 'config'])
-  ? `import * as packageAdminConfig from "../../../.keystone/admin/config"`
-  : 'let packageAdminConfig = {}'
+${
+  doesConfigExist(['.keystone', 'admin', 'config'])
+    ? `import * as packageAdminConfig from "../../../.keystone/admin/config"`
+    : 'let packageAdminConfig = {}'
 }
 
-${doesConfigExist(['admin', 'config'])
-  ? `import * as userAdminConfig from "../../../admin/config"`
-  : 'let userAdminConfig = {}'
+${
+  doesConfigExist(['admin', 'config'])
+    ? `import * as userAdminConfig from "../../../admin/config"`
+    : 'let userAdminConfig = {}'
 }
 
 export default getApp({

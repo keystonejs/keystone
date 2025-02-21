@@ -2,7 +2,7 @@
 
 import { Alert } from '../primitives/Alert'
 
-export function Keystone5DocsCTA () {
+export function Keystone5DocsCTA() {
   return (
     <Alert css={{ margin: '2rem 0' }}>
       <span

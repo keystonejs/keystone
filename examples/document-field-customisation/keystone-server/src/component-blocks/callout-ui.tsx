@@ -31,7 +31,7 @@ const toneToColor = {
   positive: 'positive',
 } as const
 
-export function Callout ({
+export function Callout({
   children,
   tone = 'info',
   ...props
@@ -65,15 +65,17 @@ export function Callout ({
         '--fg': tokenSchema.color.foreground[color],
       }}
     >
-      <NotEditable><Icon src={icon} /></NotEditable>
+      <NotEditable>
+        <Icon src={icon} />
+      </NotEditable>
       <div>{children}</div>
     </div>
   )
 }
 
-export function CalloutToolbar (props: {
+export function CalloutToolbar(props: {
   onChange: (tone: keyof typeof toneToIcon) => void
-  tones: readonly { label: string, value: keyof typeof toneToIcon }[]
+  tones: readonly { label: string; value: keyof typeof toneToIcon }[]
   tone: keyof typeof toneToIcon
   onRemove: () => void
 }) {

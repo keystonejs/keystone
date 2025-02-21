@@ -1,19 +1,14 @@
-import type {
-  BaseItem,
-  KeystoneContext
-} from '@keystone-6/core/types'
+import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import { getPasswordFieldKDF } from '@keystone-6/core/fields/types/password'
-import type {
-  AuthGqlNames,
-} from '../types'
+import type { AuthGqlNames } from '../types'
 
 const AUTHENTICATION_FAILURE = {
   code: 'FAILURE',
-  message: 'Authentication failed.'
+  message: 'Authentication failed.',
 } as const
 
-export function getBaseAuthSchema<I extends string, S extends string> ({
+export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
@@ -28,9 +23,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 }) {
   const kdf = getPasswordFieldKDF(base.schema, listKey, secretField)
   if (!kdf) {
-    throw new Error(
-      `${listKey}.${secretField} is not a valid password field.`
-    )
+    throw new Error(`${listKey}.${secretField} is not a valid password field.`)
   }
 
   const ItemAuthenticationWithPasswordSuccess = g.object<{
@@ -52,7 +45,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
   const AuthenticationResult = g.union({
     name: gqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
-    resolveType (val) {
+    resolveType(val) {
       if ('sessionToken' in val) return gqlNames.ItemAuthenticationWithPasswordSuccess
       return gqlNames.ItemAuthenticationWithPasswordFailure
     },
@@ -62,7 +55,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
     query: {
       authenticatedItem: g.field({
         type: base.object(listKey),
-        resolve (root, args, context: KeystoneContext) {
+        resolve(root, args, context: KeystoneContext) {
           const { session } = context
           if (!session?.itemId) return null
 
@@ -77,7 +70,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
     mutation: {
       endSession: g.field({
         type: g.nonNull(g.Boolean),
-        async resolve (rootVal, args, context) {
+        async resolve(rootVal, args, context) {
           await context.sessionStrategy?.end({ context })
           return true
         },
@@ -88,17 +81,18 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
           [identityField]: g.arg({ type: g.nonNull(g.String) }),
           [secretField]: g.arg({ type: g.nonNull(g.String) }),
         },
-        async resolve (root, {
-          [identityField]: identity,
-          [secretField]: secret
-        }, context: KeystoneContext) {
+        async resolve(
+          root,
+          { [identityField]: identity, [secretField]: secret },
+          context: KeystoneContext
+        ) {
           if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
           const item = await context.sudo().db[listKey].findOne({
-            where: { [identityField]: identity }
+            where: { [identityField]: identity },
           })
 
-          if ((typeof item?.[secretField] !== 'string')) {
+          if (typeof item?.[secretField] !== 'string') {
             await kdf.hash('simulated-password-to-counter-timing-attack')
             return AUTHENTICATION_FAILURE
           }
@@ -119,7 +113,7 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 
           return {
             sessionToken,
-            item
+            item,
           }
         },
       }),
@@ -128,6 +122,6 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
 
   return {
     extension,
-    ItemAuthenticationWithPasswordSuccess
+    ItemAuthenticationWithPasswordSuccess,
   }
 }

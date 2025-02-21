@@ -12,7 +12,7 @@ export default config({
   },
   lists,
   graphql: {
-    extendGraphqlSchema
+    extendGraphqlSchema,
   },
   ui: {
     getAdditionalFiles: [

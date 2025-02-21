@@ -1,6 +1,6 @@
 import { Gradients, type IconProps } from './util'
 
-export function Thinkmill ({ grad, ...props }: IconProps) {
+export function Thinkmill({ grad, ...props }: IconProps) {
   return (
     <svg aria-label="Thinkmill" role="img" viewBox="0 0 400 400" {...props}>
       <Gradients name="Thinkmill" />

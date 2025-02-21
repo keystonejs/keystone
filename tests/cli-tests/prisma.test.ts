@@ -4,7 +4,7 @@ import {
   spawnCommand,
   spawnCommand2,
   symlinkKeystoneDeps,
-  testdir
+  testdir,
 } from './utils'
 
 // testing erroring when the schemas are not up to date is in artifacts.test.ts
@@ -20,7 +20,9 @@ test('keystone prisma exits with the same code as the prisma child process exits
   const { exitCode, output } = await spawnCommand2(cwd, ['prisma', 'foo'])
 
   expect(exitCode).toEqual(1)
-  expect(output.replace(/[^ -~\n]/g, '?').replace(/ {2}\n/g, '\n')).toContain(`Unknown command "foo"`)
+  expect(output.replace(/[^ -~\n]/g, '?').replace(/ {2}\n/g, '\n')).toContain(
+    `Unknown command "foo"`
+  )
 })
 
 test('keystone prisma uses the db url in the keystone config', async () => {

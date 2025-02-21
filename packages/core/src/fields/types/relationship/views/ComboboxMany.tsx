@@ -7,7 +7,7 @@ import type { ListMeta } from '../../../../types'
 import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
-export function ComboboxMany ({
+export function ComboboxMany({
   isDisabled,
   isLoading,
   isReadOnly,
@@ -36,13 +36,12 @@ export function ComboboxMany ({
   }
   extraSelection?: string
 }) {
-  const { data, loadingState, error, onLoadMore, search, setSearch } =
-    useApolloQuery({
-      labelField,
-      list,
-      searchFields,
-      state,
-    })
+  const { data, loadingState, error, onLoadMore, search, setSearch } = useApolloQuery({
+    labelField,
+    list,
+    searchFields,
+    state,
+  })
 
   // TODO: better error UI
   // TODO: Handle permission errors
@@ -50,7 +49,7 @@ export function ComboboxMany ({
   // not the related list, or some items on the list)
   if (error) return <span>Error</span>
 
-  const items = data?.items?.map(x => ({ ...x, built: false }))  ?? []
+  const items = data?.items?.map(x => ({ ...x, built: false })) ?? []
   return (
     <ComboboxMulti
       {...props}

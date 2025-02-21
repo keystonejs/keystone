@@ -24,7 +24,7 @@ type PageItem = {
 
 const PAGE_SIZES = [10, 25, 50, 100]
 
-export function Pagination (props: PaginationProps) {
+export function Pagination(props: PaginationProps) {
   const { currentPage, total, pageSize, singular, plural } = props
 
   const router = useRouter()
@@ -100,14 +100,8 @@ export function Pagination (props: PaginationProps) {
         desktop^: items per page (picker), counts
       */}
       <HStack gap="large" alignItems="center">
-        <HStack
-          isHidden={{ below: 'desktop' }}
-          gap="regular"
-          alignItems="center"
-        >
-          <Text id="items-per-page">
-            {plural} per page:
-          </Text>
+        <HStack isHidden={{ below: 'desktop' }} gap="regular" alignItems="center">
+          <Text id="items-per-page">{plural} per page:</Text>
           <Picker
             aria-labelledby="items-per-page"
             items={PAGE_SIZES.map(n => ({ label: String(n), id: n }))}
@@ -119,14 +113,10 @@ export function Pagination (props: PaginationProps) {
             })}
             width="scale.1000"
           >
-            {item => (
-              <Item>{item.label}</Item>
-            )}
+            {item => <Item>{item.label}</Item>}
           </Picker>
         </HStack>
-        <Text color="neutralSecondary">
-          {stats}
-        </Text>
+        <Text color="neutralSecondary">{stats}</Text>
       </HStack>
 
       {/*
@@ -135,11 +125,7 @@ export function Pagination (props: PaginationProps) {
         desktop^: current page (picker), next/prev
       */}
       <HStack gap="large" alignItems="center">
-        <HStack
-          isHidden={{ below: 'desktop' }}
-          gap="regular"
-          alignItems="center"
-        >
+        <HStack isHidden={{ below: 'desktop' }} gap="regular" alignItems="center">
           <Picker
             // prominence="low"
             aria-label={`Page number, of 11 pages`}
@@ -148,9 +134,7 @@ export function Pagination (props: PaginationProps) {
             selectedKey={currentPage}
             width="scale.1000"
           >
-            {item => (
-              <Item>{item.label}</Item>
-            )}
+            {item => <Item>{item.label}</Item>}
           </Picker>
           <Text>of {limit} pages</Text>
         </HStack>
@@ -177,20 +161,22 @@ export function Pagination (props: PaginationProps) {
   )
 }
 
-export function usePaginationParams ({ defaultPageSize }: { defaultPageSize: number }) {
+export function usePaginationParams({ defaultPageSize }: { defaultPageSize: number }) {
   const { query } = useRouter()
   const currentPage = Math.max(
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1,
     1
   )
-  const pageSize = snapValueToClosest(typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
+  const pageSize = snapValueToClosest(
+    typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
       ? parseInt(query.pageSize)
-      : defaultPageSize)
+      : defaultPageSize
+  )
 
   return { currentPage, pageSize }
 }
 
-function getPaginationStats ({ singular, plural, pageSize, currentPage, total }: PaginationProps) {
+function getPaginationStats({ singular, plural, pageSize, currentPage, total }: PaginationProps) {
   let stats = ''
   if (total > pageSize) {
     const start = pageSize * (currentPage - 1) + 1
@@ -206,9 +192,11 @@ function getPaginationStats ({ singular, plural, pageSize, currentPage, total }:
   return { stats }
 }
 
-function snapValueToClosest (input: number, range = PAGE_SIZES) {
-  return range.reduce((prev, curr) => Math.abs(curr - input) < Math.abs(prev - input) ? curr : prev)
+function snapValueToClosest(input: number, range = PAGE_SIZES) {
+  return range.reduce((prev, curr) =>
+    Math.abs(curr - input) < Math.abs(prev - input) ? curr : prev
+  )
 }
-function snapValueToNextAvailable (input: number, range = PAGE_SIZES) {
+function snapValueToNextAvailable(input: number, range = PAGE_SIZES) {
   return range.find(value => input <= value) ?? range[range.length - 1]
 }

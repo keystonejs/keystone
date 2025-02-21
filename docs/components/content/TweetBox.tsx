@@ -11,7 +11,7 @@ type TweetBoxProps = {
   grad: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'
 } & HTMLAttributes<HTMLElement>
 
-export function TweetBox ({ user, img, grad, children, ...props }: TweetBoxProps) {
+export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps) {
   return (
     <div
       css={{

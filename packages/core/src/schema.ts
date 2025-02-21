@@ -10,15 +10,15 @@ import type {
 } from './types'
 
 import type { ListenOptions } from 'node:net'
-import {
-  idFieldType
-} from './lib/id-field'
+import { idFieldType } from './lib/id-field'
 
-function injectDefaults (config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
+function injectDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
-      throw new Error(`"fields.id" is reserved by Keystone, use "db.idField" for the "${listKey}" list`)
+      throw new Error(
+        `"fields.id" is reserved by Keystone, use "db.idField" for the "${listKey}" list`
+      )
     }
 
     if (list.isSingleton && list.db?.idField) {
@@ -55,15 +55,19 @@ function injectDefaults (config: KeystoneConfigPre, defaultIdField: IdFieldConfi
   return updated
 }
 
-function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
+function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
   if (!sessionStrategy) return true
   return session !== undefined
 }
 
-async function noop () {}
-function identity<T> (x: T) { return x }
+async function noop() {}
+function identity<T>(x: T) {
+  return x
+}
 
-export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfigPre<TypeInfo>): KeystoneConfig<TypeInfo> {
+export function config<TypeInfo extends BaseKeystoneTypeInfo>(
+  config: KeystoneConfigPre<TypeInfo>
+): KeystoneConfig<TypeInfo> {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
@@ -77,7 +81,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneC
       ? { origin: true, credentials: true }
       : config.server?.cors === false
         ? null
-        : config.server?.cors ?? null
+        : (config.server?.cors ?? null)
 
   const httpOptions: ListenOptions = { port: 3000 }
   if (config?.server && 'port' in config.server) {
@@ -102,21 +106,24 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneC
       prismaClientPath: config.db?.prismaClientPath ?? '@prisma/client',
       prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',
       idField: config.db?.idField ?? defaultIdField,
-      enableLogging: config.db.enableLogging === true ? ['query']
-        : config.db.enableLogging === false ? []
-          : config.db.enableLogging ?? [],
+      enableLogging:
+        config.db.enableLogging === true
+          ? ['query']
+          : config.db.enableLogging === false
+            ? []
+            : (config.db.enableLogging ?? []),
     },
     graphql: {
       ...config.graphql,
       path: config.graphql?.path ?? '/api/graphql',
       playground: config.graphql?.playground ?? process.env.NODE_ENV !== 'production',
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
-      extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? ((s) => s),
+      extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? (s => s),
     },
     lists: injectDefaults(config, defaultIdField),
     server: {
       ...config.server,
-      maxFileSize: config.server?.maxFileSize ?? (200 * 1024 * 1024), // 200 MiB
+      maxFileSize: config.server?.maxFileSize ?? 200 * 1024 * 1024, // 200 MiB
       extendExpressApp: config.server?.extendExpressApp ?? noop,
       extendHttpServer: config.server?.extendHttpServer ?? noop,
       cors,
@@ -124,7 +131,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneC
     },
     session: config.session,
     storage: {
-      ...config.storage
+      ...config.storage,
     },
     telemetry: config.telemetry ?? true,
     ui: {
@@ -134,13 +141,13 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneC
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
-      publicPages:config.ui?.publicPages ?? [],
+      publicPages: config.ui?.publicPages ?? [],
     },
   }
 }
 
 let i = 0
-export function group<ListTypeInfo extends BaseListTypeInfo> (config: {
+export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   label: string
   description?: string
   fields: BaseFields<ListTypeInfo>
@@ -160,6 +167,6 @@ export function group<ListTypeInfo extends BaseListTypeInfo> (config: {
   } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
-export function list<ListTypeInfo extends BaseListTypeInfo> (config: ListConfig<ListTypeInfo>) {
+export function list<ListTypeInfo extends BaseListTypeInfo>(config: ListConfig<ListTypeInfo>) {
   return { ...config }
 }

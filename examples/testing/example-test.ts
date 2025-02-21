@@ -33,7 +33,8 @@ test('Check that trying to create user with no name (required field) fails', asy
       })
     },
     {
-      message: 'You provided invalid data for this operation.\n  - User.name: value must not be empty',
+      message:
+        'You provided invalid data for this operation.\n  - User.name: value must not be empty',
     }
   )
 })

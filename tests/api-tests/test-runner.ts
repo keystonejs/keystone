@@ -6,25 +6,15 @@ import { readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 
 import supertest from 'supertest'
-import {
-  createDatabase,
-  getConfig,
-  getDMMF,
-  parseEnvValue,
-} from '@prisma/internals'
-import {
-  getPrismaClient,
-  objectEnumValues,
-} from '@prisma/client/runtime/library'
+import { createDatabase, getConfig, getDMMF, parseEnvValue } from '@prisma/internals'
+import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
 
-import {
-  config,
-} from '@keystone-6/core'
+import { config } from '@keystone-6/core'
 import {
   createExpressServer,
   createSystem,
   generateArtifacts,
-  withMigrate
+  withMigrate,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 import type {
@@ -43,12 +33,18 @@ import { dbProvider } from './utils'
   process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
 }
 
-async function getTestPrismaModuleInner (prismaSchemaPath: string, schema: string) {
+async function getTestPrismaModuleInner(prismaSchemaPath: string, schema: string) {
   const config = await getConfig({ datamodel: schema, ignoreEnvVarErrors: true })
   const { datamodel } = await getDMMF({ datamodel: schema, previewFeatures: [] })
-  const models = Object.values(datamodel.models).reduce<Record<string, typeof datamodel.models[number]>>((a, x) => (a[x.name] = x, a), {})
-  const enums = Object.values(datamodel.enums).reduce<Record<string, typeof datamodel.enums[number]>>((a, x) => (a[x.name] = x, a), {})
-  const types = Object.values(datamodel.types).reduce<Record<string, typeof datamodel.types[number]>>((a, x) => (a[x.name] = x, a), {})
+  const models = Object.values(datamodel.models).reduce<
+    Record<string, (typeof datamodel.models)[number]>
+  >((a, x) => ((a[x.name] = x), a), {})
+  const enums = Object.values(datamodel.enums).reduce<
+    Record<string, (typeof datamodel.enums)[number]>
+  >((a, x) => ((a[x.name] = x), a), {})
+  const types = Object.values(datamodel.types).reduce<
+    Record<string, (typeof datamodel.types)[number]>
+  >((a, x) => ((a[x.name] = x), a), {})
 
   return {
     PrismaClient: getPrismaClient({
@@ -64,7 +60,7 @@ async function getTestPrismaModuleInner (prismaSchemaPath: string, schema: strin
       engineVersion: '0000000000000000000000000000000000000000',
       generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
       inlineSchema: schema,
-      runtimeDataModel: { models, enums, types }
+      runtimeDataModel: { models, enums, types },
     }),
     Prisma: {
       DbNull: objectEnumValues.instances.DbNull,
@@ -74,9 +70,11 @@ async function getTestPrismaModuleInner (prismaSchemaPath: string, schema: strin
 }
 
 const prismaModuleCache = new Map<string, unknown>()
-async function getTestPrismaModule (prismaSchemaPath: string, schema: string) {
+async function getTestPrismaModule(prismaSchemaPath: string, schema: string) {
   if (prismaModuleCache.has(schema)) return prismaModuleCache.get(schema)!
-  return prismaModuleCache.set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema)).get(schema)!
+  return prismaModuleCache
+    .set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema))
+    .get(schema)!
 }
 
 const deferred: (() => Promise<void>)[] = []
@@ -86,15 +84,18 @@ afterAll(async () => {
   }
 })
 
-type FloatingConfig <TypeInfo extends BaseKeystoneTypeInfo> = Omit<KeystoneConfigPre<TypeInfo>, 'db'> & {
+type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<
+  KeystoneConfigPre<TypeInfo>,
+  'db'
+> & {
   db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'url'>
 }
 
-export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
+export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   config_: FloatingConfig<TypeInfo>,
   serve: boolean = false,
   identifier?: string,
-  wrap: (config: KeystoneConfig) => KeystoneConfig = (x) => x
+  wrap: (config: KeystoneConfig) => KeystoneConfig = x => x
 ) {
   const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
   const cwd = join(tmpdir(), `ks6-tests-${random}`)
@@ -119,43 +120,45 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     dbUrl = parsed.toString()
   }
 
-  const system = createSystem(wrap(config({
-    ...config_,
-    db: {
-      provider: dbProvider,
-      url: dbUrl,
-      prismaClientPath: '.prisma',
-      prismaSchemaPath: 'test-schema.prisma',
-      ...config_.db,
-    },
-    types: {
-      path: 'test-types.ts'
-    },
-    lists: config_.lists,
-    graphql: {
-      schemaPath: 'test-schema.graphql',
-      ...config_.graphql,
-    },
-    ui: {
-      isDisabled: true,
-      ...config_.ui,
-    },
-  })))
+  const system = createSystem(
+    wrap(
+      config({
+        ...config_,
+        db: {
+          provider: dbProvider,
+          url: dbUrl,
+          prismaClientPath: '.prisma',
+          prismaSchemaPath: 'test-schema.prisma',
+          ...config_.db,
+        },
+        types: {
+          path: 'test-types.ts',
+        },
+        lists: config_.lists,
+        graphql: {
+          schemaPath: 'test-schema.graphql',
+          ...config_.graphql,
+        },
+        ui: {
+          isDisabled: true,
+          ...config_.ui,
+        },
+      })
+    )
+  )
 
   const artifacts = await generateArtifacts(cwd, system)
   const paths = system.getPaths(cwd)
 
   await createDatabase(system.config.db.url, cwd)
-  await withMigrate(paths.schema.prisma, system, async (m) => {
+  await withMigrate(paths.schema.prisma, system, async m => {
     await m.reset()
     await m.schema(artifacts.prisma, false)
   })
 
-  const {
-    context,
-    connect,
-    disconnect
-  } = system.getKeystone(await getTestPrismaModule(paths.schema.prisma, artifacts.prisma))
+  const { context, connect, disconnect } = system.getKeystone(
+    await getTestPrismaModule(paths.schema.prisma, artifacts.prisma)
+  )
 
   if (dbProvider === 'sqlite') {
     await connect()
@@ -164,19 +167,21 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
   }
 
   if (serve) {
-    const {
-      expressServer: express,
-      httpServer: http
-    } = await createExpressServer(system.config, context)
+    const { expressServer: express, httpServer: http } = await createExpressServer(
+      system.config,
+      context
+    )
 
-    function gqlSuper (args:Parameters<typeof context.graphql.raw>[0]&{ operationName?: string }) {
+    function gqlSuper(
+      args: Parameters<typeof context.graphql.raw>[0] & { operationName?: string }
+    ) {
       return supertest(express)
         .post(system.config.graphql?.path ?? '/api/graphql')
         .send(args)
         .set('Accept', 'application/json')
     }
 
-    async function gql (...args: Parameters<typeof gqlSuper>) {
+    async function gql(...args: Parameters<typeof gqlSuper>) {
       const { body } = await gqlSuper(...args)
       return body
     }
@@ -194,7 +199,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
     } as const
   }
 
-  async function gql (...args: Parameters<typeof context.graphql.raw>) {
+  async function gql(...args: Parameters<typeof context.graphql.raw>) {
     return await context.graphql.raw(...args)
   }
 
@@ -214,7 +219,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> (
   } as const
 }
 
-export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
   config: config_,
   serve = false,
   identifier,
@@ -225,20 +230,21 @@ export function setupTestRunner <TypeInfo extends BaseKeystoneTypeInfo> ({
   identifier?: string
   wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
-  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) => async () => {
-    const result = await setupTestEnv(config_, serve, identifier, wrap)
+  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) =>
+    async () => {
+      const result = await setupTestEnv(config_, serve, identifier, wrap)
 
-    await result.connect()
-    try {
-      return await testFn(result)
-    } finally {
-      await result.disconnect()
+      await result.connect()
+      try {
+        return await testFn(result)
+      } finally {
+        await result.disconnect()
+      }
     }
-  }
 }
 
 // WARNING: no support for onConnect
-export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
+export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({
   config: config_,
   serve = false,
   identifier,
@@ -250,7 +256,7 @@ export function setupTestSuite <TypeInfo extends BaseKeystoneTypeInfo> ({
   wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
   const result = setupTestEnv(config_, serve, identifier, wrap)
-  const connectPromise = result.then((x) => {
+  const connectPromise = result.then(x => {
     x.connect()
     return x
   })

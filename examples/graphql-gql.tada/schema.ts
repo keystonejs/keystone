@@ -34,7 +34,7 @@ export const lists: Lists = {
         field: lists =>
           g.field({
             type: lists.Post.types.output,
-            async resolve (item, args, context) {
+            async resolve(item, args, context) {
               const data = await context.graphql.run({
                 query: LatestPostQuery,
                 variables: { id: item.id },

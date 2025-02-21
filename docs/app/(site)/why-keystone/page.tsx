@@ -6,6 +6,6 @@ export const metadata = {
     'More than a backend framework, and more than a Headless CMS, discover why Keystone is the platform for next-gen development workflows and evolution.',
 }
 
-export default function WhyKeystonePage () {
+export default function WhyKeystonePage() {
   return <PageClient />
 }

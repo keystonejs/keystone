@@ -5,7 +5,7 @@ import { smileIcon } from '@keystar/ui/icon/icons/smileIcon'
 
 type Label = string
 
-export function hint (label: Label = 'Hint') {
+export function hint(label: Label = 'Hint') {
   return wrapper({
     label: label,
     icon: megaphoneIcon,
@@ -23,7 +23,7 @@ export function hint (label: Label = 'Hint') {
   })
 }
 
-export function emoji (label: Label = 'Emoji') {
+export function emoji(label: Label = 'Emoji') {
   return inline({
     label: label,
     icon: smileIcon,

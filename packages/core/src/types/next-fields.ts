@@ -3,16 +3,11 @@ import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
 import type { CommonFieldConfig } from './config'
 import type { DatabaseProvider } from './core'
-import type {
-  JSONValue,
-  KeystoneContext,
-  MaybePromise,
-  StorageConfig
-} from '.'
+import type { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.'
 
 export { Decimal }
 
-export type BaseItem = { id: { toString(): string }, [key: string]: unknown }
+export type BaseItem = { id: { toString(): string }; [key: string]: unknown }
 
 export type ListGraphQLTypes = { types: GraphQLTypesForList }
 
@@ -38,23 +33,12 @@ export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
-  CreateArg extends g.Arg<g.InputType> | undefined =
-    | g.Arg<g.InputType>
-    | undefined,
+  CreateArg extends g.Arg<g.InputType> | undefined = g.Arg<g.InputType> | undefined,
   UpdateArg extends g.Arg<g.InputType> = g.Arg<g.InputType>,
-  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo,
 > = {
   dbField: TDBField
 } & FieldTypeWithoutDBField<
@@ -86,18 +70,18 @@ type Literal<T> = {
 
 export type ScalarDBFieldDefault<
   Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes,
-  Mode extends 'required' | 'many' | 'optional' = 'required' | 'many' | 'optional'
+  Mode extends 'required' | 'many' | 'optional' = 'required' | 'many' | 'optional',
 > = Mode extends 'many'
   ? never
   :
       | {
           String:
             | Literal<string>
-            | { kind: 'uuid', version?: 4 | 7 }
-            | { kind: 'cuid', version?: 1 | 2 }
+            | { kind: 'uuid'; version?: 4 | 7 }
+            | { kind: 'cuid'; version?: 1 | 2 }
             | { kind: 'ulid' }
-            | { kind: 'nanoid', length?: number }
-            | { kind: 'random', bytes: number, encoding: 'hex' | 'base64url' }
+            | { kind: 'nanoid'; length?: number }
+            | { kind: 'random'; bytes: number; encoding: 'hex' | 'base64url' }
           Boolean: Literal<boolean>
           Json: Literal<string>
           Float: Literal<number>
@@ -107,11 +91,11 @@ export type ScalarDBFieldDefault<
           Decimal: Literal<string>
           Bytes: Literal<Uint8Array>
         }[Scalar]
-      | { kind: 'dbgenerated', value: string }
+      | { kind: 'dbgenerated'; value: string }
 
 export type ScalarDBField<
   Scalar extends keyof ScalarPrismaTypes,
-  Mode extends 'required' | 'many' | 'optional'
+  Mode extends 'required' | 'many' | 'optional',
 > = {
   kind: 'scalar'
   scalar: Scalar
@@ -132,15 +116,15 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
 
   list: string
   field?: string
-  foreignKey?: { one: true | { map: string }, many: undefined }[Mode]
-  relationName?: { one: undefined, many: string }[Mode]
+  foreignKey?: { one: true | { map: string }; many: undefined }[Mode]
+  relationName?: { one: undefined; many: string }[Mode]
 }
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
   kind: 'enum'
   name: string
   mode: Mode
-  default?: { kind: 'literal', value: Value }
+  default?: { kind: 'literal'; value: Value }
   extendPrismaSchema?: (field: string) => string
   index?: 'unique' | 'index'
 
@@ -177,70 +161,64 @@ export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, Scal
 
 // TODO: this isn't right for create
 // for create though, db level defaults need to be taken into account for when to not allow undefined
-type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
-  infer Scalar,
-  infer Mode
->
-  ? {
-      optional: ScalarPrismaTypes[Scalar] | null | undefined
-      required: ScalarPrismaTypes[Scalar] | undefined
-      many: readonly ScalarPrismaTypes[Scalar][] | undefined
-    }[Mode]
-  : TDBField extends RelationDBField<'many' | 'one'>
-  ? { connect?: object, disconnect?: boolean } | undefined
-  : TDBField extends EnumDBField<infer Value, infer Mode>
-  ? {
-      optional: Value | null | undefined
-      required: Value | undefined
-      many: readonly Value[] | undefined
-    }[Mode]
-  : TDBField extends NoDBField
-  ? undefined
-  : TDBField extends MultiDBField<infer Fields>
-  ? // note: this is very intentionally not optional and DBFieldToInputValue will add | undefined to force people to explicitly show what they are not setting
-    { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
-  : never
-
-type DBFieldUniqueWhere<TDBField extends DBField> = TDBField extends ScalarDBField<
-  infer Scalar,
-  'optional' | 'required'
->
-  ? Scalar extends 'String' | 'Int'
+type DBFieldToInputValue<TDBField extends DBField> =
+  TDBField extends ScalarDBField<infer Scalar, infer Mode>
     ? {
-        String: string
-        Int: number
-      }[Scalar]
-    : any
-  : any
+        optional: ScalarPrismaTypes[Scalar] | null | undefined
+        required: ScalarPrismaTypes[Scalar] | undefined
+        many: readonly ScalarPrismaTypes[Scalar][] | undefined
+      }[Mode]
+    : TDBField extends RelationDBField<'many' | 'one'>
+      ? { connect?: object; disconnect?: boolean } | undefined
+      : TDBField extends EnumDBField<infer Value, infer Mode>
+        ? {
+            optional: Value | null | undefined
+            required: Value | undefined
+            many: readonly Value[] | undefined
+          }[Mode]
+        : TDBField extends NoDBField
+          ? undefined
+          : TDBField extends MultiDBField<infer Fields>
+            ? // note: this is very intentionally not optional and DBFieldToInputValue will add | undefined to force people to explicitly show what they are not setting
+              { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
+            : never
 
-type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
-  infer Scalar,
-  infer Mode
->
-  ? {
-      optional: ScalarPrismaTypes[Scalar] | null
-      required: ScalarPrismaTypes[Scalar]
-      many: readonly ScalarPrismaTypes[Scalar][]
-    }[Mode]
-  : TDBField extends RelationDBField<infer Mode>
-  ? {
-      one: () => Promise<BaseItem>
-      many: {
-        findMany(args: FindManyArgsValue): Promise<BaseItem[]>
-        count(args: { where: FindManyArgsValue['where'] }): Promise<number>
-      }
-    }[Mode]
-  : TDBField extends EnumDBField<infer Value, infer Mode>
-  ? {
-      optional: Value | null
-      required: Value
-      many: readonly Value[]
-    }[Mode]
-  : TDBField extends NoDBField
-  ? undefined
-  : TDBField extends MultiDBField<infer Fields>
-  ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
-  : never
+type DBFieldUniqueWhere<TDBField extends DBField> =
+  TDBField extends ScalarDBField<infer Scalar, 'optional' | 'required'>
+    ? Scalar extends 'String' | 'Int'
+      ? {
+          String: string
+          Int: number
+        }[Scalar]
+      : any
+    : any
+
+type DBFieldToOutputValue<TDBField extends DBField> =
+  TDBField extends ScalarDBField<infer Scalar, infer Mode>
+    ? {
+        optional: ScalarPrismaTypes[Scalar] | null
+        required: ScalarPrismaTypes[Scalar]
+        many: readonly ScalarPrismaTypes[Scalar][]
+      }[Mode]
+    : TDBField extends RelationDBField<infer Mode>
+      ? {
+          one: () => Promise<BaseItem>
+          many: {
+            findMany(args: FindManyArgsValue): Promise<BaseItem[]>
+            count(args: { where: FindManyArgsValue['where'] }): Promise<number>
+          }
+        }[Mode]
+      : TDBField extends EnumDBField<infer Value, infer Mode>
+        ? {
+            optional: Value | null
+            required: Value
+            many: readonly Value[]
+          }[Mode]
+        : TDBField extends NoDBField
+          ? undefined
+          : TDBField extends MultiDBField<infer Fields>
+            ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
+            : never
 
 export type OrderByFieldInputArg<Val, TArg extends g.Arg<g.NullableInputType>> = {
   arg: TArg
@@ -257,7 +235,6 @@ type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   relationshipInputResolver: RelationshipInputResolver
 ) => MaybePromise<Output>
 
-
 type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>
 
 type DBFieldFilters<TDBField extends DBField> =
@@ -268,10 +245,7 @@ type DBFieldFilters<TDBField extends DBField> =
     } & DBFieldFiltersInner<TDBField>)
   | null
 
-export type WhereFieldInputArg<
-  TDBField extends DBField,
-  TArg extends g.Arg<g.InputType, any>
-> = {
+export type WhereFieldInputArg<TDBField extends DBField, TArg extends g.Arg<g.InputType, any>> = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
@@ -290,10 +264,7 @@ export type WhereFieldInputArg<
   >
 >
 
-export type UpdateFieldInputArg<
-  TDBField extends DBField,
-  TArg extends g.Arg<g.InputType, any>
-> = {
+export type UpdateFieldInputArg<TDBField extends DBField, TArg extends g.Arg<g.InputType, any>> = {
   arg: TArg
 } & ResolveFunc<
   FieldInputResolver<
@@ -323,7 +294,7 @@ type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResol
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
-  TArg extends g.Arg<g.InputType, any> | undefined
+  TArg extends g.Arg<g.InputType, any> | undefined,
 > = {
   arg: TArg
 } & (TArg extends g.Arg<g.InputType, any>
@@ -355,7 +326,7 @@ export type UniqueWhereFieldInputArg<Val, TArg extends g.Arg<g.InputType>> = {
 >
 
 type FieldTypeOutputField<TDBField extends DBField> = g.Field<
-  { value: DBFieldToOutputValue<TDBField>, item: BaseItem },
+  { value: DBFieldToOutputValue<TDBField>; item: BaseItem },
   any,
   g.OutputType,
   'value'
@@ -366,28 +337,17 @@ export type OrderDirection = 'asc' | 'desc'
 type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
   ? OrderDirection | undefined
   : TDBField extends MultiDBField<infer Fields>
-  ? { [Key in keyof Fields]: DBFieldToOrderByValue<Fields[Key]> }
-  : undefined
+    ? { [Key in keyof Fields]: DBFieldToOrderByValue<Fields[Key]> }
+    : undefined
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
-  CreateArg extends g.Arg<g.InputType> | undefined =
-    | g.Arg<g.InputType>
-    | undefined,
+  CreateArg extends g.Arg<g.InputType> | undefined = g.Arg<g.InputType> | undefined,
   UpdateArg extends g.Arg<g.InputType> = g.Arg<g.InputType>,
-  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<
-    g.NullableInputType,
-    false
-  >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  UniqueWhereArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  OrderByArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  FilterArg extends g.Arg<g.NullableInputType, false> = g.Arg<g.NullableInputType, false>,
+  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo,
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>
@@ -451,10 +411,7 @@ export type GraphQLTypesForList = {
 
 export type FindManyArgs = {
   where: g.Arg<g.NonNullType<GraphQLTypesForList['where']>, true>
-  orderBy: g.Arg<
-    g.NonNullType<g.ListType<g.NonNullType<GraphQLTypesForList['orderBy']>>>,
-    true
-  >
+  orderBy: g.Arg<g.NonNullType<g.ListType<g.NonNullType<GraphQLTypesForList['orderBy']>>>, true>
   take: g.Arg<typeof g.Int>
   skip: g.Arg<g.NonNullType<typeof g.Int>, true>
   cursor: g.Arg<GraphQLTypesForList['uniqueWhere']>
@@ -463,7 +420,7 @@ export type FindManyArgs = {
 export type FindManyArgsValue = g.InferValueFromArgs<FindManyArgs>
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo> (
+export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
   dbField: TDBField
 ) {
   return function fieldTypeWrapper<
@@ -471,8 +428,8 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     UpdateArg extends g.Arg<g.InputType>,
     UniqueWhereArg extends g.Arg<g.NullableInputType, false>,
     OrderByArg extends g.Arg<g.NullableInputType, false>,
-    FilterArg extends g.Arg<g.NullableInputType, false>
-  > (
+    FilterArg extends g.Arg<g.NullableInputType, false>,
+  >(
     graphQLInfo: FieldTypeWithoutDBField<
       TDBField,
       CreateArg,

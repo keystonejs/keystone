@@ -79,9 +79,9 @@ export const lists = {
 
             hooks: {
               resolveInput: {
-                create: () => new Date()
-              }
-            }
+                create: () => new Date(),
+              },
+            },
           }),
 
           updatedBy: text({ ...readOnly }),
@@ -95,9 +95,9 @@ export const lists = {
 
             hooks: {
               resolveInput: {
-                update: () => new Date()
-              }
-            }
+                update: () => new Date(),
+              },
+            },
           }),
         },
       }),
@@ -119,7 +119,6 @@ export const lists = {
         create: ({ inputData, addValidationError }) => {
           const { title, content } = inputData
 
-  
           // an example of a content filter, the prevents the title or content containing the word "Profanity"
           if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
           if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
@@ -129,7 +128,8 @@ export const lists = {
 
           if ('feedback' in inputData) {
             const { feedback } = inputData
-            if (/profanity/i.test(feedback ?? '')) return addValidationError('Unacceptable feedback')
+            if (/profanity/i.test(feedback ?? ''))
+              return addValidationError('Unacceptable feedback')
           }
 
           // an example of a content filter, the prevents the title or content containing the word "Profanity"
@@ -138,7 +138,7 @@ export const lists = {
         },
         delete: ({ context, item, addValidationError }) => {
           const { preventDelete } = item
-  
+
           // an example of a content filter, the prevents the title or content containing the word "Profanity"
           if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
         },

@@ -11,7 +11,7 @@ type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   isIndexed?: boolean | 'unique'
 }
 
-export function text<ListTypeInfo extends BaseListTypeInfo> ({
+export function text<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
   ...config
 }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
@@ -26,7 +26,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo> ({
       input: {
         create: {
           arg: g.arg({ type: g.String }),
-          resolve (value, context) {
+          resolve(value, context) {
             return value
           },
         },
@@ -35,12 +35,12 @@ export function text<ListTypeInfo extends BaseListTypeInfo> ({
       },
       output: g.field({
         type: g.String,
-        resolve ({ value, item }, args, context, info) {
+        resolve({ value, item }, args, context, info) {
           return value
         },
       }),
       views: './1-text-field/views',
-      getAdminMeta () {
+      getAdminMeta() {
         return {}
       },
     })

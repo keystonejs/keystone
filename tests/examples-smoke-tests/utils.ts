@@ -7,7 +7,7 @@ import ms from 'ms'
 
 jest.setTimeout(ms('20 minutes'))
 
-export async function loadIndex (page: playwright.Page) {
+export async function loadIndex(page: playwright.Page) {
   await page.goto('http://localhost:3000')
   try {
     // sometimes Next will fail to load the page the first time
@@ -20,7 +20,7 @@ export async function loadIndex (page: playwright.Page) {
   }
 }
 
-async function deleteAllData (projectDir: string) {
+async function deleteAllData(projectDir: string) {
   const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
   const prisma = new PrismaClient()
 
@@ -35,7 +35,7 @@ async function deleteAllData (projectDir: string) {
 
 const treeKill = promisify(_treeKill)
 
-export function initFirstItemTest (getPage: () => playwright.Page) {
+export function initFirstItemTest(getPage: () => playwright.Page) {
   test('init first item', async () => {
     const page = getPage()
     await page.getByLabel('Name').fill('Admin')
@@ -48,10 +48,10 @@ export function initFirstItemTest (getPage: () => playwright.Page) {
 }
 
 // TODO: merge with tests/admin-ui-tests/utils.ts copy
-export async function waitForIO (ksProcess: ExecaChildProcess, content: string) {
+export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
   return await new Promise(resolve => {
     let output = ''
-    function listener (chunk: Buffer) {
+    function listener(chunk: Buffer) {
       output += chunk.toString('utf8')
       if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
@@ -78,7 +78,7 @@ export const exampleProjectTests = (
       await cleanupKeystoneProcess()
     })
 
-    async function startKeystone (command: 'start' | 'dev') {
+    async function startKeystone(command: 'start' | 'dev') {
       const ksProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
         env: process.env,

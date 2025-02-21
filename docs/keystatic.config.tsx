@@ -189,13 +189,13 @@ export default config({
               }),
               {
                 label: 'Navigation items',
-                itemLabel: (props) => props.fields.label.value,
+                itemLabel: props => props.fields.label.value,
               }
             ),
           }),
           {
             label: 'Navigation groups',
-            itemLabel: (props) => props.fields.groupName.value,
+            itemLabel: props => props.fields.groupName.value,
           }
         ),
       },
@@ -251,14 +251,14 @@ export default config({
               }),
               {
                 label: 'Featured Items',
-                itemLabel: (props) =>
+                itemLabel: props =>
                   `${props.fields.label.value} — [${props.fields.link.discriminant}]`,
               }
             ),
           }),
           {
             label: 'Featured Groups',
-            itemLabel: (props) => props.fields.groupName.value,
+            itemLabel: props => props.fields.groupName.value,
           }
         ),
       },

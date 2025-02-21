@@ -15,7 +15,7 @@ import { NavContextProvider } from '../../components/docs/Navigation'
 import { SkipLinks } from '../../components/SkipLinks'
 import { createContext } from 'react'
 
-function getTheme () {
+function getTheme() {
   const isSystemColorSchemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches
   const localStorageTheme = localStorage.theme
   if ((!localStorageTheme && isSystemColorSchemeDark) || localStorageTheme === 'dark') {
@@ -29,11 +29,11 @@ const ThemeContext = createContext({
   setTheme: (theme: 'dark' | 'light') => {},
 })
 
-export function useThemeContext () {
+export function useThemeContext() {
   return useContext(ThemeContext)
 }
 
-export function Html (props: { children: React.ReactNode}) {
+export function Html(props: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window === 'undefined') return 'light'
     return getTheme()
@@ -48,17 +48,24 @@ export function Html (props: { children: React.ReactNode}) {
       match.removeEventListener('change', listener)
     }
   }, [])
-  const context = useMemo(() => ({
-    theme,
-    setTheme (theme:'dark' | 'light') {
-      setTheme((theme) => (theme === 'dark' ? 'light' : 'dark'))
-      localStorage.setItem('theme', theme)
-    }
-  }), [theme, setTheme])
-  return <html lang="en" data-theme={theme}><ThemeContext.Provider value={context}>{props.children}</ThemeContext.Provider></html>
+  const context = useMemo(
+    () => ({
+      theme,
+      setTheme(theme: 'dark' | 'light') {
+        setTheme(theme => (theme === 'dark' ? 'light' : 'dark'))
+        localStorage.setItem('theme', theme)
+      },
+    }),
+    [theme, setTheme]
+  )
+  return (
+    <html lang="en" data-theme={theme}>
+      <ThemeContext.Provider value={context}>{props.children}</ThemeContext.Provider>
+    </html>
+  )
 }
 
-export default function RootLayoutClient ({ children }: { children: React.ReactNode }) {
+export default function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const [{ cache, flush }] = useState(() => {
     const cache = createCache({ key: 'my' })
     cache.compat = true

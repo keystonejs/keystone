@@ -6,7 +6,7 @@ import { allowAll } from '@keystone-6/core/access'
 type IdType = any
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       User: list({
         fields: {
@@ -18,7 +18,7 @@ const runner = setupTestRunner({
       Company: list({ access: allowAll, fields: { name: text() } }),
       Post: list({ access: allowAll, fields: { content: text() } }),
     },
-  }),
+  },
 })
 
 describe('relationship filtering', () => {
@@ -46,9 +46,7 @@ describe('relationship filtering', () => {
       })
 
       expect(users).toHaveLength(1)
-      expect(users).toMatchObject([
-        { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
-      ])
+      expect(users).toMatchObject([{ id: user.id, company: { id: company.id, name: 'Thinkmill' } }])
     })
   )
 
@@ -75,9 +73,7 @@ describe('relationship filtering', () => {
         query: 'id company { id name }',
       })
       expect(users).toHaveLength(1)
-      expect(users).toMatchObject([
-        { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
-      ])
+      expect(users).toMatchObject([{ id: user.id, company: { id: company.id, name: 'Thinkmill' } }])
     })
   )
 
@@ -105,7 +101,7 @@ describe('relationship filtering', () => {
           ],
         },
         query: 'id posts { id content }',
-      })) as { id: IdType, posts: { id: IdType, content: string }[] }[]
+      })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
       expect(users).toHaveLength(1)
       expect(users[0].id).toEqual(user.id)
       expect(users[0].posts).toHaveLength(3)
@@ -137,7 +133,7 @@ describe('relationship filtering', () => {
           ],
         },
         query: 'id posts { id content }',
-      })) as { id: IdType, posts: { id: IdType, content: string }[] }[]
+      })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
       expect(users).toHaveLength(1)
       expect(users[0].id).toEqual(user.id)
       expect(users[0].posts).toHaveLength(3)
@@ -202,7 +198,7 @@ describe('relationship filtering', () => {
       // NB: this includes users who have no posts at all
       type T = {
         id: IdType
-        company: { id: IdType, name: string }
+        company: { id: IdType; name: string }
         posts: { content: string }[]
       }[]
       const users = (await context.query.User.findMany({

@@ -10,7 +10,7 @@ import { g } from '../../..'
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     defaultValue?: JSONValue
-    db?: { map?: string, extendPrismaSchema?: (field: string) => string }
+    db?: { map?: string; extendPrismaSchema?: (field: string) => string }
   }
 
 export const json =
@@ -31,7 +31,7 @@ export const json =
         input: {
           create: {
             arg: g.arg({ type: g.JSON }),
-            resolve (val) {
+            resolve(val) {
               return val === undefined ? defaultValue : val
             },
           },

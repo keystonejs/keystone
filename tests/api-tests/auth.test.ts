@@ -21,7 +21,7 @@ const auth = createAuth({
   sessionData: 'id name',
   initFirstItem: {
     fields: ['email', 'password'],
-    itemData: { name: 'First User' }
+    itemData: { name: 'First User' },
   },
 })
 
@@ -42,14 +42,10 @@ const runner = setupTestRunner({
     },
     session: statelessSessions(),
   },
-  wrap: config => auth.withAuth(config)
+  wrap: config => auth.withAuth(config),
 })
 
-async function authenticateWithPassword (
-  gql: any,
-  email: string,
-  password: string
-) {
+async function authenticateWithPassword(gql: any, email: string, password: string) {
   return gql({
     query: `
       mutation($email: String!, $password: String!) {
@@ -105,9 +101,7 @@ describe('Auth testing', () => {
           'incorrectbattery'
         )) as any
 
-        const sessionHeader = res.rawHeaders.find((h: string) =>
-          h.startsWith('keystonejs-session')
-        )
+        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
         expect(sessionHeader).toBe(undefined)
         expect(body.errors).toBe(undefined)
         expect(body.data).toEqual({
@@ -127,9 +121,7 @@ describe('Auth testing', () => {
           'correctbattery'
         )) as any
 
-        const sessionHeader = res.rawHeaders.find((h: string) =>
-          h.startsWith('keystonejs-session')
-        )
+        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
         expect(sessionHeader).toBe(undefined)
         expect(body.errors).toBe(undefined)
         expect(body.data).toEqual({
@@ -183,9 +175,7 @@ describe('Auth testing', () => {
         `,
           variables: { email: 'new@example.com', password: 'new_password' },
         })) as any
-        const sessionHeader = res.rawHeaders.find((h: string) =>
-          h.startsWith('keystonejs-session')
-        )
+        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
         expect(sessionHeader).toBe(undefined)
         expectInternalServerError(body.errors, [
           {
@@ -211,9 +201,7 @@ describe('Auth testing', () => {
         `,
           variables: { password: 'new_password' },
         })) as any
-        const sessionHeader = res.rawHeaders.find((h: string) =>
-          h.startsWith('keystonejs-session')
-        )
+        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
         expect(sessionHeader).toBe(undefined)
         expectValidationError(body.errors, [
           {
@@ -230,14 +218,14 @@ describe('Auth testing', () => {
 test(
   'authenticatedItem',
   runner(async ({ context }) => {
-    const user = (await context.db.User.createOne({
+    const user = await context.db.User.createOne({
       data: {
         name: 'test',
         email: 'test@',
         yesRead: 'yes',
-        noRead: 'no'
+        noRead: 'no',
       },
-    }))
+    })
 
     const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`
     const context_ = context.withSession({
@@ -250,7 +238,7 @@ test(
       authenticatedItem: {
         id: user.id,
         yesRead: user.yesRead,
-        noRead: null
+        noRead: null,
       },
     })
     expect(errors).toBe(undefined)

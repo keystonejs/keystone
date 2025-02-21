@@ -18,7 +18,7 @@ export type Document = NonNullable<
   }
 >
 
-export default async function DocPage ({ params }) {
+export default async function DocPage({ params }) {
   const _params = await params
   const doc = await reader.collections.docs.read(_params!.rest.join('/'), {
     resolveLinkedFiles: true,
@@ -43,7 +43,7 @@ export default async function DocPage ({ params }) {
 }
 
 // Dynamic SEO page metadata
-export async function generateMetadata ({ params }) {
+export async function generateMetadata({ params }) {
   const _params = await params
   const doc = await reader.collections.docs.read(_params!.rest.join('/'))
   return {
@@ -53,7 +53,7 @@ export async function generateMetadata ({ params }) {
 }
 
 // Static HTML page generation for each document page
-export async function generateStaticParams () {
+export async function generateStaticParams() {
   const pages = await reader.collections.docs.list()
-  return pages.map((page) => ({ rest: page.split('/') }))
+  return pages.map(page => ({ rest: page.split('/') }))
 }

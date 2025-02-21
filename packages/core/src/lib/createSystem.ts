@@ -1,34 +1,29 @@
 import path from 'node:path'
 import { randomBytes } from 'node:crypto'
-import type {
-  FieldData,
-  KeystoneConfig
-} from '../types'
+import type { FieldData, KeystoneConfig } from '../types'
 
 import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
-import {
-  type InitialisedList,
-  initialiseLists,
-} from './core/initialise-lists'
+import { type InitialisedList, initialiseLists } from './core/initialise-lists'
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-export function getBuiltKeystoneConfigurationPath (cwd: string) {
+export function getBuiltKeystoneConfigurationPath(cwd: string) {
   return path.join(cwd, '.keystone/config.js')
 }
 
-function posixify (s: string) {
+function posixify(s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths (cwd: string, config: KeystoneConfig) {
-  const prismaClientPath = config.db.prismaClientPath === '@prisma/client'
-    ? null
-    : config.db.prismaClientPath
-      ? path.join(cwd, config.db.prismaClientPath)
-      : null
+export function getSystemPaths(cwd: string, config: KeystoneConfig) {
+  const prismaClientPath =
+    config.db.prismaClientPath === '@prisma/client'
+      ? null
+      : config.db.prismaClientPath
+        ? path.join(cwd, config.db.prismaClientPath)
+        : null
 
   const builtTypesPath = config.types?.path
     ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
@@ -61,7 +56,7 @@ export function getSystemPaths (cwd: string, config: KeystoneConfig) {
   }
 }
 
-function getSudoGraphQLSchema (config: KeystoneConfig) {
+function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
   //  * All list level access control is disabled
@@ -118,7 +113,7 @@ function getSudoGraphQLSchema (config: KeystoneConfig) {
   // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
-function injectNewDefaults (prismaClient: unknown, lists: Record<string, InitialisedList>) {
+function injectNewDefaults(prismaClient: unknown, lists: Record<string, InitialisedList>) {
   for (const listKey in lists) {
     const list = lists[listKey]
 
@@ -131,7 +126,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
       prismaClient = (prismaClient as any).$extends({
         query: {
           [list.prisma.listKey]: {
-            async create ({ model, args, query }: any) {
+            async create({ model, args, query }: any) {
               return query({
                 ...args,
                 data: {
@@ -149,7 +144,7 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
   return prismaClient
 }
 
-function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
+function formatUrl(provider: KeystoneConfig['db']['provider'], url: string) {
   if (url.startsWith('file:')) {
     const parsed = new URL(url)
     if (provider === 'sqlite' && !parsed.searchParams.get('connection_limit')) {
@@ -166,7 +161,7 @@ function formatUrl (provider: KeystoneConfig['db']['provider'], url: string) {
   return url
 }
 
-export function createSystem (config: KeystoneConfig) {
+export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)
@@ -186,7 +181,7 @@ export function createSystem (config: KeystoneConfig) {
     getKeystone: (PM: any) => {
       const prePrismaClient = new PM.PrismaClient({
         datasourceUrl: formatUrl(config.db.provider, config.db.url),
-        log: config.db.enableLogging
+        log: config.db.enableLogging,
       })
 
       const prismaClient = config.db.extendPrismaClient(injectNewDefaults(prePrismaClient, lists))
@@ -204,12 +199,12 @@ export function createSystem (config: KeystoneConfig) {
 
       return {
         // TODO: replace with server.onStart, remove in breaking change
-        async connect () {
+        async connect() {
           await (prismaClient as any).$connect()
           await config.db.onConnect?.(context)
         },
         // TODO: only used by tests, remove in breaking change
-        async disconnect () {
+        async disconnect() {
           await (prismaClient as any).$disconnect()
         },
         context,

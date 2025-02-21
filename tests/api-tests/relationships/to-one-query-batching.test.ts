@@ -7,7 +7,7 @@ import { dbProvider } from '../utils'
 
 const runner = setupTestRunner({
   identifier: 'toqb',
-  config: ({
+  config: {
     db: { enableLogging: true },
     lists: {
       Post: list({
@@ -31,7 +31,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 test(

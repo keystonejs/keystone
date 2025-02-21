@@ -17,7 +17,7 @@ import { Alert } from '../../../components/primitives/Alert'
 import { Button } from '../../../components/primitives/Button'
 import { ArrowR } from '../../../components/icons/ArrowR'
 
-export default function Brand () {
+export default function Brand() {
   const mq = useMediaQuery()
 
   return (

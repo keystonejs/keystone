@@ -13,11 +13,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({
     posts: (await context.query.Post.findMany({
       query: 'id name content',
-    })) as { id: string, name: string, content: string }[],
+    })) as { id: string; name: string; content: string }[],
   })
 }
 
-export default function UsersIndexRoute () {
+export default function UsersIndexRoute() {
   const data = useLoaderData<typeof loader>()
 
   return (

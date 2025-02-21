@@ -63,8 +63,8 @@ jest.setTimeout(ms('1 minute')) // these tests are slow
 jest.mock('prompts', () => {
   return function (
     args:
-      | { name: 'value', type: 'text', message: string }
-      | { name: 'value', type: 'confirm', message: string, initial: boolean }
+      | { name: 'value'; type: 'text'; message: string }
+      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
   ) {
     const getPromptAnswer = (message: string) => {
       message = message.replace(/[^ -~\n]+/g, '?')
@@ -105,14 +105,14 @@ jest.mock('prompts', () => {
   }
 })
 
-function getPrismaClient (cwd: string) {
+function getPrismaClient(cwd: string) {
   return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   })
 }
 
 describe('dev', () => {
-  async function setupInitialProject () {
+  async function setupInitialProject() {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,
@@ -240,7 +240,7 @@ describe('dev', () => {
   })
 })
 
-async function getDatabaseFiles (cwd: string) {
+async function getDatabaseFiles(cwd: string) {
   return getFiles(cwd, ['app.db', 'migrations/**/*'], null)
 }
 
@@ -268,10 +268,7 @@ describe('prisma', () => {
       await prismaClient.$disconnect()
     }
 
-    expect(
-      output
-        .replace(/[^ -~\n]+/g, '?')
-    ).toMatchInlineSnapshot(`
+    expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
       "? GraphQL and Prisma schemas are up to date
       "
     `)

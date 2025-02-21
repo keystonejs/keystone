@@ -6,7 +6,7 @@ import { graphql } from './gql'
 
 import type { Lists } from '.keystone/types'
 
-const LatestPostQuery = graphql(/* GraphQL */`
+const LatestPostQuery = graphql(/* GraphQL */ `
   query LastestPostQuery($id: ID!) {
     author(where: { id: $id }) {
       id
@@ -36,7 +36,7 @@ export const lists = {
         field: lists =>
           g.field({
             type: lists.Post.types.output,
-            async resolve (item, args, context) {
+            async resolve(item, args, context) {
               const data = await context.graphql.run({
                 query: LatestPostQuery,
                 variables: { id: item.id },

@@ -1,13 +1,10 @@
 import type { BaseListTypeInfo } from '@keystone-6/core/types'
-import type {
-  AuthGqlNames,
-  AuthConfig,
-} from '../types'
+import type { AuthGqlNames, AuthConfig } from '../types'
 
 export default function ({
   authGqlNames,
   listKey,
-  initFirstItem
+  initFirstItem,
 }: {
   authGqlNames: AuthGqlNames
   listKey: string
@@ -16,10 +13,10 @@ export default function ({
   return `import makeSigninPage from '@keystone-6/auth/pages/InitPage'
 
 export default makeSigninPage(${JSON.stringify({
-  listKey,
-  authGqlNames,
-  fieldPaths: initFirstItem.fields,
-  enableWelcome: !initFirstItem.skipKeystoneWelcome,
-})})
+    listKey,
+    authGqlNames,
+    fieldPaths: initFirstItem.fields,
+    enableWelcome: !initFirstItem.skipKeystoneWelcome,
+  })})
 `
 }

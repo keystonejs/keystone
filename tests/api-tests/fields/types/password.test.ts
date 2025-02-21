@@ -15,7 +15,7 @@ filterTests(password(), match => {
 
 const runner = setupTestRunner({
   serve: true,
-  config: ({
+  config: {
     lists: {
       User: list({
         access: allowAll,
@@ -24,33 +24,41 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
-test('password 72 characters long is allowed', runner(async ({context}) => {
-  await context.db.User.createOne({data: { password: 'a'.repeat(72) }})
-}))
+test(
+  'password 72 characters long is allowed',
+  runner(async ({ context }) => {
+    await context.db.User.createOne({ data: { password: 'a'.repeat(72) } })
+  })
+)
 
-
-test('password longer than 72 characters is rejected', runner(async ({context}) => {
-  try {
-    await context.db.User.createOne({data: { password: 'a'.repeat(73) }})
-    expect(false).toBe(true)
-  } catch (error: any) {
-    expect(error.message).toEqual(`An error occurred while resolving input fields.
+test(
+  'password longer than 72 characters is rejected',
+  runner(async ({ context }) => {
+    try {
+      await context.db.User.createOne({ data: { password: 'a'.repeat(73) } })
+      expect(false).toBe(true)
+    } catch (error: any) {
+      expect(error.message).toEqual(`An error occurred while resolving input fields.
   - User.password: value must be no longer than 72 characters`)
-  }
-}))
+    }
+  })
+)
 
-test('password that is 72 utf-16 code units but >72 utf-8 code units is rejected', runner(async ({context}) => {
-  const password = 'a'.repeat(70) + '❤️'
-  expect(password.length).toBe(72)
-  expect(new TextEncoder().encode(password).length).toBe(76)
-  try {
-    await context.db.User.createOne({data: { password }})
-    expect(false).toBe(true)
-  } catch (error: any) {
-    expect(error.message).toEqual(`An error occurred while resolving input fields.
+test(
+  'password that is 72 utf-16 code units but >72 utf-8 code units is rejected',
+  runner(async ({ context }) => {
+    const password = 'a'.repeat(70) + '❤️'
+    expect(password.length).toBe(72)
+    expect(new TextEncoder().encode(password).length).toBe(76)
+    try {
+      await context.db.User.createOne({ data: { password } })
+      expect(false).toBe(true)
+    } catch (error: any) {
+      expect(error.message).toEqual(`An error occurred while resolving input fields.
   - User.password: value must be no longer than 72 characters`)
-  }
-}))
+    }
+  })
+)

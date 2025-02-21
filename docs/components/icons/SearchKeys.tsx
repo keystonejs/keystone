@@ -2,7 +2,7 @@
 
 import { Gradients, type IconProps } from './util'
 
-export function SearchKeys ({ grad, ...props }: IconProps) {
+export function SearchKeys({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

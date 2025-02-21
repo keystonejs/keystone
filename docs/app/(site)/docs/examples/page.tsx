@@ -6,35 +6,44 @@ import { baseMarkdocConfig } from '../../../../markdoc/config'
 
 export const metadata = {
   title: 'Examples',
-  description: 'A growing collection of projects you can run locally to learn more about Keystone’s many features. Use them as a reference for best practice, and springboard when adding features to your own project.',
+  description:
+    'A growing collection of projects you can run locally to learn more about Keystone’s many features. Use them as a reference for best practice, and springboard when adding features to your own project.',
 }
 
 export type GroupedExamples = Awaited<ReturnType<typeof getGroupedExamples>>
 
-async function getGroupedExamples () {
-  const examples = await reader.collections.examples.all({resolveLinkedFiles: true})
-  const transformedExamples = await Promise.all(examples.map(async example => {
-    return {
-      ...example,
-      entry : {
-        ...example.entry,
-        description: transform(example.entry.description.node, baseMarkdocConfig)
+async function getGroupedExamples() {
+  const examples = await reader.collections.examples.all({ resolveLinkedFiles: true })
+  const transformedExamples = await Promise.all(
+    examples.map(async example => {
+      return {
+        ...example,
+        entry: {
+          ...example.entry,
+          description: transform(example.entry.description.node, baseMarkdocConfig),
+        },
       }
-    }
-  }))
+    })
+  )
 
-  const standaloneExamples = transformedExamples.filter(example => example.entry.kind === 'standalone')
-  const endToEndExamples = transformedExamples.filter(example => example.entry.kind === 'end-to-end')
-  const deploymentExamples = transformedExamples.filter(example => example.entry.kind === 'deployment')
+  const standaloneExamples = transformedExamples.filter(
+    example => example.entry.kind === 'standalone'
+  )
+  const endToEndExamples = transformedExamples.filter(
+    example => example.entry.kind === 'end-to-end'
+  )
+  const deploymentExamples = transformedExamples.filter(
+    example => example.entry.kind === 'deployment'
+  )
 
   return {
     standaloneExamples,
     endToEndExamples,
-    deploymentExamples
+    deploymentExamples,
   }
 }
 
-export default async function Docs () {
+export default async function Docs() {
   const pageData = await getGroupedExamples()
   return (
     <DocsLayout noRightNav noProse isIndexPage>

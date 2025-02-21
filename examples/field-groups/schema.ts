@@ -29,9 +29,9 @@ export const lists = {
               resolveInput: {
                 create: ({ context, operation, resolvedData }) => {
                   // TODO: text should allow you to prevent a defaultValue, then Prisma create could be non-null
-                  return resolvedData.title?.replace(/ /g, '-').toLowerCase()                  
-                },                
-              }
+                  return resolvedData.title?.replace(/ /g, '-').toLowerCase()
+                },
+              },
             },
           }),
         },

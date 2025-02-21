@@ -13,7 +13,7 @@ import { assertNever, clientSideValidateProp } from './DocumentEditor/component-
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'
 
-export function Field ({
+export function Field({
   field,
   value,
   onChange,
@@ -30,18 +30,15 @@ export function Field ({
       getNewVal => {
         onChange?.({
           kind: valueRef.current.kind,
-          value: getNewVal(valueRef.current.value)
+          value: getNewVal(valueRef.current.value),
         })
       },
       () => undefined
     )
   }, [field.schema, onChange])
   return (
-    <KeystarField
-      label={field.label}
-      description={field.description}
-    >
-      {(inputProps) => (
+    <KeystarField label={field.label} description={field.description}>
+      {inputProps => (
         <FormValueContentFromPreviewProps
           autoFocus={autoFocus}
           forceValidation={forceValidation}
@@ -58,12 +55,16 @@ export const Cell: CellComponent<typeof controller> = () => {
 
 export const allowedExportsOnCustomViews = ['schema']
 
-export function controller (
-  config: FieldControllerConfig
-): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
+export function controller(config: FieldControllerConfig): FieldController<{
+  kind: 'create' | 'update'
+  value: unknown
+}> & {
   schema: ComponentSchema
 } {
-  if (!config.customViews.schema) throw new Error(`No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`)
+  if (!config.customViews.schema)
+    throw new Error(
+      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
+    )
   return {
     path: config.path,
     label: config.label,
@@ -86,11 +87,7 @@ export function controller (
   }
 }
 
-function serializeValue (
-  schema: ComponentSchema,
-  value: any,
-  kind: 'update' | 'create'
-): any {
+function serializeValue(schema: ComponentSchema, value: any, kind: 'update' | 'create'): any {
   if (schema.kind === 'conditional') {
     return {
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
@@ -118,7 +115,7 @@ function serializeValue (
       if (kind === 'create') return
       return { disconnect: true }
     }
-    return { connect: { id: value.id }, }
+    return { connect: { id: value.id } }
   }
   if (schema.kind === 'child') {
     throw new Error('Child fields are not supported in the structure field')

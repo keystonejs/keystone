@@ -38,7 +38,7 @@ const IS_MAC =
 
 export const modifierKeyText = IS_MAC ? '⌘' : 'Ctrl'
 
-export function isElementActive (
+export function isElementActive(
   editor: Editor,
   format: Exclude<ElementFromValidation, { text: string }>['type']
 ) {
@@ -49,14 +49,14 @@ export function isElementActive (
   return !!match
 }
 
-export function clearFormatting (editor: Editor) {
+export function clearFormatting(editor: Editor) {
   Transforms.unwrapNodes(editor, {
     match: node => node.type === 'heading' || node.type === 'blockquote' || node.type === 'code',
   })
   Transforms.unsetNodes(editor, allMarks, { match: Text.isText })
 }
 
-export function moveChildren (
+export function moveChildren(
   editor: Editor,
   parent: NodeEntry | Path,
   to: Path,
@@ -74,14 +74,14 @@ export function moveChildren (
   }
 }
 
-export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading (
+export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
   editor: Editor,
   nodes: Node | Node[],
   slate?: {
     ReactEditor: {
       focus: (editor: Editor) => void
     }
-  },
+  }
 ) {
   let pathRefForEmptyNodeAtCursor: PathRef | undefined
   const entry = Editor.above(editor, {
@@ -105,7 +105,7 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading (
  * like the point in a void text node, an empty text node and the last point in a text node
  */
 // TODO: this would probably break if you were trying to get the last point in the editor?
-export function EditorAfterButIgnoringingPointsWithNoContent (
+export function EditorAfterButIgnoringingPointsWithNoContent(
   editor: Editor,
   at: Location,
   {
@@ -139,7 +139,7 @@ export function EditorAfterButIgnoringingPointsWithNoContent (
   return target
 }
 
-export function nodeTypeMatcher<Type extends Element['type'][]> (
+export function nodeTypeMatcher<Type extends Element['type'][]>(
   ...args: Type
 ): (node: Node) => node is Element & { type: Type[number] } {
   if (args.length === 1) {
@@ -150,6 +150,6 @@ export function nodeTypeMatcher<Type extends Element['type'][]> (
   return ((node: Node) => typeof node.type === 'string' && set.has(node.type)) as any
 }
 
-export function assert (condition: boolean): asserts condition {
+export function assert(condition: boolean): asserts condition {
   if (!condition) throw new Error('failed assert')
 }

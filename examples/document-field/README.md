@@ -81,27 +81,26 @@ We render the `Author.bio` field using the default document renderer.
 This renders the content with minimal styling.
 
 ```tsx
-import { DocumentRenderer } from '@keystone-6/document-renderer';
-
-<DocumentRenderer document={author.bio.document} />;
+import { DocumentRenderer } from '@keystone-6/document-renderer'
+;<DocumentRenderer document={author.bio.document} />
 ```
 
 For the `Post.content` field we provide a custom renderer for headings, which allows us to add our own styling.
 In this case we apply `textTransform: 'uppercase'` to all of our headings, while using the default styling for all other elements.
 
 ```tsx
-import { DocumentRenderer, DocumentRendererProps } from '@keystone-6/document-renderer';
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-6/document-renderer'
 
 const renderers: DocumentRendererProps['renderers'] = {
   block: {
     heading({ level, children, textAlign }) {
-      const Comp = `h${level}` as const;
-      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>;
+      const Comp = `h${level}` as const
+      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>
     },
   },
-};
+}
 
-<DocumentRenderer document={post.content.document} renderers={renderers} />;
+;<DocumentRenderer document={post.content.document} renderers={renderers} />
 ```
 
 ## Try it out in CodeSandbox 🧪

@@ -7,13 +7,13 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import theme from '../../lib/prism-theme'
 
-type Range = { start: number, end: number }
+type Range = { start: number; end: number }
 type CollapseRange = Range & { isCollapsed: boolean }
 
 const getRanges = (lines: string): Range[] => {
   const ranges: Range[] = []
 
-  lines.split(',').forEach((lineRange) => {
+  lines.split(',').forEach(lineRange => {
     if (lineRange.length) {
       const [range1, range2] = lineRange.split('-')
 
@@ -40,7 +40,7 @@ const getRanges = (lines: string): Range[] => {
 
 const parseClassName = (
   className?: string
-): { highlightRanges: Range[], collapseRanges: CollapseRange[], language: string } => {
+): { highlightRanges: Range[]; collapseRanges: CollapseRange[]; language: string } => {
   const trimmedLanguage = (className || '').replace(/language-/, '')
   let language, highlights, collapses
 
@@ -68,7 +68,7 @@ const parseClassName = (
   return {
     language: (language as any) || 'typescript',
     highlightRanges: getRanges(highlights?.replace('}', '') || ''),
-    collapseRanges: getRanges(collapses?.replace(']', '') || '').map((range) => ({
+    collapseRanges: getRanges(collapses?.replace(']', '') || '').map(range => ({
       ...range,
       isCollapsed: true,
     })),
@@ -80,7 +80,7 @@ const findRange = <TRange extends Range | CollapseRange>(
   num: number
 ): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num)
 
-export function CodeBlock (props: { children: string, className?: string }) {
+export function CodeBlock(props: { children: string; className?: string }) {
   /*
     In MDX 2, we no longer get different components for rendering `inlineCode` and code blocks.
     This function returns us to our old behaviour, though a bit inelegantly
@@ -91,7 +91,7 @@ export function CodeBlock (props: { children: string, className?: string }) {
   return <InlineCode {...props} />
 }
 
-export function Code ({ children, className }: { children: string, className?: string }) {
+export function Code({ children, className }: { children: string; className?: string }) {
   const { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
     [className]
@@ -120,7 +120,7 @@ export function Code ({ children, className }: { children: string, className?: s
                   <button
                     key={i}
                     onClick={() => {
-                      const updated = collapseState.map((item) =>
+                      const updated = collapseState.map(item =>
                         item.start === i ? { ...item, isCollapsed: false } : item
                       )
 
@@ -171,7 +171,7 @@ export function Code ({ children, className }: { children: string, className?: s
                     if (token.content === 'document' && token.types[0] === 'imports') {
                       token.types = ['imports']
                     }
-                    
+
                     // Need to extract the key from lineProps, React not happy about spreading a key on an element
                     const tokenProps = getTokenProps({ token, key })
                     const { key: k, ...restTokenProps } = tokenProps
@@ -187,7 +187,7 @@ export function Code ({ children, className }: { children: string, className?: s
   )
 }
 
-export function InlineCode ({ children }: { children: ReactNode }) {
+export function InlineCode({ children }: { children: ReactNode }) {
   return (
     <code
       css={{

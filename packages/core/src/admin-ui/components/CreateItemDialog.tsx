@@ -10,7 +10,7 @@ import { useList } from '../context'
 import { Fields } from '../utils/Fields'
 import { useBuildItem } from '../utils/useCreateItem'
 
-export function BuildItemDialog ({
+export function BuildItemDialog({
   listKey,
   onChange,
 }: {
@@ -29,7 +29,7 @@ export function BuildItemDialog ({
       <Content>
         <form
           id={formId}
-          onSubmit={async (e) => {
+          onSubmit={async e => {
             e.preventDefault()
 
             // NOTE: React events bubble through portals, this prevents the
@@ -51,12 +51,8 @@ export function BuildItemDialog ({
 
       <ButtonGroup>
         <Button onPress={dialogState.dismiss}>Cancel</Button>
-        <Button
-          form={formId}
-          prominence="high"
-          type="submit"
-         >
-           Add
+        <Button form={formId} prominence="high" type="submit">
+          Add
         </Button>
       </ButtonGroup>
     </Dialog>

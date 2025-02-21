@@ -25,11 +25,7 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import {
-  gql,
-  useMutation,
-  useQuery,
-} from '../../../../admin-ui/apollo'
+import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
@@ -49,7 +45,7 @@ type SelectedKeys = 'all' | Set<number | string>
 
 const storeableQueries = ['sortBy', 'fields']
 
-function useQueryParamsFromLocalStorage (listKey: string) {
+function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
   const resetToDefaults = () => {
@@ -58,9 +54,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   }
 
   useEffect(() => {
-    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(
-      router.query
-    ).some(x => {
+    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
       return x.startsWith('!') || storeableQueries.includes(x)
     })
 
@@ -84,10 +78,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
       }
     }
     if (Object.keys(queryParamsToSerialize).length) {
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify(queryParamsToSerialize)
-      )
+      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize))
     } else {
       localStorage.removeItem(localStorageKey)
     }
@@ -98,7 +89,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
-function ListPage ({ listKey }: ListPageProps) {
+function ListPage({ listKey }: ListPageProps) {
   const list = useList(listKey)
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
@@ -112,11 +103,7 @@ function ListPage ({ listKey }: ListPageProps) {
   const search = useSearchFilter(searchParam, list, list.initialSearchFields)
 
   const selectedFields = useSelectedFields(list)
-  const {
-    data,
-    error,
-    refetch,
-  } = useQuery(
+  const { data, error, refetch } = useQuery(
     useMemo(() => {
       const selectedGqlFields = [...selectedFields]
         .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
@@ -150,9 +137,7 @@ function ListPage ({ listKey }: ListPageProps) {
         where: { ...filters.where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
-        orderBy: sort
-          ? [{ [sort.field]: sort.direction.toLowerCase() }]
-          : undefined,
+        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
       },
     }
   )
@@ -203,11 +188,7 @@ function ListPage ({ listKey }: ListPageProps) {
           <FieldSelection listKey={listKey} isDisabled={isEmpty} />
           {Boolean(isConstrained || query.sortBy || query.fields) && (
             <TooltipTrigger>
-              <ActionButton
-                aria-label="reset"
-                onPress={resetToDefaults}
-                prominence="low"
-              >
+              <ActionButton aria-label="reset" onPress={resetToDefaults} prominence="low">
                 <Icon src={undo2Icon} />
               </ActionButton>
               <Tooltip>Reset to defaults</Tooltip>
@@ -215,16 +196,9 @@ function ListPage ({ listKey }: ListPageProps) {
           )}
         </HStack>
 
-        {filters.filters.length ? (
-          <FilterList filters={filters.filters} list={list} />
-        ) : null}
+        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
 
-        <GraphQLErrorNotice
-          errors={[
-            error?.networkError,
-            ...error?.graphQLErrors ?? []
-          ]}
-        />
+        <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
 
         <ListTable
           listKey={listKey}
@@ -244,13 +218,7 @@ function ListPage ({ listKey }: ListPageProps) {
 
 const LIST_PAGE_TITLE_ID = 'keystone-list-page-title'
 
-function ListPageHeader ({
-  listKey,
-  showCreate,
-}: {
-  listKey: string
-  showCreate?: boolean
-}) {
+function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?: boolean }) {
   const list = useList(listKey)
   return (
     <Fragment>
@@ -266,7 +234,7 @@ function ListPageHeader ({
   )
 }
 
-function ListTable ({
+function ListTable({
   allowDelete,
   count,
   currentPage,
@@ -292,9 +260,7 @@ function ListTable ({
   const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
     const sortBy =
-      sortDescriptor.direction === 'ascending'
-        ? `-${sortDescriptor.column}`
-        : sortDescriptor.column
+      sortDescriptor.direction === 'ascending' ? `-${sortDescriptor.column}` : sortDescriptor.column
     router.push({ query: { ...router.query, sortBy } })
   }
   const selectionMode = allowDelete ? 'multiple' : 'none'
@@ -316,10 +282,7 @@ function ListTable ({
           aria-labelledby={LIST_PAGE_TITLE_ID}
           selectionMode={selectionMode}
           onSortChange={onSortChange}
-          sortDescriptor={
-            parseSortQuery(router.query.sortBy) ||
-            parseInitialSort(list.initialSort)
-          }
+          sortDescriptor={parseSortQuery(router.query.sortBy) || parseInitialSort(list.initialSort)}
           density="spacious"
           overflowMode="truncate"
           onSelectionChange={setSelectedKeys}
@@ -359,11 +322,7 @@ function ListTable ({
                     return (
                       <Cell>
                         {CellContent ? (
-                          <CellContent
-                            value={value}
-                            field={field.controller}
-                            item={row}
-                          />
+                          <CellContent value={value} field={field.controller} item={row} />
                         ) : (
                           <Text>{value?.toString()}</Text>
                         )}
@@ -428,35 +387,27 @@ function ListTable ({
         }}
       >
         {idsForDeletion && (
-          <DeleteItemsDialog
-            items={idsForDeletion}
-            listKey={listKey}
-            refetch={refetch}
-          />
+          <DeleteItemsDialog items={idsForDeletion} listKey={listKey} refetch={refetch} />
         )}
       </DialogContainer>
     </Fragment>
   )
 }
 
-function parseSortQuery (
-  queryString?: string | string[]
-): SortDescriptor | undefined {
+function parseSortQuery(queryString?: string | string[]): SortDescriptor | undefined {
   if (!queryString) return
 
   // TODO: handle multiple sort queries?
   if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
 
-  const column = queryString.startsWith('-')
-    ? queryString.slice(1)
-    : queryString
+  const column = queryString.startsWith('-') ? queryString.slice(1) : queryString
   const direction = queryString.startsWith('-') ? 'ascending' : 'descending'
 
   return { column, direction }
 }
 
-function parseInitialSort (
-  sort?: { field: string, direction: 'ASC' | 'DESC' } | null
+function parseInitialSort(
+  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
 ): SortDescriptor | undefined {
   if (!sort) return undefined
   return {
@@ -465,11 +416,7 @@ function parseInitialSort (
   }
 }
 
-function DeleteItemsDialog (props: {
-  items: Set<Key>
-  listKey: string
-  refetch: () => void
-}) {
+function DeleteItemsDialog(props: { items: Set<Key>; listKey: string; refetch: () => void }) {
   const { items, listKey, refetch } = props
   const list = useList(listKey)
 
@@ -533,9 +480,7 @@ function DeleteItemsDialog (props: {
       // find out how many items failed to delete.
       // reduce error messages down to unique instances, and append to the toast as a message.
       toastQueue.critical(
-        `Unable to delete ${unsuccessfulItems} item${
-          unsuccessfulItems === 1 ? '' : 's'
-        }.`,
+        `Unable to delete ${unsuccessfulItems} item${unsuccessfulItems === 1 ? '' : 's'}.`,
         {
           timeout: 5000,
         }
@@ -543,12 +488,9 @@ function DeleteItemsDialog (props: {
     }
 
     if (successfulItems) {
-      toastQueue.neutral(
-        `Deleted ${successfulItems} item${successfulItems === 1 ? '' : 's'}.`,
-        {
-          timeout: 5000,
-        }
-      )
+      toastQueue.neutral(`Deleted ${successfulItems} item${successfulItems === 1 ? '' : 's'}.`, {
+        timeout: 5000,
+      })
     }
 
     return refetch()

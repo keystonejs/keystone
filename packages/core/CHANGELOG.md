@@ -1821,11 +1821,11 @@
   config({
     server: {
       healthCheck: {
-        path: "/my-health-check",
-        data: { status: "healthy" },
+        path: '/my-health-check',
+        data: { status: 'healthy' },
       },
     },
-  });
+  })
   ```
 
   Or use a function for the `data` config to return real-time information:
@@ -1834,15 +1834,15 @@
   config({
     server: {
       healthCheck: {
-        path: "/my-health-check",
+        path: '/my-health-check',
         data: () => ({
-          status: "healthy",
+          status: 'healthy',
           timestamp: Date.now(),
           uptime: process.uptime(),
         }),
       },
     },
-  });
+  })
   ```
 
 * [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed issues with React hooks dependency arrays
@@ -2341,7 +2341,7 @@
         width
         height
       }`,
-  });
+  })
   ```
 
   (2) Alternatively, there is a new set of APIs on `context.db.lists.{List}` which will return the unresolved item data from the database (but with read hooks applied), which can then be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers. This replaces the `resolveFields: boolean` use case.
@@ -2351,7 +2351,7 @@
   ```js
   const [post] = await context.db.lists.Post.findMany({
     where: { slug },
-  });
+  })
   ```
 
 * [#5325](https://github.com/keystonejs/keystone/pull/5325) [`3d3fb860f`](https://github.com/keystonejs/keystone/commit/3d3fb860faa303cbfe75eeb0855a8a575113320c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated to Prisma 2.20
@@ -2860,7 +2860,7 @@
   This means, for example, that
 
   ```js
-  context.createContext({ skipAccessControl: true });
+  context.createContext({ skipAccessControl: true })
   ```
 
   will create a new context with the same `sessionContext` that the original `context` object had.
@@ -2876,8 +2876,8 @@
 
   ```js
   const posts = await context.lists.Post.findMany({
-    resolveFields: "id title author { id name }",
-  });
+    resolveFields: 'id title author { id name }',
+  })
   ```
 
   If `resolveFields: false` is provided, this indicates to the method that no field-resolving is desired.

@@ -1,8 +1,4 @@
-import React, {
-  type ReactNode,
-  type PropsWithChildren,
-  useState
-} from 'react'
+import React, { type ReactNode, type PropsWithChildren, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -40,16 +36,16 @@ type NavItemProps = {
   /**
    * Optionally override the selected state of the item. By default, this is
    * determined by the current route and the `href` provided.
-    */
+   */
   isSelected?: boolean
 }
 
-export function getHrefFromList (list: Pick<ListMeta, 'path' | 'isSingleton'>) {
+export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
   return `/${list.path}${list.isSingleton ? '/1' : ''}`
 }
 
 /** A navigation item represents a page in the AdminUI. */
-export function NavItem (props: NavItemProps) {
+export function NavItem(props: NavItemProps) {
   const { children, href, isSelected: isSelectedProp } = props
   const router = useRouter()
 
@@ -63,40 +59,38 @@ export function NavItem (props: NavItemProps) {
   }
 
   return (
-    <KeystarNavItem
-      aria-current={ariaCurrent || undefined}
-      href={href}
-    >
+    <KeystarNavItem aria-current={ariaCurrent || undefined} href={href}>
       {children}
     </KeystarNavItem>
   )
 }
 
 /** Thin wrapper around "@keystar/ui" component */
-export function NavList (props: NavListProps) {
-  return <KeystarNavList aria-label='main' flex marginEnd='medium' {...props} />
+export function NavList(props: NavListProps) {
+  return <KeystarNavList aria-label="main" flex marginEnd="medium" {...props} />
 }
 
 /** The root navigation component for the AdminUI */
-export function NavContainer ({ children }: PropsWithChildren) {
+export function NavContainer({ children }: PropsWithChildren) {
   return (
-    <VStack gap='large' height='100%' paddingY='xlarge'>
+    <VStack gap="large" height="100%" paddingY="xlarge">
       {children}
     </VStack>
   )
 }
 
 /** @private Exported for internal consumption only. */
-export function Navigation () {
+export function Navigation() {
   const { adminMeta, adminConfig } = useKeystone()
   const lists = Object.values(adminMeta?.lists ?? [])
   const visibleLists = lists.filter(x => !x.hideNavigation)
 
-  if (adminConfig?.components?.Navigation) return <adminConfig.components.Navigation lists={visibleLists} />
+  if (adminConfig?.components?.Navigation)
+    return <adminConfig.components.Navigation lists={visibleLists} />
   return (
     <NavContainer>
       <NavList>
-        <NavItem href='/'>Dashboard</NavItem>
+        <NavItem href="/">Dashboard</NavItem>
         <Divider />
         {visibleLists.map((list: ListMeta) => (
           <NavItem key={list.key} href={getHrefFromList(list)}>
@@ -113,16 +107,16 @@ export function Navigation () {
 }
 
 /** Should be displayed below the `NavList` component. */
-export function NavFooter (props: PropsWithChildren) {
+export function NavFooter(props: PropsWithChildren) {
   return (
-    <HStack paddingX='large' gap='regular'>
+    <HStack paddingX="large" gap="regular">
       {props.children}
     </HStack>
   )
 }
 
 /** A footer item in the navigation. */
-export function DeveloperResourcesMenu () {
+export function DeveloperResourcesMenu() {
   const { apiPath } = useKeystone()
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
@@ -132,29 +126,35 @@ export function DeveloperResourcesMenu () {
     <>
       <MenuTrigger>
         <TooltipTrigger>
-          <ActionButton aria-label='Developer resources'>
+          <ActionButton aria-label="Developer resources">
             <Icon src={constructionIcon} />
           </ActionButton>
           <Tooltip>Developer resources</Tooltip>
         </TooltipTrigger>
-        <Menu onAction={(key) => {
-          if (key === 'community') {
-            setDialogIsOpen(true)
-          }
-        }}>
-          <Item href={apiPath} textValue='API explorer'>
+        <Menu
+          onAction={key => {
+            if (key === 'community') {
+              setDialogIsOpen(true)
+            }
+          }}
+        >
+          <Item href={apiPath} textValue="API explorer">
             <Icon src={fileJson2Icon} />
             <Text>API explorer</Text>
           </Item>
-          <Item target='_blank' href='https://github.com/keystonejs/keystone' textValue='GitHub repository'>
+          <Item
+            target="_blank"
+            href="https://github.com/keystonejs/keystone"
+            textValue="GitHub repository"
+          >
             <Icon src={githubIcon} />
             <Text>GitHub repository</Text>
           </Item>
-          <Item target='_blank' href='https://keystonejs.com' textValue='Documentation'>
+          <Item target="_blank" href="https://keystonejs.com" textValue="Documentation">
             <Icon src={bookTextIcon} />
             <Text>Documentation</Text>
           </Item>
-          <Item key="community" textValue='Community'>
+          <Item key="community" textValue="Community">
             <Icon src={heartHandshakeIcon} />
             <Text>Community</Text>
           </Item>

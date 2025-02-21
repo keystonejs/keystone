@@ -18,9 +18,7 @@ export const isListNode = (
   node: Node
 ): node is Element & { type: 'ordered-list' | 'unordered-list' } => isListType(node.type)
 
-export function ListButtons (props: {
-  lists: { ordered: boolean, unordered: boolean }
-}) {
+export function ListButtons(props: { lists: { ordered: boolean; unordered: boolean } }) {
   const { editor, lists } = useToolbarState()
 
   const items = useMemo(() => {
@@ -44,7 +42,11 @@ export function ListButtons (props: {
     const disabledKeys: string[] = []
     if (lists.ordered.isDisabled) disabledKeys.push('ordered')
     if (lists.unordered.isDisabled) disabledKeys.push('unordered')
-    const activeListType = lists.ordered.isSelected ? 'ordered' : lists.unordered.isSelected ? 'unordered' : null
+    const activeListType = lists.ordered.isSelected
+      ? 'ordered'
+      : lists.unordered.isSelected
+        ? 'unordered'
+        : null
 
     return (
       <EditorToolbarGroup
@@ -56,7 +58,7 @@ export function ListButtons (props: {
           toggleList(editor, format)
           ReactEditor.focus(editor)
         }}
-        selectionMode='single'
+        selectionMode="single"
       >
         {items.map(item => (
           <TooltipTrigger key={item.key}>
@@ -82,7 +84,6 @@ export function ListButtons (props: {
   ])
 }
 
-
-function removeFalse<T> (val: T): val is Exclude<T, false> {
+function removeFalse<T>(val: T): val is Exclude<T, false> {
   return val !== false
 }

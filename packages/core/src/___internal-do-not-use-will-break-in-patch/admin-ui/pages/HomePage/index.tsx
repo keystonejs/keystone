@@ -1,9 +1,4 @@
-import React, {
-  type PropsWithChildren,
-  useId,
-  useMemo,
-  useRef
-} from 'react'
+import React, { type PropsWithChildren, useId, useMemo, useRef } from 'react'
 
 import { gql, useQuery } from '../../../../admin-ui/apollo'
 
@@ -18,15 +13,14 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import {
-  useKeystone,
-  useList,
-} from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 
-export function HomePage () {
+export function HomePage() {
   const { adminMeta } = useKeystone()
   const lists = adminMeta?.lists ?? {}
-  const LIST_COUNTS_QUERY = useMemo(() => gql(`
+  const LIST_COUNTS_QUERY = useMemo(
+    () =>
+      gql(`
     query KsFetchListCounts {
       keystone {
         adminMeta {
@@ -35,25 +29,36 @@ export function HomePage () {
           }
         }
       }
-      ${[...function* () {
-        for (const list of Object.values(lists)) {
-          yield `${list.key}: ${list.graphql.names.listQueryCountName}`
-        }
-      }()].join('\n')}
-    }`,
-  ), [lists])
+      ${[
+        ...(function* () {
+          for (const list of Object.values(lists)) {
+            yield `${list.key}: ${list.graphql.names.listQueryCountName}`
+          }
+        })(),
+      ].join('\n')}
+    }`),
+    [lists]
+  )
   const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
 
   return (
-    <PageContainer header={<Heading elementType="h1" size="small">Dashboard</Heading>}>
-      <Text elementType="h2" visuallyHidden>Lists</Text>
+    <PageContainer
+      header={
+        <Heading elementType="h1" size="small">
+          Dashboard
+        </Heading>
+      }
+    >
+      <Text elementType="h2" visuallyHidden>
+        Lists
+      </Text>
       <VStack paddingY="xlarge">
         <GraphQLErrorNotice
           errors={[
             error?.networkError,
             // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
             // which are handled seperately and do not indicate a failure to update the item
-            ...error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []
+            ...(error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []),
           ]}
         />
         <Grid
@@ -64,24 +69,26 @@ export function HomePage () {
           )`}
           gap="large"
         >
-          {Object.values(lists).map((list) => {
-            return <ListCard
-              key={list.key}
-              listKey={list.key}
-              count={data?.[list.key] ?? null}
-              hideCreate={list.hideCreate ?? false}
-            />
-          }) ?? [] }
+          {Object.values(lists).map(list => {
+            return (
+              <ListCard
+                key={list.key}
+                listKey={list.key}
+                count={data?.[list.key] ?? null}
+                hideCreate={list.hideCreate ?? false}
+              />
+            )
+          }) ?? []}
         </Grid>
       </VStack>
     </PageContainer>
   )
 }
 
-function ListCard ({
+function ListCard({
   listKey,
   count,
-  hideCreate
+  hideCreate,
 }: {
   listKey: string
   count: number | null
@@ -91,7 +98,12 @@ function ListCard ({
   const countElementId = useId()
   const countElement = (() => {
     if (list.isSingleton) return null
-    if (count === null) return <Text id={countElementId} color="neutralTertiary">Unknown</Text>
+    if (count === null)
+      return (
+        <Text id={countElementId} color="neutralTertiary">
+          Unknown
+        </Text>
+      )
     return (
       <Text id={countElementId} color="neutralSecondary">
         {count} item{count !== 1 ? 's' : ''}
@@ -110,7 +122,10 @@ function ListCard ({
     >
       <VStack gap="regular">
         <Heading elementType="h3" size="small" truncate>
-          <CardLink aria-describedby={countElementId} href={`/${list.path}${list.isSingleton ? '/1' : ''}`}>
+          <CardLink
+            aria-describedby={countElementId}
+            href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+          >
             {list.label}
           </CardLink>
         </Heading>
@@ -130,7 +145,7 @@ function ListCard ({
   )
 }
 
-function CardLink (props: PropsWithChildren<{ href: string }>) {
+function CardLink(props: PropsWithChildren<{ href: string }>) {
   const ref = useRef<HTMLAnchorElement>(null)
   const { isPressed, linkProps } = useLink(props, ref)
   return (

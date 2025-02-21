@@ -13,11 +13,13 @@ import { Emoji, Heading, Text } from '@keystar/ui/typography'
 const newsletterUrl = 'https://endpoints.thinkmill.com.au/newsletter'
 const emailValidationMessage = 'Please enter a valid email address.'
 
-function validateEmail (value: string) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value)
+function validateEmail(value: string) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+    value
+  )
 }
 
-export function WelcomeDialog () {
+export function WelcomeDialog() {
   const [subscribe, setSubscribe] = useState(['keystone'])
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -39,14 +41,14 @@ export function WelcomeDialog () {
       }
 
       const tags = ['source:@keystone-6/auth']
-      subscribe.forEach((list) => tags.push(`list:${list}`))
+      subscribe.forEach(list => tags.push(`list:${list}`))
 
       const res = await fetch(newsletterUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, tags, }),
+        body: JSON.stringify({ email, tags }),
       })
 
       try {
@@ -75,18 +77,21 @@ export function WelcomeDialog () {
 
       <Content>
         <VStack gap="xlarge">
-          <Text elementType='p'>
+          <Text elementType="p">
             Thanks for installing Keystone, checkout the{' '}
-            <TextLink href="https://keystonejs.com">documentation</TextLink> for help getting started.
-            To stay connected <TextLink href="https://twitter.com/keystonejs" target="_blank">follow us on twitter</TextLink>,
-            and to hear about the latest news sign up to our newsletters:
+            <TextLink href="https://keystonejs.com">documentation</TextLink> for help getting
+            started. To stay connected{' '}
+            <TextLink href="https://twitter.com/keystonejs" target="_blank">
+              follow us on twitter
+            </TextLink>
+            , and to hear about the latest news sign up to our newsletters:
           </Text>
 
           <form id={formId} onSubmit={onSubmit}>
-            <VStack gap='medium'>
+            <VStack gap="medium">
               <TextField
                 label="Email"
-                name='email'
+                name="email"
                 isRequired
                 value={email}
                 onChange={setEmail}
@@ -95,12 +100,8 @@ export function WelcomeDialog () {
                 errorMessage={error}
               />
               <CheckboxGroup onChange={setSubscribe} value={subscribe}>
-                <Checkbox value="keystone">
-                  Keystone news
-                </Checkbox>
-                <Checkbox value="thinkmill">
-                  Thinkmill news
-                </Checkbox>
+                <Checkbox value="keystone">Keystone news</Checkbox>
+                <Checkbox value="thinkmill">Thinkmill news</Checkbox>
               </CheckboxGroup>
             </VStack>
           </form>
@@ -108,15 +109,8 @@ export function WelcomeDialog () {
       </Content>
 
       <ButtonGroup>
-        <Button onPress={dialog.dismiss}>
-          Cancel
-        </Button>
-        <Button
-          form={formId}
-          prominence="high"
-          type="submit"
-          isPending={loading}
-        >
+        <Button onPress={dialog.dismiss}>Cancel</Button>
+        <Button form={formId} prominence="high" type="submit" isPending={loading}>
           Subscribe
         </Button>
       </ButtonGroup>

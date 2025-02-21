@@ -53,8 +53,8 @@ const getCompanyAndLocation = async (
 ) => {
   type T = {
     data: {
-      Company: { id: IdType, locations: { id: IdType }[] }
-      Location: { id: IdType, company: { id: IdType } }
+      Company: { id: IdType; locations: { id: IdType }[] }
+      Location: { id: IdType; company: { id: IdType } }
     }
   }
   const { data } = (await context.graphql.raw({
@@ -87,7 +87,7 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
 }
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Company: list({
         access: allowAll,
@@ -104,11 +104,11 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 const runnerWithDeny = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Company: list({
         access: denyAll,
@@ -125,7 +125,7 @@ const runnerWithDeny = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe(`One-to-many relationships`, () => {
@@ -263,7 +263,7 @@ describe(`One-to-many relationships`, () => {
       runner(async ({ context }) => {
         const { locations } = await createInitialData(context)
         const location = locations[0]
-        type T = { id: IdType, locations: { id: IdType }[] }
+        type T = { id: IdType; locations: { id: IdType }[] }
         const company = (await context.query.Company.createOne({
           data: { locations: { connect: [{ id: location.id }] } },
           query: 'id locations { id }',

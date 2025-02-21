@@ -12,7 +12,7 @@ import { Emoji } from './primitives/Emoji'
 import { Type } from './primitives/Type'
 import { Socials } from './Socials'
 
-function List (props: HTMLAttributes<HTMLElement>) {
+function List(props: HTMLAttributes<HTMLElement>) {
   return (
     <ul
       css={{
@@ -32,7 +32,7 @@ function List (props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function Footer () {
+export function Footer() {
   const mq = useMediaQuery()
 
   return (
@@ -74,7 +74,13 @@ export function Footer () {
                 <Link href="/for-content-management">For Content management</Link>
               </li>
               <li>
-                <Link href="https://www.thinkmill.com.au/services/keystone" target="_blank" rel="noreferrer">For Enterprise &#8599;</Link>
+                <Link
+                  href="https://www.thinkmill.com.au/services/keystone"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  For Enterprise &#8599;
+                </Link>
               </li>
             </List>
           </div>
@@ -239,7 +245,7 @@ export function Footer () {
   )
 }
 
-export function DocsFooter () {
+export function DocsFooter() {
   const mq = useMediaQuery()
 
   return (

@@ -7,7 +7,7 @@ import { withMigrate } from '../lib/migrations'
 import { importBuiltKeystoneConfiguration } from './utils'
 import { type Flags } from './cli'
 
-export async function start (
+export async function start(
   cwd: string,
   { server, ui, withMigrations }: Pick<Flags, 'server' | 'ui' | 'withMigrations'>
 ) {
@@ -18,8 +18,12 @@ export async function start (
 
   if (withMigrations) {
     console.log('✨ Applying any database migrations')
-    const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, (m) => m.apply())
-    console.log(appliedMigrationNames.length === 0 ? `✨ No database migrations to apply` : `✨ Database migrated`)
+    const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, m => m.apply())
+    console.log(
+      appliedMigrationNames.length === 0
+        ? `✨ No database migrations to apply`
+        : `✨ Database migrated`
+    )
   }
 
   if (!server) return
@@ -38,7 +42,9 @@ export async function start (
     console.log('✨ Preparing Admin UI')
     const nextApp = next({ dev: false, dir: paths.admin })
     await nextApp.prepare()
-    expressServer.use(await createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp))
+    expressServer.use(
+      await createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp)
+    )
     console.log(`✅ Admin UI ready`)
   }
 
@@ -61,6 +67,8 @@ export async function start (
       ? 'localhost'
       : httpOptions.host
 
-    console.log(`⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`)
+    console.log(
+      `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
+    )
   })
 }

@@ -1,10 +1,5 @@
-import {
-  type KeystoneContextFromListTypeInfo,
-  type MaybePromise
-} from '..'
-import {
-  type BaseListTypeInfo
-} from '../type-info'
+import { type KeystoneContextFromListTypeInfo, type MaybePromise } from '..'
+import { type BaseListTypeInfo } from '../type-info'
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>
@@ -16,7 +11,7 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
 
 type ResolveInputListHook<
   ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update'
+  Operation extends 'create' | 'update',
 > = (
   args: {
     create: {
@@ -116,7 +111,7 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
 
 export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields'],
 > = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
@@ -127,12 +122,11 @@ export type FieldHooks<
         create?: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
         update?: ResolveInputFieldHook<ListTypeInfo, 'update', FieldKey>
       }
-  
 
   /**
    * Used to **validate** if a create, update or delete operation is OK
    */
-  validate?: 
+  validate?:
     | ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
     | {
         create?: ValidateFieldHook<ListTypeInfo, 'create', FieldKey>
@@ -143,7 +137,7 @@ export type FieldHooks<
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: 
+  beforeOperation?:
     | BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>
     | {
         create?: BeforeOperationFieldHook<ListTypeInfo, 'create', FieldKey>
@@ -165,7 +159,7 @@ export type FieldHooks<
 
 export type ResolvedFieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields'],
 > = {
   resolveInput: {
     create: ResolveInputFieldHook<ListTypeInfo, 'create', FieldKey>
@@ -191,7 +185,7 @@ export type ResolvedFieldHooks<
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update',
-  FieldKey extends ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'],
 > = (
   args: {
     create: {
@@ -226,7 +220,7 @@ type ResolveInputFieldHook<
 
 export type ValidateHook<
   ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update' | 'delete'
+  Operation extends 'create' | 'update' | 'delete',
 > = (
   args: {
     create: {
@@ -269,7 +263,7 @@ export type ValidateHook<
 export type ValidateFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
-  FieldKey extends ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'],
 > = (
   args: {
     create: {
@@ -311,7 +305,7 @@ export type ValidateFieldHook<
 
 type BeforeOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update' | 'delete'
+  Operation extends 'create' | 'update' | 'delete',
 > = (
   args: {
     create: {
@@ -357,7 +351,7 @@ type BeforeOperationListHook<
 type BeforeOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
-  FieldKey extends ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'],
 > = (
   args: {
     create: {
@@ -402,7 +396,7 @@ type BeforeOperationFieldHook<
 
 type AfterOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update' | 'delete'
+  Operation extends 'create' | 'update' | 'delete',
 > = (
   args: {
     create: {
@@ -451,7 +445,7 @@ type AfterOperationListHook<
 type AfterOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   Operation extends 'create' | 'update' | 'delete',
-  FieldKey extends ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields'],
 > = (
   args: {
     create: {

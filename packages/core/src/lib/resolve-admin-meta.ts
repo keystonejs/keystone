@@ -1,16 +1,6 @@
-import type {
-  EnumType,
-  EnumValue,
-  ScalarType,
-} from '@graphql-ts/schema'
-import type {
-  BaseItem,
-  KeystoneContext as Context,
-  MaybePromise
-} from '../types'
-import type {
-  GraphQLNames,
-} from '../types/utils'
+import type { EnumType, EnumValue, ScalarType } from '@graphql-ts/schema'
+import type { BaseItem, KeystoneContext as Context, MaybePromise } from '../types'
+import type { GraphQLNames } from '../types/utils'
 import { QueryMode } from '../types'
 import { g as graphqlBoundToKeystoneContext } from '../types/schema'
 import type {
@@ -75,7 +65,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
       ),
     }),
     itemView: g.field({
-      args: { id: g.arg({ type: g.ID, }) },
+      args: { id: g.arg({ type: g.ID }) },
       resolve: ({ itemView, listKey }, { id }) => ({
         listKey,
         fieldMode: itemView.fieldMode,
@@ -95,10 +85,12 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
               values: g.enumValues(['edit', 'read', 'hidden']),
             }),
-            async resolve ({ fieldMode, itemId, listKey }, args, context, info) {
+            async resolve({ fieldMode, itemId, listKey }, args, context, info) {
               if (typeof fieldMode !== 'function') return fieldMode
 
-              const item = itemId ? (await fetchItemForItemViewFieldMode(context)(listKey, itemId)) : null
+              const item = itemId
+                ? await fetchItemForItemViewFieldMode(context)(listKey, itemId)
+                : null
               return fieldMode({
                 session: context.session,
                 context,
@@ -111,10 +103,12 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
               values: g.enumValues(['form', 'sidebar']),
             }),
-            async resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
+            async resolve({ fieldPosition, itemId, listKey }, args, context, info) {
               if (typeof fieldPosition !== 'function') return fieldPosition
 
-              const item = itemId ? (await fetchItemForItemViewFieldMode(context)(listKey, itemId)) : null
+              const item = itemId
+                ? await fetchItemForItemViewFieldMode(context)(listKey, itemId)
+                : null
               return fieldPosition({
                 session: context.session,
                 context,
@@ -188,14 +182,14 @@ const KeystoneAdminUIGraphQLNames = g.object<GraphQLNames>()({
     // delete
     deleteMutationName: g.field({ type: g.nonNull(g.String) }),
     deleteManyMutationName: g.field({ type: g.nonNull(g.String) }),
-  }
+  },
 })
 
 const KeystoneAdminUIGraphQL = g.object<any>()({
   name: 'KeystoneAdminUIGraphQL',
   fields: {
     names: g.field({ type: g.nonNull(KeystoneAdminUIGraphQLNames) }),
-  }
+  },
 })
 
 const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
@@ -210,13 +204,13 @@ const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
     singular: g.field({ type: g.nonNull(g.String) }),
     plural: g.field({ type: g.nonNull(g.String) }),
 
-    fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))), }),
-    groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))), }),
+    fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))) }),
+    groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
 
     pageSize: g.field({ type: g.nonNull(g.Int) }),
-    initialColumns: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))), }),
-    initialSearchFields: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))), }),
+    initialColumns: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))) }),
+    initialSearchFields: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))) }),
     initialSort: g.field({ type: KeystoneAdminUISort }),
     isSingleton: g.field({ type: g.nonNull(g.Boolean) }),
 
@@ -235,7 +229,7 @@ const adminMeta = g.object<AdminMetaRootVal>()({
     list: g.field({
       type: KeystoneAdminUIListMeta,
       args: { key: g.arg({ type: g.nonNull(g.String) }) },
-      resolve (rootVal, { key }) {
+      resolve(rootVal, { key }) {
         return rootVal.listsByKey[key]
       },
     }),
@@ -247,7 +241,7 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaRootVal }>()({
   fields: {
     adminMeta: g.field({
       type: g.nonNull(adminMeta),
-      resolve ({ adminMeta }, args, context, info) {
+      resolve({ adminMeta }, args, context, info) {
         return Promise.resolve(adminMeta.isAccessAllowed(context)).then(isAllowed => {
           if (isAllowed) return adminMeta
 
@@ -276,7 +270,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
   }
 })
 
-function extendContext<T> (cb: (context: Context) => T) {
+function extendContext<T>(cb: (context: Context) => T) {
   const cache = new WeakMap<Context, T>()
   return (context: Context) => {
     if (cache.has(context)) return cache.get(context)!
@@ -286,18 +280,23 @@ function extendContext<T> (cb: (context: Context) => T) {
   }
 }
 
-function contextFunctionField<Key extends string, Type extends string | boolean> (
+function contextFunctionField<Key extends string, Type extends string | boolean>(
   key: Key,
   type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
 ) {
   return {
     [key]: g.field({
       type: g.nonNull(type),
-      resolve (source: {
-        [_ in Key]: (context: Context) => MaybePromise<Type>
-      }, args, context, info) {
+      resolve(
+        source: {
+          [_ in Key]: (context: Context) => MaybePromise<Type>
+        },
+        args,
+        context,
+        info
+      ) {
         return source[key](context)
       },
-    })
+    }),
   }
 }

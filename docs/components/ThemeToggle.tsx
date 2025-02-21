@@ -7,7 +7,7 @@ import { LightMode } from './icons/LightMode'
 import { DarkMode } from './icons/DarkMode'
 import { useThemeContext } from '../app/(site)/layout-client'
 
-export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
+export function ThemeToggle(props: HTMLAttributes<HTMLButtonElement>) {
   /*
     We don't want to render the toggle during server rendering
     because Next will always server render the light mode toggle and hydrate the light mode toggle
@@ -44,13 +44,13 @@ export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
         <LightMode
           css={{
             height: 'var(--space-xlarge)',
-            '[data-theme="light"] &': { display: 'none' }
+            '[data-theme="light"] &': { display: 'none' },
           }}
         />
         <DarkMode
           css={{
             height: 'var(--space-xlarge)',
-            '[data-theme="dark"] &': { display: 'none' }
+            '[data-theme="dark"] &': { display: 'none' },
           }}
         />
       </button>

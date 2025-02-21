@@ -2,9 +2,9 @@ import { g } from '../..'
 import { allowAll } from '../../access'
 import type { InitialisedField } from './initialise-lists'
 
-export type ListForValidation = { listKey: string, fields: Record<string, InitialisedField> }
+export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> }
 
-export function assertFieldsValid (list: ListForValidation) {
+export function assertFieldsValid(list: ListForValidation) {
   assertNoConflictingExtraOutputFields(list)
   assertIdFieldGraphQLTypesCorrect(list)
   assertNoFieldKeysThatConflictWithFilterCombinators(list)
@@ -12,7 +12,7 @@ export function assertFieldsValid (list: ListForValidation) {
   assertFieldsIsNonNullAllowed(list)
 }
 
-function assertFieldsIsNonNullAllowed (list: ListForValidation) {
+function assertFieldsIsNonNullAllowed(list: ListForValidation) {
   for (const [fieldKey, field] of Object.entries(list.fields)) {
     if (field.access.read !== allowAll) {
       if (field.graphql.isNonNull.read) {
@@ -25,7 +25,7 @@ function assertFieldsIsNonNullAllowed (list: ListForValidation) {
   }
 }
 
-function assertUniqueWhereInputsValid (list: ListForValidation) {
+function assertUniqueWhereInputsValid(list: ListForValidation) {
   for (const [fieldKey, { dbField, input }] of Object.entries(list.fields)) {
     if (input?.uniqueWhere) {
       if (dbField.kind !== 'scalar' && dbField.kind !== 'enum') {
@@ -43,7 +43,7 @@ function assertUniqueWhereInputsValid (list: ListForValidation) {
   }
 }
 
-function assertNoFieldKeysThatConflictWithFilterCombinators (list: ListForValidation) {
+function assertNoFieldKeysThatConflictWithFilterCombinators(list: ListForValidation) {
   for (const fieldKey of Object.keys(list.fields)) {
     if (fieldKey === 'AND' || fieldKey === 'OR' || fieldKey === 'NOT') {
       throw new Error(
@@ -53,7 +53,7 @@ function assertNoFieldKeysThatConflictWithFilterCombinators (list: ListForValida
   }
 }
 
-function assertNoConflictingExtraOutputFields (list: ListForValidation) {
+function assertNoConflictingExtraOutputFields(list: ListForValidation) {
   const fieldKeys = new Set(Object.keys(list.fields))
   const alreadyFoundFields: Record<string, string> = {}
   for (const [fieldKey, field] of Object.entries(list.fields)) {
@@ -77,7 +77,7 @@ function assertNoConflictingExtraOutputFields (list: ListForValidation) {
   }
 }
 
-function assertIdFieldGraphQLTypesCorrect (list: ListForValidation) {
+function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
   const idField = list.fields.id
   if (idField.input?.uniqueWhere === undefined) {
     throw new Error(

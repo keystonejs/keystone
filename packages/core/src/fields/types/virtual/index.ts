@@ -10,16 +10,21 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 
-type VirtualFieldGraphQLField<
-  Item extends BaseItem,
-  Context extends KeystoneContext
-> = g.Field<Item, any, g.OutputType, string, Context>
+type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = g.Field<
+  Item,
+  any,
+  g.OutputType,
+  string,
+  Context
+>
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
-      | ((lists: Record<string, ListGraphQLTypes>) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+      | ((
+          lists: Record<string, ListGraphQLTypes>
+        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
     unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<any>[]
     ui?: {
       /**
@@ -37,39 +42,41 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     }
   }
 
-export function virtual <ListTypeInfo extends BaseListTypeInfo> ({
+export function virtual<ListTypeInfo extends BaseListTypeInfo>({
   field,
   ...config
 }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
-  return (meta) => {
+  return meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field
     const namedType = getNamedType(usableField.type.graphQLType)
     const hasRequiredArgs =
       usableField.args &&
-      Object.values(
-        usableField.args as Record<string, g.Arg<g.InputType, boolean>>
-      ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined)
+      Object.values(usableField.args as Record<string, g.Arg<g.InputType, boolean>>).some(
+        x => x.type.kind === 'non-null' && x.defaultValue === undefined
+      )
 
     if (
       (!isLeafType(namedType) || hasRequiredArgs) &&
       !config.ui?.query &&
       (config.ui?.itemView?.fieldMode !== 'hidden' || config.ui?.listView?.fieldMode !== 'hidden')
     ) {
-      throw new Error(`${meta.listKey}.${meta.fieldKey} requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden'`)
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} requires ui.query, or ui.listView.fieldMode and ui.itemView.fieldMode to be set to 'hidden'`
+      )
     }
 
-    return fieldType({ kind: 'none', })({
+    return fieldType({ kind: 'none' })({
       ...config,
       output: g.field({
         ...(usableField as any),
-        resolve ({ item }, ...args) {
+        resolve({ item }, ...args) {
           return usableField.resolve!(item, ...args)
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
       getAdminMeta: () => ({
-        query: config.ui?.query ?? ''
+        query: config.ui?.query ?? '',
       }),
     })
   }

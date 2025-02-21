@@ -12,8 +12,8 @@ const runner = setupTestRunner({
       User: list({
         access: allowAll,
         fields: {
-          name: text()
-        }
+          name: text(),
+        },
       }),
     },
     server: {
@@ -23,17 +23,20 @@ const runner = setupTestRunner({
         })
       },
     },
-  }
+  },
 })
 
-test('basic extension', runner(async ({ express }) => {
-  const { text } = await supertest(express)
-    .get('/magic')
-    .set('Accept', 'application/json')
-    .expect('Content-Type', /json/)
-    .expect(200)
+test(
+  'basic extension',
+  runner(async ({ express }) => {
+    const { text } = await supertest(express)
+      .get('/magic')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
 
-  expect(JSON.parse(text)).toEqual({
-    magic: true,
+    expect(JSON.parse(text)).toEqual({
+      magic: true,
+    })
   })
-}))
+)

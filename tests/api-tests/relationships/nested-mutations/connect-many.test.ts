@@ -8,7 +8,7 @@ import { expectSingleRelationshipError } from '../../utils'
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
 const runner = setupTestRunner({
-  config: ({
+  config: {
     lists: {
       Note: list({
         access: allowAll,
@@ -54,7 +54,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-  }),
+  },
 })
 
 describe('no access control', () => {

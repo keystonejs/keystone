@@ -11,14 +11,14 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 
-export function CustomNavigation ({ lists }: NavigationProps) {
+export function CustomNavigation({ lists }: NavigationProps) {
   return (
     <NavContainer>
       <NavList>
-        <NavItem href='/'>Dashboard</NavItem>
-        <NavItem href='https://keystonejs.com'>Keystone Docs</NavItem>
+        <NavItem href="/">Dashboard</NavItem>
+        <NavItem href="https://keystonejs.com">Keystone Docs</NavItem>
         <Divider />
-        {lists.map((list) => (
+        {lists.map(list => (
           <NavItem key={list.key} href={getHrefFromList(list)}>
             {list.label}
           </NavItem>

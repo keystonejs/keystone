@@ -19,15 +19,15 @@ import {
 } from '../../../../types'
 
 export type Value =
-  | { kind: 'create', value: string | null }
-  | { kind: 'update', value: string | null, initial: string | null }
+  | { kind: 'create'; value: string | null }
+  | { kind: 'update'; value: string | null; initial: string | null }
 
-export function Field (props: FieldProps<typeof controller>) {
+export function Field(props: FieldProps<typeof controller>) {
   const { field, value, forceValidation, onChange } = props
   const parsedValue = value.value ? parseDate(value.value) : null
 
   const [isDirty, setDirty] = useState(false)
-  const [isReadonlyUTC, toggleReadonlyUTC] = useReducer((prev) => !prev, false)
+  const [isReadonlyUTC, toggleReadonlyUTC] = useReducer(prev => !prev, false)
   const dateFormatter = useDateFormatter({ dateStyle: 'long' })
   const placeholderValue = useMemo(() => {
     const today = now(getLocalTimeZone())
@@ -39,17 +39,22 @@ export function Field (props: FieldProps<typeof controller>) {
   // placeholder text is shown, and the toggle button is hidden
   if (!onChange) {
     return (
-      <Grid columns={parsedValue ? 'minmax(0, 1fr) auto' : undefined} gap="regular" alignItems="end">
+      <Grid
+        columns={parsedValue ? 'minmax(0, 1fr) auto' : undefined}
+        gap="regular"
+        alignItems="end"
+      >
         <TextField
           label={field.label}
           description={field.description}
           isDisabled={!parsedValue}
           isReadOnly
-          value={parsedValue
-            ? isReadonlyUTC
-              ? parsedValue.toString()
-              : dateFormatter.format(parsedValue.toDate(getLocalTimeZone()))
-            : 'yyyy-mm-dd'
+          value={
+            parsedValue
+              ? isReadonlyUTC
+                ? parsedValue.toString()
+                : dateFormatter.format(parsedValue.toDate(getLocalTimeZone()))
+              : 'yyyy-mm-dd'
           }
         />
         {!!parsedValue && (
@@ -95,7 +100,7 @@ export function Field (props: FieldProps<typeof controller>) {
   )
 }
 
-function validate (
+function validate(
   value: Value,
   fieldMeta: CalendarDayFieldMeta,
   label: string
@@ -116,9 +121,7 @@ function validate (
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   const dateFormatter = useDateFormatter({ dateStyle: 'medium' })
-  return value
-    ? <Text>{dateFormatter.format(new Date(value))}</Text>
-    : null
+  return value ? <Text>{dateFormatter.format(new Date(value))}</Text> : null
 }
 
 export type CalendarDayFieldMeta = {
@@ -126,7 +129,7 @@ export type CalendarDayFieldMeta = {
   isRequired: boolean
 }
 
-export function controller (
+export function controller(
   config: FieldControllerConfig<CalendarDayFieldMeta>
 ): FieldController<Value, string> & { fieldMeta: CalendarDayFieldMeta } {
   return {

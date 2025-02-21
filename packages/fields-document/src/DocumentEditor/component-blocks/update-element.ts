@@ -6,7 +6,7 @@ import { getInitialPropsValue } from './initial-values'
 import { getKeysForArrayValue } from './preview-props'
 import { type ReadonlyPropPath } from './utils'
 
-export function updateComponentBlockElementProps (
+export function updateComponentBlockElementProps(
   editor: Editor,
   componentBlock: ComponentBlock,
   prevProps: Record<string, unknown>,
@@ -140,7 +140,7 @@ type ChildPropPathWithPrevious = {
   options: ChildField['options']
 }
 
-function findChildPropPathsWithPrevious (
+function findChildPropPathsWithPrevious(
   value: any,
   prevValue: any,
   schema: ComponentSchema,

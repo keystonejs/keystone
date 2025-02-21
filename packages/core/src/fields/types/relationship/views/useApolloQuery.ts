@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import type { ListMeta } from '../../../../types'
 import {
@@ -16,7 +12,7 @@ import {
 import { useSearchFilter } from './useFilter'
 import { type RelationshipValue } from './types'
 
-function useDebouncedValue<T> (value: T, limitMs: number) {
+function useDebouncedValue<T>(value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
 
   useEffect(() => {
@@ -29,13 +25,13 @@ function useDebouncedValue<T> (value: T, limitMs: number) {
   return debouncedValue
 }
 
-export function useApolloQuery (args: {
+export function useApolloQuery(args: {
   labelField: string
   list: ListMeta
   searchFields: string[]
   state:
-    | { kind: 'many', value: RelationshipValue[] }
-    | { kind: 'one', value: RelationshipValue | null }
+    | { kind: 'many'; value: RelationshipValue[] }
+    | { kind: 'one'; value: RelationshipValue | null }
 }) {
   const { labelField, list, searchFields, state } = args
   const [search, setSearch] = useState(() => {
@@ -44,8 +40,8 @@ export function useApolloQuery (args: {
   })
 
   const QUERY: TypedDocumentNode<
-    { items: { id: string, label: string | null }[], count: number },
-    { where: Record<string, any>, take: number, skip: number }
+    { items: { id: string; label: string | null }[]; count: number },
+    { where: Record<string, any>; take: number; skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -58,9 +54,7 @@ export function useApolloQuery (args: {
 
   const debouncedSearch = useDebouncedValue(search, 200)
   const manipulatedSearch =
-    state.kind === 'one' && state.value?.label === debouncedSearch
-      ? ''
-      : debouncedSearch
+    state.kind === 'one' && state.value?.label === debouncedSearch ? '' : debouncedSearch
   const where = useSearchFilter(manipulatedSearch, list, searchFields)
 
   const link = useApolloClient().link
@@ -76,11 +70,7 @@ export function useApolloQuery (args: {
               fields: {
                 [list.graphql.names.listQueryName]: {
                   keyArgs: ['where'],
-                  merge: (
-                    existing: readonly unknown[],
-                    incoming: readonly unknown[],
-                    { args }
-                  ) => {
+                  merge: (existing: readonly unknown[], incoming: readonly unknown[], { args }) => {
                     const merged = existing ? existing.slice() : []
                     const { skip } = args!
                     for (let i = 0; i < incoming.length; ++i) {
@@ -120,13 +110,13 @@ export function useApolloQuery (args: {
       !loading &&
       skip &&
       data.items.length < count &&
-        (lastFetchMore?.where !== where ||
-         lastFetchMore?.list !== list ||
-         lastFetchMore?.skip !== skip)
+      (lastFetchMore?.where !== where ||
+        lastFetchMore?.list !== list ||
+        lastFetchMore?.skip !== skip)
     ) {
       const QUERY: TypedDocumentNode<
-        { items: { id: string, label: string | null }[] },
-        { where: Record<string, any>, take: number, skip: number }
+        { items: { id: string; label: string | null }[] },
+        { where: Record<string, any>; take: number; skip: number }
       > = gql`
         query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
           items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -160,10 +150,7 @@ export function useApolloQuery (args: {
   }
 }
 
-function getLoadingState (options: {
-  loading: boolean
-  search: string
-}): LoadingState {
+function getLoadingState(options: { loading: boolean; search: string }): LoadingState {
   if (options.loading) {
     if (options.search.length) return 'filtering'
     return 'loading'
@@ -172,10 +159,4 @@ function getLoadingState (options: {
   return 'idle'
 }
 
-type LoadingState =
-  | 'loading'
-  | 'sorting'
-  | 'loadingMore'
-  | 'error'
-  | 'idle'
-  | 'filtering'
+type LoadingState = 'loading' | 'sorting' | 'loadingMore' | 'error' | 'idle' | 'filtering'

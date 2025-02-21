@@ -1,7 +1,11 @@
 import { type ComponentSchema } from './api-shared'
 import { assertNever } from './utils'
 
-export function assertValidComponentSchema (schema: ComponentSchema, lists: ReadonlySet<string>, mode: 'structure' | 'document') {
+export function assertValidComponentSchema(
+  schema: ComponentSchema,
+  lists: ReadonlySet<string>,
+  mode: 'structure' | 'document'
+) {
   assertValidComponentSchemaInner(schema, [], [], new Set(), lists, mode)
 }
 
@@ -10,7 +14,7 @@ export function assertValidComponentSchema (schema: ComponentSchema, lists: Read
 // - inside an array field
 // when we hit the non-default portion of a conditional field or an array field
 // checking inside of it essentially means pretend it's a new thing
-function assertValidComponentSchemaInner (
+function assertValidComponentSchemaInner(
   schema: ComponentSchema,
   schemaAncestors: ComponentSchema[],
   propPath: string[],
@@ -73,7 +77,14 @@ function assertValidComponentSchemaInner (
             )}" changes between accesses`
           )
         }
-        assertValidComponentSchemaInner(innerProp, schemaAncestors, propPath, seenProps, lists, mode)
+        assertValidComponentSchemaInner(
+          innerProp,
+          schemaAncestors,
+          propPath,
+          seenProps,
+          lists,
+          mode
+        )
         propPath.pop()
       }
       schemaAncestors.pop()

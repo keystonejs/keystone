@@ -30,13 +30,16 @@ export default tseslint.config(
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-require-imports': 'off', // TODO: always
       'no-undef': 'off', // https://typescript-eslint.io/troubleshooting/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-      '@typescript-eslint/consistent-type-imports': ['error', {
-        disallowTypeAnnotations: true,
-        fixStyle: 'separate-type-imports',
-        prefer: 'type-imports',
-      }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          disallowTypeAnnotations: true,
+          fixStyle: 'separate-type-imports',
+          prefer: 'type-imports',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-    }
+    },
   }
 )

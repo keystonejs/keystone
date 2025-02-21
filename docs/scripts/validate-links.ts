@@ -12,9 +12,9 @@ const NON_MARKDOWN_PAGES = [
   '/docs/examples',
   '/docs/guides/overview',
   '/docs/config/overview',
-];
+]
 
-(async () => {
+;(async () => {
   const parsedFiles = (await loadAllMarkdoc()).map(({ file, contents }) => {
     const root = Markdoc.parse(contents, file)
     const ids = new Set<string>()
