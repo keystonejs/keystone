@@ -50,14 +50,16 @@ export function Fields({
         autoFocus={autoFocus}
         forceValidation={forceValidation && invalidFields.has(fieldKey)}
         field={field.controller}
-        onChange={newFieldValue => {
-          if (fieldMode !== 'edit') return
-          if (onChange === undefined) return
-          onChange({
-            ...itemValue,
-            [field.controller.path]: newFieldValue,
-          })
-        }}
+        onChange={
+          fieldMode === 'read' || onChange === undefined
+            ? undefined
+            : newFieldValue => {
+                onChange({
+                  ...itemValue,
+                  [field.controller.path]: newFieldValue,
+                })
+              }
+        }
         value={fieldValue}
         itemValue={itemValue}
       />
