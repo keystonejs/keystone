@@ -96,17 +96,21 @@ export function Fields({
 
             const group = groupByFieldKey[fieldKey]
             if (group) {
+              const fields = [
+                ...(function* () {
+                  for (const { path: fieldKey } of group.fields) {
+                    if (fieldKey in rendered) continue
+                    if (fieldDomByKey[fieldKey]) {
+                      yield fieldDomByKey[fieldKey]
+                    }
+                    rendered[fieldKey] = true
+                  }
+                })(),
+              ]
+              if (fields.length === 0) continue
               yield (
                 <FieldGroup key={group.label} label={group.label} description={group.description}>
-                  {[
-                    ...(function* () {
-                      for (const { path: fieldKey } of group.fields) {
-                        if (fieldKey in rendered) continue
-                        yield fieldDomByKey[fieldKey] ?? null
-                        rendered[fieldKey] = true
-                      }
-                    })(),
-                  ]}
+                  {fields}
                 </FieldGroup>
               )
               continue
