@@ -123,6 +123,7 @@ export type InitialisedList = {
     labelField: string
     searchFields: Set<string>
     searchableFields: Map<string, 'default' | 'insensitive' | null>
+    triviallySearchableFields: Set<string>
   }
 
   isSingleton: boolean
@@ -712,6 +713,7 @@ function getListsWithInitialisedFields(
         labelField,
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
+        triviallySearchableFields: new Set<string>(),
       },
       hooks: parseListHooks(listConfig.hooks ?? {}),
       listKey,
@@ -739,7 +741,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   for (const list of Object.values(lists)) {
     const {
       listKey,
-      ui: { searchFields, searchableFields },
+      ui: { searchFields, searchableFields, triviallySearchableFields },
     } = list
 
     if (searchFields.has('id')) {
@@ -758,6 +760,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
           fieldKey,
           fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
         )
+        triviallySearchableFields.add(fieldKey)
       } else if (
         field.dbField.kind === 'relation' &&
         filterTypeName !== undefined &&

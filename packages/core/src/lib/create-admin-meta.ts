@@ -110,7 +110,7 @@ export function createAdminMeta(
 
     let initialSearchFields = listConfig.ui?.searchFields?.concat()
     if (!initialSearchFields) {
-      initialSearchFields = [...list.ui.searchableFields.keys()]
+      initialSearchFields = [...list.ui.triviallySearchableFields]
     }
 
     const maximumPageSize = Math.min(
