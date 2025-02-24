@@ -2,6 +2,7 @@
 
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import reactHooks from 'eslint-plugin-react-hooks'
 
 export default tseslint.config(
   {
@@ -18,6 +19,7 @@ export default tseslint.config(
   },
   eslint.configs.recommended,
   ...tseslint.configs.strict,
+  reactHooks.configs['recommended-latest'],
   {
     rules: {
       'no-empty': ['error', { allowEmptyCatch: true }],
@@ -40,6 +42,8 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
+      // TODO: enable
+      // 'react-hooks/exhaustive-deps': 'error',
     },
   }
 )
