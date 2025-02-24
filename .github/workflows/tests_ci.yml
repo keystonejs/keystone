@@ -271,6 +271,7 @@ jobs:
             'usecase-roles.test.ts',
             'usecase-todo.test.ts',
             'virtual-field.test.ts',
+            'field-groups.test.ts',
           ]
       fail-fast: false
     steps:
