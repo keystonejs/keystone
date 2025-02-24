@@ -9,8 +9,8 @@ import { type FeaturedExamples } from '.'
 import { Type } from '../../primitives/Type'
 
 export default function ExamplesList({ featuredExamples }: { featuredExamples: FeaturedExamples }) {
-  if (!featuredExamples) return null
   const mq = useMediaQuery()
+  if (!featuredExamples) return null
   return (
     <>
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">

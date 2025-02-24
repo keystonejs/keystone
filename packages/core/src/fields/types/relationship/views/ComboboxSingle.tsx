@@ -38,6 +38,13 @@ export function ComboboxSingle({
     state,
   })
 
+  const [lastSeenStateValue, setLastSeenStateValue] = React.useState(state.value)
+
+  if (state.value !== lastSeenStateValue) {
+    setLastSeenStateValue(state.value)
+    setSearch(state.value?.label ?? '')
+  }
+
   // TODO: better error UI
   // TODO: Handle permission errors
   // (ie; user has permission to read this relationship field, but
@@ -48,13 +55,6 @@ export function ComboboxSingle({
 
   if (state.value?.built) {
     items.push(state.value)
-  }
-
-  const [lastSeenStateValue, setLastSeenStateValue] = React.useState(state.value)
-
-  if (state.value !== lastSeenStateValue) {
-    setLastSeenStateValue(state.value)
-    setSearch(state.value?.label ?? '')
   }
 
   return (
