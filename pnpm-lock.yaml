@@ -66,8 +66,8 @@ importers:
         specifier: ^9.2.0
         version: 9.19.0(jiti@2.4.2)
       eslint-plugin-react-hooks:
-        specifier: 5.2.0-canary-662957cc-20250221
-        version: 5.2.0-canary-662957cc-20250221(eslint@9.19.0(jiti@2.4.2))
+        specifier: 5.2.0-canary-ff628334-20250205
+        version: 5.2.0-canary-ff628334-20250205(eslint@9.19.0(jiti@2.4.2))
       jest:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@22.13.0)(babel-plugin-macros@3.1.0)
@@ -8068,8 +8068,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-plugin-react-hooks@5.2.0-canary-662957cc-20250221:
-    resolution: {integrity: sha512-iSo49ZfZg6qPLM9P1aRR2IWrMFtXsTCzRRT/OGRin/8Xd/Tz+pXm/G0bT9cmA/YLV0K9SZZ9H9LEX0rz4baxIQ==}
+  eslint-plugin-react-hooks@5.2.0-canary-ff628334-20250205:
+    resolution: {integrity: sha512-UcLi2b+P4ozlfL13l9ASIFKuIQ7y/PzPz1bSyK54Jh8UqQfMMda8nDdetB+zjroGR6qZj2vStnqhuemYMqKRjw==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -20394,7 +20394,7 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-plugin-react-hooks@5.2.0-canary-662957cc-20250221(eslint@9.19.0(jiti@2.4.2)):
+  eslint-plugin-react-hooks@5.2.0-canary-ff628334-20250205(eslint@9.19.0(jiti@2.4.2)):
     dependencies:
       eslint: 9.19.0(jiti@2.4.2)
 
