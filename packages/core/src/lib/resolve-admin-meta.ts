@@ -66,31 +66,41 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
     }),
     itemView: g.field({
       args: { id: g.arg({ type: g.ID }) },
-      resolve: ({ itemView, listKey }, { id }) => ({
-        listKey,
-        fieldMode: itemView.fieldMode,
-        itemId: id ?? null,
-        fieldPosition: itemView.fieldPosition,
-      }),
+      resolve: async ({ itemView, listKey }, { id }, context) => {
+        if (id == null) {
+          return {
+            listKey,
+            fieldMode: itemView.fieldMode,
+            fieldPosition: itemView.fieldPosition,
+            item: null,
+          }
+        }
+        const item = await context.db[listKey].findOne({ where: { id } })
+        if (!item) return null
+        return {
+          listKey,
+          fieldMode: itemView.fieldMode,
+          item,
+          fieldPosition: itemView.fieldPosition,
+        }
+      },
       type: g.object<{
         listKey: string
         fieldMode: FieldMetaRootVal['itemView']['fieldMode']
         fieldPosition: FieldMetaRootVal['itemView']['fieldPosition']
-        itemId: string | null
+        item: BaseItem | null
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {
           fieldMode: g.field({
-            type: g.enum({
-              name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-              values: g.enumValues(['edit', 'read', 'hidden']),
-            }),
-            async resolve({ fieldMode, itemId, listKey }, args, context, info) {
+            type: g.nonNull(
+              g.enum({
+                name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
+                values: g.enumValues(['edit', 'read', 'hidden']),
+              })
+            ),
+            async resolve({ fieldMode, item, listKey }, args, context, info) {
               if (typeof fieldMode !== 'function') return fieldMode
-
-              const item = itemId
-                ? await fetchItemForItemViewFieldMode(context)(listKey, itemId)
-                : null
               return fieldMode({
                 session: context.session,
                 context,
@@ -99,16 +109,14 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
             },
           }),
           fieldPosition: g.field({
-            type: g.enum({
-              name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
-              values: g.enumValues(['form', 'sidebar']),
-            }),
-            async resolve({ fieldPosition, itemId, listKey }, args, context, info) {
+            type: g.nonNull(
+              g.enum({
+                name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
+                values: g.enumValues(['form', 'sidebar']),
+              })
+            ),
+            async resolve({ fieldPosition, item, listKey }, args, context, info) {
               if (typeof fieldPosition !== 'function') return fieldPosition
-
-              const item = itemId
-                ? await fetchItemForItemViewFieldMode(context)(listKey, itemId)
-                : null
               return fieldPosition({
                 session: context.session,
                 context,
@@ -252,33 +260,6 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaRootVal }>()({
     }),
   },
 })
-
-const fetchItemForItemViewFieldMode = extendContext(context => {
-  type ListKey = string
-  type ItemId = string
-  const lists = new Map<ListKey, Map<ItemId, Promise<BaseItem | null>>>()
-  return (listKey: ListKey, id: ItemId) => {
-    if (!lists.has(listKey)) {
-      lists.set(listKey, new Map())
-    }
-    const items = lists.get(listKey)!
-    if (items.has(id)) return items.get(id)!
-
-    const promise = context.db[listKey].findOne({ where: { id } })
-    items.set(id, promise)
-    return promise
-  }
-})
-
-function extendContext<T>(cb: (context: Context) => T) {
-  const cache = new WeakMap<Context, T>()
-  return (context: Context) => {
-    if (cache.has(context)) return cache.get(context)!
-    const result = cb(context)
-    cache.set(context, result)
-    return result
-  }
-}
 
 function contextFunctionField<Key extends string, Type extends string | boolean>(
   key: Key,

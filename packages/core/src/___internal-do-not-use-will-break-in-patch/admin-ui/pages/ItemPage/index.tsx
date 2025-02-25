@@ -151,10 +151,14 @@ function ItemForm({
   listKey,
   initialValue,
   onSaveSuccess,
+  fieldModes,
+  fieldPositions,
 }: {
   listKey: string
   initialValue: Record<string, unknown>
   onSaveSuccess: () => void
+  fieldModes: Record<string, 'edit' | 'read' | 'hidden'>
+  fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
   const list = useList(listKey)
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
@@ -246,6 +250,8 @@ function ItemForm({
             invalidFields={invalidFields}
             onChange={useCallback(value => setValue(value), [setValue])}
             value={value}
+            fieldModes={fieldModes}
+            fieldPositions={fieldPositions}
           />
         </StickySidebar>
 
@@ -281,11 +287,27 @@ function ItemPage({ listKey }: ItemPageProps) {
 
   const pageLoading = loading || id === undefined
   const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
-  const pageTitle: string = list.isSingleton ? list.label : pageLoading ? undefined : pageLabel
+  const pageTitle = list.isSingleton || typeof pageLabel !== 'string' ? list.label : pageLabel
   const initialValue = useMemo(() => {
     if (!data?.item) return null
     return deserializeItemToValue(list.fields, data.item)
   }, [list.fields, data?.item])
+
+  const { fieldModes, fieldPositions } = useMemo(() => {
+    const fieldModes = Object.fromEntries(
+      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldMode])
+    )
+    const fieldPositions = Object.fromEntries(
+      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldPosition])
+    )
+    for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
+      if (field.itemView) {
+        fieldModes[field.path] = field.itemView.fieldMode
+        fieldPositions[field.path] = field.itemView.fieldPosition
+      }
+    }
+    return { fieldModes, fieldPositions }
+  }, [data?.keystone.adminMeta, list.fields])
 
   return (
     <PageContainer
@@ -293,7 +315,7 @@ function ItemPage({ listKey }: ItemPageProps) {
       header={
         <ItemPageHeader
           list={list}
-          label={pageLoading ? 'Loading...' : pageLabel}
+          label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
         />
       }
@@ -330,7 +352,13 @@ function ItemPage({ listKey }: ItemPageProps) {
               ))}
           </Box>
           {initialValue && (
-            <ItemForm listKey={listKey} initialValue={initialValue} onSaveSuccess={refetch} />
+            <ItemForm
+              fieldModes={fieldModes}
+              fieldPositions={fieldPositions}
+              listKey={listKey}
+              initialValue={initialValue}
+              onSaveSuccess={refetch}
+            />
           )}
         </ColumnLayout>
       )}
