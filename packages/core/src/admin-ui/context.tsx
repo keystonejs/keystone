@@ -10,6 +10,7 @@ import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 import type { AdminConfig, AdminMeta, FieldViews } from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
+import type { QueryResult } from './apollo'
 import { gql, ApolloProvider, ApolloClient, InMemoryCache, useQuery } from './apollo'
 
 type KeystoneContextType = {
@@ -217,7 +218,28 @@ export function useField(listKey: string, fieldKey: string) {
 }
 
 // TODO useContext
-export function useListItem(listKey: string, itemId: string | null) {
+export function useListItem(
+  listKey: string,
+  itemId: string | null
+): QueryResult<
+  {
+    item: Record<string, unknown> | null
+    keystone: {
+      adminMeta: {
+        list: {
+          fields: {
+            path: string
+            itemView: {
+              fieldMode: 'edit' | 'read' | 'hidden'
+              fieldPosition: 'form' | 'sidebar'
+            } | null
+          }[]
+        } | null
+      }
+    }
+  },
+  { id: string | null; listKey: string }
+> {
   const list = useList(listKey)
   const query = useMemo(() => {
     const selectedFields = Object.values(list.fields)
@@ -229,9 +251,22 @@ export function useListItem(listKey: string, itemId: string | null) {
       .join('\n')
 
     return gql`
-      query KsFetchItem ($id: ID!) {
+      query KsFetchItem ($id: ID!, $listKey: String!) {
         item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
           ${selectedFields}
+        }
+        keystone {
+          adminMeta {
+            list(key: $listKey) {
+              fields {
+                path
+                itemView(id: $id) {
+                  fieldMode
+                  fieldPosition
+                }
+              }
+            }
+          }
         }
       }
     `
@@ -241,7 +276,7 @@ export function useListItem(listKey: string, itemId: string | null) {
     errorPolicy: 'all',
     skip: itemId === null,
     variables: {
-      //       listKey,
+      listKey,
       id: itemId,
     },
   })

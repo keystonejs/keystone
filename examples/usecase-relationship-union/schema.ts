@@ -3,13 +3,14 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 
-function ifUnsetHideUI(field: string) {
+function ifUnsetHideUI<Key extends string>(field: Key) {
   return {
     itemView: {
-      fieldMode: ({ item }: any) => (item[field] ? 'edit' : 'read'),
+      fieldMode: ({ item }: { item: null | { [_ in Key]: unknown } }) =>
+        item?.[field] ? 'edit' : 'read',
     },
     listView: {
-      fieldMode: () => 'hidden' as const,
+      fieldMode: 'hidden' as const,
     },
   }
 }

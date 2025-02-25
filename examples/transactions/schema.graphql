@@ -354,8 +354,8 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
-  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {

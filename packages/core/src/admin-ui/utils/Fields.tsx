@@ -21,6 +21,8 @@ export function Fields({
   invalidFields,
   onChange,
   value: itemValue,
+  fieldModes = {},
+  fieldPositions = {},
 }: {
   view: 'createView' | 'itemView'
   position: 'form' | 'sidebar'
@@ -30,14 +32,17 @@ export function Fields({
   invalidFields: ReadonlySet<string>
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
+  fieldPositions?: Record<string, 'form' | 'sidebar'>
+  fieldModes?: Record<string, 'edit' | 'read' | 'hidden'>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false
   for (const fieldKey in fields) {
     const field = fields[fieldKey]
-    if (view === 'itemView' && field.itemView.fieldPosition !== position) continue
+    const fieldPosition = fieldPositions[fieldKey] ?? field.itemView.fieldPosition
+    if (view === 'itemView' && fieldPosition !== position) continue
 
-    const { fieldMode } = field[view]
+    const fieldMode = fieldModes[fieldKey] ?? field[view].fieldMode
     if (fieldMode === 'hidden') continue
 
     const fieldValue = itemValue[fieldKey]
