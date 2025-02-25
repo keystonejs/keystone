@@ -91,12 +91,9 @@ export function Field(props: FieldProps<typeof controller>) {
             }))}
             maxRows={2}
             onRemove={keys => {
-              const [key] = [...keys]
-              const item = value.value.find(item => item.id.toString() === key)
-              if (!item) return
               onChange?.({
                 ...value,
-                value: value.value.filter(item2 => item2 !== item),
+                value: value.value.filter(item => !keys.has(item.id)),
               })
             }}
             renderEmptyState={() => (

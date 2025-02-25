@@ -53,7 +53,10 @@ export function ComboboxSingle({
 
   const items: RelationshipValue[] = data?.items?.map(x => ({ ...x, built: false })) ?? []
 
-  if (state.value?.built) {
+  if (
+    state.value !== null &&
+    (state.value.built || !items.some(item => item.id === state.value?.id))
+  ) {
     items.push(state.value)
   }
 
@@ -72,8 +75,7 @@ export function ComboboxSingle({
       onLoadMore={onLoadMore}
       selectedKey={state.value ? state.value.id.toString() : null}
       onSelectionChange={key => {
-        const [selectedItem = null] = items.filter(item => key === item.id.toString())
-
+        const selectedItem = items.find(item => item.id.toString() === key) ?? null
         state.onChange(selectedItem)
         setSearch(selectedItem?.label ?? '')
       }}
