@@ -10,6 +10,8 @@ import { Text } from '@keystar/ui/typography'
 import { useList } from '../../../../admin-ui/context'
 import type { FieldProps } from '../../../../types'
 import type { RelationshipController } from './types'
+import { ActionButton } from '@keystar/ui/button'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 
 type RelationshipProps = {
   onAdd: () => void
@@ -26,12 +28,13 @@ export function ContextualActions(props: PropsWithChildren<RelationshipProps>) {
 }
 
 function ContextualActionsMenu(props: RelationshipProps) {
-  const { field, onAdd, onChange, value } = props
+  const { field, onAdd, onChange } = props
 
   const foreignList = useList(field.refListKey)
-  const relatedItem = useRelatedItem(props)
+  const relatedItemHref = useRelatedItemHref(props)
+  const relatedItemLabel = useRelatedItemLabel(field)
+  const allowAdd = !field.hideCreate && !!onChange
   const items = useMemo(() => {
-    const allowAdd = !field.hideCreate && onChange
     const result = []
     if (allowAdd) {
       result.push({
@@ -41,15 +44,15 @@ function ContextualActionsMenu(props: RelationshipProps) {
       })
     }
 
-    if (relatedItem) {
-      result.push({
-        key: 'view',
-        ...relatedItem,
-      })
-    }
+    result.push({
+      key: 'view',
+      icon: arrowUpRightIcon,
+      href: relatedItemHref,
+      label: relatedItemLabel,
+    })
 
     return result
-  }, [value])
+  }, [allowAdd, foreignList, relatedItemHref, relatedItemLabel])
 
   const onAction = (key: Key) => {
     switch (key) {
@@ -60,17 +63,32 @@ function ContextualActionsMenu(props: RelationshipProps) {
     }
   }
 
+  // we don't want to change the presence or lack thereof of a selected value
+  // but since `allowAdd` is based on config, it's fairly static and showing
+  // a menu when the menu will only have one item is quite silly
+  if (!allowAdd) {
+    return (
+      <TooltipTrigger>
+        <ActionButton {...(relatedItemHref ? { href: relatedItemHref } : { isDisabled: true })}>
+          <Icon src={arrowUpRightIcon} />
+        </ActionButton>
+        <Tooltip>{relatedItemLabel}</Tooltip>
+      </TooltipTrigger>
+    )
+  }
+
   return (
     <ActionMenu
       aria-label={`Actions for ${field.label}`}
       direction="bottom"
       align="end"
       isDisabled={items.length === 0}
+      disabledKeys={relatedItemHref === null ? ['view'] : []}
       items={items}
       onAction={onAction}
     >
       {item => (
-        <Item key={item.key} href={'href' in item ? item.href : undefined} textValue={item.label}>
+        <Item key={item.key} href={item.href ?? undefined} textValue={item.label}>
           <Icon src={item.icon} />
           <Text>{item.label}</Text>
         </Item>
@@ -79,40 +97,31 @@ function ContextualActionsMenu(props: RelationshipProps) {
   )
 }
 
-function useRelatedItem({ field, value }: FieldProps<() => RelationshipController>) {
+function useRelatedItemLabel(field: RelationshipController) {
   const foreignList = useList(field.refListKey)
-
-  switch (value.kind) {
-    case 'count': {
-      return null // TODO
-    }
-    case 'many': {
-      if (!value.value.length) return null
-
-      const query = field.refFieldKey
-        ? `!${field.refFieldKey}_some=["${value.id}"]`
-        : `!id_in=[${value.value.map(x => `"${x.id}"`).join(',')}]`
-
-      return {
-        href: `/${foreignList.path}?${query}`,
-        icon: arrowUpRightIcon,
-        label: `View related ${foreignList.plural.toLocaleLowerCase()}`,
-      }
-    }
-    case 'one': {
-      if (!value.value) return null
-      // the related item isn't actually created yet so we can't view it
-      if (value.value.built) return null
-
-      return {
-        href: `/${foreignList.path}/${value.value.id}`,
-        icon: arrowUpRightIcon,
-        label: `View ${foreignList.singular.toLocaleLowerCase()}`,
-      }
-    }
-    default: {
-      const exhaustiveCheck: never = value['kind']
-      throw new Error(`Unhandled value kind: "${exhaustiveCheck}".`)
-    }
+  if (field.many) {
+    return `View related ${foreignList.plural.toLocaleLowerCase()}`
   }
+  return `View ${foreignList.singular.toLocaleLowerCase()}`
+}
+
+function useRelatedItemHref({ field, value }: FieldProps<() => RelationshipController>) {
+  const foreignList = useList(field.refListKey)
+  if (value.kind === 'one') {
+    if (!value.value) return null
+    // the related item isn't actually created yet so we can't view it
+    if (value.value.built) return null
+
+    return `/${foreignList.path}/${value.value.id}`
+  }
+  let query: string | undefined
+  if (field.refFieldKey) {
+    const foreignField = foreignList.fields[field.refFieldKey]
+    query = `!${field.refFieldKey}_${(foreignField.fieldMeta as any).many ? 'some' : 'is'}=${JSON.stringify(value.id)}`
+  } else if (value.kind === 'many' && value.value.length > 0) {
+    query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
+  }
+  if (query === undefined) return null
+
+  return `/${foreignList.path}?${query}`
 }
