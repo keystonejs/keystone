@@ -10,6 +10,8 @@ import { Text } from '@keystar/ui/typography'
 import { useList } from '../../../../admin-ui/context'
 import type { FieldProps } from '../../../../types'
 import type { RelationshipController } from './types'
+import { ActionButton } from '@keystar/ui/button'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 
 type RelationshipProps = {
   onAdd: () => void
@@ -26,12 +28,12 @@ export function ContextualActions(props: PropsWithChildren<RelationshipProps>) {
 }
 
 function ContextualActionsMenu(props: RelationshipProps) {
-  const { field, onAdd, onChange, value } = props
+  const { field, onAdd, onChange } = props
 
   const foreignList = useList(field.refListKey)
   const relatedItem = useRelatedItem(props)
+  const allowAdd = !field.hideCreate && !!onChange
   const items = useMemo(() => {
-    const allowAdd = !field.hideCreate && onChange
     const result = []
     if (allowAdd) {
       result.push({
@@ -44,12 +46,13 @@ function ContextualActionsMenu(props: RelationshipProps) {
     if (relatedItem) {
       result.push({
         key: 'view',
+        icon: arrowUpRightIcon,
         ...relatedItem,
       })
     }
 
     return result
-  }, [value])
+  }, [allowAdd, foreignList, relatedItem])
 
   const onAction = (key: Key) => {
     switch (key) {
@@ -58,6 +61,25 @@ function ContextualActionsMenu(props: RelationshipProps) {
         break
       }
     }
+  }
+
+  if (items.length === 0) return null
+
+  if (items.length === 1) {
+    const item = items[0]
+    return (
+      <TooltipTrigger>
+        <ActionButton
+          key={item.key}
+          {...('href' in item && item.href
+            ? { href: item.href }
+            : { onPress: () => onAction(item.key) })}
+        >
+          <Icon src={item.icon} />
+        </ActionButton>
+        <Tooltip>{item.label}</Tooltip>
+      </TooltipTrigger>
+    )
   }
 
   return (
@@ -81,38 +103,32 @@ function ContextualActionsMenu(props: RelationshipProps) {
 
 function useRelatedItem({ field, value }: FieldProps<() => RelationshipController>) {
   const foreignList = useList(field.refListKey)
-
-  switch (value.kind) {
-    case 'count': {
-      return null // TODO
-    }
-    case 'many': {
-      if (!value.value.length) return null
-
-      const query = field.refFieldKey
-        ? `!${field.refFieldKey}_some=["${value.id}"]`
-        : `!id_in=[${value.value.map(x => `"${x.id}"`).join(',')}]`
-
-      return {
-        href: `/${foreignList.path}?${query}`,
-        icon: arrowUpRightIcon,
-        label: `View related ${foreignList.plural.toLocaleLowerCase()}`,
-      }
-    }
-    case 'one': {
+  return useMemo((): {
+    href: string
+    label: string
+  } | null => {
+    if (value.kind === 'one') {
       if (!value.value) return null
       // the related item isn't actually created yet so we can't view it
       if (value.value.built) return null
 
       return {
         href: `/${foreignList.path}/${value.value.id}`,
-        icon: arrowUpRightIcon,
         label: `View ${foreignList.singular.toLocaleLowerCase()}`,
       }
     }
-    default: {
-      const exhaustiveCheck: never = value['kind']
-      throw new Error(`Unhandled value kind: "${exhaustiveCheck}".`)
+    let query: string | undefined
+    if (field.refFieldKey) {
+      const foreignField = foreignList.fields[field.refFieldKey]
+      query = `!${field.refFieldKey}_${(foreignField.fieldMeta as any).many ? 'some' : 'is'}=${value.id}`
+    } else if (value.kind === 'many' && value.value.length > 0) {
+      query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
     }
-  }
+    if (query === undefined) return null
+
+    return {
+      href: `/${foreignList.path}?${query}`,
+      label: `View related ${foreignList.plural.toLocaleLowerCase()}`,
+    }
+  }, [field.refFieldKey, foreignList, value])
 }
