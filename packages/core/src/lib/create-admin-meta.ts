@@ -14,24 +14,24 @@ import type { FieldMeta, FieldGroupMeta, ListMeta } from '../types/admin-meta'
 import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
 
-type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
+type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
 type FieldMetaRootVal_ = {
   key: string
   listKey: string
-  isOrderable: ContextFunction<boolean>
-  isFilterable: ContextFunction<boolean>
+  isOrderable: EmptyResolver<boolean>
+  isFilterable: EmptyResolver<boolean>
 
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
-    fieldMode: ContextFunction<'edit' | 'hidden'>
+    fieldMode: EmptyResolver<'edit' | 'hidden'>
   }
   itemView: {
     fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>
     fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>
   }
   listView: {
-    fieldMode: ContextFunction<'read' | 'hidden'>
+    fieldMode: EmptyResolver<'read' | 'hidden'>
   }
 }
 
@@ -55,9 +55,9 @@ type ListMetaRootVal_ = {
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
   isSingleton: boolean
 
-  hideNavigation: ContextFunction<boolean>
-  hideCreate: ContextFunction<boolean>
-  hideDelete: ContextFunction<boolean>
+  hideNavigation: EmptyResolver<boolean>
+  hideCreate: EmptyResolver<boolean>
+  hideDelete: EmptyResolver<boolean>
 }
 export type ListMetaRootVal = ListMetaRootVal_ & Omit<ListMeta, keyof ListMetaRootVal_>
 
@@ -184,7 +184,7 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       )
-      const fieldMeta = {
+      const fieldMeta: FieldMetaRootVal = {
         path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
@@ -281,15 +281,15 @@ function assertValidView(view: string, location: string) {
 
 function normalizeMaybeSessionFunction<Return extends string | boolean>(
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
-): ContextFunction<Return> {
+): EmptyResolver<Return> {
   if (typeof input !== 'function') return () => input
-  return context => input({ context, session: context.session })
+  return (_, context) => input({ context, session: context.session })
 }
 
 function normalizeIsOrderFilter(
   input: MaybeFieldFunction<BaseListTypeInfo>,
   baseOrderFilterArgs: { listKey: string; fieldKey: string }
-): ContextFunction<boolean> {
+): EmptyResolver<boolean> {
   if (typeof input !== 'function') return () => input
-  return context => input({ context, session: context.session, ...baseOrderFilterArgs })
+  return (_, context) => input({ context, session: context.session, ...baseOrderFilterArgs })
 }

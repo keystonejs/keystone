@@ -42,6 +42,7 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
+      '@typescript-eslint/no-empty-object-type': 'off',
       // TODO: enable
       // 'react-hooks/exhaustive-deps': 'error',
     },

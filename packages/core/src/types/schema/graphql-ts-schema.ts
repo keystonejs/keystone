@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import type { ReadStream } from 'node:fs'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
