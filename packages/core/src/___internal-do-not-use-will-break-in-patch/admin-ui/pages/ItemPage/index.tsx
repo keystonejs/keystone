@@ -93,7 +93,8 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
           <Text>
             Are you sure you want to delete{' '}
             <strong>
-              {list.singular} {itemId}
+              {list.singular}
+              {!list.isSingleton && ` ${itemId}`}
             </strong>
             ? This action cannot be undone.
           </Text>
@@ -282,8 +283,8 @@ function ItemPage({ listKey }: ItemPageProps) {
   const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
   const pageTitle: string = list.isSingleton ? list.label : pageLoading ? undefined : pageLabel
   const initialValue = useMemo(() => {
-    const { item = null } = data ?? {}
-    return deserializeItemToValue(list.fields, item)
+    if (!data?.item) return null
+    return deserializeItemToValue(list.fields, data.item)
   }, [list.fields, data?.item])
 
   return (
@@ -310,7 +311,7 @@ function ItemPage({ listKey }: ItemPageProps) {
                 id === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
-                    {!list!.hideCreate && <CreateButtonLink list={list} />}
+                    {!list.hideCreate && <CreateButtonLink list={list} />}
                   </ItemNotFound>
                 ) : (
                   <ItemNotFound>
