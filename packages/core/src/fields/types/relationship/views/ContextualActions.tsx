@@ -31,7 +31,8 @@ function ContextualActionsMenu(props: RelationshipProps) {
   const { field, onAdd, onChange } = props
 
   const foreignList = useList(field.refListKey)
-  const relatedItem = useRelatedItem(props)
+  const relatedItemHref = useRelatedItemHref(props)
+  const relatedItemLabel = useRelatedItemLabel(field)
   const allowAdd = !field.hideCreate && !!onChange
   const items = useMemo(() => {
     const result = []
@@ -43,16 +44,15 @@ function ContextualActionsMenu(props: RelationshipProps) {
       })
     }
 
-    if (relatedItem) {
-      result.push({
-        key: 'view',
-        icon: arrowUpRightIcon,
-        ...relatedItem,
-      })
-    }
+    result.push({
+      key: 'view',
+      icon: arrowUpRightIcon,
+      href: relatedItemHref,
+      label: relatedItemLabel,
+    })
 
     return result
-  }, [allowAdd, foreignList, relatedItem])
+  }, [allowAdd, foreignList, relatedItemHref, relatedItemLabel])
 
   const onAction = (key: Key) => {
     switch (key) {
@@ -63,21 +63,16 @@ function ContextualActionsMenu(props: RelationshipProps) {
     }
   }
 
-  if (items.length === 0) return null
-
-  if (items.length === 1) {
-    const item = items[0]
+  // we don't want to change the presence or lack thereof of a selected value
+  // but since `allowAdd` is based on config, it's fairly static and showing
+  // a menu when the menu will only have one item is quite silly
+  if (!allowAdd) {
     return (
       <TooltipTrigger>
-        <ActionButton
-          key={item.key}
-          {...('href' in item && item.href
-            ? { href: item.href }
-            : { onPress: () => onAction(item.key) })}
-        >
-          <Icon src={item.icon} />
+        <ActionButton {...(relatedItemHref ? { href: relatedItemHref } : { isDisabled: true })}>
+          <Icon src={arrowUpRightIcon} />
         </ActionButton>
-        <Tooltip>{item.label}</Tooltip>
+        <Tooltip>{relatedItemLabel}</Tooltip>
       </TooltipTrigger>
     )
   }
@@ -88,11 +83,12 @@ function ContextualActionsMenu(props: RelationshipProps) {
       direction="bottom"
       align="end"
       isDisabled={items.length === 0}
+      disabledKeys={relatedItemHref === null ? ['view'] : []}
       items={items}
       onAction={onAction}
     >
       {item => (
-        <Item key={item.key} href={'href' in item ? item.href : undefined} textValue={item.label}>
+        <Item key={item.key} href={item.href ?? undefined} textValue={item.label}>
           <Icon src={item.icon} />
           <Text>{item.label}</Text>
         </Item>
@@ -101,34 +97,31 @@ function ContextualActionsMenu(props: RelationshipProps) {
   )
 }
 
-function useRelatedItem({ field, value }: FieldProps<() => RelationshipController>) {
+function useRelatedItemLabel(field: RelationshipController) {
   const foreignList = useList(field.refListKey)
-  return useMemo((): {
-    href: string
-    label: string
-  } | null => {
-    if (value.kind === 'one') {
-      if (!value.value) return null
-      // the related item isn't actually created yet so we can't view it
-      if (value.value.built) return null
+  if (field.many) {
+    return `View related ${foreignList.plural.toLocaleLowerCase()}`
+  }
+  return `View ${foreignList.singular.toLocaleLowerCase()}`
+}
 
-      return {
-        href: `/${foreignList.path}/${value.value.id}`,
-        label: `View ${foreignList.singular.toLocaleLowerCase()}`,
-      }
-    }
-    let query: string | undefined
-    if (field.refFieldKey) {
-      const foreignField = foreignList.fields[field.refFieldKey]
-      query = `!${field.refFieldKey}_${(foreignField.fieldMeta as any).many ? 'some' : 'is'}=${value.id}`
-    } else if (value.kind === 'many' && value.value.length > 0) {
-      query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
-    }
-    if (query === undefined) return null
+function useRelatedItemHref({ field, value }: FieldProps<() => RelationshipController>) {
+  const foreignList = useList(field.refListKey)
+  if (value.kind === 'one') {
+    if (!value.value) return null
+    // the related item isn't actually created yet so we can't view it
+    if (value.value.built) return null
 
-    return {
-      href: `/${foreignList.path}?${query}`,
-      label: `View related ${foreignList.plural.toLocaleLowerCase()}`,
-    }
-  }, [field.refFieldKey, foreignList, value])
+    return `/${foreignList.path}/${value.value.id}`
+  }
+  let query: string | undefined
+  if (field.refFieldKey) {
+    const foreignField = foreignList.fields[field.refFieldKey]
+    query = `!${field.refFieldKey}_${(foreignField.fieldMeta as any).many ? 'some' : 'is'}=${JSON.stringify(value.id)}`
+  } else if (value.kind === 'many' && value.value.length > 0) {
+    query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
+  }
+  if (query === undefined) return null
+
+  return `/${foreignList.path}?${query}`
 }
