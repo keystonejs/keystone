@@ -45,6 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup-examples
+        with:
+          run-example-postinstall: true
 
       - name: TypeScript
         run: pnpm test:types
@@ -232,7 +234,7 @@ jobs:
       - uses: ./.github/actions/ci-setup-examples
 
       - name: Example unit tests
-        run: cd examples/testing; pnpm test
+        run: cd examples/testing && pnpm keystone postinstall && pnpm test
 
   examples_next_app_build:
     name: Ensure Next in App directory builds
