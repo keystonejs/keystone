@@ -99,7 +99,13 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
 ) {
   const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
   const cwd = join(tmpdir(), `ks6-tests-${random}`)
-  await fs.mkdir(cwd)
+  try {
+    await fs.mkdir(cwd)
+  } catch (err) {
+    if ((err as any).code !== 'EEXIST') throw err
+    await fs.rm(cwd, { recursive: true })
+    await fs.mkdir(cwd)
+  }
 
   let dbUrl = process.env.DATABASE_URL
   if (!dbUrl) throw new TypeError('Missing DATABASE_URL')

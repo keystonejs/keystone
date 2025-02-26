@@ -1,9 +1,8 @@
-import { isDeepStrictEqual } from 'util'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner'
-import { dbProvider } from '../utils'
+import { dbProvider, monitorLogs, waitFor } from '../utils'
 
 const runner = setupTestRunner({
   identifier: 'toqb',
@@ -37,8 +36,7 @@ const runner = setupTestRunner({
 test(
   'to-one relationship query batching',
   runner(async ({ context }) => {
-    const prevConsoleLog = console.log
-    console.log = () => {}
+    let monitor = monitorLogs()
     try {
       await context.query.User.createMany({
         data: Array.from({ length: 10 }, (_, i) => ({
@@ -48,16 +46,21 @@ test(
           },
         })),
       })
+      await waitFor(() => {
+        expect(monitor.logs).toHaveLength(
+          {
+            mysql: 130,
+            postgresql: 70,
+            sqlite: 70,
+          }[dbProvider]
+        )
+      })
     } finally {
-      console.log = prevConsoleLog
-    }
-
-    let logs: unknown[][] = []
-    console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, ' ') : x)))
+      monitor.cleanup()
     }
 
     try {
+      monitor = monitorLogs()
       expect(
         await context.query.Post.findMany({
           query: 'title author { name }',
@@ -70,20 +73,12 @@ test(
         }))
       )
 
-      // the logs from the createMany are sometimes (it only seems to happen on postgres on ci)
-      // logged after the createMany resolves
-      // so we just ignore those queries (they always end in with a `COMMIT`)
-      // ideally would be findLastIndex but that's not in node 16
-      const commitIndex = logs.findLastIndex(val =>
-        isDeepStrictEqual(val, ['prisma:query', 'COMMIT'])
-      )
-      if (commitIndex !== -1) {
-        logs = logs.slice(commitIndex + 1)
-      }
-      expect(logs).toEqual([
-        [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
-        [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
-      ])
+      await waitFor(() => {
+        expect(monitor.logs).toEqual([
+          [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
+          [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
+        ])
+      })
 
       const expectedSql = {
         sqlite: [
@@ -99,10 +94,10 @@ test(
           `SELECT \`toqb\`.\`User\`.\`id\`, \`toqb\`.\`User\`.\`name\` FROM \`toqb\`.\`User\` WHERE (\`toqb\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`toqb\`.\`User\`.\`name\` LIKE ?)`,
         ],
       }[dbProvider]
-      const sql = logs.map(([, query]) => query)
+      const sql = monitor.logs.map(([, query]) => query)
       expect(sql).toEqual(expectedSql)
     } finally {
-      console.log = prevConsoleLog
+      monitor.cleanup()
     }
   })
 )
