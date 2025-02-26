@@ -48,6 +48,8 @@ jobs:
         with:
           run-example-postinstall: true
 
+      - run: cd examples/graphql-gql.tada && pnpm check:tada-output
+
       - name: TypeScript
         run: pnpm test:types
 
