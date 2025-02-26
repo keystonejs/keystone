@@ -9,7 +9,7 @@ import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
 import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
 
 import { ContextualActions } from './ContextualActions'
@@ -162,7 +162,7 @@ function renderItem(item: { id: string; href: string; label: string }) {
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
-
+  const { adminPath } = useKeystone()
   if (field.display === 'count') {
     const count = item[`${field.path}Count`] as number
     return count != null ? <Numeral value={count} abbreviate /> : null
@@ -178,7 +178,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          <TextLink href={`/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
+          <TextLink href={`${adminPath}/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
