@@ -1,11 +1,11 @@
 import path from 'path'
 import fs from 'fs/promises'
 import RSS from 'rss'
-import { globby } from 'globby'
 import { extractBlogFrontmatter } from '../markdoc'
 import { siteBaseUrl } from '../lib/og-util'
 
 async function getPosts() {
+  const { globby } = await import('globby')
   const files = await globby('*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
   })
