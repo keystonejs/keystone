@@ -8,6 +8,8 @@ A Monorepo with a Keytone server and a Next.js frontend demonstrating three cust
 
 ## Running the example
 
+This example has a **higher Node.js version requirement** than Keystone itself and other examples. It requires a version of Node.js that supports `require(esm)`. For example, Node.js `v22.12.0` and higher should work.
+
 1. Install dependencies
 
 Make sure you are at the root of the repo and install dependencies.
