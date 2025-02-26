@@ -1,0 +1,21 @@
+{
+  "name": "@keystone-6/example-byte-encoding",
+  "version": null,
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^6.3.1",
+    "@prisma/client": "6.3.1"
+  },
+  "devDependencies": {
+    "prisma": "6.3.1",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

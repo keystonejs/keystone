@@ -76,6 +76,11 @@
       "module": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.esm.js",
       "default": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.cjs.js"
     },
+    "./fields/types/bytes": {
+      "types": "./fields/types/bytes/dist/keystone-6-core-fields-types-bytes.cjs.js",
+      "module": "./fields/types/bytes/dist/keystone-6-core-fields-types-bytes.esm.js",
+      "default": "./fields/types/bytes/dist/keystone-6-core-fields-types-bytes.cjs.js"
+    },
     "./fields/types/image/utils": {
       "types": "./fields/types/image/utils/dist/keystone-6-core-fields-types-image-utils.cjs.js",
       "module": "./fields/types/image/utils/dist/keystone-6-core-fields-types-image-utils.esm.js",
@@ -105,6 +110,11 @@
       "types": "./fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.js",
       "module": "./fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js",
       "default": "./fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.js"
+    },
+    "./fields/types/bytes/views": {
+      "types": "./fields/types/bytes/views/dist/keystone-6-core-fields-types-bytes-views.cjs.js",
+      "module": "./fields/types/bytes/views/dist/keystone-6-core-fields-types-bytes-views.esm.js",
+      "default": "./fields/types/bytes/views/dist/keystone-6-core-fields-types-bytes-views.cjs.js"
     },
     "./fields/types/float/views": {
       "types": "./fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.js",
@@ -311,6 +321,7 @@
       "admin-ui/utils/index.ts",
       "fields/index.ts",
       "fields/types/password/index.ts",
+      "fields/types/bytes/index.ts",
       "fields/types/*/views/index.tsx",
       "fields/types/{image,file}/utils.ts",
       "types/index.ts"
