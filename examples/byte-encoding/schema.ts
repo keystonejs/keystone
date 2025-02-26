@@ -11,6 +11,7 @@ export const lists = {
     fields: {
       // the default encoding for bytes is hex
       hex: bytes({ validation: { isRequired: true } }),
+      // try your own encoding
       base64: bytes({
         graphql: {
           scalar: bytesScalar({
