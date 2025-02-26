@@ -225,3 +225,32 @@ export async function getPrismaSchema<TypeInfo extends BaseKeystoneTypeInfo>({
   )
   return (await getArtifacts(system)).prisma
 }
+
+// TODO: use `using monitor = monitorLogs();` when `using` is in node
+export function monitorLogs() {
+  let prevConsoleLog = console.log
+  let logs: unknown[][] = []
+  console.log = (...args) => {
+    logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, ' ') : x)))
+  }
+  return {
+    logs,
+    cleanup: () => {
+      console.log = prevConsoleLog
+    },
+  }
+}
+
+const timeout = 1000
+const interval = 50
+const maxIters = timeout / interval
+
+export async function waitFor<T>(fn: () => T): Promise<T> {
+  for (let i = 0; i < maxIters; i++) {
+    try {
+      return fn()
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, interval))
+  }
+  return fn()
+}
