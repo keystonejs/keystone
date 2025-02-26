@@ -26,15 +26,15 @@ function mapOutputFieldToSQLite(
       deprecationReason: field.deprecationReason,
       description: field.description,
       extensions: field.extensions as any,
-      resolve(rootVal, ...extra) {
-        if (rootVal.value === null) {
-          return innerResolver(rootVal, ...extra)
+      resolve(source, ...extra) {
+        if (source.value === null) {
+          return innerResolver(source, ...extra)
         }
         let value: JSONValue = null
         try {
-          value = JSON.parse(rootVal.value)
+          value = JSON.parse(source.value)
         } catch (err) {}
-        return innerResolver({ item: rootVal.item, value }, ...extra)
+        return innerResolver({ item: source.item, value }, ...extra)
       },
     }),
   }).value

@@ -6,7 +6,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import {
-  type ListMetaRootVal,
+  type ListMetaSource,
   getAdminMetaForRelationshipField,
 } from '../../../lib/create-admin-meta'
 import { type controller } from './views'
@@ -54,8 +54,8 @@ type ManyDbConfig = {
 }
 
 function throwIfMissingFields(
-  localListMeta: ListMetaRootVal,
-  foreignListMeta: ListMetaRootVal,
+  localListMeta: ListMetaSource,
+  foreignListMeta: ListMetaSource,
   refLabelField: string,
   refSearchFields: string[],
   fieldKey: string

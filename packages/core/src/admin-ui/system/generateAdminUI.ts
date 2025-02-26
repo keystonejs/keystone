@@ -5,7 +5,7 @@ import fse from 'fs-extra'
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
 import type { AdminFileToWrite, KeystoneConfig } from '../../types'
 import { writeAdminFiles } from '../templates'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import type { AdminMetaSource } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
@@ -47,7 +47,7 @@ const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
 
 export async function generateAdminUI(
   config: KeystoneConfig,
-  adminMeta: AdminMetaRootVal,
+  adminMeta: AdminMetaSource,
   projectAdminPath: string,
   isLiveReload: boolean
 ) {

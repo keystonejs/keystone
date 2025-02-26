@@ -3,10 +3,10 @@ import type { GraphQLNames } from '../types/utils'
 import { QueryMode } from '../types'
 import { g as graphqlBoundToKeystoneContext } from '../types/schema'
 import type {
-  AdminMetaRootVal,
-  FieldGroupMetaRootVal,
-  FieldMetaRootVal,
-  ListMetaRootVal,
+  AdminMetaSource,
+  FieldGroupMetaSource,
+  FieldMetaSource,
+  ListMetaSource,
 } from './create-admin-meta'
 
 const g = {
@@ -14,7 +14,7 @@ const g = {
   ...graphqlBoundToKeystoneContext.bindGraphQLSchemaAPIToContext<Context>(),
 }
 
-const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
+const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   name: 'KeystoneAdminUIFieldMeta',
   fields: {
     path: g.field({ type: g.nonNull(g.String) }),
@@ -37,7 +37,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
     customViewsIndex: g.field({ type: g.Int }),
     createView: g.field({
       type: g.nonNull(
-        g.object<FieldMetaRootVal['createView']>()({
+        g.object<FieldMetaSource['createView']>()({
           name: 'KeystoneAdminUIFieldMetaCreateView',
           fields: {
             fieldMode: g.field({
@@ -54,7 +54,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
     }),
     listView: g.field({
       type: g.nonNull(
-        g.object<FieldMetaRootVal['listView']>()({
+        g.object<FieldMetaSource['listView']>()({
           name: 'KeystoneAdminUIFieldMetaListView',
           fields: {
             fieldMode: g.field({
@@ -91,8 +91,8 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
       },
       type: g.object<{
         listKey: string
-        fieldMode: FieldMetaRootVal['itemView']['fieldMode']
-        fieldPosition: FieldMetaRootVal['itemView']['fieldPosition']
+        fieldMode: FieldMetaSource['itemView']['fieldMode']
+        fieldPosition: FieldMetaSource['itemView']['fieldPosition']
         item: BaseItem | null
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
@@ -138,7 +138,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = g.object<FieldGroupMetaRootVal>()({
+const KeystoneAdminUIFieldGroupMeta = g.object<FieldGroupMetaSource>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
     label: g.field({ type: g.nonNull(g.String) }),
@@ -149,7 +149,7 @@ const KeystoneAdminUIFieldGroupMeta = g.object<FieldGroupMetaRootVal>()({
   },
 })
 
-const KeystoneAdminUISort = g.object<NonNullable<ListMetaRootVal['initialSort']>>()({
+const KeystoneAdminUISort = g.object<NonNullable<ListMetaSource['initialSort']>>()({
   name: 'KeystoneAdminUISort',
   fields: {
     field: g.field({ type: g.nonNull(g.String) }),
@@ -205,7 +205,7 @@ const KeystoneAdminUIGraphQL = g.object<any>()({
   },
 })
 
-const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
+const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
     key: g.field({ type: g.nonNull(g.String) }),
@@ -232,7 +232,7 @@ const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
   },
 })
 
-const adminMeta = g.object<AdminMetaRootVal>()({
+const adminMeta = g.object<AdminMetaSource>()({
   name: 'KeystoneAdminMeta',
   fields: {
     lists: g.field({
@@ -241,14 +241,14 @@ const adminMeta = g.object<AdminMetaRootVal>()({
     list: g.field({
       type: KeystoneAdminUIListMeta,
       args: { key: g.arg({ type: g.nonNull(g.String) }) },
-      resolve(rootVal, { key }) {
-        return rootVal.listsByKey[key]
+      resolve(source, { key }) {
+        return source.listsByKey[key]
       },
     }),
   },
 })
 
-export const KeystoneMeta = g.object<{ adminMeta: AdminMetaRootVal }>()({
+export const KeystoneMeta = g.object<{ adminMeta: AdminMetaSource }>()({
   name: 'KeystoneMeta',
   fields: {
     adminMeta: g.field({

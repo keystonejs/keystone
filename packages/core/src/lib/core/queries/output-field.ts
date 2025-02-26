@@ -123,7 +123,7 @@ async function fetchRelatedItems(
 }
 
 function getValueForDBField(
-  rootVal: BaseItem,
+  item: BaseItem,
   dbField: ResolvedDBField,
   id: IdType,
   fieldPath: string,
@@ -135,7 +135,7 @@ function getValueForDBField(
     return Object.fromEntries(
       Object.keys(dbField.fields).map(innerDBFieldKey => {
         const keyOnDbValue = getDBFieldKeyForFieldOnMultiField(fieldPath, innerDBFieldKey)
-        return [innerDBFieldKey, rootVal[keyOnDbValue] as any]
+        return [innerDBFieldKey, item[keyOnDbValue] as any]
       })
     )
   }
@@ -143,11 +143,11 @@ function getValueForDBField(
     // If we're holding a foreign key value, let's take advantage of that.
     let fk: IdType | undefined
     if (dbField.mode === 'one' && dbField.foreignIdField.kind !== 'none') {
-      fk = rootVal[`${fieldPath}Id`] as IdType
+      fk = item[`${fieldPath}Id`] as IdType
     }
     return getRelationVal(dbField, id, lists[dbField.list], context, info, fk)
   } else {
-    return rootVal[fieldPath] as any
+    return item[fieldPath] as any
   }
 }
 
@@ -168,9 +168,9 @@ export function outputTypeField(
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    async resolve(rootVal: BaseItem, args, context, info) {
-      const id = rootVal.id as IdType
-      const fieldAccess = await getOperationFieldAccess(rootVal, list, fieldKey, context, 'read')
+    async resolve(item: BaseItem, args, context, info) {
+      const id = item.id as IdType
+      const fieldAccess = await getOperationFieldAccess(item, list, fieldKey, context, 'read')
       if (!fieldAccess) return null
 
       // only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -178,9 +178,9 @@ export function outputTypeField(
         maybeCacheControlFromInfo(info)?.setCacheHint(cacheHint)
       }
 
-      const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info)
+      const value = getValueForDBField(item, dbField, id, fieldKey, context, lists, info)
       if (output.resolve) {
-        return output.resolve({ value, item: rootVal }, args, context, info)
+        return output.resolve({ value, item: item }, args, context, info)
       } else {
         return value
       }
