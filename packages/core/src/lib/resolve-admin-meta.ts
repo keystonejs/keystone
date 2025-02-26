@@ -1,5 +1,4 @@
-import type { EnumType, EnumValue, ScalarType } from '@graphql-ts/schema'
-import type { BaseItem, KeystoneContext as Context, MaybePromise } from '../types'
+import type { BaseItem, KeystoneContext as Context } from '../types'
 import type { GraphQLNames } from '../types/utils'
 import { QueryMode } from '../types'
 import { g as graphqlBoundToKeystoneContext } from '../types/schema'
@@ -21,8 +20,8 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
     path: g.field({ type: g.nonNull(g.String) }),
     label: g.field({ type: g.nonNull(g.String) }),
     description: g.field({ type: g.String }),
-    ...contextFunctionField('isOrderable', g.Boolean),
-    ...contextFunctionField('isFilterable', g.Boolean),
+    isOrderable: g.field({ type: g.nonNull(g.Boolean) }),
+    isFilterable: g.field({ type: g.nonNull(g.Boolean) }),
     isNonNull: g.field({
       type: g.list(
         g.nonNull(
@@ -40,13 +39,16 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
       type: g.nonNull(
         g.object<FieldMetaRootVal['createView']>()({
           name: 'KeystoneAdminUIFieldMetaCreateView',
-          fields: contextFunctionField(
-            'fieldMode',
-            g.enum({
-              name: 'KeystoneAdminUIFieldMetaCreateViewFieldMode',
-              values: g.enumValues(['edit', 'hidden']),
-            })
-          ),
+          fields: {
+            fieldMode: g.field({
+              type: g.nonNull(
+                g.enum({
+                  name: 'KeystoneAdminUIFieldMetaCreateViewFieldMode',
+                  values: g.enumValues(['edit', 'hidden']),
+                })
+              ),
+            }),
+          },
         })
       ),
     }),
@@ -54,13 +56,16 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaRootVal>()({
       type: g.nonNull(
         g.object<FieldMetaRootVal['listView']>()({
           name: 'KeystoneAdminUIFieldMetaListView',
-          fields: contextFunctionField(
-            'fieldMode',
-            g.enum({
-              name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
-              values: g.enumValues(['read', 'hidden']),
-            })
-          ),
+          fields: {
+            fieldMode: g.field({
+              type: g.nonNull(
+                g.enum({
+                  name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
+                  values: g.enumValues(['read', 'hidden']),
+                })
+              ),
+            }),
+          },
         })
       ),
     }),
@@ -221,10 +226,9 @@ const KeystoneAdminUIListMeta = g.object<ListMetaRootVal>()({
     initialSearchFields: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))) }),
     initialSort: g.field({ type: KeystoneAdminUISort }),
     isSingleton: g.field({ type: g.nonNull(g.Boolean) }),
-
-    ...contextFunctionField('hideNavigation', g.Boolean),
-    ...contextFunctionField('hideCreate', g.Boolean),
-    ...contextFunctionField('hideDelete', g.Boolean),
+    hideNavigation: g.field({ type: g.nonNull(g.Boolean) }),
+    hideCreate: g.field({ type: g.nonNull(g.Boolean) }),
+    hideDelete: g.field({ type: g.nonNull(g.Boolean) }),
   },
 })
 
@@ -260,24 +264,3 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaRootVal }>()({
     }),
   },
 })
-
-function contextFunctionField<Key extends string, Type extends string | boolean>(
-  key: Key,
-  type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
-) {
-  return {
-    [key]: g.field({
-      type: g.nonNull(type),
-      resolve(
-        source: {
-          [_ in Key]: (context: Context) => MaybePromise<Type>
-        },
-        args,
-        context,
-        info
-      ) {
-        return source[key](context)
-      },
-    }),
-  }
-}
