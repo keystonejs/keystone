@@ -159,7 +159,7 @@ for (const fixture of fixtures) {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } })
         await context.query.User.createOne({ data: { name: 'another' } })
         const item = await context.query.User.findOne({ where: { id } })
-        expect(item.id).toBe(id)
+        expect(item!.id).toBe(id)
       })
     )
 
@@ -227,9 +227,9 @@ describe('case insensitive id filters', () => {
         const { id } = (await context.query.User.createOne({
           data: { name: 'something' },
         })) as { id: string }
-        const { id: fromFound } = await context.query.User.findOne({
+        const { id: fromFound } = (await context.query.User.findOne({
           where: { id: id.toUpperCase() },
-        })
+        }))!
         // it returns lower-cased
         expect(fromFound).toBe(id)
       })

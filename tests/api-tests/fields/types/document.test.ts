@@ -177,7 +177,7 @@ describe('Document field type', () => {
         where: { id: post.id },
         query: 'content { document }',
       })
-      expect(_post.content.document).toEqual(content)
+      expect(_post!.content.document).toEqual(content)
     })
   )
 
@@ -190,7 +190,7 @@ describe('Document field type', () => {
         where: { id: post.id },
         query: 'content { document(hydrateRelationships: false) }',
       })
-      expect(_post.content.document).toEqual(content)
+      expect(_post!.content.document).toEqual(content)
     })
   )
 
@@ -211,7 +211,7 @@ describe('Document field type', () => {
       content[1].children[1].data = { id: bob.id, label: 'Bob', data: { id: bob.id, name: 'Bob' } }
       // Access denied on charlie;
       content[2].children[1].data = { id: charlie.id }
-      expect(_post.content.document).toEqual(content)
+      expect(_post!.content.document).toEqual(content)
     })
   )
 
@@ -233,7 +233,7 @@ describe('Document field type', () => {
       content[1].children[1].data = { id: bob.id }
       // Access denied on charlie;
       content[2].children[1].data = { id: charlie.id }
-      expect(_post.content.document).toEqual(content)
+      expect(_post!.content.document).toEqual(content)
     })
   )
 
@@ -252,7 +252,7 @@ describe('Document field type', () => {
       // But still, and access-denied user will return data: undefined
       bio[1].children[1].data = { id: charlie.id }
 
-      expect(_dave.bio.document).toEqual(bio)
+      expect(_dave!.bio.document).toEqual(bio)
     })
   )
 

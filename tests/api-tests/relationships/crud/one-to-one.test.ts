@@ -734,7 +734,7 @@ describe(`One-to-one relationships`, () => {
             where: { id: originalLocationId },
             query: 'id company { id }',
           })
-          expect(data2.company).toBe(null)
+          expect(data2!.company).toBe(null)
         })()
       })
     )
@@ -783,7 +783,7 @@ describe(`One-to-one relationships`, () => {
             where: { id: originalCompanyId },
             query: 'id location { id }',
           })
-          expect(_company.location).toBe(null)
+          expect(_company!.location).toBe(null)
         })()
       })
     )
