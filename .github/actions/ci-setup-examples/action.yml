@@ -15,10 +15,9 @@ runs:
         cache: pnpm
     - run: |
         find examples tests -name 'package.json' -exec sh -c '
-          jq "del(.scripts.postinstall)" "$1" > tmp && mv tmp "$1"
+          jq ".scripts |= if has(\"postinstall\") then . + {\"ks-examples-postinstall\": .postinstall} | del(.postinstall) else . end" "$1" > tmp && mv tmp "$1"
         ' sh {} \;
       shell: bash
-      if: inputs.run-example-postinstall == false
 
     # limited to 1 child process, preventing Prisma postinstall races in our examples
     - run: pnpm install --child-concurrency 1
@@ -28,8 +27,3 @@ runs:
 
     - run: pnpm run build
       shell: bash
-
-inputs:
-  run-examples-postinstall:
-    required: false
-    default: false

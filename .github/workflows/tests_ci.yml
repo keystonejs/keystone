@@ -45,8 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup-examples
-        with:
-          run-example-postinstall: true
+
+      - run: pnpm run -r ks-examples-postinstall
 
       - run: cd examples/graphql-gql.tada && pnpm check:tada-output
 
