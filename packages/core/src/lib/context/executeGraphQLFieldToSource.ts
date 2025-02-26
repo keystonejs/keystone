@@ -82,8 +82,8 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
   fields: {
     [rawField]: {
       type: RawScalar,
-      resolve(rootVal) {
-        return rootVal
+      resolve(source) {
+        return source
       },
     },
   },
@@ -134,13 +134,13 @@ function getTypeForField(originalType: GraphQLOutputType): OutputType {
   return ReturnRawValueObjectType
 }
 
-function getRootValGivenOutputType(originalType: OutputType, value: any): any {
+function getSourceGivenOutputType(originalType: OutputType, value: any): any {
   if (originalType instanceof GraphQLNonNull) {
-    return getRootValGivenOutputType(originalType.ofType, value)
+    return getSourceGivenOutputType(originalType.ofType, value)
   }
   if (value === null) return null
   if (originalType instanceof GraphQLList) {
-    return value.map((x: any) => getRootValGivenOutputType(originalType.ofType, x))
+    return value.map((x: any) => getSourceGivenOutputType(originalType.ofType, x))
   }
   return value[rawField]
 }
@@ -209,6 +209,6 @@ export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
     if (result.errors?.length) {
       throw result.errors[0]
     }
-    return getRootValGivenOutputType(type, result.data![field.name])
+    return getSourceGivenOutputType(type, result.data![field.name])
   }
 }

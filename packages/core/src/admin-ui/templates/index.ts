@@ -1,6 +1,6 @@
 import path from 'path'
 import type { KeystoneConfig } from '../../types'
-import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
+import type { AdminMetaSource } from '../../lib/create-admin-meta'
 import { appTemplate } from './app'
 import { homeTemplate } from './home'
 import { listTemplate } from './list'
@@ -11,7 +11,7 @@ import { nextConfigTemplate } from './next-config'
 
 const pkgDir = path.dirname(require.resolve('@keystone-6/core/package.json'))
 
-export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaRootVal) {
+export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
   return [
     {
       mode: 'write' as const,

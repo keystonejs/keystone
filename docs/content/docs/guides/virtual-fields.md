@@ -226,7 +226,7 @@ export default config({
 });
 ```
 
-This example is written in TypeScript, so we need to specify the type of the root value expected by the `PostCounts` type.
+This example is written in TypeScript, so we need to specify the type expected by the `PostCounts` type.
 This type must correspond to the return type of the `resolve` function.
 
 Because our `virtual` field has an object type, we also need to provide a value for the option `ui.query`.

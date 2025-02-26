@@ -16,7 +16,7 @@ import type { InitialisedList } from './core/initialise-lists'
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
-type FieldMetaRootVal_ = {
+type FieldMetaSource_ = {
   key: string
   listKey: string
   isOrderable: EmptyResolver<boolean>
@@ -35,19 +35,19 @@ type FieldMetaRootVal_ = {
   }
 }
 
-export type FieldMetaRootVal = FieldMetaRootVal_ &
-  Omit<FieldMeta, keyof FieldMetaRootVal_ | 'controller' | 'graphql' | 'views'>
+export type FieldMetaSource = FieldMetaSource_ &
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
 
-type FieldGroupMetaRootVal_ = {
-  fields: FieldMetaRootVal[]
+type FieldGroupMetaSource_ = {
+  fields: FieldMetaSource[]
 }
-export type FieldGroupMetaRootVal = FieldGroupMetaRootVal_ &
-  Omit<FieldGroupMeta, keyof FieldGroupMetaRootVal_>
+export type FieldGroupMetaSource = FieldGroupMetaSource_ &
+  Omit<FieldGroupMeta, keyof FieldGroupMetaSource_>
 
-type ListMetaRootVal_ = {
-  fields: FieldMetaRootVal[]
-  fieldsByKey: Record<string, FieldMetaRootVal>
-  groups: FieldGroupMetaRootVal[]
+type ListMetaSource_ = {
+  fields: FieldMetaSource[]
+  fieldsByKey: Record<string, FieldMetaSource>
+  groups: FieldGroupMetaSource[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
@@ -59,11 +59,11 @@ type ListMetaRootVal_ = {
   hideCreate: EmptyResolver<boolean>
   hideDelete: EmptyResolver<boolean>
 }
-export type ListMetaRootVal = ListMetaRootVal_ & Omit<ListMeta, keyof ListMetaRootVal_>
+export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSource_>
 
-export type AdminMetaRootVal = {
-  lists: ListMetaRootVal[]
-  listsByKey: Record<string, ListMetaRootVal>
+export type AdminMetaSource = {
+  lists: ListMetaSource[]
+  listsByKey: Record<string, ListMetaSource>
   views: string[]
   isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
@@ -73,7 +73,7 @@ export function createAdminMeta(
   initialisedLists: Record<string, InitialisedList>
 ) {
   const { lists } = config
-  const adminMetaRoot: AdminMetaRootVal = {
+  const adminMetaRoot: AdminMetaSource = {
     listsByKey: {},
     lists: [],
     views: [],
@@ -184,7 +184,7 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       )
-      const fieldMeta: FieldMetaRootVal = {
+      const fieldMeta: FieldMetaSource = {
         path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
@@ -241,14 +241,14 @@ export function createAdminMeta(
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
     if (list.graphql.isEnabled.query === false) continue
-    for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
+    for (const fieldMetaSource of adminMetaRoot.listsByKey[key].fields) {
       // if the field is a relationship field and is related to an omitted list, skip.
-      const dbField = list.fields[fieldMetaRootVal.path].dbField
+      const dbField = list.fields[fieldMetaSource.path].dbField
       if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) continue
 
       currentAdminMeta = adminMetaRoot
       try {
-        fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null
+        fieldMetaSource.fieldMeta = list.fields[fieldMetaSource.path].getAdminMeta?.() ?? null
       } finally {
         currentAdminMeta = undefined
       }
@@ -258,7 +258,7 @@ export function createAdminMeta(
   return adminMetaRoot
 }
 
-let currentAdminMeta: undefined | AdminMetaRootVal
+let currentAdminMeta: undefined | AdminMetaSource
 
 export function getAdminMetaForRelationshipField() {
   if (currentAdminMeta) return currentAdminMeta

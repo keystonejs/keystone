@@ -96,16 +96,16 @@ describe('Virtual field type', () => {
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
-                    async resolve(rootVal, args, context) {
+                    async resolve(item, args, context) {
                       const [personAuthors, organisationAuthors] = await Promise.all([
                         context.db.Person.findMany({
                           where: {
-                            authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
+                            authoredPosts: { some: { id: { equals: item.id.toString() } } },
                           },
                         }),
                         context.db.Organisation.findMany({
                           where: {
-                            authoredPosts: { some: { id: { equals: rootVal.id.toString() } } },
+                            authoredPosts: { some: { id: { equals: item.id.toString() } } },
                           },
                         }),
                       ])

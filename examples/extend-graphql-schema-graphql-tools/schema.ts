@@ -105,7 +105,7 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
       },
       Statistics: {
         // The stats resolver returns an object which is passed to this resolver as
-        // the root value. We use that object to further resolve ths specific fields.
+        // the first argument. We use that object to further resolve ths specific fields.
         // In this case we want to take root.authorId and get the latest post for that author
         //
         // As above we use the context.db.Post API to achieve this.
