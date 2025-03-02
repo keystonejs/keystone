@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
@@ -13,6 +12,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import type { FieldMeta, JSONValue } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
+import { useRouter } from '../../../../admin-ui/router'
 
 type State =
   | { kind: 'selecting-field' }

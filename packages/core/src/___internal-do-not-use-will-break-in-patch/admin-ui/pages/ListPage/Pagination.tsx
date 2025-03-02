@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import React, { type Key, useEffect, useMemo } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -8,6 +7,7 @@ import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
 import { HStack } from '@keystar/ui/layout'
 import { Item, Picker } from '@keystar/ui/picker'
 import { Text } from '@keystar/ui/typography'
+import { useRouter } from '../../../../admin-ui/router'
 
 type PaginationProps = {
   pageSize: number
