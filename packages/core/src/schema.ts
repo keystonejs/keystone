@@ -142,6 +142,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
       publicPages: config.ui?.publicPages ?? [],
+      tsx: config.ui?.tsx ?? true,
     },
   }
 }
