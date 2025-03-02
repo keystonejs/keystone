@@ -10,9 +10,9 @@ export default function ({
   listKey: string
   initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>
 }) {
-  return `import makeSigninPage from '@keystone-6/auth/pages/InitPage'
+  return `import makeInitPage from '@keystone-6/auth/pages/InitPage'
 
-export default makeSigninPage(${JSON.stringify({
+export default makeInitPage(${JSON.stringify({
     listKey,
     authGqlNames,
     fieldPaths: initFirstItem.fields,
