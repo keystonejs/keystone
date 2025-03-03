@@ -39,79 +39,79 @@ export { fields, interface, interfaceField, object, union } from './schema-api-w
 export { BigInt, CalendarDay, DateTime, Decimal, Empty, Hex, JSON, Upload } from './scalars'
 // TODO: remove when we use { graphql } from '.keystone'
 type SomeTypeThatIsntARecordOfArgs = string
-export type FieldFuncResolve<
-  Source,
+
+type ImpliedResolver<
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType<Context>,
-  Key extends string,
   Context extends KeystoneContext<any>,
 > =
-  // the tuple is here because we _don't_ want this to be distributive
-  // if this was distributive then it would optional when it should be required e.g.
-  // graphql.object<{ id: string } | { id: boolean }>()({
-  //   name: "Node",
-  //   fields: {
-  //     id: graphql.field({
-  //       type: graphql.nonNull(graphql.ID),
-  //     }),
-  //   },
-  // });
-  [Key] extends [keyof Source]
-    ? Source[Key] extends
-        | graphqlTsSchema.InferValueFromOutputType<Type>
-        | ((
-            args: graphqlTsSchema.InferValueFromArgs<Args>,
-            context: Context,
-            info: GraphQLResolveInfo
-          ) => graphqlTsSchema.InferValueFromOutputType<Type>)
-      ? {
-          resolve?: graphqlTsSchema.FieldResolver<
-            Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
-            Type,
-            Context
-          >
-        }
-      : {
-          resolve: graphqlTsSchema.FieldResolver<
-            Source,
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
-            Type,
-            Context
-          >
-        }
-    : {
-        resolve: graphqlTsSchema.FieldResolver<
-          Source,
-          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
-          Type,
-          Context
-        >
-      }
+  | graphqlTsSchema.InferValueFromOutputType<Type>
+  | ((
+      args: graphqlTsSchema.InferValueFromArgs<Args>,
+      context: Context,
+      info: GraphQLResolveInfo
+    ) => graphqlTsSchema.InferValueFromOutputType<Type>)
 
 type FieldFuncArgs<
   Source,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType<Context>,
-  Key extends string,
-  Context extends KeystoneContext,
+  Context extends KeystoneContext<any>,
 > = {
   args?: Args
   type: Type
   deprecationReason?: string
   description?: string
   extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>
-} & FieldFuncResolve<Source, Args, Type, Key, Context>
+}
 
 type FieldFunc = <
   Source,
   Type extends OutputType<Context>,
-  Key extends string,
+  Resolve extends
+    | undefined
+    | ((
+        source: Source,
+        args: graphqlTsSchema.InferValueFromArgs<
+          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
+        >,
+        context: Context,
+        info: GraphQLResolveInfo
+      ) => graphqlTsSchema.InferValueFromOutputType<Type>),
   Context extends KeystoneContext<any>,
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {},
 >(
-  field: FieldFuncArgs<Source, Args, Type, Key, Context>
-) => graphqlTsSchema.Field<Source, Args, Type, Key, Context>
+  field: FieldFuncArgs<Source, Args, Type, Context> &
+    (Resolve extends {}
+      ? {
+          resolve: ((
+            source: Source,
+            args: graphqlTsSchema.InferValueFromArgs<
+              SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
+            >,
+            context: Context,
+            info: GraphQLResolveInfo
+          ) => graphqlTsSchema.InferValueFromOutputType<Type>) &
+            Resolve
+        }
+      : {
+          resolve?: ((
+            source: Source,
+            args: graphqlTsSchema.InferValueFromArgs<
+              SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
+            >,
+            context: Context,
+            info: GraphQLResolveInfo
+          ) => graphqlTsSchema.InferValueFromOutputType<Type>) &
+            Resolve
+        })
+) => Field<
+  Source,
+  Args,
+  Type,
+  undefined extends Resolve ? ImpliedResolver<Args, Type, Context> : unknown,
+  Context
+>
 
 export const field = fieldd as FieldFunc
 // TODO: remove when we use { graphql } from '.keystone'
@@ -127,9 +127,9 @@ export type Field<
   Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType<Context>,
-  Key extends string,
+  SourceAtKey,
   Context extends KeystoneContext = KeystoneContext,
-> = graphqlTsSchema.Field<Source, Args, TType, Key, Context>
+> = graphqlTsSchema.Field<Source, Args, TType, SourceAtKey, Context>
 export type FieldResolver<
   Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
