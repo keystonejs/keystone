@@ -333,7 +333,7 @@ type FieldTypeOutputField<TDBField extends DBField> = g.Field<
   { value: DBFieldToOutputValue<TDBField>; item: BaseItem },
   any,
   g.OutputType,
-  'value'
+  DBFieldToOutputValue<TDBField>
 >
 
 export type OrderDirection = 'asc' | 'desc'
