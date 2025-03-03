@@ -45,7 +45,7 @@ export type FormField<Value extends FormFieldValue, Options> = {
       { value: Value },
       Record<string, g.Arg<g.InputType, boolean>>,
       g.OutputType,
-      'value'
+      Value
     >
   }
 }

@@ -14,7 +14,7 @@ type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneCon
   Item,
   any,
   g.OutputType,
-  string,
+  unknown,
   Context
 >
 
