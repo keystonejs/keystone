@@ -75,7 +75,8 @@ export async function accessControlledFilter(
 export async function findOne(
   args: { where: UniqueInputFilter },
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  info: GraphQLResolveInfo
 ) {
   // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query')
@@ -99,7 +100,19 @@ export async function findOne(
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
 
-  return await context.prisma[list.listKey].findFirst({ where: filter })
+  const result = await context.prisma[list.listKey].findFirst({ where: filter })
+
+  if (list.cacheHint) {
+    maybeCacheControlFromInfo(info)?.setCacheHint(
+      list.cacheHint({
+        results: result,
+        operationName: info.operation.name?.value,
+        meta: false,
+      })
+    )
+  }
+
+  return result
 }
 
 export async function findMany(

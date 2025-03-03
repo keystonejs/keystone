@@ -13,8 +13,8 @@ export function getQueriesForList(list: InitialisedList) {
         defaultValue: list.isSingleton ? { id: '1' } : undefined,
       }),
     },
-    async resolve(_rootVal, args, context) {
-      return queries.findOne(args, list, context)
+    async resolve(_rootVal, args, context, info) {
+      return queries.findOne(args, list, context, info)
     },
   })
 
