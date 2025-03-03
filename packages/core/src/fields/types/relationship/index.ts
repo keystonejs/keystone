@@ -33,6 +33,19 @@ type CountDisplayConfig = {
   }
 }
 
+type TableDisplayConfig = {
+  ref: `${string}.${string}`
+  many: true
+  ui?: {
+    displayMode: 'table'
+    itemView: {
+      fieldMode: 'read'
+    }
+    initialSort?: { field: string; direction: 'ASC' | 'DESC' }
+    columns?: string[]
+  }
+}
+
 type OneDbConfig = {
   many?: false
   db?: {
@@ -88,14 +101,14 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       hideCreate?: boolean
     }
   } & (OneDbConfig | ManyDbConfig) &
-    (SelectDisplayConfig | CountDisplayConfig)
+    (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
 
 export function relationship<ListTypeInfo extends BaseListTypeInfo>({
   ref,
   ...config
 }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   const { many = false } = config
-  const [foreignListKey, foreignFieldKey] = ref.split('.')
+  const [foreignListKey, foreignFieldKey] = ref.split('.') as [string, string | undefined]
 
   return ({ fieldKey, listKey, lists }) => {
     const foreignList = lists[foreignListKey]
@@ -135,6 +148,50 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
             displayMode: 'count',
             refListKey: foreignListKey,
             refFieldKey: foreignFieldKey,
+            many,
+            hideCreate,
+            refLabelField,
+            refSearchFields,
+          }
+        }
+
+        if (config.ui?.displayMode === 'table') {
+          if (!foreignFieldKey) {
+            throw new Error(
+              `Using a two-sided relationship (\`ref\` must specify "List.fieldKey", not just "List") is required when using displayMode: 'table' for relationship fields but ${listKey}.${fieldKey} has \`ref: ${JSON.stringify(ref)}\``
+            )
+          }
+          if (config.ui.itemView?.fieldMode !== 'read') {
+            throw new Error(
+              `displayMode: 'table' on relationship fields currently requires itemView.fieldMode to be 'read' but ${listKey}.${fieldKey} does not have this set`
+            )
+          }
+          for (const key of config.ui.columns ?? []) {
+            if (!(key in foreignListMeta.fieldsByKey)) {
+              throw new Error(
+                `The field "${foreignListMeta.key}.${key}" does not exist, configured as a column for "${localListMeta.key}.${fieldKey}"`
+              )
+            }
+          }
+          if (config.ui.initialSort) {
+            const field = foreignListMeta.fieldsByKey[config.ui.initialSort.field]
+            if (!field) {
+              throw new Error(
+                `The field "${foreignListMeta.key}.${config.ui.initialSort.field}" does not exist, configured as the initialSort field for "${localListMeta.key}.${fieldKey}"`
+              )
+            }
+            if (!field.isOrderable) {
+              throw new Error(
+                `The field "${foreignListMeta.key}.${config.ui.initialSort.field}" is not orderable, configured as the initialSort field for "${localListMeta.key}.${fieldKey}"`
+              )
+            }
+          }
+          return {
+            displayMode: 'table',
+            refListKey: foreignListKey,
+            refFieldKey: foreignFieldKey,
+            initialSort: config.ui.initialSort ?? foreignListMeta.initialSort ?? null,
+            columns: config.ui.columns ?? null,
             many,
             hideCreate,
             refLabelField,

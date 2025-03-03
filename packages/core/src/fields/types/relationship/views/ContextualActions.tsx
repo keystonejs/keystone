@@ -97,7 +97,7 @@ function ContextualActionsMenu(props: RelationshipProps) {
   )
 }
 
-function useRelatedItemLabel(field: RelationshipController) {
+export function useRelatedItemLabel(field: RelationshipController) {
   const foreignList = useList(field.refListKey)
   if (field.many) {
     return `View related ${foreignList.plural.toLocaleLowerCase()}`
@@ -105,7 +105,10 @@ function useRelatedItemLabel(field: RelationshipController) {
   return `View ${foreignList.singular.toLocaleLowerCase()}`
 }
 
-function useRelatedItemHref({ field, value }: FieldProps<() => RelationshipController>) {
+export function useRelatedItemHref({
+  field,
+  value,
+}: Pick<FieldProps<() => RelationshipController>, 'field' | 'value'>) {
   const foreignList = useList(field.refListKey)
   if (value.kind === 'one') {
     if (!value.value) return null
