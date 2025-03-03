@@ -39,7 +39,7 @@ function getGraphQLInputTypeInner(
     return schema.graphql.input
   }
   if (schema.kind === 'object') {
-    return g.inputObject({
+    const input = g.inputObject({
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
@@ -55,13 +55,14 @@ function getGraphQLInputTypeInner(
           })
         ),
     })
+    return input
   }
   if (schema.kind === 'array') {
     const innerType = getGraphQLInputType(name, schema.element, operation, cache, meta)
     return g.list(innerType)
   }
   if (schema.kind === 'conditional') {
-    return g.inputObject({
+    const input = g.inputObject({
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
@@ -77,6 +78,7 @@ function getGraphQLInputTypeInner(
           })
         ),
     })
+    return input
   }
 
   if (schema.kind === 'relationship') {

@@ -8,10 +8,10 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
     { value: InputSource },
     Record<string, g.Arg<g.InputType, boolean>>,
     g.OutputType,
-    'value'
+    InputSource
   >,
   getVal: (outputSource: OutputSource) => InputSource
-): g.Field<OutputSource, Record<string, g.Arg<g.InputType, boolean>>, g.OutputType, string> {
+): g.Field<OutputSource, Record<string, g.Arg<g.InputType, boolean>>, g.OutputType, unknown> {
   return g.field({
     type: inputField.type,
     args: inputField.args,
@@ -32,7 +32,7 @@ type OutputField = g.Field<
   { value: unknown },
   Record<string, g.Arg<g.InputType, boolean>>,
   g.OutputType,
-  string
+  unknown
 >
 
 export function getOutputGraphQLField(
@@ -71,7 +71,7 @@ function getOutputGraphQLFieldInner(
             Object.entries(schema.fields).map(
               ([key, val]): [
                 string,
-                g.Field<unknown, Record<string, g.Arg<g.InputType>>, g.OutputType, string>,
+                g.Field<unknown, Record<string, g.Arg<g.InputType>>, g.OutputType, unknown>,
               ] => {
                 const field = getOutputGraphQLField(
                   `${name}${key[0].toUpperCase()}${key.slice(1)}`,
