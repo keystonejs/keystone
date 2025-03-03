@@ -23,7 +23,7 @@ export type ManyRelationshipValue = {
 
 export type CountRelationshipValue = {
   kind: 'count'
-  id: null | string
+  id: string
   count: number
 }
 
@@ -31,7 +31,7 @@ export type RelationshipController = FieldController<
   ManyRelationshipValue | SingleRelationshipValue | CountRelationshipValue,
   string[] | (string | null) // | number // TODO: count
 > & {
-  display: 'select' | 'count'
+  display: 'select' | 'count' | 'table'
   listKey: string
   refListKey: string
   refFieldKey?: string
@@ -39,4 +39,6 @@ export type RelationshipController = FieldController<
   refSearchFields: string[]
   hideCreate: boolean
   many: boolean
+  columns: string[] | null
+  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
 }

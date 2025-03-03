@@ -26,7 +26,11 @@ export const lists = {
     access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-      tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+      tasks: relationship({
+        ref: 'Task.assignedTo',
+        many: true,
+        ui: { displayMode: 'table', itemView: { fieldMode: 'read' } },
+      }),
     },
   }),
 } satisfies Lists
