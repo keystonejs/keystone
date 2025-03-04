@@ -18,6 +18,7 @@ import { ComboboxSingle } from './ComboboxSingle'
 
 export { ComboboxSingle, ComboboxMany }
 import type { RelationshipController, RelationshipValue } from './types'
+import { RelationshipTable } from './RelationshipTable'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
@@ -28,6 +29,9 @@ export function Field(props: FieldProps<typeof controller>) {
   const [counter, setCounter] = useState(1)
 
   if (value.kind === 'count') {
+    if (field.display === 'table') {
+      return <RelationshipTable field={field} value={value} />
+    }
     return (
       <TextField
         autoFocus={autoFocus}
@@ -195,7 +199,16 @@ export function controller(
       hideCreate: boolean
       refLabelField: string
       refSearchFields: string[]
-    } & ({ displayMode: 'select' } | { displayMode: 'count' })
+    } & (
+      | { displayMode: 'select' }
+      | { displayMode: 'count' }
+      | {
+          displayMode: 'table'
+          refFieldKey: string
+          initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
+          columns: string[] | null
+        }
+    )
   >
 ): RelationshipController {
   const { listKey, path: fieldKey, label, description } = config
@@ -214,13 +227,15 @@ export function controller(
     refSearchFields,
     refListKey,
     graphqlSelection:
-      displayMode === 'count'
+      displayMode === 'count' || displayMode === 'table'
         ? `${fieldKey}Count`
         : `${fieldKey} {
               id
               label: ${refLabelField}
             }`,
-    hideCreate,
+    hideCreate: hideCreate || displayMode === 'table',
+    columns: displayMode === 'table' ? config.fieldMeta.columns : null,
+    initialSort: displayMode === 'table' ? config.fieldMeta.initialSort : null,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
@@ -242,7 +257,7 @@ export function controller(
       return true
     },
     deserialize: data => {
-      if (displayMode === 'count') {
+      if (displayMode === 'count' || displayMode === 'table') {
         return {
           id: data.id,
           kind: 'count',
