@@ -1,5 +1,4 @@
-import React, { type Key, Fragment, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
+import React, { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'
@@ -27,7 +26,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
@@ -39,8 +38,9 @@ import { useFilters } from './useFilters'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
+import { useRouter } from '../../../../admin-ui/router'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { params: Usable<{ listKey: string }> }
 type SelectedKeys = 'all' | Set<number | string>
 
 const storeableQueries = ['sortBy', 'fields']
@@ -58,7 +58,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
       return x.startsWith('!') || storeableQueries.includes(x)
     })
 
-    if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+    if (!hasSomeQueryParamsWhichAreAboutListPage) {
       const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
       let parsed
       try {
@@ -68,7 +68,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
         router.replace({ query: { ...router.query, ...parsed } })
       }
     }
-  }, [localStorageKey, router.isReady])
+  }, [localStorageKey])
 
   useEffect(() => {
     const queryParamsToSerialize: Record<string, string> = {}
@@ -87,9 +87,10 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
-function ListPage({ listKey }: ListPageProps) {
+export function ListPage({ params }: ListPageProps) {
+  const keystone = useKeystone()
+  const _params = use<{ listKey: string }>(params)
+  const listKey = keystone.listsKeyByPath[_params.listKey]
   const list = useList(listKey)
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
@@ -256,6 +257,7 @@ function ListTable({
   items: Record<string, unknown>[]
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const router = useRouter()
   const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
@@ -314,7 +316,7 @@ function ListTable({
           <TableBody items={items}>
             {row => {
               return (
-                <Row href={`/${list.path}/${row?.id}`}>
+                <Row href={`${adminPath}/${list.path}/${row?.id}`}>
                   {key => {
                     const field = list.fields[key]
                     const value = row[key]
