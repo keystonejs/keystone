@@ -1,7 +1,3 @@
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
-
 import { list } from '@keystone-6/core'
 import { integer } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
@@ -19,26 +15,6 @@ function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
             testField: field,
           },
         }),
-      },
-      storage: {
-        test_image: {
-          kind: 'local',
-          type: 'image',
-          storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-          generateUrl: path => `http://localhost:3000/images${path}`,
-          serverRoute: {
-            path: '/images',
-          },
-        },
-        test_file: {
-          kind: 'local',
-          type: 'file',
-          storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-          generateUrl: path => `http://localhost:3000/files${path}`,
-          serverRoute: {
-            path: '/files',
-          },
-        },
       },
     },
   })

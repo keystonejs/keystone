@@ -51,7 +51,7 @@ function formatError(graphqlConfig: KeystoneConfig['graphql']) {
 }
 
 export async function createExpressServer(
-  config: Pick<KeystoneConfig, 'graphql' | 'server' | 'storage'>,
+  config: Pick<KeystoneConfig, 'graphql' | 'server'>,
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express
@@ -67,25 +67,6 @@ export async function createExpressServer(
 
   await config.server.extendExpressApp(expressServer, context)
   await config.server.extendHttpServer(httpServer, context)
-
-  if (config.storage) {
-    for (const val of Object.values(config.storage)) {
-      if (val.kind !== 'local' || !val.serverRoute) continue
-      expressServer.use(
-        val.serverRoute.path,
-        express.static(val.storagePath, {
-          setHeaders(res) {
-            if (val.type === 'file') {
-              res.setHeader('Content-Type', 'application/octet-stream')
-            }
-          },
-          index: false,
-          redirect: false,
-          lastModified: false,
-        })
-      )
-    }
-  }
 
   const apolloConfig = config.graphql.apolloConfig
   const serverConfig = {

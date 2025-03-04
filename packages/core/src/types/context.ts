@@ -1,5 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import type { Readable } from 'stream'
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists'
@@ -28,8 +27,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     }
   ) => Promise<T>
 
-  files: FilesContext
-  images: ImagesContext
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
 
@@ -160,38 +157,4 @@ export type KeystoneGraphQLAPI = {
 type GraphQLExecutionArguments<TData, TVariables> = {
   query: string | DocumentNode | TypedDocumentNode<TData, TVariables>
   variables?: TVariables
-}
-
-// Files API
-
-export type FileMetadata = {
-  filename: string
-  filesize: number
-}
-
-export type FileData = {
-  filename: string
-} & FileMetadata
-
-export type FilesContext = (storage: string) => {
-  getUrl: (filename: string) => Promise<string>
-  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>
-  deleteAtSource: (filename: string) => Promise<void>
-}
-
-// Images API
-
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif' // TODO: remove in breaking change
-export type ImageData = {
-  id: string
-  extension: ImageExtension
-  filesize: number
-  width: number
-  height: number
-}
-
-export type ImagesContext = (storage: string) => {
-  getUrl: (id: string, extension: ImageExtension) => Promise<string>
-  getDataFromStream: (stream: Readable, filename: string) => Promise<ImageData>
-  deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>
 }

@@ -130,9 +130,6 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       options: httpOptions,
     },
     session: config.session,
-    storage: {
-      ...config.storage,
-    },
     telemetry: config.telemetry ?? true,
     ui: {
       ...config.ui,

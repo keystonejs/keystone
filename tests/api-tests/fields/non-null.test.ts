@@ -1,6 +1,3 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import os from 'node:os'
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
@@ -60,26 +57,6 @@ testModules
                   }),
                 },
               }),
-            },
-            storage: {
-              test_image: {
-                kind: 'local',
-                type: 'image',
-                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                generateUrl: path => `http://localhost:3000/images${path}`,
-                serverRoute: {
-                  path: '/images',
-                },
-              },
-              test_file: {
-                kind: 'local',
-                type: 'file',
-                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                generateUrl: path => `http://localhost:3000/files${path}`,
-                serverRoute: {
-                  path: '/files',
-                },
-              },
             },
           })
           return context.graphql.schema
