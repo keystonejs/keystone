@@ -283,7 +283,6 @@ function getListsWithInitialisedFields(
   listsRef: Record<string, InitialisedList>
 ) {
   const {
-    storage: configStorage,
     lists: listsConfig,
     db: { provider },
   } = config
@@ -597,7 +596,6 @@ function getListsWithInitialisedFields(
         listKey,
         lists: listGraphqlTypes,
         provider,
-        getStorage: storage => configStorage?.[storage],
       })
 
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
