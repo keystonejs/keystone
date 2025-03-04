@@ -127,7 +127,7 @@ export type InitialisedList = {
   }
 
   isSingleton: boolean
-  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
+  cacheHint: ((args: CacheHintArgs<BaseListTypeInfo>) => CacheHint) | undefined
 }
 
 function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {

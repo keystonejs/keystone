@@ -105,7 +105,7 @@ export async function findOne(
   if (list.cacheHint) {
     maybeCacheControlFromInfo(info)?.setCacheHint(
       list.cacheHint({
-        results: result,
+        results: result ? [result] : [],
         operationName: info.operation.name?.value,
         meta: false,
       })
@@ -249,7 +249,7 @@ export async function count(
         results: count,
         operationName: info.operation.name?.value,
         meta: true,
-      }) as any
+      })
     )
   }
   return count

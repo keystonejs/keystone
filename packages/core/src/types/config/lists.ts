@@ -25,7 +25,7 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
    */
   hooks?: ListHooks<ListTypeInfo>
 
-  graphql?: ListGraphQLConfig
+  graphql?: ListGraphQLConfig<ListTypeInfo>
 
   db?: ListDBConfig
 
@@ -189,7 +189,7 @@ export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<T>)
 
-export type ListGraphQLConfig = {
+export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The description added to the GraphQL schema
    * @default listConfig.description
@@ -204,7 +204,7 @@ export type ListGraphQLConfig = {
    * The maximum value for the take parameter when querying this list
    */
   maxTake?: number
-  cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint
+  cacheHint?: ((args: CacheHintArgs<ListTypeInfo>) => CacheHint) | CacheHint
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.
   // Queries:
   //   'query':  Does item()/items() exist?
@@ -226,7 +226,17 @@ export type ListGraphQLConfig = {
       }
 }
 
-export type CacheHintArgs = { results: any; operationName?: string; meta: boolean }
+export type CacheHintArgs<ListTypeInfo extends BaseListTypeInfo> =
+  | {
+      results: ListTypeInfo['item'][]
+      operationName?: string
+      meta: false
+    }
+  | {
+      results: number
+      operationName?: string
+      meta: true
+    }
 
 // TODO: duplicate, merge with next-fields?
 export type IdFieldConfig =
