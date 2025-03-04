@@ -1,0 +1,17 @@
+name: Publish (Preview)
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Build
+        run: pnpm build
+
+      - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
