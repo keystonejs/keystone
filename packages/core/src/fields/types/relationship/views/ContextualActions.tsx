@@ -8,7 +8,7 @@ import { ActionMenu, Item } from '@keystar/ui/menu'
 import { Text } from '@keystar/ui/typography'
 
 import { useList } from '../../../../admin-ui/context'
-import type { FieldProps } from '../../../../types'
+import type { FieldProps, ListMeta } from '../../../../types'
 import type { RelationshipController } from './types'
 import { ActionButton } from '@keystar/ui/button'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
@@ -118,13 +118,22 @@ export function useRelatedItemHref({
     return `/${foreignList.path}/${value.value.id}`
   }
   let query: string | undefined
-  if (field.refFieldKey) {
-    const foreignField = foreignList.fields[field.refFieldKey]
-    query = `!${field.refFieldKey}_${(foreignField.fieldMeta as any).many ? 'some' : 'is'}=${JSON.stringify(value.id)}`
+  if (field.refFieldKey && value.id !== null) {
+    query = buildQueryForRelationshipFieldWithForeignField(foreignList, field.refFieldKey, value.id)
   } else if (value.kind === 'many' && value.value.length > 0) {
     query = `!id_in=${JSON.stringify(value.value.map(x => x.id))}`
   }
   if (query === undefined) return null
 
   return `/${foreignList.path}?${query}`
+}
+
+export function buildQueryForRelationshipFieldWithForeignField(
+  foreignList: ListMeta,
+  refFieldKey: string,
+  localId: string
+) {
+  const foreignField = foreignList.fields[refFieldKey]
+  const foreignMany: boolean = (foreignField.fieldMeta as any).many
+  return `!${refFieldKey}_${foreignMany ? 'some' : 'is'}=${JSON.stringify(foreignMany ? [localId] : localId)}`
 }

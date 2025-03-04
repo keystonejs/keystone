@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 
 import { DialogContainer } from '@keystar/ui/dialog'
-import { VStack } from '@keystar/ui/layout'
+import { HStack, VStack } from '@keystar/ui/layout'
 import { TextLink } from '@keystar/ui/link'
 import { TagGroup, Item } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
@@ -12,13 +12,19 @@ import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../
 import { useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
 
-import { ContextualActions } from './ContextualActions'
+import {
+  buildQueryForRelationshipFieldWithForeignField,
+  ContextualActions,
+} from './ContextualActions'
 import { ComboboxMany } from './ComboboxMany'
 import { ComboboxSingle } from './ComboboxSingle'
 
 export { ComboboxSingle, ComboboxMany }
 import type { RelationshipController, RelationshipValue } from './types'
 import { RelationshipTable } from './RelationshipTable'
+import { Icon } from '@keystar/ui/icon'
+import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'
+import { ActionButton } from '@keystar/ui/button'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
@@ -32,7 +38,7 @@ export function Field(props: FieldProps<typeof controller>) {
     if (field.display === 'table') {
       return <RelationshipTable field={field} value={value} />
     }
-    return (
+    const textField = (
       <TextField
         autoFocus={autoFocus}
         label={field.label}
@@ -41,6 +47,17 @@ export function Field(props: FieldProps<typeof controller>) {
         value={value.count.toString()}
         width="alias.singleLineWidth"
       />
+    )
+    if (!field.refFieldKey) return textField
+    return (
+      <HStack gap="small" alignItems="end">
+        {textField}
+        <ActionButton
+          href={`/${foreignList.path}?${buildQueryForRelationshipFieldWithForeignField(foreignList, field.refFieldKey, value.id)}`}
+        >
+          <Icon src={arrowUpRightIcon} />
+        </ActionButton>
+      </HStack>
     )
   }
 
@@ -167,7 +184,7 @@ function renderItem(item: { id: string; href: string; label: string }) {
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
 
-  if (field.display === 'count') {
+  if (field.display === 'count' || field.display === 'table') {
     const count = item[`${field.path}Count`] as number
     return count != null ? <Numeral value={count} abbreviate /> : null
   }

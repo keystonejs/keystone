@@ -30,6 +30,9 @@ type CountDisplayConfig = {
   ui?: {
     // Sets the relationship to display as a count
     displayMode: 'count'
+    itemView: {
+      fieldMode: 'read'
+    }
   }
 }
 
@@ -144,6 +147,11 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
         }
 
         if (config.ui?.displayMode === 'count') {
+          if (config.ui.itemView?.fieldMode !== 'read') {
+            throw new Error(
+              `displayMode: 'count' on relationship fields requires itemView.fieldMode to be 'read' but ${listKey}.${fieldKey} does not have this set`
+            )
+          }
           return {
             displayMode: 'count',
             refListKey: foreignListKey,
