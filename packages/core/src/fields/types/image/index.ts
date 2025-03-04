@@ -2,18 +2,24 @@ import type {
   BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
-  ImageData,
-  ImageExtension,
   KeystoneContext,
+  BaseKeystoneTypeInfo,
+  MaybePromise,
+  FieldHooks,
 } from '../../../types'
 import { fieldType } from '../../../types'
 import { g } from '../../..'
+import type { StorageAdapter } from './utils'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { merge } from '../../resolve-hooks'
+import { randomBytes } from 'node:crypto'
+import type { ImageExtension } from './internal-utils'
+import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: string
+    storage: StorageAdapter<BaseKeystoneTypeInfo>
+    transformName?: (originalFilename: string, extension: string) => MaybePromise<string>
     db?: {
       extendPrismaSchema?: (field: string) => string
     }
@@ -34,16 +40,20 @@ const ImageFieldInput = g.inputObject({
 
 const inputArg = g.arg({ type: ImageFieldInput })
 
-const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
+type ImageData = {
+  id: string
+  extension: ImageExtension
+  filesize: number
+  width: number
+  height: number
+  url: (_args: {}, context: KeystoneContext) => Promise<string>
+}
+
+const ImageFieldOutput = g.object<ImageData>()({
   name: 'ImageFieldOutput',
   fields: {
     id: g.field({ type: g.nonNull(g.ID) }),
-    url: g.field({
-      type: g.nonNull(g.String),
-      resolve(data, args, context) {
-        return context.images(data.storage).getUrl(data.id, data.extension)
-      },
-    }),
+    url: g.field({ type: g.nonNull(g.String) }),
     extension: g.field({ type: g.nonNull(ImageExtensionEnum) }),
     filesize: g.field({ type: g.nonNull(g.Int) }),
     width: g.field({ type: g.nonNull(g.Int) }),
@@ -51,11 +61,22 @@ const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
   },
 })
 
+// this is a conservative estimate of the number of bytes
+// that we need to determine the image metadata
+// since 1Kib in memory will be fine
+const bytesToDetermineImageMetadata = 1024
+
 async function inputResolver(
-  storage: string,
-  data: g.InferValueFromArg<typeof inputArg>,
-  context: KeystoneContext
-) {
+  storage: StorageAdapter<BaseKeystoneTypeInfo>,
+  transformName: (originalFilename: string, extension: string) => MaybePromise<string>,
+  data: g.InferValueFromArg<typeof inputArg>
+): Promise<{
+  id: string | null | undefined
+  extension: ImageExtension | null | undefined
+  filesize: number | null | undefined
+  width: number | null | undefined
+  height: number | null | undefined
+}> {
   if (data === null || data === undefined) {
     return {
       id: data,
@@ -67,10 +88,38 @@ async function inputResolver(
   }
 
   const upload = await data.upload
-  return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename)
+  let filesize = 0
+  const _readable = upload.createReadStream()
+  const [readableForFilesize, _readable2] = teeStream(_readable)
+  const [readableForMetadata, readableForUpload] = teeStream(_readable2)
+  readableForFilesize.on('data', data => {
+    filesize += data.length
+  })
+
+  const buffer = await getBytesFromStream(readableForMetadata, bytesToDetermineImageMetadata)
+  const metadata = getImageMetadata(buffer)
+  if (!metadata) {
+    throw new Error('File type not found')
+  }
+  const id = await transformName(upload.filename, metadata.extension)
+  await storage.put(`${id}.${metadata.extension}`, readableForUpload, {
+    contentType: {
+      png: 'image/png',
+      webp: 'image/webp',
+      gif: 'image/gif',
+      jpg: 'image/jpeg',
+    }[metadata.extension],
+  })
+  return {
+    filesize,
+    id,
+    extension: metadata.extension,
+    height: metadata.height,
+    width: metadata.width,
+  }
 }
 
-const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS)
+const extensionsSet = new Set<string>(SUPPORTED_IMAGE_EXTENSIONS)
 
 function isValidImageExtension(extension: string): extension is ImageExtension {
   return extensionsSet.has(extension)
@@ -79,22 +128,18 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 export function image<ListTypeInfo extends BaseListTypeInfo>(
   config: ImageFieldConfig<ListTypeInfo>
 ): FieldTypeFunc<ListTypeInfo> {
+  const { transformName = defaultTransformName } = config
   return meta => {
     const { fieldKey } = meta
-    const storage = meta.getStorage(config.storage)
-
-    if (!storage) {
-      throw new Error(
-        `${meta.listKey}.${fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      )
-    }
 
     if ('isIndexed' in config) {
       throw Error("isIndexed: 'unique' is not a supported option for field type image")
     }
 
-    async function beforeOperationResolver(args: any) {
-      // TODO: types
+    const beforeOperationResolver: Extract<
+      FieldHooks<BaseListTypeInfo, string>['beforeOperation'],
+      (args: any) => any
+    > = async function beforeOperationResolver(args) {
       if (args.operation === 'update' || args.operation === 'delete') {
         const idKey = `${fieldKey}_id`
         const id = args.item[idKey]
@@ -111,7 +156,7 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
           typeof extension === 'string' &&
           isValidImageExtension(extension)
         ) {
-          await args.context.images(config.storage).deleteAtSource(id, extension)
+          await config.storage.delete(`${id}.${extension}`)
         }
       }
     }
@@ -128,28 +173,26 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       },
     })({
       ...config,
-      hooks: storage.preserve
-        ? config.hooks
-        : {
-            ...config.hooks,
-            beforeOperation: merge(config.hooks?.beforeOperation, {
-              update: beforeOperationResolver,
-              delete: beforeOperationResolver,
-            }),
-          },
+      hooks: {
+        ...config.hooks,
+        beforeOperation: merge(config.hooks?.beforeOperation, {
+          update: beforeOperationResolver,
+          delete: beforeOperationResolver,
+        }),
+      },
       input: {
         create: {
           arg: inputArg,
-          resolve: (data, context) => inputResolver(config.storage, data, context),
+          resolve: (data, context) => inputResolver(config.storage, transformName, data),
         },
         update: {
           arg: inputArg,
-          resolve: (data, context) => inputResolver(config.storage, data, context),
+          resolve: (data, context) => inputResolver(config.storage, transformName, data),
         },
       },
       output: g.field({
         type: ImageFieldOutput,
-        resolve({ value: { id, extension, filesize, width, height } }) {
+        resolve({ value: { id, extension, filesize, width, height } }): ImageData | null {
           if (id === null) return null
           if (extension === null) return null
           if (filesize === null) return null
@@ -163,7 +206,7 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
             width,
             height,
             extension,
-            storage: config.storage,
+            url: async (_, context) => config.storage.url(`${id}.${extension}`, context),
           }
         },
       }),
@@ -171,4 +214,8 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       views: '@keystone-6/core/fields/types/image/views',
     })
   }
+}
+
+function defaultTransformName(path: string) {
+  return randomBytes(16).toString('base64url')
 }

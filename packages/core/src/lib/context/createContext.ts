@@ -3,8 +3,6 @@ import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphq
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'
-import { createImagesContext } from '../assets/createImagesContext'
-import { createFilesContext } from '../assets/createFilesContext'
 import { getDbFactory, getQueryFactory } from './api'
 
 export function createContext({
@@ -45,8 +43,6 @@ export function createContext({
     queryFactoriesSudo[listKey] = getQueryFactory(list, graphQLSchemaSudo)
   }
 
-  const images = createImagesContext(config)
-  const files = createFilesContext(config)
   const construct = ({
     prisma,
     session,
@@ -120,9 +116,6 @@ export function createContext({
       withSession: session => {
         return construct({ prisma, session, sudo, req, res })
       },
-
-      images,
-      files,
 
       __internal: {
         lists,
