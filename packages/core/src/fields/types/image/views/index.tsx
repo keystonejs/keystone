@@ -44,7 +44,7 @@ export type ImageValue =
     }
   | { kind: 'remove'; previous?: Exclude<ImageValue, { kind: 'remove' }> }
 
-export function validateImage(extensions: string[], v: ImageValue) {
+export function validateImage(extensions: readonly string[], v: ImageValue) {
   if (v.kind !== 'upload') return
   if (!v.data.validity.valid) return 'Something went wrong, please reload and try again.'
 

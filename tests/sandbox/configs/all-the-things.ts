@@ -22,7 +22,7 @@ import { document, structure } from '@keystone-6/fields-document'
 import { schema as structureSchema } from '../structure'
 import { schema as structureNestedSchema } from '../structure-nested'
 import { schema as structureRelationshipsSchema } from '../structure-relationships'
-import { localStorageConfig, trackingFields } from '../utils'
+import { trackingFields } from '../utils'
 //  import { type Lists } from '.keystone/types' // TODO
 
 const description =
@@ -149,8 +149,26 @@ export const lists = {
       }),
       bigInt: bigInt({ isIndexed: 'unique', ui: { description } }),
       float: float({ ui: { description } }),
-      image: image({ ui: { description }, storage: 'images' }),
-      file: file({ ui: { description }, storage: 'files' }),
+      image: image({
+        ui: { description },
+        storage: {
+          async put(key, stream, meta) {},
+          async delete(key) {},
+          url() {
+            return ''
+          },
+        },
+      }),
+      file: file({
+        ui: { description },
+        storage: {
+          async put(key, stream, meta) {},
+          async delete(key) {},
+          url() {
+            return ''
+          },
+        },
+      }),
       document: document({
         ui: { views: './component-blocks' },
         relationships: { mention: { label: 'Mention', listKey: 'User' } },
@@ -223,6 +241,5 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, don't do this
     prismaClientPath: 'node_modules/myprisma',
   },
-  storage: localStorageConfig,
   lists,
 })
