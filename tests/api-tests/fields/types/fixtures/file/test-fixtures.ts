@@ -1,5 +1,5 @@
 import { file } from '@keystone-6/core/fields'
-import { inMemoryStorageAdapter, prepareTestFile } from '../../../storage-utils'
+import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils'
 
 export const name = 'File'
 export const typeFunction = file
@@ -14,10 +14,10 @@ export const supportsUnique = false
 export const skipRequiredTest = true
 export const fieldName = 'secretFile'
 export const subfieldName = 'filesize'
-export const fieldConfig = () => ({ storage: inMemoryStorageAdapter().storage })
+export const fieldConfig = () => ({ storage: inMemoryStorageStrategy().storage })
 
 export const getTestFields = () => ({
-  secretFile: file({ storage: inMemoryStorageAdapter().storage }),
+  secretFile: file({ storage: inMemoryStorageStrategy().storage }),
 })
 
 export const initItems = () => [

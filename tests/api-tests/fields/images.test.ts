@@ -4,8 +4,8 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectSingleResolverError } from '../utils'
 import {
-  inMemoryStorageAdapter,
-  noopStorageAdapter,
+  inMemoryStorageStrategy,
+  noopStorageStrategy,
   prepareTestFile,
   readTestFile,
 } from './storage-utils'
@@ -48,7 +48,7 @@ const createItem = async (context: any, filename: string) =>
   })
 
 {
-  const { storage, files } = inMemoryStorageAdapter()
+  const { storage, files } = inMemoryStorageStrategy()
   test(
     'upload values should match expected',
     getRunner({ storage })(async ({ context }) => {
@@ -75,7 +75,7 @@ const createItem = async (context: any, filename: string) =>
   )
 }
 {
-  const { storage, files } = inMemoryStorageAdapter()
+  const { storage, files } = inMemoryStorageStrategy()
   test(
     'if not image file, throw',
     getRunner({ storage })(async ({ context }) => {
@@ -100,7 +100,7 @@ const createItem = async (context: any, filename: string) =>
 }
 
 {
-  const { storage, files } = inMemoryStorageAdapter()
+  const { storage, files } = inMemoryStorageStrategy()
   test(
     'delete works',
     getRunner({ storage })(async ({ context }) => {
@@ -123,7 +123,7 @@ const createItem = async (context: any, filename: string) =>
 }
 
 {
-  const { storage, files } = noopStorageAdapter()
+  const { storage, files } = noopStorageStrategy()
   test(
     'large file with header split into multiple chunks',
     getRunner({ storage })(async ({ context }) => {

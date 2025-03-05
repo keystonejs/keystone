@@ -1,7 +1,7 @@
 import { image } from '@keystone-6/core/fields'
-import { inMemoryStorageAdapter, prepareTestFile } from '../../../storage-utils'
+import { inMemoryStorageStrategy, prepareTestFile } from '../../../storage-utils'
 
-export const fieldConfig = () => ({ storage: inMemoryStorageAdapter().storage })
+export const fieldConfig = () => ({ storage: inMemoryStorageStrategy().storage })
 
 export const name = 'Image'
 export const typeFunction = image
@@ -19,7 +19,7 @@ export const subfieldName = 'extension'
 
 export const getTestFields = () => ({
   avatar: image({
-    storage: inMemoryStorageAdapter().storage,
+    storage: inMemoryStorageStrategy().storage,
   }),
 })
 
