@@ -1,6 +1,7 @@
 import pluralize from 'pluralize'
 import { humanize } from '../lib/utils'
-import type { KeystoneConfig } from '../types'
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types'
+import type { Readable } from 'node:stream'
 
 export type JSONValue =
   | string
@@ -94,4 +95,10 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
       },
     },
   }
+}
+
+export type StorageAdapter<TypeInfo extends BaseKeystoneTypeInfo> = {
+  put(key: string, stream: Readable, meta: { contentType: string }): Promise<void>
+  delete(key: string): Promise<void>
+  url(key: string, context: KeystoneContext<TypeInfo>): MaybePromise<string>
 }
