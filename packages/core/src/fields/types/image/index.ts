@@ -70,6 +70,7 @@ const bytesToDetermineImageMetadata = 1024
 async function inputResolver(
   storage: StorageStrategy<BaseKeystoneTypeInfo>,
   transformName: (originalFilename: string, extension: string) => MaybePromise<string>,
+  context: KeystoneContext,
   data: InferValueFromArg<typeof inputArg>
 ): Promise<{
   id: string | null | undefined
@@ -103,14 +104,19 @@ async function inputResolver(
     throw new Error('File type not found')
   }
   const id = await transformName(upload.filename, metadata.extension)
-  await storage.put(`${id}.${metadata.extension}`, readableForUpload, {
-    contentType: {
-      png: 'image/png',
-      webp: 'image/webp',
-      gif: 'image/gif',
-      jpg: 'image/jpeg',
-    }[metadata.extension],
-  })
+  await storage.put(
+    `${id}.${metadata.extension}`,
+    readableForUpload,
+    {
+      contentType: {
+        png: 'image/png',
+        webp: 'image/webp',
+        gif: 'image/gif',
+        jpg: 'image/jpeg',
+      }[metadata.extension],
+    },
+    context
+  )
   return {
     filesize,
     id,
@@ -157,7 +163,7 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
           typeof extension === 'string' &&
           isValidImageExtension(extension)
         ) {
-          await config.storage.delete(`${id}.${extension}`)
+          await config.storage.delete(`${id}.${extension}`, args.context)
         }
       }
     }
@@ -184,11 +190,11 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         create: {
           arg: inputArg,
-          resolve: (data, context) => inputResolver(config.storage, transformName, data),
+          resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
         update: {
           arg: inputArg,
-          resolve: (data, context) => inputResolver(config.storage, transformName, data),
+          resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
       output: g.field({

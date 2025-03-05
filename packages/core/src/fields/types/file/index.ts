@@ -48,6 +48,7 @@ const FileFieldOutput = g.object<{
 async function inputResolver(
   storage: StorageStrategy<BaseKeystoneTypeInfo>,
   transformName: (originalFilename: string) => Promise<string> | string,
+  context: KeystoneContext,
   data: InferValueFromArg<typeof inputArg>
 ) {
   if (data === null || data === undefined) return { filename: data, filesize: data }
@@ -59,9 +60,7 @@ async function inputResolver(
   })
 
   const filename = await transformName(upload.filename)
-  await storage.put(filename, stream, {
-    contentType: 'application/octet-stream',
-  })
+  await storage.put(filename, stream, { contentType: 'application/octet-stream' }, context)
   return { filename, filesize }
 }
 
@@ -92,7 +91,7 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
             args.resolvedData[fieldKey].filename === null) &&
           typeof filename === 'string'
         ) {
-          await config.storage.delete(filename)
+          await config.storage.delete(filename, args.context)
         }
       }
     }
@@ -116,11 +115,11 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         create: {
           arg: inputArg,
-          resolve: data => inputResolver(config.storage, transformName, data),
+          resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
         update: {
           arg: inputArg,
-          resolve: data => inputResolver(config.storage, transformName, data),
+          resolve: (data, context) => inputResolver(config.storage, transformName, context, data),
         },
       },
       output: g.field({
