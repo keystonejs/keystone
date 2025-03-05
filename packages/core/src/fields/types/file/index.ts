@@ -6,7 +6,7 @@ import type {
   FieldTypeFunc,
   KeystoneContext,
   MaybePromise,
-  StorageAdapter,
+  StorageStrategy,
 } from '../../../types'
 import { fieldType } from '../../../types'
 import { g } from '../../..'
@@ -15,7 +15,7 @@ import { randomBytes } from 'node:crypto'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: StorageAdapter<BaseKeystoneTypeInfo>
+    storage: StorageStrategy<BaseKeystoneTypeInfo>
     transformName?: (originalFilename: string) => MaybePromise<string>
     db?: {
       extendPrismaSchema?: (field: string) => string
@@ -45,7 +45,7 @@ const FileFieldOutput = g.object<{
 })
 
 async function inputResolver(
-  storage: StorageAdapter<BaseKeystoneTypeInfo>,
+  storage: StorageStrategy<BaseKeystoneTypeInfo>,
   transformName: (originalFilename: string) => Promise<string> | string,
   data: g.InferValueFromArg<typeof inputArg>
 ) {

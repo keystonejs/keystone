@@ -97,7 +97,7 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
   }
 }
 
-export type StorageAdapter<TypeInfo extends BaseKeystoneTypeInfo> = {
+export type StorageStrategy<TypeInfo extends BaseKeystoneTypeInfo> = {
   put(key: string, stream: Readable, meta: { contentType: string }): Promise<void>
   delete(key: string): Promise<void>
   url(key: string, context: KeystoneContext<TypeInfo>): MaybePromise<string>

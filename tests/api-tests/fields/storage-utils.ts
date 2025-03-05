@@ -1,4 +1,4 @@
-import type { BaseKeystoneTypeInfo, StorageAdapter } from '@keystone-6/core/types'
+import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
 import type { Readable } from 'node:stream'
 import path from 'node:path'
 import fs from 'node:fs'
@@ -15,8 +15,8 @@ async function collectStream(stream: Readable) {
   return Buffer.concat(chunks)
 }
 
-export function inMemoryStorageAdapter(): {
-  storage: StorageAdapter<BaseKeystoneTypeInfo>
+export function inMemoryStorageStrategy(): {
+  storage: StorageStrategy<BaseKeystoneTypeInfo>
   files: Map<string, Uint8Array>
 } {
   const files = new Map<string, Uint8Array>()
@@ -40,8 +40,8 @@ export function inMemoryStorageAdapter(): {
 
 type NoopStorageState = { state: 'uploading' | 'done'; bytesSeen: number }
 
-export function noopStorageAdapter(): {
-  storage: StorageAdapter<BaseKeystoneTypeInfo>
+export function noopStorageStrategy(): {
+  storage: StorageStrategy<BaseKeystoneTypeInfo>
   files: Map<string, NoopStorageState>
 } {
   const files = new Map<string, NoopStorageState>()

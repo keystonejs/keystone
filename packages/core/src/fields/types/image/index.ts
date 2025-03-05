@@ -6,7 +6,7 @@ import type {
   BaseKeystoneTypeInfo,
   MaybePromise,
   FieldHooks,
-  StorageAdapter,
+  StorageStrategy,
 } from '../../../types'
 import { fieldType } from '../../../types'
 import { g } from '../../..'
@@ -18,7 +18,7 @@ import { getBytesFromStream, getImageMetadata, teeStream } from './internal-util
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: StorageAdapter<BaseKeystoneTypeInfo>
+    storage: StorageStrategy<BaseKeystoneTypeInfo>
     transformName?: (originalFilename: string, extension: string) => MaybePromise<string>
     db?: {
       extendPrismaSchema?: (field: string) => string
@@ -67,7 +67,7 @@ const ImageFieldOutput = g.object<ImageData>()({
 const bytesToDetermineImageMetadata = 1024
 
 async function inputResolver(
-  storage: StorageAdapter<BaseKeystoneTypeInfo>,
+  storage: StorageStrategy<BaseKeystoneTypeInfo>,
   transformName: (originalFilename: string, extension: string) => MaybePromise<string>,
   data: g.InferValueFromArg<typeof inputArg>
 ): Promise<{
