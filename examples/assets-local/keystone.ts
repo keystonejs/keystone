@@ -1,6 +1,7 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import bytes from 'bytes'
+import express from 'express'
 
 export default config({
   db: {
@@ -13,25 +14,22 @@ export default config({
   lists,
   server: {
     maxFileSize: bytes('40Mb')!,
-  },
-  storage: {
-    my_images: {
-      kind: 'local',
-      type: 'image',
-      generateUrl: path => `http://localhost:3000/images${path}`,
-      serverRoute: {
-        path: '/images',
-      },
-      storagePath: 'public/images',
-    },
-    my_files: {
-      kind: 'local',
-      type: 'file',
-      generateUrl: path => `http://localhost:3000/files${path}`,
-      serverRoute: {
-        path: '/files',
-      },
-      storagePath: 'public/files',
+    extendExpressApp: app => {
+      app.use(
+        '/images',
+        express.static('public/images', { index: false, redirect: false, lastModified: false })
+      )
+      app.use(
+        '/files',
+        express.static('public/files', {
+          setHeaders(res) {
+            res.setHeader('Content-Type', 'application/octet-stream')
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      )
     },
   },
 })
