@@ -2,7 +2,16 @@ import { file, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { inMemoryStorageAdapter, prepareTestFile, readTestFile } from './storage-utils'
+import {
+  noopStorageAdapter,
+  inMemoryStorageAdapter,
+  prepareTestFile,
+  readTestFile,
+} from './storage-utils'
+import { Readable } from 'node:stream'
+// @ts-expect-error
+import Upload from 'graphql-upload/Upload.js'
+import { randomBytes } from 'node:crypto'
 
 function getRunner(opts: Parameters<typeof file>[0]) {
   return setupTestRunner({
@@ -84,6 +93,55 @@ const createItem = (context: any) =>
       await context.query.Test.deleteOne({ where: { id } })
 
       expect(files).toEqual(new Map())
+    })
+  )
+}
+
+{
+  const { storage, files } = noopStorageAdapter()
+  jest.setTimeout(10000)
+  test(
+    'large file',
+    getRunner({
+      storage,
+    })(async ({ context }) => {
+      const chunkSize = 1024 * 1024
+      const chunks = 2000
+      // ~2GB
+      const totalBytes = chunkSize * chunks
+
+      const streamOfRandomData = () =>
+        Readable.from(
+          (async function* () {
+            for (let i = 0; i < chunks; i++) {
+              expect([...files.values()]).toEqual([
+                { state: 'uploading', bytesSeen: i * chunkSize },
+              ])
+              yield randomBytes(chunkSize)
+              await new Promise(resolve => setTimeout(resolve, 1))
+            }
+          })()
+        )
+
+      const upload = new Upload()
+      upload.resolve({
+        createReadStream: streamOfRandomData,
+        filename: 'something',
+        mimetype: 'application/octet-stream',
+      })
+      const item = await context.query.Test.createOne({
+        data: { secretFile: { upload } },
+        query: `
+            id
+            secretFile {
+              filename
+            }
+        `,
+      })
+
+      expect(files).toEqual(
+        new Map([[item.secretFile.filename, { state: 'done', bytesSeen: totalBytes }]])
+      )
     })
   )
 }

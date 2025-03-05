@@ -3,7 +3,16 @@ import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectSingleResolverError } from '../utils'
-import { inMemoryStorageAdapter, prepareTestFile, readTestFile } from './storage-utils'
+import {
+  inMemoryStorageAdapter,
+  noopStorageAdapter,
+  prepareTestFile,
+  readTestFile,
+} from './storage-utils'
+// @ts-expect-error
+import Upload from 'graphql-upload/Upload.js'
+import { Readable } from 'stream'
+import { randomBytes } from 'crypto'
 
 function getRunner(args: Parameters<typeof image>[0]) {
   return setupTestRunner({
@@ -111,4 +120,79 @@ const createItem = async (context: any, filename: string) =>
       expect(files).toEqual(new Map())
     })
   )
+}
+
+{
+  const { storage, files } = noopStorageAdapter()
+  test(
+    'large file with header split into multiple chunks',
+    getRunner({ storage })(async ({ context }) => {
+      const image = new Uint8Array(await readTestFile('keystone.jpeg'))
+      const upload = new Upload()
+      const chunkSize = 1024 * 1024
+      const chunks = 2000
+      // ~2GB
+      const totalBytes = chunkSize * chunks + image.byteLength
+      expect(image.byteLength).toBeGreaterThan(1024)
+      upload.resolve({
+        createReadStream: () =>
+          Readable.from(
+            (async function* () {
+              expect(files).toEqual(new Map())
+              yield Buffer.from(image.slice(0, 100))
+              await wait(1)
+              expect(files).toEqual(new Map())
+              yield Buffer.from(image.slice(100, 1024))
+              await wait(1)
+              expect([...files.values()]).toEqual([
+                {
+                  state: 'uploading',
+                  bytesSeen: 1024,
+                },
+              ])
+              yield Buffer.from(image.slice(1024))
+              await wait(1)
+              expect([...files.values()]).toEqual([
+                {
+                  state: 'uploading',
+                  bytesSeen: image.byteLength,
+                },
+              ])
+              for (let i = 0; i < chunks; i++) {
+                expect([...files.values()]).toEqual([
+                  { state: 'uploading', bytesSeen: image.byteLength + i * chunkSize },
+                ])
+                yield randomBytes(chunkSize)
+                await wait(1)
+              }
+            })()
+          ),
+        filename: 'keystone.jpeg',
+        mimetype: 'image/jpeg',
+        encoding: 'utf-8',
+      })
+
+      const { id, avatar } = await context.query.Test.createOne({
+        data: { avatar: { upload } },
+        query: `
+          id
+          avatar {
+            id
+            extension
+          }
+        `,
+      })
+      expect(avatar.extension).toBe('jpg')
+      expect(files).toEqual(
+        new Map([[`${avatar.id}.jpg`, { state: 'done', bytesSeen: totalBytes }]])
+      )
+
+      await context.query.Test.deleteOne({ where: { id } })
+      expect(files).toEqual(new Map())
+    })
+  )
+}
+
+function wait(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

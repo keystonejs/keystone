@@ -39,6 +39,36 @@ export function inMemoryStorageAdapter(): {
   }
 }
 
+type NoopStorageState = { state: 'uploading' | 'done'; bytesSeen: number }
+
+export function noopStorageAdapter(): {
+  storage: StorageAdapter<BaseKeystoneTypeInfo>
+  files: Map<string, NoopStorageState>
+} {
+  const files = new Map<string, NoopStorageState>()
+  return {
+    files,
+    storage: {
+      async put(key, stream, meta) {
+        if (files.has(key)) throw new Error(`${key} already exists`)
+        let state: NoopStorageState = { state: 'uploading', bytesSeen: 0 }
+        files.set(key, state)
+        for await (const chunk of stream) {
+          state.bytesSeen += chunk.length
+        }
+        state.state = 'done'
+      },
+      async delete(key) {
+        if (!files.has(key)) throw new Error(`${key} does not exist`)
+        files.delete(key)
+      },
+      url(key) {
+        return 'http://localhost:3000/files/' + key
+      },
+    },
+  }
+}
+
 const testFiles = path.resolve(__dirname, 'test-files')
 
 export function prepareTestFile(_filePath: string) {
