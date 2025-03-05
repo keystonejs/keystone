@@ -1,5 +1,4 @@
-import type { StorageAdapter } from '@keystone-6/core/fields/types/image/utils'
-import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types'
+import type { BaseKeystoneTypeInfo, StorageAdapter } from '@keystone-6/core/types'
 import type { Readable } from 'node:stream'
 import path from 'node:path'
 import fs from 'node:fs'

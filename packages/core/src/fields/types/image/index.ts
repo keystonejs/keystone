@@ -6,10 +6,10 @@ import type {
   BaseKeystoneTypeInfo,
   MaybePromise,
   FieldHooks,
+  StorageAdapter,
 } from '../../../types'
 import { fieldType } from '../../../types'
 import { g } from '../../..'
-import type { StorageAdapter } from './utils'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { merge } from '../../resolve-hooks'
 import type { InferValueFromArg } from '@graphql-ts/schema'

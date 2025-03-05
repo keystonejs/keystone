@@ -1,15 +1,17 @@
-import type { BaseKeystoneTypeInfo, FieldHooks, MaybePromise } from '../../../types'
-import {
-  type FieldTypeFunc,
-  type CommonFieldConfig,
-  type BaseListTypeInfo,
-  type KeystoneContext,
-  fieldType,
+import type {
+  BaseKeystoneTypeInfo,
+  BaseListTypeInfo,
+  CommonFieldConfig,
+  FieldHooks,
+  FieldTypeFunc,
+  KeystoneContext,
+  MaybePromise,
+  StorageAdapter,
 } from '../../../types'
+import { fieldType } from '../../../types'
 import { g } from '../../..'
 import { merge } from '../../resolve-hooks'
 import type { InferValueFromArg } from '@graphql-ts/schema'
-import type { StorageAdapter } from '../image/utils'
 import { randomBytes } from 'node:crypto'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
