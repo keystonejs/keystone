@@ -21,9 +21,9 @@ Keystone can help you manage this process by generating migration files, which c
 If you haven't configured a shadow database, add a `shadowDatabaseUrl` now in your Keystone configuration.
 Alternatively, you can manually specify a shadow database manually when applying migrations:
 
-````sh
+```sh
 keystone migrate apply --shadow-database-url=<your-shadow-db-url>
-````
+```
 
 If you don't know what a shadow database is, please see the [Prisma documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
 
@@ -47,14 +47,14 @@ Follow the following steps to create a migration in your local development envir
 1. You should be shown any changes that part of your migration, and additionally asked to name the migration, for example
 
    ``` sh
-[+] Added tables
-  - Example
-
-[*] Changed the `Example` table
-  [+] Added unique index on columns (name)
-
-✔ Name of migration … test
-✨ Generated SQL migration at migrations/20250306120000_test/migration.sql
+   [+] Added tables
+     - Example
+   
+   [*] Changed the `Example` table
+     [+] Added unique index on columns (name)
+   
+   ✔ Name of migration … test
+   ✨ Generated SQL migration at migrations/20250306120000_test/migration.sql
     ```
 
 1. As needed, open the generated files in `migrations/*` to review and modify them to your needs
@@ -92,9 +92,9 @@ keystone dev
 
 If you do not want `keystone dev` to update your database schema during development, you can opt out of `db push` behaviour by using the flag `--no-db-push`:
 
-````sh
+```sh
 keystone dev --no-db-push
-````
+```
 
 This prevents automatic schema updates, leaving you responsible for applying migrations before testing changes.
 If the database schema is outdated agaist your Keystone schema, GraphQL and Prisma runtime errors may occur as result of missing columns or tables.
@@ -105,15 +105,15 @@ The process is non-interactive by nature.
 
 To apply migrations as part of the startup of your Keystone server, you can use the `--with-migrations` flag on your `keystone start`:
 
-````sh
+```sh
 keystone start --with-migrations
-````
+```
 
 If you want to run your migrations without starting a server, you can use the `--no-server` flag.
 
-````sh
+```sh
 keystone start --with-migrations --no-server
-````
+```
 
 ## Troubleshooting Common Problems
 
