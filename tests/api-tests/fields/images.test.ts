@@ -4,6 +4,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectSingleResolverError } from '../utils'
 import {
+  collectStream,
   inMemoryStorageStrategy,
   noopStorageStrategy,
   prepareTestFile,
@@ -13,6 +14,7 @@ import {
 import Upload from 'graphql-upload/Upload.js'
 import { Readable } from 'stream'
 import { randomBytes } from 'crypto'
+import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
 
 function getRunner(args: Parameters<typeof image>[0]) {
   return setupTestRunner({
@@ -195,4 +197,101 @@ const createItem = async (context: any, filename: string) =>
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+{
+  const files = new Map<string, Uint8Array>()
+  const storage: StorageStrategy<BaseKeystoneTypeInfo> = {
+    async put(key, stream, meta) {
+      files.set(key, await collectStream(stream))
+    },
+    async delete(key) {
+      if (!files.has(key)) throw new Error(`${key} does not exist`)
+      files.delete(key)
+    },
+    url(key) {
+      return 'http://localhost:3000/files/' + key
+    },
+  }
+
+  test(
+    'setting to the same filename',
+    getRunner({
+      storage,
+      transformName: () => 'something',
+    })(async ({ context }) => {
+      const item = await context.query.Test.createOne({
+        data: { avatar: prepareTestFile('keystone.jpg') },
+        query: `
+            id
+            avatar {
+              id
+            }
+        `,
+      })
+
+      expect(item).toEqual({
+        id: expect.any(String),
+        avatar: {
+          id: 'something',
+        },
+      })
+
+      expect(files).toEqual(new Map([['something.jpg', await readTestFile('keystone.jpg')]]))
+
+      await context.query.Test.updateOne({
+        where: { id: item.id },
+        data: { avatar: prepareTestFile('graphql.jpg') },
+      })
+      expect(files).toEqual(new Map([['something.jpg', await readTestFile('graphql.jpg')]]))
+    })
+  )
+}
+
+{
+  const { storage, files } = inMemoryStorageStrategy()
+  test(
+    "failing to upload a file doesn't delete the old file",
+    getRunner({
+      storage,
+      transformName: originalFilename => {
+        if (originalFilename === 'graphql.jpg') {
+          throw new Error('upload failed')
+        }
+        return 'something'
+      },
+    })(async ({ context }) => {
+      const item = await context.query.Test.createOne({
+        data: { avatar: prepareTestFile('keystone.jpg') },
+        query: `
+            id
+            avatar {
+              id
+            }
+        `,
+      })
+
+      expect(item).toEqual({
+        id: expect.any(String),
+        avatar: {
+          id: 'something',
+        },
+      })
+
+      expect(files).toEqual(new Map([['something.jpg', await readTestFile('keystone.jpg')]]))
+
+      try {
+        await context.query.Test.updateOne({
+          where: { id: item.id },
+          data: { avatar: prepareTestFile('graphql.jpg') },
+        })
+        expect(true).toBe(false)
+      } catch (err: any) {
+        expect(err.message).toBe(`An error occurred while resolving input fields.
+  - Test.avatar: upload failed`)
+      }
+
+      expect(files).toEqual(new Map([['something.jpg', await readTestFile('keystone.jpg')]]))
+    })
+  )
 }

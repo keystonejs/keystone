@@ -7,11 +7,13 @@ import {
   inMemoryStorageStrategy,
   prepareTestFile,
   readTestFile,
+  collectStream,
 } from './storage-utils'
 import { Readable } from 'node:stream'
 // @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import { randomBytes } from 'node:crypto'
+import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
 
 function getRunner(opts: Parameters<typeof file>[0]) {
   return setupTestRunner({
@@ -142,6 +144,105 @@ const createItem = (context: any) =>
       expect(files).toEqual(
         new Map([[item.secretFile.filename, { state: 'done', bytesSeen: totalBytes }]])
       )
+    })
+  )
+}
+
+{
+  const files = new Map<string, Uint8Array>()
+  const storage: StorageStrategy<BaseKeystoneTypeInfo> = {
+    async put(key, stream, meta) {
+      files.set(key, await collectStream(stream))
+    },
+    async delete(key) {
+      if (!files.has(key)) throw new Error(`${key} does not exist`)
+      files.delete(key)
+    },
+    url(key) {
+      return 'http://localhost:3000/files/' + key
+    },
+  }
+
+  test(
+    'setting to the same filename',
+    getRunner({
+      storage,
+      transformName: () => 'something',
+    })(async ({ context }) => {
+      const item = await context.query.Test.createOne({
+        data: { secretFile: prepareTestFile('keystone.jpg') },
+        query: `
+            id
+            secretFile {
+              filename
+            }
+        `,
+      })
+
+      expect(item).toEqual({
+        id: expect.any(String),
+        secretFile: {
+          filename: 'something',
+        },
+      })
+
+      expect(files).toEqual(new Map([['something', await readTestFile('keystone.jpg')]]))
+
+      await context.query.Test.updateOne({
+        where: { id: item.id },
+        data: { secretFile: prepareTestFile('graphql.jpg') },
+        query: `secretFile { filename }`,
+      })
+      expect(files).toEqual(new Map([['something', await readTestFile('graphql.jpg')]]))
+    })
+  )
+}
+
+{
+  const { storage, files } = inMemoryStorageStrategy()
+  test(
+    "failing to upload a file doesn't delete the old file",
+    getRunner({
+      storage,
+      transformName: originalFilename => {
+        if (originalFilename === 'graphql.jpg') {
+          throw new Error('upload failed')
+        }
+        return 'something'
+      },
+    })(async ({ context }) => {
+      const item = await context.query.Test.createOne({
+        data: { secretFile: prepareTestFile('keystone.jpg') },
+        query: `
+            id
+            secretFile {
+              filename
+            }
+        `,
+      })
+
+      expect(item).toEqual({
+        id: expect.any(String),
+        secretFile: {
+          filename: 'something',
+        },
+      })
+
+      expect(files).toEqual(new Map([['something', await readTestFile('keystone.jpg')]]))
+
+      try {
+        await context.query.Test.updateOne({
+          where: { id: item.id },
+          data: { secretFile: prepareTestFile('graphql.jpg') },
+          query: `secretFile { filename }`,
+        })
+        expect(true).toBe(false)
+      } catch (err: any) {
+        expect(err.message).toBe(`An error occurred while resolving input fields.
+  - Test.secretFile: upload failed`)
+      }
+
+      expect(files).toEqual(new Map([['something', await readTestFile('keystone.jpg')]]))
     })
   )
 }
