@@ -24,8 +24,7 @@ function isUuid(x: unknown) {
 }
 
 export function useSearchFilter(value: string, list: ListMeta, searchFields: string[]) {
-  const { adminMeta } = useKeystone()
-  const { lists = {} } = adminMeta ?? {}
+  const lists = useKeystone().adminMeta?.lists
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -61,7 +60,8 @@ export function useSearchFilter(value: string, list: ListMeta, searchFields: str
           // @ts-expect-error TODO: fix fieldMeta type for relationship fields
           many = false,
         } = field.fieldMeta
-        const refList = lists[refListKey]
+        const refList = lists?.[refListKey]
+        if (!refList) continue
 
         for (const refFieldKey of refSearchFields) {
           const refField = refList.fields[refFieldKey]
@@ -106,5 +106,5 @@ export function useSearchFilter(value: string, list: ListMeta, searchFields: str
     }
 
     return { OR: conditions }
-  }, [value, list, searchFields])
+  }, [value, list.fields, searchFields, lists])
 }

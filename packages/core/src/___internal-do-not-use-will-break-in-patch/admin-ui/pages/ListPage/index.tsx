@@ -1,4 +1,12 @@
-import React, { type Key, Fragment, useEffect, useMemo, useState } from 'react'
+import React, {
+  type Key,
+  Fragment,
+  Suspense,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
@@ -25,7 +33,8 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
+import { gql, useMutation, useQuery, useSuspenseQuery } from '../../../../admin-ui/apollo'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
@@ -35,10 +44,9 @@ import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
 import { FilterList } from './FilterList'
 import { Pagination, usePaginationParams } from './Pagination'
-import { useFilters } from './useFilters'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
-import { useSelectedFields } from './useSelectedFields'
-import { useSort } from './useSort'
+import { ProgressCircle } from '@keystar/ui/progress'
+import { parseFilters, parseSelectedFields, parseSortBy } from './search-params'
 
 type ListPageProps = { listKey: string }
 type SelectedKeys = 'all' | Set<number | string>
@@ -96,15 +104,130 @@ function ListPage({ listKey }: ListPageProps) {
   const { currentPage, pageSize } = usePaginationParams({
     defaultPageSize: list.pageSize,
   })
-  const sort = useSort(list)
-  const filters = useFilters(list)
-  const searchParam = typeof query.search === 'string' ? query.search : ''
-  const [searchString, setSearchString] = useState(searchParam)
-  const search = useSearchFilter(searchParam, list, list.initialSearchFields)
+  const filters = useMemo(() => parseFilters(list, query), [list, query])
+  const [searchString, setSearchString] = useState(
+    typeof query.search === 'string' ? query.search : ''
+  )
 
-  const selectedFields = useSelectedFields(list)
-  const { data, error, refetch } = useQuery(
-    useMemo(() => {
+  const updateSearch = (value: string) => {
+    const { search, ...queries } = query
+
+    if (value.trim()) {
+      push({ query: { ...queries, search: value } })
+    } else {
+      push({ query: queries })
+    }
+  }
+
+  const allowCreate = !(list.hideCreate ?? true)
+  const isConstrained = Boolean(filters.filters.length || query.search)
+
+  return (
+    <PageContainer
+      header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
+      title={list.label}
+    >
+      <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
+        {/* TODO: FIXME: not sure where to put this */}
+        {/* {list.description !== null && (
+          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
+        )} */}
+        <HStack gap="regular" alignItems="center">
+          <SearchField
+            aria-label="Search"
+            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
+            onClear={() => updateSearch('')}
+            onSubmit={updateSearch}
+            onChange={setSearchString}
+            placeholder="Search…"
+            value={searchString}
+            width="alias.singleLineWidth"
+            flexGrow={{ mobile: 1, tablet: 0 }}
+          />
+          <FilterAdd listKey={listKey} />
+          <FieldSelection listKey={listKey} />
+          {Boolean(isConstrained || query.sortBy || query.fields) && (
+            <TooltipTrigger>
+              <ActionButton aria-label="reset" onPress={resetToDefaults} prominence="low">
+                <Icon src={undo2Icon} />
+              </ActionButton>
+              <Tooltip>Reset to defaults</Tooltip>
+            </TooltipTrigger>
+          )}
+        </HStack>
+
+        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+
+        <Suspense fallback={<ProgressCircle isIndeterminate />}>
+          <ListTable
+            listKey={listKey}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            where={filters.where}
+            isConstrained={isConstrained}
+          />
+        </Suspense>
+      </VStack>
+    </PageContainer>
+  )
+}
+
+const LIST_PAGE_TITLE_ID = 'keystone-list-page-title'
+
+function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?: boolean }) {
+  const list = useList(listKey)
+  return (
+    <Fragment>
+      <Heading id={LIST_PAGE_TITLE_ID} elementType="h1" size="small">
+        {list.label}
+      </Heading>
+      {showCreate && (
+        <CreateButtonLink
+          list={list}
+        >{`New ${list.singular.toLocaleLowerCase()}`}</CreateButtonLink>
+      )}
+    </Fragment>
+  )
+}
+
+function ListTable({
+  currentPage,
+  listKey,
+  pageSize,
+  where,
+  isConstrained,
+}: {
+  currentPage: number
+  listKey: string
+  pageSize: number
+  where: Record<string, unknown>
+  isConstrained: boolean
+}) {
+  const list = useList(listKey)
+  const { query } = useRouter()
+  const searchParam = typeof query.search === 'string' ? query.search : ''
+  const deferredSearchParam = useDeferredValue(searchParam)
+  const search = useSearchFilter(deferredSearchParam, list, list.initialSearchFields)
+  const selectedFields = useMemo(
+    () => parseSelectedFields(list, query.fields),
+    [list, query.fields]
+  )
+
+  const sort = parseSortBy(list, query.sortBy)
+
+  const { data, error, refetch } = useSuspenseQuery(
+    useMemo((): TypedDocumentNode<
+      {
+        items: Record<string, unknown>[] | null
+        count: number | null
+      },
+      {
+        where: Record<string, unknown>
+        take: number
+        skip: number
+        orderBy: { [key: string]: 'asc' | 'desc' }[] | undefined
+      }
+    > => {
       const selectedGqlFields = [...selectedFields]
         .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
         .join('\n')
@@ -134,128 +257,16 @@ function ListPage({ listKey }: ListPageProps) {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
       variables: {
-        where: { ...filters.where, ...search },
+        where: { ...where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
-        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
+        orderBy: sort
+          ? [{ [sort.column]: sort.direction === 'ascending' ? 'asc' : 'desc' }]
+          : undefined,
       },
     }
   )
 
-  useEffect(() => {
-    if (searchParam === searchString) return
-    setSearchString(searchParam)
-  }, [searchParam])
-  const updateSearch = (value: string) => {
-    const { search, ...queries } = query
-
-    if (value.trim()) {
-      push({ query: { ...queries, search: value } })
-    } else {
-      push({ query: queries })
-    }
-  }
-
-  const allowCreate = !(list.hideCreate ?? true)
-  const allowDelete = !(list.hideDelete ?? true)
-  const isConstrained = Boolean(filters.filters.length || query.search)
-  const isEmpty = Boolean(data?.count === 0 && !isConstrained)
-
-  return (
-    <PageContainer
-      header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
-      title={list.label}
-    >
-      <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
-        {/* TODO: FIXME: not sure where to put this */}
-        {/* {list.description !== null && (
-          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
-        )} */}
-        <HStack gap="regular" alignItems="center">
-          <SearchField
-            aria-label="Search"
-            isDisabled={isEmpty}
-            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
-            onClear={() => updateSearch('')}
-            onSubmit={updateSearch}
-            onChange={setSearchString}
-            placeholder="Search…"
-            value={searchString}
-            width="alias.singleLineWidth"
-            flexGrow={{ mobile: 1, tablet: 0 }}
-          />
-          <FilterAdd listKey={listKey} isDisabled={isEmpty} />
-          <FieldSelection listKey={listKey} isDisabled={isEmpty} />
-          {Boolean(isConstrained || query.sortBy || query.fields) && (
-            <TooltipTrigger>
-              <ActionButton aria-label="reset" onPress={resetToDefaults} prominence="low">
-                <Icon src={undo2Icon} />
-              </ActionButton>
-              <Tooltip>Reset to defaults</Tooltip>
-            </TooltipTrigger>
-          )}
-        </HStack>
-
-        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-
-        <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
-
-        <ListTable
-          listKey={listKey}
-          allowDelete={allowDelete}
-          count={data?.count ?? 0}
-          currentPage={currentPage}
-          isConstrained={isConstrained}
-          pageSize={pageSize}
-          refetch={refetch}
-          items={data?.items ?? []}
-          selectedFields={selectedFields}
-        />
-      </VStack>
-    </PageContainer>
-  )
-}
-
-const LIST_PAGE_TITLE_ID = 'keystone-list-page-title'
-
-function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?: boolean }) {
-  const list = useList(listKey)
-  return (
-    <Fragment>
-      <Heading id={LIST_PAGE_TITLE_ID} elementType="h1" size="small">
-        {list.label}
-      </Heading>
-      {showCreate && (
-        <CreateButtonLink
-          list={list}
-        >{`New ${list.singular.toLocaleLowerCase()}`}</CreateButtonLink>
-      )}
-    </Fragment>
-  )
-}
-
-function ListTable({
-  allowDelete,
-  count,
-  currentPage,
-  isConstrained,
-  listKey,
-  items,
-  pageSize,
-  refetch,
-  selectedFields,
-}: {
-  allowDelete: boolean
-  count: number
-  currentPage: number
-  isConstrained: boolean
-  listKey: string
-  pageSize: number
-  refetch: () => void
-  selectedFields: ReturnType<typeof useSelectedFields>
-  items: Record<string, unknown>[]
-}) {
-  const list = useList(listKey)
   const router = useRouter()
   const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
@@ -263,7 +274,6 @@ function ListTable({
       sortDescriptor.direction === 'ascending' ? `-${sortDescriptor.column}` : sortDescriptor.column
     router.push({ query: { ...router.query, sortBy } })
   }
-  const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
   const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
   const columns = [...selectedFields].map(path => {
@@ -271,18 +281,21 @@ function ListTable({
     return {
       id: path,
       label: field.label,
-      allowsSorting: !isConstrained && !items.length ? false : field.isOrderable,
+      allowsSorting: field.isOrderable,
     }
   })
 
+  const items = data?.items ?? []
+
   return (
     <Fragment>
+      <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
       <ActionBarContainer flex minHeight="scale.3000">
         <TableView
           aria-labelledby={LIST_PAGE_TITLE_ID}
-          selectionMode={selectionMode}
+          selectionMode={list.hideDelete ? 'none' : 'multiple'}
           onSortChange={onSortChange}
-          sortDescriptor={parseSortQuery(router.query.sortBy) || parseInitialSort(list.initialSort)}
+          sortDescriptor={parseSortBy(list, query.sortBy)}
           density="spacious"
           overflowMode="truncate"
           onSelectionChange={setSelectedKeys}
@@ -370,13 +383,13 @@ function ListTable({
         </ActionBar>
       </ActionBarContainer>
 
-      {count > 0 && (
+      {!!data?.count && (
         <Pagination
           currentPage={currentPage}
           pageSize={pageSize}
           plural={list.plural}
           singular={list.singular}
-          total={count}
+          total={data.count}
         />
       )}
 
@@ -392,28 +405,6 @@ function ListTable({
       </DialogContainer>
     </Fragment>
   )
-}
-
-function parseSortQuery(queryString?: string | string[]): SortDescriptor | undefined {
-  if (!queryString) return
-
-  // TODO: handle multiple sort queries?
-  if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
-
-  const column = queryString.startsWith('-') ? queryString.slice(1) : queryString
-  const direction = queryString.startsWith('-') ? 'ascending' : 'descending'
-
-  return { column, direction }
-}
-
-function parseInitialSort(
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
-): SortDescriptor | undefined {
-  if (!sort) return undefined
-  return {
-    column: sort.field,
-    direction: sort.direction === 'ASC' ? 'ascending' : 'descending',
-  }
 }
 
 function DeleteItemsDialog(props: { items: Set<Key>; listKey: string; refetch: () => void }) {

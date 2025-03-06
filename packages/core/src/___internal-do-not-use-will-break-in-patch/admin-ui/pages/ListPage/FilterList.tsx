@@ -9,7 +9,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import type { FieldMeta, ListMeta } from '../../../../types'
 import { Tag } from './Tag'
-import type { Filter } from './useFilters'
+import type { Filter } from './search-params'
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (
