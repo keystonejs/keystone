@@ -1,34 +1,38 @@
 // WARNING: be careful not to import this file within next
 import esbuild, { type BuildOptions } from 'esbuild'
+import nodePath from 'node:path'
 
 function identity(x: BuildOptions) {
   return x
 }
 
-export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
-  let esbuildFn: typeof identity | undefined
-
+async function getEsbuildConfigFn(
+  cwd: string
+): Promise<((x: BuildOptions) => BuildOptions | Promise<BuildOptions>) | undefined> {
   try {
-    try {
-      await esbuild.build({
-        entryPoints: ['./esbuild.keystone'],
-        absWorkingDir: cwd,
-        bundle: true,
-        sourcemap: true,
-        outfile: '.keystone/esbuild.js',
-        format: 'cjs',
-        platform: 'node',
-        logLevel: 'silent',
-      })
-    } catch (e: any) {
-      if (!e.errors?.some((err: any) => err.text.includes('Could not resolve'))) throw e
-    }
-    esbuildFn = require(require.resolve(`${cwd}/.keystone/esbuild.js`)).default
+    await esbuild.build({
+      entryPoints: ['./esbuild.keystone'],
+      absWorkingDir: cwd,
+      bundle: true,
+      sourcemap: true,
+      outfile: '.keystone/esbuild.js',
+      format: 'cjs',
+      platform: 'node',
+      logLevel: 'silent',
+    })
+  } catch (e: any) {
+    if (!e.errors?.some((err: any) => err.text.includes('Could not resolve'))) throw e
+    return
+  }
+  try {
+    return require(require.resolve(`${cwd}/.keystone/esbuild.js`)).default
   } catch (err: any) {
     if (err.code !== 'MODULE_NOT_FOUND') throw err
   }
-  esbuildFn ??= identity
+}
 
+export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
+  const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
   return esbuildFn({
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
@@ -44,16 +48,59 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
         setup(build) {
           build.onResolve(
             {
-              // don't bundle anything that is NOT a relative import
+              namespace: 'file',
+              // anything this is a relative path, we know that we definitely want to bundle it
+              // so we can skip running the function
               //   WARNING: we can't use a negative lookahead/lookbehind because esbuild uses Go
               filter: /(?:^[^.])|(?:^\.[^/.])|(?:^\.\.[^/])/,
             },
-            ({ path }) => {
-              return { external: true, path }
+            async ({ path, ...args }) => {
+              const resolved = await build.resolve(path, {
+                ...args,
+                namespace: 'inner',
+              })
+              if (
+                // we want to bundle everything _except_ node_modules
+                // to avoid problems with duplicate instances of modules
+                // note that this will still bundle monorepo dependencies
+                // since the realpath of the modules will be outside node_modules
+                // even though they're symlinked into node_modules
+                resolved.path.includes('node_modules')
+              ) {
+                const resolvedFromOutput = await build.resolve(path, {
+                  resolveDir: '.keystone',
+                  importer: '.keystone/',
+                  kind: 'import-statement',
+                  namespace: 'inner',
+                })
+                // if Node will be able to resolve the module using the path written,
+                // we can emit imports that are the same as what was written
+                if (resolved.path === resolvedFromOutput.path) {
+                  return { path, external: true }
+                }
+                // otherwise, we need to use longer relative paths to exactly where the module is
+                // this might involve imports that look like
+                // ../../packages/something/node_modules/something/index.js
+                // which is unfortunate, but not really a significant problem
+                return {
+                  path: nodePath.relative('.keystone', resolved.path),
+                  external: true,
+                }
+              }
+              if (
+                // this exception is purely here for projects in the keystone repo itself
+                // since if we bundled @keystone-6/core, we would cause problems with the duplicated
+                // when using a published version of keystone, this should absolutely nothing
+                // since imports to @keystone-6/core will be in node_modules
+                path.startsWith('@keystone-6/core')
+              ) {
+                return { path, external: true }
+              }
+              return resolved
             }
           )
         },
       },
     ],
-  } satisfies BuildOptions)
+  })
 }
