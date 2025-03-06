@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/auth",
-  "version": "8.1.0",
+  "version": "0.0.0-rc-20250306003711",
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
@@ -39,7 +39,7 @@
     "react": "^19.0.0"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^6.0.0",
+    "@keystone-6/core": "0.0.0-rc-20250306003711",
     "react": "^19.0.0"
   },
   "preconstruct": {
