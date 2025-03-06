@@ -75,23 +75,20 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
       throw Error("isIndexed: 'unique' is not a supported option for field type file")
     }
 
-    const beforeOperationResolver: Extract<
-      FieldHooks<BaseListTypeInfo, string>['beforeOperation'],
+    const afterOperationResolver: Extract<
+      FieldHooks<BaseListTypeInfo, string>['afterOperation'],
       (args: any) => any
-    > = async function beforeOperationResolver(args) {
+    > = async function afterOperationResolver(args) {
       if (args.operation === 'update' || args.operation === 'delete') {
         const filenameKey = `${fieldKey}_filename`
-        const filename = args.item[filenameKey]
+        const oldFilename = args.originalItem[filenameKey] as string | null | undefined
+        const newFilename = args.item?.[filenameKey] as string | null | undefined
 
         // this will occur on an update where a file already existed but has been
         // changed, or on a delete, where there is no longer an item
-        if (
-          (args.operation === 'delete' ||
-            typeof args.resolvedData[fieldKey].filename === 'string' ||
-            args.resolvedData[fieldKey].filename === null) &&
-          typeof filename === 'string'
-        ) {
-          await config.storage.delete(filename, args.context)
+        // but not when the old and new filenames are the same (in that case, presumably the file has been overwritten)
+        if (typeof oldFilename === 'string' && oldFilename !== newFilename) {
+          await config.storage.delete(oldFilename, args.context)
         }
       }
     }
@@ -107,9 +104,9 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
       ...config,
       hooks: {
         ...config.hooks,
-        beforeOperation: merge(config.hooks?.beforeOperation, {
-          update: beforeOperationResolver,
-          delete: beforeOperationResolver,
+        afterOperation: merge(config.hooks?.afterOperation, {
+          update: afterOperationResolver,
+          delete: afterOperationResolver,
         }),
       },
       input: {

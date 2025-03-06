@@ -143,27 +143,26 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       throw Error("isIndexed: 'unique' is not a supported option for field type image")
     }
 
-    const beforeOperationResolver: Extract<
-      FieldHooks<BaseListTypeInfo, string>['beforeOperation'],
+    const afterOperationResolver: Extract<
+      FieldHooks<BaseListTypeInfo, string>['afterOperation'],
       (args: any) => any
-    > = async function beforeOperationResolver(args) {
+    > = async function afterOperationResolver(args) {
       if (args.operation === 'update' || args.operation === 'delete') {
         const idKey = `${fieldKey}_id`
-        const id = args.item[idKey]
+        const oldId = args.originalItem?.[idKey] as string | null | undefined
+        const newId = args.item?.[idKey] as string | null | undefined
         const extensionKey = `${fieldKey}_extension`
-        const extension = args.item[extensionKey]
-
+        const oldExtension = args.originalItem?.[extensionKey] as string | null | undefined
+        const newExtension = args.item?.[extensionKey] as string | null | undefined
         // this will occur on an update where an image already existed but has been
         // changed, or on a delete, where there is no longer an item
         if (
-          (args.operation === 'delete' ||
-            typeof args.resolvedData[fieldKey].id === 'string' ||
-            args.resolvedData[fieldKey].id === null) &&
-          typeof id === 'string' &&
-          typeof extension === 'string' &&
-          isValidImageExtension(extension)
+          typeof oldId === 'string' &&
+          typeof oldExtension === 'string' &&
+          isValidImageExtension(oldExtension) &&
+          (oldId !== newId || oldExtension !== newExtension)
         ) {
-          await config.storage.delete(`${id}.${extension}`, args.context)
+          await config.storage.delete(`${oldId}.${oldExtension}`, args.context)
         }
       }
     }
@@ -182,9 +181,9 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
       ...config,
       hooks: {
         ...config.hooks,
-        beforeOperation: merge(config.hooks?.beforeOperation, {
-          update: beforeOperationResolver,
-          delete: beforeOperationResolver,
+        afterOperation: merge(config.hooks?.afterOperation, {
+          update: afterOperationResolver,
+          delete: afterOperationResolver,
         }),
       },
       input: {

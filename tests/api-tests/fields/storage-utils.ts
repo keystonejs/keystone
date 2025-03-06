@@ -7,7 +7,7 @@ import fsp from 'node:fs/promises'
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
 
-async function collectStream(stream: Readable) {
+export async function collectStream(stream: Readable) {
   let chunks = []
   for await (const chunk of stream) {
     chunks.push(chunk)
