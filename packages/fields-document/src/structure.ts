@@ -90,6 +90,9 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
             arg: g.arg({
               type: getGraphQLInputType(name, schema, 'update', new Map(), meta),
             }),
+            resolve(val, context) {
+              return val as any
+            },
           },
         },
         output: g.field({

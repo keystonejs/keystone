@@ -28,15 +28,13 @@ export function getInitFirstItemSchema({
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig()
   const fieldsSet = new Set(fields)
-  const initialCreateInput = g.wrap.inputObject(
-    new GraphQLInputObjectType({
-      ...createInputConfig,
-      fields: Object.fromEntries(
-        Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
-      ),
-      name: gqlNames.CreateInitialInput,
-    })
-  )
+  const initialCreateInput = new GraphQLInputObjectType({
+    ...createInputConfig,
+    fields: Object.fromEntries(
+      Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
+    ),
+    name: gqlNames.CreateInitialInput,
+  })
 
   return {
     mutation: {

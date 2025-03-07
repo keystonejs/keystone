@@ -34,7 +34,7 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
   return meta => {
     if (typeof defaultValue === 'string') {
       try {
-        g.DateTime.graphQLType.parseValue(defaultValue)
+        g.DateTime.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `${meta.listKey}.${meta.fieldKey}.defaultValue is required to be an ISO8601 date-time string such as ${new Date().toISOString()}`
@@ -44,7 +44,7 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
 
     const parsedDefaultValue =
       typeof defaultValue === 'string'
-        ? (g.DateTime.graphQLType.parseValue(defaultValue) as Date)
+        ? (g.DateTime.parseValue(defaultValue) as Date)
         : defaultValue
     const { mode, validate } = makeValidateHook(meta, config)
 

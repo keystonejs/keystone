@@ -367,8 +367,8 @@ export type FieldTypeWithoutDBField<
 type AnyInputObj = g.InputObjectType<Record<string, g.Arg<g.InputType>>>
 
 export type GraphQLTypesForList = {
-  create: g.NullableInputType
-  update: g.NullableInputType
+  create: AnyInputObj | typeof g.Empty
+  update: AnyInputObj | typeof g.Empty
   uniqueWhere: g.InputObjectType<{
     id: g.Arg<typeof g.ID>
     [key: string]: g.Arg<g.NullableInputType>
@@ -440,14 +440,14 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
       ListTypeInfo
     >
   ): NextFieldType<
-    TDBField,
-    CreateArg,
-    UpdateArg,
-    UniqueWhereArg,
-    OrderByArg,
-    FilterArg,
+    DBField,
+    g.Arg<g.InputType> | undefined,
+    g.Arg<g.InputType>,
+    g.Arg<g.NullableInputType, false>,
+    g.Arg<g.NullableInputType, false>,
+    g.Arg<g.NullableInputType, false>,
     ListTypeInfo
   > {
-    return { ...graphQLInfo, dbField }
+    return { ...graphQLInfo, dbField } as any
   }
 }

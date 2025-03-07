@@ -113,7 +113,7 @@ export class NestedMutationState {
   }
 }
 
-type InputData = Record<string, unknown> | null
+type InputData = Record<string, unknown> | null | undefined
 
 export async function createOne(
   inputData: InputData,
@@ -557,7 +557,7 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T
 }
 
-function nonNull<T>(t: g.NullableInputType) {
+function nonNull<T extends g.NullableInputType>(t: T) {
   if (t === Empty) return t
   return g.nonNull(t)
 }
@@ -615,7 +615,7 @@ export function getMutationsForList(list: InitialisedList) {
     type: g.list(list.graphql.types.output),
     args: {
       data: g.arg({
-        type: g.nonNull(g.list(nonNull(updateManyInput))),
+        type: g.nonNull(g.list(g.nonNull(updateManyInput))),
       }),
     },
     async resolve(_rootVal, { data }, context) {
