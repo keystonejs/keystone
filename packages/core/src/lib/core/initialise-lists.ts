@@ -29,6 +29,7 @@ import { type ResolvedDBField, resolveRelationships } from './resolve-relationsh
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
+import { GNonNull } from '@graphql-ts/schema'
 
 export type InitialisedField = {
   fieldKey: string
@@ -451,7 +452,7 @@ function getListsWithInitialisedFields(
     const findManyArgs: FindManyArgs = {
       where: g.arg({
         type: g.nonNull(where),
-        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as object) : {},
+        defaultValue: listConfig.isSingleton ? { id: { equals: '1' } } : {},
       }),
       orderBy: g.arg({
         type: g.nonNull(g.list(g.nonNull(orderBy))),
@@ -734,8 +735,8 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   const namesOfRelationInputs = new Set<string>()
   for (const list of Object.values(lists)) {
     const { types } = list.graphql
-    namesOfRelationInputs.add(types.where.graphQLType.name)
-    namesOfRelationInputs.add(types.relateTo.many.where.graphQLType.name)
+    namesOfRelationInputs.add(types.where.name)
+    namesOfRelationInputs.add(types.relateTo.many.where.name)
   }
   for (const list of Object.values(lists)) {
     const {
@@ -749,7 +750,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
       )
     }
 
-    const whereInputFields = list.graphql.types.where.graphQLType.getFields()
+    const whereInputFields = list.graphql.types.where.getFields()
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       const filterType = whereInputFields[fieldKey]?.type
       const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined
@@ -757,7 +758,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
       if (fieldFilterFields?.contains?.type === GraphQLString) {
         searchableFields.set(
           fieldKey,
-          fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
+          fieldFilterFields?.mode?.type === QueryMode ? 'insensitive' : 'default'
         )
         triviallySearchableFields.add(fieldKey)
       } else if (
@@ -795,7 +796,7 @@ function graphqlArgForInputField(
     if (!listsRef[field.dbField.list].graphql.isEnabled.type) return
   }
   if (!field.graphql.isNonNull[operation]) return stripDefaultValue(input.arg)
-  if (input.arg.type.kind === 'non-null') return input.arg
+  if (input.arg.type instanceof GNonNull) return input.arg
 
   return g.arg({
     ...input.arg,
@@ -807,7 +808,7 @@ function graphqlForOutputField(field: InitialisedField) {
   const output = field.output
   if (!output || !field.graphql.isEnabled.read) return output
   if (!field.graphql.isNonNull.read) return output
-  if (output.type.kind === 'non-null') return output
+  if (output.type instanceof GNonNull) return output
 
   return g.field({
     ...(output as any),

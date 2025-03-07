@@ -8,6 +8,7 @@ import type { InitialisedList } from './core/initialise-lists'
 
 import { getQueriesForList } from './core/queries'
 import { getMutationsForList } from './core/mutations'
+import { GInputObjectType } from '@graphql-ts/schema'
 
 function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
@@ -41,10 +42,10 @@ function getGraphQLSchema(
   })
 
   return new GraphQLSchema({
-    query: query.graphQLType,
-    mutation: mutation.graphQLType,
+    query: query,
+    mutation: mutation,
     // not about behaviour, only ordering
-    types: [...collectTypes(lists, updateManyByList), mutation.graphQLType],
+    types: [...collectTypes(lists, updateManyByList), mutation],
     extensions: {
       sudo,
     },
@@ -60,9 +61,9 @@ function collectTypes(
     const { isEnabled } = list.graphql
     if (!isEnabled.type) continue
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
-    collectedTypes.push(list.graphql.types.output.graphQLType)
+    collectedTypes.push(list.graphql.types.output)
     if (isEnabled.query || isEnabled.update || isEnabled.delete) {
-      collectedTypes.push(list.graphql.types.uniqueWhere.graphQLType)
+      collectedTypes.push(list.graphql.types.uniqueWhere)
     }
     if (isEnabled.query) {
       for (const field of Object.values(list.fields)) {
@@ -72,28 +73,26 @@ function collectTypes(
           field.unreferencedConcreteInterfaceImplementations
         ) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
-          collectedTypes.push(
-            ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
-          )
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations)
         }
       }
-      collectedTypes.push(list.graphql.types.where.graphQLType)
-      collectedTypes.push(list.graphql.types.orderBy.graphQLType)
+      collectedTypes.push(list.graphql.types.where)
+      collectedTypes.push(list.graphql.types.orderBy)
     }
     if (isEnabled.update) {
-      if (list.graphql.types.update.kind === 'input') {
-        collectedTypes.push(list.graphql.types.update.graphQLType)
+      if (list.graphql.types.update instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.update)
       }
-      collectedTypes.push(updateManyByList[list.listKey].graphQLType)
+      collectedTypes.push(updateManyByList[list.listKey])
     }
     if (isEnabled.create) {
-      if (list.graphql.types.create.kind === 'input') {
-        collectedTypes.push(list.graphql.types.create.graphQLType)
+      if (list.graphql.types.create instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.create)
       }
     }
   }
   // this is not necessary, just about ordering
-  collectedTypes.push(g.JSON.graphQLType)
+  collectedTypes.push(g.JSON)
   return collectedTypes
 }
 

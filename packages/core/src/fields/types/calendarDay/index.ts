@@ -31,7 +31,7 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
   return meta => {
     if (typeof defaultValue === 'string') {
       try {
-        g.CalendarDay.graphQLType.parseValue(defaultValue)
+        g.CalendarDay.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`

@@ -9,6 +9,7 @@ import {
   fieldType,
 } from '../../../types'
 import { g } from '../../..'
+import { GNonNull } from '@graphql-ts/schema'
 
 type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = g.Field<
   Item,
@@ -53,11 +54,11 @@ export function virtual<ListTypeInfo extends BaseListTypeInfo>({
 }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field
-    const namedType = getNamedType(usableField.type.graphQLType)
+    const namedType = getNamedType(usableField.type)
     const hasRequiredArgs =
       usableField.args &&
       Object.values(usableField.args as Record<string, g.Arg<g.InputType, boolean>>).some(
-        x => x.type.kind === 'non-null' && x.defaultValue === undefined
+        x => x.type instanceof GNonNull && x.defaultValue === undefined
       )
 
     if (

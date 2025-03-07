@@ -81,7 +81,7 @@ function mapCreateInputArgToSQLite<Arg extends g.Arg<g.InputType, any>>(
       const resolvedInput =
         arg.resolve === undefined
           ? input
-          : await arg.resolve(input, context, relationshipInputResolver)
+          : await arg.resolve(input as any, context, relationshipInputResolver)
       if (resolvedInput === undefined || resolvedInput === null) {
         return resolvedInput
       }
