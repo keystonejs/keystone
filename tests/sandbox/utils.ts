@@ -1,22 +1,4 @@
 import { timestamp } from '@keystone-6/core/fields'
-import { type StorageConfig } from '@keystone-6/core/types'
-
-export const localStorageConfig: Record<string, StorageConfig> = {
-  images: {
-    kind: 'local',
-    type: 'image',
-    generateUrl: path => `/images${path}`,
-    serverRoute: { path: '/images' },
-    storagePath: 'public/images',
-  },
-  files: {
-    kind: 'local',
-    type: 'file',
-    generateUrl: path => `/files${path}`,
-    serverRoute: { path: '/files' },
-    storagePath: 'public/files',
-  },
-}
 
 // our monorepo tests have their @prisma/client dependencies hoisted
 //   to build them and use them without conflict, we need to ensure .prisma/client

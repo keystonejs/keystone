@@ -18,78 +18,6 @@ export type * from './access-control'
 export type * from './fields'
 export type * from './lists'
 
-type FileOrImage =
-  // is given full file name, returns file name that will be used at
-  | { type: 'file'; transformName?: (filename: string) => MaybePromise<string> }
-  // return does not include extension, extension is handed over in case they want to use it
-  | {
-      type: 'image'
-      // is given full file name, returns file name that will be used at
-      transformName?: (filename: string, extension: string) => MaybePromise<string>
-    }
-
-export type StorageConfig = (
-  | {
-      /** The kind of storage being configured */
-      kind: 'local'
-      /** The path to where the asset will be stored on disc, eg 'public/images' */
-      storagePath: string
-      /** A function that receives a partial url, whose return will be used as the URL in graphql
-       *
-       * For example, a local dev usage of this might be:
-       * ```ts
-       * path => `http://localhost:3000/images${path}`
-       * ```
-       */
-      generateUrl: (path: string) => string
-      /** The configuration for keystone's hosting of the assets - if set to null, keystone will not host the assets */
-      serverRoute: {
-        /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
-        path: string
-      } | null
-      /** Sets whether the assets should be preserved locally on removal from keystone's database */
-      preserve?: boolean
-      transformName?: (filename: string) => string
-    }
-  | {
-      /** The kind of storage being configured */
-      kind: 's3'
-      /** Sets signing of the asset - for use when you want private assets */
-      signed?: { expiry: number }
-      generateUrl?: (path: string) => string
-      /** Sets whether the assets should be preserved locally on removal from keystone's database */
-      preserve?: boolean
-      pathPrefix?: string
-      /** Your s3 instance's bucket name */
-      bucketName: string
-      /** Your s3 instance's region */
-      region: string
-      /** An access Key ID with write access to your S3 instance */
-      accessKeyId?: string
-      /** The secret access key that gives permissions to your access Key Id */
-      secretAccessKey?: string
-      /** An endpoint to use - to be provided if you are not using AWS as your endpoint */
-      endpoint?: string
-      /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
-      forcePathStyle?: boolean
-      /** A string that sets permissions for the uploaded assets. Default is 'private'.
-       *
-       * Amazon S3 supports a set of predefined grants, known as canned ACLs.
-       * See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
-       * for more details.
-       */
-      acl?:
-        | 'private'
-        | 'public-read'
-        | 'public-read-write'
-        | 'aws-exec-read'
-        | 'authenticated-read'
-        | 'bucket-owner-read'
-        | 'bucket-owner-full-control'
-    }
-) &
-  FileOrImage
-
 // copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`, as we dont have them
 type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
 type PrismaLogDefinition = {
@@ -212,14 +140,6 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
   )
 
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>
-  /** An object containing configuration about keystone's various external storages.
-   *
-   * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
-   *
-   * When configuring a `file` or `image` field that uses the storage, use the key in the storage object
-   * as the `storage` option for that field.
-   */
-  storage?: Record<string, StorageConfig>
 
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
@@ -266,7 +186,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     options: ListenOptions
   }
   session: KeystoneConfigPre<TypeInfo>['session']
-  storage: NonNullable<KeystoneConfigPre<TypeInfo>['storage']>
   telemetry: boolean
   ui: NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>
 }
