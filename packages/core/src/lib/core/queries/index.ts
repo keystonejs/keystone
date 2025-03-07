@@ -31,7 +31,7 @@ export function getQueriesForList(list: InitialisedList) {
     args: {
       where: g.arg({
         type: g.nonNull(list.graphql.types.where),
-        defaultValue: list.isSingleton ? ({ id: { equals: '1' } } as object) : {},
+        defaultValue: list.isSingleton ? { id: { equals: '1' } } : {},
       }),
     },
     async resolve(_rootVal, args, context, info) {
