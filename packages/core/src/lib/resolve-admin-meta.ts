@@ -1,18 +1,13 @@
-import type { BaseItem, KeystoneContext as Context } from '../types'
+import type { BaseItem } from '../types'
 import type { GraphQLNames } from '../types/utils'
 import { QueryMode } from '../types'
-import { g as graphqlBoundToKeystoneContext } from '../types/schema'
+import { g } from '../types/schema'
 import type {
   AdminMetaSource,
   FieldGroupMetaSource,
   FieldMetaSource,
   ListMetaSource,
 } from './create-admin-meta'
-
-const g = {
-  ...graphqlBoundToKeystoneContext,
-  ...graphqlBoundToKeystoneContext.bindGraphQLSchemaAPIToContext<Context>(),
-}
 
 const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   name: 'KeystoneAdminUIFieldMeta',
