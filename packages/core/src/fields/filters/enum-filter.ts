@@ -39,7 +39,7 @@ export function enumFilters<Enum extends g.EnumType<any>>(
   many: EnumNullableListFilterType<Enum>
 } {
   const optional: EnumNullableFilter<Enum> = g.inputObject({
-    name: `${enumType.graphQLType.name}NullableFilter`,
+    name: `${enumType.name}NullableFilter`,
     fields: () => ({
       equals: g.arg({ type: enumType }),
       in: g.arg({ type: g.list(g.nonNull(enumType)) }),
@@ -48,7 +48,7 @@ export function enumFilters<Enum extends g.EnumType<any>>(
     }),
   })
   const required: EnumFilter<Enum> = g.inputObject({
-    name: `${enumType.graphQLType.name}Filter`,
+    name: `${enumType.name}Filter`,
     fields: () => ({
       equals: g.arg({ type: enumType }),
       in: g.arg({ type: g.list(g.nonNull(enumType)) }),
@@ -57,7 +57,7 @@ export function enumFilters<Enum extends g.EnumType<any>>(
     }),
   })
   const many: EnumNullableListFilterType<Enum> = g.inputObject({
-    name: `${enumType.graphQLType.name}NullableListFilter`,
+    name: `${enumType.name}NullableListFilter`,
     fields: () => ({
       // can be null
       equals: g.arg({ type: g.list(g.nonNull(enumType)) }),

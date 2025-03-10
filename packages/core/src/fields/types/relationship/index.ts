@@ -136,9 +136,7 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
         const refSearchFields = foreignListMeta.initialSearchFields
 
         const hasOmittedCreate =
-          !lists[foreignListKey].types.relateTo[
-            many ? 'many' : 'one'
-          ].create.graphQLType.getFields().create
+          !lists[foreignListKey].types.relateTo[many ? 'many' : 'one'].create.getFields().create
         const hideCreate = config.ui?.hideCreate ?? hasOmittedCreate
         if (!hideCreate && hasOmittedCreate) {
           throw new Error(

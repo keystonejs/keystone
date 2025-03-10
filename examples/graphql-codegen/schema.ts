@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { list, g } from '@keystone-6/core'
+import { list, initG } from '@keystone-6/core'
 import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { graphql } from './gql'
 
-import type { Lists } from '.keystone/types'
+import type { Lists, TypeInfo } from '.keystone/types'
+
+const g = initG<TypeInfo>()
+type g<
+  K extends initG.Key,
+  FirstArg extends initG.Arg[K],
+  SecondArg extends initG.OtherArg[K] = initG.OtherArgDefaults<FirstArg>[K],
+> = initG<TypeInfo, K, FirstArg, SecondArg>
 
 const LatestPostQuery = graphql(/* GraphQL */ `
   query LastestPostQuery($id: ID!) {
