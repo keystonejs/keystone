@@ -7,3 +7,5 @@ export type { ListConfig, BaseFields } from './types'
 // if this was an explicit list, it would change the re-export here
 // rather than the usage in their project
 export * from './types/schema'
+
+export { initG } from './types/schema/graphql-ts-schema'

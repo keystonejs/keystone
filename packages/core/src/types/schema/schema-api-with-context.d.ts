@@ -1,5 +1,5 @@
-import { type GraphQLSchemaAPIWithContext } from '@graphql-ts/schema'
+import type { GWithContext } from '@graphql-ts/schema'
 
-declare const __graphql: GraphQLSchemaAPIWithContext<any>
+declare const __graphql: GWithContext<any>
 
 export = __graphql

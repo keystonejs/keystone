@@ -2,12 +2,10 @@ import type { ReadStream } from 'node:fs'
 import * as graphqlTsSchema from '@graphql-ts/schema'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
-import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { KeystoneContext } from '../context'
 import type { JSONValue } from '../utils'
-import { field as fieldd } from './schema-api-with-context'
 
 export {
   Boolean,
@@ -37,79 +35,58 @@ export type {
   NullableInputType,
   ScalarType,
 } from '@graphql-ts/schema/api-without-context'
-export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema'
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
 export { extend } from '@graphql-ts/extend'
-export { fields, interface, interfaceField, object, union } from './schema-api-with-context'
+export { fields, interface, interfaceField, object, union, field } from './schema-api-with-context'
+import { initG as baseInitG } from '@graphql-ts/schema'
+import type { BaseKeystoneTypeInfo } from '../type-info'
+import type { BaseSchemaMeta, Extension } from '@graphql-ts/extend'
+import { extend } from '@graphql-ts/extend'
 
-// TODO: remove when we use { graphql } from '.keystone'
-type SomeTypeThatIsntARecordOfArgs = string
+export function initG<TypeInfo extends BaseKeystoneTypeInfo>() {
+  return {
+    extend,
+    ...baseInitG<KeystoneContext<TypeInfo>>(),
+  }
+}
 
-type ImpliedResolver<
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
-  Type extends OutputType<Context>,
-  Context extends KeystoneContext<any>,
-> =
-  | graphqlTsSchema.InferValueFromOutputType<Type>
-  | ((
-      args: graphqlTsSchema.InferValueFromArgs<Args>,
-      context: Context,
-      info: GraphQLResolveInfo
-    ) => graphqlTsSchema.InferValueFromOutputType<Type>)
+export declare namespace initG {
+  export type Arg = {
+    baseSchemaMeta: never
+    extension: never
+  } & baseInitG.Arg
 
-export const field: <
-  Source,
-  Type extends OutputType<Context>,
-  Resolve extends
-    | undefined
-    | ((
-        source: Source,
-        args: graphqlTsSchema.InferValueFromArgs<
-          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
-        >,
-        context: Context,
-        info: GraphQLResolveInfo
-      ) => graphqlTsSchema.InferValueFromOutputType<Type>),
-  Context extends KeystoneContext<any>,
-  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {},
->(
-  field: {
-    args?: Args
-    type: Type
-    deprecationReason?: string
-    description?: string
-    extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>
-  } & (Resolve extends {}
+  // the definition of ArgDefaults may change in the future so you should use `ArgDefaults` as the default
+  // not `Arg`
+  export type ArgDefaults = Arg
+
+  export type OtherArg = {
+    baseSchemaMeta: never
+    extension: never
+  } & baseInitG.OtherArg
+
+  export type OtherArgDefaults<FirstArg> = {
+    baseSchemaMeta: never
+    extension: never
+  } & baseInitG.OtherArgDefaults<FirstArg>
+
+  export type Key = keyof Arg
+  export {}
+}
+
+export type initG<
+  TypeInfo extends BaseKeystoneTypeInfo,
+  K extends initG.Key,
+  FirstArg extends initG.Arg[K],
+  SecondArg extends initG.OtherArg[K] = initG.OtherArgDefaults<FirstArg>[K],
+> = K extends baseInitG.Key
+  ? baseInitG<KeystoneContext<TypeInfo>, K, FirstArg, SecondArg>
+  : K extends 'baseSchemaMeta' | 'extension'
     ? {
-        resolve: ((
-          source: Source,
-          args: graphqlTsSchema.InferValueFromArgs<
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
-          >,
-          context: Context,
-          info: GraphQLResolveInfo
-        ) => graphqlTsSchema.InferValueFromOutputType<Type>) &
-          Resolve
-      }
-    : {
-        resolve?: ((
-          source: Source,
-          args: graphqlTsSchema.InferValueFromArgs<
-            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args
-          >,
-          context: Context,
-          info: GraphQLResolveInfo
-        ) => graphqlTsSchema.InferValueFromOutputType<Type>) &
-          Resolve
-      })
-) => Field<
-  Source,
-  Args,
-  Type,
-  undefined extends Resolve ? ImpliedResolver<Args, Type, Context> : unknown,
-  Context
-> = fieldd as any
-// TODO: remove when we use { graphql } from '.keystone'
+        baseSchemaMeta: BaseSchemaMeta
+        extension: Extension
+      }[K]
+    : never
 
 export const JSON = graphqlTsSchema.g.scalar<JSONValue>(
   new GraphQLScalarType({
