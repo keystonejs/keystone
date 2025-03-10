@@ -9,18 +9,22 @@ export { Decimal }
 
 export type BaseItem = { id: { toString(): string }; [key: string]: unknown }
 
-export type ListGraphQLTypes = { types: GraphQLTypesForList }
+export type ListGraphQLTypes<ListTypeInfo extends BaseListTypeInfo> = {
+  types: GraphQLTypesForList<ListTypeInfo>
+}
 
-export type FieldData = {
-  lists: Record<string, ListGraphQLTypes>
+export type FieldData<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = {
+  lists: {
+    [Key in keyof ListTypeInfo['all']['lists']]: ListGraphQLTypes<ListTypeInfo['all']['lists'][Key]>
+  }
   provider: DatabaseProvider
   getStorage: (storage: string) => StorageConfig | undefined
-  listKey: string
+  listKey: ListTypeInfo['key']
   fieldKey: string
 }
 
 export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
-  data: FieldData
+  data: FieldData<ListTypeInfo>
 ) => NextFieldType<
   DBField,
   g.Arg<g.InputType> | undefined,
@@ -366,7 +370,7 @@ export type FieldTypeWithoutDBField<
 
 type AnyInputObj = g.InputObjectType<Record<string, g.Arg<g.InputType>>>
 
-export type GraphQLTypesForList = {
+export type GraphQLTypesForList<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = {
   create: g.NullableInputType
   update: g.NullableInputType
   uniqueWhere: g.InputObjectType<{
@@ -375,17 +379,17 @@ export type GraphQLTypesForList = {
   }>
   where: AnyInputObj
   orderBy: AnyInputObj
-  output: g.ObjectType<BaseItem>
+  output: g.ObjectType<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
   findManyArgs: FindManyArgs
   relateTo: {
     one: {
       create: g.InputObjectType<{
-        create?: g.Arg<GraphQLTypesForList['create']>
-        connect: g.Arg<GraphQLTypesForList['uniqueWhere']>
+        create?: g.Arg<GraphQLTypesForList<ListTypeInfo>['create']>
+        connect: g.Arg<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>
       }>
       update: g.InputObjectType<{
-        create?: g.Arg<GraphQLTypesForList['create']>
-        connect: g.Arg<GraphQLTypesForList['uniqueWhere']>
+        create?: g.Arg<GraphQLTypesForList<ListTypeInfo>['create']>
+        connect: g.Arg<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>
         disconnect: g.Arg<typeof g.Boolean>
       }>
     }
@@ -396,14 +400,16 @@ export type GraphQLTypesForList = {
         none: g.Arg<AnyInputObj>
       }>
       create: g.InputObjectType<{
-        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['create']>>>
-        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['create']>>>
+        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
       }>
       update: g.InputObjectType<{
-        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
-        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['create']>>>
-        disconnect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
-        set: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList['uniqueWhere']>>>
+        connect: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
+        create?: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['create']>>>
+        disconnect: g.Arg<
+          g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>
+        >
+        set: g.Arg<g.ListType<g.NonNullType<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
       }>
     }
   }
@@ -440,14 +446,14 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
       ListTypeInfo
     >
   ): NextFieldType<
-    TDBField,
-    CreateArg,
-    UpdateArg,
-    UniqueWhereArg,
-    OrderByArg,
-    FilterArg,
+    DBField,
+    g.Arg<g.InputType> | undefined,
+    g.Arg<g.InputType>,
+    g.Arg<g.NullableInputType, false>,
+    g.Arg<g.NullableInputType, false>,
+    g.Arg<g.NullableInputType, false>,
     ListTypeInfo
   > {
-    return { ...graphQLInfo, dbField }
+    return { ...graphQLInfo, dbField } as any
   }
 }

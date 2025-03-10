@@ -38,7 +38,7 @@ type OutputField = g.Field<
 export function getOutputGraphQLField(
   name: string,
   schema: ComponentSchema,
-  interfaceImplementations: g.ObjectType<unknown>[],
+  interfaceImplementations: g.ObjectType<any>[],
   cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ) {
@@ -52,7 +52,7 @@ export function getOutputGraphQLField(
 function getOutputGraphQLFieldInner(
   name: string,
   schema: ComponentSchema,
-  interfaceImplementations: g.ObjectType<unknown>[],
+  interfaceImplementations: g.ObjectType<any>[],
   cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ): OutputField {

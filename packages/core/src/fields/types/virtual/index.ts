@@ -13,7 +13,7 @@ import { g } from '../../..'
 type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = g.Field<
   Item,
   any,
-  g.OutputType,
+  g.OutputType<Context>,
   string,
   Context
 >
@@ -22,10 +22,15 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
-      | ((
-          lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
-    unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<any>[]
+      | ((lists: {
+          [Key in keyof ListTypeInfo['all']['lists']]: ListGraphQLTypes<
+            ListTypeInfo['all']['lists'][Key]
+          >
+        }) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+    unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<
+      any,
+      KeystoneContext<ListTypeInfo['all']>
+    >[]
     ui?: {
       /**
        * This can be used by the AdminUI to fetch the relevant sub-fields

@@ -48,7 +48,7 @@ type SomeTypeThatIsntARecordOfArgs = string
 export type FieldFuncResolve<
   Source,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
-  Type extends OutputType,
+  Type extends OutputType<Context>,
   Key extends string,
   Context extends KeystoneContext<any>,
 > =
@@ -98,7 +98,7 @@ export type FieldFuncResolve<
 type FieldFuncArgs<
   Source,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
-  Type extends OutputType,
+  Type extends OutputType<Context>,
   Key extends string,
   Context extends KeystoneContext,
 > = {
@@ -111,7 +111,7 @@ type FieldFuncArgs<
 
 type FieldFunc = <
   Source,
-  Type extends OutputType,
+  Type extends OutputType<Context>,
   Key extends string,
   Context extends KeystoneContext<any>,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = object,
