@@ -39,7 +39,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     const defaultValue = getInitialPropsValue(schema)
-    const unreferencedConcreteInterfaceImplementations: g.ObjectType<any>[] = []
+    const unreferencedConcreteInterfaceImplementations: g<typeof g.object<any>>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
     const innerUpdate =

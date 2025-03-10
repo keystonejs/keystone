@@ -1,7 +1,10 @@
-import { g, list } from '@keystone-6/core'
+import { gWithContext, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
-import { type Context, type Lists } from '.keystone/types'
+import type { Context, Lists } from '.keystone/types'
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const lists = {
   Post: list({
@@ -37,7 +40,7 @@ export const extendGraphqlSchema = g.extend(base => {
     fields: {
       draft: g.field({
         type: g.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve({ authorId }, args, context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
           })
@@ -45,7 +48,7 @@ export const extendGraphqlSchema = g.extend(base => {
       }),
       published: g.field({
         type: g.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve({ authorId }, args, context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
           })
@@ -53,7 +56,7 @@ export const extendGraphqlSchema = g.extend(base => {
       }),
       latest: g.field({
         type: base.object('Post'),
-        async resolve({ authorId }, args, context: Context) {
+        async resolve({ authorId }, args, context) {
           const [post] = await context.db.Post.findMany({
             take: 1,
             orderBy: { publishDate: 'desc' },
@@ -72,7 +75,7 @@ export const extendGraphqlSchema = g.extend(base => {
         // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
         args: { id: g.arg({ type: g.nonNull(g.ID) }) },
-        resolve(source, { id }, context: Context) {
+        resolve(source, { id }, context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
           // If you accidentally use `context.query.Post` here you can expect problems
@@ -90,7 +93,7 @@ export const extendGraphqlSchema = g.extend(base => {
             banPost: g.field({
               type: base.object('Post'),
               args: { id: g.arg({ type: g.nonNull(g.ID) }) },
-              resolve(source, { id }, context: Context) {
+              resolve(source, { id }, context) {
                 return context.db.Post.updateOne({
                   where: { id },
                   data: { status: 'banned' },
@@ -107,7 +110,7 @@ export const extendGraphqlSchema = g.extend(base => {
           id: g.arg({ type: g.nonNull(g.ID) }),
           seconds: g.arg({ type: g.nonNull(g.Int), defaultValue: 600 }),
         },
-        resolve(source, { id, seconds }, context: Context) {
+        resolve(source, { id, seconds }, context) {
           const cutoff = new Date(Date.now() - seconds * 1000)
 
           // Note we use `context.db.Post` here as we have a return type

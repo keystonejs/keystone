@@ -2,6 +2,7 @@ import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
 import { type AuthGqlNames, type InitFirstItemConfig } from '../types'
+import type { Extension } from '@keystone-6/core/graphql-ts'
 
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 
@@ -18,12 +19,14 @@ export function getInitFirstItemSchema({
   defaultItemData: InitFirstItemConfig<any>['itemData']
   gqlNames: AuthGqlNames
   graphQLSchema: GraphQLSchema
-  ItemAuthenticationWithPasswordSuccess: g.ObjectType<{
-    item: BaseItem
-    sessionToken: string
-  }>
+  ItemAuthenticationWithPasswordSuccess: g<
+    typeof g.object<{
+      item: BaseItem
+      sessionToken: string
+    }>
+  >
   // TODO: return type required by pnpm :(
-}): g.Extension {
+}): Extension {
   const createInputConfig = assertInputObjectType(
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig()

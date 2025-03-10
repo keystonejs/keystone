@@ -1,9 +1,12 @@
-import { g, list } from '@keystone-6/core'
+import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { password, text, timestamp } from '@keystone-6/core/fields'
 import type { Lists, Context } from '.keystone/types'
 
 import { randomBytes } from 'node:crypto'
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export type Session = {
   itemId: string
@@ -107,7 +110,7 @@ export const extendGraphqlSchema = g.extend(base => {
         type: g.nonNull(g.Boolean), // always true
         args: { userId: g.arg({ type: g.nonNull(g.String) }) },
 
-        async resolve(args, { userId }, context: Context) {
+        async resolve(args, { userId }, context) {
           // run asynchronously to reduce timing attacks
           ;(async function () {
             const ott = randomBytes(16).toString('base64url')
@@ -141,7 +144,7 @@ export const extendGraphqlSchema = g.extend(base => {
           token: g.arg({ type: g.nonNull(g.String) }),
         },
 
-        async resolve(args, { userId, token }, context: Context) {
+        async resolve(args, { userId, token }, context) {
           if (!context.sessionStrategy)
             throw new Error('No session implementation available on context')
 

@@ -1,8 +1,8 @@
-import { list, g } from '@keystone-6/core'
+import { list, gWithContext } from '@keystone-6/core'
 import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { graphql } from './tada'
-import type { Lists } from '.keystone/types'
+import type { Lists, Context } from '.keystone/types'
 
 const LatestPostQuery = graphql(`
   query LastestPostQuery($id: ID!) {
@@ -14,6 +14,9 @@ const LatestPostQuery = graphql(`
     }
   }
 `)
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const lists: Lists = {
   Post: list({

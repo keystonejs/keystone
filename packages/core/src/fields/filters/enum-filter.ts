@@ -1,37 +1,38 @@
+import type { GArg, GEnumType, GInputObjectType, GList, GNonNull } from '@graphql-ts/schema'
 import { g } from '../../types/schema'
 
 // yes, these two types have the fields but they're semantically different types
 // (even though, yes, having EnumFilter by defined as EnumNullableFilter<Enum>, would be the same type but names would show up differently in editors for example)
 
-export type EnumNullableFilter<Enum extends g.EnumType<any>> = g.InputObjectType<{
+export type EnumNullableFilter<Enum extends GEnumType<any>> = GInputObjectType<{
   // can be null
-  equals: g.Arg<Enum>
+  equals: GArg<Enum>
   // can be null
-  in: g.Arg<g.ListType<g.NonNullType<Enum>>>
+  in: GArg<GList<GNonNull<Enum>>>
   // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<Enum>>>
+  notIn: GArg<GList<GNonNull<Enum>>>
   // can be null
-  not: g.Arg<EnumNullableFilter<Enum>>
+  not: GArg<EnumNullableFilter<Enum>>
 }>
 
-export type EnumFilter<Enum extends g.EnumType<any>> = g.InputObjectType<{
-  equals: g.Arg<Enum>
-  in: g.Arg<g.ListType<g.NonNullType<Enum>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<Enum>>>
-  not: g.Arg<EnumFilter<Enum>>
+export type EnumFilter<Enum extends GEnumType<any>> = GInputObjectType<{
+  equals: GArg<Enum>
+  in: GArg<GList<GNonNull<Enum>>>
+  notIn: GArg<GList<GNonNull<Enum>>>
+  not: GArg<EnumFilter<Enum>>
 }>
 
-type EnumNullableListFilterType<Enum extends g.EnumType<any>> = g.InputObjectType<{
+type EnumNullableListFilterType<Enum extends GEnumType<any>> = GInputObjectType<{
   // can be null
-  equals: g.Arg<g.ListType<g.NonNullType<Enum>>>
+  equals: GArg<GList<GNonNull<Enum>>>
   // can be null
-  has: g.Arg<Enum>
-  hasEvery: g.Arg<g.ListType<g.NonNullType<Enum>>>
-  hasSome: g.Arg<g.ListType<g.NonNullType<Enum>>>
-  isEmpty: g.Arg<Enum>
+  has: GArg<Enum>
+  hasEvery: GArg<GList<GNonNull<Enum>>>
+  hasSome: GArg<GList<GNonNull<Enum>>>
+  isEmpty: GArg<Enum>
 }>
 
-export function enumFilters<Enum extends g.EnumType<any>>(
+export function enumFilters<Enum extends GEnumType<any>>(
   enumType: Enum
 ): {
   optional: EnumNullableFilter<Enum>

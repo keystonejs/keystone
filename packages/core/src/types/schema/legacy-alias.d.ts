@@ -1,4 +1,4 @@
-import * as _graphql from './graphql-ts-schema'
+import { g as _graphql } from './g'
 
 /**
  * The `graphql` export has been renamed to `g`.

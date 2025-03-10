@@ -29,6 +29,7 @@ import { type ResolvedDBField, resolveRelationships } from './resolve-relationsh
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
+import type { GArg, GInputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
 
 export type InitialisedField = {
@@ -393,7 +394,7 @@ function getListsWithInitialisedFields(
       name: names.createInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
-        const ret: Record<keyof typeof fields, g.Arg<g.InputType>> = {}
+        const ret: Record<keyof typeof fields, GArg<GInputType>> = {}
 
         for (const key in fields) {
           const arg = graphqlArgForInputField(fields[key], 'create', listsRef)
@@ -409,7 +410,7 @@ function getListsWithInitialisedFields(
       name: names.updateInputName,
       fields: () => {
         const { fields } = listsRef[listKey]
-        const ret: Record<keyof typeof fields, g.Arg<g.InputType>> = {}
+        const ret: Record<keyof typeof fields, GArg<GInputType>> = {}
 
         for (const key in fields) {
           const arg = graphqlArgForInputField(fields[key], 'update', listsRef)
@@ -778,7 +779,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   }
 }
 
-function stripDefaultValue(thing: g.Arg<g.InputType, boolean>) {
+function stripDefaultValue(thing: GArg<GInputType, boolean>) {
   return g.arg({
     ...thing,
     defaultValue: undefined,

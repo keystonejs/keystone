@@ -31,6 +31,11 @@
       "module": "./testing/dist/keystone-6-core-testing.esm.js",
       "default": "./testing/dist/keystone-6-core-testing.cjs.js"
     },
+    "./graphql-ts": {
+      "types": "./graphql-ts/dist/keystone-6-core-graphql-ts.cjs.js",
+      "module": "./graphql-ts/dist/keystone-6-core-graphql-ts.esm.js",
+      "default": "./graphql-ts/dist/keystone-6-core-graphql-ts.cjs.js"
+    },
     "./scripts/cli": {
       "types": "./scripts/cli/dist/keystone-6-core-scripts-cli.cjs.js",
       "module": "./scripts/cli/dist/keystone-6-core-scripts-cli.esm.js",
@@ -235,8 +240,8 @@
     "@aws-sdk/lib-storage": "^3.83.0",
     "@aws-sdk/s3-request-presigner": "^3.83.0",
     "@babel/runtime": "^7.24.7",
-    "@graphql-ts/extend": "https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea",
-    "@graphql-ts/schema": "https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea",
+    "@graphql-ts/extend": "^2.0.0",
+    "@graphql-ts/schema": "^1.0.0",
     "@graphql-typed-document-node/core": "^3.1.2",
     "@hapi/iron": "^7.0.0",
     "@internationalized/date": "^3.5.5",
@@ -311,6 +316,7 @@
       "context.ts",
       "testing.ts",
       "session.ts",
+      "graphql-ts.ts",
       "scripts/index.ts",
       "scripts/cli.ts",
       "admin-ui/components/index.ts",

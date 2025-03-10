@@ -1,7 +1,7 @@
-import { list, group, g } from '@keystone-6/core'
+import { list, group, gWithContext } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import type { Lists, Context } from '.keystone/types'
 
 function ifUnsetHideUI<Key extends string>(field: Key) {
   return {
@@ -14,6 +14,9 @@ function ifUnsetHideUI<Key extends string>(field: Key) {
     },
   }
 }
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const lists: Lists = {
   Post: list({

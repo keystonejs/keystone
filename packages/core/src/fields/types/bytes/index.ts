@@ -9,12 +9,13 @@ import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { weakMemoize } from '../../../lib/core/utils'
 import { GraphQLError } from 'graphql'
+import type { GArg, GInputObjectType, GList, GNonNull, GScalarType } from '@graphql-ts/schema'
 
 export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: true | 'unique'
     graphql?: {
-      scalar?: g.ScalarType<Uint8Array, string>
+      scalar?: GScalarType<Uint8Array, string>
     }
     validation?: {
       /**
@@ -181,16 +182,16 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
   }
 }
 
-type BytesFilterType = g.InputObjectType<{
-  equals?: g.Arg<g.ScalarType<Uint8Array>>
-  in?: g.Arg<g.ListType<g.NonNullType<g.ScalarType<Uint8Array>>>>
-  notIn?: g.Arg<g.ListType<g.NonNullType<g.ScalarType<Uint8Array>>>>
-  not?: g.Arg<BytesFilterType>
+type BytesFilterType = GInputObjectType<{
+  equals?: GArg<GScalarType<Uint8Array, string>>
+  in?: GArg<GList<GNonNull<GScalarType<Uint8Array, string>>>>
+  notIn?: GArg<GList<GNonNull<GScalarType<Uint8Array, string>>>>
+  not?: GArg<BytesFilterType>
 }>
 
 // the weakMemoizes are important so reusing the same scalar type for multiple `bytes` fields uses the same (===) filter type
 // rather than a duplicate one which would cause an error about two types with the same name
-const getFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array, string>) => {
+const getFilterType = weakMemoize((scalar: GScalarType<Uint8Array, string>) => {
   const filter: BytesFilterType = g.inputObject({
     name: `${scalar.name}Filter`,
     fields: () => ({
@@ -203,7 +204,7 @@ const getFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array, string>) => 
   return filter
 })
 
-const getNullableFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array, string>) => {
+const getNullableFilterType = weakMemoize((scalar: GScalarType<Uint8Array, string>) => {
   const filter: BytesFilterType = g.inputObject({
     name: `${scalar.name}NullableFilter`,
     fields: () => ({

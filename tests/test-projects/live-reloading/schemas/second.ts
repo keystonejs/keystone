@@ -1,8 +1,11 @@
-import { g, list } from '@keystone-6/core'
+import { gWithContext, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, virtual } from '@keystone-6/core/fields'
 
-import type { Lists } from '.keystone/types'
+import type { Lists, Context } from '.keystone/types'
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const lists = {
   Something: list({

@@ -1,7 +1,10 @@
-import { g, list } from '@keystone-6/core'
+import { gWithContext, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, integer, relationship, timestamp, virtual } from '@keystone-6/core/fields'
-import { type Context, type Lists } from '.keystone/types'
+import type { Lists, Context } from '.keystone/types'
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const extendGraphqlSchema = g.extend(base => {
   return {
@@ -9,7 +12,7 @@ export const extendGraphqlSchema = g.extend(base => {
       submitOrder: g.field({
         type: base.object('Order'),
         args: {},
-        async resolve(source, {}, context: Context) {
+        async resolve(source, {}, context) {
           // TODO: this should come from GraphQL arguments
           const orderInput = [
             { sku: '123', count: 1 },

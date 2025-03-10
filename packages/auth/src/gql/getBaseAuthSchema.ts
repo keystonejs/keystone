@@ -2,6 +2,7 @@ import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import { getPasswordFieldKDF } from '@keystone-6/core/fields/types/password'
 import type { AuthGqlNames } from '../types'
+import type { BaseSchemaMeta } from '@keystone-6/core/graphql-ts'
 
 const AUTHENTICATION_FAILURE = {
   code: 'FAILURE',
@@ -19,7 +20,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   identityField: I
   secretField: S
   gqlNames: AuthGqlNames
-  base: g.BaseSchemaMeta
+  base: BaseSchemaMeta
 }) {
   const kdf = getPasswordFieldKDF(base.schema, listKey, secretField)
   if (!kdf) {

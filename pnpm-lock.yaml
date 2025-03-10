@@ -1715,11 +1715,11 @@ importers:
         specifier: ^7.24.7
         version: 7.26.9
       '@graphql-ts/extend':
-        specifier: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea
-        version: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea(@graphql-ts/schema@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea(graphql@16.10.0))(graphql@16.10.0)
+        specifier: ^2.0.0
+        version: 2.0.0(@graphql-ts/schema@1.0.0(graphql@16.10.0))(graphql@16.10.0)
       '@graphql-ts/schema':
-        specifier: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea
-        version: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea(graphql@16.10.0)
+        specifier: ^1.0.0
+        version: 1.0.0(graphql@16.10.0)
       '@graphql-typed-document-node/core':
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.10.0)
@@ -4202,16 +4202,14 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-ts/extend@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea':
-    resolution: {tarball: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea}
-    version: 1.0.3
+  '@graphql-ts/extend@2.0.0':
+    resolution: {integrity: sha512-Zyuhl9lFGx+1LJNbzlFDEU5r4yIsA1mOGPUUCccIqCd8ewz5XcG7L/KjyyNBe9Nud7gXMBrv87mN+SeBR+Ta0g==}
     peerDependencies:
-      '@graphql-ts/schema': ^0.6.0
+      '@graphql-ts/schema': ^1.0.0
       graphql: '16'
 
-  '@graphql-ts/schema@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea':
-    resolution: {tarball: https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea}
-    version: 0.6.4
+  '@graphql-ts/schema@1.0.0':
+    resolution: {integrity: sha512-RxupeqrKlKlH38nt+lGOvS61nPIReu4jedgXmk6uUfTiN6odRnBQIdBZHqkcLKKIRTt1BDMww63nCSP/ib/2eA==}
     peerDependencies:
       graphql: '16'
 
@@ -15080,12 +15078,12 @@ snapshots:
       graphql: 16.10.0
       tslib: 2.8.1
 
-  '@graphql-ts/extend@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/extend@5eafeea(@graphql-ts/schema@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea(graphql@16.10.0))(graphql@16.10.0)':
+  '@graphql-ts/extend@2.0.0(@graphql-ts/schema@1.0.0(graphql@16.10.0))(graphql@16.10.0)':
     dependencies:
-      '@graphql-ts/schema': https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea(graphql@16.10.0)
+      '@graphql-ts/schema': 1.0.0(graphql@16.10.0)
       graphql: 16.10.0
 
-  '@graphql-ts/schema@https://pkg.pr.new/Thinkmill/graphql-ts/@graphql-ts/schema@5eafeea(graphql@16.10.0)':
+  '@graphql-ts/schema@1.0.0(graphql@16.10.0)':
     dependencies:
       graphql: 16.10.0
 

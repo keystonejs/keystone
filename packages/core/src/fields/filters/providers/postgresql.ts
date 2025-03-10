@@ -2,21 +2,23 @@
 
 import { g } from '../../../types/schema'
 
+import type { GInputObjectType, GNonNull, GList, GArg } from '@graphql-ts/schema'
+
 import { QueryMode } from '../../../types/next-fields'
 
-type StringNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.String> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.String>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.String>>> // can be null
-  lt: g.Arg<typeof g.String>
-  lte: g.Arg<typeof g.String>
-  gt: g.Arg<typeof g.String>
-  gte: g.Arg<typeof g.String>
-  contains: g.Arg<typeof g.String>
-  startsWith: g.Arg<typeof g.String>
-  endsWith: g.Arg<typeof g.String>
-  mode: g.Arg<typeof QueryMode>
-  not: g.Arg<StringNullableFilterType> // can be null
+type StringNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.String> // can be null
+  in: GArg<GList<GNonNull<typeof g.String>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.String>>> // can be null
+  lt: GArg<typeof g.String>
+  lte: GArg<typeof g.String>
+  gt: GArg<typeof g.String>
+  gte: GArg<typeof g.String>
+  contains: GArg<typeof g.String>
+  startsWith: GArg<typeof g.String>
+  endsWith: GArg<typeof g.String>
+  mode: GArg<typeof QueryMode>
+  not: GArg<StringNullableFilterType> // can be null
 }>
 
 const StringNullableFilter: StringNullableFilterType = g.inputObject({
@@ -37,19 +39,19 @@ const StringNullableFilter: StringNullableFilterType = g.inputObject({
   }),
 })
 
-type StringFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.String>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.String>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.String>>>
-  lt: g.Arg<typeof g.String>
-  lte: g.Arg<typeof g.String>
-  gt: g.Arg<typeof g.String>
-  gte: g.Arg<typeof g.String>
-  contains: g.Arg<typeof g.String>
-  startsWith: g.Arg<typeof g.String>
-  endsWith: g.Arg<typeof g.String>
-  mode: g.Arg<typeof QueryMode>
-  not: g.Arg<NestedStringFilterType>
+type StringFilterType = GInputObjectType<{
+  equals: GArg<typeof g.String>
+  in: GArg<GList<GNonNull<typeof g.String>>>
+  notIn: GArg<GList<GNonNull<typeof g.String>>>
+  lt: GArg<typeof g.String>
+  lte: GArg<typeof g.String>
+  gt: GArg<typeof g.String>
+  gte: GArg<typeof g.String>
+  contains: GArg<typeof g.String>
+  startsWith: GArg<typeof g.String>
+  endsWith: GArg<typeof g.String>
+  mode: GArg<typeof QueryMode>
+  not: GArg<NestedStringFilterType>
 }>
 
 const StringFilter: StringFilterType = g.inputObject({
@@ -70,18 +72,18 @@ const StringFilter: StringFilterType = g.inputObject({
   }),
 })
 
-type NestedStringNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.String> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.String>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.String>>> // can be null
-  lt: g.Arg<typeof g.String>
-  lte: g.Arg<typeof g.String>
-  gt: g.Arg<typeof g.String>
-  gte: g.Arg<typeof g.String>
-  contains: g.Arg<typeof g.String>
-  startsWith: g.Arg<typeof g.String>
-  endsWith: g.Arg<typeof g.String>
-  not: g.Arg<NestedStringNullableFilterType> // can be null
+type NestedStringNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.String> // can be null
+  in: GArg<GList<GNonNull<typeof g.String>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.String>>> // can be null
+  lt: GArg<typeof g.String>
+  lte: GArg<typeof g.String>
+  gt: GArg<typeof g.String>
+  gte: GArg<typeof g.String>
+  contains: GArg<typeof g.String>
+  startsWith: GArg<typeof g.String>
+  endsWith: GArg<typeof g.String>
+  not: GArg<NestedStringNullableFilterType> // can be null
 }>
 
 const NestedStringNullableFilter: NestedStringNullableFilterType = g.inputObject({
@@ -101,18 +103,18 @@ const NestedStringNullableFilter: NestedStringNullableFilterType = g.inputObject
   }),
 })
 
-type NestedStringFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.String>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.String>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.String>>>
-  lt: g.Arg<typeof g.String>
-  lte: g.Arg<typeof g.String>
-  gt: g.Arg<typeof g.String>
-  gte: g.Arg<typeof g.String>
-  contains: g.Arg<typeof g.String>
-  startsWith: g.Arg<typeof g.String>
-  endsWith: g.Arg<typeof g.String>
-  not: g.Arg<NestedStringFilterType>
+type NestedStringFilterType = GInputObjectType<{
+  equals: GArg<typeof g.String>
+  in: GArg<GList<GNonNull<typeof g.String>>>
+  notIn: GArg<GList<GNonNull<typeof g.String>>>
+  lt: GArg<typeof g.String>
+  lte: GArg<typeof g.String>
+  gt: GArg<typeof g.String>
+  gte: GArg<typeof g.String>
+  contains: GArg<typeof g.String>
+  startsWith: GArg<typeof g.String>
+  endsWith: GArg<typeof g.String>
+  not: GArg<NestedStringFilterType>
 }>
 
 const NestedStringFilter: NestedStringFilterType = g.inputObject({
@@ -132,9 +134,9 @@ const NestedStringFilter: NestedStringFilterType = g.inputObject({
   }),
 })
 
-type BooleanNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Boolean> // can be null
-  not: g.Arg<BooleanNullableFilterType> // can be null
+type BooleanNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Boolean> // can be null
+  not: GArg<BooleanNullableFilterType> // can be null
 }>
 
 const BooleanNullableFilter: BooleanNullableFilterType = g.inputObject({
@@ -145,9 +147,9 @@ const BooleanNullableFilter: BooleanNullableFilterType = g.inputObject({
   }),
 })
 
-type BooleanFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Boolean>
-  not: g.Arg<BooleanFilterType>
+type BooleanFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Boolean>
+  not: GArg<BooleanFilterType>
 }>
 
 const BooleanFilter: BooleanFilterType = g.inputObject({
@@ -158,15 +160,15 @@ const BooleanFilter: BooleanFilterType = g.inputObject({
   }),
 })
 
-type IntFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Int>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Int>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Int>>>
-  lt: g.Arg<typeof g.Int>
-  lte: g.Arg<typeof g.Int>
-  gt: g.Arg<typeof g.Int>
-  gte: g.Arg<typeof g.Int>
-  not: g.Arg<IntFilterType>
+type IntFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Int>
+  in: GArg<GList<GNonNull<typeof g.Int>>>
+  notIn: GArg<GList<GNonNull<typeof g.Int>>>
+  lt: GArg<typeof g.Int>
+  lte: GArg<typeof g.Int>
+  gt: GArg<typeof g.Int>
+  gte: GArg<typeof g.Int>
+  not: GArg<IntFilterType>
 }>
 
 const IntFilter: IntFilterType = g.inputObject({
@@ -183,15 +185,15 @@ const IntFilter: IntFilterType = g.inputObject({
   }),
 })
 
-type IntNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Int> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Int>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Int>>> // can be null
-  lt: g.Arg<typeof g.Int>
-  lte: g.Arg<typeof g.Int>
-  gt: g.Arg<typeof g.Int>
-  gte: g.Arg<typeof g.Int>
-  not: g.Arg<IntNullableFilterType> // can be null
+type IntNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Int> // can be null
+  in: GArg<GList<GNonNull<typeof g.Int>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.Int>>> // can be null
+  lt: GArg<typeof g.Int>
+  lte: GArg<typeof g.Int>
+  gt: GArg<typeof g.Int>
+  gte: GArg<typeof g.Int>
+  not: GArg<IntNullableFilterType> // can be null
 }>
 
 const IntNullableFilter: IntNullableFilterType = g.inputObject({
@@ -208,15 +210,15 @@ const IntNullableFilter: IntNullableFilterType = g.inputObject({
   }),
 })
 
-type FloatNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Float> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Float>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Float>>> // can be null
-  lt: g.Arg<typeof g.Float>
-  lte: g.Arg<typeof g.Float>
-  gt: g.Arg<typeof g.Float>
-  gte: g.Arg<typeof g.Float>
-  not: g.Arg<FloatNullableFilterType> // can be null
+type FloatNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Float> // can be null
+  in: GArg<GList<GNonNull<typeof g.Float>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.Float>>> // can be null
+  lt: GArg<typeof g.Float>
+  lte: GArg<typeof g.Float>
+  gt: GArg<typeof g.Float>
+  gte: GArg<typeof g.Float>
+  not: GArg<FloatNullableFilterType> // can be null
 }>
 
 const FloatNullableFilter: FloatNullableFilterType = g.inputObject({
@@ -233,15 +235,15 @@ const FloatNullableFilter: FloatNullableFilterType = g.inputObject({
   }),
 })
 
-type FloatFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Float>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Float>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Float>>>
-  lt: g.Arg<typeof g.Float>
-  lte: g.Arg<typeof g.Float>
-  gt: g.Arg<typeof g.Float>
-  gte: g.Arg<typeof g.Float>
-  not: g.Arg<FloatFilterType>
+type FloatFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Float>
+  in: GArg<GList<GNonNull<typeof g.Float>>>
+  notIn: GArg<GList<GNonNull<typeof g.Float>>>
+  lt: GArg<typeof g.Float>
+  lte: GArg<typeof g.Float>
+  gt: GArg<typeof g.Float>
+  gte: GArg<typeof g.Float>
+  not: GArg<FloatFilterType>
 }>
 
 const FloatFilter: FloatFilterType = g.inputObject({
@@ -258,15 +260,15 @@ const FloatFilter: FloatFilterType = g.inputObject({
   }),
 })
 
-type DateTimeNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.DateTime> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.DateTime>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.DateTime>>> // can be null
-  lt: g.Arg<typeof g.DateTime>
-  lte: g.Arg<typeof g.DateTime>
-  gt: g.Arg<typeof g.DateTime>
-  gte: g.Arg<typeof g.DateTime>
-  not: g.Arg<DateTimeNullableFilterType> // can be null
+type DateTimeNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.DateTime> // can be null
+  in: GArg<GList<GNonNull<typeof g.DateTime>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.DateTime>>> // can be null
+  lt: GArg<typeof g.DateTime>
+  lte: GArg<typeof g.DateTime>
+  gt: GArg<typeof g.DateTime>
+  gte: GArg<typeof g.DateTime>
+  not: GArg<DateTimeNullableFilterType> // can be null
 }>
 
 const DateTimeNullableFilter: DateTimeNullableFilterType = g.inputObject({
@@ -283,15 +285,15 @@ const DateTimeNullableFilter: DateTimeNullableFilterType = g.inputObject({
   }),
 })
 
-type DateTimeFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.DateTime>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.DateTime>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.DateTime>>>
-  lt: g.Arg<typeof g.DateTime>
-  lte: g.Arg<typeof g.DateTime>
-  gt: g.Arg<typeof g.DateTime>
-  gte: g.Arg<typeof g.DateTime>
-  not: g.Arg<DateTimeFilterType>
+type DateTimeFilterType = GInputObjectType<{
+  equals: GArg<typeof g.DateTime>
+  in: GArg<GList<GNonNull<typeof g.DateTime>>>
+  notIn: GArg<GList<GNonNull<typeof g.DateTime>>>
+  lt: GArg<typeof g.DateTime>
+  lte: GArg<typeof g.DateTime>
+  gt: GArg<typeof g.DateTime>
+  gte: GArg<typeof g.DateTime>
+  not: GArg<DateTimeFilterType>
 }>
 
 const DateTimeFilter: DateTimeFilterType = g.inputObject({
@@ -308,15 +310,15 @@ const DateTimeFilter: DateTimeFilterType = g.inputObject({
   }),
 })
 
-type DecimalNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Decimal> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Decimal>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Decimal>>> // can be null
-  lt: g.Arg<typeof g.Decimal>
-  lte: g.Arg<typeof g.Decimal>
-  gt: g.Arg<typeof g.Decimal>
-  gte: g.Arg<typeof g.Decimal>
-  not: g.Arg<DecimalNullableFilterType> // can be null
+type DecimalNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Decimal> // can be null
+  in: GArg<GList<GNonNull<typeof g.Decimal>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.Decimal>>> // can be null
+  lt: GArg<typeof g.Decimal>
+  lte: GArg<typeof g.Decimal>
+  gt: GArg<typeof g.Decimal>
+  gte: GArg<typeof g.Decimal>
+  not: GArg<DecimalNullableFilterType> // can be null
 }>
 
 const DecimalNullableFilter: DecimalNullableFilterType = g.inputObject({
@@ -333,15 +335,15 @@ const DecimalNullableFilter: DecimalNullableFilterType = g.inputObject({
   }),
 })
 
-type DecimalFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.Decimal>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.Decimal>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.Decimal>>>
-  lt: g.Arg<typeof g.Decimal>
-  lte: g.Arg<typeof g.Decimal>
-  gt: g.Arg<typeof g.Decimal>
-  gte: g.Arg<typeof g.Decimal>
-  not: g.Arg<DecimalFilterType>
+type DecimalFilterType = GInputObjectType<{
+  equals: GArg<typeof g.Decimal>
+  in: GArg<GList<GNonNull<typeof g.Decimal>>>
+  notIn: GArg<GList<GNonNull<typeof g.Decimal>>>
+  lt: GArg<typeof g.Decimal>
+  lte: GArg<typeof g.Decimal>
+  gt: GArg<typeof g.Decimal>
+  gte: GArg<typeof g.Decimal>
+  not: GArg<DecimalFilterType>
 }>
 
 const DecimalFilter: DecimalFilterType = g.inputObject({
@@ -358,15 +360,15 @@ const DecimalFilter: DecimalFilterType = g.inputObject({
   }),
 })
 
-type BigIntNullableFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.BigInt> // can be null
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.BigInt>>> // can be null
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.BigInt>>> // can be null
-  lt: g.Arg<typeof g.BigInt>
-  lte: g.Arg<typeof g.BigInt>
-  gt: g.Arg<typeof g.BigInt>
-  gte: g.Arg<typeof g.BigInt>
-  not: g.Arg<BigIntNullableFilterType> // can be null
+type BigIntNullableFilterType = GInputObjectType<{
+  equals: GArg<typeof g.BigInt> // can be null
+  in: GArg<GList<GNonNull<typeof g.BigInt>>> // can be null
+  notIn: GArg<GList<GNonNull<typeof g.BigInt>>> // can be null
+  lt: GArg<typeof g.BigInt>
+  lte: GArg<typeof g.BigInt>
+  gt: GArg<typeof g.BigInt>
+  gte: GArg<typeof g.BigInt>
+  not: GArg<BigIntNullableFilterType> // can be null
 }>
 
 const BigIntNullableFilter: BigIntNullableFilterType = g.inputObject({
@@ -383,15 +385,15 @@ const BigIntNullableFilter: BigIntNullableFilterType = g.inputObject({
   }),
 })
 
-type BigIntFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.BigInt>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.BigInt>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.BigInt>>>
-  lt: g.Arg<typeof g.BigInt>
-  lte: g.Arg<typeof g.BigInt>
-  gt: g.Arg<typeof g.BigInt>
-  gte: g.Arg<typeof g.BigInt>
-  not: g.Arg<BigIntFilterType>
+type BigIntFilterType = GInputObjectType<{
+  equals: GArg<typeof g.BigInt>
+  in: GArg<GList<GNonNull<typeof g.BigInt>>>
+  notIn: GArg<GList<GNonNull<typeof g.BigInt>>>
+  lt: GArg<typeof g.BigInt>
+  lte: GArg<typeof g.BigInt>
+  gt: GArg<typeof g.BigInt>
+  gte: GArg<typeof g.BigInt>
+  not: GArg<BigIntFilterType>
 }>
 
 const BigIntFilter: BigIntFilterType = g.inputObject({

@@ -1,20 +1,27 @@
 import { type GraphQLNamedType, GraphQLSchema } from 'graphql'
 
 import { g } from '../types/schema'
-import type { KeystoneConfig } from '../types'
+import type { KeystoneConfig, KeystoneContext } from '../types'
 import { KeystoneMeta } from './resolve-admin-meta'
 import type { AdminMetaSource } from './create-admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 
 import { getQueriesForList } from './core/queries'
 import { getMutationsForList } from './core/mutations'
+import type { GField, GOutputType } from '@graphql-ts/schema'
 import { GInputObjectType } from '@graphql-ts/schema'
 
 function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
   extraFields: {
-    query: Record<string, g.Field<unknown, any, g.OutputType, string>>
-    mutation: Record<string, g.Field<unknown, any, g.OutputType, string>>
+    query: Record<
+      string,
+      GField<unknown, any, GOutputType<KeystoneContext>, unknown, KeystoneContext>
+    >
+    mutation: Record<
+      string,
+      GField<unknown, any, GOutputType<KeystoneContext>, unknown, KeystoneContext>
+    >
   },
   sudo: boolean
 ) {
@@ -27,7 +34,7 @@ function getGraphQLSchema(
     ),
   })
 
-  const updateManyByList: Record<string, g.InputObjectType<any>> = {}
+  const updateManyByList: Record<string, GInputObjectType<any>> = {}
   const mutation = g.object()({
     name: 'Mutation',
     fields: Object.assign(
@@ -54,7 +61,7 @@ function getGraphQLSchema(
 
 function collectTypes(
   lists: Record<string, InitialisedList>,
-  updateManyByList: Record<string, g.InputObjectType<any>>
+  updateManyByList: Record<string, GInputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = []
   for (const list of Object.values(lists)) {

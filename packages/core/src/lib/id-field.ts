@@ -1,3 +1,4 @@
+import type { GArg, GInputObjectType, InferValueFromArg } from '../graphql-ts'
 import type { ScalarDBField } from '../types'
 import {
   type BaseListTypeInfo,
@@ -50,9 +51,9 @@ const nonCircularFields = {
   gte: g.arg({ type: g.ID }),
 }
 
-type IDFilterType = g.InputObjectType<
+type IDFilterType = GInputObjectType<
   typeof nonCircularFields & {
-    not: g.Arg<typeof IDFilter>
+    not: GArg<typeof IDFilter>
   }
 >
 
@@ -67,7 +68,7 @@ const IDFilter: IDFilterType = g.inputObject({
 const filterArg = g.arg({ type: IDFilter })
 
 function resolveInput(
-  input: Exclude<g.InferValueFromArg<typeof filterArg>, undefined>,
+  input: Exclude<InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ) {
   const where: any = {}

@@ -1,1 +1,1 @@
-export * as graphql from './graphql-ts-schema'
+export { g as graphql } from './g'
