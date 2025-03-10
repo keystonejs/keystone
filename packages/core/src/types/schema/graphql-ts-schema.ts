@@ -336,7 +336,7 @@ export const CalendarDay = graphqlTsSchema.g.scalar<string>(
   })
 )
 
-export const Empty = graphqlTsSchema.g.scalar(
+export const Empty = graphqlTsSchema.g.scalar<{}>(
   new GraphQLScalarType({
     name: 'Empty',
     serialize(value) {
