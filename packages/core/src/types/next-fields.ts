@@ -371,8 +371,8 @@ export type FieldTypeWithoutDBField<
 type AnyInputObj = g.InputObjectType<Record<string, g.Arg<g.InputType>>>
 
 export type GraphQLTypesForList<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = {
-  create: g.NullableInputType
-  update: g.NullableInputType
+  create: AnyInputObj | typeof g.Empty
+  update: AnyInputObj | typeof g.Empty
   uniqueWhere: g.InputObjectType<{
     id: g.Arg<typeof g.ID>
     [key: string]: g.Arg<g.NullableInputType>
