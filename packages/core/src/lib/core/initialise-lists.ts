@@ -297,7 +297,7 @@ function getListsWithInitialisedFields(
     ])
   )
 
-  const listGraphqlTypes: Record<string, ListGraphQLTypes> = {}
+  const listGraphqlTypes: Record<string, ListGraphQLTypes<BaseListTypeInfo>> = {}
 
   for (const listConfig of Object.values(listsConfig)) {
     const { listKey } = listConfig

@@ -59,11 +59,6 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
       throw TypeError("isIndexed: 'unique' is not a supported option for field type multiselect")
     }
 
-    const output = <T extends g.NullableOutputType>(type: T) => nonNullList(type)
-    const create = <T extends g.NullableInputType>(type: T) => {
-      return g.arg({ type: nonNullList(type) })
-    }
-
     const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] | null => {
       const resolved = resolveUpdate(val)
       if (resolved === undefined) {
@@ -79,6 +74,9 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
     }
 
     const transformedConfig = configToOptionsAndGraphQLType(config, meta)
+
+    const type = g.list(g.nonNull(transformedConfig.graphqlType))
+
     const accepted = new Set(transformedConfig.options.map(x => x.value))
     if (accepted.size !== transformedConfig.options.length) {
       throw new Error(`${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`)
@@ -122,14 +120,11 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
           defaultValue: [],
         }),
         input: {
-          create: { arg: create(transformedConfig.graphqlType), resolve: resolveCreate },
-          update: {
-            arg: g.arg({ type: nonNullList(transformedConfig.graphqlType) }),
-            resolve: resolveUpdate,
-          },
+          create: { arg: g.arg({ type }), resolve: resolveCreate },
+          update: { arg: g.arg({ type }), resolve: resolveUpdate },
         },
         output: g.field({
-          type: output(transformedConfig.graphqlType),
+          type: type,
           resolve({ value }) {
             return value as any
           },
@@ -163,7 +158,6 @@ function configToOptionsAndGraphQLType(
       )
     }
     return {
-      type: 'integer' as const,
       graphqlType: g.Int,
       options: config.options,
     }
@@ -186,16 +180,12 @@ function configToOptionsAndGraphQLType(
       values: g.enumValues(options.map(x => x.value)),
     })
     return {
-      type: 'enum' as const,
       graphqlType,
       options,
     }
   }
   return {
-    type: 'string' as const,
     graphqlType: g.String,
     options,
   }
 }
-
-const nonNullList = <T extends g.NullableType>(type: T) => g.list(g.nonNull(type))

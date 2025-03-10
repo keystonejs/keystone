@@ -8,7 +8,6 @@ import type {
   BaseItem,
   FindManyArgsValue,
   KeystoneContext,
-  GraphQLTypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types'
 import { g } from '../../..'
@@ -37,7 +36,7 @@ function getRelationVal(
     return {
       findMany: async (args: FindManyArgsValue) =>
         queries.findMany(args, foreignList, context, info, relationFilter),
-      count: async ({ where }: { where: GraphQLTypesForList['where'] }) =>
+      count: async ({ where }: { where: Record<string, unknown> }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     }
   } else {

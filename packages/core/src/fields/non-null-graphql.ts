@@ -15,7 +15,7 @@ export function resolveDbNullable(
 }
 
 export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
-  meta: FieldData,
+  meta: FieldData<ListTypeInfo>,
   config: {
     label?: string
     db?: {
@@ -78,7 +78,7 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
 }
 
 export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
-  meta: FieldData,
+  meta: FieldData<ListTypeInfo>,
   config: {
     graphql?: {
       isNonNull?:
