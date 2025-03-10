@@ -1,4 +1,4 @@
-import { graphql, list } from '@keystone-6/core'
+import { g, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { password, text, timestamp } from '@keystone-6/core/fields'
 import type { Lists, Context } from '.keystone/types'
@@ -100,12 +100,12 @@ export const lists = {
 // References
 //   https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
 
-export const extendGraphqlSchema = graphql.extend(base => {
+export const extendGraphqlSchema = g.extend(base => {
   return {
     mutation: {
-      requestAuthToken: graphql.field({
-        type: graphql.nonNull(graphql.Boolean), // always true
-        args: { userId: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
+      requestAuthToken: g.field({
+        type: g.nonNull(g.Boolean), // always true
+        args: { userId: g.arg({ type: g.nonNull(g.String) }) },
 
         async resolve(args, { userId }, context: Context) {
           // run asynchronously to reduce timing attacks
@@ -134,11 +134,11 @@ export const extendGraphqlSchema = graphql.extend(base => {
         },
       }),
 
-      redeemAuthToken: graphql.field({
-        type: graphql.nonNull(graphql.Boolean),
+      redeemAuthToken: g.field({
+        type: g.nonNull(g.Boolean),
         args: {
-          userId: graphql.arg({ type: graphql.nonNull(graphql.String) }),
-          token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          userId: g.arg({ type: g.nonNull(g.String) }),
+          token: g.arg({ type: g.nonNull(g.String) }),
         },
 
         async resolve(args, { userId, token }, context: Context) {
