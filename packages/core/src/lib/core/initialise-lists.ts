@@ -17,7 +17,6 @@ import { QueryMode } from '../../types'
 import { type GraphQLNames, __getNames } from '../../types/utils'
 import { g } from '../..'
 import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks'
-import { Empty } from '../../types/schema/graphql-ts-schema'
 import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,
@@ -865,12 +864,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     }
 
     if (!hasAnEnabledCreateField) {
-      list.graphql.types.create = Empty
+      list.graphql.types.create = g.Empty
       list.graphql.names.createInputName = 'Empty'
     }
 
     if (!hasAnEnabledUpdateField) {
-      list.graphql.types.update = Empty
+      list.graphql.types.update = g.Empty
       list.graphql.names.updateInputName = 'Empty'
     }
   }
