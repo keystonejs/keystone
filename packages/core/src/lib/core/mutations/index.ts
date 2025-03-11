@@ -1,5 +1,4 @@
 import { type BaseItem, type KeystoneContext } from '../../../types'
-import { Empty } from '../../../types/schema/graphql-ts-schema'
 import { type UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
 import { type ResolvedDBField } from '../resolve-relationships'
@@ -558,7 +557,7 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 }
 
 function nonNull<T extends g.NullableInputType>(t: T) {
-  if (t === Empty) return t
+  if (t === g.Empty) return t
   return g.nonNull(t)
 }
 
