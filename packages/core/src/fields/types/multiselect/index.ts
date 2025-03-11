@@ -1,14 +1,15 @@
 import { classify } from 'inflection'
+
+import { g } from '../../..'
 import { humanize } from '../../../lib/utils'
 import type { JSONValue } from '../../../types'
 import {
   type BaseListTypeInfo,
-  type FieldTypeFunc,
   type CommonFieldConfig,
   type FieldData,
-  jsonFieldTypePolyfilledForSQLite,
+  fieldType,
+  type FieldTypeFunc,
 } from '../../../types'
-import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import type { controller } from './views'
 
@@ -121,44 +122,42 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
       }
     )
 
-    return jsonFieldTypePolyfilledForSQLite(
-      meta.provider,
-      {
-        ...config,
-        ui,
-        __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
-        hooks: {
-          ...config.hooks,
-          validate,
-        },
-        views: '@keystone-6/core/fields/types/multiselect/views',
-        getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
-          options: transformedConfig.options,
-          type: config.type ?? 'string',
-          displayMode: displayMode,
-          defaultValue: [],
-        }),
-        input: {
-          create: { arg: g.arg({ type }), resolve: resolveCreate },
-          update: { arg: g.arg({ type }), resolve: resolveUpdate },
-        },
-        output: g.field({
-          type: type,
-          resolve({ value }) {
-            return value as any
-          },
-        }),
+    return fieldType({
+      kind: 'scalar',
+      scalar: 'Json',
+      mode,
+      map: config?.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
+      default: {
+        kind: 'literal',
+        value: JSON.stringify(defaultValue ?? null),
       },
-      {
-        mode,
-        map: config?.db?.map,
-        extendPrismaSchema: config.db?.extendPrismaSchema,
-        default: {
-          kind: 'literal',
-          value: JSON.stringify(defaultValue ?? null),
+    })({
+      ...config,
+      ui,
+      __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
+      hooks: {
+        ...config.hooks,
+        validate,
+      },
+      views: '@keystone-6/core/fields/types/multiselect/views',
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
+        options: transformedConfig.options,
+        type: config.type ?? 'string',
+        displayMode: displayMode,
+        defaultValue: [],
+      }),
+      input: {
+        create: { arg: g.arg({ type }), resolve: resolveCreate },
+        update: { arg: g.arg({ type }), resolve: resolveUpdate },
+      },
+      output: g.field({
+        type: type,
+        resolve({ value }) {
+          return value as any
         },
-      }
-    )
+      }),
+    })
   }
 }
 

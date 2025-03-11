@@ -6,7 +6,7 @@ import {
   type FieldData,
   type FieldTypeFunc,
   type JSONValue,
-  jsonFieldTypePolyfilledForSQLite,
+  fieldType,
 } from '@keystone-6/core/types'
 import { GraphQLError } from 'graphql'
 import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
@@ -115,67 +115,65 @@ export function document<ListTypeInfo extends BaseListTypeInfo>({
       }
     }
 
-    return jsonFieldTypePolyfilledForSQLite(
-      meta.provider,
-      {
-        ...config,
-        __ksTelemetryFieldTypeName: '@keystone-6/document',
-        input: {
-          create: {
-            arg: g.arg({ type: g.JSON }),
-            resolve(val) {
-              if (val === undefined) {
-                val = [{ type: 'paragraph', children: [{ text: '' }] }]
-              }
-              return inputResolver(val)
-            },
+    return fieldType({
+      kind: 'scalar',
+      scalar: 'Json',
+      mode: 'required',
+      default: {
+        kind: 'literal',
+        value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
+      },
+      map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
+    })({
+      ...config,
+      __ksTelemetryFieldTypeName: '@keystone-6/document',
+      input: {
+        create: {
+          arg: g.arg({ type: g.JSON }),
+          resolve(val) {
+            if (val === undefined) {
+              val = [{ type: 'paragraph', children: [{ text: '' }] }]
+            }
+            return inputResolver(val)
           },
-          update: { arg: g.arg({ type: g.JSON }), resolve: inputResolver },
         },
-        output: g.field({
-          type: g.object<{ document: JSONValue }>()({
-            name: `${meta.listKey}_${meta.fieldKey}_Document`,
-            fields: {
-              document: g.field({
-                args: {
-                  hydrateRelationships: g.arg({
-                    type: g.nonNull(g.Boolean),
-                    defaultValue: false,
-                  }),
-                },
-                type: g.nonNull(g.JSON),
-                resolve({ document }, { hydrateRelationships }, context) {
-                  return hydrateRelationships
-                    ? addRelationshipData(document as any, context, relationships, componentBlocks)
-                    : (document as any)
-                },
-              }),
-            },
-          }),
-          resolve({ value }) {
-            if (value === null) return null
-            return { document: value }
+        update: { arg: g.arg({ type: g.JSON }), resolve: inputResolver },
+      },
+      output: g.field({
+        type: g.object<{ document: JSONValue }>()({
+          name: `${meta.listKey}_${meta.fieldKey}_Document`,
+          fields: {
+            document: g.field({
+              args: {
+                hydrateRelationships: g.arg({
+                  type: g.nonNull(g.Boolean),
+                  defaultValue: false,
+                }),
+              },
+              type: g.nonNull(g.JSON),
+              resolve({ document }, { hydrateRelationships }, context) {
+                return hydrateRelationships
+                  ? addRelationshipData(document as any, context, relationships, componentBlocks)
+                  : (document as any)
+              },
+            }),
           },
         }),
-        views: '@keystone-6/fields-document/views',
-        getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
-          return {
-            relationships,
-            documentFeatures,
-            componentBlocksPassedOnServer: Object.keys(componentBlocks),
-          }
+        resolve({ value }) {
+          if (value === null) return null
+          return { document: value }
         },
+      }),
+      views: '@keystone-6/fields-document/views',
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
+        return {
+          relationships,
+          documentFeatures,
+          componentBlocksPassedOnServer: Object.keys(componentBlocks),
+        }
       },
-      {
-        mode: 'required',
-        default: {
-          kind: 'literal',
-          value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
-        },
-        map: config.db?.map,
-        extendPrismaSchema: config.db?.extendPrismaSchema,
-      }
-    )
+    })
   }
 }
 

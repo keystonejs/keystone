@@ -1,12 +1,11 @@
+import { g } from '../../..'
 import {
   type BaseListTypeInfo,
-  type JSONValue,
-  type FieldTypeFunc,
   type CommonFieldConfig,
-  jsonFieldTypePolyfilledForSQLite,
+  fieldType,
+  type FieldTypeFunc,
+  type JSONValue,
 } from '../../../types'
-import { g } from '../../..'
-import type { controller } from './views'
 
 type FieldTypeInfo = {
   item: JSONValue | null
@@ -41,33 +40,30 @@ export const json =
       throw Error("isIndexed: 'unique' is not a supported option for field type json")
     }
 
-    return jsonFieldTypePolyfilledForSQLite(
-      meta.provider,
-      {
-        ...config,
-        __ksTelemetryFieldTypeName: '@keystone-6/json',
-        input: {
-          create: {
-            arg: g.arg({ type: g.JSON }),
-            resolve(val) {
-              return val === undefined ? defaultValue : val
-            },
+    return fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'Json',
+      default:
+        defaultValue === null
+          ? undefined
+          : { kind: 'literal', value: JSON.stringify(defaultValue) },
+      map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
+    })({
+      ...config,
+      __ksTelemetryFieldTypeName: '@keystone-6/json',
+      input: {
+        create: {
+          arg: g.arg({ type: g.JSON }),
+          resolve(val) {
+            return val === undefined ? defaultValue : val
           },
-          update: { arg: g.arg({ type: g.JSON }) },
         },
-        output: g.field({ type: g.JSON }),
-        views: '@keystone-6/core/fields/types/json/views',
-        getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
-          defaultValue,
-        }),
+        update: { arg: g.arg({ type: g.JSON }) },
       },
-      {
-        default:
-          defaultValue === null
-            ? undefined
-            : { kind: 'literal', value: JSON.stringify(defaultValue) },
-        map: config.db?.map,
-        extendPrismaSchema: config.db?.extendPrismaSchema,
-      }
-    )
+      output: g.field({ type: g.JSON }),
+      views: '@keystone-6/core/fields/types/json/views',
+      getAdminMeta: () => ({ defaultValue }),
+    })
   }
