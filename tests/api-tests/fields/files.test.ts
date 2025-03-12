@@ -15,6 +15,8 @@ import Upload from 'graphql-upload/Upload.js'
 import { randomBytes } from 'node:crypto'
 import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
 
+jest.setTimeout(10000)
+
 function getRunner(opts: Parameters<typeof file>[0]) {
   return setupTestRunner({
     config: {
@@ -101,7 +103,6 @@ const createItem = (context: any) =>
 
 {
   const { storage, files } = noopStorageStrategy()
-  jest.setTimeout(10000)
   test(
     'large file',
     getRunner({
