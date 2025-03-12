@@ -8,13 +8,14 @@ import {
 import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { weakMemoize } from '../../../lib/core/utils'
-import { GraphQLError, GraphQLScalarType } from 'graphql'
+import { GraphQLError } from 'graphql'
+import type { GArg, GInputObjectType, GList, GNonNull, GScalarType } from '@graphql-ts/schema'
 
 export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: true | 'unique'
     graphql?: {
-      scalar?: g.ScalarType<Uint8Array>
+      scalar?: GScalarType<Uint8Array, string>
     }
     validation?: {
       /**
@@ -66,7 +67,7 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
 
   return meta => {
     {
-      const serializedExample = scalar.graphQLType.serialize(new Uint8Array([0]))
+      const serializedExample = scalar.serialize(new Uint8Array([0]))
       if (typeof serializedExample !== 'string') {
         throw new Error(
           `The GraphQL scalar type specified for ${meta.listKey}.${meta.fieldKey} must serialize Uint8Arrays to strings`
@@ -116,14 +117,14 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
 
     let clientSideDefaultValue = null
     if (defaultValue !== null) {
-      clientSideDefaultValue = scalar.graphQLType.serialize(defaultValue)
+      clientSideDefaultValue = scalar.serialize(defaultValue)
       if (typeof clientSideDefaultValue !== 'string') {
         throw new Error(
           `The GraphQL scalar type specified for ${meta.listKey}.${meta.fieldKey} must serialize Uint8Arrays to strings`
         )
       }
     } else if (mode === 'required') {
-      clientSideDefaultValue = scalar.graphQLType.serialize(new Uint8Array(0))
+      clientSideDefaultValue = scalar.serialize(new Uint8Array(0))
       if (typeof clientSideDefaultValue !== 'string') {
         throw new Error(
           `The GraphQL scalar type specified for ${meta.listKey}.${meta.fieldKey} must serialize Uint8Arrays to strings`
@@ -181,18 +182,18 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
   }
 }
 
-type BytesFilterType = g.InputObjectType<{
-  equals?: g.Arg<g.ScalarType<Uint8Array>>
-  in?: g.Arg<g.ListType<g.NonNullType<g.ScalarType<Uint8Array>>>>
-  notIn?: g.Arg<g.ListType<g.NonNullType<g.ScalarType<Uint8Array>>>>
-  not?: g.Arg<BytesFilterType>
+type BytesFilterType = GInputObjectType<{
+  equals?: GArg<GScalarType<Uint8Array, string>>
+  in?: GArg<GList<GNonNull<GScalarType<Uint8Array, string>>>>
+  notIn?: GArg<GList<GNonNull<GScalarType<Uint8Array, string>>>>
+  not?: GArg<BytesFilterType>
 }>
 
 // the weakMemoizes are important so reusing the same scalar type for multiple `bytes` fields uses the same (===) filter type
 // rather than a duplicate one which would cause an error about two types with the same name
-const getFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array>) => {
+const getFilterType = weakMemoize((scalar: GScalarType<Uint8Array, string>) => {
   const filter: BytesFilterType = g.inputObject({
-    name: `${scalar.graphQLType.name}Filter`,
+    name: `${scalar.name}Filter`,
     fields: () => ({
       equals: g.arg({ type: scalar }),
       in: g.arg({ type: g.list(g.nonNull(scalar)) }),
@@ -203,9 +204,9 @@ const getFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array>) => {
   return filter
 })
 
-const getNullableFilterType = weakMemoize((scalar: g.ScalarType<Uint8Array>) => {
+const getNullableFilterType = weakMemoize((scalar: GScalarType<Uint8Array, string>) => {
   const filter: BytesFilterType = g.inputObject({
-    name: `${scalar.graphQLType.name}NullableFilter`,
+    name: `${scalar.name}NullableFilter`,
     fields: () => ({
       equals: g.arg({ type: scalar }),
       in: g.arg({ type: g.list(g.nonNull(scalar)) }),
@@ -223,35 +224,33 @@ export function bytesScalar(opts: {
   description?: string
   specifiedByURL?: string
 }) {
-  return g.scalar<Uint8Array>(
-    new GraphQLScalarType({
-      name: opts.name,
-      description: opts.description,
-      specifiedByURL: opts.specifiedByURL,
-      parseLiteral(value) {
-        if (value.kind !== 'StringValue') {
-          throw new GraphQLError(`${opts.name} only accepts values as strings`)
-        }
-        return opts.parse(value.value)
-      },
-      parseValue(value) {
-        // so that when you're doing a mutation in a resolver, you can just pass in a Uint8Array directly
-        if (value instanceof Uint8Array) {
-          // duplicate it though to avoid any weirdness with the array being mutated
-          // + ensuring that if you pass in a Buffer, resolvers recieve a normal Uint8Array
-          return Uint8Array.from(value)
-        }
-        if (typeof value !== 'string') {
-          throw new GraphQLError(`${opts.name} only accepts values as strings`)
-        }
-        return opts.parse(value)
-      },
-      serialize(value) {
-        if (!(value instanceof Uint8Array)) {
-          throw new GraphQLError(`unexpected value provided to ${opts.name} scalar: ${value}`)
-        }
-        return opts.serialize(value)
-      },
-    })
-  )
+  return g.scalar<Uint8Array, string>({
+    name: opts.name,
+    description: opts.description,
+    specifiedByURL: opts.specifiedByURL,
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError(`${opts.name} only accepts values as strings`)
+      }
+      return opts.parse(value.value)
+    },
+    parseValue(value) {
+      // so that when you're doing a mutation in a resolver, you can just pass in a Uint8Array directly
+      if (value instanceof Uint8Array) {
+        // duplicate it though to avoid any weirdness with the array being mutated
+        // + ensuring that if you pass in a Buffer, resolvers recieve a normal Uint8Array
+        return Uint8Array.from(value)
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError(`${opts.name} only accepts values as strings`)
+      }
+      return opts.parse(value)
+    },
+    serialize(value) {
+      if (!(value instanceof Uint8Array)) {
+        throw new GraphQLError(`unexpected value provided to ${opts.name} scalar: ${value}`)
+      }
+      return opts.serialize(value)
+    },
+  })
 }

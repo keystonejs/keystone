@@ -9,12 +9,14 @@ import {
   fieldType,
 } from '../../../types'
 import { g } from '../../..'
+import type { GArg, GField, GInputType, GObjectType, GOutputType } from '@graphql-ts/schema'
+import { GNonNull } from '@graphql-ts/schema'
 
-type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = g.Field<
+type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = GField<
   Item,
   any,
-  g.OutputType<Context>,
-  string,
+  GOutputType<Context>,
+  unknown,
   Context
 >
 
@@ -27,7 +29,7 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
             ListTypeInfo['all']['lists'][Key]
           >
         }) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
-    unreferencedConcreteInterfaceImplementations?: readonly g.ObjectType<
+    unreferencedConcreteInterfaceImplementations?: readonly GObjectType<
       any,
       KeystoneContext<ListTypeInfo['all']>
     >[]
@@ -53,11 +55,11 @@ export function virtual<ListTypeInfo extends BaseListTypeInfo>({
 }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field
-    const namedType = getNamedType(usableField.type.graphQLType)
+    const namedType = getNamedType(usableField.type)
     const hasRequiredArgs =
       usableField.args &&
-      Object.values(usableField.args as Record<string, g.Arg<g.InputType, boolean>>).some(
-        x => x.type.kind === 'non-null' && x.defaultValue === undefined
+      Object.values(usableField.args as Record<string, GArg<GInputType, boolean>>).some(
+        x => x.type instanceof GNonNull && x.defaultValue === undefined
       )
 
     if (

@@ -8,6 +8,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { merge } from '../../resolve-hooks'
+import type { InferValueFromArg } from '@graphql-ts/schema'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -42,7 +43,7 @@ const FileFieldOutput = g.object<FileMetadata & { storage: string }>()({
 
 async function inputResolver(
   storage: string,
-  data: g.InferValueFromArg<typeof inputArg>,
+  data: InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) return { filename: data, filesize: data }

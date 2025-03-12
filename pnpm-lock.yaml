@@ -1715,11 +1715,11 @@ importers:
         specifier: ^7.24.7
         version: 7.26.9
       '@graphql-ts/extend':
-        specifier: ^1.0.3
-        version: 1.0.3(@graphql-ts/schema@0.6.4(graphql@16.10.0))(graphql@16.10.0)
+        specifier: ^2.0.0
+        version: 2.0.0(@graphql-ts/schema@1.0.0(graphql@16.10.0))(graphql@16.10.0)
       '@graphql-ts/schema':
-        specifier: ^0.6.4
-        version: 0.6.4(graphql@16.10.0)
+        specifier: ^1.0.0
+        version: 1.0.0(graphql@16.10.0)
       '@graphql-typed-document-node/core':
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.10.0)
@@ -4202,16 +4202,16 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-ts/extend@1.0.3':
-    resolution: {integrity: sha512-3eNrvejr++JOGTCaE9vensuOStFstgHy9U+SW3wANm2iDInkXKHXyEIwfEn7wm78FehuvIAnhu9hwJreq1U3Ng==}
+  '@graphql-ts/extend@2.0.0':
+    resolution: {integrity: sha512-Zyuhl9lFGx+1LJNbzlFDEU5r4yIsA1mOGPUUCccIqCd8ewz5XcG7L/KjyyNBe9Nud7gXMBrv87mN+SeBR+Ta0g==}
     peerDependencies:
-      '@graphql-ts/schema': ^0.6.0
-      graphql: 15 || 16
+      '@graphql-ts/schema': ^1.0.0
+      graphql: '16'
 
-  '@graphql-ts/schema@0.6.4':
-    resolution: {integrity: sha512-gbZy0R8OmwGk7qmRAiPASi5qasStuBV8tEhAc5jZTxQENV6PeBmjWBcd3tnngXqoZyBI1zOFCRNc+qKiLOjLiA==}
+  '@graphql-ts/schema@1.0.0':
+    resolution: {integrity: sha512-RxupeqrKlKlH38nt+lGOvS61nPIReu4jedgXmk6uUfTiN6odRnBQIdBZHqkcLKKIRTt1BDMww63nCSP/ib/2eA==}
     peerDependencies:
-      graphql: 15 || 16
+      graphql: '16'
 
   '@graphql-typed-document-node/core@3.2.0':
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
@@ -10691,7 +10691,6 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qs@6.13.0:
@@ -15079,12 +15078,12 @@ snapshots:
       graphql: 16.10.0
       tslib: 2.8.1
 
-  '@graphql-ts/extend@1.0.3(@graphql-ts/schema@0.6.4(graphql@16.10.0))(graphql@16.10.0)':
+  '@graphql-ts/extend@2.0.0(@graphql-ts/schema@1.0.0(graphql@16.10.0))(graphql@16.10.0)':
     dependencies:
-      '@graphql-ts/schema': 0.6.4(graphql@16.10.0)
+      '@graphql-ts/schema': 1.0.0(graphql@16.10.0)
       graphql: 16.10.0
 
-  '@graphql-ts/schema@0.6.4(graphql@16.10.0)':
+  '@graphql-ts/schema@1.0.0(graphql@16.10.0)':
     dependencies:
       graphql: 16.10.0
 

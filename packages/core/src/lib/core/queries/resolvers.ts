@@ -172,9 +172,7 @@ async function resolveOrderBy(
   orderBy.forEach(orderBySelection => {
     const keys = Object.keys(orderBySelection)
     if (keys.length !== 1) {
-      throw userInputError(
-        `Only a single key must be passed to ${list.graphql.types.orderBy.graphQLType.name}`
-      )
+      throw userInputError(`Only a single key must be passed to ${list.graphql.types.orderBy.name}`)
     }
 
     const fieldKey = keys[0]

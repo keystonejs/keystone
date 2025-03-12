@@ -39,7 +39,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     const defaultValue = getInitialPropsValue(schema)
-    const unreferencedConcreteInterfaceImplementations: g.ObjectType<any>[] = []
+    const unreferencedConcreteInterfaceImplementations: g<typeof g.object<any>>[] = []
 
     const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1)
     const innerUpdate =
@@ -90,6 +90,9 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
             arg: g.arg({
               type: getGraphQLInputType(name, schema, 'update', new Map(), meta),
             }),
+            resolve(val, context) {
+              return val as any
+            },
           },
         },
         output: g.field({

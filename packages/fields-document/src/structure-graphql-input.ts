@@ -5,6 +5,7 @@ import type {
   GraphQLTypesForList,
   KeystoneContext,
 } from '@keystone-6/core/types'
+import type { GArg, GInputType, GNonNull, InferValueFromArg } from '@keystone-6/core/graphql-ts'
 import type { GraphQLResolveInfo } from 'graphql'
 
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
@@ -15,7 +16,7 @@ export function getGraphQLInputType(
   name: string,
   schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchema, g.InputType>,
+  cache: Map<ComponentSchema, GInputType>,
   meta: FieldData
 ) {
   if (!cache.has(schema)) {
@@ -29,9 +30,9 @@ function getGraphQLInputTypeInner(
   name: string,
   schema: ComponentSchema,
   operation: 'create' | 'update',
-  cache: Map<ComponentSchema, g.InputType>,
+  cache: Map<ComponentSchema, GInputType>,
   meta: FieldData
-): g.InputType {
+): GInputType {
   if (schema.kind === 'form') {
     if (!schema.graphql) {
       throw new Error(`Field at ${name} is missing a graphql field`)
@@ -43,7 +44,7 @@ function getGraphQLInputTypeInner(
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(schema.fields).map(([key, val]): [string, g.Arg<g.InputType>] => {
+          Object.entries(schema.fields).map(([key, val]): [string, GArg<GInputType>] => {
             const type = getGraphQLInputType(
               `${name}${key[0].toUpperCase()}${key.slice(1)}`,
               val,
@@ -66,7 +67,7 @@ function getGraphQLInputTypeInner(
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(schema.values).map(([key, val]): [string, g.Arg<g.InputType>] => {
+          Object.entries(schema.values).map(([key, val]): [string, GArg<GInputType>] => {
             const type = getGraphQLInputType(
               `${name}${key[0].toUpperCase()}${key.slice(1)}`,
               val,
@@ -140,13 +141,13 @@ export async function getValueForUpdate(
   }
   if (schema.kind === 'relationship') {
     if (schema.many) {
-      const val = (value as g.InferValueFromArg<
-        g.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['update']>>
+      const val = (value as InferValueFromArg<
+        GArg<NonNullable<GraphQLTypesForList['relateTo']['many']['update']>>
       >)!
       return resolveRelateToManyForUpdateInput(val, context, schema.listKey, prevValue)
     } else {
-      const val = (value as g.InferValueFromArg<
-        g.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['update']>>
+      const val = (value as InferValueFromArg<
+        GArg<NonNullable<GraphQLTypesForList['relateTo']['one']['update']>>
       >)!
 
       return resolveRelateToOneForUpdateInput(val, context, schema.listKey)
@@ -224,14 +225,14 @@ export async function getValueForCreate(
   }
   if (schema.kind === 'relationship') {
     if (schema.many) {
-      const val = (value as g.InferValueFromArg<
-        g.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['create']>>
+      const val = (value as InferValueFromArg<
+        GArg<NonNullable<GraphQLTypesForList['relateTo']['many']['create']>>
       >)!
 
       return resolveRelateToManyForCreateInput(val, context, schema.listKey)
     } else {
-      const val = (value as g.InferValueFromArg<
-        g.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['create']>>
+      const val = (value as InferValueFromArg<
+        GArg<NonNullable<GraphQLTypesForList['relateTo']['one']['create']>>
       >)!
 
       return resolveRelateToOneForCreateInput(val, context, schema.listKey)
@@ -269,12 +270,12 @@ export async function getValueForCreate(
 /** MANY */
 
 type _CreateValueManyType = Exclude<
-  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>>,
+  InferValueFromArg<GArg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>>,
   null | undefined
 >
 
 type _UpdateValueManyType = Exclude<
-  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>>,
+  InferValueFromArg<GArg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>>,
   null | undefined
 >
 
@@ -408,12 +409,12 @@ export async function resolveRelateToManyForUpdateInput(
 /** ONE */
 
 type _CreateValueType = Exclude<
-  g.InferValueFromArg<g.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>>,
+  InferValueFromArg<GArg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>>,
   null | undefined
 >
 type _UpdateValueType = Exclude<
-  g.InferValueFromArg<
-    g.Arg<g.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>>
+  InferValueFromArg<
+    GArg<GNonNull<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>>
   >,
   null | undefined
 >

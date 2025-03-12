@@ -40,6 +40,7 @@ import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
+import type { GNullableInputType } from '@graphql-ts/schema'
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -556,7 +557,7 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T
 }
 
-function nonNull<T extends g.NullableInputType>(t: T) {
+function nonNull<T extends GNullableInputType>(t: T) {
   if (t === g.Empty) return t
   return g.nonNull(t)
 }

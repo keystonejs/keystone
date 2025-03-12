@@ -9,6 +9,13 @@ import { type CalendarDayFieldMeta } from './views'
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
+import type {
+  GInputObjectType,
+  GArg,
+  GList,
+  GNonNull,
+  InferValueFromInputType,
+} from '@graphql-ts/schema'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -31,7 +38,7 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
   return meta => {
     if (typeof defaultValue === 'string') {
       try {
-        g.CalendarDay.graphQLType.parseValue(defaultValue)
+        g.CalendarDay.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
@@ -128,19 +135,19 @@ function dateStringToDateObjectInUTC(value: string) {
   return new Date(`${value}T00:00Z`)
 }
 
-type CalendarDayFilterType = g.InputObjectType<{
-  equals: g.Arg<typeof g.CalendarDay>
-  in: g.Arg<g.ListType<g.NonNullType<typeof g.CalendarDay>>>
-  notIn: g.Arg<g.ListType<g.NonNullType<typeof g.CalendarDay>>>
-  lt: g.Arg<typeof g.CalendarDay>
-  lte: g.Arg<typeof g.CalendarDay>
-  gt: g.Arg<typeof g.CalendarDay>
-  gte: g.Arg<typeof g.CalendarDay>
-  not: g.Arg<CalendarDayFilterType>
+type CalendarDayFilterType = GInputObjectType<{
+  equals: GArg<typeof g.CalendarDay>
+  in: GArg<GList<GNonNull<typeof g.CalendarDay>>>
+  notIn: GArg<GList<GNonNull<typeof g.CalendarDay>>>
+  lt: GArg<typeof g.CalendarDay>
+  lte: GArg<typeof g.CalendarDay>
+  gt: GArg<typeof g.CalendarDay>
+  gte: GArg<typeof g.CalendarDay>
+  not: GArg<CalendarDayFilterType>
 }>
 
 function transformFilterDateStringsToDateObjects(
-  filter: g.InferValueFromInputType<CalendarDayFilterType>
+  filter: InferValueFromInputType<CalendarDayFilterType>
 ): Parameters<typeof filters.resolveCommon>[0] {
   if (filter === null) {
     return filter

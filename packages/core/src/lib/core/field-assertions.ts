@@ -1,3 +1,4 @@
+import { GNonNull } from '@graphql-ts/schema'
 import { g } from '../..'
 import { allowAll } from '../../access'
 import type { InitialisedField } from './initialise-lists'
@@ -88,7 +89,7 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
     throw new Error(
       `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${
         list.listKey
-      } defines the type ${idField.input.uniqueWhere.arg.type.graphQLType.toString()}`
+      } defines the type ${idField.input.uniqueWhere.arg.type.toString()}`
     )
   }
   // we may want to loosen these constraints in the future
@@ -107,11 +108,11 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must not have graphql.isEnabled.read be set to false but ${list.listKey} does`
     )
   }
-  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== g.ID) {
+  if (!(idField.output.type instanceof GNonNull) || idField.output.type.ofType !== g.ID) {
     throw new Error(
       `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${
         list.listKey
-      } defines the type ${idField.output.type.graphQLType.toString()}`
+      } defines the type ${idField.output.type.toString()}`
     )
   }
 }

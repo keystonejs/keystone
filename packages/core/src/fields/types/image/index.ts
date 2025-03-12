@@ -10,6 +10,7 @@ import { fieldType } from '../../../types'
 import { g } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { merge } from '../../resolve-hooks'
+import type { InferValueFromArg } from '@graphql-ts/schema'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -53,7 +54,7 @@ const ImageFieldOutput = g.object<ImageData & { storage: string }>()({
 
 async function inputResolver(
   storage: string,
-  data: g.InferValueFromArg<typeof inputArg>,
+  data: InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) {

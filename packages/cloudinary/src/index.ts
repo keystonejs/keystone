@@ -4,6 +4,7 @@ import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import type Cloudinary from 'cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
+import type { GArg, InferValueFromArg } from '@keystone-6/core/graphql-ts'
 
 type StoredFile = {
   id: string
@@ -74,7 +75,7 @@ type CloudinaryImage_File = {
   encoding: string
   publicUrl: string
   publicUrlTransformed: (args: {
-    transformation: g.InferValueFromArg<g.Arg<typeof CloudinaryImageFormat>>
+    transformation: InferValueFromArg<GArg<typeof CloudinaryImageFormat>>
   }) => string
   filesize: number
   width: number
@@ -119,7 +120,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
 
     const inputArg = g.arg({ type: g.Upload })
     async function resolveInput(
-      uploadData: g.InferValueFromArg<typeof inputArg>
+      uploadData: InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null> {
       if (uploadData === null) return null
       if (uploadData === undefined) return
@@ -181,7 +182,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
               publicUrlTransformed: ({
                 transformation,
               }: {
-                transformation: g.InferValueFromArg<g.Arg<typeof CloudinaryImageFormat>>
+                transformation: InferValueFromArg<GArg<typeof CloudinaryImageFormat>>
               }) => {
                 if (!val._meta) return null
 

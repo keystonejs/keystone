@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { list, g } from '@keystone-6/core'
+import { list, gWithContext } from '@keystone-6/core'
 import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { gql } from '@ts-gql/tag/no-transform'
 
-import type { Lists } from '.keystone/types'
+import type { Lists, Context } from '.keystone/types'
 
 const LatestPostQuery = gql`
   query LastestPostQuery($id: ID!) {
@@ -17,6 +17,9 @@ const LatestPostQuery = gql`
     }
   }
 ` as import('./__generated__/ts-gql/LastestPostQuery').type
+
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
 
 export const lists = {
   Post: list({

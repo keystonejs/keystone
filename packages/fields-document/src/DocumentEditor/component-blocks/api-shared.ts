@@ -1,4 +1,11 @@
-import type { g } from '@keystone-6/core'
+import type {
+  GField,
+  GArg,
+  GInputType,
+  GOutputType,
+  GNullableInputType,
+} from '@keystone-6/core/graphql-ts'
+import type { KeystoneContext } from '@keystone-6/core/types'
 import type { ReactElement, ReactNode } from 'react'
 
 export type FormFieldValue =
@@ -40,12 +47,13 @@ export type FormField<Value extends FormFieldValue, Options> = {
    */
   validate(value: unknown): boolean
   graphql?: {
-    input: g.NullableInputType
-    output: g.Field<
+    input: GNullableInputType
+    output: GField<
       { value: Value },
-      Record<string, g.Arg<g.InputType, boolean>>,
-      g.OutputType,
-      'value'
+      Record<string, GArg<GInputType, boolean>>,
+      GOutputType<KeystoneContext>,
+      Value,
+      KeystoneContext
     >
   }
 }

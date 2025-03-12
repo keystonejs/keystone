@@ -1,17 +1,26 @@
 import { g } from '@keystone-6/core'
+import type { KeystoneContext } from '@keystone-6/core/types'
 import { type FieldData } from '@keystone-6/core/types'
 import { type ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
+import type { GArg, GField, GInputType, GOutputType } from '@keystone-6/core/graphql-ts'
 
 function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
-  inputField: g.Field<
+  inputField: GField<
     { value: InputSource },
-    Record<string, g.Arg<g.InputType, boolean>>,
-    g.OutputType,
-    'value'
+    Record<string, GArg<GInputType, boolean>>,
+    GOutputType<KeystoneContext>,
+    InputSource,
+    KeystoneContext
   >,
   getVal: (outputSource: OutputSource) => InputSource
-): g.Field<OutputSource, Record<string, g.Arg<g.InputType, boolean>>, g.OutputType, string> {
+): GField<
+  OutputSource,
+  Record<string, GArg<GInputType, boolean>>,
+  GOutputType<KeystoneContext>,
+  unknown,
+  KeystoneContext
+> {
   return g.field({
     type: inputField.type,
     args: inputField.args,
@@ -28,17 +37,18 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
   })
 }
 
-type OutputField = g.Field<
+type OutputField = GField<
   { value: unknown },
-  Record<string, g.Arg<g.InputType, boolean>>,
-  g.OutputType,
-  string
+  Record<string, GArg<GInputType, boolean>>,
+  GOutputType<KeystoneContext>,
+  unknown,
+  KeystoneContext
 >
 
 export function getOutputGraphQLField(
   name: string,
   schema: ComponentSchema,
-  interfaceImplementations: g.ObjectType<any>[],
+  interfaceImplementations: g<typeof g.object<any>>[],
   cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ) {
@@ -52,7 +62,7 @@ export function getOutputGraphQLField(
 function getOutputGraphQLFieldInner(
   name: string,
   schema: ComponentSchema,
-  interfaceImplementations: g.ObjectType<any>[],
+  interfaceImplementations: g<typeof g.object<any>>[],
   cache: Map<ComponentSchema, OutputField>,
   meta: FieldData
 ): OutputField {
@@ -71,7 +81,13 @@ function getOutputGraphQLFieldInner(
             Object.entries(schema.fields).map(
               ([key, val]): [
                 string,
-                g.Field<unknown, Record<string, g.Arg<g.InputType>>, g.OutputType, string>,
+                GField<
+                  unknown,
+                  Record<string, GArg<GInputType>>,
+                  GOutputType<KeystoneContext>,
+                  unknown,
+                  KeystoneContext
+                >,
               ] => {
                 const field = getOutputGraphQLField(
                   `${name}${key[0].toUpperCase()}${key.slice(1)}`,
@@ -143,7 +159,7 @@ function getOutputGraphQLFieldInner(
     })
 
     interfaceImplementations.push(
-      ...Object.entries(schema.values).map(([key, val]): g.ObjectType<SourceType> => {
+      ...Object.entries(schema.values).map(([key, val]): g<typeof g.object<SourceType>> => {
         const innerName = name + key[0].toUpperCase() + key.slice(1)
         return g.object<SourceType>()({
           name: innerName,
