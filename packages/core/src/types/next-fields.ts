@@ -3,7 +3,6 @@ import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
 import type { CommonFieldConfig } from './config'
 import type { DatabaseProvider } from './core'
-import type { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.'
 import type {
   GArg,
   GInputType,
@@ -17,6 +16,7 @@ import type {
   InferValueFromArgs,
   GObjectType,
 } from '@graphql-ts/schema'
+import type { JSONValue, KeystoneContext, MaybePromise } from '.'
 
 export { Decimal }
 
@@ -31,7 +31,6 @@ export type FieldData<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> 
     [Key in keyof ListTypeInfo['all']['lists']]: ListGraphQLTypes<ListTypeInfo['all']['lists'][Key]>
   }
   provider: DatabaseProvider
-  getStorage: (storage: string) => StorageConfig | undefined
   listKey: ListTypeInfo['key']
   fieldKey: string
 }
