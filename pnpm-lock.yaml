@@ -1866,8 +1866,8 @@ importers:
         specifier: 17.0.5
         version: 17.0.5(@types/react@19.0.10)(graphql-ws@6.0.4(graphql@16.10.0)(ws@8.18.1))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@types/bcryptjs':
-        specifier: ^2.4.2
-        version: 2.4.6
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.5
@@ -6025,8 +6025,9 @@ packages:
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
 
-  '@types/bcryptjs@2.4.6':
-    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
+  '@types/bcryptjs@3.0.0':
+    resolution: {integrity: sha512-WRZOuCuaz8UcZZE4R5HXTco2goQSI2XxjGY3hbM/xDvwmqFWd4ivooImsMx65OKM6CtNKbnZ5YL+YwAwK7c1dg==}
+    deprecated: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
 
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
@@ -17825,7 +17826,9 @@ snapshots:
     dependencies:
       '@babel/types': 7.26.10
 
-  '@types/bcryptjs@2.4.6': {}
+  '@types/bcryptjs@3.0.0':
+    dependencies:
+      bcryptjs: 3.0.2
 
   '@types/body-parser@1.19.5':
     dependencies:
