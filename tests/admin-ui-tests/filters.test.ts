@@ -12,11 +12,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
 
   describe('relationship filters', () => {
     beforeEach(async () => {
-      context = await browser.newContext({
-        recordVideo: {
-          dir: 'videos/',
-        },
-      })
+      context = await browser.newContext()
       page = await context.newPage()
       await loadIndex(page)
       await deleteAllData('./tests/test-projects/basic')
@@ -112,7 +108,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
         ),
       })
       await page.goto('http://localhost:3000/tasks')
-      await page.getByText('21 Tasks').waitFor({ timeout: 10000 })
+      await page.getByText('21 Tasks').waitFor()
       await page.goto(`http://localhost:3000/tasks?!assignedTo_is="${assignedTask.assignedTo.id}"`)
       await page.getByText('1 Task').waitFor()
     })

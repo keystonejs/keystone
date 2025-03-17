@@ -321,9 +321,3 @@ jobs:
 
       - name: Unit tests
         run: pnpm jest --ci --runInBand --forceExit tests/admin-ui-tests/${{ matrix.test }}
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: videos-${{ matrix.test }}
-          path: videos
