@@ -8,8 +8,12 @@ adminUITests('./tests/test-projects/basic', browserType => {
 
   beforeAll(async () => {
     browser = await browserType.launch()
-    context = await browser.newContext()
-    page = await browser.newPage()
+    context = await browser.newContext({
+      recordVideo: {
+        dir: 'videos/',
+      },
+    })
+    page = await context.newPage()
     await loadIndex(page)
   })
 
