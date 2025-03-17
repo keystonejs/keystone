@@ -8,18 +8,17 @@ adminUITests('./tests/test-projects/basic', browserType => {
 
   beforeAll(async () => {
     browser = await browserType.launch()
-    context = await browser.newContext()
-    page = await browser.newPage()
-    await loadIndex(page)
   })
 
   describe('relationship filters', () => {
     beforeEach(async () => {
-      await context.clearCookies()
-      await page.evaluate(() => {
-        window.localStorage.clear()
-      })
+      context = await browser.newContext()
+      page = await context.newPage()
+      await loadIndex(page)
       await deleteAllData('./tests/test-projects/basic')
+    })
+    afterEach(async () => {
+      await context.close()
     })
     test('Lists are filterable by relationships', async () => {
       const gql = String.raw
