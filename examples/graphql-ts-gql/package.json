@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.3.1",
-    "@prisma/client": "6.3.1",
+    "@prisma/client": "6.5.0",
     "graphql": "^16.8.1"
   },
   "devDependencies": {
@@ -19,7 +19,7 @@
     "@ts-gql/eslint-plugin": "^0.9.1",
     "@ts-gql/tag": "^0.7.3",
     "eslint": "^8.0.0",
-    "prisma": "6.3.1",
+    "prisma": "6.5.0",
     "typescript": "^5.5.0"
   },
   "ts-gql": {

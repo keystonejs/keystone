@@ -12,10 +12,10 @@
   "dependencies": {
     "@keystar/ui": "^0.7.16",
     "@keystone-6/core": "^6.3.1",
-    "@prisma/client": "6.3.1"
+    "@prisma/client": "6.5.0"
   },
   "devDependencies": {
-    "prisma": "6.3.1",
+    "prisma": "6.5.0",
     "typescript": "^5.5.0"
   }
 }

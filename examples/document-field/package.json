@@ -15,13 +15,13 @@
     "@keystone-6/document-renderer": "^1.1.2",
     "@keystone-6/fields-document": "^9.1.1",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "6.3.1",
+    "@prisma/client": "6.5.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "prisma": "6.3.1",
+    "prisma": "6.5.0",
     "typescript": "^5.5.0"
   }
 }

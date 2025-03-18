@@ -13,10 +13,10 @@
     "@keystone-6/auth": "^8.1.0",
     "@keystone-6/core": "^6.3.1",
     "@keystone-6/fields-document": "^9.1.1",
-    "@prisma/client": "5.19.0"
+    "@prisma/client": "6.5.0"
   },
   "devDependencies": {
-    "prisma": "6.3.1",
+    "prisma": "6.5.0",
     "typescript": "^5.5.0"
   }
 }

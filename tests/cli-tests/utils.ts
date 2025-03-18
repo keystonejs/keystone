@@ -177,7 +177,7 @@ export async function getFiles(
 export async function introspectDatabase(cwd: string, url: string) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma'), 'db', 'pull', '--print'], {
+    const p = spawn('node', [require.resolve('prisma/build/index.js'), 'db', 'pull', '--print'], {
       cwd,
       env: {
         ...process.env,

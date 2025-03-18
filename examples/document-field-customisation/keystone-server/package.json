@@ -14,11 +14,11 @@
     "@keystone-6/core": "^6.3.1",
     "@keystone-6/fields-document": "^9.1.1",
     "@keystar/ui": "^0.7.16",
-    "@prisma/client": "5.19.0",
+    "@prisma/client": "6.5.0",
     "react": "^19.0.0",
     "typescript": "^5.5.0"
   },
   "devDependencies": {
-    "prisma": "6.3.1"
+    "prisma": "6.5.0"
   }
 }
