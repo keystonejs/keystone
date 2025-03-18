@@ -7,6 +7,7 @@ import { Carousel } from '../Carousel/Carousel'
 import { Tweet } from '../Tweet/Tweet'
 import { YouTubeVideo } from '../YouTubeVideo/YouTubeVideo'
 import styles from './CustomRenderer.module.css'
+import type { Renderers } from '../../../../keystone-server/src/component-blocks'
 
 type CustomRendererProps = ComponentProps<typeof DocumentRenderer>
 
@@ -39,25 +40,13 @@ const defaultElementRenderers: CustomRendererProps['renderers'] = {
   },
 }
 
-const customComponentRenderers: CustomRendererProps['componentBlocks'] = {
-  hero: props => {
-    return <Hero {...props} />
-  },
-  callout: props => {
-    return <Callout {...props} />
-  },
-  quote: props => {
-    return <Quote {...props} />
-  },
-  carousel: props => {
-    return <Carousel {...props} />
-  },
-  tweet: props => {
-    return <Tweet {...props} />
-  },
-  youtubeVideo: props => {
-    return <YouTubeVideo {...props} />
-  },
+const customComponentRenderers: Renderers = {
+  hero: Hero,
+  callout: Callout,
+  quote: Quote,
+  carousel: Carousel,
+  tweet: Tweet,
+  youtubeVideo: YouTubeVideo,
 }
 
 export function CustomRenderer({ document }: CustomRendererProps) {

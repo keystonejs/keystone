@@ -552,7 +552,7 @@
           "type": "component-block",
           "component": "callout",
           "props": {
-            "intent": "info",
+            "tone": "info",
             "content": null
           },
           "children": [
@@ -621,7 +621,7 @@
           "type": "component-block",
           "component": "callout",
           "props": {
-            "intent": "success",
+            "tone": "positive",
             "content": null
           },
           "children": [

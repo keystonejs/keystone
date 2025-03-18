@@ -21,14 +21,14 @@
   content: '\24D8';
 }
 
-.warning::after {
+.caution::after {
   content: '\26A0';
 }
 
-.success::after {
+.positive::after {
   content: '\2713';
 }
 
-.error::after {
+.critical::after {
   content: '\2717';
 }
