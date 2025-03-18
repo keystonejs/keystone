@@ -15,7 +15,8 @@ import {
   getHrefFromList,
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { useRouter } from 'next/navigation'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
 
 export default ({ labelField }: { labelField: string }) =>
   (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
@@ -45,13 +46,15 @@ function Navigation({
     )
   )
 
+  const { basePath } = useKeystone()
+
   return (
     <NavContainer>
       <NavList>
         <NavItem href="/">Dashboard</NavItem>
         <Divider />
         {lists.map(list => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
+          <NavItem key={list.key} href={getHrefFromList(list, basePath)}>
             {list.label}
           </NavItem>
         ))}
@@ -78,7 +81,7 @@ function SignoutButton({ authItemLabel }: { authItemLabel: string }) {
     if (data?.endSession) {
       router.push('/signin')
     }
-  }, [data])
+  }, [data, router])
 
   return (
     <TooltipTrigger>

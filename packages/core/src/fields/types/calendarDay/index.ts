@@ -120,7 +120,7 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
-      views: '@keystone-6/core/fields/types/calendarDay/views',
+      views: () => import('@keystone-6/core/fields/types/calendarDay/views'),
       getAdminMeta(): CalendarDayFieldMeta {
         return {
           defaultValue: defaultValue ?? null,

@@ -1,5 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
+import { CustomLogo } from './admin/components/CustomLogo'
 
 export default config({
   db: {
@@ -10,4 +11,5 @@ export default config({
     prismaClientPath: 'node_modules/myprisma',
   },
   lists,
+  ui: { components: { Logo: CustomLogo } },
 })

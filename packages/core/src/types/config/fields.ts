@@ -1,7 +1,7 @@
 import type { CacheHint } from '@apollo/cache-control-types'
 import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
-import type { KeystoneContext } from '..'
+import type { FieldViews, KeystoneContext } from '..'
 import type { MaybeFieldFunction, MaybeItemFunction, MaybeSessionFunction } from './lists'
 import type { FieldHooks } from './hooks'
 import type { FieldAccessControl } from './access-control'
@@ -23,7 +23,7 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   label?: string // TODO: move to .ui in breaking change
   ui?: {
     description?: string
-    views?: string
+    views?: () => Promise<Partial<FieldViews> & Record<string, unknown>>
     createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> }
     itemView?: {
       fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>

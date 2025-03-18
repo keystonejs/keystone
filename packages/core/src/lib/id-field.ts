@@ -199,8 +199,11 @@ export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeIn
           return value.toString()
         },
       }),
-      views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
-      getAdminMeta: () => ({ kind, type: dbFieldOptions.scalar }),
+      views: () =>
+        import(
+          '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
+        ),
+      getAdminMeta: () => ({ type: dbFieldOptions.scalar }),
       ui: {
         createView: {
           fieldMode: 'hidden',

@@ -44,7 +44,7 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo>({
           return value
         },
       }),
-      views: './4-conditional-field/views',
+      views: () => import('./views'),
       getAdminMeta() {
         return {
           dependency,

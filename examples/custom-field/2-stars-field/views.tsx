@@ -1,3 +1,4 @@
+'use client'
 import { type InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'

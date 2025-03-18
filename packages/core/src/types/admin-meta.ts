@@ -1,15 +1,8 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import type { GraphQLNames, JSONValue } from './utils'
 
 export type NavigationProps = {
   lists: ListMeta[]
-}
-
-export type AdminConfig = {
-  components?: {
-    Logo?: (props: object) => ReactElement
-    Navigation?: (props: NavigationProps) => ReactElement
-  }
 }
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
@@ -65,9 +58,8 @@ export type FieldMeta = {
   description: string | null
   fieldMeta: JSONValue | null
 
-  viewsIndex: number
-  customViewsIndex: number | null
-  views: FieldViews[number]
+  customViews: Partial<FieldViews> & Record<string, unknown>
+  views: FieldViews
   controller: FieldController<unknown, JSONValue>
 
   search: 'default' | 'insensitive' | null
@@ -143,15 +135,15 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
   itemValue: Item
 }
 
-export type FieldViews = Record<
-  string,
-  {
-    Field: (props: FieldProps<any>) => ReactElement | null
-    Cell: CellComponent
-    controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>
-    allowedExportsOnCustomViews?: string[]
-  }
->
+export type FieldViews<
+  AdminMeta extends JSONValue | undefined = JSONValue | undefined,
+  Controller extends FieldController<any, any> = FieldController<any, any>,
+> = {
+  Field: (props: FieldProps<(config: FieldControllerConfig<AdminMeta>) => Controller>) => ReactNode
+  Cell?: CellComponent<(config: FieldControllerConfig<AdminMeta>) => NoInfer<Controller>>
+  controller: (config: FieldControllerConfig<AdminMeta>) => Controller
+  allowedExportsOnCustomViews?: readonly string[]
+}
 
 export type CellComponent<
   FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<

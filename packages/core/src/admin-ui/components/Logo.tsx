@@ -6,16 +6,17 @@ import { Heading } from '@keystar/ui/typography'
 import { useKeystone } from '../context'
 
 export function Logo() {
-  const { adminConfig } = useKeystone()
-  if (adminConfig?.components?.Logo) return <adminConfig.components.Logo />
+  const { components } = useKeystone()
+  if (components?.Logo) return <components.Logo />
   return <DefaultLogo />
 }
 
 function DefaultLogo() {
+  const { basePath } = useKeystone()
   return (
     <Heading elementType="div" size="small" UNSAFE_className={css({ lineHeight: 1 })}>
       <Link
-        href="/"
+        href={`${basePath}/`}
         className={css({
           alignItems: 'center',
           color: tokenSchema.color.alias.foregroundIdle,

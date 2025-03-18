@@ -28,8 +28,6 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
       ),
     }),
     fieldMeta: g.field({ type: g.JSON }),
-    viewsIndex: g.field({ type: g.nonNull(g.Int) }),
-    customViewsIndex: g.field({ type: g.Int }),
     createView: g.field({
       type: g.nonNull(
         g.object<FieldMetaSource['createView']>()({

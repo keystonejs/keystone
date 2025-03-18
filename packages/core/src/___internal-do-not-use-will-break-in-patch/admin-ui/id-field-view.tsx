@@ -1,3 +1,4 @@
+'use client'
 import { useCallback, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 import copyToClipboard from 'clipboard-copy'
@@ -65,7 +66,9 @@ export function Field({
 }
 
 export function controller(
-  config: FieldControllerConfig<IdFieldConfig>
+  config: FieldControllerConfig<{
+    type: NonNullable<IdFieldConfig['type']>
+  }>
 ): FieldController<string | null, string | string[]> {
   return {
     path: config.path,

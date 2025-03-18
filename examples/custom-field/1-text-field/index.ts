@@ -39,7 +39,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
           return value
         },
       }),
-      views: './1-text-field/views',
+      views: () => import('./views'),
       getAdminMeta() {
         return {}
       },

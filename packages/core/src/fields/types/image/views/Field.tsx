@@ -1,3 +1,4 @@
+'use client'
 import {
   type PropsWithChildren,
   type SyntheticEvent,

@@ -1,4 +1,4 @@
-import type { CellComponent, FieldControllerConfig } from '@keystone-6/core/types'
+import type { CellComponent, FieldController, FieldControllerConfig } from '@keystone-6/core/types'
 import { type ImageValue, validateImage } from '@keystone-6/core/fields/types/image/views'
 
 export { Field } from '@keystone-6/core/fields/types/image/views'
@@ -20,7 +20,9 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
   )
 }
 
-export function controller(config: FieldControllerConfig) {
+export function controller(
+  config: FieldControllerConfig
+): FieldController<ImageValue> & { extensions: readonly string[] } {
   const extensions = ['jpg', 'png', 'webp', 'gif'] // TODO: dynamic
   return {
     path: config.path,

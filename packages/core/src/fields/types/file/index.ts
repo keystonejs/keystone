@@ -132,7 +132,7 @@ export function file<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/file',
-      views: '@keystone-6/core/fields/types/file/views',
+      views: () => import('@keystone-6/core/fields/types/file/views'),
     })
   }
 }

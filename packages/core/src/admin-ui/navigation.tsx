@@ -1,3 +1,4 @@
+'use client'
 /**
  * This file is exposed by the /router entrypoint, and helps ensure that other
  * packages import the same instance of next's router.
@@ -9,16 +10,5 @@
 // that's normally not a problem because modules generally use Object.defineProperty(exports, '__esModule', { value: true })
 // which means that the property isn't enumerable but Next uses Babel's loose mode and Babel's loose mode for the CJS transform
 // uses exports.__esModule = true instead of defineProperty so the property is enumerable
-export { Router, useRouter, withRouter } from 'next/router'
-export type { NextRouter } from 'next/router'
-
-import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
-import type { AnchorHTMLAttributes } from 'react'
-
-export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>
-
-export const Link = NextLink
-
-import NextHead from 'next/head'
-
-export const Head = NextHead
+export { useRouter, usePathname, useSearchParams } from 'next/navigation'
+export { default as Link } from 'next/link'

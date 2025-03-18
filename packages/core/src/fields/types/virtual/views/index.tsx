@@ -1,3 +1,4 @@
+'use client'
 import { TextField } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'
 import type {

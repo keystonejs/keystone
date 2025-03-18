@@ -1,21 +1,22 @@
 import path from 'path'
 import type { KeystoneConfig } from '../../types'
 import type { AdminMetaSource } from '../../lib/create-admin-meta'
-import { appTemplate } from './app'
 import { homeTemplate } from './home'
 import { listTemplate } from './list'
 import { itemTemplate } from './item'
 import { noAccessTemplate } from './no-access'
 import { createItemTemplate } from './create-item'
 import { nextConfigTemplate } from './next-config'
+import { layoutTemplate } from './app'
 
 const pkgDir = path.dirname(require.resolve('@keystone-6/core/package.json'))
 
 export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
+  const appDirPath = `app${config.ui.basePath}/(admin)`
   return [
     {
       mode: 'write' as const,
-      src: nextConfigTemplate(config.ui?.basePath),
+      src: nextConfigTemplate,
       outputPath: 'next.config.js',
     },
     {
@@ -26,21 +27,29 @@ export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSour
     {
       mode: 'write' as const,
       src: noAccessTemplate(config.session),
-      outputPath: 'pages/no-access.js',
+      outputPath: `${appDirPath}/no-access/page.js`,
     },
     {
       mode: 'write' as const,
-      src: appTemplate(config, adminMeta),
-      outputPath: 'pages/_app.js',
+      src: layoutTemplate(config, adminMeta, appDirPath),
+      outputPath: `${appDirPath}/layout.js`,
     },
-    { mode: 'write' as const, src: homeTemplate, outputPath: 'pages/index.js' },
+    { mode: 'write' as const, src: homeTemplate, outputPath: `${appDirPath}/page.js` },
     ...adminMeta.lists.flatMap(({ path, key }) => [
-      { mode: 'write' as const, src: listTemplate(key), outputPath: `pages/${path}/index.js` },
-      { mode: 'write' as const, src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
+      {
+        mode: 'write' as const,
+        src: listTemplate(key),
+        outputPath: `${appDirPath}/${path}/page.js`,
+      },
+      {
+        mode: 'write' as const,
+        src: itemTemplate(key),
+        outputPath: `${appDirPath}/${path}/[id]/page.js`,
+      },
       {
         mode: 'write' as const,
         src: createItemTemplate(key),
-        outputPath: `pages/${path}/create.js`,
+        outputPath: `${appDirPath}/${path}/create/page.js`,
       },
     ]),
   ]

@@ -63,7 +63,7 @@ export function checkbox<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: g.Boolean }),
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
-      views: '@keystone-6/core/fields/types/checkbox/views',
+      views: () => import('@keystone-6/core/fields/types/checkbox/views'),
       getAdminMeta: () => ({ defaultValue }),
     })
   }

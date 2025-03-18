@@ -1,3 +1,4 @@
+'use client'
 import type { CellComponent, FieldController, FieldControllerConfig } from '../../../../types'
 
 import { validateFile } from './Field'

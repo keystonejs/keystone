@@ -1,4 +1,5 @@
-import type { CellComponent, FieldControllerConfig } from '../../../../types'
+'use client'
+import type { CellComponent, FieldController, FieldControllerConfig } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 
 export { Field } from './Field'
@@ -53,7 +54,9 @@ export function validateImage(extensions: readonly string[], v: ImageValue) {
   }
 }
 
-export function controller(config: FieldControllerConfig) {
+export function controller(
+  config: FieldControllerConfig
+): FieldController<ImageValue> & { extensions: readonly string[] } {
   return {
     path: config.path,
     label: config.label,

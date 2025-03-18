@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { useSearchParams } from '../../../../admin-ui/navigation'
 
 import type { JSONValue, ListMeta } from '../../../../types'
 
@@ -10,7 +10,7 @@ export type Filter = {
 }
 
 export function useFilters(list: ListMeta) {
-  const { query } = useRouter()
+  const searchParams = useSearchParams()
   const possibleFilters = useMemo(() => {
     const possibleFilters: Record<string, { type: string; field: string }> = {}
 
@@ -28,9 +28,8 @@ export function useFilters(list: ListMeta) {
   }, [list])
   const filters = useMemo(() => {
     const filters: Filter[] = []
-    for (const key in query) {
+    for (const [key, val] of searchParams) {
       const filter = possibleFilters[key]
-      const val = query[key]
       if (filter && typeof val === 'string') {
         let value
         try {
@@ -53,6 +52,6 @@ export function useFilters(list: ListMeta) {
     }, {})
     if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } }
     return { filters, where }
-  }, [query, possibleFilters, list])
+  }, [list, searchParams, possibleFilters])
   return filters
 }

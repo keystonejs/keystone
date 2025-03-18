@@ -13,7 +13,7 @@ export const lists = {
     fields: {
       metadata: structure({
         schema,
-        ui: { views: './featured-posts.ts' },
+        ui: { views: () => import('./featured-posts-client') },
       }),
     },
   }),

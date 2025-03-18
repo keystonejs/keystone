@@ -137,8 +137,6 @@ type KeystoneAdminUIFieldMeta {
   isFilterable: Boolean!
   isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
-  viewsIndex: Int!
-  customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView

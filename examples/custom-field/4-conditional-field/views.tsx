@@ -1,3 +1,4 @@
+'use client'
 import { useEffect } from 'react'
 import { Text } from '@keystar/ui/typography'
 import { TextField } from '@keystar/ui/text-field'

@@ -41,14 +41,14 @@ export const lists = {
       recommendations: structure({
         schema: recommendationsStructureSchema,
         ui: {
-          views: './structure-relationships',
+          views: () => import('./structure-relationships-client'),
         },
       }),
 
       bundles: structure({
         schema: bundlesStructureSchema,
         ui: {
-          views: './structure-relationships-2',
+          views: () => import('./structure-relationships-2-client'),
         },
       }),
     },

@@ -134,7 +134,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
           },
         }),
         __ksTelemetryFieldTypeName: '@keystone-6/structure',
-        views: '@keystone-6/fields-document/structure-views',
+        views: () => import('@keystone-6/fields-document/structure-views'),
         getAdminMeta: () => ({}),
         unreferencedConcreteInterfaceImplementations,
       },

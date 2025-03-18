@@ -150,7 +150,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: g.Int }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
-      views: '@keystone-6/core/fields/types/integer/views',
+      views: () => import('@keystone-6/core/fields/types/integer/views'),
       getAdminMeta() {
         return {
           validation: {

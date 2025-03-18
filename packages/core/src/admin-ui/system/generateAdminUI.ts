@@ -77,11 +77,11 @@ export async function generateAdminUI(
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const adminConfigDir = Path.join(process.cwd(), 'admin')
-  const userPagesDir = Path.join(adminConfigDir, 'pages')
+  const userAppDir = Path.join(adminConfigDir, 'app')
 
-  let userPagesEntries: Entry[] = []
+  let userAppDirEntries: Entry[] = []
   try {
-    userPagesEntries = await walk(userPagesDir, {
+    userAppDirEntries = await walk(userAppDir, {
       entryFilter: entry => entry.dirent.isFile() && pageExtensions.has(Path.extname(entry.name)),
     })
   } catch (err: any) {
@@ -89,7 +89,7 @@ export async function generateAdminUI(
   }
 
   let adminFiles = writeAdminFiles(config, adminMeta)
-  for (const { path } of userPagesEntries) {
+  for (const { path } of userAppDirEntries) {
     const outputFilename = Path.relative(adminConfigDir, path)
     const importPath = Path.relative(
       Path.dirname(Path.join(projectAdminPath, outputFilename)),
@@ -99,7 +99,7 @@ export async function generateAdminUI(
     adminFiles.push({
       mode: 'write',
       outputPath: outputFilename,
-      src: `export { default } from ${serializedImportPath}`,
+      src: `export { default } from ${serializedImportPath};\nexport * from ${serializedImportPath};`,
     })
   }
 

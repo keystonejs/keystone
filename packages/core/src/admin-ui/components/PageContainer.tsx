@@ -1,4 +1,3 @@
-import NextHead from 'next/head'
 import { type HTMLAttributes, type ReactNode, useState } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -94,13 +93,32 @@ type PageContainerProps = {
   title?: string
 }
 
+const headerVisibilityVar = `--keystone-header-visibility`
+
 export function PageContainer({ children, header, title }: PageContainerProps) {
+  return (
+    <>
+      <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
+      <HStack
+        elementType="header"
+        alignItems="center"
+        borderBottom="neutral"
+        justifyContent="space-between"
+        paddingX="xlarge"
+        minWidth={0}
+        UNSAFE_style={{ visibility: `var(${headerVisibilityVar})` as any }}
+      >
+        {header}
+      </HStack>
+      <Content>{children}</Content>
+    </>
+  )
+}
+
+export function KeystoneLayout(props: { children: ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
-    <PageWrapper>
-      <NextHead>
-        <title key="title">{title ? `Keystone - ${title}` : 'Keystone'}</title>
-      </NextHead>
+    <PageWrapper style={{ [headerVisibilityVar as any]: isSidebarOpen ? 'hidden' : 'visible' }}>
       <HStack
         alignItems="center"
         borderBottom="neutral"
@@ -120,21 +138,10 @@ export function PageContainer({ children, header, title }: PageContainerProps) {
           <Icon src={isSidebarOpen ? xIcon : menuIcon} />
         </ActionButton>
       </HStack>
-      <HStack
-        elementType="header"
-        alignItems="center"
-        borderBottom="neutral"
-        justifyContent="space-between"
-        paddingX="xlarge"
-        minWidth={0}
-        UNSAFE_style={{ visibility: isSidebarOpen ? 'hidden' : 'visible' }}
-      >
-        {header}
-      </HStack>
       <Sidebar isSidebarOpen={isSidebarOpen}>
         <Navigation />
       </Sidebar>
-      <Content>{children}</Content>
+      {props.children}
     </PageWrapper>
   )
 }

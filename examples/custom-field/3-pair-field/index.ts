@@ -92,7 +92,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
           return resolveOutput(value)
         },
       }),
-      views: './3-pair-field/views',
+      views: () => import('./views'),
       getAdminMeta() {
         return {}
       },

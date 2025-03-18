@@ -3,6 +3,7 @@ import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
 import type { CommonFieldConfig } from './config'
 import type { DatabaseProvider } from './core'
+import type { FieldController, FieldViews, JSONValue, KeystoneContext, MaybePromise } from '.'
 import type {
   GArg,
   GInputType,
@@ -16,7 +17,6 @@ import type {
   InferValueFromArgs,
   GObjectType,
 } from '@graphql-ts/schema'
-import type { JSONValue, KeystoneContext, MaybePromise } from '.'
 
 export { Decimal }
 
@@ -365,6 +365,8 @@ export type FieldTypeWithoutDBField<
   OrderByArg extends GArg<GNullableInputType, false> = GArg<GNullableInputType, false>,
   FilterArg extends GArg<GNullableInputType, false> = GArg<GNullableInputType, false>,
   ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo,
+  AdminMeta extends JSONValue | undefined = JSONValue | undefined,
+  Controller extends FieldController<any, any> = FieldController<any>,
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>
@@ -374,9 +376,9 @@ export type FieldTypeWithoutDBField<
     orderBy?: OrderByFieldInputArg<DBFieldToOrderByValue<TDBField>, OrderByArg>
   }
   output: FieldTypeOutputField<TDBField>
-  views: string
+  views: () => Promise<FieldViews<AdminMeta, Controller>>
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>
-  getAdminMeta?: () => JSONValue
+  getAdminMeta?: () => AdminMeta
   unreferencedConcreteInterfaceImplementations?: readonly g<typeof g.object<any>>[]
   __ksTelemetryFieldTypeName?: string
 } & CommonFieldConfig<ListTypeInfo>
@@ -446,6 +448,8 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     UniqueWhereArg extends GArg<GNullableInputType, false>,
     OrderByArg extends GArg<GNullableInputType, false>,
     FilterArg extends GArg<GNullableInputType, false>,
+    AdminMeta extends JSONValue | undefined,
+    Controller extends FieldController<any, any>,
   >(
     graphQLInfo: FieldTypeWithoutDBField<
       TDBField,
@@ -454,7 +458,9 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
       UniqueWhereArg,
       OrderByArg,
       FilterArg,
-      ListTypeInfo
+      ListTypeInfo,
+      AdminMeta,
+      Controller
     >
   ): NextFieldType<
     DBField,

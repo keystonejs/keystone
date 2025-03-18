@@ -1,6 +1,7 @@
 import { config } from '@keystone-6/core'
 import { lists, extendGraphqlSchema } from './schema'
 import { extendHttpServer } from './websocket'
+import { CustomNavigation } from './admin/components/CustomNavigation'
 
 export default config({
   db: {
@@ -16,5 +17,8 @@ export default config({
   lists,
   server: {
     extendHttpServer,
+  },
+  ui: {
+    components: { Navigation: CustomNavigation },
   },
 })

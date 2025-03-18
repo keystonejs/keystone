@@ -144,7 +144,7 @@ export function RelationshipTable({
                       return (
                         <Cell>
                           {CellContent ? (
-                            <CellContent value={value} field={field.controller} item={row} />
+                            <CellContent value={value} field={field.controller as any} item={row} />
                           ) : (
                             <Text>{value?.toString()}</Text>
                           )}

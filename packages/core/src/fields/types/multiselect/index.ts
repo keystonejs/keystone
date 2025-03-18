@@ -112,7 +112,7 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
           ...config.hooks,
           validate,
         },
-        views: '@keystone-6/core/fields/types/multiselect/views',
+        views: () => import('@keystone-6/core/fields/types/multiselect/views'),
         getAdminMeta: () => ({
           options: transformedConfig.options,
           type: config.type ?? 'string',

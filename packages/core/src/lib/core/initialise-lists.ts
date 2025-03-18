@@ -12,6 +12,7 @@ import type {
   MaybeFieldFunction,
   NextFieldType,
   FieldTypeFunc,
+  FieldViews,
 } from '../../types'
 import { QueryMode } from '../../types'
 import { type GraphQLNames, __getNames } from '../../types/utils'
@@ -56,7 +57,7 @@ export type InitialisedField = {
   ui: {
     label: string | null
     description: string | null
-    views: string | null
+    views: (() => Promise<Partial<FieldViews> & Record<string, unknown>>) | null
     createView: {
       fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>
     }

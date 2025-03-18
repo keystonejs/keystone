@@ -36,15 +36,15 @@ export const lists = {
       timestamp: timestamp({ ui: { description } }),
       structure: structure({
         schema: structureSchema,
-        ui: { views: './structure' },
+        ui: { views: () => import('../structure-client') },
       }),
       structureNested: structure({
         schema: structureNestedSchema,
-        ui: { views: './structure-nested' },
+        ui: { views: () => import('../structure-nested-client') },
       }),
       structureRelationships: structure({
         schema: structureRelationshipsSchema,
-        ui: { views: './structure-relationships' },
+        ui: { views: () => import('../structure-relationships-client') },
       }),
       ...group({
         label: 'Some group',
@@ -170,7 +170,6 @@ export const lists = {
         },
       }),
       document: document({
-        ui: { views: './component-blocks' },
         relationships: { mention: { label: 'Mention', listKey: 'User' } },
         formatting: true,
         layouts: [

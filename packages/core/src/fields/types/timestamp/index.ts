@@ -100,7 +100,7 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: g.DateTime }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
-      views: '@keystone-6/core/fields/types/timestamp/views',
+      views: () => import('@keystone-6/core/fields/types/timestamp/views'),
       getAdminMeta(): TimestampFieldMeta {
         return {
           defaultValue: defaultValue ?? null,

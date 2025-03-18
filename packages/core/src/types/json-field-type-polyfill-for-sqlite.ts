@@ -1,4 +1,5 @@
 import { g } from './schema'
+import type { BaseListTypeInfo, FieldController } from '.'
 import {
   type BaseItem,
   type CreateFieldInputArg,
@@ -106,6 +107,8 @@ function mapCreateInputArgToSQLite<Arg extends GArg<GInputType, any>>(
 export function jsonFieldTypePolyfilledForSQLite<
   CreateArg extends GArg<GInputType, any>,
   UpdateArg extends GArg<GInputType, any>,
+  FieldMeta extends JSONValue | undefined,
+  Controller extends FieldController<any, any>,
 >(
   provider: DatabaseProvider,
   config: FieldTypeWithoutDBField<
@@ -113,7 +116,11 @@ export function jsonFieldTypePolyfilledForSQLite<
     CreateArg,
     UpdateArg,
     GArg<GNullableInputType, false>,
-    GArg<GNullableInputType, false>
+    GArg<GNullableInputType, false>,
+    GArg<GNullableInputType, false>,
+    BaseListTypeInfo,
+    FieldMeta,
+    Controller
   > & {
     input?: {
       uniqueWhere?: undefined

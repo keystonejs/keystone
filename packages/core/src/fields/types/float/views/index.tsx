@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 
 import { TextField } from '@keystar/ui/text-field'
@@ -23,8 +24,8 @@ type Value =
 
 type Validation = {
   isRequired: boolean
-  min: string
-  max: string
+  min: number | null
+  max: number | null
 }
 
 function validate_(value: Value, validation: Validation, label: string): string | undefined {
@@ -34,16 +35,16 @@ function validate_(value: Value, validation: Validation, label: string): string 
   if (typeof input !== 'string') return
   const v = parseFloat(input)
   if (Number.isNaN(v)) return `${label} is not a valid float`
-  if (validation.min !== undefined && v < parseFloat(validation.min))
+  if (validation.min !== null && v < validation.min)
     return `${label} must be greater than or equal to ${validation.min}`
-  if (validation.max !== undefined && v > parseFloat(validation.max))
+  if (validation.max !== null && v > validation.max)
     return `${label} must be less than or equal to ${validation.max}`
 }
 
 export function controller(
   config: FieldControllerConfig<{
     validation: Validation
-    defaultValue: string | null
+    defaultValue: number | null
   }>
 ): FieldController<Value, string | null> & {
   validation: Validation
@@ -58,7 +59,7 @@ export function controller(
     description: config.description,
     graphqlSelection: config.path,
     validation: config.fieldMeta.validation,
-    defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue },
+    defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue?.toString() ?? null },
     deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
     serialize: value => {
       const v = value.value !== null ? parseFloat(value.value) : null

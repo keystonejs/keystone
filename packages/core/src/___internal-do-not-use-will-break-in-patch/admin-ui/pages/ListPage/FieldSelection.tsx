@@ -1,5 +1,5 @@
 import { type Key, useMemo } from 'react'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import isDeepEqual from 'fast-deep-equal'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -13,17 +13,21 @@ import { useSelectedFields } from './useSelectedFields'
 
 export function FieldSelection({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const list = useList(listKey)
   const selectedFields = useSelectedFields(list)
 
   const setNewSelectedFields = (selectedFields: Key[]) => {
+    const newSearchParams = new URLSearchParams(searchParams)
     // Clear the `fields` query param when selection matches initial columns
     if (isDeepEqual(selectedFields, list.initialColumns)) {
-      const { fields: _ignore, ...otherQueryFields } = router.query
-      router.push({ query: otherQueryFields })
+      newSearchParams.delete('fields')
     } else {
-      router.push({ query: { ...router.query, fields: selectedFields.join(',') } })
+      newSearchParams.set('fields', selectedFields.join(','))
     }
+    const stringifiedSearchParams = newSearchParams.toString()
+    router.push(`${pathname}${stringifiedSearchParams ? `?${stringifiedSearchParams}` : ''}`)
   }
 
   const fields = useMemo(() => {

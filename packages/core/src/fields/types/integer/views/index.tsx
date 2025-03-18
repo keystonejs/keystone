@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 
 import { ContextualHelp } from '@keystar/ui/contextual-help'

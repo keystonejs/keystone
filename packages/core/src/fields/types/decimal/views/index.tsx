@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 
 import { TextField } from '@keystar/ui/text-field'
@@ -24,8 +25,8 @@ type Value =
 
 type Validation = {
   isRequired: boolean
-  min: string
-  max: string
+  min: string | null
+  max: string | null
 }
 
 function validate_(value: Value, validation: Validation, label: string): string | undefined {

@@ -1,8 +1,9 @@
 import type { GraphQLNames } from '../types/utils'
 import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types'
+import type { TypedDocumentNode } from './apollo'
 import { gql } from './apollo'
 
-export const adminMetaQuery = gql`
+export const adminMetaQuery: TypedDocumentNode<AdminMetaQuery, {}> = gql`
   query KsFetchAdminMeta {
     keystone {
       adminMeta {
@@ -23,9 +24,6 @@ export const adminMetaQuery = gql`
             fieldMeta
             isOrderable
             isFilterable
-
-            viewsIndex
-            customViewsIndex
 
             search
             isNonNull

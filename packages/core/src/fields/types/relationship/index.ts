@@ -122,7 +122,7 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
     const commonConfig = {
       ...config,
       __ksTelemetryFieldTypeName: '@keystone-6/relationship',
-      views: '@keystone-6/core/fields/types/relationship/views',
+      views: () => import('@keystone-6/core/fields/types/relationship/views'),
       getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => {
         const adminMetaRoot = getAdminMetaForRelationshipField()
         const localListMeta = adminMetaRoot.listsByKey[listKey]

@@ -1,3 +1,4 @@
+'use client'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { TextArea } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'

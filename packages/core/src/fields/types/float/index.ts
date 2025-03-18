@@ -113,7 +113,7 @@ export function float<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: g.Float }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
-      views: '@keystone-6/core/fields/types/float/views',
+      views: () => import('@keystone-6/core/fields/types/float/views'),
       getAdminMeta() {
         return {
           validation: {

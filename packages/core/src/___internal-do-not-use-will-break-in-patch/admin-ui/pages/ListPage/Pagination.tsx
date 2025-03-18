@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router'
-import { type Key, useEffect } from 'react'
+import { type Key, useCallback, useEffect } from 'react'
 
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type PaginationProps = {
   pageSize: number
@@ -15,21 +15,23 @@ export function Pagination(props: PaginationProps) {
   const { currentPage, total, pageSize } = props
 
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
+  const pushSearchParam = useCallback(
+    (key: string, value: string) => {
+      router.push(`/${pathname}?${new URLSearchParams([...searchParams.entries(), [key, value]])}`)
+    },
+    [pathname, router, searchParams]
+  )
   useEffect(() => {
     // Check if the current page is larger than
     // the maximal page given the total and associated page size value.
     // (This could happen due to a deletion event, in which case we want to reroute the user to a previous page).
     if (currentPage > Math.ceil(total / pageSize)) {
-      router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          page: Math.ceil(total / pageSize),
-        },
-      })
+      pushSearchParam('page', Math.ceil(total / pageSize).toString())
     }
-  }, [total, pageSize, currentPage, router])
+  }, [currentPage, pageSize, pushSearchParam, total])
 
   // Don't render the pagination component if the pageSize is greater than the
   // total number of items in the list.
@@ -38,22 +40,10 @@ export function Pagination(props: PaginationProps) {
   // }
 
   const onChangePage = (page: Key) => {
-    router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
-        page: page.toString(),
-      },
-    })
+    pushSearchParam('page', page.toString())
   }
   const onChangePageSize = (pageSize: Key) => {
-    router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
-        pageSize: pageSize.toString(),
-      },
-    })
+    pushSearchParam('pageSize', pageSize.toString())
   }
 
   return (
@@ -66,14 +56,16 @@ export function Pagination(props: PaginationProps) {
 }
 
 export function usePaginationParams({ defaultPageSize }: { defaultPageSize: number }) {
-  const { query } = useRouter()
+  const searchParams = useSearchParams()
+  const page = searchParams.get('page')
+  const pageSizeParam = searchParams.get('pageSize')
   const currentPage = Math.max(
-    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1,
+    typeof page === 'string' && !Number.isNaN(parseInt(page)) ? Number(page) : 1,
     1
   )
   const pageSize = snapValueToClosest(
-    typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
-      ? parseInt(query.pageSize)
+    typeof pageSizeParam === 'string' && !Number.isNaN(parseInt(pageSizeParam))
+      ? parseInt(pageSizeParam)
       : defaultPageSize
   )
 

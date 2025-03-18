@@ -1,4 +1,3 @@
-import path from 'node:path'
 import type {
   BaseListTypeInfo,
   KeystoneContext,
@@ -7,9 +6,10 @@ import type {
   MaybePromise,
   MaybeSessionFunction,
   KeystoneConfig,
+  NextFieldType,
 } from '../types'
 import type { GraphQLNames } from '../types/utils'
-import type { FieldMeta, FieldGroupMeta, ListMeta } from '../types/admin-meta'
+import type { FieldMeta, FieldGroupMeta, ListMeta, FieldViews } from '../types/admin-meta'
 
 import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
@@ -21,6 +21,9 @@ type FieldMetaSource_ = {
   listKey: string
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
+
+  views: NextFieldType['views']
+  customViews: (() => Promise<Partial<FieldViews> & Record<string, unknown>>) | null
 
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
@@ -36,7 +39,7 @@ type FieldMetaSource_ = {
 }
 
 export type FieldMetaSource = FieldMetaSource_ &
-  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views' | 'customViews'>
 
 type FieldGroupMetaSource_ = {
   fields: FieldMetaSource[]
@@ -64,7 +67,6 @@ export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSour
 export type AdminMetaSource = {
   lists: ListMetaSource[]
   listsByKey: Record<string, ListMetaSource>
-  views: string[]
   isAccessAllowed: (context: KeystoneContext) => MaybePromise<boolean>
 }
 
@@ -76,7 +78,6 @@ export function createAdminMeta(
   const adminMetaRoot: AdminMetaSource = {
     listsByKey: {},
     lists: [],
-    views: [],
     isAccessAllowed: config.ui?.isAccessAllowed,
   }
 
@@ -156,17 +157,6 @@ export function createAdminMeta(
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
   }
 
-  let uniqueViewCount = -1
-  const stringViewsToIndex: Record<string, number> = {}
-  function getViewId(view: string) {
-    if (stringViewsToIndex[view] !== undefined) return stringViewsToIndex[view]
-
-    uniqueViewCount++
-    stringViewsToIndex[view] = uniqueViewCount
-    adminMetaRoot.views.push(view)
-    return uniqueViewCount
-  }
-
   // populate .fields array
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue
@@ -175,10 +165,6 @@ export function createAdminMeta(
       // if the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
       if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
-      assertValidView(
-        field.views,
-        `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
-      )
 
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
       const isNonNull = (['read', 'create', 'update'] as const).filter(
@@ -201,12 +187,8 @@ export function createAdminMeta(
           baseOrderFilterArgs
         ),
 
-        viewsIndex: getViewId(field.views),
-        customViewsIndex:
-          field.ui.views === null
-            ? null
-            : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
-              getViewId(field.ui.views)),
+        views: field.views,
+        customViews: field.ui.views,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
 
         isNonNull,
@@ -263,20 +245,6 @@ let currentAdminMeta: undefined | AdminMetaSource
 export function getAdminMetaForRelationshipField() {
   if (currentAdminMeta) return currentAdminMeta
   throw new Error('unexpected call to getAdminMetaInRelationshipField')
-}
-
-function assertValidView(view: string, location: string) {
-  if (view.includes('\\')) {
-    throw new Error(
-      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
-  }
-
-  if (path.isAbsolute(view)) {
-    throw new Error(
-      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    )
-  }
 }
 
 function normalizeMaybeSessionFunction<Return extends string | boolean>(

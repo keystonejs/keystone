@@ -55,7 +55,7 @@ export const Cell: CellComponent<typeof controller> = () => {
 
 export const allowedExportsOnCustomViews = ['schema']
 
-export function controller(config: FieldControllerConfig): FieldController<{
+export function controller(config: FieldControllerConfig<{}>): FieldController<{
   kind: 'create' | 'update'
   value: unknown
 }> & {

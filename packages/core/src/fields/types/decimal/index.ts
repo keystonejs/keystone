@@ -162,7 +162,7 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/decimal',
-      views: '@keystone-6/core/fields/types/decimal/views',
+      views: () => import('@keystone-6/core/fields/types/decimal/views'),
       getAdminMeta() {
         return {
           validation: {

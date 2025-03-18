@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 

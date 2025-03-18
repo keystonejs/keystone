@@ -175,7 +175,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>(
         type: g.String,
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/text',
-      views: '@keystone-6/core/fields/types/text/views',
+      views: () => import('@keystone-6/core/fields/types/text/views'),
       getAdminMeta(): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',

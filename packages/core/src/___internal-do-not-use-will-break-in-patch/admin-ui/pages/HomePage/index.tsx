@@ -1,3 +1,4 @@
+'use client'
 import { type PropsWithChildren, useId, useMemo, useRef } from 'react'
 
 import { gql, useQuery } from '../../../../admin-ui/apollo'
@@ -95,6 +96,7 @@ function ListCard({
   hideCreate: boolean
 }) {
   const list = useList(listKey)
+  const { basePath } = useKeystone()
   const countElementId = useId()
   const countElement = (() => {
     if (list.isSingleton) return null
@@ -124,7 +126,7 @@ function ListCard({
         <Heading elementType="h3" size="small" truncate>
           <CardLink
             aria-describedby={countElementId}
-            href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+            href={`${basePath}/${list.path}${list.isSingleton ? '/1' : ''}`}
           >
             {list.label}
           </CardLink>
@@ -135,7 +137,7 @@ function ListCard({
 
       {hideCreate === false && !list.isSingleton && (
         <TooltipTrigger>
-          <ActionButton aria-label="add" href={`/${list.path}/create`}>
+          <ActionButton aria-label="add" href={`${basePath}/${list.path}/create`}>
             <Icon src={plusIcon} />
           </ActionButton>
           <Tooltip>Add {list.singular.toLowerCase()}</Tooltip>

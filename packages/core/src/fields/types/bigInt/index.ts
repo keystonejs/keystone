@@ -160,7 +160,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: g.BigInt }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
-      views: '@keystone-6/core/fields/types/bigInt/views',
+      views: () => import('@keystone-6/core/fields/types/bigInt/views'),
       getAdminMeta() {
         return {
           validation: {

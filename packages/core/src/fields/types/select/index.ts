@@ -97,7 +97,7 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
         validate,
       },
       __ksTelemetryFieldTypeName: '@keystone-6/select',
-      views: '@keystone-6/core/fields/types/select/views',
+      views: () => import('@keystone-6/core/fields/types/select/views'),
       getAdminMeta: () => ({
         options,
         type: config.type ?? 'string',

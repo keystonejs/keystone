@@ -217,7 +217,7 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/image',
-      views: '@keystone-6/core/fields/types/image/views',
+      views: () => import('@keystone-6/core/fields/types/image/views'),
     })
   }
 }

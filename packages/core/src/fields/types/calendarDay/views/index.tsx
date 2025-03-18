@@ -1,3 +1,4 @@
+'use client'
 import { CalendarDate, getLocalTimeZone, now, parseDate } from '@internationalized/date'
 import { useDateFormatter } from '@react-aria/i18n'
 import { useMemo, useReducer, useState } from 'react'

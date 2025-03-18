@@ -31,7 +31,7 @@ export const lists = {
           [1, 1, 1], // grid layout 1fr 1fr 1fr
         ],
         ui: {
-          views: './src/component-blocks',
+          views: () => import('./component-blocks/client'),
         },
         componentBlocks,
       }),

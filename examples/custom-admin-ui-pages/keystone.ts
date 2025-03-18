@@ -1,5 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
+import { CustomNavigation } from './admin/components/CustomNavigation'
 
 export default config({
   db: {
@@ -10,4 +11,9 @@ export default config({
     prismaClientPath: 'node_modules/myprisma',
   },
   lists,
+  ui: {
+    components: {
+      Navigation: CustomNavigation,
+    },
+  },
 })

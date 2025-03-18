@@ -95,7 +95,7 @@ export function stars<ListTypeInfo extends BaseListTypeInfo>({
           return value
         },
       }),
-      views: './2-stars-field/views',
+      views: () => import('./views'),
       getAdminMeta() {
         return { maxStars }
       },

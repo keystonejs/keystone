@@ -1,3 +1,4 @@
+'use client'
 import { type Key, useMemo, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 

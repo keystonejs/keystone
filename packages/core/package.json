@@ -56,6 +56,11 @@
       "module": "./scripts/dist/keystone-6-core-scripts.esm.js",
       "default": "./scripts/dist/keystone-6-core-scripts.cjs.js"
     },
+    "./admin-ui/embed": {
+      "types": "./admin-ui/embed/dist/keystone-6-core-admin-ui-embed.cjs.js",
+      "module": "./admin-ui/embed/dist/keystone-6-core-admin-ui-embed.esm.js",
+      "default": "./admin-ui/embed/dist/keystone-6-core-admin-ui-embed.cjs.js"
+    },
     "./admin-ui/image": {
       "types": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js",
       "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
@@ -66,15 +71,15 @@
       "module": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.esm.js",
       "default": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.cjs.js"
     },
-    "./admin-ui/router": {
-      "types": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.js",
-      "module": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.esm.js",
-      "default": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.js"
-    },
     "./admin-ui/context": {
       "types": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.js",
       "module": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js",
       "default": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.js"
+    },
+    "./admin-ui/navigation": {
+      "types": "./admin-ui/navigation/dist/keystone-6-core-admin-ui-navigation.cjs.js",
+      "module": "./admin-ui/navigation/dist/keystone-6-core-admin-ui-navigation.esm.js",
+      "default": "./admin-ui/navigation/dist/keystone-6-core-admin-ui-navigation.cjs.js"
     },
     "./admin-ui/utils": {
       "types": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.cjs.js",
@@ -196,10 +201,10 @@
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App": {
-      "types": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.js",
-      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.js"
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/Layout": {
+      "types": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/Layout/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-Layout.cjs.js",
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/Layout/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-Layout.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/Layout/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-Layout.cjs.js"
     },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage": {
       "types": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.js",
@@ -316,7 +321,8 @@
       "admin-ui/components/index.ts",
       "admin-ui/apollo.tsx",
       "admin-ui/context.tsx",
-      "admin-ui/router.tsx",
+      "admin-ui/navigation.tsx",
+      "admin-ui/embed.tsx",
       "admin-ui/image.tsx",
       "admin-ui/utils/index.ts",
       "fields/index.ts",

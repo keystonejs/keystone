@@ -6,13 +6,14 @@ import type express from 'express'
 import type { GraphQLSchema } from 'graphql'
 import type { Options as BodyParserOptions } from 'body-parser'
 
-import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
+import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider, NavigationProps } from '..'
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
 import type { IdFieldConfig, ListConfig, MaybeItemFunction, MaybeSessionFunction } from './lists'
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
 import type { ListHooks, FieldHooks } from './hooks'
+import type { ReactNode } from 'react'
 
 export type * from './access-control'
 export type * from './fields'
@@ -165,6 +166,11 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       wasAccessAllowed: boolean
       basePath: string
     }) => MaybePromise<{ kind: 'redirect'; to: string } | void>
+
+    components?: {
+      Logo?: () => ReactNode
+      Navigation?: (props: NavigationProps) => ReactNode
+    }
   }
 }
 

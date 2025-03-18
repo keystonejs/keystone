@@ -54,7 +54,7 @@ export function Fields({
         key={fieldKey}
         autoFocus={autoFocus}
         forceValidation={forceValidation && invalidFields.has(fieldKey)}
-        field={field.controller}
+        field={field.controller as any}
         onChange={
           fieldMode === 'read' || onChange === undefined
             ? undefined

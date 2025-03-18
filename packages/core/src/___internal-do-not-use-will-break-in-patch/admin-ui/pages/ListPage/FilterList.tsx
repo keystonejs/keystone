@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router'
 import { type FormEvent, useId, useState, type ReactNode } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -24,6 +24,8 @@ export function FilterList({ filters, list }: { filters: Filter[]; list: ListMet
 
 function FilterTag({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
   const Label = field.controller.filter!.Label as (props: {
@@ -32,8 +34,10 @@ function FilterTag({ filter, field }: { filter: Filter; field: FieldMeta }) {
     value: any
   }) => ReactNode
   const onRemove = () => {
-    const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query
-    router.push({ pathname: router.pathname, query: queryToKeep })
+    const newSearchParams = new URLSearchParams(searchParams)
+    newSearchParams.delete(`!${filter.field}_${filter.type}`)
+    const stringifiedSearchParams = newSearchParams.toString()
+    router.push(`${pathname}${stringifiedSearchParams ? `?${stringifiedSearchParams}` : ''}`)
   }
   const tagElement = (
     <Tag onRemove={onRemove}>
@@ -73,6 +77,8 @@ function FilterDialog({
 }) {
   const formId = useId()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [value, setValue] = useState(filter.value)
 
   const onSubmit = (event: FormEvent) => {
@@ -87,12 +93,10 @@ function FilterDialog({
       return
     }
 
-    router.push({
-      query: {
-        ...router.query,
-        [`!${filter.field}_${filter.type}`]: JSON.stringify(value),
-      },
-    })
+    const newSearchParams = new URLSearchParams(searchParams)
+    newSearchParams.set(`!${filter.field}_${filter.type}`, JSON.stringify(value))
+    router.push(`${pathname}${newSearchParams}`)
+
     onDismiss()
   }
 

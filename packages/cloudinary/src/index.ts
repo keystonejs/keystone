@@ -211,7 +211,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
             }
           },
         }),
-        views: '@keystone-6/cloudinary/views',
+        views: () => import('@keystone-6/cloudinary/views'),
       },
       {
         map: config.db?.map,

@@ -168,7 +168,7 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: g.field({ type: scalar }),
       __ksTelemetryFieldTypeName: '@keystone-6/bytes',
-      views: '@keystone-6/core/fields/types/bytes/views',
+      views: () => import('@keystone-6/core/fields/types/bytes/views'),
       getAdminMeta(): TextFieldMeta {
         return {
           validation: {

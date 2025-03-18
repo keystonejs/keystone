@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 import { useFilter, useListFormatter } from '@react-aria/i18n'
 

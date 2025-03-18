@@ -38,7 +38,7 @@ export const json =
           update: { arg: g.arg({ type: g.JSON }) },
         },
         output: g.field({ type: g.JSON }),
-        views: '@keystone-6/core/fields/types/json/views',
+        views: () => import('@keystone-6/core/fields/types/json/views'),
         getAdminMeta: () => ({ defaultValue }),
       },
       {

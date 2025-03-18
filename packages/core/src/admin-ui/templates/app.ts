@@ -1,60 +1,24 @@
 import Path from 'path'
-import resolve from 'resolve'
 
 import type { AdminMetaSource } from '../../lib/create-admin-meta'
 import type { KeystoneConfig } from '../../types'
 
-function doesConfigExist(path: string[]) {
-  try {
-    const configPath = Path.join(process.cwd(), ...path)
-    resolve.sync(configPath, {
-      extensions: ['.ts', '.tsx', '.js'],
-      preserveSymlinks: false,
-    })
-    return true
-  } catch (err: any) {
-    if (err.code === 'MODULE_NOT_FOUND') return false
-    throw err
-  }
-}
-
-export function appTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource) {
-  const allViews = adminMeta.views.map(viewRelativeToProject => {
-    const isRelativeToFile =
-      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
-    const viewRelativeToAppFile = isRelativeToFile
-      ? '../../../' + viewRelativeToProject
-      : viewRelativeToProject
-
-    // we're not using serializePathForImport here because we want the thing you write for a view
-    // to be exactly what you would put in an import in the project directory.
-    // we're still using JSON.stringify to escape anything that might need to be though
-    return JSON.stringify(viewRelativeToAppFile)
-  })
+export function layoutTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource, dir: string) {
+  const prismaPath =
+    config.db.prismaClientPath === '@prisma/client'
+      ? '@prisma/client'
+      : Path.relative(
+          Path.join(process.cwd(), '.keystone/admin', dir),
+          Path.join(process.cwd(), config.db.prismaClientPath)
+        )
+          .split(Path.sep)
+          .join('/')
+  const segments = dir.split('/').length
   // -- TEMPLATE START
-  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
+  return `import { getLayout } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/Layout'
+import config from '${'../'.repeat(segments + 2)}keystone'
+import * as Prisma from ${JSON.stringify(prismaPath)}
 
-${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
-
-${
-  doesConfigExist(['.keystone', 'admin', 'config'])
-    ? `import * as packageAdminConfig from "../../../.keystone/admin/config"`
-    : 'let packageAdminConfig = {}'
-}
-
-${
-  doesConfigExist(['admin', 'config'])
-    ? `import * as userAdminConfig from "../../../admin/config"`
-    : 'let userAdminConfig = {}'
-}
-
-export default getApp({
-  adminConfig: {
-    ...packageAdminConfig,
-    ...userAdminConfig
-  },
-  apiPath: "${config.graphql.path}",
-  fieldViews: [${allViews.map((_, i) => `view${i}`)}],
-})
+export default getLayout(config, Prisma)
 `
 }
