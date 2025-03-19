@@ -7,13 +7,10 @@ Keystone [fields](../fields/overview) include the `image` and `file` types.
 You can use them to manage images and/or files from within Keystone.
 This guide will show you how to configure images and files in your Keystone schema backed with [Amazon S3 Storage](https://aws.amazon.com/s3/), and thereby guide you on how you could setup a similar setup with a different storage provider.
 
-## How asset storage works in Keystone
-
-Keystone's file and image fields accept a `storage` object that defines how files are uploaded, deleted and how to get a URL to the file which Keystone returns over the GraphQL API.
-
 ## Storage with Amazon S3
 
-This example shows you could setup Keystone to store images in a public S3 bucket and files in a private S3 bucket.
+Image and file fields accept a `storage` object that can define the functions for how assets will be uploaded, deleted and linked when interacting with Keystone's GraphQL API.
+This example shows an example of how you could store public images in a public S3 bucket, and private files in a private S3 bucket.
 
 ```typescript
 import { list } from '@keystone-6/core'
