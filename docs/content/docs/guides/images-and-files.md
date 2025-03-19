@@ -3,7 +3,9 @@ title: "Images and Files"
 description: "Learn how to add Images and Files to your project using Keystone’s Storage configuration"
 ---
 
-Keystone [fields](../fields/overview) include the `image` and `file` types. You can use them to upload and reference images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets using [Amazon S3 storage](https://aws.amazon.com/s3/), you could also store files anywhere else with a similar setup.
+Keystone [fields](../fields/overview) include the `image` and `file` types.
+You can use them to manage images and/or files from within Keystone.
+This guide will show you how to configure images and files in your Keystone schema backed with [Amazon S3 Storage](https://aws.amazon.com/s3/), and thereby guide you on how you could setup a similar setup with a different storage provider.
 
 ## How asset storage works in Keystone
 
