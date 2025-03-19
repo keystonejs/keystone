@@ -22,7 +22,6 @@ export default config({
   session: { /* ... */ },
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
-  storage: { /* ... */ },
 });
 ```
 
@@ -370,105 +369,6 @@ export default config<TypeInfo>({
 ```
 
 See the [schema extension guide](../guides/schema-extension) for more details and tooling options on how to extend your GraphQL API.
-
-## storage (images and files)
-
-The `storage` config option provides configuration which is used by the [`file`](../fields/file) field type or the
-[`image`](../fields/image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
-Each storage is configured separately using the options below.
-
-A single storage may be used by multiple file or image fields, but only for files or images.
-
-Options:
-
-- `kind`: Whether the storage will be on the machine `"local"`, or in an [s3 bucket](https://aws.amazon.com/s3/) `"s3"`
-- `type`: Sets whether image fields or file fields should be used with this storage
-- `preserve`: Defines whether the items should be deleted at the source when they are removed from Keystone's database. We
-  recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference. The
-  default is `false`.
-- `transformName`: A function that creates the name for the file or image. This works a bit differently for files and images, which we'll explain below
-
-**For files:** transformName accepts a `filename` and returns a `filename` - the returned filename is what will be used as the name of the file at
-the storage location, and will be remmembered by the field to to look up at the database. For the default, we will return `${filename}-${RANDOM_ID}${extension}`
-**For images:** tranformName accepts both a `filename` and an `extension` - the passed filename will include the extension. The return should be the
-filename you want to use as the `id` for the image, and the unique identifier. We will add the extension on to the id provided. By default we return
-a unique identifier here.
-
-When using `transformName` you should ensure that these are unique
-
-Local options:
-
-- `generateUrl`: A function that recieves a partial path with the filename and extension, and the result
-  of which will be used as the `url` in the field's graphql - this should point to where the client can retrieve the item.
-- `serverRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
-  keystone to host the images, otherwise set it to an object with a `path` property
-  - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
-
-S3 options:
-
-- `bucketName`: The name of your s3 bucket
-- `region`: The region your s3 instance is hosted in
-- `accessKeyId`: Your s3 access Key ID
-- `secretAccessKey`: Your Access Key secret
-- `generateUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
-  from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
-- `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
-- `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
-- `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
-- `signed.expiry`: Use S3 URL signing to keep S3 assets private. `expiry` is in seconds
-- `acl`: Set the permissions for the uploaded asset. If not set, the permissions of the asset will depend on your S3 provider's default settings.
-These values are supported:
-  - `'private'` No public access.
-  - `'public-read'` Public read access.
-  - `'public-read-write'` Public read and write access.
-  - `'aws-exec-read'` Amazon EC2 gets read access.
-  - `'authenticated-read'` Authenticated users get access.
-  - `'bucket-owner-read'` Bucket owner gets read access.
-  - `'bucket-owner-full-control'` Bucket owner gets full control.
-
-  See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl for more details.
-
-```typescript
-import { config } from '@keystone-6/core';
-import dotenv from 'dotenv';
-/* ... */
-
-dotenv.config();
-
-const {
-  S3_BUCKET_NAME: bucketName = 'keystone-test',
-  S3_REGION: region = 'ap-southeast-2',
-  S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
-  S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
-} = process.env;
-
-export default config<TypeInfo>({
-   /* ... */
-  storage: {
-    my_S3_images: {
-      kind: 's3',
-      type: 'image',
-      bucketName,
-      region,
-      accessKeyId,
-      secretAccessKey,
-      proxied: { baseUrl: '/images-proxy' },
-      signed: { expiry: 5000 }
-      endpoint: 'http://127.0.0.1:9000/',
-      forcePathStyle: true,
-    },
-    my_local_images: {
-      kind: 'local',
-      type: 'image',
-      generateUrl: path => `http://localhost:3000/images${path}`,
-      serverRoute: {
-        path: '/images',
-      },
-      storagePath: 'public/images',
-    },
-  },
-});
-```
 
 ## Related resources
 

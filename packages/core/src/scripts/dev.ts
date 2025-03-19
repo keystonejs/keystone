@@ -140,14 +140,6 @@ export async function dev(
       await (async function () {
         const system = createSystem(stripExtendHttpServer(configWithExtendHttp))
 
-        // mkdir's for local storage
-        for (const val of Object.values(system.config.storage)) {
-          if (val.kind !== 'local') continue
-
-          await fsp.mkdir(val.storagePath, { recursive: true })
-          console.warn(`WARNING: 'mkdir -p ${val.storagePath}' won't happen in production`)
-        }
-
         // Generate the Artifacts
         if (prisma) {
           console.log('✨ Generating GraphQL and Prisma schemas')

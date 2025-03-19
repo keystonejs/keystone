@@ -28,7 +28,6 @@ for (const modulePath of testModules) {
             },
           }),
         },
-        ...mod.getRootConfig?.(matrixValue),
       },
     })
 
