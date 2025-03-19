@@ -16,7 +16,7 @@ import { randomBytes } from 'node:crypto'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: StorageStrategy<BaseKeystoneTypeInfo>
+    storage: StorageStrategy<ListTypeInfo['all']>
     transformName?: (originalFilename: string) => MaybePromise<string>
     db?: {
       extendPrismaSchema?: (field: string) => string

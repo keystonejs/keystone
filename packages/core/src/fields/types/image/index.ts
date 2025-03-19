@@ -19,7 +19,7 @@ import { getBytesFromStream, getImageMetadata, teeStream } from './internal-util
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    storage: StorageStrategy<BaseKeystoneTypeInfo>
+    storage: StorageStrategy<ListTypeInfo['all']>
     transformName?: (originalFilename: string, extension: string) => MaybePromise<string>
     db?: {
       extendPrismaSchema?: (field: string) => string
