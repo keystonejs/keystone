@@ -2,4 +2,4 @@
 "@keystone-6/core": major
 ---
 
-Replace global `storage` config with `storage` config on `image` and `file` fields that directly defines how to upload/delete/get a url for a file.
+Move `storage` configuration to `image` and `file` fields, with a new `StorageStrategy` interface that directly defines how `put`, `delete` and `url` functions
