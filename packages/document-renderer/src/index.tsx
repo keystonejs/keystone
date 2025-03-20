@@ -1,6 +1,16 @@
 import React, { Fragment, type ReactElement, type ReactNode, type JSX } from 'react'
 
-type Node = Element | Text
+export type Node = Element | Text
+
+export type Element = {
+  children: Node[]
+  [key: string]: unknown
+}
+
+export type Text = {
+  text: string
+  [key: string]: unknown
+}
 
 type Mark =
   | 'bold'
@@ -11,16 +21,6 @@ type Mark =
   | 'superscript'
   | 'subscript'
   | 'keyboard'
-
-type Element = {
-  children: Node[]
-  [key: string]: unknown
-}
-
-type Text = {
-  text: string
-  [key: string]: unknown
-}
 
 type Component<Props> = (props: Props) => ReactElement | null
 
