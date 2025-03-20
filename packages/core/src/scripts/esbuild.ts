@@ -1,6 +1,7 @@
 // WARNING: be careful not to import this file within next
 import esbuild, { type BuildOptions } from 'esbuild'
 import nodePath from 'node:path'
+import fs from 'node:fs/promises'
 
 function identity(x: BuildOptions) {
   return x
@@ -35,6 +36,12 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
   const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
   const resolveDir = nodePath.join(cwd, '.keystone')
   const importer = nodePath.join(cwd, '.keystone/config.js')
+  // we need the .keystone directory to exist so when we resolve from it below, it actually exists
+  await fs.mkdir(resolveDir, {
+    // while we don't need to actually make this recursive,
+    // this will make mkdir not error when the directory already exists
+    recursive: true,
+  })
   return esbuildFn({
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
