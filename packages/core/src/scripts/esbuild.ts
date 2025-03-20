@@ -40,6 +40,7 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
     absWorkingDir: cwd,
     bundle: true,
     sourcemap: true,
+    jsx: 'automatic',
     // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
     outfile: '.keystone/config.js',
     format: 'cjs',
