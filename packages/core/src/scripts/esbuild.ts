@@ -33,6 +33,8 @@ async function getEsbuildConfigFn(
 
 export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
   const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
+  const resolveDir = nodePath.join(cwd, '.keystone')
+  const importer = nodePath.join(cwd, '.keystone/config.js')
   return esbuildFn({
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
@@ -68,8 +70,8 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
                 resolved.path.includes('node_modules')
               ) {
                 const resolvedFromOutput = await build.resolve(path, {
-                  resolveDir: '.keystone',
-                  importer: '.keystone/',
+                  resolveDir,
+                  importer,
                   kind: 'import-statement',
                   namespace: 'inner',
                 })
