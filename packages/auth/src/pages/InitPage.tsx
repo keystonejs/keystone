@@ -49,12 +49,8 @@ function InitPage({
     }`)
 
   const onSubmit = async (e: React.FormEvent) => {
+    if (e.target !== e.currentTarget) return
     e.preventDefault()
-
-    // NOTE: React events bubble through portals, this prevents the
-    // parent form being submitted.
-    e.stopPropagation()
-
     const builtItem = await builder.build()
     if (!builtItem) return
 
