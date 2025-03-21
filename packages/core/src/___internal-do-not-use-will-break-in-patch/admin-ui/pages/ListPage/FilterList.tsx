@@ -76,6 +76,7 @@ function FilterDialog({
   const [value, setValue] = useState(filter.value)
 
   const onSubmit = (event: FormEvent) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
 
     // TODO: Special "empty" types need to be documented somewhere. Filters that

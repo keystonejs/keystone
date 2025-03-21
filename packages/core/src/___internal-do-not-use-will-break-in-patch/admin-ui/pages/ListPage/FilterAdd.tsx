@@ -36,6 +36,7 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
     }, 200)
   }
   const onSubmit = (event: FormEvent) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
     setForceValidation(true)
 

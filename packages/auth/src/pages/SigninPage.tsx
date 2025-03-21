@@ -53,6 +53,7 @@ function SigninPage({
   )
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
 
     try {

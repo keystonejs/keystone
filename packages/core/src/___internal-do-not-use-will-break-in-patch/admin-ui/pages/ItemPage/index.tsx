@@ -1,5 +1,6 @@
 import React, {
   type PropsWithChildren,
+  type FormEvent,
   Fragment,
   useCallback,
   useEffect,
@@ -39,7 +40,7 @@ type ItemPageProps = {
   listKey: string
 }
 
-function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Func): Func {
   const callbackRef = useRef(callback)
   const cb = useCallback((...args: any[]) => {
     return callbackRef.current(...args)
@@ -179,7 +180,8 @@ function ItemForm({
 
   const invalidFields = useInvalidFields(list.fields, value)
   const [forceValidation, setForceValidation] = useState(false)
-  const onSave = useEventCallback(async e => {
+  const onSave = useEventCallback(async (e: FormEvent<HTMLFormElement>) => {
+    if (e.target !== e.currentTarget) return
     e.preventDefault()
     const newForceValidation = invalidFields.size !== 0
     setForceValidation(newForceValidation)
@@ -194,11 +196,12 @@ function ItemForm({
 
     const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
     if (error) {
-      return toastQueue.critical('Unable to save item', {
+      toastQueue.critical('Unable to save item', {
         actionLabel: 'Details',
         onAction: () => setErrorDialogValue(new Error(error.message)),
         shouldCloseOnAction: true,
       })
+      return
     }
 
     toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {

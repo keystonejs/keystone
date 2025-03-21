@@ -28,6 +28,7 @@ function CreateItemPage({ listKey }: { listKey: string }) {
       <ColumnLayout>
         <form
           onSubmit={async e => {
+            if (e.target !== e.currentTarget) return
             e.preventDefault()
 
             const item = await createItem.create()
