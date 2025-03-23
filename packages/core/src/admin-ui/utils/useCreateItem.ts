@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { type ComponentProps, useEffect, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
@@ -13,6 +12,8 @@ import {
   useHasChanges,
   useInvalidFields,
 } from '../../admin-ui/utils'
+import { useKeystone } from '../context'
+import { useRouter } from '../router'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
@@ -24,6 +25,7 @@ type CreateItemHookResult = {
 
 export function useCreateItem(list: ListMeta): CreateItemHookResult {
   const router = useRouter()
+  const { adminPath } = useKeystone()
   const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
       item: ${list.graphql.names.createMutationName}(data: $data) {
@@ -101,7 +103,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         timeout: 5000,
         actionLabel: 'Create another',
         onAction: () => {
-          router.push(`/${list.path}/create`)
+          router.push(`${adminPath}/${list.path}/create`)
         },
         shouldCloseOnAction: true,
       })

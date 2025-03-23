@@ -165,6 +165,8 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       wasAccessAllowed: boolean
       basePath: string
     }) => MaybePromise<{ kind: 'redirect'; to: string } | void>
+    /** Generate .tsx files instead of .js */
+    tsx?: boolean
   }
 }
 
@@ -193,7 +195,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
 export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 export type AdminFileToWrite =
-  | { mode: 'write'; src: string; outputPath: string }
-  | { mode: 'copy'; inputPath: string; outputPath: string }
+  | { mode: 'write'; src: string; outputPath: string; overwrite?: boolean }
+  | { mode: 'copy'; inputPath: string; outputPath: string; overwrite?: boolean }
 
 export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }

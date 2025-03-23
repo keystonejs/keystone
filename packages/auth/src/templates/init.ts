@@ -10,7 +10,8 @@ export default function ({
   listKey: string
   initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>
 }) {
-  return `import makeInitPage from '@keystone-6/auth/pages/InitPage'
+  return `'use client'
+import makeInitPage from '@keystone-6/auth/pages/InitPage'
 
 export default makeInitPage(${JSON.stringify({
     listKey,
