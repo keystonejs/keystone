@@ -27,46 +27,46 @@ type RelationshipsConfig = Record<
 
 type FormattingConfig = {
   inlineMarks?:
-    | true
+    | boolean
     | {
-        bold?: true
-        italic?: true
-        underline?: true
-        strikethrough?: true
-        code?: true
-        superscript?: true
-        subscript?: true
-        keyboard?: true
+        bold?: boolean
+        italic?: boolean
+        underline?: boolean
+        strikethrough?: boolean
+        code?: boolean
+        superscript?: boolean
+        subscript?: boolean
+        keyboard?: boolean
       }
   listTypes?:
-    | true
+    | boolean
     | {
-        ordered?: true
-        unordered?: true
+        ordered?: boolean
+        unordered?: boolean
       }
   alignment?:
-    | true
+    | boolean
     | {
-        center?: true
-        end?: true
+        center?: boolean
+        end?: boolean
       }
-  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[]
+  headingLevels?: boolean | readonly (1 | 2 | 3 | 4 | 5 | 6)[]
   blockTypes?:
-    | true
+    | boolean
     | {
-        blockquote?: true
-        code?: true
+        blockquote?: boolean
+        code?: boolean
       }
-  softBreaks?: true
+  softBreaks?: boolean
 }
 
 export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     relationships?: RelationshipsConfig
     componentBlocks?: Record<string, ComponentBlock>
-    formatting?: true | FormattingConfig
-    links?: true
-    dividers?: true
+    formatting?: boolean | FormattingConfig
+    links?: boolean
+    dividers?: boolean
     layouts?: readonly (readonly [number, ...number[]])[]
     db?: { map?: string; extendPrismaSchema?: (field: string) => string }
   }
@@ -200,70 +200,54 @@ function normaliseDocumentFeatures(
     'formatting' | 'dividers' | 'layouts' | 'links'
   >
 ) {
-  const formatting: FormattingConfig =
-    config.formatting === true
+  const {
+    alignment,
+    blockTypes,
+    headingLevels,
+    inlineMarks,
+    listTypes,
+    softBreaks,
+  }: FormattingConfig =
+    typeof config.formatting === 'boolean'
       ? {
-          alignment: true,
-          blockTypes: true,
-          headingLevels: true,
-          inlineMarks: true,
-          listTypes: true,
-          softBreaks: true,
+          alignment: config.formatting,
+          blockTypes: config.formatting,
+          headingLevels: config.formatting,
+          inlineMarks: config.formatting,
+          listTypes: config.formatting,
+          softBreaks: config.formatting,
         }
       : (config.formatting ?? {})
+
   const documentFeatures: DocumentFeatures = {
     formatting: {
-      alignment:
-        formatting.alignment === true
-          ? {
-              center: true,
-              end: true,
-            }
-          : {
-              center: !!formatting.alignment?.center,
-              end: !!formatting.alignment?.end,
-            },
-      blockTypes:
-        formatting?.blockTypes === true
-          ? { blockquote: true, code: true }
-          : {
-              blockquote: !!formatting.blockTypes?.blockquote,
-              code: !!formatting.blockTypes?.code,
-            },
+      alignment: {
+        center: typeof alignment === 'boolean' ? alignment : !!alignment?.center,
+        end: typeof alignment === 'boolean' ? alignment : !!alignment?.end,
+      },
+      blockTypes: {
+        blockquote: typeof blockTypes === 'boolean' ? blockTypes : !!blockTypes?.blockquote,
+        code: typeof blockTypes === 'boolean' ? blockTypes : !!blockTypes?.code,
+      },
       headingLevels:
-        formatting?.headingLevels === true
-          ? [1, 2, 3, 4, 5, 6]
-          : [...new Set(formatting?.headingLevels)].sort(),
-      inlineMarks:
-        formatting.inlineMarks === true
-          ? {
-              bold: true,
-              code: true,
-              italic: true,
-              keyboard: true,
-              strikethrough: true,
-              subscript: true,
-              superscript: true,
-              underline: true,
-            }
-          : {
-              bold: !!formatting.inlineMarks?.bold,
-              code: !!formatting.inlineMarks?.code,
-              italic: !!formatting.inlineMarks?.italic,
-              strikethrough: !!formatting.inlineMarks?.strikethrough,
-              underline: !!formatting.inlineMarks?.underline,
-              keyboard: !!formatting.inlineMarks?.keyboard,
-              subscript: !!formatting.inlineMarks?.subscript,
-              superscript: !!formatting.inlineMarks?.superscript,
-            },
-      listTypes:
-        formatting.listTypes === true
-          ? { ordered: true, unordered: true }
-          : {
-              ordered: !!formatting.listTypes?.ordered,
-              unordered: !!formatting.listTypes?.unordered,
-            },
-      softBreaks: !!formatting.softBreaks,
+        typeof headingLevels === 'boolean'
+          ? ([1, 2, 3, 4, 5, 6] as const).filter(_ => headingLevels)
+          : [...new Set(headingLevels)].sort(),
+      inlineMarks: {
+        bold: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.bold,
+        code: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.code,
+        italic: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.italic,
+        strikethrough: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.strikethrough,
+        underline: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.underline,
+        keyboard: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.keyboard,
+        subscript: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.subscript,
+        superscript: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.superscript,
+      },
+      listTypes: {
+        ordered: typeof listTypes === 'boolean' ? listTypes : !!listTypes?.ordered,
+        unordered: typeof listTypes === 'boolean' ? listTypes : !!listTypes?.unordered,
+      },
+      softBreaks: typeof softBreaks === 'boolean' ? softBreaks : !!softBreaks,
     },
     links: !!config.links,
     layouts: [...new Set((config.layouts || []).map(x => JSON.stringify(x)))].map(x =>
