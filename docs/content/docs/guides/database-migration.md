@@ -18,7 +18,7 @@ Before running `keystone start` with a production database, your database schema
 Keystone can help you manage this process by generating migration files, which can then be committed with your code and used in a production environment.
 
 ### Pre-requisites
-If you haven't configured a shadow database, `keystone migrate` will attempt to use your current database to make a temporary database.
+If you haven't configured a shadow database, `keystone migrate` will attempt to use your existing `db.url` to make a temporary database.
 Alternatively, you can add a `shadowDatabaseUrl` in your Keystone configuration or on the command line using `--shadow-database-url`:
 
 ```sh
