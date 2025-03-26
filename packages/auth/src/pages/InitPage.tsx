@@ -29,7 +29,7 @@ function InitPage({
   const redirect = useRedirect()
   const list = useList(listKey)
 
-  const builder = useBuildItem(list)
+  const builder = useBuildItem(list, fieldPaths)
   const {
     createInitialItem,
     CreateInitialInput,
