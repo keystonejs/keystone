@@ -118,9 +118,12 @@ type BuildItemHookResult = {
   build: () => Promise<Record<string, unknown> | undefined>
 }
 
-export function useBuildItem(list: ListMeta): BuildItemHookResult {
+export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
+  const fields = fieldKeys.length
+    ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key)))
+    : list.fields
   const invalidFields = useInvalidFields(list.fields, value)
 
   return {
@@ -128,7 +131,7 @@ export function useBuildItem(list: ListMeta): BuildItemHookResult {
     props: {
       view: 'createView',
       position: 'form',
-      fields: list.fields,
+      fields,
       groups: list.groups,
       forceValidation,
       invalidFields,

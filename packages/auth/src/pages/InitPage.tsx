@@ -20,18 +20,16 @@ function InitPage({
   authGqlNames,
   listKey,
   fieldPaths,
-  enableWelcome,
 }: {
   authGqlNames: AuthGqlNames
   listKey: string
   fieldPaths: string[]
-  enableWelcome: boolean
 }) {
   const router = useRouter()
   const redirect = useRedirect()
   const list = useList(listKey)
 
-  const builder = useBuildItem(list)
+  const builder = useBuildItem(list, fieldPaths)
   const {
     createInitialItem,
     CreateInitialInput,
