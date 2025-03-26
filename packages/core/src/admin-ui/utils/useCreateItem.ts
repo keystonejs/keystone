@@ -118,7 +118,7 @@ type BuildItemHookResult = {
   build: () => Promise<Record<string, unknown> | undefined>
 }
 
-export function useBuildItem(list: ListMeta, fieldKeys?: string[] = []): BuildItemHookResult {
+export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
   const fields = fieldKeys.length
