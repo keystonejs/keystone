@@ -75,7 +75,7 @@ export async function migrateCreate(cwd: string, { frozen }: Pick<Flags, 'frozen
 provider = ${system.config.db.provider}`
   )
   // TODO: remove, should be Prisma
-  let cleanupDb = async () => {}
+  let deleteShadowDatabase = async () => {}
   let shadowDatabaseUrl = system.config.db.shadowDatabaseUrl
   if (system.config.db.provider !== 'sqlite' && !shadowDatabaseUrl) {
     const parsedUrl = new URL(system.config.db.url)
@@ -92,7 +92,7 @@ provider = ${system.config.db.provider}`
       )
       throw new ExitError(1)
     }
-    cleanupDb = async () => {
+    deleteShadowDatabase = async () => {
       await dropDatabase(shadowDatabaseUrl)
     }
   }
@@ -137,7 +137,7 @@ provider = ${system.config.db.provider}`
       throw new ExitError(prismaExitCode2)
     }
   } finally {
-    await cleanupDb()
+    await deleteShadowDatabase()
   }
 
   const prefix = new Date()
