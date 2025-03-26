@@ -2,4 +2,4 @@
 "@keystone-6/core": patch
 ---
 
-Adding a `shadowDatabaseUrl` is no longer necessary when using `keystone migrate create` when the database url used allows creating databases, similar to Prisma's built-in commands
+Change `keystone migrate create` to not require a `shadowDatabaseUrl`, opting to create a temporary new database if allowed
