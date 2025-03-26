@@ -87,7 +87,7 @@ provider = ${system.config.db.provider}`
       console.error(err)
       console.error(
         chalk.red(
-          'Failed to create shadow database, please provide a database url at db.shadowDatabaseUrl'
+          'Failed to create shadow database, db.shadowDatabaseUrl may be required'
         )
       )
       throw new ExitError(1)
