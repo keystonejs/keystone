@@ -237,7 +237,8 @@ function normaliseDocumentFeatures(
         bold: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.bold,
         code: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.code,
         italic: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.italic,
-        strikethrough: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.strikethrough,
+        strikethrough:
+          typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.strikethrough,
         underline: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.underline,
         keyboard: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.keyboard,
         subscript: typeof inlineMarks === 'boolean' ? inlineMarks : !!inlineMarks?.subscript,
