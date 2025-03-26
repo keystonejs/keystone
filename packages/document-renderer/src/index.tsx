@@ -22,7 +22,7 @@ type Mark =
   | 'subscript'
   | 'keyboard'
 
-type Component<Props> = (props: Props) => ReactElement | null
+type Component<Props> = (props: Props) => ReactNode
 
 type OnlyChildrenComponent = Component<{ children: ReactNode }> | keyof JSX.IntrinsicElements
 
@@ -41,14 +41,14 @@ interface Renderers {
     paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>
     blockquote: OnlyChildrenComponent
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements
-    layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>
+    layout: Component<{ layout: [number, ...number[]]; children: ReactNode[] }>
     divider: Component<unknown> | keyof JSX.IntrinsicElements
     heading: Component<{
       level: 1 | 2 | 3 | 4 | 5 | 6
       children: ReactNode
       textAlign: 'center' | 'end' | undefined
     }>
-    list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>
+    list: Component<{ type: 'ordered' | 'unordered'; children: ReactNode[] }>
   }
 }
 
