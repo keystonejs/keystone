@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
 
@@ -18,6 +19,7 @@ import {
 } from '../artifacts'
 import { type Flags } from './cli'
 import { ExitError, importBuiltKeystoneConfiguration } from './utils'
+import { createDatabase, dropDatabase } from '@prisma/internals'
 
 export async function spawnPrisma(
   cwd: string,
@@ -73,47 +75,67 @@ export async function migrateCreate(cwd: string, { frozen }: Pick<Flags, 'frozen
 provider = ${system.config.db.provider}`
   )
   // TODO: remove, should be Prisma
-
-  const paths = system.getPaths(cwd)
-  const { output: summary, exitCode: prismaExitCode } = await spawnPrisma(cwd, system, [
-    'migrate',
-    'diff',
-    ...(system.config.db.shadowDatabaseUrl
-      ? ['--shadow-database-url', system.config.db.shadowDatabaseUrl]
-      : []),
-    '--from-migrations',
-    'migrations/',
-    '--to-schema-datamodel',
-    paths.schema.prisma,
-  ])
-
-  if (typeof prismaExitCode === 'number' && prismaExitCode !== 0) {
-    console.error(summary)
-    throw new ExitError(prismaExitCode)
+  let deleteShadowDatabase = async () => {}
+  let shadowDatabaseUrl = system.config.db.shadowDatabaseUrl
+  if (system.config.db.provider !== 'sqlite' && !shadowDatabaseUrl) {
+    const parsedUrl = new URL(system.config.db.url)
+    parsedUrl.pathname = `ktmp${Date.now()}_${randomBytes(6).toString('hex')}`
+    shadowDatabaseUrl = parsedUrl.toString()
+    try {
+      await createDatabase(shadowDatabaseUrl)
+    } catch (err) {
+      console.error(err)
+      console.error(
+        chalk.red('Failed to create shadow database, db.shadowDatabaseUrl may be required')
+      )
+      throw new ExitError(1)
+    }
+    deleteShadowDatabase = async () => {
+      await dropDatabase(shadowDatabaseUrl)
+    }
   }
+  let sql
+  try {
+    const paths = system.getPaths(cwd)
+    const { output: summary, exitCode: prismaExitCode } = await spawnPrisma(cwd, system, [
+      'migrate',
+      'diff',
+      ...(shadowDatabaseUrl ? ['--shadow-database-url', shadowDatabaseUrl] : []),
+      '--from-migrations',
+      'migrations/',
+      '--to-schema-datamodel',
+      paths.schema.prisma,
+    ])
 
-  if (summary.startsWith('No difference detected')) {
-    console.error('🔄 Database unchanged from Prisma schema')
-    throw new ExitError(0)
-  }
+    if (typeof prismaExitCode === 'number' && prismaExitCode !== 0) {
+      console.error(summary)
+      throw new ExitError(prismaExitCode)
+    }
 
-  console.log(summary)
-  const { output: sql, exitCode: prismaExitCode2 } = await spawnPrisma(cwd, system, [
-    'migrate',
-    'diff',
-    ...(system.config.db.shadowDatabaseUrl
-      ? ['--shadow-database-url', system.config.db.shadowDatabaseUrl]
-      : []),
-    '--from-migrations',
-    'migrations/',
-    '--to-schema-datamodel',
-    paths.schema.prisma,
-    '--script',
-  ])
+    if (summary.startsWith('No difference detected')) {
+      console.error('🔄 Database unchanged from Prisma schema')
+      throw new ExitError(0)
+    }
 
-  if (typeof prismaExitCode2 === 'number' && prismaExitCode2 !== 0) {
-    console.error(sql)
-    throw new ExitError(prismaExitCode2)
+    console.log(summary)
+    const { output, exitCode: prismaExitCode2 } = await spawnPrisma(cwd, system, [
+      'migrate',
+      'diff',
+      ...(shadowDatabaseUrl ? ['--shadow-database-url', shadowDatabaseUrl] : []),
+      '--from-migrations',
+      'migrations/',
+      '--to-schema-datamodel',
+      paths.schema.prisma,
+      '--script',
+    ])
+    sql = output
+
+    if (typeof prismaExitCode2 === 'number' && prismaExitCode2 !== 0) {
+      console.error(sql)
+      throw new ExitError(prismaExitCode2)
+    }
+  } finally {
+    await deleteShadowDatabase()
   }
 
   const prefix = new Date()
