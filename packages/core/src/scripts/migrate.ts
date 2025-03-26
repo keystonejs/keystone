@@ -86,9 +86,7 @@ provider = ${system.config.db.provider}`
     } catch (err) {
       console.error(err)
       console.error(
-        chalk.red(
-          'Failed to create shadow database, db.shadowDatabaseUrl may be required'
-        )
+        chalk.red('Failed to create shadow database, db.shadowDatabaseUrl may be required')
       )
       throw new ExitError(1)
     }
