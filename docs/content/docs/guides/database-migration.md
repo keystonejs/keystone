@@ -19,11 +19,7 @@ Keystone can help you manage this process by generating migration files, which c
 
 ### Pre-requisites
 If you haven't configured a shadow database, `keystone migrate` will attempt to use a derivative of your `db.url` to make a random temporary database.
-Alternatively, you can add a `shadowDatabaseUrl` in your Keystone configuration or on the command line using `--shadow-database-url`:
-
-```sh
-keystone migrate create --shadow-database-url=<your-shadow-db-url>
-```
+Alternatively, you can add a `shadowDatabaseUrl` in your Keystone configuration.
 
 If you don't know what a shadow database is, please see the [Prisma documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
 
@@ -138,11 +134,7 @@ prisma migrate resolve --rolled-back "<migration_name>"
 For more details, see [Prisma's documentation](https://www.prisma.io/docs/orm/prisma-migrate/workflows/generating-down-migrations).
 
 ### "I'm getting a shadow database error in CI."
-Ensure that the `shadowDatabaseUrl` is correctly set in your Keystone configuration. You can also provide it as a parameter when running migrations:
-
-```sh
-keystone migrate apply --shadow-database-url=<your-shadow-db-url>
-```
+Ensure that the `shadowDatabaseUrl` is correctly set in your Keystone configuration.
 
 ## Using Prisma Migrate for Advanced Workflows
 For more complex migration workflows, refer to the official [Prisma Migrate documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate).
