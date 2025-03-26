@@ -22,7 +22,7 @@ If you haven't configured a shadow database, `keystone migrate` will attempt to 
 Alternatively, you can add a `shadowDatabaseUrl` in your Keystone configuration or on the command line using `--shadow-database-url`:
 
 ```sh
-keystone migrate apply --shadow-database-url=<your-shadow-db-url>
+keystone migrate create --shadow-database-url=<your-shadow-db-url>
 ```
 
 If you don't know what a shadow database is, please see the [Prisma documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
