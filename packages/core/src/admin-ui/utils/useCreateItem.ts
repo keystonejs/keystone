@@ -121,7 +121,9 @@ type BuildItemHookResult = {
 export function useBuildItem(list: ListMeta, fieldKeys?: string[] = []): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
-  const fields = fieldKeys.length ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key))) : list.fields
+  const fields = fieldKeys.length
+    ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key)))
+    : list.fields
   const invalidFields = useInvalidFields(list.fields, value)
 
   return {
