@@ -301,7 +301,7 @@ importers:
         specifier: ^8.1.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.5.0
@@ -348,7 +348,7 @@ importers:
   examples/byte-encoding:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.5.0
@@ -1239,7 +1239,7 @@ importers:
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.10.0)
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@parcel/watcher':
         specifier: ^2.5.1
@@ -1270,7 +1270,7 @@ importers:
         specifier: ^1.6.3
         version: 1.6.3(@0no-co/graphqlsp@1.12.16(graphql@16.10.0)(typescript@5.8.2))(graphql@16.10.0)(typescript@5.8.2)
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.5.0
@@ -1358,7 +1358,7 @@ importers:
   examples/logging:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.5.0
@@ -1377,7 +1377,7 @@ importers:
   examples/number-fields:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.5.0
@@ -1409,7 +1409,7 @@ importers:
   examples/relationships:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.3.1
+        specifier: ^6.4.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^9.1.1
