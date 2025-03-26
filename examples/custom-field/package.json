@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@keystar/ui": "^0.7.16",
-    "@keystone-6/core": "^6.3.1",
+    "@keystone-6/core": "^6.4.0",
     "@prisma/client": "6.5.0"
   },
   "devDependencies": {

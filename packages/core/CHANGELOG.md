@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 6.4.0
+
+### Minor Changes
+
+- [#9401](https://github.com/keystonejs/keystone/pull/9401) [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76) Thanks [@dcousens](https://github.com/dcousens)! - Add support for searching relationship fields in the list view
+
+### Patch Changes
+
+- [#9401](https://github.com/keystonejs/keystone/pull/9401) [`48f51be`](https://github.com/keystonejs/keystone/commit/48f51be98216ee4fa64f6d65b24c28b9c08f4b76) Thanks [@dcousens](https://github.com/dcousens)! - Fix list view ignoring `.ui.listView.searchFields`
+
+- [`424b2a2`](https://github.com/keystonejs/keystone/commit/424b2a2297141f55f2450df166d7cdf41765f1da) Thanks [@emmatown](https://github.com/emmatown)! - Fix Admin UI breaking in Safari because of usage of iterator helpers
+
+- [`f3cef4c`](https://github.com/keystonejs/keystone/commit/f3cef4c8ff29f6e3c92399d8e0735fe3bda72950) Thanks [@mikehazell](https://github.com/mikehazell)! - Fixes `context.db` missing types if they are omitted from GraphQL
+
 ## 6.3.1
 
 ### Patch Changes
