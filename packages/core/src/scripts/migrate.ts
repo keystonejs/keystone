@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
 
@@ -78,7 +79,7 @@ provider = ${system.config.db.provider}`
   let shadowDatabaseUrl = system.config.db.shadowDatabaseUrl
   if (system.config.db.provider !== 'sqlite' && !shadowDatabaseUrl) {
     const parsedUrl = new URL(system.config.db.url)
-    parsedUrl.pathname = `keystone_diff_db_${Date.now()}`
+    parsedUrl.pathname = `ktmp${Date.now()}_${randomBytes(6).toString('hex')}`
     shadowDatabaseUrl = parsedUrl.toString()
     try {
       await createDatabase(shadowDatabaseUrl)
