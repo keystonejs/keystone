@@ -66,7 +66,7 @@ export function Field({
 
 export function controller(
   config: FieldControllerConfig<IdFieldConfig>
-): FieldController<string | null, string> {
+): FieldController<string | null, string | string[]> {
   return {
     path: config.path,
     label: config.label,
@@ -80,14 +80,33 @@ export function controller(
         const { autoFocus, context, onChange, type, typeLabel, value, ...otherProps } = props
         const labelProps =
           context === 'add' ? { label: config.label, description: typeLabel } : { label: typeLabel }
+        const [inputValue, setInputValue] = useState(() =>
+          Array.isArray(value) ? value.join(', ') : value
+        )
+        const [lastSeenValue, setLastSeenValue] = useState(value)
+        if (value !== lastSeenValue && Array.isArray(value)) {
+          setInputValue(value.join(', '))
+          setLastSeenValue(value)
+        }
 
         return (
           <TextField
             {...otherProps}
             {...labelProps}
             autoFocus={autoFocus}
-            onChange={onChange}
-            value={value}
+            onChange={newVal => {
+              if (Array.isArray(value)) {
+                setInputValue(newVal)
+              } else {
+                onChange(newVal)
+              }
+            }}
+            onBlur={() => {
+              if (Array.isArray(value)) {
+                onChange(inputValue.split(',').map(val => val.trim()))
+              }
+            }}
+            value={Array.isArray(value) ? inputValue : value}
           />
         )
       },
@@ -98,20 +117,20 @@ export function controller(
         })
 
         if (['in', 'not_in'].includes(type)) {
-          return `${label.toLowerCase()} (${listFormatter.format(value.split(','))})`
+          return `${label.toLowerCase()} (${listFormatter.format(value)})`
         }
         return `${label.toLowerCase()} ${value}`
       },
       graphql: ({ type, value }) => {
-        if (type === 'not') return { [config.path]: { not: { equals: value } } }
-        const valueWithoutWhitespace = value.replace(/\s/g, '')
+        const valueWithoutWhitespace = Array.isArray(value)
+          ? value.map(val => val.replace(/\s/g, ''))
+          : value.replace(/\s/g, '')
+        if (type === 'not') return { [config.path]: { not: { equals: valueWithoutWhitespace } } }
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
 
         return {
           [config.path]: {
-            [key]: ['in', 'not_in'].includes(type)
-              ? valueWithoutWhitespace.split(',')
-              : valueWithoutWhitespace,
+            [key]: valueWithoutWhitespace,
           },
         }
       },
@@ -122,8 +141,8 @@ export function controller(
         lt: { label: 'Is less than', initialValue: '' },
         gte: { label: 'Is greater than or equal to', initialValue: '' },
         lte: { label: 'Is less than or equal to', initialValue: '' },
-        in: { label: 'Is one of', initialValue: '' },
-        not_in: { label: 'Is not one of', initialValue: '' },
+        in: { label: 'Is one of', initialValue: [] },
+        not_in: { label: 'Is not one of', initialValue: [] },
       },
     },
   }
