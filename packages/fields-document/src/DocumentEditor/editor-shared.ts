@@ -69,7 +69,7 @@ export const editorSchema = {
   }),
   'component-inline-prop': inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
   'component-block-prop': blockContainer({
-    allowedChildren: paragraphLike,
+    allowedChildren: insideOfLayouts,
     invalidPositionHandleMode: 'unwrap',
   }),
   'ordered-list': blockContainer({
