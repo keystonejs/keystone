@@ -1,4 +1,4 @@
-import React, {
+import {
   type PropsWithChildren,
   type SyntheticEvent,
   Fragment,

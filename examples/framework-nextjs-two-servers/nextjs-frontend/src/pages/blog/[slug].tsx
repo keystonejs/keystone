@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import type { GetStaticPathsResult, GetStaticPropsContext } from 'next'
 import Link from 'next/link'
 import type { DocumentRendererProps } from '@keystone-6/document-renderer'

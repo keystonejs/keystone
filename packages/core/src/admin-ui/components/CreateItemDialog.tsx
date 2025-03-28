@@ -1,4 +1,4 @@
-import React, { useId } from 'react'
+import { useId } from 'react'
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, useDialogContainer } from '@keystar/ui/dialog'
 import { Box } from '@keystar/ui/layout'

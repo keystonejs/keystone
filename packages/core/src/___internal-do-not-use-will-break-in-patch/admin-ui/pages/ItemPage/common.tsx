@@ -1,4 +1,4 @@
-import React, { type HTMLAttributes, type ReactNode, Fragment } from 'react'
+import { type HTMLAttributes, type ReactNode, Fragment } from 'react'
 import { useRouter } from 'next/router'
 
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'

@@ -1,6 +1,6 @@
 import { type RenderElementProps, ReactEditor } from 'slate-react'
 import { Node, Transforms } from 'slate'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSlateStatic as useStaticEditor } from 'slate-react'
 
 import { Icon } from '@keystar/ui/icon'

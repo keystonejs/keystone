@@ -1,4 +1,3 @@
-import React from 'react'
 import type { CellComponent, FieldControllerConfig } from '@keystone-6/core/types'
 import { type ImageValue, validateImage } from '@keystone-6/core/fields/types/image/views'
 

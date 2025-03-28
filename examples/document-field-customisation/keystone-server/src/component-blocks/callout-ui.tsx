@@ -14,7 +14,6 @@ import { alertTriangleIcon } from '@keystar/ui/icon/icons/alertTriangleIcon'
 import { checkCircle2Icon } from '@keystar/ui/icon/icons/checkCircle2Icon'
 import { infoIcon } from '@keystar/ui/icon/icons/infoIcon'
 import { css, tokenSchema } from '@keystar/ui/style'
-import React from 'react'
 import { NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 const toneToIcon = {

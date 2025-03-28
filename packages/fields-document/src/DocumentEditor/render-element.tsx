@@ -7,7 +7,6 @@ import { HeadingElement } from './heading'
 import { BlockquoteElement } from './blockquote'
 import { RelationshipElement } from './relationship'
 import { tokenSchema } from '@keystar/ui/style'
-import React from 'react'
 
 // some of the renderers read properties of the element
 // and TS doesn't understand the type narrowing when doing a spread for some reason

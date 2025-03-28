@@ -1,4 +1,4 @@
-import React, { type Key, Fragment, useEffect, useMemo, useState } from 'react'
+import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'

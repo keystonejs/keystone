@@ -1,4 +1,4 @@
-import React, { Fragment, type ReactElement, type ReactNode, type JSX } from 'react'
+import { Fragment, type ReactElement, type ReactNode, type JSX } from 'react'
 
 export type Node = Element | Text
 

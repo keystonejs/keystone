@@ -1,4 +1,4 @@
-import React, { type ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { type RenderLeafProps } from 'slate-react'
 import { InsertMenu } from './insert-menu'
 import { css } from '@keystar/ui/style'

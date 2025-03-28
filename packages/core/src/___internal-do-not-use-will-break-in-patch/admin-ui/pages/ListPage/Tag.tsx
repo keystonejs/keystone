@@ -1,4 +1,4 @@
-import React, { type ReactNode, useId } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'

@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import React from 'react'
 import { fetchGraphQL, gql } from '../utils'
 
 type Author = { id: string; name: string; posts: { id: string; slug: string; title: string }[] }

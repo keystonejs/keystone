@@ -1,6 +1,6 @@
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 
-import React, { type ReactNode, useMemo, useContext } from 'react'
+import { type ReactNode, useMemo, useContext } from 'react'
 import { Editor, type Element, Transforms } from 'slate'
 
 import { Icon } from '@keystar/ui/icon'

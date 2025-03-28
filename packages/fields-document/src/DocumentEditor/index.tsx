@@ -3,7 +3,7 @@ import { Prose } from '@keystar/ui/typography'
 
 import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
 import isHotkey from 'is-hotkey'
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import {
   type Descendant,
   type NodeEntry,

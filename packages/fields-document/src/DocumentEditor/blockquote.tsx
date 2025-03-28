@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 
 import { useToolbarState } from './toolbar-state'

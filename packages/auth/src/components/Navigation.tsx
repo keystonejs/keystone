@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Divider } from '@keystar/ui/layout'

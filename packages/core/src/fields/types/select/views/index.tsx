@@ -1,4 +1,4 @@
-import React, { type Key, useMemo, useState } from 'react'
+import { type Key, useMemo, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 
 import { ListView } from '@keystar/ui/list-view'

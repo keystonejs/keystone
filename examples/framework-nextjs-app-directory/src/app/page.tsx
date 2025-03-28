@@ -1,4 +1,3 @@
-import React from 'react'
 import { keystoneContext } from '../keystone/context'
 import { DocumentRender } from './DocumentRender'
 

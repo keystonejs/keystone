@@ -1,4 +1,3 @@
-import React from 'react'
 import type { AppProps } from 'next/app'
 import type { AdminConfig, FieldViews } from '../../../../types'
 import { ErrorBoundary } from '../../../../admin-ui/components'

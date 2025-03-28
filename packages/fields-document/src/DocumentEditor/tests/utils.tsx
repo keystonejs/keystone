@@ -2,7 +2,6 @@ import { type MutableRefObject, type ReactElement, createElement, useState } fro
 import { type Node, type Path, Editor, Range, Text } from 'slate'
 import { Slate, ReactEditor, withReact } from 'slate-react'
 
-import React from 'react'
 import { act, render } from '@testing-library/react'
 import { diff } from 'jest-diff'
 import prettyFormat, { plugins, type Plugin } from 'pretty-format'

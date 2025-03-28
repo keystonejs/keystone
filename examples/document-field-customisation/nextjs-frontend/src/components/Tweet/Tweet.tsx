@@ -1,4 +1,4 @@
-import React from 'react'
+import { useRef, useEffect } from 'react'
 import styles from './Tweet.module.css'
 
 type TweetProps = {
@@ -6,9 +6,9 @@ type TweetProps = {
 }
 
 export function Tweet({ url }: TweetProps) {
-  const wrapper = React.useRef<HTMLQuoteElement>(null)
+  const wrapper = useRef<HTMLQuoteElement>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const script = document.createElement('script')
     script.setAttribute('src', 'https://platform.twitter.com/widgets.js')
     wrapper.current!.appendChild(script)

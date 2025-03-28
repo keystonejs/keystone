@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import React, { type HTMLAttributes, type ReactNode, useState } from 'react'
+import { type HTMLAttributes, type ReactNode, useState } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'

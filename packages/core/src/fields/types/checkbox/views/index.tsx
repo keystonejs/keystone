@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Checkbox } from '@keystar/ui/checkbox'
 import { Icon } from '@keystar/ui/icon'
 import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'

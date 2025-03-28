@@ -1,4 +1,3 @@
-import React from 'react'
 import { type DocumentRendererProps, DocumentRenderer } from '@keystone-6/document-renderer'
 
 // By default the DocumentRenderer will render unstyled html elements.

@@ -6,7 +6,7 @@ import {
 } from '@react-aria/overlays'
 import { mergeProps, useLayoutEffect } from '@react-aria/utils'
 import { type OverlayTriggerState, useOverlayTriggerState } from '@react-stately/overlays'
-import React, {
+import {
   cloneElement,
   createContext,
   type ReactElement,

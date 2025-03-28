@@ -1,6 +1,5 @@
 import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
-import React from 'react'
 
 export const quote = component({
   label: 'Quote',

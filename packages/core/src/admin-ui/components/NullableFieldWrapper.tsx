@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 
 import { Checkbox } from '@keystar/ui/checkbox'
 import { Icon } from '@keystar/ui/icon'

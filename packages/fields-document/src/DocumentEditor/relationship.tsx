@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import { createContext, useContext } from 'react'
 import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms } from 'slate'
 import { useSlateStatic as useStaticEditor } from 'slate-react'

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 import copyToClipboard from 'clipboard-copy'
 

@@ -1,4 +1,4 @@
-import React, { type Key, useMemo } from 'react'
+import { type Key, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import isDeepEqual from 'fast-deep-equal'
 

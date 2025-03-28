@@ -1,4 +1,3 @@
-import React from 'react'
 import { Icon } from '@keystar/ui/icon'
 import { shieldAlertIcon } from '@keystar/ui/icon/icons/shieldAlertIcon'
 import { Heading, Text } from '@keystar/ui/typography'

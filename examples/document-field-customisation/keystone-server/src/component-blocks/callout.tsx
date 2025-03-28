@@ -1,4 +1,3 @@
-import React from 'react'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 
 import { Callout, CalloutToolbar } from './callout-ui'

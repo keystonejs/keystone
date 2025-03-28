@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 
 import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'

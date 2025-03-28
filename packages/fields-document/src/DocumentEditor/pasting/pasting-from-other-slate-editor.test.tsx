@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { createEditor, Editor } from 'slate'
 import { Editable, Slate, withReact } from 'slate-react'
 import { render } from '@testing-library/react'

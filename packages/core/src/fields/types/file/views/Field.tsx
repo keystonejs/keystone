@@ -1,7 +1,7 @@
 import { useLocale } from '@react-aria/i18n'
 import bytes, { type BytesOptions } from 'bytes'
 import { extname } from 'path'
-import React, {
+import {
   type PropsWithChildren,
   type ReactElement,
   type SyntheticEvent,
@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -213,7 +214,7 @@ type FileData = {
 }
 
 function useFileData(value: FileValue): FileData | null {
-  const [objectUrl, setObjectUrl] = React.useState<string>('')
+  const [objectUrl, setObjectUrl] = useState<string>('')
   useEffect(() => {
     if (value.kind === 'upload') {
       const objectUrl = URL.createObjectURL(value.data.file)

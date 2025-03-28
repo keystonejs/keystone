@@ -1,6 +1,6 @@
 import { CalendarDate, getLocalTimeZone, now, parseDate } from '@internationalized/date'
 import { useDateFormatter } from '@react-aria/i18n'
-import React, { useMemo, useReducer, useState } from 'react'
+import { useMemo, useReducer, useState } from 'react'
 
 import { ToggleButton } from '@keystar/ui/button'
 import { DatePicker } from '@keystar/ui/date-time'

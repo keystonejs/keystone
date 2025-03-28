@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useFilter, useListFormatter } from '@react-aria/i18n'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
 import { Heading } from '@keystar/ui/typography'

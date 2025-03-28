@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import React, { type FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'

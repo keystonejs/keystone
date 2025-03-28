@@ -1,4 +1,4 @@
-import React, { Component, type ReactNode } from 'react'
+import { Component, type ReactNode } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { Dialog } from '@keystar/ui/dialog'
