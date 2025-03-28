@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Transforms } from 'slate'
 
 import { Icon } from '@keystar/ui/icon'

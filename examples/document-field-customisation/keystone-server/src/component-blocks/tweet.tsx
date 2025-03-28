@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { css } from '@keystar/ui/style'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 

@@ -1,5 +1,5 @@
 import { useSlotId } from '@react-aria/utils'
-import React, { type ReactNode, useId } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
 import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'

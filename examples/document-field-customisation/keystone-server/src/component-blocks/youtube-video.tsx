@@ -1,4 +1,3 @@
-import React from 'react'
 import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 import { css } from '@keystar/ui/style'
 

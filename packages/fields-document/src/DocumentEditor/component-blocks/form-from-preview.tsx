@@ -14,7 +14,7 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { move } from '@keystar/ui/drag-and-drop'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 
-import React, {
+import {
   type Key,
   type MemoExoticComponent,
   type ReactElement,

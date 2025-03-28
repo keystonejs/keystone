@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { VStack } from '@keystar/ui/layout'
 import { Notice } from '@keystar/ui/notice'
 import { Content } from '@keystar/ui/slots'

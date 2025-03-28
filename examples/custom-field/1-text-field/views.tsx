@@ -1,4 +1,3 @@
-import React from 'react'
 import { TextField } from '@keystar/ui/text-field'
 
 import type { FieldController, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'

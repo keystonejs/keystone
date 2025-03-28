@@ -1,4 +1,4 @@
-import React, { type ReactNode, Fragment, useContext, useEffect, useRef } from 'react'
+import { type ReactNode, Fragment, useContext, useEffect, useRef } from 'react'
 import { type Text, Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { matchSorter } from 'match-sorter'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useFilter } from '@react-aria/i18n'
 
 import { type FormField } from './api-shared'

@@ -1,6 +1,6 @@
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
-import React, { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useSlotId } from '@react-aria/utils'
 
 import { ActionButton, ToggleButton } from '@keystar/ui/button'

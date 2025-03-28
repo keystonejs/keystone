@@ -3,7 +3,6 @@
 import { Field as KeystarField } from '@keystar/ui/field'
 import { Text } from '@keystar/ui/typography'
 import type { CellComponent, FieldProps } from '@keystone-6/core/types'
-import React from 'react'
 import { Node } from 'slate'
 
 import { DocumentEditor } from './DocumentEditor'

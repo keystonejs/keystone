@@ -2,7 +2,7 @@
 
 'use client'
 
-import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { type DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
   type ComponentBlock,

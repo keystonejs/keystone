@@ -1,6 +1,6 @@
 import { Icon } from '@keystar/ui/icon'
 import { trashIcon } from '@keystar/ui/icon/icons/trashIcon'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { RenderElementProps } from 'slate-react'
 import type { ComponentBlock, PreviewPropsForToolbar, ObjectField, ComponentSchema } from './api'
 import { ActionButton } from '@keystar/ui/button'

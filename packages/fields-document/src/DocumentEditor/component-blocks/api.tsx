@@ -1,4 +1,3 @@
-import React from 'react'
 import { g } from '@keystone-6/core'
 
 import type { HTMLAttributes, ReactElement, ReactNode } from 'react'

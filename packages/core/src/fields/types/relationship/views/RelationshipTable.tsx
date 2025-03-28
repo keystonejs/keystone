@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { SortDescriptor } from '@keystar/ui/table'
 import { Cell, Column, Row, TableBody, TableHeader, TableView } from '@keystar/ui/table'
 import { Field as KeystarField } from '@keystar/ui/field'
@@ -28,8 +28,8 @@ export function RelationshipTable({
   if (!field.refFieldKey) {
     throw new Error('refFieldKey is required for displayMode: table')
   }
-  const [currentPage, setCurrentPage] = React.useState(1)
-  const [pageSize, setPageSize] = React.useState(50)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
   const list = useList(field.refListKey)
   const hasManyOnRefList: boolean = (list.fields[field.refFieldKey].controller as any).many
 
@@ -45,7 +45,7 @@ export function RelationshipTable({
     })
   }, [selectedFields, list])
 
-  const [sort, setSort] = React.useState<SortDescriptor>(() => {
+  const [sort, setSort] = useState<SortDescriptor>(() => {
     if (field.initialSort) {
       return {
         column: field.initialSort.field,

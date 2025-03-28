@@ -1,4 +1,3 @@
-import React from 'react'
 import type { CellComponent, FieldControllerConfig } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 

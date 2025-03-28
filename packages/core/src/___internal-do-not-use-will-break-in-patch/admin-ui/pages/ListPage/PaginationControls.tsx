@@ -7,7 +7,7 @@ import { Picker } from '@keystar/ui/picker'
 import { Item } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
 import type { ReactNode } from 'react'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 type PageItem = {
   label: string

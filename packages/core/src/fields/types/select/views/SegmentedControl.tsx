@@ -1,4 +1,3 @@
-import React from 'react'
 import { useField } from '@react-aria/label'
 
 import { type ActionGroupProps, ActionGroup } from '@keystar/ui/action-group'

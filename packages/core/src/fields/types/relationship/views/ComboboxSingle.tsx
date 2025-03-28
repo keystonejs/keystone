@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 
 import { Combobox, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
@@ -38,7 +38,7 @@ export function ComboboxSingle({
     state,
   })
 
-  const [lastSeenStateValue, setLastSeenStateValue] = React.useState(state.value)
+  const [lastSeenStateValue, setLastSeenStateValue] = useState(state.value)
 
   if (state.value !== lastSeenStateValue) {
     setLastSeenStateValue(state.value)

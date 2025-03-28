@@ -1,4 +1,3 @@
-import React from 'react'
 import { type RenderElementProps } from 'slate-react'
 
 export function HeadingElement({

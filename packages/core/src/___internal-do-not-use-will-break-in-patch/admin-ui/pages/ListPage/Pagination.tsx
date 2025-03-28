@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { type Key, useEffect } from 'react'
+import { type Key, useEffect } from 'react'
 
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 

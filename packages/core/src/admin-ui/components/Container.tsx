@@ -1,4 +1,3 @@
-import React from 'react'
 import { type PropsWithChildren } from 'react'
 import { type BoxProps, Box } from '@keystar/ui/layout'
 

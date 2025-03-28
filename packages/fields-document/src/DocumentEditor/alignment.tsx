@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Icon } from '@keystar/ui/icon'
 import { alignLeftIcon } from '@keystar/ui/icon/icons/alignLeftIcon'
 import { alignRightIcon } from '@keystar/ui/icon/icons/alignRightIcon'

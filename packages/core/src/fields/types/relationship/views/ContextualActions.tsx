@@ -1,4 +1,4 @@
-import React, { type Key, type PropsWithChildren, useMemo } from 'react'
+import { type Key, type PropsWithChildren, useMemo } from 'react'
 
 import { Icon } from '@keystar/ui/icon'
 import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'

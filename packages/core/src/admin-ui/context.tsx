@@ -1,4 +1,4 @@
-import React, { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
+import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 import NextHead from 'next/head'
 import { createUploadLink } from 'apollo-upload-client'
 

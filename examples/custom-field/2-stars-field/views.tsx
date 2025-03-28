@@ -1,4 +1,4 @@
-import React, { type InputHTMLAttributes } from 'react'
+import { type InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'
 import type { FieldController, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'

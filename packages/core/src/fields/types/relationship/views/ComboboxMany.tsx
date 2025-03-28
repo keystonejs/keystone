@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ComboboxMulti, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 

@@ -1,6 +1,6 @@
 import { Icon } from '@keystar/ui/icon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
-import React, {
+import {
   type ReactNode,
   useMemo,
   useState,

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import Link from 'next/link'
 import { fetchGraphQL, gql } from '../graphql'
 

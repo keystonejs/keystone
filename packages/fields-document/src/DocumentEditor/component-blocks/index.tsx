@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useCallback, useEffect, useRef } from 'react'
+import { createContext, useContext, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Editor, Transforms } from 'slate'
 import {
   type RenderElementProps,

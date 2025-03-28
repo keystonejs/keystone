@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { Transforms } from 'slate'
 import { type RenderElementProps, ReactEditor, useSlateStatic } from 'slate-react'
 

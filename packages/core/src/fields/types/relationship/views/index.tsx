@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
 
 import { DialogContainer } from '@keystar/ui/dialog'

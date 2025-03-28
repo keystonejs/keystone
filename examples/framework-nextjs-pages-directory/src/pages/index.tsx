@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import { gql } from 'graphql-request'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { ContextualHelp } from '@keystar/ui/contextual-help'
 import { Content } from '@keystar/ui/slots'
