@@ -1,5 +1,4 @@
 import React, { type Key, useMemo } from 'react'
-import { useRouter } from 'next/router'
 import isDeepEqual from 'fast-deep-equal'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -10,6 +9,7 @@ import { Text } from '@keystar/ui/typography'
 
 import { useList } from '../../../../admin-ui/context'
 import { useSelectedFields } from './useSelectedFields'
+import { useRouter } from '../../../../admin-ui/router'
 
 export function FieldSelection({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
   const router = useRouter()

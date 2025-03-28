@@ -1,4 +1,5 @@
 import path from 'node:path'
+import fs from 'node:fs'
 import { randomBytes } from 'node:crypto'
 import type { FieldData, KeystoneConfig } from '../types'
 
@@ -41,9 +42,15 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     ? path.join(cwd, config.graphql.schemaPath) // TODO: enforce initConfig before getSystemPaths
     : path.join(cwd, 'schema.graphql')
 
+  const srcPath = path.join(cwd, 'src')
+  const hasSrc = fs.existsSync(srcPath)
+  // remove leading `/` if present
+  const basePath = config.ui?.basePath?.replace(/^\//, '') ?? ''
+  const adminPath = path.join(cwd, hasSrc ? 'src' : '', `app/${basePath || '(admin)'}`)
+
   return {
     config: getBuiltKeystoneConfigurationPath(cwd),
-    admin: path.join(cwd, '.keystone/admin'),
+    admin: adminPath,
     prisma: prismaClientPath ?? '@prisma/client',
     types: {
       relativePrismaPath,
@@ -53,6 +60,7 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
       prisma: builtPrismaPath,
       graphql: builtGraphqlPath,
     },
+    hasSrc,
   }
 }
 
