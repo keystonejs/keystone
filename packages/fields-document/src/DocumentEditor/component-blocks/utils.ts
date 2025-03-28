@@ -73,6 +73,7 @@ export type DocumentFeaturesForChildField =
       kind: 'block'
       inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks']
       softBreaks: boolean
+      componentBlocks: boolean
       documentFeatures: DocumentFeaturesForNormalization
     }
 
@@ -144,6 +145,7 @@ export function getDocumentFeaturesForChildField(
       links: options.links === 'inherit',
       relationships: options.relationships === 'inherit',
     },
+    componentBlocks: options.componentBlocks === 'inherit',
   }
 }
 

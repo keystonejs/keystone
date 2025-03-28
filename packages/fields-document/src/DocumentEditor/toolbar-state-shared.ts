@@ -100,6 +100,7 @@ export const createToolbarState = (
         relationships: true,
       },
       softBreaks: true,
+      componentBlocks: true,
     }
 
   const [maybeCodeBlockEntry] = Editor.nodes(editor, {

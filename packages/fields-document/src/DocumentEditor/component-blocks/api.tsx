@@ -237,6 +237,7 @@ export const fields = {
           dividers?: 'inherit'
           links?: 'inherit'
           relationships?: 'inherit'
+          componentBlocks?: 'inherit'
         }
       | {
           kind: 'inline'
@@ -272,6 +273,7 @@ export const fields = {
                   : options.formatting,
               links: options.links,
               relationships: options.relationships,
+              componentBlocks: options.componentBlocks,
             }
           : {
               kind: 'inline' as const,

@@ -90,6 +90,7 @@ export type ChildField = {
         dividers?: 'inherit'
         links?: 'inherit'
         relationships?: 'inherit'
+        componentBlocks?: 'inherit'
       }
     | {
         kind: 'inline'

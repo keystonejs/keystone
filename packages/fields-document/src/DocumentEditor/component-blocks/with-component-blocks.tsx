@@ -82,13 +82,20 @@ function normalizeNodeWithinComponentProp(
       // .map then .some because we don't want to exit early
       .some(x => x)
     if (fieldOptions.kind === 'block') {
-      didNormalization =
-        normalizeElementBasedOnDocumentFeatures(
-          [node, path],
-          editor,
-          fieldOptions.documentFeatures,
-          relationships
-        ) || childrenHasChanged
+      if (node.type === 'component-block') {
+        if (!fieldOptions.componentBlocks) {
+          Transforms.unwrapNodes(editor, { at: path })
+          didNormalization = true
+        }
+      } else {
+        didNormalization =
+          normalizeElementBasedOnDocumentFeatures(
+            [node, path],
+            editor,
+            fieldOptions.documentFeatures,
+            relationships
+          ) || childrenHasChanged
+      }
     } else {
       didNormalization = normalizeInlineBasedOnLinksAndRelationships(
         [node, path],
