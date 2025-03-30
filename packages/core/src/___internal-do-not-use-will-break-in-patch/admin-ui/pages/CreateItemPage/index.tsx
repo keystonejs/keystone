@@ -1,23 +1,27 @@
-import { useRouter } from 'next/router'
+import { type Usable, use } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { VStack } from '@keystar/ui/layout'
 
 import { Fields } from '../../../../admin-ui/utils'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui'
+import { useKeystone, useList } from '../../../../admin-ui'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
+import { useRouter } from '../../../../admin-ui/router'
 
 export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
   <CreateItemPage {...props} />
 )
 
-function CreateItemPage({ listKey }: { listKey: string }) {
-  const list = useList(listKey)
+export function CreateItemPage({ params }: { params: Usable<{ listKey: string }> }) {
+  const { listsKeyByPath } = useKeystone()
+  const _params = use<{ listKey: string }>(params)
+  const list = useList(listsKeyByPath[_params.listKey])
   const createItem = useCreateItem(list)
   const router = useRouter()
+  const { adminPath } = useKeystone()
 
   return (
     <PageContainer
@@ -33,7 +37,7 @@ function CreateItemPage({ listKey }: { listKey: string }) {
             const item = await createItem.create()
             if (!item) return
 
-            router.push(`/${list.path}/${item.id}`)
+            router.push(`${adminPath}/${list.path}/${item.id}`)
           }}
           style={{ display: 'contents' }}
         >

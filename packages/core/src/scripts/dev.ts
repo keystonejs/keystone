@@ -58,7 +58,13 @@ function resolvablePromise<T>() {
 
 export async function dev(
   cwd: string,
-  { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
+  {
+    dbPush,
+    prisma,
+    server,
+    ui,
+    resetAdmin,
+  }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui' | 'resetAdmin'>
 ) {
   console.log('✨ Starting Keystone')
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>()
@@ -271,11 +277,13 @@ export async function dev(
 
       console.log('✨ Generating Admin UI code')
       const paths = system.getPaths(cwd)
-      await fsp.rm(paths.admin, { recursive: true, force: true })
-      await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
+      if (resetAdmin) {
+        await fsp.rm(paths.admin, { recursive: true, force: true })
+      }
+      await generateAdminUI(system.config, system.adminMeta, paths.admin, paths.hasSrc, false)
 
       console.log('✨ Preparing Admin UI')
-      nextApp = next({ dev: true, dir: paths.admin })
+      nextApp = next({ dev: true, dir: cwd })
       await nextApp.prepare()
       expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
       console.log(`✅ Admin UI ready`)
@@ -342,7 +350,13 @@ export async function dev(
         }
 
         await generateTypes(cwd, newSystem)
-        await generateAdminUI(newSystem.config, newSystem.adminMeta, paths.admin, true)
+        await generateAdminUI(
+          newSystem.config,
+          newSystem.adminMeta,
+          paths.admin,
+          paths.hasSrc,
+          true
+        )
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const { context: newContext } = newSystem.getKeystone(prismaClientModule)

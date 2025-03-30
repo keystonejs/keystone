@@ -75,9 +75,9 @@ export const renderElement = (props: RenderElementProps) => {
       return <DividerElement {...props} />
     default:
       return (
-        <p style={{ textAlign: props.element.textAlign }} {...props.attributes}>
+        <div style={{ textAlign: props.element.textAlign }} {...props.attributes}>
           {props.children}
-        </p>
+        </div>
       )
   }
 }
