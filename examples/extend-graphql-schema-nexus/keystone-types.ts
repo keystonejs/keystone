@@ -226,11 +226,14 @@ type ResolvedAuthorUpdateInput = {
   posts?: import('./generated/prisma/client.js').Prisma.AuthorUpdateInput['posts']
 }
 
+export interface Session {}
+type __Session = keyof Session extends never ? any : Session
+
 export declare namespace Lists {
-  export type Post<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Post.TypeInfo<Session>>
+  export type Post<Session = __Session> = import('@keystone-6/core/types').ListConfig<Lists.Post.TypeInfo<Session>>
   namespace Post {
     export type Item = import('./generated/prisma/client.js').Post
-    export type TypeInfo<Session = any> = {
+    export type TypeInfo<Session = __Session> = {
       key: 'Post'
       isSingleton: false
       fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author'
@@ -250,10 +253,10 @@ export declare namespace Lists {
       all: __TypeInfo<Session>
     }
   }
-  export type Author<Session = any> = import('@keystone-6/core/types').ListConfig<Lists.Author.TypeInfo<Session>>
+  export type Author<Session = __Session> = import('@keystone-6/core/types').ListConfig<Lists.Author.TypeInfo<Session>>
   namespace Author {
     export type Item = import('./generated/prisma/client.js').Author
-    export type TypeInfo<Session = any> = {
+    export type TypeInfo<Session = __Session> = {
       key: 'Author'
       isSingleton: false
       fields: 'id' | 'name' | 'posts'
@@ -274,10 +277,10 @@ export declare namespace Lists {
     }
   }
 }
-export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>
-export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>
+export type Context<Session = __Session> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>
+export type Config<Session = __Session> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>
 
-export type TypeInfo<Session = any> = {
+export type TypeInfo<Session = __Session> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo<Session>
     readonly Author: Lists.Author.TypeInfo<Session>
@@ -288,9 +291,9 @@ export type TypeInfo<Session = any> = {
   dbProvider: 'sqlite'
 }
 
-type __TypeInfo<Session = any> = TypeInfo<Session>
+type __TypeInfo<Session = __Session> = TypeInfo<Session>
 
-export type Lists<Session = any> = {
+export type Lists<Session = __Session> = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>
 } & Record<string, import('@keystone-6/core/types').ListConfig<any>>
 
