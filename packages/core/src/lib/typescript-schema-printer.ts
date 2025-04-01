@@ -157,6 +157,8 @@ export function printGeneratedTypes(
       }
     })(),
     '',
+    'export interface Session {}',
+    '',
     'export declare namespace Lists {',
     ...(function* () {
       for (const [listKey, list] of Object.entries(lists)) {
@@ -164,10 +166,10 @@ export function printGeneratedTypes(
         const listTypeInfoName = `Lists.${listKey}.TypeInfo`
 
         yield [
-          `export type ${listKey}<Session = any> = import('@keystone-6/core/types').ListConfig<${listTypeInfoName}<Session>>`,
+          `export type ${listKey} = import('@keystone-6/core/types').ListConfig<${listTypeInfoName}>`,
           `namespace ${listKey} {`,
           `  export type Item = import('${prismaClientPath}').${listKey}`,
-          `  export type TypeInfo<Session = any> = {`,
+          `  export type TypeInfo = {`,
           `    key: '${listKey}'`,
           `    isSingleton: ${list.isSingleton}`,
           `    fields: ${Object.keys(list.fields)
@@ -190,7 +192,7 @@ export function printGeneratedTypes(
           `      create: Resolved${createInputName}`,
           `      update: Resolved${updateInputName}`,
           `    }`,
-          `    all: __TypeInfo<Session>`,
+          `    all: __TypeInfo`,
           `  }`,
           `}`,
         ]
@@ -199,14 +201,14 @@ export function printGeneratedTypes(
       }
     })(),
     '}',
-    `export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>`,
-    `export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>`,
+    `export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>`,
+    `export type Config = import('@keystone-6/core/types').KeystoneConfig<TypeInfo>`,
     '',
-    'export type TypeInfo<Session = any> = {',
+    'export type TypeInfo = {',
     `  lists: {`,
     ...(function* () {
       for (const listKey in lists) {
-        yield `    readonly ${listKey}: Lists.${listKey}.TypeInfo<Session>`
+        yield `    readonly ${listKey}: Lists.${listKey}.TypeInfo`
       }
     })(),
     `  }`,
@@ -215,10 +217,10 @@ export function printGeneratedTypes(
     `}`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`
-    `type __TypeInfo<Session = any> = TypeInfo<Session>`,
+    `type __TypeInfo = TypeInfo`,
     ``,
-    `export type Lists<Session = any> = {`,
-    `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo<Session>['lists'][Key]>`,
+    `export type Lists = {`,
+    `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core/types').ListConfig<TypeInfo['lists'][Key]>`,
     `} & Record<string, import('@keystone-6/core/types').ListConfig<any>>`,
     ``,
     `export {}`,
