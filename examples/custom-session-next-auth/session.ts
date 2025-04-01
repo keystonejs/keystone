@@ -40,8 +40,10 @@ export const nextAuthOptions = {
   ],
 }
 
-export type Session = {
-  id: string
+declare module './generated/keystone/types' {
+  interface Session {
+    id: string
+  }
 }
 
 export const nextAuthSessionStrategy = {
