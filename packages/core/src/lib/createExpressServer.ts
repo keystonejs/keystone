@@ -1,3 +1,4 @@
+import type { OutgoingMessage } from 'http'
 import { type Server, createServer } from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
@@ -74,15 +75,36 @@ export async function createExpressServer(
     ...apolloConfig,
     formatError: formatError(config.graphql),
     schema: context.graphql.schema,
-    plugins:
-      config.graphql.playground === 'apollo'
-        ? apolloConfig?.plugins
+    plugins: [
+      ...(config.graphql.playground === 'apollo'
+        ? (apolloConfig?.plugins ?? [])
         : [
             config.graphql.playground
               ? ApolloServerPluginLandingPageLocalDefault()
               : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins ?? []),
-          ],
+          ]),
+      {
+        async requestDidStart(requestContext) {
+          return {
+            willSendResponse({ contextValue }) {
+              if (contextValue.res) {
+                const res = contextResToHttpRes.get(contextValue.res)
+                if (res) {
+                  for (const [key, value] of contextValue.res.headers) {
+                    if (key === 'set-cookie') {
+                      res.appendHeader(key, value)
+                      continue
+                    }
+                    res.setHeader(key, value)
+                  }
+                }
+              }
+            },
+          }
+        },
+      },
+    ],
   } as ApolloServerOptions<KeystoneContext> // TODO: satisfies
 
   const apolloServer = new ApolloServer({ ...serverConfig })
@@ -95,10 +117,14 @@ export async function createExpressServer(
     json(config.graphql.bodyParser),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
-        return await context.withRequest(req, res)
+        const resHeaders = { headers: new Headers() }
+        contextResToHttpRes.set(resHeaders, res)
+        return await context.withNodeRequest(req, resHeaders)
       },
     })
   )
 
   return { expressServer, apolloServer, httpServer }
 }
+
+const contextResToHttpRes = new WeakMap<{ headers: Headers }, OutgoingMessage>()

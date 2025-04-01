@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { statelessSessions } from '@keystone-6/core/session'
+import expressSession from 'express-session'
 import { type KeystoneContext } from '@keystone-6/core/types'
 
 import { Passport } from 'passport'
@@ -7,21 +7,20 @@ import { type VerifyCallback } from 'passport-oauth2'
 import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
 import { type Author } from 'myprisma'
-import type { Session, TypeInfo } from '.keystone/types'
+import type { Context, TypeInfo } from '.keystone/types'
 
 declare module '.keystone/types' {
   export interface Session extends Author {}
 }
-export const session = statelessSessions<Session>({
-  maxAge: 60 * 60 * 24 * 30,
-  secret: process.env.SESSION_SECRET!,
-})
 
 declare global {
   namespace Express {
-    // Augment the global user added by Passport to be the same as the Prisma Author
     interface User extends Author {}
   }
+}
+
+export async function session({ context }: { context: Context }) {
+  return (context.req?.nodeReq as any)?.user as Author
 }
 
 const options: StrategyOptions = {
@@ -33,7 +32,7 @@ const options: StrategyOptions = {
 
 export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Router {
   const router = Router()
-  const instance = new Passport()
+  const passport = new Passport()
   const strategy = new Strategy(
     options,
     async (_a: string, _r: string, profile: Profile, done: VerifyCallback) => {
@@ -47,35 +46,41 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
     }
   )
 
-  instance.use(strategy)
-  const middleware = instance.authenticate('github', {
-    session: false, // dont use express-session
+  passport.serializeUser((user, done) => {
+    done(null, user.id)
+  })
+  passport.deserializeUser(async (user, done) => {
+    if (typeof user !== 'string') {
+      done(null)
+      return
+    }
+    const author = await commonContext.prisma.author.findUnique({
+      where: { id: user },
+    })
+    if (!author) {
+      return done(null)
+    }
+    return done(null, author)
+  })
+
+  passport.use(strategy)
+  router.use(
+    expressSession({ secret: process.env.SESSION_SECRET!, resave: false, saveUninitialized: false })
+  )
+  router.use(passport.authenticate('session'))
+  const middleware = passport.authenticate('github', {
+    successRedirect: '/auth/session',
   })
 
   router.get('/auth/github', middleware)
-  router.get('/auth/github/callback', middleware, async (req, res) => {
-    if (!req.user) {
-      res.status(401).send('Authentication failed')
-      return
-    }
-
-    const context = await commonContext.withRequest(req, res)
-
-    // starts the session, and sets the cookie on context.res
-    await context.sessionStrategy?.start({
-      context,
-      data: req.user,
-    })
-
-    res.redirect('/auth/session')
-  })
+  router.get('/auth/github/callback', middleware)
 
   // show the current session object
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
-    const context = await commonContext.withRequest(req, res)
-    const session = await context.sessionStrategy?.get({ context })
-
+    const context = await commonContext.withNodeRequest(req)
+    const session = context.session
+    console.log('session', req.session)
     res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify(session))
     res.end()

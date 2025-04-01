@@ -1,7 +1,6 @@
 import { text, password } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, statelessSessions } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectInternalServerError, expectValidationError, seed } from './utils'
@@ -18,7 +17,9 @@ const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  sessionData: 'id name',
+  sessionStrategy: statelessSessions(),
+  getSession: ({ context, data }) =>
+    context.query.User.findOne({ where: { id: data.itemId }, query: 'id name' }),
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { name: 'First User' },
@@ -40,7 +41,6 @@ const runner = setupTestRunner({
         },
       }),
     },
-    session: statelessSessions(),
   },
   wrap: config => auth.withAuth(config),
 })
