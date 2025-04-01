@@ -3,6 +3,7 @@ import { g } from '@keystone-6/core'
 import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
 import { type AuthGqlNames, type InitFirstItemConfig } from '../types'
 import type { Extension } from '@keystone-6/core/graphql-ts'
+import type { SessionStrategy } from '../session'
 
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 
@@ -13,6 +14,7 @@ export function getInitFirstItemSchema({
   defaultItemData,
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
+  sessionStrategy,
 }: {
   authGqlNames: AuthGqlNames
   listKey: string
@@ -25,6 +27,7 @@ export function getInitFirstItemSchema({
       sessionToken: string
     }>
   >
+  sessionStrategy: SessionStrategy<{ itemId: string }, unknown>
   // TODO: return type required by pnpm :(
 }): Extension {
   const createInputConfig = assertInputObjectType(
@@ -45,8 +48,6 @@ export function getInitFirstItemSchema({
         type: g.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: g.arg({ type: g.nonNull(initialCreateInput) }) },
         async resolve(rootVal, { data }, context: KeystoneContext) {
-          if (!context.sessionStrategy) throw new Error('No session strategy on context')
-
           const sudoContext = context.sudo()
 
           // should approximate hasInitFirstItemConditions
@@ -64,10 +65,9 @@ export function getInitFirstItemSchema({
             },
           })
 
-          const sessionToken = await context.sessionStrategy.start({
+          const sessionToken = await sessionStrategy.start({
             data: {
-              listKey,
-              itemId: item.id,
+              itemId: item.id.toString(),
             },
             context,
           })

@@ -1,12 +1,11 @@
+import { headers } from 'next/headers'
 import { keystoneContext } from '../keystone/context'
 import { DocumentRender } from './DocumentRender'
 
 export default async function HomePage() {
-  // WARNING: this does nothing for now
-  //   you will probably use getServerSession from 'next/auth'
-  //   https://next-auth.js.org/configuration/nextjs#in-app-directory
-  const session = {}
-  const users = await keystoneContext.withSession(session).query.User.findMany({
+  const users = await (
+    await keystoneContext.withRequest({ headers: new Headers(await headers()) })
+  ).query.User.findMany({
     query: 'id name about { document }',
   })
 

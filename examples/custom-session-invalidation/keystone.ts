@@ -1,15 +1,15 @@
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, SessionStrategy, statelessSessions } from '@keystone-6/auth'
 import { lists } from './schema'
-import type { Config, Context, TypeInfo, Session } from '.keystone/types'
+import type { TypeInfo, Lists } from '.keystone/types'
+import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
 // withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth({
+const { withAuth } = createAuth<Lists.User.TypeInfo, { itemId: string; startedAt: number }>({
   // this is the list that contains our users
   listKey: 'User',
 
@@ -29,55 +29,57 @@ const { withAuth } = createAuth({
     fields: ['name', 'password'],
   },
 
-  sessionData: 'passwordChangedAt',
+  sessionStrategy: withSessionStartedAt(statelessSessions()),
+  async getSession({ context, data }) {
+    const user = await context.db.User.findOne({
+      where: { id: data.itemId },
+    })
+    if (!user) return
+    if (user.passwordChangedAt && user.passwordChangedAt > new Date(data.startedAt)) {
+      return
+    }
+    return { user }
+  },
 })
 
-function withSessionInvalidation(config: Config): Config {
-  const existingSessionStrategy = config.session!
-
+function withSessionStartedAt<T, TypeInfo extends BaseKeystoneTypeInfo>(
+  existingSessionStrategy: SessionStrategy<
+    T & { startedAt: number },
+    T & { startedAt: number },
+    TypeInfo
+  >
+): SessionStrategy<T, T & { startedAt: number }, TypeInfo> {
   return {
-    ...config,
-    session: {
-      ...existingSessionStrategy,
-      async get({ context }: { context: Context }): Promise<Session | undefined> {
-        const session = await existingSessionStrategy.get({ context })
-        if (!session) return
-
-        // has the password changed since the session started?
-        if (new Date(session.data.passwordChangedAt) > new Date(session.startedAt)) {
-          // invalidate the session if password changed
-          await existingSessionStrategy.end({ context })
-          return
-        }
-
-        return session
-      },
-      async start({ context, data }: { context: Context; data: Session }) {
-        return await existingSessionStrategy.start({
-          context,
-          data: {
-            ...data,
-            startedAt: Date.now(),
-          },
-        })
-      },
+    async start({ context, data }) {
+      await existingSessionStrategy.start({
+        context,
+        data: { ...data, startedAt: Date.now() },
+      })
     },
+    async get({ context }) {
+      const session = await existingSessionStrategy.get({ context })
+      if (
+        !session ||
+        typeof session !== 'object' ||
+        !('startedAt' in session) ||
+        typeof session.startedAt !== 'number'
+      )
+        return
+      return { ...session, startedAt: session.startedAt }
+    },
+    end: existingSessionStrategy.end,
   }
 }
 
-export default withSessionInvalidation(
-  withAuth(
-    config<TypeInfo>({
-      db: {
-        provider: 'sqlite',
-        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+export default withAuth(
+  config<TypeInfo>({
+    db: {
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
-        // WARNING: this is only needed for our monorepo examples, dont do this
-        prismaClientPath: 'node_modules/myprisma',
-      },
-      lists,
-      // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-      session: statelessSessions<Session>(),
-    })
-  )
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      prismaClientPath: 'node_modules/myprisma',
+    },
+    lists,
+  })
 )

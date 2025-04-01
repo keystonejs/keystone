@@ -10,11 +10,7 @@ import type { Lists, Session } from '.keystone/types'
 // needs to be compatible with withAuth
 declare module '.keystone/types' {
   interface Session {
-    listKey: string
     itemId: string
-    data: {
-      something: string
-    }
   }
 }
 

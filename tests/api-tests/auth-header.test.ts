@@ -1,7 +1,6 @@
 import { list } from '@keystone-6/core'
 import { text, timestamp, password } from '@keystone-6/core/fields'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, statelessSessions } from '@keystone-6/auth'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectAccessDenied, seed } from './utils'
@@ -13,13 +12,19 @@ const initialData = {
   ],
 }
 
-function setup(options?: any) {
+function setup() {
   const { withAuth } = createAuth({
     listKey: 'User',
     identityField: 'email',
     secretField: 'password',
-    sessionData: 'id',
-    ...options,
+    sessionStrategy: statelessSessions(),
+    async getSession(args) {
+      const user = await args.context.sudo().db.User.findOne({ where: { id: args.data.itemId } })
+      if (!user) {
+        return
+      }
+      return user
+    },
   })
 
   return setupTestRunner({
@@ -41,7 +46,6 @@ function setup(options?: any) {
           },
         }),
       },
-      session: statelessSessions(),
     } as any) as any,
     serve: true,
   })
@@ -95,7 +99,8 @@ describe('Auth testing', () => {
       listKey: 'User',
       identityField: 'email',
       secretField: 'password',
-      sessionData: 'id',
+      sessionStrategy: statelessSessions(),
+      getSession: ({ context, data }) => context.query.User.findOne({ where: { id: data.itemId } }),
     })
     await expect(
       setupTestEnv(
@@ -110,8 +115,6 @@ describe('Auth testing', () => {
               },
             }),
           },
-
-          session: statelessSessions(),
         } as any) as any
       )
     ).rejects.toMatchInlineSnapshot(
@@ -222,35 +225,5 @@ describe('Auth testing', () => {
         }
       })
     )
-
-    test('Starting up fails if there sessionData configuration has a syntax error', async () => {
-      await expect(
-        setup({
-          sessionData: 'id {',
-        })(async () => {})
-      ).rejects.toMatchInlineSnapshot(`
-              [Error: The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect
-              Syntax Error: Expected Name, found "}".
-
-              GraphQL request:1:51
-              1 | query($id: ID!) { user(where: { id: $id }) { id { } }
-                |                                                   ^]
-            `)
-    })
-
-    test('Starting up fails if there sessionData configuration has a validation error', async () => {
-      await expect(
-        setup({
-          sessionData: 'id foo', // foo does not exist
-        })(async () => {})
-      ).rejects.toMatchInlineSnapshot(`
-              [Error: The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect
-              Cannot query field "foo" on type "User".
-
-              GraphQL request:1:49
-              1 | query($id: ID!) { user(where: { id: $id }) { id foo } }
-                |                                                 ^]
-            `)
-    })
   })
 })
