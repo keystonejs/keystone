@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { text, password } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
+import { jwtSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
@@ -15,11 +15,18 @@ const initialData = {
   ],
 }
 
+const sessionStrategy = jwtSessions({
+  secret: 'api-test-session-secret-at-least-32-characters',
+})
+
 const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
-  secretField: 'password',
-  sessionData: 'id name',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.sub
+  },
 })
 
 const runner = setupTestRunner({
@@ -28,6 +35,10 @@ const runner = setupTestRunner({
     lists: {
       User: list({
         access: allowAll,
+        graphql: {
+          singular: 'Person',
+          plural: 'People',
+        },
         fields: {
           name: text(),
           email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -37,7 +48,7 @@ const runner = setupTestRunner({
         },
       }),
     },
-    session: statelessSessions(),
+    getSession: sessionStrategy.get,
   },
   wrap: config => auth.withAuth(config),
 })
@@ -46,12 +57,12 @@ async function authenticateWithPassword(gql: any, email: string, password: strin
   return gql({
     query: `
       mutation($email: String!, $password: String!) {
-        authenticateUserWithPassword(email: $email, password: $password) {
-          ... on UserAuthenticationWithPasswordSuccess {
+        authenticateWithPassword(identity: $email, password: $password) {
+          ... on AuthenticationWithPasswordSuccess {
             sessionToken
             item { id }
           }
-          ... on UserAuthenticationWithPasswordFailure {
+          ... on AuthenticationWithPasswordFailure {
             message
           }
         }
@@ -79,7 +90,7 @@ describe('Auth testing', () => {
           .split('=')[1]
         expect(body.errors).toBe(undefined)
         expect(body.data).toEqual({
-          authenticateUserWithPassword: {
+          authenticateWithPassword: {
             sessionToken: sessionHeader,
             item: { id: users[0].id },
           },
@@ -102,7 +113,7 @@ describe('Auth testing', () => {
         expect(sessionHeader).toBe(undefined)
         expect(body.errors).toBe(undefined)
         expect(body.data).toEqual({
-          authenticateUserWithPassword: { message: 'Authentication failed.' },
+          authenticateWithPassword: { message: 'Authentication failed.' },
         })
       })
     )
@@ -122,7 +133,7 @@ describe('Auth testing', () => {
         expect(sessionHeader).toBe(undefined)
         expect(body.errors).toBe(undefined)
         expect(body.data).toEqual({
-          authenticateUserWithPassword: { message: 'Authentication failed.' },
+          authenticateWithPassword: { message: 'Authentication failed.' },
         })
       })
     )
@@ -141,9 +152,9 @@ test(
       },
     })
 
-    const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`
+    const query = `query { authenticatedItem { ... on Person { id yesRead noRead } } }`
     const context_ = context.withSession({
-      itemId: user.id,
+      sub: user.id,
       listKey: 'User',
       data: user,
     })

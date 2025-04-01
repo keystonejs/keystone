@@ -1,14 +1,4 @@
 import type { MaybePromise } from './utils.ts'
-import type { BaseKeystoneTypeInfo, KeystoneContext } from './index.ts'
-
-export type SessionStrategy<
-  Session,
-  TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo,
-> = {
-  get: (args: { context: KeystoneContext<TypeInfo> }) => Promise<Session | undefined>
-  start: (args: { context: KeystoneContext<TypeInfo>; data: Session }) => Promise<unknown>
-  end: (args: { context: KeystoneContext<TypeInfo> }) => Promise<unknown>
-}
 
 /** @deprecated */
 export type SessionStore<Session> = {

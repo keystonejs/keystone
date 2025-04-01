@@ -13,7 +13,7 @@ import { lists } from './schema.ts'
 
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
-import { withAuth, session } from './auth.ts'
+import { sessionStrategy, withAuth } from './auth.ts'
 
 export default withAuth(
   config({
@@ -40,6 +40,16 @@ export default withAuth(
         })().catch(error => console.error('Failed to create initial user:', error))
       },
     },
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      return (
+        (await context.sudo().query.User.findOne({
+          where: { id: data.sub },
+          query: 'id name createdAt',
+        })) ?? undefined
+      )
+    },
     apolloConfig: {
       plugins: [
         {
@@ -58,6 +68,5 @@ export default withAuth(
       ],
     },
     lists,
-    session,
   })
 )

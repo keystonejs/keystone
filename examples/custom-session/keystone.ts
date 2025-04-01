@@ -12,7 +12,7 @@ const sillySessionStrategy = {
     //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
     //
     // in practice, you should use authentication for your sessions, such as OAuth or JWT
-    const { cookie = '' } = context.req.headers
+    const cookie = context.req.get('cookie') ?? ''
     const [cookieName, id] = cookie.split('=')
     if (cookieName !== 'user') return
 
@@ -24,10 +24,6 @@ const sillySessionStrategy = {
     }
   },
 
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
   async start() {},
   async end() {},
 }
@@ -42,5 +38,5 @@ export default config<TypeInfo>({
     }),
   },
   lists,
-  session: sillySessionStrategy,
+  getSession: sillySessionStrategy.get,
 })

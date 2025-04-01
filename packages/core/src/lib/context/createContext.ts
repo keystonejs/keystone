@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql/index.js'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types/index.ts'
 
@@ -24,6 +23,19 @@ export function createContext({
     JsonNull: unknown
   }
 }) {
+  async function resolveSession(context: KeystoneContext) {
+    const session = await config.getSession?.({ context })
+
+    if (
+      config.getSession &&
+      session !== undefined &&
+      (session === null || typeof session !== 'object')
+    ) {
+      throw new TypeError('getSession must return a non-null object or undefined')
+    }
+    return session
+  }
+
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
     dbFactories[listKey] = getDbFactory(list, graphQLSchemas.public)
@@ -53,8 +65,8 @@ export function createContext({
     sudo,
   }: {
     prisma: any
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: Headers
+    res?: Headers
     session?: unknown
     internal: boolean
     sudo: boolean
@@ -99,21 +111,18 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
       ...(session ? { session } : {}),
 
-      withRequest: async (newReq, newRes) => {
+      withHeaders: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
-          req: newReq,
+          req: new Headers(newReq),
           res: newRes,
           session,
           internal,
           sudo,
         })
-        return newContext.withSession(
-          (await config.session?.get({ context: newContext })) ?? undefined
-        )
+        return newContext.withSession((await resolveSession(newContext)) ?? undefined)
       },
 
       withSession: session => {

@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { statelessSessions } from '@keystone-6/core/session'
+import { jwtSessions } from '@keystone-6/auth'
 import type { KeystoneContext } from '@keystone-6/core/types'
+import { nodeHeadersToHeaders } from '../utils/node-headers'
 
 import { Passport } from 'passport'
 import type { VerifyCallback } from 'passport-oauth2'
@@ -12,7 +13,7 @@ import type { Session, TypeInfo } from './generated/keystone/types'
 declare module './generated/keystone/types' {
   export interface Session extends Author {}
 }
-export const session = statelessSessions<Session>({
+export const session = jwtSessions<Session>({
   maxAge: 60 * 60 * 24 * 30,
   secret: process.env.SESSION_SECRET!,
 })
@@ -59,13 +60,18 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
       return
     }
 
-    const context = await commonContext.withRequest(req, res)
+    const responseHeaders = new Headers()
+    const context = await commonContext.withHeaders(
+      nodeHeadersToHeaders(req.headers),
+      responseHeaders
+    )
 
     // starts the session, and sets the cookie on context.res
-    await context.sessionStrategy?.start({
+    await session.start({
       context,
       data: req.user,
     })
+    for (const value of responseHeaders.getSetCookie()) res.appendHeader('Set-Cookie', value)
 
     res.redirect('/auth/session')
   })
@@ -73,11 +79,11 @@ export function passportMiddleware(commonContext: KeystoneContext<TypeInfo>): Ro
   // show the current session object
   //   WARNING: this is for demonstration purposes only, probably dont do this
   router.get('/auth/session', async (req, res) => {
-    const context = await commonContext.withRequest(req, res)
-    const session = await context.sessionStrategy?.get({ context })
+    const context = await commonContext.withHeaders(nodeHeadersToHeaders(req.headers))
+    const currentSession = await session.get({ context })
 
     res.setHeader('Content-Type', 'application/json')
-    res.send(JSON.stringify(session))
+    res.send(JSON.stringify(currentSession))
     res.end()
   })
 

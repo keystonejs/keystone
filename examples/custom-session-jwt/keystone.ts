@@ -53,7 +53,7 @@ const jwtSessionStrategy = {
   async get({ context }: { context: Context }): Promise<Session | undefined> {
     if (!context.req) return
 
-    const { cookie = '' } = context.req.headers
+    const cookie = context.req.get('cookie') ?? ''
     const [cookieName, jwt] = cookie.split('=')
     if (cookieName !== 'user') return
 
@@ -69,10 +69,6 @@ const jwtSessionStrategy = {
     }
   },
 
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
   async start() {},
   async end() {},
 }
@@ -99,5 +95,5 @@ export default config<TypeInfo>({
     },
   },
   lists,
-  session: jwtSessionStrategy,
+  getSession: jwtSessionStrategy.get,
 })

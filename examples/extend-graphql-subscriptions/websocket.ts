@@ -5,6 +5,7 @@ import { PubSub } from 'graphql-subscriptions'
 import { parse } from 'graphql'
 
 import type { Context } from './generated/keystone/types'
+import { nodeHeadersToHeaders } from '../utils/node-headers'
 
 // Setup pubsub as a Global variable in dev so it survives Hot Reloads.
 declare global {
@@ -29,7 +30,9 @@ export function extendHttpServer(httpServer: http.Server, commonContext: Context
       schema: commonContext.graphql.schema,
       // run these onSubscribe functions as needed or remove them if you don't need them
       onSubscribe: async (ctx: any, msg) => {
-        const context = await commonContext.withRequest(ctx.extra.request)
+        const context = await commonContext.withHeaders(
+          nodeHeadersToHeaders(ctx.extra.request.headers)
+        )
         // Return the execution args for this subscription passing through the Keystone Context
         return {
           schema: commonContext.graphql.schema,

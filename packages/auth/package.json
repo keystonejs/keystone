@@ -9,13 +9,13 @@
     "./components/Navigation": "./dist/keystone-6-auth-components-Navigation.js",
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "dependencies": {
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "catalog:",
+    "cookie": "^1.0.0",
     "graphql": "catalog:",
+    "jose": "^6.0.0",
     "react-aria": "catalog:"
   },
   "devDependencies": {
@@ -34,11 +34,7 @@
     "react-aria": "catalog:"
   },
   "preconstruct": {
-    "entrypoints": [
-      "index.ts",
-      "components/Navigation.tsx",
-      "pages/*.tsx"
-    ]
+    "entrypoints": ["index.ts", "components/Navigation.tsx", "pages/*.tsx"]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/auth"
 }

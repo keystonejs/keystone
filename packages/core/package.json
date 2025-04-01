@@ -8,7 +8,6 @@
     ".": "./dist/keystone-6-core.js",
     "./access": "./dist/keystone-6-core-access.js",
     "./context": "./dist/keystone-6-core-context.js",
-    "./session": "./dist/keystone-6-core-session.js",
     "./graphql-ts": "./dist/keystone-6-core-graphql-ts.js",
     "./scripts/cli": "./dist/keystone-6-core-scripts-cli.js",
     "./types": "./dist/keystone-6-core-types.js",
@@ -57,11 +56,7 @@
   "bin": {
     "keystone": "bin/cli.js"
   },
-  "files": [
-    "bin",
-    "dist",
-    "static"
-  ],
+  "files": ["bin", "dist", "static"],
   "dependencies": {
     "@apollo/cache-control-types": "^1.0.3",
     "@apollo/client": "^4.1.6",
@@ -71,7 +66,6 @@
     "@graphql-ts/extend": "^2.0.0",
     "@graphql-ts/schema": "^1.0.0",
     "@graphql-typed-document-node/core": "^3.1.2",
-    "@hapi/iron": "^7.0.0",
     "@internationalized/date": "^3.12.2",
     "@keystar/ui": "catalog:",
     "@nodelib/fs.walk": "^3.0.0",
@@ -83,7 +77,6 @@
     "bytes": "^3.1.1",
     "ci-info": "^4.0.0",
     "conf": "^15.1.0",
-    "cookie": "^1.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.1.0",
     "decimal.js": "^10.4.1",
@@ -152,7 +145,6 @@
       "testing/mysql.ts",
       "testing/postgresql.ts",
       "testing/sqlite.ts",
-      "session.ts",
       "graphql-ts.ts",
       "scripts/index.ts",
       "scripts/cli.ts",

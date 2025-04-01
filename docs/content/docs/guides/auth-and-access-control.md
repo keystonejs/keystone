@@ -20,7 +20,7 @@ Keystone is designed to make as few assumptions about your schema and system des
 
 ### Create a list for users
 
-To use the `auth` package, you need to nominate a list that stores your user accounts, and that lists needs at least two fields: an **identity** field (e.g username or email address, it should be unique) that users are looked up by when they sign in; and a **secret** field (i.e password) that is used to verify them.
+To use the `auth` package, you need to nominate a list that stores your user accounts, and that list needs at least two fields: an **identity** field (for example, a username or email address; it should be unique) that users are looked up by when they sign in, and a **password** field that is used to verify them.
 
 You can add any other fields you want to your users list, including contact information, permissions, roles, and relationships to other entities in your database.
 
@@ -47,12 +47,16 @@ Read more about creating lists in the [schema](../config/lists) and [fields](../
 With our users list in place, we can start configuring our authentication:
 
 ```ts
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
+
+const sessionStrategy = jwtSessions()
 
 const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
-  secretField: 'password',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
 })
 ```
 
@@ -64,11 +68,11 @@ Read more about `createAuth` in the [Auth API Docs](../config/auth).
 
 ### Configure sessions
 
-Finally we need to tell Keystone how to track sessions. The simplest method is to use **stateless sessions**, which use an encrypted cookie to store enough information for Keystone to identify the item on each request. They're like JWTs, but without the downsides.
+Finally we need to tell Keystone how to track sessions. The simplest method is to use **JWT sessions**, which use an HS256-signed cookie to store enough information for Keystone to identify the item on each request. JWT payloads are readable, so they should not contain sensitive data.
 
 ```ts
-const session = statelessSessions({
-  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+const sessionStrategy = jwtSessions({
+  secret: crypto.getRandomValues(new Uint8Array(32)).toHex(),
 })
 ```
 
@@ -85,7 +89,7 @@ Your Keystone config should now look like this:
 ```ts
 import { config, list } from '@keystone-6/core'
 import { checkbox, password, text } from '@keystone-6/core/fields'
-import { statelessSessions } from '@keystone-6/core/session'
+import { jwtSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 
@@ -98,14 +102,16 @@ const db = {
   }),
 }
 
+const sessionStrategy = jwtSessions({
+  secret: crypto.getRandomValues(new Uint8Array(32)).toHex(),
+})
+
 const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
-  secretField: 'password',
-})
-
-const session = statelessSessions({
-  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
 })
 
 const lists = {
@@ -124,7 +130,12 @@ export default withAuth(
   config({
     db,
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.Person.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
   })
 )
 ```
@@ -139,31 +150,22 @@ In this initialisation phase, you'll want to load any data you'll need to work o
 
 If no session cookie is present, or no matching item can be found, `context.session` will be `undefined`.
 
-### Add a sessionData query
+### Load application session data
 
-In our example above, we probably want to know the current user's ID and the value of the `isAdmin` checkbox. The `auth` package makes this simple by providing a `sessionData` option, which should contain the fields to query when a session is found.
+In our example above, we load the current person in `getSession`. The returned object becomes `context.session`, so it can include any fields needed by access control and hooks.
 
 You configure it like this:
 
 ```ts
-const { withAuth } = createAuth({
-  // ...
-  sessionData: 'isAdmin',
-})
-```
-
-Think of this like the field selection in a GraphQL query. You can load any fields you need to have at hand when writing Access Control methods, including virtual fields and relationships.
-
-The equivalent GraphQL query would look like this:
-
-```graphql
-query {
-  person(where: { id: $session.itemId }) {
-    id
-    isAdmin
-  }
+async getSession({ context }) {
+  const data = await sessionStrategy.get({ context })
+  if (!data) return
+  const user = await context.sudo().db.Person.findOne({ where: { id: data.sub } })
+  return user ? { user } : undefined
 }
 ```
+
+You can hydrate relationships or derived values here as well when they are needed by your application.
 
 ## Adding Access Control
 

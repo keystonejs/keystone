@@ -1,6 +1,6 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
-import { storedSessions } from '@keystone-6/core/session'
+import { storedSessions } from '@keystone-6/auth'
 import { createAuth } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
 import { lists } from './schema'
@@ -9,18 +9,6 @@ import type { TypeInfo, Session } from './generated/keystone/types'
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
-
-// withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth({
-  // this is the list that contains our users
-  listKey: 'User',
-
-  // an identity field, typically a username or an email address
-  identityField: 'name',
-
-  // a secret field must be a password field type
-  secretField: 'password',
-})
 
 const redis = createClient()
 
@@ -47,6 +35,19 @@ function redisSessionStrategy() {
   })
 }
 
+const sessionStrategy = redisSessionStrategy()
+
+// withAuth is a function we can use to wrap our base configuration
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'name',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.sub
+  },
+})
+
 export default withAuth(
   config<TypeInfo>({
     db: {
@@ -72,6 +73,6 @@ export default withAuth(
       },
     },
     lists,
-    session: redisSessionStrategy(),
+    getSession: sessionStrategy.get,
   })
 )

@@ -14,7 +14,7 @@ export default config<TypeInfo>({
     }),
   },
   lists,
-  session,
+  getSession: session.get,
 
   server: {
     extendExpressApp(app, context) {

@@ -1,5 +1,5 @@
 ---
-title: "Context Overview"
+title: 'Context Overview'
 description: "The Context object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions."
 ---
 
@@ -20,13 +20,12 @@ const context = {
   // Database API
   db,
 
-  // HTTP request object
+  // HTTP headers
   req,
   res,
 
   // Session API
   session,
-  sessionStrategy,
 
   // GraphQL helpers
   graphql: {
@@ -38,7 +37,7 @@ const context = {
   // New context creators
   sudo,
   internal,
-  withRequest,
+  withHeaders,
   withSession,
 
   // Transactions
@@ -49,10 +48,11 @@ const context = {
 }
 ```
 
-### HTTP request object
+### HTTP headers
 
-`req`: The [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) object from the HTTP request.
-`res`: The [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse) object for the HTTP request.
+`req`: A WHATWG [`Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers) object containing the incoming request headers.
+
+`res`: A WHATWG `Headers` object for outgoing response headers. It can be undefined for read-only contexts.
 
 ### Query API
 
@@ -84,11 +84,9 @@ See the [schema extension guide](../guides/schema-extension) for examples of usi
 ### Session API
 
 If you configure your Keystone system with session management then you will have access to the following properties.
-See the [session API](../config/session#session-context) for more details.
+See the [`getSession` API](../config/session) for more details.
 
 `session`: The current session data object.
-
-`sessionStrategy`: an object containing functions(`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
 
 ### New context creators
 
@@ -99,7 +97,7 @@ The following functions will create a new `Context` object with this behaviour m
 
 `internal()`: A function which returns a new `Context` object that bypasses `graphql.omit` on lists and fields, allowing you to query and mutate data that is otherwise omitted from the GraphQL API.
 
-`withRequest(req, res)`: A function which returns a new `Context` object with the `.session` determined by your `sessionStrategy.get` function.
+`withHeaders(req, res?)`: Creates a context from WHATWG `Headers`. Request headers are cloned; the supplied response headers object receives outgoing session headers. Omitting `res` is supported for read-only operations, but built-in session strategies throw if a session is started or ended.
 
 `withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced by the `newSession` argument.
 

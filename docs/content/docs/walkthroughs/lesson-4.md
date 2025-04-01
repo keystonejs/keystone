@@ -124,16 +124,19 @@ And add the following code:
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
+
+const sessionStrategy = jwtSessions()
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
-  sessionData: 'name',
-  secretField: 'password',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
 })
 
-export { withAuth }
+export { withAuth, sessionStrategy }
 ```
 
 This code says:
@@ -147,32 +150,32 @@ Having added an authentication method, we need to add a 'session', so that authe
 
 ```ts{3,12-500}[4-11]
 // auth.ts
-import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth, jwtSessions } from '@keystone-6/auth';
 
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  sessionData: 'name',
-  secretField: 'password',
-});
-
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+const sessionSecret = crypto.getRandomValues(new Uint8Array(32)).toHex();
 let sessionMaxAge = 60 * 60 * 24; // 24 hours
 
-const session = statelessSessions({
+const sessionStrategy = jwtSessions({
   maxAge: sessionMaxAge,
   secret: sessionSecret,
 });
 
-export { withAuth, session }
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
+});
+
+export { withAuth, sessionStrategy }
 ```
 
 ### Import Auth & Sessions to Keystone config
 
-Back over in our keystone file, we want to import our `withAuth` function, and our `session` object.
+Back over in our keystone file, we want to import our `withAuth` function and `sessionStrategy`.
 
-`withAuth` will wrap our default export and modify it as a last step in setting up our config. The session is attached to the export.
+`withAuth` will wrap our default export and modify it as a last step in setting up our config. `getSession` calls the strategy and hydrates the signed-in user.
 
 Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
@@ -181,7 +184,7 @@ Finally, we need to add an `isAccessAllowed` function to our export so that only
 import { list, config } from '@keystone-6/core';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
-import { withAuth, session } from './auth';
+import { withAuth, sessionStrategy } from './auth';
 
 const lists = {
   User: list({
@@ -218,9 +221,14 @@ export default config(
       }),
     },
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context });
+      if (!data) return;
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } });
+      return user ? { user } : undefined;
+    },
     ui: {
-      isAccessAllowed: (context) => !!context.session?.data,
+      isAccessAllowed: (context) => !!context.session?.user,
     },
   })
 );
@@ -236,25 +244,25 @@ The creation runs in the background so it does not delay startup. This is conven
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth'
-import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth, jwtSessions } from '@keystone-6/auth'
 
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  sessionData: 'name',
-  secretField: 'password',
-})
-
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+const sessionSecret = crypto.getRandomValues(new Uint8Array(32)).toHex()
 let sessionMaxAge = 60 * 60 * 24 // 24 hours
 
-const session = statelessSessions({
+const sessionStrategy = jwtSessions({
   maxAge: sessionMaxAge,
   secret: sessionSecret,
 })
 
-export { withAuth, session }
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId: context => context.session?.user.id,
+})
+
+export { withAuth, sessionStrategy }
 ```
 
 ```ts
@@ -262,7 +270,7 @@ export { withAuth, session }
 import { list, config } from '@keystone-6/core'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
-import { withAuth, session } from './auth'
+import { withAuth, sessionStrategy } from './auth'
 
 const lists = {
   User: list({
@@ -313,9 +321,14 @@ export default config(
       },
     },
     lists,
-    session,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      const user = await context.sudo().db.User.findOne({ where: { id: data.sub } })
+      return user ? { user } : undefined
+    },
     ui: {
-      isAccessAllowed: context => !!context.session?.data,
+      isAccessAllowed: context => !!context.session?.user,
     },
   })
 )

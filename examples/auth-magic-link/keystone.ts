@@ -1,21 +1,12 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import { lists, extendGraphqlSchema } from './schema'
+import { lists, extendGraphqlSchema, sessionStrategy } from './schema'
 import type { TypeInfo } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
-
-// WARNING: you need to change this
-const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
-
-// statelessSessions uses cookies for session tracking
-//   these cookies have an expiry, in seconds
-//   we use an expiry of one hour for this example
-const sessionMaxAge = 60 * 60
 
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
@@ -25,8 +16,12 @@ const { withAuth } = createAuth({
   // an identity field, typically a username or an email address
   identityField: 'name',
 
-  // a secret field must be a password field type
-  secretField: 'password',
+  // the password field must use the password field type
+  passwordField: 'password',
+  sessionStrategy,
+  getAuthenticatedItemId(context) {
+    return context.session?.id
+  },
 })
 
 export default withAuth<TypeInfo>(
@@ -52,15 +47,13 @@ export default withAuth<TypeInfo>(
       },
     },
     lists,
+    async getSession({ context }) {
+      const data = await sessionStrategy.get({ context })
+      if (!data) return
+      return (await context.db.User.findOne({ where: { id: data.sub } })) ?? undefined
+    },
     graphql: {
       extendGraphqlSchema,
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions({
-      // the maxAge option controls how long session cookies are valid for before they expire
-      maxAge: sessionMaxAge,
-      // the session secret is used to encrypt cookie data
-      secret: sessionSecret,
-    }),
   })
 )
