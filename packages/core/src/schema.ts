@@ -4,7 +4,6 @@ import type {
   BaseListTypeInfo,
   IdFieldConfig,
   KeystoneConfigPre,
-  KeystoneContext,
   ListConfig,
   KeystoneConfig,
 } from './types'
@@ -53,11 +52,6 @@ function injectDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig
   }
 
   return updated
-}
-
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true
-  return session !== undefined
 }
 
 async function noop() {}
@@ -134,7 +128,9 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     ui: {
       ...config.ui,
       basePath: config.ui?.basePath ?? '',
-      isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
+      isAccessAllowed:
+        config.ui?.isAccessAllowed ??
+        (config.session ? ({ session }) => session !== undefined : () => true),
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
