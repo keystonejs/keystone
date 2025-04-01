@@ -2,8 +2,8 @@ import { config } from '@keystone-6/core'
 import { storedSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
-import { lists, type Session } from './schema'
-import type { TypeInfo } from '.keystone/types'
+import { lists } from './schema'
+import type { TypeInfo, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -57,7 +57,7 @@ function redisSessionStrategy() {
 }
 
 export default withAuth(
-  config<TypeInfo<Session>>({
+  config<TypeInfo>({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
