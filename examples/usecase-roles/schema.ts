@@ -3,7 +3,6 @@ import { allOperations, denyAll } from '@keystone-6/core/access'
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
 
 import { isSignedIn as hasSession, permissions, rules } from './access'
-import type { Session } from './access'
 import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -19,7 +18,7 @@ import type { Lists } from '.keystone/types'
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists: Lists<Session> = {
+export const lists: Lists = {
   Todo: list({
     /*
       SPEC
@@ -239,4 +238,4 @@ export const lists: Lists<Session> = {
       }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists
