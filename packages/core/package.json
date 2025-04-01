@@ -21,11 +21,6 @@
       "module": "./context/dist/keystone-6-core-context.esm.js",
       "default": "./context/dist/keystone-6-core-context.cjs.js"
     },
-    "./session": {
-      "types": "./session/dist/keystone-6-core-session.cjs.js",
-      "module": "./session/dist/keystone-6-core-session.esm.js",
-      "default": "./session/dist/keystone-6-core-session.cjs.js"
-    },
     "./testing": {
       "types": "./testing/dist/keystone-6-core-testing.cjs.js",
       "module": "./testing/dist/keystone-6-core-testing.esm.js",
@@ -240,7 +235,6 @@
     "@graphql-ts/extend": "^2.0.0",
     "@graphql-ts/schema": "^1.0.0",
     "@graphql-typed-document-node/core": "^3.1.2",
-    "@hapi/iron": "^7.0.0",
     "@internationalized/date": "^3.9.0",
     "@keystar/ui": "^0.7.19",
     "@nodelib/fs.walk": "^3.0.0",
@@ -261,7 +255,6 @@
     "ci-info": "^4.0.0",
     "clipboard-copy": "^4.0.1",
     "conf": "^10.2.0",
-    "cookie": "^1.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.1.0",
     "date-fns": "^4.0.0",
@@ -309,7 +302,6 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",
       "testing.ts",
-      "session.ts",
       "graphql-ts.ts",
       "scripts/index.ts",
       "scripts/cli.ts",

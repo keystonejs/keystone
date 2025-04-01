@@ -2,7 +2,6 @@ import type {
   AdminFileToWrite,
   BaseListTypeInfo,
   KeystoneContext,
-  SessionStrategy,
   BaseKeystoneTypeInfo,
   KeystoneConfig,
 } from '@keystone-6/core/types'
@@ -12,6 +11,7 @@ import { getSchemaExtension } from './schema'
 import configTemplate from './templates/config'
 import signinTemplate from './templates/signin'
 import initTemplate from './templates/init'
+import { sessionToItemId } from './gql/getBaseAuthSchema'
 
 export type AuthSession = {
   itemId: string | number // TODO: use ListTypeInfo
@@ -35,18 +35,23 @@ function getAuthGqlNames(singular: string): AuthGqlNames {
 }
 
 // TODO: use TypeInfo and listKey for types
+
 /**
  * createAuth function
  *
  * Generates config for Keystone to implement standard auth features.
  */
-export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
+export function createAuth<
+  ListTypeInfo extends BaseListTypeInfo & { all: { session: object } },
+  SessionStrategySession extends { itemId: string } = { itemId: string },
+>({
   listKey,
   secretField,
   initFirstItem,
   identityField,
-  sessionData = 'id',
-}: AuthConfig<ListTypeInfo>) {
+  sessionStrategy,
+  getSession,
+}: AuthConfig<ListTypeInfo, SessionStrategySession>) {
   /**
    * getAdditionalFiles
    *
@@ -116,43 +121,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
   }
 
-  // this strategy wraps the existing session strategy,
-  //   and injects the requested session.data before returning
-  function authSessionStrategy<Session extends AuthSession>(
-    _sessionStrategy: SessionStrategy<Session>
-  ): SessionStrategy<Session> {
-    const { get, ...sessionStrategy } = _sessionStrategy
-    return {
-      ...sessionStrategy,
-      get: async ({ context }) => {
-        const session = await get({ context })
-        const sudoContext = context.sudo()
-        if (!session?.itemId) return
-
-        // TODO: replace with SessionSecret: HMAC({ listKey, identityField, secretField }, SessionSecretVar)
-        // if (session.listKey !== listKey) return null
-
-        try {
-          const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId },
-            query: sessionData,
-          })
-          if (!data) return
-
-          return {
-            ...session,
-            itemId: session.itemId,
-            data,
-          }
-        } catch (e) {
-          console.error(e)
-          // WARNING: this is probably an invalid configuration
-          return
-        }
-      },
-    }
-  }
-
   async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo>(
     context: KeystoneContext<TypeInfo>
   ) {
@@ -170,13 +138,14 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     context,
     wasAccessAllowed,
     basePath,
+    url,
   }: {
     context: KeystoneContext<TypeInfo>
     wasAccessAllowed: boolean
     basePath: string
+    url: string
   }): Promise<{ kind: 'redirect'; to: string } | void> {
-    const { req } = context
-    const { pathname } = new URL(req!.url!, 'http://_')
+    const { pathname } = new URL(url, 'http://_')
 
     // redirect to init if initFirstItem conditions are met
     if (pathname !== `${basePath}/init` && (await hasInitFirstItemConditions(context))) {
@@ -242,8 +211,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       }
     }
 
-    if (!config.session) throw new TypeError('Missing .session configuration')
-
     const { graphql } = config
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = graphql ?? {}
     const listConfig = config.lists[listKey]
@@ -260,7 +227,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       identityField,
       secretField,
       initFirstItem,
-      sessionData,
+      sessionStrategy,
     })
 
     return {
@@ -272,7 +239,17 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         },
       },
       ui,
-      session: authSessionStrategy(config.session),
+      async session(args) {
+        const session = await sessionStrategy.get(args)
+        if (!session) return
+        const innerSession = getSession({ data: session, context: args.context })
+        if (!innerSession) return
+        if (typeof innerSession !== 'object') {
+          throw new Error('getSession must return an object')
+        }
+        sessionToItemId.set(innerSession, session.itemId)
+        return innerSession
+      },
       lists: {
         ...config.lists,
         [listKey]: {
@@ -289,3 +266,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     withAuth,
   }
 }
+
+export {
+  type SessionStrategy,
+  statelessSessions,
+  storedSessions,
+  type SessionStore,
+  type SessionStoreFunction,
+} from './session'

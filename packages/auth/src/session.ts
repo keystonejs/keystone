@@ -1,7 +1,32 @@
 import { randomBytes } from 'node:crypto'
 import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
-import type { SessionStrategy, SessionStoreFunction } from '../types'
+import type { BaseKeystoneTypeInfo, KeystoneContext, MaybePromise } from '@keystone-6/core/types'
+
+export type SessionStrategy<
+  StartSession,
+  GetSession,
+  TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo,
+> = {
+  get: (args: { context: KeystoneContext<TypeInfo> }) => Promise<GetSession | undefined>
+  start: (args: { context: KeystoneContext<TypeInfo>; data: StartSession }) => Promise<unknown>
+  end: (args: { context: KeystoneContext<TypeInfo> }) => Promise<unknown>
+}
+
+/** @deprecated */
+export type SessionStore<Session> = {
+  get(key: string): MaybePromise<Session | undefined>
+  set(key: string, value: Session): void | Promise<void>
+  delete(key: string): void | Promise<void>
+}
+
+/** @deprecated */
+export type SessionStoreFunction<Session> = (args: {
+  /**
+   * The number of seconds that a cookie session be valid for
+   */
+  maxAge: number
+}) => SessionStore<Session>
 
 // TODO: should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -59,7 +84,7 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none'
 }
 
-export function statelessSessions<Session>({
+export function statelessSessions<Session = { itemId: string }>({
   secret = randomBytes(32).toString('base64url'),
   maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
@@ -68,7 +93,7 @@ export function statelessSessions<Session>({
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions = {}) {
+}: StatelessSessionsOptions = {}): SessionStrategy<Session, Session, any> {
   // atleast 192-bit in base64
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long')
@@ -78,8 +103,8 @@ export function statelessSessions<Session>({
     async get({ context }) {
       if (!context?.req) return
 
-      const cookies = cookie.parse(context.req.headers.cookie || '')
-      const bearer = context.req.headers.authorization?.replace('Bearer ', '')
+      const cookies = cookie.parse(context.req.headers.get('cookie') || '')
+      const bearer = context.req.headers.get('authorization')?.replace('Bearer ', '')
       const token = bearer || cookies[cookieName]
       if (!token) return
       try {
@@ -91,7 +116,7 @@ export function statelessSessions<Session>({
     async end({ context }) {
       if (!context?.res) return
 
-      context.res.setHeader(
+      context.res.headers.append(
         'Set-Cookie',
         cookie.serialize(cookieName, '', {
           maxAge: 0,
@@ -108,7 +133,7 @@ export function statelessSessions<Session>({
       if (!context?.res) return
 
       const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 })
-      context.res.setHeader(
+      context.res.headers.append(
         'Set-Cookie',
         cookie.serialize(cookieName, sealedData, {
           maxAge,
@@ -123,16 +148,16 @@ export function statelessSessions<Session>({
 
       return sealedData
     },
-  } satisfies SessionStrategy<Session, any>
+  }
 }
 
-export function storedSessions<Session>({
+export function storedSessions<Session = { itemId: string }>({
   store: storeFn,
   maxAge = 60 * 60 * 8, // 8 hours
   ...statelessSessionsOptions
 }: {
   store: SessionStoreFunction<Session>
-} & StatelessSessionsOptions) {
+} & StatelessSessionsOptions): SessionStrategy<Session, Session, any> {
   const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge })
   const store = storeFn({ maxAge })
 
@@ -155,5 +180,5 @@ export function storedSessions<Session>({
       await store.delete(sessionId)
       await stateless.end({ context })
     },
-  } satisfies SessionStrategy<Session, any>
+  }
 }

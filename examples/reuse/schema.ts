@@ -47,7 +47,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
       hooks: {
         resolveInput: {
           async create({ context }) {
-            return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+            return `${context.req?.nodeReq?.socket.remoteAddress} (${context.req?.headers.get('user-agent')})`
           },
           async update() {
             return undefined
@@ -77,7 +77,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
 
           // TODO: refined types for the return types
           //   FIXME: CommonFieldConfig need not always be generalised
-          return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+          return `${context.req?.nodeReq?.socket.remoteAddress} (${context.req?.headers.get('user-agent')})`
         },
       },
     }),

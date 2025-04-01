@@ -1,9 +1,9 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
 import { type InitialisedList } from '../core/initialise-lists'
 import { getDbFactory, getQueryFactory } from './api'
+import type { OutgoingMessage } from 'http'
 
 export function createContext({
   config,
@@ -53,8 +53,8 @@ export function createContext({
     prisma: any
     session?: unknown
     sudo: boolean
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: KeystoneContext['req']
+    res?: KeystoneContext['res']
   }) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
@@ -97,9 +97,25 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
+      // sessionStrategy: config.session,
       ...(session ? { session } : {}),
-
+      withNodeRequest: async (req, res) => {
+        return context.withRequest(
+          {
+            headers: new Headers(
+              Object.entries(req.headers).flatMap(([key, value]): [string, string][] =>
+                value
+                  ? Array.isArray(value)
+                    ? value.map(inner => [key, inner])
+                    : [[key, value]]
+                  : []
+              )
+            ),
+            nodeReq: req,
+          },
+          res ? { headers: new HeadersWithSettingOnNodeResponse(res) } : undefined
+        )
+      },
       withRequest: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
@@ -109,7 +125,7 @@ export function createContext({
           res: newRes,
         })
         return newContext.withSession(
-          (await config.session?.get({ context: newContext })) ?? undefined
+          (await config.session?.({ context: newContext })) ?? undefined
         )
       },
 
@@ -141,4 +157,24 @@ export function createContext({
     session: undefined,
     sudo: false,
   })
+}
+
+class HeadersWithSettingOnNodeResponse extends Headers {
+  #propogateTo: OutgoingMessage
+  constructor(propogateTo: OutgoingMessage, init?: HeadersInit) {
+    super(init)
+    this.#propogateTo = propogateTo
+  }
+  append(name: string, value: string): void {
+    super.append(name, value)
+    this.#propogateTo.appendHeader(name, value)
+  }
+  delete(name: string): void {
+    super.delete(name)
+    this.#propogateTo.removeHeader(name)
+  }
+  set(name: string, value: string): void {
+    super.set(name, value)
+    this.#propogateTo.setHeader(name, value)
+  }
 }
