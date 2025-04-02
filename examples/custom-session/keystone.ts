@@ -2,33 +2,28 @@ import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import type { Context, TypeInfo, Session } from '.keystone/types'
 
-const sillySessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
-    if (!context.req) return
+async function sillySessionStrategy({
+  context,
+}: {
+  context: Context
+}): Promise<Session | undefined> {
+  if (!context.req) return
 
-    // WARNING: for demonstrative purposes only, this has no authentication
-    //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
-    //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
-    //
-    // in practice, you should use authentication for your sessions, such as OAuth or JWT
-    const { cookie = '' } = context.req.headers
-    const [cookieName, id] = cookie.split('=')
-    if (cookieName !== 'user') return
-
-    const who = await context.sudo().db.User.findOne({ where: { id } })
-    if (!who) return
-    return {
-      id,
-      admin: who.admin,
-    }
-  },
-
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
+  // WARNING: for demonstrative purposes only, this has no authentication
+  //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
+  //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
   //
-  async start() {},
-  async end() {},
+  // in practice, you should use authentication for your sessions, such as OAuth or JWT
+  const cookie = context.req.headers.get('cookie') ?? ''
+  const [cookieName, id] = cookie.split('=')
+  if (cookieName !== 'user') return
+
+  const who = await context.sudo().db.User.findOne({ where: { id } })
+  if (!who) return
+  return {
+    id,
+    admin: who.admin,
+  }
 }
 
 export default config<TypeInfo>({

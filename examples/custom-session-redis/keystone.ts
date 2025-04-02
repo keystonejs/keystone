@@ -1,16 +1,15 @@
 import { config } from '@keystone-6/core'
-import { storedSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, storedSessions } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
 import { lists } from './schema'
-import type { TypeInfo, Session } from '.keystone/types'
+import type { TypeInfo, Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
 // withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth({
+const { withAuth } = createAuth<Lists.User.TypeInfo>({
   // this is the list that contains our users
   listKey: 'User',
 
@@ -29,11 +28,17 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
+  sessionStrategy: redisSessionStrategy(),
+  getSession: async ({ context, data }) => {
+    const user = await context.db.User.findOne({ where: { id: data.itemId } })
+    if (!user) return
+    return { itemId: user.id }
+  },
 })
 
 const redis = createClient()
 
-function redisSessionStrategy() {
+function redisSessionStrategy<Session = { itemId: string }>() {
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   return storedSessions<Session>({
     store: ({ maxAge }) => ({
@@ -69,6 +74,5 @@ export default withAuth(
       prismaClientPath: 'node_modules/myprisma',
     },
     lists,
-    session: redisSessionStrategy(),
   })
 )

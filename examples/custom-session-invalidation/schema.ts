@@ -10,12 +10,7 @@ import type { Lists, Session } from '.keystone/types'
 // needs to be compatible with withAuth
 declare module '.keystone/types' {
   interface Session {
-    listKey: string
-    itemId: string
-    data: {
-      passwordChangedAt: string
-    }
-    startedAt: number
+    user: Lists.User.Item
   }
 }
 
@@ -30,7 +25,7 @@ function isSameUserFilter({ session }: { session?: Session }) {
   // the authenticated user can only see themselves
   return {
     id: {
-      equals: session.itemId,
+      equals: session.user.id,
     },
   }
 }

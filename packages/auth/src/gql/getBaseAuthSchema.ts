@@ -3,6 +3,7 @@ import { g } from '@keystone-6/core'
 import { getPasswordFieldKDF } from '@keystone-6/core/fields/types/password'
 import type { AuthGqlNames } from '../types'
 import type { BaseSchemaMeta } from '@keystone-6/core/graphql-ts'
+import type { SessionStrategy } from '../session'
 
 const AUTHENTICATION_FAILURE = {
   code: 'FAILURE',
@@ -15,12 +16,14 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretField,
   gqlNames,
   base,
+  sessionStrategy,
 }: {
   listKey: string
   identityField: I
   secretField: S
   gqlNames: AuthGqlNames
   base: BaseSchemaMeta
+  sessionStrategy: SessionStrategy<{ itemId: string }, unknown>
 }) {
   const kdf = getPasswordFieldKDF(base.schema, listKey, secretField)
   if (!kdf) {
@@ -72,7 +75,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       endSession: g.field({
         type: g.nonNull(g.Boolean),
         async resolve(rootVal, args, context) {
-          await context.sessionStrategy?.end({ context })
+          await sessionStrategy.end({ context })
           return true
         },
       }),
@@ -87,8 +90,6 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           { [identityField]: identity, [secretField]: secret },
           context: KeystoneContext
         ) {
-          if (!context.sessionStrategy) throw new Error('No session strategy on context')
-
           const item = await context.sudo().db[listKey].findOne({
             where: { [identityField]: identity },
           })
@@ -101,9 +102,9 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           const equal = await kdf.compare(secret, item[secretField])
           if (!equal) return AUTHENTICATION_FAILURE
 
-          const sessionToken = await context.sessionStrategy.start({
+          const sessionToken = await sessionStrategy.start({
             data: {
-              itemId: item.id,
+              itemId: item.id.toString(),
             },
             context,
           })

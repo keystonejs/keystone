@@ -27,5 +27,28 @@ export default createYoga<{
     in the request object and gives you a `context` object with session info
     and an elevated sudo context to bypass access control if needed (context.sudo()).
   */
-  context: ({ req, res }) => keystoneContext.withRequest(req, res),
+  context: ({ request }) => {
+    const responseHeaders = new Headers()
+    requestToResponseHeaders.set(request, responseHeaders)
+    return keystoneContext.withRequest({ headers: request.headers }, { headers: responseHeaders })
+  },
+  plugins: [
+    {
+      onResponse({ response, request }) {
+        const headers = requestToResponseHeaders.get(request)
+        if (headers) {
+          for (const [key, value] of headers.entries()) {
+            if (key === 'set-cookie') {
+              response.headers.append(key, value)
+            } else {
+              response.headers.set(key, value)
+            }
+          }
+        }
+      },
+    },
+  ],
+  fetchAPI: globalThis,
 })
+
+const requestToResponseHeaders = new WeakMap<Request, Headers>()

@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
@@ -53,8 +52,8 @@ export function createContext({
     prisma: any
     session?: unknown
     sudo: boolean
-    req?: IncomingMessage
-    res?: ServerResponse
+    req?: KeystoneContext['req']
+    res?: KeystoneContext['res']
   }) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
@@ -97,9 +96,25 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
+      // sessionStrategy: config.session,
       ...(session ? { session } : {}),
-
+      withNodeRequest: async (req, res) => {
+        return context.withRequest(
+          {
+            headers: new Headers(
+              Object.entries(req.headers).flatMap(([key, value]): [string, string][] =>
+                value
+                  ? Array.isArray(value)
+                    ? value.map(inner => [key, inner])
+                    : [[key, value]]
+                  : []
+              )
+            ),
+            nodeReq: req,
+          },
+          res
+        )
+      },
       withRequest: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
@@ -109,7 +124,7 @@ export function createContext({
           res: newRes,
         })
         return newContext.withSession(
-          (await config.session?.get({ context: newContext })) ?? undefined
+          (await config.session?.({ context: newContext })) ?? undefined
         )
       },
 

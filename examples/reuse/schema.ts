@@ -59,7 +59,7 @@ function trackingByHooks<
       async create({ context, operation, resolvedData, item, fieldKey }) {
         // TODO: refined types for the return types
         //   FIXME: CommonFieldConfig need not always be generalised
-        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
+        return `${context.req?.nodeReq?.socket.remoteAddress} (${context.req?.headers.get('user-agent')})` as any
       },
       async update({ context, operation, resolvedData, item, fieldKey }) {
         if (immutable) return undefined
@@ -69,7 +69,7 @@ function trackingByHooks<
 
         // TODO: refined types for the return types
         //   FIXME: CommonFieldConfig need not always be generalised
-        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
+        return `${context.req?.nodeReq?.socket.remoteAddress} (${context.req?.headers.get('user-agent')})` as any
       },
     },
   }
