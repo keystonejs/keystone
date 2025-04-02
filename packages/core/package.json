@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "6.4.0",
+  "version": "0.0.0-rc-20250402042704",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
