@@ -327,9 +327,18 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
           many,
         } as any
       }
-      onChange={thing => {
-        if (thing.kind === 'count') return // shouldnt happen
-        onChange(thing.value)
+      onChange={val => {
+        if (val.kind === 'count') return // shouldnt happen
+        const { value } = val
+        if (value === null) {
+          onChange(null)
+          return
+        }
+        if (Array.isArray(value)) {
+          onChange(value.map(x => ({ id: x.id, label: x.label })))
+          return
+        }
+        onChange({ id: value.id, label: value.label })
       }}
       value={formValue}
       itemValue={{}}
