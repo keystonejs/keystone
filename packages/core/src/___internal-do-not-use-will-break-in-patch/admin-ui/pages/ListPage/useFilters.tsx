@@ -42,15 +42,16 @@ export function useFilters(list: ListMeta) {
       }
     }
 
-    const where = filters.reduce((_where, filter) => {
-      return Object.assign(
-        _where,
+    const where = filters.reduce<{AND: Array<Record<string, string>>}>((acc, filter) => {
+      acc.AND.push(
         list.fields[filter.field].controller.filter!.graphql({
           type: filter.type,
           value: filter.value,
         })
       )
-    }, {})
+      return acc;
+    }, {AND: []})
+
     if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } }
     return { filters, where }
   }, [query, possibleFilters, list])
