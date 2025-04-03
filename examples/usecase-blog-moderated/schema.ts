@@ -1,17 +1,19 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { checkbox, text, relationship, timestamp } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import type { Lists, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-export type Session = {
-  id: string
-  admin: boolean
-  moderator: null | { id: string }
-  contributor: null | { id: string }
+declare module '.keystone/types' {
+  interface Session {
+    id: string
+    admin: boolean
+    moderator: null | { id: string }
+    contributor: null | { id: string }
+  }
 }
 
 type Has<T, K extends keyof T> = {
@@ -275,4 +277,4 @@ export const lists = {
       moderator: relationship({ ref: 'Moderator' }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists
