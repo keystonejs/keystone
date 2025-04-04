@@ -9,7 +9,8 @@ export default function ({
   identityField: string
   secretField: string
 }) {
-  return `import makeSigninPage from '@keystone-6/auth/pages/SigninPage'
+  return `'use client'
+import makeSigninPage from '@keystone-6/auth/pages/SigninPage'
 
 export default makeSigninPage(${JSON.stringify({
     authGqlNames,

@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router'
 import { type Key, useEffect } from 'react'
 
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
+import { useRouter } from '../../../../admin-ui/router'
 
 type PaginationProps = {
   pageSize: number
