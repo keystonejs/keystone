@@ -30,28 +30,28 @@ export function useFilters(list: ListMeta) {
     const filters: Filter[] = []
     for (const key in query) {
       const filter = possibleFilters[key]
+      if (!filter) continue
       const val = query[key]
-      if (filter && typeof val === 'string') {
-        let value
-        try {
-          value = JSON.parse(val)
-        } catch (err) {}
-        if (val !== undefined) {
-          filters.push({ ...filter, value })
-        }
-      }
+      if (typeof val !== 'string') continue
+      try {
+        const value = JSON.parse(val)
+        filters.push({ ...filter, value })
+      } catch (err) {}
     }
 
-    const where = filters.reduce((_where, filter) => {
-      return Object.assign(
-        _where,
-        list.fields[filter.field].controller.filter!.graphql({
-          type: filter.type,
-          value: filter.value,
-        })
-      )
-    }, {})
-    if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } }
+    const where = filters.reduce<{ AND: Array<Record<string, string>> }>(
+      (acc, filter) => {
+        acc.AND.push(
+          list.fields[filter.field].controller.filter!.graphql({
+            type: filter.type,
+            value: filter.value,
+          })
+        )
+        return acc
+      },
+      { AND: [] }
+    )
+
     return { filters, where }
   }, [query, possibleFilters, list])
   return filters
