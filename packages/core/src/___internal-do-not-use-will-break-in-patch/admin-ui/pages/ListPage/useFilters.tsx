@@ -55,7 +55,6 @@ export function useFilters(list: ListMeta) {
       { AND: [] }
     )
 
-    if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } }
     return { filters, where }
   }, [query, possibleFilters, list])
   return filters
