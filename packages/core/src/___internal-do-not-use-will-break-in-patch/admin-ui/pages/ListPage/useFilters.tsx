@@ -30,16 +30,13 @@ export function useFilters(list: ListMeta) {
     const filters: Filter[] = []
     for (const key in query) {
       const filter = possibleFilters[key]
+      if (!filter) continue
       const val = query[key]
-      if (filter && typeof val === 'string') {
-        let value
-        try {
-          value = JSON.parse(val)
-        } catch (err) {}
-        if (val !== undefined) {
-          filters.push({ ...filter, value })
-        }
-      }
+      if (typeof val !== 'string') continue
+      try {
+        const value = JSON.parse(val)
+        filters.push({ ...filter, value })
+      } catch (err) {}
     }
 
     const where = filters.reduce<{ AND: Array<Record<string, string>> }>(
