@@ -1,5 +1,11 @@
 # @keystone-6/document-renderer
 
+## 0.0.0-rc-20250408002352
+
+### Minor Changes
+
+- [#9556](https://github.com/keystonejs/keystone/pull/9556) [`f0e6aaf`](https://github.com/keystonejs/keystone/commit/f0e6aaf4ff7f72b6eb4cbabb1452f49643f82fcf) Thanks [@emmatown](https://github.com/emmatown)! - Support React 19 Types and export `Element`, `Text` and `Node` types.
+
 ## 1.1.2
 
 ### Patch Changes
