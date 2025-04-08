@@ -7,6 +7,7 @@ const zMarkValue = z.union([z.literal(true), z.undefined()])
 
 const zText = z
   .object({
+    type: z.never().optional(),
     text: z.string(),
     bold: zMarkValue,
     italic: zMarkValue,
@@ -52,20 +53,23 @@ const zParagraph = z
   })
   .strict()
 
-const zElements = z
-  .object({
-    type: z.union([
-      z.literal('blockquote'),
-      z.literal('layout-area'),
-      z.literal('code'),
-      z.literal('divider'),
-      z.literal('list-item'),
-      z.literal('list-item-content'),
-      z.literal('ordered-list'),
-      z.literal('unordered-list'),
-    ]),
-  })
-  .strict()
+const zBasicElement = <T extends string>(type: T) =>
+  z
+    .object({
+      type: z.literal(type),
+    })
+    .strict()
+
+const zBasicElements = [
+  zBasicElement('blockquote'),
+  zBasicElement('layout-area'),
+  zBasicElement('code'),
+  zBasicElement('divider'),
+  zBasicElement('list-item'),
+  zBasicElement('list-item-content'),
+  zBasicElement('ordered-list'),
+  zBasicElement('unordered-list'),
+] as const
 
 const zLayout = z
   .object({
@@ -98,12 +102,18 @@ const zComponentBlock = z
   })
   .strict()
 
-const zComponentProp = z
-  .object({
-    type: z.union([z.literal('component-block-prop'), z.literal('component-inline-prop')]),
-    propPath: z.array(z.union([z.string(), z.number()])).optional(),
-  })
-  .strict()
+const zComponentProp = <T extends string>(type: T) =>
+  z
+    .object({
+      type: z.literal(type),
+      propPath: z.array(z.union([z.string(), z.number()])).optional(),
+    })
+    .strict()
+
+const zComponentProps = [
+  zComponentProp('component-block-prop'),
+  zComponentProp('component-inline-prop'),
+] as const
 
 type Children =
   // inline
@@ -112,22 +122,26 @@ type Children =
   | (z.infer<typeof zRelationship> & { children: Children[] })
   // block
   | (z.infer<typeof zComponentBlock> & { children: Children[] })
-  | (z.infer<typeof zComponentProp> & { children: Children[] })
-  | (z.infer<typeof zElements> & { children: Children[] })
+  | (z.infer<(typeof zComponentProps)[keyof typeof zComponentProps & number]> & {
+      children: Children[]
+    })
+  | (z.infer<(typeof zBasicElements)[keyof typeof zBasicElements & number]> & {
+      children: Children[]
+    })
   | (z.infer<typeof zHeading> & { children: Children[] })
   | (z.infer<typeof zLayout> & { children: Children[] })
   | (z.infer<typeof zParagraph> & { children: Children[] })
 
-const zBlock: z.ZodType<Children> = z.union([
+const zBlock: z.ZodType<Children> = z.discriminatedUnion('type', [
   zComponentBlock.extend({ children: z.lazy(() => zChildren) }),
-  zComponentProp.extend({ children: z.lazy(() => zChildren) }),
-  zElements.extend({ children: z.lazy(() => zChildren) }),
+  ...zComponentProps.map(prop => prop.extend({ children: z.lazy(() => zChildren) })),
+  ...zBasicElements.map(prop => prop.extend({ children: z.lazy(() => zChildren) })),
   zHeading.extend({ children: z.lazy(() => zChildren) }),
   zLayout.extend({ children: z.lazy(() => zChildren) }),
   zParagraph.extend({ children: z.lazy(() => zChildren) }),
 ])
 
-const zInline: z.ZodType<Children> = z.union([
+const zInline: z.ZodType<Children> = z.discriminatedUnion('type', [
   zText,
   zLink.extend({ children: z.lazy(() => zChildren) }),
   zRelationship.extend({ children: z.lazy(() => zChildren) }),
