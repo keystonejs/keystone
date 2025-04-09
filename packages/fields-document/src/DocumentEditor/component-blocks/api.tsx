@@ -23,6 +23,7 @@ import {
   Checkbox,
   Text,
   TextField,
+  TextArea,
 } from '#fields-ui'
 
 export * from './api-shared'
@@ -37,13 +38,25 @@ export const fields = {
   text({
     label,
     defaultValue = '',
+    displayMode,
   }: {
     label: string
     defaultValue?: string
+    displayMode?: 'input' | 'textarea'
   }): FormField<string, undefined> {
     return {
       kind: 'form' as const,
       Input({ value, onChange, autoFocus }: InputArgs<string>) {
+        if (displayMode === 'textarea') {
+          return (
+            <TextArea
+              autoFocus={autoFocus}
+              label={label}
+              onChange={x => onChange?.(x)}
+              value={value}
+            />
+          )
+        }
         return (
           <TextField
             autoFocus={autoFocus}
