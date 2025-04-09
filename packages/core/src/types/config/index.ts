@@ -7,7 +7,6 @@ import type { GraphQLSchema } from 'graphql'
 import type { Options as BodyParserOptions } from 'body-parser'
 
 import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
-import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
 import type { IdFieldConfig, ListConfig, MaybeItemFunction, MaybeSessionFunction } from './lists'
 import type { BaseFields } from './fields'
@@ -139,7 +138,9 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       }
   )
 
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>
+  session?: (args: {
+    context: KeystoneContext<TypeInfo>
+  }) => Promise<TypeInfo['session'] | undefined>
 
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
@@ -163,6 +164,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     pageMiddleware?: (args: {
       context: KeystoneContext<TypeInfo>
       wasAccessAllowed: boolean
+      url: string
       basePath: string
     }) => MaybePromise<{ kind: 'redirect'; to: string } | void>
   }

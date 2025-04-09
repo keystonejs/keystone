@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, statelessSessions } from '@keystone-6/auth'
 import { lists } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
@@ -28,6 +27,13 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
+  sessionStrategy: statelessSessions(),
+  getSession: ({ context, data }) => {
+    return context.query.User.findOne({
+      where: { id: data.itemId },
+      query: 'id name',
+    })
+  },
 })
 
 export default withAuth(
@@ -41,6 +47,5 @@ export default withAuth(
     },
     lists,
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions(),
   })
 )

@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, statelessSessions } from '@keystone-6/auth'
 import { lists } from './schema'
 
 // WARNING: this example is for demonstration purposes only
@@ -47,8 +46,11 @@ const { withAuth } = createAuth({
       },
     },
   },
-
-  sessionData: `
+  sessionStrategy: statelessSessions<{ itemId: string }>(),
+  getSession: ({ context, data }) =>
+    context.query.User.findOne({
+      where: { id: data.itemId },
+      query: `id
     name
     role {
       id
@@ -61,6 +63,7 @@ const { withAuth } = createAuth({
       canManageRoles
       canUseAdminUI
     }`,
+    }),
 })
 
 export default withAuth(
@@ -78,7 +81,5 @@ export default withAuth(
         return session?.data.role?.canUseAdminUI ?? false
       },
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions(),
   })
 )
