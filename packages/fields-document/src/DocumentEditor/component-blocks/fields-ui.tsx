@@ -12,7 +12,7 @@ import { VStack } from '@keystar/ui/layout'
 import { TagGroup } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
 
-export { TextField } from '@keystar/ui/text-field'
+export { TextField, TextArea } from '@keystar/ui/text-field'
 export { Text } from '@keystar/ui/typography'
 export { Checkbox } from '@keystar/ui/checkbox'
 

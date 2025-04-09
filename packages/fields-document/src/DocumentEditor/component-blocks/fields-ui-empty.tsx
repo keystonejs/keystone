@@ -5,6 +5,7 @@ function throwAlways(): never {
 }
 
 export const TextField = throwAlways,
+  TextArea = throwAlways,
   Checkbox = throwAlways,
   Text = throwAlways,
   makeIntegerFieldInput = () => throwAlways,
