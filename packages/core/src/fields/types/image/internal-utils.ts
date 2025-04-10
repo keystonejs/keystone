@@ -4,30 +4,24 @@ import { WEBP } from 'image-size/types/webp'
 import { GIF } from 'image-size/types/gif'
 import { PassThrough, type Readable } from 'node:stream'
 
-export function getImageMetadata(bytes: Uint8Array) {
-  for (const [type, checker] of types) {
+export function getImageExtension(bytes: Uint8Array) {
+  for (const [type, checker] of typesEntries) {
     if (checker.validate(bytes)) {
-      const result = checker.calculate(bytes)
-      if (result.width === undefined || result.height === undefined) {
-        return
-      }
-      return {
-        width: result.width,
-        height: result.height,
-        extension: type,
-      }
+      return type
     }
   }
 }
 
-const types = [
-  ['jpg', JPG],
-  ['png', PNG],
-  ['webp', WEBP],
-  ['gif', GIF],
-] as const
+export const types = {
+  jpg: JPG,
+  png: PNG,
+  webp: WEBP,
+  gif: GIF,
+}
 
-export type ImageExtension = (typeof types)[number][0]
+const typesEntries = Object.entries(types) as [ImageExtension, typeof JPG][]
+
+export type ImageExtension = keyof typeof types
 
 export async function getBytesFromStream(stream: Readable, maxBytes: number): Promise<Buffer> {
   let chunks: Buffer[] = []

@@ -37,6 +37,7 @@
     "@types/superagent": "^4.1.15",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^9.0.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "image-size": "^2.0.0"
   }
 }

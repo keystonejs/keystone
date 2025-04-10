@@ -15,7 +15,9 @@ import { merge } from '../../resolve-hooks'
 import type { InferValueFromArg } from '@graphql-ts/schema'
 import { randomBytes } from 'node:crypto'
 import type { ImageExtension } from './internal-utils'
-import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils'
+import { getBytesFromStream, getImageExtension, teeStream, types } from './internal-utils'
+import type { Readable } from 'node:stream'
+import { extractJPGDimensions } from './jpg'
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -99,30 +101,52 @@ async function inputResolver(
   })
 
   const buffer = await getBytesFromStream(readableForMetadata, bytesToDetermineImageMetadata)
-  const metadata = getImageMetadata(buffer)
-  if (!metadata) {
+  const extension = getImageExtension(buffer)
+  if (!extension) {
     throw new Error('File type not found')
   }
-  const id = await transformName(upload.filename, metadata.extension)
-  await storage.put(
-    `${id}.${metadata.extension}`,
-    readableForUpload,
-    {
-      contentType: {
-        png: 'image/png',
-        webp: 'image/webp',
-        gif: 'image/gif',
-        jpg: 'image/jpeg',
-      }[metadata.extension],
-    },
-    context
-  )
+  const id = await transformName(upload.filename, extension)
+  let store = (stream: Readable) =>
+    storage.put(
+      `${id}.${extension}`,
+      stream,
+      {
+        contentType: {
+          png: 'image/png',
+          webp: 'image/webp',
+          gif: 'image/gif',
+          jpg: 'image/jpeg',
+        }[extension],
+      },
+      context
+    )
+  let height: number, width: number
+  if (extension === 'jpg') {
+    const [readableForUpload2, readableForDimensions] = teeStream(readableForUpload)
+    const [storeResult, dimensionsResult] = await Promise.allSettled([
+      store(readableForUpload2),
+      extractJPGDimensions(readableForDimensions),
+    ])
+    if (storeResult.status === 'rejected') {
+      throw storeResult.reason
+    }
+    if (dimensionsResult.status === 'rejected' || dimensionsResult.value === undefined) {
+      await storage.delete(`${id}.${extension}`, context)
+      throw new Error('File type not found')
+    }
+    height = dimensionsResult.value.height
+    width = dimensionsResult.value.width
+  } else {
+    ;({ height, width } = types[extension].calculate(buffer))
+    await store(readableForUpload)
+  }
+
   return {
     filesize,
     id,
-    extension: metadata.extension,
-    height: metadata.height,
-    width: metadata.width,
+    extension,
+    height,
+    width,
   }
 }
 

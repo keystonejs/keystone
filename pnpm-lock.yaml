@@ -2131,6 +2131,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.21.2
+      image-size:
+        specifier: ^2.0.0
+        version: 2.0.1
     devDependencies:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
