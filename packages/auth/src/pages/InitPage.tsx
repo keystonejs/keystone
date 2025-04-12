@@ -1,16 +1,13 @@
 import NextHead from 'next/head'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { useList } from '@keystone-6/core/admin-ui/context'
+import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
 import { Heading } from '@keystar/ui/typography'
-
-import { useRedirect } from '../lib/useFromRedirect'
-
 import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
@@ -25,7 +22,7 @@ function InitPage({
   fieldPaths: string[]
 }) {
   const router = useRouter()
-  const redirect = useRedirect()
+  const { adminPath } = useKeystone()
   const list = useList(listKey)
 
   const builder = useBuildItem(list, fieldPaths)
@@ -62,7 +59,7 @@ function InitPage({
       return
     }
 
-    router.push(redirect)
+    router.push(adminPath || '/')
   }
 
   const pending = loading || data?.authenticate?.__typename === successTypename
