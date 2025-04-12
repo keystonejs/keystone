@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { type FormEvent, useId, useState, type ReactNode } from 'react'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
@@ -10,6 +9,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import type { FieldMeta, ListMeta } from '../../../../types'
 import { Tag } from './Tag'
 import type { Filter } from './useFilters'
+import { useRouter } from '../../../../admin-ui/router'
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (
