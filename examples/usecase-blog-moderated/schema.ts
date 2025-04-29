@@ -191,6 +191,7 @@ export const lists = {
             },
           }),
           async resolve(item, _, context) {
+            if (!item.hiddenById) return null
             return await context.db.User.findOne({
               where: {
                 moderator: {
@@ -200,6 +201,9 @@ export const lists = {
             })
           },
         }),
+        ui: {
+          query: '{ name }'
+        }
       })
     },
     hooks: {
@@ -304,8 +308,18 @@ export const lists = {
     fields: {
       name: text(),
       admin: checkbox(),
-      contributor: relationship({ ref: 'Contributor.user' }),
-      moderator: relationship({ ref: 'Moderator.user' }),
+      contributor: relationship({
+        ref: 'Contributor.user',
+        db: {
+          foreignKey: true
+        }
+      }),
+      moderator: relationship({
+        ref: 'Moderator.user',
+        db: {
+          foreignKey: true
+        }
+      }),
     },
   }),
 } satisfies Lists<Session>

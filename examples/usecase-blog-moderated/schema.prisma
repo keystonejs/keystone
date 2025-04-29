@@ -30,24 +30,24 @@ model Post {
 }
 
 model Contributor {
-  id     String  @id @default(cuid())
-  bio    String  @default("")
-  posts  Post[]  @relation("Post_createdBy")
-  user   User?   @relation("Contributor_user", fields: [userId], references: [id])
-  userId String? @unique @map("user")
+  id    String @id @default(cuid())
+  bio   String @default("")
+  posts Post[] @relation("Post_createdBy")
+  user  User?  @relation("User_contributor")
 }
 
 model Moderator {
-  id     String  @id @default(cuid())
-  hidden Post[]  @relation("Post_hiddenBy")
-  user   User?   @relation("Moderator_user", fields: [userId], references: [id])
-  userId String? @unique @map("user")
+  id     String @id @default(cuid())
+  hidden Post[] @relation("Post_hiddenBy")
+  user   User?  @relation("User_moderator")
 }
 
 model User {
-  id          String       @id @default(cuid())
-  name        String       @default("")
-  admin       Boolean      @default(false)
-  contributor Contributor? @relation("Contributor_user")
-  moderator   Moderator?   @relation("Moderator_user")
+  id            String       @id @default(cuid())
+  name          String       @default("")
+  admin         Boolean      @default(false)
+  contributor   Contributor? @relation("User_contributor", fields: [contributorId], references: [id])
+  contributorId String?      @unique @map("contributor")
+  moderator     Moderator?   @relation("User_moderator", fields: [moderatorId], references: [id])
+  moderatorId   String?      @unique @map("moderator")
 }

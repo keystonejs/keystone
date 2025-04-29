@@ -39,8 +39,8 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        *   or arguments on a non-scalar field GraphQL type
        * ```graphql
        * query {
-       *   item(where: { id: "..." }) {
-       *     fieldName${ui.query}
+       *   ${list}(where: { id: "..." }) {
+       *     ${field}${ui.query}
        *   }
        * }
        * ```
