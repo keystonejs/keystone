@@ -29,13 +29,13 @@ function assertFieldsIsNonNullAllowed(list: ListForValidation) {
 function assertUniqueWhereInputsValid(list: ListForValidation) {
   for (const [fieldKey, { dbField, input }] of Object.entries(list.fields)) {
     if (input?.uniqueWhere) {
-      if (dbField.kind !== 'scalar' && dbField.kind !== 'enum') {
+      if (dbField.kind !== 'scalar' && dbField.kind !== 'enum' && dbField.kind !== 'relation') {
         throw new Error(
           `Only scalar db fields can provide a uniqueWhere input currently but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input`
         )
       }
 
-      if (dbField.index !== 'unique' && fieldKey !== 'id') {
+      if (dbField.kind !== 'relation' && dbField.index !== 'unique' && fieldKey !== 'id') {
         throw new Error(
           `Fields must have a unique index or be the idField to specify a uniqueWhere input but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input without a unique index`
         )

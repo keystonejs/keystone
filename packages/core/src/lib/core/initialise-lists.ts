@@ -359,6 +359,18 @@ function getListsWithInitialisedFields(
               ) {
                 return []
               }
+              if (field.dbField.kind === 'relation') {
+                const remoteField =
+                  listsRef[field.dbField.list].resolvedDbFields[field.dbField.field]
+                if (
+                  field.dbField.mode === 'one' &&
+                  remoteField.kind === 'relation' &&
+                  remoteField.mode === 'one'
+                ) {
+                  return [[key, field.input.uniqueWhere.arg]] as const
+                }
+                return []
+              }
               return [[key, field.input.uniqueWhere.arg]] as const
             })
           ),
