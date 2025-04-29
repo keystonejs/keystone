@@ -2,7 +2,6 @@ import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { checkbox, text, relationship, timestamp, virtual } from '@keystone-6/core/fields'
 import type { Context, Lists } from '.keystone/types'
-import { session } from '../custom-session-passport/auth'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
