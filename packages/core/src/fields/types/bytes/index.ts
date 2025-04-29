@@ -13,7 +13,7 @@ import type { GArg, GInputObjectType, GList, GNonNull, GScalarType } from '@grap
 
 export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: true | 'unique'
+    isIndexed?: boolean | 'unique'
     graphql?: {
       scalar?: GScalarType<Uint8Array, string>
     }
