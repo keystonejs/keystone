@@ -30,27 +30,24 @@ model Post {
 }
 
 model Contributor {
-  id                    String @id @default(cuid())
-  bio                   String @default("")
-  posts                 Post[] @relation("Post_createdBy")
-  from_User_contributor User[] @relation("User_contributor")
+  id     String  @id @default(cuid())
+  bio    String  @default("")
+  posts  Post[]  @relation("Post_createdBy")
+  user   User?   @relation("Contributor_user", fields: [userId], references: [id])
+  userId String? @unique @map("user")
 }
 
 model Moderator {
-  id                  String @id @default(cuid())
-  hidden              Post[] @relation("Post_hiddenBy")
-  from_User_moderator User[] @relation("User_moderator")
+  id     String  @id @default(cuid())
+  hidden Post[]  @relation("Post_hiddenBy")
+  user   User?   @relation("Moderator_user", fields: [userId], references: [id])
+  userId String? @unique @map("user")
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String       @default("")
-  admin         Boolean      @default(false)
-  contributor   Contributor? @relation("User_contributor", fields: [contributorId], references: [id])
-  contributorId String?      @map("contributor")
-  moderator     Moderator?   @relation("User_moderator", fields: [moderatorId], references: [id])
-  moderatorId   String?      @map("moderator")
-
-  @@index([contributorId])
-  @@index([moderatorId])
+  id          String       @id @default(cuid())
+  name        String       @default("")
+  admin       Boolean      @default(false)
+  contributor Contributor? @relation("Contributor_user")
+  moderator   Moderator?   @relation("Moderator_user")
 }

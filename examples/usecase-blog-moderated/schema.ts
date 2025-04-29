@@ -237,6 +237,9 @@ export const lists = {
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.createdBy
         many: true,
       }),
+      user: relationship({
+        ref: 'User.contributor',
+      })
     },
   }),
 
@@ -263,6 +266,9 @@ export const lists = {
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
         many: true,
       }),
+      user: relationship({
+        ref: 'User.moderator',
+      })
     },
   }),
 
@@ -271,8 +277,8 @@ export const lists = {
     fields: {
       name: text(),
       admin: checkbox(),
-      contributor: relationship({ ref: 'Contributor' }),
-      moderator: relationship({ ref: 'Moderator' }),
+      contributor: relationship({ ref: 'Contributor.user' }),
+      moderator: relationship({ ref: 'Moderator.user' }),
     },
   }),
 } satisfies Lists<Session>
