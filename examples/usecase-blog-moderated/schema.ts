@@ -1,7 +1,8 @@
-import { list } from '@keystone-6/core'
+import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
-import { checkbox, text, relationship, timestamp } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import { checkbox, text, relationship, timestamp, virtual } from '@keystone-6/core/fields'
+import type { Context, Lists } from '.keystone/types'
+import { session } from '../custom-session-passport/auth'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -97,6 +98,9 @@ function editOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
   return viewOnlyBy(f, 'edit')
 }
 
+const g = gWithContext<Context>()
+type g<T> = gWithContext.infer<T>
+
 export const lists = {
   Post: list({
     access: {
@@ -174,6 +178,29 @@ export const lists = {
           ...readOnlyViewBy(moderatorsOrAbove),
         },
       }),
+
+      moderatedBy: virtual({
+        access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
+        field: g.field({
+          type: g.object<{
+            name: string
+          }>()({
+            name: 'ModeratedBy',
+            fields: {
+              name: g.field({ type: g.String }),
+            },
+          }),
+          async resolve(item, _, context) {
+            return await context.db.User.findOne({
+              where: {
+                moderator: {
+                  id: item.hiddenById
+                }
+              },
+            })
+          },
+        }),
+      })
     },
     hooks: {
       resolveInput: {
