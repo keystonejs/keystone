@@ -195,16 +195,16 @@ export const lists = {
             return await context.db.User.findOne({
               where: {
                 moderator: {
-                  id: item.hiddenById
-                }
+                  id: item.hiddenById,
+                },
               },
             })
           },
         }),
         ui: {
-          query: '{ name }'
-        }
-      })
+          query: '{ name }',
+        },
+      }),
     },
     hooks: {
       resolveInput: {
@@ -270,7 +270,7 @@ export const lists = {
       }),
       user: relationship({
         ref: 'User.contributor',
-      })
+      }),
     },
   }),
 
@@ -299,7 +299,7 @@ export const lists = {
       }),
       user: relationship({
         ref: 'User.moderator',
-      })
+      }),
     },
   }),
 
@@ -311,14 +311,14 @@ export const lists = {
       contributor: relationship({
         ref: 'Contributor.user',
         db: {
-          foreignKey: true
-        }
+          foreignKey: true,
+        },
       }),
       moderator: relationship({
         ref: 'Moderator.user',
         db: {
-          foreignKey: true
-        }
+          foreignKey: true,
+        },
       }),
     },
   }),
