@@ -1,9 +1,9 @@
-import {
-  type DBField,
-  type MultiDBField,
-  type NoDBField,
-  type RelationDBField,
-  type ScalarishDBField,
+import type {
+  DBField,
+  MultiDBField,
+  NoDBField,
+  RelationDBField,
+  ScalarishDBField,
 } from '../../types'
 
 type BaseResolvedRelationDBField = {
