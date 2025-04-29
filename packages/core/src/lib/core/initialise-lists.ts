@@ -360,7 +360,7 @@ function getListsWithInitialisedFields(
                 return []
               }
 
-              // only 1:1 relationships can have a uniqueWhere filter on relations
+              // only 1-to-1 relationships can have a uniqueWhere filter on relations
               if (field.dbField.kind === 'relation') {
                 const remoteField =
                   listsRef[field.dbField.list].resolvedDbFields[field.dbField.field]

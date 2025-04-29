@@ -46,7 +46,7 @@ describe('update one to one relationship back reference', () => {
         where: { id: companyId },
         query: 'id location { id }',
       })) as { id: any; location: { id: any } }
-      // Everything should now be connected. 1:1 has a single connection on the first list defined.
+      // Everything should now be connected. 1-to-1 has a single connection on the first list defined.
       expect(company.location.id.toString()).toBe(locationId.toString())
     })
   )
