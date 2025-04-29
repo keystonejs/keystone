@@ -97,7 +97,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   identifier?: string,
   wrap: (config: KeystoneConfig) => KeystoneConfig = x => x
 ) {
-  const random = identifier ?? randomBytes(8).toString('base64url').toLowerCase()
+  const random = identifier ?? randomBytes(10).toString('base64url').toLowerCase()
   const cwd = join(tmpdir(), `ks6-tests-${random}`)
   try {
     await fs.mkdir(cwd)
@@ -262,16 +262,13 @@ export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({
   wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
   const result = setupTestEnv(config_, serve, identifier, wrap)
-  const connectPromise = result.then(x => {
-    x.connect()
-    return x
-  })
 
   afterAll(async () => {
     await (await result).disconnect()
   })
 
   return async () => {
-    return await connectPromise
+    await (await result).connect()
+    return result
   }
 }

@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { test, beforeEach } from 'node:test'
+import { test, describe, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 
 import { resetDatabase } from '@keystone-6/core/testing'
