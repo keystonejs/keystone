@@ -393,8 +393,7 @@ describe('isOrderable', () => {
       expectFilterDenied(errors, [
         {
           path: ['users'],
-          message:
-            'Access denied: You cannot orderBy by fields ["User.orderFunctionFalse"]',
+          message: 'Access denied: You cannot orderBy by fields ["User.orderFunctionFalse"]',
         },
       ])
     })
@@ -518,8 +517,7 @@ describe('defaultIsOrderable', () => {
       expectFilterDenied(errors, [
         {
           path: ['defaultOrderFunctionFalses'],
-          message:
-            'Access denied: You cannot orderBy by fields ["DefaultOrderFunctionFalse.a"]',
+          message: 'Access denied: You cannot orderBy by fields ["DefaultOrderFunctionFalse.a"]',
         },
       ])
     })
