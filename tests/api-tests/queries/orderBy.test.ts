@@ -394,7 +394,7 @@ describe('isOrderable', () => {
         {
           path: ['users'],
           message:
-            'You do not have access to perform \'orderBy\' operations on the fields ["User.orderFunctionFalse"].',
+            'Access denied: You cannot orderBy by fields ["User.orderFunctionFalse"]',
         },
       ])
     })
@@ -459,7 +459,7 @@ describe('isOrderable', () => {
         {
           path: ['users'],
           message:
-            'You do not have access to perform \'orderBy\' operations on the fields ["User.orderFunctionFalse","User.orderFunctionFalseToo"].',
+            'Access denied: You cannot orderBy by fields ["User.orderFunctionFalse","User.orderFunctionFalseToo"]',
         },
       ])
     })
@@ -519,7 +519,7 @@ describe('defaultIsOrderable', () => {
         {
           path: ['defaultOrderFunctionFalses'],
           message:
-            'You do not have access to perform \'orderBy\' operations on the fields ["DefaultOrderFunctionFalse.a"].',
+            'Access denied: You cannot orderBy by fields ["DefaultOrderFunctionFalse.a"]',
         },
       ])
     })
