@@ -11,7 +11,7 @@
   "scripts": {
     "coverage": "jest --coverage",
     "test": "jest",
-    "vitest": "vitest",
+    "test:vitest": "vitest ./packages/fields-document",
     "test:filters": "cd prisma-utils && pnpm verify",
     "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest",

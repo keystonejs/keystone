@@ -73,7 +73,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm vitest
+        run: pnpm test:vitest
 
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
