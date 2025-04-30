@@ -608,11 +608,15 @@ describe(`Access (${dbProvider})`, () => {
         }
 
         const items = await updatePromise
-        expectEqualItems(l, items, target.map((t, i) => ({
-          id: t.where.id,
-          ...seeded[i],
-          ...t.data,
-        })))
+        expectEqualItems(
+          l,
+          items,
+          target.map((t, i) => ({
+            id: t.where.id,
+            ...seeded[i],
+            ...t.data,
+          }))
+        )
       })
 
       test.concurrent(`delete: ${l.expect.delete} (deleteOne)`, async () => {

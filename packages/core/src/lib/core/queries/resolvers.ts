@@ -1,11 +1,6 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import { type GraphQLResolveInfo } from 'graphql'
-import type {
-  BaseItem,
-  FindManyArgsValue,
-  KeystoneContext,
-  OrderDirection,
-} from '../../../types'
+import type { BaseItem, FindManyArgsValue, KeystoneContext, OrderDirection } from '../../../types'
 import { type PrismaFilter, type UniquePrismaFilter } from '../../../types/prisma'
 
 import { getOperationAccess, getAccessFilters } from '../access-control'
