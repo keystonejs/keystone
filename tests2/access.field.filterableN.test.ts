@@ -12,7 +12,7 @@ import {
   makeWhereUniqueFilter,
   randomString,
   seed,
-  seedMany
+  seedMany,
 } from './utils2'
 
 describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {

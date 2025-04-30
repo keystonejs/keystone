@@ -1,14 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils'
-import {
-  config,
-  expectEqualItem,
-  expectEqualItems,
-  lists,
-  seed,
-  seedMany
-} from './utils2'
+import { config, expectEqualItem, expectEqualItems, lists, seed, seedMany } from './utils2'
 
 describe(`*.access.[query/read] tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()

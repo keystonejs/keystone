@@ -9,7 +9,7 @@ import {
   makeWhereFilter,
   makeWhereUniqueFilter,
   seed,
-  seedMany
+  seedMany,
 } from './utils2'
 
 describe(`field.access.filterable tests (${dbProvider})`, () => {

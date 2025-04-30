@@ -84,7 +84,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
     // field access tests
     for (const f of l.fields) {
       const fieldQuery = `id ${f.name}`
-     const hasUnique = l.fields.some(f => f.expect.unique)
+      const hasUnique = l.fields.some(f => f.expect.unique)
 
       // we tested list create operations previously^, skip
       //   and create operations with unique fields need us to write hooks

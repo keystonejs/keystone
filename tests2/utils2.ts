@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-import { allowAll, denyAll } from "@keystone-6/core/access"
+import { allowAll, denyAll } from '@keystone-6/core/access'
 
 import { setupTestSuite, dbProvider } from './utils'
 
@@ -34,7 +34,13 @@ export function expectEqualItem(l: List, a: any, b: any, keys: string[] = []) {
   }
 }
 
-export function expectEqualItems(l: List, a: readonly any[], b: any[], keys: string[] = [], sort = true) {
+export function expectEqualItems(
+  l: List,
+  a: readonly any[],
+  b: any[],
+  keys: string[] = [],
+  sort = true
+) {
   assert.notEqual(a, null)
   assert.equal(a.length, b.length)
 
@@ -418,5 +424,5 @@ export const config = {
         }
       })()
     ),
-  }
+  },
 }
