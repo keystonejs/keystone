@@ -34,7 +34,7 @@ export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: Ini
 
 export function* traverse(
   list: InitialisedList,
-  inputFilter: InputFilter
+  inputFilter: InputFilter | UniqueInputFilter
 ): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
@@ -93,11 +93,10 @@ export async function findOne(
   if (Object.keys(resolvedWhere).length === 0) return null
 
   // check filter access
-  await checkFilterOrderAccess([...traverse(list, resolvedWhere as any)], context, 'filter')
+  await checkFilterOrderAccess([...traverse(list, args.where)], context, 'filter')
 
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-
   const result = await context.prisma[list.listKey].findFirst({ where: filter })
 
   if (list.cacheHint) {
@@ -125,22 +124,24 @@ export async function findMany(
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake })
   }
 
-  // TODO: rewrite, this actually checks access
-  const orderBy = await resolveOrderBy(rawOrderBy, list, context)
-
+  // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query')
   if (!operationAccess) return []
 
   const accessFilters = await getAccessFilters(list, context, 'query')
   if (accessFilters === false) return []
 
+  // validate and resolve the input filter
   const resolvedWhere = await resolveWhereInput(where, list, context)
 
   // check filter access (TODO: why isn't this using resolvedWhere)
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
 
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
+  // WARNING: this checks .isOrderable
+  const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
+  // apply access control
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
   const results = await context.prisma[list.listKey].findMany({
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,

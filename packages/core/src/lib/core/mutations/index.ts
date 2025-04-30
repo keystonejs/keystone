@@ -1,8 +1,8 @@
-import { type BaseItem, type KeystoneContext } from '../../../types'
-import { type UniquePrismaFilter } from '../../../types/prisma'
+import type { BaseItem, KeystoneContext } from '../../../types'
+import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
-import { type ResolvedDBField } from '../resolve-relationships'
-import { type InitialisedList } from '../initialise-lists'
+import type { ResolvedDBField } from '../resolve-relationships'
+import type { InitialisedList } from '../initialise-lists'
 import {
   type IdType,
   promiseAllRejectWithAllErrors,
