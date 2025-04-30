@@ -62,10 +62,15 @@ export const limitsExceededError = (args: { type: string; limit: number; list: s
     },
   })
 
+function formatKeys(keys: string[]) {
+  if (keys.length < 4) return keys.join(', ')
+  return keys.slice(0, 3).join(', ') + ` and ${keys.length - 3} others...`
+}
+
 export const filterAccessError = ({
   operation,
   fieldKeys,
 }: {
   operation: 'filter' | 'orderBy'
   fieldKeys: string[]
-}) => accessDeniedError(`You cannot ${operation} by ${fieldKeys.join(', ')}`, `KS_FILTER_DENIED`)
+}) => accessDeniedError(`You cannot ${operation} by ${formatKeys(fieldKeys)}`, `KS_FILTER_DENIED`)
