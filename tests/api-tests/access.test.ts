@@ -4,6 +4,7 @@ import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { dbProvider } from './utils'
+import ms from 'ms'
 
 function randomString() {
   return `foo-${randomUUID()}`
@@ -101,7 +102,7 @@ function makeWhereAndFilter(
   }
 }
 
-//jest.setTimeout(ms('20 minutes'))
+jest.setTimeout(ms('20 minutes'))
 
 function makeFieldEntry({
   access,
