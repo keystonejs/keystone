@@ -3,8 +3,8 @@ import { GraphQLError } from 'graphql'
 export const userInputError = (msg: string) =>
   new GraphQLError(`Input error: ${msg}`, { extensions: { code: 'KS_USER_INPUT_ERROR' } })
 
-export const accessDeniedError = (msg: string) =>
-  new GraphQLError(`Access denied: ${msg}`, { extensions: { code: 'KS_ACCESS_DENIED' } })
+export const accessDeniedError = (msg: string, code = 'KS_ACCESS_DENIED') =>
+  new GraphQLError(`Access denied: ${msg}`, { extensions: { code } })
 
 export const validationFailureError = (messages: string[]) => {
   const s = messages.map(m => `  - ${m}`).join('\n')
@@ -69,13 +69,4 @@ export const filterAccessError = ({
   operation: 'filter' | 'orderBy'
   fieldKeys: string[]
 }) =>
-  new GraphQLError(
-    `You do not have access to perform '${operation}' operations on the fields ${JSON.stringify(
-      fieldKeys
-    )}.`,
-    {
-      extensions: {
-        code: 'KS_FILTER_DENIED',
-      },
-    }
-  )
+  accessDeniedError(`You cannot ${operation} by ${JSON.stringify(fieldKeys)}`, `KS_FILTER_DENIED`)

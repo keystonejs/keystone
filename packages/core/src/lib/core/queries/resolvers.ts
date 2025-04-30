@@ -1,10 +1,10 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import { type GraphQLResolveInfo } from 'graphql'
-import {
-  type BaseItem,
-  type FindManyArgsValue,
-  type KeystoneContext,
-  type OrderDirection,
+import type {
+  BaseItem,
+  FindManyArgsValue,
+  KeystoneContext,
+  OrderDirection,
 } from '../../../types'
 import { type PrismaFilter, type UniquePrismaFilter } from '../../../types/prisma'
 
@@ -17,7 +17,7 @@ import {
 } from '../where-inputs'
 
 import { limitsExceededError, userInputError } from '../graphql-errors'
-import { type InitialisedList } from '../initialise-lists'
+import type { InitialisedList } from '../initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils'
 import { checkFilterOrderAccess } from '../filter-order-access'
 
