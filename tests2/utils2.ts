@@ -2,10 +2,8 @@ import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-
-import { setupTestSuite, dbProvider } from './utils'
+import { text } from '@keystone-6/core/fields'
 
 export function makeName(o: Record<string, boolean>) {
   return (
