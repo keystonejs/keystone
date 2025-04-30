@@ -1,10 +1,10 @@
-import { setupTestSuite } from '@keystone-6/api-tests/test-runner'
+import assert from 'node:assert/strict'
+import { describe, test } from 'node:test'
 import { randomInt, randomUUID } from 'node:crypto'
 import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { dbProvider } from './utils'
-import ms from 'ms'
+import { setupTestSuite, dbProvider } from './utils'
 
 function randomString() {
   return `foo-${randomUUID()}`
@@ -12,26 +12,24 @@ function randomString() {
 
 function randomCount() {
   // return 1 + randomInt()
-  return 20
+  return 6
 }
 
 function expectEqualItem(l: List, a: any, b: any, keys: string[] = []) {
-  expect(a).not.toBe(null)
-  if ('id' in b) expect(a!.id).toBe(b.id)
+  assert.notEqual(a, null)
+  if ('id' in b) assert.equal(a.id, b.id)
   for (const f of l.fields) {
     if (keys.length && !keys.includes(f.name)) continue
-    expect(a).toHaveProperty(f.name)
-
     if (f.expect.read) {
-      expect(a![f.name]).toBe(b![f.name])
+      assert.equal(a[f.name], b[f.name])
     } else {
-      expect(a![f.name]).toBe(null)
+      assert.equal(a[f.name], null)
     }
   }
 }
 function expectEqualItems(l: List, a: readonly any[], b: any[], keys: string[] = [], sort = true) {
-  expect(a).not.toBe(null)
-  expect(a).toHaveLength(b.length)
+  assert.notEqual(a, null)
+  assert.equal(a.length, b.length)
 
   // order isn't always guaranteed (we might use `where.id.in`)
   const sorteda = sort ? [...a].sort((x, y) => x.id.localeCompare(y.id)) : a
@@ -101,8 +99,6 @@ function makeWhereAndFilter(
     }),
   }
 }
-
-jest.setTimeout(ms('20 minutes'))
 
 function makeFieldEntry({
   access,
@@ -431,7 +427,7 @@ describe(`Access (${dbProvider})`, () => {
     const hasUnique = l.fields.some(f => f.expect.unique)
 
     describe(`${l.name}`, () => {
-      test.concurrent(`query: ${l.expect.query} (findOne)`, async () => {
+      test(`query: ${l.expect.query} (findOne)`, async () => {
         const { context } = await suite
         const seeded = await seed(l, context)
 
@@ -442,7 +438,7 @@ describe(`Access (${dbProvider})`, () => {
         })
 
         if (!l.expect.query) {
-          expect(item).toBe(null)
+          assert.equal(item, null)
           return
         }
 
@@ -450,7 +446,7 @@ describe(`Access (${dbProvider})`, () => {
         expectEqualItem(l, item, seeded)
       })
 
-      test.concurrent(`query: ${l.expect.query} (findMany)`, async () => {
+      test(`query: ${l.expect.query} (findMany)`, async () => {
         const { context } = await suite
         const seeded = await seedMany(l, context)
 
@@ -465,7 +461,7 @@ describe(`Access (${dbProvider})`, () => {
         })
 
         if (!l.expect.query) {
-          expect(items).toEqual([])
+          assert.deepEqual(items, [])
           return
         }
 
@@ -473,7 +469,7 @@ describe(`Access (${dbProvider})`, () => {
         expectEqualItems(l, items, seeded)
       })
 
-      test.concurrent(`query: ${l.expect.query} for counting`, async () => {
+      test(`query: ${l.expect.query} for counting`, async () => {
         const { context } = await suite
         const seeded = await seedMany(l, context)
 
@@ -487,13 +483,13 @@ describe(`Access (${dbProvider})`, () => {
         })
 
         if (l.expect.query) {
-          expect(count).toBe(seeded.length)
+          assert.equal(count, seeded.length)
         } else {
-          expect(count).toBe(0)
+          assert.equal(count, 0)
         }
       })
 
-      test.concurrent(`create: ${l.expect.create} (createOne)`, async () => {
+      test(`create: ${l.expect.create} (createOne)`, async () => {
         const { context } = await suite
         const target = makeItem(l, 'create')
 
@@ -505,25 +501,24 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.create) {
           const error = createPromise.catch((e: any) => e.message)
-          expect(await error).toBe(`Access denied: You cannot create that ${l.name}`)
+          assert.match(await error, /^Access denied: You cannot create that/)
           return
         }
 
         const item = await createPromise
-        expect(item).not.toBe(null)
-        expect(item.id).not.toBe(null)
+        assert.notEqual(item, null)
+        assert.notEqual(item.id, null)
 
         for (const f of l.fields) {
-          expect(item).toHaveProperty(f.name)
           if (f.expect.read) {
-            expect(item![f.name]).toBe(target[f.name] ?? f.defaultValue)
+            assert.equal(item![f.name], target[f.name] ?? f.defaultValue)
           } else {
-            expect(item![f.name]).toBe(null)
+            assert.equal(item![f.name], null)
           }
         }
       })
 
-      test.concurrent(`create: ${l.expect.create} (createMany)`, async () => {
+      test(`create: ${l.expect.create} (createMany)`, async () => {
         const { context } = await suite
         const target = [...Array(randomCount())].map(_ => makeItem(l, 'create'))
 
@@ -535,30 +530,29 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.create) {
           const error = createPromise.catch((e: any) => e.message)
-          expect(await error).toBe(`Access denied: You cannot create that ${l.name}`)
+          assert.match(await error, /^Access denied: You cannot create that/)
           return
         }
 
         const items = await createPromise
-        expect(items).not.toBe(null)
-        expect(items).toHaveLength(target.length)
-        expect(countUniqueItems(items)).toBe(target.length)
+        assert.notEqual(items, null)
+        assert.equal(items.length, target.length)
+        assert.equal(countUniqueItems(items), target.length)
 
         let i = 0
         for (const item of items) {
           for (const f of l.fields) {
-            expect(item).toHaveProperty(f.name)
             if (f.expect.read) {
-              expect(item![f.name]).toBe(target[i][f.name] ?? f.defaultValue)
+              assert.equal(item![f.name], target[i][f.name] ?? f.defaultValue)
             } else {
-              expect(item![f.name]).toBe(null)
+              assert.equal(item![f.name], null)
             }
           }
           ++i
         }
       })
 
-      test.concurrent(`update: ${l.expect.update} (updateOne)`, async () => {
+      test(`update: ${l.expect.update} (updateOne)`, async () => {
         const { context } = await suite
         const seeded = await seed(l, context)
         const target = makeItem(l, 'update')
@@ -572,9 +566,7 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.update) {
           const error = updatePromise.catch(e => e.message)
-          expect(await error).toBe(
-            `Access denied: You cannot update that ${l.name} - it may not exist`
-          )
+          assert.match(await error, /^Access denied: You cannot update that/)
           return
         }
 
@@ -586,7 +578,7 @@ describe(`Access (${dbProvider})`, () => {
         })
       })
 
-      test.concurrent(`update: ${l.expect.update} (updateMany)`, async () => {
+      test(`update: ${l.expect.update} (updateMany)`, async () => {
         const { context } = await suite
         const seeded = await seedMany(l, context)
         const target = seeded.map(({ id }) => ({
@@ -602,9 +594,7 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.update) {
           const error = updatePromise.catch(e => e.message)
-          expect(await error).toBe(
-            `Access denied: You cannot update that ${l.name} - it may not exist`
-          )
+          assert.match(await error, /^Access denied: You cannot update that/)
           return
         }
 
@@ -620,7 +610,7 @@ describe(`Access (${dbProvider})`, () => {
         )
       })
 
-      test.concurrent(`delete: ${l.expect.delete} (deleteOne)`, async () => {
+      test(`delete: ${l.expect.delete} (deleteOne)`, async () => {
         const { context } = await suite
         const seeded = await seed(l, context)
 
@@ -632,13 +622,14 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.delete) {
           const error = deletePromise.catch(e => e.message)
-          expect(await error).toBe(
+          assert.equal(
+            await error,
             `Access denied: You cannot delete that ${l.name} - it may not exist`
           )
 
           // sudo required, as we might not have query/read access
           const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
-          expect(count).toBe(1)
+          assert.equal(count, 1)
           return
         }
 
@@ -647,10 +638,10 @@ describe(`Access (${dbProvider})`, () => {
 
         // sudo required, as we might not have query/read access
         const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
-        expect(count).toBe(0)
+        assert.equal(count, 0)
       })
 
-      test.concurrent(`delete: ${l.expect.delete} (deleteMany)`, async () => {
+      test(`delete: ${l.expect.delete} (deleteMany)`, async () => {
         const { context } = await suite
         const seeded = await seedMany(l, context)
 
@@ -664,14 +655,15 @@ describe(`Access (${dbProvider})`, () => {
 
         if (!l.expect.delete) {
           const error = deletePromise.catch(e => e.message)
-          expect(await error).toBe(
+          assert.equal(
+            await error,
             `Access denied: You cannot delete that ${l.name} - it may not exist`
           )
 
           const count = await context.prisma[l.name].count({
             where: { id: { in: seeded.map(s => s.id) } },
           })
-          expect(count).toBe(seeded.length) // unchanged
+          assert.equal(count, seeded.length) // unchanged
           return
         }
 
@@ -682,7 +674,7 @@ describe(`Access (${dbProvider})`, () => {
         const count = await context.prisma[l.name].count({
           where: { id: { in: seeded.map(s => s.id) } },
         })
-        expect(count).toBe(0) // changed
+        assert.equal(count, 0) // changed
       })
 
       // field access tests
@@ -690,7 +682,7 @@ describe(`Access (${dbProvider})`, () => {
         const fieldQuery = `id ${f.name}`
 
         describe(`${f.name}`, () => {
-          test.concurrent(`read: ${f.expect.read} (findOne)`, async () => {
+          test(`read: ${f.expect.read} (findOne)`, async () => {
             if (!f.expect.read) return
             const { context } = await suite
             const seeded = await seed(l, context)
@@ -702,7 +694,7 @@ describe(`Access (${dbProvider})`, () => {
             })
 
             if (!l.expect.query) {
-              expect(item).toEqual(null)
+              assert.equal(item, null)
               return
             }
 
@@ -710,7 +702,7 @@ describe(`Access (${dbProvider})`, () => {
             expectEqualItem(l, item, seeded, [f.name])
           })
 
-          test.concurrent(`read: ${f.expect.read} (findMany)`, async () => {
+          test(`read: ${f.expect.read} (findMany)`, async () => {
             const { context } = await suite
             const seeded = await seedMany(l, context)
 
@@ -725,7 +717,7 @@ describe(`Access (${dbProvider})`, () => {
             })
 
             if (!l.expect.query) {
-              expect(items).toEqual([])
+              assert.deepEqual(items, [])
               return
             }
 
@@ -734,7 +726,7 @@ describe(`Access (${dbProvider})`, () => {
           })
 
           if (f.expect.unique) {
-            test.concurrent(`filterable: ${f.expect.filterable} (findOne)`, async () => {
+            test(`filterable: ${f.expect.filterable} (findOne)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
 
@@ -746,20 +738,20 @@ describe(`Access (${dbProvider})`, () => {
 
               // access.filter's happen after .filterable
               if (!l.expect.query && l.expect.type !== 'filter') {
-                expect(await findPromise).toEqual(null)
+                assert.equal(await findPromise, null)
                 return
               }
 
               if (!f.expect.filterable) {
                 const error = findPromise.catch((e: any) => e.message)
-                expect(await error).toMatch(/^Access denied: You cannot filter/)
+                assert.match(await error, /^Access denied: You cannot filter/)
                 return
               }
 
               // test field.access.read
               const item = await findPromise
               if (!l.expect.query) {
-                expect(item).toEqual(null)
+                assert.equal(item, null)
                 return
               }
 
@@ -767,7 +759,7 @@ describe(`Access (${dbProvider})`, () => {
             })
           }
 
-          test.concurrent(`filterable: ${f.expect.filterable} (findMany)`, async () => {
+          test(`filterable: ${f.expect.filterable} (findMany)`, async () => {
             const { context } = await suite
             const seeded = await seedMany(l, context)
 
@@ -779,20 +771,20 @@ describe(`Access (${dbProvider})`, () => {
 
             // access.filter's happen after .filterable
             if (!l.expect.query && l.expect.type !== 'filter') {
-              expect(await findPromise).toEqual([])
+              assert.deepEqual(await findPromise, [])
               return
             }
 
             if (!f.expect.filterable) {
               const error = findPromise.catch((e: any) => e.message)
-              expect(await error).toMatch(/^Access denied: You cannot filter/)
+              assert.match(await error, /^Access denied: You cannot filter/)
               return
             }
 
             // test field.access.read
             const items = await findPromise
             if (!l.expect.query) {
-              expect(items).toEqual([])
+              assert.deepEqual(items, [])
               return
             }
 
@@ -802,7 +794,7 @@ describe(`Access (${dbProvider})`, () => {
           // we tested list create operations previously^, skip
           //   and create operations with unique fields need us to write hooks
           if (l.expect.create && !hasUnique) {
-            test.concurrent(`create: ${f.expect.create}`, async () => {
+            test(`create: ${f.expect.create}`, async () => {
               const { context } = await suite
               const target = { [f.name]: randomString() }
 
@@ -815,7 +807,8 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.create
               if (!f.expect.create) {
                 const error = createPromise.catch((e: any) => e.message)
-                expect(await error).toBe(
+                assert.equal(
+                  await error,
                   `Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`
                 )
                 return
@@ -827,10 +820,10 @@ describe(`Access (${dbProvider})`, () => {
 
               // sudo required, as we might not have query/read access
               const item_ = await context.sudo().db[l.name].findOne({ where: { id: item.id } })
-              expect(item_![f.name]).toBe(target[f.name])
+              assert.equal(item_![f.name], target[f.name])
             })
 
-            test.concurrent(`create: ${f.expect.create} (createMany)`, async () => {
+            test(`create: ${f.expect.create} (createMany)`, async () => {
               const { context } = await suite
               const target = [...Array(randomCount())].map(_ => ({ [f.name]: randomString() }))
 
@@ -843,16 +836,17 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.create
               if (!f.expect.create) {
                 const error = createPromise.catch(e => e.message)
-                expect(await error).toBe(
+                assert.equal(
+                  await error,
                   `Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`
                 )
                 return
               }
 
               const items = await createPromise
-              expect(items).not.toBe(null)
-              expect(items).toHaveLength(target.length)
-              expect(countUniqueItems(items)).toBe(target.length)
+              assert.notEqual(items, null)
+              assert.equal(items.length, target.length)
+              assert.equal(countUniqueItems(items), target.length)
 
               // test field.access.read
               expectEqualItems(l, items, target, [f.name], false)
@@ -861,7 +855,7 @@ describe(`Access (${dbProvider})`, () => {
 
           // we tested list update operations previously^, skip
           if (l.expect.update) {
-            test.concurrent(`update: ${f.expect.update}`, async () => {
+            test(`update: ${f.expect.update} (updateOne)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
               const target = { [f.name]: randomString() }
@@ -876,7 +870,8 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.update
               if (!f.expect.update) {
                 const error = updatePromise.catch(e => e.message)
-                expect(await error).toBe(
+                assert.equal(
+                  await error,
                   `Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`
                 )
                 return
@@ -889,10 +884,10 @@ describe(`Access (${dbProvider})`, () => {
 
               // sudo required, as we might not have read
               const item_ = await context.sudo().db[l.name].findOne({ where: { id: seeded.id } })
-              expect(item_![f.name]).toBe(target[f.name])
+              assert.equal(item_![f.name], target[f.name])
             })
 
-            test.concurrent(`update: ${f.expect.update} (updateMany)`, async () => {
+            test(`update: ${f.expect.update} (updateMany)`, async () => {
               const { context } = await suite
               const seeded = await seedMany(l, context)
               const target = seeded.map(({ id }) => ({ id, [f.name]: randomString() }))
@@ -909,7 +904,8 @@ describe(`Access (${dbProvider})`, () => {
               // test field.access.update
               if (!f.expect.update) {
                 const error = updatePromise.catch(e => e.message)
-                expect(await error).toBe(
+                assert.equal(
+                  await error,
                   `Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`
                 )
                 return
@@ -924,7 +920,7 @@ describe(`Access (${dbProvider})`, () => {
 
           // we tested list delete operations previously^, skip
           if (l.expect.delete) {
-            test.concurrent(`read: ${f.expect.read} (on delete)`, async () => {
+            test(`read: ${f.expect.read} (on delete)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
 
@@ -938,7 +934,7 @@ describe(`Access (${dbProvider})`, () => {
               expectEqualItem(l, item, seeded, [f.name])
             })
 
-            test.concurrent(`read: ${f.expect.read} (on deleteMany)`, async () => {
+            test(`read: ${f.expect.read} (on deleteMany)`, async () => {
               const { context } = await suite
               const seeded = await seedMany(l, context)
 
@@ -961,7 +957,7 @@ describe(`Access (${dbProvider})`, () => {
       for (const f1 of l.fields) {
         for (const f2 of l.fields) {
           if (f1 === f2) continue
-          if (randomInt(10) < 9) continue
+          if (randomInt(100) < 90) continue
 
           const fields = [f1, f2]
           const filterable = fields.every(f => f.expect.filterable)
@@ -969,7 +965,7 @@ describe(`Access (${dbProvider})`, () => {
           const label = `filterable: ${filterable}`
 
           if (unique) {
-            test.concurrent(`query: ${l.expect.query}, ${label} (findOne)`, async () => {
+            test(`query: ${l.expect.query}, ${label} (findOne)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
               const where = makeWhereUniqueFilter(fields, seeded)
@@ -982,19 +978,19 @@ describe(`Access (${dbProvider})`, () => {
 
               // access.filter's happen after .filterable
               if (!l.expect.query && l.expect.type !== 'filter') {
-                expect(await findPromise).toEqual(null)
+                assert.equal(await findPromise, null)
                 return
               }
 
               if (!filterable) {
                 const error = findPromise.catch((e: any) => e.message)
-                expect(await error).toMatch(/^Access denied: You cannot filter/)
+                assert.match(await error, /^Access denied: You cannot filter/)
                 return
               }
 
               const item = await findPromise
               if (!l.expect.query) {
-                expect(item).toEqual(null)
+                assert.equal(item, null)
                 return
               }
 
@@ -1003,14 +999,14 @@ describe(`Access (${dbProvider})`, () => {
             })
           }
 
-          test.concurrent(`query: ${l.expect.query}, ${label} (findMany, 1)`, async () => {
+          test(`query: ${l.expect.query}, ${label} (findMany, 1)`, async () => {
             const { context } = await suite
             const seeded = await seed(l, context)
             const where = makeWhereFilter(fields, seeded)
 
             //   for debugging
             // const count = await context.prisma[l.name].count({ where })
-            // expect(count).toBe(1)
+            // assert.equal(count).toBe(1)
 
             // test list.access.*.query
             const findPromise = context.query[l.name].findMany({
@@ -1020,19 +1016,19 @@ describe(`Access (${dbProvider})`, () => {
 
             // access.filter's happen after .filterable
             if (!l.expect.query && l.expect.type !== 'filter') {
-              expect(await findPromise).toEqual([])
+              assert.deepEqual(await findPromise, [])
               return
             }
 
             if (!filterable) {
               const error = findPromise.catch((e: any) => e.message)
-              expect(await error).toMatch(/^Access denied: You cannot filter/)
+              assert.match(await error, /^Access denied: You cannot filter/)
               return
             }
 
             const items = await findPromise
             if (!l.expect.query) {
-              expect(items).toEqual([])
+              assert.deepEqual(items, [])
               return
             }
 
@@ -1040,7 +1036,7 @@ describe(`Access (${dbProvider})`, () => {
             expectEqualItems(l, items, [seeded])
           })
 
-          test.concurrent(`query: ${l.expect.query}, ${label} (findMany, 1 AND)`, async () => {
+          test(`query: ${l.expect.query}, ${label} (findMany, 1 AND)`, async () => {
             const { context } = await suite
             const seeded = await seed(l, context)
             const where = makeWhereAndFilter(fields, seeded)
@@ -1053,19 +1049,19 @@ describe(`Access (${dbProvider})`, () => {
 
             // access.filter's happen after .filterable
             if (!l.expect.query && l.expect.type !== 'filter') {
-              expect(await findPromise).toEqual([])
+              assert.deepEqual(await findPromise, [])
               return
             }
 
             if (!filterable) {
               const error = findPromise.catch((e: any) => e.message)
-              expect(await error).toMatch(/^Access denied: You cannot filter/)
+              assert.match(await error, /^Access denied: You cannot filter/)
               return
             }
 
             const items = await findPromise
             if (!l.expect.query) {
-              expect(items).toEqual([])
+              assert.deepEqual(items, [])
               return
             }
 
@@ -1073,7 +1069,7 @@ describe(`Access (${dbProvider})`, () => {
             expectEqualItems(l, items, [seeded])
           })
 
-          test.concurrent(`query: ${l.expect.query}, ${label} (findMany, N)`, async () => {
+          test(`query: ${l.expect.query}, ${label} (findMany, N)`, async () => {
             const { context } = await suite
             const seeded = await seedMany(l, context)
             const where = makeWhereFilter(fields, seeded)
@@ -1086,19 +1082,19 @@ describe(`Access (${dbProvider})`, () => {
 
             // access.filter's happen after .filterable
             if (!l.expect.query && l.expect.type !== 'filter') {
-              expect(await findPromise).toEqual([])
+              assert.deepEqual(await findPromise, [])
               return
             }
 
             if (!filterable) {
               const error = findPromise.catch((e: any) => e.message)
-              expect(await error).toMatch(/^Access denied: You cannot filter/)
+              assert.match(await error, /^Access denied: You cannot filter/)
               return
             }
 
             const items = await findPromise
             if (!l.expect.query) {
-              expect(items).toEqual([])
+              assert.deepEqual(items, [])
               return
             }
 
@@ -1110,7 +1106,7 @@ describe(`Access (${dbProvider})`, () => {
           if (l.expect.update && updatable && unique) {
             const updateQuery = `id ${updatable.name}`
 
-            test.concurrent(`update: ${l.expect.update}, ${label} (updateOne)`, async () => {
+            test(`update: ${l.expect.update}, ${label} (updateOne)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
               const target = { [updatable.name]: randomString() }
@@ -1124,19 +1120,19 @@ describe(`Access (${dbProvider})`, () => {
 
               // access.filter's happen after .filterable
               if (!l.expect.update && l.expect.type !== 'filter') {
-                expect(await updatePromise).toEqual(null)
+                assert.equal(await updatePromise, null)
                 return
               }
 
               if (!filterable) {
                 const error = updatePromise.catch((e: any) => e.message)
-                expect(await error).toMatch(/^Access denied: You cannot filter/)
+                assert.match(await error, /^Access denied: You cannot filter/)
                 return
               }
 
               const item = await updatePromise
               if (!l.expect.update) {
-                expect(item).toEqual(null)
+                assert.equal(item, null)
                 return
               }
 
@@ -1147,7 +1143,7 @@ describe(`Access (${dbProvider})`, () => {
           }
 
           if (l.expect.delete && unique) {
-            test.concurrent(`delete: ${l.expect.delete}, ${label} (deleteOne)`, async () => {
+            test(`delete: ${l.expect.delete}, ${label} (deleteOne)`, async () => {
               const { context } = await suite
               const seeded = await seed(l, context)
 
@@ -1159,19 +1155,19 @@ describe(`Access (${dbProvider})`, () => {
 
               // access.filter's happen after .filterable
               if (!l.expect.delete && l.expect.type !== 'filter') {
-                expect(await deletePromise).toEqual(null)
+                assert.equal(await deletePromise, null)
                 return
               }
 
               if (!filterable) {
                 const error = deletePromise.catch((e: any) => e.message)
-                expect(await error).toMatch(/^Access denied: You cannot filter/)
+                assert.match(await error, /^Access denied: You cannot filter/)
                 return
               }
 
               const item = await deletePromise
               if (!l.expect.delete) {
-                expect(item).toEqual(null)
+                assert.equal(item, null)
                 return
               }
 

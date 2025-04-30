@@ -1,6 +1,6 @@
-import path from 'node:path'
-import { test, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
+import { test, beforeEach } from 'node:test'
+import path from 'node:path'
 
 import { resetDatabase } from '@keystone-6/core/testing'
 import { getContext } from '@keystone-6/core/context'

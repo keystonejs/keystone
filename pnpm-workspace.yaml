@@ -9,5 +9,6 @@ packages:
   - 'tests/test-projects/*'
   - 'tests/sandbox'
   - 'tests/cli-tests'
+  - 'tests2/'
   - 'prisma-utils'
   - '!**/node_modules/**'

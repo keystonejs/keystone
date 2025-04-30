@@ -1,3 +1,4 @@
+import { after } from 'node:test'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { join } from 'node:path'
@@ -22,7 +23,14 @@ import type {
   KeystoneConfig,
   KeystoneConfigPre,
 } from '@keystone-6/core/types'
-import { dbProvider } from './utils'
+
+export const dbProvider = (function () {
+  const dbUrl = process.env.DATABASE_URL ?? ''
+  if (dbUrl.startsWith('file:')) return 'sqlite' as const
+  if (dbUrl.startsWith('postgres:')) return 'postgresql' as const
+  if (dbUrl.startsWith('mysql:')) return 'mysql' as const
+  throw new Error(`Unsupported environment DATABASE_URL="${dbUrl}"`)
+})()
 
 // prisma checks
 {
@@ -256,7 +264,7 @@ export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({
 }) {
   const result = setupTestEnv(config_, serve, identifier, wrap)
 
-  afterAll(async () => {
+  after(async () => {
     await (await result).disconnect()
   })
 
