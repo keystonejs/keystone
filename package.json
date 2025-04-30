@@ -16,7 +16,7 @@
     "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest",
     "test:admin-ui": "jest tests/admin-ui-tests",
-    "test:node": "node --import tsx --test tests2/*.test.ts",
+    "test:node": "node --import tsx --test --test-concurrency 4 tests2/*.test.ts",
     "test:node:only": "node --import tsx --test-only tests2/*.test.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
