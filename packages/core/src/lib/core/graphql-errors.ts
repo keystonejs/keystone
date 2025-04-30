@@ -68,5 +68,4 @@ export const filterAccessError = ({
 }: {
   operation: 'filter' | 'orderBy'
   fieldKeys: string[]
-}) =>
-  accessDeniedError(`You cannot ${operation} by ${JSON.stringify(fieldKeys)}`, `KS_FILTER_DENIED`)
+}) => accessDeniedError(`You cannot ${operation} by ${fieldKeys.join(', ')}`, `KS_FILTER_DENIED`)

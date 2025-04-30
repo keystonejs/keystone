@@ -320,7 +320,7 @@ describe('isFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['users'],
-          message: `Access denied: You cannot filter by fields ["User.filterFunctionFalse"]`,
+          message: `Access denied: You cannot filter by User.filterFunctionFalse`,
         },
       ])
     })
@@ -385,7 +385,7 @@ describe('isFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['secondaryLists'],
-          message: `Access denied: You cannot filter by fields ["SecondaryList.filterFunctionFalse","SecondaryList.filterFunctionFalse","User.filterFunctionFalse"]`,
+          message: `Access denied: You cannot filter by SecondaryList.filterFunctionFalse, SecondaryList.filterFunctionFalse, User.filterFunctionFalse`,
         },
       ])
     })
@@ -440,7 +440,7 @@ describe('defaultIsFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['defaultFilterFunctionFalses'],
-          message: `Access denied: You cannot filter by fields ["DefaultFilterFunctionFalse.a"]`,
+          message: `Access denied: You cannot filter by DefaultFilterFunctionFalse.a`,
         },
       ])
     })
