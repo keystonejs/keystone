@@ -3,10 +3,10 @@ import type {
   BaseListTypeInfo,
   KeystoneContext,
   MaybeFieldFunction,
-  MaybeItemFunction,
   MaybePromise,
   MaybeSessionFunction,
   KeystoneConfig,
+  MaybeItemFunction,
 } from '../types'
 import type { GraphQLNames } from '../types/utils'
 import type { FieldMeta, FieldGroupMeta, ListMeta } from '../types/admin-meta'

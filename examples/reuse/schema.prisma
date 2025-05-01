@@ -26,10 +26,16 @@ model Order {
   id        String    @id @default(cuid())
   title     String    @default("")
   completed Boolean   @default(false)
+  name      String    @default("")
   createdBy String    @default("")
   createdAt DateTime?
   updatedBy String    @default("")
   updatedAt DateTime?
+}
+
+model Foo {
+  id        String  @id @default(cuid())
+  completed Boolean @default(false)
 }
 
 model User {

@@ -1,3 +1,4 @@
+import type { BaseFieldTypeInfo } from '@keystone-6/core/types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -17,11 +18,13 @@ import {
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
 import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data'
 
-export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    db?: { map?: string }
-    schema: ComponentSchema
-  }
+export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo
+> & {
+  db?: { map?: string }
+  schema: ComponentSchema
+}
 
 export function structure<ListTypeInfo extends BaseListTypeInfo>({
   schema,

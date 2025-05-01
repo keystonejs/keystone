@@ -20,34 +20,51 @@ type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneCon
   Context
 >
 
-export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
-      | ((lists: {
-          [Key in keyof ListTypeInfo['all']['lists']]: ListGraphQLTypes<
-            ListTypeInfo['all']['lists'][Key]
-          >
-        }) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
-    unreferencedConcreteInterfaceImplementations?: readonly GObjectType<
-      any,
-      KeystoneContext<ListTypeInfo['all']>
-    >[]
-    ui?: {
-      /**
-       * This can be used by the AdminUI to fetch the relevant sub-fields
-       *   or arguments on a non-scalar field GraphQL type
-       * ```graphql
-       * query {
-       *   ${list}(where: { id: "..." }) {
-       *     ${field}${ui.query}
-       *   }
-       * }
-       * ```
-       */
-      query?: string
-    }
+type FieldTypeInfo = {
+  item: undefined
+  inputs: {
+    where: undefined
+    create: undefined
+    update: undefined
+    uniqueWhere: undefined
+    orderBy: undefined
   }
+  prisma: {
+    create: undefined
+    update: undefined
+  }
+}
+
+export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  field:
+    | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
+    | ((lists: {
+        [Key in keyof ListTypeInfo['all']['lists']]: ListGraphQLTypes<
+          ListTypeInfo['all']['lists'][Key]
+        >
+      }) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+  unreferencedConcreteInterfaceImplementations?: readonly GObjectType<
+    any,
+    KeystoneContext<ListTypeInfo['all']>
+  >[]
+  ui?: {
+    /**
+     * This can be used by the AdminUI to fetch the relevant sub-fields
+     *   or arguments on a non-scalar field GraphQL type
+     * ```graphql
+     * query {
+     *   ${list}(where: { id: "..." }) {
+     *     ${field}${ui.query}
+     *   }
+     * }
+     * ```
+     */
+    query?: string
+  }
+}
 
 export function virtual<ListTypeInfo extends BaseListTypeInfo>({
   field,

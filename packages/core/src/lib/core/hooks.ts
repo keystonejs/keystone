@@ -23,7 +23,14 @@ export async function validate({
       const hook = field.hooks.validate[operation]
 
       try {
-        await hook({ ...hookArgs, addValidationError, fieldKey } as never) // TODO: FIXME
+        await hook({
+          ...hookArgs,
+          addValidationError,
+          fieldKey,
+          itemField: hookArgs.item?.[fieldKey],
+          inputFieldData: hookArgs.inputData?.[fieldKey],
+          resolvedFieldData: hookArgs.resolvedData?.[fieldKey],
+        } as never) // TODO: FIXME
       } catch (error: any) {
         fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` })
       }
@@ -76,7 +83,14 @@ export async function runSideEffectOnlyHook<
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
-          await field.hooks[hookName][operation]({ fieldKey, ...args } as any) // TODO: FIXME any
+          await field.hooks[hookName][operation]({
+            ...args,
+            fieldKey,
+            itemField: args.item?.[fieldKey],
+            inputFieldData: args.inputData?.[fieldKey],
+            resolvedFieldData: args.resolvedData?.[fieldKey],
+            originalItemField: (args as any).originalItem?.[fieldKey],
+          } as any) // TODO: FIXME any
         } catch (error: any) {
           fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
         }

@@ -12,6 +12,7 @@ import type {
   MaybeFieldFunction,
   NextFieldType,
   FieldTypeFunc,
+  BaseFieldTypeInfo,
 } from '../../types'
 import { QueryMode } from '../../types'
 import { type GraphQLNames, __getNames } from '../../types/utils'
@@ -37,7 +38,7 @@ export type InitialisedField = {
 
   access: ResolvedFieldAccessControl
   dbField: ResolvedDBField
-  hooks: ResolvedFieldHooks<BaseListTypeInfo>
+  hooks: ResolvedFieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
   graphql: {
     isEnabled: {
       read: boolean
@@ -259,8 +260,8 @@ function defaultFieldHooksResolveInput({
 }
 
 function parseFieldHooks(
-  hooks: FieldHooks<BaseListTypeInfo>
-): ResolvedFieldHooks<BaseListTypeInfo> {
+  hooks: FieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
+): ResolvedFieldHooks<BaseListTypeInfo, BaseFieldTypeInfo> {
   return {
     resolveInput: {
       create:

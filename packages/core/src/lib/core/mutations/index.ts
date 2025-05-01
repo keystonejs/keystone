@@ -416,12 +416,18 @@ async function getResolvedData(
             operation === 'create'
               ? await field.hooks.resolveInput.create({
                   ...hookArgs,
+                  itemField: undefined,
+                  inputFieldData: hookArgs.inputData[fieldKey],
                   resolvedData,
+                  resolvedFieldData: resolvedData[fieldKey],
                   fieldKey,
                 })
               : await field.hooks.resolveInput.update({
                   ...hookArgs,
+                  itemField: hookArgs.item[fieldKey],
+                  inputFieldData: hookArgs.inputData[fieldKey],
                   resolvedData,
+                  resolvedFieldData: resolvedData[fieldKey],
                   fieldKey,
                 }),
           ]

@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -9,21 +10,23 @@ import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 
-export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    defaultValue?: number | null
-    validation?: {
-      isRequired?: boolean
-      min?: number
-      max?: number
-    }
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
+export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'Float'>
+> & {
+  isIndexed?: boolean | 'unique'
+  defaultValue?: number | null
+  validation?: {
+    isRequired?: boolean
+    min?: number
+    max?: number
   }
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+  }
+}
 
 export function float<ListTypeInfo extends BaseListTypeInfo>(
   config: FloatFieldConfig<ListTypeInfo> = {}

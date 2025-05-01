@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -9,21 +10,23 @@ import { g } from '../../..'
 import { filters } from '../../filters'
 import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
 
-export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    defaultValue?: number | null | { kind: 'autoincrement' }
-    validation?: {
-      isRequired?: boolean
-      min?: number
-      max?: number
-    }
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
+export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'Int'>
+> & {
+  isIndexed?: boolean | 'unique'
+  defaultValue?: number | null | { kind: 'autoincrement' }
+  validation?: {
+    isRequired?: boolean
+    min?: number
+    max?: number
   }
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+  }
+}
 
 // for a signed 32-bit integer
 const MAX_INT = 0x7fffffff

@@ -12,26 +12,44 @@ import { g } from '../../..'
 import { type PasswordFieldMeta } from './views'
 import { makeValidateHook } from '../../non-null-graphql'
 import { isObjectType, type GraphQLSchema } from 'graphql'
+import type { InferValueFromInputType } from '@graphql-ts/schema'
 
-export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    validation?: {
-      isRequired?: boolean
-      rejectCommon?: boolean
-      match?: { regex: RegExp; explanation?: string }
-      length?: {
-        /** @default 8 */
-        min?: number
-        max?: number
-      }
-    }
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
-    kdf?: KDF
+type FieldTypeInfo = {
+  item: string | null
+  inputs: {
+    where: InferValueFromInputType<typeof PasswordFilter> | undefined
+    create: string | null | undefined
+    update: string | null | undefined
+    uniqueWhere: never
+    orderBy: never
   }
+  prisma: {
+    create: string | null | undefined
+    update: string | null | undefined
+  }
+}
+
+export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  validation?: {
+    isRequired?: boolean
+    rejectCommon?: boolean
+    match?: { regex: RegExp; explanation?: string }
+    length?: {
+      /** @default 8 */
+      min?: number
+      max?: number
+    }
+  }
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+  }
+  kdf?: KDF
+}
 
 type KDF = {
   compare(preImage: string, hash: string): Promise<boolean>

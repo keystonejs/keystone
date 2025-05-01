@@ -17,9 +17,27 @@ export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
   fieldKey: ListTypeInfo['fields']
 }
 
-export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type BaseFieldTypeInfo = {
+  item: any
+  inputs: {
+    create: any
+    update: any
+    where: any
+    uniqueWhere: any
+    orderBy: any
+  }
+  prisma: {
+    create: any
+    update: any
+  }
+}
+
+export type CommonFieldConfig<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldTypeInfo extends BaseFieldTypeInfo,
+> = {
   access?: FieldAccessControl<ListTypeInfo>
-  hooks?: FieldHooks<ListTypeInfo, ListTypeInfo['fields']>
+  hooks?: FieldHooks<ListTypeInfo, FieldTypeInfo>
   label?: string // TODO: move to .ui in breaking change
   ui?: {
     description?: string

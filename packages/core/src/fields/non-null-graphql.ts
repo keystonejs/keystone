@@ -1,3 +1,4 @@
+import type { BaseFieldTypeInfo } from '../types'
 import { type BaseListTypeInfo, type FieldData } from '../types'
 import type { FieldHooks } from '../types/config/hooks'
 import { type ValidateFieldHook } from '../types/config/hooks'
@@ -33,10 +34,10 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
       [key: string]: unknown
     }
     hooks?: {
-      validate?: FieldHooks<ListTypeInfo>['validate']
+      validate?: FieldHooks<ListTypeInfo, any>['validate']
     }
   },
-  f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', ListTypeInfo['fields']>
+  f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>
 ) {
   const dbNullable = resolveDbNullable(config.validation, config.db)
   const mode = dbNullable ? ('optional' as const) : ('required' as const)
@@ -59,11 +60,7 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
       }
 
       await f?.(args)
-    } satisfies ValidateFieldHook<
-      ListTypeInfo,
-      'create' | 'update' | 'delete',
-      ListTypeInfo['fields']
-    >
+    } satisfies ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>
 
     return {
       mode,

@@ -1,4 +1,5 @@
 import {
+  BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
@@ -7,7 +8,10 @@ import {
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 
-type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
+type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo // TODO
+> & {
   isIndexed?: boolean | 'unique'
 }
 

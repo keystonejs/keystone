@@ -1,4 +1,5 @@
 import {
+  BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
@@ -12,7 +13,10 @@ import { g } from '@keystone-6/core'
 // and a different input in the Admin UI
 // https://github.com/keystonejs/keystone/tree/main/packages/core/src/fields/types/integer
 
-type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
+type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo // TODO
+> & {
   isIndexed?: boolean | 'unique'
   maxStars?: number
 }

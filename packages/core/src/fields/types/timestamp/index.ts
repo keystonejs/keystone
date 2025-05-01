@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -10,21 +11,23 @@ import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 import { type TimestampFieldMeta } from './views'
 
-export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    validation?: {
-      isRequired?: boolean
-    }
-    defaultValue?: string | { kind: 'now' }
-    db?: {
-      // this is @updatedAt in Prisma
-      updatedAt?: boolean
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
+export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'DateTime' | 'String'> // TODO: make more exact
+> & {
+  isIndexed?: boolean | 'unique'
+  validation?: {
+    isRequired?: boolean
   }
+  defaultValue?: string | { kind: 'now' }
+  db?: {
+    // this is @updatedAt in Prisma
+    updatedAt?: boolean
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+  }
+}
 
 export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
   config: TimestampFieldConfig<ListTypeInfo> = {}

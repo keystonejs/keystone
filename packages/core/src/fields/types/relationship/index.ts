@@ -1,3 +1,4 @@
+import type { JSONValue } from '../../../types'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -96,15 +97,50 @@ function throwIfMissingFields(
   }
 }
 
-export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    many?: boolean
-    ref: string
-    ui?: {
-      hideCreate?: boolean
-    }
-  } & (OneDbConfig | ManyDbConfig) &
-    (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
+type ArrayOr<T> = T | T[]
+
+// TODO: add types based on list types
+type FieldTypeInfo = {
+  item: undefined
+  inputs: {
+    where: JSONValue | undefined
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+    uniqueWhere: undefined
+    orderBy: undefined
+  }
+  prisma: {
+    create:
+      | {
+          connect?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          create?: any
+          set?: ArrayOr<{ id?: string; [key: string]: unknown }>
+        }
+      | undefined
+      | null
+    update:
+      | {
+          connect?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          create?: any
+          set?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          disconnect?: boolean | ArrayOr<{ id?: string; [key: string]: unknown }> | undefined
+        }
+      | undefined
+      | null
+  }
+}
+
+export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  many?: boolean
+  ref: string
+  ui?: {
+    hideCreate?: boolean
+  }
+} & (OneDbConfig | ManyDbConfig) &
+  (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
 
 export function relationship<ListTypeInfo extends BaseListTypeInfo>({
   ref,

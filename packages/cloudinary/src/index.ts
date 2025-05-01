@@ -1,5 +1,10 @@
 import { randomBytes } from 'node:crypto'
-import type { CommonFieldConfig, BaseListTypeInfo, FieldTypeFunc } from '@keystone-6/core/types'
+import type {
+  CommonFieldConfig,
+  BaseListTypeInfo,
+  FieldTypeFunc,
+  BaseFieldTypeInfo,
+} from '@keystone-6/core/types'
 import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 import type Cloudinary from 'cloudinary'
@@ -15,16 +20,18 @@ type StoredFile = {
   _meta: Cloudinary.UploadApiResponse
 }
 
-type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    cloudinary: {
-      cloudName: string
-      apiKey: string
-      apiSecret: string
-      folder?: string
-    }
-    db?: { map?: string }
+type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo
+> & {
+  cloudinary: {
+    cloudName: string
+    apiKey: string
+    apiSecret: string
+    folder?: string
   }
+  db?: { map?: string }
+}
 
 const CloudinaryImageFormat = g.inputObject({
   name: 'CloudinaryImageFormat',

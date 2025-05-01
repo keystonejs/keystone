@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -17,19 +18,21 @@ import type {
   InferValueFromInputType,
 } from '@graphql-ts/schema'
 
-export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    validation?: {
-      isRequired?: boolean
-    }
-    defaultValue?: string
-    db?: {
-      isNullable?: boolean
-      extendPrismaSchema?: (field: string) => string
-      map?: string
-    }
+export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'String' | 'DateTime'>
+> & {
+  isIndexed?: boolean | 'unique'
+  validation?: {
+    isRequired?: boolean
   }
+  defaultValue?: string
+  db?: {
+    isNullable?: boolean
+    extendPrismaSchema?: (field: string) => string
+    map?: string
+  }
+}
 
 export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
   config: CalendarDayFieldConfig<ListTypeInfo> = {}

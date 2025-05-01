@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -10,23 +11,25 @@ import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook } from '../../non-null-graphql'
 
-export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    defaultValue?: string | null
-    validation?: {
-      isRequired?: boolean
-      min?: string
-      max?: string
-    }
-    precision?: number
-    scale?: number
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
+export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'Decimal'>
+> & {
+  isIndexed?: boolean | 'unique'
+  defaultValue?: string | null
+  validation?: {
+    isRequired?: boolean
+    min?: string
+    max?: string
   }
+  precision?: number
+  scale?: number
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+  }
+}
 
 function safeParseDecimal(value: string | null | undefined) {
   if (value === null || value === undefined) return value

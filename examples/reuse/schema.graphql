@@ -119,6 +119,7 @@ type Order {
   id: ID!
   title: String
   completed: Boolean
+  name: String
   createdBy: String
   createdAt: DateTime
   updatedBy: String
@@ -136,6 +137,7 @@ input OrderWhereInput {
   id: IDFilter
   title: StringFilter
   completed: BooleanFilter
+  name: StringFilter
   createdBy: StringFilter
   createdAt: DateTimeNullableFilter
   updatedBy: StringFilter
@@ -146,6 +148,7 @@ input OrderOrderByInput {
   id: OrderDirection
   title: OrderDirection
   completed: OrderDirection
+  name: OrderDirection
   createdBy: OrderDirection
   createdAt: OrderDirection
   updatedBy: OrderDirection
@@ -155,6 +158,7 @@ input OrderOrderByInput {
 input OrderUpdateInput {
   title: String
   completed: Boolean
+  name: String
 }
 
 input OrderUpdateArgs {
@@ -164,6 +168,42 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   title: String
+  completed: Boolean
+  name: String
+}
+
+type Foo {
+  id: ID!
+  completed: Boolean
+}
+
+input FooWhereUniqueInput {
+  id: ID
+}
+
+input FooWhereInput {
+  AND: [FooWhereInput!]
+  OR: [FooWhereInput!]
+  NOT: [FooWhereInput!]
+  id: IDFilter
+  completed: BooleanFilter
+}
+
+input FooOrderByInput {
+  id: OrderDirection
+  completed: OrderDirection
+}
+
+input FooUpdateInput {
+  completed: Boolean
+}
+
+input FooUpdateArgs {
+  where: FooWhereUniqueInput!
+  data: FooUpdateInput!
+}
+
+input FooCreateInput {
   completed: Boolean
 }
 
@@ -220,6 +260,12 @@ type Mutation {
   updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
+  createFoo(data: FooCreateInput!): Foo
+  createFoos(data: [FooCreateInput!]!): [Foo]
+  updateFoo(where: FooWhereUniqueInput!, data: FooUpdateInput!): Foo
+  updateFoos(data: [FooUpdateArgs!]!): [Foo]
+  deleteFoo(where: FooWhereUniqueInput!): Foo
+  deleteFoos(where: [FooWhereUniqueInput!]!): [Foo]
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
@@ -235,6 +281,9 @@ type Query {
   order(where: OrderWhereUniqueInput!): Order
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
+  foo(where: FooWhereUniqueInput!): Foo
+  foos(where: FooWhereInput! = {}, orderBy: [FooOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooWhereUniqueInput): [Foo!]
+  foosCount(where: FooWhereInput! = {}): Int
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
