@@ -76,42 +76,42 @@ describe(`*.access.delete tests (${dbProvider})`, () => {
       assert.equal(count, 0) // changed
     })
 
+    // we test list delete operations previously^, skip
+    if (!l.expect.delete) continue
+
     // field access tests
     for (const f of l.fields) {
       const fieldQuery = `id ${f.name}`
 
-      // we tested list delete operations previously^, skip
-      if (l.expect.delete) {
-        test(`deleteOne ${f.name}`, async () => {
-          const { context } = await suite
-          const seeded = await seed(l, context)
+      test(`deleteOne ${f.name}`, async () => {
+        const { context } = await suite
+        const seeded = await seed(l, context)
 
-          // test list.access.*.delete
-          const item = await context.query[l.name].deleteOne({
-            where: { id: seeded.id },
-            query: fieldQuery,
-          })
-
-          // test field.access.read
-          expectEqualItem(l, item, seeded, [f.name])
+        // test list.access.*.delete
+        const item = await context.query[l.name].deleteOne({
+          where: { id: seeded.id },
+          query: fieldQuery,
         })
 
-        test(`deleteMany ${f.name}`, async () => {
-          const { context } = await suite
-          const seeded = await seedMany(l, context)
+        // test field.access.read
+        expectEqualItem(l, item, seeded, [f.name])
+      })
 
-          // test list.access.*.query
-          const items = await context.query[l.name].deleteMany({
-            where: seeded.map(({ id }) => ({
-              id,
-            })),
-            query: fieldQuery,
-          })
+      test(`deleteMany ${f.name}`, async () => {
+        const { context } = await suite
+        const seeded = await seedMany(l, context)
 
-          // test field.access.read
-          expectEqualItems(l, items, seeded, [f.name])
+        // test list.access.*.query
+        const items = await context.query[l.name].deleteMany({
+          where: seeded.map(({ id }) => ({
+            id,
+          })),
+          query: fieldQuery,
         })
-      }
+
+        // test field.access.read
+        expectEqualItems(l, items, seeded, [f.name])
+      })
     }
   }
 })

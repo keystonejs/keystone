@@ -81,72 +81,74 @@ describe(`*.access.create tests (${dbProvider})`, () => {
       }
     })
 
+    // we test list create operations previously^, skip
+    if (!l.expect.create) continue
+
+    // create operations with unique fields need us to write hooks, skip
+    const hasUnique = l.fields.some(f => f.expect.unique)
+    if (hasUnique) continue
+
     // field access tests
     for (const f of l.fields) {
       const fieldQuery = `id ${f.name}`
-      const hasUnique = l.fields.some(f => f.expect.unique)
 
-      // we tested list create operations previously^, skip
-      //   and create operations with unique fields need us to write hooks
-      if (l.expect.create && !hasUnique) {
-        test(`createOne ${f.name}`, async () => {
-          const { context } = await suite
-          const target = { [f.name]: randomString() }
+      test(`createOne ${f.name}`, async () => {
+        const { context } = await suite
+        const target = { [f.name]: randomString() }
 
-          // test list.access.*.create
-          const createPromise = context.query[l.name].createOne({
-            data: target,
-            query: fieldQuery,
-          })
-
-          // test field.access.create
-          if (!f.expect.create) {
-            const error = createPromise.catch((e: any) => e.message)
-            assert.equal(
-              await error,
-              `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
-            )
-            return
-          }
-
-          // test field.access.read
-          const item = await createPromise
-          expectEqualItem(l, item, target, [f.name])
-
-          // sudo required, as we might not have query/read access
-          const item_ = await context.sudo().db[l.name].findOne({ where: { id: item.id } })
-          assert.equal(item_![f.name], target[f.name])
+        // test list.access.*.create
+        const createPromise = context.query[l.name].createOne({
+          data: target,
+          query: fieldQuery,
         })
 
-        test(`createMany ${f.name}`, async () => {
-          const { context } = await suite
-          const target = [...Array(randomCount())].map(_ => ({ [f.name]: randomString() }))
+        // test field.access.create
+        if (!f.expect.create) {
+          const error = createPromise.catch((e: any) => e.message)
+          assert.equal(
+            await error,
+            `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
+          )
+          return
+        }
 
-          // test list.access.*.create
-          const createPromise = context.query[l.name].createMany({
-            data: target,
-            query: fieldQuery,
-          })
+        // test field.access.read
+        const item = await createPromise
+        expectEqualItem(l, item, target, [f.name])
 
-          // test field.access.create
-          if (!f.expect.create) {
-            const error = createPromise.catch(e => e.message)
-            assert.equal(
-              await error,
-              `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
-            )
-            return
-          }
+        // sudo required, as we might not have query/read access
+        const item_ = await context.sudo().db[l.name].findOne({ where: { id: item.id } })
+        assert.equal(item_![f.name], target[f.name])
+      })
 
-          const items = await createPromise
-          assert.notEqual(items, null)
-          assert.equal(items.length, target.length)
-          assert.equal(countUniqueItems(items), target.length)
+      test(`createMany ${f.name}`, async () => {
+        const { context } = await suite
+        const target = [...Array(randomCount())].map(_ => ({ [f.name]: randomString() }))
 
-          // test field.access.read
-          expectEqualItems(l, items, target, [f.name], false)
+        // test list.access.*.create
+        const createPromise = context.query[l.name].createMany({
+          data: target,
+          query: fieldQuery,
         })
-      }
+
+        // test field.access.create
+        if (!f.expect.create) {
+          const error = createPromise.catch(e => e.message)
+          assert.equal(
+            await error,
+            `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
+          )
+          return
+        }
+
+        const items = await createPromise
+        assert.notEqual(items, null)
+        assert.equal(items.length, target.length)
+        assert.equal(countUniqueItems(items), target.length)
+
+        // test field.access.read
+        expectEqualItems(l, items, target, [f.name], false)
+      })
     }
   }
 })
