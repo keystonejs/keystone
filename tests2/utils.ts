@@ -12,7 +12,7 @@ import { config } from '@keystone-6/core'
 import {
   createSystem,
   generateArtifacts,
-  withMigrate
+  withMigrate,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 import type {
