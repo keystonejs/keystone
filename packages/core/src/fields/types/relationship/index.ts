@@ -1,16 +1,16 @@
-import type { JSONValue } from '../../../types'
-import {
-  type BaseListTypeInfo,
-  type FieldTypeFunc,
-  type CommonFieldConfig,
-  fieldType,
-} from '../../../types'
 import { g } from '../../..'
 import {
   type ListMetaSource,
   getAdminMetaForRelationshipField,
 } from '../../../lib/create-admin-meta'
-import { type controller } from './views'
+import type { JSONValue } from '../../../types'
+import {
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
+} from '../../../types'
+import type { controller } from './views'
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -276,19 +276,19 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
         input: {
           where: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.where }),
-            resolve(value, context, resolve) {
+            resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
           create: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.create }),
-            async resolve(value, context, resolve) {
+            async resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
           update: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.update }),
-            async resolve(value, context, resolve) {
+            async resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
@@ -331,7 +331,7 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
       input: {
         where: {
           arg: g.arg({ type: foreignListTypes.where }),
-          resolve(value, context, resolve) {
+          resolve(value, _context, resolve) {
             return resolve(value)
           },
         },
@@ -341,14 +341,14 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
 
         create: foreignListTypes.relateTo.one.create && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.create }),
-          async resolve(value, context, resolve) {
+          async resolve(value, _context, resolve) {
             return resolve(value)
           },
         },
 
         update: foreignListTypes.relateTo.one.update && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.update }),
-          async resolve(value, context, resolve) {
+          async resolve(value, _context, resolve) {
             return resolve(value)
           },
         },

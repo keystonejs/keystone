@@ -3,17 +3,15 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 import type { Lists, Context } from '.keystone/types'
 
-function ifUnsetHideUI<Key extends string>(field: Key) {
-  return {
-    itemView: {
-      fieldMode: ({ item }: { item: null | { [_ in Key]: unknown } }) =>
-        item?.[field] ? 'edit' : 'read',
-    },
-    listView: {
-      fieldMode: 'hidden' as const,
-    },
-  }
-}
+const ifUnsetHideUI = {
+  itemView: {
+    fieldMode: ({ itemField }: { itemField: unknown | null }) =>
+      itemField ? 'edit' : 'read',
+  },
+  listView: {
+    fieldMode: 'hidden',
+  },
+} as const
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>
@@ -69,14 +67,14 @@ export const lists: Lists = {
           post: relationship({
             ref: 'Post',
             ui: {
-              ...ifUnsetHideUI('postId'),
+              ...ifUnsetHideUI,
             },
           }),
 
           link: relationship({
             ref: 'Link',
             ui: {
-              ...ifUnsetHideUI('linkId'),
+              ...ifUnsetHideUI,
             },
           }),
         },
@@ -85,7 +83,7 @@ export const lists: Lists = {
 
     hooks: {
       validate: {
-        create: async ({ operation, inputData, addValidationError }) => {
+        create: async ({ inputData, addValidationError }) => {
           const { post, link } = inputData
           const values = [post, link].filter(x => x?.connect ?? x?.create)
           if (values.length === 0)
@@ -93,7 +91,7 @@ export const lists: Lists = {
           if (values.length > 1)
             return addValidationError('Only one media type relationship can be selected')
         },
-        update: async ({ operation, inputData, addValidationError }) => {
+        update: async ({ inputData, addValidationError }) => {
           const { post, link } = inputData
           if ([post, link].some(x => x?.disconnect))
             return addValidationError('Cannot change media type relationship type')
@@ -106,7 +104,7 @@ export const lists: Lists = {
         },
       },
       resolveInput: {
-        update: async ({ context, operation, resolvedData }) => {
+        update: async ({ resolvedData }) => {
           const { post, link, ...rest } = resolvedData
           for (const [key, value] of Object.entries({ post, link })) {
             if (!value) continue

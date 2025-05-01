@@ -1,10 +1,10 @@
 import type { CacheHint } from '@apollo/cache-control-types'
+import type { KeystoneContext } from '..'
 import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
-import type { KeystoneContext } from '..'
-import type { MaybeFieldFunction, MaybeItemFunction, MaybeSessionFunction } from './lists'
-import type { FieldHooks } from './hooks'
 import type { FieldAccessControl } from './access-control'
+import type { FieldHooks } from './hooks'
+import type { MaybeFieldFunction, MaybeItemFieldFunction, MaybeSessionFunction } from './lists'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>
@@ -44,8 +44,8 @@ export type CommonFieldConfig<
     views?: string
     createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> }
     itemView?: {
-      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>
-      fieldPosition?: MaybeItemFunction<'form' | 'sidebar', ListTypeInfo>
+      fieldMode?: MaybeItemFieldFunction<'edit' | 'read' | 'hidden', ListTypeInfo, FieldTypeInfo>
+      fieldPosition?: MaybeItemFieldFunction<'form' | 'sidebar', ListTypeInfo, FieldTypeInfo>
     }
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> }
   }

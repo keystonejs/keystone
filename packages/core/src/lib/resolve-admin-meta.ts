@@ -66,29 +66,35 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
     }),
     itemView: g.field({
       args: { id: g.arg({ type: g.ID }) },
-      resolve: async ({ itemView, listKey }, { id }, context) => {
+      resolve: async ({ itemView, listKey, fieldKey }, { id }, context) => {
         if (id == null) {
           return {
             listKey,
+            fieldKey,
             fieldMode: itemView.fieldMode,
             fieldPosition: itemView.fieldPosition,
             item: null,
+            itemField: null,
           }
         }
         const item = await context.db[listKey].findOne({ where: { id } })
         if (!item) return null
         return {
           listKey,
+          fieldKey,
           fieldMode: itemView.fieldMode,
-          item,
           fieldPosition: itemView.fieldPosition,
+          item,
+          itemField: item[fieldKey],
         }
       },
       type: g.object<{
         listKey: string
+        fieldKey: string
         fieldMode: FieldMetaSource['itemView']['fieldMode']
         fieldPosition: FieldMetaSource['itemView']['fieldPosition']
         item: BaseItem | null
+        itemField: BaseItem[string] | null
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {
@@ -99,12 +105,15 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
                 values: g.enumValues(['edit', 'read', 'hidden']),
               })
             ),
-            async resolve({ fieldMode, item, listKey }, args, context, info) {
+            async resolve({ fieldMode, listKey, fieldKey, item, itemField }, _, context) {
               if (typeof fieldMode !== 'function') return fieldMode
               return fieldMode({
                 session: context.session,
                 context,
                 item,
+                itemField,
+                listKey,
+                fieldKey,
               })
             },
           }),
@@ -115,12 +124,15 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
                 values: g.enumValues(['form', 'sidebar']),
               })
             ),
-            async resolve({ fieldPosition, item, listKey }, args, context, info) {
+            async resolve({ fieldPosition, listKey, fieldKey, item, itemField }, _, context) {
               if (typeof fieldPosition !== 'function') return fieldPosition
               return fieldPosition({
                 session: context.session,
                 context,
                 item,
+                itemField,
+                listKey,
+                fieldKey,
               })
             },
           }),
@@ -248,13 +260,12 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaSource }>()({
   fields: {
     adminMeta: g.field({
       type: g.nonNull(adminMeta),
-      resolve({ adminMeta }, args, context, info) {
-        return Promise.resolve(adminMeta.isAccessAllowed(context)).then(isAllowed => {
-          if (isAllowed) return adminMeta
+      async resolve({ adminMeta }, _, context) {
+        const isAllowed = await adminMeta.isAccessAllowed(context)
+        if (isAllowed) return adminMeta
 
-          // TODO: we need better errors
-          throw new Error('Access denied')
-        })
+        // TODO: we need better errors
+        throw new Error('Access denied')
       },
     }),
   },

@@ -1,24 +1,25 @@
 import path from 'node:path'
 import type {
+  BaseFieldTypeInfo,
   BaseListTypeInfo,
+  KeystoneConfig,
   KeystoneContext,
   MaybeFieldFunction,
+  MaybeItemFieldFunction,
   MaybePromise,
-  MaybeSessionFunction,
-  KeystoneConfig,
-  MaybeItemFunction,
+  MaybeSessionFunction
 } from '../types'
+import type { FieldGroupMeta, FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames } from '../types/utils'
-import type { FieldMeta, FieldGroupMeta, ListMeta } from '../types/admin-meta'
 
-import { humanize } from './utils'
 import type { InitialisedList } from './core/initialise-lists'
+import { humanize } from './utils'
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
 type FieldMetaSource_ = {
-  key: string
   listKey: string
+  fieldKey: string
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
 
@@ -27,8 +28,8 @@ type FieldMetaSource_ = {
     fieldMode: EmptyResolver<'edit' | 'hidden'>
   }
   itemView: {
-    fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>
-    fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>
+    fieldMode: MaybeItemFieldFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo, BaseFieldTypeInfo>
+    fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', BaseListTypeInfo, BaseFieldTypeInfo>
   }
   listView: {
     fieldMode: EmptyResolver<'read' | 'hidden'>
@@ -184,14 +185,14 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       )
-      const fieldMeta: FieldMetaSource = {
+      const fieldMeta = {
         path: fieldKey, // TODO: deprecated, remove in breaking change
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
         fieldMeta: null,
 
-        key: fieldKey,
         listKey: listKey,
+        fieldKey: fieldKey,
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,
           baseOrderFilterArgs
@@ -220,7 +221,7 @@ export function createAdminMeta(
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),
         },
-      }
+      } satisfies FieldMetaSource
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta

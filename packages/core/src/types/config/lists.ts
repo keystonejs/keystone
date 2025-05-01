@@ -4,7 +4,7 @@ import type { BaseListTypeInfo } from '../type-info'
 import type { KeystoneContext } from '../context'
 import type { ListHooks } from './hooks'
 import type { ListAccessControl } from './access-control'
-import type { BaseFields } from './fields'
+import type { BaseFields, BaseFieldTypeInfo } from './fields'
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean
@@ -181,11 +181,27 @@ export type MaybeSessionFunction<
       session?: ListTypeInfo['all']['session']
     }) => MaybePromise<T>)
 
+export type MaybeItemFieldFunction<
+  T,
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldTypeInfo extends BaseFieldTypeInfo,
+> =
+  | T
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session']
+      listKey: ListTypeInfo['key']
+      fieldKey: ListTypeInfo['fields']
+      item: ListTypeInfo['item'] | null
+      itemField: FieldTypeInfo['item'] | null
+    }) => MaybePromise<T>)
+
 export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session']
+      listKey: ListTypeInfo['key']
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<T>)
 
