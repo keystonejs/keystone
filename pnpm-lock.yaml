@@ -2389,15 +2389,9 @@ importers:
       '@prisma/internals':
         specifier: 6.5.0
         version: 6.5.0(typescript@5.8.2)
-      '@types/supertest':
-        specifier: ^2.0.11
-        version: 2.0.16
       prisma:
         specifier: 6.5.0
         version: 6.5.0(typescript@5.8.2)
-      supertest:
-        specifier: ^6.1.6
-        version: 6.3.4
 
 packages:
 

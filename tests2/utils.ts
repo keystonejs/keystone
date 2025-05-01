@@ -1,21 +1,18 @@
-import { after } from 'node:test'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { join } from 'node:path'
 import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
+import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
+import path, { join } from 'node:path'
+import { after } from 'node:test'
 
-import supertest from 'supertest'
-import { createDatabase, getConfig, getDMMF, parseEnvValue } from '@prisma/internals'
 import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
+import { createDatabase, getConfig, getDMMF, parseEnvValue } from '@prisma/internals'
 
 import { config } from '@keystone-6/core'
 import {
-  createExpressServer,
   createSystem,
   generateArtifacts,
-  withMigrate,
+  withMigrate
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 import type {
@@ -94,7 +91,6 @@ type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<
 
 export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   config_: FloatingConfig<TypeInfo>,
-  serve: boolean = false,
   identifier?: string,
   wrap: (config: KeystoneConfig) => KeystoneConfig = x => x
 ) {
@@ -173,87 +169,17 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     await disconnect()
   }
 
-  if (serve) {
-    const { expressServer: express, httpServer: http } = await createExpressServer(
-      system.config,
-      context
-    )
-
-    function gqlSuper(
-      args: Parameters<typeof context.graphql.raw>[0] & { operationName?: string }
-    ) {
-      return supertest(express)
-        .post(system.config.graphql?.path ?? '/api/graphql')
-        .send(args)
-        .set('Accept', 'application/json')
-    }
-
-    async function gql(...args: Parameters<typeof gqlSuper>) {
-      const { body } = await gqlSuper(...args)
-      return body
-    }
-
-    return {
-      artifacts,
-      connect,
-      context,
-      config: system.config,
-      http,
-      gql,
-      gqlSuper,
-      express,
-      disconnect,
-    } as const
-  }
-
-  async function gql(...args: Parameters<typeof context.graphql.raw>) {
-    return await context.graphql.raw(...args)
-  }
-
   return {
     artifacts,
     connect,
     context,
     config: system.config,
-    // the non null assertions are wrong but better than casting as any or similar
-    // and it doesn't really matter much since it's in tests so if it fails
-    // the test fails and it's fine
-    http: null!,
-    express: null!,
-    gql,
-    gqlSuper: null!,
     disconnect,
   } as const
 }
 
-export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
-  config: config_,
-  serve = false,
-  identifier,
-  wrap,
-}: {
-  config: FloatingConfig<TypeInfo>
-  serve?: boolean
-  identifier?: string
-  wrap?: (config: KeystoneConfig) => KeystoneConfig
-}) {
-  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv>>) => Promise<void>) =>
-    async () => {
-      const result = await setupTestEnv(config_, serve, identifier, wrap)
-
-      await result.connect()
-      try {
-        return await testFn(result)
-      } finally {
-        await result.disconnect()
-      }
-    }
-}
-
-// WARNING: no support for onConnect
 export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({
   config: config_,
-  serve = false,
   identifier,
   wrap,
 }: {
@@ -262,7 +188,7 @@ export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({
   identifier?: string
   wrap?: (config: KeystoneConfig) => KeystoneConfig
 }) {
-  const result = setupTestEnv(config_, serve, identifier, wrap)
+  const result = setupTestEnv(config_, identifier, wrap)
 
   after(async () => {
     await (await result).disconnect()

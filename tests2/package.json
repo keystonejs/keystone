@@ -3,12 +3,10 @@
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@types/supertest": "^2.0.11",
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "6.5.0",
     "@prisma/engines": "6.5.0",
     "@prisma/internals": "6.5.0",
-    "prisma": "6.5.0",
-    "supertest": "^6.1.6"
+    "prisma": "6.5.0"
   }
 }
