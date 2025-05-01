@@ -99,7 +99,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
             const error = updatePromise.catch(e => e.message)
             assert.equal(
               await error,
-              `Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`
+              `Access denied: You cannot update that ${l.name} - you cannot update the fields ${f.name}`
             )
             return
           }
@@ -133,7 +133,7 @@ describe(`*.access.update tests (${dbProvider})`, () => {
             const error = updatePromise.catch(e => e.message)
             assert.equal(
               await error,
-              `Access denied: You cannot update that ${l.name} - you cannot update the fields ["${f.name}"]`
+              `Access denied: You cannot update that ${l.name} - you cannot update the fields ${f.name}`
             )
             return
           }

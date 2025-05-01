@@ -55,14 +55,14 @@ export const accessReturnError = (things: { tag: string; returned: string }[]) =
   })
 }
 
-export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
+export const limitsExceededError = (_: { type: string; limit: number; list: string }) =>
   new GraphQLError('Your request exceeded server limits', {
     extensions: {
       code: 'KS_LIMITS_EXCEEDED',
     },
   })
 
-function formatKeys(keys: string[]) {
+export function formatKeys(keys: string[]) {
   if (keys.length < 4) return keys.join(', ')
   return keys.slice(0, 3).join(', ') + ` and ${keys.length - 3} others...`
 }

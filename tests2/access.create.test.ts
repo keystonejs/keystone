@@ -104,7 +104,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
             const error = createPromise.catch((e: any) => e.message)
             assert.equal(
               await error,
-              `Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`
+              `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
             )
             return
           }
@@ -133,7 +133,7 @@ describe(`*.access.create tests (${dbProvider})`, () => {
             const error = createPromise.catch(e => e.message)
             assert.equal(
               await error,
-              `Access denied: You cannot create that ${l.name} - you cannot create the fields ["${f.name}"]`
+              `Access denied: You cannot create that ${l.name} - you cannot create the fields ${f.name}`
             )
             return
           }
