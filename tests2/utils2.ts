@@ -9,9 +9,9 @@ export function makeName(o: Record<string, boolean>) {
   return (
     Object.entries(o)
       .filter(([_, v]) => v)
-      .map(([k]) => k)
-      .join('_')
-      .toUpperCase() ?? 'DENY_ALL'
+      .map(([k]) => k.charAt(0))
+      .join('')
+      .toUpperCase() ?? 'DENY'
   )
 }
 
