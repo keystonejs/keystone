@@ -109,7 +109,7 @@ expect(data!.updateTask).toBe(null);
 expect(errors).toHaveLength(1);
 expect(errors![0].path).toEqual(['updateTask']);
 expect(errors![0].message).toEqual(
-  `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
+  `Access denied: You cannot update the item '{"id":"${task.id}"}' - it may not exist`
 );
 ```
 

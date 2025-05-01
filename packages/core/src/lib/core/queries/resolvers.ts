@@ -1,11 +1,6 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types'
 import { type GraphQLResolveInfo } from 'graphql'
-import {
-  type BaseItem,
-  type FindManyArgsValue,
-  type KeystoneContext,
-  type OrderDirection,
-} from '../../../types'
+import type { BaseItem, FindManyArgsValue, KeystoneContext, OrderDirection } from '../../../types'
 import { type PrismaFilter, type UniquePrismaFilter } from '../../../types/prisma'
 
 import { getOperationAccess, getAccessFilters } from '../access-control'
@@ -17,24 +12,29 @@ import {
 } from '../where-inputs'
 
 import { limitsExceededError, userInputError } from '../graphql-errors'
-import { type InitialisedList } from '../initialise-lists'
+import type { InitialisedList } from '../initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils'
 import { checkFilterOrderAccess } from '../filter-order-access'
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter, list: InitialisedList) {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
+    if (list.fields[key].dbField.kind === 'relation') {
+      const foreignList = list.lists[list.fields[key].dbField.list]
+      where[key] = mapUniqueWhereToWhere(uniqueWhere[key], foreignList)
+      continue
+    }
     where[key] = { equals: uniqueWhere[key] }
   }
   return where
 }
 
-function* traverse(
+export function* traverse(
   list: InitialisedList,
-  inputFilter: InputFilter
+  inputFilter: InputFilter | UniqueInputFilter
 ): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
@@ -87,19 +87,16 @@ export async function findOne(
 
   // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context)
-  const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere)
+  const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere, list)
 
   // findOne requires at least one filter
   if (Object.keys(resolvedWhere).length === 0) return null
 
   // check filter access
-  for (const fieldKey in resolvedWhere) {
-    await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
-  }
+  await checkFilterOrderAccess([...traverse(list, args.where)], context, 'filter')
 
   // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
-
   const result = await context.prisma[list.listKey].findFirst({ where: filter })
 
   if (list.cacheHint) {
@@ -127,22 +124,24 @@ export async function findMany(
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake })
   }
 
-  // TODO: rewrite, this actually checks access
-  const orderBy = await resolveOrderBy(rawOrderBy, list, context)
-
+  // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query')
   if (!operationAccess) return []
 
   const accessFilters = await getAccessFilters(list, context, 'query')
   if (accessFilters === false) return []
 
+  // validate and resolve the input filter
   const resolvedWhere = await resolveWhereInput(where, list, context)
 
   // check filter access (TODO: why isn't this using resolvedWhere)
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
 
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
+  // WARNING: this checks .isOrderable
+  const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
+  // apply access control
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters)
   const results = await context.prisma[list.listKey].findMany({
     where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     orderBy,

@@ -9,7 +9,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldKey>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
-- `db.foreignKey`: When `true` or an object, ensures the foreign Key for two-sided relationships is stored in the table for this list (only available on single relationships, and not on both sides of a 1:1 relationship)
+- `db.foreignKey`: When `true` or an object, ensures the foreign Key for two-sided relationships is stored in the table for this list (only available on single relationships, and not on both sides of a 1-to-1 relationship)
   - `map`: Changes the column name in the database
 - `ui`: Configures the display mode of the field in the Admin UI
   - `displayMode` (default: `select`): If `count`, only `many: true` relationships are supported

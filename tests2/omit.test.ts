@@ -1,12 +1,10 @@
-import { setupTestSuite } from '@keystone-6/api-tests/test-runner'
+import assert from 'node:assert/strict'
+import { describe, test } from 'node:test'
 import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { type KeystoneContext } from '@keystone-6/core/types'
-import { dbProvider } from './utils'
-import ms from 'ms'
-
-jest.setTimeout(ms('20 minutes'))
+import type { KeystoneContext } from '@keystone-6/core/types'
+import { setupTestSuite, dbProvider } from './utils'
 
 function yn(x: boolean) {
   return x ? '1' : '0'
@@ -275,84 +273,63 @@ describe(`Omit (${dbProvider})`, () => {
     const listName = listName_.toLowerCase()
 
     if (expected.query)
-      test.concurrent('does have find', async () => expect((await d).queries).toContain(listName))
+      test('does have find', async () => assert.ok((await d).queries.includes(listName)))
     if (expected.query)
-      test.concurrent('does have findMany', async () =>
-        expect((await d).queries).toContain(listName + 's')
-      )
+      test('does have findMany', async () => assert.ok((await d).queries.includes(listName + 's')))
     if (expected.create)
-      test.concurrent('does have create', async () =>
-        expect((await d).mutations).toContain(`create${listName}`)
-      )
+      test('does have create', async () =>
+        assert.ok((await d).mutations.includes(`create${listName}`)))
     if (expected.create)
-      test.concurrent('does have createMany', async () =>
-        expect((await d).mutations).toContain(`create${listName}s`)
-      )
+      test('does have createMany', async () =>
+        assert.ok((await d).mutations.includes(`create${listName}s`)))
     if (expected.update)
-      test.concurrent('does have update', async () =>
-        expect((await d).mutations).toContain(`update${listName}`)
-      )
+      test('does have update', async () =>
+        assert.ok((await d).mutations.includes(`update${listName}`)))
     if (expected.update)
-      test.concurrent('does have updateMany', async () =>
-        expect((await d).mutations).toContain(`update${listName}s`)
-      )
+      test('does have updateMany', async () =>
+        assert.ok((await d).mutations.includes(`update${listName}s`)))
     if (expected.delete)
-      test.concurrent('does have delete', async () =>
-        expect((await d).mutations).toContain(`delete${listName}`)
-      )
+      test('does have delete', async () =>
+        assert.ok((await d).mutations.includes(`delete${listName}`)))
     if (expected.delete)
-      test.concurrent('does have deleteMany', async () =>
-        expect((await d).mutations).toContain(`delete${listName}s`)
-      )
+      test('does have deleteMany', async () =>
+        assert.ok((await d).mutations.includes(`delete${listName}s`)))
     if (expected.meta)
-      test.concurrent('does have an Admin meta list entry', async () =>
-        expect((await d).adminMetaLists).toContain(listName)
-      )
+      test('does have an Admin meta list entry', async () =>
+        assert.ok((await d).adminMetaLists.includes(listName)))
     if (expected.type)
-      test.concurrent('does have a GraphQL schema type', async () =>
-        expect((await d).schemaTypes).toContain(listName)
-      )
+      test('does have a GraphQL schema type', async () =>
+        assert.ok((await d).schemaTypes.includes(listName)))
 
     if (!expected.query)
-      test.concurrent('does not have find', async () =>
-        expect((await d).queries).not.toContain(listName)
-      )
+      test('does not have find', async () => assert.ok(!(await d).queries.includes(listName)))
     if (!expected.query)
-      test.concurrent('does not have findMany', async () =>
-        expect((await d).queries).not.toContain(listName + 's')
-      )
+      test('does not have findMany', async () =>
+        assert.ok(!(await d).queries.includes(listName + 's')))
     if (!expected.create)
-      test.concurrent('does not have create', async () =>
-        expect((await d).mutations).not.toContain(`create${listName}`)
-      )
+      test('does not have create', async () =>
+        assert.ok(!(await d).mutations.includes(`create${listName}`)))
     if (!expected.create)
-      test.concurrent('does not have createMany', async () =>
-        expect((await d).mutations).not.toContain(`create${listName}s`)
-      )
+      test('does not have createMany', async () =>
+        assert.ok(!(await d).mutations.includes(`create${listName}s`)))
     if (!expected.update)
-      test.concurrent('does not have update', async () =>
-        expect((await d).mutations).not.toContain(`update${listName}`)
-      )
+      test('does not have update', async () =>
+        assert.ok(!(await d).mutations.includes(`update${listName}`)))
     if (!expected.update)
-      test.concurrent('does not have updateMany', async () =>
-        expect((await d).mutations).not.toContain(`update${listName}s`)
-      )
+      test('does not have updateMany', async () =>
+        assert.ok(!(await d).mutations.includes(`update${listName}s`)))
     if (!expected.delete)
-      test.concurrent('does not have delete', async () =>
-        expect((await d).mutations).not.toContain(`delete${listName}`)
-      )
+      test('does not have delete', async () =>
+        assert.ok(!(await d).mutations.includes(`delete${listName}`)))
     if (!expected.delete)
-      test.concurrent('does not have deleteMany', async () =>
-        expect((await d).mutations).not.toContain(`delete${listName}s`)
-      )
+      test('does not have deleteMany', async () =>
+        assert.ok(!(await d).mutations.includes(`delete${listName}s`)))
     if (!expected.meta)
-      test.concurrent('does not have an Admin meta list entry', async () =>
-        expect((await d).adminMetaLists).not.toContain(listName)
-      )
+      test('does not have an Admin meta list entry', async () =>
+        assert.ok(!(await d).adminMetaLists.includes(listName)))
     if (!expected.type)
-      test.concurrent('does not have a GraphQL schema type', async () =>
-        expect((await d).schemaTypes).not.toContain(listName)
-      )
+      test('does not have a GraphQL schema type', async () =>
+        assert.ok(!(await d).schemaTypes.includes(listName)))
   }
 
   const suite = setupTestSuite({

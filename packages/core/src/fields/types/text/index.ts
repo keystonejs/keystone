@@ -11,7 +11,7 @@ import { filters } from '../../filters'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: true | 'unique'
+    isIndexed?: boolean | 'unique'
     ui?: {
       displayMode?: 'input' | 'textarea'
     }

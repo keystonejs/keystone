@@ -73,7 +73,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm vitest
+        run: pnpm test:vitest
 
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
@@ -225,6 +225,61 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+
+  node_postgresql:
+    name: node:test PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: node:test tests
+        run: pnpm test:node
+        env:
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  node_tests_sqlite:
+    name: node:test SQLite
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: node:test tests
+        run: pnpm test:node
+        env:
+          DATABASE_URL: file:./test.db
+
+  node_tests_mysql:
+    name: node:test MySQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mariadb:11.7
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: node:test tests
+        run: pnpm test:node
+        env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   examples_tests:

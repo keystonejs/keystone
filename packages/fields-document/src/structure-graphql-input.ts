@@ -421,9 +421,7 @@ type _UpdateValueType = Exclude<
 
 function missingItem(operation: string, uniqueWhere: Record<string, any>) {
   throw new Error(
-    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-      uniqueWhere
-    )}'. It may not exist.`
+    `You cannot ${operation} the item '${JSON.stringify(uniqueWhere)}' - it may not exist`
   )
 }
 

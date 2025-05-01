@@ -1,8 +1,8 @@
-import { type BaseItem, type KeystoneContext } from '../../../types'
-import { type UniquePrismaFilter } from '../../../types/prisma'
+import type { BaseItem, KeystoneContext } from '../../../types'
+import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
-import { type ResolvedDBField } from '../resolve-relationships'
-import { type InitialisedList } from '../initialise-lists'
+import type { ResolvedDBField } from '../resolve-relationships'
+import type { InitialisedList } from '../initialise-lists'
 import {
   type IdType,
   promiseAllRejectWithAllErrors,
@@ -30,7 +30,7 @@ import {
 import { checkFilterOrderAccess } from '../filter-order-access'
 import { runSideEffectOnlyHook, validate } from '../hooks'
 
-import { mapUniqueWhereToWhere } from '../queries/resolvers'
+import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -55,7 +55,10 @@ async function getFilteredItem(
   }
 
   // merge the filter access control and try to get the item
-  let where = mapUniqueWhereToWhere(uniqueWhere)
+  let where = mapUniqueWhereToWhere(uniqueWhere, list)
+
+  await checkFilterOrderAccess([...traverse(list, where as any)], context, 'filter')
+
   if (typeof accessFilters === 'object') {
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] }
   }
@@ -167,10 +170,6 @@ async function updateSingle(
   // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
-  // check filter access
-  const fieldKey = Object.keys(uniqueWhere)[0]
-  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
-
   // filter and item access control - throws an AccessDeniedError if not allowed
   const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
 
@@ -238,10 +237,6 @@ async function deleteSingle(
 ) {
   // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
-
-  // check filter access
-  const fieldKey = Object.keys(uniqueWhere)[0]
-  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter')
 
   // filter and item access control throw an AccessDeniedError if not allowed
   // apply access.filter.* controls

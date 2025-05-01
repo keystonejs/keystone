@@ -11,11 +11,13 @@
   "scripts": {
     "coverage": "jest --coverage",
     "test": "jest",
-    "vitest": "vitest",
+    "test:vitest": "vitest ./packages/fields-document",
     "test:filters": "cd prisma-utils && pnpm verify",
     "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest",
     "test:admin-ui": "jest tests/admin-ui-tests",
+    "test:node": "node --import tsx --test --test-concurrency 4 tests2/*.test.ts",
+    "test:node:only": "node --import tsx --test-only tests2/*.test.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "build": "preconstruct build",
@@ -47,6 +49,7 @@
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
     "prettier": "^3.5.1",
+    "tsx": "^4.0.0",
     "typescript": "^5.5.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^3.0.4"

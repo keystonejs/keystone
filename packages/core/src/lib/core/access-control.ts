@@ -17,7 +17,7 @@ import type {
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
-import { accessDeniedError, accessReturnError, extensionError } from './graphql-errors'
+import { accessDeniedError, accessReturnError, extensionError, formatKeys } from './graphql-errors'
 import type { InitialisedList } from './initialise-lists'
 import { type InputFilter, type UniqueInputFilter, resolveUniqueWhereInput } from './where-inputs'
 
@@ -31,7 +31,7 @@ export function cannotForItemFields(
   list: InitialisedList,
   fieldsDenied: string[]
 ) {
-  return `You cannot ${operation} that ${list.listKey} - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
+  return `You cannot ${operation} that ${list.listKey} - you cannot ${operation} the fields ${formatKeys(fieldsDenied)}`
 }
 
 export async function getOperationFieldAccess(

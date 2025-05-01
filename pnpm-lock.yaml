@@ -77,6 +77,9 @@ importers:
       prettier:
         specifier: ^3.5.1
         version: 3.5.3
+      tsx:
+        specifier: ^4.0.0
+        version: 4.19.3
       typescript:
         specifier: ^5.5.0
         version: 5.8.2
@@ -2153,6 +2156,9 @@ importers:
       '@prisma/client':
         specifier: 6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
+      '@prisma/engines':
+        specifier: 6.5.0
+        version: 6.5.0
       '@prisma/internals':
         specifier: ^6.5.0
         version: 6.5.0(typescript@5.8.2)
@@ -2368,6 +2374,24 @@ importers:
       typescript:
         specifier: ^5.5.0
         version: 5.8.2
+
+  tests2:
+    devDependencies:
+      '@keystone-6/core':
+        specifier: workspace:^
+        version: link:../packages/core
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
+      '@prisma/engines':
+        specifier: 6.5.0
+        version: 6.5.0
+      '@prisma/internals':
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.8.2)
+      prisma:
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.8.2)
 
 packages:
 

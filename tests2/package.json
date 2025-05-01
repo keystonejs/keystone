@@ -1,0 +1,12 @@
+{
+  "name": "@keystone-6/node-tests",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "@keystone-6/core": "workspace:^",
+    "@prisma/client": "6.5.0",
+    "@prisma/engines": "6.5.0",
+    "@prisma/internals": "6.5.0",
+    "prisma": "6.5.0"
+  }
+}
