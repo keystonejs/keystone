@@ -37,7 +37,6 @@ export async function resolveWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
   context: KeystoneContext,
-  isAtRootWhere = true
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
@@ -45,7 +44,7 @@ export async function resolveWhereInput(
         if (key === 'OR' || key === 'AND' || key === 'NOT') {
           return {
             [key]: await Promise.all(
-              value.map((value: any) => resolveWhereInput(value, list, context, false))
+              value.map((value: any) => resolveWhereInput(value, list, context))
             ),
           }
         }
