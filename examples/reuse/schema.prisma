@@ -33,12 +33,12 @@ model Order {
   updatedAt DateTime?
 }
 
-model Foo {
-  id        String  @id @default(cuid())
-  completed Boolean @default(false)
-}
-
 model User {
   id   String @id @default(cuid())
   name String @default("")
+}
+
+model Unused {
+  id        String  @id @default(cuid())
+  completed Boolean @default(false)
 }

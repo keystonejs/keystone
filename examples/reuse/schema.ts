@@ -106,17 +106,17 @@ export const lists = {
     },
   }),
 
-  Foo: list({
-    access: allowAll,
-    fields: {
-      completed: checkbox(),
-    },
-  }),
-
   User: list({
     access: allowAll,
     fields: {
       name: text(),
+    },
+  }),
+
+  Unused: list({
+    access: allowAll,
+    fields: {
+      completed: checkbox(),
     },
   }),
 } satisfies Lists

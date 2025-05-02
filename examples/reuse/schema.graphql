@@ -172,41 +172,6 @@ input OrderCreateInput {
   name: String
 }
 
-type Foo {
-  id: ID!
-  completed: Boolean
-}
-
-input FooWhereUniqueInput {
-  id: ID
-}
-
-input FooWhereInput {
-  AND: [FooWhereInput!]
-  OR: [FooWhereInput!]
-  NOT: [FooWhereInput!]
-  id: IDFilter
-  completed: BooleanFilter
-}
-
-input FooOrderByInput {
-  id: OrderDirection
-  completed: OrderDirection
-}
-
-input FooUpdateInput {
-  completed: Boolean
-}
-
-input FooUpdateArgs {
-  where: FooWhereUniqueInput!
-  data: FooUpdateInput!
-}
-
-input FooCreateInput {
-  completed: Boolean
-}
-
 type User {
   id: ID!
   name: String
@@ -242,6 +207,41 @@ input UserCreateInput {
   name: String
 }
 
+type Unused {
+  id: ID!
+  completed: Boolean
+}
+
+input UnusedWhereUniqueInput {
+  id: ID
+}
+
+input UnusedWhereInput {
+  AND: [UnusedWhereInput!]
+  OR: [UnusedWhereInput!]
+  NOT: [UnusedWhereInput!]
+  id: IDFilter
+  completed: BooleanFilter
+}
+
+input UnusedOrderByInput {
+  id: OrderDirection
+  completed: OrderDirection
+}
+
+input UnusedUpdateInput {
+  completed: Boolean
+}
+
+input UnusedUpdateArgs {
+  where: UnusedWhereUniqueInput!
+  data: UnusedUpdateInput!
+}
+
+input UnusedCreateInput {
+  completed: Boolean
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -260,18 +260,18 @@ type Mutation {
   updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
-  createFoo(data: FooCreateInput!): Foo
-  createFoos(data: [FooCreateInput!]!): [Foo]
-  updateFoo(where: FooWhereUniqueInput!, data: FooUpdateInput!): Foo
-  updateFoos(data: [FooUpdateArgs!]!): [Foo]
-  deleteFoo(where: FooWhereUniqueInput!): Foo
-  deleteFoos(where: [FooWhereUniqueInput!]!): [Foo]
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createUnused(data: UnusedCreateInput!): Unused
+  createUnuseds(data: [UnusedCreateInput!]!): [Unused]
+  updateUnused(where: UnusedWhereUniqueInput!, data: UnusedUpdateInput!): Unused
+  updateUnuseds(data: [UnusedUpdateArgs!]!): [Unused]
+  deleteUnused(where: UnusedWhereUniqueInput!): Unused
+  deleteUnuseds(where: [UnusedWhereUniqueInput!]!): [Unused]
 }
 
 type Query {
@@ -281,12 +281,12 @@ type Query {
   order(where: OrderWhereUniqueInput!): Order
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
-  foo(where: FooWhereUniqueInput!): Foo
-  foos(where: FooWhereInput! = {}, orderBy: [FooOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooWhereUniqueInput): [Foo!]
-  foosCount(where: FooWhereInput! = {}): Int
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  unused(where: UnusedWhereUniqueInput!): Unused
+  unuseds(where: UnusedWhereInput! = {}, orderBy: [UnusedOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UnusedWhereUniqueInput): [Unused!]
+  unusedsCount(where: UnusedWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 
