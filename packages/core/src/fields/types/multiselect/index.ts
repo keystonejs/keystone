@@ -1,5 +1,6 @@
 import { classify } from 'inflection'
 import { humanize } from '../../../lib/utils'
+import type { JSONValue } from '../../../types'
 import {
   type BaseListTypeInfo,
   type FieldTypeFunc,
@@ -10,36 +11,53 @@ import {
 import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 
-export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> &
-    (
-      | {
-          /**
-           * When a value is provided as just a string, it will be formatted in the same way
-           * as field labels are to create the label.
-           */
-          options: readonly ({ label: string; value: string } | string)[]
-          /**
-           * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
-           */
-          type?: 'string' | 'enum'
-          defaultValue?: readonly string[] | null
-        }
-      | {
-          options: readonly { label: string; value: number }[]
-          type: 'integer'
-          defaultValue?: readonly number[] | null
-        }
-    ) & {
-      ui?: {
-        displayMode?: 'checkboxes' | 'select'
+type FieldTypeInfo = {
+  item: JSONValue | null
+  inputs: {
+    where: never
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+    uniqueWhere: never
+    orderBy: never
+  }
+  prisma: {
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+  }
+}
+
+export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> &
+  (
+    | {
+        /**
+         * When a value is provided as just a string, it will be formatted in the same way
+         * as field labels are to create the label.
+         */
+        options: readonly ({ label: string; value: string } | string)[]
+        /**
+         * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
+         */
+        type?: 'string' | 'enum'
+        defaultValue?: readonly string[] | null
       }
-      db?: {
-        isNullable?: boolean
-        map?: string
-        extendPrismaSchema?: (field: string) => string
+    | {
+        options: readonly { label: string; value: number }[]
+        type: 'integer'
+        defaultValue?: readonly number[] | null
       }
+  ) & {
+    ui?: {
+      displayMode?: 'checkboxes' | 'select'
     }
+    db?: {
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+  }
 
 // these are the lowest and highest values for a signed 32-bit integer
 const MAX_INT = 2147483647

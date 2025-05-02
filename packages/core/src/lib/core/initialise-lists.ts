@@ -1,43 +1,44 @@
 import type { CacheHint } from '@apollo/cache-control-types'
+import type { GArg, GInputType } from '@graphql-ts/schema'
+import { GNonNull } from '@graphql-ts/schema'
 import { GraphQLString, isInputObjectType } from 'graphql'
+import { g } from '../..'
+import { expandVoidHooks } from '../../fields/resolve-hooks'
 import type {
+  BaseFieldTypeInfo,
   BaseItem,
   BaseListTypeInfo,
   CacheHintArgs,
+  FieldTypeFunc,
   FindManyArgs,
   GraphQLTypesForList,
+  KeystoneConfig,
   ListGraphQLTypes,
   ListHooks,
-  KeystoneConfig,
   MaybeFieldFunction,
   NextFieldType,
-  FieldTypeFunc,
 } from '../../types'
 import { QueryMode } from '../../types'
+import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
+import type { MaybeItemFieldFunction, MaybeSessionFunction } from '../../types/config/lists'
 import { type GraphQLNames, __getNames } from '../../types/utils'
-import { g } from '../..'
-import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks'
-import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists'
 import {
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
-  parseListAccessControl,
   parseFieldAccessControl,
+  parseListAccessControl,
 } from './access-control'
-import { areArraysEqual } from './utils'
-import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
-import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
-import { expandVoidHooks } from '../../fields/resolve-hooks'
-import type { GArg, GInputType } from '@graphql-ts/schema'
-import { GNonNull } from '@graphql-ts/schema'
+import { outputTypeField } from './queries/output-field'
+import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
+import { areArraysEqual } from './utils'
 
 export type InitialisedField = {
   fieldKey: string
 
   access: ResolvedFieldAccessControl
   dbField: ResolvedDBField
-  hooks: ResolvedFieldHooks<BaseListTypeInfo>
+  hooks: ResolvedFieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
   graphql: {
     isEnabled: {
       read: boolean
@@ -61,8 +62,8 @@ export type InitialisedField = {
       fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>
     }
     itemView: {
-      fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>
-      fieldPosition: MaybeItemFunction<'form' | 'sidebar', any>
+      fieldMode: MaybeItemFieldFunction<'read' | 'edit' | 'hidden', any, any>
+      fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', any, any>
     }
     listView: {
       fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
@@ -259,8 +260,8 @@ function defaultFieldHooksResolveInput({
 }
 
 function parseFieldHooks(
-  hooks: FieldHooks<BaseListTypeInfo>
-): ResolvedFieldHooks<BaseListTypeInfo> {
+  hooks: FieldHooks<BaseListTypeInfo, BaseFieldTypeInfo>
+): ResolvedFieldHooks<BaseListTypeInfo, BaseFieldTypeInfo> {
   return {
     resolveInput: {
       create:

@@ -1,3 +1,4 @@
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -9,48 +10,50 @@ import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { filters } from '../../filters'
 
-export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    ui?: {
-      displayMode?: 'input' | 'textarea'
-    }
-    validation?: {
-      /**
-       * Makes the field disallow null values and require a string at least 1 character long
-       */
-      isRequired?: boolean
-      match?: { regex: RegExp; explanation?: string }
-      length?: { min?: number; max?: number }
-    }
-    defaultValue?: string | null
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-      /**
-       * The underlying database type.
-       * Only some of the types are supported on PostgreSQL and MySQL.
-       * The native type is not customisable on SQLite.
-       * See Prisma's documentation for more information about the supported types.
-       *
-       * https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-       */
-      nativeType?:
-        | 'Text' // PostgreSQL and MySQL
-        | `VarChar(${number})`
-        | `Char(${number})`
-        | `Bit(${number})` // PostgreSQL
-        | 'VarBit'
-        | 'Uuid'
-        | 'Xml'
-        | 'Inet'
-        | 'Citext'
-        | 'TinyText' // MySQL
-        | 'MediumText'
-        | 'LargeText'
-    }
+export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'String'>
+> & {
+  isIndexed?: boolean | 'unique'
+  ui?: {
+    displayMode?: 'input' | 'textarea'
   }
+  validation?: {
+    /**
+     * Makes the field disallow null values and require a string at least 1 character long
+     */
+    isRequired?: boolean
+    match?: { regex: RegExp; explanation?: string }
+    length?: { min?: number; max?: number }
+  }
+  defaultValue?: string | null
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+    /**
+     * The underlying database type.
+     * Only some of the types are supported on PostgreSQL and MySQL.
+     * The native type is not customisable on SQLite.
+     * See Prisma's documentation for more information about the supported types.
+     *
+     * https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+     */
+    nativeType?:
+      | 'Text' // PostgreSQL and MySQL
+      | `VarChar(${number})`
+      | `Char(${number})`
+      | `Bit(${number})` // PostgreSQL
+      | 'VarBit'
+      | 'Uuid'
+      | 'Xml'
+      | 'Inet'
+      | 'Citext'
+      | 'TinyText' // MySQL
+      | 'MediumText'
+      | 'LargeText'
+  }
+}
 
 export type TextFieldMeta = {
   displayMode: 'input' | 'textarea'

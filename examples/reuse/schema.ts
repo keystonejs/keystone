@@ -1,10 +1,9 @@
 import { list } from '@keystone-6/core'
-//  import type { BaseListTypeInfo } from '@keystone-6/core/types';
-import type { FieldHooks } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, text, timestamp } from '@keystone-6/core/fields'
 
-import type { Lists, TypeInfo } from '.keystone/types'
+import type { Lists } from '.keystone/types'
+import { BaseListTypeInfo } from '@keystone-6/core/types'
 
 const readOnlyField = {
   access: {
@@ -39,92 +38,49 @@ function isTrue(b: boolean) {
   return b === true
 }
 
-type ListsT = TypeInfo['lists']
-type FindListsWithField<K> = {
-  [key in keyof ListsT]: K extends ListsT[key]['fields'] ? ListsT[key] : never
-}[keyof ListsT]
-
-// alternatively, if you don't like type functions
-//  type CompatibleLists = Lists.Invoice.TypeInfo | Lists.Order.TypeInfo
-type CompatibleLists = FindListsWithField<'completed'>
-//  type CompatibleLists = TypeInfo['lists'][keyof TypeInfo['lists']] // item is resolved, but not completed
-//  type CompatibleLists = BaseListTypeInfo // nothing is refined, item is Record<string, unknown>
-
-function trackingByHooks<
-  ListTypeInfo extends CompatibleLists,
-  //    FieldKey extends 'createdBy' | 'updatedBy' // TODO: refined types for the return types
->(immutable: boolean = false): FieldHooks<ListTypeInfo> {
-  return {
-    resolveInput: {
-      async create({ context, operation, resolvedData, item, fieldKey }) {
-        // TODO: refined types for the return types
-        //   FIXME: CommonFieldConfig need not always be generalised
-        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
-      },
-      async update({ context, operation, resolvedData, item, fieldKey }) {
-        if (immutable) return undefined
-
-        // show we have refined types for compatible item.* fields
-        if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
-
-        // TODO: refined types for the return types
-        //   FIXME: CommonFieldConfig need not always be generalised
-        return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any
-      },
-    },
-  }
-}
-
-function trackingAtHooks<
-  ListTypeInfo extends CompatibleLists,
-  //    FieldKey extends 'createdAt' | 'updatedAt' // TODO: refined types for the return types
->(immutable: boolean = false): FieldHooks<ListTypeInfo> {
-  return {
-    // TODO: switch to operation routing when supported for fields
-    resolveInput: {
-      async create({ context, operation, resolvedData, item, fieldKey }) {
-        // TODO: refined types for the return types
-        //   FIXME: CommonFieldConfig need not always be generalised
-        return new Date() as any
-      },
-      async update({ context, operation, resolvedData, item, fieldKey }) {
-        if (immutable) return undefined
-
-        // show we have refined types for compatible item.* fields
-        if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
-
-        // TODO: refined types for the return types
-        //   FIXME: CommonFieldConfig need not always be generalised
-        return new Date() as any
-      },
-    },
-  }
-}
+type CompatibleLists = BaseListTypeInfo & { item: { completed: boolean } }
 
 function trackingFields<ListTypeInfo extends CompatibleLists>() {
   return {
     createdBy: text<ListTypeInfo>({
       ...readOnlyField,
       hooks: {
-        ...trackingByHooks<ListTypeInfo>(true),
+        resolveInput: {
+          async create({ context }) {
+            return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+          },
+        },
       },
     }),
     createdAt: timestamp<ListTypeInfo>({
       ...readOnlyField,
       hooks: {
-        ...trackingAtHooks<ListTypeInfo>(true),
+        resolveInput: {
+          async create() {
+            return new Date()
+          },
+        },
       },
     }),
     updatedBy: text<ListTypeInfo>({
       ...readOnlyField,
       hooks: {
-        ...trackingByHooks<ListTypeInfo>(),
+        async resolveInput({ context, operation, resolvedData, item, fieldKey }) {
+          // show we have refined types for compatible item.* fields
+          if (isTrue(item?.completed ?? false) && resolvedData.completed !== false) return undefined
+
+          // TODO: refined types for the return types
+          //   FIXME: CommonFieldConfig need not always be generalised
+          return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+        },
       },
     }),
     updatedAt: timestamp<ListTypeInfo>({
       ...readOnlyField,
       hooks: {
-        ...trackingAtHooks<ListTypeInfo>(),
+        async resolveInput() {
+          return new Date()
+        },
       },
     }),
   }
@@ -136,7 +92,7 @@ export const lists = {
     fields: {
       title: text(),
       completed: checkbox(),
-      ...trackingFields(),
+      ...trackingFields<Lists.Invoice.TypeInfo>(),
     },
   }),
 
@@ -145,7 +101,8 @@ export const lists = {
     fields: {
       title: text(),
       completed: checkbox(),
-      ...trackingFields(),
+      name: text(),
+      ...trackingFields<Lists.Order.TypeInfo>(),
     },
   }),
 
@@ -153,6 +110,13 @@ export const lists = {
     access: allowAll,
     fields: {
       name: text(),
+    },
+  }),
+
+  Unused: list({
+    access: allowAll,
+    fields: {
+      completed: checkbox(),
     },
   }),
 } satisfies Lists

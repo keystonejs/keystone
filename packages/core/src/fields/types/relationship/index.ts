@@ -1,15 +1,16 @@
-import {
-  type BaseListTypeInfo,
-  type FieldTypeFunc,
-  type CommonFieldConfig,
-  fieldType,
-} from '../../../types'
 import { g } from '../../..'
 import {
   type ListMetaSource,
   getAdminMetaForRelationshipField,
 } from '../../../lib/create-admin-meta'
-import { type controller } from './views'
+import type { JSONValue } from '../../../types'
+import {
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
+  type FieldTypeFunc,
+  fieldType,
+} from '../../../types'
+import type { controller } from './views'
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -96,15 +97,50 @@ function throwIfMissingFields(
   }
 }
 
-export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    many?: boolean
-    ref: string
-    ui?: {
-      hideCreate?: boolean
-    }
-  } & (OneDbConfig | ManyDbConfig) &
-    (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
+type ArrayOr<T> = T | T[]
+
+// TODO: add types based on list types
+type FieldTypeInfo = {
+  item: undefined
+  inputs: {
+    where: JSONValue | undefined
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+    uniqueWhere: undefined
+    orderBy: undefined
+  }
+  prisma: {
+    create:
+      | {
+          connect?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          create?: any
+          set?: ArrayOr<{ id?: string; [key: string]: unknown }>
+        }
+      | undefined
+      | null
+    update:
+      | {
+          connect?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          create?: any
+          set?: ArrayOr<{ id?: string; [key: string]: unknown }>
+          disconnect?: boolean | ArrayOr<{ id?: string; [key: string]: unknown }> | undefined
+        }
+      | undefined
+      | null
+  }
+}
+
+export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  many?: boolean
+  ref: string
+  ui?: {
+    hideCreate?: boolean
+  }
+} & (OneDbConfig | ManyDbConfig) &
+  (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
 
 export function relationship<ListTypeInfo extends BaseListTypeInfo>({
   ref,
@@ -240,19 +276,19 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
         input: {
           where: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.where }),
-            resolve(value, context, resolve) {
+            resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
           create: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.create }),
-            async resolve(value, context, resolve) {
+            async resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
           update: {
             arg: g.arg({ type: foreignListTypes.relateTo.many.update }),
-            async resolve(value, context, resolve) {
+            async resolve(value, _context, resolve) {
               return resolve(value)
             },
           },
@@ -295,7 +331,7 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
       input: {
         where: {
           arg: g.arg({ type: foreignListTypes.where }),
-          resolve(value, context, resolve) {
+          resolve(value, _context, resolve) {
             return resolve(value)
           },
         },
@@ -305,14 +341,14 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
 
         create: foreignListTypes.relateTo.one.create && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.create }),
-          async resolve(value, context, resolve) {
+          async resolve(value, _context, resolve) {
             return resolve(value)
           },
         },
 
         update: foreignListTypes.relateTo.one.update && {
           arg: g.arg({ type: foreignListTypes.relateTo.one.update }),
-          async resolve(value, context, resolve) {
+          async resolve(value, _context, resolve) {
             return resolve(value)
           },
         },

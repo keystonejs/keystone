@@ -26,6 +26,7 @@ model Order {
   id        String    @id @default(cuid())
   title     String    @default("")
   completed Boolean   @default(false)
+  name      String    @default("")
   createdBy String    @default("")
   createdAt DateTime?
   updatedBy String    @default("")
@@ -35,4 +36,9 @@ model Order {
 model User {
   id   String @id @default(cuid())
   name String @default("")
+}
+
+model Unused {
+  id        String  @id @default(cuid())
+  completed Boolean @default(false)
 }

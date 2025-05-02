@@ -7,11 +7,28 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 
-export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: JSONValue
-    db?: { map?: string; extendPrismaSchema?: (field: string) => string }
+type FieldTypeInfo = {
+  item: JSONValue | null
+  inputs: {
+    where: never
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+    uniqueWhere: never
+    orderBy: never
   }
+  prisma: {
+    create: JSONValue | undefined
+    update: JSONValue | undefined
+  }
+}
+
+export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  defaultValue?: JSONValue
+  db?: { map?: string; extendPrismaSchema?: (field: string) => string }
+}
 
 export const json =
   <ListTypeInfo extends BaseListTypeInfo>({

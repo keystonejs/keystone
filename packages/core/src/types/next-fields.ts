@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js'
 import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
-import type { CommonFieldConfig } from './config'
+import type { BaseFieldTypeInfo, CommonFieldConfig } from './config'
 import type { DatabaseProvider } from './core'
 import type {
   GArg,
@@ -15,8 +15,10 @@ import type {
   GNonNull,
   InferValueFromArgs,
   GObjectType,
+  InferValueFromInputType,
 } from '@graphql-ts/schema'
 import type { JSONValue, KeystoneContext, MaybePromise } from '.'
+import type { filters } from '../fields/filters'
 
 export { Decimal }
 
@@ -33,6 +35,31 @@ export type FieldData<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> 
   provider: DatabaseProvider
   listKey: ListTypeInfo['key']
   fieldKey: string
+}
+
+type ScalarNames = Exclude<keyof (typeof filters)[DatabaseProvider], 'enum'>
+
+export type SimpleFieldTypeInfo<Scalar extends ScalarNames> = {
+  item: ScalarPrismaTypes[Scalar] | null
+  inputs: {
+    create: ScalarPrismaTypes[Scalar] | null | undefined
+    update: ScalarPrismaTypes[Scalar] | null | undefined
+    where: InferValueFromInputType<(typeof filters)[DatabaseProvider][Scalar]['required']> | null
+    uniqueWhere: ScalarPrismaTypes[Scalar] | null | undefined
+    orderBy: 'asc' | 'desc' | null
+  }
+  prisma: {
+    create:
+      | ScalarPrismaTypes[Scalar]
+      | { set?: ScalarPrismaTypes[Scalar] | null }
+      | null
+      | undefined
+    update:
+      | ScalarPrismaTypes[Scalar]
+      | { set?: ScalarPrismaTypes[Scalar] | null }
+      | null
+      | undefined
+  }
 }
 
 export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
@@ -67,7 +94,7 @@ export type NextFieldType<
   ListTypeInfo
 >
 
-type ScalarPrismaTypes = {
+export type ScalarPrismaTypes = {
   String: string
   Boolean: boolean
   Int: number
@@ -365,6 +392,7 @@ export type FieldTypeWithoutDBField<
   OrderByArg extends GArg<GNullableInputType, false> = GArg<GNullableInputType, false>,
   FilterArg extends GArg<GNullableInputType, false> = GArg<GNullableInputType, false>,
   ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo,
+  FieldTypeInfo extends BaseFieldTypeInfo = BaseFieldTypeInfo,
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>
@@ -379,7 +407,7 @@ export type FieldTypeWithoutDBField<
   getAdminMeta?: () => JSONValue
   unreferencedConcreteInterfaceImplementations?: readonly g<typeof g.object<any>>[]
   __ksTelemetryFieldTypeName?: string
-} & CommonFieldConfig<ListTypeInfo>
+} & CommonFieldConfig<ListTypeInfo, FieldTypeInfo>
 
 type AnyInputObj = GInputObjectType<Record<string, GArg<GInputType>>>
 

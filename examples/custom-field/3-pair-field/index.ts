@@ -1,4 +1,5 @@
 import {
+  BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
@@ -6,7 +7,10 @@ import {
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
 
-type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>
+type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo // TODO
+>
 
 type PairInput = string
 type PairOutput = string

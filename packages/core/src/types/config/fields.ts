@@ -1,10 +1,10 @@
 import type { CacheHint } from '@apollo/cache-control-types'
+import type { KeystoneContext } from '..'
 import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
-import type { KeystoneContext } from '..'
-import type { MaybeFieldFunction, MaybeItemFunction, MaybeSessionFunction } from './lists'
-import type { FieldHooks } from './hooks'
 import type { FieldAccessControl } from './access-control'
+import type { FieldHooks } from './hooks'
+import type { MaybeFieldFunction, MaybeItemFieldFunction, MaybeSessionFunction } from './lists'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>
@@ -17,17 +17,35 @@ export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
   fieldKey: ListTypeInfo['fields']
 }
 
-export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type BaseFieldTypeInfo = {
+  item: any
+  inputs: {
+    create: any
+    update: any
+    where: any
+    uniqueWhere: any
+    orderBy: any
+  }
+  prisma: {
+    create: any
+    update: any
+  }
+}
+
+export type CommonFieldConfig<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldTypeInfo extends BaseFieldTypeInfo,
+> = {
   access?: FieldAccessControl<ListTypeInfo>
-  hooks?: FieldHooks<ListTypeInfo, ListTypeInfo['fields']>
+  hooks?: FieldHooks<ListTypeInfo, FieldTypeInfo>
   label?: string // TODO: move to .ui in breaking change
   ui?: {
     description?: string
     views?: string
     createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> }
     itemView?: {
-      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>
-      fieldPosition?: MaybeItemFunction<'form' | 'sidebar', ListTypeInfo>
+      fieldMode?: MaybeItemFieldFunction<'edit' | 'read' | 'hidden', ListTypeInfo, FieldTypeInfo>
+      fieldPosition?: MaybeItemFieldFunction<'form' | 'sidebar', ListTypeInfo, FieldTypeInfo>
     }
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> }
   }

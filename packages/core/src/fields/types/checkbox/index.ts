@@ -1,4 +1,5 @@
 import { userInputError } from '../../../lib/core/graphql-errors'
+import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -10,14 +11,16 @@ import { g } from '../../..'
 import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
 import { filters } from '../../filters'
 
-export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: boolean
-    db?: {
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-    }
+export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  SimpleFieldTypeInfo<'Boolean'>
+> & {
+  defaultValue?: boolean
+  db?: {
+    map?: string
+    extendPrismaSchema?: (field: string) => string
   }
+}
 
 export function checkbox<ListTypeInfo extends BaseListTypeInfo>(
   config: CheckboxFieldConfig<ListTypeInfo> = {}

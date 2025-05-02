@@ -1,4 +1,5 @@
 import { GraphQLError } from 'graphql'
+import type { BaseFieldTypeInfo } from '@keystone-6/core/types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
@@ -60,16 +61,18 @@ type FormattingConfig = {
   softBreaks?: boolean
 }
 
-export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    relationships?: RelationshipsConfig
-    componentBlocks?: Record<string, ComponentBlock>
-    formatting?: boolean | FormattingConfig
-    links?: boolean
-    dividers?: boolean
-    layouts?: readonly (readonly [number, ...number[]])[]
-    db?: { map?: string; extendPrismaSchema?: (field: string) => string }
-  }
+export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  BaseFieldTypeInfo
+> & {
+  relationships?: RelationshipsConfig
+  componentBlocks?: Record<string, ComponentBlock>
+  formatting?: boolean | FormattingConfig
+  links?: boolean
+  dividers?: boolean
+  layouts?: readonly (readonly [number, ...number[]])[]
+  db?: { map?: string; extendPrismaSchema?: (field: string) => string }
+}
 
 export function document<ListTypeInfo extends BaseListTypeInfo>({
   componentBlocks = {},

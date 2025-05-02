@@ -9,40 +9,64 @@ import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
 import { weakMemoize } from '../../../lib/core/utils'
 import { GraphQLError } from 'graphql'
-import type { GArg, GInputObjectType, GList, GNonNull, GScalarType } from '@graphql-ts/schema'
+import type {
+  GArg,
+  GInputObjectType,
+  GList,
+  GNonNull,
+  GScalarType,
+  InferValueFromInputType,
+} from '@graphql-ts/schema'
 
-export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique'
-    graphql?: {
-      scalar?: GScalarType<Uint8Array, string>
-    }
-    validation?: {
-      /**
-       * Makes the field disallow null values. It does not constrain the length of the value.
-       */
-      isRequired?: boolean
-      /**
-       * Specifies the minimum and maximum length of the value in _bytes_. It does _not_ represent the length in the encoded form.
-       */
-      length?: { min?: number; max?: number }
-    }
-    defaultValue?: Uint8Array | null
-    db?: {
-      isNullable?: boolean
-      map?: string
-      extendPrismaSchema?: (field: string) => string
-      /**
-       * The underlying database type.
-       * Only some of the types are supported on PostgreSQL and MySQL.
-       * The native type is not customisable on SQLite.
-       * See Prisma's documentation for more information about the supported types.
-       *
-       * https://www.prisma.io/docs/orm/reference/prisma-schema-reference#bytes
-       */
-      nativeType?: string
-    }
+export type FieldTypeInfo = {
+  item: Uint8Array | null
+  inputs: {
+    create: Uint8Array | null | undefined
+    update: Uint8Array | null | undefined
+    where: InferValueFromInputType<BytesFilterType> | undefined
+    uniqueWhere: Uint8Array | null | undefined
+    orderBy: undefined
   }
+  prisma: {
+    create: Uint8Array | null | undefined
+    update: Uint8Array | null | undefined
+  }
+}
+
+export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  isIndexed?: boolean | 'unique'
+  graphql?: {
+    scalar?: GScalarType<Uint8Array, string>
+  }
+  validation?: {
+    /**
+     * Makes the field disallow null values. It does not constrain the length of the value.
+     */
+    isRequired?: boolean
+    /**
+     * Specifies the minimum and maximum length of the value in _bytes_. It does _not_ represent the length in the encoded form.
+     */
+    length?: { min?: number; max?: number }
+  }
+  defaultValue?: Uint8Array | null
+  db?: {
+    isNullable?: boolean
+    map?: string
+    extendPrismaSchema?: (field: string) => string
+    /**
+     * The underlying database type.
+     * Only some of the types are supported on PostgreSQL and MySQL.
+     * The native type is not customisable on SQLite.
+     * See Prisma's documentation for more information about the supported types.
+     *
+     * https://www.prisma.io/docs/orm/reference/prisma-schema-reference#bytes
+     */
+    nativeType?: string
+  }
+}
 
 export type TextFieldMeta = {
   isNullable: boolean

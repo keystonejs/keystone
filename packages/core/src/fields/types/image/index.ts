@@ -12,19 +12,36 @@ import { fieldType } from '../../../types'
 import { g } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'
 import { merge } from '../../resolve-hooks'
-import type { InferValueFromArg } from '@graphql-ts/schema'
+import type { InferValueFromArg, InferValueFromInputType } from '@graphql-ts/schema'
 import { randomBytes } from 'node:crypto'
 import type { ImageExtension } from './internal-utils'
 import { getBytesFromStream, getImageMetadata, teeStream } from './internal-utils'
 
-export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    storage: StorageStrategy<ListTypeInfo['all']>
-    transformName?: (originalFilename: string, extension: string) => MaybePromise<string>
-    db?: {
-      extendPrismaSchema?: (field: string) => string
-    }
+export type FieldTypeInfo = {
+  item: undefined
+  inputs: {
+    create: InferValueFromInputType<typeof ImageFieldInput> | null | undefined
+    update: InferValueFromInputType<typeof ImageFieldInput> | null | undefined
+    where: undefined
+    uniqueWhere: undefined
+    orderBy: undefined
   }
+  prisma: {
+    create: undefined
+    update: undefined
+  }
+}
+
+export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
+  ListTypeInfo,
+  FieldTypeInfo
+> & {
+  storage: StorageStrategy<ListTypeInfo['all']>
+  transformName?: (originalFilename: string, extension: string) => MaybePromise<string>
+  db?: {
+    extendPrismaSchema?: (field: string) => string
+  }
+}
 
 // TODO: dynamic
 const ImageExtensionEnum = g.enum({
@@ -144,7 +161,7 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
     }
 
     const afterOperationResolver: Extract<
-      FieldHooks<BaseListTypeInfo, string>['afterOperation'],
+      FieldHooks<BaseListTypeInfo, FieldTypeInfo>['afterOperation'],
       (args: any) => any
     > = async function afterOperationResolver(args) {
       if (args.operation === 'update' || args.operation === 'delete') {
