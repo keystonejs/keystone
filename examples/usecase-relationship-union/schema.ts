@@ -5,8 +5,7 @@ import type { Lists, Context } from '.keystone/types'
 
 const ifUnsetHideUI = {
   itemView: {
-    fieldMode: ({ itemField }: { itemField: unknown | null }) =>
-      itemField ? 'edit' : 'read',
+    fieldMode: ({ itemField }: { itemField: unknown | null }) => (itemField ? 'edit' : 'read'),
   },
   listView: {
     fieldMode: 'hidden',

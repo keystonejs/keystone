@@ -7,7 +7,7 @@ import type {
   MaybeFieldFunction,
   MaybeItemFieldFunction,
   MaybePromise,
-  MaybeSessionFunction
+  MaybeSessionFunction,
 } from '../types'
 import type { FieldGroupMeta, FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames } from '../types/utils'
@@ -28,7 +28,11 @@ type FieldMetaSource_ = {
     fieldMode: EmptyResolver<'edit' | 'hidden'>
   }
   itemView: {
-    fieldMode: MaybeItemFieldFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo, BaseFieldTypeInfo>
+    fieldMode: MaybeItemFieldFunction<
+      'edit' | 'read' | 'hidden',
+      BaseListTypeInfo,
+      BaseFieldTypeInfo
+    >
     fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', BaseListTypeInfo, BaseFieldTypeInfo>
   }
   listView: {
