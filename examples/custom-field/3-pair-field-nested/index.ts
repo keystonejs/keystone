@@ -1,5 +1,5 @@
 import {
-  BaseFieldTypeInfo,
+  type BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
