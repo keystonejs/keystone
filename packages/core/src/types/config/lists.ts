@@ -73,7 +73,7 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    */
   hideNavigation?: MaybeSessionFunction<boolean, ListTypeInfo>
   /**
-   * Hides the create button in the Admin UI.
+   * Hides the capability to create for this list in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
    * @default false
    */

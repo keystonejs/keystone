@@ -5,14 +5,19 @@ import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
-export function makeName(o: Record<string, boolean>) {
+export function makeName(o: boolean | Record<string, boolean>, t: string, f: string) {
+  if (typeof o === 'boolean') return o ? t : f
   return (
     Object.entries(o)
       .filter(([_, v]) => v)
       .map(([k]) => (k === 'unique' ? 'x' : k.charAt(0)))
       .join('')
-      .toUpperCase() ?? 'DENY'
+      .toUpperCase()
   )
+}
+
+function makeAccessName(x: boolean | Record<string, boolean>) {
+  return makeName(x, 'ALLOW', 'DENY')
 }
 
 export function countUniqueItems(items: readonly any[]) {
@@ -109,7 +114,7 @@ export function makeFieldEntry({
   }
   unique: boolean
 }) {
-  const name = `Field_${makeName({ ...access, unique })}` as const
+  const name = `Field_${makeAccessName({ ...access, unique })}` as const
   return {
     name,
     expect: {
@@ -120,8 +125,8 @@ export function makeFieldEntry({
       read: access.read ? allowAll : denyAll,
       create: access.create ? allowAll : denyAll,
       update: access.update ? allowAll : denyAll,
+      filterable: access.filterable ? allowAll : denyAll,
     },
-    isFilterable: access.filterable ? allowAll : denyAll,
     isIndexed: unique ? 'unique' : false,
     validation: {
       isRequired: unique, // helps with debugging
@@ -163,7 +168,7 @@ export function* makeList({
   }
   fields: Field[]
 }) {
-  const suffix = `${prefix}${makeName(access)}`
+  const suffix = `${prefix}${makeAccessName(access)}`
   const nameO = `List_operation_${suffix}`
 
   yield {

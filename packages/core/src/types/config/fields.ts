@@ -4,7 +4,7 @@ import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
 import type { FieldAccessControl } from './access-control'
 import type { FieldHooks } from './hooks'
-import type { MaybeFieldFunction, MaybeItemFieldFunction, MaybeSessionFunction } from './lists'
+import type { MaybeItemFieldFunction, MaybeSessionFunction } from './lists'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>
@@ -71,8 +71,10 @@ export type CommonFieldConfig<
           create?: boolean
           // whether this field is omitted from the {List}UpdateInput GraphQL type
           update?: boolean
+          // whether filtering by this field is omitted from the {List}Where* GraphQL type(s)
+          filter?: boolean
+          // whether ordering by this field is omitted from the {List}Where* GraphQL type(s)
+          order?: boolean
         }
   }
-  isFilterable?: MaybeFieldFunction<ListTypeInfo>
-  isOrderable?: MaybeFieldFunction<ListTypeInfo>
 }

@@ -128,7 +128,7 @@ export type ListAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   | ListAccessControlObject<ListTypeInfo>
 
 // Field Access
-export type IndividualFieldAccessControl<Args> = (args: Args) => MaybePromise<boolean>
+export type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>)
 
 export type FieldCreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   BaseAccessArgs<ListTypeInfo> & {
@@ -164,16 +164,32 @@ export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
     inputData: ListTypeInfo['inputs']['update']
   }
 
+export type FieldFilterableItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'filter'
+    fieldKey: string
+  }
+
+export type FieldOrderableItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'order'
+    fieldKey: string
+  }
+
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   | IndividualFieldAccessControl<
       | FieldReadItemAccessArgs<ListTypeInfo>
       | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldUpdateItemAccessArgs<ListTypeInfo>
       // delete: not supported
+      | FieldFilterableItemAccessArgs<ListTypeInfo>
+      | FieldOrderableItemAccessArgs<ListTypeInfo>
     >
   | {
       read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<ListTypeInfo>>
       create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>
       update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported
+      filter?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>
+      order?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>
     }

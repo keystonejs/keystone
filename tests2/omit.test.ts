@@ -5,62 +5,51 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { setupTestSuite, dbProvider } from './utils'
+import { makeName } from './utils2'
 
-function yn(x: boolean) {
-  return x ? '1' : '0'
+function makeOmitName(x: boolean | Record<string, boolean>) {
+  return makeName(x, 'OMIT', 'RETAIN')
 }
 
 function makeField({
-  isFilterable,
-  isOrderable,
   omit,
 }: {
-  isFilterable: boolean
-  isOrderable: boolean
   omit:
     | boolean
     | {
         read: boolean
         create: boolean
         update: boolean
+        filter: boolean
+        order: boolean
       }
 }) {
-  const suffix = [
-    `Filt${yn(isFilterable)}`,
-    `Ord${yn(isOrderable)}`,
-    `Omit${
-      typeof omit !== 'object' ? yn(omit) : [omit.read, omit.create, omit.update].map(yn).join('')
-    }`,
-  ].join('')
-
   return [
-    `Field_${suffix}`,
+    `Field_${makeOmitName(omit)}`,
     text({
       graphql: { omit },
-      isFilterable,
-      isOrderable,
     }),
   ] as const
 }
 
 const fieldsMatrix = [
   ...(function* () {
-    for (const isFilterable of [false, true]) {
-      for (const isOrderable of [false, true]) {
-        for (const omit of [false, true]) {
-          yield makeField({ isFilterable, isOrderable, omit })
-        }
+    for (const omit of [false, true]) {
+      yield makeField({ omit })
+    }
 
-        for (const read of [false, true]) {
-          for (const create of [false, true]) {
-            for (const update of [false, true]) {
+    for (const read of [false, true]) {
+      for (const create of [false, true]) {
+        for (const update of [false, true]) {
+          for (const filter of [false, true]) {
+            for (const order of [false, true]) {
               yield makeField({
-                isFilterable,
-                isOrderable,
                 omit: {
                   read,
                   create,
                   update,
+                  filter,
+                  order,
                 },
               })
             }
@@ -73,13 +62,9 @@ const fieldsMatrix = [
 
 function makeList({
   fields,
-  isFilterable,
-  isOrderable,
   omit,
 }: {
   fields: typeof fieldsMatrix
-  isFilterable: boolean
-  isOrderable: boolean
   omit:
     | boolean
     | {
@@ -89,19 +74,12 @@ function makeList({
         delete: boolean
       }
 }) {
-  const prefix = `List${fields.length}_Filt${yn(isFilterable)}_Ord${yn(isOrderable)}` as const
-  const __name = `${prefix}_Omit${
-    typeof omit !== 'object'
-      ? yn(omit)
-      : [omit.query, omit.create, omit.update, omit.delete].map(yn).join('')
-  }`
+  const __name = `List${fields.length}_${makeOmitName(omit)}` as const
 
   return {
     __name,
     access: allowAll,
     fields: Object.fromEntries(fields),
-    defaultIsFilterable: isFilterable,
-    defaultIsOrderable: isOrderable,
     graphql: {
       plural: __name + 's',
       omit,
@@ -111,41 +89,29 @@ function makeList({
 
 const listsMatrix = [
   ...(function* () {
-    for (const isFilterable of [false, true]) {
-      for (const isOrderable of [false, true]) {
-        for (const omit of [false, true]) {
-          yield makeList({ fields: fieldsMatrix, isFilterable, isOrderable, omit })
-        }
+    for (const query of [false, true]) {
+      for (const create of [false, true]) {
+        for (const update of [false, true]) {
+          for (const delete_ of [false, true]) {
+            yield makeList({
+              fields: fieldsMatrix,
+              omit: {
+                query,
+                create,
+                update,
+                delete: delete_,
+              },
+            })
 
-        for (const query of [false, true]) {
-          for (const create of [false, true]) {
-            for (const update of [false, true]) {
-              for (const delete_ of [false, true]) {
-                yield makeList({
-                  fields: fieldsMatrix,
-                  isFilterable,
-                  isOrderable,
-                  omit: {
-                    query,
-                    create,
-                    update,
-                    delete: delete_,
-                  },
-                })
-
-                yield makeList({
-                  fields: [],
-                  isFilterable,
-                  isOrderable,
-                  omit: {
-                    query,
-                    create,
-                    update,
-                    delete: delete_,
-                  },
-                })
-              }
-            }
+            yield makeList({
+              fields: [],
+              omit: {
+                query,
+                create,
+                update,
+                delete: delete_,
+              },
+            })
           }
         }
       }
@@ -156,7 +122,7 @@ const listsMatrix = [
 // TODO: FIXME: skip for now, MySQL has a limit on the number of indexes
 if (dbProvider !== 'mysql') {
   listsMatrix.push({
-    __name: 'RelatedToAll',
+    __name: 'RelatedToAll' as any,
     access: allowAll,
     fields: Object.fromEntries(
       (function* () {
@@ -180,8 +146,6 @@ if (dbProvider !== 'mysql') {
         }
       })()
     ),
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
     graphql: {
       plural: 'RelatedToAlls',
       omit: false,
