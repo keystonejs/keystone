@@ -180,8 +180,10 @@ export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeIn
       ...config,
 
       // the ID field is always filterable and orderable
-      isFilterable: true, // TODO: should it be?
-      isOrderable: true, // TODO: should it be?
+      access: {
+        filter: true, // TODO: should it be?
+        order: true, // TODO: should it be?
+      },
 
       input: {
         where: {

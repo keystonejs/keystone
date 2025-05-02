@@ -164,18 +164,34 @@ export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
     inputData: ListTypeInfo['inputs']['update']
   }
 
+export type FieldFilterableItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'filter'
+    fieldKey: string
+  }
+
+export type FieldOrderableItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'order'
+    fieldKey: string
+  }
+
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   | FieldAccessControlFunction<
       | FieldReadItemAccessArgs<ListTypeInfo>
       | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldUpdateItemAccessArgs<ListTypeInfo>
       // delete: not supported
+      | FieldFilterableItemAccessArgs<ListTypeInfo>
+      | FieldOrderableItemAccessArgs<ListTypeInfo>
     >
   | {
       read?: FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>
       create?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
       update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported
+      filter?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
+      order?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
     }
 
 // Action Access

@@ -152,8 +152,6 @@ export type InitialisedList = {
       create: boolean
       update: boolean
       delete: boolean
-      filter: MaybeFieldFunction<BaseListTypeInfo>
-      orderBy: MaybeFieldFunction<BaseListTypeInfo>
     }
   }
 
@@ -176,25 +174,13 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs<BaseListTypeInfo>) => CacheHint) | undefined
 }
 
-function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
-  if (['boolean', 'undefined', 'function'].includes(typeof x)) return
-  throw new Error(
-    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`
-  )
-}
-
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
-// TODO: move to defaultLists?
-function getIsEnabled(listKey: string, listConfig: ListConfigType) {
-  const omit = listConfig.graphql.omit ?? false
-  const { defaultIsFilterable, defaultIsOrderable } = listConfig
-
-  throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
-  throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
+function getIsEnabled(listConfig: ListConfigType) {
+  const omit = listConfig.graphql?.omit ?? false
 
   if (typeof omit === 'boolean') {
     const notOmit = !omit
@@ -204,8 +190,6 @@ function getIsEnabled(listKey: string, listConfig: ListConfigType) {
       create: notOmit,
       update: notOmit,
       delete: notOmit,
-      filter: notOmit ? defaultIsFilterable : false,
-      orderBy: notOmit ? defaultIsOrderable : false,
     }
   }
 
@@ -215,26 +199,14 @@ function getIsEnabled(listKey: string, listConfig: ListConfigType) {
     create: !omit.create,
     update: !omit.update,
     delete: !omit.delete,
-    filter: defaultIsFilterable,
-    orderBy: defaultIsOrderable,
   }
 }
 
 function getIsEnabledField(
   f: FieldConfigType,
-  listKey: string,
-  list: PartiallyInitialisedList1,
   lists: Record<string, PartiallyInitialisedList1>
 ) {
   const omit = f.graphql?.omit ?? false
-  const {
-    isFilterable = list.graphql.isEnabled.filter,
-    isOrderable = list.graphql.isEnabled.orderBy,
-  } = f
-
-  // TODO: check types in initConfig
-  throwIfNotAFilter(isFilterable, listKey, 'isFilterable')
-  throwIfNotAFilter(isOrderable, listKey, 'isOrderable')
 
   if (f.dbField.kind === 'relation') {
     if (!lists[f.dbField.list].graphql.isEnabled.type) {
@@ -256,8 +228,8 @@ function getIsEnabledField(
       read: notOmit,
       create: notOmit,
       update: notOmit,
-      filter: notOmit ? isFilterable : false,
-      orderBy: notOmit ? isOrderable : false,
+      filter: notOmit,
+      orderBy: notOmit,
     }
   }
 
@@ -266,8 +238,8 @@ function getIsEnabledField(
     read: !omit.read,
     create: !omit.create,
     update: !omit.update,
-    filter: !omit.read ? isFilterable : false, // prevent filtering if read is false
-    orderBy: !omit.read ? isOrderable : false, // prevent ordering if read is false
+    filter: 'filter' in omit ? !omit.filter : !omit.read, // default to prevent filtering if .read is set [and .filter is undefined]
+    orderBy: 'order' in omit ? !omit.order : !omit.read, // default to prevent orderBy if .read is set [and .order is undefined]
   }
 }
 
@@ -336,7 +308,7 @@ function getListsWithInitialisedFields(
       listConfig.listKey,
       {
         graphql: {
-          isEnabled: getIsEnabled(listConfig.listKey, listConfig),
+          isEnabled: getIsEnabled(listConfig),
         },
       },
     ])
@@ -665,7 +637,14 @@ function getListsWithInitialisedFields(
         fieldKey,
       })
 
-      const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
+      const isEnabledField = getIsEnabledField(f, intermediateLists)
+      const fieldModes = {
+        create:
+          f.ui?.createView?.fieldMode ?? listConfig.ui?.createView?.defaultFieldMode ?? 'edit',
+        item: f.ui?.itemView?.fieldMode ?? listConfig.ui?.itemView?.defaultFieldMode ?? 'edit',
+        list: f.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read',
+      }
+
       resultFields[fieldKey] = {
         fieldKey,
 

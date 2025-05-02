@@ -7,6 +7,7 @@ import type { MaybePromise } from '../utils'
 import type { ListAccessControl, ActionAccessControlFunction } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
 import type { ListHooks } from './hooks'
+import { MaybeItemFunction } from './lists_BASE_12605'
 
 export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
   /**
@@ -170,6 +171,91 @@ export type ListSortDescriptor<Fields extends string> = {
 
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
+   * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
+   * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
+   */
+  labelField?: 'id' | Exclude<keyof BaseFields<ListTypeInfo>, number>
+  /**
+   * The fields used by the Admin UI when searching this list.
+   * It is always possible to search by id and `id` should not be specified in this option.
+   * @default The `labelField` if it has a string `contains` filter, otherwise none.
+   */
+  searchFields?: readonly Extract<keyof BaseFields<ListTypeInfo>, string>[]
+
+  /** The path that the list should be at in the Admin UI */
+  // Not currently used. Should be passed into `keystone.createList()`.
+  // path?: string;
+  /**
+   * The description shown on the list page
+   * @default listConfig.description
+   */
+  description?: string // the description displayed below the field in the Admin UI
+
+  /**
+   * Hides this list from the Admin UI navigation, it only hides the list, you can still navigate directly.
+   * @default false
+   */
+  hideNavigation?: MaybeSessionFunction<boolean, ListTypeInfo>
+  /**
+   * Hides the capability to create for this list in the Admin UI.
+   * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
+   * @default false
+   */
+  hideCreate?: MaybeSessionFunction<boolean, ListTypeInfo>
+  /**
+   * Hides the delete button in the Admin UI.
+   * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
+   * @default false
+   */
+  hideDelete?: MaybeSessionFunction<boolean, ListTypeInfo>
+  /**
+   * Configuration specific to the create view in the Admin UI
+   */
+  createView?: {
+    /**
+     * The default field mode for fields on the create view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'edit'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo>
+  }
+
+  /**
+   * Configuration specific to the item view in the Admin UI
+   */
+  itemView?: {
+    /**
+     * The default field mode for fields on the item view for this list.
+     * This controls what people can do for fields
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'edit'
+     */
+    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>
+  }
+
+  /**
+   * Configuration specific to the list view in the Admin UI
+   */
+  listView?: {
+    /**
+     * The default field mode for fields on the list view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'read'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
+    /**
+     * The columns(which refer to fields) that should be shown to users of the Admin UI.
+     * Users of the Admin UI can select different columns to show in the UI.
+     * @default the first three fields in the list
+     */
+    initialColumns?: readonly ('id' | keyof BaseFields<ListTypeInfo>)[]
+    // was previously top-level defaultSort
+    initialSort?: { field: 'id' | keyof BaseFields<ListTypeInfo>; direction: 'ASC' | 'DESC' }
+    // was previously defaultPageSize
+    pageSize?: number // default number of items to display per page on the list screen
+  }
+
+  /**
    * The label used to identify the list in navigation and etc.
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
    */
@@ -198,87 +284,6 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * @default label.split(' ').join('-').toLowerCase()
    */
   path?: string
-
-  /**
-   * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
-   * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
-   */
-  labelField?: 'id' | Exclude<ListTypeInfo['fields'], number>
-
-  /**
-   * The fields used by the Admin UI when searching this list.
-   * It is always possible to search by id and `id` should not be specified in this option.
-   * @default The `labelField` if it has a string `contains` filter, otherwise none.
-   */
-  searchFields?: ListTypeInfo['fields'][]
-
-  /**
-   * Hides this list from the Admin UI navigation, it only hides the list, you can still navigate directly.
-   * @default false
-   */
-  hideNavigation?: MaybeSessionFunction<boolean, ListTypeInfo>
-  /**
-   * Hides the create button in the Admin UI.
-   * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
-   * @default false
-   */
-  hideCreate?: MaybeSessionFunction<boolean, ListTypeInfo>
-  /**
-   * Hides the delete button in the Admin UI.
-   * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
-   * @default false
-   */
-  hideDelete?: MaybeSessionFunction<boolean, ListTypeInfo>
-  /**
-   * Configuration specific to the create view in the Admin UI
-   */
-  createView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo>
-  }
-
-  /**
-   * Configuration specific to the item view in the Admin UI
-   */
-  itemView?: {
-    /**
-     * The default field mode for fields on the item view for this list.
-     * This controls what people can do for fields
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeItemFunctionWithFilter<'edit' | 'read' | 'hidden', ListTypeInfo>
-  }
-
-  /**
-   * Configuration specific to the list view in the Admin UI
-   */
-  listView?: {
-    /**
-     * The default field mode for fields on the list view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'read'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
-    /**
-     * The columns(which refer to fields) that should be shown to users of the Admin UI.
-     * Users of the Admin UI can select different columns to show in the UI.
-     * @default the first three fields in the list
-     */
-    initialColumns?: readonly ('id' | ListTypeInfo['fields'])[]
-    initialFilter?: MaybeSessionFunction<
-      Omit<ListTypeInfo['inputs']['where'], 'AND' | 'OR' | 'NOT'>,
-      ListTypeInfo
-    >
-    initialSort?: ListSortDescriptor<ListTypeInfo['fields']>
-
-    // TODO: rename to initialItemsPerPage or initialPageSize?
-    pageSize?: number // default number of items to display per page on the list screen
-  }
 }
 
 export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
