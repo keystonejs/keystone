@@ -1,7 +1,7 @@
+import type { Lists } from '.keystone/types'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
-import { checkbox, text, relationship, timestamp } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -237,6 +237,9 @@ export const lists = {
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.createdBy
         many: true,
       }),
+      user: relationship({
+        ref: 'User.contributor',
+      }),
     },
   }),
 
@@ -263,6 +266,9 @@ export const lists = {
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
         many: true,
       }),
+      user: relationship({
+        ref: 'User.moderator',
+      }),
     },
   }),
 
@@ -271,8 +277,18 @@ export const lists = {
     fields: {
       name: text(),
       admin: checkbox(),
-      contributor: relationship({ ref: 'Contributor' }),
-      moderator: relationship({ ref: 'Moderator' }),
+      contributor: relationship({
+        ref: 'Contributor.user',
+        db: {
+          foreignKey: true,
+        },
+      }),
+      moderator: relationship({
+        ref: 'Moderator.user',
+        db: {
+          foreignKey: true,
+        },
+      }),
     },
   }),
 } satisfies Lists<Session>

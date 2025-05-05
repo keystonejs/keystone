@@ -290,6 +290,10 @@ export function relationship <ListTypeInfo extends BaseListTypeInfo>({
             return resolve(value)
           },
         },
+        uniqueWhere: {
+          arg: graphql.arg({ type: foreignListTypes.uniqueWhere }),
+        },
+
         create: foreignListTypes.relateTo.one.create && {
           arg: graphql.arg({ type: foreignListTypes.relateTo.one.create }),
           async resolve (value, context, resolve) {

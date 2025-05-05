@@ -17,12 +17,8 @@ import {
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { allowAll } from '../../access'
-import {
-  accessDeniedError,
-  accessReturnError,
-  extensionError
-} from './graphql-errors'
-import { type InitialisedList } from './initialise-lists'
+import { accessDeniedError, accessReturnError, extensionError } from './graphql-errors'
+import type { InitialisedList } from './initialise-lists'
 import { type InputFilter } from './where-inputs'
 
 export function cannotForItem (operation: string, list: InitialisedList) {

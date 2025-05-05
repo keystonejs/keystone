@@ -158,10 +158,12 @@ type Contributor {
   bio: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  user: User
 }
 
 input ContributorWhereUniqueInput {
   id: ID
+  user: UserWhereUniqueInput
 }
 
 input ContributorWhereInput {
@@ -171,6 +173,7 @@ input ContributorWhereInput {
   id: IDFilter
   bio: StringFilter
   posts: PostManyRelationFilter
+  user: UserWhereInput
 }
 
 input PostManyRelationFilter {
@@ -187,6 +190,7 @@ input ContributorOrderByInput {
 input ContributorUpdateInput {
   bio: String
   posts: PostRelateToManyForUpdateInput
+  user: UserRelateToOneForUpdateInput
 }
 
 input PostRelateToManyForUpdateInput {
@@ -194,6 +198,12 @@ input PostRelateToManyForUpdateInput {
   set: [PostWhereUniqueInput!]
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ContributorUpdateArgs {
@@ -204,6 +214,7 @@ input ContributorUpdateArgs {
 input ContributorCreateInput {
   bio: String
   posts: PostRelateToManyForCreateInput
+  user: UserRelateToOneForCreateInput
 }
 
 input PostRelateToManyForCreateInput {
@@ -211,14 +222,21 @@ input PostRelateToManyForCreateInput {
   connect: [PostWhereUniqueInput!]
 }
 
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
 type Moderator {
   id: ID!
   hidden(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   hiddenCount(where: PostWhereInput! = {}): Int
+  user: User
 }
 
 input ModeratorWhereUniqueInput {
   id: ID
+  user: UserWhereUniqueInput
 }
 
 input ModeratorWhereInput {
@@ -227,6 +245,7 @@ input ModeratorWhereInput {
   NOT: [ModeratorWhereInput!]
   id: IDFilter
   hidden: PostManyRelationFilter
+  user: UserWhereInput
 }
 
 input ModeratorOrderByInput {
@@ -235,6 +254,7 @@ input ModeratorOrderByInput {
 
 input ModeratorUpdateInput {
   hidden: PostRelateToManyForUpdateInput
+  user: UserRelateToOneForUpdateInput
 }
 
 input ModeratorUpdateArgs {
@@ -244,6 +264,7 @@ input ModeratorUpdateArgs {
 
 input ModeratorCreateInput {
   hidden: PostRelateToManyForCreateInput
+  user: UserRelateToOneForCreateInput
 }
 
 type User {
@@ -256,6 +277,8 @@ type User {
 
 input UserWhereUniqueInput {
   id: ID
+  contributor: ContributorWhereUniqueInput
+  moderator: ModeratorWhereUniqueInput
 }
 
 input UserWhereInput {
