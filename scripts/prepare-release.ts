@@ -1,7 +1,7 @@
-const { spawnSync } = require('child_process')
-const { readFileSync, writeFileSync } = require('fs')
-const { default: getReleasePlan } = require('@changesets/get-release-plan')
-const { getInfo } = require('@changesets/get-github-info')
+import { spawnSync } from 'node:child_process'
+import { readFileSync, writeFileSync } from 'node:fs'
+import getReleasePlan from '@changesets/get-release-plan'
+import { getInfo } from '@changesets/get-github-info'
 
 // TODO: move this to CI linting
 const verbs = new Set(['Adds', 'Changes', 'Fixes', 'Moves', 'Removes', 'Updates', 'Upgrade'])
@@ -16,11 +16,10 @@ const publicPackages = [
   'create-keystone-app',
 ]
 
-const cves = [
+const cves: any[] = [
   //    {
   //      id: 'CVE-2023-23936',
   //      href: 'https://github.com/advisories/GHSA-5r9g-qh6m-jxff',
-  //      upstream: true,
   //      description: `
   //        An upstream transitive dependency \`undici\` is vulnerable to a HTTP header CRLF injection vulnerability.
   //        We have upgraded to a version of \`@prisma/core\` that uses a fixed \`undici\`.
@@ -28,15 +27,15 @@ const cves = [
   //    },
 ]
 
-function gitCommitsSince (tag) {
-  const { stdout } = spawnSync('git', ['rev-list', `^${tag}`, 'HEAD'])
+function gitCommitsSince (tag: string) {
+  const { stdout } = spawnSync('git', ['rev-list', `${tag}..HEAD`])
   return stdout
     .toString('utf-8')
     .split('\n')
     .filter(x => x)
 }
 
-function gitCommitsFor (path) {
+function gitCommitsFor (path: string) {
   const { stdout } = spawnSync('git', [
     'log',
     '--pretty=format:%H',
@@ -51,13 +50,13 @@ function gitCommitsFor (path) {
     .map(x => x.replace(/[^A-Za-z0-9]/g, '').slice(0, 40))
 }
 
-function gitCommitDescription (commit) {
+function gitCommitDescription (commit: string) {
   const { stdout } = spawnSync('git', ['log', '--oneline', commit])
-  return stdout.toString('utf-8').split('\n', 1).pop().slice(10)
+  return stdout.toString('utf-8').split('\n', 1).pop()?.slice(10)
 }
 
-async function fetchData (tag) {
-  const { changesets, releases } = await getReleasePlan('.')
+async function fetchData (tag: string) {
+  const { changesets, releases } = await getReleasePlan('.') as any // TODO: upstream types are wrong
 
   // find the commits since the tag
   const revs = gitCommitsSince(tag)
@@ -68,7 +67,7 @@ async function fetchData (tag) {
   // tag changesets with their commits
   for (const changeset of changesets) {
     const commits = gitCommitsFor(`.changeset/${changeset.id}.md`)
-    const commit = commits.slice(-1).pop()
+    const commit = commits.slice(-1).pop() ?? 'missing'
     console.error(
       `changeset ${changeset.id} has ${commits.length} commits, the first commit is ${commit}`
     )
@@ -82,10 +81,10 @@ async function fetchData (tag) {
     readFileSync('.changeset/contributors.json').toString('utf-8')
   )
 
-  const githubCommits = {}
+  const githubCommits: Record<string, any> = {}
   for (const commit of revs) {
-    let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit })
-    pull = gitCommitDescription(commit).match(/#([0-9]+)/)?.[1] ?? pull
+    let { user, pull: pullInfo } = await getInfo({ repo: 'keystonejs/keystone', commit })
+    const pull = gitCommitDescription(commit)?.match(/#([0-9]+)/)?.[1] ?? pullInfo
 
     console.error(`commit ${commit}, user ${user}, pull #${pull}`)
     const first = !previousContributors.includes(user)
@@ -108,14 +107,14 @@ async function fetchData (tag) {
     for (const release of releases) {
       if (['minor', 'patch', undefined].includes(type) && release.type === 'major') type = 'major'
       if (['patch', undefined].includes(type) && release.type === 'minor') type = 'minor'
-      if ([undefined].includes(type) && release.type === 'patch') type = 'patch'
+      if (type === undefined && release.type === 'patch') type = 'patch'
     }
     if (!type) throw new Error('Unknown type')
 
     // only public packages, then strip the namespace
     const packages = releases
-      .filter(x => publicPackages.includes(x.name))
-      .map(x => x.name.replace('@keystone-6/', ''))
+      .filter((x: any) => publicPackages.includes(x.name))
+      .map((x: any) => x.name.replace('@keystone-6/', ''))
       .sort()
 
     const githubCommit = githubCommits[commit]
@@ -138,40 +137,40 @@ async function fetchData (tag) {
 
   // only public packages
   const packages = releases
-    .filter(x => publicPackages.includes(x.name))
-    .filter(x => x.type !== 'none')
-    .map(x => `${x.name}@${x.newVersion}`)
+    .filter((x: any) => publicPackages.includes(x.name))
+    .filter((x: any) => x.type !== 'none')
+    .map((x: any) => `${x.name}@${x.newVersion}`)
     .sort()
 
   return { packages, changes, contributors }
 }
 
-function formatPackagesChanged (packages) {
+function formatPackagesChanged (packages: string[]) {
   return `The following packages have been updated
 %%%
 ${packages.join('\n')}
 %%%`.replace(/%/g, '`')
 }
 
-function formatChange ({ packages, summary, pull, user }) {
+function formatChange ({ packages, summary, pull, user }: { packages: string[], summary: string, pull: string, user: string }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`
 }
 
-function formatCVE ({ id, href, upstream, description }) {
+function formatCVE ({ id, href, description }: { id: string, href: string, description: string }) {
   description = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
   return `- [\`${id}\`](${href}) - ${description}`
 }
 
-function formatLink (pull) {
+function formatLink (pull: string) {
   return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`
 }
 
-function sortByCommit (a, b) {
+function sortByCommit (a: any, b: any) {
   return a.commit.localeCompare(b.commit)
 }
 
-function groupPullsByUser (list) {
-  const result = {}
+function groupPullsByUser (list: any[]) {
+  const result: Record<string, any> = {}
   for (const item of list) {
     if (!item.pull) continue
     result[item.user] ||= []
@@ -182,7 +181,7 @@ function groupPullsByUser (list) {
     .sort((a, b) => a.user.localeCompare(b.user))
 }
 
-async function generateGitHubReleaseText (previousTag) {
+async function generateGitHubReleaseText (previousTag: string) {
   if (!previousTag) throw new Error('Missing tag')
 
   const date = new Date().toISOString().slice(0, 10)
