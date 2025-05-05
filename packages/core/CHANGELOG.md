@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 6.5.1
+
+### Patch Changes
+
+- [`9508e02`](https://github.com/keystonejs/keystone/commit/9508e020992dcddd221dbccd931bf124bf044235) Thanks [@emmatown](https://github.com/emmatown)! - Fix incompatible `Context` type export
+
 ## 6.5.0
 
 ### Minor Changes
