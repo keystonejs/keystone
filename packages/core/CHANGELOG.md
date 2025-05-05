@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 6.5.0
+
+### Minor Changes
+
+- [`0b29faf`](https://github.com/keystonejs/keystone/commit/0b29faf032c5e747099945881c78a8330915afe7) Thanks [@dcousens](https://github.com/dcousens)! - Add support for uniquely filtering items by 1-to-1 relationships
+
 ## 6.4.0
 
 ### Minor Changes
