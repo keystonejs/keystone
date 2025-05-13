@@ -27,7 +27,10 @@ const zTextAlign = z.union([z.undefined(), z.literal('center'), z.literal('end')
 const zLink = z
   .object({
     type: z.literal('link'),
-    href: z.string().refine(isValidURL),
+    href: z.string().refinement(isValidURL as (url: string) => url is any, val => ({
+      code: 'custom',
+      message: `Invalid URL: ${val}`,
+    })),
   })
   .strict()
 
@@ -162,6 +165,6 @@ export function isRelationshipData(val: unknown): val is RelationshipData {
 export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
   const result = zEditorCodec.safeParse(val)
   if (!result.success) {
-    throw new Error('Invalid document structure')
+    throw new Error(`Invalid document structure: ${result.error.message}`)
   }
 }

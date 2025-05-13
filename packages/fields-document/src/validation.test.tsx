@@ -80,7 +80,17 @@ expect.addSnapshotSerializer({
 })
 
 test('invalid structure', () => {
-  expect(validate({})).toMatchInlineSnapshot(`[Error: Invalid document structure]`)
+  expect(validate({})).toMatchInlineSnapshot(`
+  [Error: Invalid document structure: [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "received": "object",
+      "path": [],
+      "message": "Expected array, received object"
+    }
+  ]]
+`)
 })
 
 test('bad link', () => {
@@ -93,7 +103,20 @@ test('bad link', () => {
         ],
       },
     ])
-  ).toMatchInlineSnapshot(`[Error: Invalid document structure]`)
+  ).toMatchInlineSnapshot(`
+    [Error: Invalid document structure: [
+      {
+        "code": "custom",
+        "message": "Invalid URL: javascript:doBadThings()",
+        "path": [
+          0,
+          "children",
+          0,
+          "href"
+        ]
+      }
+    ]]
+  `)
 })
 
 test('excess properties', () => {
@@ -111,7 +134,22 @@ test('excess properties', () => {
         ],
       },
     ])
-  ).toMatchInlineSnapshot(`[Error: Invalid document structure]`)
+  ).toMatchInlineSnapshot(`
+    [Error: Invalid document structure: [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "somethingElse"
+        ],
+        "path": [
+          0,
+          "children",
+          0
+        ],
+        "message": "Unrecognized key(s) in object: 'somethingElse'"
+      }
+    ]]
+  `)
 })
 
 test('relationships that do not exist in the allowed relationships are normalized away', () => {
@@ -286,7 +324,7 @@ test('array in to-one relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["one"]`)
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value: [] at one" ["one"]`)
 })
 
 test('single item in many relationship', () => {
@@ -306,7 +344,9 @@ test('single item in many relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["many"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Invalid relationship value: {\\"id\\":\\"some-id\\",\\"label\\":\\"some label\\",\\"data\\":{\\"something\\":true}} at many" ["many"]`
+  )
 })
 
 test('missing relationships', () => {
@@ -323,7 +363,9 @@ test('missing relationships', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["one"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Invalid relationship value: undefined at one" ["one"]`
+  )
 })
 
 test('excess prop', () => {
@@ -341,7 +383,7 @@ test('excess prop', () => {
       },
     ])
   ).toMatchInlineSnapshot(
-    `PropValidationError "Key on object value \\"something\\" is not allowed" []`
+    `PropValidationError "Key on object value \\"something\\" is not allowed at " []`
   )
 })
 
@@ -359,7 +401,7 @@ test('form prop validation', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value" ["prop"]`)
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value: {} at prop" ["prop"]`)
 })
 
 test('object prop of wrong type', () => {
@@ -376,7 +418,9 @@ test('object prop of wrong type', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Object value must be an object" ["prop"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Object value must be an object but is boolean at prop" ["prop"]`
+  )
 })
 
 test('form prop failure inside of object', () => {
@@ -393,7 +437,9 @@ test('form prop failure inside of object', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value" ["prop","prop"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Invalid form prop value: false at prop.prop" ["prop","prop"]`
+  )
 })
 
 test('non-object value in conditional prop', () => {
@@ -410,7 +456,9 @@ test('non-object value in conditional prop', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Conditional value must be an object" ["prop"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Conditional value must be an object but is string at prop" ["prop"]`
+  )
 })
 
 test('excess prop in conditional object', () => {
@@ -428,7 +476,7 @@ test('excess prop in conditional object', () => {
       },
     ])
   ).toMatchInlineSnapshot(
-    `PropValidationError "Conditional value only allows keys named \\"discriminant\\" and \\"value\\", not \\"excess\\"" ["prop"]`
+    `PropValidationError "Conditional value only allows keys named \\"discriminant\\" and \\"value\\", not \\"excess\\" at prop" ["prop"]`
   )
 })
 
@@ -446,7 +494,9 @@ test('validation failure on discriminant', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value" ["prop","discriminant"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Invalid form prop value: \\"\\" at prop.discriminant" ["prop","discriminant"]`
+  )
 })
 
 test('validation failure on value', () => {
@@ -463,5 +513,7 @@ test('validation failure on value', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value" ["prop","value"]`)
+  ).toMatchInlineSnapshot(
+    `PropValidationError "Invalid form prop value: false at prop.value" ["prop","value"]`
+  )
 })
