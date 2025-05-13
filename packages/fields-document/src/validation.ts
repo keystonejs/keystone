@@ -17,7 +17,7 @@ import { type DocumentFeatures } from './views-shared'
 export class PropValidationError extends Error {
   path: ReadonlyPropPath
   constructor(message: string, path: ReadonlyPropPath) {
-    super(message)
+    super(`${message} at ${path.join('.')}`)
     this.path = path
   }
 }
@@ -32,7 +32,7 @@ function validateComponentBlockProps(
     if (schema.validate(value)) {
       return value
     }
-    throw new PropValidationError('Invalid form prop value', path)
+    throw new PropValidationError(`Invalid form prop value: ${JSON.stringify(value)}`, path)
   }
   if (schema.kind === 'child') {
     return null
@@ -43,19 +43,22 @@ function validateComponentBlockProps(
         // yes, ts understands this completely correctly, i'm as suprised as you are
         return value.map(x => ({ id: x.id }))
       } else {
-        throw new PropValidationError(`Invalid relationship value`, path)
+        throw new PropValidationError(`Invalid relationship value: ${JSON.stringify(value)}`, path)
       }
     }
     if (value === null || isRelationshipData(value)) {
       return value === null ? null : { id: value.id }
     } else {
-      throw new PropValidationError(`Invalid relationship value`, path)
+      throw new PropValidationError(`Invalid relationship value: ${JSON.stringify(value)}`, path)
     }
   }
 
   if (schema.kind === 'conditional') {
     if (typeof value !== 'object' || value === null) {
-      throw new PropValidationError('Conditional value must be an object', path)
+      throw new PropValidationError(
+        `Conditional value must be an object but is ${typeof value}`,
+        path
+      )
     }
     for (const key of Object.keys(value)) {
       if (key !== 'discriminant' && key !== 'value') {
@@ -93,7 +96,7 @@ function validateComponentBlockProps(
 
   if (schema.kind === 'object') {
     if (typeof value !== 'object' || value === null) {
-      throw new PropValidationError('Object value must be an object', path)
+      throw new PropValidationError(`Object value must be an object but is ${typeof value}`, path)
     }
     const allowedKeysSet = new Set(Object.keys(schema.fields))
     for (const key of Object.keys(value)) {
@@ -119,7 +122,10 @@ function validateComponentBlockProps(
   }
   if (schema.kind === 'array') {
     if (!Array.isArray(value)) {
-      throw new PropValidationError('Array field value must be an array', path)
+      throw new PropValidationError(
+        `Array field value must be an array but is ${typeof value}`,
+        path
+      )
     }
     return value.map((innerVal, i) => {
       return validateComponentBlockProps(schema.element, innerVal, relationships, path.concat(i))
