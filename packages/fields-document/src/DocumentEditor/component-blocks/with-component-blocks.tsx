@@ -75,12 +75,14 @@ function normalizeNodeWithinComponentProp(
     )
   }
   if (Element.isElement(node)) {
-    const childrenHasChanged = node.children
-      .map((node, i) =>
-        normalizeNodeWithinComponentProp([node, [...path, i]], editor, fieldOptions, relationships)
-      )
-      // .map then .some because we don't want to exit early
-      .some(x => x)
+    for (const [i, child] of node.children.entries()) {
+      if (
+        normalizeNodeWithinComponentProp([child, [...path, i]], editor, fieldOptions, relationships)
+      ) {
+        return true
+      }
+    }
+
     if (fieldOptions.kind === 'block') {
       if (node.type === 'component-block') {
         if (!fieldOptions.componentBlocks) {
@@ -88,13 +90,12 @@ function normalizeNodeWithinComponentProp(
           didNormalization = true
         }
       } else {
-        didNormalization =
-          normalizeElementBasedOnDocumentFeatures(
-            [node, path],
-            editor,
-            fieldOptions.documentFeatures,
-            relationships
-          ) || childrenHasChanged
+        didNormalization = normalizeElementBasedOnDocumentFeatures(
+          [node, path],
+          editor,
+          fieldOptions.documentFeatures,
+          relationships
+        )
       }
     } else {
       didNormalization = normalizeInlineBasedOnLinksAndRelationships(

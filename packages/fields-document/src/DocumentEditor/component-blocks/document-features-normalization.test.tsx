@@ -195,6 +195,25 @@ const cases: Record<
       </paragraph>
     ),
   },
+  '2 divider not allowed': {
+    schema: fields.child({ kind: 'block', placeholder: '' }),
+    children: [
+      <paragraph>
+        <text>some text </text>
+      </paragraph>,
+      <divider>
+        <text />
+      </divider>,
+      <divider>
+        <text />
+      </divider>,
+    ],
+    expectedNormalized: (
+      <paragraph>
+        <text>some text </text>
+      </paragraph>
+    ),
+  },
   'soft breaks allowed': {
     schema: fields.child({ kind: 'block', placeholder: '', formatting: { softBreaks: 'inherit' } }),
     children: (
