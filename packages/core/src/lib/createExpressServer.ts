@@ -94,7 +94,7 @@ export async function createExpressServer(
     config.graphql.path,
     json(config.graphql.bodyParser),
     (req, res, next) => {
-      // to bring back old behavior of body-parser always setting req.body that apollo server expects
+      // WARNING: body-parser@^2 only sets .body if a .body is parsed, Apollo always wants .body to be set
       req.body ??= {}
       next()
     },
