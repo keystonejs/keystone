@@ -1,5 +1,95 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20250515045907
+
+### Major Changes
+
+- [#9234](https://github.com/keystonejs/keystone/pull/9234) [`7a4624f`](https://github.com/keystonejs/keystone/commit/7a4624fd472f9da31049e9a8a7bd8ba8f541a1e2) Thanks [@dcousens](https://github.com/dcousens)! - Add support for `[field].graphql.isNonNull: true`
+
+- [#9600](https://github.com/keystonejs/keystone/pull/9600) [`585e4ee`](https://github.com/keystonejs/keystone/commit/585e4ee64c497c6b63e42f640a3032670369bd30) Thanks [@dcousens](https://github.com/dcousens)! - Add `itemField`, `originalItemField`, `inputFieldData` and `resolvedFieldData` parameters to field hooks
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Replaces the type signature `boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)` with `MaybeFieldFunction`, like `MaybeSessionFunction`
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Renames `isHidden` to `hideNavigation` on the AdminMeta list GraphQL type
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes `authenticatedItem` from `@keystone-6/core/admin-ui/components` exports
+
+- [#9189](https://github.com/keystonejs/keystone/pull/9189) [`a2ee52e`](https://github.com/keystonejs/keystone/commit/a2ee52e93ad3d281035dac857519709f647048fe) Thanks [@gautamsi](https://github.com/gautamsi)! - Update the `config` function to default any missing values to what is used internally; compatible with the internal type `ResolvedKeystoneConfig`
+
+- [#9421](https://github.com/keystonejs/keystone/pull/9421) [`c340760`](https://github.com/keystonejs/keystone/commit/c3407607cdd733b6555b02fe8264e4953af92256) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgrades Next major version to 15
+
+- [#9415](https://github.com/keystonejs/keystone/pull/9415) [`5b5aec1`](https://github.com/keystonejs/keystone/commit/5b5aec170b36fe69457be80449199ddca807e9ca) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrades Prisma major version to 6.5.0
+
+- [#9421](https://github.com/keystonejs/keystone/pull/9421) [`c340760`](https://github.com/keystonejs/keystone/commit/c3407607cdd733b6555b02fe8264e4953af92256) Thanks [@gautamsi](https://github.com/gautamsi)! - Upgrades React major version to 19
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes `.itemQueryName` and `.listQueryName` from `KeystoneAdminUIListMeta`, use `.graphql.names.*QueryName` instead
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes the `@keystone-ui/*` design system, you should upgrade your custom components to `@keystar/ui`
+
+- [#9204](https://github.com/keystonejs/keystone/pull/9204) [`77bfd2c`](https://github.com/keystonejs/keystone/commit/77bfd2c0b9cf2bcd14d10712dd40f7f5aeffac37) Thanks [@gautamsi](https://github.com/gautamsi)! - Removed deprecated `validateInput` and `validateDelete` hooks and add object hook syntax to fields.
+
+- [#9535](https://github.com/keystonejs/keystone/pull/9535) [`810e77d`](https://github.com/keystonejs/keystone/commit/810e77d12c54c4c22480b43bed1456e1f5e46d3d) Thanks [@emmatown](https://github.com/emmatown)! - `@graphql-ts/schema` has been upgraded to `1.0.0`
+
+- [#9529](https://github.com/keystonejs/keystone/pull/9529) [`41ee880`](https://github.com/keystonejs/keystone/commit/41ee880fe389240e3dee5ffb9439fb5d96ae5429) Thanks [@emmatown](https://github.com/emmatown)! - Move `storage` configuration to `image` and `file` fields, with a new `StorageStrategy` interface that directly defines how `put`, `delete` and `url` functions
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Changes `item` argument type in `field.*View.field*` functions to be nullable
+
+- [#9476](https://github.com/keystonejs/keystone/pull/9476) [`eaf1144`](https://github.com/keystonejs/keystone/commit/eaf11443239f5c7554883c097df03d40eaabdfff) Thanks [@emmatown](https://github.com/emmatown)! - Keystone no longer extends the Prisma client to make Prisma operations return `GraphQLError` when they error. Using the Prisma client will now throw errors normally. Prisma errors that are not caught in resolvers will now have all information beyond the fact that they're Prisma errors removed before they're returned over the network. You can use `graphql.apolloConfig.formatError` in your config to override this.
+
+- [#9471](https://github.com/keystonejs/keystone/pull/9471) [`e3e1f8d`](https://github.com/keystonejs/keystone/commit/e3e1f8d9eed94bfed0ff9542b5661c2eb2f4a7b2) Thanks [@emmatown](https://github.com/emmatown)! - Replace `bcrypt` and `workFactor` options for `password` field with new generic `kdf` option.
+
+- [#9486](https://github.com/keystonejs/keystone/pull/9486) [`0c5e0c0`](https://github.com/keystonejs/keystone/commit/0c5e0c03d73cb13e541accaa5a2f494e435c04e9) Thanks [@emmatown](https://github.com/emmatown)! - Fixes the `password` field to throw an error for inputs longer than 72 bytes when using the default `bcrypt` key derivation function (KDF)
+
+- [#9528](https://github.com/keystonejs/keystone/pull/9528) [`1f0a560`](https://github.com/keystonejs/keystone/commit/1f0a5603a63e20a3af1fcddadea7a016bc21e0a7) Thanks [@emmatown](https://github.com/emmatown)! - `displayMode: 'count'` on relationship fields now requires `itemView.fieldMode: 'read'` to be set.
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Removes the `EndSession` GraphQL mutation addition when `context.session.end` is defined, extend this yourself if required
+
+- [#9190](https://github.com/keystonejs/keystone/pull/9190) [`5410848`](https://github.com/keystonejs/keystone/commit/54108480451680f960f7e1c5c92418953a2c6dac) Thanks [@gautamsi](https://github.com/gautamsi)! - Remove the deprecated `--fix` flag from `keystone postinstall`
+
+### Minor Changes
+
+- [#9600](https://github.com/keystonejs/keystone/pull/9600) [`585e4ee`](https://github.com/keystonejs/keystone/commit/585e4ee64c497c6b63e42f640a3032670369bd30) Thanks [@dcousens](https://github.com/dcousens)! - Add `itemField` and `fieldKey` parameters to field `ui.fieldMode` and `ui.fieldPosition` functions
+
+- [#9595](https://github.com/keystonejs/keystone/pull/9595) [`dd8c02d`](https://github.com/keystonejs/keystone/commit/dd8c02d146c89bd0b78911349b17b521357aa642) Thanks [@dcousens](https://github.com/dcousens)! - Add support for uniquely filtering items by 1-to-1 relationships
+
+- [#9481](https://github.com/keystonejs/keystone/pull/9481) [`8b87897`](https://github.com/keystonejs/keystone/commit/8b878977d34c7ced2629dcf012739b5b51906549) Thanks [@emmatown](https://github.com/emmatown)! - Add support for extra id types (cuid2, uuid v7, ulid, nanoid) added to Prisma
+
+- [#9523](https://github.com/keystonejs/keystone/pull/9523) [`67cc93d`](https://github.com/keystonejs/keystone/commit/67cc93d107c892e6f2fa231f68ce6f88bb0cf17b) Thanks [@emmatown](https://github.com/emmatown)! - Add support for `displayMode: 'table'` on relationship fields
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Add support for `null` as a `defaultValue` on `bigint`, `decimal`, `float` and `integer`
+
+- [#9595](https://github.com/keystonejs/keystone/pull/9595) [`dd8c02d`](https://github.com/keystonejs/keystone/commit/dd8c02d146c89bd0b78911349b17b521357aa642) Thanks [@dcousens](https://github.com/dcousens)! - Fix the common field type of `.isIndexed` to accept `boolean`, not only `true`
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Changes the relationship field to only call the GraphQL `create` mutation when saving the item, not on blur
+
+- [`014b9f3`](https://github.com/keystonejs/keystone/commit/014b9f31170902c43af853dfb4d10c4e7d0b1282) Thanks [@dcousens](https://github.com/dcousens)! - Add support for importing TypeScript (and similar) packages in a monorepo without a separate build step.
+
+- [#9460](https://github.com/keystonejs/keystone/pull/9460) [`c6ce0a7`](https://github.com/keystonejs/keystone/commit/c6ce0a7ea67d33deeba96173e729fec5fd2cd18e) Thanks [@emmatown](https://github.com/emmatown)! - Rename `graphql` export to `g` - `graphql` is still exported but is deprecated and may be removed in a future release. In projects, use `gWithContext` to bind `g` to your specific context type.
+
+### Patch Changes
+
+- [#9595](https://github.com/keystonejs/keystone/pull/9595) [`dd8c02d`](https://github.com/keystonejs/keystone/commit/dd8c02d146c89bd0b78911349b17b521357aa642) Thanks [@dcousens](https://github.com/dcousens)! - Changes KS_FILTER_DENIED error messages to match KS_ACCESS_DENIED error messages
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Fix AdminUI create view not supporting `{field}.graphql.isNonNull` for `create` operations
+
+- [#9489](https://github.com/keystonejs/keystone/pull/9489) [`d9a78df`](https://github.com/keystonejs/keystone/commit/d9a78df14491b7e965cf1912f8314e12461c284b) Thanks [@emmatown](https://github.com/emmatown)! - Lazily load next build to improve CLI performance
+
+- [#9480](https://github.com/keystonejs/keystone/pull/9480) [`3c6b053`](https://github.com/keystonejs/keystone/commit/3c6b053dec67fbdd1fd77c244e3ce205f1eb5991) Thanks [@emmatown](https://github.com/emmatown)! - Implicitly set `ui.hideCreate: true` on relationship fields when `graphql.omit.create: false` is set on the related list
+
+- [#9510](https://github.com/keystonejs/keystone/pull/9510) [`f77e69a`](https://github.com/keystonejs/keystone/commit/f77e69a96d492320a027cc36df9084ff95ce5c17) Thanks [@emmatown](https://github.com/emmatown)! - Changes `fieldMode` and `fieldPosition` on `KeystoneAdminUIFieldMetaItemView` to non-nullable
+
+- [#9524](https://github.com/keystonejs/keystone/pull/9524) [`ec66d47`](https://github.com/keystonejs/keystone/commit/ec66d472feeabd2bda2c457d8991953c25cab9f3) Thanks [@lushkovsky-s](https://github.com/lushkovsky-s)! - Add more specific types to `cacheHint` and respect `cacheHint` on `findOne` queries.
+
+- [#9536](https://github.com/keystonejs/keystone/pull/9536) [`c2a8116`](https://github.com/keystonejs/keystone/commit/c2a8116a46f6caa30a50e6dac3e6338f46da6c16) Thanks [@emmatown](https://github.com/emmatown)! - Adds more specific types for the `lists` argument passed in `virtual` fields when using existing list types
+
+- [#9483](https://github.com/keystonejs/keystone/pull/9483) [`341e342`](https://github.com/keystonejs/keystone/commit/341e3427ac49c8e73a5c76d66f2d6fca5cfa26ce) Thanks [@emmatown](https://github.com/emmatown)! - Allow `Bytes` Prisma type in TypeScript types when implementing custom field types
+
+- [#9555](https://github.com/keystonejs/keystone/pull/9555) [`b645aba`](https://github.com/keystonejs/keystone/commit/b645aba1963019d27a5c60e87f4c16e76d9b122b) Thanks [@emmatown](https://github.com/emmatown)! - Change `keystone migrate create` to not require `db.shadowDatabaseUrl`, opting to create a temporary new database if allowed
+
+- [#9558](https://github.com/keystonejs/keystone/pull/9558) [`c643407`](https://github.com/keystonejs/keystone/commit/c6434077d86fe53705a31b7496a1246aab5c34e1) Thanks [@emmatown](https://github.com/emmatown)! - Use automatic JSX runtime in esbuild to align with Next build process
+
+- [#9479](https://github.com/keystonejs/keystone/pull/9479) [`b4a44da`](https://github.com/keystonejs/keystone/commit/b4a44daad477a3f85d68356dd8feaaa6c4f35f0b) Thanks [@emmatown](https://github.com/emmatown)! - Replace `experimental: { esmExternals: 'loose' }` with `bundlePagesRouterDependencies: true` in Keystone's Next config
+
 ## 6.4.0
 
 ### Minor Changes
