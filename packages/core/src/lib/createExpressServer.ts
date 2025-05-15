@@ -93,6 +93,11 @@ export async function createExpressServer(
   expressServer.use(
     config.graphql.path,
     json(config.graphql.bodyParser),
+    (req, res, next) => {
+      // to bring back old behavior of body-parser always setting req.body that apollo server expects
+      req.body ??= {}
+      next()
+    },
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
         return await context.withRequest(req, res)
