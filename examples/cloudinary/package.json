@@ -13,7 +13,7 @@
     "@keystar/ui": "^0.7.16",
     "@keystone-6/auth": "^8.1.0",
     "@keystone-6/cloudinary": "^8.0.0",
-    "@keystone-6/core": "^6.4.0",
+    "@keystone-6/core": "^6.5.1",
     "@prisma/client": "6.5.0",
     "dotenv": "^16.0.0"
   },
