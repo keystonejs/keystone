@@ -10,7 +10,7 @@
     "postinstall": "keystone build --no-ui --frozen"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.4.0",
+    "@keystone-6/core": "^6.5.1",
     "@prisma/client": "6.5.0",
     "dotenv": "^16.0.0",
     "express": "^4.19.2",
