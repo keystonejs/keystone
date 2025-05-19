@@ -1,0 +1,104 @@
+{
+  "name": "@keystone-6/fields-content",
+  "description": "KeystoneJS Content Field Type",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/keystone-6-fields-content.js",
+      "node": "./dist/keystone-6-fields-content.node.js",
+      "react-server": "./dist/keystone-6-fields-content.node.js",
+      "worker": "./dist/keystone-6-fields-content.node.js",
+      "default": "./dist/keystone-6-fields-content.js"
+    },
+    "./views": {
+      "types": "./dist/keystone-6-fields-content-views.js",
+      "node": "./dist/keystone-6-fields-content-views.node.js",
+      "react-server": "./dist/keystone-6-fields-content-views.node.js",
+      "worker": "./dist/keystone-6-fields-content-views.node.js",
+      "default": "./dist/keystone-6-fields-content-views.js"
+    },
+    "./content-components": {
+      "types": "./dist/keystone-6-fields-content-content-components.js",
+      "node": "./dist/keystone-6-fields-content-content-components.node.js",
+      "react-server": "./dist/keystone-6-fields-content-content-components.node.js",
+      "worker": "./dist/keystone-6-fields-content-content-components.node.js",
+      "default": "./dist/keystone-6-fields-content-content-components.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "views",
+    "content-components"
+  ],
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "views.tsx",
+      "content-components.ts"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-content",
+  "dependencies": {
+    "@babel/runtime": "^7.24.7",
+    "@braintree/sanitize-url": "7.0.4",
+    "@emotion/weak-memoize": "^0.4.0",
+    "@internationalized/string": "^3.2.6",
+    "@keystar/ui": "^0.7.16",
+    "@floating-ui/react": "^0.24.0",
+    "@markdoc/markdoc": "^0.5.2",
+    "@react-aria/i18n": "^3.12.9",
+    "@react-aria/label": "^3.7.17",
+    "@react-aria/overlays": "^3.23.2",
+    "@react-aria/selection": "^3.24.0",
+    "@react-aria/utils": "^3.25.1",
+    "@react-stately/list": "^3.10.8",
+    "@react-stately/overlays": "^3.6.10",
+    "@react-types/shared": "^3.29.0",
+    "@types/react": "^19.0.0",
+    "emery": "^1.4.4",
+    "escape-string-regexp": "^4.0.0",
+    "graphql": "^16.8.1",
+    "match-sorter": "^8.0.0",
+    "prosemirror-commands": "^1.5.1",
+    "prosemirror-history": "^1.3.0",
+    "@react-stately/collections": "^3.12.3",
+    "prosemirror-keymap": "^1.2.1",
+    "prosemirror-model": "^1.19.0",
+    "prosemirror-state": "^1.4.2",
+    "prosemirror-tables": "^1.3.4",
+    "prosemirror-transform": "^1.7.1",
+    "prosemirror-view": "^1.30.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@internationalized/string-compiler": "^3.2.6",
+    "@keystone-6/core": "workspace:^",
+    "react-element-to-jsx-string": "^17.0.1",
+    "@testing-library/dom": "^10.4.0",
+    "resize-observer-polyfill": "^1.5.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "jest-diff": "^29.0.0",
+    "@vitest/pretty-format": "^3.1.4",
+    "tsx": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@keystone-6/core": "^6.0.0"
+  },
+  "imports": {
+    "#markdoc": "./src/markdoc.js",
+    "#base64": "./src/base64.ts",
+    "#field-ui/*": {
+      "node": "./src/form/fields/empty-field-ui.tsx",
+      "worker": "./src/form/fields/empty-field-ui.tsx",
+      "react-server": "./src/form/fields/empty-field-ui.tsx",
+      "default": "./src/form/fields/*/ui.tsx"
+    }
+  }
+}
