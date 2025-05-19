@@ -39,7 +39,8 @@ export function Field(props: FieldProps<typeof controller>) {
   const errorMessage =
     isInvalid && (isDirty || forceValidation) ? `${field.label} is required.` : undefined
 
-  const onSelectionChange = (key: Key | null) => {
+  const onSelectionChange = (key: Key | null | null) => {
+    if (key === null) return
     if (!onChange) return
 
     // FIXME: the value should be primitive, not an object. i think this is an

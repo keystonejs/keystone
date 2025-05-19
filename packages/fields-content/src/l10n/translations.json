@@ -1,0 +1,240 @@
+{
+  "ar-AE": {
+    "add": "يضيف",
+    "cancel": "يلغي",
+    "delete": "يمسح",
+    "edit": "يحرر",
+    "save": "يحفظ"
+  },
+  "bg-BG": {
+    "add": "Добавете",
+    "cancel": "Отказ",
+    "delete": "Изтрий",
+    "edit": "редактиране",
+    "save": "Запазване"
+  },
+  "cs-CZ": {
+    "add": "Přidat",
+    "cancel": "zrušení",
+    "delete": "Vymazat",
+    "edit": "Upravit",
+    "save": "Uložit"
+  },
+  "da-DK": {
+    "add": "Tilføje",
+    "cancel": "Afbestille",
+    "delete": "Slet",
+    "edit": "Redigere",
+    "save": "Gemme"
+  },
+  "de-DE": {
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "save": "Speichern"
+  },
+  "el-GR": {
+    "add": "Προσθήκη",
+    "cancel": "Ματαίωση",
+    "delete": "Διαγράφω",
+    "edit": "Επεξεργασία",
+    "save": "Αποθηκεύσετε"
+  },
+  "en-US": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save"
+  },
+  "es-ES": {
+    "add": "Agregar",
+    "cancel": "Cancelar",
+    "delete": "Borrar",
+    "edit": "Editar",
+    "save": "Guardar"
+  },
+  "et-EE": {
+    "add": "Lisama",
+    "cancel": "Tühista",
+    "delete": "Kustuta",
+    "edit": "Muuda",
+    "save": "Salvesta"
+  },
+  "fi-FI": {
+    "add": "Lisätä",
+    "cancel": "Tühista",
+    "delete": "Poistaa",
+    "edit": "Muokata",
+    "save": "Tallentaa"
+  },
+  "fr-FR": {
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "save": "Sauvegarder"
+  },
+  "he-IL": {
+    "add": "לְהוֹסִיף",
+    "cancel": "לְבַטֵל",
+    "delete": "לִמְחוֹק",
+    "edit": "לַעֲרוֹך",
+    "save": "להציל"
+  },
+  "hr-HR": {
+    "add": "Dodati",
+    "cancel": "Otkazati",
+    "delete": "Izbrisati",
+    "edit": "Uredi",
+    "save": "Uštedjeti"
+  },
+  "hu-HU": {
+    "add": "Hozzáadás",
+    "cancel": "Megszünteti",
+    "delete": "Töröl",
+    "edit": "Szerkesztés",
+    "save": "Megment"
+  },
+  "it-IT": {
+    "add": "Aggiungere",
+    "cancel": "Annulla",
+    "delete": "Eliminare",
+    "edit": "Modificare",
+    "save": "Salva"
+  },
+  "ja-JP": {
+    "add": "追加",
+    "cancel": "キャンセル",
+    "delete": "消去",
+    "edit": "編集",
+    "save": "保存"
+  },
+  "ko-KR": {
+    "add": "추가하다",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집하다",
+    "save": "구하다"
+  },
+  "lt-LT": {
+    "add": "Papildyti",
+    "cancel": "Atšaukti",
+    "delete": "Ištrinti",
+    "edit": "Redaguoti",
+    "save": "Sutaupyti"
+  },
+  "lv-LV": {
+    "add": "Pievienot",
+    "cancel": "Atcelt",
+    "delete": "Dzēst",
+    "edit": "Rediģēt",
+    "save": "Saglabāt"
+  },
+  "nb-NO": {
+    "add": "Legg til",
+    "cancel": "Avbryt",
+    "delete": "Slett",
+    "edit": "Redigere",
+    "save": "Lagre"
+  },
+  "nl-NL": {
+    "add": "Toevoegen",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerking",
+    "save": "Redden"
+  },
+  "pl-PL": {
+    "add": "Dodaj",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "save": "Zapisz"
+  },
+  "pt-BR": {
+    "add": "Adicionar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "save": "Guardar"
+  },
+  "pt-PT": {
+    "add": "Adicionar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "save": "Guardar"
+  },
+  "ro-RO": {
+    "add": "Adăuga",
+    "cancel": "Anulare",
+    "delete": "Șterge",
+    "edit": "Editați",
+    "save": "Salvați"
+  },
+  "ru-RU": {
+    "add": "Добавить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "save": "Сохранить"
+  },
+  "sk-SK": {
+    "add": "Pridať",
+    "cancel": "Zrušiť",
+    "delete": "Odstrániť",
+    "edit": "Upraviť",
+    "save": "Uložiť"
+  },
+  "sl-SI": {
+    "add": "Dodaj",
+    "cancel": "Prekliči",
+    "delete": "Izbriši",
+    "edit": "Uredi",
+    "save": "Shrani"
+  },
+  "sr-SP": {
+    "add": "Додати",
+    "cancel": "Поништити, отказати",
+    "delete": "Избриши",
+    "edit": "Уредити",
+    "save": "сачувати"
+  },
+  "sv-SE": {
+    "add": "Lägg till",
+    "cancel": "Поништити, отказати",
+    "delete": "Radera",
+    "edit": "Redigera",
+    "save": "Spara"
+  },
+  "tr-TR": {
+    "add": "Avbryt",
+    "cancel": "iptal etmek",
+    "delete": "Silmek",
+    "edit": "Düzenlemek",
+    "save": "Kaydetmek"
+  },
+  "uk-UA": {
+    "add": "Додати",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "save": "Зберегти"
+  },
+  "zh-CN": {
+    "add": "添加",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "save": "节省"
+  },
+  "zh-TW": {
+    "add": "添加",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "save": "節省"
+  }
+}
