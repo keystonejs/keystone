@@ -1,6 +1,4 @@
 import { type ReactNode, type PropsWithChildren, useState } from 'react'
-import { useRouter } from 'next/router'
-
 import { ActionButton } from '@keystar/ui/button'
 import { DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
@@ -22,6 +20,7 @@ import { Text } from '@keystar/ui/typography'
 import type { ListMeta } from '../../types'
 import { useKeystone } from '../context'
 import { WelcomeDialog } from './WelcomeDialog'
+import { useRouter } from '../router'
 
 type NavItemProps = {
   /**
@@ -40,8 +39,11 @@ type NavItemProps = {
   isSelected?: boolean
 }
 
-export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
-  return `/${list.path}${list.isSingleton ? '/1' : ''}`
+export function getHrefFromList(
+  list: Pick<ListMeta, 'path' | 'isSingleton'>,
+  adminPath: string = ''
+) {
+  return `${adminPath}/${list.path}${list.isSingleton ? '/1' : `${adminPath}`}`
 }
 
 /** A navigation item represents a page in the AdminUI. */
@@ -81,7 +83,7 @@ export function NavContainer({ children }: PropsWithChildren) {
 
 /** @private Exported for internal consumption only. */
 export function Navigation() {
-  const { adminMeta, adminConfig } = useKeystone()
+  const { adminMeta, adminConfig, adminPath } = useKeystone()
   const lists = Object.values(adminMeta?.lists ?? [])
   const visibleLists = lists.filter(x => !x.hideNavigation)
 
@@ -93,7 +95,7 @@ export function Navigation() {
         <NavItem href="/">Dashboard</NavItem>
         <Divider />
         {visibleLists.map((list: ListMeta) => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
+          <NavItem key={list.key} href={getHrefFromList(list, adminPath)}>
             {list.label}
           </NavItem>
         ))}
