@@ -1,7 +1,7 @@
 import type { FieldController } from '../../../../types'
 
 export type RelationshipValue = {
-  id: string | number
+  id: string
   label: string | null
   data?: Record<string, unknown>
   built: undefined | boolean

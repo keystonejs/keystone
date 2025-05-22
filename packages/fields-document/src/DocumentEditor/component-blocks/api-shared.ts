@@ -277,13 +277,13 @@ type DiscriminantStringToDiscriminantValue<
   : DiscriminantString
 
 export type HydratedRelationshipData = {
-  id: string | number
+  id: string
   label: string | null
   data?: Record<string, unknown>
 }
 
 export type RelationshipData = {
-  id: string | number
+  id: string
   label: string | null | undefined
   data?: Record<string, unknown>
 }
