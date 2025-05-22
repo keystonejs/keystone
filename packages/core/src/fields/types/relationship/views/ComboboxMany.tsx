@@ -47,7 +47,15 @@ export function ComboboxMany({
   // not the related list, or some items on the list)
   if (error) return <span>Error</span>
 
-  const items = data?.items?.map(x => ({ ...x, built: false })) ?? []
+  const items: RelationshipValue[] = data?.items?.map(x => ({ ...x, built: false })) ?? []
+  const fetchedIds = new Set(items.map(item => item.id))
+
+  for (const item of state.value) {
+    if (!fetchedIds.has(item.id)) {
+      items.push(item)
+    }
+  }
+
   return (
     <ComboboxMulti
       {...props}
