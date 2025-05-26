@@ -40,6 +40,7 @@ import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
 import { assertNever, clientSideValidateProp } from './utils'
 import { createGetPreviewProps } from './preview-props'
+import { Content } from '@keystar/ui/slots'
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,
@@ -228,11 +229,13 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
               return (
                 <Dialog>
                   <Heading>Edit item</Heading>
-                  <ArrayFieldItemModalContent
-                    onChange={onModalChange}
-                    schema={element.schema as any /* TODO FIXME */}
-                    value={modalState.value}
-                  />
+                  <Content>
+                    <ArrayFieldItemModalContent
+                      onChange={onModalChange}
+                      schema={element.schema as any /* TODO FIXME */}
+                      value={modalState.value}
+                    />
+                  </Content>
                   <ButtonGroup>
                     <Button
                       prominence="low"
