@@ -2,10 +2,12 @@ import path from 'node:path'
 import type {
   BaseFieldTypeInfo,
   BaseListTypeInfo,
+  ClientSideFilter,
   KeystoneConfig,
   KeystoneContext,
   MaybeFieldFunction,
   MaybeItemFieldFunction,
+  MaybeItemFieldFunctionWithFilter,
   MaybePromise,
   MaybeSessionFunction,
 } from '../types'
@@ -25,10 +27,10 @@ type FieldMetaSource_ = {
 
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
-    fieldMode: EmptyResolver<'edit' | 'hidden'>
+    fieldMode: EmptyResolver<ClientSideFilter<'edit' | 'hidden', BaseListTypeInfo>>
   }
   itemView: {
-    fieldMode: MaybeItemFieldFunction<
+    fieldMode: MaybeItemFieldFunctionWithFilter<
       'edit' | 'read' | 'hidden',
       BaseListTypeInfo,
       BaseFieldTypeInfo
@@ -284,7 +286,7 @@ function assertValidView(view: string, location: string) {
   }
 }
 
-function normalizeMaybeSessionFunction<Return extends string | boolean>(
+function normalizeMaybeSessionFunction<Return extends string | boolean | object>(
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): EmptyResolver<Return> {
   if (typeof input !== 'function') return () => input

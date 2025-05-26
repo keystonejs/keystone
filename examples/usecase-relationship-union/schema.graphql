@@ -129,8 +129,14 @@ type Media {
   id: ID!
   label: String
   description: String
+  type: MediaTypeType
   post: Post
   link: Link
+}
+
+enum MediaTypeType {
+  post
+  link
 }
 
 input MediaWhereUniqueInput {
@@ -143,17 +149,27 @@ input MediaWhereInput {
   NOT: [MediaWhereInput!]
   id: IDFilter
   description: StringFilter
+  type: MediaTypeTypeNullableFilter
   post: PostWhereInput
   link: LinkWhereInput
+}
+
+input MediaTypeTypeNullableFilter {
+  equals: MediaTypeType
+  in: [MediaTypeType!]
+  notIn: [MediaTypeType!]
+  not: MediaTypeTypeNullableFilter
 }
 
 input MediaOrderByInput {
   id: OrderDirection
   description: OrderDirection
+  type: OrderDirection
 }
 
 input MediaUpdateInput {
   description: String
+  type: MediaTypeType
   post: PostRelateToOneForUpdateInput
   link: LinkRelateToOneForUpdateInput
 }
@@ -177,6 +193,7 @@ input MediaUpdateArgs {
 
 input MediaCreateInput {
   description: String
+  type: MediaTypeType
   post: PostRelateToOneForCreateInput
   link: LinkRelateToOneForCreateInput
 }
@@ -283,12 +300,7 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
+  fieldMode: JSON!
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -301,14 +313,8 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: JSON!
   fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {

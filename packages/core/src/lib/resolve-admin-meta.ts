@@ -36,12 +36,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
           name: 'KeystoneAdminUIFieldMetaCreateView',
           fields: {
             fieldMode: g.field({
-              type: g.nonNull(
-                g.enum({
-                  name: 'KeystoneAdminUIFieldMetaCreateViewFieldMode',
-                  values: g.enumValues(['edit', 'hidden']),
-                })
-              ),
+              type: g.nonNull(g.JSON),
             }),
           },
         })
@@ -99,12 +94,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {
           fieldMode: g.field({
-            type: g.nonNull(
-              g.enum({
-                name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-                values: g.enumValues(['edit', 'read', 'hidden']),
-              })
-            ),
+            type: g.nonNull(g.JSON),
             async resolve({ fieldMode, listKey, fieldKey, item, itemField }, _, context) {
               if (typeof fieldMode !== 'function') return fieldMode
               return fieldMode({

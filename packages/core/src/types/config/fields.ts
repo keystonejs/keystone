@@ -4,7 +4,13 @@ import type { FieldTypeFunc } from '../next-fields'
 import type { BaseListTypeInfo } from '../type-info'
 import type { FieldAccessControl } from './access-control'
 import type { FieldHooks } from './hooks'
-import type { MaybeFieldFunction, MaybeItemFieldFunction, MaybeSessionFunction } from './lists'
+import type {
+  MaybeFieldFunction,
+  MaybeItemFieldFunction,
+  MaybeItemFieldFunctionWithFilter,
+  MaybeSessionFunction,
+  MaybeSessionFunctionWithFilter,
+} from './lists'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>
@@ -42,9 +48,13 @@ export type CommonFieldConfig<
   ui?: {
     description?: string
     views?: string
-    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> }
+    createView?: { fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo> }
     itemView?: {
-      fieldMode?: MaybeItemFieldFunction<'edit' | 'read' | 'hidden', ListTypeInfo, FieldTypeInfo>
+      fieldMode?: MaybeItemFieldFunctionWithFilter<
+        'edit' | 'read' | 'hidden',
+        ListTypeInfo,
+        FieldTypeInfo
+      >
       fieldPosition?: MaybeItemFieldFunction<'form' | 'sidebar', ListTypeInfo, FieldTypeInfo>
     }
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> }

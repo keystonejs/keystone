@@ -20,7 +20,12 @@ import type {
 } from '../../types'
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
-import type { MaybeItemFieldFunction, MaybeSessionFunction } from '../../types/config/lists'
+import type {
+  MaybeItemFieldFunction,
+  MaybeItemFieldFunctionWithFilter,
+  MaybeSessionFunction,
+  MaybeSessionFunctionWithFilter,
+} from '../../types/config/lists'
 import { type GraphQLNames, __getNames } from '../../types/utils'
 import {
   type ResolvedFieldAccessControl,
@@ -59,10 +64,10 @@ export type InitialisedField = {
     description: string | null
     views: string | null
     createView: {
-      fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>
+      fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', any>
     }
     itemView: {
-      fieldMode: MaybeItemFieldFunction<'read' | 'edit' | 'hidden', any, any>
+      fieldMode: MaybeItemFieldFunctionWithFilter<'read' | 'edit' | 'hidden', any, any>
       fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', any, any>
     }
     listView: {

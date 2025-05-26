@@ -1,16 +1,24 @@
 import { list, group, gWithContext } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, relationship, virtual } from '@keystone-6/core/fields'
+import { text, relationship, virtual, select } from '@keystone-6/core/fields'
 import type { Lists, Context } from '.keystone/types'
 
-const ifUnsetHideUI = {
-  itemView: {
-    fieldMode: ({ itemField }: { itemField: unknown | null }) => (itemField ? 'edit' : 'read'),
-  },
-  listView: {
-    fieldMode: 'hidden',
-  },
-} as const
+const hiddenIfWrongKind = (kind: 'post' | 'link') =>
+  ({
+    createView: {
+      fieldMode: {
+        edit: { type: { equals: kind } },
+      },
+    },
+    itemView: {
+      fieldMode: {
+        edit: { type: { equals: kind } },
+      },
+    },
+    listView: {
+      fieldMode: 'hidden',
+    },
+  }) as const
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>
@@ -63,18 +71,23 @@ export const lists: Lists = {
       ...group({
         label: 'Media Type',
         fields: {
+          type: select({
+            options: [
+              { label: 'Post', value: 'post' },
+              { label: 'Link', value: 'link' },
+            ],
+            defaultValue: 'post',
+            validation: { isRequired: true },
+            type: 'enum',
+          }),
           post: relationship({
             ref: 'Post',
-            ui: {
-              ...ifUnsetHideUI,
-            },
+            ui: hiddenIfWrongKind('post'),
           }),
 
           link: relationship({
             ref: 'Link',
-            ui: {
-              ...ifUnsetHideUI,
-            },
+            ui: hiddenIfWrongKind('link'),
           }),
         },
       }),
@@ -82,43 +95,44 @@ export const lists: Lists = {
 
     hooks: {
       validate: {
-        create: async ({ inputData, addValidationError }) => {
-          const { post, link } = inputData
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length === 0)
-            return addValidationError('A media type relationship is required')
-          if (values.length > 1)
-            return addValidationError('Only one media type relationship can be selected')
+        create: async ({ resolvedData, addValidationError }) => {
+          const { post, link, type } = resolvedData
+          if (!type) return addValidationError('Media type is required')
+          if (type === 'post' && !post?.connect && !post?.create)
+            return addValidationError('A post relationship is required')
+          if ((type === 'post' && link?.connect) || link?.create)
+            return addValidationError('A link relationship cannot be selected with a post')
+          if (type === 'link' && !link?.connect && !link?.create)
+            return addValidationError('A link relationship is required')
+          if ((type === 'link' && post?.connect) || post?.create)
+            return addValidationError('A post relationship cannot be selected with a link')
         },
-        update: async ({ inputData, addValidationError }) => {
-          const { post, link } = inputData
-          if ([post, link].some(x => x?.disconnect))
-            return addValidationError('Cannot change media type relationship type')
-
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
-          if (values.length > 1)
-            return addValidationError('Only one media type relationship can be selected')
-
+        update: async ({ resolvedData, addValidationError, item }) => {
+          let { post, link, type } = resolvedData
+          if (!type) type = item.type
+          if (type === 'post' && !post?.disconnect)
+            return addValidationError('A post relationship is required')
+          if ((type === 'post' && link?.connect) || link?.create)
+            return addValidationError('A link relationship cannot be selected with a post')
+          if (type === 'link' && link?.disconnect)
+            return addValidationError('A link relationship is required')
+          if ((type === 'link' && post?.connect) || post?.create)
+            return addValidationError('A post relationship cannot be selected with a link')
           // TODO: prevent item from changing types with implicit disconnect
         },
       },
       resolveInput: {
-        update: async ({ resolvedData }) => {
-          const { post, link, ...rest } = resolvedData
-          for (const [key, value] of Object.entries({ post, link })) {
-            if (!value) continue
-            if (value.disconnect) continue // TODO: null should disconnect
-
-            // disconnect everything else
-            return {
-              ...rest,
-              post: { disconnect: true },
-              link: { disconnect: true },
-              [key]: value,
-            }
+        update: async ({ resolvedData, item }) => {
+          const type = (typeof resolvedData.type === 'string' ? resolvedData.type : item.type) as
+            | 'post'
+            | 'link'
+          // disconnect everything else
+          return {
+            ...resolvedData,
+            post: { disconnect: true },
+            link: { disconnect: true },
+            [type]: resolvedData[type],
           }
-
-          return rest
         },
       },
     },
