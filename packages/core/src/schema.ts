@@ -7,6 +7,9 @@ import type {
   KeystoneContext,
   ListConfig,
   KeystoneConfig,
+  MaybeItemFunctionWithFilter,
+  MaybeSessionFunction,
+  MaybeSessionFunctionWithFilter,
 } from './types'
 
 import type { ListenOptions } from 'node:net'
@@ -144,9 +147,30 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
 }
 
 let i = 0
+
+export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
+  fields: string[]
+  label: string
+  description: string | null
+  ui: GroupUIConfig<ListTypeInfo> | undefined
+}
+
+type GroupUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
+  createView?: {
+    defaultFieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo>
+  }
+  itemView?: {
+    defaultFieldMode?: MaybeItemFunctionWithFilter<'edit' | 'read' | 'hidden', ListTypeInfo>
+  }
+  listView?: {
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
+  }
+}
+
 export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   label: string
   description?: string
+  ui?: GroupUIConfig<ListTypeInfo>
   fields: BaseFields<ListTypeInfo>
 }) {
   const keys = Object.keys(config.fields)
@@ -154,12 +178,15 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
     throw new Error('groups cannot be nested')
   }
 
+  const info: GroupInfo<ListTypeInfo> = {
+    fields: keys,
+    label: config.label,
+    description: config.description ?? null,
+    ui: config.ui,
+  }
+
   return {
-    [`__group${i++}`]: {
-      fields: keys,
-      label: config.label,
-      description: config.description ?? null,
-    },
+    [`__group${i++}`]: info,
     ...config.fields,
   } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }

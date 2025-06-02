@@ -37,6 +37,7 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
+import type { GroupInfo } from '../../schema'
 
 export type InitialisedField = {
   fieldKey: string
@@ -91,11 +92,7 @@ export type InitialisedList = {
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
-  groups: {
-    label: string
-    description: string | null
-    fields: BaseListTypeInfo['fields'][]
-  }[]
+  groups: GroupInfo<BaseListTypeInfo>[]
 
   hooks: ResolvedListHooks<BaseListTypeInfo>
 
@@ -588,29 +585,35 @@ function getListsWithInitialisedFields(
     const { listKey } = listConfig
     const intermediateList = intermediateLists[listKey]
     const resultFields: Record<string, InitialisedField> = {}
-    const groups = []
+    const groups: GroupInfo<BaseListTypeInfo>[] = []
     const fieldKeys = Object.keys(listConfig.fields)
 
+    const fieldKeysToGroup: Record<string, GroupInfo<BaseListTypeInfo>> = {}
     for (const [idx, [fieldKey, fieldFunc]] of Object.entries(listConfig.fields).entries()) {
       if (fieldKey.startsWith('__group')) {
-        const group = fieldFunc as any
+        const _group = fieldFunc as any
         if (
-          typeof group === 'object' &&
-          group !== null &&
-          typeof group.label === 'string' &&
-          (group.description === null || typeof group.description === 'string') &&
-          Array.isArray(group.fields) &&
-          areArraysEqual(group.fields, fieldKeys.slice(idx + 1, idx + 1 + group.fields.length))
+          typeof _group === 'object' &&
+          _group !== null &&
+          typeof _group.label === 'string' &&
+          (_group.description === null || typeof _group.description === 'string') &&
+          Array.isArray(_group.fields) &&
+          areArraysEqual(_group.fields, fieldKeys.slice(idx + 1, idx + 1 + _group.fields.length))
         ) {
+          const group: GroupInfo<BaseListTypeInfo> = _group
           groups.push(group)
+          for (const field of group.fields) {
+            fieldKeysToGroup[field] = group
+          }
           continue
         }
         throw new Error(`unexpected value for a group at ${listKey}.${fieldKey}`)
       }
-
       if (typeof fieldFunc !== 'function') {
         throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`)
       }
+
+      const group = fieldKeysToGroup[fieldKey]
 
       const f = fieldFunc({
         fieldKey,
@@ -622,9 +625,20 @@ function getListsWithInitialisedFields(
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
       const fieldModes = {
         create:
-          f.ui?.createView?.fieldMode ?? listConfig.ui?.createView?.defaultFieldMode ?? 'edit',
-        item: f.ui?.itemView?.fieldMode ?? listConfig.ui?.itemView?.defaultFieldMode ?? 'edit',
-        list: f.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read',
+          f.ui?.createView?.fieldMode ??
+          group?.ui?.createView?.defaultFieldMode ??
+          listConfig.ui?.createView?.defaultFieldMode ??
+          'edit',
+        item:
+          f.ui?.itemView?.fieldMode ??
+          group?.ui?.itemView?.defaultFieldMode ??
+          listConfig.ui?.itemView?.defaultFieldMode ??
+          'edit',
+        list:
+          f.ui?.listView?.fieldMode ??
+          group?.ui?.listView?.defaultFieldMode ??
+          listConfig.ui?.listView?.defaultFieldMode ??
+          'read',
       }
 
       resultFields[fieldKey] = {

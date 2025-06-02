@@ -20,17 +20,6 @@ const readOnly = {
       update: true,
     },
   },
-  ui: {
-    createView: {
-      fieldMode: () => 'hidden' as const,
-    },
-    itemView: {
-      fieldMode: () => 'read' as const,
-    },
-    listView: {
-      fieldMode: () => 'read' as const,
-    },
-  },
 }
 
 export const lists = {
@@ -69,6 +58,14 @@ export const lists = {
       ...group({
         label: 'Authorship',
         description: 'Fields that show who created and updated this Post',
+        ui: {
+          createView: {
+            defaultFieldMode: 'hidden',
+          },
+          itemView: {
+            defaultFieldMode: 'read',
+          },
+        },
         fields: {
           createdBy: text({ ...readOnly }),
           createdAt: timestamp({
