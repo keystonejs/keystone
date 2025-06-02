@@ -12,8 +12,8 @@ import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
 import { EmptyState } from '../components/EmptyState'
 import type {
   BaseListTypeInfo,
-  ClientSideFilter,
-  ClientSideFilterCase,
+  ConditionalFieldFilter,
+  ConditionalFieldFilterCase,
   FieldGroupMeta,
   FieldMeta,
 } from '../../types'
@@ -30,7 +30,7 @@ function applyFilter<T>(
   return true
 }
 function testFilter(
-  filter: ClientSideFilterCase<BaseListTypeInfo> | undefined,
+  filter: ConditionalFieldFilterCase<BaseListTypeInfo> | undefined,
   serialized: Record<string, unknown>
 ): boolean {
   if (filter === undefined) return false
@@ -66,7 +66,7 @@ export function Fields({
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
   fieldPositions?: Record<string, 'form' | 'sidebar'>
-  fieldModes?: Record<string, ClientSideFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
+  fieldModes?: Record<string, ConditionalFieldFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false

@@ -2,7 +2,7 @@ import path from 'node:path'
 import type {
   BaseFieldTypeInfo,
   BaseListTypeInfo,
-  ClientSideFilter,
+  ConditionalFieldFilter,
   KeystoneConfig,
   KeystoneContext,
   MaybeFieldFunction,
@@ -27,7 +27,7 @@ type FieldMetaSource_ = {
 
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
-    fieldMode: EmptyResolver<ClientSideFilter<'edit' | 'hidden', BaseListTypeInfo>>
+    fieldMode: EmptyResolver<ConditionalFieldFilter<'edit' | 'hidden', BaseListTypeInfo>>
   }
   itemView: {
     fieldMode: MaybeItemFieldFunctionWithFilter<

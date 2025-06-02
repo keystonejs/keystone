@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import type { GraphQLNames, JSONValue } from './utils'
-import type { ClientSideFilter } from './config'
+import type { ConditionalFieldFilter } from './config'
 import type { BaseListTypeInfo } from './type-info'
 
 export type NavigationProps = {
@@ -77,10 +77,10 @@ export type FieldMeta = {
     isNonNull: ('read' | 'create' | 'update')[]
   }
   createView: {
-    fieldMode: ClientSideFilter<'edit' | 'hidden', BaseListTypeInfo>
+    fieldMode: ConditionalFieldFilter<'edit' | 'hidden', BaseListTypeInfo>
   }
   itemView: {
-    fieldMode: ClientSideFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+    fieldMode: ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
     fieldPosition: 'form' | 'sidebar'
   }
   listView: {

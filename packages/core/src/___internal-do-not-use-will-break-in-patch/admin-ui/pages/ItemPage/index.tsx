@@ -20,7 +20,7 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { BaseListTypeInfo, ClientSideFilter, ListMeta } from '../../../../types'
+import type { BaseListTypeInfo, ConditionalFieldFilter, ListMeta } from '../../../../types'
 import {
   Fields,
   useInvalidFields,
@@ -158,7 +158,7 @@ function ItemForm({
   listKey: string
   initialValue: Record<string, unknown>
   onSaveSuccess: () => void
-  fieldModes: Record<string, ClientSideFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
+  fieldModes: Record<string, ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
   const list = useList(listKey)
