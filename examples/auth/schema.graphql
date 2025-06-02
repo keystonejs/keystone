@@ -161,12 +161,7 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
+  fieldMode: JSON!
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -179,14 +174,8 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: JSON!
   fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {

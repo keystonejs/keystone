@@ -491,7 +491,7 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     GArg<GNullableInputType, false>,
     GArg<GNullableInputType, false>,
     GArg<GNullableInputType, false>,
-    ListTypeInfo
+    any
   > {
     return { ...graphQLInfo, dbField } as any
   }

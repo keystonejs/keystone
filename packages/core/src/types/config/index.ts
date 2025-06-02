@@ -9,7 +9,12 @@ import type { Options as BodyParserOptions } from 'body-parser'
 import type { BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
 import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
-import type { IdFieldConfig, ListConfig, MaybeItemFunction, MaybeSessionFunction } from './lists'
+import type {
+  IdFieldConfig,
+  ListConfig,
+  MaybeItemFunctionWithFilter,
+  MaybeSessionFunction,
+} from './lists'
 import type { BaseFields } from './fields'
 import type { ListAccessControl, FieldAccessControl } from './access-control'
 import type { ListHooks, FieldHooks } from './hooks'
@@ -190,7 +195,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   ui: NonNullable<Required<KeystoneConfigPre<TypeInfo>['ui']>>
 }
 
-export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
+export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunctionWithFilter }
 
 export type AdminFileToWrite =
   | { mode: 'write'; src: string; outputPath: string }

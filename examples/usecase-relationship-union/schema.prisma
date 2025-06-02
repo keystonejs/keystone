@@ -29,6 +29,7 @@ model Link {
 model Media {
   id          String  @id @default(cuid())
   description String  @default("")
+  type        String  @default("post")
   post        Post?   @relation("Media_post", fields: [postId], references: [id])
   postId      String? @map("post")
   link        Link?   @relation("Media_link", fields: [linkId], references: [id])

@@ -97,16 +97,7 @@ export type KeystoneAdminUIFieldMetaIsNonNull =
   | 'create'
   | 'update'
 
-export type KeystoneAdminUIFieldMetaCreateViewFieldMode =
-  | 'edit'
-  | 'hidden'
-
 export type KeystoneAdminUIFieldMetaListViewFieldMode =
-  | 'read'
-  | 'hidden'
-
-export type KeystoneAdminUIFieldMetaItemViewFieldMode =
-  | 'edit'
   | 'read'
   | 'hidden'
 
