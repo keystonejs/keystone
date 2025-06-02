@@ -18,6 +18,7 @@ import type {
   FieldMeta,
 } from '../../types'
 
+// with implicit ANDing
 function applyFilter<T>(
   filter: {
     equals?: T
