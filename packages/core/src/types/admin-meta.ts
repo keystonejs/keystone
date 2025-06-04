@@ -42,7 +42,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   defaultValue: FormState
   deserialize: (item: any) => FormState // TODO: unknown
   serialize: (formState: FormState) => any // TODO: unknown
-  validate?: (formState: FormState) => boolean
+  validate?: (formState: FormState, opts: { isRequired: boolean }) => boolean
   filter?: {
     types: Record<string, FilterTypeDeclaration<FilterValue>>
     graphql(type: { type: string; value: FilterValue }): Record<string, any>
@@ -135,6 +135,7 @@ export type Item = {
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   autoFocus?: boolean
   field: ReturnType<FieldControllerFn>
+  isRequired: boolean
   /**
    * Will be true when the user has clicked submit and
    * the validate function on the field controller has returned false

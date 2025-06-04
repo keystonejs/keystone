@@ -8,7 +8,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
+import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -125,6 +125,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,

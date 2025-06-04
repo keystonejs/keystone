@@ -210,6 +210,13 @@ export type MaybeSessionFunctionWithFilter<
       session?: ListTypeInfo['all']['session']
     }) => MaybePromise<ConditionalFieldFilter<T, ListTypeInfo>>)
 
+export type MaybeBooleanSessionFunctionWithFilter<ListTypeInfo extends BaseListTypeInfo> =
+  | ConditionalFieldFilterCase<ListTypeInfo>
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session']
+    }) => MaybePromise<ConditionalFieldFilterCase<ListTypeInfo>>)
+
 export type MaybeItemFieldFunctionWithFilter<
   T extends string,
   ListTypeInfo extends BaseListTypeInfo,
