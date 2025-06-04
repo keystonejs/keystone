@@ -16,6 +16,7 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
 
 export default ({ labelField }: { labelField: string }) =>
   (props: NavigationProps) => <Navigation labelField={labelField} {...props} />
@@ -45,13 +46,15 @@ function Navigation({
     )
   )
 
+  const { adminPath } = useKeystone()
+
   return (
     <NavContainer>
       <NavList>
         <NavItem href="/">Dashboard</NavItem>
         <Divider />
         {lists.map(list => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
+          <NavItem key={list.key} href={getHrefFromList(list, adminPath)}>
             {list.label}
           </NavItem>
         ))}
