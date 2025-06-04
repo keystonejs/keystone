@@ -847,6 +847,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.21.2
+      next-auth:
+        specifier: ^4.24.11
+        version: 4.24.11(next@15.2.3(@babel/core@7.26.10)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
     devDependencies:
       prisma:
         specifier: 6.5.0
@@ -12583,7 +12586,7 @@ snapshots:
     dependencies:
       '@babel/generator': 7.26.10
       '@babel/parser': 7.26.10
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       chalk: 4.1.2
       fb-watchman: 2.0.2
       graphql: 16.10.0
@@ -14130,7 +14133,7 @@ snapshots:
   '@emotion/babel-plugin@11.13.5':
     dependencies:
       '@babel/helper-module-imports': 7.25.9
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       '@emotion/hash': 0.9.2
       '@emotion/memoize': 0.9.0
       '@emotion/serialize': 1.3.3
@@ -15637,7 +15640,7 @@ snapshots:
 
   '@manypkg/get-packages@1.1.3':
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       '@changesets/types': 4.1.0
       '@manypkg/find-root': 1.1.0
       fs-extra: 8.1.0
@@ -17626,7 +17629,7 @@ snapshots:
 
   '@ts-gql/config@0.9.2(graphql@16.10.0)':
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       find-pkg-json-field-up: 1.0.1
       graphql: 16.10.0
       lazy-require.macro: 0.1.0
@@ -18617,13 +18620,13 @@ snapshots:
 
   babel-plugin-macros@2.8.0:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       cosmiconfig: 6.0.0
       resolve: 1.22.10
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       cosmiconfig: 7.1.0
       resolve: 1.22.10
 
@@ -19341,7 +19344,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
 
   date-fns@4.1.0: {}
 
@@ -21831,7 +21834,7 @@ snapshots:
 
   match-sorter@6.3.4:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       remove-accents: 0.5.0
 
   match-sorter@8.0.0:
@@ -22153,7 +22156,7 @@ snapshots:
 
   media-query-parser@2.0.2:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
 
   media-typer@0.3.0: {}
 
@@ -22863,7 +22866,7 @@ snapshots:
 
   next-auth@4.24.11(next@15.2.3(@babel/core@7.26.10)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       '@panva/hkdf': 1.2.1
       cookie: 0.7.2
       jose: 4.15.9
@@ -23673,7 +23676,7 @@ snapshots:
 
   react-clientside-effect@1.2.7(react@19.0.0):
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       react: 19.0.0
 
   react-dom@19.0.0(react@19.0.0):
@@ -23791,7 +23794,7 @@ snapshots:
 
   regenerator-transform@0.15.2:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
 
   regex-not@1.0.2:
     dependencies:
@@ -23864,7 +23867,7 @@ snapshots:
 
   relay-runtime@12.0.0:
     dependencies:
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.4
       fbjs: 3.0.5
       invariant: 2.2.4
     transitivePeerDependencies:

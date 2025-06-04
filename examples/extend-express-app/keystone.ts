@@ -3,6 +3,8 @@ import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import { type TypeInfo } from '.keystone/types'
 
+import { getServerSession } from "next-auth/next";
+
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
@@ -14,6 +16,24 @@ export default config<TypeInfo>({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     prismaClientPath: 'node_modules/myprisma',
+    async onConnect () {
+      setTimeout(() => {
+        console.log(new Error())
+      }, 10000)
+    }
+  },
+  session: {
+    async get({ context }) {
+      const { req, res } = context;
+      if (!req || !res) return;
+      await getServerSession(
+        { headers: {}, cookies: {} } as any,
+        res,
+        {},
+      );
+    },
+    async start () {},
+    async end () {},
   },
   server: {
     extendExpressApp: (app, commonContext) => {

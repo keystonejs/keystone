@@ -13,7 +13,8 @@
     "@keystone-6/core": "^6.5.1",
     "@prisma/client": "6.5.0",
     "@types/express": "^4.17.14",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "next-auth": "^4.24.11"
   },
   "devDependencies": {
     "prisma": "6.5.0",
