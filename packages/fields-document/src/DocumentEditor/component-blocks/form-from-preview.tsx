@@ -316,6 +316,7 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
   return (
     <RelationshipFieldView
       autoFocus={autoFocus}
+      isRequired={false}
       field={
         {
           path: '', // unused

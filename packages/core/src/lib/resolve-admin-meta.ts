@@ -38,6 +38,9 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
             fieldMode: g.field({
               type: g.nonNull(g.JSON),
             }),
+            isRequired: g.field({
+              type: g.nonNull(g.JSON),
+            }),
           },
         })
       ),
@@ -68,6 +71,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
             fieldKey,
             fieldMode: itemView.fieldMode,
             fieldPosition: itemView.fieldPosition,
+            isRequired: itemView.isRequired,
             item: null,
             itemField: null,
           }
@@ -79,6 +83,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
           fieldKey,
           fieldMode: itemView.fieldMode,
           fieldPosition: itemView.fieldPosition,
+          isRequired: itemView.isRequired,
           item,
           itemField: item[fieldKey],
         }
@@ -88,6 +93,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
         fieldKey: string
         fieldMode: FieldMetaSource['itemView']['fieldMode']
         fieldPosition: FieldMetaSource['itemView']['fieldPosition']
+        isRequired: FieldMetaSource['itemView']['isRequired']
         item: BaseItem | null
         itemField: BaseItem[string] | null
       }>()({
@@ -117,6 +123,20 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
             async resolve({ fieldPosition, listKey, fieldKey, item, itemField }, _, context) {
               if (typeof fieldPosition !== 'function') return fieldPosition
               return fieldPosition({
+                session: context.session,
+                context,
+                item,
+                itemField,
+                listKey,
+                fieldKey,
+              })
+            },
+          }),
+          isRequired: g.field({
+            type: g.nonNull(g.JSON),
+            resolve({ isRequired, item, fieldKey, itemField, listKey }, _, context) {
+              if (typeof isRequired !== 'function') return isRequired
+              return isRequired({
                 session: context.session,
                 context,
                 item,

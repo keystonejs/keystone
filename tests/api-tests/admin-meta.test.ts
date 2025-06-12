@@ -64,6 +64,7 @@ test(
                 {
                   createView: {
                     fieldMode: 'hidden',
+                    isRequired: false,
                   },
                   isFilterable: true,
                   isOrderable: true,
@@ -80,6 +81,7 @@ test(
                   itemView: {
                     fieldMode: 'read',
                     fieldPosition: 'sidebar',
+                    isRequired: false,
                   },
                   label: 'Id',
                   path: 'id',
@@ -89,6 +91,7 @@ test(
                 {
                   createView: {
                     fieldMode: 'edit',
+                    isRequired: false,
                   },
                   isFilterable: true,
                   isOrderable: true,
@@ -103,7 +106,6 @@ test(
                     isNullable: false,
                     shouldUseModeInsensitive: dbProvider === 'postgresql',
                     validation: {
-                      isRequired: false,
                       length: {
                         max: null,
                         min: null,
@@ -115,6 +117,7 @@ test(
                   itemView: {
                     fieldMode: 'hidden',
                     fieldPosition: 'form',
+                    isRequired: false,
                   },
                   label: 'Name',
                   path: 'name',
@@ -124,6 +127,7 @@ test(
                 {
                   createView: {
                     fieldMode: 'hidden',
+                    isRequired: false,
                   },
                   isFilterable: true,
                   isOrderable: true,
@@ -135,7 +139,6 @@ test(
                   fieldMeta: {
                     defaultValue: null,
                     validation: {
-                      isRequired: false,
                       max: 2147483647,
                       min: -2147483648,
                     },
@@ -144,6 +147,7 @@ test(
                   itemView: {
                     fieldMode: 'read',
                     fieldPosition: 'form',
+                    isRequired: false,
                   },
                   label: 'Something',
                   path: 'something',

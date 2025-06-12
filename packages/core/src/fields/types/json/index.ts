@@ -6,6 +6,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { g } from '../../..'
+import type { controller } from './views'
 
 type FieldTypeInfo = {
   item: JSONValue | null
@@ -56,7 +57,9 @@ export const json =
         },
         output: g.field({ type: g.JSON }),
         views: '@keystone-6/core/fields/types/json/views',
-        getAdminMeta: () => ({ defaultValue }),
+        getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
+          defaultValue,
+        }),
       },
       {
         default:

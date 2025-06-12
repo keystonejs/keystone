@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import isDeepEqual from 'fast-deep-equal'
 import type { FieldMeta } from '../../../types'
 import { type FragmentDefinitionNode, type SelectionSetNode, parse } from 'graphql'
-import type { FieldController } from '../../types'
+import type { BaseListTypeInfo, ConditionalFieldFilterCase, FieldController } from '../../types'
+import { testFilter } from './Fields'
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {
@@ -26,23 +27,28 @@ export function getRootGraphQLFieldsFromFieldController(controller: FieldControl
 
 export function useInvalidFields(
   fields: Record<string, FieldMeta>,
-  item: Record<string, unknown>
+  item: Record<string, unknown>,
+  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
 ): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>()
+    const serialized: Record<string, unknown> = {}
+    for (const [fieldKey, field] of Object.entries(fields)) {
+      Object.assign(serialized, field.controller.serialize(item[fieldKey]))
+    }
 
     for (const fieldKey in item) {
       const validateFn = fields[fieldKey]?.controller?.validate
       if (!validateFn) continue
-
+      const isRequired = testFilter(isRequireds[fieldKey] ?? false, serialized)
       const fieldValue = item[fieldKey]
-      const valid = validateFn(fieldValue)
+      const valid = validateFn(fieldValue, { isRequired })
       if (valid) continue
 
       invalidFields.add(fieldKey)
     }
     return invalidFields
-  }, [fields, item])
+  }, [fields, isRequireds, item])
 }
 
 export function makeDefaultValueState(fields: Record<string, FieldMeta>) {
@@ -113,5 +119,5 @@ export function useHasChanges(
 
     // add any fields that are always required
     return Object.keys(itemForUpdate).length - alwaysRequiredCount > 0
-  }, [fields, value, valueReference])
+  }, [fields, operation, value, valueReference])
 }

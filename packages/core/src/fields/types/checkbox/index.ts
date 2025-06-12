@@ -10,6 +10,7 @@ import {
 import { g } from '../../..'
 import { assertReadIsNonNullAllowed } from '../../non-null-graphql'
 import { filters } from '../../filters'
+import type { controller } from './views'
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -67,7 +68,9 @@ export function checkbox<ListTypeInfo extends BaseListTypeInfo>(
       output: g.field({ type: g.Boolean }),
       __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
-      getAdminMeta: () => ({ defaultValue }),
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
+        defaultValue,
+      }),
     })
   }
 }

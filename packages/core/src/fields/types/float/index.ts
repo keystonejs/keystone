@@ -8,7 +8,8 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import type { controller } from './views'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -91,6 +92,7 @@ export function float<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -117,14 +119,13 @@ export function float<ListTypeInfo extends BaseListTypeInfo>(
       output: g.field({ type: g.Float }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {
           validation: {
-            isRequired,
             min: min ?? null,
             max: max ?? null,
           },
-          defaultValue,
+          defaultValue: defaultValue === null ? null : defaultValue.toString(),
         }
       },
     })

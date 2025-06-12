@@ -6,6 +6,7 @@ import {
   fieldType,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
+import { controller } from './views'
 
 type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -100,7 +101,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       views: './3-pair-field-json/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {}
       },
     })

@@ -21,11 +21,16 @@ import type {
   FieldProps,
 } from '../../../../types'
 
-function validate(value: Value, validation: Validation, fieldLabel: string): string | undefined {
+function validate(
+  value: Value,
+  validation: Validation,
+  isRequired: boolean,
+  fieldLabel: string
+): string | undefined {
   if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
     return undefined
   }
-  if (value.kind === 'initial' && validation?.isRequired) {
+  if (value.kind === 'initial' && isRequired) {
     return `${fieldLabel} is required`
   }
   if (value.kind === 'editing' && value.confirm !== value.value) {
@@ -74,7 +79,7 @@ export function Field(props: FieldProps<typeof controller>) {
   const isReadOnly = onChange == null
   const validationMessage =
     forceValidation || (touched.value && touched.confirm)
-      ? validate(value, field.validation, field.label)
+      ? validate(value, field.validation, props.isRequired, field.label)
       : undefined
 
   const labelId = useId()
@@ -213,7 +218,6 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 }
 
 type Validation = {
-  isRequired: boolean
   rejectCommon: boolean
   match: {
     regex: RegExp
@@ -228,7 +232,6 @@ type Validation = {
 export type PasswordFieldMeta = {
   isNullable: boolean
   validation: {
-    isRequired: boolean
     rejectCommon: boolean
     match: {
       regex: { source: string; flags: string }
@@ -282,7 +285,8 @@ export function controller(config: FieldControllerConfig<PasswordFieldMeta>): Fi
       kind: 'initial',
       isSet: false,
     },
-    validate: state => validate(state, validation, config.label) === undefined,
+    validate: (state, opts) =>
+      validate(state, validation, opts.isRequired, config.label) === undefined,
     deserialize: data => ({ kind: 'initial', isSet: data[config.path]?.isSet ?? null }),
     serialize: value => {
       if (value.kind === 'initial') return {}

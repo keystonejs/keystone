@@ -6,7 +6,7 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { g } from '../../..'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import { weakMemoize } from '../../../lib/core/utils'
 import { GraphQLError } from 'graphql'
 import type {
@@ -70,9 +70,6 @@ export type BytesFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFiel
 
 export type TextFieldMeta = {
   isNullable: boolean
-  validation: {
-    isRequired: boolean
-  }
   defaultValue: string | null
 }
 
@@ -167,6 +164,7 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -195,9 +193,6 @@ export function bytes<ListTypeInfo extends BaseListTypeInfo>(
       views: '@keystone-6/core/fields/types/bytes/views',
       getAdminMeta(): TextFieldMeta {
         return {
-          validation: {
-            isRequired,
-          },
           defaultValue: clientSideDefaultValue,
           isNullable: mode === 'optional',
         }

@@ -160,6 +160,7 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 
 type KeystoneAdminUIFieldMetaCreateView {
   fieldMode: JSON!
+  isRequired: JSON!
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -174,6 +175,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: JSON!
   fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
+  isRequired: JSON!
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {

@@ -9,10 +9,10 @@ import {
   fieldType,
 } from '../../../types'
 import { g } from '../../..'
-import { type PasswordFieldMeta } from './views'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import { isObjectType, type GraphQLSchema } from 'graphql'
 import type { InferValueFromInputType } from '@graphql-ts/schema'
+import type { controller } from './views'
 
 type FieldTypeInfo = {
   item: string | null
@@ -165,6 +165,7 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -195,10 +196,9 @@ export function password<ListTypeInfo extends BaseListTypeInfo>(
       },
       __ksTelemetryFieldTypeName: '@keystone-6/password',
       views: '@keystone-6/core/fields/types/password/views',
-      getAdminMeta: (): PasswordFieldMeta => ({
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
         isNullable: mode === 'optional',
         validation: {
-          isRequired,
           rejectCommon,
           match: match
             ? {

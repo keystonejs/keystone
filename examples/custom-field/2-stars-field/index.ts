@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
+import { controller } from './views'
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
@@ -100,7 +101,7 @@ export function stars<ListTypeInfo extends BaseListTypeInfo>({
         },
       }),
       views: './2-stars-field/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return { maxStars }
       },
     })

@@ -9,7 +9,7 @@ import {
 import { type CalendarDayFieldMeta } from './views'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import type {
   GInputObjectType,
   GArg,
@@ -78,6 +78,7 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
       nativeType: usesNativeDateType ? 'Date' : undefined,
     })({
       ...config,
+      ...defaultIsRequired(config, validation?.isRequired ?? false),
       hooks: {
         ...config.hooks,
         validate,
@@ -127,7 +128,6 @@ export function calendarDay<ListTypeInfo extends BaseListTypeInfo>(
       getAdminMeta(): CalendarDayFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
-          isRequired: validation?.isRequired ?? false,
         }
       },
     })
