@@ -5,6 +5,7 @@ import type { BaseListTypeInfo } from '../type-info'
 import type { FieldAccessControl } from './access-control'
 import type { FieldHooks } from './hooks'
 import type {
+  MaybeBooleanSessionFunctionWithFilter,
   MaybeFieldFunction,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
@@ -48,7 +49,10 @@ export type CommonFieldConfig<
   ui?: {
     description?: string
     views?: string
-    createView?: { fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo> }
+    createView?: {
+      fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo>
+      isRequired?: MaybeBooleanSessionFunctionWithFilter<ListTypeInfo>
+    }
     itemView?: {
       fieldMode?: MaybeItemFieldFunctionWithFilter<
         'edit' | 'read' | 'hidden',
@@ -56,6 +60,7 @@ export type CommonFieldConfig<
         FieldTypeInfo
       >
       fieldPosition?: MaybeItemFieldFunction<'form' | 'sidebar', ListTypeInfo, FieldTypeInfo>
+      isRequired?: MaybeBooleanSessionFunctionWithFilter<ListTypeInfo>
     }
     listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> }
   }

@@ -210,6 +210,27 @@ export type MaybeSessionFunctionWithFilter<
       session?: ListTypeInfo['all']['session']
     }) => MaybePromise<ConditionalFieldFilter<T, ListTypeInfo>>)
 
+export type MaybeBooleanSessionFunctionWithFilter<ListTypeInfo extends BaseListTypeInfo> =
+  | ConditionalFieldFilterCase<ListTypeInfo>
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session']
+    }) => MaybePromise<ConditionalFieldFilterCase<ListTypeInfo>>)
+
+export type MaybeBooleanItemFunctionWithFilter<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldTypeInfo extends BaseFieldTypeInfo,
+> =
+  | ConditionalFieldFilterCase<ListTypeInfo>
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      listKey: ListTypeInfo['key']
+      fieldKey: ListTypeInfo['fields']
+      item: ListTypeInfo['item'] | null
+      itemField: FieldTypeInfo['item'] | null
+      session?: ListTypeInfo['all']['session']
+    }) => MaybePromise<ConditionalFieldFilterCase<ListTypeInfo>>)
+
 export type MaybeItemFieldFunctionWithFilter<
   T extends string,
   ListTypeInfo extends BaseListTypeInfo,

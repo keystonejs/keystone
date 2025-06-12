@@ -20,7 +20,7 @@ import type {
 import type { Value } from './utils'
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { field, value, forceValidation, onChange } = props
+  const { field, value, forceValidation, onChange, isRequired } = props
   const parsedValue = value.value ? parseAbsoluteToLocal(value.value) : null
 
   const [isDirty, setDirty] = useState(false)
@@ -68,7 +68,7 @@ export function Field(props: FieldProps<typeof controller>) {
 
   const showValidation = isDirty || forceValidation
   const validationMessage = showValidation
-    ? validate(value, field.fieldMeta, field.label)
+    ? validate(value, field.fieldMeta, isRequired, field.label)
     : undefined
 
   return (
@@ -78,7 +78,7 @@ export function Field(props: FieldProps<typeof controller>) {
       errorMessage={showValidation ? validationMessage : undefined}
       granularity="second"
       // isReadOnly={undefined} // read-only state handled above
-      isRequired={field.fieldMeta.isRequired}
+      isRequired={isRequired}
       // NOTE: in addition to providing a cue for users about the expected input
       // format, the `placeholderValue` determines the type of value for the
       // field. the implementation below ensures `ZonedDateTime` so we can avoid
@@ -93,7 +93,12 @@ export function Field(props: FieldProps<typeof controller>) {
   )
 }
 
-function validate(value: Value, fieldMeta: TimestampFieldMeta, label: string): string | undefined {
+function validate(
+  value: Value,
+  fieldMeta: TimestampFieldMeta,
+  isRequired: boolean,
+  label: string
+): string | undefined {
   const isEmpty = !value.value
 
   // if we recieve null initially on the item view and the current value is null,
@@ -110,7 +115,7 @@ function validate(value: Value, fieldMeta: TimestampFieldMeta, label: string): s
   )
     return
 
-  if (fieldMeta.isRequired && isEmpty) return `${label} is required`
+  if (isRequired && isEmpty) return `${label} is required`
 
   // TODO: update field in "@keystar/ui" to use new validation APIs, for more
   // granular validation messages
@@ -125,7 +130,6 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 export type TimestampFieldMeta = {
   defaultValue: string | { kind: 'now' } | null
   updatedAt: boolean
-  isRequired: boolean
 }
 
 export function controller(
@@ -154,7 +158,8 @@ export function controller(
       if (value) return { [config.path]: value }
       return { [config.path]: null }
     },
-    validate: value => validate(value, config.fieldMeta, config.label) === undefined,
+    validate: (value, opts) =>
+      validate(value, config.fieldMeta, opts.isRequired, config.label) === undefined,
     filter: {
       Filter(props) {
         const {

@@ -6,10 +6,10 @@ import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import type { TextFieldMeta } from '..'
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { autoFocus, field, forceValidation, onChange, value } = props
+  const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
 
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
-  const validationMessages = validate(value, field.validation, field.label)
+  const validationMessages = validate(value, props.isRequired, field.label)
 
   const isReadOnly = onChange == null
   const isNull = value.inner.kind === 'null'
@@ -43,7 +43,7 @@ export function Field(props: FieldProps<typeof controller>) {
         }
         isDisabled={isNull}
         isReadOnly={isReadOnly}
-        isRequired={field.validation.isRequired}
+        isRequired={isRequired}
         onBlur={() => {
           setShouldShowErrors(true)
         }}
@@ -67,11 +67,7 @@ export function Field(props: FieldProps<typeof controller>) {
 
 type Config = FieldControllerConfig<TextFieldMeta>
 
-type Validation = {
-  isRequired: boolean
-}
-
-function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
+function validate(value: TextValue, isRequired: boolean, fieldLabel: string): string[] {
   // if the value is the same as the initial for an update, we don't want to block saving
   // since we're not gonna send it anyway if it's the same
   // and going "fix this thing that is unrelated to the thing you're doing" is bad
@@ -87,7 +83,7 @@ function validate(value: TextValue, validation: Validation, fieldLabel: string):
   }
 
   if (value.inner.kind === 'null') {
-    if (validation.isRequired) return [`${fieldLabel} is required`]
+    if (isRequired) return [`${fieldLabel} is required`]
     return []
   }
   return []
@@ -104,12 +100,8 @@ function deserializeTextValue(value: string | null): InnerTextValue {
 }
 
 export function controller(config: Config): FieldController<TextValue, string> & {
-  validation: Validation
   isNullable: boolean
 } {
-  const validation: Validation = {
-    isRequired: config.fieldMeta.validation.isRequired,
-  }
   return {
     path: config.path,
     label: config.label,
@@ -122,8 +114,8 @@ export function controller(config: Config): FieldController<TextValue, string> &
       return { kind: 'update', inner, initial: inner }
     },
     serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
-    validation,
-    validate: val => validate(val, validation, config.label).length === 0,
+
+    validate: (val, opts) => validate(val, opts.isRequired, config.label).length === 0,
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props

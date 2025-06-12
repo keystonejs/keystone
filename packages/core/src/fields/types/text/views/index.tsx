@@ -6,10 +6,10 @@ import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import type { TextFieldMeta } from '..'
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { autoFocus, field, forceValidation, onChange, value } = props
+  const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
 
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
-  const validationMessages = validate(value, field.validation, field.label)
+  const validationMessages = validate(value, field.validation, props.isRequired, field.label)
 
   const isReadOnly = onChange == null
   const isNull = value.inner.kind === 'null'
@@ -45,7 +45,7 @@ export function Field(props: FieldProps<typeof controller>) {
         }
         isDisabled={isNull}
         isReadOnly={isReadOnly}
-        isRequired={field.validation.isRequired}
+        isRequired={isRequired}
         onBlur={() => {
           setShouldShowErrors(true)
         }}
@@ -70,12 +70,16 @@ export function Field(props: FieldProps<typeof controller>) {
 type Config = FieldControllerConfig<TextFieldMeta>
 
 type Validation = {
-  isRequired: boolean
   match: { regex: RegExp; explanation: string | null } | null
   length: { min: number | null; max: number | null }
 }
 
-function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
+function validate(
+  value: TextValue,
+  validation: Validation,
+  isRequired: boolean,
+  fieldLabel: string
+): string[] {
   // if the value is the same as the initial for an update, we don't want to block saving
   // since we're not gonna send it anyway if it's the same
   // and going "fix this thing that is unrelated to the thing you're doing" is bad
@@ -91,18 +95,18 @@ function validate(value: TextValue, validation: Validation, fieldLabel: string):
   }
 
   if (value.inner.kind === 'null') {
-    if (validation.isRequired) return [`${fieldLabel} is required`]
+    if (isRequired) return [`${fieldLabel} is required`]
     return []
   }
 
   const val = value.inner.value
-
+  const min = Math.max(validation.length.min ?? 0, isRequired ? 1 : 0)
   const messages: string[] = []
-  if (validation.length.min !== null && val.length < validation.length.min) {
-    if (validation.length.min === 1) {
+  if (val.length < min) {
+    if (min === 1) {
       messages.push(`${fieldLabel} must not be empty`)
     } else {
-      messages.push(`${fieldLabel} must be at least ${validation.length.min} characters long`)
+      messages.push(`${fieldLabel} must be at least ${min} characters long`)
     }
   }
   if (validation.length.max !== null && val.length > validation.length.max) {
@@ -132,7 +136,6 @@ export function controller(config: Config): FieldController<TextValue, string> &
   isNullable: boolean
 } {
   const validation: Validation = {
-    isRequired: config.fieldMeta.validation.isRequired,
     length: config.fieldMeta.validation.length,
     match: config.fieldMeta.validation.match
       ? {
@@ -158,7 +161,7 @@ export function controller(config: Config): FieldController<TextValue, string> &
     },
     serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
     validation,
-    validate: val => validate(val, validation, config.label).length === 0,
+    validate: (val, opts) => validate(val, validation, opts.isRequired, config.label).length === 0,
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props
