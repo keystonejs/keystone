@@ -7,7 +7,7 @@ import {
   orderDirectionEnum,
 } from '../../../types'
 import { g } from '../../..'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import { filters } from '../../filters'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
@@ -60,7 +60,6 @@ export type TextFieldMeta = {
   shouldUseModeInsensitive: boolean
   isNullable: boolean
   validation: {
-    isRequired: boolean
     match: { regex: { source: string; flags: string }; explanation: string | null } | null
     length: { min: number | null; max: number | null }
   }
@@ -149,6 +148,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -184,7 +184,6 @@ export function text<ListTypeInfo extends BaseListTypeInfo>(
           displayMode: config.ui?.displayMode ?? 'input',
           shouldUseModeInsensitive: meta.provider === 'postgresql',
           validation: {
-            isRequired,
             match: match
               ? {
                   regex: {

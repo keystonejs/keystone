@@ -15,15 +15,17 @@ describe('controller', () => {
         ...STUBCONFIG,
         fieldMeta: {
           defaultValue: null,
-          isRequired: false,
           updatedAt: false,
         },
       })
       expect(
-        validate!({
-          kind: 'create',
-          value: null,
-        })
+        validate!(
+          {
+            kind: 'create',
+            value: null,
+          },
+          { isRequired: false }
+        )
       ).toBe(true)
     })
     it('isRequired enforces required (null)', () => {
@@ -31,15 +33,17 @@ describe('controller', () => {
         ...STUBCONFIG,
         fieldMeta: {
           defaultValue: null,
-          isRequired: true,
           updatedAt: false,
         },
       })
       expect(
-        validate!({
-          kind: 'create',
-          value: null,
-        })
+        validate!(
+          {
+            kind: 'create',
+            value: null,
+          },
+          { isRequired: true }
+        )
       ).toBe('foo is required')
     })
     it('isRequired enforces required (value)', () => {
@@ -47,15 +51,17 @@ describe('controller', () => {
         ...STUBCONFIG,
         fieldMeta: {
           defaultValue: null,
-          isRequired: true,
           updatedAt: false,
         },
       })
       expect(
-        validate!({
-          kind: 'create',
-          value: new Date().toJSON(),
-        })
+        validate!(
+          {
+            kind: 'create',
+            value: new Date().toJSON(),
+          },
+          { isRequired: true }
+        )
       ).toBe(true)
     })
   })

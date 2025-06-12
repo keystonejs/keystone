@@ -8,7 +8,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import { type TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
@@ -70,6 +70,7 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, validation?.isRequired ?? false),
       hooks: {
         ...config.hooks,
         validate,
@@ -107,7 +108,6 @@ export function timestamp<ListTypeInfo extends BaseListTypeInfo>(
       getAdminMeta(): TimestampFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
-          isRequired: validation?.isRequired ?? false,
           updatedAt: config.db?.updatedAt ?? false,
         }
       },

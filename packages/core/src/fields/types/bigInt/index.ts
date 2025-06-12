@@ -8,7 +8,8 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
+import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import type { controller } from './views'
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -135,6 +136,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -164,10 +166,9 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
       output: g.field({ type: g.BigInt }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {
           validation: {
-            isRequired,
             min: min?.toString() ?? `${MIN_INT}`,
             max: max?.toString() ?? `${MAX_INT}`,
           },

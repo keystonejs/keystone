@@ -31,10 +31,12 @@ export const adminMetaQuery = gql`
             isNonNull
             createView {
               fieldMode
+              isRequired
             }
             itemView {
               fieldMode
               fieldPosition
+              isRequired
             }
             listView {
               fieldMode

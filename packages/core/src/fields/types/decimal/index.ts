@@ -9,7 +9,8 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import type { controller } from './views'
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -132,6 +133,7 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -166,16 +168,13 @@ export function decimal<ListTypeInfo extends BaseListTypeInfo>(
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/decimal',
       views: '@keystone-6/core/fields/types/decimal/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {
           validation: {
-            isRequired,
             max: max ?? null,
             min: min ?? null,
           },
           defaultValue,
-          precision,
-          scale,
         }
       },
     })

@@ -20,7 +20,7 @@ import type {
 } from '../../../../types'
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { autoFocus, field, forceValidation, onChange, value } = props
+  const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
   const [isDirty, setDirty] = useState(false)
   const [preNullValue, setPreNullValue] = useState(
     value.value || (value.kind === 'update' ? value.initial : null)
@@ -30,9 +30,9 @@ export function Field(props: FieldProps<typeof controller>) {
   }, [field.options])
 
   const selectedKey = value.value?.value || preNullValue?.value || null
-  const isNullable = !field.isRequired
+  const isNullable = !isRequired
   const isNull = isNullable && value.value?.value == null
-  const isInvalid = !validate(value, field.isRequired)
+  const isInvalid = !validate(value, isRequired)
   const isReadOnly = onChange == null
   const errorMessage =
     isInvalid && (isDirty || forceValidation) ? `${field.label} is required.` : undefined
@@ -76,7 +76,7 @@ export function Field(props: FieldProps<typeof controller>) {
             errorMessage={errorMessage}
             isDisabled={isNull}
             isReadOnly={isReadOnly}
-            isRequired={field.isRequired}
+            isRequired={isRequired}
             items={field.options}
             onChange={onSelectionChange}
             value={selectedKey}
@@ -93,7 +93,7 @@ export function Field(props: FieldProps<typeof controller>) {
             errorMessage={errorMessage}
             isDisabled={isNull}
             isReadOnly={isReadOnly}
-            isRequired={field.isRequired}
+            isRequired={isRequired}
             onChange={onSelectionChange}
             // maintain the previous value when set to null in aid of continuity
             // for the user. it will be cleared when the item is saved
@@ -115,7 +115,7 @@ export function Field(props: FieldProps<typeof controller>) {
             errorMessage={errorMessage}
             isDisabled={isNull}
             isReadOnly={isReadOnly}
-            isRequired={field.isRequired}
+            isRequired={isRequired}
             items={field.options}
             onSelectionChange={onSelectionChange}
             selectedKey={selectedKey}
@@ -133,7 +133,7 @@ export function Field(props: FieldProps<typeof controller>) {
 
   return (
     <NullableFieldWrapper
-      isAllowed={!field.isRequired}
+      isAllowed={!isRequired}
       autoFocus={isNull && autoFocus}
       label={field.label}
       isReadOnly={isReadOnly}
@@ -154,7 +154,6 @@ export type AdminSelectFieldMeta = {
   options: readonly { label: string; value: string | number }[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
-  isRequired: boolean
   defaultValue: string | number | null
 }
 
@@ -189,7 +188,6 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
   options: Option[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
-  isRequired: boolean
 } {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,
@@ -213,7 +211,6 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
     },
     type: config.fieldMeta.type,
     displayMode: config.fieldMeta.displayMode,
-    isRequired: config.fieldMeta.isRequired,
     options: optionsWithStringValues,
     deserialize: data => {
       for (const option of config.fieldMeta.options) {
@@ -229,7 +226,7 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
       return { kind: 'update', initial: null, value: null }
     },
     serialize: value => ({ [config.path]: t(value.value?.value ?? null) }),
-    validate: value => validate(value, config.fieldMeta.isRequired),
+    validate: (value, opts) => validate(value, opts.isRequired),
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props

@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
+import { controller } from './views'
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -44,7 +45,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
         },
       }),
       views: './1-text-field/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {}
       },
     })

@@ -11,6 +11,7 @@ import {
 import { g } from '../../..'
 import type { GArg, GField, GInputType, GObjectType, GOutputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
+import type { controller } from './views'
 
 type VirtualFieldGraphQLField<Item extends BaseItem, Context extends KeystoneContext> = GField<
   Item,
@@ -99,7 +100,7 @@ export function virtual<ListTypeInfo extends BaseListTypeInfo>({
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
-      getAdminMeta: () => ({
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
         query: config.ui?.query ?? '',
       }),
     })

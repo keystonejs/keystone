@@ -22,21 +22,25 @@ type Value =
   | { kind: 'update'; initial: string | null; value: string | null }
 
 type Validation = {
-  isRequired: boolean
-  min: string
-  max: string
+  min: number | null
+  max: number | null
 }
 
-function validate_(value: Value, validation: Validation, label: string): string | undefined {
+function validate_(
+  value: Value,
+  validation: Validation,
+  isRequired: boolean,
+  label: string
+): string | undefined {
   const { value: input, kind } = value
   if (kind === 'update' && value.initial === null && input === null) return
-  if (validation.isRequired && input === null) return `${label} is required`
+  if (isRequired && input === null) return `${label} is required`
   if (typeof input !== 'string') return
   const v = parseFloat(input)
   if (Number.isNaN(v)) return `${label} is not a valid float`
-  if (validation.min !== undefined && v < parseFloat(validation.min))
+  if (validation.min != null && v < validation.min)
     return `${label} must be greater than or equal to ${validation.min}`
-  if (validation.max !== undefined && v > parseFloat(validation.max))
+  if (validation.max != null && v > validation.max)
     return `${label} must be less than or equal to ${validation.max}`
 }
 
@@ -48,8 +52,8 @@ export function controller(
 ): FieldController<Value, string | null> & {
   validation: Validation
 } {
-  const validate = (value: Value) => {
-    return validate_(value, config.fieldMeta.validation, config.label)
+  const validate = (value: Value, opts: { isRequired: boolean }) => {
+    return validate_(value, config.fieldMeta.validation, opts.isRequired, config.label)
   }
 
   return {
@@ -88,7 +92,8 @@ export function controller(
             {...labelProps}
             autoFocus={autoFocus}
             errorMessage={
-              (forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value })
+              (forceValidation || isDirty) &&
+              !validate({ kind: 'update', initial: null, value }, { isRequired: true })
                 ? 'Required'
                 : null
             }
@@ -148,7 +153,7 @@ export function controller(
       },
     },
 
-    validate: value => validate(value) === undefined,
+    validate: (value, opts) => validate(value, opts) === undefined,
   }
 }
 
@@ -158,12 +163,13 @@ export function Field({
   onChange,
   autoFocus,
   forceValidation,
+  isRequired,
 }: FieldProps<typeof controller>) {
   const [isDirty, setDirty] = useState(false)
   const isReadOnly = !onChange
 
   const validate = (value: Value) => {
-    return validate_(value, field.validation, field.label)
+    return validate_(value, field.validation, isRequired, field.label)
   }
 
   return (
@@ -173,7 +179,7 @@ export function Field({
       label={field.label}
       errorMessage={(forceValidation || isDirty) && validate(value)}
       isReadOnly={isReadOnly}
-      isRequired={field.validation.isRequired}
+      isRequired={isRequired}
       inputMode="numeric"
       width="alias.singleLineWidth"
       onBlur={() => setDirty(true)}

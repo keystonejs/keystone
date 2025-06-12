@@ -23,7 +23,7 @@ export type Value =
   | { kind: 'update'; value: string | null; initial: string | null }
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { field, value, forceValidation, onChange } = props
+  const { field, value, forceValidation, onChange, isRequired } = props
   const parsedValue = value.value ? parseDate(value.value) : null
 
   const [isDirty, setDirty] = useState(false)
@@ -74,9 +74,7 @@ export function Field(props: FieldProps<typeof controller>) {
   }
 
   const showValidation = isDirty || forceValidation
-  const validationMessage = showValidation
-    ? validate(value, field.fieldMeta, field.label)
-    : undefined
+  const validationMessage = showValidation ? validate(value, isRequired, field.label) : undefined
 
   return (
     <DatePicker
@@ -85,7 +83,7 @@ export function Field(props: FieldProps<typeof controller>) {
       errorMessage={showValidation ? validationMessage : undefined}
       granularity="day"
       // isReadOnly={undefined} // read-only state handled above
-      isRequired={field.fieldMeta.isRequired}
+      isRequired={isRequired}
       // NOTE: in addition to providing a cue for users about the expected input
       // format, the `placeholderValue` determines the type of value for the
       // field. the implementation below ensures `CalendarDate` so we can avoid
@@ -100,11 +98,7 @@ export function Field(props: FieldProps<typeof controller>) {
   )
 }
 
-function validate(
-  value: Value,
-  fieldMeta: CalendarDayFieldMeta,
-  label: string
-): string | undefined {
+function validate(value: Value, isRequired: boolean, label: string): string | undefined {
   // if we recieve null initially on the item view and the current value is null,
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
@@ -113,7 +107,7 @@ function validate(
     return undefined
   }
 
-  if (fieldMeta.isRequired && value.value === null) {
+  if (isRequired && value.value === null) {
     return `${label} is required`
   }
   return undefined
@@ -126,7 +120,6 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 
 export type CalendarDayFieldMeta = {
   defaultValue: string | null
-  isRequired: boolean
 }
 
 export function controller(
@@ -146,6 +139,6 @@ export function controller(
     serialize: ({ value }) => {
       return { [config.path]: value }
     },
-    validate: value => validate(value, config.fieldMeta, config.label) === undefined,
+    validate: (value, opts) => validate(value, opts.isRequired, config.label) === undefined,
   }
 }
