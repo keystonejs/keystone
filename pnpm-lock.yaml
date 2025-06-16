@@ -2032,14 +2032,14 @@ importers:
         specifier: ^3.0.0
         version: 3.1.0
       slate:
-        specifier: ^0.112.0
-        version: 0.112.0
+        specifier: ^0.117.0
+        version: 0.117.0
       slate-history:
         specifier: ^0.113.0
-        version: 0.113.1(slate@0.112.0)
+        version: 0.113.1(slate@0.117.0)
       slate-react:
         specifier: ^0.112.0
-        version: 0.112.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.112.0))(slate@0.112.0)
+        version: 0.112.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.117.0))(slate@0.117.0)
       zod:
         specifier: ^3.23.8
         version: 3.24.2
@@ -2061,7 +2061,7 @@ importers:
         version: 29.7.0
       slate-hyperscript:
         specifier: ^0.100.0
-        version: 0.100.0(slate@0.112.0)
+        version: 0.100.0(slate@0.117.0)
 
   prisma-utils:
     devDependencies:
@@ -11231,8 +11231,8 @@ packages:
       react-dom: '>=16.8.0'
       slate: '>=0.65.3'
 
-  slate@0.112.0:
-    resolution: {integrity: sha512-PRnfFgDA3tSop4OH47zu4M1R4Uuhm/AmASu29Qp7sGghVFb713kPBKEnSf1op7Lx/nCHkRlCa3ThfHtCBy+5Yw==}
+  slate@0.117.0:
+    resolution: {integrity: sha512-qPReb7Z7OQ5ryoStjlnC9tQd3294SdV5Y1aLjstAK/zckfvVYApI3GVdOawFdPgI+++KpZYiz6EHjwJGFVdbmA==}
 
   slate@0.91.4:
     resolution: {integrity: sha512-aUJ3rpjrdi5SbJ5G1Qjr3arytfRkEStTmHjBfWq2A2Q8MybacIzkScSvGJjQkdTk3djCK9C9SEOt39sSeZFwTw==}
@@ -24337,7 +24337,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slate-dom@0.112.2(slate@0.112.0):
+  slate-dom@0.112.2(slate@0.117.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -24345,25 +24345,25 @@ snapshots:
       is-plain-object: 5.0.0
       lodash: 4.17.21
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
+      slate: 0.117.0
       tiny-invariant: 1.3.1
 
-  slate-history@0.113.1(slate@0.112.0):
+  slate-history@0.113.1(slate@0.117.0):
     dependencies:
       is-plain-object: 5.0.0
-      slate: 0.112.0
+      slate: 0.117.0
 
   slate-history@0.86.0(slate@0.91.4):
     dependencies:
       is-plain-object: 5.0.0
       slate: 0.91.4
 
-  slate-hyperscript@0.100.0(slate@0.112.0):
+  slate-hyperscript@0.100.0(slate@0.117.0):
     dependencies:
       is-plain-object: 5.0.0
-      slate: 0.112.0
+      slate: 0.117.0
 
-  slate-react@0.112.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.112.0))(slate@0.112.0):
+  slate-react@0.112.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.117.0))(slate@0.117.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -24373,8 +24373,8 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
-      slate-dom: 0.112.2(slate@0.112.0)
+      slate: 0.117.0
+      slate-dom: 0.112.2(slate@0.117.0)
       tiny-invariant: 1.3.1
 
   slate-react@0.91.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate@0.91.4):
@@ -24392,10 +24392,9 @@ snapshots:
       slate: 0.91.4
       tiny-invariant: 1.0.6
 
-  slate@0.112.0:
+  slate@0.117.0:
     dependencies:
       immer: 10.1.1
-      is-plain-object: 5.0.0
       tiny-warning: 1.0.3
 
   slate@0.91.4:
