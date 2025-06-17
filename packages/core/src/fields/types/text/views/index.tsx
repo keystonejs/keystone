@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 
-import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  SimpleFieldTypeInfo,
+} from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import type { TextFieldMeta } from '..'
 
@@ -130,7 +136,11 @@ function deserializeTextValue(value: string | null): InnerTextValue {
   return { kind: 'value', value }
 }
 
-export function controller(config: Config): FieldController<TextValue, string> & {
+export function controller(config: Config): FieldController<
+  TextValue,
+  string,
+  SimpleFieldTypeInfo<'String'>['inputs']['where']
+> & {
   displayMode: 'input' | 'textarea'
   validation: Validation
   isNullable: boolean
@@ -205,6 +215,22 @@ export function controller(config: Config): FieldController<TextValue, string> &
             mode: config.fieldMeta.shouldUseModeInsensitive ? 'insensitive' : undefined,
           },
         }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (!value) return []
+          if (type === 'equals') return { type: 'is_i', value }
+          if (type === 'contains') return { type: 'contains_i', value }
+          if (type === 'startsWith') return { type: 'starts_with_i', value }
+          if (type === 'endsWith') return { type: 'ends_with_i', value }
+          if (type === 'not') {
+            if (value?.equals) return { type: 'not_i', value: value.equals }
+            if (value?.contains) return { type: 'not_contains_i', value: value.contains }
+            if (value?.startsWith) return { type: 'not_starts_with_i', value: value.startsWith }
+            if (value?.endsWith) return { type: 'not_ends_with_i', value: value.endsWith }
+          }
+          return []
+        })
       },
       types: {
         contains_i: {

@@ -41,6 +41,7 @@ import { useSearchFilter } from '../../../../fields/types/relationship/views/use
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 import { ProgressCircle } from '@keystar/ui/progress'
+import type { ListMeta } from '../../../../types'
 
 type ListPageProps = { listKey: string }
 type SelectedKeys = 'all' | Set<number | string>
@@ -89,11 +90,25 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   return { resetToDefaults }
 }
 
+function getDefaultFilters(list: ListMeta) {
+  const filters = Object.entries(list.initialFilter ?? {}).flatMap(([fieldKey, filter]) => {
+    const { controller } = list.fields[fieldKey]
+    if (controller.filter && filter) {
+      const filters = controller.filter?.parseGraphQL(filter as any as never)
+      return filters.map(
+        filter => [`!${fieldKey}_${filter.type}`, JSON.stringify(filter.value)] as const
+      )
+    }
+    return []
+  })
+  return filters
+}
+
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
 function ListPage({ listKey }: ListPageProps) {
   const list = useList(listKey)
-  const { query, push } = useRouter()
+  const { query, push, replace } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({
     defaultPageSize: list.pageSize,
@@ -103,6 +118,20 @@ function ListPage({ listKey }: ListPageProps) {
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, setSearchString] = useState(searchParam)
   const search = useSearchFilter(searchParam, list, list.initialSearchFields)
+
+  useEffect(() => {
+    if (!filters.filters.length) {
+      const filters = getDefaultFilters(list)
+      if (!filters.length) return
+      replace({
+        query: {
+          ...query,
+          ...Object.fromEntries(filters),
+        },
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list])
 
   const selectedFields = useSelectedFields(list)
   const { data, error, refetch, loading } = useQuery(

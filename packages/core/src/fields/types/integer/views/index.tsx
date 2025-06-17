@@ -6,7 +6,13 @@ import { NumberField } from '@keystar/ui/number-field'
 
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  SimpleFieldTypeInfo,
+} from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 
 // TODO: extract
 const TYPE_OPERATOR_MAP = {
@@ -52,7 +58,7 @@ export function controller(
     validation: Validation
     defaultValue: number | null | 'autoincrement'
   }>
-): FieldController<Value, number | null> & {
+): FieldController<Value, number | null, SimpleFieldTypeInfo<'Int'>['inputs']['where']> & {
   validation: Validation
   hasAutoIncrementDefault: boolean
 } {
@@ -124,6 +130,24 @@ export function controller(
         if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (type === 'equals' && value === null) {
+            return [{ type: 'empty', value: null }]
+          }
+          if (!value) return []
+          if (type === 'equals') return { type: 'equals', value }
+          if (type === 'not') {
+            if (value?.equals === null) return { type: 'not_empty', value: null }
+            if (value?.equals === undefined) return []
+            return { type: 'not', value: value.equals }
+          }
+          if (type === 'gt' || type === 'gte' || type === 'lt' || type === 'lte') {
+            return { type, value }
+          }
+          return []
+        })
       },
       Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()

@@ -6,7 +6,9 @@ import {
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
+  type SimpleFieldTypeInfo,
 } from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 
 const TYPE_OPERATOR_MAP = {
   equals: '=',
@@ -49,7 +51,7 @@ export function controller(
     validation: Validation
     defaultValue: string | null
   }>
-): FieldController<Value, string | null> & {
+): FieldController<Value, string | null, SimpleFieldTypeInfo<'Float'>['inputs']['where']> & {
   validation: Validation
 } {
   const validate = (value: Value, opts: { isRequired: boolean }) => {
@@ -109,8 +111,27 @@ export function controller(
       graphql: ({ type, value }) => {
         if (type === 'empty') return { [config.path]: { equals: null } }
         if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
-        if (type === 'not') return { [config.path]: { not: { equals: value } } }
-        return { [config.path]: { [type]: value } }
+        const val = value === null ? null : parseFloat(value)
+        if (type === 'not') return { [config.path]: { not: { equals: val } } }
+        return { [config.path]: { [type]: val } }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (type === 'equals' && value === null) {
+            return [{ type: 'empty', value: null }]
+          }
+          if (!value) return []
+          if (type === 'equals') return { type: 'equals', value: value.toString() }
+          if (type === 'not') {
+            if (value.equals === null) return { type: 'not_empty', value: null }
+            if (value.equals === undefined) return []
+            return { type: 'not', value: value.equals.toString() }
+          }
+          if (type === 'gt' || type === 'gte' || type === 'lt' || type === 'lte') {
+            return { type, value: value.toString() }
+          }
+          return []
+        })
       },
       Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()

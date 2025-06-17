@@ -1,4 +1,4 @@
-import type { GraphQLNames } from '../types/utils'
+import type { GraphQLNames, JSONValue } from '../types/utils'
 import type { ListMeta, FieldMeta, FieldGroupMeta } from '../types'
 import { gql } from './apollo'
 
@@ -86,6 +86,7 @@ export const adminMetaQuery = gql`
             field
             direction
           }
+          initialFilter
           isSingleton
 
           hideNavigation
@@ -117,6 +118,7 @@ export type AdminMetaQuery = {
         initialColumns: string[]
         initialSearchFields: string[]
         initialSort: ListMeta['initialSort'] | null
+        initialFilter: JSONValue
         isSingleton: boolean
 
         hideNavigation: boolean

@@ -129,6 +129,11 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
     initialSort?: { field: 'id' | keyof BaseFields<ListTypeInfo>; direction: 'ASC' | 'DESC' }
     // was previously defaultPageSize
     pageSize?: number // default number of items to display per page on the list screen
+
+    initialFilter?: MaybeSessionFunction<
+      Omit<ListTypeInfo['inputs']['where'], 'AND' | 'OR' | 'NOT'>,
+      ListTypeInfo
+    >
   }
 
   /**

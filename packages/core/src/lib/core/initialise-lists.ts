@@ -4,6 +4,7 @@ import { GNonNull } from '@graphql-ts/schema'
 import { GraphQLString, isInputObjectType } from 'graphql'
 import { g } from '../..'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
+import type { GroupInfo } from '../../schema'
 import type {
   BaseFieldTypeInfo,
   BaseItem,
@@ -16,7 +17,7 @@ import type {
   ListGraphQLTypes,
   ListHooks,
   MaybeFieldFunction,
-  NextFieldType,
+  NextFieldType
 } from '../../types'
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
@@ -39,7 +40,6 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
-import type { GroupInfo } from '../../schema'
 
 export type InitialisedField = {
   fieldKey: string
@@ -80,7 +80,7 @@ export type InitialisedField = {
       isRequired: MaybeBooleanItemFunctionWithFilter<BaseListTypeInfo, BaseFieldTypeInfo>
     }
     listView: {
-      fieldMode: MaybeSessionFunction<'read' | 'hidden', BaseListTypeInfo>
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
     }
   }
 } & Pick<

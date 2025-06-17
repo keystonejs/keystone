@@ -1,9 +1,15 @@
-import { useState } from 'react'
 import { TextField } from '@keystar/ui/text-field'
+import { useState } from 'react'
 
-import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
-import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import type { TextFieldMeta } from '..'
+import { NullableFieldWrapper } from '../../../../admin-ui/components'
+import { entriesTyped } from '../../../../lib/core/utils'
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  SimpleFieldTypeInfo,
+} from '../../../../types'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
@@ -99,7 +105,11 @@ function deserializeTextValue(value: string | null): InnerTextValue {
   return { kind: 'value', value }
 }
 
-export function controller(config: Config): FieldController<TextValue, string> & {
+export function controller(config: Config): FieldController<
+  TextValue,
+  string,
+  SimpleFieldTypeInfo<'String'>['inputs']['where']
+> & {
   isNullable: boolean
 } {
   return {
@@ -151,6 +161,17 @@ export function controller(config: Config): FieldController<TextValue, string> &
             ...(isNot ? { not: filter } : filter),
           },
         }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, _value]) => {
+          if (!_value) return []
+          if (type === 'equals') return { type: 'is_i', value: _value as string }
+          if (type === 'not') {
+            const notValue = _value as any
+            if (notValue?.equals) return { type: 'not_i', value: notValue.equals as string }
+          }
+          return []
+        })
       },
       types: {
         is_i: {

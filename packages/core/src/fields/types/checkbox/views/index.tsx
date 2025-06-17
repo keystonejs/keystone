@@ -8,7 +8,9 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
+  SimpleFieldTypeInfo,
 } from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 
 export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   return (
@@ -28,7 +30,11 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
   return value ? <Icon src={checkIcon} aria-label="true" /> : <VisuallyHidden>false</VisuallyHidden>
 }
 
-type CheckboxController = FieldController<boolean, boolean>
+type CheckboxController = FieldController<
+  boolean,
+  boolean,
+  SimpleFieldTypeInfo<'Boolean'>['inputs']['where']
+>
 
 export function controller(
   config: FieldControllerConfig<{ defaultValue: boolean }>
@@ -64,6 +70,17 @@ export function controller(
             equals: type === 'not' ? !value : value,
           },
         }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (value == null) return []
+          if (type === 'equals') return { type: 'is', value }
+          if (type === 'not') {
+            if (value.equals == null) return []
+            return { type: 'not', value: value.equals }
+          }
+          return []
+        })
       },
       types: {
         is: {

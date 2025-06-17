@@ -3,9 +3,7 @@ import { useFilter, useListFormatter } from '@react-aria/i18n'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
 import { Combobox, Item } from '@keystar/ui/combobox'
-import { FieldLabel } from '@keystar/ui/field'
 import { VStack } from '@keystar/ui/layout'
-import { ListView } from '@keystar/ui/list-view'
 import { TagGroup } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
 
@@ -149,76 +147,5 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
       return selectedOptions
     },
     serialize: value => ({ [config.path]: value.map(x => parseValue(x.value)) }),
-    filter: {
-      Filter(props) {
-        const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
-        const densityLevels = ['spacious', 'regular', 'compact'] as const
-        const density =
-          densityLevels[Math.min(Math.floor((optionsWithStringValues.length - 1) / 3), 2)]
-
-        const listView = (
-          <ListView
-            aria-label={typeLabel}
-            density={density}
-            items={optionsWithStringValues}
-            flex
-            minHeight={0}
-            maxHeight="100%"
-            selectionMode="multiple"
-            onSelectionChange={selection => {
-              if (selection === 'all') return // irrelevant for this case
-
-              onChange(optionsWithStringValues.filter(opt => selection.has(opt.value)))
-            }}
-            selectedKeys={value.map(x => x.value)}
-            {...otherProps}
-          >
-            {item => <Item key={item.value}>{item.label}</Item>}
-          </ListView>
-        )
-
-        if (context === 'edit') {
-          return (
-            <VStack gap="medium" flex minHeight={0} maxHeight="100%">
-              {/* intentionally not linked: the `ListView` has an explicit "aria-label" to avoid awkwardness with IDs and forked render */}
-              <FieldLabel elementType="span">{typeLabel}</FieldLabel>
-              {listView}
-            </VStack>
-          )
-        }
-
-        return listView
-      },
-      graphql: ({ type, value: options }) => ({
-        [config.path]: {
-          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => x.value),
-        },
-      }),
-      Label({ type, value }) {
-        const listFormatter = useListFormatter({
-          style: 'short',
-          type: 'disjunction',
-        })
-
-        if (value.length === 0) return type === 'not_matches' ? `is set` : `is not set`
-
-        const labels = value.map(i => i.label)
-        const prefix = type === 'not_matches' ? `is not` : `is`
-
-        if (value.length === 1) return `${prefix} ${labels[0]}`
-        if (value.length === 2) return `${prefix} ${listFormatter.format(labels)}`
-        return `${prefix} ${listFormatter.format([labels[0], `${value.length - 1} more`])}`
-      },
-      types: {
-        matches: {
-          label: 'Matches',
-          initialValue: [],
-        },
-        not_matches: {
-          label: 'Does not match',
-          initialValue: [],
-        },
-      },
-    },
   }
 }

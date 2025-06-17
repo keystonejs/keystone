@@ -7,6 +7,11 @@ import type { Lists } from '.keystone/types'
 export const lists = {
   Task: list({
     access: allowAll,
+    ui: {
+      listView: {
+        initialFilter: { isComplete: { equals: false } },
+      },
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       priority: select({

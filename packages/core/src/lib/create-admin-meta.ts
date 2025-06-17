@@ -14,7 +14,7 @@ import type {
   MaybeSessionFunction,
 } from '../types'
 import type { FieldGroupMeta, FieldMeta, ListMeta } from '../types/admin-meta'
-import type { GraphQLNames } from '../types/utils'
+import type { GraphQLNames, JSONValue } from '../types/utils'
 
 import type { InitialisedList } from './core/initialise-lists'
 import { humanize } from './utils'
@@ -64,6 +64,7 @@ type ListMetaSource_ = {
   initialColumns: string[]
   initialSearchFields: string[]
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
+  initialFilter: EmptyResolver<JSONValue>
   isSingleton: boolean
 
   hideNavigation: EmptyResolver<boolean>
@@ -153,6 +154,7 @@ export function createAdminMeta(
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
+      initialFilter: normalizeMaybeSessionFunction(listConfig.ui?.listView?.initialFilter ?? {}),
       isSingleton: list.isSingleton,
 
       hideNavigation: normalizeMaybeSessionFunction(listConfig.ui?.hideNavigation ?? false),
@@ -292,7 +294,7 @@ function assertValidView(view: string, location: string) {
   }
 }
 
-function normalizeMaybeSessionFunction<Return extends string | boolean | object>(
+function normalizeMaybeSessionFunction<Return extends string | boolean | object | null | number>(
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): EmptyResolver<Return> {
   if (typeof input !== 'function') return () => input

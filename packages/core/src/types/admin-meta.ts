@@ -34,7 +34,11 @@ export type FilterTypeToFormat<Value extends JSONValue> = {
   readonly value: Value
 }
 
-export type FieldController<FormState, FilterValue extends JSONValue = never> = {
+export type FieldController<
+  FormState,
+  FilterValue extends JSONValue = never,
+  GraphQLFilterValue = never,
+> = {
   path: string
   label: string
   description: string | null
@@ -45,6 +49,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   validate?: (formState: FormState, opts: { isRequired: boolean }) => boolean
   filter?: {
     types: Record<string, FilterTypeDeclaration<FilterValue>>
+    parseGraphQL(value: GraphQLFilterValue & {}): { type: string; value: FilterValue }[]
     graphql(type: { type: string; value: FilterValue }): Record<string, any>
     Label(type: FilterTypeToFormat<FilterValue>): string | ReactElement | null
     Filter(props: {
@@ -119,6 +124,7 @@ export type ListMeta = {
   initialColumns: string[]
   initialSearchFields: string[]
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string }
+  initialFilter: JSONValue
   isSingleton: boolean
 
   hideNavigation: boolean

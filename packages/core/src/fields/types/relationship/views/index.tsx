@@ -439,6 +439,7 @@ export function controller(
         if (type === 'not_some') return { [config.path]: { not: { some: { id: { in: value } } } } }
         return { [config.path]: { [type]: value } } // uh
       },
+      parseGraphQL: () => [],
       types: {
         empty: { label: 'Is empty', initialValue: null },
         not_empty: { label: 'Is not empty', initialValue: null },

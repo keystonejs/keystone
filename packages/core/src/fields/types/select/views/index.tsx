@@ -17,7 +17,9 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
+  SimpleFieldTypeInfo,
 } from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
@@ -184,7 +186,11 @@ const FILTER_TYPES = {
   },
 }
 
-export function controller(config: Config): FieldController<Value, Option[]> & {
+export function controller(config: Config): FieldController<
+  Value,
+  string[],
+  SimpleFieldTypeInfo<'String'>['inputs']['where']
+> & {
   options: Option[]
   type: 'string' | 'integer' | 'enum'
   displayMode: 'select' | 'segmented-control' | 'radio'
@@ -246,9 +252,9 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
             onSelectionChange={selection => {
               if (selection === 'all') return // irrelevant for this case
 
-              onChange(optionsWithStringValues.filter(opt => selection.has(opt.value)))
+              onChange([...selection].filter(x => typeof x === 'string'))
             }}
-            selectedKeys={value.map(x => x.value)}
+            selectedKeys={value}
             {...otherProps}
           >
             {item => <Item key={item.value}>{item.label}</Item>}
@@ -269,9 +275,24 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
       },
       graphql: ({ type, value: options }) => ({
         [config.path]: {
-          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value)),
+          [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x)),
         },
       }),
+      parseGraphQL(value) {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (type === 'equals' && value != null) {
+            return { type: 'matches', value: [value] }
+          }
+          if (type === 'notIn' || type === 'in') {
+            if (!value) return []
+            return {
+              type: type === 'notIn' ? 'not_matches' : 'matches',
+              value: value.filter(x => x != null),
+            }
+          }
+          return []
+        })
+      },
       Label({ type, value }) {
         const listFormatter = useListFormatter({
           style: 'short',
@@ -281,8 +302,10 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
         if (value.length === 0) {
           return type === 'not_matches' ? `is set` : `is not set`
         }
-
-        const labels = value.map(i => i.label)
+        const values = new Set(value)
+        const labels = optionsWithStringValues
+          .filter(opt => values.has(opt.value))
+          .map(i => i.label)
         const prefix = type === 'not_matches' ? `is not` : `is`
 
         if (value.length === 1) return `${prefix} ${labels[0]}`

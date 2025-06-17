@@ -10,6 +10,9 @@ import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { TextField } from '@keystar/ui/text-field'
 
 import type { FieldController, FieldControllerConfig, FieldProps, IdFieldConfig } from '../../types'
+import type { InferValueFromInputType } from '@graphql-ts/schema'
+import type { filters } from '../../fields/filters'
+import { entriesTyped } from '../../lib/core/utils'
 
 const COPY_TOOLTIP_CONTENT = {
   neutral: 'Copy ID',
@@ -66,7 +69,11 @@ export function Field({
 
 export function controller(
   config: FieldControllerConfig<IdFieldConfig>
-): FieldController<string | null, string | string[]> {
+): FieldController<
+  string | null,
+  string | string[],
+  InferValueFromInputType<(typeof filters)['mysql']['String']['required']>
+> {
   return {
     path: config.path,
     label: config.label,
@@ -110,6 +117,7 @@ export function controller(
           />
         )
       },
+
       Label({ label, value, type }) {
         const listFormatter = useListFormatter({
           style: 'short',
@@ -133,6 +141,21 @@ export function controller(
             [key]: valueWithoutWhitespace,
           },
         }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (!value) return []
+          if (type === 'equals') return { type: 'is', value }
+          if (type === 'notIn') return { type: 'not_in', value }
+          if (type === 'in') return { type: 'in', value }
+          if (type === 'not' && value?.equals) {
+            return { type: 'not', value: value?.equals }
+          }
+          if (type === 'gt' || type === 'gte' || type === 'lt' || type === 'lte') {
+            return { type, value }
+          }
+          return []
+        })
       },
       types: {
         is: { label: 'Is exactly', initialValue: '' },

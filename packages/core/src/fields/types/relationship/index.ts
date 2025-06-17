@@ -103,7 +103,7 @@ type ArrayOr<T> = T | T[]
 type FieldTypeInfo = {
   item: undefined
   inputs: {
-    where: JSONValue | undefined
+    where: any
     create: JSONValue | undefined
     update: JSONValue | undefined
     uniqueWhere: undefined
