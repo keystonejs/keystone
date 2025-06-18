@@ -39,20 +39,14 @@ export function useFilters(list: ListMeta) {
       } catch (err) {}
     }
 
-    const where = filters.reduce<{ AND: Array<Record<string, string>> }>(
-      (acc, filter) => {
-        acc.AND.push(
-          list.fields[filter.field].controller.filter!.graphql({
-            type: filter.type,
-            value: filter.value,
-          })
-        )
-        return acc
-      },
-      { AND: [] }
-    )
+    const where = filters.map(filter => {
+      return list.fields[filter.field].controller.filter!.graphql({
+        type: filter.type,
+        value: filter.value,
+      })
+    })
 
-    return { filters, where }
+    return { filters, where: { AND: where } }
   }, [query, possibleFilters, list])
   return filters
 }

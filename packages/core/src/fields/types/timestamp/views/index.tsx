@@ -16,7 +16,9 @@ import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
+  SimpleFieldTypeInfo,
 } from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 import type { Value } from './utils'
 
 export function Field(props: FieldProps<typeof controller>) {
@@ -132,9 +134,13 @@ export type TimestampFieldMeta = {
   updatedAt: boolean
 }
 
-export function controller(
-  config: FieldControllerConfig<TimestampFieldMeta>
-): FieldController<Value, string | null> & { fieldMeta: TimestampFieldMeta } {
+export function controller(config: FieldControllerConfig<TimestampFieldMeta>): FieldController<
+  Value,
+  string | null,
+  SimpleFieldTypeInfo<'DateTime'>['inputs']['where']
+> & {
+  fieldMeta: TimestampFieldMeta
+} {
   return {
     path: config.path,
     label: config.label,
@@ -199,6 +205,23 @@ export function controller(
         if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (type === 'equals' && value === null) {
+            return { type: 'empty', value: null }
+          }
+          if (!value) return []
+          if (type === 'equals') return { type: 'equals', value: value as unknown as string }
+          if (type === 'not') {
+            if (value?.equals === null) return { type: 'not_empty', value: null }
+            return { type: 'not', value: value.equals as unknown as string }
+          }
+          if (type === 'gt' || type === 'lt') {
+            return { type, value: value as unknown as string }
+          }
+          return []
+        })
       },
       Label({ label, type, value }) {
         const dateFormatter = useDateFormatter({ dateStyle: 'short', timeStyle: 'short' })

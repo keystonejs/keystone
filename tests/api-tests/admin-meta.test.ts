@@ -186,6 +186,7 @@ test(
               initialColumns: ['name', 'something'],
               initialSearchFields: ['name'],
               initialSort: null,
+              initialFilter: {},
               key: 'User',
               label: 'Users',
               labelField: 'name',

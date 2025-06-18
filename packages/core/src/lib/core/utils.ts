@@ -46,3 +46,11 @@ export function weakMemoize<Arg extends object, Return>(cb: (arg: Arg) => Return
     return cache.get(arg)!
   }
 }
+
+export function entriesTyped<T extends Record<string, unknown>>(
+  obj: T
+): {
+  [K in keyof T]: [K, T[K]]
+}[keyof T][] {
+  return Object.entries(obj) as any
+}

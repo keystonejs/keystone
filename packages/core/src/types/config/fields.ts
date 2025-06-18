@@ -62,7 +62,9 @@ export type CommonFieldConfig<
       fieldPosition?: MaybeItemFieldFunction<'form' | 'sidebar', ListTypeInfo, FieldTypeInfo>
       isRequired?: MaybeBooleanSessionFunctionWithFilter<ListTypeInfo>
     }
-    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> }
+    listView?: {
+      fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
+    }
   }
   graphql?: {
     cacheHint?: CacheHint

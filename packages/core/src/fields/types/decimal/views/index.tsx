@@ -6,8 +6,10 @@ import {
   type FieldController,
   type FieldControllerConfig,
   type FieldProps,
+  type SimpleFieldTypeInfo,
   Decimal,
 } from '../../../../types'
+import { entriesTyped } from '../../../../lib/core/utils'
 
 const TYPE_OPERATOR_MAP = {
   equals: '=',
@@ -54,7 +56,7 @@ export function controller(
     validation: Validation
     defaultValue: string | null
   }>
-): FieldController<Value, string | null> & {
+): FieldController<Value, string | null, SimpleFieldTypeInfo<'Decimal'>['inputs']['where']> & {
   validation: Validation
 } {
   const validate = (value: Value, opts: { isRequired: boolean }) => {
@@ -113,6 +115,23 @@ export function controller(
         if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
         if (type === 'not') return { [config.path]: { not: { equals: value } } }
         return { [config.path]: { [type]: value } }
+      },
+      parseGraphQL: value => {
+        return entriesTyped(value).flatMap(([type, value]) => {
+          if (type === 'equals' && value === null) {
+            return [{ type: 'empty', value: null }]
+          }
+          if (!value) return []
+          if (type === 'equals') return { type: 'equals', value: value as unknown as string }
+          if (type === 'not') {
+            if (value.equals === null) return { type: 'not_empty', value: null }
+            return { type: 'not', value: value.equals as unknown as string }
+          }
+          if (type === 'gt' || type === 'gte' || type === 'lt' || type === 'lte') {
+            return { type, value: value as unknown as string }
+          }
+          return []
+        })
       },
       Label({ label, type, value }) {
         if (type === 'empty' || type === 'not_empty') return label.toLocaleLowerCase()

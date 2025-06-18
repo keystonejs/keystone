@@ -258,7 +258,8 @@ type Value =
 
 export function controller(config: FieldControllerConfig<PasswordFieldMeta>): FieldController<
   Value,
-  boolean | null
+  boolean | null,
+  { isSet?: boolean | null | undefined }
 > & {
   validation: Validation
 } {
@@ -315,6 +316,12 @@ export function controller(config: FieldControllerConfig<PasswordFieldMeta>): Fi
                   isSet: type === 'not' ? !value : value,
                 },
               }
+            },
+            parseGraphQL: value => {
+              if (value?.isSet !== undefined) {
+                return [{ type: 'is', value: value.isSet }]
+              }
+              return []
             },
             Label({ type, value }) {
               if ((type === 'is' && value) || (type === 'not' && !value)) return `is set`

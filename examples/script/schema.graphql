@@ -143,6 +143,7 @@ type KeystoneAdminUIListMeta {
   initialColumns: [String!]!
   initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
+  initialFilter: JSON
   isSingleton: Boolean!
   hideNavigation: Boolean!
   hideCreate: Boolean!
