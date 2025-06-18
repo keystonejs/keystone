@@ -43,7 +43,8 @@ export function ComboboxSingle({
   })
 
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
-  const validationMessages = (isRequired && state.value === null) ? [`A ${list.singular} is required`] : []
+  const validationMessages =
+    isRequired && state.value === null ? [`A ${list.singular} is required`] : []
   const [lastSeenStateValue, setLastSeenStateValue] = useState(state.value)
 
   if (state.value !== lastSeenStateValue) {

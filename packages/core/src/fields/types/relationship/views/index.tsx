@@ -27,14 +27,7 @@ import type { RelationshipController, RelationshipValue } from './types'
 export { ComboboxMany, ComboboxSingle }
 
 export function Field(props: FieldProps<typeof controller>) {
-  const {
-    autoFocus,
-    field,
-    forceValidation = false,
-    onChange,
-    value,
-    isRequired
-  } = props
+  const { autoFocus, field, forceValidation = false, onChange, value, isRequired } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
   const description = field.description || undefined

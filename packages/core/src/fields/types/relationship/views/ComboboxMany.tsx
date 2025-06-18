@@ -46,7 +46,8 @@ export function ComboboxMany({
     state,
   })
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
-  const validationMessages = (isRequired && state.value.length === 0) ? [`At least one ${list.singular} is required`] : []
+  const validationMessages =
+    isRequired && state.value.length === 0 ? [`At least one ${list.singular} is required`] : []
 
   // TODO: better error UI
   // TODO: Handle permission errors

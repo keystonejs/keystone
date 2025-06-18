@@ -57,8 +57,8 @@ export const lists = {
         many: true,
         ui: {
           createView: { isRequired: true },
-          itemView: { isRequired: true }
-        }
+          itemView: { isRequired: true },
+        },
       }),
     },
   }),
