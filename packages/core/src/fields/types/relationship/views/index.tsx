@@ -1,33 +1,33 @@
-import { Fragment, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
+import { Fragment, useState } from 'react'
 
 import { DialogContainer } from '@keystar/ui/dialog'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { TextLink } from '@keystar/ui/link'
-import { TagGroup, Item } from '@keystar/ui/tag'
+import { Item, TagGroup } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
-import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
-import { useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
+import { useList } from '../../../../admin-ui/context'
+import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
 
+import { ActionButton } from '@keystar/ui/button'
+import { Icon } from '@keystar/ui/icon'
+import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'
+import { ComboboxMany } from './ComboboxMany'
+import { ComboboxSingle } from './ComboboxSingle'
 import {
   buildQueryForRelationshipFieldWithForeignField,
   ContextualActions,
 } from './ContextualActions'
-import { ComboboxMany } from './ComboboxMany'
-import { ComboboxSingle } from './ComboboxSingle'
-
-export { ComboboxSingle, ComboboxMany }
-import type { RelationshipController, RelationshipValue } from './types'
 import { RelationshipTable } from './RelationshipTable'
-import { Icon } from '@keystar/ui/icon'
-import { arrowUpRightIcon } from '@keystar/ui/icon/icons/arrowUpRightIcon'
-import { ActionButton } from '@keystar/ui/button'
+import type { RelationshipController, RelationshipValue } from './types'
+
+export { ComboboxMany, ComboboxSingle }
 
 export function Field(props: FieldProps<typeof controller>) {
-  const { autoFocus, field, onChange, value } = props
+  const { autoFocus, field, forceValidation = false, onChange, value, isRequired } = props
   const foreignList = useList(field.refListKey)
   const [dialogIsOpen, setDialogOpen] = useState(false)
   const description = field.description || undefined
@@ -70,7 +70,9 @@ export function Field(props: FieldProps<typeof controller>) {
               autoFocus={autoFocus}
               label={field.label}
               description={description}
+              forceValidation={forceValidation}
               isReadOnly={isReadOnly}
+              isRequired={isRequired}
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               list={foreignList}
@@ -87,7 +89,9 @@ export function Field(props: FieldProps<typeof controller>) {
               autoFocus={autoFocus}
               label={field.label}
               description={description}
+              forceValidation={forceValidation}
               isReadOnly={isReadOnly}
+              isRequired={isRequired}
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               list={foreignList}
@@ -105,6 +109,7 @@ export function Field(props: FieldProps<typeof controller>) {
         {value.kind === 'many' && (
           <TagGroup
             aria-label={`related ${foreignList.plural}`}
+            isRequired={isRequired}
             items={value.value.map(item => ({
               id: item.id.toString() ?? '',
               label: item.label ?? '',
@@ -270,8 +275,13 @@ export function controller(
           value: null,
           initialValue: null,
         },
-    validate() {
-      return true
+    validate(value, opts) {
+      if ('count' in value) return true
+      return opts.isRequired
+        ? value.kind === 'one'
+          ? value.value !== null
+          : value.value.length > 0
+        : true
     },
     deserialize: data => {
       if (displayMode === 'count' || displayMode === 'table') {

@@ -19,4 +19,11 @@ model Todo {
   reasonForHighPriority String    @default("")
   isComplete            Boolean   @default(false)
   finishBy              DateTime?
+  tags                  Tag[]     @relation("Tag_todos")
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @default("")
+  todos Todo[] @relation("Tag_todos")
 }
