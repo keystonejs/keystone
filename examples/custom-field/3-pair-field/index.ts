@@ -98,8 +98,8 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       views: './3-pair-field/views',
-      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
-        return {}
+      getAdminMeta() {
+        return {} as Parameters<typeof controller>[0]['fieldMeta']
       },
     })
 }

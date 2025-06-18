@@ -111,8 +111,8 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
         },
       }),
       views: './3-pair-field-nested/views',
-      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
-        return {}
+      getAdminMeta() {
+        return {} satisfies Parameters<typeof controller>[0]['fieldMeta']
       },
     })
 }

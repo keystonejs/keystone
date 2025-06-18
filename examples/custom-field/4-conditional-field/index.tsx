@@ -50,10 +50,10 @@ export function feedback<ListTypeInfo extends BaseListTypeInfo>({
         },
       }),
       views: './4-conditional-field/views',
-      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
+      getAdminMeta() {
         return {
           dependency,
-        }
+        } satisfies Parameters<typeof controller>[0]['fieldMeta']
       },
     })
 }
