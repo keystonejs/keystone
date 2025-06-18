@@ -21,11 +21,11 @@ export function ComboboxMany({
 }: {
   autoFocus?: boolean
   description?: string
-  forceValidation: boolean
+  forceValidation?: boolean
   isDisabled?: boolean
   isLoading?: boolean
   isReadOnly?: boolean
-  isRequired: boolean
+  isRequired?: boolean
   label?: string
   'aria-label'?: string
   labelField: string

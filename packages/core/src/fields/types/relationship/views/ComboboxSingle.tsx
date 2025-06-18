@@ -19,11 +19,11 @@ export function ComboboxSingle({
 }: {
   autoFocus?: boolean
   description?: string
-  forceValidation: boolean
+  forceValidation?: boolean
   isDisabled?: boolean
   isLoading?: boolean
   isReadOnly?: boolean
-  isRequired: boolean
+  isRequired?: boolean
   label?: string
   labelField: string
   searchFields: string[]
