@@ -1,4 +1,4 @@
-import type { BaseFieldTypeInfo } from '../types'
+import type { BaseFieldTypeInfo, CommonFieldConfig } from '../types'
 import { type BaseListTypeInfo, type FieldData } from '../types'
 import type { FieldHooks } from '../types/config/hooks'
 import { type ValidateFieldHook } from '../types/config/hooks'
@@ -95,4 +95,20 @@ export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo
     `${meta.listKey}.${meta.fieldKey} sets graphql.isNonNull.read: true, but not validation.isRequired: true (or db.isNullable: false)\n` +
       `Set validation.isRequired: true, or db.isNullable: false, or graphql.isNonNull.read: false`
   )
+}
+
+export function defaultIsRequired(config: CommonFieldConfig<any, any>, isRequired: boolean) {
+  return {
+    ui: {
+      ...config.ui,
+      createView: {
+        ...config.ui?.createView,
+        isRequired: config.ui?.createView?.isRequired ?? isRequired,
+      },
+      itemView: {
+        ...config.ui?.itemView,
+        isRequired: config.ui?.itemView?.isRequired ?? isRequired,
+      },
+    },
+  }
 }

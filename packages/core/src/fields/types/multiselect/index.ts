@@ -10,6 +10,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { makeValidateHook } from '../../non-null-graphql'
+import type { controller } from './views'
 
 type FieldTypeInfo = {
   item: JSONValue | null
@@ -131,7 +132,7 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
           validate,
         },
         views: '@keystone-6/core/fields/types/multiselect/views',
-        getAdminMeta: () => ({
+        getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
           options: transformedConfig.options,
           type: config.type ?? 'string',
           displayMode: displayMode,

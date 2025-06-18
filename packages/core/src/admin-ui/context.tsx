@@ -8,7 +8,14 @@ import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-import type { AdminConfig, AdminMeta, FieldViews } from '../types'
+import type {
+  AdminConfig,
+  AdminMeta,
+  BaseListTypeInfo,
+  ConditionalFieldFilter,
+  ConditionalFieldFilterCase,
+  FieldViews,
+} from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
 import type { QueryResult } from './apollo'
 import { gql, ApolloProvider, ApolloClient, InMemoryCache, useQuery } from './apollo'
@@ -89,10 +96,12 @@ function InternalKeystoneProvider({
           ...field,
           createView: {
             fieldMode: field.createView?.fieldMode ?? null,
+            isRequired: field.createView?.isRequired ?? false,
           },
           itemView: {
             fieldMode: field.itemView?.fieldMode ?? null,
             fieldPosition: field.itemView?.fieldPosition ?? null,
+            isRequired: field.itemView?.isRequired ?? false,
           },
           listView: {
             fieldMode: field.listView?.fieldMode ?? null,
@@ -230,8 +239,9 @@ export function useListItem(
           fields: {
             path: string
             itemView: {
-              fieldMode: 'edit' | 'read' | 'hidden'
+              fieldMode: ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
               fieldPosition: 'form' | 'sidebar'
+              isRequired: ConditionalFieldFilterCase<BaseListTypeInfo>
             } | null
           }[]
         } | null
@@ -263,6 +273,7 @@ export function useListItem(
                 itemView(id: $id) {
                   fieldMode
                   fieldPosition
+                  isRequired
                 }
               }
             }

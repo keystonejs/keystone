@@ -8,7 +8,8 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { resolveDbNullable, makeValidateHook } from '../../non-null-graphql'
+import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import type { controller } from './views'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -125,6 +126,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
+      ...defaultIsRequired(config, isRequired),
       hooks: {
         ...config.hooks,
         validate,
@@ -154,10 +156,9 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
       output: g.field({ type: g.Int }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
-      getAdminMeta() {
+      getAdminMeta(): Parameters<typeof controller>[0]['fieldMeta'] {
         return {
           validation: {
-            isRequired,
             min: min ?? MIN_INT,
             max: max ?? MAX_INT,
           },

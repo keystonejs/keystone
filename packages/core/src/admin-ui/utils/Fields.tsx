@@ -30,7 +30,7 @@ function applyFilter<T>(
   if (filter.in !== undefined && !filter.in.includes(val)) return false
   return true
 }
-function testFilter(
+export function testFilter(
   filter: ConditionalFieldFilterCase<BaseListTypeInfo> | undefined,
   serialized: Record<string, unknown>
 ): boolean {
@@ -57,6 +57,7 @@ export function Fields({
   value: itemValue,
   fieldModes = {},
   fieldPositions = {},
+  isRequireds,
 }: {
   view: 'createView' | 'itemView'
   position: 'form' | 'sidebar'
@@ -67,6 +68,7 @@ export function Fields({
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
   fieldPositions?: Record<string, 'form' | 'sidebar'>
+  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
   fieldModes?: Record<string, ConditionalFieldFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
@@ -102,6 +104,7 @@ export function Fields({
         autoFocus={autoFocus}
         forceValidation={forceValidation && invalidFields.has(fieldKey)}
         field={field.controller}
+        isRequired={testFilter(isRequireds[fieldKey] ?? false, serialized)}
         onChange={
           fieldMode === 'read' || onChange === undefined
             ? undefined

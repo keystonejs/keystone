@@ -10,7 +10,8 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook } from '../../non-null-graphql'
+import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import type { controller } from './views'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -94,19 +95,18 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
     const commonConfig = {
       ...config,
       mode,
-      ui,
+      ...defaultIsRequired({ ui }, validation?.isRequired ?? false),
       hooks: {
         ...config.hooks,
         validate,
       },
       __ksTelemetryFieldTypeName: '@keystone-6/select',
       views: '@keystone-6/core/fields/types/select/views',
-      getAdminMeta: () => ({
+      getAdminMeta: (): Parameters<typeof controller>[0]['fieldMeta'] => ({
         options,
         type: config.type ?? 'string',
         displayMode: displayMode,
         defaultValue: defaultValue ?? null,
-        isRequired: validation?.isRequired ?? false,
       }),
     }
 

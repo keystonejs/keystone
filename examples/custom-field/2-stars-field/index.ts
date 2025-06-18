@@ -7,6 +7,7 @@ import {
   orderDirectionEnum,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
+import { controller } from './views'
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
@@ -79,7 +80,7 @@ export function stars<ListTypeInfo extends BaseListTypeInfo>({
           resolve(val, context) {
             // if it's null, then the value will be set to null in the database
             if (val === null) return null
-            // if it's undefined(which means that it was omitted in the request)
+            // if it's undefined (which means that it was omitted in the request)
             // returning undefined will mean "don't change the existing value"
             // note that this means that this function is called on every update to an item
             // including when the field is not updated
@@ -101,7 +102,7 @@ export function stars<ListTypeInfo extends BaseListTypeInfo>({
       }),
       views: './2-stars-field/views',
       getAdminMeta() {
-        return { maxStars }
+        return { maxStars } satisfies Parameters<typeof controller>[0]['fieldMeta']
       },
     })
 }

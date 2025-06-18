@@ -3,8 +3,10 @@ import type {
   BaseFieldTypeInfo,
   BaseListTypeInfo,
   ConditionalFieldFilter,
+  ConditionalFieldFilterCase,
   KeystoneConfig,
   KeystoneContext,
+  MaybeBooleanItemFunctionWithFilter,
   MaybeFieldFunction,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
@@ -28,6 +30,7 @@ type FieldMetaSource_ = {
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
     fieldMode: EmptyResolver<ConditionalFieldFilter<'edit' | 'hidden', BaseListTypeInfo>>
+    isRequired: EmptyResolver<ConditionalFieldFilterCase<BaseListTypeInfo>>
   }
   itemView: {
     fieldMode: MaybeItemFieldFunctionWithFilter<
@@ -36,6 +39,7 @@ type FieldMetaSource_ = {
       BaseFieldTypeInfo
     >
     fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', BaseListTypeInfo, BaseFieldTypeInfo>
+    isRequired: MaybeBooleanItemFunctionWithFilter<BaseListTypeInfo, BaseFieldTypeInfo>
   }
   listView: {
     fieldMode: EmptyResolver<'read' | 'hidden'>
@@ -219,10 +223,12 @@ export function createAdminMeta(
         isNonNull,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.createView.fieldMode),
+          isRequired: normalizeMaybeSessionFunction(field.ui.createView.isRequired ?? false),
         },
         itemView: {
           fieldMode: field.ui.itemView.fieldMode,
           fieldPosition: field.ui.itemView.fieldPosition,
+          isRequired: field.ui.itemView.isRequired ?? false,
         },
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),

@@ -25,7 +25,6 @@ type Value =
   | { kind: 'update'; initial: string | null; value: string | null }
 
 type Validation = {
-  isRequired: boolean
   min: string
   max: string
 }
@@ -33,13 +32,14 @@ type Validation = {
 function validate_(
   value: Value,
   validation: Validation,
+  isRequired: boolean,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
   const { value: input, kind } = value
   if (kind === 'create' && hasAutoIncrementDefault && input === null) return
   if (kind === 'update' && value.initial === null && input === null) return
-  if (validation.isRequired && input === null) return `${label} is required`
+  if (isRequired && input === null) return `${label} is required`
   if (typeof input !== 'string') return
   try {
     const v = BigInt(input)
@@ -61,10 +61,11 @@ export function controller(
   validation: Validation
   hasAutoIncrementDefault: boolean
 } {
-  const validate = (value: Value) => {
+  const validate = (value: Value, opts: { isRequired: boolean }) => {
     return validate_(
       value,
       config.fieldMeta.validation,
+      opts.isRequired,
       config.label,
       config.fieldMeta.defaultValue === 'autoincrement'
     )
@@ -107,7 +108,8 @@ export function controller(
             {...labelProps}
             autoFocus={autoFocus}
             errorMessage={
-              (forceValidation || isDirty) && !validate({ kind: 'update', initial: null, value })
+              (forceValidation || isDirty) &&
+              !validate({ kind: 'update', initial: null, value }, { isRequired: true })
                 ? 'Required'
                 : null
             }
@@ -168,7 +170,7 @@ export function controller(
     },
 
     hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
-    validate: value => validate(value) === undefined,
+    validate: (value, opts) => validate(value, opts) === undefined,
   }
 }
 
@@ -178,6 +180,7 @@ export function Field({
   onChange,
   autoFocus,
   forceValidation,
+  isRequired,
 }: FieldProps<typeof controller>) {
   const [isDirty, setDirty] = useState(false)
   const isReadOnly = !onChange || field.hasAutoIncrementDefault
@@ -205,7 +208,13 @@ export function Field({
   }
 
   const validate = (value: Value) => {
-    return validate_(value, field.validation, field.label, field.hasAutoIncrementDefault)
+    return validate_(
+      value,
+      field.validation,
+      isRequired,
+      field.label,
+      field.hasAutoIncrementDefault
+    )
   }
 
   return (
@@ -215,7 +224,7 @@ export function Field({
       label={field.label}
       errorMessage={(forceValidation || isDirty) && validate(value)}
       isReadOnly={isReadOnly}
-      isRequired={field.validation.isRequired}
+      isRequired={isRequired}
       inputMode="numeric"
       width="alias.singleLineWidth"
       onBlur={() => setDirty(true)}

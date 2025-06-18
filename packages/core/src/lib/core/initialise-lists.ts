@@ -21,6 +21,8 @@ import type {
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
 import type {
+  MaybeBooleanItemFunctionWithFilter,
+  MaybeBooleanSessionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
@@ -65,14 +67,20 @@ export type InitialisedField = {
     description: string | null
     views: string | null
     createView: {
-      fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', any>
+      fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', BaseListTypeInfo>
+      isRequired: MaybeBooleanSessionFunctionWithFilter<BaseListTypeInfo>
     }
     itemView: {
-      fieldMode: MaybeItemFieldFunctionWithFilter<'read' | 'edit' | 'hidden', any, any>
-      fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', any, any>
+      fieldMode: MaybeItemFieldFunctionWithFilter<
+        'read' | 'edit' | 'hidden',
+        BaseListTypeInfo,
+        BaseFieldTypeInfo
+      >
+      fieldPosition: MaybeItemFieldFunction<'form' | 'sidebar', BaseListTypeInfo, BaseFieldTypeInfo>
+      isRequired: MaybeBooleanItemFunctionWithFilter<BaseListTypeInfo, BaseFieldTypeInfo>
     }
     listView: {
-      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', BaseListTypeInfo>
     }
   }
 } & Pick<
@@ -671,8 +679,8 @@ function getListsWithInitialisedFields(
           views: f.ui?.views ?? null,
           createView: {
             fieldMode: isEnabledField.create ? fieldModes.create : 'hidden',
+            isRequired: f.ui?.createView?.isRequired ?? false,
           },
-
           itemView: {
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
             fieldMode: isEnabledField.update
@@ -680,6 +688,7 @@ function getListsWithInitialisedFields(
               : isEnabledField.read && fieldModes.item !== 'hidden'
                 ? 'read'
                 : 'hidden',
+            isRequired: f.ui?.itemView?.isRequired ?? false,
           },
 
           listView: {
