@@ -17,7 +17,7 @@ import type {
   ListGraphQLTypes,
   ListHooks,
   MaybeFieldFunction,
-  NextFieldType
+  NextFieldType,
 } from '../../types'
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
