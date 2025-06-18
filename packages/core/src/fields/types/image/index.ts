@@ -239,6 +239,6 @@ export function image<ListTypeInfo extends BaseListTypeInfo>(
   }
 }
 
-function defaultTransformName(path: string) {
+function defaultTransformName(_: string) {
   return randomBytes(16).toString('base64url')
 }
