@@ -8,18 +8,22 @@ import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
 export function ComboboxSingle({
-  labelField,
-  searchFields,
-  list,
-  state,
+  forceValidation,
   isLoading,
+  isRequired,
+  labelField,
+  list,
+  searchFields,
+  state,
   ...props
 }: {
   autoFocus?: boolean
   description?: string
+  forceValidation: boolean
   isDisabled?: boolean
   isLoading?: boolean
   isReadOnly?: boolean
+  isRequired: boolean
   label?: string
   labelField: string
   searchFields: string[]
@@ -38,6 +42,8 @@ export function ComboboxSingle({
     state,
   })
 
+  const [shouldShowErrors, setShouldShowErrors] = useState(false)
+  const validationMessages = (isRequired && state.value === null) ? [`A ${list.singular} is required`] : []
   const [lastSeenStateValue, setLastSeenStateValue] = useState(state.value)
 
   if (state.value !== lastSeenStateValue) {
@@ -63,8 +69,17 @@ export function ComboboxSingle({
   return (
     <Combobox
       {...props}
+      isRequired={isRequired}
       items={data?.items ?? []}
       loadingState={loading || isLoading ? 'loading' : 'idle'}
+      errorMessage={
+        !!validationMessages.length && (shouldShowErrors || forceValidation)
+          ? validationMessages.join('. ')
+          : undefined
+      }
+      onBlur={() => {
+        setShouldShowErrors(true)
+      }}
       onInputChange={input => {
         setSearch(input)
 

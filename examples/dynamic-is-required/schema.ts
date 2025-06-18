@@ -1,8 +1,7 @@
+import type { Lists } from '.keystone/types'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { checkbox, text, timestamp } from '@keystone-6/core/fields'
-import { select } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import { checkbox, relationship, select, text, timestamp } from '@keystone-6/core/fields'
 
 export const lists = {
   Todo: list({
@@ -53,6 +52,24 @@ export const lists = {
       }),
       isComplete: checkbox(),
       finishBy: timestamp(),
+      tags: relationship({
+        ref: 'Tag.todos',
+        many: true,
+        ui: {
+          createView: { isRequired: true },
+          itemView: { isRequired: true }
+        }
+      }),
+    },
+  }),
+  Tag: list({
+    access: allowAll,
+    fields: {
+      name: text(),
+      todos: relationship({
+        ref: 'Todo.tags',
+        many: true,
+      }),
     },
   }),
 } satisfies Lists

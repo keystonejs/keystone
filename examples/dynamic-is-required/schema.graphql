@@ -8,6 +8,8 @@ type Todo {
   reasonForHighPriority: String
   isComplete: Boolean
   finishBy: DateTime
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
 }
 
 enum TodoPriorityType {
@@ -32,6 +34,7 @@ input TodoWhereInput {
   reasonForHighPriority: StringFilter
   isComplete: BooleanFilter
   finishBy: DateTimeNullableFilter
+  tags: TagManyRelationFilter
 }
 
 input IDFilter {
@@ -96,6 +99,12 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
+}
+
 input TodoOrderByInput {
   id: OrderDirection
   label: OrderDirection
@@ -116,6 +125,14 @@ input TodoUpdateInput {
   reasonForHighPriority: String
   isComplete: Boolean
   finishBy: DateTime
+  tags: TagRelateToManyForUpdateInput
+}
+
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input TodoUpdateArgs {
@@ -129,6 +146,70 @@ input TodoCreateInput {
   reasonForHighPriority: String
   isComplete: Boolean
   finishBy: DateTime
+  tags: TagRelateToManyForCreateInput
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
+type Tag {
+  id: ID!
+  name: String
+  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
+  todosCount(where: TodoWhereInput! = {}): Int
+}
+
+input TagWhereUniqueInput {
+  id: ID
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
+  NOT: [TagWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  todos: TodoManyRelationFilter
+}
+
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input TagUpdateInput {
+  name: String
+  todos: TodoRelateToManyForUpdateInput
+}
+
+input TodoRelateToManyForUpdateInput {
+  disconnect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
+}
+
+input TagUpdateArgs {
+  where: TagWhereUniqueInput!
+  data: TagUpdateInput!
+}
+
+input TagCreateInput {
+  name: String
+  todos: TodoRelateToManyForCreateInput
+}
+
+input TodoRelateToManyForCreateInput {
+  create: [TodoCreateInput!]
+  connect: [TodoWhereUniqueInput!]
 }
 
 """
@@ -143,12 +224,21 @@ type Mutation {
   updateTodos(data: [TodoUpdateArgs!]!): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
+  createTag(data: TagCreateInput!): Tag
+  createTags(data: [TagCreateInput!]!): [Tag]
+  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
+  updateTags(data: [TagUpdateArgs!]!): [Tag]
+  deleteTag(where: TagWhereUniqueInput!): Tag
+  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
 }
 
 type Query {
   todo(where: TodoWhereUniqueInput!): Todo
   todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todosCount(where: TodoWhereInput! = {}): Int
+  tag(where: TagWhereUniqueInput!): Tag
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

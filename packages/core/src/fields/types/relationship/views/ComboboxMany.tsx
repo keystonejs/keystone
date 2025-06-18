@@ -4,23 +4,28 @@ import { css } from '@keystar/ui/style'
 import type { ListMeta } from '../../../../types'
 import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
+import { useState } from 'react'
 
 export function ComboboxMany({
+  extraSelection = '',
+  forceValidation,
   isDisabled,
   isLoading,
   isReadOnly,
+  isRequired,
   labelField,
-  searchFields,
   list,
+  searchFields,
   state,
-  extraSelection = '',
   ...props
 }: {
   autoFocus?: boolean
   description?: string
+  forceValidation: boolean
   isDisabled?: boolean
   isLoading?: boolean
   isReadOnly?: boolean
+  isRequired: boolean
   label?: string
   'aria-label'?: string
   labelField: string
@@ -40,6 +45,8 @@ export function ComboboxMany({
     searchFields,
     state,
   })
+  const [shouldShowErrors, setShouldShowErrors] = useState(false)
+  const validationMessages = (isRequired && state.value.length === 0) ? [`At least one ${list.singular} is required`] : []
 
   // TODO: better error UI
   // TODO: Handle permission errors
@@ -60,8 +67,17 @@ export function ComboboxMany({
     <ComboboxMulti
       {...props}
       isDisabled={isDisabled || isReadOnly}
+      isRequired={isRequired}
       items={items}
       loadingState={loadingState}
+      errorMessage={
+        !!validationMessages.length && (shouldShowErrors || forceValidation)
+          ? validationMessages.join('. ')
+          : undefined
+      }
+      onBlur={() => {
+        setShouldShowErrors(true)
+      }}
       onInputChange={setSearch}
       inputValue={search}
       onLoadMore={onLoadMore}
