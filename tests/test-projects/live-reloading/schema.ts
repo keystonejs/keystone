@@ -6,7 +6,7 @@ export const lists = {
   Something: list({
     access: allowAll,
     fields: {
-      text: text({ label: 'Initial Label For Text' }),
+      text: text({ ui: { label: 'Initial Label For Text' } }),
     },
   }),
 }

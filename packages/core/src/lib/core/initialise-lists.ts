@@ -674,7 +674,7 @@ function getListsWithInitialisedFields(
           },
         },
         ui: {
-          label: f.label ?? null,
+          label: f.ui?.label ?? null,
           description: f.ui?.description ?? null,
           views: f.ui?.views ?? null,
           createView: {

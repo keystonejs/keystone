@@ -45,8 +45,8 @@ export type CommonFieldConfig<
 > = {
   access?: FieldAccessControl<ListTypeInfo>
   hooks?: FieldHooks<ListTypeInfo, FieldTypeInfo>
-  label?: string // TODO: move to .ui in breaking change
   ui?: {
+    label?: string
     description?: string
     views?: string
     createView?: {
