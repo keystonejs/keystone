@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
@@ -13,6 +13,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import type { FieldMeta, JSONValue } from '../../../../types'
 import { useList } from '../../../../admin-ui/context'
+import { useQueryParams } from '../../../../admin-ui/router'
 
 type State =
   | { kind: 'selecting-field' }
@@ -24,6 +25,7 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
   const [forceValidation, setForceValidation] = useState(false)
   const router = useRouter()
   const formId = useId()
+  const { query, toQueryString } = useQueryParams()
 
   const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(listKey)
   const resetState = () => {
@@ -54,12 +56,11 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
       return
     }
 
-    router.push({
-      query: {
-        ...router.query,
+    router.push(
+      toQueryString({
+        ...query,
         [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-      },
-    })
+    }))
     resetState()
   }
 

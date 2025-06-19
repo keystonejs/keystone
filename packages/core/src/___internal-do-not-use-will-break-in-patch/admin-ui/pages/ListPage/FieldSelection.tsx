@@ -1,5 +1,5 @@
 import { type Key, useMemo } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import isDeepEqual from 'fast-deep-equal'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -10,19 +10,21 @@ import { Text } from '@keystar/ui/typography'
 
 import { useList } from '../../../../admin-ui/context'
 import { useSelectedFields } from './useSelectedFields'
+import { useQueryParams } from '../../../../admin-ui/router'
 
 export function FieldSelection({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
   const router = useRouter()
   const list = useList(listKey)
   const selectedFields = useSelectedFields(list)
+  const { query, toQueryString } = useQueryParams()
 
   const setNewSelectedFields = (selectedFields: Key[]) => {
     // Clear the `fields` query param when selection matches initial columns
     if (isDeepEqual(selectedFields, list.initialColumns)) {
-      const { fields: _ignore, ...otherQueryFields } = router.query
-      router.push({ query: otherQueryFields })
+      const { fields: _ignore, ...otherQueryFields } = query
+      router.push(toQueryString(otherQueryFields))
     } else {
-      router.push({ query: { ...router.query, fields: selectedFields.join(',') } })
+      router.push(toQueryString({ ...query, fields: selectedFields.join(',') }))
     }
   }
 

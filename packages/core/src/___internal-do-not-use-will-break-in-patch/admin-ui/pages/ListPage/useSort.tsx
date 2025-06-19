@@ -1,9 +1,8 @@
-import { useRouter } from 'next/router'
-
+import { useQueryParams } from '../../../../admin-ui/router'
 import type { ListMeta } from '../../../../types'
 
 export function useSort(list: ListMeta) {
-  const { query } = useRouter()
+  const { query } = useQueryParams()
   const sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
   if (!sortByFromUrl) return null
   const fieldKey = sortByFromUrl.startsWith('-') ? sortByFromUrl.slice(1) : sortByFromUrl

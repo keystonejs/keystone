@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
 import { type ListMeta } from '../../../../types'
+import { useQueryParams } from '../../../../admin-ui/router'
 
 export function useSelectedFields(list: ListMeta): ReadonlySet<string> {
-  const { query } = useRouter()
+  const { query } = useQueryParams()
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : ''
   return useMemo(() => {
     const selectedFieldsArray = selectedFieldsFromUrl

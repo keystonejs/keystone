@@ -1,5 +1,5 @@
-import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
+import { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'
@@ -28,7 +28,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
@@ -42,42 +42,45 @@ import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 import { ProgressCircle } from '@keystar/ui/progress'
 import type { ListMeta } from '../../../../types'
+import { useQueryParams } from '../../../../admin-ui/router'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { params: Usable<{ listKey: string }> }
 type SelectedKeys = 'all' | Set<number | string>
 
 const storeableQueries = ['sortBy', 'fields']
 
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter()
+  const pathname = usePathname()
+  const { query, toQueryString } = useQueryParams()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
-    router.replace({ pathname: router.pathname })
+    router.replace(pathname)
   }
 
   useEffect(() => {
-    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(query).some(x => {
       return x.startsWith('!') || storeableQueries.includes(x)
     })
 
-    if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+    if (!hasSomeQueryParamsWhichAreAboutListPage) {
       const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
       let parsed
       try {
         parsed = JSON.parse(queryParamsFromLocalStorage!)
       } catch (err) {}
       if (parsed) {
-        router.replace({ query: { ...router.query, ...parsed } })
+        router.replace(toQueryString({ ...query, ...parsed }))
       }
     }
-  }, [localStorageKey, router.isReady])
+  }, [localStorageKey])
 
   useEffect(() => {
     const queryParamsToSerialize: Record<string, string> = {}
-    for (const key in router.query) {
+    for (const key in query) {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
-        queryParamsToSerialize[key] = router.query[key] as string
+        queryParamsToSerialize[key] = query[key] as string
       }
     }
     if (Object.keys(queryParamsToSerialize).length) {
@@ -85,7 +88,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
     } else {
       localStorage.removeItem(localStorageKey)
     }
-  }, [localStorageKey, router])
+  }, [localStorageKey, query])
 
   return { resetToDefaults }
 }
@@ -104,11 +107,13 @@ function getDefaultFilters(list: ListMeta) {
   return filters
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
-function ListPage({ listKey }: ListPageProps) {
+export function ListPage({ params }: ListPageProps) {
+  const keystone = useKeystone()
+  const _params = use<{ listKey: string }>(params)
+  const listKey = keystone.listsKeyByPath[_params.listKey]
   const list = useList(listKey)
-  const { query, push, replace } = useRouter()
+  const router = useRouter()
+  const { query, toQueryString } = useQueryParams()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({
     defaultPageSize: list.pageSize,
@@ -123,12 +128,10 @@ function ListPage({ listKey }: ListPageProps) {
     if (!filters.filters.length) {
       const filters = getDefaultFilters(list)
       if (!filters.length) return
-      replace({
-        query: {
+      router.replace(toQueryString({
           ...query,
           ...Object.fromEntries(filters),
-        },
-      })
+        }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list])
@@ -184,9 +187,9 @@ function ListPage({ listKey }: ListPageProps) {
     const { search, ...queries } = query
 
     if (value.trim()) {
-      push({ query: { ...queries, search: value } })
+      router.push(toQueryString({ ...queries, search: value }))
     } else {
-      push({ query: queries })
+      router.push(toQueryString(queries))
     }
   }
 
@@ -296,12 +299,14 @@ function ListTable({
   loading: boolean
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const router = useRouter()
+  const { query, toQueryString } = useQueryParams()
   const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
     const sortBy =
       sortDescriptor.direction === 'ascending' ? `-${sortDescriptor.column}` : sortDescriptor.column
-    router.push({ query: { ...router.query, sortBy } })
+    router.push(toQueryString({ ...query, sortBy: sortBy as string }))
   }
   const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
@@ -322,7 +327,7 @@ function ListTable({
           aria-labelledby={LIST_PAGE_TITLE_ID}
           selectionMode={selectionMode}
           onSortChange={onSortChange}
-          sortDescriptor={parseSortQuery(router.query.sortBy) || parseInitialSort(list.initialSort)}
+          sortDescriptor={parseSortQuery(query.sortBy!) || parseInitialSort(list.initialSort)}
           density="spacious"
           overflowMode="truncate"
           onSelectionChange={setSelectedKeys}
@@ -359,7 +364,7 @@ function ListTable({
           <TableBody items={data?.items ?? []}>
             {row => {
               return (
-                <Row href={`/${list.path}/${row?.id}`}>
+                <Row href={`${adminPath}/${list.path}/${row?.id}`}>
                   {key => {
                     const field = list.fields[key]
                     const value = row[key]
