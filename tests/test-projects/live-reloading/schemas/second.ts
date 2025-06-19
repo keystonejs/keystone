@@ -11,7 +11,7 @@ export const lists = {
   Something: list({
     access: allowAll,
     fields: {
-      text: text({ label: 'Very Important Text' }),
+      text: text({ ui: { label: 'Very Important Text' } }),
       virtual: virtual({
         field: g.field({
           type: g.String,
