@@ -29,14 +29,12 @@ function Navigation({
   const { data } = useQuery<{
     authenticatedItem: null | {
       label: string
-      id: string
     }
   }>(
     useMemo(
       () => gql`
     query KsAuthFetchSession {
       authenticatedItem {
-        id
         label: ${labelField}
       }
     }
