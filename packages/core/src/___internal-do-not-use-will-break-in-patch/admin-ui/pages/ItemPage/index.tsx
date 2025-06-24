@@ -245,6 +245,8 @@ function ItemForm({
             groups={list.groups}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
+            fieldModes={fieldModes}
+            fieldPositions={fieldPositions}
             onChange={useCallback(value => setValue(value), [setValue])}
             value={value}
             isRequireds={isRequireds}
