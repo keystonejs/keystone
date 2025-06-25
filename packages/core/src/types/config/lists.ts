@@ -191,7 +191,7 @@ export type ConditionalFieldFilterCase<ListTypeInfo extends BaseListTypeInfo> =
   | (ListTypeInfo extends []
       ? any
       : {
-          [K in keyof ListTypeInfo['inputs']['update']]: {
+          [K in keyof ListTypeInfo['inputs']['update']]?: {
             equals?: ListTypeInfo['inputs']['update'][K]
             in?: ListTypeInfo['inputs']['update'][K][]
             not?: {

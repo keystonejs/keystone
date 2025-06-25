@@ -37,6 +37,7 @@ export function testFilter(
   if (filter === undefined) return false
   if (typeof filter === 'boolean') return filter
   for (const [key, filterOnField] of Object.entries(filter)) {
+    if (!filterOnField) continue
     const serializedValue = serialized[key]
     if (!applyFilter(filterOnField, serializedValue)) return false
     if (filterOnField.not !== undefined && applyFilter(filterOnField.not, serializedValue)) {
