@@ -6,19 +6,7 @@ export { Field } from './Field'
 
 export const Cell: CellComponent<typeof controller> = ({ value }) => {
   if (!value) return null
-  return (
-    <div
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        height: 24,
-        lineHeight: 0,
-        width: 24,
-      }}
-    >
-      {value.filename}
-    </div>
-  )
+  return value.filename
 }
 
 type FileData = {
