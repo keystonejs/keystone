@@ -29,6 +29,7 @@ function validateComponentBlockProps(
   path: ReadonlyPropPath
 ): any {
   if (schema.kind === 'form') {
+    value = value === undefined ? schema.defaultValue : value
     if (schema.validate(value)) {
       return value
     }
