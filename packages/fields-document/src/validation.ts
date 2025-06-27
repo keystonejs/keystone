@@ -99,12 +99,6 @@ function validateComponentBlockProps(
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError(`Object value must be an object but is ${typeof value}`, path)
     }
-    const allowedKeysSet = new Set(Object.keys(schema.fields))
-    for (const key of Object.keys(value)) {
-      if (!allowedKeysSet.has(key)) {
-        throw new PropValidationError(`Key on object value "${key}" is not allowed`, path)
-      }
-    }
     const val: Record<string, any> = {}
     for (const key of Object.keys(schema.fields)) {
       const propVal = validateComponentBlockProps(

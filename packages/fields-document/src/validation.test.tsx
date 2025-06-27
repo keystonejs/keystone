@@ -368,25 +368,6 @@ test('missing relationships', () => {
   )
 })
 
-test('excess prop', () => {
-  expect(
-    validate([
-      {
-        type: 'component-block',
-        props: { something: true, prop: '' },
-        component: 'basic',
-        children: [],
-      },
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      },
-    ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Key on object value \\"something\\" is not allowed at " []`
-  )
-})
-
 test('form prop validation', () => {
   expect(
     validate([
