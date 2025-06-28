@@ -4,9 +4,9 @@ import resolve from 'resolve'
 import type { AdminMetaSource } from '../../lib/create-admin-meta'
 import type { KeystoneConfig } from '../../types'
 
-function doesConfigExist(path: string[]) {
+function doesConfigExist(adminPath: string, path: string[]) {
   try {
-    const configPath = Path.join(process.cwd(), ...path)
+    const configPath = Path.join(adminPath, ...path)
     resolve.sync(configPath, {
       extensions: ['.ts', '.tsx', '.js'],
       preserveSymlinks: false,
@@ -18,7 +18,11 @@ function doesConfigExist(path: string[]) {
   }
 }
 
-export function appTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource) {
+export function adminConfigTemplate(
+  config: KeystoneConfig,
+  adminMeta: AdminMetaSource,
+  adminPath: string
+) {
   const allViews = adminMeta.views.map(viewRelativeToProject => {
     const isRelativeToFile =
       viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../')
@@ -32,29 +36,67 @@ export function appTemplate(config: KeystoneConfig, adminMeta: AdminMetaSource) 
     return JSON.stringify(viewRelativeToAppFile)
   })
   // -- TEMPLATE START
-  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
-
-${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
+  return `/* eslint-disable */\n${allViews
+    .map((views, i) => `import * as view${i} from ${views}`)
+    .join('\n')}
 
 ${
-  doesConfigExist(['.keystone', 'admin', 'config'])
-    ? `import * as packageAdminConfig from "../../../.keystone/admin/config"`
-    : 'let packageAdminConfig = {}'
+  doesConfigExist(adminPath, ['.admin', 'config'])
+    ? `import * as packageAdminConfig from "./config"`
+    : 'const packageAdminConfig = {}'
 }
 
 ${
-  doesConfigExist(['admin', 'config'])
-    ? `import * as userAdminConfig from "../../../admin/config"`
-    : 'let userAdminConfig = {}'
+  doesConfigExist(adminPath, ['config'])
+    ? `import * as userAdminConfig from "../config"`
+    : 'const userAdminConfig = {}'
 }
-
-export default getApp({
+export const config = {
   adminConfig: {
     ...packageAdminConfig,
     ...userAdminConfig
   },
-  apiPath: "${config.graphql.path}",
+  apiPath: '${config.graphql.path}',
+  adminPath: '${config.ui.basePath}',
   fieldViews: [${allViews.map((_, i) => `view${i}`)}],
-})
+};
 `
+  // -- TEMPLATE END
+}
+
+export function adminLayoutTemplate() {
+  // -- TEMPLATE START
+  return `'use client'
+import { Layout } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App'
+import { config } from './.admin'
+
+
+export default function AdminLayout ({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <Layout config={config as any}>
+      {children}
+    </Layout>
+  )
+}`
+  // -- TEMPLATE END
+}
+
+export function adminRootLayoutTemplate() {
+  // -- TEMPLATE START
+  return `export default function RootLayout ({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}`
+  // -- TEMPLATE END
 }
