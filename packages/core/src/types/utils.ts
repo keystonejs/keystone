@@ -90,7 +90,7 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
     },
     ui: {
       labels: {
-        lable: ui?.label || humanize(isSingleton ? singular : plural),
+        label: ui?.label || humanize(isSingleton ? singular : plural),
         singular: ui?.singular || humanize(singular),
         plural: ui?.plural || humanize(plural),
         path: ui?.path || labelToPath(humanize(isSingleton ? singular : plural))
