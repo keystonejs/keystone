@@ -18,6 +18,22 @@ export type AuthSession = {
   data: unknown // TODO: use ListTypeInfo
 }
 
+function getAuthGqlNames (singular: string): AuthGqlNames {
+  const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
+  return {
+    itemQueryName: lowerSingularName,
+    whereUniqueInputName: `${singular}WhereUniqueInput`,
+
+    authenticateItemWithPassword: `authenticate${singular}WithPassword`,
+    ItemAuthenticationWithPasswordResult: `${singular}AuthenticationWithPasswordResult`,
+    ItemAuthenticationWithPasswordSuccess: `${singular}AuthenticationWithPasswordSuccess`,
+    ItemAuthenticationWithPasswordFailure: `${singular}AuthenticationWithPasswordFailure`,
+
+    CreateInitialInput: `CreateInitial${singular}Input`,
+    createInitialItem: `createInitial${singular}`,
+  } as const
+}
+
 // TODO: use TypeInfo and listKey for types
 /**
  * createAuth function
@@ -31,17 +47,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   identityField,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
-  const authGqlNames: AuthGqlNames = {
-    // Core
-    authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
-    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
-    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
-    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
-    // Initial data
-    CreateInitialInput: `CreateInitial${listKey}Input`,
-    createInitialItem: `createInitial${listKey}`,
-  }
-
   /**
    * getAdditionalFiles
    *
@@ -63,6 +68,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
             ? 'title'
             : 'id')
 
+    const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -85,19 +91,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return filesToWrite
   }
 
-  /**
-   * extendGraphqlSchema
-   *
-   * Must be added to the extendGraphqlSchema config. Can be composed.
-   */
-  const authExtendGraphqlSchema = getSchemaExtension({
-    identityField,
-    listKey,
-    secretField,
-    gqlNames: authGqlNames,
-    initFirstItem,
-    sessionData,
-  })
 
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
     config: KeystoneConfig<TypeInfo>
@@ -203,7 +196,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return { kind: 'redirect', to: `${basePath}/signin` }
   }
 
-  function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
+  function defaultIsAccessAllowed({ session }: KeystoneContext) {
     return session !== undefined
   }
 
@@ -251,7 +244,22 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
     const { graphql } = config
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = graphql ?? {}
-    const authListConfig = config.lists[listKey]
+    const listConfig = config.lists[listKey]
+
+    /**
+    * extendGraphqlSchema
+    *
+    * Must be added to the extendGraphqlSchema config. Can be composed.
+    */
+    const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
+    const authExtendGraphqlSchema = getSchemaExtension({
+      authGqlNames,
+      listKey,
+      identityField,
+      secretField,
+      initFirstItem,
+      sessionData,
+    })
 
     return {
       ...config,
@@ -266,9 +274,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       lists: {
         ...config.lists,
         [listKey]: {
-          ...authListConfig,
+          ...listConfig,
           fields: {
-            ...authListConfig.fields,
+            ...listConfig.fields,
           },
         },
       },

@@ -10,16 +10,16 @@ const AUTHENTICATION_FAILURE = {
 } as const
 
 export function getBaseAuthSchema<I extends string, S extends string>({
+  authGqlNames,
   listKey,
   identityField,
   secretField,
-  gqlNames,
   base,
 }: {
+  authGqlNames: AuthGqlNames
   listKey: string
   identityField: I
   secretField: S
-  gqlNames: AuthGqlNames
   base: BaseSchemaMeta
 }) {
   const kdf = getPasswordFieldKDF(base.schema, listKey, secretField)
@@ -31,24 +31,24 @@ export function getBaseAuthSchema<I extends string, S extends string>({
     sessionToken: string
     item: BaseItem
   }>()({
-    name: gqlNames.ItemAuthenticationWithPasswordSuccess,
+    name: authGqlNames.ItemAuthenticationWithPasswordSuccess,
     fields: {
       sessionToken: g.field({ type: g.nonNull(g.String) }),
       item: g.field({ type: g.nonNull(base.object(listKey)) }),
     },
   })
   const ItemAuthenticationWithPasswordFailure = g.object<{ message: string }>()({
-    name: gqlNames.ItemAuthenticationWithPasswordFailure,
+    name: authGqlNames.ItemAuthenticationWithPasswordFailure,
     fields: {
       message: g.field({ type: g.nonNull(g.String) }),
     },
   })
   const AuthenticationResult = g.union({
-    name: gqlNames.ItemAuthenticationWithPasswordResult,
+    name: authGqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
     resolveType(val) {
-      if ('sessionToken' in val) return gqlNames.ItemAuthenticationWithPasswordSuccess
-      return gqlNames.ItemAuthenticationWithPasswordFailure
+      if ('sessionToken' in val) return authGqlNames.ItemAuthenticationWithPasswordSuccess
+      return authGqlNames.ItemAuthenticationWithPasswordFailure
     },
   })
 
@@ -56,7 +56,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
     query: {
       authenticatedItem: g.field({
         type: base.object(listKey),
-        resolve(root, args, context: KeystoneContext) {
+        resolve(rootVal, args, context: KeystoneContext) {
           const { session } = context
           if (!session?.itemId) return null
 
@@ -76,14 +76,14 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           return true
         },
       }),
-      [gqlNames.authenticateItemWithPassword]: g.field({
+      [authGqlNames.authenticateItemWithPassword]: g.field({
         type: AuthenticationResult,
         args: {
           [identityField]: g.arg({ type: g.nonNull(g.String) }),
           [secretField]: g.arg({ type: g.nonNull(g.String) }),
         },
         async resolve(
-          root,
+          rootVal,
           { [identityField]: identity, [secretField]: secret },
           context: KeystoneContext
         ) {
