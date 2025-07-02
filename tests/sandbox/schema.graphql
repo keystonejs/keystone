@@ -454,6 +454,7 @@ input UserRelateToOneForCreateInput {
 input TodoRelateToManyForCreateInput {
   create: [TodoCreateInput!]
   connect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
 }
 
 type Todo {

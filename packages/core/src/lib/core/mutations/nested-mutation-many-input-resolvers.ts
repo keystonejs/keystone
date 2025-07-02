@@ -43,29 +43,40 @@ export function resolveRelateToManyForCreateInput(
   tag: string
 ) {
   return async (value: _CreateValueType) => {
-    if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
+    if (
+      !Array.isArray(value.connect) &&
+      !Array.isArray(value.create) &&
+      !Array.isArray(value.set)
+    ) {
       throw userInputError(
-        `You must provide "connect" or "create" in to-many relationship inputs for "create" operations.`
+        `You must provide at least one of "set", "connect" or "create" in to-many relationship inputs for "create" operations.`
       )
     }
 
     // Perform queries for the connections
     const connects = Promise.allSettled(
-      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
+      getResolvedUniqueWheres(value.connect ?? [], context, foreignList, 'connect')
+    )
+    const sets = Promise.allSettled(
+      getResolvedUniqueWheres(value.set ?? [], context, foreignList, 'set')
     )
 
     // Perform nested mutations for the creations
     const creates = Promise.allSettled(
-      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+      (value.create ?? []).map(x => nestedMutationState.create(x, foreignList))
     )
-    const [connectResult, createResult] = await Promise.all([connects, creates])
+
+    // Resolve items
+    const [connectResult, createResult, setResult] = await Promise.all([connects, creates, sets])
 
     // Collect all the errors
-    const errors = [...connectResult, ...createResult].filter(isRejected)
+    const errors = [...connectResult, ...createResult, ...setResult].filter(isRejected)
     if (errors.length) throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag })))
 
     return {
-      connect: [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value),
+      connect: [...setResult, ...connectResult, ...createResult]
+        .filter(isFulfilled)
+        .map(x => x.value),
     }
   }
 }
@@ -87,6 +98,7 @@ export function resolveRelateToManyForUpdateInput(
         `You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`
       )
     }
+
     if (value.set && value.disconnect) {
       throw userInputError(
         `The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`
@@ -95,19 +107,21 @@ export function resolveRelateToManyForUpdateInput(
 
     // Perform queries for the connections
     const connects = Promise.allSettled(
-      getResolvedUniqueWheres(value.connect || [], context, foreignList, 'connect')
+      getResolvedUniqueWheres(value.connect ?? [], context, foreignList, 'connect')
     )
     const disconnects = Promise.allSettled(
-      getResolvedUniqueWheres(value.disconnect || [], context, foreignList, 'disconnect')
+      getResolvedUniqueWheres(value.disconnect ?? [], context, foreignList, 'disconnect')
     )
     const sets = Promise.allSettled(
-      getResolvedUniqueWheres(value.set || [], context, foreignList, 'set')
+      getResolvedUniqueWheres(value.set ?? [], context, foreignList, 'set')
     )
 
     // Perform nested mutations for the creations
     const creates = Promise.allSettled(
-      (value.create || []).map(x => nestedMutationState.create(x, foreignList))
+      (value.create ?? []).map(x => nestedMutationState.create(x, foreignList))
     )
+
+    // Resolve items
     const [connectResult, createResult, disconnectResult, setResult] = await Promise.all([
       connects,
       creates,

@@ -216,6 +216,7 @@ input PersonCreateInput {
 input TaskRelateToManyForCreateInput {
   create: [TaskCreateInput!]
   connect: [TaskWhereUniqueInput!]
+  set: [TaskWhereUniqueInput!]
 }
 
 """

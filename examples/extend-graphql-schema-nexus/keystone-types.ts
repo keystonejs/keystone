@@ -170,6 +170,7 @@ export type AuthorCreateInput = {
 export type PostRelateToManyForCreateInput = {
   readonly create?: ReadonlyArray<PostCreateInput> | PostCreateInput | null
   readonly connect?: ReadonlyArray<PostWhereUniqueInput> | PostWhereUniqueInput | null
+  readonly set?: ReadonlyArray<PostWhereUniqueInput> | PostWhereUniqueInput | null
 }
 
 export type KeystoneAdminUIFieldMetaIsNonNull =

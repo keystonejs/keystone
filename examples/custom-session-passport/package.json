@@ -7,7 +7,7 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone build --no-ui --frozen"
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.1",

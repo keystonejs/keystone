@@ -106,6 +106,7 @@ input SettingsCreateInput {
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
 }
 
 type Post {

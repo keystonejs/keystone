@@ -191,6 +191,7 @@ input AuthorCreateInput {
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
 }
 
 """

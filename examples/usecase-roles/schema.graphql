@@ -186,6 +186,7 @@ input RoleRelateToOneForCreateInput {
 input TodoRelateToManyForCreateInput {
   create: [TodoCreateInput!]
   connect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
 }
 
 type Role {
@@ -279,6 +280,7 @@ input RoleCreateInput {
 input UserRelateToManyForCreateInput {
   create: [UserCreateInput!]
   connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
 }
 
 """

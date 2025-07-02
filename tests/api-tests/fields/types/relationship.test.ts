@@ -1,10 +1,10 @@
-import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql'
-import type { KeystoneConfigPre } from '@keystone-6/core/types'
+import { assertInputObjectType, assertObjectType, parse, printType } from 'graphql'
 
 import { config, list } from '@keystone-6/core'
-import { text, relationship } from '@keystone-6/core/fields'
-import { allowAll } from '@keystone-6/core/access'
+import type { KeystoneConfigPre } from '@keystone-6/core/types'
 import { createSystem } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
+import { allowAll } from '@keystone-6/core/access'
+import { relationship, text } from '@keystone-6/core/fields'
 
 const fieldKey = 'foo'
 
@@ -80,6 +80,7 @@ describe('Type Generation', () => {
 "input ZipRelateToManyForCreateInput {
   create: [ZipCreateInput!]
   connect: [ZipWhereUniqueInput!]
+  set: [ZipWhereUniqueInput!]
 }"
 `)
   })

@@ -152,6 +152,7 @@ input TodoCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
 }
 
 type Tag {
@@ -210,6 +211,7 @@ input TagCreateInput {
 input TodoRelateToManyForCreateInput {
   create: [TodoCreateInput!]
   connect: [TodoWhereUniqueInput!]
+  set: [TodoWhereUniqueInput!]
 }
 
 """
