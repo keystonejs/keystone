@@ -86,6 +86,7 @@ input OrderCreateInput {
 input ItemRelateToManyForCreateInput {
   create: [ItemCreateInput!]
   connect: [ItemWhereUniqueInput!]
+  set: [ItemWhereUniqueInput!]
 }
 
 type Item {
