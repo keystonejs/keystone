@@ -166,6 +166,7 @@ Options:
 
 - `description` (default: `undefined`): Sets the description of the associated GraphQL type in the generated GraphQL API documentation.
   Overrides the list-level `description` config option.
+- `singular`: (default: Singular list key, e.g. `'User'`): Overrides the name used in singular mutations and queries (e.g. `user()`, `updateUser()`, etc).
 - `plural`: (default: Pluralised list key, e.g. `'Users'`): Overrides the name used in multiple mutations and queries (e.g. `users()`, `updateUsers()`, etc).
 - `maxTake` (default: `undefined`): Allows you to specify the maximum `take` number for query operations on this list in the GraphQL API.
 - `cacheHint` (default: `undefined`): Allows you to specify the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this list.
@@ -185,8 +186,8 @@ export default config({
     SomeListName: list({
       graphql: {
         description: '...',
-        itemQueryName: '...',
-        listQueryName: '...',
+        singular: '...',
+        plural: '...',
         maxTake: 100,
         cacheHint: { maxAge: 60, scope: 'PRIVATE' },
         omit: {
