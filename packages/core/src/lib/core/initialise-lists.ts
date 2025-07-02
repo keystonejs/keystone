@@ -531,6 +531,9 @@ function getListsWithInitialisedFields(
           connect: g.arg({
             type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)),
           }),
+          set: g.arg({
+            type: g.list(g.nonNull(listRef.graphql.types.uniqueWhere)),
+          }),
         }
       },
     })
