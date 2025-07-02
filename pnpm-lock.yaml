@@ -1877,7 +1877,7 @@ importers:
         version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
       image-size:
         specifier: ^2.0.0
-        version: 2.0.1
+        version: 2.0.2
       inflection:
         specifier: ^3.0.0
         version: 3.0.2
@@ -8517,8 +8517,8 @@ packages:
     resolution: {integrity: sha512-bAH5jbK/F3T3Jls4I0SO1hmPR0dKU0a7+SY6n1yzRtG54FLO8d6w/nxLFX2Nb7dBu6cCWXPaAME6cYqFUMmuCA==}
     engines: {node: '>= 4'}
 
-  image-size@2.0.1:
-    resolution: {integrity: sha512-NI6NK/2zchlZopsQrcVIS7jxA0/rtIy74B+/rx5s7rKQyFebmQjZVhzxXgRZJROk+WhhOq+S6sUaODxp0L5hfg==}
+  image-size@2.0.2:
+    resolution: {integrity: sha512-IRqXKlaXwgSMAMtpNzZa1ZAe8m+Sa1770Dhk8VkSsP9LS+iHD62Zd8FQKs8fbPiagBE7BzoFX23cxFnwshpV6w==}
     engines: {node: '>=16.x'}
     hasBin: true
 
@@ -20803,7 +20803,7 @@ snapshots:
 
   ignore@7.0.3: {}
 
-  image-size@2.0.1: {}
+  image-size@2.0.2: {}
 
   immer@10.1.1: {}
 
