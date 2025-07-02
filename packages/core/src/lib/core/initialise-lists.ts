@@ -111,7 +111,6 @@ export type InitialisedList = {
   graphql: {
     types: GraphQLTypesForList
     names: GraphQLNames
-    namePlural: string // TODO: remove
     isEnabled: {
       type: boolean
       query: boolean
@@ -738,7 +737,6 @@ function getListsWithInitialisedFields(
         names: {
           ...names.graphql.names,
         },
-        namePlural: names.graphql.namePlural, // TODO: remove
         ...intermediateList.graphql,
       },
 
