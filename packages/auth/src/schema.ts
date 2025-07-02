@@ -1,23 +1,22 @@
 import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql'
 
 import { g } from '@keystone-6/core'
-import { getGqlNames } from '@keystone-6/core/types'
 import type { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
 
 export const getSchemaExtension = ({
-  identityField,
+  authGqlNames,
   listKey,
+  identityField,
   secretField,
-  gqlNames,
   initFirstItem,
   sessionData,
 }: {
-  identityField: string
+  authGqlNames: AuthGqlNames
   listKey: string
+  identityField: string
   secretField: string
-  gqlNames: AuthGqlNames
   initFirstItem?: InitFirstItemConfig<any>
   passwordResetLink?: AuthTokenTypeConfig
   magicAuthLink?: AuthTokenTypeConfig
@@ -25,7 +24,7 @@ export const getSchemaExtension = ({
 }) =>
   g.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
-      base.schema.getType(`${listKey}WhereUniqueInput`)
+      base.schema.getType(authGqlNames.whereUniqueInputName)
     )
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (
@@ -42,18 +41,17 @@ export const getSchemaExtension = ({
     }
 
     const baseSchema = getBaseAuthSchema({
+      authGqlNames: authGqlNames,
       identityField,
       listKey,
       secretField,
-      gqlNames,
       base,
     })
 
     // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
     // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
     // they want to add a GraphQL field, they'll probably use a virtual field
-    const { itemQueryName } = getGqlNames({ listKey, pluralGraphQLName: '' })
-    const query = `query($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${sessionData} } }`
+    const query = `query($id: ID!) { ${authGqlNames.itemQueryName}(where: { id: $id }) { ${sessionData} } }`
 
     let ast
     try {
@@ -75,10 +73,10 @@ export const getSchemaExtension = ({
       baseSchema.extension,
       initFirstItem &&
         getInitFirstItemSchema({
+          authGqlNames,
           listKey,
           fields: initFirstItem.fields,
           defaultItemData: initFirstItem.itemData,
-          gqlNames,
           graphQLSchema: base.schema,
           ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
         }),

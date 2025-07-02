@@ -17,44 +17,38 @@ export type MaybePromise<T> = T | Promise<T>
 // WARNING: may break in patch
 export type GraphQLNames = ReturnType<typeof getGqlNames>
 
-export function getGqlNames({
-  listKey,
-  pluralGraphQLName,
-}: {
-  listKey: string
-  pluralGraphQLName: string
-}) {
-  const lowerPluralName = pluralGraphQLName.charAt(0).toLowerCase() + pluralGraphQLName.slice(1)
-  const lowerSingularName = listKey.charAt(0).toLowerCase() + listKey.slice(1)
+export function getGqlNames({ singular, plural }: { singular: string; plural: string }) {
+  const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
+  const lowerPluralName = plural.charAt(0).toLowerCase() + plural.slice(1)
   return {
-    outputTypeName: listKey,
-    whereInputName: `${listKey}WhereInput`,
-    whereUniqueInputName: `${listKey}WhereUniqueInput`,
+    outputTypeName: singular,
+    whereInputName: `${singular}WhereInput`,
+    whereUniqueInputName: `${singular}WhereUniqueInput`,
 
     // create
-    createInputName: `${listKey}CreateInput`,
-    createMutationName: `create${listKey}`,
-    createManyMutationName: `create${pluralGraphQLName}`,
-    relateToOneForCreateInputName: `${listKey}RelateToOneForCreateInput`,
-    relateToManyForCreateInputName: `${listKey}RelateToManyForCreateInput`,
+    createInputName: `${singular}CreateInput`,
+    createMutationName: `create${singular}`,
+    createManyMutationName: `create${plural}`,
+    relateToOneForCreateInputName: `${singular}RelateToOneForCreateInput`,
+    relateToManyForCreateInputName: `${singular}RelateToManyForCreateInput`,
 
     // read
     itemQueryName: lowerSingularName,
     listQueryName: lowerPluralName,
     listQueryCountName: `${lowerPluralName}Count`,
-    listOrderName: `${listKey}OrderByInput`,
+    listOrderName: `${singular}OrderByInput`,
 
     // update
-    updateInputName: `${listKey}UpdateInput`,
-    updateMutationName: `update${listKey}`,
-    updateManyInputName: `${listKey}UpdateArgs`,
-    updateManyMutationName: `update${pluralGraphQLName}`,
-    relateToOneForUpdateInputName: `${listKey}RelateToOneForUpdateInput`,
-    relateToManyForUpdateInputName: `${listKey}RelateToManyForUpdateInput`,
+    updateInputName: `${singular}UpdateInput`,
+    updateMutationName: `update${singular}`,
+    updateManyInputName: `${singular}UpdateArgs`,
+    updateManyMutationName: `update${plural}`,
+    relateToOneForUpdateInputName: `${singular}RelateToOneForUpdateInput`,
+    relateToManyForUpdateInputName: `${singular}RelateToManyForUpdateInput`,
 
     // delete
-    deleteMutationName: `delete${listKey}`,
-    deleteManyMutationName: `delete${pluralGraphQLName}`,
+    deleteMutationName: `delete${singular}`,
+    deleteManyMutationName: `delete${plural}`,
   }
 }
 
@@ -70,29 +64,30 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
     )
   }
 
-  const computedSingular = humanize(listKey)
-  const computedPlural = pluralize.plural(computedSingular)
-  const computedLabel = isSingleton ? computedSingular : computedPlural
-  const path = ui?.path || labelToPath(computedLabel)
+  const singular = listKey // an assumption
+  const plural = pluralize.plural(singular)
 
-  const pluralGraphQLName = graphql?.plural || labelToClass(computedPlural)
-  if (pluralGraphQLName === listKey) {
+  const graphqlSingular = graphql?.singular || labelToClass(singular)
+  const graphqlPlural = graphql?.plural || labelToClass(plural)
+  if (graphqlSingular === graphqlPlural) {
     throw new Error(
-      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+      `The singular and plural name used by GraphQL must be different, but ${graphqlSingular} is the same as ${graphqlPlural}`
     )
   }
 
   return {
     graphql: {
-      names: getGqlNames({ listKey, pluralGraphQLName }),
-      namePlural: pluralGraphQLName,
+      names: getGqlNames({
+        singular: graphqlSingular,
+        plural: graphqlPlural,
+      }),
     },
     ui: {
       labels: {
-        label: ui?.label || computedLabel,
-        singular: ui?.singular || computedSingular,
-        plural: ui?.plural || computedPlural,
-        path,
+        label: ui?.label || humanize(isSingleton ? singular : plural),
+        singular: ui?.singular || humanize(singular),
+        plural: ui?.plural || humanize(plural),
+        path: ui?.path || labelToPath(humanize(isSingleton ? singular : plural)),
       },
     },
   }

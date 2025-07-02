@@ -7,17 +7,17 @@ import type { Extension } from '@keystone-6/core/graphql-ts'
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 
 export function getInitFirstItemSchema({
+  authGqlNames,
   listKey,
   fields,
   defaultItemData,
-  gqlNames,
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
 }: {
+  authGqlNames: AuthGqlNames
   listKey: string
   fields: InitFirstItemConfig<any>['fields']
   defaultItemData: InitFirstItemConfig<any>['itemData']
-  gqlNames: AuthGqlNames
   graphQLSchema: GraphQLSchema
   ItemAuthenticationWithPasswordSuccess: g<
     typeof g.object<{
@@ -36,12 +36,12 @@ export function getInitFirstItemSchema({
     fields: Object.fromEntries(
       Object.entries(createInputConfig.fields).filter(([fieldKey]) => fieldsSet.has(fieldKey))
     ),
-    name: gqlNames.CreateInitialInput,
+    name: authGqlNames.CreateInitialInput,
   })
 
   return {
     mutation: {
-      [gqlNames.createInitialItem]: g.field({
+      [authGqlNames.createInitialItem]: g.field({
         type: g.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: g.arg({ type: g.nonNull(initialCreateInput) }) },
         async resolve(rootVal, { data }, context: KeystoneContext) {

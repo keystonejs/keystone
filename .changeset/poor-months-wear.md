@@ -2,4 +2,4 @@
 "@keystone-6/fields-document": patch
 ---
 
-Handle adding extra form fields to component blocks for existing data
+Fix new component-block form fields failing validation on existing data

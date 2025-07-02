@@ -282,8 +282,11 @@ export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
    */
   description?: string
   /**
+   * The singular form of the list key to use in the generated GraphQL schema.
+   */
+  singular?: string
+  /**
    * The plural form of the list key to use in the generated GraphQL schema.
-   * Note that there is no singular here because the singular used in the GraphQL schema is the list key.
    */
   plural?: string
   /**

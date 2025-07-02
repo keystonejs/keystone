@@ -1,12 +1,16 @@
 import type { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types'
 
 export type AuthGqlNames = {
-  CreateInitialInput: string
-  createInitialItem: string
+  itemQueryName: string
+  whereUniqueInputName: string
+
   authenticateItemWithPassword: string
   ItemAuthenticationWithPasswordResult: string
   ItemAuthenticationWithPasswordSuccess: string
   ItemAuthenticationWithPasswordFailure: string
+
+  CreateInitialInput: string
+  createInitialItem: string
 }
 
 export type SendTokenFn = (args: {
