@@ -170,6 +170,7 @@ input PersonCreateInput {
 input TaskRelateToManyForCreateInput {
   create: [TaskCreateInput!]
   connect: [TaskWhereUniqueInput!]
+  set: [TaskWhereUniqueInput!]
 }
 
 type Order {
@@ -255,11 +256,13 @@ input OrderCreateInput {
 input OptionRelateToManyForCreateInput {
   create: [OptionCreateInput!]
   connect: [OptionWhereUniqueInput!]
+  set: [OptionWhereUniqueInput!]
 }
 
 input ProductRelateToManyForCreateInput {
   create: [ProductCreateInput!]
   connect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
 }
 
 type Option {
