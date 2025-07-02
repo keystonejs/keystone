@@ -17,13 +17,7 @@ export type MaybePromise<T> = T | Promise<T>
 // WARNING: may break in patch
 export type GraphQLNames = ReturnType<typeof getGqlNames>
 
-export function getGqlNames({
-  singular,
-  plural,
-}: {
-  singular: string
-  plural: string
-}) {
+export function getGqlNames({ singular, plural }: { singular: string; plural: string }) {
   const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
   const lowerPluralName = plural.charAt(0).toLowerCase() + plural.slice(1)
   return {
@@ -85,7 +79,7 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
     graphql: {
       names: getGqlNames({
         singular: graphqlSingular,
-        plural: graphqlPlural
+        plural: graphqlPlural,
       }),
     },
     ui: {
@@ -93,7 +87,7 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
         label: ui?.label || humanize(isSingleton ? singular : plural),
         singular: ui?.singular || humanize(singular),
         plural: ui?.plural || humanize(plural),
-        path: ui?.path || labelToPath(humanize(isSingleton ? singular : plural))
+        path: ui?.path || labelToPath(humanize(isSingleton ? singular : plural)),
       },
     },
   }

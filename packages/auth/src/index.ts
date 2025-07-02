@@ -18,7 +18,7 @@ export type AuthSession = {
   data: unknown // TODO: use ListTypeInfo
 }
 
-function getAuthGqlNames (singular: string): AuthGqlNames {
+function getAuthGqlNames(singular: string): AuthGqlNames {
   const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
   return {
     itemQueryName: lowerSingularName,
@@ -90,7 +90,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
     return filesToWrite
   }
-
 
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
     config: KeystoneConfig<TypeInfo>
@@ -247,10 +246,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     const listConfig = config.lists[listKey]
 
     /**
-    * extendGraphqlSchema
-    *
-    * Must be added to the extendGraphqlSchema config. Can be composed.
-    */
+     * extendGraphqlSchema
+     *
+     * Must be added to the extendGraphqlSchema config. Can be composed.
+     */
     const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
     const authExtendGraphqlSchema = getSchemaExtension({
       authGqlNames,
