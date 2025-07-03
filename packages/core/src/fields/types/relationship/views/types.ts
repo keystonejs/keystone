@@ -41,4 +41,6 @@ export type RelationshipController = FieldController<
   many: boolean
   columns: string[] | null
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
+  selectFilter: Record<string, any> | null
+  sort: { field: string; direction: 'ASC' | 'DESC' } | null
 }

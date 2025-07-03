@@ -17,6 +17,8 @@ export function ComboboxMany({
   list,
   searchFields,
   state,
+  filter,
+  sort,
   ...props
 }: {
   autoFocus?: boolean
@@ -32,6 +34,8 @@ export function ComboboxMany({
   searchFields: string[]
   list: ListMeta
   placeholder?: string
+  filter?: Record<string, any> | null
+  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
   state: {
     kind: 'many'
     value: RelationshipValue[]
@@ -44,6 +48,8 @@ export function ComboboxMany({
     list,
     searchFields,
     state,
+    filter,
+    sort,
   })
   const [shouldShowErrors, setShouldShowErrors] = useState(false)
   const validationMessages =

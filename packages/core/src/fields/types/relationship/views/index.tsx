@@ -83,6 +83,8 @@ export function Field(props: FieldProps<typeof controller>) {
                   onChange?.({ ...value, value: newItems })
                 },
               }}
+              filter={field.selectFilter}
+              sort={field.sort}
             />
           ) : (
             <ComboboxSingle
@@ -102,6 +104,8 @@ export function Field(props: FieldProps<typeof controller>) {
                   onChange?.({ ...value, value: newItem })
                 },
               }}
+              filter={field.selectFilter}
+              sort={field.sort}
             />
           )}
         </ContextualActions>
@@ -222,7 +226,11 @@ export function controller(
       refLabelField: string
       refSearchFields: string[]
     } & (
-      | { displayMode: 'select' }
+      | {
+          displayMode: 'select'
+          sort: { field: string; direction: 'ASC' | 'DESC' } | null
+          filter: Record<string, any> | null
+        }
       | { displayMode: 'count' }
       | {
           displayMode: 'table'
@@ -251,13 +259,15 @@ export function controller(
     graphqlSelection:
       displayMode === 'count' || displayMode === 'table'
         ? `${fieldKey}Count`
-        : `${fieldKey} {
+        : `${fieldKey}${many && config.fieldMeta.sort ? `(orderBy: { ${config.fieldMeta.sort.field}: ${config.fieldMeta.sort.direction.toLowerCase()} })` : ''} {
               id
               label: ${refLabelField}
             }`,
     hideCreate: hideCreate || displayMode === 'table',
     columns: displayMode === 'table' ? config.fieldMeta.columns : null,
     initialSort: displayMode === 'table' ? config.fieldMeta.initialSort : null,
+    selectFilter: displayMode === 'select' ? config.fieldMeta.filter : null,
+    sort: displayMode === 'select' ? config.fieldMeta.sort : null,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
@@ -384,6 +394,8 @@ export function controller(
                   props.onChange(newItem === null ? null : newItem.id.toString())
                 },
               }}
+              filter={config.fieldMeta.displayMode === 'select' ? config.fieldMeta.filter : null}
+              sort={config.fieldMeta.displayMode === 'select' ? config.fieldMeta.sort : null}
             />
           )
         }
@@ -405,6 +417,8 @@ export function controller(
                   props.onChange(newItem.map(x => x.id.toString()))
                 },
               }}
+              filter={config.fieldMeta.displayMode === 'select' ? config.fieldMeta.filter : null}
+              sort={config.fieldMeta.displayMode === 'select' ? config.fieldMeta.sort : null}
             />
             <TagGroup
               aria-label={`related ${foreignList.plural}`}

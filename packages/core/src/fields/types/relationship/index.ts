@@ -12,8 +12,10 @@ import {
 } from '../../../types'
 import type { controller } from './views'
 
+type ListKeyFromRef<Ref extends string> = Ref extends `${infer ListKey}.${string}` ? ListKey : Ref
+
 // This is the default display mode for Relationships
-type SelectDisplayConfig = {
+type SelectDisplayConfig<ListTypeInfo extends BaseListTypeInfo, Ref extends string> = {
   ui?: {
     // Sets the relationship to display as a Select field
     displayMode?: 'select'
@@ -23,6 +25,8 @@ type SelectDisplayConfig = {
      */
     labelField?: string
     searchFields?: string[]
+    filter?: ListTypeInfo['all']['lists'][ListKeyFromRef<Ref>]['inputs']['where']
+    sort?: { field: string; direction: 'ASC' | 'DESC' }
   }
 }
 
@@ -130,22 +134,22 @@ type FieldTypeInfo = {
   }
 }
 
-export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
-  ListTypeInfo,
-  FieldTypeInfo
-> & {
+export type RelationshipFieldConfig<
+  ListTypeInfo extends BaseListTypeInfo,
+  Ref extends `${keyof ListTypeInfo['all']['lists'] & string}${'' | `.${string}`}`,
+> = CommonFieldConfig<ListTypeInfo, FieldTypeInfo> & {
   many?: boolean
-  ref: string
+  ref: Ref
   ui?: {
     hideCreate?: boolean
   }
 } & (OneDbConfig | ManyDbConfig) &
-  (SelectDisplayConfig | CountDisplayConfig | TableDisplayConfig)
+  (SelectDisplayConfig<ListTypeInfo, Ref> | CountDisplayConfig | TableDisplayConfig)
 
-export function relationship<ListTypeInfo extends BaseListTypeInfo>({
-  ref,
-  ...config
-}: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+export function relationship<
+  ListTypeInfo extends BaseListTypeInfo,
+  Ref extends `${keyof ListTypeInfo['all']['lists'] & string}${'' | `.${string}`}`,
+>({ ref, ...config }: RelationshipFieldConfig<ListTypeInfo, Ref>): FieldTypeFunc<ListTypeInfo> {
   const { many = false } = config
   const [foreignListKey, foreignFieldKey] = ref.split('.') as [string, string | undefined]
 
@@ -259,6 +263,8 @@ export function relationship<ListTypeInfo extends BaseListTypeInfo>({
           hideCreate,
           refLabelField: specificRefLabelField,
           refSearchFields: specificRefSearchFields,
+          filter: config.ui?.filter ?? null,
+          sort: config.ui?.sort ?? null,
         }
       },
     }
