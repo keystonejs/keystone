@@ -18,6 +18,7 @@ model Author {
   email     String    @unique @default("")
   posts     Post[]    @relation("Post_author")
   createdAt DateTime? @default(now())
+  verified  Boolean   @default(true)
 }
 
 model Post {

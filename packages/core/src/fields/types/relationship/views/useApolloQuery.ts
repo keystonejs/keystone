@@ -29,6 +29,8 @@ export function useApolloQuery(args: {
   labelField: string
   list: ListMeta
   searchFields: string[]
+  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
+  filter?: Record<string, any> | null
   state:
     | { kind: 'many'; value: RelationshipValue[] }
     | { kind: 'one'; value: RelationshipValue | null }
@@ -41,10 +43,15 @@ export function useApolloQuery(args: {
 
   const QUERY: TypedDocumentNode<
     { items: { id: string; label: string | null }[]; count: number },
-    { where: Record<string, any>; take: number; skip: number }
+    {
+      where: Record<string, any>
+      take: number
+      skip: number
+      orderBy: Record<string, any> | undefined
+    }
   > = gql`
-    query RelationshipSelect($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
-      items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
+    query RelationshipSelect($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.graphql.names.listOrderName}!]) {
+      items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
         id: id
         label: ${labelField}
       }
@@ -55,7 +62,15 @@ export function useApolloQuery(args: {
   const debouncedSearch = useDebouncedValue(search, 200)
   const manipulatedSearch =
     state.kind === 'one' && state.value?.label === debouncedSearch ? '' : debouncedSearch
-  const where = useSearchFilter(manipulatedSearch, list, searchFields)
+  const _where = useSearchFilter(manipulatedSearch, list, searchFields)
+
+  const where = useMemo(() => {
+    return args.filter ? { AND: [_where, args.filter] } : _where
+  }, [args.filter, _where])
+
+  const orderBy = useMemo(() => {
+    return args.sort ? { [args.sort.field]: args.sort.direction.toLowerCase() } : undefined
+  }, [args.sort])
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies
@@ -91,7 +106,7 @@ export function useApolloQuery(args: {
   const subsequentItemsToLoad = Math.min(list.pageSize, 50)
   const { data, previousData, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { where, take: initialItemsToLoad, skip: 0 },
+    variables: { where, take: initialItemsToLoad, skip: 0, orderBy },
     client: apolloClient,
   })
 
@@ -116,10 +131,15 @@ export function useApolloQuery(args: {
     ) {
       const QUERY: TypedDocumentNode<
         { items: { id: string; label: string | null }[] },
-        { where: Record<string, any>; take: number; skip: number }
+        {
+          where: Record<string, any>
+          take: number
+          skip: number
+          orderBy: Record<string, any> | undefined
+        }
       > = gql`
-        query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!) {
-          items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip) {
+        query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.graphql.names.listOrderName}!]) {
+          items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
             label: ${labelField}
             id: id
           }
@@ -132,6 +152,7 @@ export function useApolloQuery(args: {
           where,
           take: subsequentItemsToLoad,
           skip,
+          orderBy,
         },
       })
         .then(() => setLastFetchMore(null))

@@ -15,6 +15,8 @@ export function ComboboxSingle({
   list,
   searchFields,
   state,
+  filter,
+  sort,
   ...props
 }: {
   autoFocus?: boolean
@@ -29,6 +31,8 @@ export function ComboboxSingle({
   searchFields: string[]
   list: ListMeta
   placeholder?: string
+  filter?: Record<string, any> | null
+  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
   state: {
     kind: 'one'
     value: RelationshipValue | null
@@ -40,6 +44,8 @@ export function ComboboxSingle({
     list,
     searchFields,
     state,
+    filter,
+    sort,
   })
 
   const [shouldShowErrors, setShouldShowErrors] = useState(false)

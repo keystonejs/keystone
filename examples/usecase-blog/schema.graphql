@@ -8,6 +8,7 @@ type Author {
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
+  verified: Boolean
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -26,6 +27,7 @@ input AuthorWhereInput {
   email: StringFilter
   posts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
+  verified: BooleanFilter
 }
 
 input IDFilter {
@@ -84,11 +86,17 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
   createdAt: OrderDirection
+  verified: OrderDirection
 }
 
 enum OrderDirection {
@@ -101,6 +109,7 @@ input AuthorUpdateInput {
   email: String
   posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
+  verified: Boolean
 }
 
 input PostRelateToManyForUpdateInput {
@@ -120,6 +129,7 @@ input AuthorCreateInput {
   email: String
   posts: PostRelateToManyForCreateInput
   createdAt: DateTime
+  verified: Boolean
 }
 
 input PostRelateToManyForCreateInput {

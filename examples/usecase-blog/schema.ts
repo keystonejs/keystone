@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 // see https://keystonejs.com/docs/fields/overview for the full list of fields
 //   this is a few common fields for an example
-import { text, relationship, timestamp } from '@keystone-6/core/fields'
+import { text, relationship, timestamp, checkbox } from '@keystone-6/core/fields'
 
 // the document field is a more complicated field, so it has it's own package
 import { document } from '@keystone-6/fields-document'
@@ -43,6 +43,10 @@ export const lists = {
         // default this timestamp to Date.now() when first created
         defaultValue: { kind: 'now' },
       }),
+
+      verified: checkbox({
+        defaultValue: true,
+      }),
     },
   }),
 
@@ -72,6 +76,13 @@ export const lists = {
       author: relationship({
         // we could have used 'Author', but then the relationship would only be 1-way
         ref: 'Author.posts',
+        ui: {
+          // prevent the user from selecting an unverified Author
+          filter: {
+            verified: { equals: true },
+          },
+          sort: { direction: 'ASC', field: 'name' },
+        },
         many: false, // only 1 author for each Post (the default)
       }),
 
