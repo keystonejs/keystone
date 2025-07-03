@@ -139,7 +139,7 @@ export function useApolloQuery(args: {
         }
       > = gql`
         query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.graphql.names.listOrderName}!]) {
-          items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip,orderBy: $orderBy) {
+          items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
             label: ${labelField}
             id: id
           }
