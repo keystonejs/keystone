@@ -44,7 +44,7 @@ export const lists = {
         defaultValue: { kind: 'now' },
       }),
 
-      active: checkbox({
+      verified: checkbox({
         defaultValue: true,
       }),
     },
@@ -77,8 +77,9 @@ export const lists = {
         // we could have used 'Author', but then the relationship would only be 1-way
         ref: 'Author.posts',
         ui: {
+          // prevent the user from selecting an unverified Author
           filter: {
-            active: { equals: true },
+            verified: { equals: true },
           },
           sort: { direction: 'ASC', field: 'name' },
         },
