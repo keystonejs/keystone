@@ -134,11 +134,13 @@ input AuthorRelateToOneForCreateInput {
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
 }
 
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
 }
 
 type Author {

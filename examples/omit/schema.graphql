@@ -99,6 +99,7 @@ input PersonCreateInput {
 
 input PriorityRelateToManyForCreateInput {
   connect: [PriorityWhereUniqueInput!]
+  set: [PriorityWhereUniqueInput!]
 }
 
 type Priority {

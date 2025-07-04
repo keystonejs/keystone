@@ -139,16 +139,19 @@ input PostCreateInput {
 input GroupRelateToManyForCreateInput {
   create: [Empty!]
   connect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
 }
 
 input ReactionRelateToManyForCreateInput {
   create: [Empty!]
   connect: [ReactionWhereUniqueInput!]
+  set: [ReactionWhereUniqueInput!]
 }
 
 input LogRelateToManyForCreateInput {
   create: [LogCreateInput!]
   connect: [LogWhereUniqueInput!]
+  set: [LogWhereUniqueInput!]
 }
 
 type User {
