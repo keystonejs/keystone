@@ -73,7 +73,7 @@ export function makeSelectFieldInput({
         items={options}
         onSelectionChange={key => {
           const newVal = options.find(option => option.value === key)?.value
-          if (newVal) {
+          if (newVal !== undefined) {
             onChange?.(newVal)
           }
         }}
