@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core'
-import { createHash, randomBytes } from 'node:crypto'
+import { createHash } from 'node:crypto'
 import pino_ from 'pino-http'
 
 import type { TypeInfo } from '.keystone/types'
@@ -21,7 +21,6 @@ export default config<TypeInfo>({
   },
   server: {
     extendExpressApp(app) {
-      // TODO: use the same requestId between express and Apollo
       app.use(pino)
     },
   },
@@ -34,26 +33,24 @@ export default config<TypeInfo>({
       plugins: [
         {
           async requestDidStart() {
-            // const requestId = requestContext.request.http?.headers.get('cf-ray')
-            // const requestId = requestContext.request.http?.headers.get('x-amzn-trace-id')
-            // const requestId = requestContext.request.http?.headers.get('x-request-id')
-            const requestId = randomBytes(16).toString('base64url')
             const start = Date.now()
 
             return {
               async willSendResponse (requestContext) {
                 pino.logger.info({
-                  requestId, // TODO: share with express
+                  // requestId: requestContext.request.http?.headers.get('cf-ray'),
+                  // requestId: requestContext.request.http?.headers.get('x-amzn-trace-id'),
+                  // requestId: requestContext.request.http?.headers.get('x-request-id'),
                   duration: Date.now() - start,
                   query: {
-                    name: requestContext.request.operationName,
                     type: requestContext.operation?.operation,
+                    name: requestContext.request.operationName,
                     hash: sha256(requestContext.request.query ?? ''),
                     // query: requestContext.request.query, // WARNING: may be verbose
                   },
                   errors: requestContext.errors?.map(e => ({
+                    path: e.path,
                     message: e.message,
-                    path: e.path
                   })) || undefined
                 }, 'GraphQL')
               },
