@@ -9,7 +9,11 @@ function sha256(q: string) {
   return createHash('sha256').update(q).digest('hex')
 }
 
-const pino = pino_()
+const pino = pino_({
+  // genReqId: (req, res) => req.headers["cf-ray"] ?? '',
+  // genReqId: (req, res) => req.headers["x-amzn-trace-id"] ?? '',
+  // genReqId: (req, res) => req.headers["x-request-id"] ?? '',
+})
 
 export default config<TypeInfo>({
   db: {
@@ -39,23 +43,23 @@ export default config<TypeInfo>({
               async willSendResponse(requestContext) {
                 pino.logger.info(
                   {
-                    // requestId: requestContext.request.http?.headers.get('cf-ray'),
-                    // requestId: requestContext.request.http?.headers.get('x-amzn-trace-id'),
-                    // requestId: requestContext.request.http?.headers.get('x-request-id'),
-                    duration: Date.now() - start,
-                    query: {
+                    req: requestContext.contextValue.req
+                      ? { id: requestContext.contextValue.req?.id }
+                      : undefined,
+                    responseTime: Date.now() - start,
+                    graphql: {
                       type: requestContext.operation?.operation,
                       name: requestContext.request.operationName,
                       hash: sha256(requestContext.request.query ?? ''),
                       // query: requestContext.request.query, // WARNING: may be verbose
+                      errors:
+                        requestContext.errors?.map(e => ({
+                          path: e.path,
+                          message: e.message,
+                        })) || undefined,
                     },
-                    errors:
-                      requestContext.errors?.map(e => ({
-                        path: e.path,
-                        message: e.message,
-                      })) || undefined,
                   },
-                  'GraphQL'
+                  'graphql query completed'
                 )
               },
             }
