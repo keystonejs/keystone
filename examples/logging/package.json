@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.1",
-    "@prisma/client": "6.5.0"
+    "@prisma/client": "6.5.0",
+    "pino-http": "^10.5.0"
   },
   "devDependencies": {
     "prisma": "6.5.0",
