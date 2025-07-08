@@ -245,6 +245,7 @@
     "@keystar/ui": "^0.7.16",
     "@nodelib/fs.walk": "^3.0.0",
     "@prisma/client": "6.11.1",
+    "@prisma/client-generator-registry": "6.11.1",
     "@prisma/internals": "6.11.1",
     "@prisma/migrate": "6.11.1",
     "@react-aria/i18n": "^3.12.1",
