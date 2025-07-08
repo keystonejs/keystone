@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { allOperations, denyAll } from '@keystone-6/core/access'
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
 
-import { isSignedIn, permissions, rules } from './access'
+import { isSignedIn as hasSession, permissions, rules } from './access'
 import type { Session } from './access'
 import type { Lists } from '.keystone/types'
 
@@ -39,7 +39,7 @@ export const lists: Lists<Session> = {
     */
     access: {
       operation: {
-        ...allOperations(isSignedIn),
+        ...allOperations(hasSession),
         create: permissions.canCreateTodos,
       },
       filter: {
@@ -84,20 +84,9 @@ export const lists: Lists<Session> = {
     },
   }),
   User: list({
-    /*
-      SPEC
-      - [x] Block all public access
-      - [x] Restrict list create based on canManagePeople
-      - [x] Restrict list read based on canSeeOtherPeople
-      - [x] Restrict list update based on canEditOtherPeople
-      - [x] Restrict list delete based on canManagePeople
-      - [x] Restrict role field update based on canManagePeople
-      - [x] Restrict password field update based on same item or canManagePeople
-      - [x] Restrict tasks based on same item or canManageTodos
-    */
     access: {
       operation: {
-        ...allOperations(isSignedIn),
+        ...allOperations(hasSession),
         create: permissions.canManagePeople,
         delete: permissions.canManagePeople,
       },
@@ -201,7 +190,7 @@ export const lists: Lists<Session> = {
     access: {
       operation: {
         ...allOperations(permissions.canManageRoles),
-        query: isSignedIn,
+        query: hasSession,
       },
     },
     ui: {
