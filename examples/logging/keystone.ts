@@ -5,7 +5,7 @@ import pino_ from 'pino-http'
 import type { TypeInfo } from '.keystone/types'
 import { lists } from './schema'
 
-function sha256 (q: string) {
+function sha256(q: string) {
   return createHash('sha256').update(q).digest('hex')
 }
 
@@ -36,23 +36,27 @@ export default config<TypeInfo>({
             const start = Date.now()
 
             return {
-              async willSendResponse (requestContext) {
-                pino.logger.info({
-                  // requestId: requestContext.request.http?.headers.get('cf-ray'),
-                  // requestId: requestContext.request.http?.headers.get('x-amzn-trace-id'),
-                  // requestId: requestContext.request.http?.headers.get('x-request-id'),
-                  duration: Date.now() - start,
-                  query: {
-                    type: requestContext.operation?.operation,
-                    name: requestContext.request.operationName,
-                    hash: sha256(requestContext.request.query ?? ''),
-                    // query: requestContext.request.query, // WARNING: may be verbose
+              async willSendResponse(requestContext) {
+                pino.logger.info(
+                  {
+                    // requestId: requestContext.request.http?.headers.get('cf-ray'),
+                    // requestId: requestContext.request.http?.headers.get('x-amzn-trace-id'),
+                    // requestId: requestContext.request.http?.headers.get('x-request-id'),
+                    duration: Date.now() - start,
+                    query: {
+                      type: requestContext.operation?.operation,
+                      name: requestContext.request.operationName,
+                      hash: sha256(requestContext.request.query ?? ''),
+                      // query: requestContext.request.query, // WARNING: may be verbose
+                    },
+                    errors:
+                      requestContext.errors?.map(e => ({
+                        path: e.path,
+                        message: e.message,
+                      })) || undefined,
                   },
-                  errors: requestContext.errors?.map(e => ({
-                    path: e.path,
-                    message: e.message,
-                  })) || undefined
-                }, 'GraphQL')
+                  'GraphQL'
+                )
               },
             }
           },
