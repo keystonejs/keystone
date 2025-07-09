@@ -2,27 +2,26 @@ import { VStack } from '@keystar/ui/layout'
 import { Notice } from '@keystar/ui/notice'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
+import { type controller } from '@keystone-6/core/fields/types/virtual/views'
 
-import type { GraphQLError, GraphQLFormattedError } from 'graphql'
+import type {
+  FieldProps,
+} from '@keystone-6/core/types'
 
-export function GraphQLErrorNotice({
-  errors: errors_ = [],
-}: {
-  errors?: (null | undefined | GraphQLError | GraphQLFormattedError | Error)[]
-}) {
-  const errors = errors_.filter((x): x is NonNullable<typeof x> => !!x)
-  if (!errors.length) return null
+export function Field({ value }: FieldProps<typeof controller> & { value: { messages: string[] } }) {
+  const { messages } = value ?? {}
+  if (!messages?.length) return null
 
   return (
-    <Notice tone="critical">
-      <Heading>Errors</Heading>
+    <Notice tone="neutral">
+      <Heading>FYI</Heading>
       <Content>
         <VStack elementType="ul" gap="large">
           {[
             ...(function* () {
               let i = 0
-              for (const error of errors) {
-                const lines = error.message.split('\n')
+              for (const message of messages) {
+                const lines = message.split('\n')
                 for (const line of lines) {
                   yield (
                     <Text key={i++} elementType="li">
