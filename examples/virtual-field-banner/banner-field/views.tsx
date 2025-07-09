@@ -4,17 +4,17 @@ import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 import { type controller } from '@keystone-6/core/fields/types/virtual/views'
 
-import type {
-  FieldProps,
-} from '@keystone-6/core/types'
+import type { FieldProps } from '@keystone-6/core/types'
 
-export function Field({ value }: FieldProps<typeof controller> & { value: { messages: string[] } }) {
+export function Field({
+  value,
+}: FieldProps<typeof controller> & { value: { messages: string[] } }) {
   const { messages } = value ?? {}
   if (!messages?.length) return null
 
   return (
     <Notice tone="neutral">
-      <Heading>FYI</Heading>
+      <Heading>A neutral heading</Heading>
       <Content>
         <VStack elementType="ul" gap="large">
           {[
