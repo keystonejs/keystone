@@ -443,10 +443,11 @@ export type GraphQLTypesForList<ListTypeInfo extends BaseListTypeInfo = BaseList
       create: GInputObjectType<{
         create?: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['create']>>>
         connect: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
+        set: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
       }>
       update: GInputObjectType<{
-        connect: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
         create?: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['create']>>>
+        connect: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
         disconnect: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
         set: GArg<GList<GNonNull<GraphQLTypesForList<ListTypeInfo>['uniqueWhere']>>>
       }>
