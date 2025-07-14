@@ -1,3 +1,4 @@
+import { g } from '@keystone-6/core'
 import type { BaseFieldTypeInfo } from '@keystone-6/core/types'
 import {
   type BaseListTypeInfo,
@@ -6,17 +7,16 @@ import {
   type JSONValue,
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
-import { g } from '@keystone-6/core'
-import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { getOutputGraphQLField } from './structure-graphql-output'
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
+import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data'
 import {
   getGraphQLInputType,
   getValueForCreate,
   getValueForUpdate,
 } from './structure-graphql-input'
-import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
-import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data'
+import { getOutputGraphQLField } from './structure-graphql-output'
 
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
@@ -93,7 +93,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
             arg: g.arg({
               type: getGraphQLInputType(name, schema, 'update', new Map(), meta),
             }),
-            resolve(val, context) {
+            resolve(val) {
               return val as any
             },
           },

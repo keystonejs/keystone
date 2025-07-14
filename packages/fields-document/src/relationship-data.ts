@@ -1,14 +1,13 @@
-import { type KeystoneContext } from '@keystone-6/core/types'
-import { type Descendant } from 'slate'
+import type { KeystoneContext } from '@keystone-6/core/types'
+import type { Descendant } from 'slate'
 
-import {
-  type ComponentBlock,
-  type ComponentSchema,
-  type RelationshipField,
+import type {
+  ComponentBlock,
+  ComponentSchema,
+  RelationshipField,
 } from './DocumentEditor/component-blocks/api-shared'
-
 import { assertNever } from './DocumentEditor/component-blocks/utils'
-import { type Relationships } from './DocumentEditor/relationship-shared'
+import type { Relationships } from './DocumentEditor/relationship-shared'
 
 const labelFieldAlias = '____document_field_relationship_item_label'
 const idFieldAlias = '____document_field_relationship_item_id'

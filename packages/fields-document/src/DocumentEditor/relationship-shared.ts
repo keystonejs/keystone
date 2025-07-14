@@ -1,4 +1,4 @@
-import { type Editor } from 'slate'
+import type { Editor } from 'slate'
 
 export type Relationships = Record<
   string,
