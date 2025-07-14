@@ -123,8 +123,9 @@ export type RelationshipField<Many extends boolean> = {
   kind: 'relationship'
   listKey: string
   label: string
+  labelField: string | null
+  selection: string | null
   many: Many
-  selection?: string
 }
 
 export type ConditionalField<

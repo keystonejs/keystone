@@ -1,11 +1,11 @@
 import { g } from '@keystone-6/core'
+import type { GArg, GInputType, GNonNull, InferValueFromArg } from '@keystone-6/core/graphql-ts'
 import type {
   BaseItem,
   FieldData,
   GraphQLTypesForList,
   KeystoneContext,
 } from '@keystone-6/core/types'
-import type { GArg, GInputType, GNonNull, InferValueFromArg } from '@keystone-6/core/graphql-ts'
 import type { GraphQLResolveInfo } from 'graphql'
 
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'

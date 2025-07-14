@@ -2,9 +2,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { Transforms } from 'slate'
-import { component, fields } from '../../component-blocks'
-import { jsx, makeEditor } from '../tests/utils'
 import { insertComponentBlock } from '.'
+import { component, fields } from '../../component-blocks'
+import { makeEditor, jsx } from '../tests/utils'
 
 const componentBlocks = {
   basic: component({

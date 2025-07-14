@@ -1,12 +1,13 @@
-import { type Editor } from 'slate'
+import type { Editor } from 'slate'
 
 export type Relationships = Record<
   string,
   {
     listKey: string
+    label: string
+    labelField: string | null
     /** GraphQL fields to select when querying the field */
     selection: string | null
-    label: string
   }
 >
 

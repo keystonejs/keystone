@@ -46,7 +46,7 @@ const runner = setupTestRunner({
               mention: {
                 listKey: 'Author',
                 label: 'Mention',
-                selection: 'bad selection',
+                selection: 'id notafield',
               },
             },
           }),
@@ -270,8 +270,8 @@ describe('Document field type', () => {
                 { text: '' },
                 {
                   type: 'relationship',
-                  data: { id: alice.id },
                   relationship: 'mention',
+                  data: { id: alice.id },
                   children: [{ text: '' }],
                 },
                 { text: '' },
@@ -286,12 +286,12 @@ describe('Document field type', () => {
           'query ($id: ID!){ author(where: { id: $id }) { badBio { document(hydrateRelationships: true) } } }',
         variables: { id: badBob.id },
       })
-      // FIXME: The path doesn't match the null field here!
+
       expect(body.data).toEqual({ author: { badBio: null } })
       expectInternalServerError(body.errors, [
         {
           path: ['author', 'badBio', 'document'],
-          message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
+          message: 'Cannot query field "notafield" on type "Author".',
         },
       ])
     })

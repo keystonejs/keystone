@@ -322,12 +322,14 @@ export const fields = {
   },
   relationship<Many extends boolean | undefined = false>({
     listKey,
-    selection,
     label,
+    labelField,
+    selection,
     many,
   }: {
     listKey: string
     label: string
+    labelField?: string
     selection?: string
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
     Many extends true ? true : false
@@ -335,8 +337,9 @@ export const fields = {
     return {
       kind: 'relationship' as const,
       listKey,
-      selection,
       label,
+      labelField: labelField ?? null,
+      selection: selection ?? null,
       many: (many ? true : false) as any,
     }
   },

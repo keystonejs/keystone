@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { component, type ComponentBlock, fields } from './DocumentEditor/component-blocks/api'
-import { type Relationships } from './DocumentEditor/relationship'
+import type { Relationships } from './DocumentEditor/relationship'
 import { defaultDocumentFeatures, makeEditor, jsx } from './DocumentEditor/tests/utils'
 import { PropValidationError, validateAndNormalizeDocument } from './validation'
 
@@ -11,8 +11,9 @@ import { PropValidationError, validateAndNormalizeDocument } from './validation'
 
 const relationships: Relationships = {
   inline: {
-    label: 'Inline',
     listKey: 'Post',
+    label: 'Inline',
+    labelField: null,
     selection: `something`,
   },
 }
@@ -27,8 +28,8 @@ const componentBlocks: Record<string, ComponentBlock> = {
     preview: () => null,
     label: '',
     schema: {
-      one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
-      many: fields.relationship({ label: '', listKey: 'Post', many: true, selection: 'something' }),
+      one: fields.relationship({ listKey: 'Post', label: '', selection: 'something' }),
+      many: fields.relationship({ listKey: 'Post', label: '', many: true, selection: 'something' }),
     },
   }),
   object: component({

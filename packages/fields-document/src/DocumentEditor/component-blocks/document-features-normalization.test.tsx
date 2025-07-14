@@ -308,8 +308,9 @@ function makeEditorWithChildField(
       },
       relationships: {
         mention: {
-          label: 'Mention',
           listKey: 'User',
+          label: 'Mention',
+          labelField: null,
           selection: null,
         },
       },
