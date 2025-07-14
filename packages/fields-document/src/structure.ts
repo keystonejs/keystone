@@ -120,13 +120,7 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
                 resolve({ value }, args, context) {
                   if (!args.hydrateRelationships) return value
                   return addRelationshipDataToComponentProps(schema, value, (schema, value) => {
-                    return fetchRelationshipData(
-                      context,
-                      schema.listKey,
-                      schema.many,
-                      schema.selection || '',
-                      value
-                    )
+                    return fetchRelationshipData(context, schema, value)
                   })
                 },
               }),

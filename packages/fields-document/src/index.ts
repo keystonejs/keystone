@@ -1,6 +1,6 @@
-import { GraphQLError } from 'graphql'
-import type { BaseFieldTypeInfo } from '@keystone-6/core/types'
+import { g } from '@keystone-6/core'
 import {
+  type BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldData,
@@ -8,21 +8,22 @@ import {
   type JSONValue,
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types'
-import { g } from '@keystone-6/core'
-import type { Relationships } from './DocumentEditor/relationship-shared'
+import { GraphQLError } from 'graphql'
 import type { ComponentBlock } from './DocumentEditor/component-blocks/api-shared'
-import { validateAndNormalizeDocument } from './validation'
-import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'
+import type { Relationships } from './DocumentEditor/relationship-shared'
+import { addRelationshipData } from './relationship-data'
+import { validateAndNormalizeDocument } from './validation'
 import type { DocumentFeatures, controller } from './views-shared'
 
 type RelationshipsConfig = Record<
   string,
   {
     listKey: string
+    label: string
+    labelField?: string
     /** GraphQL fields to select when querying the field */
     selection?: string
-    label: string
   }
 >
 
@@ -182,17 +183,19 @@ function normaliseRelationships(
   configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
   meta: FieldData
 ) {
+  if (!configRelationships) return {}
   const relationships: Relationships = {}
-  if (configRelationships) {
-    Object.keys(configRelationships).forEach(key => {
-      const relationship = configRelationships[key]
-      if (meta.lists[relationship.listKey] === undefined) {
-        throw new Error(
-          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
-        )
-      }
-      relationships[key] = { ...relationship, selection: relationship.selection ?? null }
-    })
+  for (const [key, relationship] of Object.entries(configRelationships)) {
+    if (meta.lists[relationship.listKey] === undefined) {
+      throw new Error(
+        `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
+      )
+    }
+    relationships[key] = {
+      ...relationship,
+      labelField: relationship.labelField ?? null,
+      selection: relationship.selection ?? null,
+    }
   }
   return relationships
 }

@@ -28,8 +28,10 @@ export function addRelationshipData(
           ...node,
           data: await fetchDataForOne(
             context,
-            relationship.listKey,
-            relationship.selection || '',
+            {
+              ...relationship,
+              many: false,
+            },
             node.data
           ),
         }
@@ -41,14 +43,7 @@ export function addRelationshipData(
             addRelationshipDataToComponentProps(
               { kind: 'object', fields: componentBlock.schema },
               node.props,
-              (relationship, data) =>
-                fetchRelationshipData(
-                  context,
-                  relationship.listKey,
-                  relationship.many,
-                  relationship.selection || '',
-                  data
-                )
+              (relationship, data) => fetchRelationshipData(context, relationship, data)
             ),
             addRelationshipData(node.children, context, relationships, componentBlocks),
           ])
@@ -75,27 +70,25 @@ export function addRelationshipData(
   )
 }
 
+type Relationship_ = Omit<RelationshipField<boolean>, 'kind'>
+
 export async function fetchRelationshipData(
   context: KeystoneContext,
-  listKey: string,
-  many: boolean,
-  selection: string,
+  relationship: Relationship_,
   data: any
 ) {
-  if (!many) return fetchDataForOne(context, listKey, selection, data)
+  if (!relationship.many) return fetchDataForOne(context, relationship, data)
 
   const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : []
   if (!ids.length) return []
 
-  const {
-    graphql: {
-      names: { listQueryName },
-    },
-    ui: { labelField },
-  } = context.__internal.lists[listKey]
+  const list = context.__internal.lists[relationship.listKey]
+  const { listQueryName } = list.graphql.names
+  const labelField = relationship.labelField ?? list.ui.labelField
+
   const value = (await context.graphql.run({
     query: `query($ids: [ID!]!) {items:${listQueryName}(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
-      selection || ''
+      relationship.selection || ''
     }}}`,
     variables: { ids },
   })) as { items: { [idFieldAlias]: string | number; [labelFieldAlias]: string }[] }
@@ -107,12 +100,7 @@ export async function fetchRelationshipData(
     : []
 }
 
-async function fetchDataForOne(
-  context: KeystoneContext,
-  listKey: string,
-  selection: string,
-  data: any
-) {
+async function fetchDataForOne(context: KeystoneContext, relationship: Relationship_, data: any) {
   // Single related item
   const id = data?.id
   if (id == null) return null
@@ -120,14 +108,11 @@ async function fetchDataForOne(
   // An exception here indicates something wrong with either the system or the
   // configuration (e.g. a bad selection field). These will surface as system
   // errors from the GraphQL field resolver.
-  const {
-    graphql: {
-      names: { itemQueryName },
-    },
-    ui: { labelField },
-  } = context.__internal.lists[listKey]
+  const list = context.__internal.lists[relationship.listKey]
+  const { itemQueryName } = list.graphql.names
+  const labelField = relationship.labelField ?? list.ui.labelField
   const value = (await context.graphql.run({
-    query: `query($id: ID!) {item:${itemQueryName}(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
+    query: `query($id: ID!) {item:${itemQueryName}(where: { id: $id }) {${labelFieldAlias}:${labelField}\n${relationship.selection || ''}}}`,
     variables: { id },
   })) as { item: Record<string, any> | null }
 
