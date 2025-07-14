@@ -102,7 +102,7 @@
     "slate": "^0.112.0",
     "slate-history": "^0.113.0",
     "slate-react": "^0.112.0",
-    "zod": "^3.23.8"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
