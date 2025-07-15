@@ -225,19 +225,19 @@ importers:
       '@prisma/client':
         specifier: 6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
-      '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
       bytes:
         specifier: ^3.1.1
         version: 3.1.2
       express:
-        specifier: ^4.19.2
-        version: 4.21.2
+        specifier: ^5.0.0
+        version: 5.1.0
     devDependencies:
       '@types/bytes':
         specifier: ^3.1.1
         version: 3.1.5
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.1
       prisma:
         specifier: 6.5.0
         version: 6.5.0(typescript@5.8.2)
@@ -649,8 +649,8 @@ importers:
         specifier: ^16.0.0
         version: 16.4.7
       express:
-        specifier: ^4.19.2
-        version: 4.21.2
+        specifier: ^5.0.0
+        version: 5.1.0
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -659,8 +659,8 @@ importers:
         version: 0.1.12
     devDependencies:
       '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
+        specifier: ^5.0.0
+        version: 5.0.1
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.17
@@ -879,13 +879,13 @@ importers:
       '@prisma/client':
         specifier: 6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
-      '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
       express:
-        specifier: ^4.19.2
-        version: 4.21.2
+        specifier: ^5.0.0
+        version: 5.1.0
     devDependencies:
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.1
       prisma:
         specifier: 6.5.0
         version: 6.5.0(typescript@5.8.2)
@@ -1809,8 +1809,11 @@ importers:
         specifier: ^3.12.2
         version: 3.13.5(@types/react@19.0.12)(graphql-ws@6.0.4(graphql@16.10.0)(ws@8.18.1))(graphql@16.10.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@apollo/server':
-        specifier: ^4.10.0
-        version: 4.11.3(graphql@16.10.0)
+        specifier: ^4.12.1
+        version: 4.12.2(graphql@16.10.0)
+      '@as-integrations/express5':
+        specifier: ^1.1.1
+        version: 1.1.1(@apollo/server@4.12.2(graphql@16.10.0))(express@5.1.0)
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.10
@@ -2156,8 +2159,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
       express:
-        specifier: ^4.19.2
-        version: 4.21.2
+        specifier: ^5.0.0
+        version: 5.1.0
       graphql:
         specifier: ^16.8.1
         version: 16.10.0
@@ -2165,35 +2168,13 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3
       playwright:
-        specifier: ^1.17.1
-        version: 1.51.1
+        specifier: ^1.54.1
+        version: 1.54.1
       treekill:
         specifier: ^1.0.0
         version: 1.0.0
 
   tests/api-tests:
-    dependencies:
-      '@types/body-parser':
-        specifier: ^1.19.2
-        version: 1.19.5
-      '@types/fs-extra':
-        specifier: ^11.0.0
-        version: 11.0.4
-      '@types/mime':
-        specifier: ^2.0.3
-        version: 2.0.3
-      '@types/superagent':
-        specifier: ^4.1.15
-        version: 4.1.24
-      '@types/supertest':
-        specifier: ^2.0.11
-        version: 2.0.16
-      '@types/uuid':
-        specifier: ^9.0.0
-        version: 9.0.8
-      express:
-        specifier: ^4.19.2
-        version: 4.21.2
     devDependencies:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
@@ -2222,15 +2203,36 @@ importers:
       '@prisma/internals':
         specifier: ^6.5.0
         version: 6.5.0(typescript@5.8.2)
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.5
       '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.21
+        specifier: ^5.0.0
+        version: 5.0.1
+      '@types/fs-extra':
+        specifier: ^11.0.0
+        version: 11.0.4
+      '@types/mime':
+        specifier: ^2.0.3
+        version: 2.0.3
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
+      '@types/superagent':
+        specifier: ^4.1.15
+        version: 4.1.24
+      '@types/supertest':
+        specifier: ^2.0.11
+        version: 2.0.16
+      '@types/uuid':
+        specifier: ^9.0.0
+        version: 9.0.8
       cookie-signature:
         specifier: ^1.1.0
         version: 1.2.2
+      express:
+        specifier: ^5.0.0
+        version: 5.1.0
       fs-extra:
         specifier: ^11.0.0
         version: 11.3.0
@@ -2242,7 +2244,7 @@ importers:
         version: 16.10.0
       graphql-upload:
         specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.21)(graphql@16.10.0)
+        version: 15.0.2(@types/express@5.0.1)(graphql@16.10.0)
       mime:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2275,13 +2277,6 @@ importers:
         version: 1.0.0-rc.2
 
   tests/cli-tests:
-    dependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.0
-        version: 11.0.4
-      express:
-        specifier: ^4.19.2
-        version: 4.21.2
     devDependencies:
       '@apollo/cache-control-types':
         specifier: ^1.0.2
@@ -2307,6 +2302,9 @@ importers:
       '@prisma/migrate':
         specifier: ^6.5.0
         version: 6.5.0(@prisma/generator-helper@6.5.0)(@prisma/internals@6.5.0(typescript@5.8.2))
+      '@types/fs-extra':
+        specifier: ^11.0.0
+        version: 11.0.4
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
@@ -2316,6 +2314,9 @@ importers:
       execa:
         specifier: ^5.1.1
         version: 5.1.1
+      express:
+        specifier: ^5.0.0
+        version: 5.1.0
       fast-glob:
         specifier: ^3.2.12
         version: 3.3.3
@@ -2506,8 +2507,8 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/server@4.11.3':
-    resolution: {integrity: sha512-mW8idE2q0/BN14mimfJU5DAnoPHZRrAWgwsVLBEdACds+mxapIYxIbI6AH4AsOpxfrpvHts3PCYDbopy1XPW1g==}
+  '@apollo/server@4.12.2':
+    resolution: {integrity: sha512-jKRlf+sBMMdKYrjMoiWKne42Eb6paBfDOr08KJnUaeaiyWFj+/040FjVPQI7YGLfdwnYIsl1NUUqS2UdgezJDg==}
     engines: {node: '>=14.16.0'}
     deprecated: Apollo Server v4 is deprecated and will transition to end-of-life on January 26, 2026. As long as you are already using a non-EOL version of Node.js, upgrading to v5 should take only a few minutes. See https://www.apollographql.com/docs/apollo-server/previous-versions for details.
     peerDependencies:
@@ -2581,6 +2582,13 @@ packages:
     hasBin: true
     peerDependencies:
       graphql: '*'
+
+  '@as-integrations/express5@1.1.1':
+    resolution: {integrity: sha512-bOXlKomcbLhezrcuy8zKFhYwe6EItVIomOJExtiwkzPW6tYm4f886zeMx8CI+r548L8QLuyzfQPio8ZFEmHXxQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@apollo/server': ^4.0.0 || 5.0.0-rc.0
+      express: ^5.0.0
 
   '@astrojs/compiler@2.11.0':
     resolution: {integrity: sha512-zZOO7i+JhojO8qmlyR/URui6LyfHJY6m+L9nwyX5GiKD78YoRaZ5tzz6X0fkl+5bD3uwlDHayf6Oe8Fu36RKNg==}
@@ -10542,8 +10550,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.54.1:
+    resolution: {integrity: sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.51.1:
     resolution: {integrity: sha512-kkx+MB2KQRkyxjYPc3a0wLZZoDczmppyGJIvQ43l+aZihkaVvmu/21kiyaHeHjiFxjxNNFnUncKmcGIyOojsaw==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.54.1:
+    resolution: {integrity: sha512-peWpSwIBmSLi6aW2auvrUtf2DqY16YYcCMO8rTVx486jKmDTJg7UAhyrraP98GB8BoPURZP8+nxO7TSd4cPr5g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -12676,7 +12694,7 @@ snapshots:
       '@apollo/utils.logger': 2.0.1
       graphql: 16.10.0
 
-  '@apollo/server@4.11.3(graphql@16.10.0)':
+  '@apollo/server@4.12.2(graphql@16.10.0)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.10.0)
       '@apollo/server-gateway-interface': 1.1.1(graphql@16.10.0)
@@ -12775,6 +12793,11 @@ snapshots:
       signedsource: 1.0.0
     transitivePeerDependencies:
       - encoding
+
+  '@as-integrations/express5@1.1.1(@apollo/server@4.12.2(graphql@16.10.0))(express@5.1.0)':
+    dependencies:
+      '@apollo/server': 4.12.2(graphql@16.10.0)
+      express: 5.1.0
 
   '@astrojs/compiler@2.11.0': {}
 
@@ -18095,19 +18118,19 @@ snapshots:
 
   '@types/passport-github2@1.2.9':
     dependencies:
-      '@types/express': 4.17.21
+      '@types/express': 5.0.1
       '@types/passport': 1.0.17
       '@types/passport-oauth2': 1.4.17
 
   '@types/passport-oauth2@1.4.17':
     dependencies:
-      '@types/express': 4.17.21
+      '@types/express': 5.0.1
       '@types/oauth': 0.9.6
       '@types/passport': 1.0.17
 
   '@types/passport@1.0.17':
     dependencies:
-      '@types/express': 4.17.21
+      '@types/express': 5.0.1
 
   '@types/pluralize@0.0.33': {}
 
@@ -20723,19 +20746,6 @@ snapshots:
     dependencies:
       graphql: 16.10.0
       tslib: 2.8.1
-
-  graphql-upload@15.0.2(@types/express@4.17.21)(graphql@16.10.0):
-    dependencies:
-      '@types/busboy': 1.5.4
-      '@types/node': 22.13.11
-      '@types/object-path': 0.11.4
-      busboy: 1.6.0
-      fs-capacitor: 6.2.0
-      graphql: 16.10.0
-      http-errors: 2.0.0
-      object-path: 0.11.8
-    optionalDependencies:
-      '@types/express': 4.17.21
 
   graphql-upload@15.0.2(@types/express@5.0.1)(graphql@16.10.0):
     dependencies:
@@ -23676,9 +23686,17 @@ snapshots:
 
   playwright-core@1.51.1: {}
 
+  playwright-core@1.54.1: {}
+
   playwright@1.51.1:
     dependencies:
       playwright-core: 1.51.1
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.54.1:
+    dependencies:
+      playwright-core: 1.54.1
     optionalDependencies:
       fsevents: 2.3.2
 

@@ -1,15 +1,17 @@
-import { type Server, createServer } from 'http'
-import cors from 'cors'
 import { json } from 'body-parser'
-import { expressMiddleware } from '@apollo/server/express4'
+import cors from 'cors'
 import express from 'express'
 import { GraphQLError, type GraphQLFormattedError } from 'graphql'
-import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
+import { type Server, createServer } from 'http'
+
+import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
+import { expressMiddleware } from '@as-integrations/express5'
+
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
-import type { KeystoneContext, KeystoneConfig } from '../types'
+import type { KeystoneConfig, KeystoneContext } from '../types'
 
 /*
 NOTE: This creates the main Keystone express server, including the
