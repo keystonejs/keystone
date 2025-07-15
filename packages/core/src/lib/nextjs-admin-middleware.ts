@@ -7,7 +7,7 @@ import { pkgDir } from '../pkg-dir'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
-export function createAdminUIMiddlewareWithNextApp(
+export function createNextAdminUIMiddleware(
   config: KeystoneConfig,
   commonContext: KeystoneContext,
   nextApp: ReturnType<typeof next>
@@ -41,8 +41,7 @@ export function createAdminUIMiddlewareWithNextApp(
       if (shouldRedirect) {
         res.header('Cache-Control', 'no-cache, max-age=0')
         res.header('Location', shouldRedirect.to)
-        res.status(302)
-        res.send()
+        res.status(302).send()
         return
       }
 
@@ -51,8 +50,7 @@ export function createAdminUIMiddlewareWithNextApp(
       handle(req, res)
     } catch (e) {
       console.error('An error occurred handling a request for the Admin UI:', e)
-      res.status(500)
-      res.format({
+      res.status(500).format({
         'text/html': function () {
           res.sendFile(adminErrorHTMLFilepath)
         },
