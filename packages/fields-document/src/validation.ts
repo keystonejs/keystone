@@ -4,7 +4,7 @@ import { type ReadonlyPropPath, assertNever } from './DocumentEditor/component-b
 import { createDocumentEditor } from './DocumentEditor/editor-shared'
 import type { Relationships } from './DocumentEditor/relationship-shared'
 import {
-  type ElementFromValidation,
+  type Node,
   type TextWithMarks,
   isRelationshipData,
   validateDocumentStructure,
@@ -126,7 +126,7 @@ function validateComponentBlockProps(
   assertNever(schema)
 }
 
-function isText(node: ElementFromValidation): node is TextWithMarks {
+function isText(node: Node): node is TextWithMarks {
   return Text.isText(node)
 }
 
@@ -135,10 +135,10 @@ function isText(node: ElementFromValidation): node is TextWithMarks {
 // this is fine because these cases are pretty much all about
 // malicious content being inserted, not valid content
 export function getValidatedNodeWithNormalizedComponentFormProps(
-  node: ElementFromValidation,
+  node: Node,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
-): ElementFromValidation {
+): Node {
   if (isText(node)) return node
   if (node.type === 'component-block') {
     if (Object.prototype.hasOwnProperty.call(componentBlocks, node.component)) {

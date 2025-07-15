@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { type RelationshipData } from './DocumentEditor/component-blocks/api-shared'
+import type { RelationshipData } from './DocumentEditor/component-blocks/api-shared'
 import { isValidURL } from './DocumentEditor/isValidURL'
 
 // leaf types
@@ -118,24 +118,24 @@ const zComponentProps = [
   zComponentProp('component-inline-prop'),
 ] as const
 
-type Children =
+export type Node =
   // inline
   | z.infer<typeof zText>
-  | (z.infer<typeof zLink> & { children: Children[] })
-  | (z.infer<typeof zRelationship> & { children: Children[] })
+  | (z.infer<typeof zLink> & { children: Node[] })
+  | (z.infer<typeof zRelationship> & { children: Node[] })
   // block
-  | (z.infer<typeof zComponentBlock> & { children: Children[] })
+  | (z.infer<typeof zComponentBlock> & { children: Node[] })
   | (z.infer<(typeof zComponentProps)[keyof typeof zComponentProps & number]> & {
-      children: Children[]
+      children: Node[]
     })
   | (z.infer<(typeof zBasicElements)[keyof typeof zBasicElements & number]> & {
-      children: Children[]
+      children: Node[]
     })
-  | (z.infer<typeof zHeading> & { children: Children[] })
-  | (z.infer<typeof zLayout> & { children: Children[] })
-  | (z.infer<typeof zParagraph> & { children: Children[] })
+  | (z.infer<typeof zHeading> & { children: Node[] })
+  | (z.infer<typeof zLayout> & { children: Node[] })
+  | (z.infer<typeof zParagraph> & { children: Node[] })
 
-const zBlock: z.ZodType<Children> = z.discriminatedUnion('type', [
+const zBlock: z.ZodType<Node> = z.discriminatedUnion('type', [
   zComponentBlock.extend({ children: z.lazy(() => zChildren) }),
   ...zComponentProps.map(prop => prop.extend({ children: z.lazy(() => zChildren) })),
   ...zBasicElements.map(prop => prop.extend({ children: z.lazy(() => zChildren) })),
@@ -144,26 +144,24 @@ const zBlock: z.ZodType<Children> = z.discriminatedUnion('type', [
   zParagraph.extend({ children: z.lazy(() => zChildren) }),
 ])
 
-const zInline: z.ZodType<Children> = z.discriminatedUnion('type', [
+const zInline: z.ZodType<Node> = z.discriminatedUnion('type', [
   zText,
   zLink.extend({ children: z.lazy(() => zChildren) }),
   zRelationship.extend({ children: z.lazy(() => zChildren) }),
 ])
 
-const zChildren: z.ZodType<Children[]> = z.array(z.union([zBlock, zInline]))
-
-const zEditorCodec = z.array(zBlock)
+const zChildren: z.ZodType<Node[]> = z.array(z.union([zBlock, zInline]))
+const zDocument = z.array(zBlock)
 
 // exports
 export type TextWithMarks = z.infer<typeof zText>
-export type ElementFromValidation = Children
 
-export function isRelationshipData(val: unknown): val is RelationshipData {
-  return zRelationshipData.safeParse(val).success
+export function isRelationshipData(value: unknown): value is RelationshipData {
+  return zRelationshipData.safeParse(value).success
 }
 
-export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
-  const result = zEditorCodec.safeParse(val)
+export function validateDocumentStructure(value: unknown): asserts value is Node[] {
+  const result = zDocument.safeParse(value)
   if (!result.success) {
     throw new Error(`Invalid document structure: ${result.error.message}`)
   }

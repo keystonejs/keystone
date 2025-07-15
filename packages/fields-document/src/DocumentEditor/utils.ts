@@ -10,7 +10,7 @@ import {
   Text,
   Transforms,
 } from 'slate'
-import { type ElementFromValidation } from '../structure-validation'
+import type { Node as StructureNode } from '../structure-validation'
 
 export type Mark =
   | 'bold'
@@ -40,7 +40,7 @@ export const modifierKeyText = IS_MAC ? '⌘' : 'Ctrl'
 
 export function isElementActive(
   editor: Editor,
-  format: Exclude<ElementFromValidation, { text: string }>['type']
+  format: Exclude<StructureNode, { text: string }>['type']
 ) {
   const [match] = Editor.nodes(editor, {
     match: n => n.type === format,
