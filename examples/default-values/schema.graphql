@@ -6,6 +6,7 @@ type Task {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
+  additionalData: JSON
   assignedTo: Person
   finishBy: DateTime
   viewCount: BigInt
@@ -129,6 +130,7 @@ input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
+  additionalData: JSON
   assignedTo: PersonRelateToOneForUpdateInput
   finishBy: DateTime
   viewCount: BigInt
@@ -149,6 +151,7 @@ input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
+  additionalData: JSON
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: DateTime
   viewCount: BigInt

@@ -52,10 +52,15 @@ export function structure<ListTypeInfo extends BaseListTypeInfo>({
     return fieldType({
       kind: 'scalar',
       scalar: 'Json',
-      default: {
-        kind: 'literal',
-        value: JSON.stringify(defaultValue),
-      },
+      default:
+        meta.provider === 'sqlite'
+          ? undefined
+          : {
+              kind: 'literal',
+              // TODO: waiting on https://github.com/prisma/prisma/issues/26571
+              //   input.create manages defaultValues anyway
+              value: JSON.stringify(defaultValue ?? null),
+            },
       map: config.db?.map,
       mode: 'required',
     })({

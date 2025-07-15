@@ -115,14 +115,20 @@ export function document<ListTypeInfo extends BaseListTypeInfo>({
       }
     }
 
+    const defaultValue = [{ type: 'paragraph', children: [{ text: '' }] }]
     return fieldType({
       kind: 'scalar',
       scalar: 'Json',
       mode: 'required',
-      default: {
-        kind: 'literal',
-        value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
-      },
+      default:
+        meta.provider === 'sqlite'
+          ? undefined
+          : {
+              kind: 'literal',
+              // TODO: waiting on https://github.com/prisma/prisma/issues/26571
+              //   input.create manages defaultValues anyway
+              value: JSON.stringify(defaultValue ?? null),
+            },
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
@@ -133,7 +139,7 @@ export function document<ListTypeInfo extends BaseListTypeInfo>({
           arg: g.arg({ type: g.JSON }),
           resolve(val) {
             if (val === undefined) {
-              val = [{ type: 'paragraph', children: [{ text: '' }] }]
+              val = defaultValue
             }
             return inputResolver(val)
           },

@@ -13,8 +13,8 @@ generator client {
 }
 
 model Homepage {
-  id       Int    @id
-  metadata String @default("{\"featuredPosts\":[]}")
+  id       Int  @id
+  metadata Json
 }
 
 model Post {

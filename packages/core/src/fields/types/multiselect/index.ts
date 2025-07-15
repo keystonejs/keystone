@@ -128,10 +128,15 @@ export function multiselect<ListTypeInfo extends BaseListTypeInfo>(
       mode,
       map: config?.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
-      default: {
-        kind: 'literal',
-        value: JSON.stringify(defaultValue ?? null),
-      },
+      default:
+        meta.provider === 'sqlite'
+          ? undefined
+          : {
+              kind: 'literal',
+              // TODO: waiting on https://github.com/prisma/prisma/issues/26571
+              //   input.create manages defaultValues anyway
+              value: JSON.stringify(defaultValue ?? null),
+            },
     })({
       ...config,
       ui,

@@ -19,8 +19,8 @@ model Post {
   categoryId        String?   @map("category")
   tags              Tag[]     @relation("Post_tags")
   related           Post[]    @relation("Post_related")
-  recommendations   String    @default("[]")
-  bundles           String    @default("[]")
+  recommendations   Json
+  bundles           Json
   from_Post_related Post[]    @relation("Post_related")
 
   @@index([categoryId])

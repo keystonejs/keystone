@@ -30,12 +30,11 @@ export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonField
   db?: { map?: string; extendPrismaSchema?: (field: string) => string }
 }
 
-export const json =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    defaultValue = null,
-    ...config
-  }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+export function json<ListTypeInfo extends BaseListTypeInfo>({
+  defaultValue = null,
+  ...config
+}: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type json")
     }
@@ -47,7 +46,14 @@ export const json =
       default:
         defaultValue === null
           ? undefined
-          : { kind: 'literal', value: JSON.stringify(defaultValue) },
+          : meta.provider === 'sqlite'
+            ? undefined
+            : {
+                kind: 'literal',
+                // TODO: waiting on https://github.com/prisma/prisma/issues/26571
+                //   input.create manages defaultValues anyway
+                value: JSON.stringify(defaultValue ?? null),
+              },
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
@@ -57,6 +63,7 @@ export const json =
         create: {
           arg: g.arg({ type: g.JSON }),
           resolve(val) {
+            // TODO: redundant when https://github.com/prisma/prisma/issues/26571 is resolved
             return val === undefined ? defaultValue : val
           },
         },
@@ -67,3 +74,4 @@ export const json =
       getAdminMeta: () => ({ defaultValue }),
     })
   }
+}
