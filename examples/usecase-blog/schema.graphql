@@ -135,6 +135,7 @@ input AuthorCreateInput {
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
 }
 
 type Post {
@@ -215,6 +216,7 @@ input AuthorRelateToOneForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
 }
 
 type Tag {

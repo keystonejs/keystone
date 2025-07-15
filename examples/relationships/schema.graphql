@@ -156,11 +156,13 @@ input CategoryRelateToOneForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
 }
 
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
 }
 
 input PostRelateToOneForCreateInput {

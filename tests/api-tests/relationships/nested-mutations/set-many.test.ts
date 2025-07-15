@@ -1,9 +1,9 @@
-import { gen, sampleOne } from 'testcheck'
-import { text, relationship } from '@keystone-6/core/fields'
-import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { list } from '@keystone-6/core'
 import { allOperations, allowAll } from '@keystone-6/core/access'
-import { expectGraphQLValidationError, expectSingleRelationshipError } from '../../utils'
+import { relationship, text } from '@keystone-6/core/fields'
+import { gen, sampleOne } from 'testcheck'
+import { expectSingleRelationshipError } from '../../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
@@ -91,6 +91,42 @@ describe('no access control', () => {
   )
 
   test(
+    'set: [] works in create',
+    runner(async ({ context }) => {
+      const noteContent = `foo${sampleOne(alphanumGenerator)}`
+      const noteContent2 = `foo${sampleOne(alphanumGenerator)}`
+
+      // Create two items with content that can be matched
+      const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
+      const createNote2 = await context.query.Note.createOne({
+        data: { content: noteContent2 },
+      })
+
+      // Create an item to update
+      const createUser = await context.query.User.createOne({
+        data: {
+          username: 'A thing',
+          notes: { set: [{ id: createNote.id }, { id: createNote2.id }] },
+        },
+      })
+
+      // Update the item and link the relationship field
+      const user = await context.query.User.findOne({
+        where: { id: createUser.id },
+        query: 'id notes { id content }',
+      })
+
+      expect({
+        ...user,
+        notes: user.notes.map((note: any) => note.id).sort(),
+      }).toMatchObject({
+        id: expect.any(String),
+        notes: [createNote.id, createNote2.id].sort(),
+      })
+    })
+  )
+
+  test(
     'set and connect removes all existing items and adds the items specified in set and connect',
     runner(async ({ context }) => {
       const createNote = await context.query.Note.createOne({ data: {} })
@@ -152,26 +188,6 @@ describe('no access control', () => {
       const message =
         'Input error: The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.'
       expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message)
-    })
-  )
-
-  test(
-    'causes a validation error if used during create',
-    runner(async ({ gqlSuper }) => {
-      const { body } = await gqlSuper({
-        query: `
-          mutation {
-            createUser(data: { notes: { set: [] } }) {
-              id
-            }
-          }
-        `,
-      }).expect(400)
-      expectGraphQLValidationError(body.errors, [
-        {
-          message: `Field "set" is not defined by type "NoteRelateToManyForCreateInput".`,
-        },
-      ])
     })
   )
 })

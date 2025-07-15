@@ -155,7 +155,7 @@ describe('errors on incomplete data', () => {
 
       expect(data).toEqual({ createUser: null })
       const message =
-        'Input error: You must provide "connect" or "create" in to-many relationship inputs for "create" operations.'
+        'Input error: You must provide at least one of "set", "connect" or "create" in to-many relationship inputs for "create" operations.'
       expectSingleRelationshipError(errors, 'createUser', 'User.notes', message)
     })
   )
