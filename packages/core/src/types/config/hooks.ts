@@ -285,6 +285,7 @@ export type ValidateFieldHook<
        * The GraphQL input **after** being resolved by the field type's input resolver
        */
       resolvedData: ListTypeInfo['prisma']['create']
+      resolvedFieldData: FieldTypeInfo['prisma']['create']
     }
     update: {
       operation: 'update'
