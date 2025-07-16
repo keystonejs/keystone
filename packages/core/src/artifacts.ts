@@ -3,7 +3,14 @@ import path from 'node:path'
 import type { ChildProcess } from 'node:child_process'
 
 import { printSchema } from 'graphql'
-import { getGenerators, formatSchema } from '@prisma/internals'
+import { defaultRegistry } from '@prisma/client-generator-registry'
+import {
+  getGenerators,
+  formatSchema,
+  getSchemaWithPath,
+  processSchemaResult,
+} from '@prisma/internals'
+
 import { ExitError } from './scripts/utils'
 import { initialiseLists } from './lib/core/initialise-lists'
 import { type System, getSystemPaths } from './lib/createSystem'
@@ -85,23 +92,23 @@ export async function generateTypes(cwd: string, system: System) {
 
 export async function generatePrismaClient(cwd: string, system: System) {
   const paths = getSystemPaths(cwd, system.config)
+  const schemaResult = await getSchemaWithPath(paths.schema.prisma, undefined, { cwd })
+  const schemaContext = await processSchemaResult({ schemaResult, ignoreEnvVarErrors: true })
+
   const generators = await getGenerators({
-    schemaPath: paths.schema.prisma,
+    schemaContext,
+    registry: defaultRegistry.toInternal(),
+    postinstall: false,
+    printDownloadProgress: false,
   })
 
+  console.error(generators)
   await Promise.all(
     generators.map(async generator => {
       try {
         await generator.generate()
       } finally {
-        const closePromise = new Promise<void>(resolve => {
-          const child = (generator as any).generatorProcess.child as ChildProcess
-          child.once('exit', () => {
-            resolve()
-          })
-        })
         generator.stop()
-        await closePromise
       }
     })
   )
