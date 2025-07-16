@@ -103,7 +103,7 @@ export const lists = {
             },
             tags: {
               connect: tags.map(id => ({ id })),
-            }
+            },
           }
         }
 
@@ -114,7 +114,7 @@ export const lists = {
           },
           tags: {
             set: tags.map(id => ({ id })),
-          }
+          },
         }
       },
     },
