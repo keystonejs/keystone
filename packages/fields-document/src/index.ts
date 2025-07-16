@@ -269,4 +269,5 @@ function normaliseDocumentFeatures(
   return documentFeatures
 }
 
+export type { Node } from './structure-validation'
 export { structure } from './structure'

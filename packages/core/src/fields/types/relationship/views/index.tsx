@@ -120,12 +120,16 @@ export function Field(props: FieldProps<typeof controller>) {
               href: item.built ? '' : `/${foreignList.path}/${item.id}`,
             }))}
             maxRows={2}
-            onRemove={keys => {
-              onChange?.({
-                ...value,
-                value: value.value.filter(item => !keys.has(item.id)),
-              })
-            }}
+            onRemove={
+              isReadOnly
+                ? undefined
+                : keys => {
+                    onChange?.({
+                      ...value,
+                      value: value.value.filter(item => !keys.has(item.id)),
+                    })
+                  }
+            }
             renderEmptyState={() => (
               <Text color="neutralSecondary" size="small">
                 No related {foreignList.plural.toLowerCase()}…

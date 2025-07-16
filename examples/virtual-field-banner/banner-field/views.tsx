@@ -2,8 +2,8 @@ import { VStack } from '@keystar/ui/layout'
 import { Notice } from '@keystar/ui/notice'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
-import { type controller } from '@keystone-6/core/fields/types/virtual/views'
 
+import type { controller } from '@keystone-6/core/fields/types/virtual/views'
 import type { FieldProps } from '@keystone-6/core/types'
 
 export function Field({

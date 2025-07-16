@@ -817,6 +817,28 @@ importers:
         specifier: ^5.5.0
         version: 5.8.2
 
+  examples/document-field-hooks:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.5.1
+        version: link:../../packages/core
+      '@keystone-6/document-renderer':
+        specifier: ^1.1.2
+        version: link:../../packages/document-renderer
+      '@keystone-6/fields-document':
+        specifier: ^9.1.1
+        version: link:../../packages/fields-document
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
+    devDependencies:
+      prisma:
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.8.2
+
   examples/dynamic-is-required:
     dependencies:
       '@keystone-6/core':
