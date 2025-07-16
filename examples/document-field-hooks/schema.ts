@@ -28,7 +28,7 @@ function mapNodes(
 
 export const lists = {
   Post: list({
-    access: allowAll,
+    access: allowAll, // WARNING: public
     fields: {
       title: text({ validation: { isRequired: true } }),
       content: document({
@@ -37,7 +37,11 @@ export const lists = {
             listKey: 'Post',
             label: 'Link',
             labelField: 'title',
-            selection: 'id title',
+          },
+          tag: {
+            listKey: 'Tag',
+            label: 'Tag',
+            labelField: 'name',
           },
         },
         hooks: {
@@ -63,28 +67,64 @@ export const lists = {
           },
         },
       }),
+      tags: relationship({
+        ref: 'Tag.posts',
+        many: true,
+        graphql: {
+          omit: {
+            create: true,
+            update: true,
+          },
+        },
+      }),
     },
     hooks: {
-      resolveInput({ resolvedData }) {
+      resolveInput({ operation, resolvedData }) {
         const { content } = resolvedData
-        const related: string[] = []
+        const posts: string[] = []
+        const tags: string[] = []
 
         if (content) {
           mapNodes(content as Node[], (node, __parents) => {
             if (node.type === 'relationship' && node.data) {
-              related.push(node.data.id)
+              if (node.relationship === 'link') posts.push(node.data.id)
+              if (node.relationship === 'tag') tags.push(node.data.id)
             }
 
             return node
           })
         }
+
+        if (operation === 'create') {
+          return {
+            ...resolvedData,
+            related: {
+              connect: posts.map(id => ({ id })),
+            },
+            tags: {
+              connect: tags.map(id => ({ id })),
+            },
+          }
+        }
+
         return {
           ...resolvedData,
           related: {
-            connect: related.map(id => ({ id })),
+            set: posts.map(id => ({ id })),
+          },
+          tags: {
+            set: tags.map(id => ({ id })),
           },
         }
       },
+    },
+  }),
+
+  Tag: list({
+    access: allowAll, // WARNING: public
+    fields: {
+      name: text(),
+      posts: relationship({ ref: 'Post.tags', many: true }),
     },
   }),
 } satisfies Lists
