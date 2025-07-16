@@ -13,14 +13,15 @@ generator client {
 }
 
 model Task {
-  id           String    @id @default(cuid())
-  label        String    @default("")
-  priority     String?
-  isComplete   Boolean   @default(false)
-  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
-  assignedToId String?   @map("assignedTo")
-  finishBy     DateTime?
-  viewCount    BigInt?   @default(0)
+  id             String    @id @default(cuid())
+  label          String    @default("")
+  priority       String?
+  isComplete     Boolean   @default(false)
+  additionalData Json?
+  assignedTo     Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId   String?   @map("assignedTo")
+  finishBy       DateTime?
+  viewCount      BigInt?   @default(0)
 
   @@index([assignedToId])
 }

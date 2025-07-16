@@ -1,15 +1,16 @@
-import { randomBytes } from 'node:crypto'
-import type {
-  CommonFieldConfig,
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  BaseFieldTypeInfo,
-} from '@keystone-6/core/types'
-import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
+import type { GArg, InferValueFromArg } from '@keystone-6/core/graphql-ts'
+import type {
+  BaseFieldTypeInfo,
+  BaseListTypeInfo,
+  CommonFieldConfig,
+  FieldTypeFunc,
+} from '@keystone-6/core/types'
+import { fieldType } from '@keystone-6/core/types'
+
 import type Cloudinary from 'cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
-import type { GArg, InferValueFromArg } from '@keystone-6/core/graphql-ts'
+import { randomBytes } from 'node:crypto'
 
 type StoredFile = {
   id: string
@@ -167,62 +168,61 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
       }
     }
 
-    return jsonFieldTypePolyfilledForSQLite(
-      meta.provider,
-      {
-        ...config,
-        __ksTelemetryFieldTypeName: '@keystone-6/cloudinary',
-        input: {
-          create: { arg: inputArg, resolve: resolveInput },
-          update: { arg: inputArg, resolve: resolveInput },
-        },
-        output: g.field({
-          type: outputType,
-          resolve({ value }) {
-            if (value === null) return null
-            const val = value as any
-            return {
-              width: val?._meta.width,
-              height: val?._meta.width,
-              filesize: val?._meta.bytes,
-              publicUrl: val?._meta?.secure_url ?? null,
-              publicUrlTransformed: ({
-                transformation,
-              }: {
-                transformation: InferValueFromArg<GArg<typeof CloudinaryImageFormat>>
-              }) => {
-                if (!val._meta) return null
-
-                const { prettyName, ...rest } = transformation ?? {}
-
-                // no formatting options provided, return the publicUrl field
-                if (!Object.keys(rest).length) return val?._meta?.secure_url ?? null
-
-                const { public_id, format } = val._meta
-
-                // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
-                return cloudinary.url(public_id, {
-                  type: 'upload',
-                  format,
-                  secure: true, // the default as of version 2
-                  url_suffix: prettyName,
-                  transformation,
-                  cloud_name: cloudinaryConfig.cloudName,
-
-                  // SDK analytics defaults to true in version 2 (ref https://github.com/cloudinary/cloudinary_npm/commit/d2510eb677e553a45bc7e363b35d2c20b4c4b144#diff-9aa82f0ed674e050695a7422b1cd56d43ce47e6953688a16a003bf49c3481622)
-                  //   we default to false for the least surprise, keeping this upgrade as a patch
-                  urlAnalytics: false,
-                })
-              },
-              ...val,
-            }
-          },
-        }),
-        views: '@keystone-6/cloudinary/views',
+    return fieldType({
+      kind: 'scalar',
+      mode: 'optional',
+      scalar: 'Json',
+      map: config.db?.map,
+    })({
+      ...config,
+      __ksTelemetryFieldTypeName: '@keystone-6/cloudinary',
+      input: {
+        create: { arg: inputArg, resolve: resolveInput },
+        update: { arg: inputArg, resolve: resolveInput },
       },
-      {
-        map: config.db?.map,
-      }
-    )
+      output: g.field({
+        type: outputType,
+        resolve({ value }) {
+          if (value === null) return null
+          const val = value as any
+          return {
+            width: val?._meta.width,
+            height: val?._meta.width,
+            filesize: val?._meta.bytes,
+            publicUrl: val?._meta?.secure_url ?? null,
+            publicUrlTransformed: ({
+              transformation,
+            }: {
+              transformation: InferValueFromArg<GArg<typeof CloudinaryImageFormat>>
+            }) => {
+              if (!val._meta) return null
+
+              const { prettyName, ...rest } = transformation ?? {}
+
+              // no formatting options provided, return the publicUrl field
+              if (!Object.keys(rest).length) return val?._meta?.secure_url ?? null
+
+              const { public_id, format } = val._meta
+
+              // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
+              return cloudinary.url(public_id, {
+                type: 'upload',
+                format,
+                secure: true, // the default as of version 2
+                url_suffix: prettyName,
+                transformation,
+                cloud_name: cloudinaryConfig.cloudName,
+
+                // SDK analytics defaults to true in version 2 (ref https://github.com/cloudinary/cloudinary_npm/commit/d2510eb677e553a45bc7e363b35d2c20b4c4b144#diff-9aa82f0ed674e050695a7422b1cd56d43ce47e6953688a16a003bf49c3481622)
+                //   we default to false for the least surprise, keeping this upgrade as a patch
+                urlAnalytics: false,
+              })
+            },
+            ...val,
+          }
+        },
+      }),
+      views: '@keystone-6/cloudinary/views',
+    })
   }
 }

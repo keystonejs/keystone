@@ -13,8 +13,8 @@ generator client {
 }
 
 model Post {
-  id      String  @id @default(cuid())
-  title   String  @default("")
-  content String  @default("")
-  banner  String?
+  id      String @id @default(cuid())
+  title   String @default("")
+  content String @default("")
+  banner  Json?
 }

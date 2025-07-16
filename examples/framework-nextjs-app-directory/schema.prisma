@@ -15,6 +15,6 @@ generator client {
 model User {
   id        String    @id @default(cuid())
   name      String    @default("")
-  about     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  about     Json
   createdAt DateTime? @default(now())
 }

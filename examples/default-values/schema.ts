@@ -1,8 +1,15 @@
-import { list } from '@keystone-6/core'
-import { bigInt, checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
-import { select } from '@keystone-6/core/fields'
-import { allowAll } from '@keystone-6/core/access'
 import type { Lists } from '.keystone/types'
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import {
+  bigInt,
+  checkbox,
+  json,
+  relationship,
+  select,
+  text,
+  timestamp,
+} from '@keystone-6/core/fields'
 
 export const lists = {
   Task: list({
@@ -33,6 +40,15 @@ export const lists = {
 
       // static default: when a task is first created, it is incomplete
       isComplete: checkbox({ defaultValue: false }),
+
+      // static default: may stringify in Prisma schema
+      additionalData: json({
+        defaultValue: {
+          conditions: [],
+          location: null,
+          notification: 'bongo',
+        },
+      }),
 
       assignedTo: relationship({
         ref: 'Person.tasks',
