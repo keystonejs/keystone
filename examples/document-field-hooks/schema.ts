@@ -44,13 +44,14 @@ export const lists = {
           validate({ resolvedFieldData, addValidationError }) {
             mapNodes(resolvedFieldData as Node[], (node, __parents) => {
               if ('text' in node) {
-                if (/profanity/i.test(node.text)) addValidationError(`${node.text} is unacceptable content`)
+                if (/profanity/i.test(node.text))
+                  addValidationError(`${node.text} is unacceptable content`)
               }
 
               return node
             })
           },
-        }
+        },
       }),
       related: relationship({
         ref: 'Post',
