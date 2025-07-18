@@ -62,7 +62,7 @@ From here you can explore and interact with the data in your system, and underst
 
 ## Output
 
-Keytone creates the following files in your newly generated folder. The most important ones are [`keystone.ts`](/docs/config/config) and [`schema.ts`](/docs/config/lists).
+Keystone creates the following files in your newly generated folder. The most important ones are [`keystone.ts`](/docs/config/config) and [`schema.ts`](/docs/config/lists).
 
 ```sh
 .
