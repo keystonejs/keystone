@@ -1,12 +1,11 @@
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 import NextHead from 'next/head'
+import { useRouter } from 'next/navigation'
 import { createUploadLink } from 'apollo-upload-client'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
 import { Toaster } from '@keystar/ui/toast'
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
-
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 import type {
   AdminConfig,
@@ -25,6 +24,8 @@ type KeystoneContextType = {
   adminMeta: AdminMeta | null
   apiPath: string | null
   fieldViews: FieldViews
+  adminPath: string
+  listsKeyByPath: Record<string, string>
 }
 
 const KeystoneContext = createContext<KeystoneContextType>({
@@ -32,11 +33,14 @@ const KeystoneContext = createContext<KeystoneContextType>({
   adminMeta: null,
   apiPath: null,
   fieldViews: {},
+  adminPath: '',
+  listsKeyByPath: {},
 })
 
 type KeystoneProviderProps = {
   adminConfig: AdminConfig
   apiPath: string
+  adminPath: string
   fieldViews: FieldViews
   children: ReactNode
 }
@@ -48,6 +52,7 @@ function InternalKeystoneProvider({
   apiPath,
   fieldViews,
   children,
+  adminPath,
 }: KeystoneProviderProps) {
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
@@ -171,6 +176,8 @@ function InternalKeystoneProvider({
           adminMeta: meta ?? null,
           fieldViews,
           apiPath,
+          adminPath,
+          listsKeyByPath: {},
         }}
       >
         {children}
@@ -193,7 +200,6 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
       }),
     [props.apiPath]
   )
-
   return (
     <ApolloProvider client={apolloClient}>
       <InternalKeystoneProvider {...props} />
@@ -207,8 +213,26 @@ export function useRawKeystone() {
   return value
 }
 
-export function useKeystone() {
-  return useContext(KeystoneContext)
+export function useKeystone(): KeystoneContextType {
+  const value = useContext(KeystoneContext)
+  if (!value) throw new Error('useKeystone must be called inside a KeystoneProvider component')
+
+  const listsKeyByPath = Object.values(value.adminMeta?.lists || {}).reduce(
+    (acc, list) => {
+      acc[list.path] = list.key
+      return acc
+    },
+    {} as Record<string, string>
+  )
+
+  return {
+    adminConfig: value.adminConfig,
+    adminMeta: value.adminMeta,
+    fieldViews: value.fieldViews,
+    apiPath: value.apiPath,
+    adminPath: value.adminPath,
+    listsKeyByPath,
+  }
 }
 
 export function useList(listKey: string) {
