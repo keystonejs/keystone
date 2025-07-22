@@ -633,24 +633,6 @@ function getListsWithInitialisedFields(
       })
 
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
-      const fieldModes = {
-        create:
-          f.ui?.createView?.fieldMode ??
-          group?.ui?.createView?.defaultFieldMode ??
-          listConfig.ui?.createView?.defaultFieldMode ??
-          'edit',
-        item:
-          f.ui?.itemView?.fieldMode ??
-          group?.ui?.itemView?.defaultFieldMode ??
-          listConfig.ui?.itemView?.defaultFieldMode ??
-          'edit',
-        list:
-          f.ui?.listView?.fieldMode ??
-          group?.ui?.listView?.defaultFieldMode ??
-          listConfig.ui?.listView?.defaultFieldMode ??
-          'read',
-      }
-
       resultFields[fieldKey] = {
         fieldKey,
 
@@ -680,21 +662,38 @@ function getListsWithInitialisedFields(
           description: f.ui?.description ?? null,
           views: f.ui?.views ?? null,
           createView: {
-            fieldMode: isEnabledField.create ? fieldModes.create : 'hidden',
             isRequired: f.ui?.createView?.isRequired ?? false,
+            fieldMode:
+              f.ui?.createView?.fieldMode ??
+              (isEnabledField.create
+                ? (group?.ui?.createView?.defaultFieldMode ??
+                  listConfig.ui?.createView?.defaultFieldMode ??
+                  'edit')
+                : 'hidden'),
           },
+
           itemView: {
-            fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
-            fieldMode: isEnabledField.update
-              ? fieldModes.item
-              : isEnabledField.read && fieldModes.item !== 'hidden'
-                ? 'read'
-                : 'hidden',
             isRequired: f.ui?.itemView?.isRequired ?? false,
+            fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
+            fieldMode:
+              f.ui?.itemView?.fieldMode ??
+              (isEnabledField.update
+                ? (group?.ui?.itemView?.defaultFieldMode ??
+                  listConfig.ui?.itemView?.defaultFieldMode ??
+                  'edit')
+                : isEnabledField.read
+                  ? 'read'
+                  : 'hidden'),
           },
 
           listView: {
-            fieldMode: isEnabledField.read ? fieldModes.list : 'hidden',
+            fieldMode:
+              f.ui?.listView?.fieldMode ??
+              (isEnabledField.read
+                ? (group?.ui?.listView?.defaultFieldMode ??
+                  listConfig.ui?.listView?.defaultFieldMode ??
+                  'read')
+                : 'hidden'),
           },
         },
 
