@@ -663,37 +663,37 @@ function getListsWithInitialisedFields(
           views: f.ui?.views ?? null,
           createView: {
             isRequired: f.ui?.createView?.isRequired ?? false,
-            fieldMode:
-              f.ui?.createView?.fieldMode ??
-              (isEnabledField.create
-                ? (group?.ui?.createView?.defaultFieldMode ??
-                  listConfig.ui?.createView?.defaultFieldMode ??
-                  'edit')
-                : 'hidden'),
+            fieldMode: isEnabledField.create
+              ? (f.ui?.createView?.fieldMode ??
+                group?.ui?.createView?.defaultFieldMode ??
+                listConfig.ui?.createView?.defaultFieldMode ??
+                'edit')
+              : 'hidden',
           },
 
           itemView: {
             isRequired: f.ui?.itemView?.isRequired ?? false,
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
-            fieldMode:
-              f.ui?.itemView?.fieldMode ??
-              (isEnabledField.update
-                ? (group?.ui?.itemView?.defaultFieldMode ??
+            fieldMode: isEnabledField.update
+              ? (f.ui?.itemView?.fieldMode ??
+                group?.ui?.itemView?.defaultFieldMode ??
+                listConfig.ui?.itemView?.defaultFieldMode ??
+                'edit')
+              : isEnabledField.read
+                ? (f.ui?.itemView?.fieldMode ??
+                  group?.ui?.itemView?.defaultFieldMode ??
                   listConfig.ui?.itemView?.defaultFieldMode ??
-                  'edit')
-                : isEnabledField.read
-                  ? 'read'
-                  : 'hidden'),
+                  'read')
+                : 'hidden',
           },
 
           listView: {
-            fieldMode:
-              f.ui?.listView?.fieldMode ??
-              (isEnabledField.read
-                ? (group?.ui?.listView?.defaultFieldMode ??
-                  listConfig.ui?.listView?.defaultFieldMode ??
-                  'read')
-                : 'hidden'),
+            fieldMode: isEnabledField.read
+              ? (f.ui?.listView?.fieldMode ??
+                group?.ui?.listView?.defaultFieldMode ??
+                listConfig.ui?.listView?.defaultFieldMode ??
+                'read')
+              : 'hidden',
           },
         },
 
