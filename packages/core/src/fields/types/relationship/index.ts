@@ -21,18 +21,22 @@ type SelectDisplayConfig<ListTypeInfo extends BaseListTypeInfo, Ref extends stri
     displayMode?: 'select'
     /**
      * The path of the field to use from the related list for item labels in the select.
-     * Defaults to the labelField configured on the related list.
+     * Defaults to the labelField (if set) on the related list.
      */
     labelField?: string
+    /**
+     * The paths of the fields to use from the related list when searching in the select.
+     * Defaults to the initialSearchFields (if set) on the related list.
+     */
     searchFields?: string[]
     /**
      * The filter to apply when shown in the select.
-     * Defaults to the initialSort (if configured) on the related list.
+     * Defaults to the initialSort (if set) on the related list.
      */
     filter?: ListTypeInfo['all']['lists'][ListKeyFromRef<Ref>]['inputs']['where']
     /**
      * The sort to apply when shown in the select.
-     * Defaults to the initialSort (if configured) on the related list.
+     * Defaults to the initialSort (if set) on the related list.
      */
     sort?: { field: string; direction: 'ASC' | 'DESC' }
   }

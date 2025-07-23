@@ -51,7 +51,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
           },
           async update() {
             return undefined
-          }
+          },
         },
       },
     }),
@@ -64,7 +64,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
           },
           async update() {
             return undefined
-          }
+          },
         },
       },
     }),
