@@ -25,7 +25,15 @@ type SelectDisplayConfig<ListTypeInfo extends BaseListTypeInfo, Ref extends stri
      */
     labelField?: string
     searchFields?: string[]
+    /**
+     * The filter to apply when shown in the select.
+     * Defaults to the initialSort (if configured) on the related list.
+     */
     filter?: ListTypeInfo['all']['lists'][ListKeyFromRef<Ref>]['inputs']['where']
+    /**
+     * The sort to apply when shown in the select.
+     * Defaults to the initialSort (if configured) on the related list.
+     */
     sort?: { field: string; direction: 'ASC' | 'DESC' }
   }
 }
@@ -46,11 +54,12 @@ type TableDisplayConfig = {
   many: true
   ui?: {
     displayMode: 'table'
+    initialSort?: { field: string; direction: 'ASC' | 'DESC' }
+    columns?: string[]
+
     itemView: {
       fieldMode: 'read'
     }
-    initialSort?: { field: string; direction: 'ASC' | 'DESC' }
-    columns?: string[]
   }
 }
 
@@ -246,8 +255,8 @@ export function relationship<
         }
 
         // prefer the local definition to the foreign list, if provided
-        const specificRefLabelField = config.ui?.labelField || refLabelField
-        const specificRefSearchFields = config.ui?.searchFields || refSearchFields
+        const specificRefLabelField = config.ui?.labelField ?? refLabelField
+        const specificRefSearchFields = config.ui?.searchFields ?? refSearchFields
         throwIfMissingFields(
           localListMeta,
           foreignListMeta,
@@ -263,8 +272,8 @@ export function relationship<
           hideCreate,
           refLabelField: specificRefLabelField,
           refSearchFields: specificRefSearchFields,
-          filter: config.ui?.filter ?? null,
-          sort: config.ui?.sort ?? null,
+          filter: config.ui?.filter ?? foreignListMeta.initialFilter ?? null,
+          sort: config.ui?.sort ?? foreignListMeta.initialSort ?? null,
         }
       },
     }
