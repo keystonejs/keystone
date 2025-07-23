@@ -49,6 +49,9 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
           async create({ context }) {
             return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
           },
+          async update() {
+            return undefined
+          },
         },
       },
     }),
@@ -58,6 +61,9 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
         resolveInput: {
           async create() {
             return new Date()
+          },
+          async update() {
+            return undefined
           },
         },
       },

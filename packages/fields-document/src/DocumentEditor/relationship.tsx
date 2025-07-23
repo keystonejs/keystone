@@ -28,7 +28,6 @@ export function RelationshipElement({
   const relationships = useContext(DocumentFieldRelationshipsContext)!
   const relationship = relationships[element.relationship]
   const list = useList(relationship.listKey)
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
   return (
     <span
@@ -51,9 +50,11 @@ export function RelationshipElement({
       >
         {relationship ? (
           <ComboboxSingle
-            labelField={list.labelField}
-            searchFields={searchFields}
             list={list}
+            labelField={list.labelField}
+            searchFields={list.initialSearchFields}
+            filter={list.initialFilter as any}
+            sort={list.initialSort}
             state={{
               kind: 'one',
               value:
