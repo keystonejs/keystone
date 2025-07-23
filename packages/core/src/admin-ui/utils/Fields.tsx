@@ -68,9 +68,9 @@ export function Fields({
   invalidFields: ReadonlySet<string>
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
+  fieldModes?: Record<string, ConditionalFieldFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
   fieldPositions?: Record<string, 'form' | 'sidebar'>
   isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
-  fieldModes?: Record<string, ConditionalFieldFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false

@@ -73,7 +73,7 @@ export function StickySidebar(props: HTMLAttributes<HTMLDivElement>) {
 
         [breakpointQueries.above.tablet]: {
           alignSelf: 'start',
-          marginBottom: tokenSchema.size.space.xlarge,
+          marginBottom: tokenSchema.size.element.xlarge,
           // sync with toolbar height
           paddingBottom: tokenSchema.size.element.xlarge,
           position: 'sticky',
