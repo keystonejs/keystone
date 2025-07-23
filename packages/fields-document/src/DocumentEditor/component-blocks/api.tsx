@@ -329,7 +329,9 @@ export const fields = {
   }: {
     listKey: string
     label: string
+    /** The label field to use for this relationship when showing the select */
     labelField?: string
+    /** The GraphQL selection to use for this relationship when hydrating .data */
     selection?: string
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
     Many extends true ? true : false
