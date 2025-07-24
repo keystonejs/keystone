@@ -56,7 +56,7 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * It is always possible to search by id and `id` should not be specified in this option.
    * @default The `labelField` if it has a string `contains` filter, otherwise none.
    */
-  searchFields?: ListTypeInfo['fields'][];
+  searchFields?: ListTypeInfo['fields'][]
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.

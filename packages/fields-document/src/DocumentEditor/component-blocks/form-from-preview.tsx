@@ -273,12 +273,7 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
 
 function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
   const { autoFocus, onChange, schema, value } = props
-  const {
-    listKey,
-    label,
-    description,
-    many
-  } = schema
+  const { listKey, label, description, many } = schema
   const list = useList(listKey)
   const formValue = (function () {
     if (many) {

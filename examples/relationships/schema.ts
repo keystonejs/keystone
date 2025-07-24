@@ -12,12 +12,12 @@ export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
     ui: {
-      listView:{
+      listView: {
         initialSort: {
           field: 'title',
           direction: 'DESC',
         },
-      }
+      },
     },
     fields: {
       title: text({
