@@ -4,7 +4,7 @@ export const schema = fields.array(
   fields.relationship({
     listKey: 'Post',
     label: 'Bundle',
-    description: 'What posts should be bundled with this post',
+    description: 'What posts do you want to bundle with this post?',
     many: true,
   }),
   {
