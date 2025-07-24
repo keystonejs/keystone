@@ -1,4 +1,4 @@
-import { type Browser, type Page, type BrowserContext } from 'playwright'
+import type { Browser, Page, BrowserContext } from 'playwright'
 import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {
@@ -65,7 +65,10 @@ adminUITests('./tests/test-projects/basic', browserType => {
       await page.getByRole('option', { name: 'James Joyce' }).click()
       await page.getByRole('button', { name: 'Add' }).click()
       await page.waitForURL(
-        `http://localhost:3000/tasks?%21assignedTo_is="${assignedTask.assignedTo.id}"`
+        // e.g http://localhost:3000/tasks?column=label&column=priority&column=isComplete&filter=assignedTo_is_%22cmdh4fha60000vllm5dnt7z1b%22
+        new RegExp(
+          `/localhost:3000/tasks\\?.*filter=assignedTo_is_%22${assignedTask.assignedTo.id}%22`
+        )
       )
 
       // Assert that there's only one result.
@@ -109,7 +112,9 @@ adminUITests('./tests/test-projects/basic', browserType => {
       })
       await page.goto('http://localhost:3000/tasks')
       await page.getByText('21 Tasks').waitFor()
-      await page.goto(`http://localhost:3000/tasks?!assignedTo_is="${assignedTask.assignedTo.id}"`)
+      await page.goto(
+        `http://localhost:3000/tasks?filter=assignedTo_is_"${assignedTask.assignedTo.id}"`
+      )
       await page.getByText('1 Task').waitFor()
     })
   })

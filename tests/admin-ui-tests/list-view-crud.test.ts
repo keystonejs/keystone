@@ -1,4 +1,4 @@
-import { type Browser, type Page } from 'playwright'
+import type { Browser, Page } from 'playwright'
 
 import { makeGqlRequest, adminUITests, deleteAllData } from './utils'
 
