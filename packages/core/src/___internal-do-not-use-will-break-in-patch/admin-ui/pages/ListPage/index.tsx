@@ -1,12 +1,12 @@
-import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
+import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
-import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
+import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { HStack, VStack } from '@keystar/ui/layout'
@@ -14,34 +14,33 @@ import { SearchField } from '@keystar/ui/search-field'
 import { css, tokenSchema } from '@keystar/ui/style'
 import {
   type SortDescriptor,
-  TableView,
+  Cell,
+  Column,
+  Row,
   TableBody,
   TableHeader,
-  Column,
-  Cell,
-  Row,
+  TableView,
 } from '@keystar/ui/table'
 import { toastQueue } from '@keystar/ui/toast'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import { ProgressCircle } from '@keystar/ui/progress'
 import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui/context'
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer'
+import { useList } from '../../../../admin-ui/context'
+import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
+import type { ListMeta } from '../../../../types'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
 import { FilterList } from './FilterList'
 import { Pagination, usePaginationParams } from './Pagination'
 import { useFilters } from './useFilters'
-import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import { useSelectedFields } from './useSelectedFields'
-import { useSort } from './useSort'
-import { ProgressCircle } from '@keystar/ui/progress'
-import type { ListMeta } from '../../../../types'
 
 type ListPageProps = { listKey: string }
 type SelectedKeys = 'all' | Set<number | string>
@@ -102,6 +101,30 @@ function getDefaultFilters(list: ListMeta) {
     return []
   })
   return filters
+}
+
+export function useSort(list: ListMeta): SortDescriptor | null {
+  const { query } = useRouter()
+  const sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
+  if (sortByFromUrl === '') return null
+  if (!sortByFromUrl) {
+    if (!list.initialSort) return null
+    return {
+      column: list.initialSort.field,
+      direction: list.initialSort.direction === 'ASC' ? 'ascending' : 'descending',
+    }
+  }
+
+  const fieldKey = sortByFromUrl.startsWith('-') ? sortByFromUrl.slice(1) : sortByFromUrl
+  const direction = sortByFromUrl.startsWith('-') ? 'ascending' : 'descending'
+  const field = list.fields[fieldKey]
+  if (!field) return null
+  if (!field.isOrderable) return null
+
+  return {
+    column: fieldKey,
+    direction,
+  }
 }
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
@@ -171,7 +194,13 @@ function ListPage({ listKey }: ListPageProps) {
         where: { ...filters.where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
-        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
+        orderBy: sort
+          ? [
+              {
+                [sort.column]: sort.direction === 'ascending' ? 'asc' : 'desc',
+              },
+            ]
+          : undefined,
       },
     }
   )
@@ -243,13 +272,14 @@ function ListPage({ listKey }: ListPageProps) {
         <ListTable
           listKey={listKey}
           allowDelete={allowDelete}
-          data={dataWithPevious}
           currentPage={currentPage}
+          data={dataWithPevious}
           isConstrained={isConstrained}
+          loading={loading}
           pageSize={pageSize}
           refetch={refetch}
           selectedFields={selectedFields}
-          loading={loading}
+          sort={sort}
         />
       </VStack>
     </PageContainer>
@@ -276,24 +306,26 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
 
 function ListTable({
   allowDelete,
-  data,
   currentPage,
+  data,
   isConstrained,
   listKey,
+  loading,
   pageSize,
   refetch,
   selectedFields,
-  loading,
+  sort,
 }: {
   allowDelete: boolean
   currentPage: number
+  data: { items: Record<string, unknown>[] | null; count: number | null } | undefined
   isConstrained: boolean
   listKey: string
+  loading: boolean
   pageSize: number
   refetch: () => void
   selectedFields: ReturnType<typeof useSelectedFields>
-  data: { items: Record<string, unknown>[] | null; count: number | null } | undefined
-  loading: boolean
+  sort: SortDescriptor | null
 }) {
   const list = useList(listKey)
   const router = useRouter()
@@ -322,7 +354,7 @@ function ListTable({
           aria-labelledby={LIST_PAGE_TITLE_ID}
           selectionMode={selectionMode}
           onSortChange={onSortChange}
-          sortDescriptor={parseSortQuery(router.query.sortBy) || parseInitialSort(list.initialSort)}
+          sortDescriptor={sort ?? undefined}
           density="spacious"
           overflowMode="truncate"
           onSelectionChange={setSelectedKeys}
@@ -437,28 +469,6 @@ function ListTable({
       </DialogContainer>
     </Fragment>
   )
-}
-
-function parseSortQuery(queryString?: string | string[]): SortDescriptor | undefined {
-  if (!queryString) return
-
-  // TODO: handle multiple sort queries?
-  if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
-
-  const column = queryString.startsWith('-') ? queryString.slice(1) : queryString
-  const direction = queryString.startsWith('-') ? 'ascending' : 'descending'
-
-  return { column, direction }
-}
-
-function parseInitialSort(
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
-): SortDescriptor | undefined {
-  if (!sort) return undefined
-  return {
-    column: sort.field,
-    direction: sort.direction === 'ASC' ? 'ascending' : 'descending',
-  }
 }
 
 function DeleteItemsDialog(props: { items: Set<Key>; listKey: string; refetch: () => void }) {
