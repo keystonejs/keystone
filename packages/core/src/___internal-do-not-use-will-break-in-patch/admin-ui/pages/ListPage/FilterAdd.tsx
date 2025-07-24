@@ -1,28 +1,35 @@
-import { useRouter } from 'next/router'
 import { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
-import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
+import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { Grid } from '@keystar/ui/layout'
-import { MenuTrigger, Menu, Item } from '@keystar/ui/menu'
+import { Item, Menu, MenuTrigger } from '@keystar/ui/menu'
 import { Picker } from '@keystar/ui/picker'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { FieldMeta, JSONValue } from '../../../../types'
+import type { Filter } from '.'
 import { useList } from '../../../../admin-ui/context'
+import type { FieldMeta, JSONValue } from '../../../../types'
 
 type State =
   | { kind: 'selecting-field' }
   | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue }
 
-export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
+export function FilterAdd({
+  listKey,
+  onAdd,
+  isDisabled,
+}: {
+  listKey: string
+  onAdd: (filter: Filter) => void
+  isDisabled?: boolean
+}) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [state, setState] = useState<State>({ kind: 'selecting-field' })
   const [forceValidation, setForceValidation] = useState(false)
-  const router = useRouter()
   const formId = useId()
 
   const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(listKey)
@@ -54,11 +61,10 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
       return
     }
 
-    router.push({
-      query: {
-        ...router.query,
-        [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-      },
+    onAdd({
+      field: state.fieldPath,
+      type: state.filterType,
+      value: state.filterValue,
     })
     resetState()
   }

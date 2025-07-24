@@ -15,11 +15,11 @@ type PageItem = {
 }
 
 export function PaginationControls(props: {
-  pageSize: number
-  total: number
-  currentPage: number
   singular: string
   plural: string
+  currentPage: number
+  pageSize: number
+  total: number
   onChangePage: (page: number) => void
   onChangePageSize: (pageSize: number) => void
   extraActions?: ReactNode
@@ -29,25 +29,18 @@ export function PaginationControls(props: {
 
   const nextPage = currentPage + 1
   const prevPage = currentPage - 1
-  const minPage = 1
+  const lastPage = Math.max(Math.ceil(total / pageSize), 1)
 
-  const limit = Math.ceil(total / pageSize)
   const pageItems = useMemo(() => {
     const result: PageItem[] = []
-    for (let page = minPage; page <= limit; page++) {
+    for (let page = 1; page <= lastPage; page++) {
       result.push({
         id: page,
         label: String(page),
       })
     }
     return result
-  }, [limit])
-
-  // Don't render the pagination component if the pageSize is greater than the
-  // total number of items in the list.
-  // if (total <= pageSize) {
-  //   return null
-  // }
+  }, [lastPage])
 
   return (
     <HStack
@@ -89,7 +82,7 @@ export function PaginationControls(props: {
         <HStack isHidden={{ below: 'desktop' }} gap="regular" alignItems="center">
           <Picker
             // prominence="low"
-            aria-label={`Page number, of ${limit} pages`}
+            aria-label={`Page number, of ${lastPage} pages`}
             items={pageItems}
             onSelectionChange={page => {
               props.onChangePage(Number(page))
@@ -99,12 +92,12 @@ export function PaginationControls(props: {
           >
             {item => <Item>{item.label}</Item>}
           </Picker>
-          <Text>of {limit} pages</Text>
+          <Text>of {lastPage} pages</Text>
         </HStack>
         <HStack gap="regular">
           <ActionButton
             aria-label="Previous page"
-            isDisabled={prevPage < minPage}
+            isDisabled={prevPage < 1}
             onPress={() => props.onChangePage(prevPage)}
             // prominence="low"
           >
@@ -112,7 +105,7 @@ export function PaginationControls(props: {
           </ActionButton>
           <ActionButton
             aria-label="Next page"
-            isDisabled={nextPage > limit}
+            isDisabled={nextPage > lastPage}
             onPress={() => props.onChangePage(nextPage)}
             // prominence="low"
           >
