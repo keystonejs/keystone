@@ -94,7 +94,7 @@ export function PaginationControls(props: {
         <HStack isHidden={{ below: 'desktop' }} gap="regular" alignItems="center">
           <Picker
             // prominence="low"
-            aria-label={`Page number, of 11 pages`}
+            aria-label={`Page number, of ${limit} pages`}
             items={pageItems}
             onSelectionChange={page => {
               props.onChangePage(Number(page))
