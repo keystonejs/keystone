@@ -323,12 +323,15 @@ export const fields = {
   relationship<Many extends boolean | undefined = false>({
     listKey,
     label,
+    description,
     labelField,
     selection,
     many,
   }: {
     listKey: string
     label: string
+    /** The description to show adjacent to the label */
+    description?: string
     /** The label field to use for this relationship when showing the select */
     labelField?: string
     /** The GraphQL selection to use for this relationship when hydrating .data */
@@ -340,6 +343,7 @@ export const fields = {
       kind: 'relationship' as const,
       listKey,
       label,
+      description: description ?? null,
       labelField: labelField ?? null,
       selection: selection ?? null,
       many: (many ? true : false) as any,

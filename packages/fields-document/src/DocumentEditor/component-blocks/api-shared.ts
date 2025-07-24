@@ -123,6 +123,7 @@ export type RelationshipField<Many extends boolean> = {
   kind: 'relationship'
   listKey: string
   label: string
+  description: string | null
   labelField: string | null
   selection: string | null
   many: Many
