@@ -1,18 +1,17 @@
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { Field as RelationshipFieldView } from '@keystone-6/core/fields/types/relationship/views'
 import { GroupIndicatorLine } from '@keystone-6/core/admin-ui/utils'
+import { Field as RelationshipFieldView } from '@keystone-6/core/fields/types/relationship/views'
 
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { Dialog, DialogContainer } from '@keystar/ui/dialog'
+import { type ItemDropTarget, move, useDragAndDrop } from '@keystar/ui/drag-and-drop'
 import { Field } from '@keystar/ui/field'
-import { Heading, Text } from '@keystar/ui/typography'
 import { Icon } from '@keystar/ui/icon'
-import { Item, ListView } from '@keystar/ui/list-view'
-import { type ItemDropTarget, useDragAndDrop } from '@keystar/ui/drag-and-drop'
-import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
-import { HStack, VStack } from '@keystar/ui/layout'
-import { move } from '@keystar/ui/drag-and-drop'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
+import { HStack, VStack } from '@keystar/ui/layout'
+import { Item, ListView } from '@keystar/ui/list-view'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
+import { Heading, Text } from '@keystar/ui/typography'
 
 import {
   type Key,
@@ -20,10 +19,10 @@ import {
   type ReactElement,
   memo,
   useCallback,
-  useMemo,
-  useState,
-  useRef,
   useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import type {
   ArrayField,
@@ -38,9 +37,9 @@ import type {
 } from './api'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
-import { assertNever, clientSideValidateProp } from './utils'
-import { createGetPreviewProps } from './preview-props'
 import { Content } from '@keystar/ui/slots'
+import { createGetPreviewProps } from './preview-props'
+import { assertNever, clientSideValidateProp } from './utils'
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,
@@ -274,7 +273,7 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
 
 function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
   const { autoFocus, onChange, schema, value } = props
-  const { label, listKey, many } = schema
+  const { listKey, label, description, many } = schema
   const list = useList(listKey)
   const formValue = (function () {
     if (many) {
@@ -321,14 +320,18 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
         {
           path: '', // unused
           label,
-          description: '', // TODO
+          description,
           display: 'select',
           listKey: '', // unused
+
+          // see relationship controller for these fields
           refListKey: list.key,
+          many,
+          hideCreate: true,
           refLabelField: list.labelField,
           refSearchFields: list.initialSearchFields,
-          hideCreate: true,
-          many,
+          filter: list.initialFilter as any,
+          sort: list.initialSort,
         } as any
       }
       onChange={val => {

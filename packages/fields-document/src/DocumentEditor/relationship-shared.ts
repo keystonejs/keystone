@@ -1,12 +1,14 @@
 import type { Editor } from 'slate'
 
+// inline relationship type
 export type Relationships = Record<
   string,
   {
     listKey: string
     label: string
+    /** The label field to use for this relationship when showing the select */
     labelField: string | null
-    /** GraphQL fields to select when querying the field */
+    /** The GraphQL selection to use for this relationship when hydrating .data */
     selection: string | null
   }
 >

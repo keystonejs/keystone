@@ -2,8 +2,9 @@ import { fields } from '@keystone-6/fields-document/component-blocks'
 
 export const schema = fields.array(
   fields.relationship({
-    label: 'Bundle',
     listKey: 'Post',
+    label: 'Bundle',
+    description: 'What posts should be bundled with this post',
     many: true,
   }),
   {

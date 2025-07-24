@@ -50,13 +50,13 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
-  labelField?: 'id' | Exclude<keyof BaseFields<ListTypeInfo>, number>
+  labelField?: 'id' | Exclude<ListTypeInfo['fields'], number>
   /**
    * The fields used by the Admin UI when searching this list.
    * It is always possible to search by id and `id` should not be specified in this option.
    * @default The `labelField` if it has a string `contains` filter, otherwise none.
    */
-  searchFields?: readonly Extract<keyof BaseFields<ListTypeInfo>, string>[]
+  searchFields?: ListTypeInfo['fields'][]
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.
@@ -124,9 +124,9 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
      * Users of the Admin UI can select different columns to show in the UI.
      * @default the first three fields in the list
      */
-    initialColumns?: readonly ('id' | keyof BaseFields<ListTypeInfo>)[]
+    initialColumns?: readonly ('id' | ListTypeInfo['fields'])[]
     // was previously top-level defaultSort
-    initialSort?: { field: 'id' | keyof BaseFields<ListTypeInfo>; direction: 'ASC' | 'DESC' }
+    initialSort?: { field: 'id' | ListTypeInfo['fields']; direction: 'ASC' | 'DESC' }
     // was previously defaultPageSize
     pageSize?: number // default number of items to display per page on the list screen
 

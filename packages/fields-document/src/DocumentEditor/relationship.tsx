@@ -19,6 +19,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
 
+// this is the inline relationship, see form-from-preview for the component field
 export function RelationshipElement({
   attributes,
   children,

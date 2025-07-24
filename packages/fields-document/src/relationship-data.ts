@@ -70,7 +70,7 @@ export function addRelationshipData(
   )
 }
 
-type Relationship_ = Omit<RelationshipField<boolean>, 'kind'>
+type Relationship_ = Omit<RelationshipField<boolean>, 'kind' | 'description'>
 
 export async function fetchRelationshipData(
   context: KeystoneContext,
