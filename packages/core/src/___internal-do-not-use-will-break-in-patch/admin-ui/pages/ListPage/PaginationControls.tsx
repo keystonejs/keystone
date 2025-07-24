@@ -25,7 +25,6 @@ export function PaginationControls(props: {
   extraActions?: ReactNode
 }) {
   const { currentPage, total, pageSize } = props
-
   const { stats } = getPaginationStats(props)
 
   const nextPage = currentPage + 1
@@ -73,10 +72,6 @@ export function PaginationControls(props: {
               props.onChangePageSize(Number(key))
             }}
             selectedKey={pageSize}
-            // disable sizes greater than the total, allowing the next page to be the last
-            disabledKeys={PAGE_SIZES.filter(n => {
-              return n > snapValueToNextAvailable(total)
-            })}
             width="scale.1000"
           >
             {item => <Item>{item.label}</Item>}
@@ -159,10 +154,6 @@ function getPaginationStats({
 }
 
 const PAGE_SIZES = [10, 25, 50, 100]
-
-function snapValueToNextAvailable(input: number, range = PAGE_SIZES) {
-  return range.find(value => input <= value) ?? range[range.length - 1]
-}
 
 export function snapValueToClosest(input: number, range = PAGE_SIZES) {
   return range.reduce((prev, curr) =>
