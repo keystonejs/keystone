@@ -331,10 +331,12 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
 
           // see relationship controller for these fields
           refListKey: list.key,
+          many,
+          hideCreate: true,
           refLabelField: list.labelField,
           refSearchFields: list.initialSearchFields,
-          hideCreate: true,
-          many,
+          filter: list.initialFilter as any,
+          sort: list.initialSort,
         } as any
       }
       onChange={val => {

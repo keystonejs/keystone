@@ -232,8 +232,8 @@ export function controller(
     } & (
       | {
           displayMode: 'select'
-          sort: { field: string; direction: 'ASC' | 'DESC' } | null
           filter: Record<string, any> | null
+          sort: { field: string; direction: 'ASC' | 'DESC' } | null
         }
       | { displayMode: 'count' }
       | {

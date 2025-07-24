@@ -11,6 +11,14 @@ import { schema as bundlesStructureSchema } from './structure-relationships-2'
 export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
+    ui: {
+      listView:{
+        initialSort: {
+          field: 'title',
+          direction: 'DESC',
+        },
+      }
+    },
     fields: {
       title: text({
         validation: { isRequired: true },
