@@ -2,4 +2,4 @@
 "@keystone-6/fields-document": minor
 ---
 
-Add `ui.labelField` support for relationship fields
+Add `.labelField` support for inline and component block relationship fields
