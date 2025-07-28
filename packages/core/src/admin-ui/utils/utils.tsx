@@ -86,10 +86,8 @@ export function serializeValueToOperationItem(
 
   for (const fieldKey in fields) {
     const field = fields[fieldKey]
-
     const fieldValue = value[fieldKey]
     const fieldValueSerialized = field.controller.serialize(fieldValue)
-
     const fieldValueReference = valueReference[fieldKey]
 
     const isAlwaysRequired = field.graphql.isNonNull.includes(operation)
@@ -111,13 +109,18 @@ export function useHasChanges(
   valueReference?: Record<string, unknown>
 ) {
   return useMemo(() => {
-    const alwaysRequiredCount = Object.values(fields).filter(f =>
-      f.graphql.isNonNull.includes(operation)
-    ).length
+    valueReference ??= makeDefaultValueState(fields)
 
-    const itemForUpdate = serializeValueToOperationItem(operation, fields, value, valueReference)
+    for (const fieldKey in fields) {
+      const field = fields[fieldKey]
+      const fieldValue = value[fieldKey]
+      const fieldValueSerialized = field.controller.serialize(fieldValue)
+      const fieldValueReference = valueReference[fieldKey]
 
-    // add any fields that are always required
-    return Object.keys(itemForUpdate).length - alwaysRequiredCount > 0
+      if (!isDeepEqual(fieldValueSerialized, field.controller.serialize(fieldValueReference)))
+        return true
+    }
+
+    return false
   }, [fields, operation, value, valueReference])
 }
