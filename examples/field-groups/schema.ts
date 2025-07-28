@@ -23,14 +23,16 @@ export const lists = {
               create: denyAll,
               update: denyAll,
             },
-            // for this example, we are going to use a hook for fun
-            //  defaultValue: { kind: 'now' }
+            graphql: {
+              omit: {
+                create: true,
+                update: true,
+              },
+            },
             hooks: {
-              resolveInput: {
-                create: ({ context, operation, resolvedData }) => {
-                  // TODO: text should allow you to prevent a defaultValue, then Prisma create could be non-null
-                  return resolvedData.title?.replace(/ /g, '-').toLowerCase()
-                },
+              resolveInput: ({ context, operation, resolvedData }) => {
+                if (typeof resolvedData.title !== 'string') return undefined // TODO: remove this
+                return resolvedData.title?.replace(/ /g, '-').toLowerCase()
               },
             },
           }),
