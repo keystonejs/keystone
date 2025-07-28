@@ -6,11 +6,7 @@ import { TextField } from '@keystar/ui/text-field'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import type { SimpleFieldTypeInfo } from '../../../../types'
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-} from '../../../../types'
+import type { FieldController, FieldControllerConfig, FieldProps } from '../../../../types'
 import { entriesTyped } from '../../../../lib/core/utils'
 
 const TYPE_OPERATOR_MAP = {
@@ -77,7 +73,6 @@ export function controller(
     fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.fieldKey,
     validation: config.fieldMeta.validation,
     defaultValue: {
       kind: 'create',
@@ -90,6 +85,7 @@ export function controller(
       initial: data[config.fieldKey],
     }),
     serialize: value => ({ [config.fieldKey]: value.value }),
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const {

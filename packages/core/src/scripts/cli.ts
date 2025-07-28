@@ -112,6 +112,8 @@ export async function cli(cwd: string, argv: string[]) {
 
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
+    // uncomment when you need to update the schemas
+    // return build(cwd, { frozen: false, prisma: true, ui: false })
     return build(cwd, { frozen: true, prisma: true, ui: false })
   }
 

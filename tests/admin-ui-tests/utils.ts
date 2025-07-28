@@ -2,7 +2,7 @@ import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
 
-import { type ExecaChildProcess } from 'execa'
+import type { ExecaChildProcess } from 'execa'
 import * as playwright from 'playwright'
 import dotenv from 'dotenv'
 import ms from 'ms'

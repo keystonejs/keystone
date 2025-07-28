@@ -40,6 +40,7 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
+import { humanize } from '../../lib/utils'
 
 export type InitialisedField = {
   fieldKey: string
@@ -63,8 +64,8 @@ export type InitialisedField = {
     cacheHint: CacheHint | undefined
   }
   ui: {
-    label: string | null
-    description: string | null
+    label: string
+    description: string
     views: string | null
     createView: {
       fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', BaseListTypeInfo>
@@ -624,10 +625,10 @@ function getListsWithInitialisedFields(
 
       const group = fieldKeysToGroup[fieldKey]
       const f = fieldFunc({
-        fieldKey,
-        listKey,
-        lists: listGraphqlTypes,
         provider,
+        lists: listGraphqlTypes,
+        listKey,
+        fieldKey,
       })
 
       const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
@@ -656,8 +657,8 @@ function getListsWithInitialisedFields(
           },
         },
         ui: {
-          label: f.ui?.label ?? null,
-          description: f.ui?.description ?? null,
+          label: f.ui?.label || humanize(fieldKey),
+          description: f.ui?.description ?? '',
           views: f.ui?.views ?? null,
           createView: {
             isRequired: f.ui?.createView?.isRequired ?? false,

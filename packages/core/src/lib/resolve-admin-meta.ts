@@ -225,14 +225,12 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
   name: 'KeystoneAdminUIListMeta',
   fields: {
     key: g.field({ type: g.nonNull(g.String) }),
-    path: g.field({ type: g.nonNull(g.String) }),
-    description: g.field({ type: g.String }),
-
     label: g.field({ type: g.nonNull(g.String) }),
-    labelField: g.field({ type: g.nonNull(g.String) }),
     singular: g.field({ type: g.nonNull(g.String) }),
     plural: g.field({ type: g.nonNull(g.String) }),
+    path: g.field({ type: g.nonNull(g.String) }),
 
+    labelField: g.field({ type: g.nonNull(g.String) }),
     fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))) }),
     groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),

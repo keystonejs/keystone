@@ -402,9 +402,6 @@ function ListPage({ listKey }: ListPageProps) {
       title={list.label}
     >
       <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
-        {/* {list.description !== null && (
-          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
-        )} */}
         <HStack gap="regular" alignItems="center">
           <SearchField
             aria-label="Search"

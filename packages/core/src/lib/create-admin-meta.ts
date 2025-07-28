@@ -1,4 +1,5 @@
 import path from 'node:path'
+
 import type {
   BaseFieldTypeInfo,
   BaseListTypeInfo,
@@ -15,9 +16,7 @@ import type {
 } from '../types'
 import type { FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames, JSONValue } from '../types/utils'
-
 import type { InitialisedList } from './core/initialise-lists'
-import { humanize } from './utils'
 
 type EmptyResolver<Return> = (args: {}, context: KeystoneContext) => MaybePromise<Return>
 
@@ -53,7 +52,7 @@ type ListMetaSource_ = {
   fieldsByKey: Record<string, FieldMetaSource>
   groups: {
     label: string
-    description: string | null
+    description: string
     fields: FieldMetaSource[]
   }[]
   graphql: { names: GraphQLNames }
@@ -130,13 +129,12 @@ export function createAdminMeta(
     adminMetaRoot.listsByKey[listKey] = {
       key: listKey,
       path: list.ui.labels.path,
-      description: listConfig.ui?.description ?? listConfig.description ?? null,
 
       label: list.ui.labels.label,
-      labelField: list.ui.labelField,
       singular: list.ui.labels.singular,
       plural: list.ui.labels.plural,
 
+      labelField: list.ui.labelField,
       fields: [],
       fieldsByKey: {},
       groups: [],
@@ -161,7 +159,7 @@ export function createAdminMeta(
       hideDelete: normalizeMaybeSessionFunction(
         listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete
       ),
-    }
+    } satisfies ListMetaSource
 
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
   }
@@ -195,11 +193,20 @@ export function createAdminMeta(
         operation => field.graphql.isNonNull[operation]
       )
       const fieldMeta = {
+        // FieldMeta
         key: fieldKey,
-        label: field.ui.label ?? humanize(fieldKey),
-        description: field.ui.description ?? null,
+        label: field.ui.label,
+        description: field.ui.description,
         fieldMeta: null,
+        viewsIndex: getViewId(field.views),
+        customViewsIndex:
+          field.ui.views === null
+            ? null
+            : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
+              getViewId(field.ui.views)),
+        search: list.ui.searchableFields.get(fieldKey) ?? null,
 
+        // FieldMetaSource_
         listKey: listKey,
         fieldKey: fieldKey,
         isFilterable: normalizeIsOrderFilter(
@@ -211,14 +218,6 @@ export function createAdminMeta(
           baseOrderFilterArgs
         ),
 
-        viewsIndex: getViewId(field.views),
-        customViewsIndex:
-          field.ui.views === null
-            ? null
-            : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
-              getViewId(field.ui.views)),
-        search: list.ui.searchableFields.get(fieldKey) ?? null,
-
         isNonNull,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.createView.fieldMode),
@@ -227,7 +226,7 @@ export function createAdminMeta(
         itemView: {
           fieldMode: field.ui.itemView.fieldMode,
           fieldPosition: field.ui.itemView.fieldPosition,
-          isRequired: field.ui.itemView.isRequired ?? false,
+          isRequired: field.ui.itemView.isRequired,
         },
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),

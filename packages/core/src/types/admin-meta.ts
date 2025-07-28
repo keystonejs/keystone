@@ -19,7 +19,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   fieldKey: string
 
   label: string
-  description: string | null
+  description: string
   customViews: Record<string, any>
   fieldMeta: FieldMeta
 }
@@ -43,12 +43,14 @@ export type FieldController<
   fieldKey: string
 
   label: string
-  description: string | null
-  graphqlSelection: string
+  description: string
+
   defaultValue: FormState
   deserialize: (item: any) => FormState // TODO: unknown
   serialize: (formState: FormState) => any // TODO: unknown
   validate?: (formState: FormState, opts: { isRequired: boolean }) => boolean
+
+  graphqlSelection: string
   filter?: {
     types: Record<string, FilterTypeDeclaration<FilterValue>>
     parseGraphQL(value: GraphQLFilterValue & {}): { type: string; value: FilterValue }[]
@@ -72,13 +74,14 @@ export type FieldMeta = {
   key: string
 
   label: string
-  description: string | null
+  description: string
   fieldMeta: JSONValue | null
-
   viewsIndex: number
   customViewsIndex: number | null
   views: FieldViews[number]
   controller: FieldController<unknown, JSONValue>
+  isFilterable: boolean
+  isOrderable: boolean
 
   search: 'default' | 'insensitive' | null
   graphql: {
@@ -96,27 +99,22 @@ export type FieldMeta = {
   listView: {
     fieldMode: 'read' | 'hidden'
   }
-
-  isFilterable: boolean
-  isOrderable: boolean
 }
 
 export type FieldGroupMeta = {
   label: string
-  description: string | null
+  description: string
   fields: FieldMeta[]
 }
 
 export type ListMeta = {
   key: string
-  path: string
-  description: string | null
-
   label: string
-  labelField: string
   singular: string
   plural: string
+  path: string
 
+  labelField: string
   fields: { [key: string]: FieldMeta }
   groups: FieldGroupMeta[]
   graphql: {

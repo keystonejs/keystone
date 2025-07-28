@@ -33,7 +33,7 @@ export function controller(
   return {
     fieldKey: config.fieldKey,
     label: config.label,
-    description: config.description,
+    description: config.description ?? '',
     maxStars: config.fieldMeta.maxStars,
     defaultValue: null,
     deserialize: data => {
