@@ -83,7 +83,11 @@ export function controller(
       value:
         config.fieldMeta.defaultValue === 'autoincrement' ? null : config.fieldMeta.defaultValue,
     },
-    deserialize: data => ({ kind: 'update', value: data[config.fieldKey], initial: data[config.fieldKey] }),
+    deserialize: data => ({
+      kind: 'update',
+      value: data[config.fieldKey],
+      initial: data[config.fieldKey],
+    }),
     serialize: value => ({ [config.fieldKey]: value.value }),
     hasAutoIncrementDefault: config.fieldMeta.defaultValue === 'autoincrement',
     validate: (value, opts) => validate(value, opts) === undefined,

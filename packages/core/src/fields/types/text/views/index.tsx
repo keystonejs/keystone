@@ -168,7 +168,9 @@ export function controller(config: Config): FieldController<
       const inner = deserializeTextValue(data[config.fieldKey])
       return { kind: 'update', inner, initial: inner }
     },
-    serialize: value => ({ [config.fieldKey]: value.inner.kind === 'null' ? null : value.inner.value }),
+    serialize: value => ({
+      [config.fieldKey]: value.inner.kind === 'null' ? null : value.inner.value,
+    }),
     validation,
     validate: (val, opts) => validate(val, validation, opts.isRequired, config.label).length === 0,
     graphqlSelection: config.fieldKey,

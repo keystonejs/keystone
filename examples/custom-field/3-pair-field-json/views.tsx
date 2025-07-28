@@ -1,10 +1,6 @@
 import { TextField } from '@keystar/ui/text-field'
 
-import type {
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-} from '@keystone-6/core/types'
+import type { FieldController, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'
 
 export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const disabled = onChange === undefined

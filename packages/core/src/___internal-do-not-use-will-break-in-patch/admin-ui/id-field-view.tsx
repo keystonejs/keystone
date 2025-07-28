@@ -21,9 +21,7 @@ const COPY_TOOLTIP_CONTENT = {
 }
 type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
 
-export function Field({
-  value,
-}: FieldProps<typeof controller>) {
+export function Field({ value }: FieldProps<typeof controller>) {
   const [tooltipState, setTooltipState] = useState<TooltipState>({ tone: 'neutral' })
 
   const onCopy = useCallback(async () => {
@@ -129,7 +127,8 @@ export function controller(
         const valueWithoutWhitespace = Array.isArray(value)
           ? value.map(val => val.replace(/\s/g, ''))
           : value.replace(/\s/g, '')
-        if (type === 'not') return { [config.fieldKey]: { not: { equals: valueWithoutWhitespace } } }
+        if (type === 'not')
+          return { [config.fieldKey]: { not: { equals: valueWithoutWhitespace } } }
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
 
         return {

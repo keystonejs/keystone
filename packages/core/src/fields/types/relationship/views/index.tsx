@@ -464,7 +464,8 @@ export function controller(
         if (type === 'is') return { [config.fieldKey]: { id: { equals: value } } }
         if (type === 'not_is') return { [config.fieldKey]: { not: { id: { equals: value } } } }
         if (type === 'some') return { [config.fieldKey]: { some: { id: { in: value } } } }
-        if (type === 'not_some') return { [config.fieldKey]: { not: { some: { id: { in: value } } } } }
+        if (type === 'not_some')
+          return { [config.fieldKey]: { not: { some: { id: { in: value } } } } }
         return { [config.fieldKey]: { [type]: value } } // uh
       },
       parseGraphQL: () => [],
