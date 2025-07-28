@@ -89,7 +89,6 @@ enum OrderDirection {
 
 input PostUpdateInput {
   title: String!
-  slug: String
   content: String
 }
 
@@ -100,7 +99,6 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String! = ""
-  slug: String
   content: String
 }
 
