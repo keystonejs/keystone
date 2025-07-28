@@ -45,7 +45,6 @@ type FieldMetaSource_ = {
     fieldMode: EmptyResolver<'read' | 'hidden'>
   }
 }
-
 export type FieldMetaSource = FieldMetaSource_ &
   Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
 
@@ -58,7 +57,11 @@ export type FieldGroupMetaSource = FieldGroupMetaSource_ &
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
   fieldsByKey: Record<string, FieldMetaSource>
-  groups: FieldGroupMetaSource[]
+  groups: {
+    label: string
+    description: string
+    fields: FieldMetaSource[]
+  }[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
