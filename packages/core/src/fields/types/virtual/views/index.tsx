@@ -42,12 +42,12 @@ export function controller(
   config: FieldControllerConfig<{ query: string }>
 ): FieldController<unknown> {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path}${config.fieldMeta.query}`,
+    graphqlSelection: `${config.fieldKey}${config.fieldMeta.query}`,
     defaultValue: createViewValue,
-    deserialize: data => data[config.path],
+    deserialize: data => data[config.fieldKey],
     serialize: () => ({}),
   }
 }

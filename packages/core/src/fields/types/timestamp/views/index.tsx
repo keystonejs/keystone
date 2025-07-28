@@ -142,10 +142,10 @@ export function controller(config: FieldControllerConfig<TimestampFieldMeta>): F
   fieldMeta: TimestampFieldMeta
 } {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
+    graphqlSelection: config.fieldKey,
     fieldMeta: config.fieldMeta,
     defaultValue: {
       kind: 'create',
@@ -153,16 +153,16 @@ export function controller(config: FieldControllerConfig<TimestampFieldMeta>): F
         typeof config.fieldMeta.defaultValue === 'string' ? config.fieldMeta.defaultValue : null,
     },
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return {
         kind: 'update',
-        initial: data[config.path],
+        initial: data[config.fieldKey],
         value: value ?? null,
       }
     },
     serialize: ({ value }) => {
-      if (value) return { [config.path]: value }
-      return { [config.path]: null }
+      if (value) return { [config.fieldKey]: value }
+      return { [config.fieldKey]: null }
     },
     validate: (value, opts) =>
       validate(value, config.fieldMeta, opts.isRequired, config.label) === undefined,
@@ -201,10 +201,10 @@ export function controller(config: FieldControllerConfig<TimestampFieldMeta>): F
         )
       },
       graphql: ({ type, value }) => {
-        if (type === 'empty') return { [config.path]: { equals: null } }
-        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
-        if (type === 'not') return { [config.path]: { not: { equals: value } } }
-        return { [config.path]: { [type]: value } }
+        if (type === 'empty') return { [config.fieldKey]: { equals: null } }
+        if (type === 'not_empty') return { [config.fieldKey]: { not: { equals: null } } }
+        if (type === 'not') return { [config.fieldKey]: { not: { equals: value } } }
+        return { [config.fieldKey]: { [type]: value } }
       },
       parseGraphQL: value => {
         return entriesTyped(value).flatMap(([type, value]) => {

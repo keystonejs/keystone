@@ -15,10 +15,10 @@ import { HStack, VStack } from '@keystar/ui/layout'
 import { css, tokenSchema, transition } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
+import { type controller, validateImage } from '.'
 import type { FieldProps } from '../../../../types'
 import { formatBytes, useTrimStartStyles } from '../../file/views/Field'
 import type { ImageValue } from './index'
-import { type controller, validateImage } from '.'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
@@ -67,7 +67,7 @@ export function Field(props: FieldProps<typeof controller>) {
             disabled={onChange === undefined}
             hidden
             key={inputKey}
-            name={field.path}
+            name={field.fieldKey}
             onChange={onUploadChange}
             ref={inputRef}
             type="file"

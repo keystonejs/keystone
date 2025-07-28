@@ -1,10 +1,6 @@
 import { TextField } from '@keystar/ui/text-field'
 
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-} from '@keystone-6/core/types'
+import type { FieldController, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'
 
 export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const disabled = onChange === undefined
@@ -25,15 +21,15 @@ export function controller(
   config: FieldControllerConfig<{}>
 ): FieldController<string | null, string> {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: null,
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return typeof value === 'string' ? value : null
     },
-    serialize: value => ({ [config.path]: value }),
+    serialize: value => ({ [config.fieldKey]: value }),
+    graphqlSelection: config.fieldKey,
   }
 }

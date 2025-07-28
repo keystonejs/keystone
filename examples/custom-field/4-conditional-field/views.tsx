@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Text } from '@keystar/ui/typography'
 import { TextField } from '@keystar/ui/text-field'
+import { Text } from '@keystar/ui/typography'
 
 import type {
   CellComponent,
@@ -47,7 +47,7 @@ export const Cell: CellComponent<typeof controller> = ({ item, field }) => {
         <i>hidden</i>
       </Text>
     )
-  return <Text>{(item as any)[field.path]}</Text>
+  return <Text>{(item as any)[field.label]}</Text>
 }
 
 export function controller(
@@ -64,16 +64,16 @@ export function controller(
   }
 } {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
     dependency: config.fieldMeta?.dependency,
-    graphqlSelection: config.path,
     defaultValue: null,
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return typeof value === 'string' ? value : null
     },
-    serialize: value => ({ [config.path]: value }),
+    serialize: value => ({ [config.fieldKey]: value }),
+    graphqlSelection: config.fieldKey,
   }
 }

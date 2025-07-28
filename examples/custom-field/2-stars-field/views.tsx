@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes } from 'react'
 
 import { Field as KeystarField } from '@keystar/ui/field'
 import type { FieldController, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'
@@ -31,17 +31,17 @@ export function controller(
   config: FieldControllerConfig<{ maxStars: number }>
 ): FieldController<number | null, string> & { maxStars: number } {
   return {
-    maxStars: config.fieldMeta.maxStars,
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
+    maxStars: config.fieldMeta.maxStars,
     defaultValue: null,
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return typeof value === 'number' ? value : null
     },
-    serialize: value => ({ [config.path]: value }),
+    serialize: value => ({ [config.fieldKey]: value }),
     validate: value => value === null || (value >= 0 && value <= config.fieldMeta.maxStars),
+    graphqlSelection: config.fieldKey,
   }
 }

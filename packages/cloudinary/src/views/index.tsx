@@ -23,37 +23,37 @@ export const Cell: CellComponent<typeof controller> = ({ value }) => {
 export function controller(config: FieldControllerConfig) {
   const extensions = ['jpg', 'png', 'webp', 'gif'] // TODO: dynamic
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} {
-      id
-      url: publicUrlTransformed(transformation: { width: "120" crop: "limit" })
-      filesize
-      width
-      height
-    }`,
     defaultValue: { kind: 'empty' },
     extensions,
     deserialize(item: any): ImageValue {
-      const value = item[config.path]
+      const value = item[config.fieldKey]
       if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
         data: value,
       }
     },
-    validate(value: ImageValue): boolean {
-      return validateImage(extensions, value) === undefined
-    },
     serialize(value: ImageValue) {
       if (value.kind === 'upload') {
-        return { [config.path]: value.data.file }
+        return { [config.fieldKey]: value.data.file }
       }
       if (value.kind === 'remove') {
-        return { [config.path]: null }
+        return { [config.fieldKey]: null }
       }
       return {}
     },
+    validate(value: ImageValue): boolean {
+      return validateImage(extensions, value) === undefined
+    },
+    graphqlSelection: `${config.fieldKey} {
+      id
+      url: publicUrlTransformed(transformation: { width: "120" crop: "limit" })
+      filesize
+      width
+      height
+    }`,
   }
 }

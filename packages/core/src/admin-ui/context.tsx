@@ -72,7 +72,7 @@ function InternalKeystoneProvider({
         for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
-              `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
+              `The view for the field at ${list.key}.${field.key} is missing the ${exportName} export`
             )
           }
         }
@@ -92,7 +92,7 @@ function InternalKeystoneProvider({
           }
         }
 
-        result.lists[list.key].fields[field.path] = {
+        result.lists[list.key].fields[field.key] = {
           ...field,
           createView: {
             fieldMode: field.createView?.fieldMode ?? null,
@@ -112,10 +112,10 @@ function InternalKeystoneProvider({
           views,
           controller: views.controller({
             listKey: list.key,
-            fieldMeta: field.fieldMeta,
+            fieldKey: field.key,
             label: field.label,
             description: field.description,
-            path: field.path,
+            fieldMeta: field.fieldMeta,
             customViews,
           }),
         }
@@ -125,7 +125,7 @@ function InternalKeystoneProvider({
         result.lists[list.key].groups.push({
           label: group.label,
           description: group.description,
-          fields: group.fields.map(field => result.lists[list.key].fields[field.path]),
+          fields: group.fields.map(field => result.lists[list.key].fields[field.key]),
         })
       }
     }
@@ -237,7 +237,7 @@ export function useListItem(
       adminMeta: {
         list: {
           fields: {
-            path: string
+            key: string
             itemView: {
               fieldMode: ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
               fieldPosition: 'form' | 'sidebar'
@@ -254,7 +254,7 @@ export function useListItem(
   const query = useMemo(() => {
     const selectedFields = Object.values(list.fields)
       .filter(field => {
-        if (field.path === 'id') return true
+        if (field.key === 'id') return true
         return field.itemView.fieldMode !== 'hidden'
       })
       .map(field => field.controller.graphqlSelection)
@@ -269,7 +269,7 @@ export function useListItem(
           adminMeta {
             list(key: $listKey) {
               fields {
-                path
+                key
                 itemView(id: $id) {
                   fieldMode
                   fieldPosition

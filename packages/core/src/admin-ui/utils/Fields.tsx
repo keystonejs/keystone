@@ -112,7 +112,7 @@ export function Fields({
             : newFieldValue => {
                 onChange({
                   ...itemValue,
-                  [field.controller.path]: newFieldValue,
+                  [field.controller.fieldKey]: newFieldValue,
                 })
               }
         }
@@ -124,7 +124,7 @@ export function Fields({
 
   const groupByFieldKey: Record<string, FieldGroupMeta> = {}
   for (const group of groups) {
-    for (const { path: fieldKey } of group.fields) {
+    for (const { key: fieldKey } of group.fields) {
       groupByFieldKey[fieldKey] = group
     }
   }
@@ -154,7 +154,7 @@ export function Fields({
             if (group) {
               const fields = [
                 ...(function* () {
-                  for (const { path: fieldKey } of group.fields) {
+                  for (const { key: fieldKey } of group.fields) {
                     if (fieldKey in rendered) continue
                     if (fieldDomByKey[fieldKey]) {
                       yield fieldDomByKey[fieldKey]

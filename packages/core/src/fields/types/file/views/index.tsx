@@ -35,17 +35,12 @@ type FileController = FieldController<FileValue>
 
 export function controller(config: FieldControllerConfig): FileController {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} {
-        url
-        filename
-        filesize
-      }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
-      const value = item[config.path]
+      const value = item[config.fieldKey]
       if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
@@ -58,17 +53,22 @@ export function controller(config: FieldControllerConfig): FileController {
         },
       }
     },
-    validate(value): boolean {
-      return value.kind !== 'upload' || validateFile(value.data) === undefined
-    },
     serialize(value) {
       if (value.kind === 'upload') {
-        return { [config.path]: { upload: value.data.file } }
+        return { [config.fieldKey]: { upload: value.data.file } }
       }
       if (value.kind === 'remove') {
-        return { [config.path]: null }
+        return { [config.fieldKey]: null }
       }
       return {}
     },
+    validate(value): boolean {
+      return value.kind !== 'upload' || validateFile(value.data) === undefined
+    },
+    graphqlSelection: `${config.fieldKey} {
+        url
+        filename
+        filesize
+      }`,
   }
 }

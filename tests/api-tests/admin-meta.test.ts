@@ -62,6 +62,10 @@ test(
               description: null,
               fields: [
                 {
+                  key: 'id',
+                  label: 'Id',
+                  search: null,
+                  viewsIndex: 0,
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -83,12 +87,10 @@ test(
                     fieldPosition: 'sidebar',
                     isRequired: false,
                   },
-                  label: 'Id',
-                  path: 'id',
-                  search: null,
-                  viewsIndex: 0,
                 },
                 {
+                  key: 'name',
+                  label: 'Name',
                   createView: {
                     fieldMode: 'edit',
                     isRequired: false,
@@ -119,12 +121,14 @@ test(
                     fieldPosition: 'form',
                     isRequired: false,
                   },
-                  label: 'Name',
-                  path: 'name',
                   search: dbProvider === 'postgresql' ? 'insensitive' : 'default',
                   viewsIndex: 1,
                 },
                 {
+                  key: 'something',
+                  label: 'Something',
+                  search: null,
+                  viewsIndex: 2,
                   createView: {
                     fieldMode: 'hidden',
                     isRequired: false,
@@ -149,10 +153,6 @@ test(
                     fieldPosition: 'form',
                     isRequired: false,
                   },
-                  label: 'Something',
-                  path: 'something',
-                  search: null,
-                  viewsIndex: 2,
                 },
               ],
               graphql: {
@@ -260,7 +260,7 @@ test(
               lists {
                 key
                 fields {
-                  path
+                  key
                   createView {
                     fieldMode
                   }
@@ -285,28 +285,28 @@ test(
                     "createView": {
                       "fieldMode": "hidden",
                     },
+                    "key": "id",
                     "listView": {
                       "fieldMode": "hidden",
                     },
-                    "path": "id",
                   },
                   {
                     "createView": {
                       "fieldMode": "edit",
                     },
+                    "key": "name",
                     "listView": {
                       "fieldMode": "read",
                     },
-                    "path": "name",
                   },
                   {
                     "createView": {
                       "fieldMode": "hidden",
                     },
+                    "key": "something",
                     "listView": {
                       "fieldMode": "hidden",
                     },
-                    "path": "something",
                   },
                 ],
                 "key": "User",

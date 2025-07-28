@@ -17,7 +17,7 @@ export const adminMetaQuery = gql`
           plural
 
           fields {
-            path
+            key
             label
             description
             fieldMeta
@@ -47,7 +47,7 @@ export const adminMetaQuery = gql`
             label
             description
             fields {
-              path
+              key
             }
           }
           graphql {

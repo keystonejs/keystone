@@ -2,11 +2,11 @@ import { useState } from 'react'
 
 import { TextField } from '@keystar/ui/text-field'
 
-import {
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-  type SimpleFieldTypeInfo,
+import type {
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  SimpleFieldTypeInfo,
 } from '../../../../types'
 import { entriesTyped } from '../../../../lib/core/utils'
 
@@ -59,16 +59,20 @@ export function controller(
   }
 
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
+    graphqlSelection: config.fieldKey,
     validation: config.fieldMeta.validation,
     defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue },
-    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
+    deserialize: data => ({
+      kind: 'update',
+      value: data[config.fieldKey],
+      initial: data[config.fieldKey],
+    }),
     serialize: value => {
       const v = value.value !== null ? parseFloat(value.value) : null
-      return { [config.path]: Number.isFinite(v) ? v : null }
+      return { [config.fieldKey]: Number.isFinite(v) ? v : null }
     },
     filter: {
       Filter(props) {
@@ -109,11 +113,11 @@ export function controller(
       },
 
       graphql: ({ type, value }) => {
-        if (type === 'empty') return { [config.path]: { equals: null } }
-        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
+        if (type === 'empty') return { [config.fieldKey]: { equals: null } }
+        if (type === 'not_empty') return { [config.fieldKey]: { not: { equals: null } } }
         const val = value === null ? null : parseFloat(value)
-        if (type === 'not') return { [config.path]: { not: { equals: val } } }
-        return { [config.path]: { [type]: val } }
+        if (type === 'not') return { [config.fieldKey]: { not: { equals: val } } }
+        return { [config.fieldKey]: { [type]: val } }
       },
       parseGraphQL: value => {
         return entriesTyped(value).flatMap(([type, value]) => {

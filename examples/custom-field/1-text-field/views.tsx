@@ -21,15 +21,15 @@ export function controller(
   config: FieldControllerConfig<{}>
 ): FieldController<string | null, string> {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: null,
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return typeof value === 'string' ? value : null
     },
-    serialize: value => ({ [config.path]: value }),
+    serialize: value => ({ [config.fieldKey]: value }),
+    graphqlSelection: config.fieldKey,
   }
 }

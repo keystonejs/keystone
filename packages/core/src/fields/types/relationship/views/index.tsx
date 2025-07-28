@@ -198,11 +198,11 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
 
   if (field.display === 'count' || field.display === 'table') {
-    const count = item[`${field.path}Count`] as number
+    const count = item[`${field.fieldKey}Count`] as number
     return count != null ? <Numeral value={count} abbreviate /> : null
   }
 
-  const data = item[field.path]
+  const data = item[field.fieldKey]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
   const displayItems = items.length < 3 ? items : items.slice(0, 2)
   const overflow = items.length < 3 ? 0 : items.length - 2
@@ -245,7 +245,7 @@ export function controller(
     )
   >
 ): RelationshipController {
-  const { listKey, path: fieldKey, label, description } = config
+  const { listKey, fieldKey: fieldKey, label, description } = config
   const { displayMode, hideCreate, many, refFieldKey, refLabelField, refListKey, refSearchFields } =
     config.fieldMeta
 
@@ -253,7 +253,7 @@ export function controller(
     refFieldKey,
     many,
     listKey,
-    path: fieldKey,
+    fieldKey,
     label,
     description,
     display: displayMode,
@@ -302,11 +302,11 @@ export function controller(
         return {
           id: data.id,
           kind: 'count',
-          count: data[`${config.path}Count`] ?? 0,
+          count: data[`${config.fieldKey}Count`] ?? 0,
         }
       }
       if (many) {
-        const value = (data[config.path] || []).map((x: any) => ({
+        const value = (data[config.fieldKey] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,
         }))
@@ -317,7 +317,7 @@ export function controller(
           value,
         }
       }
-      let value = data[config.path]
+      let value = data[config.fieldKey]
       if (value) {
         value = {
           id: value.id,
@@ -350,21 +350,21 @@ export function controller(
 
         if (Object.keys(output).length) {
           return {
-            [config.path]: output,
+            [config.fieldKey]: output,
           }
         }
       } else if (state.kind === 'one') {
-        if (state.initialValue && !state.value) return { [config.path]: { disconnect: true } }
+        if (state.initialValue && !state.value) return { [config.fieldKey]: { disconnect: true } }
         if (state.value?.built) {
           return {
-            [config.path]: {
+            [config.fieldKey]: {
               create: state.value.data,
             },
           }
         }
         if (state.value && state.value.id !== state.initialValue?.id) {
           return {
-            [config.path]: {
+            [config.fieldKey]: {
               connect: {
                 id: state.value.id,
               },
@@ -457,15 +457,16 @@ export function controller(
         return `${label.toLowerCase()} (${listFormatter.format(value || [''])})`
       },
       graphql: ({ type, value }) => {
-        if (type === 'empty' && !many) return { [config.path]: { equals: null } }
-        if (type === 'empty' && many) return { [config.path]: { none: {} } }
-        if (type === 'not_empty' && !many) return { [config.path]: { not: { equals: null } } }
-        if (type === 'not_empty' && many) return { [config.path]: { some: {} } }
-        if (type === 'is') return { [config.path]: { id: { equals: value } } }
-        if (type === 'not_is') return { [config.path]: { not: { id: { equals: value } } } }
-        if (type === 'some') return { [config.path]: { some: { id: { in: value } } } }
-        if (type === 'not_some') return { [config.path]: { not: { some: { id: { in: value } } } } }
-        return { [config.path]: { [type]: value } } // uh
+        if (type === 'empty' && !many) return { [config.fieldKey]: { equals: null } }
+        if (type === 'empty' && many) return { [config.fieldKey]: { none: {} } }
+        if (type === 'not_empty' && !many) return { [config.fieldKey]: { not: { equals: null } } }
+        if (type === 'not_empty' && many) return { [config.fieldKey]: { some: {} } }
+        if (type === 'is') return { [config.fieldKey]: { id: { equals: value } } }
+        if (type === 'not_is') return { [config.fieldKey]: { not: { id: { equals: value } } } }
+        if (type === 'some') return { [config.fieldKey]: { some: { id: { in: value } } } }
+        if (type === 'not_some')
+          return { [config.fieldKey]: { not: { some: { id: { in: value } } } } }
+        return { [config.fieldKey]: { [type]: value } } // uh
       },
       parseGraphQL: () => [],
       types: {

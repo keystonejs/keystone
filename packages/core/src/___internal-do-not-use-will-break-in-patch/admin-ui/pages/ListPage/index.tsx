@@ -300,8 +300,8 @@ function ListPage({ listKey }: ListPageProps) {
   const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedItems === 'all' ? 'all' : selectedItems.size
   const readableFields = Object.values(list.fields).map(f => ({
-    id: f.path,
-    value: f.path,
+    id: f.key,
+    value: f.key,
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
@@ -324,7 +324,7 @@ function ListPage({ listKey }: ListPageProps) {
       count: number | null
     }> => {
       const selectedGqlFields = shownFields
-        .filter(field => field.path !== 'id') // id is always included
+        .filter(field => field.key !== 'id') // id is always included
         .map(field => field.controller.graphqlSelection)
         .join('\n')
 
@@ -379,7 +379,7 @@ function ListPage({ listKey }: ListPageProps) {
   const isEmpty = Boolean(data?.count === 0 && !isConstrained)
   const headers = shownFields.map(field => {
     return {
-      id: field.path,
+      id: field.key,
       label: field.label,
       allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
     }

@@ -55,10 +55,32 @@ export function validateImage(extensions: readonly string[], v: ImageValue) {
 
 export function controller(config: FieldControllerConfig) {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} {
+    defaultValue: { kind: 'empty' },
+    extensions: SUPPORTED_IMAGE_EXTENSIONS,
+    deserialize(item: any): ImageValue {
+      const value = item[config.fieldKey]
+      if (!value) return { kind: 'empty' }
+      return {
+        kind: 'from-server',
+        data: value,
+      }
+    },
+    serialize(value: ImageValue) {
+      if (value.kind === 'upload') {
+        return { [config.fieldKey]: { upload: value.data.file } }
+      }
+      if (value.kind === 'remove') {
+        return { [config.fieldKey]: null }
+      }
+      return {}
+    },
+    validate(value: ImageValue): boolean {
+      return validateImage(SUPPORTED_IMAGE_EXTENSIONS, value) === undefined
+    },
+    graphqlSelection: `${config.fieldKey} {
       id
       url
       extension
@@ -66,27 +88,5 @@ export function controller(config: FieldControllerConfig) {
       width
       height
     }`,
-    defaultValue: { kind: 'empty' },
-    extensions: SUPPORTED_IMAGE_EXTENSIONS,
-    deserialize(item: any): ImageValue {
-      const value = item[config.path]
-      if (!value) return { kind: 'empty' }
-      return {
-        kind: 'from-server',
-        data: value,
-      }
-    },
-    validate(value: ImageValue): boolean {
-      return validateImage(SUPPORTED_IMAGE_EXTENSIONS, value) === undefined
-    },
-    serialize(value: ImageValue) {
-      if (value.kind === 'upload') {
-        return { [config.path]: { upload: value.data.file } }
-      }
-      if (value.kind === 'remove') {
-        return { [config.path]: null }
-      }
-      return {}
-    },
   }
 }

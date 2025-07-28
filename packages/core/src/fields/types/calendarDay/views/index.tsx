@@ -11,11 +11,11 @@ import { TextField } from '@keystar/ui/text-field'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
 } from '../../../../types'
 
 export type Value =
@@ -126,18 +126,18 @@ export function controller(
   config: FieldControllerConfig<CalendarDayFieldMeta>
 ): FieldController<Value, string> & { fieldMeta: CalendarDayFieldMeta } {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
+    graphqlSelection: config.fieldKey,
     fieldMeta: config.fieldMeta,
     defaultValue: { kind: 'create', value: null },
     deserialize: data => {
-      const value = data[config.path]
+      const value = data[config.fieldKey]
       return { kind: 'update', initial: value, value }
     },
     serialize: ({ value }) => {
-      return { [config.path]: value }
+      return { [config.fieldKey]: value }
     },
     validate: (value, opts) => validate(value, opts.isRequired, config.label) === undefined,
   }

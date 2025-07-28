@@ -601,19 +601,18 @@ function getListsWithInitialisedFields(
     const fieldKeysToGroup: Record<string, GroupInfo<BaseListTypeInfo>> = {}
     for (const [idx, [fieldKey, fieldFunc]] of Object.entries(listConfig.fields).entries()) {
       if (fieldKey.startsWith('__group')) {
-        const _group = fieldFunc as any
+        const group__ = fieldFunc as any
         if (
-          typeof _group === 'object' &&
-          _group !== null &&
-          typeof _group.label === 'string' &&
-          (_group.description === null || typeof _group.description === 'string') &&
-          Array.isArray(_group.fields) &&
-          areArraysEqual(_group.fields, fieldKeys.slice(idx + 1, idx + 1 + _group.fields.length))
+          typeof group__ === 'object' &&
+          group__ !== null &&
+          typeof group__.label === 'string' &&
+          (group__.description === null || typeof group__.description === 'string') &&
+          Array.isArray(group__.fields) &&
+          areArraysEqual(group__.fields, fieldKeys.slice(idx + 1, idx + 1 + group__.fields.length))
         ) {
-          const group: GroupInfo<BaseListTypeInfo> = _group
-          groups.push(group)
-          for (const field of group.fields) {
-            fieldKeysToGroup[field] = group
+          groups.push(group__)
+          for (const field of group__.fields) {
+            fieldKeysToGroup[field] = group__
           }
           continue
         }
@@ -624,7 +623,6 @@ function getListsWithInitialisedFields(
       }
 
       const group = fieldKeysToGroup[fieldKey]
-
       const f = fieldFunc({
         fieldKey,
         listKey,

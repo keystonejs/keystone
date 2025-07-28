@@ -40,18 +40,18 @@ export function controller(
   config: FieldControllerConfig<{ defaultValue: boolean }>
 ): CheckboxController {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: config.fieldMeta.defaultValue,
     deserialize(item) {
-      const value = item[config.path]
+      const value = item[config.fieldKey]
       return typeof value === 'boolean' ? value : false
     },
     serialize(value) {
-      return { [config.path]: value }
+      return { [config.fieldKey]: value }
     },
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, value, type, ...otherProps } = props
@@ -66,7 +66,7 @@ export function controller(
       },
       graphql({ type, value }) {
         return {
-          [config.path]: {
+          [config.fieldKey]: {
             equals: type === 'not' ? !value : value,
           },
         }

@@ -8,7 +8,7 @@ type NoAccessPage = { sessionsEnabled: boolean }
 
 export const getNoAccessPage = (props: NoAccessPage) => () => <NoAccessPage {...props} />
 
-export function NoAccessPage({ sessionsEnabled }: NoAccessPage) {
+export function NoAccessPage(_: NoAccessPage) {
   return (
     <ErrorContainer>
       <Icon color="neutral" src={shieldAlertIcon} size="large" />

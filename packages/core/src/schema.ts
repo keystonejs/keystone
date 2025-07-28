@@ -178,15 +178,13 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
     throw new Error('groups cannot be nested')
   }
 
-  const info: GroupInfo<ListTypeInfo> = {
-    fields: keys,
-    label: config.label,
-    description: config.description ?? null,
-    ui: config.ui,
-  }
-
   return {
-    [`__group${i++}`]: info,
+    [`__group${i++}`]: {
+      fields: keys,
+      label: config.label,
+      description: config.description ?? null,
+      ui: config.ui,
+    } satisfies GroupInfo<ListTypeInfo>,
     ...config.fields,
   } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
