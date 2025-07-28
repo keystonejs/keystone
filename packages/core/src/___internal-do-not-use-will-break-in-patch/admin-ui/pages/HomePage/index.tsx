@@ -20,12 +20,14 @@ export function HomePage() {
   const visibleLists = useMemo(() => {
     return Object.values(adminMeta?.lists ?? {}).filter(list => !list.hideNavigation)
   }, [adminMeta?.lists])
+
   const LIST_COUNTS_QUERY = useMemo(
     () =>
       gql(`
     query KsFetchListCounts {
       ${[
         ...(function* () {
+          if (visibleLists.length === 0) yield '__typename' // noop
           for (const list of visibleLists) {
             yield `${list.key}: ${list.graphql.names.listQueryCountName}`
           }
@@ -34,6 +36,7 @@ export function HomePage() {
     }`),
     [visibleLists]
   )
+
   const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
 
   return (
