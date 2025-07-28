@@ -4,7 +4,6 @@ import { QueryMode } from '../types'
 import { g } from '../types/schema'
 import type {
   AdminMetaSource,
-  FieldGroupMetaSource,
   FieldMetaSource,
   ListMetaSource,
 } from './create-admin-meta'
@@ -12,7 +11,7 @@ import type {
 const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   name: 'KeystoneAdminUIFieldMeta',
   fields: {
-    path: g.field({ type: g.nonNull(g.String) }),
+    key: g.field({ type: g.nonNull(g.String) }),
     label: g.field({ type: g.nonNull(g.String) }),
     description: g.field({ type: g.String }),
     isOrderable: g.field({ type: g.nonNull(g.Boolean) }),
@@ -155,7 +154,11 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   },
 })
 
-const KeystoneAdminUIFieldGroupMeta = g.object<FieldGroupMetaSource>()({
+const KeystoneAdminUIFieldGroupMeta = g.object<{
+  label: string
+  description: string | null
+  fields: FieldMetaSource[]
+}>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
   fields: {
     label: g.field({ type: g.nonNull(g.String) }),

@@ -38,7 +38,7 @@ export function Field({
   }, [field.schema, onChange])
   return (
     <KeystarField label={field.label} description={field.description}>
-      {inputProps => (
+      {_inputProps => (
         <FormValueContentFromPreviewProps
           autoFocus={autoFocus}
           forceValidation={forceValidation}
@@ -63,27 +63,27 @@ export function controller(config: FieldControllerConfig): FieldController<{
 } {
   if (!config.customViews.schema)
     throw new Error(
-      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
+      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.fieldKey}`
     )
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} { json(hydrateRelationships: true) }`,
     schema: config.customViews.schema,
     defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.schema) },
     validate: value => clientSideValidateProp(config.customViews.schema, value.value),
     deserialize: data => {
       return {
         kind: 'update',
-        value: data[`${config.path}`]?.json ?? null,
+        value: data[`${config.fieldKey}`]?.json ?? null,
       }
     },
     serialize: value => {
       return {
-        [config.path]: serializeValue(config.customViews.schema, value.value, value.kind),
+        [config.fieldKey]: serializeValue(config.customViews.schema, value.value, value.kind),
       }
     },
+    graphqlSelection: `${config.fieldKey} { json(hydrateRelationships: true) }`,
   }
 }
 

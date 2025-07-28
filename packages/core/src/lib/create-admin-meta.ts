@@ -13,7 +13,7 @@ import type {
   MaybePromise,
   MaybeSessionFunction,
 } from '../types'
-import type { FieldGroupMeta, FieldMeta, ListMeta } from '../types/admin-meta'
+import type { FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames, JSONValue } from '../types/utils'
 
 import type { InitialisedList } from './core/initialise-lists'
@@ -48,18 +48,12 @@ type FieldMetaSource_ = {
 export type FieldMetaSource = FieldMetaSource_ &
   Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
 
-type FieldGroupMetaSource_ = {
-  fields: FieldMetaSource[]
-}
-export type FieldGroupMetaSource = FieldGroupMetaSource_ &
-  Omit<FieldGroupMeta, keyof FieldGroupMetaSource_>
-
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
   fieldsByKey: Record<string, FieldMetaSource>
   groups: {
     label: string
-    description: string
+    description: string | null
     fields: FieldMetaSource[]
   }[]
   graphql: { names: GraphQLNames }
@@ -201,7 +195,7 @@ export function createAdminMeta(
         operation => field.graphql.isNonNull[operation]
       )
       const fieldMeta = {
-        path: fieldKey, // TODO: deprecated, remove in breaking change
+        key: fieldKey,
         label: field.ui.label ?? humanize(fieldKey),
         description: field.ui.description ?? null,
         fieldMeta: null,
@@ -261,12 +255,12 @@ export function createAdminMeta(
     if (list.graphql.isEnabled.query === false) continue
     for (const fieldMetaSource of adminMetaRoot.listsByKey[key].fields) {
       // if the field is a relationship field and is related to an omitted list, skip.
-      const dbField = list.fields[fieldMetaSource.path].dbField
+      const dbField = list.fields[fieldMetaSource.fieldKey].dbField
       if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) continue
 
       currentAdminMeta = adminMetaRoot
       try {
-        fieldMetaSource.fieldMeta = list.fields[fieldMetaSource.path].getAdminMeta?.() ?? null
+        fieldMetaSource.fieldMeta = list.fields[fieldMetaSource.fieldKey].getAdminMeta?.() ?? null
       } finally {
         currentAdminMeta = undefined
       }
@@ -306,7 +300,10 @@ function normalizeMaybeSessionFunction<Return extends string | boolean | object 
 
 function normalizeIsOrderFilter(
   input: MaybeFieldFunction<BaseListTypeInfo>,
-  baseOrderFilterArgs: { listKey: string; fieldKey: string }
+  baseOrderFilterArgs: {
+    listKey: string
+    fieldKey: string
+  }
 ): EmptyResolver<boolean> {
   if (typeof input !== 'function') return () => input
   return (_, context) => input({ context, session: context.session, ...baseOrderFilterArgs })

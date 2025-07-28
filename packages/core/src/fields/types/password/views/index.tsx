@@ -277,10 +277,10 @@ export function controller(config: FieldControllerConfig<PasswordFieldMeta>): Fi
           },
   }
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} {isSet}`,
+    graphqlSelection: `${config.fieldKey} {isSet}`,
     validation,
     defaultValue: {
       kind: 'initial',
@@ -288,10 +288,10 @@ export function controller(config: FieldControllerConfig<PasswordFieldMeta>): Fi
     },
     validate: (state, opts) =>
       validate(state, validation, opts.isRequired, config.label) === undefined,
-    deserialize: data => ({ kind: 'initial', isSet: data[config.path]?.isSet ?? null }),
+    deserialize: data => ({ kind: 'initial', isSet: data[config.fieldKey]?.isSet ?? null }),
     serialize: value => {
       if (value.kind === 'initial') return {}
-      return { [config.path]: value.value }
+      return { [config.fieldKey]: value.value }
     },
     filter:
       config.fieldMeta.isNullable === false
@@ -312,7 +312,7 @@ export function controller(config: FieldControllerConfig<PasswordFieldMeta>): Fi
             },
             graphql({ type, value }) {
               return {
-                [config.path]: {
+                [config.fieldKey]: {
                   isSet: type === 'not' ? !value : value,
                 },
               }

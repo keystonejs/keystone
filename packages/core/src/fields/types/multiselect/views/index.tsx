@@ -130,22 +130,22 @@ export function controller(config: Config): FieldController<Value, Option[]> & {
     config.fieldMeta.type === 'integer' ? parseInt(value) : value
 
   return {
-    displayMode: config.fieldMeta.displayMode,
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
-    defaultValue: config.fieldMeta.defaultValue.map(x => valuesToOptionsWithStringValues[x]),
+    displayMode: config.fieldMeta.displayMode,
     type: config.fieldMeta.type,
     options: optionsWithStringValues,
     valuesToOptionsWithStringValues,
+    defaultValue: config.fieldMeta.defaultValue.map(x => valuesToOptionsWithStringValues[x]),
     deserialize: data => {
       // if we get null from the GraphQL API (which will only happen if field read access control failed)
       // we'll just show it as nothing being selected for now.
-      const values: readonly string[] | readonly number[] = data[config.path] ?? []
+      const values: readonly string[] | readonly number[] = data[config.fieldKey] ?? []
       const selectedOptions = values.map(x => valuesToOptionsWithStringValues[x])
       return selectedOptions
     },
-    serialize: value => ({ [config.path]: value.map(x => parseValue(x.value)) }),
+    serialize: value => ({ [config.fieldKey]: value.map(x => parseValue(x.value)) }),
+    graphqlSelection: config.fieldKey,
   }
 }

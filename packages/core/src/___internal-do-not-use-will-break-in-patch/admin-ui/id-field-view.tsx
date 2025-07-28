@@ -22,11 +22,7 @@ const COPY_TOOLTIP_CONTENT = {
 type TooltipState = { isOpen?: boolean; tone: keyof typeof COPY_TOOLTIP_CONTENT }
 
 export function Field({
-  field,
   value,
-  onChange,
-  autoFocus,
-  forceValidation,
 }: FieldProps<typeof controller>) {
   const [tooltipState, setTooltipState] = useState<TooltipState>({ tone: 'neutral' })
 
@@ -75,13 +71,13 @@ export function controller(
   InferValueFromInputType<(typeof filters)['mysql']['String']['required']>
 > {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: null,
-    deserialize: data => data[config.path],
-    serialize: value => ({ [config.path]: value }),
+    deserialize: data => data[config.fieldKey],
+    serialize: value => ({ [config.fieldKey]: value }),
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const { autoFocus, context, onChange, type, typeLabel, value, ...otherProps } = props
@@ -133,11 +129,11 @@ export function controller(
         const valueWithoutWhitespace = Array.isArray(value)
           ? value.map(val => val.replace(/\s/g, ''))
           : value.replace(/\s/g, '')
-        if (type === 'not') return { [config.path]: { not: { equals: valueWithoutWhitespace } } }
+        if (type === 'not') return { [config.fieldKey]: { not: { equals: valueWithoutWhitespace } } }
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
 
         return {
-          [config.path]: {
+          [config.fieldKey]: {
             [key]: valueWithoutWhitespace,
           },
         }

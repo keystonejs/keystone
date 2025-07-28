@@ -131,7 +131,7 @@ type KeystoneAdminUIListMeta {
 }
 
 type KeystoneAdminUIFieldMeta {
-  path: String!
+  key: String!
   label: String!
   description: String
   isOrderable: Boolean!

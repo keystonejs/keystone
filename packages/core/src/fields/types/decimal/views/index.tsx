@@ -64,14 +64,14 @@ export function controller(
   }
 
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
-    validation: config.fieldMeta.validation,
     defaultValue: { kind: 'create', value: config.fieldMeta.defaultValue },
-    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
-    serialize: value => ({ [config.path]: value.value }),
+    deserialize: data => ({ kind: 'update', value: data[config.fieldKey], initial: data[config.fieldKey] }),
+    serialize: value => ({ [config.fieldKey]: value.value }),
+    validation: config.fieldMeta.validation,
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const {
@@ -111,10 +111,10 @@ export function controller(
       },
 
       graphql: ({ type, value }) => {
-        if (type === 'empty') return { [config.path]: { equals: null } }
-        if (type === 'not_empty') return { [config.path]: { not: { equals: null } } }
-        if (type === 'not') return { [config.path]: { not: { equals: value } } }
-        return { [config.path]: { [type]: value } }
+        if (type === 'empty') return { [config.fieldKey]: { equals: null } }
+        if (type === 'not_empty') return { [config.fieldKey]: { not: { equals: null } } }
+        if (type === 'not') return { [config.fieldKey]: { not: { equals: value } } }
+        return { [config.fieldKey]: { [type]: value } }
       },
       parseGraphQL: value => {
         return entriesTyped(value).flatMap(([type, value]) => {

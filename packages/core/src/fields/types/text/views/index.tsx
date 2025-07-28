@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { TextArea, TextField } from '@keystar/ui/text-field'
 
+import type { TextFieldMeta } from '..'
+import { NullableFieldWrapper } from '../../../../admin-ui/components'
+import { entriesTyped } from '../../../../lib/core/utils'
 import type {
   FieldController,
   FieldControllerConfig,
   FieldProps,
   SimpleFieldTypeInfo,
 } from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
-import { NullableFieldWrapper } from '../../../../admin-ui/components'
-import type { TextFieldMeta } from '..'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
@@ -158,20 +158,20 @@ export function controller(config: Config): FieldController<
       : null,
   }
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: { kind: 'create', inner: deserializeTextValue(config.fieldMeta.defaultValue) },
     displayMode: config.fieldMeta.displayMode,
     isNullable: config.fieldMeta.isNullable,
     deserialize: data => {
-      const inner = deserializeTextValue(data[config.path])
+      const inner = deserializeTextValue(data[config.fieldKey])
       return { kind: 'update', inner, initial: inner }
     },
-    serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
+    serialize: value => ({ [config.fieldKey]: value.inner.kind === 'null' ? null : value.inner.value }),
     validation,
     validate: (val, opts) => validate(val, validation, opts.isRequired, config.label).length === 0,
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props
@@ -210,7 +210,7 @@ export function controller(config: Config): FieldController<
                 .replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
         const filter = { [key]: value }
         return {
-          [config.path]: {
+          [config.fieldKey]: {
             ...(isNot ? { not: filter } : filter),
             mode: config.fieldMeta.shouldUseModeInsensitive ? 'insensitive' : undefined,
           },

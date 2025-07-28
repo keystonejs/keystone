@@ -16,7 +16,8 @@ export type AdminConfig = {
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
   listKey: string
-  path: string
+  fieldKey: string
+
   label: string
   description: string | null
   customViews: Record<string, any>
@@ -39,7 +40,8 @@ export type FieldController<
   FilterValue extends JSONValue = never,
   GraphQLFilterValue = never,
 > = {
-  path: string
+  fieldKey: string
+
   label: string
   description: string | null
   graphqlSelection: string
@@ -67,7 +69,8 @@ export type FieldController<
 
 // TODO: duplicate, reference core/src/lib/create-admin-meta.ts
 export type FieldMeta = {
-  path: string
+  key: string
+
   label: string
   description: string | null
   fieldMeta: JSONValue | null
@@ -114,7 +117,7 @@ export type ListMeta = {
   singular: string
   plural: string
 
-  fields: { [path: string]: FieldMeta }
+  fields: { [key: string]: FieldMeta }
   groups: FieldGroupMeta[]
   graphql: {
     names: GraphQLNames

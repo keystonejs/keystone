@@ -13,25 +13,25 @@ import {
 } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
+import { Field as KeystarField } from '@keystar/ui/field'
 import { Icon } from '@keystar/ui/icon'
-import { fileIcon } from '@keystar/ui/icon/icons/fileIcon'
 import { fileAudioIcon } from '@keystar/ui/icon/icons/fileAudioIcon'
 import { fileCodeIcon } from '@keystar/ui/icon/icons/fileCodeIcon'
 import { fileDigitIcon } from '@keystar/ui/icon/icons/fileDigitIcon'
+import { fileIcon } from '@keystar/ui/icon/icons/fileIcon'
 import { fileImageIcon } from '@keystar/ui/icon/icons/fileImageIcon'
 import { fileJsonIcon } from '@keystar/ui/icon/icons/fileJsonIcon'
 import { fileSpreadsheetIcon } from '@keystar/ui/icon/icons/fileSpreadsheetIcon'
 import { fileTextIcon } from '@keystar/ui/icon/icons/fileTextIcon'
-import { fileVideoIcon } from '@keystar/ui/icon/icons/fileVideoIcon'
 import { fileUpIcon } from '@keystar/ui/icon/icons/fileUpIcon'
-import { Field as KeystarField } from '@keystar/ui/field'
+import { fileVideoIcon } from '@keystar/ui/icon/icons/fileVideoIcon'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { css } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
+import type { controller } from '.'
 import type { FieldProps } from '../../../../types'
 import type { FileValue } from './index'
-import type { controller } from '.'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, onChange, value } = props
@@ -78,7 +78,7 @@ export function Field(props: FieldProps<typeof controller>) {
             disabled={onChange === undefined}
             hidden
             key={inputKey}
-            name={field.path}
+            name={field.fieldKey}
             onChange={onUploadChange}
             ref={inputRef}
             type="file"

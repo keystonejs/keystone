@@ -2,12 +2,12 @@ import { css, tokenSchema } from '@keystar/ui/style'
 import { TextArea } from '@keystar/ui/text-field'
 import { Text } from '@keystar/ui/typography'
 
-import {
-  type CellComponent,
-  type FieldController,
-  type FieldControllerConfig,
-  type FieldProps,
-  type JSONValue,
+import type {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  JSONValue,
 } from '../../../../types'
 
 export const Field = (props: FieldProps<typeof controller>) => {
@@ -41,14 +41,27 @@ type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
 
 export function controller(config: Config): FieldController<string, string> {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue:
       config.fieldMeta.defaultValue === null
         ? ''
         : JSON.stringify(config.fieldMeta.defaultValue, null, 2),
+    deserialize: data => {
+      const value = data[config.fieldKey]
+      // null is equivalent to Prisma.DbNull, and we show that as an empty input
+      if (value === null) return ''
+      return JSON.stringify(value, null, 2)
+    },
+    serialize: value => {
+      if (!value) return { [config.fieldKey]: null }
+      try {
+        return { [config.fieldKey]: JSON.parse(value) }
+      } catch (e) {
+        return { [config.fieldKey]: undefined }
+      }
+    },
     validate: value => {
       if (!value) return true
       try {
@@ -58,19 +71,6 @@ export function controller(config: Config): FieldController<string, string> {
         return false
       }
     },
-    deserialize: data => {
-      const value = data[config.path]
-      // null is equivalent to Prisma.DbNull, and we show that as an empty input
-      if (value === null) return ''
-      return JSON.stringify(value, null, 2)
-    },
-    serialize: value => {
-      if (!value) return { [config.path]: null }
-      try {
-        return { [config.path]: JSON.parse(value) }
-      } catch (e) {
-        return { [config.path]: undefined }
-      }
-    },
+    graphqlSelection: config.fieldKey,
   }
 }

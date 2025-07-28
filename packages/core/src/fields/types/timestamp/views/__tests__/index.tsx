@@ -2,7 +2,7 @@ import { controller } from '../index'
 
 const STUBCONFIG = {
   listKey: 'timestamp',
-  path: './timestamp',
+  fieldKey: 'timestamp',
   label: 'foo',
   customViews: {},
   description: null,

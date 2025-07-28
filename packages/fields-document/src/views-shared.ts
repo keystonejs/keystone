@@ -64,7 +64,7 @@ export function controller(
   if (componentBlocksOnlyBeingPassedOnTheClient.length) {
     throw new Error(
       `(${config.listKey}:${
-        config.path
+        config.fieldKey
       }) The following component blocks are being passed in the custom view but not in the server-side field config: ${JSON.stringify(
         componentBlocksOnlyBeingPassedOnTheClient
       )}`
@@ -76,7 +76,7 @@ export function controller(
   if (componentBlocksOnlyBeingPassedOnTheServer.length) {
     throw new Error(
       `(${config.listKey}:${
-        config.path
+        config.fieldKey
       }) The following component blocks are being passed in the server-side field config but not in the custom view: ${JSON.stringify(
         componentBlocksOnlyBeingPassedOnTheServer
       )}`
@@ -100,16 +100,16 @@ export function controller(
     return node.children.every(node => validateNode(node))
   })
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: `${config.path} {document(hydrateRelationships: true)}`,
+
     componentBlocks: config.customViews.componentBlocks || {},
     documentFeatures: config.fieldMeta.documentFeatures,
     relationships: config.fieldMeta.relationships,
     defaultValue: [{ type: 'paragraph', children: [{ text: '' }] }],
     deserialize: data => {
-      const documentFromServer = data[config.path]?.document
+      const documentFromServer = data[config.fieldKey]?.document
       if (!documentFromServer) {
         return [{ type: 'paragraph', children: [{ text: '' }] }]
       }
@@ -124,10 +124,11 @@ export function controller(
       return editor.children
     },
     serialize: value => ({
-      [config.path]: value,
+      [config.fieldKey]: value,
     }),
     validate(value) {
       return value.every(node => validateNode(node))
     },
+    graphqlSelection: `${config.fieldKey} {document(hydrateRelationships: true)}`,
   }
 }

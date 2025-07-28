@@ -1,44 +1,44 @@
+import { useRouter } from 'next/router'
 import {
-  type PropsWithChildren,
   type FormEvent,
   Fragment,
+  type PropsWithChildren,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
-import { useRouter } from 'next/router'
 
 import { Button } from '@keystar/ui/button'
+import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { fileWarningIcon } from '@keystar/ui/icon/icons/fileWarningIcon'
-import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Box, VStack } from '@keystar/ui/layout'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import { gql, useMutation } from '../../../../admin-ui/apollo'
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
+import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
+import { PageContainer } from '../../../../admin-ui/components/PageContainer'
+import { useList, useListItem } from '../../../../admin-ui/context'
+import {
+  deserializeItemToValue,
+  Fields,
+  serializeValueToOperationItem,
+  useHasChanges,
+  useInvalidFields,
+} from '../../../../admin-ui/utils'
 import type {
   BaseListTypeInfo,
   ConditionalFieldFilter,
   ConditionalFieldFilterCase,
   ListMeta,
 } from '../../../../types'
-import {
-  Fields,
-  useInvalidFields,
-  deserializeItemToValue,
-  serializeValueToOperationItem,
-  useHasChanges,
-} from '../../../../admin-ui/utils'
-import { gql, useMutation } from '../../../../admin-ui/apollo'
-import { useList, useListItem } from '../../../../admin-ui/context'
-import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
-import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
-import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
 
 type ItemPageProps = {
@@ -319,9 +319,9 @@ function ItemPage({ listKey }: ItemPageProps) {
     )
     for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
       if (field.itemView) {
-        fieldModes[field.path] = field.itemView.fieldMode
-        fieldPositions[field.path] = field.itemView.fieldPosition
-        isRequireds[field.path] = field.itemView.isRequired
+        fieldModes[field.key] = field.itemView.fieldMode
+        fieldPositions[field.key] = field.itemView.fieldPosition
+        isRequireds[field.key] = field.itemView.isRequired
       }
     }
     return { fieldModes, fieldPositions, isRequireds }

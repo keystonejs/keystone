@@ -98,7 +98,7 @@ export function useSearchFilter(value: string, list: ListMeta, searchFields: str
       }
 
       conditions.push({
-        [field.path]: {
+        [field.key]: {
           contains: trimmedSearch,
           mode: field.search === 'insensitive' ? 'insensitive' : undefined,
         },

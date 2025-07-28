@@ -113,19 +113,19 @@ export function controller(config: Config): FieldController<
   isNullable: boolean
 } {
   return {
-    path: config.path,
+    fieldKey: config.fieldKey,
     label: config.label,
     description: config.description,
-    graphqlSelection: config.path,
     defaultValue: { kind: 'create', inner: deserializeTextValue(config.fieldMeta.defaultValue) },
     isNullable: config.fieldMeta.isNullable,
     deserialize: data => {
-      const inner = deserializeTextValue(data[config.path])
+      const inner = deserializeTextValue(data[config.fieldKey])
       return { kind: 'update', inner, initial: inner }
     },
-    serialize: value => ({ [config.path]: value.inner.kind === 'null' ? null : value.inner.value }),
+    serialize: value => ({ [config.fieldKey]: value.inner.kind === 'null' ? null : value.inner.value }),
 
     validate: (val, opts) => validate(val, opts.isRequired, config.label).length === 0,
+    graphqlSelection: config.fieldKey,
     filter: {
       Filter(props) {
         const { autoFocus, context, typeLabel, onChange, type, value, ...otherProps } = props
@@ -157,7 +157,7 @@ export function controller(config: Config): FieldController<
         const isNot = type.startsWith('not_')
         const filter = { equals: value }
         return {
-          [config.path]: {
+          [config.fieldKey]: {
             ...(isNot ? { not: filter } : filter),
           },
         }
