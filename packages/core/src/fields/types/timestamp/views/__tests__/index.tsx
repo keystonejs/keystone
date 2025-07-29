@@ -4,9 +4,9 @@ const STUBCONFIG = {
   listKey: 'timestamp',
   fieldKey: 'timestamp',
   label: 'foo',
+  description: '',
   customViews: {},
-  description: null,
-}
+} as const
 
 describe('controller', () => {
   describe('validate', () => {

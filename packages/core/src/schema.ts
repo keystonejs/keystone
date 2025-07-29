@@ -151,7 +151,7 @@ let i = 0
 export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
   fields: string[]
   label: string
-  description: string | null
+  description: string
   ui: GroupUIConfig<ListTypeInfo> | undefined
 }
 
@@ -182,7 +182,7 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
     [`__group${i++}`]: {
       fields: keys,
       label: config.label,
-      description: config.description ?? null,
+      description: config.description ?? '',
       ui: config.ui,
     } satisfies GroupInfo<ListTypeInfo>,
     ...config.fields,

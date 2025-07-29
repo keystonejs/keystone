@@ -80,7 +80,7 @@ describe('postinstall', () => {
   })
 })
 
-// uncomment when you need to update the schemas in the fixture
+// uncomment when you need to update the schemas
 // import fs from 'node:fs/promises'
 // test.only('update', async () => {
 //   const cwd = await testdir({

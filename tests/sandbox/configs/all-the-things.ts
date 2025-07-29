@@ -191,7 +191,6 @@ export const lists = {
   Todo: list({
     access: allowAll,
     ui: {
-      description,
       listView: { initialColumns: ['label', 'isComplete', 'createdAt', 'updatedAt'] },
     },
     fields: {

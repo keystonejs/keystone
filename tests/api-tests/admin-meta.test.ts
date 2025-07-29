@@ -59,11 +59,11 @@ test(
         adminMeta: {
           lists: [
             {
-              description: null,
               fields: [
                 {
                   key: 'id',
                   label: 'Id',
+                  description: '',
                   search: null,
                   viewsIndex: 0,
                   createView: {
@@ -76,7 +76,6 @@ test(
                     fieldMode: 'hidden',
                   },
                   customViewsIndex: null,
-                  description: null,
                   fieldMeta: {
                     kind: 'cuid',
                     type: 'String',
@@ -91,6 +90,7 @@ test(
                 {
                   key: 'name',
                   label: 'Name',
+                  description: '',
                   createView: {
                     fieldMode: 'edit',
                     isRequired: false,
@@ -101,7 +101,6 @@ test(
                     fieldMode: 'read',
                   },
                   customViewsIndex: null,
-                  description: null,
                   fieldMeta: {
                     defaultValue: '',
                     displayMode: 'input',
@@ -127,6 +126,7 @@ test(
                 {
                   key: 'something',
                   label: 'Something',
+                  description: '',
                   search: null,
                   viewsIndex: 2,
                   createView: {
@@ -139,7 +139,6 @@ test(
                     fieldMode: 'hidden',
                   },
                   customViewsIndex: null,
-                  description: null,
                   fieldMeta: {
                     defaultValue: null,
                     validation: {

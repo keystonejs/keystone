@@ -66,7 +66,7 @@ export function controller(
   return {
     fieldKey: config.fieldKey,
     label: config.label,
-    description: config.description,
+    description: config.description ?? '',
     dependency: config.fieldMeta?.dependency,
     defaultValue: null,
     deserialize: data => {

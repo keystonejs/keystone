@@ -8,22 +8,22 @@ export const adminMetaQuery = gql`
       adminMeta {
         lists {
           key
-          path
-          description
 
           label
-          labelField
           singular
           plural
+          path
 
+          labelField
           fields {
             key
+
             label
             description
+
             fieldMeta
             isOrderable
             isFilterable
-
             viewsIndex
             customViewsIndex
 

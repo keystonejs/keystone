@@ -23,7 +23,7 @@ export function controller(
   return {
     fieldKey: config.fieldKey,
     label: config.label,
-    description: config.description,
+    description: config.description ?? '',
     defaultValue: null,
     deserialize: data => {
       const value = data[config.fieldKey]

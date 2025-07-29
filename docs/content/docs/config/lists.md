@@ -18,7 +18,6 @@ export default config({
       hooks: { /* ... */ },
       graphql: { /* ... */ },
       db: { /* ... */ },
-      description: '...',
       isSingleton: false,
       defaultIsFilterable: false,
       defaultIsOrderable: false,
@@ -121,9 +120,15 @@ export default config({
     SomeListName: list({
       fields: { name: text({ /* ... */ }) },
       ui: {
+        label: 'Some List',
+        description: '...',
+
+        singular: 'Item',
+        plural: 'Items',
+        path: 'some-list'
+
         labelField: 'name',
         searchFields: ['name', 'alternativeName'],
-        description: '...',
         hideNavigation: ({ session, context }) => false,
         hideCreate: ({ session, context }) => false,
         hideDelete: ({ session, context }) => false,
@@ -139,10 +144,6 @@ export default config({
           initialSort: { field: 'name', direction: 'ASC' },
           pageSize: 50,
         },
-        label: "Some List",
-        singular: "Item",
-        plural: "Items",
-        path: 'some-list'
       },
     }),
     /* ... */
@@ -211,7 +212,7 @@ The `db` config option allows you to configure certain aspects of the database c
 
 Options:
 
-- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+- `idField` (default: `{ kind: 'cuid' }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   The default across all lists can be changed at the root-level `db.idField` config.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
@@ -233,11 +234,6 @@ export default config({
   /* ... */
 });
 ```
-
-## description
-
-The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
-This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
 ## isSingleton
 

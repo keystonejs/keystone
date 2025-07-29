@@ -16,7 +16,7 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
    */
   access: ListAccessControl<ListTypeInfo>
 
-  /** Config for how this list should act in the Admin UI */
+  /** Options for how this list should show in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo>
 
   /**
@@ -28,11 +28,6 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   graphql?: ListGraphQLConfig<ListTypeInfo>
 
   db?: ListDBConfig
-
-  /**
-   * Defaults the Admin UI and GraphQL descriptions
-   */
-  description?: string // defaults both { adminUI: { description }, graphQL: { description } }
 
   /**
    * The default value to use for graphql.isEnabled.filter on all fields for this list
@@ -47,16 +42,40 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
 
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
+   * The label used to identify the list in navigation and etc.
+   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
+   */
+  label?: string
+
+  /**
+   * The singular form of the list key.
+   *
+   * It is used in sentences like `Are you sure you want to delete these {plural}?`
+   * @default pluralize.singular(label)
+   */
+  singular?: string
+
+  /**
+   * The plural form of the list key.
+   *
+   * It is used in sentences like `Are you sure you want to delete this {singular}?`.
+   * @default pluralize.plural(label)
+   */
+  plural?: string
+
+  /**
+   * The path segment to identify the list in URLs.
+   *
+   * It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
+   * @default label.split(' ').join('-').toLowerCase()
+   */
+  path?: string
+
+  /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
   labelField?: 'id' | Exclude<ListTypeInfo['fields'], number>
-
-  /**
-   * The description shown on the list page
-   * @default listConfig.description
-   */
-  description?: string // the description displayed below the field in the Admin UI
 
   /**
    * The fields used by the Admin UI when searching this list.
@@ -133,36 +152,6 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
       ListTypeInfo
     >
   }
-
-  /**
-   * The label used to identify the list in navigation and etc.
-   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
-   */
-  label?: string
-
-  /**
-   * The singular form of the list key.
-   *
-   * It is used in sentences like `Are you sure you want to delete these {plural}?`
-   * @default pluralize.singular(label)
-   */
-  singular?: string
-
-  /**
-   * The plural form of the list key.
-   *
-   * It is used in sentences like `Are you sure you want to delete this {singular}?`.
-   * @default pluralize.plural(label)
-   */
-  plural?: string
-
-  /**
-   * The path segment to identify the list in URLs.
-   *
-   * It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
-   * @default label.split(' ').join('-').toLowerCase()
-   */
-  path?: string
 }
 
 export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
@@ -276,7 +265,7 @@ export type MaybeItemFunctionWithFilter<T extends string, ListTypeInfo extends B
 export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The description added to the GraphQL schema
-   * @default listConfig.description
+   * @default empty
    */
   description?: string
   /**
