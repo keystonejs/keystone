@@ -4,14 +4,9 @@ import https from 'node:https'
 import ci from 'ci-info'
 import Conf from 'conf'
 import { bold, blue as b, yellow as y, red as r, green as g, grey } from 'chalk'
-import {
-  type Device,
-  type Project,
-  type TelemetryVersion1,
-  type TelemetryVersion2,
-} from '../types/telemetry'
-import { type DatabaseProvider } from '../types'
-import { type InitialisedList } from './core/initialise-lists'
+import type { Device, Project, TelemetryVersion1, TelemetryVersion2 } from '../types/telemetry'
+import type { DatabaseProvider } from '../types'
+import type { InitialisedList } from './core/initialise-lists'
 
 const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com/3/'
 
@@ -124,7 +119,7 @@ async function collectPackageVersions() {
     '@keystone-6/auth',
     '@keystone-6/fields-document',
     '@keystone-6/cloudinary',
-    '@keystone-6/session-store-redis',
+    '@keystone-6/session-store-redis', // we hope usage to drops to zero
     '@opensaas/keystone-nextjs-auth',
   ]) {
     try {

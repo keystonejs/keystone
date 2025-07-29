@@ -24,7 +24,7 @@ The questions we want to currently answer using telemetry are the following:
 
 - How many active developers are using Keystone, compared to how many are active in the community,
 - How complex are projects that use Keystone,
-- What field types and `@keystone-6` or community packages are being used by developers, and
+- What field types and `@keystone-6/` or community nominated packages are being used by developers, and
 - What operating systems and node versions are being used by the community?
 
 This information will help Thinkmill Labs prioritise future features or maintenance efforts for ongoing development.
@@ -63,9 +63,9 @@ Keystone collects telemetry information in the form of two different types of da
 We refer to these two different reports, as “device telemetry” and “project telemetry” respectively.
 
 These reports are forwarded to [https://telemetry.keystonejs.com/](https://telemetry.keystonejs.com/), and are reported separately to minimize any correlation between them insofar as the timing and grouping of that data, that an otherwise combined report may have. We are collecting these two reports for different reasons, and thus have no need to associate them.
-We differentiate and record the type and version of reports from the URL used by Keystone.
 
 We additionally record a timestamp of the time that the report is received by the server at [https://telemetry.keystonejs.com](https://telemetry.keystonejs.com/).
+The type of report and the version of the report is determined by the location the report is forwarded to.
 
 #### Device Telemetry
 
@@ -85,21 +85,23 @@ A device telemetry report is formatted as JSON and currently looks like:
 }
 ```
 
+Device telemetry reports are forwarded to [https://telemetry.keystonejs.com/3/device](https://telemetry.keystonejs.com/3/device).
+
 #### Project Telemetry
 
 The type of information contained within a project telemetry report is currently:
 
 - The last date you used `keystone dev` for this project, and
-- The resolved package versions of any `@keystone-6` packages used by this project, and
+- The resolved package versions of any `@keystone-6/` (or community nominated packages) packages used by this project, and
 - The database type used by the project,
-- The number of lists for this project, and
-- The name and number of field types that you are using
+- The number of lists used by this project, and
+- The name and number of field types used by this project
 
 A project telemetry report is formatted as JSON and currently looks like:
 
 ```json
 {
-  "lastSentDate": "2024-11-23",
+  "lastSentDate": "2025-07-28",
   "packages": {
     "@keystone-6/auth": "8.0.1",
     "@keystone-6/core": "6.1.0",
@@ -116,6 +118,8 @@ A project telemetry report is formatted as JSON and currently looks like:
   }
 }
 ```
+
+Project telemetry reports are forwarded to [https://telemetry.keystonejs.com/3/project](https://telemetry.keystonejs.com/3/project).
 
 ---
 
@@ -140,7 +144,7 @@ For that purpose, **we currently only retain telemetry reports and their respect
 
 ## How to opt-out?
 
-To opt-out of Keystone device and project telemetry for your user profile, in 1 command, you can use the following:
+To opt-out of Keystone device and project telemetry for your user profile, you can use the following:
 
 ```bash
 $ keystone telemetry disable
