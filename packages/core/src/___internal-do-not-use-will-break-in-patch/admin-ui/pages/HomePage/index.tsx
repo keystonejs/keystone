@@ -8,7 +8,7 @@ import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid, VStack } from '@keystar/ui/layout'
 import { useLink } from '@keystar/ui/link'
 import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
@@ -16,10 +16,8 @@ import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui/context'
 
 export function HomePage() {
-  const { adminMeta } = useKeystone()
-  const visibleLists = useMemo(() => {
-    return Object.values(adminMeta?.lists ?? {}).filter(list => !list.hideNavigation)
-  }, [adminMeta?.lists])
+  const { lists: allLists } = useKeystone()
+  const visibleLists = Object.values(allLists).filter(list => !list.hideNavigation)
 
   const LIST_COUNTS_QUERY = useMemo(
     () =>

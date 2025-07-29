@@ -81,9 +81,8 @@ export function NavContainer({ children }: PropsWithChildren) {
 
 /** @private Exported for internal consumption only. */
 export function Navigation() {
-  const { adminMeta, adminConfig } = useKeystone()
-  const lists = Object.values(adminMeta?.lists ?? [])
-  const visibleLists = lists.filter(x => !x.hideNavigation)
+  const { adminConfig, lists: allLists } = useKeystone()
+  const visibleLists = Object.values(allLists).filter(x => !x.hideNavigation)
 
   if (adminConfig?.components?.Navigation)
     return <adminConfig.components.Navigation lists={visibleLists} />

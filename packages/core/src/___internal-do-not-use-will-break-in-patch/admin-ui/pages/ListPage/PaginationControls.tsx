@@ -2,9 +2,11 @@ import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { chevronLeftIcon } from '@keystar/ui/icon/icons/chevronLeftIcon'
 import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
+import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { HStack } from '@keystar/ui/layout'
 import { Picker } from '@keystar/ui/picker'
 import { Item } from '@keystar/ui/tag'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
@@ -20,11 +22,12 @@ export function PaginationControls(props: {
   currentPage: number
   pageSize: number
   total: number
+  defaultPageSize?: number
   onChangePage: (page: number) => void
   onChangePageSize: (pageSize: number) => void
   extraActions?: ReactNode
 }) {
-  const { currentPage, total, pageSize } = props
+  const { currentPage, total, pageSize, defaultPageSize } = props
   const { stats } = getPaginationStats(props)
 
   const nextPage = currentPage + 1
@@ -69,6 +72,18 @@ export function PaginationControls(props: {
           >
             {item => <Item>{item.label}</Item>}
           </Picker>
+          {defaultPageSize !== undefined && pageSize !== defaultPageSize ? (
+            <TooltipTrigger>
+              <ActionButton
+                aria-label="reset"
+                onPress={() => props.onChangePageSize(defaultPageSize)}
+                prominence="low"
+              >
+                <Icon src={undo2Icon} />
+              </ActionButton>
+              <Tooltip>Reset to defaults</Tooltip>
+            </TooltipTrigger>
+          ) : null}
         </HStack>
         <Text color="neutralSecondary">{stats}</Text>
       </HStack>

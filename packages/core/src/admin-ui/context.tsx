@@ -1,36 +1,36 @@
-import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
-import NextHead from 'next/head'
 import { createUploadLink } from 'apollo-upload-client'
+import NextHead from 'next/head'
+import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
-import { Toaster } from '@keystar/ui/toast'
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
-
+import { Toaster } from '@keystar/ui/toast'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
+import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls'
 import type {
   AdminConfig,
-  AdminMeta,
   BaseListTypeInfo,
   ConditionalFieldFilter,
   ConditionalFieldFilterCase,
   FieldViews,
+  ListMeta,
 } from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
 import type { QueryResult } from './apollo'
-import { gql, ApolloProvider, ApolloClient, InMemoryCache, useQuery } from './apollo'
+import { ApolloClient, ApolloProvider, InMemoryCache, gql, useQuery } from './apollo'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
-  adminMeta: AdminMeta | null
+  lists: { [list: string]: ListMeta }
   apiPath: string | null
   fieldViews: FieldViews
 }
 
 const KeystoneContext = createContext<KeystoneContextType>({
   adminConfig: null,
-  adminMeta: null,
   apiPath: null,
+  lists: {},
   fieldViews: {},
 })
 
@@ -52,18 +52,17 @@ function InternalKeystoneProvider({
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
   const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery)
-  const lists = data?.keystone?.adminMeta?.lists
-  const meta = useMemo(() => {
-    if (!lists) return
+  const listsData = data?.keystone?.adminMeta?.lists
+  const lists = useMemo(() => {
+    if (!listsData) return
     if (error) return
 
-    const result: AdminMeta = {
-      lists: {},
-    }
+    const lists: KeystoneContextType['lists'] = {}
 
-    for (const list of lists) {
-      result.lists[list.key] = {
+    for (const list of listsData) {
+      lists[list.key] = {
         ...list,
+        pageSize: snapValueToClosest(list.pageSize ?? 50),
         groups: [],
         fields: {},
       }
@@ -92,7 +91,7 @@ function InternalKeystoneProvider({
           }
         }
 
-        result.lists[list.key].fields[field.key] = {
+        lists[list.key].fields[field.key] = {
           ...field,
           createView: {
             fieldMode: field.createView?.fieldMode ?? null,
@@ -122,16 +121,16 @@ function InternalKeystoneProvider({
       }
 
       for (const group of list.groups) {
-        result.lists[list.key].groups.push({
+        lists[list.key].groups.push({
           label: group.label,
           description: group.description,
-          fields: group.fields.map(field => result.lists[list.key].fields[field.key]),
+          fields: group.fields.map(field => lists[list.key].fields[field.key]),
         })
       }
     }
 
-    return result
-  }, [lists, error, fieldViews])
+    return lists
+  }, [listsData, error, fieldViews])
 
   // TODO: remove this once studio is fully migrated to keystar-ui
   useEffect(() => {
@@ -168,9 +167,9 @@ function InternalKeystoneProvider({
       <KeystoneContext.Provider
         value={{
           adminConfig,
-          adminMeta: meta ?? null,
-          fieldViews,
           apiPath,
+          lists: lists ?? {},
+          fieldViews,
         }}
       >
         {children}
@@ -212,8 +211,7 @@ export function useKeystone() {
 }
 
 export function useList(listKey: string) {
-  const { adminMeta } = useKeystone()
-  const { lists } = adminMeta ?? {}
+  const { lists } = useKeystone()
   const list = lists?.[listKey]
   if (!list) throw new Error(`Unknown list ${listKey}`)
   return list

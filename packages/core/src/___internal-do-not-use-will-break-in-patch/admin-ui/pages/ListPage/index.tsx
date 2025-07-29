@@ -41,8 +41,7 @@ import { useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
-import { Pagination } from './Pagination'
-import { snapValueToClosest } from './PaginationControls'
+import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
 
 type ListPageProps = { listKey: string }
@@ -144,7 +143,9 @@ function FilterDialog({
 }
 
 function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
-  if (!Array.isArray(query.filter)) return []
+  const param_ = query.filter
+  const params = Array.isArray(param_) ? param_ : typeof param_ === 'string' ? [param_] : []
+  if (!params.length) return []
   const filters: Filter[] = []
 
   for (const [fieldPath, field] of Object.entries(list.fields)) {
@@ -153,7 +154,7 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
 
     for (const filterType in field.controller.filter.types) {
       const prefix = `${fieldPath}_${filterType}`
-      for (const queryFilter of query.filter) {
+      for (const queryFilter of params) {
         if (queryFilter === prefix) {
           filters.push({
             type: filterType,
@@ -228,26 +229,25 @@ function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const defaultFilters = useMemo(() => getFilters(list, {}), [list])
-  const defaultSort = useMemo(() => getSort(list, {}), [list])
-
   const { query, replace, isReady } = useRouter()
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
-  const [columns, setColumns] = useState<string[]>(() => getColumns(list, {}))
+  const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
-  const [currentPage, setCurrentPage] = useState<number>(() => getCurrentPage(list, {}))
-  const [pageSize, setPageSize] = useState<number>(() => getPageSize(list, {}))
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(list.pageSize)
   const [searchString, setSearchString] = useState('')
   const [selectedItems, setSelectedItems] = useState<SelectedKeys>(() => new Set([]))
   const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
   const dirty = useMemo(() => {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
     return (
       !!searchString ||
       !isDeepEqual(filters, defaultFilters) ||
       !isDeepEqual(sort, defaultSort) ||
       !isDeepEqual(columns, list.initialColumns)
     )
-  }, [searchString, filters, defaultFilters, sort, defaultSort, columns, list.initialColumns])
+  }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
     if (!isReady) return
@@ -305,7 +305,7 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const shownFields = columns.map(fieldKey => list.fields[fieldKey])
+  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
   const where = useMemo(
     () =>
       filters.map(filter => {
@@ -390,6 +390,8 @@ function ListPage({ listKey }: ListPageProps) {
   }
 
   function resetToDefaults() {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
     setSearchString('')
     setColumns(list.initialColumns)
     setFilters(defaultFilters)
@@ -406,9 +408,8 @@ function ListPage({ listKey }: ListPageProps) {
           <SearchField
             aria-label="Search"
             isDisabled={isEmpty}
-            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
             onClear={() => setSearchString('')}
-            onChange={v => setSearchString(v.trim())}
+            onChange={v => setSearchString(v)}
             placeholder="Search…"
             value={searchString}
             width="alias.singleLineWidth"
@@ -567,16 +568,15 @@ function ListPage({ listKey }: ListPageProps) {
         </ActionBarContainer>
 
         {!!data?.count && (
-          <Pagination
+          <PaginationControls
             singular={list.singular}
             plural={list.plural}
             currentPage={currentPage}
             pageSize={pageSize}
             total={data.count}
-            onChange={(page, pageSize) => {
-              setCurrentPage(page)
-              setPageSize(pageSize)
-            }}
+            onChangePage={(page: number) => setCurrentPage(page)}
+            onChangePageSize={(pageSize: number) => setPageSize(pageSize)}
+            defaultPageSize={list.pageSize}
           />
         )}
 
