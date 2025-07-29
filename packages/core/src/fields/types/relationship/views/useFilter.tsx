@@ -24,8 +24,7 @@ function isUuid(x: unknown) {
 }
 
 export function useSearchFilter(value: string, list: ListMeta, searchFields: string[]) {
-  const { adminMeta } = useKeystone()
-  const { lists = {} } = adminMeta ?? {}
+  const { lists } = useKeystone()
   return useMemo(() => {
     const trimmedSearch = value.trim()
     if (!trimmedSearch.length) return { OR: [] }

@@ -133,10 +133,6 @@ export type ListMeta = {
   hideDelete: boolean
 }
 
-export type AdminMeta = {
-  lists: { [list: string]: ListMeta }
-}
-
 export type Item = {
   [key: string]: unknown
 }

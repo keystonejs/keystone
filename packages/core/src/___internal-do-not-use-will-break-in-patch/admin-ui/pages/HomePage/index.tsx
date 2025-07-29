@@ -16,10 +16,8 @@ import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui/context'
 
 export function HomePage() {
-  const { adminMeta } = useKeystone()
-  const visibleLists = useMemo(() => {
-    return Object.values(adminMeta?.lists ?? {}).filter(list => !list.hideNavigation)
-  }, [adminMeta?.lists])
+  const { lists: allLists } = useKeystone()
+  const visibleLists = Object.values(allLists).filter(list => !list.hideNavigation)
 
   const LIST_COUNTS_QUERY = useMemo(
     () =>
