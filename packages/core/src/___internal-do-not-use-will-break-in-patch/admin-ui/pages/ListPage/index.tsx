@@ -409,9 +409,8 @@ function ListPage({ listKey }: ListPageProps) {
           <SearchField
             aria-label="Search"
             isDisabled={isEmpty}
-            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
             onClear={() => setSearchString('')}
-            onChange={v => setSearchString(v.trim())}
+            onChange={v => setSearchString(v)}
             placeholder="Search…"
             value={searchString}
             width="alias.singleLineWidth"
