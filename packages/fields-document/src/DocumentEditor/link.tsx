@@ -21,6 +21,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { TextField } from '#fields-ui'
 import { Content } from '@keystar/ui/slots'
 import { unlinkIcon } from '@keystar/ui/icon/icons/unlinkIcon'
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
 export * from './link-shared'
 
@@ -99,9 +100,7 @@ export function LinkElement({
           <LinkDialog
             text={Node.string(currentElement)}
             href={href}
-            onSubmit={({ href }) => {
-              setNode({ href })
-            }}
+            onSubmit={href => setNode({ href })}
           />
         )}
       </DialogContainer>
@@ -115,13 +114,20 @@ function LinkDialog({
 }: {
   href?: string
   text?: string
-  onSubmit: (value: { href: string }) => void
+  onSubmit: (href: string) => void
 }) {
-  let [href, setHref] = useState(props.href || '')
-  let [touched, setTouched] = useState(false)
+  const [href, setHref] = useState(props.href ?? '')
+  const [touched, setTouched] = useState(false)
+  const { dismiss } = useDialogContainer()
+  const sanitisedHref = encodeURI(sanitizeUrl(href))
+  const isInvalid = touched && !isValidURL(href)
 
-  let { dismiss } = useDialogContainer()
-  const showInvalidState = touched && !isValidURL(href)
+  function onBlur() {
+    if (href !== sanitisedHref && sanitisedHref !== 'about:blank') {
+      setHref(sanitisedHref)
+    }
+    setTouched(true)
+  }
 
   return (
     <Dialog size="small">
@@ -130,10 +136,11 @@ function LinkDialog({
         onSubmit={event => {
           if (event.target !== event.currentTarget) return
           event.preventDefault()
-          if (!showInvalidState) {
-            dismiss()
-            onSubmit({ href })
-          }
+
+          if (isInvalid) return
+
+          dismiss()
+          onSubmit(sanitisedHref)
         }}
       >
         <Heading>{props.href ? 'Edit' : 'Add'} link</Heading>
@@ -143,17 +150,17 @@ function LinkDialog({
             <TextField
               autoFocus
               isRequired
-              onBlur={() => setTouched(true)}
+              onBlur={onBlur}
               label="Link"
               onChange={setHref}
               value={href}
-              errorMessage={showInvalidState && 'Please provide a valid URL.'}
+              errorMessage={isInvalid && 'This type of URL is not accepted by Keystone'}
             />
           </Flex>
         </Content>
         <ButtonGroup>
           <Button onPress={dismiss}>Cancel</Button>
-          <Button prominence="high" type="submit">
+          <Button isDisabled={isInvalid} prominence="high" type="submit">
             Save
           </Button>
         </ButtonGroup>
