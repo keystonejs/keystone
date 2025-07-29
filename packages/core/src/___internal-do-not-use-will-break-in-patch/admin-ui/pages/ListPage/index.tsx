@@ -41,8 +41,7 @@ import { useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
-import { Pagination } from './Pagination'
-import { snapValueToClosest } from './PaginationControls'
+import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
 
 type ListPageProps = { listKey: string }
@@ -569,16 +568,14 @@ function ListPage({ listKey }: ListPageProps) {
         </ActionBarContainer>
 
         {!!data?.count && (
-          <Pagination
+          <PaginationControls
             singular={list.singular}
             plural={list.plural}
             currentPage={currentPage}
             pageSize={pageSize}
             total={data.count}
-            onChange={(page, pageSize) => {
-              setCurrentPage(page)
-              setPageSize(pageSize)
-            }}
+            onChangePage={(page: number) => setCurrentPage(page)}
+            onChangePageSize={(pageSize: number) => setPageSize(pageSize)}
           />
         )}
 
