@@ -1,6 +1,6 @@
 {
   "name": "create-keystone-app",
-  "version": "10.0.3",
+  "version": "0.0.0-rc-20250729040543",
   "license": "MIT",
   "type": "module",
   "main": "dist/create-keystone-app.cjs.js",
