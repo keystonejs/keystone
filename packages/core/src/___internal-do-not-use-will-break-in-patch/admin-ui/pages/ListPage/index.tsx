@@ -212,7 +212,7 @@ function getCurrentPage(_: ListMeta, query: ParsedUrlQuery) {
 
 function getPageSize(list: ListMeta, query: ParsedUrlQuery) {
   const pageSize = Number(query.pageSize)
-  if (Number.isNaN(pageSize) || pageSize < 1) return snapValueToClosest(list.pageSize)
+  if (Number.isNaN(pageSize) || pageSize < 1) return list.pageSize
   return snapValueToClosest(pageSize)
 }
 
@@ -576,6 +576,7 @@ function ListPage({ listKey }: ListPageProps) {
             total={data.count}
             onChangePage={(page: number) => setCurrentPage(page)}
             onChangePageSize={(pageSize: number) => setPageSize(pageSize)}
+            defaultPageSize={list.pageSize}
           />
         )}
 

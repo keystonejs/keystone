@@ -19,6 +19,7 @@ import type {
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
 import type { QueryResult } from './apollo'
 import { gql, ApolloProvider, ApolloClient, InMemoryCache, useQuery } from './apollo'
+import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -64,6 +65,7 @@ function InternalKeystoneProvider({
     for (const list of lists) {
       result.lists[list.key] = {
         ...list,
+        pageSize: snapValueToClosest(list.pageSize ?? 50),
         groups: [],
         fields: {},
       }

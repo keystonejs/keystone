@@ -8,7 +8,7 @@ import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid, VStack } from '@keystar/ui/layout'
 import { useLink } from '@keystar/ui/link'
 import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
