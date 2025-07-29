@@ -154,7 +154,7 @@ function LinkDialog({
               label="Link"
               onChange={setHref}
               value={href}
-              errorMessage={isInvalid && 'This type of URL is not accepted by Keystone'}
+              errorMessage={isInvalid && 'This type of URL is not accepted'}
             />
           </Flex>
         </Content>

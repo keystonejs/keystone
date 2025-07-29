@@ -27,10 +27,9 @@ const zTextAlign = z.union([z.undefined(), z.literal('center'), z.literal('end')
 const zLink = z
   .object({
     type: z.literal('link'),
-    href: z.string().refinement(isValidURL as (url: string) => url is any, val => ({
-      code: 'custom',
-      message: `Invalid URL: ${val}`,
-    })),
+    href: z.string().refine(val => isValidURL(val), {
+      error: `This type of URL is not accepted`,
+    }),
   })
   .strict()
 
