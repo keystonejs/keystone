@@ -305,7 +305,7 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const shownFields = columns.map(fieldKey => list.fields[fieldKey])
+  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
   const where = useMemo(
     () =>
       filters.map(filter => {
