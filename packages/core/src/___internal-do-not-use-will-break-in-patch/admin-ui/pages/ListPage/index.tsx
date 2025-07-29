@@ -144,7 +144,9 @@ function FilterDialog({
 }
 
 function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
-  if (!Array.isArray(query.filter)) return []
+  const param_ = query.filter
+  const params = Array.isArray(param_) ? param_ : typeof param_ === 'string' ? [param_] : []
+  if (!params.length) return []
   const filters: Filter[] = []
 
   for (const [fieldPath, field] of Object.entries(list.fields)) {
@@ -153,7 +155,7 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
 
     for (const filterType in field.controller.filter.types) {
       const prefix = `${fieldPath}_${filterType}`
-      for (const queryFilter of query.filter) {
+      for (const queryFilter of params) {
         if (queryFilter === prefix) {
           filters.push({
             type: filterType,

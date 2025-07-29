@@ -135,5 +135,5 @@ export function buildQueryForRelationshipFieldWithForeignField(
 ) {
   const foreignField = foreignList.fields[refFieldKey]
   const foreignMany: boolean = (foreignField.fieldMeta as any).many
-  return `!${refFieldKey}_${foreignMany ? 'some' : 'is'}=${JSON.stringify(foreignMany ? [localId] : localId)}`
+  return `filter=${refFieldKey}_${foreignMany ? 'some' : 'is'}_${JSON.stringify(foreignMany ? [localId] : localId)}`
 }
