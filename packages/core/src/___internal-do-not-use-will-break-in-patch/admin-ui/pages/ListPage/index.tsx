@@ -213,7 +213,7 @@ function getCurrentPage(_: ListMeta, query: ParsedUrlQuery) {
 
 function getPageSize(list: ListMeta, query: ParsedUrlQuery) {
   const pageSize = Number(query.pageSize)
-  if (Number.isNaN(pageSize) || pageSize < 1) return list.pageSize
+  if (Number.isNaN(pageSize) || pageSize < 1) return snapValueToClosest(list.pageSize)
   return snapValueToClosest(pageSize)
 }
 
@@ -230,26 +230,25 @@ function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const defaultFilters = useMemo(() => getFilters(list, {}), [list])
-  const defaultSort = useMemo(() => getSort(list, {}), [list])
-
   const { query, replace, isReady } = useRouter()
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
-  const [columns, setColumns] = useState<string[]>(() => getColumns(list, {}))
+  const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
-  const [currentPage, setCurrentPage] = useState<number>(() => getCurrentPage(list, {}))
-  const [pageSize, setPageSize] = useState<number>(() => getPageSize(list, {}))
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(list.pageSize)
   const [searchString, setSearchString] = useState('')
   const [selectedItems, setSelectedItems] = useState<SelectedKeys>(() => new Set([]))
   const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
   const dirty = useMemo(() => {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
     return (
       !!searchString ||
       !isDeepEqual(filters, defaultFilters) ||
       !isDeepEqual(sort, defaultSort) ||
       !isDeepEqual(columns, list.initialColumns)
     )
-  }, [searchString, filters, defaultFilters, sort, defaultSort, columns, list.initialColumns])
+  }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
     if (!isReady) return
@@ -392,6 +391,8 @@ function ListPage({ listKey }: ListPageProps) {
   }
 
   function resetToDefaults() {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
     setSearchString('')
     setColumns(list.initialColumns)
     setFilters(defaultFilters)
