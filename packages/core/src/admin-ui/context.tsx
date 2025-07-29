@@ -57,7 +57,7 @@ function InternalKeystoneProvider({
     if (!listsData) return
     if (error) return
 
-    const lists: KeystoneContextType["lists"] = {}
+    const lists: KeystoneContextType['lists'] = {}
 
     for (const list of listsData) {
       lists[list.key] = {

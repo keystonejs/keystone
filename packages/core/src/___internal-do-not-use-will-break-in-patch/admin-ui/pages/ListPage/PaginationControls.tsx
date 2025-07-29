@@ -72,16 +72,18 @@ export function PaginationControls(props: {
           >
             {item => <Item>{item.label}</Item>}
           </Picker>
-          {
-            defaultPageSize !== undefined && pageSize !== defaultPageSize ? (
-              <TooltipTrigger>
-                <ActionButton aria-label="reset" onPress={() => props.onChangePageSize(defaultPageSize)} prominence="low">
-                  <Icon src={undo2Icon} />
-                </ActionButton>
-                <Tooltip>Reset to defaults</Tooltip>
-              </TooltipTrigger>
-            ) : null
-          }
+          {defaultPageSize !== undefined && pageSize !== defaultPageSize ? (
+            <TooltipTrigger>
+              <ActionButton
+                aria-label="reset"
+                onPress={() => props.onChangePageSize(defaultPageSize)}
+                prominence="low"
+              >
+                <Icon src={undo2Icon} />
+              </ActionButton>
+              <Tooltip>Reset to defaults</Tooltip>
+            </TooltipTrigger>
+          ) : null}
         </HStack>
         <Text color="neutralSecondary">{stats}</Text>
       </HStack>
