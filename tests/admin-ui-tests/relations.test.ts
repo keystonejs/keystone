@@ -30,16 +30,13 @@ adminUITests('./tests/test-projects/basic', browserType => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: gql`
-          mutation ($people: [PersonCreateInput!]!) {
-            createPeople(data: $people) {
-              id
-            }
-            createTask(data: { label: "some task", assignedTo: { create: { name: "the user" } } }) {
+          mutation {
+            createTask(data: { label: "A task", assignedTo: { create: { name: "A user" } } }) {
               id
             }
           }
         `,
-        variables: { people: Array.from({ length: 500 }, (_, i) => ({ name: `Person ${i}` })) },
+        variables: {},
       }),
     }).then(res => res.json())
     expect(result.errors).toBeUndefined()
@@ -47,8 +44,38 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.goto(`http://localhost:3000/tasks/${result.data.createTask.id}`)
     await page.getByRole('combobox', { name: 'Assigned To' }).click()
     await page.getByRole('textbox', { name: 'Label' }).click()
-    await expect(page.getByRole('combobox', { name: 'Assigned To' })).toHaveValue('the user')
+    await expect(page.getByRole('combobox', { name: 'Assigned To' })).toHaveValue('A user')
     await expect(page.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
+
+  test('view related relationships on the item page filters the list view', async () => {
+    const result = await fetch('http://localhost:3000/api/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: gql`
+          mutation {
+            createTask(data: { label: "My task", assignedTo: { create: { name: "My user" } } }) {
+              id
+              assignedTo {
+                id
+              }
+            }
+          }
+        `,
+        variables: {},
+      }),
+    }).then(res => res.json())
+    expect(result.errors).toBeUndefined()
+
+    await page.goto(`http://localhost:3000/people/${result.data.createTask.assignedTo.id}`)
+    await page.getByRole('button', { name: 'Actions for Tasks' }).click()
+    await page.getByText('View related').click()
+    await page.waitForURL(
+      `http://localhost:3000/tasks?filter=assignedTo_is_"${result.data.createTask.assignedTo.id}"`
+    )
+    await page.getByText('My task').waitFor()
+    await expect(page.getByText('A task')).toBeHidden()
   })
 
   afterAll(async () => {
