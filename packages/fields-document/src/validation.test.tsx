@@ -84,11 +84,10 @@ test('invalid structure', () => {
   expect(validate({})).toMatchInlineSnapshot(`
   [Error: Invalid document structure: [
     {
-      "code": "invalid_type",
       "expected": "array",
-      "received": "object",
+      "code": "invalid_type",
       "path": [],
-      "message": "Expected array, received object"
+      "message": "Invalid input: expected array, received object"
     }
   ]]
 `)
@@ -100,7 +99,7 @@ test('bad link', () => {
       {
         type: 'paragraph',
         children: [
-          { type: 'link', href: 'javascript:doBadThings()', children: [{ text: 'some text' }] },
+          { type: 'link', href: 'javascript:bad', children: [{ text: 'some text' }] },
         ],
       },
     ])
@@ -108,13 +107,13 @@ test('bad link', () => {
     [Error: Invalid document structure: [
       {
         "code": "custom",
-        "message": "Invalid URL: javascript:doBadThings()",
         "path": [
           0,
           "children",
           0,
           "href"
-        ]
+        ],
+        "message": "This type of URL is not accepted"
       }
     ]]
   `)
@@ -136,20 +135,41 @@ test('excess properties', () => {
       },
     ])
   ).toMatchInlineSnapshot(`
-    [Error: Invalid document structure: [
-      {
-        "code": "unrecognized_keys",
-        "keys": [
-          "somethingElse"
-        ],
-        "path": [
-          0,
-          "children",
-          0
-        ],
-        "message": "Unrecognized key(s) in object: 'somethingElse'"
-      }
-    ]]
+[Error: Invalid document structure: [
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "invalid_union",
+          "errors": [],
+          "note": "No matching discriminator",
+          "discriminator": "type",
+          "path": [
+            "type"
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      [
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "somethingElse"
+          ],
+          "path": [],
+          "message": "Unrecognized key: \\"somethingElse\\""
+        }
+      ]
+    ],
+    "path": [
+      0,
+      "children",
+      0
+    ],
+    "message": "Invalid input"
+  }
+]]
   `)
 })
 

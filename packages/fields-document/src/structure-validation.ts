@@ -7,7 +7,7 @@ const zMarkValue = z.union([z.literal(true), z.undefined()])
 
 const zText = z
   .object({
-    type: z.never().optional(),
+    type: z.literal('text').optional(),
     text: z.string(),
     bold: zMarkValue,
     italic: zMarkValue,
@@ -143,12 +143,10 @@ const zBlock: z.ZodType<Node> = z.discriminatedUnion('type', [
   zParagraph.extend({ children: z.lazy(() => zChildren) }),
 ])
 
-const zInline: z.ZodType<Node> = z.union([
+const zInline: z.ZodType<Node> = z.discriminatedUnion('type', [
   zText,
-  z.discriminatedUnion('type', [
-    zLink.extend({ children: z.lazy(() => zChildren) }),
-    zRelationship.extend({ children: z.lazy(() => zChildren) }),
-  ]),
+  zLink.extend({ children: z.lazy(() => zChildren) }),
+  zRelationship.extend({ children: z.lazy(() => zChildren) }),
 ])
 
 const zChildren: z.ZodType<Node[]> = z.array(z.union([zBlock, zInline]))
