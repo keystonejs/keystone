@@ -58,10 +58,8 @@ test(
       {
         type: 'paragraph',
         children: [
-          {
-            text: 'blah',
-          },
-          { type: 'link', href: 'javascript:evil', children: [{ text: `blah` }] },
+          { text: 'blah' },
+          { type: 'link', href: 'javascript:bad', children: [{ text: `blah` }] },
           { text: 'blah' },
         ],
       },
@@ -78,13 +76,13 @@ test(
   - Post.document: Invalid document structure: [
   {
     "code": "custom",
-    "message": "Invalid URL: javascript:evil",
     "path": [
       0,
       "children",
       1,
       "href"
-    ]
+    ],
+    "message": "This type of URL is not accepted"
   }
 ]`
     )
@@ -99,7 +97,7 @@ test(
         type: 'component-block',
         component: 'a',
         props: {
-          url: 'javascript:evil',
+          url: 'javascript:bad',
         },
         children: [
           {
@@ -122,7 +120,7 @@ test(
     ).rejects.toHaveProperty(
       'message',
       `An error occurred while resolving input fields.
-  - Post.document: Invalid form prop value: "javascript:evil" at url`
+  - Post.document: Invalid form prop value: "javascript:bad" at url`
     )
   })
 )

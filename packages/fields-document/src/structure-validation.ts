@@ -143,10 +143,12 @@ const zBlock: z.ZodType<Node> = z.discriminatedUnion('type', [
   zParagraph.extend({ children: z.lazy(() => zChildren) }),
 ])
 
-const zInline: z.ZodType<Node> = z.discriminatedUnion('type', [
+const zInline: z.ZodType<Node> = z.union([
   zText,
-  zLink.extend({ children: z.lazy(() => zChildren) }),
-  zRelationship.extend({ children: z.lazy(() => zChildren) }),
+  z.discriminatedUnion('type', [
+    zLink.extend({ children: z.lazy(() => zChildren) }),
+    zRelationship.extend({ children: z.lazy(() => zChildren) }),
+  ]),
 ])
 
 const zChildren: z.ZodType<Node[]> = z.array(z.union([zBlock, zInline]))
