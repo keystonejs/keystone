@@ -98,9 +98,7 @@ test('bad link', () => {
     validate([
       {
         type: 'paragraph',
-        children: [
-          { type: 'link', href: 'javascript:bad', children: [{ text: 'some text' }] },
-        ],
+        children: [{ type: 'link', href: 'javascript:bad', children: [{ text: 'some text' }] }],
       },
     ])
   ).toMatchInlineSnapshot(`
