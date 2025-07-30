@@ -7,7 +7,7 @@ const zMarkValue = z.union([z.literal(true), z.undefined()])
 
 const zText = z
   .object({
-    type: z.never().optional(),
+    type: z.literal('text').optional(),
     text: z.string(),
     bold: zMarkValue,
     italic: zMarkValue,
@@ -27,10 +27,9 @@ const zTextAlign = z.union([z.undefined(), z.literal('center'), z.literal('end')
 const zLink = z
   .object({
     type: z.literal('link'),
-    href: z.string().refinement(isValidURL as (url: string) => url is any, val => ({
-      code: 'custom',
-      message: `Invalid URL: ${val}`,
-    })),
+    href: z.string().refine(val => isValidURL(val), {
+      error: `This type of URL is not accepted`,
+    }),
   })
   .strict()
 
