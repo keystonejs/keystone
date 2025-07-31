@@ -62,8 +62,12 @@ export function useApolloQuery(args: {
   const debouncedSearch = useDebouncedValue(search, 200)
   const manipulatedSearch =
     state.kind === 'one' && state.value?.label === debouncedSearch ? '' : debouncedSearch
-  const _where = useSearchFilter(manipulatedSearch, list, searchFields)
 
+  // TODO: rewrite
+  const _where = {
+    OR: useSearchFilter(manipulatedSearch, list, searchFields)
+  }
+  // memo is used for referential stability, not for performance
   const where = useMemo(() => {
     return args.filter ? { AND: [_where, args.filter] } : _where
   }, [args.filter, _where])
