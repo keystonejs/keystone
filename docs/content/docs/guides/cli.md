@@ -58,7 +58,7 @@ We recommend adding the following scripts to your project's `package.json` file:
     "build": "keystone build",
     "dev": "keystone dev",
     "postinstall": "keystone postinstall",
-    "start": "keystone start --with-migrations",
+    "start": "keystone start --with-migrations"
   }
 }
 ```
