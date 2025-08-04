@@ -58,13 +58,7 @@ We recommend adding the following scripts to your project's `package.json` file:
     "build": "keystone build",
     "dev": "keystone dev",
     "postinstall": "keystone postinstall",
-    "generate": "keystone prisma migrate dev",
-    "start": "keystone start --with-migrations",
-    {% else / %}
-    "deploy": "keystone build && keystone prisma migrate deploy",
-    "dev": "keystone dev",
-    "postinstall": "keystone postinstall",
-    "start": "keystone start"
+    "start": "keystone start --with-migrations"
   }
 }
 ```
