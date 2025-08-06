@@ -91,6 +91,7 @@ function ListCard({
   hideCreate: boolean
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const countElementId = useId()
   const countElement = (() => {
     if (list.isSingleton) return null
@@ -120,7 +121,7 @@ function ListCard({
         <Heading elementType="h3" size="small" truncate>
           <CardLink
             aria-describedby={countElementId}
-            href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
+            href={`${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`}
           >
             {list.label}
           </CardLink>
@@ -131,7 +132,7 @@ function ListCard({
 
       {hideCreate === false && !list.isSingleton && (
         <TooltipTrigger>
-          <ActionButton aria-label="add" href={`/${list.path}/create`}>
+          <ActionButton aria-label="add" href={`${adminPath}/${list.path}/create`}>
             <Icon src={plusIcon} />
           </ActionButton>
           <Tooltip>Add {list.singular.toLowerCase()}</Tooltip>

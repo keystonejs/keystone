@@ -1,7 +1,8 @@
 import isDeepEqual from 'fast-deep-equal'
-import { useRouter } from 'next/router'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { use, type Usable } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
@@ -37,14 +38,15 @@ import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLi
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
+import { searchParamsToUrlQuery, urlQueryToSearchParams } from './lib'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { params: Usable<{ listKey: string }> }
 type SelectedKeys = 'all' | Set<number | string>
 export type Filter = {
   field: string
@@ -225,11 +227,17 @@ function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
-function ListPage({ listKey }: ListPageProps) {
+export function ListPage({ params }: ListPageProps) {
+  const { adminPath, listsKeyByPath } = useKeystone()
+  const _params = use<{ listKey: string }>(params)
+  const listKey = listsKeyByPath[_params.listKey]
+
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const { query, replace, isReady } = useRouter()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = searchParamsToUrlQuery(searchParams)
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
   const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
@@ -250,7 +258,7 @@ function ListPage({ listKey }: ListPageProps) {
   }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
-    if (!isReady) return
+    // if (!isReady) return
     let localStorageQuery
     try {
       localStorageQuery = JSON.parse(localStorage.getItem(localStorageListKey) ?? '{}')
@@ -262,10 +270,10 @@ function ListPage({ listKey }: ListPageProps) {
     setCurrentPage(getCurrentPage(list, { ...localStorageQuery, ...query }))
     setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
     setSearchString(typeof query.search === 'string' ? query.search : '')
-  }, [list, isReady])
+  }, [list/*, isReady*/])
 
   useEffect(() => {
-    if (!isReady) return
+    // if (!isReady) return
     const updatedQuery: ParsedUrlQueryInput = {
       ...(columns.length ? { column: columns } : {}),
       ...(sort ? { sortBy: sort.direction === 'ascending' ? sort.column : `-${sort.column}` } : {}),
@@ -291,7 +299,7 @@ function ListPage({ listKey }: ListPageProps) {
     }
 
     localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
-    replace({ query: updatedQuery })
+    router.replace(urlQueryToSearchParams(updatedQuery))
   }, [columns, sort, filters, currentPage, pageSize, searchString, list])
 
   const allowCreate = !(list.hideCreate ?? true)
@@ -445,7 +453,7 @@ function ListPage({ listKey }: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           ) : null}
-          {isReady && loading && <ProgressCircle size="small" isIndeterminate />}
+          {/*isReady && */loading && <ProgressCircle size="small" isIndeterminate />}
         </HStack>
 
         {filters.length ? (
@@ -511,7 +519,7 @@ function ListPage({ listKey }: ListPageProps) {
             <TableBody items={data?.items ?? []}>
               {row => {
                 return (
-                  <Row href={`/${list.path}/${row?.id}`}>
+                  <Row href={`${adminPath}/${list.path}/${row?.id}`}>
                     {key => {
                       const field = list.fields[key]
                       const value = row[key]
