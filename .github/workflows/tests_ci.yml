@@ -227,6 +227,19 @@ jobs:
           S3_REGION: us-east-1
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
+  node_unit_tests:
+    name: node:test unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: node:test unit tests
+        run: pnpm test:node:nodb
+        env:
+          DATABASE_URL: file:./test.db
+
   node_postgresql:
     name: node:test PostgreSQL
     runs-on: ubuntu-latest
@@ -244,8 +257,8 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: node:test tests
-        run: pnpm test:node
+      - name: node:test database tests
+        run: pnpm test:node:db
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
@@ -257,8 +270,8 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: node:test tests
-        run: pnpm test:node
+      - name: node:test database tests
+        run: pnpm test:node:db
         env:
           DATABASE_URL: file:./test.db
 
@@ -277,8 +290,8 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: node:test tests
-        run: pnpm test:node
+      - name: node:test database tests
+        run: pnpm test:node:db
         env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
