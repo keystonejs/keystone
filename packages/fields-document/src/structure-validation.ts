@@ -162,6 +162,6 @@ export function isRelationshipData(value: unknown): value is RelationshipData {
 export function validateDocumentStructure(value: unknown): asserts value is Node[] {
   const result = zDocument.safeParse(value)
   if (!result.success) {
-    throw new Error(`Invalid document structure: ${result.error.message}`)
+    throw new TypeError(`Invalid document structure: ${result.error.message}`)
   }
 }

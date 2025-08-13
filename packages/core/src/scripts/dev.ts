@@ -17,7 +17,7 @@ import { confirmPrompt } from '../lib/prompts'
 import { createSystem } from '../lib/createSystem'
 import { getEsbuildConfig } from './esbuild'
 import { createExpressServer } from '../lib/createExpressServer'
-import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
+import { createNextAdminUIMiddleware } from '../lib/nextjs-admin-middleware'
 import { runTelemetry } from '../lib/telemetry'
 import {
   generateArtifacts,
@@ -277,7 +277,7 @@ export async function dev(
       console.log('✨ Preparing Admin UI')
       nextApp = next({ dev: true, dir: paths.admin })
       await nextApp.prepare()
-      expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
+      expressServer.use(createNextAdminUIMiddleware(system.config, context, nextApp))
       console.log(`✅ Admin UI ready`)
     }
 
@@ -349,7 +349,7 @@ export async function dev(
             const servers = await createExpressServer(newSystem.config, newContext)
             if (nextApp) {
               servers.expressServer.use(
-                createAdminUIMiddlewareWithNextApp(newSystem.config, newContext, nextApp)
+                createNextAdminUIMiddleware(newSystem.config, newContext, nextApp)
               )
             }
             expressServer = servers.expressServer
