@@ -1,20 +1,20 @@
-import { type GraphQLSchema } from 'graphql'
+import type { GraphQLSchema } from 'graphql'
+import type { KeystoneContext } from '../../types'
 import type { InitialisedList } from '../core/initialise-lists'
-import { type KeystoneContext } from '../../types'
-import { executeGraphQLFieldToSource } from './executeGraphQLFieldToSource'
-import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection'
+import { makeContextDbFn, makeContextQueryFn } from './graphql'
 
 export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
+  const queryType = schema.getQueryType()!
+  const mutationType = schema.getMutationType()!
+
   function f(operation: 'query' | 'mutation', fieldName: string) {
-    const exec = executeGraphQLFieldWithSelection(schema, operation, fieldName)
-    return (
-      _args: {
-        query?: string
-      } & Record<string, any> = {},
-      context: KeystoneContext
-    ) => {
-      const { query, ...args } = _args
-      return exec(args, query ?? 'id', context) as Promise<any>
+    const rootType = operation === 'query' ? queryType : mutationType
+    const field = rootType.getFields()[fieldName]
+    if (field) return makeContextQueryFn(schema, operation, field)
+
+    // if omitted
+    return () => {
+      throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`)
     }
   }
 
@@ -63,15 +63,12 @@ export function getDbFactory(list: InitialisedList, schema: GraphQLSchema) {
   function f(operation: 'query' | 'mutation', fieldName: string) {
     const rootType = operation === 'query' ? queryType : mutationType
     const field = rootType.getFields()[fieldName]
-    if (field === undefined) {
-      return () => {
-        // This will be triggered if the field is missing due to `omit` configuration.
-        // The GraphQL equivalent would be a bad user input error.
-        throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`)
-      }
-    }
+    if (field) return makeContextDbFn(field)
 
-    return executeGraphQLFieldToSource(field)
+    // if omitted
+    return () => {
+      throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`)
+    }
   }
 
   const fcache = {

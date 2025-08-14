@@ -2,12 +2,12 @@ import { bold } from 'chalk'
 import {
   disableTelemetry,
   enableTelemetry,
+  informTelemetry,
   resetTelemetry,
   statusTelemetry,
-  informTelemetry,
 } from '../lib/telemetry'
 
-export async function telemetry(cwd: string, command?: string) {
+export async function telemetry(_: string, command?: string) {
   const usageText = `
     Usage
       $ keystone telemetry [command]
@@ -27,8 +27,8 @@ For more details visit: https://keystonejs.com/telemetry
   if (command === 'status') return statusTelemetry()
   if (command === 'inform') return informTelemetry()
   if (command === '--help') {
-    console.log(`${bold('Keystone Telemetry')}`)
-    console.log(usageText)
+    console.error(`${bold('Keystone Telemetry')}`)
+    console.error(usageText)
     return
   }
 

@@ -1,17 +1,18 @@
 import meow from 'meow'
-import { ExitError } from './utils'
 import { build } from './build'
 import { dev } from './dev'
+import { migrateApply, migrateCreate } from './migrate'
 import { prisma } from './prisma'
 import { start } from './start'
-import { migrateCreate, migrateApply } from './migrate'
 import { telemetry } from './telemetry'
+import { ExitError } from './utils'
 
 export type Flags = {
   dbPush: boolean
   frozen: boolean
   prisma: boolean
   server: boolean
+  quiet: boolean
   ui: boolean
   withMigrations: boolean
 }
@@ -113,11 +114,11 @@ export async function cli(cwd: string, argv: string[]) {
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
     // uncomment when you need to update the schemas
-    // return build(cwd, { frozen: false, prisma: true, ui: false })
-    return build(cwd, { frozen: true, prisma: true, ui: false })
+    // return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: false }))
+    return build(cwd, defaultFlags(flags, { frozen: true, prisma: true, ui: false }))
   }
 
-  console.log(`${command} is an unknown command`)
-  console.log(help)
+  console.error(`${command} is an unknown command`)
+  console.error(help)
   throw new ExitError(1)
 }

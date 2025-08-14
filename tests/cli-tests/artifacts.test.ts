@@ -1,9 +1,8 @@
-import { ExitError } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import {
   basicKeystoneConfig,
+  cliMock,
   getFiles,
   recordConsole,
-  cliMock,
   schemas,
   symlinkKeystoneDeps,
   testdir,
@@ -16,11 +15,8 @@ describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
       'keystone.js': basicKeystoneConfig,
     })
 
-    const recording = recordConsole()
-    await expect(cliMock(cwd, command)).rejects.toEqual(new ExitError(1))
-
-    expect(recording()).toMatchInlineSnapshot(
-      `"Your Prisma and GraphQL schemas are not up to date"`
+    await expect(cliMock(cwd, command)).rejects.toEqual(
+      new Error('Your Prisma and GraphQL schemas are not up to date')
     )
   })
 })
@@ -31,15 +27,11 @@ describe('prisma migrate status', () => {
       ...symlinkKeystoneDeps,
       'keystone.js': basicKeystoneConfig,
     })
-    await expect(cliMock(cwd, ['build', '--no-ui', '--frozen'])).rejects.toEqual(new ExitError(1))
-
-    const recording = recordConsole()
-    await expect(cliMock(cwd, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(
-      new ExitError(1)
+    await expect(cliMock(cwd, ['build', '--no-ui', '--frozen'])).rejects.toEqual(
+      new Error('Your Prisma and GraphQL schemas are not up to date')
     )
-
-    expect(recording()).toMatchInlineSnapshot(
-      `"Your Prisma and GraphQL schemas are not up to date"`
+    await expect(cliMock(cwd, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(
+      new Error('Your Prisma and GraphQL schemas are not up to date')
     )
   })
 })
