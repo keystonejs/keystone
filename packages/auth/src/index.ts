@@ -225,8 +225,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         ...ui,
         publicPages: [...publicPages, ...authPublicPages],
         getAdditionalFiles: async () => [
-          ...await getAdditionalFiles(),
-          ...authGetAdditionalFiles(config)
+          ...(await getAdditionalFiles()),
+          ...authGetAdditionalFiles(config),
         ],
 
         isAccessAllowed: async (context: KeystoneContext) => {
