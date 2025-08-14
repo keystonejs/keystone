@@ -4,7 +4,6 @@ import path from 'node:path'
 
 import { formatSchema, getGenerators } from '@prisma/internals'
 import { printSchema } from 'graphql'
-import { initialiseLists } from './lib/core/initialise-lists'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import type { System } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
@@ -54,9 +53,8 @@ export async function validateArtifacts(cwd: string, system: System) {
 
 // exported for tests
 export async function getArtifacts(system: System) {
-  const lists = initialiseLists(system.config)
   const prismaSchema = await formatSchema({
-    schemas: [[system.config.db.prismaSchemaPath, printPrismaSchema(system.config, lists)]],
+    schemas: [[system.config.db.prismaSchemaPath, printPrismaSchema(system.config, system.lists)]],
   })
 
   return {
