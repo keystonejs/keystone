@@ -23,7 +23,9 @@ export function FeaturedCard({
   const id = useId()
   return (
     <Well heading={label} href={href} grad={gradient}>
-      {description?.children.map((child, i) => <Markdoc key={`${id}-${i}`} content={child} />)}
+      {description?.children.map((child, i) => (
+        <Markdoc key={`${id}-${i}`} content={child} />
+      ))}
     </Well>
   )
 }

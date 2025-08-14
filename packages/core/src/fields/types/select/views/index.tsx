@@ -1,9 +1,9 @@
-import { type Key, useMemo, useState } from 'react'
 import { useListFormatter } from '@react-aria/i18n'
+import { type Key, useMemo, useState } from 'react'
 
-import { ListView } from '@keystar/ui/list-view'
 import { FieldLabel } from '@keystar/ui/field'
 import { VStack } from '@keystar/ui/layout'
+import { ListView } from '@keystar/ui/list-view'
 import { Item, Picker } from '@keystar/ui/picker'
 import { Radio, RadioGroup } from '@keystar/ui/radio'
 import { tokenSchema } from '@keystar/ui/style'
@@ -12,6 +12,7 @@ import { Text } from '@keystar/ui/typography'
 import { NullableFieldWrapper } from '../../../../admin-ui/components'
 import { SegmentedControl } from './SegmentedControl'
 
+import { entriesTyped } from '../../../../lib/core/utils'
 import type {
   CellComponent,
   FieldController,
@@ -19,7 +20,6 @@ import type {
   FieldProps,
   SimpleFieldTypeInfo,
 } from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
 
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation, onChange, value, isRequired } = props
@@ -39,7 +39,7 @@ export function Field(props: FieldProps<typeof controller>) {
   const errorMessage =
     isInvalid && (isDirty || forceValidation) ? `${field.label} is required.` : undefined
 
-  const onSelectionChange = (key: Key) => {
+  const onSelectionChange = (key: Key | null) => {
     if (!onChange) return
 
     // FIXME: the value should be primitive, not an object. i think this is an
