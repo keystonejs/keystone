@@ -1,11 +1,11 @@
 import next from 'next'
 
-import { createSystem } from '../lib/createSystem'
-import { createExpressServer } from '../lib/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
+import { createExpressServer } from '../lib/createExpressServer'
+import { createSystem } from '../lib/createSystem'
 import { withMigrate } from '../lib/migrations'
+import type { Flags } from './cli'
 import { importBuiltKeystoneConfiguration } from './utils'
-import { type Flags } from './cli'
 
 export async function start(
   cwd: string,
