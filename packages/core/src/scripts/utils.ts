@@ -1,6 +1,6 @@
-import { getBuiltKeystoneConfigurationPath } from '../lib/createSystem'
-import type { KeystoneConfig } from '../types'
 import fs from 'node:fs/promises'
+import { getBuiltKeystoneConfigurationPath } from '../lib/system'
+import type { KeystoneConfig } from '../types'
 
 export class ExitError extends Error {
   code: number

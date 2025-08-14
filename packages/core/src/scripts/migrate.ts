@@ -1,25 +1,25 @@
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import { join } from 'node:path'
-import { spawn } from 'node:child_process'
 
 import chalk from 'chalk'
 import esbuild from 'esbuild'
 import fse from 'fs-extra'
 
-import { createSystem } from '../lib/createSystem'
-import { getEsbuildConfig } from './esbuild'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt, textPrompt } from '../lib/prompts'
+import { createSystem } from '../lib/system'
+import { getEsbuildConfig } from './esbuild'
 
+import { createDatabase, dropDatabase } from '@prisma/internals'
 import {
   generateArtifacts,
   generatePrismaClient,
   generateTypes,
   validateArtifacts,
 } from '../artifacts'
-import { type Flags } from './cli'
+import type { Flags } from './cli'
 import { ExitError, importBuiltKeystoneConfiguration } from './utils'
-import { createDatabase, dropDatabase } from '@prisma/internals'
 
 export async function spawnPrisma(
   cwd: string,

@@ -1,8 +1,8 @@
 import next from 'next'
 
-import { createAdminUIMiddlewareWithNextApp } from '../lib/createAdminUIMiddleware'
-import { createExpressServer } from '../lib/createExpressServer'
-import { createSystem } from '../lib/createSystem'
+import { createSystem } from '../lib/system'
+import { createExpressServer } from '../lib/express'
+import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
 import { withMigrate } from '../lib/migrations'
 import type { Flags } from './cli'
 import { importBuiltKeystoneConfiguration } from './utils'
@@ -43,7 +43,7 @@ export async function start(
     const nextApp = next({ dev: false, dir: paths.admin })
     await nextApp.prepare()
     expressServer.use(
-      await createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp)
+      createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp)
     )
     console.log(`✅ Admin UI ready`)
   }

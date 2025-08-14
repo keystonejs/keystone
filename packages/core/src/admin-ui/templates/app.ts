@@ -1,7 +1,7 @@
-import Path from 'path'
+import Path from 'node:path'
 import resolve from 'resolve'
 
-import type { AdminMetaSource } from '../../lib/create-admin-meta'
+import type { AdminMetaSource } from '../../lib/admin-meta'
 import type { KeystoneConfig } from '../../types'
 
 function doesConfigExist(path: string[]) {
