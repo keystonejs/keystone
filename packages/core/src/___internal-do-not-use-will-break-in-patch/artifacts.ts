@@ -1,4 +1,4 @@
-export { generateArtifacts, getArtifacts } from '../artifacts'
+export { buildArtifacts, generateArtifacts } from '../artifacts'
 export { createExpressServer } from '../lib/express'
 export { withMigrate } from '../lib/migrations'
 export { createSystem } from '../lib/system'

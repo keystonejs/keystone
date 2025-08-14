@@ -1,19 +1,14 @@
-import fs from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
+
 import execa from 'execa'
 import {
   basicKeystoneConfig,
   cliBinPath,
-  recordConsole,
   cliMock,
   schemas,
   symlinkKeystoneDeps,
   testdir,
 } from './utils'
-import ms from 'ms'
-
-import { ExitError } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
-
-jest.setTimeout(ms('20 minutes'))
 
 test("start errors when a build hasn't happened", async () => {
   const cwd = await testdir({
@@ -21,19 +16,14 @@ test("start errors when a build hasn't happened", async () => {
     ...schemas,
     'keystone.js': basicKeystoneConfig,
   })
-  const recording = recordConsole()
-  await expect(cliMock(cwd, 'start')).rejects.toEqual(new ExitError(1))
-  expect(recording()).toMatchInlineSnapshot(`
-    "? Starting Keystone
-    ? keystone build has not been run"
-  `)
+  await expect(cliMock(cwd, 'start')).rejects.toEqual(new Error('You need to run "keystone build"'))
 })
 
 test('build works with typescript without the user defining a babel config', async () => {
   const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
-    'keystone.ts': await fs.readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
+    'keystone.ts': await readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
   })
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
@@ -53,7 +43,7 @@ test('process.env.NODE_ENV is production in production', async () => {
   const cwd = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
-    'keystone.ts': await fs.readFile(`${__dirname}/fixtures/log-node-env.ts`, 'utf8'),
+    'keystone.ts': await readFile(`${__dirname}/fixtures/log-node-env.ts`, 'utf8'),
   })
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
@@ -77,7 +67,7 @@ test('process.env.NODE_ENV is production in production', async () => {
   let output = ''
   try {
     await Promise.race([
-      new Promise((resolve, reject) =>
+      new Promise((_, reject) =>
         setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
       ),
       new Promise<void>(resolve => {

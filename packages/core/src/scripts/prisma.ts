@@ -36,9 +36,7 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   // TODO: should build unless --frozen?
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
-
   await validateArtifacts(cwd, system)
-  console.log('✨ GraphQL and Prisma schemas are up to date')
 
   const { exitCode } = await spawnPrisma3(cwd, system, args)
   if (typeof exitCode === 'number' && exitCode !== 0) {

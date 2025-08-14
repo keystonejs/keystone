@@ -1,8 +1,5 @@
 import { g } from '../../..'
-import {
-  type ListMetaSource,
-  getAdminMetaForRelationshipField,
-} from '../../../lib/admin-meta'
+import { type ListMetaSource, getAdminMetaForRelationshipField } from '../../../lib/admin-meta'
 import type { JSONValue } from '../../../types'
 import {
   type BaseListTypeInfo,

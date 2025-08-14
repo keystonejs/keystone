@@ -12,6 +12,7 @@ export type Flags = {
   frozen: boolean
   prisma: boolean
   server: boolean
+  quiet: boolean
   ui: boolean
   withMigrations: boolean
 }
@@ -113,8 +114,8 @@ export async function cli(cwd: string, argv: string[]) {
   // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
     // uncomment when you need to update the schemas
-    // return build(cwd, { frozen: false, prisma: true, ui: false })
-    return build(cwd, { frozen: true, prisma: true, ui: false })
+    // return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: false }))
+    return build(cwd, defaultFlags(flags, { frozen: true, prisma: true, ui: false }))
   }
 
   console.error(`${command} is an unknown command`)
