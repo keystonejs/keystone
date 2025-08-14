@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
-
 import execa from 'execa'
+import ms from 'ms'
+
 import {
   basicKeystoneConfig,
   cliBinPath,
@@ -9,6 +10,8 @@ import {
   symlinkKeystoneDeps,
   testdir,
 } from './utils'
+
+jest.setTimeout(ms('2 minutes')) // these tests are slow
 
 test("start errors when a build hasn't happened", async () => {
   const cwd = await testdir({
@@ -65,24 +68,16 @@ test('process.env.NODE_ENV is production in production', async () => {
     } as any,
   })
   let output = ''
-  try {
-    await Promise.race([
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
-      ),
-      new Promise<void>(resolve => {
-        startResult.all!.on('data', data => {
-          output += data
-          if (
-            output.includes('CLI-TESTS-NODE-ENV: production') &&
-            output.includes('CLI-TESTS-NODE-ENV-EVAL: production')
-          ) {
-            resolve()
-          }
-        })
-      }),
-    ])
-  } finally {
-    startResult.kill()
-  }
+  await new Promise<void>(resolve => {
+    startResult.all!.on('data', data => {
+      output += data
+      if (
+        output.includes('CLI-TESTS-NODE-ENV: production') &&
+        output.includes('CLI-TESTS-NODE-ENV-EVAL: production')
+      ) {
+        resolve()
+      }
+    })
+  })
+  startResult.kill()
 })

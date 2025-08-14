@@ -222,7 +222,7 @@ describe('dev', () => {
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
     const stopRecording = recordConsole()
-    await expect(cliMock(cwd, 'dev')).rejects.toEqual(expect.objectContaining({ code: 0 }))
+    await expect(cliMock(cwd, 'dev')).rejects.toEqual(new Error('Database push cancelled by user'))
 
     expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
     expect(stopRecording()).toMatchInlineSnapshot(`
@@ -234,8 +234,7 @@ describe('dev', () => {
       ?  Warnings:
 
         ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost false
-      Push cancelled"
+      Prompt: Do you want to continue? Some data will be lost false"
     `)
   })
 })

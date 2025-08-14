@@ -192,9 +192,9 @@ export async function migrateApply(
     if (diagnostic.action.tag === 'reset') {
       console.error(diagnostic.action.reason)
       const consent = await confirmPrompt(
-        `Do you want to continue? ${chalk.red('All data will be lost')}`
+        `Do you want to continue? ${chalk.red('The database will be reset')}`
       )
-      if (!consent) throw new ExitError(1)
+      if (!consent) throw new ExitError(1, 'Database reset cancelled by user')
 
       await m.reset()
     }

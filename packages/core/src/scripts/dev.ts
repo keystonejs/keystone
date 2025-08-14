@@ -109,7 +109,7 @@ export async function dev(
   esbuildContext.watch()
 
   let prismaClient: any = null
-  async function stop(aHttpServer: any, exit = false) {
+  async function stop(aHttpServer: any, exitMessage: string = '') {
     await esbuildContext.dispose()
 
     //   WARNING: this is only actually required for tests
@@ -136,7 +136,7 @@ export async function dev(
       throw err
     }
 
-    if (exit) throw new ExitError(1)
+    if (exitMessage) throw new ExitError(1, exitMessage)
   }
 
   const app = server ? express() : null
@@ -191,12 +191,11 @@ export async function dev(
                 console.error('\nTo apply this migration, we need to reset the database')
                 if (
                   !(await confirmPrompt(
-                    `Do you want to continue? ${chalk.red('All data will be lost')}`,
+                    `Do you want to continue? ${chalk.red('The database will be reset')}`,
                     false
                   ))
                 ) {
-                  console.error('Reset cancelled')
-                  throw new ExitError(1)
+                  throw new ExitError(1, 'Database reset cancelled by user')
                 }
 
                 await m.reset()
@@ -217,8 +216,7 @@ export async function dev(
                     false
                   ))
                 ) {
-                  console.error('Push cancelled')
-                  throw new ExitError(1)
+                  throw new ExitError(1, 'Database push cancelled by user')
                 }
 
                 return m.schema(generatedPrismaSchema, true)
@@ -326,8 +324,7 @@ export async function dev(
 
           const newPrismaSchema = printPrismaSchema(newSystem.config, newSystem.lists)
           if (originalPrismaSchema !== newPrismaSchema) {
-            console.error('🔄 Your prisma schema has changed, please restart Keystone')
-            return stop(null, true)
+            return stop(null, '🔄 Your prisma schema has changed, please restart Keystone')
           }
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
@@ -336,8 +333,7 @@ export async function dev(
               JSON.stringify(system.config.db.enableLogging) ||
             newSystem.config.db.url !== system.config.db.url
           ) {
-            console.error('Your database configuration has changed, please restart Keystone')
-            return stop(null, true)
+            return stop(null, 'Your database configuration has changed, please restart Keystone')
           }
         }
 
