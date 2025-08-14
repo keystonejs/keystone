@@ -1,32 +1,36 @@
 import {
-  GraphQLScalarType,
-  GraphQLObjectType,
-  type GraphQLArgument,
-  type GraphQLArgumentConfig,
-  GraphQLSchema,
+  type ArgumentNode,
+  astFromValue,
+  type ConstValueNode,
   type DocumentNode,
   execute,
-  type GraphQLField,
-  type VariableDefinitionNode,
-  type TypeNode,
-  type GraphQLType,
-  GraphQLNonNull,
-  GraphQLList,
+  type FragmentDefinitionNode,
+  type GraphQLArgument,
+  type GraphQLArgumentConfig,
   type GraphQLEnumType,
+  type GraphQLField,
+  type GraphQLFieldConfig,
   type GraphQLInputObjectType,
   type GraphQLInterfaceType,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  type GraphQLOutputType,
+  GraphQLScalarType,
+  GraphQLSchema,
+  type GraphQLType,
   type GraphQLUnionType,
+  Kind,
   type ListTypeNode,
   type NamedTypeNode,
-  type ArgumentNode,
-  type GraphQLFieldConfig,
-  type GraphQLOutputType,
-  astFromValue,
-  Kind,
   OperationTypeNode,
-  type ConstValueNode,
+  parse,
+  type TypeNode,
+  validate,
+  type VariableDefinitionNode,
 } from 'graphql'
-import { type KeystoneContext } from '../../types'
+
+import type { KeystoneContext } from '../../types'
 
 function getNamedOrListTypeNodeForType(
   type:
@@ -51,7 +55,7 @@ export function getTypeNodeForType(type: GraphQLType): TypeNode {
   return getNamedOrListTypeNodeForType(type)
 }
 
-export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
+function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
   const variableDefinitions: VariableDefinitionNode[] = field.args.map(
     (arg): VariableDefinitionNode => ({
       kind: Kind.VARIABLE_DEFINITION,
@@ -71,6 +75,16 @@ export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
   }))
 
   return { variableDefinitions, argumentNodes }
+}
+
+function getRootTypeName(type: GraphQLOutputType): string {
+  if (type instanceof GraphQLNonNull) {
+    return getRootTypeName(type.ofType)
+  }
+  if (type instanceof GraphQLList) {
+    return getRootTypeName(type.ofType)
+  }
+  return type.name
 }
 
 const rawField = 'raw'
@@ -145,7 +159,7 @@ function getSourceGivenOutputType(originalType: OutputType, value: any): any {
   return value[rawField]
 }
 
-export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
+export function makeContextDbFn(field: GraphQLField<any, unknown>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
   const document: DocumentNode = {
     kind: Kind.DOCUMENT,
@@ -173,7 +187,6 @@ export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
   }
 
   const type = getTypeForField(field.type)
-
   const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<unknown, unknown>> = {
     args: argsToArgsConfig(field.args),
     astNode: undefined,
@@ -184,6 +197,8 @@ export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
     subscribe: field.subscribe,
     type,
   }
+
+  // we construct a schema as we need return a different type than the one in the base GraphQL schema
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'Query',
@@ -210,5 +225,76 @@ export function executeGraphQLFieldToSource(field: GraphQLField<any, unknown>) {
       throw result.errors[0]
     }
     return getSourceGivenOutputType(type, result.data![field.name])
+  }
+}
+
+export function makeContextQueryFn(
+  schema: GraphQLSchema,
+  operation: 'query' | 'mutation',
+  field: GraphQLField<any, unknown>
+) {
+  const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field)
+  const rootName = getRootTypeName(field.type)
+  const exec = async (args: Record<string, any>, query: string, context: KeystoneContext) => {
+    const selectionSet = (
+      parse(`fragment x on ${rootName} {${query}}`).definitions[0] as FragmentDefinitionNode
+    ).selectionSet
+
+    const document: DocumentNode = {
+      kind: Kind.DOCUMENT,
+      definitions: [
+        {
+          kind: Kind.OPERATION_DEFINITION,
+          // OperationTypeNode is an ts enum where the values are 'query' | 'mutation' | 'subscription'
+          operation: operation as OperationTypeNode,
+          selectionSet: {
+            kind: Kind.SELECTION_SET,
+            selections: [
+              {
+                kind: Kind.FIELD,
+                name: { kind: Kind.NAME, value: field.name },
+                arguments: argumentNodes,
+                selectionSet: selectionSet,
+              },
+            ],
+          },
+          variableDefinitions,
+        },
+      ],
+    }
+
+    const validationErrors = validate(schema, document)
+
+    if (validationErrors.length > 0) {
+      throw validationErrors[0]
+    }
+
+    const result = await execute({
+      schema,
+      document,
+      contextValue: context,
+      variableValues: Object.fromEntries(
+        // GraphQL for some reason decides to make undefined values in args
+        // skip defaulting for some reason
+        // this ofc doesn't technically fully fix it (bc nested things)
+        // but for the cases where we care, it does
+        Object.entries(args).filter(([, val]) => val !== undefined)
+      ),
+      rootValue: {},
+    })
+    if (result.errors?.length) {
+      throw result.errors[0]
+    }
+    return result.data![field.name]
+  }
+
+  return (
+    _args: {
+      query?: string
+    } & Record<string, unknown> = {}, // WARNING: sometimes this is undefined somewhere
+    context: KeystoneContext
+  ) => {
+    const { query, ...args } = _args
+    return exec(args, query ?? 'id', context) as Promise<any>
   }
 }
