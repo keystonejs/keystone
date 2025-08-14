@@ -117,7 +117,7 @@ export async function cli(cwd: string, argv: string[]) {
     return build(cwd, { frozen: true, prisma: true, ui: false })
   }
 
-  console.log(`${command} is an unknown command`)
-  console.log(help)
+  console.error(`${command} is an unknown command`)
+  console.error(help)
   throw new ExitError(1)
 }
