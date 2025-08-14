@@ -139,7 +139,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       basePath: config.ui?.basePath ?? '',
       isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
       isDisabled: config.ui?.isDisabled ?? false,
-      getAdditionalFiles: config.ui?.getAdditionalFiles ?? [],
+      getAdditionalFiles: config.ui?.getAdditionalFiles ?? (() => []),
       pageMiddleware: config.ui?.pageMiddleware ?? noop,
       publicPages: config.ui?.publicPages ?? [],
     },

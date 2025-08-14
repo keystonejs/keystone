@@ -1,5 +1,4 @@
-// you don't need this if you're building something outside of the Keystone repo
-
+// WARNING: this is needed for our monorepo, you may not want this
 const withPreconstruct = require('@preconstruct/next')
 
 module.exports = withPreconstruct()

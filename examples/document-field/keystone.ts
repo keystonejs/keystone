@@ -6,7 +6,7 @@ export default config({
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
-    // WARNING: this is only needed for our monorepo examples, dont do this
+    // WARNING: this is needed for our monorepo, you may not want this
     prismaClientPath: 'node_modules/myprisma',
   },
   lists,

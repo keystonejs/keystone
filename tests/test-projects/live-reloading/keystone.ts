@@ -15,14 +15,12 @@ export default config({
     extendGraphqlSchema,
   },
   ui: {
-    getAdditionalFiles: [
-      () => [
-        {
-          mode: 'write',
-          src: "export default function(req,res) {res.send('something')}",
-          outputPath: 'pages/api/blah/[...rest].js',
-        },
-      ],
+    getAdditionalFiles: () => [
+      {
+        mode: 'write',
+        src: "export default function(req,res) {res.send('something')}",
+        outputPath: 'pages/api/blah/[...rest].js',
+      },
     ],
   },
 })

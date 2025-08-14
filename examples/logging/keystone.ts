@@ -68,5 +68,23 @@ export default config<TypeInfo>({
       ],
     },
   },
+  ui: {
+    getAdditionalFiles: async () => [
+      {
+        mode: 'write',
+        src: `export default ${JSON.stringify({
+          // stop the default Next logging
+          logging: false, // we use pino
+
+          // defaults from packages/core/src/templates/next-config.ts
+          bundlePagesRouterDependencies: true,
+          eslint: { ignoreDuringBuilds: true },
+          typescript: { ignoreBuildErrors: true },
+          transpilePackages: ['../../admin'],
+        })}`,
+        outputPath: 'next.config.js',
+      },
+    ],
+  },
   lists,
 })
