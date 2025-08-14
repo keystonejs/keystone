@@ -65,24 +65,16 @@ test('process.env.NODE_ENV is production in production', async () => {
     } as any,
   })
   let output = ''
-  try {
-    await Promise.race([
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
-      ),
-      new Promise<void>(resolve => {
-        startResult.all!.on('data', data => {
-          output += data
-          if (
-            output.includes('CLI-TESTS-NODE-ENV: production') &&
-            output.includes('CLI-TESTS-NODE-ENV-EVAL: production')
-          ) {
-            resolve()
-          }
-        })
-      }),
-    ])
-  } finally {
-    startResult.kill()
-  }
+  await new Promise<void>(resolve => {
+    startResult.all!.on('data', data => {
+      output += data
+      if (
+        output.includes('CLI-TESTS-NODE-ENV: production') &&
+        output.includes('CLI-TESTS-NODE-ENV-EVAL: production')
+      ) {
+        resolve()
+      }
+    })
+  })
+  startResult.kill()
 })
