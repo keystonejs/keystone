@@ -215,7 +215,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     let { ui } = config
     if (!ui?.isDisabled) {
       const {
-        getAdditionalFiles = [],
+        getAdditionalFiles = () => [],
         isAccessAllowed = defaultIsAccessAllowed,
         pageMiddleware,
         publicPages = [],
@@ -224,7 +224,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       ui = {
         ...ui,
         publicPages: [...publicPages, ...authPublicPages],
-        getAdditionalFiles: [...getAdditionalFiles, () => authGetAdditionalFiles(config)],
+        getAdditionalFiles: async () => [
+          ...await getAdditionalFiles(),
+          ...authGetAdditionalFiles(config)
+        ],
 
         isAccessAllowed: async (context: KeystoneContext) => {
           if (await hasInitFirstItemConditions(context)) return true

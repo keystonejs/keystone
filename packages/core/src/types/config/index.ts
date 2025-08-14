@@ -162,7 +162,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     /** The Base Path for Keystones Admin UI */
     basePath?: string
 
-    getAdditionalFiles?: readonly (() => MaybePromise<readonly AdminFileToWrite[]>)[]
+    getAdditionalFiles?: () => MaybePromise<readonly AdminFileToWrite[]>
 
     /** An async middleware function that can optionally return a redirect */
     pageMiddleware?: (args: {
