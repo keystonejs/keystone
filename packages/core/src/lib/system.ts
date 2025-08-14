@@ -17,7 +17,7 @@ function posixify(s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths(cwd: string, config: KeystoneConfig) {
+function getSystemPaths(cwd: string, config: KeystoneConfig) {
   const prismaClientPath =
     config.db.prismaClientPath === '@prisma/client'
       ? null

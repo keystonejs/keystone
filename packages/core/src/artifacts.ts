@@ -6,7 +6,7 @@ import { formatSchema, getGenerators } from '@prisma/internals'
 import { printSchema } from 'graphql'
 import { initialiseLists } from './lib/core/initialise-lists'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
-import { type System, getSystemPaths } from './lib/system'
+import type { System } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
 import { ExitError } from './scripts/utils'
 
@@ -52,6 +52,7 @@ export async function validateArtifacts(cwd: string, system: System) {
   }
 }
 
+// exported for tests
 export async function getArtifacts(system: System) {
   const lists = initialiseLists(system.config)
   const prismaSchema = await formatSchema({
@@ -65,7 +66,7 @@ export async function getArtifacts(system: System) {
 }
 
 export async function generateArtifacts(cwd: string, system: System) {
-  const paths = getSystemPaths(cwd, system.config)
+  const paths = system.getPaths(cwd)
   const artifacts = await getArtifacts(system)
   await fs.writeFile(paths.schema.graphql, artifacts.graphql)
   await fs.writeFile(paths.schema.prisma, artifacts.prisma)
@@ -73,7 +74,7 @@ export async function generateArtifacts(cwd: string, system: System) {
 }
 
 export async function generateTypes(cwd: string, system: System) {
-  const paths = getSystemPaths(cwd, system.config)
+  const paths = system.getPaths(cwd)
   const schema = printGeneratedTypes(
     paths.types.relativePrismaPath,
     system.graphQLSchemaSudo,
@@ -84,7 +85,7 @@ export async function generateTypes(cwd: string, system: System) {
 }
 
 export async function generatePrismaClient(cwd: string, system: System) {
-  const paths = getSystemPaths(cwd, system.config)
+  const paths = system.getPaths(cwd)
   const generators = await getGenerators({
     schemaPath: paths.schema.prisma,
   })
