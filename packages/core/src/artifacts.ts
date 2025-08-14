@@ -7,7 +7,6 @@ import { printSchema } from 'graphql'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import type { System } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
-import { ExitError } from './scripts/utils'
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (
@@ -29,30 +28,27 @@ async function readFileOrUndefined(path: string) {
 
 export async function validateArtifacts(cwd: string, system: System) {
   const paths = system.getPaths(cwd)
-  const artifacts = await getArtifacts(system)
+  const artifacts = await buildArtifacts(system)
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
     readFileOrUndefined(paths.schema.graphql),
     readFileOrUndefined(paths.schema.prisma),
   ])
 
   if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
-    console.error('Your Prisma and GraphQL schemas are not up to date')
-    throw new ExitError(1)
+    throw new Error('Your Prisma and GraphQL schemas are not up to date')
   }
 
   if (writtenGraphQLSchema !== artifacts.graphql) {
-    console.error('Your GraphQL schema is not up to date')
-    throw new ExitError(1)
+    throw new Error('Your GraphQL schema is not up to date')
   }
 
   if (writtenPrismaSchema !== artifacts.prisma) {
-    console.error('Your Prisma schema is not up to date')
-    throw new ExitError(1)
+    throw new Error('Your Prisma schema is not up to date')
   }
 }
 
 // exported for tests
-export async function getArtifacts(system: System) {
+export async function buildArtifacts(system: System) {
   const prismaSchema = await formatSchema({
     schemas: [[system.config.db.prismaSchemaPath, printPrismaSchema(system.config, system.lists)]],
   })
@@ -65,7 +61,7 @@ export async function getArtifacts(system: System) {
 
 export async function generateArtifacts(cwd: string, system: System) {
   const paths = system.getPaths(cwd)
-  const artifacts = await getArtifacts(system)
+  const artifacts = await buildArtifacts(system)
   await fs.writeFile(paths.schema.graphql, artifacts.graphql)
   await fs.writeFile(paths.schema.prisma, artifacts.prisma)
   return artifacts

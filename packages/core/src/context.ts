@@ -1,1 +1,1 @@
-export { getContext } from './lib/system';
+export { getContext } from './lib/system'

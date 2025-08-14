@@ -13,18 +13,24 @@ import { importBuiltKeystoneConfiguration } from './utils'
 
 export async function build(
   cwd: string,
-  { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
+  { frozen, prisma, quiet, ui }: Pick<Flags, 'frozen' | 'prisma' | 'quiet' | 'ui'>
 ) {
+  function log(message: string) {
+    if (quiet) return
+    console.log(message)
+  }
+
+  // log('✨ Building Keystone configuration')
   await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (prisma) {
     if (frozen) {
       await validateArtifacts(cwd, system)
-      console.log('✨ GraphQL and Prisma schemas are up to date') // TODO: validating?
+      log('✨ GraphQL and Prisma schemas are up to date') // TODO: validating?
     } else {
       await generateArtifacts(cwd, system)
-      console.log('✨ Generated GraphQL and Prisma schemas') // TODO: generating?
+      log('✨ Generated GraphQL and Prisma schemas') // TODO: generating?
     }
 
     await generateTypes(cwd, system)
@@ -33,11 +39,11 @@ export async function build(
 
   if (system.config.ui?.isDisabled || !ui) return
 
-  console.log('✨ Generating Admin UI code')
+  log('✨ Generating Admin UI code')
   const paths = system.getPaths(cwd)
   await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
-  console.log('✨ Building Admin UI')
+  log('✨ Building Admin UI')
 
   // do _NOT_ change this to a static import, it is intentionally like this
   // to avoid loading it in the common case where the UI is not being built

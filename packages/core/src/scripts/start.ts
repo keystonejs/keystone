@@ -9,17 +9,21 @@ import { importBuiltKeystoneConfiguration } from './utils'
 
 export async function start(
   cwd: string,
-  { server, ui, withMigrations }: Pick<Flags, 'server' | 'ui' | 'withMigrations'>
+  { quiet, server, ui, withMigrations }: Pick<Flags, 'quiet' | 'server' | 'ui' | 'withMigrations'>
 ) {
-  console.log('✨ Starting Keystone')
+  function log(message: string) {
+    if (quiet) return
+    console.log(message)
+  }
+  log('✨ Starting Keystone')
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   const paths = system.getPaths(cwd)
 
   if (withMigrations) {
-    console.log('✨ Applying any database migrations')
+    log('✨ Applying any database migrations')
     const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, m => m.apply())
-    console.log(
+    log(
       appliedMigrationNames.length === 0
         ? `✨ No database migrations to apply`
         : `✨ Database migrated`
@@ -31,21 +35,19 @@ export async function start(
   const prismaClient = require(paths.prisma)
   const keystone = system.getKeystone(prismaClient)
 
-  console.log('✨ Connecting to the database')
+  log('✨ Connecting to the database')
   await keystone.connect()
 
-  console.log('✨ Creating server')
+  log('✨ Creating server')
   const { expressServer, httpServer } = await createExpressServer(system.config, keystone.context)
 
-  console.log(`✅ GraphQL API ready`)
+  log(`✅ GraphQL API ready`)
   if (!system.config.ui?.isDisabled && ui) {
-    console.log('✨ Preparing Admin UI')
+    log('✨ Preparing Admin UI')
     const nextApp = next({ dev: false, dir: paths.admin })
     await nextApp.prepare()
-    expressServer.use(
-      createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp)
-    )
-    console.log(`✅ Admin UI ready`)
+    expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, keystone.context, nextApp))
+    log(`✅ Admin UI ready`)
   }
 
   const httpOptions = system.config.server.options
@@ -67,7 +69,7 @@ export async function start(
       ? 'localhost'
       : httpOptions.host
 
-    console.log(
+    log(
       `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     )
   })

@@ -58,9 +58,20 @@ function resolvablePromise<T>() {
 
 export async function dev(
   cwd: string,
-  { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
+  {
+    dbPush,
+    prisma,
+    quiet,
+    server,
+    ui,
+  }: Pick<Flags, 'dbPush' | 'prisma' | 'quiet' | 'server' | 'ui'>
 ) {
-  console.log('✨ Starting Keystone')
+  function log(message: string) {
+    if (quiet) return
+    console.log(message)
+  }
+
+  log('✨ Starting Keystone')
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>()
 
   const builds: AsyncIterable<BuildResult> = {
@@ -142,7 +153,7 @@ export async function dev(
 
         // Generate the Artifacts
         if (prisma) {
-          console.log('✨ Generating GraphQL and Prisma schemas')
+          log('✨ Generating GraphQL and Prisma schemas')
           const { prisma: generatedPrismaSchema } = await generateArtifacts(cwd, system)
           await generateTypes(cwd, system)
           await generatePrismaClient(cwd, system)
@@ -153,7 +164,7 @@ export async function dev(
               system.config.db.url,
               path.dirname(paths.schema.prisma)
             )
-            if (created) console.log(`✨ Database created`)
+            if (created) log(`✨ Database created`)
 
             const migration = await withMigrate(paths.schema.prisma, system, async m => {
               // what does force on migrate.engine.schemaPush mean?
@@ -163,27 +174,29 @@ export async function dev(
 
               // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
               if (migration_.unexecutable.length) {
-                console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`)
+                console.error(
+                  `${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`
+                )
                 for (const item of migration_.unexecutable) {
-                  console.log(`  • ${item}`)
+                  console.error(`  • ${item}`)
                 }
 
                 if (migration_.warnings.length) {
-                  console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
                   for (const warning of migration_.warnings) {
-                    console.warn(`  • ${warning}`)
+                    console.error(`  • ${warning}`)
                   }
                 }
 
-                console.log('\nTo apply this migration, we need to reset the database')
+                console.error('\nTo apply this migration, we need to reset the database')
                 if (
                   !(await confirmPrompt(
                     `Do you want to continue? ${chalk.red('All data will be lost')}`,
                     false
                   ))
                 ) {
-                  console.log('Reset cancelled')
-                  throw new ExitError(0)
+                  console.error('Reset cancelled')
+                  throw new ExitError(1)
                 }
 
                 await m.reset()
@@ -192,9 +205,9 @@ export async function dev(
 
               if (migration_.warnings.length) {
                 if (migration_.warnings.length) {
-                  console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
+                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
                   for (const warning of migration_.warnings) {
-                    console.warn(`  • ${warning}`)
+                    console.error(`  • ${warning}`)
                   }
                 }
 
@@ -204,8 +217,8 @@ export async function dev(
                     false
                   ))
                 ) {
-                  console.log('Push cancelled')
-                  throw new ExitError(0)
+                  console.error('Push cancelled')
+                  throw new ExitError(1)
                 }
 
                 return m.schema(generatedPrismaSchema, true)
@@ -215,18 +228,18 @@ export async function dev(
             })
 
             if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-              console.log(`✨ Database unchanged`)
+              log(`✨ Database unchanged`)
             } else {
-              console.log(`✨ Database synchronized with Prisma schema`)
+              log(`✨ Database synchronized with Prisma schema`)
             }
           } else {
-            console.warn('⚠️ Skipping database schema push')
+            log('⚠️ Skipping database schema push')
           }
 
           const prismaClientModule = require(paths.prisma)
           const keystone = system.getKeystone(prismaClientModule)
 
-          console.log('✨ Connecting to the database')
+          log('✨ Connecting to the database')
           await keystone.connect() // TODO: remove, replace with server.onStart
           if (!server) {
             return {
@@ -236,12 +249,12 @@ export async function dev(
             }
           }
 
-          console.log('✨ Creating server')
+          log('✨ Creating server')
           const { apolloServer, expressServer } = await createExpressServer(
             system.config,
             keystone.context
           )
-          console.log(`✅ GraphQL API ready`)
+          log(`✅ GraphQL API ready`)
 
           return {
             system,
@@ -269,16 +282,16 @@ export async function dev(
     if (!system.config.ui?.isDisabled && ui) {
       if (!expressServer || !context) throw new TypeError('Error trying to prepare the Admin UI')
 
-      console.log('✨ Generating Admin UI code')
+      log('✨ Generating Admin UI code')
       const paths = system.getPaths(cwd)
       await fsp.rm(paths.admin, { recursive: true, force: true })
       await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
-      console.log('✨ Preparing Admin UI')
+      log('✨ Preparing Admin UI')
       nextApp = next({ dev: true, dir: paths.admin })
       await nextApp.prepare()
       expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
-      console.log(`✅ Admin UI ready`)
+      log(`✅ Admin UI ready`)
     }
 
     hasAddedAdminUIMiddleware = true
@@ -295,7 +308,7 @@ export async function dev(
     for await (const buildResult of builds) {
       if (buildResult.errors.length) continue
 
-      console.log('compiled successfully')
+      log('compiled successfully')
       try {
         const paths = system.getPaths(cwd)
 
@@ -420,12 +433,12 @@ export async function dev(
       const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host)
         ? 'localhost'
         : httpOptions.host
-      console.log(
+      log(
         `⭐️ Server listening on ${httpOptions.host ?? ''}:${
           httpOptions.port
         } (http://${easyHost}:${httpOptions.port}/)`
       )
-      console.log(`⭐️ GraphQL API available at ${config.graphql?.path ?? '/api/graphql'}`)
+      log(`⭐️ GraphQL API available at ${config.graphql?.path ?? '/api/graphql'}`)
 
       // Don't start initialising Keystone until the dev server is ready,
       // otherwise it slows down the first response significantly
