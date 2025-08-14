@@ -1,11 +1,12 @@
+import { type Entry, walk as _walk } from '@nodelib/fs.walk'
+import fse from 'fs-extra'
+import fs from 'node:fs/promises'
 import Path from 'node:path'
 import { promisify } from 'node:util'
-import fs from 'node:fs/promises'
-import fse from 'fs-extra'
-import { type Entry, walk as _walk } from '@nodelib/fs.walk'
+
+import type { AdminMetaSource } from '../../lib/admin-meta'
 import type { AdminFileToWrite, KeystoneConfig } from '../../types'
 import { writeAdminFiles } from '../templates'
-import type { AdminMetaSource } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 

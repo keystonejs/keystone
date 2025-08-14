@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process'
 
-import { createSystem } from '../lib/createSystem'
 import { validateArtifacts } from '../artifacts'
+import { createSystem } from '../lib/system'
 import { ExitError, importBuiltKeystoneConfiguration } from './utils'
 
 async function spawnPrisma3(

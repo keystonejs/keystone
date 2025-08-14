@@ -1,14 +1,14 @@
+import type { ChildProcess } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import type { ChildProcess } from 'node:child_process'
 
+import { formatSchema, getGenerators } from '@prisma/internals'
 import { printSchema } from 'graphql'
-import { getGenerators, formatSchema } from '@prisma/internals'
-import { ExitError } from './scripts/utils'
 import { initialiseLists } from './lib/core/initialise-lists'
-import { type System, getSystemPaths } from './lib/createSystem'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
+import { type System, getSystemPaths } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
+import { ExitError } from './scripts/utils'
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (

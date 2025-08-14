@@ -1,14 +1,14 @@
 import esbuild from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
-import { createSystem } from '../lib/createSystem'
 import {
   generateArtifacts,
   generatePrismaClient,
   generateTypes,
   validateArtifacts,
 } from '../artifacts'
-import { getEsbuildConfig } from './esbuild'
+import { createSystem } from '../lib/system'
 import type { Flags } from './cli'
+import { getEsbuildConfig } from './esbuild'
 import { importBuiltKeystoneConfiguration } from './utils'
 
 export async function build(

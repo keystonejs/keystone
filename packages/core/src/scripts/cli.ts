@@ -1,11 +1,11 @@
 import meow from 'meow'
-import { ExitError } from './utils'
 import { build } from './build'
 import { dev } from './dev'
+import { migrateApply, migrateCreate } from './migrate'
 import { prisma } from './prisma'
 import { start } from './start'
-import { migrateCreate, migrateApply } from './migrate'
 import { telemetry } from './telemetry'
+import { ExitError } from './utils'
 
 export type Flags = {
   dbPush: boolean
