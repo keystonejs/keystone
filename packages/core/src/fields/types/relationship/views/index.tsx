@@ -8,8 +8,8 @@ import { Item, TagGroup } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
-import { useList } from '../../../../admin-ui/context'
 import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -196,6 +196,7 @@ function renderItem(item: { id: string; href: string; label: string }) {
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
+  const { adminPath } = useKeystone()
 
   if (field.display === 'count' || field.display === 'table') {
     const count = item[`${field.fieldKey}Count`] as number
@@ -212,7 +213,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          <TextLink href={`/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
+          <TextLink href={`${adminPath}/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
