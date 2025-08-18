@@ -1,12 +1,31 @@
+import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
+import { GraphQLNamedType } from 'graphql'
+
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
-import type { ResolvedDBField } from '../resolve-relationships'
+import {
+  cannotForItem,
+  enforceFieldLevelAccessControl,
+  enforceListLevelAccessControl,
+  getAccessFilters,
+  getOperationAccess,
+} from '../access-control'
+import { checkFilterOrderAccess } from '../filter-order-access'
+import {
+  accessDeniedError,
+  extensionError,
+  relationshipError,
+  resolverError,
+} from '../graphql-errors'
+import { runSideEffectOnlyHook, validate } from '../hooks'
 import type { InitialisedList } from '../initialise-lists'
+import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
+import type { ResolvedDBField } from '../resolve-relationships'
 import {
   type IdType,
-  promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
+  promiseAllRejectWithAllErrors,
 } from '../utils'
 import {
   type InputFilter,
@@ -14,23 +33,6 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs'
-import {
-  accessDeniedError,
-  extensionError,
-  relationshipError,
-  resolverError,
-} from '../graphql-errors'
-import {
-  cannotForItem,
-  getOperationAccess,
-  getAccessFilters,
-  enforceListLevelAccessControl,
-  enforceFieldLevelAccessControl,
-} from '../access-control'
-import { checkFilterOrderAccess } from '../filter-order-access'
-import { runSideEffectOnlyHook, validate } from '../hooks'
-
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -40,7 +42,6 @@ import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
-import type { GNullableInputType } from '@graphql-ts/schema'
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -649,6 +650,41 @@ export function getMutationsForList(list: InitialisedList) {
     },
   })
 
+  const collectedTypes: GraphQLNamedType[] = []
+  const { isEnabled } = list.graphql
+  if (isEnabled.type) {
+    // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
+    collectedTypes.push(list.graphql.types.output)
+    if (isEnabled.query || isEnabled.update || isEnabled.delete) {
+      collectedTypes.push(list.graphql.types.uniqueWhere)
+    }
+    if (isEnabled.query) {
+      for (const field of Object.values(list.fields)) {
+        if (
+          isEnabled.query &&
+          field.graphql.isEnabled.read &&
+          field.unreferencedConcreteInterfaceImplementations
+        ) {
+          // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations)
+        }
+      }
+      collectedTypes.push(list.graphql.types.where)
+      collectedTypes.push(list.graphql.types.orderBy)
+    }
+    if (isEnabled.update) {
+      if (list.graphql.types.update instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.update)
+      }
+      collectedTypes.push(updateManyInput)
+    }
+    if (isEnabled.create) {
+      if (list.graphql.types.create instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.create)
+      }
+    }
+  }
+
   return {
     mutations: {
       ...(list.graphql.isEnabled.create && {
@@ -664,6 +700,6 @@ export function getMutationsForList(list: InitialisedList) {
         [list.graphql.names.deleteManyMutationName]: deleteMany_,
       }),
     },
-    updateManyInput,
+    types: collectedTypes
   }
 }
