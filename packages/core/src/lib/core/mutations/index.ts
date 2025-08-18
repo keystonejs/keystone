@@ -1,4 +1,5 @@
-import type { GNullableInputType } from '@graphql-ts/schema'
+import { GraphQLNamedType } from 'graphql'
+import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
 
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
@@ -691,6 +692,41 @@ export function getMutationsForList(list: InitialisedList) {
     },
   })
 
+  const collectedTypes: GraphQLNamedType[] = []
+  const { isEnabled } = list.graphql
+  if (isEnabled.type) {
+    // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
+    collectedTypes.push(list.graphql.types.output)
+    if (isEnabled.query || isEnabled.update || isEnabled.delete) {
+      collectedTypes.push(list.graphql.types.uniqueWhere)
+    }
+    if (isEnabled.query) {
+      for (const field of Object.values(list.fields)) {
+        if (
+          isEnabled.query &&
+          field.graphql.isEnabled.read &&
+          field.unreferencedConcreteInterfaceImplementations
+        ) {
+          // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations)
+        }
+      }
+      collectedTypes.push(list.graphql.types.where)
+      collectedTypes.push(list.graphql.types.orderBy)
+    }
+    if (isEnabled.update) {
+      if (list.graphql.types.update instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.update)
+      }
+      collectedTypes.push(updateManyInput)
+    }
+    if (isEnabled.create) {
+      if (list.graphql.types.create instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.create)
+      }
+    }
+  }
+
   return {
     mutations: {
       ...(list.graphql.isEnabled.create && {
@@ -741,6 +777,6 @@ export function getMutationsForList(list: InitialisedList) {
         })()
       ),
     },
-    updateManyInput,
+    types: collectedTypes
   }
 }
