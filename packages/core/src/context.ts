@@ -1,11 +1,1 @@
-import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from './types'
-import { createSystem } from './lib/createSystem'
-
-export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(
-  config: KeystoneConfig<TypeInfo>,
-  PrismaModule: unknown
-): KeystoneContext<TypeInfo> {
-  const system = createSystem(config)
-  const { context } = system.getKeystone(PrismaModule)
-  return context
-}
+export { getContext } from './lib/system'

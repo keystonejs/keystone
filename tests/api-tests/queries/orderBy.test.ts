@@ -1,13 +1,15 @@
-import { integer } from '@keystone-6/core/fields'
-import { list } from '@keystone-6/core'
+import type { ExecutionResult } from 'graphql'
+
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { type ExecutionResult } from 'graphql'
+import { integer } from '@keystone-6/core/fields'
+
 import {
   expectAccessReturnError,
   expectBadUserInput,
-  expectGraphQLValidationError,
   expectFilterDenied,
+  expectGraphQLValidationError,
   type ContextFromRunner,
 } from '../utils'
 

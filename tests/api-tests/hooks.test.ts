@@ -202,7 +202,7 @@ async function runOperations(context: KeystoneContext, list: ReturnType<typeof m
 
   const deleteMany = context.db[list.__name]
     .deleteMany({
-      where: ditems.map((x, i) => ({
+      where: ditems.map(x => ({
         id: x.id,
       })),
     })

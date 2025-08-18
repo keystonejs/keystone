@@ -1,13 +1,14 @@
-import path from 'path'
+import path from 'node:path'
+
+import type { AdminMetaSource } from '../../lib/admin-meta'
 import type { KeystoneConfig } from '../../types'
-import type { AdminMetaSource } from '../../lib/create-admin-meta'
 import { appTemplate } from './app'
-import { homeTemplate } from './home'
-import { listTemplate } from './list'
-import { itemTemplate } from './item'
-import { noAccessTemplate } from './no-access'
 import { createItemTemplate } from './create-item'
+import { homeTemplate } from './home'
+import { itemTemplate } from './item'
+import { listTemplate } from './list'
 import { nextConfigTemplate } from './next-config'
+import { noAccessTemplate } from './no-access'
 
 const pkgDir = path.dirname(require.resolve('@keystone-6/core/package.json'))
 

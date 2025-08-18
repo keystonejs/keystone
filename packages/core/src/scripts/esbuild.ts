@@ -1,7 +1,7 @@
 // WARNING: be careful not to import this file within next
 import esbuild, { type BuildOptions } from 'esbuild'
-import nodePath from 'node:path'
 import fs from 'node:fs/promises'
+import nodePath from 'node:path'
 
 function identity(x: BuildOptions) {
   return x

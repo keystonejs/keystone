@@ -1,7 +1,8 @@
-import type { GraphQLSchema, VariableDefinitionNode, GraphQLInputType, GraphQLError } from 'graphql'
+import type { GraphQLError, GraphQLInputType, GraphQLSchema, VariableDefinitionNode } from 'graphql'
 import { Kind } from 'graphql'
 import { getVariableValues } from 'graphql/execution/values'
-import { getTypeNodeForType } from './context/executeGraphQLFieldToSource'
+
+import { getTypeNodeForType } from './context/graphql'
 
 const argName = 'where'
 

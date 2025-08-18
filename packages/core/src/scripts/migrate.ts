@@ -1,25 +1,25 @@
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import { join } from 'node:path'
-import { spawn } from 'node:child_process'
 
 import chalk from 'chalk'
 import esbuild from 'esbuild'
 import fse from 'fs-extra'
 
-import { createSystem } from '../lib/createSystem'
-import { getEsbuildConfig } from './esbuild'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt, textPrompt } from '../lib/prompts'
+import { createSystem } from '../lib/system'
+import { getEsbuildConfig } from './esbuild'
 
+import { createDatabase, dropDatabase } from '@prisma/internals'
 import {
   generateArtifacts,
   generatePrismaClient,
   generateTypes,
   validateArtifacts,
 } from '../artifacts'
-import { type Flags } from './cli'
+import type { Flags } from './cli'
 import { ExitError, importBuiltKeystoneConfiguration } from './utils'
-import { createDatabase, dropDatabase } from '@prisma/internals'
 
 export async function spawnPrisma(
   cwd: string,
@@ -52,16 +52,24 @@ export async function spawnPrisma(
   })
 }
 
-export async function migrateCreate(cwd: string, { frozen }: Pick<Flags, 'frozen'>) {
+export async function migrateCreate(
+  cwd: string,
+  { frozen, quiet }: Pick<Flags, 'frozen' | 'quiet'>
+) {
+  function log(message: string) {
+    if (quiet) return
+    console.log(message)
+  }
+
   await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
-    console.log('✨ GraphQL and Prisma schemas are up to date')
+    log('✨ GraphQL and Prisma schemas are up to date')
   } else {
     await generateArtifacts(cwd, system)
-    console.log('✨ Generated GraphQL and Prisma schemas')
+    log('✨ Generated GraphQL and Prisma schemas')
   }
 
   await generateTypes(cwd, system)
@@ -113,11 +121,11 @@ provider = ${system.config.db.provider}`
     }
 
     if (summary.startsWith('No difference detected')) {
-      console.error('🔄 Database unchanged from Prisma schema')
+      log('🔄 Database unchanged from Prisma schema')
       throw new ExitError(0)
     }
 
-    console.log(summary)
+    console.error(summary)
     const { output, exitCode: prismaExitCode2 } = await spawnPrisma(cwd, system, [
       'migrate',
       'diff',
@@ -149,36 +157,44 @@ provider = ${system.config.db.provider}`
   const path = join(`migrations`, `${prefix}_${name}/migration.sql`)
 
   await fse.outputFile(join(cwd, path), sql)
-  console.log(`✨ Generated SQL migration at ${path}`)
+  log(`✨ Generated SQL migration at ${path}`)
 }
 
-export async function migrateApply(cwd: string, { frozen }: Pick<Flags, 'frozen'>) {
+export async function migrateApply(
+  cwd: string,
+  { frozen, quiet }: Pick<Flags, 'frozen' | 'quiet'>
+) {
+  function log(message: string) {
+    if (quiet) return
+    console.log(message)
+  }
+
   // TODO: should this happen if frozen?
   await esbuild.build(await getEsbuildConfig(cwd))
 
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (frozen) {
     await validateArtifacts(cwd, system)
-    console.log('✨ GraphQL and Prisma schemas are up to date')
+    log('✨ GraphQL and Prisma schemas are up to date')
   } else {
     await generateArtifacts(cwd, system)
-    console.log('✨ Generated GraphQL and Prisma schemas')
+    log('✨ Generated GraphQL and Prisma schemas')
   }
 
   await generateTypes(cwd, system)
   await generatePrismaClient(cwd, system)
 
-  console.log('✨ Applying any database migrations')
+  log('✨ Applying any database migrations')
   const paths = system.getPaths(cwd)
   const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, async m => {
     const diagnostic = await m.diagnostic()
 
     if (diagnostic.action.tag === 'reset') {
-      console.log(diagnostic.action.reason)
+      console.error(diagnostic.action.reason)
       const consent = await confirmPrompt(
-        `Do you want to continue? ${chalk.red('All data will be lost')}`
+        `Do you want to continue? ${chalk.red('The database will be reset')}`
       )
-      if (!consent) throw new ExitError(1)
+      if (!consent) throw new ExitError(1, 'Database reset cancelled by user')
 
       await m.reset()
     }
@@ -186,7 +202,7 @@ export async function migrateApply(cwd: string, { frozen }: Pick<Flags, 'frozen'
     return await m.apply()
   })
 
-  console.log(
+  log(
     appliedMigrationNames.length === 0
       ? `✨ No database migrations to apply`
       : `✨ Database migrated`

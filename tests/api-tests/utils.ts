@@ -6,7 +6,7 @@ import type {
 } from '@keystone-6/core/types'
 import {
   createSystem,
-  getArtifacts,
+  buildArtifacts,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 
 import { type setupTestRunner } from './test-runner'
@@ -223,7 +223,7 @@ export async function getPrismaSchema<TypeInfo extends BaseKeystoneTypeInfo>({
       },
     })
   )
-  return (await getArtifacts(system)).prisma
+  return (await buildArtifacts(system)).prisma
 }
 
 // TODO: use `using monitor = monitorLogs();` when `using` is in node

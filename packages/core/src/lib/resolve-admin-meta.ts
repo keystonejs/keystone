@@ -1,8 +1,8 @@
 import type { BaseItem } from '../types'
-import type { GraphQLNames } from '../types/utils'
 import { QueryMode } from '../types'
 import { g } from '../types/schema'
-import type { AdminMetaSource, FieldMetaSource, ListMetaSource } from './create-admin-meta'
+import type { GraphQLNames } from '../types/utils'
+import type { AdminMetaSource, FieldMetaSource, ListMetaSource } from './admin-meta'
 
 const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   name: 'KeystoneAdminUIFieldMeta',

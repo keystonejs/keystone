@@ -1,7 +1,7 @@
 import { toSchemasContainer } from '@prisma/internals'
-
 import { Migrate } from '@prisma/migrate'
-import type { System } from './createSystem'
+
+import type { System } from './system'
 
 function setOrRemoveEnvVariable(name: string, value: string | undefined) {
   if (value === undefined) {

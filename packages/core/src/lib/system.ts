@@ -1,12 +1,12 @@
-import path from 'node:path'
 import { randomBytes } from 'node:crypto'
-import type { FieldData, KeystoneConfig } from '../types'
+import path from 'node:path'
 
 import { allowAll } from '../access'
-import { createAdminMeta } from './create-admin-meta'
-import { createGraphQLSchema } from './createGraphQLSchema'
+import type { BaseKeystoneTypeInfo, FieldData, KeystoneConfig, KeystoneContext } from '../types'
+import { createAdminMeta } from './admin-meta'
 import { createContext } from './context/createContext'
-import { type InitialisedList, initialiseLists } from './core/initialise-lists'
+import { initialiseLists, type InitialisedList } from './core/initialise-lists'
+import { createGraphQLSchema } from './graphql'
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath(cwd: string) {
@@ -17,7 +17,7 @@ function posixify(s: string) {
   return s.split(path.sep).join('/')
 }
 
-export function getSystemPaths(cwd: string, config: KeystoneConfig) {
+function getSystemPaths(cwd: string, config: KeystoneConfig) {
   const prismaClientPath =
     config.db.prismaClientPath === '@prisma/client'
       ? null
@@ -126,7 +126,7 @@ function injectNewDefaults(prismaClient: unknown, lists: Record<string, Initiali
       prismaClient = (prismaClient as any).$extends({
         query: {
           [list.prisma.listKey]: {
-            async create({ model, args, query }: any) {
+            async create({ args, query }: any) {
               return query({
                 ...args,
                 data: {
@@ -173,10 +173,7 @@ export function createSystem(config: KeystoneConfig) {
     graphQLSchemaSudo,
     adminMeta,
     lists,
-
-    getPaths: (cwd: string) => {
-      return getSystemPaths(cwd, config)
-    },
+    getPaths: (cwd: string) => getSystemPaths(cwd, config),
 
     getKeystone: (PM: any) => {
       const prePrismaClient = new PM.PrismaClient({
@@ -214,3 +211,12 @@ export function createSystem(config: KeystoneConfig) {
 }
 
 export type System = ReturnType<typeof createSystem>
+
+export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(
+  config: KeystoneConfig<TypeInfo>,
+  PrismaModule: unknown
+): KeystoneContext<TypeInfo> {
+  const system = createSystem(config)
+  const { context } = system.getKeystone(PrismaModule)
+  return context
+}
