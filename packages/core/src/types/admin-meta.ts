@@ -107,6 +107,20 @@ export type FieldGroupMeta = {
   fields: FieldMeta[]
 }
 
+export type ActionMeta = {
+  key: string
+
+  label: string
+  verb: string
+  tone: 'neutral' | 'accent' | 'critical'
+  itemView: {
+    actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+  }
+  listView: {
+    actionMode: 'enabled' | 'disabled' | 'hidden'
+  }
+}
+
 export type ListMeta = {
   key: string
   label: string
@@ -117,6 +131,7 @@ export type ListMeta = {
   labelField: string
   fields: { [key: string]: FieldMeta }
   groups: FieldGroupMeta[]
+  actions: ActionMeta[]
   graphql: {
     names: GraphQLNames
   }

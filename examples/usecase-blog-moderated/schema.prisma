@@ -16,7 +16,6 @@ model Post {
   id          String       @id @default(cuid())
   title       String       @default("")
   content     String       @default("")
-  hidden      Boolean      @default(false)
   createdBy   Contributor? @relation("Post_createdBy", fields: [createdById], references: [id])
   createdById String?      @map("createdBy")
   createdAt   DateTime?

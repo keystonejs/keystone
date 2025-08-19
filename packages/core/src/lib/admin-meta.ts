@@ -10,12 +10,13 @@ import type {
   KeystoneContext,
   MaybeBooleanItemFunctionWithFilter,
   MaybeFieldFunction,
+  MaybeItemActionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybePromise,
   MaybeSessionFunction,
 } from '../types'
-import type { FieldMeta, ListMeta } from '../types/admin-meta'
+import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames, JSONValue } from '../types/utils'
 import type { InitialisedList } from './core/initialise-lists'
 
@@ -50,6 +51,21 @@ type FieldMetaSource_ = {
 export type FieldMetaSource = FieldMetaSource_ &
   Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
 
+type ActionMetaSource_ = {
+  listKey: string
+  itemView: {
+    actionMode: MaybeItemActionFunctionWithFilter<
+      'enabled' | 'disabled' | 'hidden',
+      BaseListTypeInfo
+    >
+  }
+  listView: {
+    actionMode: EmptyResolver<'enabled' | 'disabled' | 'hidden'>
+  }
+  item: BaseItem | null
+}
+export type ActionMetaSource = ActionMetaSource_ & Omit<ActionMeta, keyof ActionMetaSource_>
+
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
   fieldsByKey: Record<string, FieldMetaSource>
@@ -58,6 +74,7 @@ type ListMetaSource_ = {
     description: string
     fields: FieldMetaSource[]
   }[]
+  actions: ActionMetaSource[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
@@ -142,6 +159,8 @@ export function createAdminMeta(
       fields: [],
       fieldsByKey: {},
       groups: [],
+      actions: [],
+
       graphql: {
         names: list.graphql.names,
       },
@@ -244,6 +263,27 @@ export function createAdminMeta(
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
+    }
+
+    // populate .actions
+    for (const action of list.actions) {
+      adminMetaRoot.listsByKey[listKey].actions.push({
+        // ActionMeta
+        key: action.actionKey,
+        label: action.ui.label,
+        verb: action.ui.verb,
+        tone: action.ui.tone,
+
+        // ActionMetaSource_
+        listKey,
+        itemView: {
+          actionMode: action.ui.itemView.actionMode,
+        },
+        listView: {
+          actionMode: normalizeMaybeSessionFunction(action.ui.listView.actionMode),
+        },
+        item: null, // part of resolver
+      })
     }
 
     // populate .groups

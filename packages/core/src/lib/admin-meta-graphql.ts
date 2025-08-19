@@ -2,7 +2,12 @@ import type { BaseItem } from '../types'
 import { QueryMode } from '../types'
 import { g } from '../types/schema'
 import type { GraphQLNames } from '../types/utils'
-import type { AdminMetaSource, FieldMetaSource, ListMetaSource } from './admin-meta'
+import type {
+  ActionMetaSource,
+  AdminMetaSource,
+  FieldMetaSource,
+  ListMetaSource,
+} from './admin-meta'
 
 const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   name: 'KeystoneAdminUIFieldMeta',
@@ -134,6 +139,73 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
   },
 })
 
+const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
+  name: 'KeystoneAdminUIActionMeta',
+  fields: {
+    key: g.field({ type: g.nonNull(g.String) }),
+    label: g.field({ type: g.nonNull(g.String) }),
+    verb: g.field({ type: g.nonNull(g.String) }),
+    tone: g.field({
+      type: g.nonNull(
+        g.enum({
+          name: 'KeystoneAdminUIActionMetaTone',
+          values: g.enumValues(['neutral', 'accent', 'critical']),
+        })
+      ),
+    }),
+    itemView: g.field({
+      resolve: ({ listKey, key, itemView, item }) => {
+        return {
+          listKey,
+          actionKey: key,
+          ...itemView,
+          item,
+        }
+      },
+      type: g.object<{
+        listKey: string
+        actionKey: string
+        actionMode: ActionMetaSource['itemView']['actionMode']
+        item: BaseItem | null
+      }>()({
+        name: 'KeystoneAdminUIActionMetaItemView',
+        fields: {
+          actionMode: g.field({
+            type: g.nonNull(g.JSON),
+            async resolve({ listKey, actionKey, actionMode, item }, _, context) {
+              if (typeof actionMode !== 'function') return actionMode
+              return actionMode({
+                session: context.session,
+                context,
+                listKey,
+                actionKey,
+                item,
+              })
+            },
+          }),
+        },
+      }),
+    }),
+    listView: g.field({
+      type: g.nonNull(
+        g.object<ActionMetaSource['listView']>()({
+          name: 'KeystoneAdminUIActionMetaListView',
+          fields: {
+            actionMode: g.field({
+              type: g.nonNull(
+                g.enum({
+                  name: 'KeystoneAdminUIActionMetaListViewActionMode',
+                  values: g.enumValues(['enabled', 'disabled', 'hidden']),
+                })
+              ),
+            }),
+          },
+        })
+      ),
+    }),
+  },
+})
+
 const KeystoneAdminUIFieldGroupMeta = g.object<{
   label: string
   description: string | null
@@ -217,6 +289,7 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
     labelField: g.field({ type: g.nonNull(g.String) }),
     fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))) }),
     groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
+    actions: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))) }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
 
     pageSize: g.field({ type: g.nonNull(g.Int) }),

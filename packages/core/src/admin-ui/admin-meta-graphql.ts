@@ -50,6 +50,21 @@ export const adminMetaQuery = gql`
               key
             }
           }
+
+          actions {
+            key
+
+            label
+            verb
+            tone
+            itemView {
+              actionMode
+            }
+            listView {
+              actionMode
+            }
+          }
+
           graphql {
             names {
               outputTypeName

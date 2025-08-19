@@ -20,6 +20,7 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import { capitalize } from 'inflection'
 import { gql, useMutation } from '../../../../admin-ui/apollo'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
@@ -34,6 +35,7 @@ import {
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import type {
+  ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
@@ -54,6 +56,75 @@ function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Fu
     callbackRef.current = callback
   })
   return cb as any
+}
+
+function ActionButton({
+  list,
+  actionKey,
+  itemId,
+  label,
+  verb,
+  tone,
+}: {
+  list: ListMeta
+  actionKey: string
+  itemId: string
+} & ActionMeta) {
+  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const router = useRouter()
+  const [actionOnItem] = useMutation(
+    gql`mutation ${actionKey}${list.key}($id: ID!) {
+      result: ${actionKey}${list.key}(where: { id: $id }) {
+        id
+      }
+    }`,
+    { variables: { id: itemId } }
+  )
+
+  const singular = list.singular.toLocaleLowerCase()
+  return (
+    <Fragment>
+      <DialogTrigger>
+        <Button tone={tone}>{label}</Button>
+        <AlertDialog
+          tone={tone === 'accent' ? undefined : tone}
+          title={`${capitalize(verb)} this ${singular}`}
+          cancelLabel="Cancel"
+          primaryActionLabel={`Yes, ${verb} this ${singular}`}
+          onPrimaryAction={async () => {
+            try {
+              const data = await actionOnItem()
+              toastQueue.info(`Successfully ${verb}ed the ${singular}.`, {
+                timeout: 5000,
+              })
+
+              if (data.data?.result?.id) {
+                router.push(`/${list.path}/${data.data.result.id}`)
+              } else {
+                router.push(`/${list.path}`)
+              }
+            } catch (err: any) {
+              toastQueue.critical(`Unable to ${verb} this ${singular}.`, {
+                actionLabel: 'Details',
+                onAction: () => setErrorDialogValue(err),
+                shouldCloseOnAction: true,
+              })
+              return
+            }
+          }}
+        >
+          <Text>
+            Are you sure you want to {verb} the {singular}{' '}
+            <strong>{!list.isSingleton && `${itemId}`}</strong>?
+          </Text>
+        </AlertDialog>
+      </DialogTrigger>
+
+      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
+        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      </DialogContainer>
+    </Fragment>
+  )
 }
 
 function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
@@ -219,6 +290,7 @@ function ItemForm({
   })
 
   const hasChangedFields = useHasChanges('update', list.fields, value, initialValue)
+  const itemId = (value.id as string | number | undefined)?.toString()
 
   return (
     <Fragment>
@@ -280,6 +352,13 @@ function ItemForm({
           </Button>
           <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
+          {itemId && list.actions.length > 0
+            ? list.actions.map(({ key, ...action }) => {
+                return (
+                  <ActionButton key={key} actionKey={key} {...action} list={list} itemId={itemId} />
+                )
+              })
+            : null}
           {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
         </BaseToolbar>
       </form>

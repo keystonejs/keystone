@@ -1,10 +1,55 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import type { MaybePromise } from '../utils'
-import type { BaseListTypeInfo } from '../type-info'
 import type { KeystoneContext } from '../context'
-import type { ListHooks } from './hooks'
-import type { ListAccessControl } from './access-control'
+import type { BaseListTypeInfo } from '../type-info'
+import type { MaybePromise } from '../utils'
+import type { ActionAccessControlFunction, ListAccessControl } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
+import type { ListHooks } from './hooks'
+
+export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
+  /**
+   * The key of the action, used to prefix the mutation in the GraphQL schema
+   */
+  [key: string]: {
+    /**
+     * Controls what users can use this action
+     * @see https://www.keystonejs.com/guides/auth-and-access-control
+     */
+    access: ActionAccessControlFunction<ListTypeInfo>
+    resolve: (
+      context: KeystoneContext<ListTypeInfo['all']>,
+      args: {
+        listKey: ListTypeInfo['key']
+        actionKey: string
+        where: ListTypeInfo['inputs']['uniqueWhere']
+      }
+    ) => MaybePromise<ListTypeInfo['item'] | null>
+    ui: {
+      /**
+       * The label used to identify the action in the Admin UI.
+       */
+      label: string
+      /**
+       * The verb used to describe the action in the Admin UI.
+       */
+      verb: string
+      /**
+       * The tone used to style the action in the Admin UI.
+       */
+      tone: 'neutral' | 'accent' | 'critical'
+
+      itemView?: {
+        actionMode: MaybeItemActionFunctionWithFilter<
+          'enabled' | 'disabled' | 'hidden',
+          ListTypeInfo
+        >
+      }
+      listView?: {
+        actionMode: MaybeSessionFunction<'enabled' | 'disabled' | 'hidden', ListTypeInfo>
+      }
+    }
+  }
+}
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
@@ -14,6 +59,7 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   access: ListAccessControl<ListTypeInfo>
 
   fields: BaseFields<ListTypeInfo>
+  actions?: BaseActions<ListTypeInfo>
 
   /** Options for how this list should show in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo>
@@ -264,6 +310,19 @@ export type MaybeItemFunctionWithFilter<T extends string, ListTypeInfo extends B
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
+      item: ListTypeInfo['item'] | null
+    }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
+
+export type MaybeItemActionFunctionWithFilter<
+  T extends string,
+  ListTypeInfo extends BaseListTypeInfo,
+> =
+  | ConditionalFilter<T, ListTypeInfo>
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+      listKey: ListTypeInfo['key']
+      actionKey: string
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
 

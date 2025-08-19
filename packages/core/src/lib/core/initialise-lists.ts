@@ -24,8 +24,10 @@ import type {
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
 import type {
+  BaseActions,
   MaybeBooleanItemFunctionWithFilter,
   MaybeBooleanSessionFunctionWithFilter,
+  MaybeItemActionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
@@ -33,6 +35,7 @@ import type {
 } from '../../types/config/lists'
 import { type GraphQLNames, __getNames } from '../../types/utils'
 import {
+  type ResolvedActionAccessControl,
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
   parseFieldAccessControl,
@@ -42,6 +45,27 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
+
+export type InitialisedAction = {
+  actionKey: string
+
+  access: ResolvedActionAccessControl
+  resolve: BaseActions<BaseListTypeInfo>[string]['resolve']
+  ui: {
+    label: string
+    verb: string
+    tone: 'neutral' | 'accent' | 'critical'
+    itemView: {
+      actionMode: MaybeItemActionFunctionWithFilter<
+        'enabled' | 'disabled' | 'hidden',
+        BaseListTypeInfo
+      >
+    }
+    listView: {
+      actionMode: MaybeSessionFunction<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+    }
+  }
+}
 
 export type InitialisedField = {
   fieldKey: string
@@ -82,7 +106,7 @@ export type InitialisedField = {
       isRequired: MaybeBooleanItemFunctionWithFilter<BaseListTypeInfo, BaseFieldTypeInfo>
     }
     listView: {
-      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', BaseListTypeInfo>
     }
   }
 } & Pick<
@@ -102,6 +126,7 @@ export type InitialisedList = {
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
+  actions: InitialisedAction[]
   groups: GroupInfo<BaseListTypeInfo>[]
 
   hooks: ResolvedListHooks<BaseListTypeInfo>
@@ -731,6 +756,23 @@ function getListsWithInitialisedFields(
 
       fields: resultFields,
       groups,
+      actions: [
+        ...(function* () {
+          for (const actionKey in listConfig.actions) {
+            const action = listConfig.actions[actionKey]
+            yield {
+              actionKey,
+              ...action,
+              ui: {
+                ...action.ui,
+                // TODO: move to listWithDefaults
+                itemView: action.ui.itemView ?? { actionMode: 'enabled' },
+                listView: action.ui.listView ?? { actionMode: 'enabled' },
+              },
+            }
+          }
+        })(),
+      ],
 
       graphql: {
         types: {

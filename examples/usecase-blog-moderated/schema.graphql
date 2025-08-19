@@ -5,7 +5,6 @@ type Post {
   id: ID!
   title: String
   content: String
-  hidden: Boolean
   createdBy: Contributor
   createdAt: DateTime
   updatedAt: DateTime
@@ -31,7 +30,6 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
-  hidden: BooleanFilter
   createdBy: ContributorWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -78,11 +76,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -98,7 +91,6 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
-  hidden: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
   hiddenAt: OrderDirection
@@ -112,24 +104,6 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   content: String
-  hidden: Boolean
-  createdBy: ContributorRelateToOneForUpdateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  hiddenBy: ModeratorRelateToOneForUpdateInput
-  hiddenAt: DateTime
-}
-
-input ContributorRelateToOneForUpdateInput {
-  create: ContributorCreateInput
-  connect: ContributorWhereUniqueInput
-  disconnect: Boolean
-}
-
-input ModeratorRelateToOneForUpdateInput {
-  create: ModeratorCreateInput
-  connect: ModeratorWhereUniqueInput
-  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -140,22 +114,6 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   content: String
-  hidden: Boolean
-  createdBy: ContributorRelateToOneForCreateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  hiddenBy: ModeratorRelateToOneForCreateInput
-  hiddenAt: DateTime
-}
-
-input ContributorRelateToOneForCreateInput {
-  create: ContributorCreateInput
-  connect: ContributorWhereUniqueInput
-}
-
-input ModeratorRelateToOneForCreateInput {
-  create: ModeratorCreateInput
-  connect: ModeratorWhereUniqueInput
 }
 
 type Contributor {
@@ -298,6 +256,11 @@ input UserWhereInput {
   moderator: ModeratorWhereInput
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -311,6 +274,18 @@ input UserUpdateInput {
   moderator: ModeratorRelateToOneForUpdateInput
 }
 
+input ContributorRelateToOneForUpdateInput {
+  create: ContributorCreateInput
+  connect: ContributorWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ModeratorRelateToOneForUpdateInput {
+  create: ModeratorCreateInput
+  connect: ModeratorWhereUniqueInput
+  disconnect: Boolean
+}
+
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
@@ -321,6 +296,16 @@ input UserCreateInput {
   admin: Boolean
   contributor: ContributorRelateToOneForCreateInput
   moderator: ModeratorRelateToOneForCreateInput
+}
+
+input ContributorRelateToOneForCreateInput {
+  create: ContributorCreateInput
+  connect: ContributorWhereUniqueInput
+}
+
+input ModeratorRelateToOneForCreateInput {
+  create: ModeratorCreateInput
+  connect: ModeratorWhereUniqueInput
 }
 
 """
@@ -389,6 +374,7 @@ type KeystoneAdminUIListMeta {
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  actions: [KeystoneAdminUIActionMeta!]!
   graphql: KeystoneAdminUIGraphQL!
   pageSize: Int!
   initialColumns: [String!]!
@@ -457,6 +443,35 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIActionMeta {
+  key: String!
+  label: String!
+  verb: String!
+  tone: KeystoneAdminUIActionMetaTone!
+  itemView: KeystoneAdminUIActionMetaItemView
+  listView: KeystoneAdminUIActionMetaListView!
+}
+
+enum KeystoneAdminUIActionMetaTone {
+  neutral
+  accent
+  critical
+}
+
+type KeystoneAdminUIActionMetaItemView {
+  actionMode: JSON!
+}
+
+type KeystoneAdminUIActionMetaListView {
+  actionMode: KeystoneAdminUIActionMetaListViewActionMode!
+}
+
+enum KeystoneAdminUIActionMetaListViewActionMode {
+  enabled
+  disabled
+  hidden
 }
 
 type KeystoneAdminUIGraphQL {

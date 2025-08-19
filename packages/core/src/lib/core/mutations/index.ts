@@ -1,12 +1,30 @@
+import type { GNullableInputType } from '@graphql-ts/schema'
+
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
-import type { ResolvedDBField } from '../resolve-relationships'
+import {
+  cannotForItem,
+  enforceFieldLevelAccessControl,
+  enforceListLevelAccessControl,
+  getAccessFilters,
+  getOperationAccess,
+} from '../access-control'
+import { checkFilterOrderAccess } from '../filter-order-access'
+import {
+  accessDeniedError,
+  extensionError,
+  relationshipError,
+  resolverError,
+} from '../graphql-errors'
+import { runSideEffectOnlyHook, validate } from '../hooks'
 import type { InitialisedList } from '../initialise-lists'
+import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
+import type { ResolvedDBField } from '../resolve-relationships'
 import {
   type IdType,
-  promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
+  promiseAllRejectWithAllErrors,
 } from '../utils'
 import {
   type InputFilter,
@@ -14,23 +32,6 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs'
-import {
-  accessDeniedError,
-  extensionError,
-  relationshipError,
-  resolverError,
-} from '../graphql-errors'
-import {
-  cannotForItem,
-  getOperationAccess,
-  getAccessFilters,
-  enforceListLevelAccessControl,
-  enforceFieldLevelAccessControl,
-} from '../access-control'
-import { checkFilterOrderAccess } from '../filter-order-access'
-import { runSideEffectOnlyHook, validate } from '../hooks'
-
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -40,7 +41,6 @@ import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
-import type { GNullableInputType } from '@graphql-ts/schema'
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -632,7 +632,7 @@ export function getMutationsForList(list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve(rootVal, { where }, context) {
+    resolve(_, { where }, context) {
       return deleteOne(where, list, context)
     },
   })
@@ -644,7 +644,7 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve(rootVal, { where }, context) {
+    async resolve(_, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
     },
   })
@@ -663,6 +663,32 @@ export function getMutationsForList(list: InitialisedList) {
         [list.graphql.names.deleteMutationName]: deleteOne_,
         [list.graphql.names.deleteManyMutationName]: deleteMany_,
       }),
+      ...Object.fromEntries(
+        (function* () {
+          for (const action of list.actions) {
+            const actionName = `${action.actionKey}${list.listKey}` // TODO: move elsewhere, and pass the mutationName in AdminMeta
+            yield [
+              actionName,
+              g.field({
+                type: list.graphql.types.output,
+                args: {
+                  where: g.arg({
+                    type: g.nonNull(list.graphql.types.uniqueWhere),
+                    defaultValue: defaultUniqueWhereInput,
+                  }),
+                },
+                async resolve(_, { where }, context) {
+                  return action.resolve(context, {
+                    listKey: list.listKey,
+                    actionKey: action.actionKey,
+                    where,
+                  })
+                },
+              }),
+            ]
+          }
+        })()
+      ),
     },
     updateManyInput,
   }

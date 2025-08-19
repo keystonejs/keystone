@@ -269,6 +269,11 @@ export function useListItem(
                   isRequired
                 }
               }
+              actions {
+                itemView {
+                  actionMode
+                }
+              }
             }
           }
         }

@@ -48,8 +48,8 @@ function getGraphQLSchema(
   })
 
   return new GraphQLSchema({
-    query: query,
-    mutation: mutation,
+    query,
+    mutation,
     // not about behaviour, only ordering
     types: [...collectTypes(lists, updateManyByList), mutation],
     extensions: {

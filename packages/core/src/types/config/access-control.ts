@@ -177,3 +177,14 @@ export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
       update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported
     }
+
+// Action Access
+export type ActionAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
+  args: BaseAccessArgs<ListTypeInfo> & {
+    actionKey: string
+    /**
+     * The item being actioned
+     */
+    itemId: ListTypeInfo['item']['id'] | null
+  }
+) => MaybePromise<boolean>
