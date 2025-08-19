@@ -353,7 +353,10 @@ function ListPage({ listKey }: ListPageProps) {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
       variables: {
-        where: { AND: where, ...search },
+        where: {
+          ...(where.length ? { AND: where } : {}),
+          ...(search.length ? { OR: search } : {}),
+        },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort

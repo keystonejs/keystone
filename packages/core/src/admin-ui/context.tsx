@@ -11,8 +11,8 @@ import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patc
 import type {
   AdminConfig,
   BaseListTypeInfo,
-  ConditionalFieldFilter,
-  ConditionalFieldFilterCase,
+  ConditionalFilter,
+  ConditionalFilterCase,
   FieldViews,
   ListMeta,
 } from '../types'
@@ -200,12 +200,6 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
   )
 }
 
-export function useRawKeystone() {
-  const value = useContext(KeystoneContext)
-  if (!value) throw new Error('useRawKeystone must be called inside a KeystoneProvider component')
-  return value
-}
-
 export function useKeystone() {
   return useContext(KeystoneContext)
 }
@@ -224,7 +218,7 @@ export function useField(listKey: string, fieldKey: string) {
   return field
 }
 
-// TODO useContext
+// TODO useContext?
 export function useListItem(
   listKey: string,
   itemId: string | null
@@ -237,9 +231,9 @@ export function useListItem(
           fields: {
             key: string
             itemView: {
-              fieldMode: ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+              fieldMode: ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
               fieldPosition: 'form' | 'sidebar'
-              isRequired: ConditionalFieldFilterCase<BaseListTypeInfo>
+              isRequired: ConditionalFilterCase<BaseListTypeInfo>
             } | null
           }[]
         } | null
@@ -259,16 +253,13 @@ export function useListItem(
       .join('\n')
 
     return gql`
-      query KsFetchItem ($id: ID!, $listKey: String!) {
-        item: ${list.graphql.names.itemQueryName}(where: {id: $id}) {
-          ${selectedFields}
-        }
+      query KsFetchItem ($listKey: String!, $id: ID!) {
         keystone {
           adminMeta {
-            list(key: $listKey) {
+            list(key: $listKey, itemId: $id) {
               fields {
                 key
-                itemView(id: $id) {
+                itemView {
                   fieldMode
                   fieldPosition
                   isRequired
@@ -276,6 +267,9 @@ export function useListItem(
               }
             }
           }
+        }
+        item: ${list.graphql.names.itemQueryName}(where: { id: $id }) {
+          ${selectedFields}
         }
       }
     `

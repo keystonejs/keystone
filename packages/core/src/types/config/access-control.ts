@@ -128,7 +128,7 @@ export type ListAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   | ListAccessControlObject<ListTypeInfo>
 
 // Field Access
-export type IndividualFieldAccessControl<Args> = (args: Args) => MaybePromise<boolean>
+export type FieldAccessControlFunction<Args> = (args: Args) => MaybePromise<boolean>
 
 export type FieldCreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   BaseAccessArgs<ListTypeInfo> & {
@@ -165,15 +165,15 @@ export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   }
 
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
-  | IndividualFieldAccessControl<
+  | FieldAccessControlFunction<
       | FieldReadItemAccessArgs<ListTypeInfo>
       | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldUpdateItemAccessArgs<ListTypeInfo>
       // delete: not supported
     >
   | {
-      read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<ListTypeInfo>>
-      create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>
-      update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<ListTypeInfo>>
+      read?: FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>
+      create?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
+      update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported
     }

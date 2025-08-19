@@ -35,8 +35,8 @@ import {
 } from '../../../../admin-ui/utils'
 import type {
   BaseListTypeInfo,
-  ConditionalFieldFilter,
-  ConditionalFieldFilterCase,
+  ConditionalFilter,
+  ConditionalFilterCase,
   ListMeta,
 } from '../../../../types'
 import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
@@ -164,8 +164,8 @@ function ItemForm({
   listKey: string
   initialValue: Record<string, unknown>
   onSaveSuccess: () => void
-  fieldModes: Record<string, ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
-  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
+  fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
+  isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
   const list = useList(listKey)

@@ -2,8 +2,10 @@ import type { CacheHint } from '@apollo/cache-control-types'
 import type { GArg, GInputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
 import { GraphQLString, isInputObjectType } from 'graphql'
+
 import { g } from '../..'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
+import { humanize } from '../../lib/utils'
 import type { GroupInfo } from '../../schema'
 import type {
   BaseFieldTypeInfo,
@@ -40,7 +42,6 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
-import { humanize } from '../../lib/utils'
 
 export type InitialisedField = {
   fieldKey: string
@@ -154,11 +155,11 @@ type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
+// TODO: move to defaultLists?
 function getIsEnabled(listKey: string, listConfig: ListConfigType) {
-  const omit = listConfig.graphql?.omit ?? false
-  const { defaultIsFilterable = true, defaultIsOrderable = true } = listConfig
+  const omit = listConfig.graphql.omit ?? false
+  const { defaultIsFilterable, defaultIsOrderable } = listConfig
 
-  // TODO: check types in initConfig
   throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
   throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
 
@@ -665,7 +666,7 @@ function getListsWithInitialisedFields(
             fieldMode: isEnabledField.create
               ? (f.ui?.createView?.fieldMode ??
                 group?.ui?.createView?.defaultFieldMode ??
-                listConfig.ui?.createView?.defaultFieldMode ??
+                listConfig.ui.createView?.defaultFieldMode ??
                 'edit')
               : 'hidden',
           },
@@ -676,12 +677,12 @@ function getListsWithInitialisedFields(
             fieldMode: isEnabledField.update
               ? (f.ui?.itemView?.fieldMode ??
                 group?.ui?.itemView?.defaultFieldMode ??
-                listConfig.ui?.itemView?.defaultFieldMode ??
+                listConfig.ui.itemView?.defaultFieldMode ??
                 'edit')
               : isEnabledField.read
                 ? (f.ui?.itemView?.fieldMode ??
                   group?.ui?.itemView?.defaultFieldMode ??
-                  listConfig.ui?.itemView?.defaultFieldMode ??
+                  listConfig.ui.itemView?.defaultFieldMode ??
                   'read')
                 : 'hidden',
           },
@@ -690,7 +691,7 @@ function getListsWithInitialisedFields(
             fieldMode: isEnabledField.read
               ? (f.ui?.listView?.fieldMode ??
                 group?.ui?.listView?.defaultFieldMode ??
-                listConfig.ui?.listView?.defaultFieldMode ??
+                listConfig.ui.listView?.defaultFieldMode ??
                 'read')
               : 'hidden',
           },
@@ -710,7 +711,7 @@ function getListsWithInitialisedFields(
 
     // default labelField to `name`, `label`, or `title`; fallback to `id`
     const labelField =
-      listConfig.ui?.labelField ??
+      listConfig.ui.labelField ??
       (listConfig.fields.label
         ? 'label'
         : listConfig.fields.name
@@ -719,7 +720,7 @@ function getListsWithInitialisedFields(
             ? 'title'
             : 'id')
 
-    const searchFields = new Set(listConfig.ui?.searchFields ?? [])
+    const searchFields = new Set(listConfig.ui.searchFields ?? [])
     if (searchFields.has('id')) {
       throw new Error(`${listKey}.ui.searchFields cannot include 'id'`)
     }
@@ -746,8 +747,8 @@ function getListsWithInitialisedFields(
           ...names.graphql.names,
         },
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
-        mapping: listConfig.db?.map,
-        extendPrismaSchema: listConfig.db?.extendPrismaSchema,
+        mapping: listConfig.db.map,
+        extendPrismaSchema: listConfig.db.extendPrismaSchema,
       },
 
       ui: {
@@ -760,7 +761,7 @@ function getListsWithInitialisedFields(
       hooks: parseListHooks(listConfig.hooks ?? {}),
       listKey,
       cacheHint: (() => {
-        const cacheHint = listConfig.graphql?.cacheHint
+        const cacheHint = listConfig.graphql.cacheHint
         if (typeof cacheHint === 'function') return cacheHint
         if (cacheHint !== undefined) return () => cacheHint
         return undefined

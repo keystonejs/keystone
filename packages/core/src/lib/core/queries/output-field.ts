@@ -1,22 +1,23 @@
 import { type CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control-types'
-import { type GraphQLResolveInfo } from 'graphql'
 import DataLoader from 'dataloader'
+import type { GraphQLResolveInfo } from 'graphql'
+
+import { g } from '../../..'
 import type {
-  NextFieldType,
-  IndividualFieldAccessControl,
-  BaseListTypeInfo,
   BaseItem,
+  BaseListTypeInfo,
+  FieldAccessControlFunction,
+  FieldReadItemAccessArgs,
   FindManyArgsValue,
   KeystoneContext,
-  FieldReadItemAccessArgs,
+  NextFieldType,
 } from '../../../types'
-import { g } from '../../..'
-import { getOperationFieldAccess, getOperationAccess, getAccessFilters } from '../access-control'
-import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
+import { getAccessFilters, getOperationAccess, getOperationFieldAccess } from '../access-control'
 import type { InitialisedList } from '../initialise-lists'
+import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils'
-import { accessControlledFilter } from './resolvers'
 import * as queries from './resolvers'
+import { accessControlledFilter } from './resolvers'
 
 function getRelationVal(
   dbField: ResolvedRelationDBField,
@@ -143,7 +144,7 @@ export function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
-  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>,
+  access: FieldAccessControlFunction<FieldReadItemAccessArgs<BaseListTypeInfo>>,
   listKey: string,
   fieldKey: string,
   lists: Record<string, InitialisedList>

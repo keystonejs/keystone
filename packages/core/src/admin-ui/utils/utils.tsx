@@ -1,8 +1,13 @@
-import { useMemo } from 'react'
 import isDeepEqual from 'fast-deep-equal'
-import type { FieldMeta } from '../../../types'
 import { type FragmentDefinitionNode, type SelectionSetNode, parse } from 'graphql'
-import type { BaseListTypeInfo, ConditionalFieldFilterCase, FieldController } from '../../types'
+import { useMemo } from 'react'
+
+import type {
+  BaseListTypeInfo,
+  ConditionalFilterCase,
+  FieldController,
+  FieldMeta,
+} from '../../types'
 import { testFilter } from './Fields'
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
@@ -28,7 +33,7 @@ export function getRootGraphQLFieldsFromFieldController(controller: FieldControl
 export function useInvalidFields(
   fields: Record<string, FieldMeta>,
   item: Record<string, unknown>,
-  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
+  isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
 ): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>()
