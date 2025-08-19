@@ -1,21 +1,21 @@
+import type { ListenOptions } from 'node:net'
+
+import { idFieldType } from './lib/id-field'
 import type {
   BaseFields,
   BaseKeystoneTypeInfo,
   BaseListTypeInfo,
   IdFieldConfig,
+  KeystoneConfig,
   KeystoneConfigPre,
   KeystoneContext,
   ListConfig,
-  KeystoneConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
-  MaybeSessionFunctionWithFilter,
+  MaybeSessionFunctionWithFilter
 } from './types'
 
-import type { ListenOptions } from 'node:net'
-import { idFieldType } from './lib/id-field'
-
-function injectDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
+function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -29,33 +29,40 @@ function injectDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig
     }
   }
 
-  const updated: KeystoneConfig['lists'] = {}
-
-  for (const [listKey, list] of Object.entries(config.lists)) {
-    if (list.isSingleton) {
-      updated[listKey] = {
-        listKey,
-        ...list,
-        fields: {
-          id: idFieldType({ kind: 'number', type: 'Int' }),
-          ...list.fields,
-        },
+  return Object.fromEntries([
+    ...(function* () {
+      for (const [listKey, list] of Object.entries(config.lists)) {
+        yield [listKey, {
+          listKey,
+          defaultIsFilterable: true, // TODO: move to access control?
+          defaultIsOrderable: true, // TODO: move to access control?
+          isSingleton: false,
+          ...list,
+          db: {
+            ...list.db,
+          },
+          fields: {
+            ...(list.isSingleton ? {
+              id: idFieldType({ kind: 'number', type: 'Int' }),
+              ...list.fields,
+            } : {
+              id: idFieldType(list.db?.idField ?? defaultIdField),
+              ...list.fields,
+            })
+          },
+          hooks: {
+            ...list.hooks,
+          },
+          graphql: {
+            ...list.graphql,
+          },
+          ui: {
+            ...list.ui,
+          },
+        } satisfies KeystoneConfig['lists'][typeof listKey]]
       }
-
-      continue
-    }
-
-    updated[listKey] = {
-      listKey,
-      ...list,
-      fields: {
-        id: idFieldType(list.db?.idField ?? defaultIdField),
-        ...list.fields,
-      },
-    }
-  }
-
-  return updated
+    }())
+  ]) satisfies KeystoneConfig['lists']
 }
 
 function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
@@ -123,7 +130,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
       schemaPath: config.graphql?.schemaPath ?? 'schema.graphql',
       extendGraphqlSchema: config.graphql?.extendGraphqlSchema ?? (s => s),
     },
-    lists: injectDefaults(config, defaultIdField),
+    lists: listsWithDefaults(config, defaultIdField),
     server: {
       ...config.server,
       maxFileSize: config.server?.maxFileSize ?? 200 * 1024 * 1024, // 200 MiB
@@ -189,6 +196,6 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
-export function list<ListTypeInfo extends BaseListTypeInfo>(config: ListConfig<ListTypeInfo>) {
-  return { ...config }
+export function list<ListTypeInfo extends BaseListTypeInfo>(listConfig: ListConfig<ListTypeInfo>) {
+  return { ...listConfig }
 }

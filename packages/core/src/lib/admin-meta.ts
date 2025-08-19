@@ -175,10 +175,10 @@ export function createAdminMeta(
     return uniqueViewCount
   }
 
-  // populate .fields array
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue
 
+    // populate .fields
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // if the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue

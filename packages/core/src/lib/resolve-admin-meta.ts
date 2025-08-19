@@ -101,10 +101,10 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
               return fieldMode({
                 session: context.session,
                 context,
-                item,
-                itemField,
                 listKey,
                 fieldKey,
+                item,
+                itemField,
               })
             },
           }),
@@ -120,10 +120,10 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
               return fieldPosition({
                 session: context.session,
                 context,
-                item,
-                itemField,
                 listKey,
                 fieldKey,
+                item,
+                itemField,
               })
             },
           }),

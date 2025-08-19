@@ -200,12 +200,6 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
   )
 }
 
-export function useRawKeystone() {
-  const value = useContext(KeystoneContext)
-  if (!value) throw new Error('useRawKeystone must be called inside a KeystoneProvider component')
-  return value
-}
-
 export function useKeystone() {
   return useContext(KeystoneContext)
 }
@@ -224,7 +218,7 @@ export function useField(listKey: string, fieldKey: string) {
   return field
 }
 
-// TODO useContext
+// TODO useContext?
 export function useListItem(
   listKey: string,
   itemId: string | null

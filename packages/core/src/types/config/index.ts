@@ -184,7 +184,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   lists: {
     [listKey: string]: {
       listKey: string
-    } & KeystoneConfigPre<TypeInfo>['lists'][string]
+    } & Required<KeystoneConfigPre<TypeInfo>['lists'][string]>
   }
   server: Omit<Required<NonNullable<KeystoneConfigPre<TypeInfo>['server']>>, 'cors' | 'port'> & {
     cors: CorsOptions | null
