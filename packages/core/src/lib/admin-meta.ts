@@ -44,12 +44,11 @@ type FieldMetaSource_ = {
   listView: {
     fieldMode: EmptyResolver<'read' | 'hidden'>
   }
+  item: BaseItem | null
+  itemField: BaseItem[string] | null
 }
 export type FieldMetaSource = FieldMetaSource_ &
-  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'> & {
-    item: BaseItem | null
-    itemField: BaseItem[string] | null
-  }
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
 
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
@@ -70,11 +69,9 @@ type ListMetaSource_ = {
   hideNavigation: EmptyResolver<boolean>
   hideCreate: EmptyResolver<boolean>
   hideDelete: EmptyResolver<boolean>
+  item: BaseItem | null
 }
-export type ListMetaSource = ListMetaSource_ &
-  Omit<ListMeta, keyof ListMetaSource_> & {
-    item: any
-  }
+export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSource_>
 
 export type AdminMetaSource = {
   lists: ListMetaSource[]
