@@ -5,7 +5,7 @@ import { checkbox, text, timestamp } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 import { BaseListTypeInfo } from '@keystone-6/core/types'
 
-const readOnlyField = {
+const systemField = {
   access: {
     read: allowAll,
     create: denyAll,
@@ -19,14 +19,14 @@ const readOnlyField = {
   },
   ui: {
     createView: {
-      fieldMode: () => 'hidden' as const,
+      fieldMode: 'hidden' as const,
     },
     itemView: {
-      fieldMode: () => 'read' as const,
-      fieldPosition: () => 'sidebar' as const,
+      fieldMode: 'read' as const,
+      fieldPosition: 'sidebar' as const,
     },
     listView: {
-      fieldMode: () => 'read' as const,
+      fieldMode: 'read' as const,
     },
   },
 }
@@ -43,7 +43,7 @@ type CompatibleLists = BaseListTypeInfo & { item: { completed: boolean } }
 function trackingFields<ListTypeInfo extends CompatibleLists>() {
   return {
     createdBy: text<ListTypeInfo>({
-      ...readOnlyField,
+      ...systemField,
       hooks: {
         resolveInput: {
           async create({ context }) {
@@ -56,7 +56,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
       },
     }),
     createdAt: timestamp<ListTypeInfo>({
-      ...readOnlyField,
+      ...systemField,
       hooks: {
         resolveInput: {
           async create() {
@@ -69,7 +69,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
       },
     }),
     updatedBy: text<ListTypeInfo>({
-      ...readOnlyField,
+      ...systemField,
       hooks: {
         async resolveInput({ context, operation, resolvedData, item, fieldKey }) {
           // show we have refined types for compatible item.* fields
@@ -82,7 +82,7 @@ function trackingFields<ListTypeInfo extends CompatibleLists>() {
       },
     }),
     updatedAt: timestamp<ListTypeInfo>({
-      ...readOnlyField,
+      ...systemField,
       hooks: {
         async resolveInput() {
           return new Date()
