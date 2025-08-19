@@ -7,27 +7,32 @@ import type { ListAccessControl } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  isSingleton?: boolean
-  fields: BaseFields<ListTypeInfo>
-
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
-   * @see https://www.keystonejs.com/guides/auth-and-access-control
+   * @see https://keystonejs.com/guides/auth-and-access-control
    */
   access: ListAccessControl<ListTypeInfo>
+
+  fields: BaseFields<ListTypeInfo>
 
   /** Options for how this list should show in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo>
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
-   * @see https://www.keystonejs.com/guides/hooks
+   * @see https://keystonejs.com/guides/hooks
    */
   hooks?: ListHooks<ListTypeInfo>
 
   graphql?: ListGraphQLConfig<ListTypeInfo>
 
   db?: ListDBConfig
+
+  /**
+   * Controls if this list is a singleton
+   * @see https://keystonejs.com/docs/config/lists#is-singleton
+   */
+  isSingleton?: boolean
 
   /**
    * The default value to use for graphql.isEnabled.filter on all fields for this list
