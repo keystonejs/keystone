@@ -1,6 +1,6 @@
-import type { MaybePromise } from '../utils'
 import type { KeystoneContext } from '../context'
 import type { BaseListTypeInfo } from '../type-info'
+import type { MaybePromise } from '../utils'
 
 export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>
@@ -177,3 +177,10 @@ export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
       update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported
     }
+
+// Action Access
+export type ActionAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
+  args: BaseAccessArgs<ListTypeInfo> & {
+    actionKey: string
+  }
+) => MaybePromise<boolean>

@@ -62,19 +62,19 @@ function InternalKeystoneProvider({
 
     const lists: KeystoneContextType['lists'] = {}
 
-    for (const list of listsData) {
-      lists[list.key] = {
-        ...list,
-        pageSize: snapValueToClosest(list.pageSize ?? 50),
-        groups: [],
+    for (const listData of listsData) {
+      lists[listData.key] = {
+        ...listData,
+        pageSize: snapValueToClosest(listData.pageSize ?? 50),
         fields: {},
+        groups: [],
       }
 
-      for (const field of list.fields) {
+      for (const field of listData.fields) {
         for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
-              `The view for the field at ${list.key}.${field.key} is missing the ${exportName} export`
+              `The view for the field at ${listData.key}.${field.key} is missing the ${exportName} export`
             )
           }
         }
@@ -94,7 +94,7 @@ function InternalKeystoneProvider({
           }
         }
 
-        lists[list.key].fields[field.key] = {
+        lists[listData.key].fields[field.key] = {
           ...field,
           createView: {
             fieldMode: field.createView?.fieldMode ?? null,
@@ -108,12 +108,9 @@ function InternalKeystoneProvider({
           listView: {
             fieldMode: field.listView?.fieldMode ?? null,
           },
-          graphql: {
-            isNonNull: field.isNonNull,
-          },
           views,
           controller: views.controller({
-            listKey: list.key,
+            listKey: listData.key,
             fieldKey: field.key,
             label: field.label,
             description: field.description,
@@ -123,11 +120,11 @@ function InternalKeystoneProvider({
         }
       }
 
-      for (const group of list.groups) {
-        lists[list.key].groups.push({
+      for (const group of listData.groups) {
+        lists[listData.key].groups.push({
           label: group.label,
           description: group.description,
-          fields: group.fields.map(field => lists[list.key].fields[field.key]),
+          fields: group.fields.map(field => lists[listData.key].fields[field.key]),
         })
       }
     }
@@ -267,6 +264,11 @@ export function useListItem(
                   fieldMode
                   fieldPosition
                   isRequired
+                }
+              }
+              actions {
+                itemView {
+                  actionMode
                 }
               }
             }

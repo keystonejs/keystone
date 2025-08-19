@@ -217,6 +217,22 @@ importers:
         specifier: ^5.5.0
         version: 5.8.2
 
+  examples/actions:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.5.1
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
+    devDependencies:
+      prisma:
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.8.2
+
   examples/assets-local:
     dependencies:
       '@keystone-6/core':

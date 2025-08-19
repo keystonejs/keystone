@@ -5,8 +5,8 @@ type GraphQLInput = Record<string, any>
 
 export type BaseListTypeInfo<Session = any> = {
   key: string
-  isSingleton: boolean
   fields: string
+  actions: string
   item: BaseItem
   inputs: {
     create: GraphQLInput
@@ -24,6 +24,8 @@ export type BaseListTypeInfo<Session = any> = {
     update: Record<string, any>
   }
   all: BaseKeystoneTypeInfo<Session>
+
+  isSingleton: boolean
 }
 
 export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInfo> =

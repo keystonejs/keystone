@@ -126,6 +126,7 @@ type KeystoneAdminUIListMeta {
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  actions: [KeystoneAdminUIActionMeta!]!
   graphql: KeystoneAdminUIGraphQL!
   pageSize: Int!
   initialColumns: [String!]!
@@ -194,6 +195,60 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIActionMeta {
+  key: String!
+  label: String!
+  icon: String
+  messages: KeystoneAdminUIActionMetaMessages!
+  graphql: KeystoneAdminUIActionMetaGraphQL
+  itemView: KeystoneAdminUIActionMetaItemView
+  listView: KeystoneAdminUIActionMetaListView!
+}
+
+type KeystoneAdminUIActionMetaMessages {
+  promptTitle: String!
+  promptTitleMany: String
+  prompt: String!
+  promptMany: String
+  promptConfirmLabel: String!
+  promptConfirmLabelMany: String
+  fail: String!
+  failMany: String
+  success: String!
+  successMany: String
+}
+
+type KeystoneAdminUIActionMetaGraphQL {
+  names: KeystoneAdminUIActionMetaGraphQLNames!
+}
+
+type KeystoneAdminUIActionMetaGraphQLNames {
+  one: String!
+  many: String
+}
+
+type KeystoneAdminUIActionMetaItemView {
+  actionMode: JSON!
+  navigation: KeystoneAdminUIActionMetaItemViewNavigation!
+  hidePrompt: Boolean!
+  hideToast: Boolean!
+}
+
+enum KeystoneAdminUIActionMetaItemViewNavigation {
+  follow
+  refetch
+  return
+}
+
+type KeystoneAdminUIActionMetaListView {
+  actionMode: KeystoneAdminUIActionMetaListViewActionMode!
+}
+
+enum KeystoneAdminUIActionMetaListViewActionMode {
+  enabled
+  hidden
 }
 
 type KeystoneAdminUIGraphQL {

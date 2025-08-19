@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import {
   type FormEvent,
   Fragment,
@@ -34,6 +34,7 @@ import {
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import type {
+  ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
@@ -97,8 +98,9 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
           }}
         >
           <Text>
-            Are you sure you want to delete{' '}
+            Are you sure you want to delete
             <strong>
+              {' '}
               {list.singular}
               {!list.isSingleton && ` ${itemId}`}
             </strong>
@@ -296,15 +298,18 @@ export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} 
 function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
-  const [id] = Array.isArray(id_) ? id_ : [id_]
-  const { data, error, loading, refetch } = useListItem(listKey, id ?? null)
+  const [itemId] = Array.isArray(id_) ? id_ : [id_]
+  const { data, error, loading, refetch } = useListItem(listKey, itemId ?? null)
+  const item = data?.item
+  const itemLabel_ = item?.[list.labelField] ?? item?.id
+  const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (itemId ?? '')
 
-  const pageLoading = loading || id === undefined
-  const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+  const pageLoading = loading || itemId === undefined
+  const pageLabel = itemLabel || itemId
   const pageTitle = list.isSingleton || typeof pageLabel !== 'string' ? list.label : pageLabel
   const initialValue = useMemo(() => {
-    if (!data?.item) return null
-    return deserializeItemToValue(list.fields, data.item)
+    if (!item) return null
+    return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
 
   const { fieldModes, fieldPositions, isRequireds } = useMemo(() => {
@@ -327,6 +332,18 @@ function ItemPage({ listKey }: ItemPageProps) {
     return { fieldModes, fieldPositions, isRequireds }
   }, [data?.keystone.adminMeta, list.fields])
 
+  function onAction(action: ActionMeta, resultId: string | null) {
+    const { navigation } = action.itemView
+
+    if ((navigation === 'follow' && resultId === itemId) || navigation === 'refetch') {
+      refetch()
+    } else if (navigation === 'follow' && resultId) {
+      router.push(`/${list.path}/${resultId}`)
+    } else {
+      router.push(list.isSingleton ? '/' : `/${list.path}`)
+    }
+  }
+
   return (
     <PageContainer
       title={pageTitle}
@@ -335,6 +352,8 @@ function ItemPage({ listKey }: ItemPageProps) {
           list={list}
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
+          item={item ?? null}
+          onAction={onAction}
         />
       }
     >
@@ -346,9 +365,9 @@ function ItemPage({ listKey }: ItemPageProps) {
         <ColumnLayout>
           <Box marginY="xlarge">
             <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
-            {data?.item == null &&
+            {item == null &&
               (list.isSingleton ? (
-                id === '1' ? (
+                itemId === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
                     {!list.hideCreate && <CreateButtonLink list={list} />}
@@ -356,15 +375,15 @@ function ItemPage({ listKey }: ItemPageProps) {
                 ) : (
                   <ItemNotFound>
                     <Text>
-                      An item with ID <strong>“{id}”</strong> does not exist.
+                      An item with ID <strong>“{itemId}”</strong> does not exist.
                     </Text>
                   </ItemNotFound>
                 )
               ) : (
                 <ItemNotFound>
                   <Text>
-                    The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access
-                    to it.
+                    The item with ID <strong>“{itemId}”</strong> doesn’t exist, or you don’t have
+                    access to it.
                   </Text>
                 </ItemNotFound>
               ))}

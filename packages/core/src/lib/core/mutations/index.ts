@@ -1,5 +1,5 @@
 import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
-import { GraphQLNamedType } from 'graphql'
+import type { GraphQLNamedType } from 'graphql'
 
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
@@ -19,7 +19,7 @@ import {
   resolverError,
 } from '../graphql-errors'
 import { runSideEffectOnlyHook, validate } from '../hooks'
-import type { InitialisedList } from '../initialise-lists'
+import type { InitialisedAction, InitialisedList } from '../initialise-lists'
 import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import type { ResolvedDBField } from '../resolve-relationships'
 import {
@@ -302,6 +302,48 @@ export async function deleteMany(
     if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
 
     return deleteSingle(where, list, context, accessFilters)
+  })
+}
+
+export async function actionOne(
+  where: UniqueInputFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  action: InitialisedAction
+) {
+  const operationAccess = await action.access({
+    context,
+    listKey: list.listKey,
+    actionKey: action.actionKey,
+  })
+  if (!operationAccess) throw accessDeniedError(cannotForItem(action.actionKey, list))
+
+  return action.resolve(context, {
+    listKey: list.listKey,
+    actionKey: action.actionKey,
+    where,
+  })
+}
+
+export async function actionMany(
+  wheres: UniqueInputFilter[],
+  list: InitialisedList,
+  context: KeystoneContext,
+  action: InitialisedAction
+) {
+  const operationAccess = await action.access({
+    context,
+    listKey: list.listKey,
+    actionKey: action.actionKey,
+  })
+  if (!operationAccess) throw accessDeniedError(cannotForItem(action.actionKey, list))
+
+  return wheres.map(async where => {
+    return action.resolve(context, {
+      listKey: list.listKey,
+      actionKey: action.actionKey,
+      where,
+    })
   })
 }
 
@@ -633,7 +675,7 @@ export function getMutationsForList(list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve(rootVal, { where }, context) {
+    resolve(_, { where }, context) {
       return deleteOne(where, list, context)
     },
   })
@@ -645,7 +687,7 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve(rootVal, { where }, context) {
+    async resolve(_, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
     },
   })
@@ -699,7 +741,44 @@ export function getMutationsForList(list: InitialisedList) {
         [list.graphql.names.deleteMutationName]: deleteOne_,
         [list.graphql.names.deleteManyMutationName]: deleteMany_,
       }),
+      ...Object.fromEntries(
+        (function* () {
+          for (const action of list.actions) {
+            yield [
+              action.graphql.names.one,
+              g.field({
+                type: list.graphql.types.output,
+                args: {
+                  where: g.arg({
+                    type: g.nonNull(list.graphql.types.uniqueWhere),
+                    defaultValue: defaultUniqueWhereInput,
+                  }),
+                },
+                async resolve(_, { where }, context) {
+                  return actionOne(where, list, context, action)
+                },
+              }),
+            ]
+            yield [
+              action.graphql.names.many,
+              g.field({
+                type: g.list(list.graphql.types.output),
+                args: {
+                  where: g.arg({
+                    type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
+                  }),
+                },
+                async resolve(_, { where }, context) {
+                  return promisesButSettledWhenAllSettledAndInOrder(
+                    await actionMany(where, list, context, action)
+                  )
+                },
+              }),
+            ]
+          }
+        })()
+      ),
     },
-    types: collectedTypes
+    types: collectedTypes,
   }
 }

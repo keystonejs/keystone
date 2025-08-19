@@ -1,7 +1,7 @@
+import type { Context, Lists } from '.keystone/types'
 import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
-import { checkbox, text, relationship, timestamp, virtual } from '@keystone-6/core/fields'
-import type { Context, Lists } from '.keystone/types'
+import { checkbox, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -74,27 +74,34 @@ function readOnlyBy(f: ({ session }: { session?: Session }) => boolean) {
   }
 }
 
-function viewOnlyBy(f: ({ session }: { session?: Session }) => boolean, mode: 'edit' | 'read') {
+function systemField(f: ({ session }: { session?: Session }) => boolean) {
   return {
-    createView: {
-      fieldMode: ({ session }: { session?: Session }) =>
-        f({ session }) ? (mode === 'edit' ? 'edit' : 'hidden') : 'hidden',
+    access: {
+      read: f,
+      create: denyAll,
+      update: denyAll,
     },
-    itemView: {
-      fieldMode: ({ session }: { session?: Session }) => (f({ session }) ? mode : 'hidden'),
+    graphql: {
+      omit: {
+        create: true,
+        update: true,
+      },
     },
-    listView: {
-      fieldMode: ({ session }: { session?: Session }) => (f({ session }) ? 'read' : 'hidden'),
+    ui: {
+      createView: {
+        fieldMode: 'hidden' as const,
+      },
+      itemView: {
+        fieldMode: (args: { session?: Session }) =>
+          f(args) ? ('read' as const) : ('hidden' as const),
+        fieldPosition: 'sidebar' as const,
+      },
+      listView: {
+        fieldMode: (args: { session?: Session }) =>
+          f(args) ? ('read' as const) : ('hidden' as const),
+      },
     },
   }
-}
-
-function readOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
-  return viewOnlyBy(f, 'read')
-}
-
-function editOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
-  return viewOnlyBy(f, 'edit')
 }
 
 const g = gWithContext<Context>()
@@ -137,49 +144,22 @@ export const lists = {
     fields: {
       title: text(),
       content: text(),
-      hidden: checkbox({
-        access: moderatorsOrAbove,
-        ui: {
-          ...editOnlyViewBy(moderatorsOrAbove),
-        },
-      }),
 
       // read only fields
       createdBy: relationship({
         ref: 'Contributor.posts',
-        access: readOnlyBy(allowAll),
-        ui: {
-          ...readOnlyViewBy(allowAll),
-        },
+        ...systemField(allowAll),
       }),
-      createdAt: timestamp({
-        access: readOnlyBy(allowAll),
-        ui: {
-          ...readOnlyViewBy(allowAll),
-        },
-      }),
-      updatedAt: timestamp({
-        access: readOnlyBy(allowAll),
-        ui: {
-          ...readOnlyViewBy(allowAll),
-        },
-      }),
+      createdAt: timestamp({ ...systemField(allowAll) }),
+      updatedAt: timestamp({ ...systemField(allowAll) }),
       hiddenBy: relationship({
         ref: 'Moderator.hidden',
-        access: readOnlyBy(moderatorsOrAbove),
-        ui: {
-          ...readOnlyViewBy(moderatorsOrAbove),
-        },
+        ...systemField(moderatorsOrAbove),
       }),
-      hiddenAt: timestamp({
-        access: readOnlyBy(moderatorsOrAbove),
-        ui: {
-          ...readOnlyViewBy(moderatorsOrAbove),
-        },
-      }),
+      hiddenAt: timestamp({ ...systemField(moderatorsOrAbove) }),
 
       moderatedBy: virtual({
-        access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
+        access: readOnlyBy(allowAll), // WARNING: public
         field: g.field({
           type: g.object<{
             name: string
@@ -208,37 +188,75 @@ export const lists = {
     hooks: {
       resolveInput: {
         create: ({ context: { session }, resolvedData }) => {
-          resolvedData.createdAt = new Date()
-          if (isContributor(session)) {
-            return {
-              ...resolvedData,
-              createdBy: {
-                connect: {
-                  id: session.contributor.id,
-                },
-              },
-            }
-          }
-          return resolvedData
-        },
-        update: ({ context: { session }, resolvedData }) => {
-          resolvedData.updatedAt = new Date()
-          if ('hidden' in resolvedData && isModerator(session)) {
-            resolvedData.hiddenBy = resolvedData.hidden
+          return {
+            ...resolvedData,
+            createdAt: new Date(),
+            ...(isContributor(session)
               ? {
-                  connect: {
-                    id: session.moderator.id,
+                  createdBy: {
+                    connect: { id: session.contributor.id },
                   },
-                  // TODO: should support : null
                 }
-              : {
-                  disconnect: true,
-                }
-
-            resolvedData.hiddenAt = resolvedData.hidden ? new Date() : null
+              : {}),
           }
+        },
+        update: ({ resolvedData }) => {
+          return {
+            ...resolvedData,
+            updatedAt: new Date(),
+          }
+        },
+      },
+    },
 
-          return resolvedData
+    actions: {
+      // flagPost
+      flag: {
+        access: moderatorsOrAbove,
+        // null redirects the page, otherwise it updates the page
+        async resolve(context, { where }) {
+          return await context.db.Post.updateOne({
+            where,
+            data: {
+              ...(isModerator(context.session)
+                ? {
+                    hiddenBy: {
+                      connect: { id: context.session.moderator.id },
+                    },
+                  }
+                : null),
+              hiddenAt: new Date(),
+            },
+          })
+        },
+        ui: {
+          label: 'Flag',
+          icon: 'flagIcon',
+          messages: {
+            promptTitle: 'Flag {itemLabel}',
+            promptTitleMany: 'Flag {count} {singular|plural}',
+            prompt: 'Are you sure you want to flag "{itemLabel}"?',
+            promptMany: 'Are you sure you want to flag {count} {singular|plural}?',
+            promptConfirmLabel: 'Yes, flag this {singular}',
+            promptConfirmLabelMany: 'Yes, flag {count} {singular|plural}',
+            fail: 'Could not flag {singular}',
+            failMany: 'Could not flag {countFail} {singular|plural}',
+            success: 'Flagged "{itemLabel}"',
+            successMany: 'Successfully flagged {countSuccess} {singular|plural}',
+          },
+          itemView: {
+            actionMode: ({ session }) => {
+              if (isModerator(session)) return 'enabled'
+              if (isAdmin(session)) return 'disabled'
+              return 'hidden'
+            },
+          },
+          listView: {
+            actionMode: ({ session }) => {
+              if (isModerator(session)) return 'enabled'
+              return 'hidden'
+            },
+          },
         },
       },
     },

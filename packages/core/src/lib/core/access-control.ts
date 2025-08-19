@@ -1,14 +1,17 @@
 import { assertInputObjectType } from 'graphql'
+
+import { allowAll } from '../../access'
 import type {
+  ActionAccessControlFunction,
   BaseItem,
   BaseListTypeInfo,
   CreateListItemAccessControl,
   DeleteListItemAccessControl,
   FieldAccessControl,
+  FieldAccessControlFunction,
   FieldCreateItemAccessArgs,
   FieldReadItemAccessArgs,
   FieldUpdateItemAccessArgs,
-  FieldAccessControlFunction,
   KeystoneContext,
   ListAccessControl,
   ListFilterAccessControl,
@@ -16,7 +19,6 @@ import type {
   UpdateListItemAccessControl,
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
-import { allowAll } from '../../access'
 import { accessDeniedError, accessReturnError, extensionError, formatKeys } from './graphql-errors'
 import type { InitialisedList } from './initialise-lists'
 import { type InputFilter, type UniqueInputFilter, resolveUniqueWhereInput } from './where-inputs'
@@ -318,6 +320,8 @@ export function parseFieldAccessControl(
     update: access?.update ?? allowAll,
   }
 }
+
+export type ResolvedActionAccessControl = ActionAccessControlFunction<BaseListTypeInfo>
 
 export type ResolvedListAccessControl = {
   operation: {

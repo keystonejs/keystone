@@ -9,7 +9,15 @@ import { Heading, Text } from '@keystar/ui/typography'
 export function GraphQLErrorNotice({
   errors: errors_ = [],
 }: {
-  errors?: (null | undefined | ServerError | ServerParseError | GraphQLError | GraphQLFormattedError | Error)[]
+  errors?: (
+    | null
+    | undefined
+    | ServerError
+    | ServerParseError
+    | GraphQLError
+    | GraphQLFormattedError
+    | Error
+  )[]
 }) {
   const errors = errors_.filter((x): x is NonNullable<typeof x> => !!x)
   if (!errors.length) return null
