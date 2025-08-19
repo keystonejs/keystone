@@ -2,9 +2,10 @@ import path from 'node:path'
 
 import type {
   BaseFieldTypeInfo,
+  BaseItem,
   BaseListTypeInfo,
-  ConditionalFieldFilter,
-  ConditionalFieldFilterCase,
+  ConditionalFilter,
+  ConditionalFilterCase,
   KeystoneConfig,
   KeystoneContext,
   MaybeBooleanItemFunctionWithFilter,
@@ -28,8 +29,8 @@ type FieldMetaSource_ = {
 
   isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
-    fieldMode: EmptyResolver<ConditionalFieldFilter<'edit' | 'hidden', BaseListTypeInfo>>
-    isRequired: EmptyResolver<ConditionalFieldFilterCase<BaseListTypeInfo>>
+    fieldMode: EmptyResolver<ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>>
+    isRequired: EmptyResolver<ConditionalFilterCase<BaseListTypeInfo>>
   }
   itemView: {
     fieldMode: MaybeItemFieldFunctionWithFilter<
@@ -45,7 +46,10 @@ type FieldMetaSource_ = {
   }
 }
 export type FieldMetaSource = FieldMetaSource_ &
-  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'> & {
+    item: BaseItem | null
+    itemField: BaseItem[string] | null
+  }
 
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
@@ -67,7 +71,10 @@ type ListMetaSource_ = {
   hideCreate: EmptyResolver<boolean>
   hideDelete: EmptyResolver<boolean>
 }
-export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSource_>
+export type ListMetaSource = ListMetaSource_ &
+  Omit<ListMeta, keyof ListMetaSource_> & {
+    item: any
+  }
 
 export type AdminMetaSource = {
   lists: ListMetaSource[]
@@ -159,6 +166,8 @@ export function createAdminMeta(
       hideDelete: normalizeMaybeSessionFunction(
         listConfig.ui?.hideDelete ?? !list.graphql.isEnabled.delete
       ),
+
+      item: null, // part of resolver
     } satisfies ListMetaSource
 
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
@@ -231,12 +240,16 @@ export function createAdminMeta(
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),
         },
+
+        item: null, // part of resolver
+        itemField: null, // part of resolver
       } satisfies FieldMetaSource
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
     }
 
+    // populate .groups
     for (const group of list.groups) {
       adminMetaRoot.listsByKey[listKey].groups.push({
         label: group.label,

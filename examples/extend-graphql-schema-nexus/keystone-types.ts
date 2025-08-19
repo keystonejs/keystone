@@ -178,13 +178,13 @@ export type KeystoneAdminUIFieldMetaIsNonNull =
   | 'create'
   | 'update'
 
-export type KeystoneAdminUIFieldMetaListViewFieldMode =
-  | 'read'
-  | 'hidden'
-
 export type KeystoneAdminUIFieldMetaItemViewFieldPosition =
   | 'form'
   | 'sidebar'
+
+export type KeystoneAdminUIFieldMetaListViewFieldMode =
+  | 'read'
+  | 'hidden'
 
 export type QueryMode =
   | 'default'

@@ -198,7 +198,7 @@ type KeystoneMeta {
 
 type KeystoneAdminMeta {
   lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
+  list(key: String!, itemId: ID): KeystoneAdminUIListMeta
 }
 
 type KeystoneAdminUIListMeta {
@@ -233,8 +233,8 @@ type KeystoneAdminUIFieldMeta {
   viewsIndex: Int!
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
+  itemView: KeystoneAdminUIFieldMetaItemView
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -249,15 +249,6 @@ type KeystoneAdminUIFieldMetaCreateView {
   isRequired: JSON!
 }
 
-type KeystoneAdminUIFieldMetaListView {
-  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaListViewFieldMode {
-  read
-  hidden
-}
-
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: JSON!
   fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
@@ -267,6 +258,15 @@ type KeystoneAdminUIFieldMetaItemView {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
 }
 
 enum QueryMode {

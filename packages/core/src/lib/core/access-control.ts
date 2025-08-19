@@ -8,7 +8,7 @@ import type {
   FieldCreateItemAccessArgs,
   FieldReadItemAccessArgs,
   FieldUpdateItemAccessArgs,
-  IndividualFieldAccessControl,
+  FieldAccessControlFunction,
   KeystoneContext,
   ListAccessControl,
   ListFilterAccessControl,
@@ -295,9 +295,10 @@ export async function enforceFieldLevelAccessControl(
 }
 
 export type ResolvedFieldAccessControl = {
-  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>
-  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>
-  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
+  read: FieldAccessControlFunction<FieldReadItemAccessArgs<BaseListTypeInfo>>
+  create: FieldAccessControlFunction<FieldCreateItemAccessArgs<BaseListTypeInfo>>
+  update: FieldAccessControlFunction<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
+  // delete: not supported
 }
 
 export function parseFieldAccessControl(

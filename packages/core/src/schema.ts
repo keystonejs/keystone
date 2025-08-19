@@ -12,7 +12,7 @@ import type {
   ListConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
-  MaybeSessionFunctionWithFilter
+  MaybeSessionFunctionWithFilter,
 } from './types'
 
 function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldConfig) {
@@ -32,36 +32,41 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
   return Object.fromEntries([
     ...(function* () {
       for (const [listKey, list] of Object.entries(config.lists)) {
-        yield [listKey, {
+        yield [
           listKey,
-          defaultIsFilterable: true, // TODO: move to access control?
-          defaultIsOrderable: true, // TODO: move to access control?
-          isSingleton: false,
-          ...list,
-          db: {
-            ...list.db,
-          },
-          fields: {
-            ...(list.isSingleton ? {
-              id: idFieldType({ kind: 'number', type: 'Int' }),
-              ...list.fields,
-            } : {
-              id: idFieldType(list.db?.idField ?? defaultIdField),
-              ...list.fields,
-            })
-          },
-          hooks: {
-            ...list.hooks,
-          },
-          graphql: {
-            ...list.graphql,
-          },
-          ui: {
-            ...list.ui,
-          },
-        } satisfies KeystoneConfig['lists'][typeof listKey]]
+          {
+            listKey,
+            defaultIsFilterable: true, // TODO: move to access control?
+            defaultIsOrderable: true, // TODO: move to access control?
+            isSingleton: false,
+            ...list,
+            db: {
+              ...list.db,
+            },
+            fields: {
+              ...(list.isSingleton
+                ? {
+                    id: idFieldType({ kind: 'number', type: 'Int' }),
+                    ...list.fields,
+                  }
+                : {
+                    id: idFieldType(list.db?.idField ?? defaultIdField),
+                    ...list.fields,
+                  }),
+            },
+            hooks: {
+              ...list.hooks,
+            },
+            graphql: {
+              ...list.graphql,
+            },
+            ui: {
+              ...list.ui,
+            },
+          } satisfies KeystoneConfig['lists'][typeof listKey],
+        ]
       }
-    }())
+    })(),
   ]) satisfies KeystoneConfig['lists']
 }
 

@@ -65,7 +65,7 @@ export function useApolloQuery(args: {
 
   // TODO: rewrite
   const _where = {
-    OR: useSearchFilter(manipulatedSearch, list, searchFields)
+    OR: useSearchFilter(manipulatedSearch, list, searchFields),
   }
   // memo is used for referential stability, not for performance
   const where = useMemo(() => {

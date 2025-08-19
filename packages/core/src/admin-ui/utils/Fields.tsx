@@ -2,21 +2,21 @@ import { useSlotId } from '@react-aria/utils'
 import { type ReactNode, useId } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'
-import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
 import { Icon } from '@keystar/ui/icon'
+import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Text } from '@keystar/ui/typography'
 
 import { textCursorInputIcon } from '@keystar/ui/icon/icons/textCursorInputIcon'
-import { EmptyState } from '../components/EmptyState'
 import type {
   BaseListTypeInfo,
-  ConditionalFieldFilter,
-  ConditionalFieldFilterCase,
+  ConditionalFilter,
+  ConditionalFilterCase,
   FieldGroupMeta,
   FieldMeta,
 } from '../../types'
+import { EmptyState } from '../components/EmptyState'
 
 // with implicit ANDing
 function applyFilter<T>(
@@ -31,7 +31,7 @@ function applyFilter<T>(
   return true
 }
 export function testFilter(
-  filter: ConditionalFieldFilterCase<BaseListTypeInfo> | undefined,
+  filter: ConditionalFilterCase<BaseListTypeInfo> | undefined,
   serialized: Record<string, unknown>
 ): boolean {
   if (filter === undefined) return false
@@ -68,9 +68,9 @@ export function Fields({
   invalidFields: ReadonlySet<string>
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
-  fieldModes?: Record<string, ConditionalFieldFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
+  fieldModes?: Record<string, ConditionalFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
   fieldPositions?: Record<string, 'form' | 'sidebar'>
-  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
+  isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false

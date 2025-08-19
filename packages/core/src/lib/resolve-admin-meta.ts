@@ -40,47 +40,14 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
         })
       ),
     }),
-    listView: g.field({
-      type: g.nonNull(
-        g.object<FieldMetaSource['listView']>()({
-          name: 'KeystoneAdminUIFieldMetaListView',
-          fields: {
-            fieldMode: g.field({
-              type: g.nonNull(
-                g.enum({
-                  name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
-                  values: g.enumValues(['read', 'hidden']),
-                })
-              ),
-            }),
-          },
-        })
-      ),
-    }),
     itemView: g.field({
-      args: { id: g.arg({ type: g.ID }) },
-      resolve: async ({ itemView, listKey, fieldKey }, { id }, context) => {
-        if (id == null) {
-          return {
-            listKey,
-            fieldKey,
-            fieldMode: itemView.fieldMode,
-            fieldPosition: itemView.fieldPosition,
-            isRequired: itemView.isRequired,
-            item: null,
-            itemField: null,
-          }
-        }
-        const item = await context.db[listKey].findOne({ where: { id } })
-        if (!item) return null
+      resolve: ({ listKey, fieldKey, itemView, item, itemField }) => {
         return {
           listKey,
           fieldKey,
-          fieldMode: itemView.fieldMode,
-          fieldPosition: itemView.fieldPosition,
-          isRequired: itemView.isRequired,
+          ...itemView,
           item,
-          itemField: item[fieldKey],
+          itemField,
         }
       },
       type: g.object<{
@@ -134,15 +101,32 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
               return isRequired({
                 session: context.session,
                 context,
-                item,
-                itemField,
                 listKey,
                 fieldKey,
+                item,
+                itemField,
               })
             },
           }),
         },
       }),
+    }),
+    listView: g.field({
+      type: g.nonNull(
+        g.object<FieldMetaSource['listView']>()({
+          name: 'KeystoneAdminUIFieldMetaListView',
+          fields: {
+            fieldMode: g.field({
+              type: g.nonNull(
+                g.enum({
+                  name: 'KeystoneAdminUIFieldMetaListViewFieldMode',
+                  values: g.enumValues(['read', 'hidden']),
+                })
+              ),
+            }),
+          },
+        })
+      ),
     }),
     search: g.field({
       type: QueryMode,
@@ -255,9 +239,23 @@ const adminMeta = g.object<AdminMetaSource>()({
     }),
     list: g.field({
       type: KeystoneAdminUIListMeta,
-      args: { key: g.arg({ type: g.nonNull(g.String) }) },
-      resolve(source, { key }) {
-        return source.listsByKey[key]
+      args: {
+        key: g.arg({ type: g.nonNull(g.String) }),
+        itemId: g.arg({ type: g.ID }),
+      },
+      async resolve(source, { key, itemId }, context) {
+        if (itemId === null || itemId === undefined) {
+          return {
+            ...source.listsByKey[key],
+            item: null,
+          }
+        }
+        const item = await context.db[key].findOne({ where: { id: itemId } })
+        if (!item) return null
+        return {
+          ...source.listsByKey[key],
+          item,
+        }
       },
     }),
   },
