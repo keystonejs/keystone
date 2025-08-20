@@ -109,6 +109,16 @@ export type QueryMode =
   | 'default'
   | 'insensitive'
 
+export type KeystoneAdminUIActionMetaTone =
+  | 'neutral'
+  | 'accent'
+  | 'critical'
+
+export type KeystoneAdminUIActionMetaListViewActionMode =
+  | 'enabled'
+  | 'disabled'
+  | 'hidden'
+
 export type KeystoneAdminUISortDirection =
   | 'ASC'
   | 'DESC'
@@ -134,6 +144,7 @@ export declare namespace Lists {
       key: 'Post'
       isSingleton: false
       fields: 'id' | 'title' | 'content' | 'publishDate'
+      actions: 
       item: Item
       inputs: {
         where: PostWhereInput

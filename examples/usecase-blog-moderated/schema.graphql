@@ -320,6 +320,7 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  flagPost(where: PostWhereUniqueInput!): Post
   createContributor(data: ContributorCreateInput!): Contributor
   createContributors(data: [ContributorCreateInput!]!): [Contributor]
   updateContributor(where: ContributorWhereUniqueInput!, data: ContributorUpdateInput!): Contributor

@@ -59,8 +59,8 @@ export const lists = {
       report: {
         access: allowAll,
         // null redirects to the list view, otherwise to the item view {for the returned item id}
-        async resolve(context: Context, { where }) {
-          console.log('reportPost action called', { where })
+        async resolve(context: Context, { actionKey, where }) {
+          console.log(`${actionKey} called`, { where })
           if (!where) return null
           return await context.sudo().db.Post.updateOne({
             where,

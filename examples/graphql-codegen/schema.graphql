@@ -221,6 +221,7 @@ type KeystoneAdminUIListMeta {
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  actions: [KeystoneAdminUIActionMeta!]!
   graphql: KeystoneAdminUIGraphQL!
   pageSize: Int!
   initialColumns: [String!]!
@@ -289,6 +290,35 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIActionMeta {
+  key: String!
+  label: String!
+  verb: String!
+  tone: KeystoneAdminUIActionMetaTone!
+  itemView: KeystoneAdminUIActionMetaItemView
+  listView: KeystoneAdminUIActionMetaListView!
+}
+
+enum KeystoneAdminUIActionMetaTone {
+  neutral
+  accent
+  critical
+}
+
+type KeystoneAdminUIActionMetaItemView {
+  actionMode: JSON!
+}
+
+type KeystoneAdminUIActionMetaListView {
+  actionMode: KeystoneAdminUIActionMetaListViewActionMode!
+}
+
+enum KeystoneAdminUIActionMetaListViewActionMode {
+  enabled
+  disabled
+  hidden
 }
 
 type KeystoneAdminUIGraphQL {
