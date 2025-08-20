@@ -1,7 +1,8 @@
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import {
   type FormEvent,
   Fragment,
+  Key,
   type PropsWithChildren,
   useCallback,
   useEffect,
@@ -20,7 +21,6 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { capitalize } from 'inflection'
 import { gql, useMutation } from '../../../../admin-ui/apollo'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
@@ -35,7 +35,6 @@ import {
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import type {
-  ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
@@ -56,75 +55,6 @@ function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Fu
     callbackRef.current = callback
   })
   return cb as any
-}
-
-function ActionButton({
-  list,
-  actionKey,
-  itemId,
-  label,
-  verb,
-  tone,
-}: {
-  list: ListMeta
-  actionKey: string
-  itemId: string
-} & ActionMeta) {
-  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
-  const router = useRouter()
-  const [actionOnItem] = useMutation(
-    gql`mutation ${actionKey}${list.key}($id: ID!) {
-      result: ${actionKey}${list.key}(where: { id: $id }) {
-        id
-      }
-    }`,
-    { variables: { id: itemId } }
-  )
-
-  const singular = list.singular.toLocaleLowerCase()
-  return (
-    <Fragment>
-      <DialogTrigger>
-        <Button tone={tone}>{label}</Button>
-        <AlertDialog
-          tone={tone === 'accent' ? undefined : tone}
-          title={`${capitalize(verb)} this ${singular}`}
-          cancelLabel="Cancel"
-          primaryActionLabel={`Yes, ${verb} this ${singular}`}
-          onPrimaryAction={async () => {
-            try {
-              const data = await actionOnItem()
-              toastQueue.info(`Successfully ${verb}ed the ${singular}.`, {
-                timeout: 5000,
-              })
-
-              if (data.data?.result?.id) {
-                router.push(`/${list.path}/${data.data.result.id}`)
-              } else {
-                router.push(`/${list.path}`)
-              }
-            } catch (err: any) {
-              toastQueue.critical(`Unable to ${verb} this ${singular}.`, {
-                actionLabel: 'Details',
-                onAction: () => setErrorDialogValue(err),
-                shouldCloseOnAction: true,
-              })
-              return
-            }
-          }}
-        >
-          <Text>
-            Are you sure you want to {verb} the {singular}{' '}
-            <strong>{!list.isSingleton && `${itemId}`}</strong>?
-          </Text>
-        </AlertDialog>
-      </DialogTrigger>
-
-      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
-        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
-      </DialogContainer>
-    </Fragment>
-  )
 }
 
 function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
@@ -290,7 +220,6 @@ function ItemForm({
   })
 
   const hasChangedFields = useHasChanges('update', list.fields, value, initialValue)
-  const itemId = (value.id as string | number | undefined)?.toString()
 
   return (
     <Fragment>
@@ -352,13 +281,6 @@ function ItemForm({
           </Button>
           <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
-          {itemId && list.actions.length > 0
-            ? list.actions.map(({ key, ...action }) => {
-                return (
-                  <ActionButton key={key} actionKey={key} {...action} list={list} itemId={itemId} />
-                )
-              })
-            : null}
           {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
         </BaseToolbar>
       </form>
@@ -370,20 +292,34 @@ function ItemForm({
   )
 }
 
+function replace(s: string, list: ListMeta, args: {
+  itemLabel?: string
+}) {
+  if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
+  if (s.includes('{Plural}')) s = s.replaceAll('{Plural}', list.plural)
+  if (s.includes('{singular}')) s = s.replaceAll('{singular}', list.singular.toLowerCase())
+  if (s.includes('{plural}')) s = s.replaceAll('{plural}', list.plural.toLowerCase())
+  if ('itemLabel' in args) s = s.replaceAll('{itemLabel}', args.itemLabel ?? '')
+  return s
+}
+
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
 function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
-  const [id] = Array.isArray(id_) ? id_ : [id_]
-  const { data, error, loading, refetch } = useListItem(listKey, id ?? null)
+  const [itemId] = Array.isArray(id_) ? id_ : [id_]
+  const { data, error, loading, refetch } = useListItem(listKey, itemId ?? null)
+  const item = data?.item
+  const itemLabel_ = item?.[list.labelField] ?? item?.id
+  const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (itemId ?? '')
 
-  const pageLoading = loading || id === undefined
-  const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+  const pageLoading = loading || itemId === undefined
+  const pageLabel = itemLabel || itemId
   const pageTitle = list.isSingleton || typeof pageLabel !== 'string' ? list.label : pageLabel
   const initialValue = useMemo(() => {
-    if (!data?.item) return null
-    return deserializeItemToValue(list.fields, data.item)
+    if (!item) return null
+    return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
 
   const { fieldModes, fieldPositions, isRequireds } = useMemo(() => {
@@ -406,6 +342,41 @@ function ItemPage({ listKey }: ItemPageProps) {
     return { fieldModes, fieldPositions, isRequireds }
   }, [data?.keystone.adminMeta, list.fields])
 
+  async function onTryAction(key: Key) {
+    if (!list.actions) return
+    const action = list.actions.find(action => action.key === key)
+    if (!action) return
+    const { messages: m } = action
+    const { navigation } = action.itemView
+
+    try {
+      const data = await (function(){})() // TODO: FIXME: this should be the action mutation call
+      const returnedItemId = data.data?.result?.id
+
+      toastQueue.neutral(
+        replace(m.success, list, { itemLabel }),
+        { timeout: 5000 }
+      )
+
+      if ((navigation === 'follow' && returnedItemId === itemId) || (navigation === 'refetch')) {
+        refetch()
+      } else if (navigation === 'follow' && returnedItemId) {
+        router.push(`/${list.path}/${returnedItemId}`)
+      } else {
+        router.push(list.isSingleton ? '/' : `/${list.path}`)
+      }
+    } catch (err: any) {
+      toastQueue.critical(
+        replace(m.fail, list, { itemLabel }),
+        {
+          actionLabel: 'Details',
+          onAction: () => setErrorDialogValue(err),
+          shouldCloseOnAction: true,
+        }
+      )
+    }
+  }
+
   return (
     <PageContainer
       title={pageTitle}
@@ -414,6 +385,7 @@ function ItemPage({ listKey }: ItemPageProps) {
           list={list}
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
+          onAction={onTryAction}
         />
       }
     >
@@ -425,9 +397,9 @@ function ItemPage({ listKey }: ItemPageProps) {
         <ColumnLayout>
           <Box marginY="xlarge">
             <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
-            {data?.item == null &&
+            {item == null &&
               (list.isSingleton ? (
-                id === '1' ? (
+                itemId === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
                     {!list.hideCreate && <CreateButtonLink list={list} />}
@@ -435,14 +407,14 @@ function ItemPage({ listKey }: ItemPageProps) {
                 ) : (
                   <ItemNotFound>
                     <Text>
-                      An item with ID <strong>“{id}”</strong> does not exist.
+                      An item with ID <strong>“{itemId}”</strong> does not exist.
                     </Text>
                   </ItemNotFound>
                 )
               ) : (
                 <ItemNotFound>
                   <Text>
-                    The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access
+                    The item with ID <strong>“{itemId}”</strong> doesn’t exist, or you don’t have access
                     to it.
                   </Text>
                 </ItemNotFound>

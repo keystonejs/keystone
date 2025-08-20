@@ -1,26 +1,33 @@
-import { type HTMLAttributes, type ReactNode, Fragment } from 'react'
 import { useRouter } from 'next/router'
+import { type HTMLAttributes, type ReactNode, Fragment, Key } from 'react'
 
+import { ActionGroup } from '@keystar/ui/action-group'
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
+import { Icon } from '@keystar/ui/icon'
+import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import { Grid, HStack } from '@keystar/ui/layout'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { Heading, Text } from '@keystar/ui/typography'
-
 import { Container } from '../../../../admin-ui/components/Container'
 import type { ListMeta } from '../../../../types'
 
-type ItemPageHeaderProps = {
+export function ItemPageHeader({
+  label,
+  list,
+  title = label,
+  onAction,
+}: {
   label: string
   list: ListMeta
   title: string
-}
-
-export function ItemPageHeader(props: ItemPageHeaderProps) {
-  const { label, list, title = label } = props
+  onAction: (key: Key) => void
+}) {
   const router = useRouter()
+  const actions = list.actions.filter(action => action.itemView.actionMode !== 'hidden')
+  const disabledActions = list.actions.filter(action => action.itemView.actionMode === 'disabled').map(action => action.key)
 
   return (
-    <Container flex>
+    <HStack gap="regular">
       {list.isSingleton ? (
         <Heading elementType="h1" size="small">
           {list.label}
@@ -38,7 +45,23 @@ export function ItemPageHeader(props: ItemPageHeaderProps) {
           </Text>
         </Fragment>
       )}
-    </Container>
+      <ActionGroup
+        disabledKeys={disabledActions}
+        onAction={onAction}
+        overflowMode="collapse">
+        {[...(function* () {
+          for (const action of actions) {
+            const iconComponent = action.icon ? KeystarIcons[action.icon] : null
+            yield <Item
+              key={action.key}
+              textValue={action.label}>
+              {iconComponent ? <Icon src={iconComponent} /> : null}
+              <Text>{action.label}</Text>
+            </Item>
+          }
+        })()]}
+      </ActionGroup>
+  </HStack>
   )
 }
 

@@ -55,10 +55,28 @@ export const adminMetaQuery = gql`
             key
 
             label
-            verb
-            tone
+            icon
+            messages {
+              promptTitle
+              promptTitleMany
+              prompt
+              promptMany
+              promptConfirmLabel
+              promptConfirmLabelMany
+              fail
+              failMany
+              success
+              successMany
+            }
+            graphql {
+              names {
+                one
+                many
+              }
+            }
             itemView {
               actionMode
+              navigation
             }
             listView {
               actionMode
@@ -113,15 +131,13 @@ export const adminMetaQuery = gql`
   }
 `
 
-// TODO: FIXME: should use DeepNullable
-// TODO: duplicate, reference core/src/lib/create-admin-meta.ts
+// TODO: duplicate, reference core/src/lib/admin-meta.ts
 export type AdminMetaQuery = {
   keystone: {
     adminMeta: {
       lists: (ListMeta & {
-        fields: (Omit<FieldMeta, 'graphql'> & {
-          isNonNull: FieldMeta['graphql']['isNonNull'] // TODO: FIXME: flattened?
-        })[]
+        fields: ListMeta['fields'][string][]
+        actions: ListMeta['actions']
         groups: (FieldGroupMeta & {
           fields: FieldMeta[]
         })[]

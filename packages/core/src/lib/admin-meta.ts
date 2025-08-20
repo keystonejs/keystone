@@ -14,7 +14,7 @@ import type {
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybePromise,
-  MaybeSessionFunction,
+  MaybeSessionFunction
 } from '../types'
 import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames, JSONValue } from '../types/utils'
@@ -28,7 +28,6 @@ type FieldMetaSource_ = {
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
 
-  isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
     fieldMode: EmptyResolver<ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>>
     isRequired: EmptyResolver<ConditionalFilterCase<BaseListTypeInfo>>
@@ -49,18 +48,18 @@ type FieldMetaSource_ = {
   itemField: BaseItem[string] | null
 }
 export type FieldMetaSource = FieldMetaSource_ &
-  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'>
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'views'>
 
 type ActionMetaSource_ = {
   listKey: string
-  itemView: {
+  itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
     actionMode: MaybeItemActionFunctionWithFilter<
       'enabled' | 'disabled' | 'hidden',
       BaseListTypeInfo
     >
   }
   listView: {
-    actionMode: EmptyResolver<'enabled' | 'disabled' | 'hidden'>
+    actionMode: EmptyResolver<'enabled' | 'hidden'>
   }
   item: BaseItem | null
 }
@@ -203,6 +202,8 @@ export function createAdminMeta(
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue
 
+    const listMeta = adminMetaRoot.listsByKey[listKey]
+
     // populate .fields
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // if the field is a relationship field and is related to an omitted list, skip.
@@ -261,23 +262,28 @@ export function createAdminMeta(
         itemField: null, // part of resolver
       } satisfies FieldMetaSource
 
-      adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
-      adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
+      listMeta.fields.push(fieldMeta)
+      listMeta.fieldsByKey[fieldKey] = fieldMeta
     }
 
     // populate .actions
     for (const action of list.actions) {
-      adminMetaRoot.listsByKey[listKey].actions.push({
+      listMeta.actions.push({
         // ActionMeta
         key: action.actionKey,
         label: action.ui.label,
-        verb: action.ui.verb,
-        tone: action.ui.tone,
+        icon: action.ui.icon,
+        messages: {
+          ...action.ui.messages,
+        },
+        graphql: {
+          ...action.graphql,
+        },
 
         // ActionMetaSource_
         listKey,
         itemView: {
-          actionMode: action.ui.itemView.actionMode,
+          ...action.ui.itemView,
         },
         listView: {
           actionMode: normalizeMaybeSessionFunction(action.ui.listView.actionMode),
@@ -288,7 +294,7 @@ export function createAdminMeta(
 
     // populate .groups
     for (const group of list.groups) {
-      adminMetaRoot.listsByKey[listKey].groups.push({
+      listMeta.groups.push({
         label: group.label,
         description: group.description,
         fields: group.fields.map(

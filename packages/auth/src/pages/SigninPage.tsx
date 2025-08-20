@@ -29,14 +29,14 @@ function SigninPage({
   const router = useRouter()
   const [state, setState] = useState({ identity: '', secret: '' })
   const {
-    authenticateItemWithPassword: mutationName,
+    authenticateItemWithPassword,
     ItemAuthenticationWithPasswordSuccess: successTypename,
     ItemAuthenticationWithPasswordFailure: failureTypename,
   } = authGqlNames
   const [tryAuthenticate, { error, loading, data }] = useMutation(
     gql`
     mutation KsAuthSignin ($identity: String!, $secret: String!) {
-      authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
+      authenticate: ${authenticateItemWithPassword}(${identityField}: $identity, ${secretField}: $secret) {
         ... on ${successTypename} {
           item {
             id

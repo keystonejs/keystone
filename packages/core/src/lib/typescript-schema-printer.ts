@@ -173,6 +173,11 @@ export function printGeneratedTypes(
           `    fields: ${Object.keys(list.fields)
             .map(x => `'${x}'`)
             .join(' | ')}`,
+          `    actions: ${
+            Object.values(list.actions)
+              .map(x => `'${x.actionKey}'`)
+              .join(' | ') || 'never'
+          }`,
           `    item: Item`,
           `    inputs: {`,
           `      where: ${printTypeReferenceWithoutNullable(list.graphql.types.where)}`,

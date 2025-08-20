@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { text, timestamp } from '@keystone-6/core/fields'
+import { integer, text, timestamp } from '@keystone-6/core/fields'
 
 import type { Context, Lists } from '.keystone/types'
 
@@ -36,32 +36,48 @@ const systemField = {
 
 export const lists = {
   Post: list({
-    access: {
-      operation: {
-        query: allowAll, // WARNING: public
-        create: allowAll, // WARNING: public
-        update: allowAll, // WARNING: public
-        delete: denyAll,
-      },
-    },
+    access: allowAll, // WARNING: public
     fields: {
       title: text(),
       content: text(),
+      votes: integer({ defaultValue: 0 }),
       reportedAt: timestamp({ ...systemField }),
     },
-    graphql: {
-      omit: {
-        delete: true,
-      },
-    },
     actions: {
-      // reportPost
+      vote: {
+        access: allowAll,
+        // with navigation: 'follow', null redirects to the list view, otherwise to the item view {with the returned item id}
+        async resolve(context: Context, { actionKey, where }) {
+          console.log(`${actionKey}`, JSON.stringify({ where }))
+          if (!where) return null
+          if (typeof where.id !== 'string') return null // TODO: FIXME: { increment } support for context.db?
+          return await context.prisma.post.update({
+            where: { id: where.id },
+            data: {
+              votes: {
+                increment: 1
+              }
+            },
+          })
+        },
+        ui: {
+          label: 'Vote +1',
+          icon: 'voteIcon',
+          messages: {
+            success: 'Voted for {itemLabel}',
+          },
+          itemView: {
+            showToast: true,
+          },
+          listView: {
+            actionMode: 'hidden',
+          },
+        },
+      },
       report: {
         access: allowAll,
-        // null redirects to the list view, otherwise to the item view {for the returned item id}
         async resolve(context: Context, { actionKey, where }) {
-          console.log(`${actionKey} called`, { where })
-          if (!where) return null
+          console.log(`${actionKey}`, JSON.stringify({ where }))
           return await context.sudo().db.Post.updateOne({
             where,
             data: {
@@ -69,12 +85,29 @@ export const lists = {
             },
           })
         },
+        graphql: {
+          singular: 'reportAPost', // optional, defaults to 'reportPost'
+          plural: 'reportSomePosts', // optional, defaults to 'reportPosts'
+        },
         ui: {
           label: 'Report',
-          verb: 'report',
-          tone: 'critical',
+          icon: 'flagIcon',
+          messages: {
+            promptTitle: 'Report {itemLabel}',
+            promptTitleMany: 'Report {count} {singular|plural}',
+            prompt: 'Are you sure you want to report {itemLabel}?',
+            promptMany: 'Are you sure you want to report {count} {singular|plural}?',
+            promptConfirmLabel: 'Yes, report this {singular}',
+            promptConfirmLabelMany: 'Yes, report {count} {singular|plural}',
+            fail: 'Could not report {singular}',
+            failMany: 'Could not report {countFail} {singular|plural}',
+            success: '{Singular} reported',
+            successMany: 'Successfully reported {countSuccess} {singular|plural}',
+          },
           itemView: {
             actionMode: () => 'enabled',
+            navigation: 'refetch',
+            showPrompt: true,
           },
           listView: {
             actionMode: 'enabled',

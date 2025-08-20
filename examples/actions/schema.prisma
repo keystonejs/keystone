@@ -16,5 +16,6 @@ model Post {
   id         String    @id @default(cuid())
   title      String    @default("")
   content    String    @default("")
+  votes      Int?      @default(0)
   reportedAt DateTime?
 }

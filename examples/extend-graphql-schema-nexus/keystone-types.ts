@@ -239,7 +239,7 @@ export declare namespace Lists {
       key: 'Post'
       isSingleton: false
       fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author'
-      actions: 
+      actions: never
       item: Item
       inputs: {
         where: PostWhereInput
@@ -262,7 +262,7 @@ export declare namespace Lists {
       key: 'Author'
       isSingleton: false
       fields: 'id' | 'name' | 'posts'
-      actions: 
+      actions: never
       item: Item
       inputs: {
         where: AuthorWhereInput

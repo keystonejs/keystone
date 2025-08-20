@@ -77,6 +77,8 @@ export function __getNames(listKey: string, list: KeystoneConfig['lists'][string
 
   return {
     graphql: {
+      singular: graphqlSingular,
+      plural: graphqlPlural,
       names: getGqlNames({
         singular: graphqlSingular,
         plural: graphqlPlural,

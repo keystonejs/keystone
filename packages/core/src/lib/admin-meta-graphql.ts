@@ -1,4 +1,3 @@
-import type { BaseItem } from '../types'
 import { QueryMode } from '../types'
 import { g } from '../types/schema'
 import type { GraphQLNames } from '../types/utils'
@@ -46,29 +45,14 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
       ),
     }),
     itemView: g.field({
-      resolve: ({ listKey, fieldKey, itemView, item, itemField }) => {
-        return {
-          listKey,
-          fieldKey,
-          ...itemView,
-          item,
-          itemField,
-        }
-      },
-      type: g.object<{
-        listKey: string
-        fieldKey: string
-        fieldMode: FieldMetaSource['itemView']['fieldMode']
-        fieldPosition: FieldMetaSource['itemView']['fieldPosition']
-        isRequired: FieldMetaSource['itemView']['isRequired']
-        item: BaseItem | null
-        itemField: BaseItem[string] | null
-      }>()({
+      resolve: (args) => args,
+      type: g.object<FieldMetaSource>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {
           fieldMode: g.field({
             type: g.nonNull(g.JSON),
-            async resolve({ fieldMode, listKey, fieldKey, item, itemField }, _, context) {
+            async resolve({ listKey, fieldKey, itemView, item, itemField }, _, context) {
+              const { fieldMode } = itemView
               if (typeof fieldMode !== 'function') return fieldMode
               return fieldMode({
                 session: context.session,
@@ -87,7 +71,8 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
                 values: g.enumValues(['form', 'sidebar']),
               })
             ),
-            async resolve({ fieldPosition, listKey, fieldKey, item, itemField }, _, context) {
+            async resolve({ listKey, fieldKey, itemView, item, itemField }, _, context) {
+              const { fieldPosition } = itemView
               if (typeof fieldPosition !== 'function') return fieldPosition
               return fieldPosition({
                 session: context.session,
@@ -101,7 +86,8 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
           }),
           isRequired: g.field({
             type: g.nonNull(g.JSON),
-            resolve({ isRequired, item, fieldKey, itemField, listKey }, _, context) {
+            resolve({ item, fieldKey, itemView, itemField, listKey }, _, context) {
+              const { isRequired } = itemView
               if (typeof isRequired !== 'function') return isRequired
               return isRequired({
                 session: context.session,
@@ -144,43 +130,66 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
   fields: {
     key: g.field({ type: g.nonNull(g.String) }),
     label: g.field({ type: g.nonNull(g.String) }),
-    verb: g.field({ type: g.nonNull(g.String) }),
-    tone: g.field({
+    icon: g.field({ type: g.String }),
+    messages: g.field({
       type: g.nonNull(
-        g.enum({
-          name: 'KeystoneAdminUIActionMetaTone',
-          values: g.enumValues(['neutral', 'accent', 'critical']),
+        g.object<ActionMetaSource['messages']>()({
+          name: 'KeystoneAdminUIActionMetaMessages',
+          fields: {
+            promptTitle: g.field({ type: g.nonNull(g.String) }),
+            promptTitleMany: g.field({ type: g.String }),
+            prompt: g.field({ type: g.nonNull(g.String) }),
+            promptMany: g.field({ type: g.String }),
+            promptConfirmLabel: g.field({ type: g.nonNull(g.String) }),
+            promptConfirmLabelMany: g.field({ type: g.String }),
+            fail: g.field({ type: g.nonNull(g.String) }),
+            failMany: g.field({ type: g.String }),
+            success: g.field({ type: g.nonNull(g.String) }),
+            successMany: g.field({ type: g.String }),
+          },
         })
       ),
     }),
-    itemView: g.field({
-      resolve: ({ listKey, key, itemView, item }) => {
-        return {
-          listKey,
-          actionKey: key,
-          ...itemView,
-          item,
-        }
+    graphql: g.field({ type: g.object<ActionMetaSource['graphql']>()({
+      name: 'KeystoneAdminUIActionMetaGraphQL',
+      fields: {
+        names: g.field({ type: g.nonNull(g.object<ActionMetaSource['graphql']['names']>()({
+          name: 'KeystoneAdminUIActionMetaGraphQLNames',
+          fields: {
+            one: g.field({ type: g.nonNull(g.String) }),
+            many: g.field({ type: g.String }),
+          },
+        }))})
       },
-      type: g.object<{
-        listKey: string
-        actionKey: string
-        actionMode: ActionMetaSource['itemView']['actionMode']
-        item: BaseItem | null
-      }>()({
+    })}),
+    itemView: g.field({
+      resolve: (args) => args,
+      type: g.object<ActionMetaSource>()({
         name: 'KeystoneAdminUIActionMetaItemView',
         fields: {
           actionMode: g.field({
             type: g.nonNull(g.JSON),
-            async resolve({ listKey, actionKey, actionMode, item }, _, context) {
+            async resolve({ listKey, key, itemView, item }, _, context) {
+              const { actionMode } = itemView
               if (typeof actionMode !== 'function') return actionMode
               return actionMode({
                 session: context.session,
                 context,
                 listKey,
-                actionKey,
+                actionKey: key,
                 item,
               })
+            },
+          }),
+          navigation: g.field({
+            type: g.nonNull(
+              g.enum({
+                name: 'KeystoneAdminUIActionMetaItemViewNavigation',
+                values: g.enumValues(['follow', 'refetch', 'return']),
+              })
+            ),
+            resolve({ itemView }) {
+              return itemView.navigation
             },
           }),
         },
@@ -195,7 +204,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
               type: g.nonNull(
                 g.enum({
                   name: 'KeystoneAdminUIActionMetaListViewActionMode',
-                  values: g.enumValues(['enabled', 'disabled', 'hidden']),
+                  values: g.enumValues(['enabled', 'hidden']),
                 })
               ),
             }),
@@ -236,44 +245,42 @@ const KeystoneAdminUISort = g.object<NonNullable<ListMetaSource['initialSort']>>
   },
 })
 
-const KeystoneAdminUIGraphQLNames = g.object<GraphQLNames>()({
-  name: 'KeystoneAdminUIGraphQLNames',
-  fields: {
-    outputTypeName: g.field({ type: g.nonNull(g.String) }),
-    whereInputName: g.field({ type: g.nonNull(g.String) }),
-    whereUniqueInputName: g.field({ type: g.nonNull(g.String) }),
-
-    // create
-    createInputName: g.field({ type: g.nonNull(g.String) }),
-    createMutationName: g.field({ type: g.nonNull(g.String) }),
-    createManyMutationName: g.field({ type: g.nonNull(g.String) }),
-    relateToOneForCreateInputName: g.field({ type: g.nonNull(g.String) }),
-    relateToManyForCreateInputName: g.field({ type: g.nonNull(g.String) }),
-
-    // read
-    itemQueryName: g.field({ type: g.nonNull(g.String) }),
-    listOrderName: g.field({ type: g.nonNull(g.String) }),
-    listQueryCountName: g.field({ type: g.nonNull(g.String) }),
-    listQueryName: g.field({ type: g.nonNull(g.String) }),
-
-    // update
-    updateInputName: g.field({ type: g.nonNull(g.String) }),
-    updateMutationName: g.field({ type: g.nonNull(g.String) }),
-    updateManyInputName: g.field({ type: g.nonNull(g.String) }),
-    updateManyMutationName: g.field({ type: g.nonNull(g.String) }),
-    relateToOneForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
-    relateToManyForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
-
-    // delete
-    deleteMutationName: g.field({ type: g.nonNull(g.String) }),
-    deleteManyMutationName: g.field({ type: g.nonNull(g.String) }),
-  },
-})
-
 const KeystoneAdminUIGraphQL = g.object<any>()({
   name: 'KeystoneAdminUIGraphQL',
   fields: {
-    names: g.field({ type: g.nonNull(KeystoneAdminUIGraphQLNames) }),
+    names: g.field({ type: g.nonNull(g.object<GraphQLNames>()({
+      name: 'KeystoneAdminUIGraphQLNames',
+      fields: {
+        outputTypeName: g.field({ type: g.nonNull(g.String) }),
+        whereInputName: g.field({ type: g.nonNull(g.String) }),
+        whereUniqueInputName: g.field({ type: g.nonNull(g.String) }),
+
+        // create
+        createInputName: g.field({ type: g.nonNull(g.String) }),
+        createMutationName: g.field({ type: g.nonNull(g.String) }),
+        createManyMutationName: g.field({ type: g.nonNull(g.String) }),
+        relateToOneForCreateInputName: g.field({ type: g.nonNull(g.String) }),
+        relateToManyForCreateInputName: g.field({ type: g.nonNull(g.String) }),
+
+        // read
+        itemQueryName: g.field({ type: g.nonNull(g.String) }),
+        listOrderName: g.field({ type: g.nonNull(g.String) }),
+        listQueryCountName: g.field({ type: g.nonNull(g.String) }),
+        listQueryName: g.field({ type: g.nonNull(g.String) }),
+
+        // update
+        updateInputName: g.field({ type: g.nonNull(g.String) }),
+        updateMutationName: g.field({ type: g.nonNull(g.String) }),
+        updateManyInputName: g.field({ type: g.nonNull(g.String) }),
+        updateManyMutationName: g.field({ type: g.nonNull(g.String) }),
+        relateToOneForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
+        relateToManyForUpdateInputName: g.field({ type: g.nonNull(g.String) }),
+
+        // delete
+        deleteMutationName: g.field({ type: g.nonNull(g.String) }),
+        deleteManyMutationName: g.field({ type: g.nonNull(g.String) }),
+      },
+    }))})
   },
 })
 

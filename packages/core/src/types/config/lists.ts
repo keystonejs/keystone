@@ -1,18 +1,20 @@
 import type { CacheHint } from '@apollo/cache-control-types'
+import type { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
+
 import type { KeystoneContext } from '../context'
 import type { BaseListTypeInfo } from '../type-info'
 import type { MaybePromise } from '../utils'
-import type { ActionAccessControlFunction, ListAccessControl } from './access-control'
+import type { ListAccessControl, ActionAccessControlFunction } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
 import type { ListHooks } from './hooks'
 
 export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
   /**
-   * The key of the action, used to prefix the mutation in the GraphQL schema
+   * The key of the action, by default this is used to prefix the mutation in the GraphQL schema
    */
   [key: string]: {
     /**
-     * Controls what users can use this action
+     * Controls who or what can use this action
      * @see https://www.keystonejs.com/guides/auth-and-access-control
      */
     access: ActionAccessControlFunction<ListTypeInfo>
@@ -20,32 +22,102 @@ export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
       context: KeystoneContext<ListTypeInfo['all']>,
       args: {
         listKey: ListTypeInfo['key']
-        actionKey: string
+        actionKey: ListTypeInfo['actions']
         where: ListTypeInfo['inputs']['uniqueWhere']
       }
     ) => MaybePromise<ListTypeInfo['item'] | null>
+    graphql?: {
+      /**
+       * The name of the singular mutation in the GraphQL schema
+       * @default {action}{list.graphql.singular}
+       */
+      singular?: string
+      /**
+       * The name of the plural mutation in the GraphQL schema
+       * @default {action}{list.graphql.plural}
+       */
+      plural?: string
+      /**
+       * The description added to the GraphQL schema
+       * @default empty
+       */
+      description?: string
+    }
     ui: {
       /**
        * The label used to identify the action in the Admin UI.
        */
       label: string
+
       /**
-       * The verb used to describe the action in the Admin UI.
+       * The icon name used to represent the action in the Admin UI.
+       * @default null
        */
-      verb: string
+      icon: keyof typeof KeystarIcons | null
+
       /**
-       * The tone used to style the action in the Admin UI.
+       * The style used for the success message in the Admin UI.
+       * @default 'neutral'
        */
-      tone: 'neutral' | 'accent' | 'critical'
+      // TODO: ? maybe ?
+      // result?: 'positive' | 'info' | 'neutral' | 'critical'
+
+      /**
+       * The locale messages used in the Admin UI, with support for the following template tags:
+       * - {singular}: Uses {list}.ui.singular
+       * - {plural}: Uses {list}.ui.plural
+       * - {singular|plural}: Uses {list}.ui.singular if {count} is 1, otherwise uses {list}.ui.plural
+       * - {itemLabel}: The label of the item being acted upon
+       * - {count}: The number of items being acted upon
+       * - {countSuccess}: The number of items successfully acted upon
+       * - {countFail}: The number of items that failed to be acted upon
+       */
+      messages?: {
+        promptTitle?: string
+        promptTitleMany?: string
+        prompt?: string
+        promptMany?: string
+        promptConfirmLabel?: string
+        promptConfirmLabelMany?: string
+        fail?: string
+        failMany?: string
+        success?: string
+        successMany?: string
+      }
 
       itemView?: {
-        actionMode: MaybeItemActionFunctionWithFilter<
+        /**
+         * Controls the action mode for this action in the item view in the Admin UI.
+         * @default 'enabled'
+         */
+        actionMode?: MaybeItemActionFunctionWithFilter<
           'enabled' | 'disabled' | 'hidden',
           ListTypeInfo
         >
+        /**
+         * Controls the navigation behaviour after the action completes in the item view in the Admin UI.
+         * @default 'follow'
+         */
+        navigation?: 'follow' | 'refetch' | 'return'
+
+        /**
+         * Controls whether to show a prompt prior to the action in the item view in the Admin UI.
+         * @default false
+         */
+        showPrompt?: boolean
+
+        /**
+         * Controls whether to show a toast notification after completing the action in the item view in the Admin UI.
+         * @default false
+         */
+        showToast?: boolean
       }
       listView?: {
-        actionMode: MaybeSessionFunction<'enabled' | 'disabled' | 'hidden', ListTypeInfo>
+        /**
+         * Controls the action mode for this action in the list view in the Admin UI.
+         * @default 'enabled'
+         */
+        actionMode?: MaybeSessionFunction<'enabled' | 'hidden', ListTypeInfo>
       }
     }
   }
@@ -313,6 +385,18 @@ export type MaybeItemFunctionWithFilter<T extends string, ListTypeInfo extends B
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
 
+export type MaybeItemActionFunction<
+  T extends string,
+  ListTypeInfo extends BaseListTypeInfo,
+> =
+  ((args: {
+    context: KeystoneContext<ListTypeInfo['all']>
+    session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+    listKey: ListTypeInfo['key']
+    actionKey: ListTypeInfo['actions']
+    item: ListTypeInfo['item'] | null
+  }) => MaybePromise<T>)
+
 export type MaybeItemActionFunctionWithFilter<
   T extends string,
   ListTypeInfo extends BaseListTypeInfo,
@@ -322,7 +406,7 @@ export type MaybeItemActionFunctionWithFilter<
       context: KeystoneContext<ListTypeInfo['all']>
       session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
-      actionKey: string
+      actionKey: ListTypeInfo['actions']
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
 

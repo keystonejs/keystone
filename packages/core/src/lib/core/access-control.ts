@@ -1,4 +1,5 @@
 import { assertInputObjectType } from 'graphql'
+
 import { allowAll } from '../../access'
 import type {
   ActionAccessControlFunction,

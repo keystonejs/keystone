@@ -8,6 +8,7 @@ import { expandVoidHooks } from '../../fields/resolve-hooks'
 import { humanize } from '../../lib/utils'
 import type { GroupInfo } from '../../schema'
 import type {
+  ActionMeta,
   BaseFieldTypeInfo,
   BaseItem,
   BaseListTypeInfo,
@@ -31,7 +32,7 @@ import type {
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
-  MaybeSessionFunctionWithFilter,
+  MaybeSessionFunctionWithFilter
 } from '../../types/config/lists'
 import { type GraphQLNames, __getNames } from '../../types/utils'
 import {
@@ -51,18 +52,24 @@ export type InitialisedAction = {
 
   access: ResolvedActionAccessControl
   resolve: BaseActions<BaseListTypeInfo>[string]['resolve']
+  graphql: {
+    names: {
+      one: string
+      many: string
+    }
+  }
   ui: {
-    label: string
-    verb: string
-    tone: 'neutral' | 'accent' | 'critical'
-    itemView: {
+    label: ActionMeta['label']
+    icon: ActionMeta['icon']
+    messages: ActionMeta['messages']
+    itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
       actionMode: MaybeItemActionFunctionWithFilter<
         'enabled' | 'disabled' | 'hidden',
         BaseListTypeInfo
       >
     }
     listView: {
-      actionMode: MaybeSessionFunction<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+      actionMode: MaybeSessionFunction<'enabled' | 'hidden', BaseListTypeInfo>
     }
   }
 }
@@ -760,14 +767,42 @@ function getListsWithInitialisedFields(
         ...(function* () {
           for (const actionKey in listConfig.actions) {
             const action = listConfig.actions[actionKey]
+            const { label } = action.ui
+            const label_ = label.toLowerCase()
             yield {
               actionKey,
               ...action,
+              graphql: {
+                names: {
+                  one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
+                  many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
+                },
+              },
               ui: {
-                ...action.ui,
+                label,
+                icon: action.ui.icon ?? null,
+                messages: {
+                  promptTitle: `${label}`,
+                  promptTitleMany: `${label} {count} {singular|plural}`,
+                  prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
+                  promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
+                  promptConfirmLabel: `Yes, ${label_} this {singular}`,
+                  promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
+                  fail: `Could not ${label_} {singular}`,
+                  failMany: `Could not ${label_} {countFail} {singular|plural}`,
+                  success: `Completed ${label_} action`,
+                  successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
+                } satisfies InitialisedAction['ui']['messages'],
                 // TODO: move to listWithDefaults
-                itemView: action.ui.itemView ?? { actionMode: 'enabled' },
-                listView: action.ui.listView ?? { actionMode: 'enabled' },
+                itemView: {
+                  actionMode: action.ui.itemView?.actionMode ?? 'enabled',
+                  navigation: action.ui.itemView?.navigation ?? 'follow',
+                  showPrompt: action.ui.itemView?.showPrompt ?? false,
+                  showToast: action.ui.itemView?.showToast ?? false,
+                } satisfies InitialisedAction['ui']['itemView'],
+                listView: {
+                  actionMode: action.ui.listView?.actionMode ?? 'enabled',
+                },
               },
             }
           }

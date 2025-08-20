@@ -1,7 +1,9 @@
 import type { ReactElement } from 'react'
-import type { GraphQLNames, JSONValue } from './utils'
+import type { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
+
 import type { ConditionalFilter, ConditionalFilterCase } from './config'
 import type { BaseListTypeInfo } from './type-info'
+import type { GraphQLNames, JSONValue } from './utils'
 
 export type NavigationProps = {
   lists: ListMeta[]
@@ -69,10 +71,9 @@ export type FieldController<
   }
 }
 
-// TODO: duplicate, reference core/src/lib/create-admin-meta.ts
+// TODO: duplicate, reference core/src/lib/admin-meta.ts
 export type FieldMeta = {
   key: string
-
   label: string
   description: string
   fieldMeta: JSONValue | null
@@ -84,17 +85,15 @@ export type FieldMeta = {
   isOrderable: boolean
 
   search: 'default' | 'insensitive' | null
-  graphql: {
-    isNonNull: ('read' | 'create' | 'update')[]
-  }
+  isNonNull: ('read' | 'create' | 'update')[]
   createView: {
     fieldMode: ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>
     isRequired: ConditionalFilterCase<BaseListTypeInfo>
   }
   itemView: {
     fieldMode: ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
-    isRequired: ConditionalFilterCase<BaseListTypeInfo>
     fieldPosition: 'form' | 'sidebar'
+    isRequired: ConditionalFilterCase<BaseListTypeInfo>
   }
   listView: {
     fieldMode: 'read' | 'hidden'
@@ -109,15 +108,35 @@ export type FieldGroupMeta = {
 
 export type ActionMeta = {
   key: string
+  graphql: {
+    names: {
+      one: string
+      many: string | null
+    }
+  }
 
   label: string
-  verb: string
-  tone: 'neutral' | 'accent' | 'critical'
+  icon: keyof typeof KeystarIcons | null
+  messages: {
+    promptTitle: string
+    promptTitleMany: string
+    prompt: string
+    promptMany: string
+    promptConfirmLabel: string
+    promptConfirmLabelMany: string
+    fail: string
+    failMany: string
+    success: string
+    successMany: string
+  }
   itemView: {
     actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+    navigation: 'follow' | 'refetch' | 'return',
+    showPrompt: boolean
+    showToast: boolean
   }
   listView: {
-    actionMode: 'enabled' | 'disabled' | 'hidden'
+    actionMode: 'enabled' | 'hidden'
   }
 }
 

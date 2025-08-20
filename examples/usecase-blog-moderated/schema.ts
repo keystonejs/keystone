@@ -231,19 +231,31 @@ export const lists = {
         },
         ui: {
           label: 'Flag',
-          verb: 'flag',
-          tone: 'critical',
+          icon: 'flagIcon',
+          messages: {
+            promptTitle: 'Flag {itemLabel}',
+            promptTitleMany: 'Flag {count} {singular|plural}',
+            prompt: 'Are you sure you want to flag "{itemLabel}"?',
+            promptMany: 'Are you sure you want to flag {count} {singular|plural}?',
+            promptConfirmLabel: 'Yes, flag this {singular}',
+            promptConfirmLabelMany: 'Yes, flag {count} {singular|plural}',
+            fail: 'Could not flag {singular}',
+            failMany: 'Could not flag {countFail} {singular|plural}',
+            success: 'Flagged "{itemLabel}"',
+            successMany: 'Successfully flagged {countSuccess} {singular|plural}',
+          },
           itemView: {
             actionMode: ({ session }) => {
               if (isModerator(session)) return 'enabled'
               if (isAdmin(session)) return 'disabled'
               return 'hidden'
             },
+            showPrompt: true,
+            showToast: true,
           },
           listView: {
             actionMode: ({ session }) => {
               if (isModerator(session)) return 'enabled'
-              if (isAdmin(session)) return 'disabled'
               return 'hidden'
             },
           },

@@ -6,6 +6,7 @@ type GraphQLInput = Record<string, any>
 export type BaseListTypeInfo<Session = any> = {
   key: string
   fields: string
+  actions: string
   item: BaseItem
   inputs: {
     create: GraphQLInput

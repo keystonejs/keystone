@@ -5,6 +5,7 @@ type Post {
   id: ID!
   title: String
   content: String
+  votes: Int
   reportedAt: DateTime
 }
 
@@ -21,6 +22,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
+  votes: IntNullableFilter
   reportedAt: DateTimeNullableFilter
 }
 
@@ -63,6 +65,17 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -78,6 +91,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
+  votes: OrderDirection
   reportedAt: OrderDirection
 }
 
@@ -89,6 +103,7 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   content: String
+  votes: Int
 }
 
 input PostUpdateArgs {
@@ -99,6 +114,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   content: String
+  votes: Int
 }
 
 """
@@ -111,7 +127,12 @@ type Mutation {
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
   updatePosts(data: [PostUpdateArgs!]!): [Post]
-  reportPost(where: PostWhereUniqueInput!): Post
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  votePost(where: PostWhereUniqueInput!): Post
+  votePosts(where: [PostWhereUniqueInput!]!): [Post]
+  reportAPost(where: PostWhereUniqueInput!): Post
+  reportSomePosts(where: [PostWhereUniqueInput!]!): [Post]
 }
 
 type Query {
@@ -213,20 +234,44 @@ type KeystoneAdminUIFieldGroupMeta {
 type KeystoneAdminUIActionMeta {
   key: String!
   label: String!
-  verb: String!
-  tone: KeystoneAdminUIActionMetaTone!
+  icon: String
+  messages: KeystoneAdminUIActionMetaMessages!
+  graphql: KeystoneAdminUIActionMetaGraphQL
   itemView: KeystoneAdminUIActionMetaItemView
   listView: KeystoneAdminUIActionMetaListView!
 }
 
-enum KeystoneAdminUIActionMetaTone {
-  neutral
-  accent
-  critical
+type KeystoneAdminUIActionMetaMessages {
+  promptTitle: String!
+  promptTitleMany: String
+  prompt: String!
+  promptMany: String
+  promptConfirmLabel: String!
+  promptConfirmLabelMany: String
+  fail: String!
+  failMany: String
+  success: String!
+  successMany: String
+}
+
+type KeystoneAdminUIActionMetaGraphQL {
+  names: KeystoneAdminUIActionMetaGraphQLNames!
+}
+
+type KeystoneAdminUIActionMetaGraphQLNames {
+  one: String!
+  many: String
 }
 
 type KeystoneAdminUIActionMetaItemView {
   actionMode: JSON!
+  navigation: KeystoneAdminUIActionMetaItemViewNavigation!
+}
+
+enum KeystoneAdminUIActionMetaItemViewNavigation {
+  follow
+  refetch
+  return
 }
 
 type KeystoneAdminUIActionMetaListView {
@@ -235,7 +280,6 @@ type KeystoneAdminUIActionMetaListView {
 
 enum KeystoneAdminUIActionMetaListViewActionMode {
   enabled
-  disabled
   hidden
 }
 
