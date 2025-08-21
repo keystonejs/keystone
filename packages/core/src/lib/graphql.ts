@@ -8,7 +8,7 @@ import type { AdminMetaSource } from './admin-meta'
 import type { InitialisedList } from './core/initialise-lists'
 import { getMutationsForList } from './core/mutations'
 import { getQueriesForList } from './core/queries'
-import { KeystoneMeta } from './resolve-admin-meta'
+import { KeystoneMeta } from './admin-meta-graphql'
 
 function getGraphQLSchema(
   lists: Record<string, InitialisedList>,

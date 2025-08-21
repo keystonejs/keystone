@@ -17,14 +17,15 @@ import type {
   ListMeta,
 } from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
-import type { QueryResult } from './apollo'
+import type { ApolloError, QueryResult } from './apollo'
 import { ApolloClient, ApolloProvider, InMemoryCache, gql, useQuery } from './apollo'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
-  lists: { [list: string]: ListMeta }
   apiPath: string | null
+  error?: ApolloError | null
   fieldViews: FieldViews
+  lists: { [list: string]: ListMeta }
 }
 
 const KeystoneContext = createContext<KeystoneContextType>({
@@ -51,7 +52,9 @@ function InternalKeystoneProvider({
 }: KeystoneProviderProps) {
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
-  const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery)
+  const { data, loading, error } = useQuery<AdminMetaQuery>(adminMetaQuery, {
+    errorPolicy: 'all',
+  })
   const listsData = data?.keystone?.adminMeta?.lists
   const lists = useMemo(() => {
     if (!listsData) return
@@ -168,8 +171,9 @@ function InternalKeystoneProvider({
         value={{
           adminConfig,
           apiPath,
-          lists: lists ?? {},
           fieldViews,
+          lists: lists ?? {},
+          error: error ?? null,
         }}
       >
         {children}
