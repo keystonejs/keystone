@@ -124,9 +124,10 @@ export function PageContainer({ children, header, title }: PageContainerProps) {
         elementType="header"
         alignItems="center"
         borderBottom="neutral"
+        gap="regular"
         justifyContent="space-between"
-        paddingX="xlarge"
         minWidth={0}
+        paddingX="xlarge"
         UNSAFE_style={{ visibility: isSidebarOpen ? 'hidden' : 'visible' }}
       >
         {header}

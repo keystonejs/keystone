@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { type HTMLAttributes, type ReactNode, Fragment, Key } from 'react'
+import type { HTMLAttributes, Key, ReactNode } from 'react';
+import { useMemo } from 'react'
 
 import { ActionGroup } from '@keystar/ui/action-group'
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
@@ -9,32 +10,40 @@ import { Grid, HStack } from '@keystar/ui/layout'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { Heading, Text } from '@keystar/ui/typography'
 import { Container } from '../../../../admin-ui/components/Container'
-import type { ListMeta } from '../../../../types'
+import type { ActionMeta, ListMeta } from '../../../../types'
 
-export function ItemPageHeader({
-  label,
-  list,
-  title = label,
-  onAction,
-}: {
+type ItemPageHeaderProps = {
   label: string
   list: ListMeta
   title: string
   onAction: (key: Key) => void
-}) {
+}
+
+export function ItemPageHeader(props: ItemPageHeaderProps) {
   const router = useRouter()
+  
+  const { label, list, title = label, onAction } = props
   const actions = list.actions.filter(action => action.itemView.actionMode !== 'hidden')
-  const disabledActions = list.actions.filter(action => action.itemView.actionMode === 'disabled').map(action => action.key)
 
   return (
-    <HStack gap="regular">
+    <Grid
+      // fill space; take over layout from the `PageContainer` flex wrapper
+      flex
+      // make sure actions don't run into the primary element, even though it'll truncate
+      gap="medium"
+      // best efforts to ensure actions collapse first, then the title/breadcrumbs may truncate
+      columns={`minmax(50cqw, auto) minmax(${tokenSchema.size.element.regular}, max-content)`}
+      // grid areas required because the `ActionGroup` implements focus
+      // sentinels (span) before and after the root element
+      areas={['primary secondary']}
+    >
       {list.isSingleton ? (
-        <Heading elementType="h1" size="small">
+        <Heading elementType="h1" size="small" gridArea="primary" truncate>
           {list.label}
         </Heading>
       ) : (
-        <Fragment>
-          <Breadcrumbs flex size="medium" minWidth="alias.singleLineWidth">
+        <>
+          <Breadcrumbs size="medium" gridArea="primary">
             <Item href={`/${list.path}`}>{list.label}</Item>
             <Item href={router.asPath}>{label}</Item>
           </Breadcrumbs>
@@ -43,25 +52,50 @@ export function ItemPageHeader({
           <Text elementType="h1" visuallyHidden>
             {title}
           </Text>
-        </Fragment>
+        </>
       )}
-      <ActionGroup
-        disabledKeys={disabledActions}
-        onAction={onAction}
-        overflowMode="collapse">
-        {[...(function* () {
-          for (const action of actions) {
-            const iconComponent = action.icon ? KeystarIcons[action.icon] : null
-            yield <Item
-              key={action.key}
-              textValue={action.label}>
-              {iconComponent ? <Icon src={iconComponent} /> : null}
-              <Text>{action.label}</Text>
-            </Item>
-          }
-        })()]}
-      </ActionGroup>
-  </HStack>
+
+      {actions.length > 0 && (
+        <ItemActions actions={actions} onAction={onAction} />
+      )}
+    </Grid>
+  )
+}
+
+type ItemActionsProps = {
+  actions: ActionMeta[],
+  onAction: (key: Key) => void
+}
+
+function ItemActions(props: ItemActionsProps) {
+  const { actions, onAction } = props
+
+  const items = useMemo(() => actions.map(action => ({
+    id: action.key,
+    label: action.label,
+    icon: action.icon ? KeystarIcons[action.icon] : null,
+  })), [actions])
+
+  const disabledKeys = useMemo(() => actions
+    .filter(action => action.itemView.actionMode === 'disabled')
+    .map(action => action.key),
+  [actions])
+
+  return (
+    <ActionGroup
+      gridArea="secondary"
+      disabledKeys={disabledKeys}
+      onAction={onAction}
+      overflowMode="collapse"
+      items={items}
+    >
+      {item => (
+        <Item textValue={item.label}>
+          {item.icon && <Icon src={item.icon} />}
+          <Text>{item.label}</Text>
+        </Item>
+      )}
+    </ActionGroup>
   )
 }
 
