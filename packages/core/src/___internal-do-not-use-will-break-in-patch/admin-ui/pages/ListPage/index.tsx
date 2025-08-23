@@ -449,7 +449,9 @@ function ListPage({ listKey }: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           ) : null}
-          {isReady && loading && <ProgressCircle size="small" isIndeterminate />}
+          {isReady && loading && (
+            <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />
+          )}
         </HStack>
 
         {filters.length ? (
@@ -485,7 +487,7 @@ function ListPage({ listKey }: ListPageProps) {
             selectedKeys={selectedItems}
             renderEmptyState={() =>
               loading ? (
-                <ProgressCircle isIndeterminate />
+                <ProgressCircle aria-label="Preparing items" isIndeterminate />
               ) : isConstrained ? (
                 <EmptyState
                   icon={searchXIcon}
