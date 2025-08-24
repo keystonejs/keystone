@@ -64,7 +64,8 @@ export async function dev(
     quiet,
     server,
     ui,
-  }: Pick<Flags, 'dbPush' | 'prisma' | 'quiet' | 'server' | 'ui'>
+    resetAdmin,
+  }: Pick<Flags, 'dbPush' | 'prisma' | 'quiet' | 'server' | 'ui' | 'resetAdmin'>
 ) {
   function log(message: string) {
     if (quiet) return
@@ -282,11 +283,13 @@ export async function dev(
 
       log('✨ Generating Admin UI code')
       const paths = system.getPaths(cwd)
-      await fsp.rm(paths.admin, { recursive: true, force: true })
-      await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
+      if (resetAdmin) {
+        await fsp.rm(paths.admin, { recursive: true, force: true })
+      }
+      await generateAdminUI(system.config, system.adminMeta, paths.admin, paths.hasSrc, false)
 
       log('✨ Preparing Admin UI')
-      nextApp = next({ dev: true, dir: paths.admin })
+      nextApp = next({ dev: true, dir: cwd })
       await nextApp.prepare()
       expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
       log(`✅ Admin UI ready`)
@@ -351,7 +354,13 @@ export async function dev(
         }
 
         await generateTypes(cwd, newSystem)
-        await generateAdminUI(newSystem.config, newSystem.adminMeta, paths.admin, true)
+        await generateAdminUI(
+          newSystem.config,
+          newSystem.adminMeta,
+          paths.admin,
+          paths.hasSrc,
+          true
+        )
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const { context: newContext } = newSystem.getKeystone(prismaClientModule)

@@ -1,9 +1,6 @@
-import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 export function usePreventNavigation(shouldPreventNavigationRef: { current: boolean }) {
-  const router = useRouter()
-
   useEffect(() => {
     const clientSideRouteChangeHandler = () => {
       if (
@@ -16,16 +13,17 @@ export function usePreventNavigation(shouldPreventNavigationRef: { current: bool
         throw 'Navigation cancelled by user'
       }
     }
-    router.events.on('routeChangeStart', clientSideRouteChangeHandler)
     const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
       if (shouldPreventNavigationRef.current) {
+        clientSideRouteChangeHandler()
         event.preventDefault()
+        event.returnValue = ''
+        return
       }
     }
     window.addEventListener('beforeunload', beforeUnloadHandler)
     return () => {
-      router.events.off('routeChangeStart', clientSideRouteChangeHandler)
       window.removeEventListener('beforeunload', beforeUnloadHandler)
     }
-  }, [shouldPreventNavigationRef, router.events])
+  }, [shouldPreventNavigationRef])
 }

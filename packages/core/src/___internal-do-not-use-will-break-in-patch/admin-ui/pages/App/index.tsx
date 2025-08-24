@@ -1,22 +1,23 @@
-import type { AppProps } from 'next/app'
 import type { AdminConfig, FieldViews } from '../../../../types'
 import { ErrorBoundary } from '../../../../admin-ui/components'
 import { KeystoneProvider } from '../../../../admin-ui/context'
+
+type AdminProps = {
+  children: React.ReactNode
+  config: AppConfig
+}
 
 type AppConfig = {
   adminConfig: AdminConfig
   fieldViews: FieldViews
   apiPath: string
+  adminPath: string
 }
 
-export const getApp =
-  (props: AppConfig) =>
-  ({ Component, pageProps }: AppProps) => {
-    return (
-      <KeystoneProvider {...props}>
-        <ErrorBoundary>
-          <Component {...pageProps} />
-        </ErrorBoundary>
-      </KeystoneProvider>
-    )
-  }
+export function Layout({ children, config }: AdminProps) {
+  return (
+    <KeystoneProvider {...config}>
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </KeystoneProvider>
+  )
+}

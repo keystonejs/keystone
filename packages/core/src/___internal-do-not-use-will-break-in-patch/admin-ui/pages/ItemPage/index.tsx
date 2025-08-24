@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import {
   type FormEvent,
   Fragment,
@@ -8,7 +7,10 @@ import {
   useMemo,
   useRef,
   useState,
+  use,
+  type Usable,
 } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@keystar/ui/button'
 import { AlertDialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
@@ -25,7 +27,7 @@ import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLi
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList, useListItem } from '../../../../admin-ui/context'
+import { useKeystone, useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
@@ -42,7 +44,10 @@ import type {
 import { BaseToolbar, ColumnLayout, ItemPageHeader, StickySidebar } from './common'
 
 type ItemPageProps = {
-  listKey: string
+  params: Usable<{
+    id: string
+    listKey: string
+  }>
 }
 
 function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Func): Func {
@@ -59,6 +64,7 @@ function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Fu
 function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
   const itemId = ((value.id ?? '') as string | number).toString()
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const { adminPath } = useKeystone()
   const router = useRouter()
   const [deleteItem] = useMutation(
     gql`mutation ($id: ID!) {
@@ -93,7 +99,7 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
             toastQueue.neutral(`${list.singular} deleted.`, {
               timeout: 5000,
             })
-            router.push(list.isSingleton ? '/' : `/${list.path}`)
+            router.push(list.isSingleton ? `${adminPath}/` : `${adminPath}/${list.path}`)
           }}
         >
           <Text>
@@ -291,11 +297,12 @@ function ItemForm({
   )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
-
-function ItemPage({ listKey }: ItemPageProps) {
+export function ItemPage({ params }: ItemPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const _params = use<{ listKey: string; id: string }>(params)
+  const listKey = listsKeyByPath[_params.listKey]
   const list = useList(listKey)
-  const id_ = useRouter().query.id
+  const id_ = _params.id as string
   const [id] = Array.isArray(id_) ? id_ : [id_]
   const { data, error, loading, refetch } = useListItem(listKey, id ?? null)
 
