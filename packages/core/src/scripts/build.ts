@@ -41,7 +41,7 @@ export async function build(
 
   log('✨ Generating Admin UI code')
   const paths = system.getPaths(cwd)
-  await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
+  await generateAdminUI(system.config, system.adminMeta, paths.admin, paths.hasSrc, false)
 
   log('✨ Building Admin UI')
 
@@ -49,7 +49,7 @@ export async function build(
   // to avoid loading it in the common case where the UI is not being built
   const nextBuild = require('next/dist/build').default
   await nextBuild(
-    paths.admin,
+    cwd,
     undefined,
     undefined,
     undefined,

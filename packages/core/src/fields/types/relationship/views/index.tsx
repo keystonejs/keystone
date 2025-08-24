@@ -8,8 +8,8 @@ import { Item, TagGroup } from '@keystar/ui/tag'
 import { TextField } from '@keystar/ui/text-field'
 import { Numeral, Text } from '@keystar/ui/typography'
 
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { BuildItemDialog } from '../../../../admin-ui/components'
-import { useList } from '../../../../admin-ui/context'
 import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -29,6 +29,7 @@ export { ComboboxMany, ComboboxSingle }
 export function Field(props: FieldProps<typeof controller>) {
   const { autoFocus, field, forceValidation = false, onChange, value, isRequired } = props
   const foreignList = useList(field.refListKey)
+  const { adminPath } = useKeystone()
   const [dialogIsOpen, setDialogOpen] = useState(false)
   const description = field.description || undefined
   const isReadOnly = onChange === undefined
@@ -53,7 +54,7 @@ export function Field(props: FieldProps<typeof controller>) {
       <HStack gap="small" alignItems="end">
         {textField}
         <ActionButton
-          href={`/${foreignList.path}?${buildQueryForRelationshipFieldWithForeignField(foreignList, field.refFieldKey, value.id)}`}
+          href={`${adminPath}/${foreignList.path}?${buildQueryForRelationshipFieldWithForeignField(foreignList, field.refFieldKey, value.id)}`}
         >
           <Icon src={arrowUpRightIcon} />
         </ActionButton>
@@ -117,7 +118,7 @@ export function Field(props: FieldProps<typeof controller>) {
             items={value.value.map(item => ({
               id: item.id.toString() ?? '',
               label: item.label ?? '',
-              href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+              href: item.built ? '' : `${adminPath}/${foreignList.path}/${item.id}`,
             }))}
             maxRows={2}
             onRemove={
@@ -196,6 +197,7 @@ function renderItem(item: { id: string; href: string; label: string }) {
 
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
+  const { adminPath } = useKeystone()
 
   if (field.display === 'count' || field.display === 'table') {
     const count = item[`${field.fieldKey}Count`] as number
@@ -212,7 +214,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          <TextLink href={`/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
+          <TextLink href={`${adminPath}/${list.path}/${item.id}`}>{item.label || item.id}</TextLink>
         </Fragment>
       ))}
       {overflow ? `, and ${overflow} more` : null}
@@ -377,6 +379,7 @@ export function controller(
     filter: {
       Filter(props) {
         const foreignList = useList(refListKey)
+        const { adminPath } = useKeystone()
         if (props.type === 'empty' || props.type === 'not_empty') return null
         // TODO: show labels rather than ids
         if (props.type === 'is' || props.type === 'not_is') {
@@ -429,7 +432,7 @@ export function controller(
               items={value.map(item => ({
                 id: item.id.toString() ?? '',
                 label: item.label ?? '',
-                href: item.built ? '' : `/${foreignList.path}/${item.id}`,
+                href: item.built ? '' : `${adminPath}/${foreignList.path}/${item.id}`,
               }))}
               maxRows={2}
               onRemove={keys => {
