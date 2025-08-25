@@ -99,9 +99,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "scroll-into-view-if-needed": "^3.0.0",
-    "slate": "^0.118.0",
-    "slate-history": "^0.113.0",
-    "slate-react": "^0.117.0",
+    "slate": "^0.118.1",
+    "slate-history": "^0.113.1",
+    "slate-react": "^0.117.4",
     "zod": "^4.0.0"
   },
   "devDependencies": {

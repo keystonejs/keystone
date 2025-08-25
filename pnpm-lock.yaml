@@ -2092,14 +2092,14 @@ importers:
         specifier: ^3.0.0
         version: 3.1.0
       slate:
-        specifier: ^0.118.0
-        version: 0.118.0
+        specifier: ^0.118.1
+        version: 0.118.1
       slate-history:
-        specifier: ^0.113.0
-        version: 0.113.1(slate@0.118.0)
+        specifier: ^0.113.1
+        version: 0.113.1(slate@0.118.1)
       slate-react:
-        specifier: ^0.117.0
-        version: 0.117.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.118.0))(slate@0.118.0)
+        specifier: ^0.117.4
+        version: 0.117.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1)
       zod:
         specifier: ^4.0.0
         version: 4.0.10
@@ -2121,7 +2121,7 @@ importers:
         version: 29.7.0
       slate-hyperscript:
         specifier: ^0.100.0
-        version: 0.100.0(slate@0.118.0)
+        version: 0.100.0(slate@0.118.1)
 
   prisma-utils:
     devDependencies:
@@ -11310,8 +11310,8 @@ packages:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
     engines: {node: '>=14.16'}
 
-  slate-dom@0.112.2:
-    resolution: {integrity: sha512-cozITMlpcBxrov854reM6+TooiHiqpfM/nZPrnjpN1wSiDsAQmYbWUyftC+jlwcpFj80vywfDHzlG6hXIc5h6A==}
+  slate-dom@0.118.1:
+    resolution: {integrity: sha512-D6J0DF9qdJrXnRDVhYZfHzzpVxzqKRKFfS0Wcin2q0UC+OnQZ0lbCGJobatVbisOlbSe7dYFHBp9OZ6v1lEcbQ==}
     peerDependencies:
       slate: '>=0.99.0'
 
@@ -11345,8 +11345,8 @@ packages:
       react-dom: '>=16.8.0'
       slate: '>=0.65.3'
 
-  slate@0.118.0:
-    resolution: {integrity: sha512-XAHgaoN3IikTz83DlJWZWR7e4SjuRn1Ps6I717fL7yaITF7zhZm5z8zbU+TaPlHu4APCV6TCMIF33EZdW3GqfQ==}
+  slate@0.118.1:
+    resolution: {integrity: sha512-6H1DNgnSwAFhq/pIgf+tLvjNzH912M5XrKKhP9Frmbds2zFXdSJ6L/uFNyVKxQIkPzGWPD0m+wdDfmEuGFH5Tg==}
 
   slate@0.91.4:
     resolution: {integrity: sha512-aUJ3rpjrdi5SbJ5G1Qjr3arytfRkEStTmHjBfWq2A2Q8MybacIzkScSvGJjQkdTk3djCK9C9SEOt39sSeZFwTw==}
@@ -24515,7 +24515,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slate-dom@0.112.2(slate@0.118.0):
+  slate-dom@0.118.1(slate@0.118.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -24523,25 +24523,25 @@ snapshots:
       is-plain-object: 5.0.0
       lodash: 4.17.21
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.118.0
+      slate: 0.118.1
       tiny-invariant: 1.3.1
 
-  slate-history@0.113.1(slate@0.118.0):
+  slate-history@0.113.1(slate@0.118.1):
     dependencies:
       is-plain-object: 5.0.0
-      slate: 0.118.0
+      slate: 0.118.1
 
   slate-history@0.86.0(slate@0.91.4):
     dependencies:
       is-plain-object: 5.0.0
       slate: 0.91.4
 
-  slate-hyperscript@0.100.0(slate@0.118.0):
+  slate-hyperscript@0.100.0(slate@0.118.1):
     dependencies:
       is-plain-object: 5.0.0
-      slate: 0.118.0
+      slate: 0.118.1
 
-  slate-react@0.117.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.112.2(slate@0.118.0))(slate@0.118.0):
+  slate-react@0.117.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -24550,8 +24550,8 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.118.0
-      slate-dom: 0.112.2(slate@0.118.0)
+      slate: 0.118.1
+      slate-dom: 0.118.1(slate@0.118.1)
       tiny-invariant: 1.3.1
 
   slate-react@0.91.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate@0.91.4):
@@ -24569,7 +24569,7 @@ snapshots:
       slate: 0.91.4
       tiny-invariant: 1.0.6
 
-  slate@0.118.0:
+  slate@0.118.1:
     dependencies:
       immer: 10.1.1
       tiny-warning: 1.0.3
