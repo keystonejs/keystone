@@ -2,7 +2,6 @@ import fsp from 'node:fs/promises'
 import { createServer } from 'node:http'
 import type { ListenOptions } from 'node:net'
 import path from 'node:path'
-import url from 'node:url'
 
 import { createDatabase } from '@prisma/internals'
 import chalk from 'chalk'
@@ -393,7 +392,7 @@ export async function dev(
         return expressServer(req, res, next)
       }
 
-      const { pathname } = url.parse(req.url)
+      const { pathname } = new URL(req.url, 'http://ks')
       if (expressServer && pathname === (config.graphql?.path ?? '/api/graphql')) {
         return expressServer(req, res, next)
       }
