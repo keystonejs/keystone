@@ -58,7 +58,11 @@ export function makeUrlFieldInput(opts: {
       <TextField
         autoFocus={autoFocus}
         label={opts.label}
-        errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'This type of URL is not accepted' : null}
+        errorMessage={
+          (forceValidation || isDirty) && !opts.validate(value)
+            ? 'This type of URL is not accepted'
+            : null
+        }
         onBlur={onBlur}
         onChange={x => onChange?.(x)}
         value={value}
