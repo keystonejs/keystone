@@ -110,6 +110,7 @@ export const fields = {
     label: string
     defaultValue?: string
   }): FormField<string, undefined> {
+    // TODO: use zod?
     const validate = (value: unknown) => {
       return typeof value === 'string' && (value === '' || isValidURL(value))
     }

@@ -11,6 +11,7 @@ import { TextField } from '@keystar/ui/text-field'
 import { VStack } from '@keystar/ui/layout'
 import { TagGroup } from '@keystar/ui/tag'
 import { Text } from '@keystar/ui/typography'
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
 export { TextField, TextArea } from '@keystar/ui/text-field'
 export { Text } from '@keystar/ui/typography'
@@ -44,12 +45,21 @@ export function makeUrlFieldInput(opts: {
 }): FormField<string, unknown>['Input'] {
   return function UrlFieldInput({ autoFocus, forceValidation, onChange, value }) {
     const [isDirty, setDirty] = useState(false)
+
+    function onBlur() {
+      const sanitisedHref = encodeURI(sanitizeUrl(value))
+      if (value !== sanitisedHref && sanitisedHref !== 'about:blank') {
+        onChange(sanitisedHref)
+      }
+      setDirty(true)
+    }
+
     return (
       <TextField
         autoFocus={autoFocus}
         label={opts.label}
-        errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'Invalid URL' : null}
-        onBlur={() => setDirty(true)}
+        errorMessage={(forceValidation || isDirty) && !opts.validate(value) ? 'This type of URL is not accepted' : null}
+        onBlur={onBlur}
         onChange={x => onChange?.(x)}
         value={value}
       />
