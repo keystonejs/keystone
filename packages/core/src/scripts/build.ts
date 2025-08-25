@@ -33,7 +33,10 @@ export async function build(
       log('✨ Generated GraphQL and Prisma schemas') // TODO: generating?
     }
 
+    console.log('✨ Generated Keystone types') // TODO: generating?
     await generateTypes(cwd, system)
+
+    console.log('✨ Generated Prisma client') // TODO: generating?
     await generatePrismaClient(cwd, system)
   }
 
