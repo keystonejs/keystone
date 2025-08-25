@@ -1,9 +1,9 @@
-import url from 'url'
-import path from 'path'
+import path from 'node:path'
+
 import type express from 'express'
 import type next from 'next'
-import type { KeystoneContext, KeystoneConfig } from '../types'
 import { pkgDir } from '../pkg-dir'
+import type { KeystoneConfig, KeystoneContext } from '../types'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
@@ -21,7 +21,7 @@ export function createAdminUIMiddlewareWithNextApp(
   if (basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
 
   return async (req: express.Request, res: express.Response) => {
-    const { pathname } = url.parse(req.url)
+    const { pathname } = new URL(req.url, 'http://ks')
 
     if (pathname?.startsWith(`${basePath}/_next`) || pathname?.startsWith(`${basePath}/__next`)) {
       return handle(req, res)
