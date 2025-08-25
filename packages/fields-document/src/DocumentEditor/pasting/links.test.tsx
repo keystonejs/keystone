@@ -78,10 +78,10 @@ test('pasting a url on a selection spanning multiple blocks replaces the selecti
         >
           <text>
             https://keystonejs.com
-            <cursor />
           </text>
         </link>
         <text>
+          <cursor />
            end should still exist
         </text>
       </paragraph>
@@ -120,10 +120,10 @@ test('pasting a url on a selection with a link inside replaces the selection wit
         >
           <text>
             https://keystonejs.com
-            <cursor />
           </text>
         </link>
         <text>
+          <cursor />
            end should still exist
         </text>
       </paragraph>
