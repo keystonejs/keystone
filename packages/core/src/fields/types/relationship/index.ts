@@ -1,10 +1,10 @@
 import { g } from '../../..'
 import { type ListMetaSource, getAdminMetaForRelationshipField } from '../../../lib/admin-meta'
-import type { JSONValue } from '../../../types'
 import {
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
+  type JSONValue,
   fieldType,
 } from '../../../types'
 import type { controller } from './views'

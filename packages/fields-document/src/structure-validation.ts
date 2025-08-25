@@ -22,14 +22,15 @@ const zText = z
   .strict()
 
 const zTextAlign = z.union([z.undefined(), z.literal('center'), z.literal('end')])
+const zUrl = z.string().refine(val => isValidURL(val), {
+  error: `This type of URL is not accepted`,
+})
 
 // recursive types
 const zLink = z
   .object({
     type: z.literal('link'),
-    href: z.string().refine(val => isValidURL(val), {
-      error: `This type of URL is not accepted`,
-    }),
+    href: zUrl,
   })
   .strict()
 

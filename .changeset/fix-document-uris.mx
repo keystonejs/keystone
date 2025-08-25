@@ -1,5 +1,5 @@
 ---
-"@keystone-6/fields-document": patch
+"@keystone-6/fields-document": major
 ---
 
-Use `new URL` rather than `encodeURI` when validating, and sanitize user input
+Changes `fields.url` and document links to sanitise and `encodeURI` on blur
