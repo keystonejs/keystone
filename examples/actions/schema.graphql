@@ -266,6 +266,8 @@ type KeystoneAdminUIActionMetaGraphQLNames {
 type KeystoneAdminUIActionMetaItemView {
   actionMode: JSON!
   navigation: KeystoneAdminUIActionMetaItemViewNavigation!
+  hidePrompt: Boolean!
+  hideToast: Boolean!
 }
 
 enum KeystoneAdminUIActionMetaItemViewNavigation {

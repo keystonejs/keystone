@@ -2,13 +2,12 @@ import router, { useRouter } from 'next/router'
 import {
   type FormEvent,
   Fragment,
-  Key,
   type PropsWithChildren,
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 
 import { Button } from '@keystar/ui/button'
@@ -35,6 +34,7 @@ import {
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import type {
+  ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
@@ -98,9 +98,9 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
           }}
         >
           <Text>
-            Are you sure you want to delete{' '}
+            Are you sure you want to delete
             <strong>
-              {list.singular}
+              {' '}{list.singular}
               {!list.isSingleton && ` ${itemId}`}
             </strong>
             ? This action cannot be undone.
@@ -292,17 +292,6 @@ function ItemForm({
   )
 }
 
-function replace(s: string, list: ListMeta, args: {
-  itemLabel?: string
-}) {
-  if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
-  if (s.includes('{Plural}')) s = s.replaceAll('{Plural}', list.plural)
-  if (s.includes('{singular}')) s = s.replaceAll('{singular}', list.singular.toLowerCase())
-  if (s.includes('{plural}')) s = s.replaceAll('{plural}', list.plural.toLowerCase())
-  if ('itemLabel' in args) s = s.replaceAll('{itemLabel}', args.itemLabel ?? '')
-  return s
-}
-
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
 function ItemPage({ listKey }: ItemPageProps) {
@@ -342,38 +331,15 @@ function ItemPage({ listKey }: ItemPageProps) {
     return { fieldModes, fieldPositions, isRequireds }
   }, [data?.keystone.adminMeta, list.fields])
 
-  async function onTryAction(key: Key) {
-    if (!list.actions) return
-    const action = list.actions.find(action => action.key === key)
-    if (!action) return
-    const { messages: m } = action
+  function onAction (action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView
 
-    try {
-      const data = await (function(){})() // TODO: FIXME: this should be the action mutation call
-      const returnedItemId = data.data?.result?.id
-
-      toastQueue.neutral(
-        replace(m.success, list, { itemLabel }),
-        { timeout: 5000 }
-      )
-
-      if ((navigation === 'follow' && returnedItemId === itemId) || (navigation === 'refetch')) {
-        refetch()
-      } else if (navigation === 'follow' && returnedItemId) {
-        router.push(`/${list.path}/${returnedItemId}`)
-      } else {
-        router.push(list.isSingleton ? '/' : `/${list.path}`)
-      }
-    } catch (err: any) {
-      toastQueue.critical(
-        replace(m.fail, list, { itemLabel }),
-        {
-          actionLabel: 'Details',
-          onAction: () => setErrorDialogValue(err),
-          shouldCloseOnAction: true,
-        }
-      )
+    if ((navigation === 'follow' && resultId === itemId) || (navigation === 'refetch')) {
+      refetch()
+    } else if (navigation === 'follow' && resultId) {
+      router.push(`/${list.path}/${resultId}`)
+    } else {
+      router.push(list.isSingleton ? '/' : `/${list.path}`)
     }
   }
 
@@ -385,7 +351,8 @@ function ItemPage({ listKey }: ItemPageProps) {
           list={list}
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
-          onAction={onTryAction}
+          item={item ?? null}
+          onAction={onAction}
         />
       }
     >

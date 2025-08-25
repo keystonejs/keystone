@@ -192,6 +192,14 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
               return itemView.navigation
             },
           }),
+          hidePrompt: g.field({
+            type: g.nonNull(g.Boolean),
+            resolve({ itemView }) { return itemView.hidePrompt },
+          }),
+          hideToast: g.field({
+            type: g.nonNull(g.Boolean),
+            resolve({ itemView }) { return itemView.hideToast },
+          }),
         },
       }),
     }),

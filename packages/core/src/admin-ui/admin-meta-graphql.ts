@@ -77,6 +77,8 @@ export const adminMetaQuery = gql`
             itemView {
               actionMode
               navigation
+              hidePrompt
+              hideToast
             }
             listView {
               actionMode

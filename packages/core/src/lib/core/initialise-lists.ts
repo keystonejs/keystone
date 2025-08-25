@@ -790,15 +790,16 @@ function getListsWithInitialisedFields(
                   promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
                   fail: `Could not ${label_} {singular}`,
                   failMany: `Could not ${label_} {countFail} {singular|plural}`,
-                  success: `Completed ${label_} action`,
+                  success: `Completed ${label_} action for {singular}`,
                   successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
+                  ...action.ui.messages,
                 } satisfies InitialisedAction['ui']['messages'],
                 // TODO: move to listWithDefaults
                 itemView: {
                   actionMode: action.ui.itemView?.actionMode ?? 'enabled',
                   navigation: action.ui.itemView?.navigation ?? 'follow',
-                  showPrompt: action.ui.itemView?.showPrompt ?? false,
-                  showToast: action.ui.itemView?.showToast ?? false,
+                  hidePrompt: action.ui.itemView?.hidePrompt ?? false,
+                  hideToast: action.ui.itemView?.hideToast ?? false,
                 } satisfies InitialisedAction['ui']['itemView'],
                 listView: {
                   actionMode: action.ui.listView?.actionMode ?? 'enabled',

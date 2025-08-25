@@ -65,9 +65,10 @@ export const lists = {
           icon: 'voteIcon',
           messages: {
             success: 'Voted for {itemLabel}',
+            successMany: 'Voted for {countSuccess} {singular|plural}',
           },
           itemView: {
-            showToast: true,
+            hidePrompt: true,
           },
           listView: {
             actionMode: 'hidden',
@@ -107,7 +108,7 @@ export const lists = {
           itemView: {
             actionMode: () => 'enabled',
             navigation: 'refetch',
-            showPrompt: true,
+            hideToast: true,
           },
           listView: {
             actionMode: 'enabled',

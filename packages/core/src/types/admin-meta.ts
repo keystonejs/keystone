@@ -132,8 +132,8 @@ export type ActionMeta = {
   itemView: {
     actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
     navigation: 'follow' | 'refetch' | 'return',
-    showPrompt: boolean
-    showToast: boolean
+    hidePrompt: boolean
+    hideToast: boolean
   }
   listView: {
     actionMode: 'enabled' | 'hidden'

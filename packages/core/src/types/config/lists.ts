@@ -104,13 +104,13 @@ export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
          * Controls whether to show a prompt prior to the action in the item view in the Admin UI.
          * @default false
          */
-        showPrompt?: boolean
+        hidePrompt?: boolean
 
         /**
          * Controls whether to show a toast notification after completing the action in the item view in the Admin UI.
          * @default false
          */
-        showToast?: boolean
+        hideToast?: boolean
       }
       listView?: {
         /**

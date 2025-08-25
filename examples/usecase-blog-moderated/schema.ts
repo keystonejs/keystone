@@ -250,8 +250,6 @@ export const lists = {
               if (isAdmin(session)) return 'disabled'
               return 'hidden'
             },
-            showPrompt: true,
-            showToast: true,
           },
           listView: {
             actionMode: ({ session }) => {
