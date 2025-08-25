@@ -1,5 +1,6 @@
-import { type SVGAttributes } from 'react'
+import type { SVGAttributes } from 'react'
 import Link from 'next/link'
+
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading } from '@keystar/ui/typography'
 

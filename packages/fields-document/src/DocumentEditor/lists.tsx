@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { type Element, type Node } from 'slate'
+import type { Element, Node } from 'slate'
 
 import { useToolbarState } from './toolbar-state'
 import { toggleList } from './lists-shared'

@@ -3,7 +3,7 @@
 'use client'
 
 import slugify from '@sindresorhus/slugify'
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { HeadingIdLink } from './CopyToClipboard'
 
