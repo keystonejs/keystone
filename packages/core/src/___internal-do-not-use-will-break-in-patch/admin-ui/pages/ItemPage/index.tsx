@@ -46,13 +46,6 @@ type ItemPageProps = {
   listKey: string
 }
 
-// FIXME: surely this (or similar) is declared somewhere else
-type UpdateValue = {
-  initial: { kind: 'value'; value: string | null }
-  inner: { kind: 'value'; value: string | null }
-  kind: 'update'
-}
-
 function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Func): Func {
   const callbackRef = useRef(callback)
   const cb = useCallback((...args: any[]) => {
@@ -64,8 +57,15 @@ function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Fu
   return cb as any
 }
 
-function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
-  const itemId = ((value.id ?? '') as string | number).toString()
+function DeleteButton({
+  list,
+  itemId,
+  itemLabel,
+}: {
+  list: ListMeta
+  itemId: string
+  itemLabel: string
+}) {
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const router = useRouter()
   const [deleteItem] = useMutation(
@@ -76,14 +76,6 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
     }`,
     { variables: { id: itemId } }
   )
-
-  // ensure there's _something_ to reference
-  let itemLabel = list.isSingleton ? list.singular : String(value.id)
-  // prefer the item's "label" where available
-  const labelValue = value[list.labelField] as UpdateValue | undefined
-  if (labelValue && labelValue?.initial?.value) {
-    itemLabel = labelValue.initial.value
-  }
 
   return (
     <Fragment>
@@ -168,6 +160,7 @@ function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
 function ItemForm({
   listKey,
   initialValue,
+  itemLabel,
   onSaveSuccess,
   fieldModes,
   fieldPositions,
@@ -175,12 +168,14 @@ function ItemForm({
 }: {
   listKey: string
   initialValue: Record<string, unknown>
+  itemLabel: string
   onSaveSuccess: () => void
   fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
   isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
   const list = useList(listKey)
+  const itemId = initialValue.id as string
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const [update, { loading, error }] = useMutation(
     gql`mutation ($id: ID!, $data: ${list.graphql.names.updateInputName}!) {
@@ -208,7 +203,7 @@ function ItemForm({
 
     const { errors } = await update({
       variables: {
-        id: initialValue.id,
+        id: itemId,
         data: serializeValueToOperationItem('update', list.fields, value, initialValue),
       },
     })
@@ -292,7 +287,9 @@ function ItemForm({
           </Button>
           <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
-          {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
+          {!list.hideDelete ? (
+            <DeleteButton list={list} itemId={itemId} itemLabel={itemLabel} />
+          ) : null}
         </BaseToolbar>
       </form>
 
@@ -404,6 +401,7 @@ function ItemPage({ listKey }: ItemPageProps) {
               fieldPositions={fieldPositions}
               isRequireds={isRequireds}
               listKey={listKey}
+              itemLabel={itemLabel}
               initialValue={initialValue}
               onSaveSuccess={refetch}
             />
