@@ -12,7 +12,7 @@ import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 import { gql, useApolloClient } from '../../../../admin-ui/apollo'
-import { Container } from '../../../../admin-ui/components/Container'
+import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import type { ActionMeta, ListMeta } from '../../../../types'
 
@@ -43,6 +43,9 @@ export function ItemPageHeader({
       // grid areas required because the `ActionGroup` implements focus
       // sentinels (span) before and after the root element
       areas={['primary secondary']}
+      // treat this area like a container
+      minWidth={0}
+      maxWidth={CONTAINER_MAX}
     >
       {list.isSingleton ? (
         <Heading elementType="h1" size="small" gridArea="primary" truncate>
@@ -169,10 +172,9 @@ function ItemActions({
           </Item>
         )}
       </ActionGroup>
-      <DialogContainer onDismiss={() => setActiveAction(null)} isDismissable>
+      <DialogContainer onDismiss={() => setActiveAction(null)}>
         {activeAction && (
           <AlertDialog
-            tone="neutral"
             title={replace(activeAction.messages.promptTitle, list, { itemLabel })}
             cancelLabel="Cancel"
             primaryActionLabel={replace(activeAction.messages.promptConfirmLabel, list, {
@@ -182,7 +184,7 @@ function ItemActions({
               await onTryAction(activeAction, true)
             }}
           >
-            <Text>{replace(activeAction.messages.prompt, list, { itemLabel })}</Text>
+            {replace(activeAction.messages.prompt, list, { itemLabel })}
           </AlertDialog>
         )}
       </DialogContainer>

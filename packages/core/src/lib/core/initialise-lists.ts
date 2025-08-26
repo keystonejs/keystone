@@ -782,7 +782,7 @@ function getListsWithInitialisedFields(
                 label,
                 icon: action.ui.icon ?? null,
                 messages: {
-                  promptTitle: `${label}`,
+                  promptTitle: `${label} {singular}`,
                   promptTitleMany: `${label} {count} {singular|plural}`,
                   prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
                   promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,

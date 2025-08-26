@@ -46,6 +46,13 @@ type ItemPageProps = {
   listKey: string
 }
 
+// FIXME: surely this (or similar) is declared somewhere else
+type UpdateValue = {
+  initial: { kind: 'value'; value: string | null }
+  inner: { kind: 'value'; value: string | null }
+  kind: 'update'
+}
+
 function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Func): Func {
   const callbackRef = useRef(callback)
   const cb = useCallback((...args: any[]) => {
@@ -69,6 +76,14 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
     }`,
     { variables: { id: itemId } }
   )
+
+  // ensure there's _something_ to reference
+  let itemLabel = list.isSingleton ? list.singular : String(value.id)
+  // prefer the item's "label" where available
+  const labelValue = value[list.labelField] as UpdateValue | undefined
+  if (labelValue && labelValue?.initial?.value) {
+    itemLabel = labelValue.initial.value
+  }
 
   return (
     <Fragment>
@@ -98,12 +113,7 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
           }}
         >
           <Text>
-            Are you sure you want to delete
-            <strong>
-              {' '}
-              {list.singular}
-              {!list.isSingleton && ` ${itemId}`}
-            </strong>
+            Are you sure you want to delete <strong style={{ fontWeight: 600 }}>{itemLabel}</strong>
             ? This action cannot be undone.
           </Text>
         </AlertDialog>
