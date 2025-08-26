@@ -11,6 +11,7 @@ type Post {
   relatedCount(where: PostWhereInput! = {}): Int
   recommendations: PostRecommendationsOutput
   bundles: PostBundlesOutput
+  hidden: Boolean
 }
 
 type PostRecommendationsOutput {
@@ -36,6 +37,7 @@ input PostWhereInput {
   category: CategoryWhereInput
   tags: TagManyRelationFilter
   related: PostManyRelationFilter
+  hidden: BooleanFilter
 }
 
 input IDFilter {
@@ -89,9 +91,15 @@ input PostManyRelationFilter {
   none: PostWhereInput
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
+  hidden: OrderDirection
 }
 
 enum OrderDirection {
@@ -106,6 +114,7 @@ input PostUpdateInput {
   related: PostRelateToManyForUpdateInput
   recommendations: [PostRelateToOneForUpdateInput]
   bundles: [PostRelateToManyForUpdateInput]
+  hidden: Boolean
 }
 
 input CategoryRelateToOneForUpdateInput {
@@ -146,6 +155,7 @@ input PostCreateInput {
   related: PostRelateToManyForCreateInput
   recommendations: [PostRelateToOneForCreateInput]
   bundles: [PostRelateToManyForCreateInput]
+  hidden: Boolean
 }
 
 input CategoryRelateToOneForCreateInput {

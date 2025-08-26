@@ -21,6 +21,7 @@ model Post {
   related           Post[]    @relation("Post_related")
   recommendations   Json
   bundles           Json
+  hidden            Boolean   @default(false)
   from_Post_related Post[]    @relation("Post_related")
 
   @@index([categoryId])

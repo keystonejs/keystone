@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, relationship } from '@keystone-6/core/fields'
+import { checkbox, text, relationship } from '@keystone-6/core/fields'
 import { structure } from '@keystone-6/fields-document'
 import type { Lists } from '.keystone/types'
 
@@ -13,6 +13,11 @@ export const lists = {
     access: allowAll, // WARNING: public
     ui: {
       listView: {
+        initialFilter: {
+          hidden: {
+            equals: false
+          }
+        },
         initialSort: {
           field: 'title',
           direction: 'DESC',
@@ -57,6 +62,12 @@ export const lists = {
         schema: bundlesStructureSchema,
         ui: {
           views: './structure-relationships-2',
+        },
+      }),
+
+      hidden: checkbox({
+        ui: {
+          itemView: { fieldPosition: 'sidebar' },
         },
       }),
     },
