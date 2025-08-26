@@ -2,8 +2,15 @@ import type { ChildProcess } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { formatSchema, getGenerators } from '@prisma/internals'
 import { printSchema } from 'graphql'
+import { defaultRegistry } from '@prisma/client-generator-registry'
+import {
+  getGenerators,
+  formatSchema,
+  getSchemaWithPath,
+  processSchemaResult,
+} from '@prisma/internals'
+
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import type { System } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
@@ -80,23 +87,23 @@ export async function generateTypes(cwd: string, system: System) {
 
 export async function generatePrismaClient(cwd: string, system: System) {
   const paths = system.getPaths(cwd)
+  const schemaResult = await getSchemaWithPath(paths.schema.prisma, undefined, { cwd })
+  const schemaContext = await processSchemaResult({ schemaResult, ignoreEnvVarErrors: true })
+
   const generators = await getGenerators({
-    schemaPath: paths.schema.prisma,
+    schemaContext,
+    registry: defaultRegistry.toInternal(),
+    postinstall: false,
+    printDownloadProgress: false,
   })
 
+  console.error(generators)
   await Promise.all(
     generators.map(async generator => {
       try {
         await generator.generate()
       } finally {
-        const closePromise = new Promise<void>(resolve => {
-          const child = (generator as any).generatorProcess.child as ChildProcess
-          child.once('exit', () => {
-            resolve()
-          })
-        })
         generator.stop()
-        await closePromise
       }
     })
   )
