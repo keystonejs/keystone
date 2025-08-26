@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import type { ListMeta } from '../../../../types'
+import type { ListMeta, ListSortDescriptor } from '../../../../types'
 import {
   type TypedDocumentNode,
   ApolloClient,
@@ -10,7 +10,7 @@ import {
   useQuery,
 } from '../../../../admin-ui/apollo'
 import { useSearchFilter } from './useFilter'
-import { type RelationshipValue } from './types'
+import type { RelationshipValue } from './types'
 
 function useDebouncedValue<T>(value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
@@ -29,7 +29,7 @@ export function useApolloQuery(args: {
   labelField: string
   list: ListMeta
   searchFields: string[]
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
+  sort?: ListSortDescriptor<string> | null
   filter?: Record<string, any> | null
   state:
     | { kind: 'many'; value: RelationshipValue[] }
@@ -144,8 +144,8 @@ export function useApolloQuery(args: {
       > = gql`
         query RelationshipSelectMore($where: ${list.graphql.names.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.graphql.names.listOrderName}!]) {
           items: ${list.graphql.names.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
+            id
             label: ${labelField}
-            id: id
           }
         }
       `

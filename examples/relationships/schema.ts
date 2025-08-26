@@ -32,6 +32,9 @@ export const lists = {
       category: relationship({
         ref: 'Category.posts',
         // many: false, // a Post can have one Category
+        ui: {
+          sort: { field: 'name', direction: 'ASC' },
+        }
       }),
 
       // with this field, you can add some Tags to Posts
@@ -47,6 +50,12 @@ export const lists = {
         ref: 'Post',
         many: true,
         ui: {
+          filter: {
+            relatable: {
+              equals: true
+            }
+          },
+          sort: { field: 'title', direction: 'ASC' },
           hideCreate: true,
         },
       }),
@@ -65,6 +74,12 @@ export const lists = {
         },
       }),
 
+      relatable: checkbox({
+        defaultValue: true,
+        ui: {
+          itemView: { fieldPosition: 'sidebar' },
+        },
+      }),
       hidden: checkbox({
         ui: {
           itemView: { fieldPosition: 'sidebar' },

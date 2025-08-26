@@ -40,6 +40,11 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   defaultIsOrderable?: MaybeFieldFunction<ListTypeInfo>
 }
 
+export type ListSortDescriptor<Fields extends string> = {
+  field: 'id' | Fields
+  direction: 'ASC' | 'DESC'
+}
+
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The label used to identify the list in navigation and etc.
@@ -142,15 +147,14 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
      * @default the first three fields in the list
      */
     initialColumns?: readonly ('id' | ListTypeInfo['fields'])[]
-    // was previously top-level defaultSort
-    initialSort?: { field: 'id' | ListTypeInfo['fields']; direction: 'ASC' | 'DESC' }
-    // was previously defaultPageSize
-    pageSize?: number // default number of items to display per page on the list screen
-
     initialFilter?: MaybeSessionFunction<
       Omit<ListTypeInfo['inputs']['where'], 'AND' | 'OR' | 'NOT'>,
       ListTypeInfo
     >
+    initialSort?: ListSortDescriptor<ListTypeInfo['fields']>
+
+    // TODO: rename to initialItemsPerPage or initialPageSize?
+    pageSize?: number // default number of items to display per page on the list screen
   }
 }
 

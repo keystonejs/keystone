@@ -21,6 +21,7 @@ model Post {
   related           Post[]    @relation("Post_related")
   recommendations   Json
   bundles           Json
+  relatable         Boolean   @default(true)
   hidden            Boolean   @default(false)
   from_Post_related Post[]    @relation("Post_related")
 

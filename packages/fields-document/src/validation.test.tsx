@@ -15,6 +15,8 @@ const relationships: Relationships = {
     label: 'Inline',
     labelField: null,
     selection: `something`,
+    filter: null,
+    sort: null,
   },
 }
 

@@ -273,7 +273,14 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
 
 function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
   const { autoFocus, onChange, schema, value } = props
-  const { listKey, label, description, many } = schema
+  const {
+    listKey,
+    label,
+    description,
+    filter,
+    sort,
+    many,
+  } = schema
   const list = useList(listKey)
   const formValue = (function () {
     if (many) {
@@ -318,11 +325,15 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
       isRequired={false}
       field={
         {
-          path: '', // unused
           label,
-          description,
+          description: description ?? '',
           display: 'select',
-          listKey: '', // unused
+          listKey: '?', // unused
+          fieldKey: '?', // unused
+          defaultValue: null as any, // unused
+          deserialize: null as any, // unused
+          serialize: null as any, // unused
+          graphqlSelection: null as any, // unused
 
           // see relationship controller for these fields
           refListKey: list.key,
@@ -330,9 +341,11 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
           hideCreate: true,
           refLabelField: list.labelField,
           refSearchFields: list.initialSearchFields,
-          filter: list.initialFilter as any,
-          sort: list.initialSort,
-        } as any
+          columns: list.initialColumns,
+          initialSort: null,
+          selectFilter: filter || null,
+          selectSort: sort ?? list.initialSort,
+        }
       }
       onChange={val => {
         if (val.kind === 'count') return // shouldnt happen

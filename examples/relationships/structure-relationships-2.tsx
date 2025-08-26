@@ -6,6 +6,10 @@ export const schema = fields.array(
     label: 'Bundle',
     description: 'What posts do you want to bundle with this post?',
     many: true,
+    sort: { field: 'title', direction: 'ASC' },
+    filter: {
+      hidden: { equals: false }
+    },
   }),
   {
     itemLabel: props => {
