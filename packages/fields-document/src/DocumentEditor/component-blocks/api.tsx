@@ -1,30 +1,32 @@
 import { g } from '@keystone-6/core'
-
 import type { HTMLAttributes, ReactElement, ReactNode } from 'react'
-import { isValidURL } from '../isValidURL'
-import type {
-  BlockFormattingConfig,
-  ChildField,
-  ConditionalField,
-  ComponentBlock,
-  ComponentSchema,
-  GenericPreviewProps,
-  InlineMarksConfig,
-  ObjectField,
-  RelationshipField,
-  FormField,
-  ArrayField,
-} from './api-shared'
+
 import {
+  Checkbox,
   makeIntegerFieldInput,
   makeMultiselectFieldInput,
   makeSelectFieldInput,
   makeUrlFieldInput,
-  Checkbox,
   Text,
-  TextField,
   TextArea,
+  TextField,
 } from '#fields-ui'
+
+import { isValidURL } from '../isValidURL'
+import type {
+  ArrayField,
+  BlockFormattingConfig,
+  ChildField,
+  ComponentBlock,
+  ComponentSchema,
+  ConditionalField,
+  FormField,
+  GenericPreviewProps,
+  InlineMarksConfig,
+  ObjectField,
+  RelationshipField,
+} from './api-shared'
+import type { ListSortDescriptor } from '@keystone-6/core/types'
 
 export * from './api-shared'
 
@@ -326,7 +328,9 @@ export const fields = {
     label,
     description,
     labelField,
+    filter,
     selection,
+    sort,
     many,
   }: {
     listKey: string
@@ -337,6 +341,10 @@ export const fields = {
     labelField?: string
     /** The GraphQL selection to use for this relationship when hydrating .data */
     selection?: string
+    /** The default sort to apply to the relationship when showing the select */
+    sort?: ListSortDescriptor<string>
+    /** A filter to apply to the relationship when showing the select */
+    filter?: Record<string, unknown>
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
     Many extends true ? true : false
   > {
@@ -346,7 +354,9 @@ export const fields = {
       label,
       description: description ?? null,
       labelField: labelField ?? null,
+      filter: filter ?? null,
       selection: selection ?? null,
+      sort: sort ?? null,
       many: (many ? true : false) as any,
     }
   },

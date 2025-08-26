@@ -5,7 +5,7 @@ import type {
   GOutputType,
   GNullableInputType,
 } from '@keystone-6/core/graphql-ts'
-import type { KeystoneContext } from '@keystone-6/core/types'
+import type { KeystoneContext, ListSortDescriptor } from '@keystone-6/core/types'
 import type { ReactElement, ReactNode } from 'react'
 
 export type FormFieldValue =
@@ -125,7 +125,9 @@ export type RelationshipField<Many extends boolean> = {
   label: string
   description: string | null
   labelField: string | null
+  filter: Record<string, any> | null
   selection: string | null
+  sort: ListSortDescriptor<string> | null
   many: Many
 }
 

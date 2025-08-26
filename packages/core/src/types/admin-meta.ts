@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import type { GraphQLNames, JSONValue } from './utils'
-import type { ConditionalFilter, ConditionalFilterCase } from './config'
+import type { ConditionalFilter, ConditionalFilterCase, ListSortDescriptor } from './config'
 import type { BaseListTypeInfo } from './type-info'
 
 export type NavigationProps = {
@@ -124,7 +124,7 @@ export type ListMeta = {
   pageSize: number
   initialColumns: string[]
   initialSearchFields: string[]
-  initialSort: null | { direction: 'ASC' | 'DESC'; field: string }
+  initialSort: ListSortDescriptor<string>
   initialFilter: JSONValue
   isSingleton: boolean
 

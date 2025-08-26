@@ -10,7 +10,12 @@ import { Numeral, Text } from '@keystar/ui/typography'
 
 import { BuildItemDialog } from '../../../../admin-ui/components'
 import { useList } from '../../../../admin-ui/context'
-import type { CellComponent, FieldControllerConfig, FieldProps } from '../../../../types'
+import type {
+  CellComponent,
+  FieldControllerConfig,
+  FieldProps,
+  ListSortDescriptor,
+} from '../../../../types'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -77,7 +82,7 @@ export function Field(props: FieldProps<typeof controller>) {
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               filter={field.selectFilter}
-              sort={field.sort}
+              sort={field.selectSort}
               state={{
                 kind: 'many',
                 value: value.value,
@@ -98,7 +103,7 @@ export function Field(props: FieldProps<typeof controller>) {
               labelField={field.refLabelField}
               searchFields={field.refSearchFields}
               filter={field.selectFilter}
-              sort={field.sort}
+              sort={field.selectSort}
               state={{
                 kind: 'one',
                 value: value.value,
@@ -233,13 +238,13 @@ export function controller(
       | {
           displayMode: 'select'
           filter: Record<string, any> | null
-          sort: { field: string; direction: 'ASC' | 'DESC' } | null
+          sort: ListSortDescriptor<string> | null
         }
       | { displayMode: 'count' }
       | {
           displayMode: 'table'
           refFieldKey: string
-          initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
+          initialSort: ListSortDescriptor<string> | null
           columns: string[] | null
         }
     )
@@ -271,7 +276,7 @@ export function controller(
     columns: displayMode === 'table' ? config.fieldMeta.columns : null,
     initialSort: displayMode === 'table' ? config.fieldMeta.initialSort : null,
     selectFilter: displayMode === 'select' ? config.fieldMeta.filter : null,
-    sort: displayMode === 'select' ? config.fieldMeta.sort : null,
+    selectSort: displayMode === 'select' ? config.fieldMeta.sort : null,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well

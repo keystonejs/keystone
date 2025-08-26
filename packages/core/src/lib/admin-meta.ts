@@ -8,6 +8,7 @@ import type {
   ConditionalFilterCase,
   KeystoneConfig,
   KeystoneContext,
+  ListSortDescriptor,
   MaybeBooleanItemFunctionWithFilter,
   MaybeFieldFunction,
   MaybeItemFieldFunction,
@@ -62,9 +63,9 @@ type ListMetaSource_ = {
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
-  initialSearchFields: string[]
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
   initialFilter: EmptyResolver<JSONValue>
+  initialSearchFields: string[]
+  initialSort: ListSortDescriptor<string> | null
   isSingleton: boolean
 
   hideNavigation: EmptyResolver<boolean>
@@ -72,9 +73,7 @@ type ListMetaSource_ = {
   hideDelete: EmptyResolver<boolean>
 }
 export type ListMetaSource = ListMetaSource_ &
-  Omit<ListMeta, keyof ListMetaSource_> & {
-    item: any
-  }
+  Omit<ListMeta, keyof ListMetaSource_> & { item: BaseItem | null }
 
 export type AdminMetaSource = {
   lists: ListMetaSource[]
@@ -153,9 +152,7 @@ export function createAdminMeta(
       initialColumns,
       initialSearchFields,
       initialSort:
-        (listConfig.ui?.listView?.initialSort as
-          | { field: string; direction: 'ASC' | 'DESC' }
-          | undefined) ?? null,
+        (listConfig.ui?.listView?.initialSort as ListSortDescriptor<string> | undefined) ?? null,
       initialFilter: normalizeMaybeSessionFunction(listConfig.ui?.listView?.initialFilter ?? {}),
       isSingleton: list.isSingleton,
 

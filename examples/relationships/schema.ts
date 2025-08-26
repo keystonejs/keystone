@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, relationship } from '@keystone-6/core/fields'
+import { checkbox, text, relationship } from '@keystone-6/core/fields'
 import { structure } from '@keystone-6/fields-document'
 import type { Lists } from '.keystone/types'
 
@@ -13,6 +13,11 @@ export const lists = {
     access: allowAll, // WARNING: public
     ui: {
       listView: {
+        initialFilter: {
+          hidden: {
+            equals: false,
+          },
+        },
         initialSort: {
           field: 'title',
           direction: 'DESC',
@@ -27,6 +32,9 @@ export const lists = {
       category: relationship({
         ref: 'Category.posts',
         // many: false, // a Post can have one Category
+        ui: {
+          sort: { field: 'name', direction: 'ASC' },
+        },
       }),
 
       // with this field, you can add some Tags to Posts
@@ -42,6 +50,12 @@ export const lists = {
         ref: 'Post',
         many: true,
         ui: {
+          filter: {
+            relatable: {
+              equals: true,
+            },
+          },
+          sort: { field: 'title', direction: 'ASC' },
           hideCreate: true,
         },
       }),
@@ -57,6 +71,18 @@ export const lists = {
         schema: bundlesStructureSchema,
         ui: {
           views: './structure-relationships-2',
+        },
+      }),
+
+      relatable: checkbox({
+        defaultValue: true,
+        ui: {
+          itemView: { fieldPosition: 'sidebar' },
+        },
+      }),
+      hidden: checkbox({
+        ui: {
+          itemView: { fieldPosition: 'sidebar' },
         },
       }),
     },

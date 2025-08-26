@@ -142,12 +142,28 @@ function FilterDialog({
   )
 }
 
-function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
+function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
   const param_ = query.filter
   const params = Array.isArray(param_) ? param_ : typeof param_ === 'string' ? [param_] : []
-  if (!params.length) return []
-  const filters: Filter[] = []
 
+  if (!params.length) {
+    if (!list.initialFilter) return []
+
+    const filters: Filter[] = []
+    for (const [fieldKey, filter] of Object.entries(list.initialFilter)) {
+      const { controller } = list.fields[fieldKey]
+      for (const f of controller.filter?.parseGraphQL(filter as any as never) ?? []) {
+        filters.push({
+          field: fieldKey,
+          ...f,
+        })
+      }
+    }
+
+    return filters
+  }
+
+  const filters: Filter[] = []
   for (const [fieldPath, field] of Object.entries(list.fields)) {
     if (!field.isFilterable) continue
     if (!field.controller.filter) continue

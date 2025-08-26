@@ -1,5 +1,5 @@
 ---
-"@keystone-6/fields-document": patch
+"@keystone-6/fields-document": minor
 ---
 
-Fix the relationship fields to default to `initialFilter` and `initialSort` from the foreign list (if provided)
+Add `filter` and `sort` options to inline and component relationship fields

@@ -1,4 +1,4 @@
-import type { FieldController } from '../../../../types'
+import type { FieldController, ListSortDescriptor } from '../../../../types'
 
 export type RelationshipValue = {
   id: string
@@ -40,7 +40,7 @@ export type RelationshipController = FieldController<
   hideCreate: boolean
   many: boolean
   columns: string[] | null
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null
+  initialSort: ListSortDescriptor<string> | null
   selectFilter: Record<string, any> | null
-  sort: { field: string; direction: 'ASC' | 'DESC' } | null
+  selectSort: ListSortDescriptor<string> | null
 }

@@ -1,14 +1,16 @@
 import { createContext, useContext } from 'react'
-import { ReactEditor, type RenderElementProps } from 'slate-react'
 import { Transforms } from 'slate'
-import { useSlateStatic as useStaticEditor } from 'slate-react'
+import {
+  type RenderElementProps,
+  ReactEditor,
+  useSlateStatic as useStaticEditor,
+} from 'slate-react'
 
+import { css } from '@keystar/ui/style'
 import { useList } from '@keystone-6/core/admin-ui/context'
-
 import { ComboboxSingle } from '@keystone-6/core/fields/types/relationship/views'
 
 import type { Relationships } from './relationship-shared'
-import { css } from '@keystar/ui/style'
 export type { Relationships } from './relationship-shared'
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
@@ -19,7 +21,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
 
-// this is the inline relationship, see form-from-preview for the component field
+// WARNING: this is the inline relationship, see form-from-preview for the component field
 export function RelationshipElement({
   attributes,
   children,
@@ -53,9 +55,9 @@ export function RelationshipElement({
           <ComboboxSingle
             list={list}
             labelField={list.labelField}
+            filter={relationship.filter}
             searchFields={list.initialSearchFields}
-            filter={list.initialFilter as any}
-            sort={list.initialSort}
+            sort={relationship.sort}
             state={{
               kind: 'one',
               value:

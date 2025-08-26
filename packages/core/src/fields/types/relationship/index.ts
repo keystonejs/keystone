@@ -5,6 +5,7 @@ import {
   type CommonFieldConfig,
   type FieldTypeFunc,
   type JSONValue,
+  type ListSortDescriptor,
   fieldType,
 } from '../../../types'
 import type { controller } from './views'
@@ -35,7 +36,7 @@ type SelectDisplayConfig<ListTypeInfo extends BaseListTypeInfo, Ref extends stri
      * The sort to apply when shown in the select.
      * Defaults to the initialSort (if set) on the related list.
      */
-    sort?: { field: string; direction: 'ASC' | 'DESC' }
+    sort?: ListSortDescriptor<string>
   }
 }
 
@@ -55,7 +56,7 @@ type TableDisplayConfig = {
   many: true
   ui?: {
     displayMode: 'table'
-    initialSort?: { field: string; direction: 'ASC' | 'DESC' }
+    initialSort?: ListSortDescriptor<string>
     columns?: string[]
 
     itemView: {
@@ -273,7 +274,7 @@ export function relationship<
           hideCreate,
           refLabelField: specificRefLabelField,
           refSearchFields: specificRefSearchFields,
-          filter: config.ui?.filter ?? foreignListMeta.initialFilter ?? null,
+          filter: config.ui?.filter ?? null,
           sort: config.ui?.sort ?? foreignListMeta.initialSort ?? null,
         }
       },

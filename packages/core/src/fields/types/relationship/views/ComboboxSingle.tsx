@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Combobox, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
-import type { ListMeta } from '../../../../types'
+import type { ListMeta, ListSortDescriptor } from '../../../../types'
 import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 
@@ -32,7 +32,7 @@ export function ComboboxSingle({
   list: ListMeta
   placeholder?: string
   filter?: Record<string, any> | null
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
+  sort?: ListSortDescriptor<string> | null
   state: {
     kind: 'one'
     value: RelationshipValue | null

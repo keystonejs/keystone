@@ -6,6 +6,7 @@ import {
   type FieldData,
   type FieldTypeFunc,
   type JSONValue,
+  type ListSortDescriptor,
   fieldType,
 } from '@keystone-6/core/types'
 import { GraphQLError } from 'graphql'
@@ -21,9 +22,14 @@ type RelationshipsConfig = Record<
   {
     listKey: string
     label: string
+    /** The label field to use when showing the select */
     labelField?: string
-    /** GraphQL fields to select when querying the field */
+    /** The GraphQL selection to use when hydrating .data */
     selection?: string
+    /** The filter to use when showing the select */
+    filter?: Record<string, any>
+    /** The sort to use when showing the select */
+    sort?: ListSortDescriptor<string>
   }
 >
 
@@ -199,6 +205,8 @@ function normaliseRelationships(
       ...relationship,
       labelField: relationship.labelField ?? null,
       selection: relationship.selection ?? null,
+      filter: relationship.filter ?? null,
+      sort: relationship.sort ?? null,
     }
   }
   return relationships
@@ -269,5 +277,5 @@ function normaliseDocumentFeatures(
   return documentFeatures
 }
 
-export type { Node } from './structure-validation'
 export { structure } from './structure'
+export type { Node } from './structure-validation'

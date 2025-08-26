@@ -1,7 +1,7 @@
 import { ComboboxMulti, Item } from '@keystar/ui/combobox'
 import { css } from '@keystar/ui/style'
 
-import type { ListMeta } from '../../../../types'
+import type { ListMeta, ListSortDescriptor } from '../../../../types'
 import type { RelationshipValue } from './types'
 import { useApolloQuery } from './useApolloQuery'
 import { useState } from 'react'
@@ -35,7 +35,7 @@ export function ComboboxMany({
   list: ListMeta
   placeholder?: string
   filter?: Record<string, any> | null
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
+  sort?: ListSortDescriptor<string> | null
   state: {
     kind: 'many'
     value: RelationshipValue[]

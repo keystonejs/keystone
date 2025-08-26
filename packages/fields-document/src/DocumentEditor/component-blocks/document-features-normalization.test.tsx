@@ -312,6 +312,8 @@ function makeEditorWithChildField(
           label: 'Mention',
           labelField: null,
           selection: null,
+          filter: null,
+          sort: null,
         },
       },
     }

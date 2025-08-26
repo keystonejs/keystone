@@ -5,6 +5,10 @@ export const schema = fields.array(
     listKey: 'Post',
     label: 'Recommended Post',
     description: 'What posts do you recommend?',
+    filter: {
+      relatable: { equals: true },
+      hidden: { equals: false },
+    },
   }),
   {
     itemLabel: props => {
