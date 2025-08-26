@@ -7,7 +7,7 @@ export const schema = fields.array(
     description: 'What posts do you recommend?',
     filter: {
       relatable: { equals: true },
-      hidden: { equals: false }
+      hidden: { equals: false },
     },
   }),
   {

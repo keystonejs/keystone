@@ -152,9 +152,7 @@ export function createAdminMeta(
       initialColumns,
       initialSearchFields,
       initialSort:
-        (listConfig.ui?.listView?.initialSort as
-          | ListSortDescriptor<string>
-          | undefined) ?? null,
+        (listConfig.ui?.listView?.initialSort as ListSortDescriptor<string> | undefined) ?? null,
       initialFilter: normalizeMaybeSessionFunction(listConfig.ui?.listView?.initialFilter ?? {}),
       isSingleton: list.isSingleton,
 

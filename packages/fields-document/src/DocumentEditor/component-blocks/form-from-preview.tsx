@@ -273,14 +273,7 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
 
 function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
   const { autoFocus, onChange, schema, value } = props
-  const {
-    listKey,
-    label,
-    description,
-    filter,
-    sort,
-    many,
-  } = schema
+  const { listKey, label, description, filter, sort, many } = schema
   const list = useList(listKey)
   const formValue = (function () {
     if (many) {
@@ -323,30 +316,28 @@ function RelationshipFieldPreview(props: DefaultFieldProps<'relationship'>) {
     <RelationshipFieldView
       autoFocus={autoFocus}
       isRequired={false}
-      field={
-        {
-          label,
-          description: description ?? '',
-          display: 'select',
-          listKey: '?', // unused
-          fieldKey: '?', // unused
-          defaultValue: null as any, // unused
-          deserialize: null as any, // unused
-          serialize: null as any, // unused
-          graphqlSelection: null as any, // unused
+      field={{
+        label,
+        description: description ?? '',
+        display: 'select',
+        listKey: '?', // unused
+        fieldKey: '?', // unused
+        defaultValue: null as any, // unused
+        deserialize: null as any, // unused
+        serialize: null as any, // unused
+        graphqlSelection: null as any, // unused
 
-          // see relationship controller for these fields
-          refListKey: list.key,
-          many,
-          hideCreate: true,
-          refLabelField: list.labelField,
-          refSearchFields: list.initialSearchFields,
-          columns: list.initialColumns,
-          initialSort: null,
-          selectFilter: filter || null,
-          selectSort: sort ?? list.initialSort,
-        }
-      }
+        // see relationship controller for these fields
+        refListKey: list.key,
+        many,
+        hideCreate: true,
+        refLabelField: list.labelField,
+        refSearchFields: list.initialSearchFields,
+        columns: list.initialColumns,
+        initialSort: null,
+        selectFilter: filter || null,
+        selectSort: sort ?? list.initialSort,
+      }}
       onChange={val => {
         if (val.kind === 'count') return // shouldnt happen
         const { value } = val

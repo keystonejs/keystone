@@ -8,7 +8,7 @@ export const schema = fields.array(
     many: true,
     sort: { field: 'title', direction: 'ASC' },
     filter: {
-      hidden: { equals: false }
+      hidden: { equals: false },
     },
   }),
   {

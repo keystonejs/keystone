@@ -82,13 +82,20 @@ export async function fetchRelationshipData(
     listKey: string
     labelField: string | null
     selection: string | null
-    many: boolean,
-  }, data: any) {
-  if (!many) return fetchDataForOne(context, {
-    listKey,
-    labelField: preferredLabelField,
-    selection,
-  }, data)
+    many: boolean
+  },
+  data: any
+) {
+  if (!many)
+    return fetchDataForOne(
+      context,
+      {
+        listKey,
+        labelField: preferredLabelField,
+        selection,
+      },
+      data
+    )
 
   const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : []
   if (!ids.length) return []
@@ -111,15 +118,19 @@ export async function fetchRelationshipData(
     : []
 }
 
-async function fetchDataForOne(context: KeystoneContext, {
-  listKey,
-  labelField: preferredLabelField,
-  selection,
-}: {
-  listKey: string
-  labelField: string | null
-  selection: string | null
-}, data: any) {
+async function fetchDataForOne(
+  context: KeystoneContext,
+  {
+    listKey,
+    labelField: preferredLabelField,
+    selection,
+  }: {
+    listKey: string
+    labelField: string | null
+    selection: string | null
+  },
+  data: any
+) {
   // Single related item
   const id = data?.id
   if (id == null) return null

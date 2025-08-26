@@ -15,8 +15,8 @@ export const lists = {
       listView: {
         initialFilter: {
           hidden: {
-            equals: false
-          }
+            equals: false,
+          },
         },
         initialSort: {
           field: 'title',
@@ -34,7 +34,7 @@ export const lists = {
         // many: false, // a Post can have one Category
         ui: {
           sort: { field: 'name', direction: 'ASC' },
-        }
+        },
       }),
 
       // with this field, you can add some Tags to Posts
@@ -52,8 +52,8 @@ export const lists = {
         ui: {
           filter: {
             relatable: {
-              equals: true
-            }
+              equals: true,
+            },
           },
           sort: { field: 'title', direction: 'ASC' },
           hideCreate: true,

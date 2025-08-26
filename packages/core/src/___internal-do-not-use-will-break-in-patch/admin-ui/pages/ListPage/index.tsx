@@ -155,7 +155,7 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
       for (const f of controller.filter?.parseGraphQL(filter as any as never) ?? []) {
         filters.push({
           field: fieldKey,
-          ...f
+          ...f,
         })
       }
     }

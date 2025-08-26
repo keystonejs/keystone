@@ -10,7 +10,12 @@ import { Numeral, Text } from '@keystar/ui/typography'
 
 import { BuildItemDialog } from '../../../../admin-ui/components'
 import { useList } from '../../../../admin-ui/context'
-import type { CellComponent, FieldControllerConfig, FieldProps, ListSortDescriptor } from '../../../../types'
+import type {
+  CellComponent,
+  FieldControllerConfig,
+  FieldProps,
+  ListSortDescriptor,
+} from '../../../../types'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
