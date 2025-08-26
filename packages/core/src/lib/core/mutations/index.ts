@@ -532,7 +532,7 @@ async function resolveInputForCreateOrUpdate(
   // Return the full resolved input (ready for prisma level operation),
   // and the afterOperation hook to be applied
   return {
-    data: transformForPrismaClient(list.fields, hookArgs.resolvedData, context),
+    data: transformForPrismaClient(list, context, hookArgs.resolvedData),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation()
 
@@ -557,15 +557,15 @@ function transformInnerDBField(
 }
 
 function transformForPrismaClient(
-  fields: Record<string, { dbField: ResolvedDBField }>,
-  data: Record<string, any>,
-  context: KeystoneContext
+  list: InitialisedList,
+  context: KeystoneContext,
+  data: Record<string, any>
 ) {
   return Object.fromEntries([
     ...(function* () {
       for (const fieldKey in data) {
         const value = data[fieldKey]
-        const { dbField } = fields[fieldKey]
+        const { dbField } = list.fields[fieldKey]
 
         if (dbField.kind === 'multi') {
           for (const innerFieldKey in value) {

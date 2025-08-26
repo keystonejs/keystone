@@ -27,7 +27,7 @@ export function ItemPageHeader({
   item: Record<string, unknown> | null
   label: string
   title: string
-  onAction: (action: ActionMeta, resultId: string) => void
+  onAction: ((action: ActionMeta, resultId: string) => void) | null
 }) {
   const router = useRouter()
   const actions = list.actions.filter(action => action.itemView.actionMode !== 'hidden')
@@ -65,7 +65,7 @@ export function ItemPageHeader({
         </>
       )}
 
-      {item && actions.length > 0 && (
+      {item && onAction && actions.length > 0 && (
         <ItemActions list={list} item={item} actions={actions} onAction={onAction} />
       )}
     </Grid>

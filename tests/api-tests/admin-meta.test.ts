@@ -178,6 +178,7 @@ test(
                   whereUniqueInputName: 'UserWhereUniqueInput',
                 },
               },
+              actions: [],
               groups: [],
               hideCreate: false,
               hideDelete: false,
