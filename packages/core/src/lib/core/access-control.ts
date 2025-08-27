@@ -20,12 +20,17 @@ import type {
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
 import { accessDeniedError, accessReturnError, extensionError, formatKeys } from './graphql-errors'
-import type { InitialisedList } from './initialise-lists'
+import type { InitialisedAction, InitialisedList } from './initialise-lists'
 import { type InputFilter, type UniqueInputFilter, resolveUniqueWhereInput } from './where-inputs'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
-  if (operation === 'create') return `You cannot ${operation} that ${list.listKey}`
-  return `You cannot ${operation} that ${list.listKey} - it may not exist`
+  if (operation === 'create')
+    return `You cannot ${operation} that ${list.graphql.names.outputTypeName}`
+  return `You cannot ${operation} that ${list.graphql.names.outputTypeName} - it may not exist`
+}
+
+export function cannotActionForItem(action: InitialisedAction, list: InitialisedList) {
+  return `You cannot execute action "${action.actionKey}" for that ${list.graphql.names.outputTypeName}`
 }
 
 export function cannotForItemFields(
@@ -33,7 +38,7 @@ export function cannotForItemFields(
   list: InitialisedList,
   fieldsDenied: string[]
 ) {
-  return `You cannot ${operation} that ${list.listKey} - you cannot ${operation} the fields ${formatKeys(fieldsDenied)}`
+  return `You cannot ${operation} that ${list.graphql.names.outputTypeName} - you cannot ${operation} the fields ${formatKeys(fieldsDenied)}`
 }
 
 export async function getOperationFieldAccess(

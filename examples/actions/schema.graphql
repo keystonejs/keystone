@@ -104,6 +104,7 @@ input PostUpdateInput {
   title: String
   content: String
   votes: Int
+  reportedAt: DateTime
 }
 
 input PostUpdateArgs {
@@ -115,6 +116,7 @@ input PostCreateInput {
   title: String
   content: String
   votes: Int
+  reportedAt: DateTime
 }
 
 """

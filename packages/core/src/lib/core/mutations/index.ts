@@ -5,6 +5,7 @@ import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
 import {
+  cannotActionForItem,
   cannotForItem,
   enforceFieldLevelAccessControl,
   enforceListLevelAccessControl,
@@ -316,7 +317,7 @@ export async function actionOne(
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
-  if (!operationAccess) throw accessDeniedError(cannotForItem(action.actionKey, list))
+  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
   return action.resolve(context, {
     listKey: list.listKey,
@@ -336,7 +337,7 @@ export async function actionMany(
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
-  if (!operationAccess) throw accessDeniedError(cannotForItem(action.actionKey, list))
+  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
   return wheres.map(async where => {
     return action.resolve(context, {

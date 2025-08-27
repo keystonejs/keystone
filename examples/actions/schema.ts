@@ -8,32 +8,6 @@ import type { Context, Lists } from '.keystone/types'
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-const systemField = {
-  access: {
-    read: allowAll,
-    create: denyAll,
-    update: denyAll,
-  },
-  graphql: {
-    omit: {
-      create: true,
-      update: true,
-    },
-  },
-  ui: {
-    createView: {
-      fieldMode: 'hidden' as const,
-    },
-    itemView: {
-      fieldMode: 'read' as const,
-      fieldPosition: 'sidebar' as const,
-    },
-    listView: {
-      fieldMode: 'read' as const,
-    },
-  },
-}
-
 export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
@@ -41,11 +15,22 @@ export const lists = {
       title: text(),
       content: text(),
       votes: integer({ defaultValue: 0 }),
-      reportedAt: timestamp({ ...systemField }),
+      reportedAt: timestamp({
+        ui: {
+          itemView: {
+            fieldMode: 'read' as const, // WARNING: this is not access control
+            fieldPosition: 'sidebar' as const,
+          },
+        },
+      }),
     },
     actions: {
       vote: {
-        access: allowAll,
+        access: ({ context }) => {
+          const ua = context.req?.headers['user-agent'] ?? ''
+          // only allow voting from Chrome browsers
+          return ua.includes('Chrome')
+        },
         // with navigation: 'follow', null redirects to the list view, otherwise to the item view {with the returned item id}
         async resolve(context: Context, { actionKey, where }) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
@@ -79,7 +64,7 @@ export const lists = {
         access: allowAll,
         async resolve(context: Context, { actionKey, where }) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
-          return await context.sudo().db.Post.updateOne({
+          return await context.db.Post.updateOne({
             where,
             data: {
               reportedAt: new Date(),
