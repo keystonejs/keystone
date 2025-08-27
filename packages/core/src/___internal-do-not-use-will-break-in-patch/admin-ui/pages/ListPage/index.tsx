@@ -11,7 +11,6 @@ import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
-import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { Flex, HStack, VStack } from '@keystar/ui/layout'
 import { Menu, MenuTrigger } from '@keystar/ui/menu'
@@ -419,6 +418,37 @@ function ListPage({ listKey }: ListPageProps) {
   }
 
   const actions = list.actions.filter(action => action.listView.actionMode === 'enabled')
+  const actionsForList = list.hideDelete
+    ? actions
+    : [
+        ...actions,
+        {
+          key: 'delete',
+          label: 'Delete',
+          icon: 'trash2Icon',
+          graphql: {
+            names: {
+              one: list.graphql.names.deleteMutationName,
+              many: list.graphql.names.deleteManyMutationName,
+            },
+          },
+          messages: {
+            promptTitle: 'Delete {singular}?',
+            promptTitleMany: 'Delete {count} {singular|plural}?',
+            prompt: 'Are you sure you want to delete {singular}? This action cannot be undone.',
+            promptMany:
+              'Are you sure you want to delete {count} {singular|plural}? This action cannot be undone.',
+            promptConfirmLabel: 'Yes, delete',
+            promptConfirmLabelMany: 'Yes, delete {count} {singular|plural}',
+            success: 'Deleted {singular}.',
+            successMany: 'Deleted {countSuccess} {singular|plural}.',
+            fail: 'Failed to delete {singular}.',
+            failMany: 'Failed to delete {countFail} {singular|plural}.',
+          },
+          itemView: null as any, // unusud
+          listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
+        } as const,
+      ]
   const selectionMode = actions.length > 0 ? 'multiple' : 'none'
   return (
     <PageContainer
@@ -573,7 +603,7 @@ function ListPage({ listKey }: ListPageProps) {
           >
             {[
               ...(function* () {
-                for (const action of actions) {
+                for (const action of actionsForList) {
                   const iconComponent = action.icon ? KeystarIcons[action.icon] : null
                   yield (
                     <Item key={action.key} textValue={action.label}>
@@ -582,13 +612,6 @@ function ListPage({ listKey }: ListPageProps) {
                     </Item>
                   )
                 }
-
-                yield (
-                  <Item key="delete" textValue="Delete">
-                    <Icon src={trash2Icon} />
-                    <Text>Delete</Text>
-                  </Item>
-                )
               })(),
             ]}
           </ActionBar>
@@ -612,7 +635,7 @@ function ListPage({ listKey }: ListPageProps) {
             setActiveAction(null)
           }}
         >
-          {actions
+          {actionsForList
             .filter(action => action.key === activeAction)
             .map(action => {
               return (
