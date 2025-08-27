@@ -214,7 +214,7 @@ export const lists = {
       flag: {
         access: moderatorsOrAbove,
         // null redirects the page, otherwise it updates the page
-        async resolve(context, { where }) {
+        async resolve({ where }, context) {
           return await context.db.Post.updateOne({
             where,
             data: {

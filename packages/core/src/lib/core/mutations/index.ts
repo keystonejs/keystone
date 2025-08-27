@@ -319,11 +319,14 @@ export async function actionOne(
   })
   if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
-  return action.resolve(context, {
-    listKey: list.listKey,
-    actionKey: action.actionKey,
-    where,
-  })
+  return action.resolve(
+    {
+      listKey: list.listKey,
+      actionKey: action.actionKey,
+      where,
+    },
+    context
+  )
 }
 
 export async function actionMany(
@@ -340,11 +343,14 @@ export async function actionMany(
   if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
   return wheres.map(async where => {
-    return action.resolve(context, {
-      listKey: list.listKey,
-      actionKey: action.actionKey,
-      where,
-    })
+    return action.resolve(
+      {
+        listKey: list.listKey,
+        actionKey: action.actionKey,
+        where,
+      },
+      context
+    )
   })
 }
 

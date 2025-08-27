@@ -51,7 +51,7 @@ export type InitialisedAction = {
   actionKey: string
 
   access: ResolvedActionAccessControl
-  resolve: BaseActions<BaseListTypeInfo>[string]['resolve']
+  resolve: BaseActions<BaseListTypeInfo>[keyof BaseActions<BaseListTypeInfo>]['resolve']
   graphql: {
     names: {
       one: string

@@ -1,8 +1,8 @@
 import { list } from '@keystone-6/core'
-import { allowAll, denyAll } from '@keystone-6/core/access'
+import { allowAll } from '@keystone-6/core/access'
 import { integer, text, timestamp } from '@keystone-6/core/fields'
 
-import type { Context, Lists } from '.keystone/types'
+import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -32,10 +32,12 @@ export const lists = {
           return ua.includes('Chrome')
         },
         // with navigation: 'follow', null redirects to the list view, otherwise to the item view {with the returned item id}
-        async resolve(context: Context, { actionKey, where }) {
+        async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
           if (!where) return null
           if (typeof where.id !== 'string') return null // TODO: FIXME: { increment } support for context.db?
+
+          // WARNING: prisma bypasses access control, be wary of this
           return await context.prisma.post.update({
             where: { id: where.id },
             data: {
@@ -62,7 +64,7 @@ export const lists = {
       },
       report: {
         access: allowAll,
-        async resolve(context: Context, { actionKey, where }) {
+        async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
           return await context.db.Post.updateOne({
             where,

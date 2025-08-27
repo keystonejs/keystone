@@ -19,12 +19,12 @@ export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
      */
     access: ActionAccessControlFunction<ListTypeInfo>
     resolve: (
-      context: KeystoneContext<ListTypeInfo['all']>,
       args: {
         listKey: ListTypeInfo['key']
         actionKey: ListTypeInfo['actions']
         where: ListTypeInfo['inputs']['uniqueWhere']
-      }
+      },
+      context: KeystoneContext<ListTypeInfo['all']>
     ) => MaybePromise<ListTypeInfo['item'] | null>
     graphql?: {
       /**
