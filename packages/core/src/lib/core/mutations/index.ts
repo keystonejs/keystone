@@ -564,6 +564,10 @@ function transformForPrismaClient(
   return Object.fromEntries([
     ...(function* () {
       for (const fieldKey in data) {
+        if (!(fieldKey in list.fields)) {
+          // either the types are wrong, or someone didnt use them, either way, bail out
+          throw new Error(`Attempted to use unknown field "${fieldKey}"`)
+        }
         const value = data[fieldKey]
         const { dbField } = list.fields[fieldKey]
 
