@@ -53,7 +53,7 @@ export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
        * The icon name used to represent the action in the Admin UI.
        * @default null
        */
-      icon: keyof typeof KeystarIcons | null
+      icon?: keyof typeof KeystarIcons | null
 
       /**
        * The style used for the success message in the Admin UI.
