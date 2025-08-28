@@ -54,12 +54,12 @@ export type Filter = {
 function FilterTag({
   filter,
   field,
-  onAdd,
+  onChange,
   onRemove,
 }: {
   filter: Filter
   field: FieldMeta
-  onAdd: (filter: Filter) => void
+  onChange: (filter: Filter) => void
   onRemove: () => void
 }) {
   const Label = field.controller.filter!.Label
@@ -86,21 +86,21 @@ function FilterTag({
     <DialogTrigger type="popover" mobileType="tray">
       {tagElement}
       {onDismiss => (
-        <FilterDialog onAdd={onAdd} onDismiss={onDismiss} field={field} filter={filter} />
+        <FilterEdit onChange={onChange} onDismiss={onDismiss} field={field} filter={filter} />
       )}
     </DialogTrigger>
   )
 }
 
-function FilterDialog({
+function FilterEdit({
   filter,
   field,
-  onAdd,
+  onChange: onAdd,
   onDismiss,
 }: {
   filter: Filter
   field: FieldMeta
-  onAdd: (filter: Filter) => void
+  onChange: (filter: Filter) => void
   onDismiss: () => void
 }) {
   const formId = useId()
@@ -109,7 +109,10 @@ function FilterDialog({
     if (event.target !== event.currentTarget) return
     event.preventDefault()
 
-    onAdd(filter)
+    onAdd({
+      ...filter,
+      value,
+    })
     onDismiss()
   }
 
@@ -170,6 +173,8 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
     for (const filterType in field.controller.filter.types) {
       const prefix = `${fieldPath}_${filterType}`
       for (const queryFilter of params) {
+        if (!queryFilter.startsWith(prefix)) continue
+
         if (queryFilter === prefix) {
           filters.push({
             type: filterType,
@@ -179,7 +184,6 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
           continue
         }
 
-        if (!queryFilter.startsWith(prefix)) continue
         const queryValue = queryFilter.slice(prefix.length + 1)
         try {
           const value = JSON.parse(queryValue)
@@ -188,7 +192,9 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
             field: fieldPath,
             value,
           })
-        } catch {}
+        } catch (e) {
+          console.error('Error parsing filter', queryFilter)
+        }
       }
     }
   }
@@ -505,16 +511,21 @@ function ListPage({ listKey }: ListPageProps) {
 
         {filters.length ? (
           <Flex gap="small" wrap>
-            {filters.map(filter => {
+            {filters.map((filter, i) => {
               const field = list.fields[filter.field]
-              const onRemove = () =>
+              function onRemove() {
                 setFilters(prevFilters => prevFilters.filter(f => f !== filter))
+              }
+              function onChange(updatedFilter: Filter) {
+                setFilters(prevFilters => [...prevFilters.filter(f => f !== filter), updatedFilter])
+              }
+
               return (
                 <FilterTag
-                  key={`${filter.field}_${filter.type}`}
+                  key={i}
                   field={field}
                   filter={filter}
-                  onAdd={onAddFilter}
+                  onChange={onChange}
                   onRemove={onRemove}
                 />
               )
