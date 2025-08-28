@@ -173,6 +173,8 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
     for (const filterType in field.controller.filter.types) {
       const prefix = `${fieldPath}_${filterType}`
       for (const queryFilter of params) {
+        if (!queryFilter.startsWith(prefix)) continue
+
         if (queryFilter === prefix) {
           filters.push({
             type: filterType,
@@ -182,7 +184,6 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
           continue
         }
 
-        if (!queryFilter.startsWith(prefix)) continue
         const queryValue = queryFilter.slice(prefix.length + 1)
         try {
           const value = JSON.parse(queryValue)
@@ -191,7 +192,9 @@ function getFilters(list: ListMeta, query: ParsedUrlQueryInput): Filter[] {
             field: fieldPath,
             value,
           })
-        } catch {}
+        } catch (e) {
+          console.error('Error parsing filter', queryFilter)
+        }
       }
     }
   }
@@ -514,10 +517,7 @@ function ListPage({ listKey }: ListPageProps) {
                 setFilters(prevFilters => prevFilters.filter(f => f !== filter))
               }
               function onChange(updatedFilter: Filter) {
-                setFilters(prevFilters => [
-                  ...prevFilters.filter(f => f !== filter),
-                  updatedFilter
-                ])
+                setFilters(prevFilters => [...prevFilters.filter(f => f !== filter), updatedFilter])
               }
 
               return (
