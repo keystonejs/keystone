@@ -8,6 +8,7 @@ import { expandVoidHooks } from '../../fields/resolve-hooks'
 import { humanize } from '../../lib/utils'
 import type { GroupInfo } from '../../schema'
 import type {
+  ActionMeta,
   BaseFieldTypeInfo,
   BaseItem,
   BaseListTypeInfo,
@@ -24,8 +25,10 @@ import type {
 import { QueryMode } from '../../types'
 import type { FieldHooks, ResolvedFieldHooks, ResolvedListHooks } from '../../types/config/hooks'
 import type {
+  BaseActions,
   MaybeBooleanItemFunctionWithFilter,
   MaybeBooleanSessionFunctionWithFilter,
+  MaybeItemActionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
@@ -33,6 +36,7 @@ import type {
 } from '../../types/config/lists'
 import { type GraphQLNames, __getNames } from '../../types/utils'
 import {
+  type ResolvedActionAccessControl,
   type ResolvedFieldAccessControl,
   type ResolvedListAccessControl,
   parseFieldAccessControl,
@@ -42,6 +46,33 @@ import { assertFieldsValid } from './field-assertions'
 import { outputTypeField } from './queries/output-field'
 import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { areArraysEqual } from './utils'
+
+export type InitialisedAction = {
+  actionKey: string
+
+  access: ResolvedActionAccessControl
+  resolve: BaseActions<BaseListTypeInfo>[keyof BaseActions<BaseListTypeInfo>]['resolve']
+  graphql: {
+    names: {
+      one: string
+      many: string
+    }
+  }
+  ui: {
+    label: ActionMeta['label']
+    icon: ActionMeta['icon']
+    messages: ActionMeta['messages']
+    itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
+      actionMode: MaybeItemActionFunctionWithFilter<
+        'enabled' | 'disabled' | 'hidden',
+        BaseListTypeInfo
+      >
+    }
+    listView: {
+      actionMode: MaybeSessionFunction<'enabled' | 'hidden', BaseListTypeInfo>
+    }
+  }
+}
 
 export type InitialisedField = {
   fieldKey: string
@@ -82,7 +113,7 @@ export type InitialisedField = {
       isRequired: MaybeBooleanItemFunctionWithFilter<BaseListTypeInfo, BaseFieldTypeInfo>
     }
     listView: {
-      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', BaseListTypeInfo>
     }
   }
 } & Pick<
@@ -102,6 +133,7 @@ export type InitialisedList = {
   access: ResolvedListAccessControl
 
   fields: Record<string, InitialisedField>
+  actions: InitialisedAction[]
   groups: GroupInfo<BaseListTypeInfo>[]
 
   hooks: ResolvedListHooks<BaseListTypeInfo>
@@ -731,6 +763,52 @@ function getListsWithInitialisedFields(
 
       fields: resultFields,
       groups,
+      actions: [
+        ...(function* () {
+          for (const actionKey in listConfig.actions) {
+            const action = listConfig.actions[actionKey]
+            const { label } = action.ui
+            const label_ = label.toLowerCase()
+            yield {
+              actionKey,
+              ...action,
+              graphql: {
+                names: {
+                  one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
+                  many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
+                },
+              },
+              ui: {
+                label,
+                icon: action.ui.icon ?? null,
+                messages: {
+                  promptTitle: `${label} {singular}`,
+                  promptTitleMany: `${label} {count} {singular|plural}`,
+                  prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
+                  promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
+                  promptConfirmLabel: `Yes, ${label_} this {singular}`,
+                  promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
+                  fail: `Could not ${label_} {singular}`,
+                  failMany: `Could not ${label_} {countFail} {singular|plural}`,
+                  success: `Completed ${label_} action for {singular}`,
+                  successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
+                  ...action.ui.messages,
+                } satisfies InitialisedAction['ui']['messages'],
+                // TODO: move to listWithDefaults
+                itemView: {
+                  actionMode: action.ui.itemView?.actionMode ?? 'enabled',
+                  navigation: action.ui.itemView?.navigation ?? 'follow',
+                  hidePrompt: action.ui.itemView?.hidePrompt ?? false,
+                  hideToast: action.ui.itemView?.hideToast ?? false,
+                } satisfies InitialisedAction['ui']['itemView'],
+                listView: {
+                  actionMode: action.ui.listView?.actionMode ?? 'enabled',
+                },
+              },
+            }
+          }
+        })(),
+      ],
 
       graphql: {
         types: {

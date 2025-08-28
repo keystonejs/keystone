@@ -1,33 +1,156 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import type { MaybePromise } from '../utils'
-import type { BaseListTypeInfo } from '../type-info'
+import type { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
+
 import type { KeystoneContext } from '../context'
-import type { ListHooks } from './hooks'
-import type { ListAccessControl } from './access-control'
+import type { BaseListTypeInfo } from '../type-info'
+import type { MaybePromise } from '../utils'
+import type { ListAccessControl, ActionAccessControlFunction } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
+import type { ListHooks } from './hooks'
+
+export type BaseActions<ListTypeInfo extends BaseListTypeInfo> = {
+  /**
+   * The key of the action, by default this is used to prefix the mutation in the GraphQL schema
+   */
+  [key: string]: {
+    /**
+     * Controls who or what can use this action
+     * @see https://www.keystonejs.com/guides/auth-and-access-control
+     */
+    access: ActionAccessControlFunction<ListTypeInfo>
+    resolve: (
+      args: {
+        listKey: ListTypeInfo['key']
+        actionKey: ListTypeInfo['actions']
+        where: ListTypeInfo['inputs']['uniqueWhere']
+      },
+      context: KeystoneContext<ListTypeInfo['all']>
+    ) => MaybePromise<ListTypeInfo['item'] | null>
+    graphql?: {
+      /**
+       * The name of the singular mutation in the GraphQL schema
+       * @default {action}{list.graphql.singular}
+       */
+      singular?: string
+      /**
+       * The name of the plural mutation in the GraphQL schema
+       * @default {action}{list.graphql.plural}
+       */
+      plural?: string
+      /**
+       * The description added to the GraphQL schema
+       * @default empty
+       */
+      description?: string
+    }
+    ui: {
+      /**
+       * The label used to identify the action in the Admin UI.
+       */
+      label: string
+
+      /**
+       * The icon name used to represent the action in the Admin UI.
+       * @default null
+       */
+      icon?: keyof typeof KeystarIcons | null
+
+      /**
+       * The style used for the success message in the Admin UI.
+       * @default 'neutral'
+       */
+      // TODO: ? maybe ?
+      // result?: 'positive' | 'info' | 'neutral' | 'critical'
+
+      /**
+       * The locale messages used in the Admin UI, with support for the following template tags:
+       * - {singular}: Uses {list}.ui.singular
+       * - {plural}: Uses {list}.ui.plural
+       * - {singular|plural}: Uses {list}.ui.singular if {count} is 1, otherwise uses {list}.ui.plural
+       * - {itemLabel}: The label of the item being acted upon
+       * - {count}: The number of items being acted upon
+       * - {countSuccess}: The number of items successfully acted upon
+       * - {countFail}: The number of items that failed to be acted upon
+       */
+      messages?: {
+        promptTitle?: string
+        promptTitleMany?: string
+        prompt?: string
+        promptMany?: string
+        promptConfirmLabel?: string
+        promptConfirmLabelMany?: string
+        fail?: string
+        failMany?: string
+        success?: string
+        successMany?: string
+      }
+
+      itemView?: {
+        /**
+         * Controls the action mode for this action in the item view in the Admin UI.
+         * @default 'enabled'
+         */
+        actionMode?: MaybeItemActionFunctionWithFilter<
+          'enabled' | 'disabled' | 'hidden',
+          ListTypeInfo
+        >
+        /**
+         * Controls the navigation behaviour after the action completes in the item view in the Admin UI.
+         * @default 'follow'
+         */
+        navigation?: 'follow' | 'refetch' | 'return'
+
+        /**
+         * Controls whether to show a prompt prior to the action in the item view in the Admin UI.
+         * @default false
+         */
+        hidePrompt?: boolean
+
+        /**
+         * Controls whether to show a toast notification after completing the action in the item view in the Admin UI.
+         * @default false
+         */
+        hideToast?: boolean
+      }
+      listView?: {
+        /**
+         * Controls the action mode for this action in the list view in the Admin UI.
+         * @default 'enabled'
+         */
+        actionMode?: MaybeSessionFunction<'enabled' | 'hidden', ListTypeInfo>
+      }
+    }
+  }
+}
 
 export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  isSingleton?: boolean
-  fields: BaseFields<ListTypeInfo>
-
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
-   * @see https://www.keystonejs.com/guides/auth-and-access-control
+   * @see https://keystonejs.com/guides/auth-and-access-control
    */
   access: ListAccessControl<ListTypeInfo>
+
+  fields: BaseFields<ListTypeInfo>
+  actions?: BaseActions<ListTypeInfo>
 
   /** Options for how this list should show in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo>
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
-   * @see https://www.keystonejs.com/guides/hooks
+   * @see https://keystonejs.com/guides/hooks
    */
   hooks?: ListHooks<ListTypeInfo>
 
   graphql?: ListGraphQLConfig<ListTypeInfo>
 
   db?: ListDBConfig
+
+  /**
+   * Controls if this list is a singleton
+   * @see https://keystonejs.com/docs/config/lists#is-singleton
+   */
+  isSingleton?: boolean
 
   /**
    * The default value to use for graphql.isEnabled.filter on all fields for this list
@@ -162,7 +285,7 @@ export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
   | boolean
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
       fieldKey: ListTypeInfo['fields']
     }) => MaybePromise<boolean>)
@@ -171,7 +294,7 @@ export type MaybeSessionFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
     }) => MaybePromise<T>)
 
 export type ConditionalFilterCase<ListTypeInfo extends BaseListTypeInfo> =
@@ -203,14 +326,14 @@ export type MaybeSessionFunctionWithFilter<
   | ConditionalFilter<T, ListTypeInfo>
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
     }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
 
 export type MaybeBooleanSessionFunctionWithFilter<ListTypeInfo extends BaseListTypeInfo> =
   | ConditionalFilterCase<ListTypeInfo>
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
     }) => MaybePromise<ConditionalFilterCase<ListTypeInfo>>)
 
 export type MaybeBooleanItemFunctionWithFilter<
@@ -224,7 +347,7 @@ export type MaybeBooleanItemFunctionWithFilter<
       fieldKey: ListTypeInfo['fields']
       item: ListTypeInfo['item'] | null
       itemField: FieldTypeInfo['item'] | null
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
     }) => MaybePromise<ConditionalFilterCase<ListTypeInfo>>)
 
 export type MaybeItemFieldFunctionWithFilter<
@@ -235,7 +358,7 @@ export type MaybeItemFieldFunctionWithFilter<
   | ConditionalFilter<T, ListTypeInfo>
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
       fieldKey: ListTypeInfo['fields']
       item: ListTypeInfo['item'] | null
@@ -250,7 +373,7 @@ export type MaybeItemFieldFunction<
   | T
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
       fieldKey: ListTypeInfo['fields']
       item: ListTypeInfo['item'] | null
@@ -261,8 +384,32 @@ export type MaybeItemFunctionWithFilter<T extends string, ListTypeInfo extends B
   | ConditionalFilter<T, ListTypeInfo>
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session']
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
       listKey: ListTypeInfo['key']
+      item: ListTypeInfo['item'] | null
+    }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
+
+export type MaybeItemActionFunction<
+  T extends string,
+  ListTypeInfo extends BaseListTypeInfo,
+> = (args: {
+  context: KeystoneContext<ListTypeInfo['all']>
+  session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+  listKey: ListTypeInfo['key']
+  actionKey: ListTypeInfo['actions']
+  item: ListTypeInfo['item'] | null
+}) => MaybePromise<T>
+
+export type MaybeItemActionFunctionWithFilter<
+  T extends string,
+  ListTypeInfo extends BaseListTypeInfo,
+> =
+  | ConditionalFilter<T, ListTypeInfo>
+  | ((args: {
+      context: KeystoneContext<ListTypeInfo['all']>
+      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
+      listKey: ListTypeInfo['key']
+      actionKey: ListTypeInfo['actions']
       item: ListTypeInfo['item'] | null
     }) => MaybePromise<ConditionalFilter<T, ListTypeInfo>>)
 

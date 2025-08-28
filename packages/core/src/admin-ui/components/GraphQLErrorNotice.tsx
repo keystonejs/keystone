@@ -1,14 +1,23 @@
+import type { ServerError, ServerParseError } from '@apollo/client'
+import type { GraphQLError, GraphQLFormattedError } from 'graphql'
+
 import { VStack } from '@keystar/ui/layout'
 import { Notice } from '@keystar/ui/notice'
 import { Content } from '@keystar/ui/slots'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { GraphQLError, GraphQLFormattedError } from 'graphql'
-
 export function GraphQLErrorNotice({
   errors: errors_ = [],
 }: {
-  errors?: (null | undefined | GraphQLError | GraphQLFormattedError | Error)[]
+  errors?: (
+    | null
+    | undefined
+    | ServerError
+    | ServerParseError
+    | GraphQLError
+    | GraphQLFormattedError
+    | Error
+  )[]
 }) {
   const errors = errors_.filter((x): x is NonNullable<typeof x> => !!x)
   if (!errors.length) return null
@@ -29,6 +38,17 @@ export function GraphQLErrorNotice({
                       {line}
                     </Text>
                   )
+                }
+
+                if ('result' in error && typeof error.result !== 'string') {
+                  for (const { message } of error.result.errors) {
+                    if (typeof message !== 'string') continue
+                    yield (
+                      <Text key={i++} elementType="li">
+                        {message}
+                      </Text>
+                    )
+                  }
                 }
               }
             })(),

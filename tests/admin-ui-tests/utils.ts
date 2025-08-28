@@ -1,11 +1,11 @@
 import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
-import path from 'node:path'
 import fs from 'node:fs'
+import path from 'node:path'
 
-import type { ExecaChildProcess } from 'execa'
-import * as playwright from 'playwright'
 import dotenv from 'dotenv'
+import type { ExecaChildProcess } from 'execa'
 import ms from 'ms'
+import * as playwright from 'playwright'
 
 jest.setTimeout(ms('20 minutes'))
 

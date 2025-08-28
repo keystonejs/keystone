@@ -1,12 +1,32 @@
+import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
+import type { GraphQLNamedType } from 'graphql'
+
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
+import {
+  cannotActionForItem,
+  cannotForItem,
+  enforceFieldLevelAccessControl,
+  enforceListLevelAccessControl,
+  getAccessFilters,
+  getOperationAccess,
+} from '../access-control'
+import { checkFilterOrderAccess } from '../filter-order-access'
+import {
+  accessDeniedError,
+  extensionError,
+  relationshipError,
+  resolverError,
+} from '../graphql-errors'
+import { runSideEffectOnlyHook, validate } from '../hooks'
+import type { InitialisedAction, InitialisedList } from '../initialise-lists'
+import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import type { ResolvedDBField } from '../resolve-relationships'
-import type { InitialisedList } from '../initialise-lists'
 import {
   type IdType,
-  promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
+  promiseAllRejectWithAllErrors,
 } from '../utils'
 import {
   type InputFilter,
@@ -14,23 +34,6 @@ import {
   resolveUniqueWhereInput,
   resolveWhereInput,
 } from '../where-inputs'
-import {
-  accessDeniedError,
-  extensionError,
-  relationshipError,
-  resolverError,
-} from '../graphql-errors'
-import {
-  cannotForItem,
-  getOperationAccess,
-  getAccessFilters,
-  enforceListLevelAccessControl,
-  enforceFieldLevelAccessControl,
-} from '../access-control'
-import { checkFilterOrderAccess } from '../filter-order-access'
-import { runSideEffectOnlyHook, validate } from '../hooks'
-
-import { mapUniqueWhereToWhere, traverse } from '../queries/resolvers'
 import {
   RelationshipErrors,
   resolveRelateToManyForCreateInput,
@@ -40,7 +43,6 @@ import {
   resolveRelateToOneForCreateInput,
   resolveRelateToOneForUpdateInput,
 } from './nested-mutation-one-input-resolvers'
-import type { GNullableInputType } from '@graphql-ts/schema'
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -304,6 +306,54 @@ export async function deleteMany(
   })
 }
 
+export async function actionOne(
+  where: UniqueInputFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  action: InitialisedAction
+) {
+  const operationAccess = await action.access({
+    context,
+    listKey: list.listKey,
+    actionKey: action.actionKey,
+  })
+  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
+
+  return action.resolve(
+    {
+      listKey: list.listKey,
+      actionKey: action.actionKey,
+      where,
+    },
+    context
+  )
+}
+
+export async function actionMany(
+  wheres: UniqueInputFilter[],
+  list: InitialisedList,
+  context: KeystoneContext,
+  action: InitialisedAction
+) {
+  const operationAccess = await action.access({
+    context,
+    listKey: list.listKey,
+    actionKey: action.actionKey,
+  })
+  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
+
+  return wheres.map(async where => {
+    return action.resolve(
+      {
+        listKey: list.listKey,
+        actionKey: action.actionKey,
+        where,
+      },
+      context
+    )
+  })
+}
+
 async function getResolvedData(
   list: InitialisedList,
   hookArgs: {
@@ -489,7 +539,7 @@ async function resolveInputForCreateOrUpdate(
   // Return the full resolved input (ready for prisma level operation),
   // and the afterOperation hook to be applied
   return {
-    data: transformForPrismaClient(list.fields, hookArgs.resolvedData, context),
+    data: transformForPrismaClient(list, context, hookArgs.resolvedData),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation()
 
@@ -514,15 +564,19 @@ function transformInnerDBField(
 }
 
 function transformForPrismaClient(
-  fields: Record<string, { dbField: ResolvedDBField }>,
-  data: Record<string, any>,
-  context: KeystoneContext
+  list: InitialisedList,
+  context: KeystoneContext,
+  data: Record<string, any>
 ) {
   return Object.fromEntries([
     ...(function* () {
       for (const fieldKey in data) {
+        if (!(fieldKey in list.fields)) {
+          // either the types are wrong, or someone didnt use them, either way, bail out
+          throw new Error(`Attempted to use unknown field "${fieldKey}"`)
+        }
         const value = data[fieldKey]
-        const { dbField } = fields[fieldKey]
+        const { dbField } = list.fields[fieldKey]
 
         if (dbField.kind === 'multi') {
           for (const innerFieldKey in value) {
@@ -632,7 +686,7 @@ export function getMutationsForList(list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve(rootVal, { where }, context) {
+    resolve(_, { where }, context) {
       return deleteOne(where, list, context)
     },
   })
@@ -644,10 +698,45 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve(rootVal, { where }, context) {
+    async resolve(_, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
     },
   })
+
+  const collectedTypes: GraphQLNamedType[] = []
+  const { isEnabled } = list.graphql
+  if (isEnabled.type) {
+    // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
+    collectedTypes.push(list.graphql.types.output)
+    if (isEnabled.query || isEnabled.update || isEnabled.delete) {
+      collectedTypes.push(list.graphql.types.uniqueWhere)
+    }
+    if (isEnabled.query) {
+      for (const field of Object.values(list.fields)) {
+        if (
+          isEnabled.query &&
+          field.graphql.isEnabled.read &&
+          field.unreferencedConcreteInterfaceImplementations
+        ) {
+          // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
+          collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations)
+        }
+      }
+      collectedTypes.push(list.graphql.types.where)
+      collectedTypes.push(list.graphql.types.orderBy)
+    }
+    if (isEnabled.update) {
+      if (list.graphql.types.update instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.update)
+      }
+      collectedTypes.push(updateManyInput)
+    }
+    if (isEnabled.create) {
+      if (list.graphql.types.create instanceof GInputObjectType) {
+        collectedTypes.push(list.graphql.types.create)
+      }
+    }
+  }
 
   return {
     mutations: {
@@ -663,7 +752,44 @@ export function getMutationsForList(list: InitialisedList) {
         [list.graphql.names.deleteMutationName]: deleteOne_,
         [list.graphql.names.deleteManyMutationName]: deleteMany_,
       }),
+      ...Object.fromEntries(
+        (function* () {
+          for (const action of list.actions) {
+            yield [
+              action.graphql.names.one,
+              g.field({
+                type: list.graphql.types.output,
+                args: {
+                  where: g.arg({
+                    type: g.nonNull(list.graphql.types.uniqueWhere),
+                    defaultValue: defaultUniqueWhereInput,
+                  }),
+                },
+                async resolve(_, { where }, context) {
+                  return actionOne(where, list, context, action)
+                },
+              }),
+            ]
+            yield [
+              action.graphql.names.many,
+              g.field({
+                type: g.list(list.graphql.types.output),
+                args: {
+                  where: g.arg({
+                    type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
+                  }),
+                },
+                async resolve(_, { where }, context) {
+                  return promisesButSettledWhenAllSettledAndInOrder(
+                    await actionMany(where, list, context, action)
+                  )
+                },
+              }),
+            ]
+          }
+        })()
+      ),
     },
-    updateManyInput,
+    types: collectedTypes,
   }
 }

@@ -94,6 +94,15 @@ export type QueryMode =
   | 'default'
   | 'insensitive'
 
+export type KeystoneAdminUIActionMetaItemViewNavigation =
+  | 'follow'
+  | 'refetch'
+  | 'return'
+
+export type KeystoneAdminUIActionMetaListViewActionMode =
+  | 'enabled'
+  | 'hidden'
+
 export type KeystoneAdminUISortDirection =
   | 'ASC'
   | 'DESC'
@@ -115,6 +124,7 @@ export declare namespace Lists {
       key: 'Todo'
       isSingleton: false
       fields: 'id' | 'title'
+      actions: never
       item: Item
       inputs: {
         where: TodoWhereInput

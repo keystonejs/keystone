@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import {
   type FormEvent,
   Fragment,
@@ -34,6 +34,7 @@ import {
   useInvalidFields,
 } from '../../../../admin-ui/utils'
 import type {
+  ActionMeta,
   BaseListTypeInfo,
   ConditionalFilter,
   ConditionalFilterCase,
@@ -56,8 +57,15 @@ function useEventCallback<Func extends (...args: any[]) => unknown>(callback: Fu
   return cb as any
 }
 
-function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, unknown> }) {
-  const itemId = ((value.id ?? '') as string | number).toString()
+function DeleteButton({
+  list,
+  itemId,
+  itemLabel,
+}: {
+  list: ListMeta
+  itemId: string
+  itemLabel: string
+}) {
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const router = useRouter()
   const [deleteItem] = useMutation(
@@ -97,11 +105,7 @@ function DeleteButton({ list, value }: { list: ListMeta; value: Record<string, u
           }}
         >
           <Text>
-            Are you sure you want to delete{' '}
-            <strong>
-              {list.singular}
-              {!list.isSingleton && ` ${itemId}`}
-            </strong>
+            Are you sure you want to delete <strong style={{ fontWeight: 600 }}>{itemLabel}</strong>
             ? This action cannot be undone.
           </Text>
         </AlertDialog>
@@ -156,6 +160,7 @@ function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
 function ItemForm({
   listKey,
   initialValue,
+  itemLabel,
   onSaveSuccess,
   fieldModes,
   fieldPositions,
@@ -163,12 +168,14 @@ function ItemForm({
 }: {
   listKey: string
   initialValue: Record<string, unknown>
+  itemLabel: string
   onSaveSuccess: () => void
   fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
   isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
   const list = useList(listKey)
+  const itemId = initialValue.id as string
   const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
   const [update, { loading, error }] = useMutation(
     gql`mutation ($id: ID!, $data: ${list.graphql.names.updateInputName}!) {
@@ -196,7 +203,7 @@ function ItemForm({
 
     const { errors } = await update({
       variables: {
-        id: initialValue.id,
+        id: itemId,
         data: serializeValueToOperationItem('update', list.fields, value, initialValue),
       },
     })
@@ -280,7 +287,9 @@ function ItemForm({
           </Button>
           <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
-          {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
+          {!list.hideDelete ? (
+            <DeleteButton list={list} itemId={itemId} itemLabel={itemLabel} />
+          ) : null}
         </BaseToolbar>
       </form>
 
@@ -296,15 +305,18 @@ export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} 
 function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id_ = useRouter().query.id
-  const [id] = Array.isArray(id_) ? id_ : [id_]
-  const { data, error, loading, refetch } = useListItem(listKey, id ?? null)
+  const [itemId] = Array.isArray(id_) ? id_ : [id_]
+  const { data, error, loading, refetch } = useListItem(listKey, itemId ?? null)
+  const item = data?.item
+  const itemLabel_ = item?.[list.labelField] ?? item?.id
+  const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (itemId ?? '')
 
-  const pageLoading = loading || id === undefined
-  const pageLabel = (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+  const pageLoading = loading || itemId === undefined
+  const pageLabel = itemLabel || itemId
   const pageTitle = list.isSingleton || typeof pageLabel !== 'string' ? list.label : pageLabel
   const initialValue = useMemo(() => {
-    if (!data?.item) return null
-    return deserializeItemToValue(list.fields, data.item)
+    if (!item) return null
+    return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
 
   const { fieldModes, fieldPositions, isRequireds } = useMemo(() => {
@@ -327,6 +339,18 @@ function ItemPage({ listKey }: ItemPageProps) {
     return { fieldModes, fieldPositions, isRequireds }
   }, [data?.keystone.adminMeta, list.fields])
 
+  function onAction(action: ActionMeta, resultId: string | null) {
+    const { navigation } = action.itemView
+
+    if ((navigation === 'follow' && resultId === itemId) || navigation === 'refetch') {
+      refetch()
+    } else if (navigation === 'follow' && resultId) {
+      router.push(`/${list.path}/${resultId}`)
+    } else {
+      router.push(list.isSingleton ? '/' : `/${list.path}`)
+    }
+  }
+
   return (
     <PageContainer
       title={pageTitle}
@@ -335,6 +359,8 @@ function ItemPage({ listKey }: ItemPageProps) {
           list={list}
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
+          item={item ?? null}
+          onAction={onAction}
         />
       }
     >
@@ -346,9 +372,9 @@ function ItemPage({ listKey }: ItemPageProps) {
         <ColumnLayout>
           <Box marginY="xlarge">
             <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
-            {data?.item == null &&
+            {item == null &&
               (list.isSingleton ? (
-                id === '1' ? (
+                itemId === '1' ? (
                   <ItemNotFound>
                     <Text>“{list.label}” doesn’t exist, or you don’t have access to it.</Text>
                     {!list.hideCreate && <CreateButtonLink list={list} />}
@@ -356,15 +382,15 @@ function ItemPage({ listKey }: ItemPageProps) {
                 ) : (
                   <ItemNotFound>
                     <Text>
-                      An item with ID <strong>“{id}”</strong> does not exist.
+                      An item with ID <strong>“{itemId}”</strong> does not exist.
                     </Text>
                   </ItemNotFound>
                 )
               ) : (
                 <ItemNotFound>
                   <Text>
-                    The item with ID <strong>“{id}”</strong> doesn’t exist, or you don’t have access
-                    to it.
+                    The item with ID <strong>“{itemId}”</strong> doesn’t exist, or you don’t have
+                    access to it.
                   </Text>
                 </ItemNotFound>
               ))}
@@ -375,6 +401,7 @@ function ItemPage({ listKey }: ItemPageProps) {
               fieldPositions={fieldPositions}
               isRequireds={isRequireds}
               listKey={listKey}
+              itemLabel={itemLabel}
               initialValue={initialValue}
               onSaveSuccess={refetch}
             />

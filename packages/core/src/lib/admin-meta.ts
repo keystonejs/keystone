@@ -11,12 +11,13 @@ import type {
   ListSortDescriptor,
   MaybeBooleanItemFunctionWithFilter,
   MaybeFieldFunction,
+  MaybeItemActionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybePromise,
   MaybeSessionFunction,
 } from '../types'
-import type { FieldMeta, ListMeta } from '../types/admin-meta'
+import type { ActionMeta, FieldMeta, ListMeta } from '../types/admin-meta'
 import type { GraphQLNames, JSONValue } from '../types/utils'
 import type { InitialisedList } from './core/initialise-lists'
 
@@ -28,7 +29,6 @@ type FieldMetaSource_ = {
   isOrderable: EmptyResolver<boolean>
   isFilterable: EmptyResolver<boolean>
 
-  isNonNull: ('read' | 'create' | 'update')[] // TODO: FIXME: flattened?
   createView: {
     fieldMode: EmptyResolver<ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>>
     isRequired: EmptyResolver<ConditionalFilterCase<BaseListTypeInfo>>
@@ -45,12 +45,26 @@ type FieldMetaSource_ = {
   listView: {
     fieldMode: EmptyResolver<'read' | 'hidden'>
   }
+  item: BaseItem | null
+  itemField: BaseItem[string] | null
 }
 export type FieldMetaSource = FieldMetaSource_ &
-  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'graphql' | 'views'> & {
-    item: BaseItem | null
-    itemField: BaseItem[string] | null
+  Omit<FieldMeta, keyof FieldMetaSource_ | 'controller' | 'views'>
+
+type ActionMetaSource_ = {
+  listKey: string
+  itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
+    actionMode: MaybeItemActionFunctionWithFilter<
+      'enabled' | 'disabled' | 'hidden',
+      BaseListTypeInfo
+    >
   }
+  listView: {
+    actionMode: EmptyResolver<'enabled' | 'hidden'>
+  }
+  item: BaseItem | null
+}
+export type ActionMetaSource = ActionMetaSource_ & Omit<ActionMeta, keyof ActionMetaSource_>
 
 type ListMetaSource_ = {
   fields: FieldMetaSource[]
@@ -60,6 +74,7 @@ type ListMetaSource_ = {
     description: string
     fields: FieldMetaSource[]
   }[]
+  actions: ActionMetaSource[]
   graphql: { names: GraphQLNames }
   pageSize: number
   initialColumns: string[]
@@ -71,9 +86,9 @@ type ListMetaSource_ = {
   hideNavigation: EmptyResolver<boolean>
   hideCreate: EmptyResolver<boolean>
   hideDelete: EmptyResolver<boolean>
+  item: BaseItem | null
 }
-export type ListMetaSource = ListMetaSource_ &
-  Omit<ListMeta, keyof ListMetaSource_> & { item: BaseItem | null }
+export type ListMetaSource = ListMetaSource_ & Omit<ListMeta, keyof ListMetaSource_>
 
 export type AdminMetaSource = {
   lists: ListMetaSource[]
@@ -144,6 +159,8 @@ export function createAdminMeta(
       fields: [],
       fieldsByKey: {},
       groups: [],
+      actions: [],
+
       graphql: {
         names: list.graphql.names,
       },
@@ -183,6 +200,8 @@ export function createAdminMeta(
 
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue
+
+    const listMeta = adminMetaRoot.listsByKey[listKey]
 
     // populate .fields
     for (const [fieldKey, field] of Object.entries(list.fields)) {
@@ -242,13 +261,39 @@ export function createAdminMeta(
         itemField: null, // part of resolver
       } satisfies FieldMetaSource
 
-      adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
-      adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
+      listMeta.fields.push(fieldMeta)
+      listMeta.fieldsByKey[fieldKey] = fieldMeta
+    }
+
+    // populate .actions
+    for (const action of list.actions) {
+      listMeta.actions.push({
+        // ActionMeta
+        key: action.actionKey,
+        label: action.ui.label,
+        icon: action.ui.icon,
+        messages: {
+          ...action.ui.messages,
+        },
+        graphql: {
+          ...action.graphql,
+        },
+
+        // ActionMetaSource_
+        listKey,
+        itemView: {
+          ...action.ui.itemView,
+        },
+        listView: {
+          actionMode: normalizeMaybeSessionFunction(action.ui.listView.actionMode),
+        },
+        item: null, // part of resolver
+      })
     }
 
     // populate .groups
     for (const group of list.groups) {
-      adminMetaRoot.listsByKey[listKey].groups.push({
+      listMeta.groups.push({
         label: group.label,
         description: group.description,
         fields: group.fields.map(

@@ -190,6 +190,15 @@ export type QueryMode =
   | 'default'
   | 'insensitive'
 
+export type KeystoneAdminUIActionMetaItemViewNavigation =
+  | 'follow'
+  | 'refetch'
+  | 'return'
+
+export type KeystoneAdminUIActionMetaListViewActionMode =
+  | 'enabled'
+  | 'hidden'
+
 export type KeystoneAdminUISortDirection =
   | 'ASC'
   | 'DESC'
@@ -229,6 +238,7 @@ export declare namespace Lists {
       key: 'Post'
       isSingleton: false
       fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author'
+      actions: never
       item: Item
       inputs: {
         where: PostWhereInput
@@ -251,6 +261,7 @@ export declare namespace Lists {
       key: 'Author'
       isSingleton: false
       fields: 'id' | 'name' | 'posts'
+      actions: never
       item: Item
       inputs: {
         where: AuthorWhereInput

@@ -1,7 +1,5 @@
 import { type PropsWithChildren, useId, useMemo, useRef } from 'react'
 
-import { gql, useQuery } from '../../../../admin-ui/apollo'
-
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
@@ -11,14 +9,14 @@ import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import { gql, useQuery } from '../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui/context'
 
 export function HomePage() {
-  const { lists: allLists } = useKeystone()
-  const visibleLists = Object.values(allLists).filter(list => !list.hideNavigation)
-
+  const { lists, error: metaError } = useKeystone()
+  const visibleLists = Object.values(lists).filter(list => !list.hideNavigation)
   const LIST_COUNTS_QUERY = useMemo(
     () =>
       gql(`
@@ -35,8 +33,7 @@ export function HomePage() {
     [visibleLists]
   )
 
-  const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
-
+  const { data, error: countsError } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
   return (
     <PageContainer
       header={
@@ -51,10 +48,10 @@ export function HomePage() {
       <VStack paddingY="xlarge">
         <GraphQLErrorNotice
           errors={[
-            error?.networkError,
-            // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-            // which are handled seperately and do not indicate a failure to update the item
-            ...(error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []),
+            metaError?.networkError,
+            countsError?.networkError,
+            ...(metaError?.graphQLErrors ?? []),
+            ...(countsError?.graphQLErrors ?? []),
           ]}
         />
         <Grid

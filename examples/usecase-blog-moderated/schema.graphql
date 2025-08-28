@@ -5,7 +5,6 @@ type Post {
   id: ID!
   title: String
   content: String
-  hidden: Boolean
   createdBy: Contributor
   createdAt: DateTime
   updatedAt: DateTime
@@ -31,7 +30,6 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
-  hidden: BooleanFilter
   createdBy: ContributorWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -78,11 +76,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -98,7 +91,6 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
-  hidden: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
   hiddenAt: OrderDirection
@@ -112,24 +104,6 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   content: String
-  hidden: Boolean
-  createdBy: ContributorRelateToOneForUpdateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  hiddenBy: ModeratorRelateToOneForUpdateInput
-  hiddenAt: DateTime
-}
-
-input ContributorRelateToOneForUpdateInput {
-  create: ContributorCreateInput
-  connect: ContributorWhereUniqueInput
-  disconnect: Boolean
-}
-
-input ModeratorRelateToOneForUpdateInput {
-  create: ModeratorCreateInput
-  connect: ModeratorWhereUniqueInput
-  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -140,22 +114,6 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   content: String
-  hidden: Boolean
-  createdBy: ContributorRelateToOneForCreateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  hiddenBy: ModeratorRelateToOneForCreateInput
-  hiddenAt: DateTime
-}
-
-input ContributorRelateToOneForCreateInput {
-  create: ContributorCreateInput
-  connect: ContributorWhereUniqueInput
-}
-
-input ModeratorRelateToOneForCreateInput {
-  create: ModeratorCreateInput
-  connect: ModeratorWhereUniqueInput
 }
 
 type Contributor {
@@ -298,6 +256,11 @@ input UserWhereInput {
   moderator: ModeratorWhereInput
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -309,6 +272,18 @@ input UserUpdateInput {
   admin: Boolean
   contributor: ContributorRelateToOneForUpdateInput
   moderator: ModeratorRelateToOneForUpdateInput
+}
+
+input ContributorRelateToOneForUpdateInput {
+  create: ContributorCreateInput
+  connect: ContributorWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ModeratorRelateToOneForUpdateInput {
+  create: ModeratorCreateInput
+  connect: ModeratorWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserUpdateArgs {
@@ -323,6 +298,16 @@ input UserCreateInput {
   moderator: ModeratorRelateToOneForCreateInput
 }
 
+input ContributorRelateToOneForCreateInput {
+  create: ContributorCreateInput
+  connect: ContributorWhereUniqueInput
+}
+
+input ModeratorRelateToOneForCreateInput {
+  create: ModeratorCreateInput
+  connect: ModeratorWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -335,6 +320,8 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  flagPost(where: PostWhereUniqueInput!): Post
+  flagPosts(where: [PostWhereUniqueInput!]!): [Post]
   createContributor(data: ContributorCreateInput!): Contributor
   createContributors(data: [ContributorCreateInput!]!): [Contributor]
   updateContributor(where: ContributorWhereUniqueInput!, data: ContributorUpdateInput!): Contributor
@@ -389,6 +376,7 @@ type KeystoneAdminUIListMeta {
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  actions: [KeystoneAdminUIActionMeta!]!
   graphql: KeystoneAdminUIGraphQL!
   pageSize: Int!
   initialColumns: [String!]!
@@ -457,6 +445,60 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIActionMeta {
+  key: String!
+  label: String!
+  icon: String
+  messages: KeystoneAdminUIActionMetaMessages!
+  graphql: KeystoneAdminUIActionMetaGraphQL
+  itemView: KeystoneAdminUIActionMetaItemView
+  listView: KeystoneAdminUIActionMetaListView!
+}
+
+type KeystoneAdminUIActionMetaMessages {
+  promptTitle: String!
+  promptTitleMany: String
+  prompt: String!
+  promptMany: String
+  promptConfirmLabel: String!
+  promptConfirmLabelMany: String
+  fail: String!
+  failMany: String
+  success: String!
+  successMany: String
+}
+
+type KeystoneAdminUIActionMetaGraphQL {
+  names: KeystoneAdminUIActionMetaGraphQLNames!
+}
+
+type KeystoneAdminUIActionMetaGraphQLNames {
+  one: String!
+  many: String
+}
+
+type KeystoneAdminUIActionMetaItemView {
+  actionMode: JSON!
+  navigation: KeystoneAdminUIActionMetaItemViewNavigation!
+  hidePrompt: Boolean!
+  hideToast: Boolean!
+}
+
+enum KeystoneAdminUIActionMetaItemViewNavigation {
+  follow
+  refetch
+  return
+}
+
+type KeystoneAdminUIActionMetaListView {
+  actionMode: KeystoneAdminUIActionMetaListViewActionMode!
+}
+
+enum KeystoneAdminUIActionMetaListViewActionMode {
+  enabled
+  hidden
 }
 
 type KeystoneAdminUIGraphQL {

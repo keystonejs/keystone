@@ -7,10 +7,10 @@ import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
 import { AlertDialog, Dialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
+import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
-import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { Flex, HStack, VStack } from '@keystar/ui/layout'
 import { Menu, MenuTrigger } from '@keystar/ui/menu'
@@ -39,13 +39,12 @@ import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLError
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
-import type { FieldMeta, JSONValue, ListMeta } from '../../../../types'
+import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
 
 type ListPageProps = { listKey: string }
-type SelectedKeys = 'all' | Set<number | string>
 export type Filter = {
   field: string
   type: string
@@ -241,6 +240,7 @@ function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
+type Selection = Set<string | number> | 'all'
 function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
@@ -252,8 +252,8 @@ function ListPage({ listKey }: ListPageProps) {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(list.pageSize)
   const [searchString, setSearchString] = useState('')
-  const [selectedItems, setSelectedItems] = useState<SelectedKeys>(() => new Set([]))
-  const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
+  const [selectedItems, setSelectedItems] = useState<Selection>(() => new Set([]))
+  const [activeAction, setActiveAction] = useState<Key | null>(null)
   const dirty = useMemo(() => {
     const defaultFilters = getFilters(list, {})
     const defaultSort = getSort(list, {})
@@ -311,10 +311,7 @@ function ListPage({ listKey }: ListPageProps) {
   }, [columns, sort, filters, currentPage, pageSize, searchString, list])
 
   const allowCreate = !(list.hideCreate ?? true)
-  const allowDelete = !(list.hideDelete ?? true)
   const isConstrained = Boolean(filters.length || query.search)
-  const selectionMode = allowDelete ? 'multiple' : 'none'
-  const selectedItemCount = selectedItems === 'all' ? 'all' : selectedItems.size
   const readableFields = Object.values(list.fields).map(f => ({
     id: f.key,
     value: f.key,
@@ -395,6 +392,9 @@ function ListPage({ listKey }: ListPageProps) {
     }
   }, [data])
 
+  const selectedItemIds = (
+    selectedItems === 'all' ? (data?.items?.map(item => item.id) ?? []) : Array.from(selectedItems)
+  ).map(String)
   const isEmpty = Boolean(data?.count === 0 && !isConstrained)
   const headers = shownFields.map(field => {
     return {
@@ -416,6 +416,40 @@ function ListPage({ listKey }: ListPageProps) {
     setFilters(defaultFilters)
     setSort(defaultSort)
   }
+
+  const actions = list.actions.filter(action => action.listView.actionMode === 'enabled')
+  const actionsForList = list.hideDelete
+    ? actions
+    : [
+        ...actions,
+        {
+          key: 'delete',
+          label: 'Delete',
+          icon: 'trash2Icon',
+          graphql: {
+            names: {
+              one: list.graphql.names.deleteMutationName,
+              many: list.graphql.names.deleteManyMutationName,
+            },
+          },
+          messages: {
+            promptTitle: 'Delete {singular}?',
+            promptTitleMany: 'Delete {count} {singular|plural}?',
+            prompt: 'Are you sure you want to delete {singular}? This action cannot be undone.',
+            promptMany:
+              'Are you sure you want to delete {count} {singular|plural}? This action cannot be undone.',
+            promptConfirmLabel: 'Yes, delete',
+            promptConfirmLabelMany: 'Yes, delete',
+            success: 'Deleted {singular}.',
+            successMany: 'Deleted {countSuccess} {singular|plural}.',
+            fail: 'Unable to delete {singular}.',
+            failMany: 'Unable to delete {countFail} {singular|plural}.',
+          },
+          itemView: null as any, // unusud
+          listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
+        } as const,
+      ]
+  const selectionMode = actionsForList.length > 0 ? 'multiple' : 'none'
 
   return (
     <PageContainer
@@ -464,7 +498,9 @@ function ListPage({ listKey }: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           ) : null}
-          {isReady && loading && <ProgressCircle size="small" isIndeterminate />}
+          {isReady && loading && (
+            <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />
+          )}
         </HStack>
 
         {filters.length ? (
@@ -500,7 +536,7 @@ function ListPage({ listKey }: ListPageProps) {
             selectedKeys={selectedItems}
             renderEmptyState={() =>
               loading ? (
-                <ProgressCircle isIndeterminate />
+                <ProgressCircle aria-label="Preparing items" isIndeterminate />
               ) : isConstrained ? (
                 <EmptyState
                   icon={searchXIcon}
@@ -552,7 +588,7 @@ function ListPage({ listKey }: ListPageProps) {
           </TableView>
 
           <ActionBar
-            selectedItemCount={selectedItemCount}
+            selectedItemCount={selectedItemIds.length}
             onClearSelection={() => setSelectedItems(new Set())}
             UNSAFE_className={css({
               // TODO: update in @keystar/ui package
@@ -564,25 +600,21 @@ function ListPage({ listKey }: ListPageProps) {
                 boxShadow: `0 1px 4px ${tokenSchema.color.shadow.regular}`,
               },
             })}
-            onAction={key => {
-              switch (key) {
-                case 'delete':
-                  if (selectedItems === 'all') {
-                    const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
-                    setIdsForDeletion(new Set(ids))
-                  } else {
-                    setIdsForDeletion(selectedItems)
-                  }
-                  break
-                default:
-                  break
-              }
-            }}
+            onAction={setActiveAction}
           >
-            <Item key="delete" textValue="Delete">
-              <Icon src={trash2Icon} />
-              <Text>Delete</Text>
-            </Item>
+            {[
+              ...(function* () {
+                for (const action of actionsForList) {
+                  const iconComponent = action.icon ? KeystarIcons[action.icon] : null
+                  yield (
+                    <Item key={action.key} textValue={action.label}>
+                      {iconComponent ? <Icon src={iconComponent} /> : null}
+                      <Text>{action.label}</Text>
+                    </Item>
+                  )
+                }
+              })(),
+            ]}
           </ActionBar>
         </ActionBarContainer>
 
@@ -601,13 +633,25 @@ function ListPage({ listKey }: ListPageProps) {
 
         <DialogContainer
           onDismiss={() => {
-            setSelectedItems(new Set())
-            setIdsForDeletion(null)
+            setActiveAction(null)
           }}
         >
-          {idsForDeletion && (
-            <DeleteItemsDialog items={idsForDeletion} listKey={listKey} refetch={refetch} />
-          )}
+          {actionsForList
+            .filter(action => action.key === activeAction)
+            .map(action => {
+              return (
+                <ActionItemsDialog
+                  itemIds={selectedItemIds}
+                  {...action}
+                  list={list}
+                  onSuccess={() => {
+                    refetch()
+                    setSelectedItems(new Set())
+                  }}
+                />
+              )
+            })
+            .pop()}
         </DialogContainer>
       </VStack>
     </PageContainer>
@@ -632,96 +676,113 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
   )
 }
 
-function DeleteItemsDialog(props: { items: Set<Key>; listKey: string; refetch: () => void }) {
-  const { items, listKey, refetch } = props
-  const list = useList(listKey)
+function replace(
+  s: string,
+  list: ListMeta,
+  args: {
+    itemLabel?: string
+    count?: number
+    countFail?: number
+    countSuccess?: number
+  },
+  many: boolean
+) {
+  if (s.includes('{singular|plural}'))
+    s = s.replaceAll('{singular|plural}', many ? '{plural}' : '{singular}')
+  if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
+  if (s.includes('{Plural}')) s = s.replaceAll('{Plural}', list.plural)
+  if (s.includes('{singular}')) s = s.replaceAll('{singular}', list.singular.toLowerCase())
+  if (s.includes('{plural}')) s = s.replaceAll('{plural}', list.plural.toLowerCase())
+  if ('count' in args) s = s.replaceAll('{count}', String(args.count))
+  if ('countFail' in args) s = s.replaceAll('{countFail}', String(args.countFail))
+  if ('countSuccess' in args) s = s.replaceAll('{countSuccess}', String(args.countSuccess))
+  if ('itemLabel' in args) s = s.replaceAll('{itemLabel}', args.itemLabel ?? '')
+  return s
+}
 
-  const [deleteItems] = useMutation(
-    useMemo(
-      () =>
-        gql`
-        mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
-          ${list.graphql.names.deleteManyMutationName}(where: $where) {
-            id
-            ${list.labelField}
-          }
-        }
-`,
-      [list]
-    ),
-    { errorPolicy: 'all' }
-  )
-
-  const onDelete = async () => {
-    const { data, errors } = await deleteItems({
-      variables: { where: [...items].map(id => ({ id })) },
-    })
-    /*
-      Data returns an array where successful deletions are item objects
-      and unsuccessful deletions are null values.
-      Run a reduce to count success and failure as well as
-      to generate the success message to be passed to the success toast
-     */
-    const { successfulItems, unsuccessfulItems } = data[
-      list.graphql.names.deleteManyMutationName
-    ].reduce(
-      (
-        acc: {
-          successfulItems: number
-          unsuccessfulItems: number
-          successMessage: string
-        },
-        curr: any
-      ) => {
-        if (curr) {
-          acc.successfulItems++
-          acc.successMessage =
-            acc.successMessage === ''
-              ? (acc.successMessage += curr[list.labelField])
-              : (acc.successMessage += `, ${curr[list.labelField]}`)
-        } else {
-          acc.unsuccessfulItems++
-        }
-        return acc
-      },
-      { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
-        successfulItems: number
-        unsuccessfulItems: number
-        successMessage: string
+function ActionItemsDialog({
+  list,
+  itemIds,
+  onSuccess,
+  ...action
+}: {
+  list: ListMeta
+  itemIds: string[]
+  onSuccess: (remaining: string[]) => void
+} & ActionMeta) {
+  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
+    gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
+      results: ${action.graphql.names.many}(where: $where) {
+        id
       }
-    )
-
-    // if there are errors
-    if (errors?.length) {
-      // find out how many items failed to delete.
-      // reduce error messages down to unique instances, and append to the toast as a message.
-      toastQueue.critical(
-        `Unable to delete ${unsuccessfulItems} item${unsuccessfulItems === 1 ? '' : 's'}.`,
-        {
-          timeout: 5000,
-        }
-      )
+    }`,
+    {
+      variables: { where: itemIds.map(id => ({ id })) },
+      errorPolicy: 'all',
     }
+  )
+  const { messages: m } = action
 
-    if (successfulItems) {
-      toastQueue.neutral(`Deleted ${successfulItems} item${successfulItems === 1 ? '' : 's'}.`, {
-        timeout: 5000,
-      })
+  async function onTryAction() {
+    try {
+      const { data, errors } = await actionOnItems()
+      const failed = itemIds.filter(id => !data?.results?.some(x => x?.id === id))
+      const countSuccess = itemIds.length - failed.length
+      const countFail = failed.length
+
+      // if there are errors
+      if (failed.length || errors?.length) {
+        toastQueue.critical(
+          replace(
+            m.failMany,
+            list,
+            {
+              count: itemIds.length,
+              countFail,
+              countSuccess,
+            },
+            countFail > 1
+          ),
+          { timeout: 5000 }
+        )
+      }
+
+      if (countSuccess) {
+        toastQueue.neutral(
+          replace(
+            m.successMany,
+            list,
+            {
+              count: itemIds.length,
+              countFail,
+              countSuccess,
+            },
+            countSuccess > 1
+          ),
+          { timeout: 5000 }
+        )
+      }
+
+      return onSuccess(failed)
+    } catch (error) {
+      console.error(error)
     }
-
-    return refetch()
   }
 
   return (
     <AlertDialog
-      title="Delete items"
+      tone={'neutral'}
+      title={replace(m.promptTitleMany, list, { count: itemIds.length }, itemIds.length > 1)}
       cancelLabel="Cancel"
-      primaryActionLabel="Yes, delete"
-      onPrimaryAction={onDelete}
-      tone="critical"
+      primaryActionLabel={replace(
+        m.promptConfirmLabelMany,
+        list,
+        { count: itemIds.length },
+        itemIds.length > 1
+      )}
+      onPrimaryAction={onTryAction}
     >
-      Are you sure? This will permanently delete {items.size} item
-      {items.size === 1 ? '' : 's'}.
+      <Text>{replace(m.promptMany, list, { count: itemIds.length }, itemIds.length > 1)}</Text>
     </AlertDialog>
   )
 }

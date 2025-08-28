@@ -95,7 +95,7 @@ export function serializeValueToOperationItem(
     const fieldValueSerialized = field.controller.serialize(fieldValue)
     const fieldValueReference = valueReference[fieldKey]
 
-    const isAlwaysRequired = field.graphql.isNonNull.includes(operation)
+    const isAlwaysRequired = field.isNonNull.includes(operation)
     if (!isAlwaysRequired) {
       if (isDeepEqual(fieldValueSerialized, field.controller.serialize(fieldValueReference)))
         continue

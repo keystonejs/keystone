@@ -54,6 +54,9 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
                     ...list.fields,
                   }),
             },
+            actions: {
+              ...list.actions,
+            },
             hooks: {
               ...list.hooks,
             },
@@ -63,7 +66,7 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
             ui: {
               ...list.ui,
             },
-          } satisfies KeystoneConfig['lists'][typeof listKey],
+          } satisfies KeystoneConfig['lists'][string],
         ]
       }
     })(),

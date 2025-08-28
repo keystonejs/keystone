@@ -1,6 +1,6 @@
 import type { Browser, Page } from 'playwright'
 
-import { makeGqlRequest, adminUITests, deleteAllData } from './utils'
+import { adminUITests, deleteAllData, makeGqlRequest } from './utils'
 
 adminUITests('./tests/test-projects/crud-notifications', browserType => {
   let browser: Browser = undefined as any
@@ -33,7 +33,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
     await page.getByRole('button', { name: 'Yes, delete' }).click()
     const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
     await alertDialog.waitFor()
-    expect(await alertDialog.innerText()).toBe('Deleted 1 item.')
+    expect(await alertDialog.innerText()).toBe('Deleted 1 task.')
   })
 
   test('Complete deletion failure, only shows the successful failure prompt', async () => {
@@ -54,7 +54,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
     await page.getByRole('button', { name: 'Yes, delete' }).click()
     const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
     await alertDialog.waitFor()
-    expect(await alertDialog.innerText()).toBe('Unable to delete 1 item.')
+    expect(await alertDialog.innerText()).toBe('Unable to delete 1 task.')
   })
 
   test('Partial deletion failure', async () => {
@@ -88,10 +88,10 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
     await page.getByRole('button', { name: 'Yes, delete' }).click()
     const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
     await alertDialog.waitFor()
-    expect(await alertDialog.innerText()).toBe('Unable to delete 25 items.')
+    expect(await alertDialog.innerText()).toBe('Unable to delete 25 tasks.')
     await alertDialog.getByRole('button', { name: 'Close' }).click()
     await page
-      .locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 items.")')
+      .locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 tasks.")')
       .waitFor()
   })
   afterAll(async () => {

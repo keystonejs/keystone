@@ -22,7 +22,15 @@ function CreateItemPage({ listKey }: { listKey: string }) {
   return (
     <PageContainer
       title={`Create ${list.singular}`}
-      header={<ItemPageHeader list={list} label="Create" title={`Create ${list.singular}`} />}
+      header={
+        <ItemPageHeader
+          list={list}
+          label="Create"
+          title={`Create ${list.singular}`}
+          item={null}
+          onAction={null}
+        />
+      }
     >
       <ColumnLayout>
         <form
