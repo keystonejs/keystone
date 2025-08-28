@@ -736,13 +736,17 @@ function ActionItemsDialog({
 
   async function onTryAction() {
     try {
-      const { data, errors } = await actionOnItems()
-      const failed = itemIds.filter(id => !data?.results?.some(x => x?.id === id))
-      const countSuccess = itemIds.length - failed.length
-      const countFail = failed.length
+      const { errors } = await actionOnItems()
+      const countFail = errors?.length ?? 0
+      const countSuccess = itemIds.length - countFail
+      const failed = []
+      for (const error of errors ?? []) {
+        const i = error.path?.[1]
+        if (typeof i !== 'number') continue
+        failed.push(itemIds[i])
+      }
 
-      // if there are errors
-      if (failed.length || errors?.length) {
+      if (countFail) {
         toastQueue.critical(
           replace(
             m.failMany,
