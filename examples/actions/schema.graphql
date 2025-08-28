@@ -5,6 +5,7 @@ type Post {
   id: ID!
   title: String
   content: String
+  hidden: Boolean
   votes: Int
   reportedAt: DateTime
 }
@@ -22,6 +23,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
+  hidden: BooleanFilter
   votes: IntNullableFilter
   reportedAt: DateTimeNullableFilter
 }
@@ -65,6 +67,11 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input IntNullableFilter {
   equals: Int
   in: [Int!]
@@ -91,6 +98,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
+  hidden: OrderDirection
   votes: OrderDirection
   reportedAt: OrderDirection
 }
@@ -103,6 +111,7 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   content: String
+  hidden: Boolean
   votes: Int
   reportedAt: DateTime
 }
@@ -115,6 +124,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   content: String
+  hidden: Boolean
   votes: Int
   reportedAt: DateTime
 }

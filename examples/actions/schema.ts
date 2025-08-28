@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { integer, text, timestamp } from '@keystone-6/core/fields'
+import { checkbox, integer, text, timestamp } from '@keystone-6/core/fields'
 
 import type { Lists } from '.keystone/types'
 
@@ -14,6 +14,7 @@ export const lists = {
     fields: {
       title: text(),
       content: text(),
+      hidden: checkbox(),
       votes: integer({ defaultValue: 0 }),
       reportedAt: timestamp({
         ui: {
@@ -101,6 +102,14 @@ export const lists = {
             actionMode: 'enabled',
           },
         },
+      },
+    },
+    ui: {
+      listView: {
+        initialFilter: {
+          hidden: { equals: false },
+        },
+        initialSort: { field: 'votes', direction: 'DESC' },
       },
     },
   }),
