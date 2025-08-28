@@ -4,7 +4,7 @@ import type { MaybePromise } from '../utils'
 
 export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>
-  session?: ListTypeInfo['all']['session']
+  session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
   listKey: ListTypeInfo['key']
 }
 

@@ -314,6 +314,7 @@ export async function actionOne(
 ) {
   const operationAccess = await action.access({
     context,
+    session: context.session, // TODO: remove in breaking change
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
@@ -337,6 +338,7 @@ export async function actionMany(
 ) {
   const operationAccess = await action.access({
     context,
+    session: context.session, // TODO: remove in breaking change
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
