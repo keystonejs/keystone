@@ -439,17 +439,18 @@ function ListPage({ listKey }: ListPageProps) {
             promptMany:
               'Are you sure you want to delete {count} {singular|plural}? This action cannot be undone.',
             promptConfirmLabel: 'Yes, delete',
-            promptConfirmLabelMany: 'Yes, delete {count} {singular|plural}',
+            promptConfirmLabelMany: 'Yes, delete',
             success: 'Deleted {singular}.',
             successMany: 'Deleted {countSuccess} {singular|plural}.',
-            fail: 'Failed to delete {singular}.',
-            failMany: 'Failed to delete {countFail} {singular|plural}.',
+            fail: 'Unable to delete {singular}.',
+            failMany: 'Unable to delete {countFail} {singular|plural}.',
           },
           itemView: null as any, // unusud
           listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
         } as const,
       ]
-  const selectionMode = actions.length > 0 ? 'multiple' : 'none'
+  const selectionMode = actionsForList.length > 0 ? 'multiple' : 'none'
+
   return (
     <PageContainer
       header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
@@ -717,6 +718,7 @@ function ActionItemsDialog({
     }`,
     {
       variables: { where: itemIds.map(id => ({ id })) },
+      errorPolicy: 'all',
     }
   )
   const { messages: m } = action
@@ -726,6 +728,7 @@ function ActionItemsDialog({
       const { data, errors } = await actionOnItems()
       const failed = itemIds.filter(id => !data?.results?.some(x => x?.id === id))
       const countSuccess = itemIds.length - failed.length
+      const countFail = failed.length
 
       // if there are errors
       if (failed.length || errors?.length) {
@@ -735,10 +738,10 @@ function ActionItemsDialog({
             list,
             {
               count: itemIds.length,
-              countFail: failed.length,
+              countFail,
               countSuccess,
             },
-            failed.length > 1
+            countFail > 1
           ),
           { timeout: 5000 }
         )
@@ -751,7 +754,7 @@ function ActionItemsDialog({
             list,
             {
               count: itemIds.length,
-              countFail: failed.length,
+              countFail,
               countSuccess,
             },
             countSuccess > 1
@@ -761,7 +764,9 @@ function ActionItemsDialog({
       }
 
       return onSuccess(failed)
-    } catch (error) {}
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
