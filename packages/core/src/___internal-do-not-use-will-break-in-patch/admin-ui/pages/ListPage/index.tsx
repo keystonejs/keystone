@@ -1,4 +1,5 @@
 import isDeepEqual from 'fast-deep-equal'
+import type { GraphQLFormattedError } from 'graphql'
 import { useRouter } from 'next/router'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
@@ -12,7 +13,7 @@ import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
-import { Flex, HStack, VStack } from '@keystar/ui/layout'
+import { Box, Flex, HStack, VStack } from '@keystar/ui/layout'
 import { Menu, MenuTrigger } from '@keystar/ui/menu'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { SearchField } from '@keystar/ui/search-field'
@@ -31,6 +32,8 @@ import { toastQueue } from '@keystar/ui/toast'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import { TextLink } from '@keystar/ui/link'
+import { Notice } from '@keystar/ui/notice'
 import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
 import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
@@ -251,7 +254,7 @@ function ListPage({ listKey }: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const { query, replace, isReady } = useRouter()
+  const { query, replace: routerReplace, isReady } = useRouter()
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
   const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
@@ -260,6 +263,7 @@ function ListPage({ listKey }: ListPageProps) {
   const [searchString, setSearchString] = useState('')
   const [selectedItems, setSelectedItems] = useState<Selection>(() => new Set([]))
   const [activeAction, setActiveAction] = useState<Key | null>(null)
+  const [actionResult, setActionResult] = useState<ActionErrorResult | null>(null)
   const dirty = useMemo(() => {
     const defaultFilters = getFilters(list, {})
     const defaultSort = getSort(list, {})
@@ -313,7 +317,7 @@ function ListPage({ listKey }: ListPageProps) {
     }
 
     localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
-    replace({ query: updatedQuery })
+    routerReplace({ query: updatedQuery })
   }, [columns, sort, filters, currentPage, pageSize, searchString, list])
 
   const allowCreate = !(list.hideCreate ?? true)
@@ -655,14 +659,74 @@ function ListPage({ listKey }: ListPageProps) {
                   itemIds={selectedItemIds}
                   {...action}
                   list={list}
-                  onSuccess={() => {
+                  onSuccess={remaining => {
                     refetch()
-                    setSelectedItems(new Set())
+                    setSelectedItems(remaining)
                   }}
+                  onErrors={setActionResult}
                 />
               )
             })
             .pop()}
+        </DialogContainer>
+        <DialogContainer onDismiss={() => setActionResult(null)} isDismissable>
+          {actionResult ? (
+            <Dialog>
+              <Heading>Error details for {actionResult.action.label} action</Heading>
+              <Content>
+                <VStack gap="large">
+                  {[
+                    ...(function* () {
+                      const { action, errors: actionErrors } = actionResult
+                      for (const [itemId, itemActionErrors] of Object.entries(actionErrors)) {
+                        const item = data?.items?.find(i => i.id === itemId) ?? null
+                        const itemLabel = (item?.[list.labelField] as string | null) ?? itemId
+                        const href = `/${list.path}/${itemId}`
+
+                        for (const error of itemActionErrors) {
+                          yield (
+                            <VStack key={itemId} gap="regular">
+                              <Notice tone="critical">
+                                <Content>
+                                  <Text>
+                                    You might try running the action again from{' '}
+                                    <TextLink href={href}>
+                                      the {list.singular.toLowerCase()}.
+                                    </TextLink>
+                                  </Text>
+                                  <Box
+                                    elementType="pre"
+                                    backgroundColor="critical"
+                                    borderRadius="regular"
+                                    maxHeight="100%"
+                                    overflow="auto"
+                                  >
+                                    <Text
+                                      color="critical"
+                                      UNSAFE_className={css({
+                                        fontFamily: tokenSchema.typography.fontFamily.code,
+                                      })}
+                                    >
+                                      {error.message}
+                                    </Text>
+                                  </Box>
+                                </Content>
+                                <div>
+                                  <Heading>
+                                    {replace(action.messages.fail, list, { itemLabel }, false)}
+                                  </Heading>
+                                </div>
+                              </Notice>
+                            </VStack>
+                          )
+                        }
+                      }
+                    })(),
+                  ]}
+                </VStack>
+              </Content>
+            </Dialog>
+          ) : null}
         </DialogContainer>
       </VStack>
     </PageContainer>
@@ -711,15 +775,23 @@ function replace(
   return s
 }
 
+type ActionErrors = Record<string, GraphQLFormattedError[]>
+type ActionErrorResult = {
+  action: ActionMeta
+  errors: ActionErrors
+}
+
 function ActionItemsDialog({
   list,
   itemIds,
   onSuccess,
+  onErrors,
   ...action
 }: {
   list: ListMeta
   itemIds: string[]
-  onSuccess: (remaining: string[]) => void
+  onSuccess: (remaining: Set<string>) => void
+  onErrors: (result: ActionErrorResult) => void
 } & ActionMeta) {
   const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
     gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
@@ -736,13 +808,22 @@ function ActionItemsDialog({
 
   async function onTryAction() {
     try {
-      const { data, errors } = await actionOnItems()
-      const failed = itemIds.filter(id => !data?.results?.some(x => x?.id === id))
-      const countSuccess = itemIds.length - failed.length
-      const countFail = failed.length
+      const { errors } = await actionOnItems()
+      const countFail = errors?.length ?? 0
+      const countSuccess = itemIds.length - countFail
+      const failed = new Set<string>()
+      const actionErrors: ActionErrors = {}
+      for (const error of errors ?? []) {
+        const i = error.path?.[1]
+        if (typeof i !== 'number') continue
+        const itemId = itemIds[i]
 
-      // if there are errors
-      if (failed.length || errors?.length) {
+        failed.add(itemId)
+        actionErrors[itemId] ??= []
+        actionErrors[itemId].push(error)
+      }
+
+      if (countFail) {
         toastQueue.critical(
           replace(
             m.failMany,
@@ -754,7 +835,11 @@ function ActionItemsDialog({
             },
             countFail > 1
           ),
-          { timeout: 5000 }
+          {
+            actionLabel: 'Details',
+            onAction: () => onErrors({ action, errors: actionErrors }),
+            shouldCloseOnAction: true,
+          }
         )
       }
 

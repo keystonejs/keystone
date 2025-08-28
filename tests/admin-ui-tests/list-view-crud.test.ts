@@ -88,7 +88,7 @@ adminUITests('./tests/test-projects/crud-notifications', browserType => {
     await page.getByRole('button', { name: 'Yes, delete' }).click()
     const alertDialog = page.locator('[role=alertdialog][aria-modal=false]')
     await alertDialog.waitFor()
-    expect(await alertDialog.innerText()).toBe('Unable to delete 25 tasks.')
+    expect(await alertDialog.innerText()).toBe('Unable to delete 25 tasks.\nDetails')
     await alertDialog.getByRole('button', { name: 'Close' }).click()
     await page
       .locator('[role=alertdialog][aria-modal=false]:has-text("Deleted 25 tasks.")')

@@ -67,6 +67,7 @@ export const lists = {
         access: allowAll,
         async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
+          // throw new Error('Random failure, try again')
           return await context.db.Post.updateOne({
             where,
             data: {
@@ -88,7 +89,7 @@ export const lists = {
             promptMany: 'Are you sure you want to report {count} {singular|plural}?',
             promptConfirmLabel: 'Yes, report',
             promptConfirmLabelMany: 'Yes, report {count} {singular|plural}',
-            fail: 'Could not report {singular}',
+            fail: 'Could not report {singular} “{itemLabel}”',
             failMany: 'Could not report {countFail} {singular|plural}',
             success: '{Singular} reported',
             successMany: 'Successfully reported {countSuccess} {singular|plural}',
