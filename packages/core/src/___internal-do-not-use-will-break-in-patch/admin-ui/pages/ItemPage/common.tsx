@@ -18,19 +18,20 @@ import type { ActionMeta, ListMeta } from '../../../../types'
 
 export function ItemPageHeader({
   list,
+  actions,
   item,
   label,
   title = label,
   onAction,
 }: {
   list: ListMeta
+  actions: ActionMeta[]
   item: Record<string, unknown> | null
   label: string
   title: string
   onAction: ((action: ActionMeta, resultId: string) => void) | null
 }) {
   const router = useRouter()
-  const actions = list.actions.filter(action => action.itemView.actionMode !== 'hidden')
 
   return (
     <Grid
@@ -87,6 +88,11 @@ function replace(
   return s
 }
 
+type ActionError = {
+  action: ActionMeta
+  error: Error
+}
+
 function ItemActions({
   list,
   item,
@@ -108,7 +114,7 @@ function ItemActions({
       })),
     [actions]
   )
-  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const [actionError, setActionError] = useState<ActionError | null>(null)
   const [activeAction, setActiveAction] = useState<ActionMeta | null>(null)
   const itemLabel_ = item[list.labelField] ?? item.id
   const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (item.id as string)
@@ -143,10 +149,10 @@ function ItemActions({
       }
 
       onAction(action, data.data?.result?.id)
-    } catch (err: any) {
+    } catch (error: any) {
       toastQueue.critical(replace(m.fail, list, { itemLabel }), {
         actionLabel: 'Details',
-        onAction: () => setErrorDialogValue(err),
+        onAction: () => setActionError({ action, error }),
         shouldCloseOnAction: true,
       })
     }
@@ -189,8 +195,13 @@ function ItemActions({
         )}
       </DialogContainer>
 
-      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
-        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      <DialogContainer onDismiss={() => setActionError(null)} isDismissable>
+        {actionError && (
+          <ErrorDetailsDialog
+            title={replace(actionError.action.messages.fail, list, { itemLabel })}
+            error={actionError.error}
+          />
+        )}
       </DialogContainer>
     </Fragment>
   )

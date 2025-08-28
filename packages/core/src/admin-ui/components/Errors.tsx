@@ -5,6 +5,7 @@ import { Dialog } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { alertTriangleIcon } from '@keystar/ui/icon/icons/alertTriangleIcon'
 import { Box, Grid, VStack } from '@keystar/ui/layout'
+import { Notice } from '@keystar/ui/notice'
 import { Content, SlotProvider } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading, Text } from '@keystar/ui/typography'
@@ -83,26 +84,34 @@ export function ErrorContainer({ children }: ErrorContainerProps) {
   )
 }
 
-export function ErrorDetailsDialog({ error }: { error: Error }) {
+export function ErrorDetailsDialog({ title, error }: { title: string; error: Error }) {
   const { message, stack } = error
   return (
     <Dialog>
       <Heading>Error details</Heading>
       <Content>
-        <VStack gap="large">
-          <Text weight="medium">{message}</Text>
-          {stack && (
+        <Notice tone="critical">
+          <Content>
+            <Text weight="medium">{message}</Text>
             <Box
               elementType="pre"
               backgroundColor="critical"
               borderRadius="regular"
               maxHeight="100%"
-              padding="medium"
               overflow="auto"
             >
               <Text
                 color="critical"
-                trim={false}
+                UNSAFE_className={css({
+                  fontFamily: tokenSchema.typography.fontFamily.code,
+                })}
+              >
+                {message}
+              </Text>
+              <Text
+                color="critical"
+                marginTop="small"
+                size="small"
                 UNSAFE_className={css({
                   fontFamily: tokenSchema.typography.fontFamily.code,
                 })}
@@ -110,8 +119,11 @@ export function ErrorDetailsDialog({ error }: { error: Error }) {
                 {stack}
               </Text>
             </Box>
-          )}
-        </VStack>
+          </Content>
+          <div>
+            <Heading>{title}</Heading>
+          </div>
+        </Notice>
       </Content>
     </Dialog>
   )

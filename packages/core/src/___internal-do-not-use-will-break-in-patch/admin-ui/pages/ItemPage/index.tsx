@@ -90,7 +90,7 @@ function DeleteButton({
             try {
               await deleteItem()
             } catch (err: any) {
-              toastQueue.critical('Unable to delete item.', {
+              toastQueue.critical('Unable to delete item', {
                 actionLabel: 'Details',
                 onAction: () => setErrorDialogValue(err),
                 shouldCloseOnAction: true,
@@ -112,7 +112,9 @@ function DeleteButton({
       </DialogTrigger>
 
       <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
-        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+        {errorDialogValue && (
+          <ErrorDetailsDialog title="Unable to delete item" error={errorDialogValue} />
+        )}
       </DialogContainer>
     </Fragment>
   )
@@ -176,7 +178,7 @@ function ItemForm({
 }) {
   const list = useList(listKey)
   const itemId = initialValue.id as string
-  const [errorDialogValue, setErrorDialogValue] = useState<Error | null>(null)
+  const [updateError, setUpdateError] = useState<Error | null>(null)
   const [update, { loading, error }] = useMutation(
     gql`mutation ($id: ID!, $data: ${list.graphql.names.updateInputName}!) {
       item: ${list.graphql.names.updateMutationName}(where: { id: $id }, data: $data) {
@@ -212,13 +214,13 @@ function ItemForm({
     if (error) {
       toastQueue.critical('Unable to save item', {
         actionLabel: 'Details',
-        onAction: () => setErrorDialogValue(new Error(error.message)),
+        onAction: () => setUpdateError(new Error(error.message)),
         shouldCloseOnAction: true,
       })
       return
     }
 
-    toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}`, {
+    toastQueue.positive(`Saved changes to ${list.singular.toLocaleLowerCase()}.`, {
       timeout: 5000,
     })
 
@@ -293,8 +295,8 @@ function ItemForm({
         </BaseToolbar>
       </form>
 
-      <DialogContainer onDismiss={() => setErrorDialogValue(null)} isDismissable>
-        {errorDialogValue && <ErrorDetailsDialog error={errorDialogValue} />}
+      <DialogContainer onDismiss={() => setUpdateError(null)} isDismissable>
+        {updateError && <ErrorDetailsDialog title="Unable to save item" error={updateError} />}
       </DialogContainer>
     </Fragment>
   )
@@ -319,24 +321,47 @@ function ItemPage({ listKey }: ItemPageProps) {
     return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
 
-  const { fieldModes, fieldPositions, isRequireds } = useMemo(() => {
+  const { actionsInContext, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
+    const actionModes = Object.fromEntries(
+      Object.entries(list.actions).map(([k, v]) => [k, v.itemView.actionMode])
+    )
     const fieldModes = Object.fromEntries(
-      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldMode])
+      Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldMode])
     )
     const fieldPositions = Object.fromEntries(
-      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldPosition])
+      Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldPosition])
     )
     const isRequireds = Object.fromEntries(
-      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.isRequired])
+      Object.entries(list.fields).map(([k, v]) => [k, v.itemView.isRequired])
     )
     for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
-      if (field.itemView) {
-        fieldModes[field.key] = field.itemView.fieldMode
-        fieldPositions[field.key] = field.itemView.fieldPosition
-        isRequireds[field.key] = field.itemView.isRequired
-      }
+      if (!field.itemView) continue
+      fieldModes[field.key] = field.itemView.fieldMode
+      fieldPositions[field.key] = field.itemView.fieldPosition
+      isRequireds[field.key] = field.itemView.isRequired
     }
-    return { fieldModes, fieldPositions, isRequireds }
+    for (const action of data?.keystone.adminMeta.list?.actions ?? []) {
+      if (!action.itemView) continue
+      actionModes[action.key] = action.itemView.actionMode
+    }
+
+    // actions within context of an item
+    const actionsInContext = list.actions
+      .map(action => ({
+        ...action,
+        itemView: {
+          ...action.itemView,
+          actionMode: actionModes[action.key],
+        },
+      }))
+      .filter(action => action.itemView.actionMode !== 'hidden')
+
+    return {
+      actionsInContext,
+      fieldModes,
+      fieldPositions,
+      isRequireds,
+    }
   }, [data?.keystone.adminMeta, list.fields])
 
   function onAction(action: ActionMeta, resultId: string | null) {
@@ -357,6 +382,7 @@ function ItemPage({ listKey }: ItemPageProps) {
       header={
         <ItemPageHeader
           list={list}
+          actions={actionsInContext}
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
           item={item ?? null}

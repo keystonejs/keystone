@@ -237,6 +237,12 @@ export function useListItem(
               isRequired: ConditionalFilterCase<BaseListTypeInfo>
             } | null
           }[]
+          actions: {
+            key: string
+            itemView: {
+              actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+            } | null
+          }[]
         } | null
       }
     }
