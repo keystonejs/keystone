@@ -177,14 +177,18 @@ export async function getFiles(
 export async function introspectDatabase(cwd: string, url: string) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma/build/index.js'), 'db', 'pull', '--print'], {
-      cwd,
-      env: {
-        ...process.env,
-        DATABASE_URL: url,
-        PRISMA_HIDE_UPDATE_MESSAGE: '1',
-      },
-    })
+    const p = spawn(
+      'node',
+      ['--title=prisma', require.resolve('prisma/build/index.js'), 'db', 'pull', '--print'],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
+      }
+    )
     p.stdout.on('data', data => (output += data.toString('utf-8')))
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))

@@ -18,15 +18,19 @@ async function spawnPrisma3(
   return new Promise<{
     exitCode: number | null
   }>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma/build/index.js'), ...commands], {
-      cwd,
-      env: {
-        ...process.env,
-        DATABASE_URL: system.config.db.url,
-        PRISMA_HIDE_UPDATE_MESSAGE: '1',
-      },
-      stdio: 'inherit',
-    })
+    const p = spawn(
+      'node',
+      ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: system.config.db.url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
+        stdio: 'inherit',
+      }
+    )
     p.on('error', err => reject(err))
     p.on('exit', exitCode => resolve({ exitCode }))
   })
