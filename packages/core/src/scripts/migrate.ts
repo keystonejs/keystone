@@ -37,14 +37,18 @@ export async function spawnPrisma(
     exitCode: number | null
     output: string
   }>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma/build/index.js'), ...commands], {
-      cwd,
-      env: {
-        ...process.env,
-        DATABASE_URL: system.config.db.url,
-        PRISMA_HIDE_UPDATE_MESSAGE: '1',
-      },
-    })
+    const p = spawn(
+      'node',
+      ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: system.config.db.url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
+      }
+    )
     p.stdout.on('data', data => (output += data.toString('utf-8')))
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
