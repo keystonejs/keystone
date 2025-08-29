@@ -194,7 +194,17 @@ async function updateSingle(
   })
 
   // after operation
-  await afterOperation(updatedItem)
+  if (updatedItem) {
+    await runSideEffectOnlyHook(list, 'afterOperation', {
+      context,
+      listKey: list.listKey,
+      operation: 'update' as const,
+      originalItem: item || updatedItem,
+      item: updatedItem,
+      inputData: inputData || {},
+      resolvedData: {},
+    })
+  }
 
   return updatedItem
 }
@@ -538,8 +548,112 @@ async function resolveInputForCreateOrUpdate(
   // before operation
   await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
 
-  // Return the full resolved input (ready for prisma level operation),
-  // and the afterOperation hook to be applied
+  // Run the operation against the database
+  const { operation } = hookArgs
+  let updatedItem: BaseItem | undefined
+  if (operation === 'create') {
+    const data = transformForPrismaClient(list.fields, hookArgs.resolvedData, context)
+    updatedItem = await context.prisma[list.listKey].create({ data })
+  } else if (operation === 'update') {
+    const data = transformForPrismaClient(list.fields, hookArgs.resolvedData, context)
+    updatedItem = await context.prisma[list.listKey].update({
+      where: { id: item!.id },
+      data,
+    })
+
+    // Track relationship fields that need to trigger afterOperation hooks on the related list
+    const relationshipFieldsToTriggerHooks: Array<{
+      fieldKey: string;
+      foreignList: InitialisedList;
+      foreignItem: BaseItem;
+    }> = [];
+
+    // Identify relationship fields with foreignKey on the other side
+    if (hookArgs.resolvedData) {
+      for (const [fieldKey, value] of Object.entries(hookArgs.resolvedData)) {
+        const field = list.fields[fieldKey];
+        
+        // Only process relationship fields
+        if (field?.dbField?.kind === 'relation' && field.dbField.mode === 'one') {
+          const foreignListKey = field.dbField.list;
+          const foreignList = list.lists[foreignListKey];
+          const foreignFieldKey = field.dbField.field;
+          
+          // Check if the foreign field exists
+          if (foreignList && foreignFieldKey) {
+            const foreignField = foreignList.fields[foreignFieldKey];
+            
+            // Check if the foreign field has a foreignIdField (indicates foreignKey: true)
+            if (foreignField?.dbField?.kind === 'relation' && 
+                'foreignIdField' in foreignField.dbField && 
+                value !== undefined) {
+              
+              // Get the foreign item if it exists
+              if (value !== null) {
+                const foreignItemId = typeof value === 'object' && value !== null ? 
+                  (value as { id?: string }).id : value;
+                
+                if (foreignItemId) {
+                  try {
+                    const foreignItem = await context.prisma[foreignListKey].findUnique({
+                      where: { id: foreignItemId as string },
+                    });
+                    
+                    if (foreignItem) {
+                      // Queue this relationship for hook triggering
+                      relationshipFieldsToTriggerHooks.push({
+                        fieldKey,
+                        foreignList,
+                        foreignItem,
+                      });
+                    }
+                  } catch (e) {
+                    // Ignore errors finding the foreign item
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Run afterOperation hooks on related lists
+    for (const { foreignList, foreignItem } of relationshipFieldsToTriggerHooks) {
+      // Create hook args for the foreign list
+      const foreignHookArgs = {
+        context,
+        listKey: foreignList.listKey,
+        operation: 'update' as const,
+        originalItem: foreignItem,
+        item: foreignItem,
+        inputData: {},
+        resolvedData: {},
+      };
+      
+      // Run the afterOperation hook on the foreign list
+      try {
+        await runSideEffectOnlyHook(foreignList, 'afterOperation', foreignHookArgs);
+      } catch (error) {
+        // Log the error but don't fail the operation
+        console.error(`Error running afterOperation hook on related list ${foreignList.listKey}:`, error);
+      }
+    }
+  }
+
+  // after operation
+  if (updatedItem) {
+    await runSideEffectOnlyHook(list, 'afterOperation', {
+      context,
+      listKey: list.listKey,
+      operation: 'update' as const,
+      originalItem: item || updatedItem,
+      item: updatedItem,
+      inputData: inputData || {},
+      resolvedData: {},
+    })
+  }
+
   return {
     data: transformForPrismaClient(list, context, hookArgs.resolvedData),
     afterOperation: async (updatedItem: BaseItem) => {
