@@ -37,7 +37,7 @@ export async function spawnPrisma(
     exitCode: number | null
     output: string
   }>((resolve, reject) => {
-    const p = spawn('node', [require.resolve('prisma/build/index.js'), ...commands], {
+    const p = spawn('node', ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands], {
       cwd,
       env: {
         ...process.env,
