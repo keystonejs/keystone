@@ -1,6 +1,7 @@
-import { useRouter } from 'next/router'
+'use client'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 import { ActionGroup } from '@keystar/ui/action-group'
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
@@ -15,6 +16,7 @@ import { gql, useApolloClient } from '../../../../admin-ui/apollo'
 import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import type { ActionMeta, ListMeta } from '../../../../types'
+import { useKeystone } from '../../../../admin-ui'
 
 export function ItemPageHeader({
   list,
@@ -31,7 +33,8 @@ export function ItemPageHeader({
   title: string
   onAction: ((action: ActionMeta, resultId: string) => void) | null
 }) {
-  const router = useRouter()
+  const pathname = usePathname()
+  const { adminPath } = useKeystone()
 
   return (
     <Grid
@@ -55,8 +58,8 @@ export function ItemPageHeader({
       ) : (
         <>
           <Breadcrumbs size="medium" gridArea="primary">
-            <Item href={`/${list.path}`}>{list.label}</Item>
-            <Item href={router.asPath}>{label}</Item>
+            <Item href={`${adminPath}/${list.path}`}>{list.label}</Item>
+            <Item href={`${pathname}`}>{label}</Item>
           </Breadcrumbs>
 
           {/* Every page must have an H1 for accessibility. */}

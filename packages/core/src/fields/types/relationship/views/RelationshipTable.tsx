@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { SortDescriptor } from '@keystar/ui/table'
 import { Cell, Column, Row, TableBody, TableHeader, TableView } from '@keystar/ui/table'
 import { Field as KeystarField } from '@keystar/ui/field'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import type { controller } from '.'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
@@ -31,6 +31,7 @@ export function RelationshipTable({
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
   const list = useList(field.refListKey)
+  const { adminPath } = useKeystone()
   const hasManyOnRefList: boolean = (list.fields[field.refFieldKey].controller as any).many
 
   const selectedFields = field.columns ?? list.initialColumns
@@ -136,7 +137,7 @@ export function RelationshipTable({
             <TableBody items={items}>
               {row => {
                 return (
-                  <Row href={`/${list.path}/${row?.id}`}>
+                  <Row href={`${adminPath}/${list.path}/${row?.id}`}>
                     {key => {
                       const field = list.fields[key]
                       const value = row[key]
