@@ -13,7 +13,7 @@
     "@keystar/ui": "^0.7.16",
     "@keystone-6/core": "^6.5.1",
     "@prisma/client": "6.5.0",
-    "next": "^15.1.0",
+    "next": "^15.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

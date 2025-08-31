@@ -1,4 +1,4 @@
-import { type Browser, type Page } from 'playwright'
+import type { Browser, Page } from 'playwright'
 import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {
@@ -16,12 +16,8 @@ adminUITests('./tests/test-projects/basic', browserType => {
   test('Clicking on the logo should return you to the Dashboard route', async () => {
     await page.goto('http://localhost:3000/tasks')
     await page.waitForSelector('a:has-text("Keystone")')
-    await Promise.all([
-      page.waitForNavigation({
-        url: 'http://localhost:3000',
-      }),
-      page.click('a:has-text("Keystone")'),
-    ])
+    await page.click('a:has-text("Keystone")')
+    await page.waitForURL('http://localhost:3000')
   })
   test('Should see a 404 on request of the /init route', async () => {
     await page.goto('http://localhost:3000/init')

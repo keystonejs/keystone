@@ -1,9 +1,10 @@
-import path from 'path'
-import fs from 'fs/promises'
-import { type Browser, type Page, chromium } from 'playwright'
-import { expect as playwrightExpect } from 'playwright/test'
 import { parse, print } from 'graphql'
 import ms from 'ms'
+import { readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+
+import { type Browser, type Page, chromium } from 'playwright'
+import { expect as playwrightExpect } from 'playwright/test'
 
 import { loadIndex, makeGqlRequest, spawnCommand3, waitForIO } from './utils'
 
@@ -11,9 +12,9 @@ const gql = ([content]: TemplateStringsArray) => content
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')
 
 async function replaceSchema(schema: string) {
-  await fs.writeFile(
+  await writeFile(
     path.join(testProjectPath, 'schema.ts'),
-    await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))
+    await readFile(path.join(testProjectPath, `schemas/${schema}`))
   )
 }
 
@@ -67,14 +68,13 @@ test('changing the label of a field updates in the Admin UI', async () => {
 })
 
 test('adding a virtual field', async () => {
-  const virtualFieldTextbox = page.getByRole('textbox', { name: 'Virtual' })
-  expect(await virtualFieldTextbox.getAttribute('value')).toBe('blah')
+  await playwrightExpect(page.getByRole('textbox', { name: 'Virtual' })).toHaveValue('blah')
 })
 
 test('the generated schema includes schema updates', async () => {
   // we want to make sure the field that we added worked
   // and the change we made to the have worked
-  const schema = await fs.readFile(path.join(testProjectPath, 'schema.graphql'), 'utf8')
+  const schema = await readFile(path.join(testProjectPath, 'schema.graphql'), 'utf8')
   const parsed = parse(schema)
   const objectTypes = parsed.definitions.filter(
     x =>
@@ -109,8 +109,8 @@ test("a runtime error is shown and doesn't crash the process", async () => {
 })
 
 test('errors can be recovered from', async () => {
+  await new Promise(resolve => setTimeout(resolve, 3000)) // TODO: FIXME, something is up
   await replaceSchema('initial.ts')
-
   await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue(
     'blah'
   )

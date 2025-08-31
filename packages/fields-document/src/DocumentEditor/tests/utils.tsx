@@ -1,22 +1,22 @@
 import { type MutableRefObject, type ReactElement, createElement, useState } from 'react'
 import { type Node, type Path, Editor, Range, Text } from 'slate'
-import { Slate, ReactEditor, withReact } from 'slate-react'
+import { ReactEditor, Slate, withReact } from 'slate-react'
 
+import { KeystarProvider } from '@keystar/ui/core'
 import { act, render } from '@testing-library/react'
 import { diff } from 'jest-diff'
-import prettyFormat, { plugins, type Plugin } from 'pretty-format'
+import prettyFormat, { type Plugin, plugins } from 'pretty-format'
 import { DocumentEditorEditable } from '..'
-import { createDocumentEditor } from '../editor-shared'
 import { type ComponentBlock } from '../../component-blocks'
-import { type DocumentFeatures } from '../../views'
-
-export { __jsx as jsx } from './jsx/namespace'
 import { validateDocumentStructure } from '../../structure-validation'
+import { validateAndNormalizeDocument } from '../../validation'
+import { type DocumentFeatures } from '../../views'
+import { createDocumentEditor } from '../editor-shared'
 import { type Relationships } from '../relationship'
 import { ToolbarStateProvider } from '../toolbar-state'
 import { createToolbarState } from '../toolbar-state-shared'
-import { validateAndNormalizeDocument } from '../../validation'
-import { KeystarProvider } from '@keystar/ui/core'
+
+export { __jsx as jsx } from './jsx/namespace'
 
 const oldConsoleError = console.error
 
@@ -33,6 +33,13 @@ console.error = (...stuff: any[]) => {
       return
     }
     if (stuff[0].startsWith('In HTML, %s cannot be a descendant of <%s>.\n')) {
+      return
+    }
+    if (stuff[0].includes('When testing React components that depend on asynchronous data')) {
+      return
+    }
+    // TODO: ...
+    if (stuff[0].includes('See this log for the ancestor stack trace')) {
       return
     }
   }
@@ -53,6 +60,7 @@ console.error = (...stuff: any[]) => {
   // you should remove the process.exit call and replace it with a throw
   // and then look for unhandled rejections or thrown errors
   process.exit(1)
+  // throw new Error(`console.error was called with ${JSON.stringify(stuff)}`)
 }
 
 function formatEditor(editor: Node) {

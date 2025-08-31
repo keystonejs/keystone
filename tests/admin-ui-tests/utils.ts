@@ -1,5 +1,5 @@
 import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
-import fs from 'node:fs'
+import { stat } from 'node:fs/promises'
 import path from 'node:path'
 
 import dotenv from 'dotenv'
@@ -98,7 +98,6 @@ export async function waitForIO(
     let output = ''
     function listener(chunk: Buffer) {
       output += chunk.toString('utf8')
-      if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
       signal.removeEventListener('abort', abortListener)
       p.stdout!.off('data', listener)
@@ -126,17 +125,29 @@ export async function waitForIO(
 const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
 export async function spawnCommand3(cwd: string, commands: string[], waitOn: string | null = null) {
-  if (!fs.existsSync(cwd)) throw new Error(`No such file or directory ${cwd}`)
+  if (!(await stat(cwd))) throw new Error(`No such file or directory ${cwd}`)
 
   const p = spawn('node', [cliBinPath, ...commands], { cwd })
   if (waitOn) {
     await waitForIO(p, waitOn)
   }
 
+  if (process.env.VERBOSE) {
+    function listener(chunk: Buffer) {
+      console.log(chunk.toString('utf8'))
+    }
+    p.stdout!.on('data', listener)
+    p.stderr!.on('data', listener)
+  }
+
   const exitPromise = new Promise<void>((resolve, reject) => {
     p.on('exit', exitCode => {
       if (typeof exitCode === 'number' && exitCode !== 0)
-        return reject(new Error(`Error ${exitCode}`))
+        return reject(
+          new Error(
+            `Test Error for ${commands}, exited with error ${exitCode}, see admin-ui/utils.ts`
+          )
+        )
       resolve()
     })
   })

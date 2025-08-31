@@ -13,7 +13,7 @@
     "@keystone-6/document-renderer": "^1.1.2",
     "@preconstruct/next": "^4.0.0",
     "graphql": "^16.8.1",
-    "next": "^15.1.0",
+    "next": "^15.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

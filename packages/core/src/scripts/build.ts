@@ -47,9 +47,11 @@ export async function build(
 
   // do _NOT_ change this to a static import, it is intentionally like this
   // to avoid loading it in the common case where the UI is not being built
-  const nextBuild = require('next/dist/build').default
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const nextBuild = require('next/dist/build').default as typeof import('next/dist/build').default
   await nextBuild(
     paths.admin,
+    undefined,
     undefined,
     undefined,
     undefined,
