@@ -657,7 +657,7 @@ function ListPage({ listKey }: ListPageProps) {
               return (
                 <ActionItemsDialog
                   itemIds={selectedItemIds}
-                  {...action}
+                  action={action}
                   list={list}
                   onSuccess={remaining => {
                     refetch()
@@ -786,13 +786,14 @@ function ActionItemsDialog({
   itemIds,
   onSuccess,
   onErrors,
-  ...action
+  action,
 }: {
   list: ListMeta
   itemIds: string[]
   onSuccess: (remaining: Set<string>) => void
   onErrors: (result: ActionErrorResult) => void
-} & ActionMeta) {
+  action: ActionMeta
+}) {
   const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
     gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
       results: ${action.graphql.names.many}(where: $where) {
