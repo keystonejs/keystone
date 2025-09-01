@@ -4,6 +4,7 @@ import type { GraphQLNamedType } from 'graphql'
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'
 import { g } from '../../../types/schema'
+import { withSpan } from '../../otel'
 import {
   cannotActionForItem,
   cannotForItem,
@@ -71,28 +72,36 @@ async function getFilteredItem(
   throw accessDeniedError(cannotForItem(operation, list))
 }
 
-async function createSingle(
+async function createSingle__(
   inputData: Record<string, unknown>,
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // throw an accessDeniedError if not allowed
-  await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
+  return await withSpan(
+    `create ${list.graphql.names.outputTypeNameLower}`,
+    async () => {
+      // throw an accessDeniedError if not allowed
+      await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
+      await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
+      const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
+        list,
+        context,
+        inputData,
+        undefined
+      )
 
-  await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
+      // before operation
+      await beforeOperation()
 
-  const { afterOperation, data } = await resolveInputForCreateOrUpdate(
-    list,
-    context,
-    inputData,
-    undefined
+      // operation
+      const item = await context.prisma[list.listKey].create({
+        data: list.isSingleton ? { ...data, id: 1 } : data,
+      })
+
+      return { item, afterOperation }
+    },
+    { 'keystone.list': list.listKey, 'keystone.operation': 'create' }
   )
-
-  const item = await context.prisma[list.listKey].create({
-    data: list.isSingleton ? { ...data, id: 1 } : data,
-  })
-
-  return { item, afterOperation }
 }
 
 export class NestedMutationState {
@@ -107,8 +116,10 @@ export class NestedMutationState {
     const operationAccess = await getOperationAccess(list, context, 'create')
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
-    const { item, afterOperation } = await createSingle(data, list, context)
+    // before operation AND operation
+    const { item, afterOperation } = await createSingle__(data, list, context)
 
+    // after operation
     this.#afterOperations.push(() => afterOperation(item))
     return { id: item.id as IdType }
   }
@@ -119,87 +130,176 @@ export class NestedMutationState {
 }
 
 type InputData = Record<string, unknown> | null | undefined
+type UpdateInput = {
+  where: UniqueInputFilter
+  data: InputData
+}
 
-export async function createOne(
-  inputData: InputData,
+async function updateSingle__(
+  { where, data: inputData }: UpdateInput,
   list: InitialisedList,
-  context: KeystoneContext
+  context: KeystoneContext,
+  accessFilters: boolean | InputFilter
 ) {
+  return await withSpan(
+    `update ${list.graphql.names.outputTypeNameLower}`,
+    async () => {
+      // validate and resolve the input filter
+      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
+
+      // filter and item access control - throws an AccessDeniedError if not allowed
+      const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
+
+      // throw an accessDeniedError if not allowed
+      await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
+      await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
+      const { beforeOperation, afterOperation, data } = await resolveInputForCreateOrUpdate(
+        list,
+        context,
+        inputData ?? {},
+        item
+      )
+
+      // before operation
+      await beforeOperation()
+
+      // operation
+      const updatedItem = await context.prisma[list.listKey].update({
+        where: { id: item.id },
+        data,
+      })
+
+      // after operation
+      await afterOperation(updatedItem)
+
+      return updatedItem
+    },
+    { 'keystone.list': list.listKey, 'keystone.operation': 'update' }
+  )
+}
+
+async function deleteSingle__(
+  where: UniqueInputFilter,
+  list: InitialisedList,
+  context: KeystoneContext,
+  accessFilters: boolean | InputFilter
+) {
+  return await withSpan(
+    `delete ${list.graphql.names.outputTypeNameLower}`,
+    async () => {
+      // validate and resolve the input filter
+      const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
+
+      // filter and item access control throw an AccessDeniedError if not allowed
+      // apply access.filter.* controls
+      const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
+
+      await enforceListLevelAccessControl(context, 'delete', list, {}, item)
+      // WARNING: no field level access control for delete operations
+
+      const hookArgs = {
+        operation: 'delete' as const,
+        listKey: list.listKey,
+        context,
+        item,
+        resolvedData: undefined,
+        inputData: undefined,
+      }
+
+      // hooks
+      await validate({ list, hookArgs })
+
+      // before operation
+      await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
+
+      // operation
+      const result = await context.prisma[list.listKey].delete({ where: { id: item.id } })
+
+      // after operation
+      await runSideEffectOnlyHook(list, 'afterOperation', {
+        ...hookArgs,
+        item: undefined,
+        originalItem: item,
+      })
+
+      return result
+    },
+    { 'keystone.list': list.listKey, 'keystone.operation': 'delete' }
+  )
+}
+
+async function actionSingle__(
+  context: KeystoneContext,
+  list: InitialisedList,
+  action: InitialisedAction,
+  where: UniqueInputFilter
+) {
+  return await withSpan(
+    action.otel,
+    async () => {
+      // no before operation hook for actions
+
+      // operation
+      const result = await action.resolve(
+        {
+          listKey: list.listKey,
+          actionKey: action.actionKey,
+          where,
+        },
+        context
+      )
+
+      // no after operation hook for actions
+      return result
+    },
+    { 'keystone.list': list.listKey, 'keystone.action': action.actionKey }
+  )
+}
+
+//
+
+async function createOne(inputData: InputData, list: InitialisedList, context: KeystoneContext) {
   const operationAccess = await getOperationAccess(list, context, 'create')
   if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
-  // operation
-  const { item, afterOperation } = await createSingle(inputData ?? {}, list, context)
+  // get list-level access control filters
+  //   NOTHING - no filters for create operations
 
-  // after operation
+  // operation
+  const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context)
+
+  // after operation // TODO: move to createSingle__
   await afterOperation(item)
 
   return item
 }
 
-export async function createMany(
+async function createMany(
   inputDatas: InputData[],
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const operationAccess = await getOperationAccess(list, context, 'create')
+  // WARNING: we do not short-circuit here, we throw for each
+
+  // get list-level access control filters
+  //   NOTHING - no filters for create operations
 
   return inputDatas.map(async inputData => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('create', list))
 
     // operation
-    const { item, afterOperation } = await createSingle(inputData ?? {}, list, context)
+    const { item, afterOperation } = await createSingle__(inputData ?? {}, list, context)
 
-    // after operation
+    // after operation // TODO: move to createSingle__
     await afterOperation(item)
 
     return item
   })
 }
 
-type UpdateInput = {
-  where: UniqueInputFilter
-  data: InputData
-}
-
-async function updateSingle(
-  { where, data: inputData }: UpdateInput,
-  list: InitialisedList,
-  context: KeystoneContext,
-  accessFilters: boolean | InputFilter
-) {
-  // validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
-
-  // filter and item access control - throws an AccessDeniedError if not allowed
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update')
-
-  // throw an accessDeniedError if not allowed
-  await enforceListLevelAccessControl(context, 'update', list, inputData ?? {}, item)
-
-  await enforceFieldLevelAccessControl(context, 'update', list, inputData ?? {}, item)
-
-  const { afterOperation, data } = await resolveInputForCreateOrUpdate(
-    list,
-    context,
-    inputData ?? {},
-    item
-  )
-
-  // operation
-  const updatedItem = await context.prisma[list.listKey].update({
-    where: { id: item.id },
-    data,
-  })
-
-  // after operation
-  await afterOperation(updatedItem)
-
-  return updatedItem
-}
-
-export async function updateOne(
+async function updateOne(
   updateInput: UpdateInput,
   list: InitialisedList,
   context: KeystoneContext
@@ -210,15 +310,16 @@ export async function updateOne(
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update')
 
-  return updateSingle(updateInput, list, context, accessFilters)
+  return updateSingle__(updateInput, list, context, accessFilters)
 }
 
-export async function updateMany(
+async function updateMany(
   updateManyInput: UpdateInput[],
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const operationAccess = await getOperationAccess(list, context, 'update')
+  // WARNING: we do not short-circuit here, we throw for each
 
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update')
@@ -227,54 +328,11 @@ export async function updateMany(
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('update', list))
 
-    return updateSingle(updateInput, list, context, accessFilters)
+    return updateSingle__(updateInput, list, context, accessFilters)
   })
 }
 
-async function deleteSingle(
-  where: UniqueInputFilter,
-  list: InitialisedList,
-  context: KeystoneContext,
-  accessFilters: boolean | InputFilter
-) {
-  // validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
-
-  // filter and item access control throw an AccessDeniedError if not allowed
-  // apply access.filter.* controls
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete')
-
-  await enforceListLevelAccessControl(context, 'delete', list, {}, item)
-
-  const hookArgs = {
-    operation: 'delete' as const,
-    listKey: list.listKey,
-    context,
-    item,
-    resolvedData: undefined,
-    inputData: undefined,
-  }
-
-  // hooks
-  await validate({ list, hookArgs })
-
-  // before operation
-  await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
-
-  // operation
-  const result = await context.prisma[list.listKey].delete({ where: { id: item.id } })
-
-  // after operation
-  await runSideEffectOnlyHook(list, 'afterOperation', {
-    ...hookArgs,
-    item: undefined,
-    originalItem: item,
-  })
-
-  return result
-}
-
-export async function deleteOne(
+async function deleteOne(
   where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
@@ -285,15 +343,16 @@ export async function deleteOne(
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'delete')
 
-  return deleteSingle(where, list, context, accessFilters)
+  return deleteSingle__(where, list, context, accessFilters)
 }
 
-export async function deleteMany(
+async function deleteMany(
   wheres: UniqueInputFilter[],
   list: InitialisedList,
   context: KeystoneContext
 ) {
   const operationAccess = await getOperationAccess(list, context, 'delete')
+  // WARNING: we do not short-circuit here, we throw for each
 
   // get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'delete')
@@ -302,11 +361,11 @@ export async function deleteMany(
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list))
 
-    return deleteSingle(where, list, context, accessFilters)
+    return deleteSingle__(where, list, context, accessFilters)
   })
 }
 
-export async function actionOne(
+async function actionOne(
   where: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
@@ -320,17 +379,13 @@ export async function actionOne(
   })
   if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
-  return action.resolve(
-    {
-      listKey: list.listKey,
-      actionKey: action.actionKey,
-      where,
-    },
-    context
-  )
+  // get list-level access control filters
+  //   NOTHING - no filters for action operations
+
+  return actionSingle__(context, list, action, where)
 }
 
-export async function actionMany(
+async function actionMany(
   wheres: UniqueInputFilter[],
   list: InitialisedList,
   context: KeystoneContext,
@@ -342,17 +397,16 @@ export async function actionMany(
     listKey: list.listKey,
     actionKey: action.actionKey,
   })
-  if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
+  // WARNING: we do not short-circuit here, we throw for each
+
+  // get list-level access control filters
+  //   NOTHING - no filters for action operations
 
   return wheres.map(async where => {
-    return action.resolve(
-      {
-        listKey: list.listKey,
-        actionKey: action.actionKey,
-        where,
-      },
-      context
-    )
+    // throw for each attempt
+    if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
+
+    return actionSingle__(context, list, action, where)
   })
 }
 
@@ -535,13 +589,14 @@ async function resolveInputForCreateOrUpdate(
   // Apply all validation checks
   await validate({ list, hookArgs })
 
-  // before operation
-  await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
-
   // Return the full resolved input (ready for prisma level operation),
   // and the afterOperation hook to be applied
   return {
     data: transformForPrismaClient(list, context, hookArgs.resolvedData),
+    beforeOperation: async () => {
+      // before operation
+      await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs)
+    },
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation()
 
@@ -627,8 +682,14 @@ export function getMutationsForList(list: InitialisedList) {
     args: {
       data: g.arg({ type: nonNull(list.graphql.types.create) }),
     },
-    resolve(_rootVal, { data }, context) {
-      return createOne(data, list, context)
+    async resolve(_, { data }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return createOne(data, list, context)
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'create' }
+      )
     },
   })
 
@@ -639,8 +700,14 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(nonNull(list.graphql.types.create))),
       }),
     },
-    async resolve(_rootVal, { data }, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(await createMany(data, list, context))
+    async resolve(_, { data }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return promisesButSettledWhenAllSettledAndInOrder(await createMany(data, list, context))
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'create', 'keystone.many': true }
+      )
     },
   })
 
@@ -653,8 +720,14 @@ export function getMutationsForList(list: InitialisedList) {
       }),
       data: g.arg({ type: nonNull(list.graphql.types.update) }),
     },
-    resolve(_rootVal, { where, data }, context) {
-      return updateOne({ where, data }, list, context)
+    async resolve(_, { where, data }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return updateOne({ where, data }, list, context)
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'update' }
+      )
     },
   })
 
@@ -675,8 +748,14 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(updateManyInput))),
       }),
     },
-    async resolve(_rootVal, { data }, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(await updateMany(data, list, context))
+    async resolve(_, { data }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return promisesButSettledWhenAllSettledAndInOrder(await updateMany(data, list, context))
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'update', 'keystone.many': true }
+      )
     },
   })
 
@@ -688,8 +767,14 @@ export function getMutationsForList(list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve(_, { where }, context) {
-      return deleteOne(where, list, context)
+    async resolve(_, { where }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return deleteOne(where, list, context)
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'delete' }
+      )
     },
   })
 
@@ -700,8 +785,14 @@ export function getMutationsForList(list: InitialisedList) {
         type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve(_, { where }, context) {
-      return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
+    async resolve(_, { where }, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
+        },
+        { 'keystone.list': list.listKey, 'keystone.operation': 'delete', 'keystone.many': true }
+      )
     },
   })
 
@@ -767,8 +858,14 @@ export function getMutationsForList(list: InitialisedList) {
                     defaultValue: defaultUniqueWhereInput,
                   }),
                 },
-                async resolve(_, { where }, context) {
-                  return actionOne(where, list, context, action)
+                async resolve(_, { where }, context, info) {
+                  return await withSpan(
+                    info.fieldName,
+                    async () => {
+                      return actionOne(where, list, context, action)
+                    },
+                    { 'keystone.list': list.listKey, 'keystone.action': action.actionKey }
+                  )
                 },
               }),
             ]
@@ -781,9 +878,19 @@ export function getMutationsForList(list: InitialisedList) {
                     type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
                   }),
                 },
-                async resolve(_, { where }, context) {
-                  return promisesButSettledWhenAllSettledAndInOrder(
-                    await actionMany(where, list, context, action)
+                async resolve(_, { where }, context, info) {
+                  return await withSpan(
+                    info.fieldName,
+                    async () => {
+                      return promisesButSettledWhenAllSettledAndInOrder(
+                        await actionMany(where, list, context, action)
+                      )
+                    },
+                    {
+                      'keystone.list': list.listKey,
+                      'keystone.action': action.actionKey,
+                      'keystone.many': true,
+                    }
                   )
                 },
               }),
