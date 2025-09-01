@@ -22,8 +22,6 @@ jobs:
 
       - name: version packages
         run: pnpm changeset version --snapshot ${{ inputs.tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
 
       - name: git commit
         run: |
