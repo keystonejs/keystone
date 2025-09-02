@@ -72,7 +72,7 @@ test('editor equality mismatch', () => {
         </editor>
       )
     )
-  ).toThrowError()
+  ).toThrow()
 })
 
 test('cursor in the middle of text', () => {
@@ -330,7 +330,7 @@ test('marks that conflict with .marks', () => {
         </paragraph>
       </editor>
     )
-  ).toThrowError()
+  ).toThrow()
 })
 
 test('differing current marks', () => {
