@@ -1,49 +1,49 @@
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 
-import { type ReactNode, useMemo, useContext } from 'react'
+import { type ReactNode, useContext, useMemo } from 'react'
 import { Editor, type Element, Transforms } from 'slate'
 
-import { Icon } from '@keystar/ui/icon'
-import { boldIcon } from '@keystar/ui/icon/icons/boldIcon'
-import { italicIcon } from '@keystar/ui/icon/icons/italicIcon'
-import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
-import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
-import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
-import { removeFormattingIcon } from '@keystar/ui/icon/icons/removeFormattingIcon'
-import { strikethroughIcon } from '@keystar/ui/icon/icons/strikethroughIcon'
-import { subscriptIcon } from '@keystar/ui/icon/icons/subscriptIcon'
-import { superscriptIcon } from '@keystar/ui/icon/icons/superscriptIcon'
-import { typeIcon } from '@keystar/ui/icon/icons/typeIcon'
-import { underlineIcon } from '@keystar/ui/icon/icons/underlineIcon'
-import { maximizeIcon } from '@keystar/ui/icon/icons/maximizeIcon'
-import { minimizeIcon } from '@keystar/ui/icon/icons/minimizeIcon'
-import { Kbd, Text } from '@keystar/ui/typography'
 import {
   EditorToolbar,
   EditorToolbarButton,
   EditorToolbarGroup,
   EditorToolbarSeparator,
 } from '@keystar/ui/editor'
+import { Icon } from '@keystar/ui/icon'
+import { boldIcon } from '@keystar/ui/icon/icons/boldIcon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
+import { codeIcon } from '@keystar/ui/icon/icons/codeIcon'
+import { italicIcon } from '@keystar/ui/icon/icons/italicIcon'
+import { maximizeIcon } from '@keystar/ui/icon/icons/maximizeIcon'
+import { minimizeIcon } from '@keystar/ui/icon/icons/minimizeIcon'
+import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
+import { removeFormattingIcon } from '@keystar/ui/icon/icons/removeFormattingIcon'
+import { strikethroughIcon } from '@keystar/ui/icon/icons/strikethroughIcon'
+import { subscriptIcon } from '@keystar/ui/icon/icons/subscriptIcon'
+import { superscriptIcon } from '@keystar/ui/icon/icons/superscriptIcon'
+import { typeIcon } from '@keystar/ui/icon/icons/typeIcon'
+import { underlineIcon } from '@keystar/ui/icon/icons/underlineIcon'
+import { Kbd, Text } from '@keystar/ui/typography'
 
-import type { DocumentFeatures } from '../views-shared'
-import { linkButton } from './link'
-import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
-import { clearFormatting } from './utils'
-import { LayoutsButton } from './layouts'
-import { ListButtons } from './lists'
-import { blockquoteButton } from './blockquote'
-import { DocumentFieldRelationshipsContext } from './relationship'
-import { codeButton } from './code-block'
-import { TextAlignMenu } from './alignment'
-import { dividerButton } from './divider'
-import { useToolbarState } from './toolbar-state'
-import { Item, Picker } from '@keystar/ui/picker'
-import { ReactEditor, useSlateStatic } from 'slate-react'
 import { ActionGroup } from '@keystar/ui/action-group'
-import { Flex } from '@keystar/ui/layout'
 import { ActionButton } from '@keystar/ui/button'
-import { MenuTrigger, Menu } from '@keystar/ui/menu'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Flex } from '@keystar/ui/layout'
+import { Menu, MenuTrigger } from '@keystar/ui/menu'
+import { Item, Picker } from '@keystar/ui/picker'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
+import { ReactEditor, useSlateStatic } from 'slate-react'
+import type { DocumentFeatures } from '../views-shared'
+import { TextAlignMenu } from './alignment'
+import { blockquoteButton } from './blockquote'
+import { codeButton } from './code-block'
+import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
+import { dividerButton } from './divider'
+import { LayoutsButton } from './layouts'
+import { linkButton } from './link'
+import { ListButtons } from './lists'
+import { DocumentFieldRelationshipsContext } from './relationship'
+import { useToolbarState } from './toolbar-state'
+import { clearFormatting } from './utils'
 
 export function Toolbar({
   documentFeatures,
@@ -155,7 +155,7 @@ const HeadingMenu = ({
         isDisabled={isDisabled}
         selectedKey={selected}
         onSelectionChange={selected => {
-          let key = headingMenuVals.get(selected)
+          const key = selected ? headingMenuVals.get(selected) : undefined
           if (key === 'normal') {
             Editor.withoutNormalizing(editor, () => {
               Transforms.unsetNodes(editor, 'level', {
