@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-logging",
+  "name": "@keystone-6/example-logging-opentelemetry",
   "version": null,
   "private": true,
   "license": "MIT",
@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.1",
-    "@prisma/client": "6.5.0",
-    "pino-http": "^10.5.0"
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-node": "^2.0.1",
+    "@prisma/client": "6.5.0"
   },
   "devDependencies": {
+    "@opentelemetry/sdk-trace-base": "^2.0.1",
     "prisma": "6.5.0",
     "tsx": "^4.0.0",
     "typescript": "^5.5.0"

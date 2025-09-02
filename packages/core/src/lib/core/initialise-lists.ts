@@ -58,6 +58,7 @@ export type InitialisedAction = {
       many: string
     }
   }
+  otel: string
   ui: {
     label: ActionMeta['label']
     icon: ActionMeta['icon']
@@ -769,15 +770,17 @@ function getListsWithInitialisedFields(
             const action = listConfig.actions[actionKey]
             const { label } = action.ui
             const label_ = label.toLowerCase()
+            const graphqlNames = {
+              one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
+              many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
+            }
             yield {
               actionKey,
               ...action,
               graphql: {
-                names: {
-                  one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
-                  many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
-                },
+                names: graphqlNames,
               },
+              otel: humanize(graphqlNames.one, true).toLowerCase(),
               ui: {
                 label,
                 icon: action.ui.icon ?? null,

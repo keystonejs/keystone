@@ -1,5 +1,6 @@
 import { g } from '../../..'
 import type { InitialisedList } from '../initialise-lists'
+import { withSpan } from '../../otel'
 import * as queries from './resolvers'
 
 export function getQueriesForList(list: InitialisedList) {
@@ -13,16 +14,28 @@ export function getQueriesForList(list: InitialisedList) {
         defaultValue: list.isSingleton ? { id: '1' } : undefined,
       }),
     },
-    async resolve(_rootVal, args, context, info) {
-      return queries.findOne(args, list, context, info)
+    async resolve(_, args, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return queries.findOne(args, list, context, info)
+        },
+        { 'keystone.list': list.listKey }
+      )
     },
   })
 
   const findMany = g.field({
     type: g.list(g.nonNull(list.graphql.types.output)),
     args: list.graphql.types.findManyArgs,
-    async resolve(_rootVal, args, context, info) {
-      return queries.findMany(args, list, context, info)
+    async resolve(_, args, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return queries.findMany(args, list, context, info)
+        },
+        { 'keystone.list': list.listKey }
+      )
     },
   })
 
@@ -34,8 +47,14 @@ export function getQueriesForList(list: InitialisedList) {
         defaultValue: list.isSingleton ? { id: { equals: '1' } } : {},
       }),
     },
-    async resolve(_rootVal, args, context, info) {
-      return queries.count(args, list, context, info)
+    async resolve(_, args, context, info) {
+      return await withSpan(
+        info.fieldName,
+        async () => {
+          return queries.count(args, list, context, info)
+        },
+        { 'keystone.list': list.listKey }
+      )
     },
   })
 

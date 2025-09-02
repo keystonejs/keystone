@@ -1,5 +1,3 @@
-import { classify } from 'inflection'
-
 import { g } from '../../..'
 import { humanize } from '../../../lib/utils'
 import type { JSONValue } from '../../../types'
@@ -197,7 +195,7 @@ function configToOptionsAndGraphQLType(
   })
 
   if (config.type === 'enum') {
-    const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`
+    const enumName = `${meta.listKey}${humanize(meta.fieldKey).replace(/ /g, '')}Type`
     const graphqlType = g.enum({
       name: enumName,
       values: g.enumValues(options.map(x => x.value)),

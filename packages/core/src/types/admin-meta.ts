@@ -111,7 +111,7 @@ export type ActionMeta = {
   graphql: {
     names: {
       one: string
-      many: string | null
+      many: string
     }
   }
 

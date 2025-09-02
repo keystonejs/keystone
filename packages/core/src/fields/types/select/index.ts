@@ -1,4 +1,4 @@
-import { classify } from 'inflection'
+import { g } from '../../..'
 import { humanize } from '../../../lib/utils'
 import type { SimpleFieldTypeInfo } from '../../../types'
 import {
@@ -8,9 +8,8 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { g } from '../../..'
 import { filters } from '../../filters'
-import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql'
 import type { controller } from './views'
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
@@ -165,7 +164,7 @@ export function select<ListTypeInfo extends BaseListTypeInfo>(
     }
 
     if (config.type === 'enum') {
-      const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`
+      const enumName = `${meta.listKey}${humanize(meta.fieldKey).replace(/ /g, '')}Type`
       const enumValues = options.map(x => `${x.value}`)
 
       const graphQLType = g.enum({

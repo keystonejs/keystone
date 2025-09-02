@@ -6,7 +6,7 @@ import type { TypeInfo } from '.keystone/types'
 import { lists } from './schema'
 
 function sha256(q: string) {
-  return createHash('sha256').update(q).digest('hex')
+  return createHash('sha256').update(q).digest('base64url')
 }
 
 const pino = pino_({
@@ -51,7 +51,7 @@ export default config<TypeInfo>({
                       type: requestContext.operation?.operation,
                       name: requestContext.request.operationName,
                       hash: sha256(requestContext.request.query ?? ''),
-                      // query: requestContext.request.query, // WARNING: may be verbose
+                      // query: requestContext.request.query, // WARNING: verbose
                       errors:
                         requestContext.errors?.map(e => ({
                           path: e.path,
@@ -72,7 +72,7 @@ export default config<TypeInfo>({
     getAdditionalFiles: async () => [
       {
         mode: 'write',
-        src: `export default ${JSON.stringify({
+        src: `module.exports = ${JSON.stringify({
           // stop the default Next logging
           logging: false, // we use pino
 

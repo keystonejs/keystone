@@ -5,6 +5,7 @@ import path from 'node:path'
 import { formatSchema, getGenerators } from '@prisma/internals'
 import { printSchema } from 'graphql'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
+import { withSpan } from './lib/otel'
 import type { System } from './lib/system'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
 
@@ -27,77 +28,89 @@ async function readFileOrUndefined(path: string) {
 }
 
 export async function validateArtifacts(cwd: string, system: System) {
-  const paths = system.getPaths(cwd)
-  const artifacts = await buildArtifacts(system)
-  const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
-    readFileOrUndefined(paths.schema.graphql),
-    readFileOrUndefined(paths.schema.prisma),
-  ])
+  await withSpan('validating artifacts', async () => {
+    const paths = system.getPaths(cwd)
+    const artifacts = await buildArtifacts(system)
+    const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
+      readFileOrUndefined(paths.schema.graphql),
+      readFileOrUndefined(paths.schema.prisma),
+    ])
 
-  if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
-    throw new Error('Your Prisma and GraphQL schemas are not up to date')
-  }
+    if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
+      throw new Error('Your Prisma and GraphQL schemas are not up to date')
+    }
 
-  if (writtenGraphQLSchema !== artifacts.graphql) {
-    throw new Error('Your GraphQL schema is not up to date')
-  }
+    if (writtenGraphQLSchema !== artifacts.graphql) {
+      throw new Error('Your GraphQL schema is not up to date')
+    }
 
-  if (writtenPrismaSchema !== artifacts.prisma) {
-    throw new Error('Your Prisma schema is not up to date')
-  }
+    if (writtenPrismaSchema !== artifacts.prisma) {
+      throw new Error('Your Prisma schema is not up to date')
+    }
+  })
 }
 
 // exported for tests
 export async function buildArtifacts(system: System) {
-  const prismaSchema = await formatSchema({
-    schemas: [[system.config.db.prismaSchemaPath, printPrismaSchema(system.config, system.lists)]],
-  })
+  return await withSpan('building artifacts', async () => {
+    const prismaSchema = await formatSchema({
+      schemas: [
+        [system.config.db.prismaSchemaPath, printPrismaSchema(system.config, system.lists)],
+      ],
+    })
 
-  return {
-    graphql: getFormattedGraphQLSchema(printSchema(system.graphQLSchema)),
-    prisma: prismaSchema[0][1],
-  }
+    return {
+      graphql: getFormattedGraphQLSchema(printSchema(system.graphQLSchema)),
+      prisma: prismaSchema[0][1],
+    }
+  })
 }
 
 export async function generateArtifacts(cwd: string, system: System) {
-  const paths = system.getPaths(cwd)
-  const artifacts = await buildArtifacts(system)
-  await fs.writeFile(paths.schema.graphql, artifacts.graphql)
-  await fs.writeFile(paths.schema.prisma, artifacts.prisma)
-  return artifacts
+  return await withSpan('generating artifacts', async () => {
+    const paths = system.getPaths(cwd)
+    const artifacts = await buildArtifacts(system)
+    await fs.writeFile(paths.schema.graphql, artifacts.graphql)
+    await fs.writeFile(paths.schema.prisma, artifacts.prisma)
+    return artifacts
+  })
 }
 
 export async function generateTypes(cwd: string, system: System) {
-  const paths = system.getPaths(cwd)
-  const schema = printGeneratedTypes(
-    paths.types.relativePrismaPath,
-    system.graphQLSchemaSudo,
-    system.lists
-  )
-  await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
-  await fs.writeFile(paths.schema.types, schema)
+  return await withSpan('generating types', async () => {
+    const paths = system.getPaths(cwd)
+    const schema = printGeneratedTypes(
+      paths.types.relativePrismaPath,
+      system.graphQLSchemaSudo,
+      system.lists
+    )
+    await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
+    await fs.writeFile(paths.schema.types, schema)
+  })
 }
 
 export async function generatePrismaClient(cwd: string, system: System) {
-  const paths = system.getPaths(cwd)
-  const generators = await getGenerators({
-    schemaPath: paths.schema.prisma,
-  })
-
-  await Promise.all(
-    generators.map(async generator => {
-      try {
-        await generator.generate()
-      } finally {
-        const closePromise = new Promise<void>(resolve => {
-          const child = (generator as any).generatorProcess.child as ChildProcess
-          child.once('exit', () => {
-            resolve()
-          })
-        })
-        generator.stop()
-        await closePromise
-      }
+  return await withSpan('generating prisma client', async () => {
+    const paths = system.getPaths(cwd)
+    const generators = await getGenerators({
+      schemaPath: paths.schema.prisma,
     })
-  )
+
+    await Promise.all(
+      generators.map(async generator => {
+        try {
+          await generator.generate()
+        } finally {
+          const closePromise = new Promise<void>(resolve => {
+            const child = (generator as any).generatorProcess.child as ChildProcess
+            child.once('exit', () => {
+              resolve()
+            })
+          })
+          generator.stop()
+          await closePromise
+        }
+      })
+    )
+  })
 }

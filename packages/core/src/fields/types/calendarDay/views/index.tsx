@@ -8,7 +8,7 @@ import { Icon } from '@keystar/ui/icon'
 import { calendarClockIcon } from '@keystar/ui/icon/icons/calendarClockIcon'
 import { Grid } from '@keystar/ui/layout'
 import { TextField } from '@keystar/ui/text-field'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
 import type {

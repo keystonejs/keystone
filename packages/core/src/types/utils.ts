@@ -1,7 +1,7 @@
 import pluralize from 'pluralize'
-import { humanize } from '../lib/utils'
 import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types'
 import type { Readable } from 'node:stream'
+import { humanize } from '../lib/utils'
 
 export type JSONValue =
   | string
@@ -21,6 +21,7 @@ export function getGqlNames({ singular, plural }: { singular: string; plural: st
   const lowerSingularName = singular.charAt(0).toLowerCase() + singular.slice(1)
   const lowerPluralName = plural.charAt(0).toLowerCase() + plural.slice(1)
   return {
+    outputTypeNameLower: lowerSingularName,
     outputTypeName: singular,
     whereInputName: `${singular}WhereInput`,
     whereUniqueInputName: `${singular}WhereUniqueInput`,
