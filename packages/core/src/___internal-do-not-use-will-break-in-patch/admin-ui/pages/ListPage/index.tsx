@@ -824,6 +824,22 @@ function ActionItemsDialog({
         actionErrors[itemId].push(error)
       }
 
+      if (countSuccess) {
+        toastQueue.neutral(
+          replace(
+            m.successMany,
+            list,
+            {
+              count: itemIds.length,
+              countFail,
+              countSuccess,
+            },
+            countSuccess > 1
+          ),
+          { timeout: 5000 }
+        )
+      }
+
       if (countFail) {
         toastQueue.critical(
           replace(
@@ -844,22 +860,6 @@ function ActionItemsDialog({
         )
       }
 
-      if (countSuccess) {
-        toastQueue.neutral(
-          replace(
-            m.successMany,
-            list,
-            {
-              count: itemIds.length,
-              countFail,
-              countSuccess,
-            },
-            countSuccess > 1
-          ),
-          { timeout: 5000 }
-        )
-      }
-
       return onSuccess(failed)
     } catch (error) {
       console.error(error)
@@ -868,7 +868,7 @@ function ActionItemsDialog({
 
   return (
     <AlertDialog
-      tone={'neutral'}
+      tone={action.key === 'delete' ? 'critical' : 'neutral'}
       title={replace(m.promptTitleMany, list, { count: itemIds.length }, itemIds.length > 1)}
       cancelLabel="Cancel"
       primaryActionLabel={replace(
