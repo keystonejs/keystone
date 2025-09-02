@@ -71,9 +71,8 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.goto(`http://localhost:3000/people/${result.data.createTask.assignedTo.id}`)
     await page.getByRole('button', { name: 'Actions for Tasks' }).click()
     await page.getByText('View related').click()
-    await page.waitForURL(
-      `http://localhost:3000/tasks?filter=assignedTo_is_"${result.data.createTask.assignedTo.id}"`
-    )
+
+    await page.waitForURL(new RegExp(encodeURI(`assignedTo_is_"${result.data.createTask.assignedTo.id}"`)))
     await page.getByText('My task').waitFor()
     await expect(page.getByText('A task')).toBeHidden()
   })

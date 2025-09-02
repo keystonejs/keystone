@@ -255,6 +255,7 @@ function ListPage({ listKey }: ListPageProps) {
 
   const list = useList(listKey)
   const { query, replace: routerReplace, isReady } = useRouter()
+  const [loaded, setLoaded] = useState(false)
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
   const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
@@ -277,6 +278,7 @@ function ListPage({ listKey }: ListPageProps) {
 
   useEffect(() => {
     if (!isReady) return
+    if (loaded) return
     let localStorageQuery
     try {
       localStorageQuery = JSON.parse(localStorage.getItem(localStorageListKey) ?? '{}')
@@ -288,10 +290,12 @@ function ListPage({ listKey }: ListPageProps) {
     setCurrentPage(getCurrentPage(list, { ...localStorageQuery, ...query }))
     setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
     setSearchString(typeof query.search === 'string' ? query.search : '')
+    setLoaded(true)
   }, [list, isReady])
 
   useEffect(() => {
     if (!isReady) return
+    if (!loaded) return // TODO: stop this race condition properly
     const updatedQuery: ParsedUrlQueryInput = {
       ...(columns.length ? { column: columns } : {}),
       ...(sort ? { sortBy: sort.direction === 'ascending' ? sort.column : `-${sort.column}` } : {}),
@@ -318,7 +322,7 @@ function ListPage({ listKey }: ListPageProps) {
 
     localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
     routerReplace({ query: updatedQuery })
-  }, [columns, sort, filters, currentPage, pageSize, searchString, list])
+  }, [columns, sort, filters, currentPage, pageSize, searchString, list, loaded])
 
   const allowCreate = !(list.hideCreate ?? true)
   const isConstrained = Boolean(filters.length || query.search)
