@@ -28,10 +28,13 @@ export default config<TypeInfo>({
 
             return {
               async willSendResponse({ operation, request }) {
-                span.setAttribute('type', operation?.operation || 'unknown')
-                span.setAttribute('name', request.operationName || 'unknown')
-                span.setAttribute('hash', request.query ? sha256(request.query) : 'empty')
-                // span.setAttribute('query', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
+                span.setAttribute('graphql.operation.name', operation?.operation || 'unknown')
+                span.setAttribute('graphql.operation.type', request.operationName || 'unknown')
+                span.setAttribute(
+                  'graphql.document.sha256',
+                  request.query ? sha256(request.query) : 'empty'
+                )
+                // span.setAttribute('graphql.document', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
                 span.end()
               },
             }
@@ -47,9 +50,9 @@ export default config<TypeInfo>({
           'http request',
           {
             attributes: {
-              method: req.method,
-              path: req.path,
-              userAgent: req.headers['user-agent'] || '',
+              'http.request.method': req.method,
+              'http.request.path': req.path,
+              'user_agent.original': req.headers['user-agent'] || '',
             },
           },
           span => {
