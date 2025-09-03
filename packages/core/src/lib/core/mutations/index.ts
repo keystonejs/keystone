@@ -691,7 +691,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { data }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return createOne(data, list, context)
         },
@@ -709,7 +709,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { data }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return promisesButSettledWhenAllSettledAndInOrder(await createMany(data, list, context))
         },
@@ -729,7 +729,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { where, data }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return updateOne({ where, data }, list, context)
         },
@@ -757,7 +757,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { data }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return promisesButSettledWhenAllSettledAndInOrder(await updateMany(data, list, context))
         },
@@ -776,7 +776,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { where }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return deleteOne(where, list, context)
         },
@@ -794,7 +794,7 @@ export function getMutationsForList(list: InitialisedList) {
     },
     async resolve(_, { where }, context, info) {
       return await withSpan(
-        info.fieldName,
+        `mutation ${info.fieldName}`,
         async () => {
           return promisesButSettledWhenAllSettledAndInOrder(await deleteMany(where, list, context))
         },
@@ -867,7 +867,7 @@ export function getMutationsForList(list: InitialisedList) {
                 },
                 async resolve(_, { where }, context, info) {
                   return await withSpan(
-                    info.fieldName,
+                    `mutation ${info.fieldName}`,
                     async () => {
                       return actionOne(where, list, context, action)
                     },
@@ -887,7 +887,7 @@ export function getMutationsForList(list: InitialisedList) {
                 },
                 async resolve(_, { where }, context, info) {
                   return await withSpan(
-                    info.fieldName,
+                    `mutation ${info.fieldName}`,
                     async () => {
                       return promisesButSettledWhenAllSettledAndInOrder(
                         await actionMany(where, list, context, action)
