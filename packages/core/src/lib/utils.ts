@@ -6,7 +6,8 @@ export function humanize(s: string, capitalize: boolean = true) {
   s = s.replace(/[^a-zA-Z0-9]+/g, ' ')
 
   // insert spaces before camels of length > 1
-  for (let i = 0; i < 24; i++) { // not unbounded, shouldnt happen
+  for (let i = 0; i < 24; i++) {
+    // not unbounded, shouldnt happen
     const next = s.replace(/([a-z0-9])([A-Z][A-Za-z0-9])/, '$1 $2')
     if (next === s) break
     s = next

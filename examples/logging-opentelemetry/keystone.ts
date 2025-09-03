@@ -30,7 +30,10 @@ export default config<TypeInfo>({
               async willSendResponse({ operation, request }) {
                 span.setAttribute('gql.query.type', operation?.operation || 'unknown')
                 span.setAttribute('gql.query.name', request.operationName || 'unknown')
-                span.setAttribute('qql.query.sha256', request.query ? sha256(request.query) : 'empty')
+                span.setAttribute(
+                  'qql.query.sha256',
+                  request.query ? sha256(request.query) : 'empty'
+                )
                 // span.setAttribute('query', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
                 span.end()
               },
