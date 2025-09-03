@@ -52,6 +52,7 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
     outfile: '.keystone/config.js',
     format: 'cjs',
     platform: 'node',
+    conditions: [],
     plugins: [
       {
         name: 'external-node_modules',
