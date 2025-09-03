@@ -79,7 +79,7 @@ async function createSingle__(
 ) {
   return await withSpan(
     `create ${list.graphql.names.outputTypeNameLower}`,
-    async () => {
+    async (span) => {
       // throw an accessDeniedError if not allowed
       await enforceListLevelAccessControl(context, 'create', list, inputData, undefined)
       await enforceFieldLevelAccessControl(context, 'create', list, inputData, undefined)
@@ -94,13 +94,17 @@ async function createSingle__(
       await beforeOperation()
 
       // operation
-      const item = await context.prisma[list.listKey].create({
+      const result = await context.prisma[list.listKey].create({
         data: list.isSingleton ? { ...data, id: 1 } : data,
       })
 
-      return { item, afterOperation }
+      span.setAttribute('keystone.result.id', result?.id ?? '')
+      return { item: result, afterOperation }
     },
-    { 'keystone.list': list.listKey, 'keystone.operation': 'create' }
+    {
+      'keystone.list': list.listKey,
+      'keystone.operation': 'create'
+    }
   )
 }
 
@@ -143,7 +147,7 @@ async function updateSingle__(
 ) {
   return await withSpan(
     `update ${list.graphql.names.outputTypeNameLower}`,
-    async () => {
+    async (span) => {
       // validate and resolve the input filter
       const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
@@ -164,15 +168,16 @@ async function updateSingle__(
       await beforeOperation()
 
       // operation
-      const updatedItem = await context.prisma[list.listKey].update({
+      const result = await context.prisma[list.listKey].update({
         where: { id: item.id },
         data,
       })
+      span.setAttribute('keystone.result.id', result?.id ?? '')
 
       // after operation
-      await afterOperation(updatedItem)
+      await afterOperation(result)
 
-      return updatedItem
+      return result
     },
     { 'keystone.list': list.listKey, 'keystone.operation': 'update' }
   )
@@ -186,7 +191,7 @@ async function deleteSingle__(
 ) {
   return await withSpan(
     `delete ${list.graphql.names.outputTypeNameLower}`,
-    async () => {
+    async (span) => {
       // validate and resolve the input filter
       const uniqueWhere = await resolveUniqueWhereInput(where, list, context)
 
@@ -214,6 +219,7 @@ async function deleteSingle__(
 
       // operation
       const result = await context.prisma[list.listKey].delete({ where: { id: item.id } })
+      span.setAttribute('keystone.result.id', result?.id ?? '')
 
       // after operation
       await runSideEffectOnlyHook(list, 'afterOperation', {
@@ -236,7 +242,7 @@ async function actionSingle__(
 ) {
   return await withSpan(
     action.otel,
-    async () => {
+    async (span) => {
       // no before operation hook for actions
 
       // operation
@@ -248,6 +254,7 @@ async function actionSingle__(
         },
         context
       )
+      span.setAttribute('keystone.result.id', (result?.id as string) ?? '')
 
       // no after operation hook for actions
       return result

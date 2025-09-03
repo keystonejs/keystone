@@ -28,9 +28,9 @@ export default config<TypeInfo>({
 
             return {
               async willSendResponse({ operation, request }) {
-                span.setAttribute('type', operation?.operation || 'unknown')
-                span.setAttribute('name', request.operationName || 'unknown')
-                span.setAttribute('hash', request.query ? sha256(request.query) : 'empty')
+                span.setAttribute('gql.query.type', operation?.operation || 'unknown')
+                span.setAttribute('gql.query.name', request.operationName || 'unknown')
+                span.setAttribute('qql.query.sha256', request.query ? sha256(request.query) : 'empty')
                 // span.setAttribute('query', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
                 span.end()
               },
@@ -47,9 +47,9 @@ export default config<TypeInfo>({
           'http request',
           {
             attributes: {
-              method: req.method,
-              path: req.path,
-              userAgent: req.headers['user-agent'] || '',
+              'http.method': req.method,
+              'http.path': req.path,
+              'http.headers.user-agent': req.headers['user-agent'] || '',
             },
           },
           span => {
