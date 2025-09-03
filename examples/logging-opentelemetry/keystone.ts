@@ -28,13 +28,13 @@ export default config<TypeInfo>({
 
             return {
               async willSendResponse({ operation, request }) {
-                span.setAttribute('gql.query.type', operation?.operation || 'unknown')
-                span.setAttribute('gql.query.name', request.operationName || 'unknown')
+                span.setAttribute('graphql.operation.name', operation?.operation || 'unknown')
+                span.setAttribute('graphql.operation.type', request.operationName || 'unknown')
                 span.setAttribute(
-                  'qql.query.sha256',
+                  'graphql.document.sha256',
                   request.query ? sha256(request.query) : 'empty'
                 )
-                // span.setAttribute('query', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
+                // span.setAttribute('graphql.document', request.query?.replaceAll(/\s+/g, ' ') || '') // WARNING: verbose
                 span.end()
               },
             }
@@ -50,9 +50,9 @@ export default config<TypeInfo>({
           'http request',
           {
             attributes: {
-              'http.method': req.method,
-              'http.path': req.path,
-              'http.headers.user-agent': req.headers['user-agent'] || '',
+              'http.request.method': req.method,
+              'http.request.path': req.path,
+              'user_agent.original': req.headers['user-agent'] || '',
             },
           },
           span => {
