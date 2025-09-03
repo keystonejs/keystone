@@ -16,7 +16,7 @@ export function getQueriesForList(list: InitialisedList) {
     },
     async resolve(_, args, context, info) {
       return await withSpan(
-        info.fieldName,
+        `query ${info.fieldName}`,
         async () => {
           return queries.findOne(args, list, context, info)
         },
@@ -30,7 +30,7 @@ export function getQueriesForList(list: InitialisedList) {
     args: list.graphql.types.findManyArgs,
     async resolve(_, args, context, info) {
       return await withSpan(
-        info.fieldName,
+        `query ${info.fieldName}`,
         async () => {
           return queries.findMany(args, list, context, info)
         },
@@ -49,7 +49,7 @@ export function getQueriesForList(list: InitialisedList) {
     },
     async resolve(_, args, context, info) {
       return await withSpan(
-        info.fieldName,
+        `query ${info.fieldName}`,
         async () => {
           return queries.count(args, list, context, info)
         },
