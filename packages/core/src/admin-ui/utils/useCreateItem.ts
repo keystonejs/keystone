@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
@@ -13,6 +13,7 @@ import {
 import type { ListMeta } from '../../types'
 import { type ApolloError, gql, useMutation } from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
+import { useKeystone } from '../context'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
@@ -24,6 +25,7 @@ type CreateItemHookResult = {
 
 export function useCreateItem(list: ListMeta): CreateItemHookResult {
   const router = useRouter()
+  const { adminPath } = useKeystone()
   const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.graphql.names.createInputName}!) {
       item: ${list.graphql.names.createMutationName}(data: $data) {
@@ -110,7 +112,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         timeout: 5000,
         actionLabel: 'Create another',
         onAction: () => {
-          router.push(`/${list.path}/create`)
+          router.push(`${adminPath}/${list.path}/create`)
         },
         shouldCloseOnAction: true,
       })

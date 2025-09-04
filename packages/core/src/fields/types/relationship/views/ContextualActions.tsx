@@ -7,7 +7,7 @@ import { Grid } from '@keystar/ui/layout'
 import { ActionMenu, Item } from '@keystar/ui/menu'
 import { Text } from '@keystar/ui/typography'
 
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import type { FieldProps, ListMeta } from '../../../../types'
 import type { RelationshipController } from './types'
 import { ActionButton } from '@keystar/ui/button'
@@ -110,12 +110,13 @@ export function useRelatedItemHref({
   value,
 }: Pick<FieldProps<() => RelationshipController>, 'field' | 'value'>) {
   const foreignList = useList(field.refListKey)
+  const { adminPath } = useKeystone()
   if (value.kind === 'one') {
     if (!value.value) return null
     // the related item isn't actually created yet so we can't view it
     if (value.value.built) return null
 
-    return `/${foreignList.path}/${value.value.id}`
+    return `${adminPath}/${foreignList.path}/${value.value.id}`
   }
   let query: string | undefined
   if (field.refFieldKey && value.id !== null) {
@@ -125,7 +126,7 @@ export function useRelatedItemHref({
   }
   if (query === undefined) return null
 
-  return `/${foreignList.path}?${query}`
+  return `${adminPath}/${foreignList.path}?${query}`
 }
 
 export function buildQueryForRelationshipFieldWithForeignField(

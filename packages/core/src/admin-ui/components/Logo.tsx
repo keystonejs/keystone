@@ -13,10 +13,11 @@ export function Logo() {
 }
 
 function DefaultLogo() {
+  const { adminPath } = useKeystone()
   return (
     <Heading elementType="div" size="small" UNSAFE_className={css({ lineHeight: 1 })}>
       <Link
-        href="/"
+        href={`${adminPath}/`}
         className={css({
           alignItems: 'center',
           color: tokenSchema.color.alias.foregroundIdle,
