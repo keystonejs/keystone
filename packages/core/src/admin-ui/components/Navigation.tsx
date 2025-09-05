@@ -1,5 +1,5 @@
 import { type ReactNode, type PropsWithChildren, useState } from 'react'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 
 import { ActionButton } from '@keystar/ui/button'
 import { DialogContainer } from '@keystar/ui/dialog'
@@ -40,20 +40,27 @@ type NavItemProps = {
   isSelected?: boolean
 }
 
-export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
-  return `/${list.path}${list.isSingleton ? '/1' : ''}`
+export function getHrefFromList(
+  list: Pick<ListMeta, 'path' | 'isSingleton'>,
+  adminPath: string = ''
+) {
+  return `${adminPath}/${list.path}${list.isSingleton ? '/1' : ''}`
 }
 
 /** A navigation item represents a page in the AdminUI. */
 export function NavItem(props: NavItemProps) {
   const { children, href, isSelected: isSelectedProp } = props
-  const router = useRouter()
+  const pathname = usePathname()
+  const { adminPath } = useKeystone()
 
   let ariaCurrent: 'page' | boolean | undefined = isSelectedProp
   if (!ariaCurrent) {
-    if (router.pathname === href) {
+    if (pathname === href) {
       ariaCurrent = 'page'
-    } else if (router.pathname.split('/')[1] === href.split('/')[1]) {
+    } else if (
+      pathname.replace(`${adminPath}`, '').split('/')[1] ===
+      href.replace(`${adminPath}`, '').split('/')[1]
+    ) {
       ariaCurrent = true
     }
   }
@@ -81,7 +88,7 @@ export function NavContainer({ children }: PropsWithChildren) {
 
 /** @private Exported for internal consumption only. */
 export function Navigation() {
-  const { adminConfig, lists: allLists } = useKeystone()
+  const { adminConfig, lists: allLists, adminPath } = useKeystone()
   const visibleLists = Object.values(allLists).filter(x => !x.hideNavigation)
 
   if (adminConfig?.components?.Navigation)
@@ -89,10 +96,10 @@ export function Navigation() {
   return (
     <NavContainer>
       <NavList>
-        <NavItem href="/">Dashboard</NavItem>
+        <NavItem href={`${adminPath}/`}>Dashboard</NavItem>
         <Divider />
         {visibleLists.map((list: ListMeta) => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
+          <NavItem key={list.key} href={getHrefFromList(list, adminPath)}>
             {list.label}
           </NavItem>
         ))}

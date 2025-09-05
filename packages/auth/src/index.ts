@@ -69,23 +69,24 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
             : 'id')
 
     const authGqlNames = getAuthGqlNames(listConfig.graphql?.singular ?? listKey)
+    const ext = (config.ui.tsx ?? true) ? 'tsx' : 'js'
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
         src: signinTemplate({ authGqlNames, identityField, secretField }),
-        outputPath: 'pages/signin.js',
+        outputPath: `signin/page.${ext}`,
       },
       {
         mode: 'write',
         src: configTemplate({ labelField }),
-        outputPath: 'config.ts',
+        outputPath: '.admin/config.tsx',
       },
     ]
     if (initFirstItem) {
       filesToWrite.push({
         mode: 'write',
         src: initTemplate({ authGqlNames, listKey, initFirstItem }),
-        outputPath: 'pages/init.js',
+        outputPath: `init/page.${ext}`,
       })
     }
     return filesToWrite

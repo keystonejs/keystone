@@ -1,11 +1,11 @@
 import { createUploadLink } from 'apollo-upload-client'
 import NextHead from 'next/head'
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
 import { injectGlobal, tokenSchema } from '@keystar/ui/style'
 import { Toaster } from '@keystar/ui/toast'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 import { snapValueToClosest } from '../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls'
 import type {
@@ -26,6 +26,8 @@ type KeystoneContextType = {
   error?: ApolloError | null
   fieldViews: FieldViews
   lists: { [list: string]: ListMeta }
+  adminPath: string
+  listsKeyByPath: Record<string, string>
 }
 
 const KeystoneContext = createContext<KeystoneContextType>({
@@ -33,11 +35,14 @@ const KeystoneContext = createContext<KeystoneContextType>({
   apiPath: null,
   lists: {},
   fieldViews: {},
+  adminPath: '',
+  listsKeyByPath: {},
 })
 
 type KeystoneProviderProps = {
   adminConfig: AdminConfig
   apiPath: string
+  adminPath: string
   fieldViews: FieldViews
   children: ReactNode
 }
@@ -49,6 +54,7 @@ function InternalKeystoneProvider({
   apiPath,
   fieldViews,
   children,
+  adminPath,
 }: KeystoneProviderProps) {
   const { push: navigate } = useRouter()
   const keystarRouter = useMemo(() => ({ navigate }), [navigate])
@@ -131,6 +137,16 @@ function InternalKeystoneProvider({
 
     return lists
   }, [listsData, error, fieldViews])
+  const listsKeyByPath = useMemo(() => {
+    if (!lists) return {}
+    return Object.values(lists).reduce(
+      (acc, list) => {
+        acc[list.path] = list.key
+        return acc
+      },
+      {} as Record<string, string>
+    )
+  }, [lists])
 
   // TODO: remove this once studio is fully migrated to keystar-ui
   useEffect(() => {
@@ -171,6 +187,8 @@ function InternalKeystoneProvider({
           fieldViews,
           lists: lists ?? {},
           error: error ?? null,
+          adminPath,
+          listsKeyByPath,
         }}
       >
         {children}
