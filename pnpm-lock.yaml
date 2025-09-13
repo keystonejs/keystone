@@ -1885,6 +1885,9 @@ importers:
       '@prisma/client':
         specifier: 6.16.1
         version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+      '@prisma/client-generator-registry':
+        specifier: ^6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       '@prisma/internals':
         specifier: 6.16.1
         version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
