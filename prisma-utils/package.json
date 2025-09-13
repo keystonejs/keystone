@@ -3,8 +3,8 @@
   "version": "0.0.2",
   "private": true,
   "devDependencies": {
-    "@prisma/generator-helper": "^6.5.0",
-    "@prisma/internals": "^6.5.0",
+    "@prisma/generator-helper": "^6.16.1",
+    "@prisma/internals": "^6.16.1",
     "tsx": "^4.0.0"
   },
   "scripts": {
