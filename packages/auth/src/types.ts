@@ -1,4 +1,5 @@
 import type { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types'
+import type { SessionStrategy } from './session'
 
 export type AuthGqlNames = {
   itemQueryName: string
@@ -27,17 +28,22 @@ export type AuthTokenTypeConfig = {
   tokensValidForMins?: number
 }
 
-export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type AuthConfig<ListTypeInfo extends BaseListTypeInfo, SessionStrategySession> = {
   /** The key of the list to authenticate users with */
   listKey: ListTypeInfo['key']
   /** The path of the field the identity is stored in; must be text-ish */
   identityField: ListTypeInfo['fields']
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: ListTypeInfo['fields']
+  /** How Keystone Auth should store/access auth information in headers/cookies */
+  sessionStrategy: SessionStrategy<{ itemId: string }, SessionStrategySession, ListTypeInfo['all']>
+  /** Session hydration */
+  getSession: (args: {
+    data: SessionStrategySession
+    context: KeystoneContext<ListTypeInfo['all']>
+  }) => Promise<ListTypeInfo['all']['session'] | undefined>
   /** The initial user/db seeding functionality */
   initFirstItem?: InitFirstItemConfig<ListTypeInfo>
-  /** Session data population */
-  sessionData?: string
 }
 
 export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {

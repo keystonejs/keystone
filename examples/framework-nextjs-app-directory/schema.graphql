@@ -4,8 +4,14 @@
 type User {
   id: ID!
   name: String
+  email: String
+  password: PasswordState
   about: User_about_Document
   createdAt: DateTime
+}
+
+type PasswordState {
+  isSet: Boolean!
 }
 
 type User_about_Document {
@@ -16,6 +22,7 @@ scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input UserWhereInput {
@@ -24,6 +31,8 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   id: IDFilter
   name: StringFilter
+  email: StringFilter
+  password: PasswordFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -66,6 +75,10 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input PasswordFilter {
+  isSet: Boolean!
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -80,6 +93,7 @@ input DateTimeNullableFilter {
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  email: OrderDirection
   createdAt: OrderDirection
 }
 
@@ -90,6 +104,8 @@ enum OrderDirection {
 
 input UserUpdateInput {
   name: String
+  email: String
+  password: String
   about: JSON
   createdAt: DateTime
 }
@@ -101,6 +117,8 @@ input UserUpdateArgs {
 
 input UserCreateInput {
   name: String
+  email: String
+  password: String
   about: JSON
   createdAt: DateTime
 }
@@ -117,6 +135,19 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  endSession: Boolean!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+}
+
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  message: String!
 }
 
 type Query {
@@ -124,6 +155,7 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  authenticatedItem: User
 }
 
 type KeystoneMeta {

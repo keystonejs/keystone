@@ -8,7 +8,6 @@ import type express from 'express'
 import type { GraphQLSchema } from 'graphql'
 
 import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '..'
-import type { SessionStrategy } from '../session'
 import type { MaybePromise } from '../utils'
 import type { FieldAccessControl, ListAccessControl } from './access-control'
 import type { BaseFields } from './fields'
@@ -145,7 +144,9 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
       }
   )
 
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>
+  session?: (args: {
+    context: KeystoneContext<TypeInfo>
+  }) => Promise<TypeInfo['session'] | undefined>
 
   /** Telemetry boolean to disable telemetry for this project */
   telemetry?: boolean
@@ -169,6 +170,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
     pageMiddleware?: (args: {
       context: KeystoneContext<TypeInfo>
       wasAccessAllowed: boolean
+      url: string
       basePath: string
     }) => MaybePromise<{ kind: 'redirect'; to: string } | void>
   }

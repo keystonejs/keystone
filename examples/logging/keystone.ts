@@ -44,7 +44,7 @@ export default config<TypeInfo>({
                 pino.logger.info(
                   {
                     req: requestContext.contextValue.req
-                      ? { id: requestContext.contextValue.req?.id }
+                      ? { id: requestContext.contextValue.req?.nodeReq?.id }
                       : undefined,
                     responseTime: Date.now() - start,
                     graphql: {

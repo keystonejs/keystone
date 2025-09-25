@@ -8,7 +8,6 @@ import type {
   IdFieldConfig,
   KeystoneConfig,
   KeystoneConfigPre,
-  KeystoneContext,
   ListConfig,
   MaybeItemFunctionWithFilter,
   MaybeSessionFunction,
@@ -71,11 +70,6 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
       }
     })(),
   ]) satisfies KeystoneConfig['lists']
-}
-
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true
-  return session !== undefined
 }
 
 async function noop() {}
@@ -152,7 +146,9 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     ui: {
       ...config.ui,
       basePath: config.ui?.basePath ?? '',
-      isAccessAllowed: config.ui?.isAccessAllowed ?? defaultIsAccessAllowed,
+      isAccessAllowed:
+        config.ui?.isAccessAllowed ??
+        (config.session ? ({ session }) => session !== undefined : () => true),
       isDisabled: config.ui?.isDisabled ?? false,
       getAdditionalFiles: config.ui?.getAdditionalFiles ?? (() => []),
       pageMiddleware: config.ui?.pageMiddleware ?? noop,

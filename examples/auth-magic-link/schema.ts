@@ -4,20 +4,35 @@ import { password, text, timestamp } from '@keystone-6/core/fields'
 import type { Lists, Context, Session } from '.keystone/types'
 
 import { randomBytes } from 'node:crypto'
+import { statelessSessions } from '@keystone-6/auth'
 
 const g = gWithContext<Context>()
 type g<T> = gWithContext.infer<T>
 
 declare module '.keystone/types' {
   interface Session {
-    itemId: string
-    listKey: string
+    id: string
   }
 }
 
 function hasSession({ session }: { session?: Session }) {
   return Boolean(session)
 }
+
+// WARNING: you need to change this
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+
+// statelessSessions uses cookies for session tracking
+//   these cookies have an expiry, in seconds
+//   we use an expiry of one hour for this example
+const sessionMaxAge = 60 * 60
+
+export const sessionStrategy = statelessSessions({
+  // the maxAge option controls how long session cookies are valid for before they expire
+  maxAge: sessionMaxAge,
+  // the session secret is used to encrypt cookie data
+  secret: sessionSecret,
+})
 
 function isSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session to do this
@@ -26,7 +41,7 @@ function isSameUserFilter({ session }: { session?: Session }) {
   // only yourself
   return {
     id: {
-      equals: session.itemId,
+      equals: session.id,
     },
   }
 }
@@ -148,9 +163,6 @@ export const extendGraphqlSchema = g.extend(base => {
         },
 
         async resolve(args, { userId, token }, context) {
-          if (!context.sessionStrategy)
-            throw new Error('No session implementation available on context')
-
           const kdf = (base.schema.getType('User') as any).getFields()?.password.extensions
             ?.keystoneSecretField
           const sudoContext = context.sudo()
@@ -176,10 +188,9 @@ export const extendGraphqlSchema = g.extend(base => {
               },
             })
 
-            await context.sessionStrategy.start({
+            await sessionStrategy.start({
               context,
               data: {
-                listKey: 'User',
                 itemId: userId,
               },
             })

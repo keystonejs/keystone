@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core'
-import { statelessSessions } from '@keystone-6/core/session'
-import { createAuth } from '@keystone-6/auth'
+import { createAuth, statelessSessions } from '@keystone-6/auth'
 import { lists } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
@@ -42,9 +41,19 @@ const { withAuth } = createAuth({
       isAdmin: true,
     },
   },
-
-  // add isAdmin to the session data
-  sessionData: 'isAdmin',
+  sessionStrategy: statelessSessions({
+    // the maxAge option controls how long session cookies are valid for before they expire
+    maxAge: sessionMaxAge,
+    // the session secret is used to encrypt cookie data
+    secret: sessionSecret,
+  }),
+  async getSession({ context, data }) {
+    const user = await context.db.User.findOne({
+      where: { id: data.itemId },
+    })
+    if (!user) return
+    return { user }
+  },
 })
 
 export default withAuth<TypeInfo>(
@@ -60,15 +69,8 @@ export default withAuth<TypeInfo>(
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: context => {
-        return context.session?.data?.isAdmin ?? false
+        return context.session?.user.isAdmin ?? false
       },
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions({
-      // the maxAge option controls how long session cookies are valid for before they expire
-      maxAge: sessionMaxAge,
-      // the session secret is used to encrypt cookie data
-      secret: sessionSecret,
-    }),
   })
 )
