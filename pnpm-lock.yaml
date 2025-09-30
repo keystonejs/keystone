@@ -2004,8 +2004,8 @@ importers:
         specifier: workspace:^
         version: 'link:'
       '@types/apollo-upload-client':
-        specifier: 17.0.5
-        version: 17.0.5(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 18.0.1
+        version: 18.0.1(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.6
@@ -4354,6 +4354,7 @@ packages:
   '@graphql-tools/prisma-loader@8.0.17':
     resolution: {integrity: sha512-fnuTLeQhqRbA156pAyzJYN0KxCjKYRU5bz1q/SKOwElSnAU4k7/G1kyVsWLh7fneY78LoMNH5n+KlFV8iQlnyg==}
     engines: {node: '>=16.0.0'}
+    deprecated: 'This package was intended to be used with an older versions of Prisma.\nThe newer versions of Prisma has a different approach to GraphQL integration.\nTherefore, this package is no longer needed and has been deprecated and removed.\nLearn more: https://www.prisma.io/graphql'
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
@@ -6309,8 +6310,8 @@ packages:
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
 
-  '@types/apollo-upload-client@17.0.5':
-    resolution: {integrity: sha512-rPKHaE4QNd06LNtBgz6hfntVO+pOQMS2yTcynrzBPg9+a/nbtJ2gus5KgzRp2rqfzmnKEc/sRGjLen/9Ot0Z2A==}
+  '@types/apollo-upload-client@18.0.1':
+    resolution: {integrity: sha512-qumgUkhs9pqJAxlDtzmn3WTrJ9oAHBb6i9A7aR1HQyjLpX9+LRL5V84aErv5ZwcCSR2zEgG8cFsuBVYfZHFSRA==}
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -18255,7 +18256,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
 
-  '@types/apollo-upload-client@17.0.5(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@types/apollo-upload-client@18.0.1(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@apollo/client': 3.14.0(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(graphql@16.11.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/extract-files': 13.0.1

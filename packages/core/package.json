@@ -287,7 +287,7 @@
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "@types/apollo-upload-client": "17.0.5",
+    "@types/apollo-upload-client": "18.0.1",
     "@types/body-parser": "^1.19.2",
     "@types/bytes": "^3.1.1",
     "@types/cors": "^2.8.13",
