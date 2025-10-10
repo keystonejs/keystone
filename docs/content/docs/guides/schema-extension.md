@@ -29,22 +29,24 @@ import { Context } from '.keystone/types';
 
 export default config({
   {/* ... */},
-  extendGraphqlSchema: graphql.extend(base => {
-    return {
-      mutation: {
-        publishPost: graphql.field({
-          type: base.object('Post'),
-          args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-          resolve(source, { id }, context:Context) {
-            return context.db.Post.updateOne({
-              where: { id },
-              data: { status: 'published', publishDate: new Date().toISOString() },
-            });
-          },
-        }),
-      },
-    };
-  }),
+  graphql: {
+   extendGraphqlSchema: graphql.extend(base => {
+      return {
+        mutation: {
+          publishPost: graphql.field({
+            type: base.object('Post'),
+            args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+            resolve(source, { id }, context:Context) {
+              return context.db.Post.updateOne({
+                where: { id },
+                data: { status: 'published', publishDate: new Date().toISOString() },
+              });
+            },
+          }),
+        },
+      };
+    }),
+  }
 });
 ```
 
@@ -80,24 +82,26 @@ which performs the same function as above.
 ```ts
 export default config({
   {/* ... */},
-  extendGraphqlSchema: schema =>
-    mergeSchemas({
-      schemas: [schema],
-      typeDefs: `
-      type Mutation {
-        publishPost(id: ID!): Post
-      `,
-      resolvers: {
-        Mutation: {
-          publishPost: (root, { id }, context) => {
-            return context.db.Post.updateOne({
-              where: { id },
-              data: { status: 'published', publishDate: new Date().toUTCString() },
-            });
+  graphql: {
+    extendGraphqlSchema: schema =>
+      mergeSchemas({
+        schemas: [schema],
+        typeDefs: `
+        type Mutation {
+          publishPost(id: ID!): Post
+        `,
+        resolvers: {
+          Mutation: {
+            publishPost: (root, { id }, context) => {
+              return context.db.Post.updateOne({
+                where: { id },
+                data: { status: 'published', publishDate: new Date().toUTCString() },
+              });
+            },
           },
         },
-      },
-    }),
+      }),
+  }
 });
 ```
 
