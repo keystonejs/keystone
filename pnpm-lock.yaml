@@ -132,8 +132,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@sindresorhus/slugify':
-        specifier: ^1.1.2
-        version: 1.1.2
+        specifier: ^3.0.0
+        version: 3.0.0
       '@vercel/og':
         specifier: ^0.8.0
         version: 0.8.5
@@ -1904,8 +1904,8 @@ importers:
         specifier: ^3.11.6
         version: 3.14.0(react@19.1.1)
       '@sindresorhus/slugify':
-        specifier: ^1.1.2
-        version: 1.1.2
+        specifier: ^3.0.0
+        version: 3.0.0
       apollo-upload-client:
         specifier: ^17.0.0
         version: 17.0.0(@apollo/client@3.14.0(@types/react@19.1.12)(graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3))(graphql@16.11.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(graphql@16.11.0)
@@ -4354,6 +4354,7 @@ packages:
   '@graphql-tools/prisma-loader@8.0.17':
     resolution: {integrity: sha512-fnuTLeQhqRbA156pAyzJYN0KxCjKYRU5bz1q/SKOwElSnAU4k7/G1kyVsWLh7fneY78LoMNH5n+KlFV8iQlnyg==}
     engines: {node: '>=16.0.0'}
+    deprecated: 'This package was intended to be used with an older versions of Prisma.\nThe newer versions of Prisma has a different approach to GraphQL integration.\nTherefore, this package is no longer needed and has been deprecated and removed.\nLearn more: https://www.prisma.io/graphql'
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
@@ -6016,9 +6017,17 @@ packages:
     resolution: {integrity: sha512-V9nR/W0Xd9TSGXpZ4iFUcFGhuOJtZX82Fzxj1YISlbSgKvIiNa7eLEZrT0vAraPOt++KHauIVNYgGRgjc13dXA==}
     engines: {node: '>=10'}
 
+  '@sindresorhus/slugify@3.0.0':
+    resolution: {integrity: sha512-SCrKh1zS96q+CuH5GumHcyQEVPsM4Ve8oE0E6tw7AAhGq50K8ojbTUOQnX/j9Mhcv/AXiIsbCfquovyGOo5fGw==}
+    engines: {node: '>=20'}
+
   '@sindresorhus/transliterate@0.1.2':
     resolution: {integrity: sha512-5/kmIOY9FF32nicXH+5yLNTX4NJ4atl7jRgqAJuIn/iyDFXBktOKDxCvyGE/EzmF4ngSUvjXxQUQlQiZ5lfw+w==}
     engines: {node: '>=10'}
+
+  '@sindresorhus/transliterate@2.2.0':
+    resolution: {integrity: sha512-aLtANYAx3qvFilasPhZke27+Cm7WawGGuGiOd2EAp0lg1NdWKfulslcql/Qi7lNQ9odkPjwRbwk9c4CYsTh+Rg==}
+    engines: {node: '>=20'}
 
   '@sinonjs/commons@3.0.1':
     resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
@@ -8919,6 +8928,7 @@ packages:
 
   intersection-observer@0.12.2:
     resolution: {integrity: sha512-7m1vEcPCxXYI8HqnL8CKI6siDyD+eIWSwgB3DZA+ZTogxk9I4CDnj4wilt9x/+/QbHI4YG5YZNmC6458/e9Ktg==}
+    deprecated: The Intersection Observer polyfill is no longer needed and can safely be removed. Intersection Observer has been Baseline since 2019.
 
   intl-messageformat@10.7.16:
     resolution: {integrity: sha512-UmdmHUmp5CIKKjSoE10la5yfU+AYJAaiYLsodbjL4lji83JNvgOQUjGaGhGrpFCb0Uh7sl7qfP1IyILa8Z40ug==}
@@ -17802,10 +17812,17 @@ snapshots:
       '@sindresorhus/transliterate': 0.1.2
       escape-string-regexp: 4.0.0
 
+  '@sindresorhus/slugify@3.0.0':
+    dependencies:
+      '@sindresorhus/transliterate': 2.2.0
+      escape-string-regexp: 5.0.0
+
   '@sindresorhus/transliterate@0.1.2':
     dependencies:
       escape-string-regexp: 2.0.0
       lodash.deburr: 4.1.0
+
+  '@sindresorhus/transliterate@2.2.0': {}
 
   '@sinonjs/commons@3.0.1':
     dependencies:

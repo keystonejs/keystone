@@ -27,7 +27,7 @@
     "@keystone-6/fields-document": "workspace:^",
     "@markdoc/markdoc": "^0.5.0",
     "@preconstruct/next": "^4.0.0",
-    "@sindresorhus/slugify": "^1.1.2",
+    "@sindresorhus/slugify": "^3.0.0",
     "@vercel/og": "^0.8.0",
     "classnames": "^2.3.1",
     "clipboard-copy": "^4.0.1",
