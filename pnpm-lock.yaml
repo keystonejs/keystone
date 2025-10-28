@@ -223,12 +223,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -239,8 +239,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.23
@@ -255,8 +255,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.5
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -276,8 +276,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       bytes:
         specifier: ^3.1.1
         version: 3.1.2
@@ -289,8 +289,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.5
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -304,12 +304,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -323,8 +323,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -336,8 +336,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -351,12 +351,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -370,12 +370,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -398,15 +398,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -420,8 +420,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -433,8 +433,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -448,15 +448,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       react:
         specifier: ^19.0.0
         version: 19.1.1
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -470,8 +470,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -483,8 +483,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -495,12 +495,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -514,12 +514,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -533,12 +533,12 @@ importers:
         specifier: ^2.2.1
         version: 2.2.2
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -552,8 +552,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -565,8 +565,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -580,12 +580,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -599,12 +599,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -618,8 +618,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -628,8 +628,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.10
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -640,15 +640,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next-auth:
         specifier: ^4.24.11
         version: 4.24.11(next@15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -659,8 +659,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
@@ -687,8 +687,8 @@ importers:
         specifier: ^1.4.16
         version: 1.8.0
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -702,15 +702,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@redis/client':
         specifier: ^1.3.0
         version: 1.6.1
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -721,12 +721,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -746,8 +746,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -759,8 +759,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -786,8 +786,8 @@ importers:
         specifier: ^9.1.1
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       react:
         specifier: ^19.0.0
         version: 19.1.1
@@ -796,8 +796,8 @@ importers:
         version: 5.9.2
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
 
   examples/document-field-customisation/nextjs-frontend:
     dependencies:
@@ -845,12 +845,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -861,12 +861,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -877,12 +877,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -893,8 +893,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.23
@@ -903,8 +903,8 @@ importers:
         version: 4.21.2
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -921,15 +921,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -940,12 +940,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -959,8 +959,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -969,8 +969,8 @@ importers:
         version: 1.3.0(graphql@16.11.0)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
 
   examples/extend-graphql-subscriptions:
     dependencies:
@@ -990,8 +990,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -1012,8 +1012,8 @@ importers:
         specifier: ^8.5.3
         version: 8.18.1
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1027,12 +1027,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1043,12 +1043,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1062,8 +1062,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       astro:
         specifier: ^4.12.3
         version: 4.16.19(@types/node@20.19.11)(rollup@4.50.0)(terser@5.43.1)(typescript@5.9.2)
@@ -1075,8 +1075,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.9(@types/react@19.1.12)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       react:
         specifier: ^19.0.0
         version: 19.1.1
@@ -1102,8 +1102,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -1130,8 +1130,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.9(@types/react@19.1.12)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1151,8 +1151,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -1179,8 +1179,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.9(@types/react@19.1.12)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1203,12 +1203,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1253,8 +1253,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@remix-run/node':
         specifier: ^1.18.0
         version: 1.19.3
@@ -1284,8 +1284,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.9(@types/react@19.1.12)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1302,8 +1302,8 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -1315,8 +1315,8 @@ importers:
         specifier: ^8.0.0
         version: 8.57.1
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1330,8 +1330,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       gql.tada:
         specifier: ^1.8.10
         version: 1.8.13(graphql@16.11.0)(typescript@5.9.2)
@@ -1340,8 +1340,8 @@ importers:
         version: 16.11.0
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1352,8 +1352,8 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -1371,8 +1371,8 @@ importers:
         specifier: ^8.0.0
         version: 8.57.1
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1383,12 +1383,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1399,12 +1399,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1418,15 +1418,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       pino-http:
         specifier: ^10.5.0
         version: 10.5.0
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1446,15 +1446,15 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(@opentelemetry/api@1.9.0)
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       '@opentelemetry/sdk-trace-base':
         specifier: ^2.0.1
         version: 2.0.1(@opentelemetry/api@1.9.0)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1468,12 +1468,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1484,12 +1484,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1503,12 +1503,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1519,12 +1519,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1535,12 +1535,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1554,12 +1554,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1579,8 +1579,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       next:
         specifier: ^15.5.2
         version: 15.5.2(@babel/core@7.28.3)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -1592,8 +1592,8 @@ importers:
         version: 19.1.1(react@19.1.1)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1607,15 +1607,15 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       '@types/node':
         specifier: ^20.14.10
         version: 20.19.11
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1629,12 +1629,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1648,12 +1648,12 @@ importers:
         specifier: ^9.1.1
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1670,12 +1670,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1686,12 +1686,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1705,12 +1705,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1721,12 +1721,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1740,12 +1740,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -1759,12 +1759,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1778,12 +1778,12 @@ importers:
         specifier: ^6.5.1
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -1883,14 +1883,17 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+      '@prisma/client-generator-registry':
+        specifier: ^6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       '@prisma/internals':
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       '@prisma/migrate':
-        specifier: 6.5.0
-        version: 6.5.0(@prisma/generator-helper@6.15.0)(@prisma/internals@6.5.0(typescript@5.9.2))
+        specifier: 6.16.1
+        version: 6.16.1(@prisma/internals@6.16.1(magicast@0.3.5)(typescript@5.9.2))(magicast@0.3.5)(typescript@5.9.2)
       '@react-aria/i18n':
         specifier: ^3.12.1
         version: 3.12.12(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -1982,8 +1985,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -2170,11 +2173,11 @@ importers:
   prisma-utils:
     devDependencies:
       '@prisma/generator-helper':
-        specifier: ^6.5.0
-        version: 6.15.0
+        specifier: ^6.16.1
+        version: 6.16.1
       '@prisma/internals':
-        specifier: ^6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: ^6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.0.0
         version: 4.20.5
@@ -2258,14 +2261,14 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@prisma/engines':
-        specifier: 6.5.0
-        version: 6.5.0
+        specifier: 6.16.1
+        version: 6.16.1
       '@prisma/internals':
-        specifier: ^6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: ^6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.23
@@ -2294,8 +2297,8 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       supertest:
         specifier: ^6.1.6
         version: 6.3.4
@@ -2343,14 +2346,14 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@prisma/internals':
-        specifier: ^6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: ^6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       '@prisma/migrate':
-        specifier: ^6.5.0
-        version: 6.5.0(@prisma/generator-helper@6.15.0)(@prisma/internals@6.5.0(typescript@5.9.2))
+        specifier: ^6.16.1
+        version: 6.16.1(@prisma/internals@6.16.1(magicast@0.3.5)(typescript@5.9.2))(magicast@0.3.5)(typescript@5.9.2)
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
@@ -2373,8 +2376,8 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
 
   tests/examples-smoke-tests:
     devDependencies:
@@ -2418,15 +2421,15 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       react:
         specifier: ^19.0.0
         version: 19.1.1
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -2437,12 +2440,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -2453,12 +2456,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -2469,12 +2472,12 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
     devDependencies:
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript:
         specifier: ^5.5.0
         version: 5.9.2
@@ -2485,17 +2488,17 @@ importers:
         specifier: workspace:^
         version: link:../packages/core
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@prisma/engines':
-        specifier: 6.5.0
-        version: 6.5.0
+        specifier: 6.16.1
+        version: 6.16.1
       '@prisma/internals':
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       prisma:
-        specifier: 6.5.0
-        version: 6.5.0(typescript@5.9.2)
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
 
 packages:
 
@@ -2516,6 +2519,10 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@antfu/ni@0.21.12':
+    resolution: {integrity: sha512-2aDL3WUv8hMJb2L3r/PIQWsTLyq7RQr3v9xD16fiz6O8ys1xEyLhhTOv8gxtZvJiTzjTF5pHoArvRdesGL1DMQ==}
+    hasBin: true
 
   '@apollo/cache-control-types@1.0.3':
     resolution: {integrity: sha512-F17/vCp7QVwom9eG7ToauIKdAxpSoadsJnqIfyryLFSkLSOEqu+eC5Z3N8OXcUVStuOMcNHlyraRsA6rRICu4g==}
@@ -3429,6 +3436,10 @@ packages:
     resolution: {integrity: sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/runtime@7.28.4':
+    resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/template@7.27.2':
     resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
     engines: {node: '>=6.9.0'}
@@ -3449,6 +3460,9 @@ packages:
 
   '@braintree/sanitize-url@7.0.4':
     resolution: {integrity: sha512-hPYRrKFoI+nuckPgDJfyYAkybFvheo4usS0Vw0HNAe+fmGBQA5Az37b/yStO284atBoqqdOUhKJ3d9Zw3PQkcQ==}
+
+  '@bugsnag/cuid@3.2.1':
+    resolution: {integrity: sha512-zpvN8xQ5rdRWakMd/BcVkdn2F8HKlDSbM3l7duueK590WmI1T0ObTLc1V/1e55r14WNjPd5AJTYX4yPEAFVi+Q==}
 
   '@changesets/apply-release-plan@7.0.12':
     resolution: {integrity: sha512-EaET7As5CeuhTzvXTQCRZeBUcisoYPDDcXvgTE/2jmmypKp0RC7LxKj/yzqeh/1qFTZI7oDGFcL1PHRuQuketQ==}
@@ -5133,8 +5147,23 @@ packages:
   '@preconstruct/next@4.0.0':
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
 
-  '@prisma/client@6.5.0':
-    resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
+  '@prisma/client-common@6.16.1':
+    resolution: {integrity: sha512-ubqzNZ99uuysJpHIYA50F5j8dpvcyzlEw2zFPdKcBn+qyEyd5UddgctE6TIhK6rFBnzxO060NhpIm8sJl/WUcw==}
+
+  '@prisma/client-engine-runtime@6.16.1':
+    resolution: {integrity: sha512-lWkzXq07MhsEBEJF1GYEmGcq4PouYPV8biQQsBSouAA0otZMgH0zLClsVvnEIsnLCB/Hkpyiou15ZkhfTJ4HWA==}
+
+  '@prisma/client-generator-js@6.16.1':
+    resolution: {integrity: sha512-yWIabnTjMpnmAUpSBplwfTI/vH7clT0nn1RvOp75Y46pcikvi/3srGjU6AvDzhh3CWFx5lyCQHAjK9r0MSXM1A==}
+
+  '@prisma/client-generator-registry@6.16.1':
+    resolution: {integrity: sha512-Ewl4PGBL7MaZ0en3i6M97uRiAmA3OaUGRUH3aE0mkVm6OJyEAtcgBfcBdg6mjLYhFNC6kLW9juToiE6oeWdjtA==}
+
+  '@prisma/client-generator-ts@6.16.1':
+    resolution: {integrity: sha512-VbPheDVpDnsL+IGQ/foTag0jbOaFLUQpFFuwRHanv/PJ8sp1rh9WJZ38ZYb73rwvY+j+7fO0sX+hH9NXLoUgOw==}
+
+  '@prisma/client@6.16.1':
+    resolution: {integrity: sha512-QaBCOY29lLAxEFFJgBPyW3WInCW52fJeQTmWx/h6YsP5u0bwuqP51aP0uhqFvhK9DaZPwvai/M4tSDYLVE9vRg==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -5145,58 +5174,60 @@ packages:
       typescript:
         optional: true
 
-  '@prisma/config@6.5.0':
-    resolution: {integrity: sha512-sOH/2Go9Zer67DNFLZk6pYOHj+rumSb0VILgltkoxOjYnlLqUpHPAN826vnx8HigqnOCxj9LRhT6U7uLiIIWgw==}
+  '@prisma/config@6.16.1':
+    resolution: {integrity: sha512-sz3uxRPNL62QrJ0EYiujCFkIGZ3hg+9hgC1Ae1HjoYuj0BxCqHua4JNijYvYCrh9LlofZDZcRBX3tHBfLvAngA==}
 
-  '@prisma/debug@6.15.0':
-    resolution: {integrity: sha512-y7cSeLuQmyt+A3hstAs6tsuAiVXSnw9T55ra77z0nbNkA8Lcq9rNcQg6PI00by/+WnE/aMRJ/W7sZWn2cgIy1g==}
+  '@prisma/debug@6.16.1':
+    resolution: {integrity: sha512-RWv/VisW5vJE4cDRTuAHeVedtGoItXTnhuLHsSlJ9202QKz60uiXWywBlVcqXVq8bFeIZoCoWH+R1duZJPwqLw==}
 
-  '@prisma/debug@6.5.0':
-    resolution: {integrity: sha512-fc/nusYBlJMzDmDepdUtH9aBsJrda2JNErP9AzuHbgUEQY0/9zQYZdNlXmKoIWENtio+qarPNe/+DQtrX5kMcQ==}
+  '@prisma/dmmf@6.16.1':
+    resolution: {integrity: sha512-SpsNh7DGpmwRM0bqrs63yitkoqmbBicvrKZGzNr2e3b8xiVZhCg/rEnjCgCVvIDII327d/lpoKmrx0N9/SIngQ==}
 
-  '@prisma/dmmf@6.15.0':
-    resolution: {integrity: sha512-HAUnWmxjtx8sJevhNhimSfAgho5JR6+H51DpQMZd1C5m1m4jOYkNIZ6oAdujls+Yo9iObfix4sUcvHmQY2HFQQ==}
+  '@prisma/driver-adapter-utils@6.16.1':
+    resolution: {integrity: sha512-NyAxvAoe5eICBVwnizswcIaa/WvlqKK3W12afLco6XCN5viqkDpo7DQEcArLCpEBADTWmfPfJUxKclqwZPDb9Q==}
 
-  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60':
-    resolution: {integrity: sha512-iK3EmiVGFDCmXjSpdsKGNqy9hOdLnvYBrJB61far/oP03hlIxrb04OWmDjNTwtmZ3UZdA5MCvI+f+3k2jPTflQ==}
+  '@prisma/engines-version@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43':
+    resolution: {integrity: sha512-ThvlDaKIVrnrv97ujNFDYiQbeMQpLa0O86HFA2mNoip4mtFqM7U5GSz2ie1i2xByZtvPztJlNRgPsXGeM/kqAA==}
 
-  '@prisma/engines@6.5.0':
-    resolution: {integrity: sha512-FVPQYHgOllJklN9DUyujXvh3hFJCY0NX86sDmBErLvoZjy2OXGiZ5FNf3J/C4/RZZmCypZBYpBKEhx7b7rEsdw==}
+  '@prisma/engines@6.16.1':
+    resolution: {integrity: sha512-EOnEM5HlosPudBqbI+jipmaW/vQEaF0bKBo4gVkGabasINHR6RpC6h44fKZEqx4GD8CvH+einD2+b49DQrwrAg==}
 
-  '@prisma/fetch-engine@6.5.0':
-    resolution: {integrity: sha512-3LhYA+FXP6pqY8FLHCjewyE8pGXXJ7BxZw2rhPq+CZAhvflVzq4K8Qly3OrmOkn6wGlz79nyLQdknyCG2HBTuA==}
+  '@prisma/fetch-engine@6.16.1':
+    resolution: {integrity: sha512-fl/PKQ8da5YTayw86WD3O9OmKJEM43gD3vANy2hS5S1CnfW2oPXk+Q03+gUWqcKK306QqhjjIHRFuTZ31WaosQ==}
 
-  '@prisma/generator-helper@6.15.0':
-    resolution: {integrity: sha512-QHwXmVo52tcbbqT72He+3iEjNFQmf26Pxt/FrA9rvM/AmpTeSVdwFWf7tJVk1p0CH/mL8hmgHMzzt6wjy3Aa3A==}
+  '@prisma/generator-helper@6.16.1':
+    resolution: {integrity: sha512-IaYP0SVAVCYiUUEsy3WdB7FVAJqPLrbgFfQVKrUgeeQZpp3obCBCHBaE80h4IPoSlohZ8oqFdOrxeC5FK/XEbQ==}
 
-  '@prisma/generator-helper@6.5.0':
-    resolution: {integrity: sha512-71ELYxnSE4soeV0BlWJEMgO4KkCowuzHsPY3o7quFOtlcmds5ZX190VZK/k9HMJWdPQ893HooBv3BkKvieR7vA==}
+  '@prisma/generator@6.16.1':
+    resolution: {integrity: sha512-vyxuB1H1uyarkqhQsQm+zj2J5cV2wssLtvzRz92mYrJZRNiSRwjFbVntlXyZzxOui+/cXjmbVaaYoWe7ILucWw==}
 
-  '@prisma/generator@6.15.0':
-    resolution: {integrity: sha512-STY+e1wHAwl6rvnsmGG6/6ckVG9oRsYVP7W80N9dHSRxx2Wq1A9TxQBWRE8pep2Rq9hSoXNxJV0xcYwzC9K7Vg==}
+  '@prisma/get-platform@6.16.1':
+    resolution: {integrity: sha512-kUfg4vagBG7dnaGRcGd1c0ytQFcDj2SUABiuveIpL3bthFdTLI6PJeLEia6Q8Dgh+WhPdo0N2q0Fzjk63XTyaA==}
 
-  '@prisma/get-platform@6.5.0':
-    resolution: {integrity: sha512-xYcvyJwNMg2eDptBYFqFLUCfgi+wZLcj6HDMsj0Qw0irvauG4IKmkbywnqwok0B+k+W+p+jThM2DKTSmoPCkzw==}
-
-  '@prisma/internals@6.5.0':
-    resolution: {integrity: sha512-4hI114ho/BVvxSIZ7lQB3TPxGrSnt5+aYhKMzQU5+l659Qcjjiz56hZ/rXph3xIlgJUWVQyzwAS9/ZAMgXUySw==}
+  '@prisma/internals@6.16.1':
+    resolution: {integrity: sha512-K3m9yyqO/ndBmhV0F4UbJtsypZNlTXLaMutPeJZDDrZXsMNjToqqipI6pLJpmITcRqkXlPs5wm2iNPC/IUaavw==}
     peerDependencies:
       typescript: '>=5.1.0'
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  '@prisma/migrate@6.5.0':
-    resolution: {integrity: sha512-FXaKd5g+i2GK4cFFDIm3u+U5tiynPRQqP1G68BzVFkXfjM1O2l1H+fBC3Pntg2hXsTw7zsWZwb5+q2kefftGDg==}
+  '@prisma/migrate@6.16.1':
+    resolution: {integrity: sha512-LkyExWzkc2N5e5E2w7vjU1h3jwgYjGId55K/5hPepQ6wrC8dY70rHeF+4p1osYoQiOiTjaH9yQChnTJw/ApcxA==}
     peerDependencies:
-      '@prisma/generator-helper': '*'
       '@prisma/internals': '*'
 
-  '@prisma/prisma-schema-wasm@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60':
-    resolution: {integrity: sha512-8zmXO5Luw5sCOgTw9nyN4/x7MgmIUUt/9zQZPPStiMUhZsXH72oqFwYJlibdS77gDuH2+DXgSRv6aPleDdTMsQ==}
+  '@prisma/prisma-schema-wasm@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43':
+    resolution: {integrity: sha512-DvYi0zKqzPd49Z5japS3FawyMylscaoUmlXNhnRAXb8HZryG4Q7TM1FLX8OIAfCgLmoWS1c/Zf4UZznBXkvWSg==}
 
-  '@prisma/schema-files-loader@6.5.0':
-    resolution: {integrity: sha512-BE+YPIcqXx+9MkPsA/mACz3rGhKUfh5rsoGe1Male/0c9my9CaHKzJFxNAV4f70d6GTMMITQgFpwfrudGFOwpw==}
+  '@prisma/schema-engine-wasm@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43':
+    resolution: {integrity: sha512-HDgFE0um5OHkk2pkQbAgARR284i2VpoM+7GYRAT0zxoTagsdaZ6yquJF2LEZuAKfibib0Ct7JZxRCB8eN/Ru6g==}
+
+  '@prisma/schema-files-loader@6.16.1':
+    resolution: {integrity: sha512-zuiwXIrL8Gpa75Q0hn5nfumMphwZ6GOr7/Rw5ZXYNmwHs2zK7AJ7eQ0r4JEHC8dZJDJAbe+e1MfaRzIRJBU5dg==}
+
+  '@prisma/ts-builders@6.16.1':
+    resolution: {integrity: sha512-t3psDR7huSZk1tgmfKw687g7h7s5S7S6dm4avgEsjICNs92CJBx4bQQ/sfc3P7p0ccOOf2MVT0B0Ox5lQRHoSA==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -6239,6 +6270,9 @@ packages:
     resolution: {integrity: sha512-mYqtQXPmrwvUljaHyGxYUIIRI3qjBTEb/f5QFi3A6VlxhpmZd5mWXn9W+qUkf2pVE1Hv3SqxefiZOPGdxmO64A==}
     engines: {node: '>=18.0.0'}
 
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
@@ -7223,6 +7257,14 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
+  c12@3.1.0:
+    resolution: {integrity: sha512-uWoS8OU1MEIsOv8p/5a82c3H31LsWVR5qiyXVfBNOzfffjUWtPnhAb4BYI2uG2HfGmZmFjCtui5XNWaps+iFuw==}
+    peerDependencies:
+      magicast: ^0.3.5
+    peerDependenciesMeta:
+      magicast:
+        optional: true
+
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
@@ -7355,6 +7397,10 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
+  chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
+    engines: {node: '>= 14.16.0'}
+
   chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
 
@@ -7369,9 +7415,16 @@ packages:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
     engines: {node: '>=8'}
 
+  ci-info@4.2.0:
+    resolution: {integrity: sha512-cYY9mypksY8NRqgDB1XD1RiJL338v/551niynFTGkZOO2LHuB2OmOYxDIe/ttN9AHwrqdum1360G3ald0W9kCg==}
+    engines: {node: '>=8'}
+
   ci-info@4.3.0:
     resolution: {integrity: sha512-l+2bNRMiQgcfILUi33labAZYIWlH1kWDp+ecNo5iisRKrbm0xcRyCww71/YU0Fkw0mAFpz9bJayXPjey6vkmaQ==}
     engines: {node: '>=8'}
+
+  citty@0.1.6:
+    resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
   cjs-module-lexer@1.4.3:
     resolution: {integrity: sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==}
@@ -7529,6 +7582,10 @@ packages:
 
   config-chain@1.1.13:
     resolution: {integrity: sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==}
+
+  consola@3.4.2:
+    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
+    engines: {node: ^14.18.0 || >=16.10.0}
 
   constant-case@3.0.4:
     resolution: {integrity: sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==}
@@ -7728,6 +7785,9 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
+  decimal.js@10.5.0:
+    resolution: {integrity: sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==}
+
   decimal.js@10.6.0:
     resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
 
@@ -7764,6 +7824,10 @@ packages:
   deep-object-diff@1.1.9:
     resolution: {integrity: sha512-Rn+RuwkmkDwCi2/oXOFS9Gsr5lJZu/yTGpK7wAaAIE75CC+LCGEZHpY6VQJa/RoJcrmaA/docWJZvYohlNkWPA==}
 
+  deepmerge-ts@7.1.5:
+    resolution: {integrity: sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==}
+    engines: {node: '>=16.0.0'}
+
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
@@ -7791,6 +7855,9 @@ packages:
     resolution: {integrity: sha512-jwK2UV4cnPpbcG7+VRARKTZPUWowwXA8bzH5NP6ud0oeAxyYPuGZUAC7hMugpCdz4BeSZl2Dl9k66CHJ/46ZYQ==}
     engines: {node: '>=0.10.0'}
 
+  defu@6.1.4:
+    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+
   degenerator@5.0.1:
     resolution: {integrity: sha512-TllpMR/t0M5sqCXfj85i4XaAzxmS5tVA16dqvdkMwGmzI+dXLXnw3J+3Vdv7VKw+ThlTMboK6i9rnZ6Nntj5CQ==}
     engines: {node: '>= 14'}
@@ -7810,6 +7877,9 @@ packages:
   dequal@2.0.3:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
+
+  destr@2.0.5:
+    resolution: {integrity: sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA==}
 
   destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -7917,6 +7987,9 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
+  effect@3.16.12:
+    resolution: {integrity: sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==}
+
   electron-to-chromium@1.5.211:
     resolution: {integrity: sha512-IGBvimJkotaLzFnwIVgW9/UD/AOJ2tByUmeOrtqBfACSbAw5b1G0XpvdaieKyc7ULmbwXVx+4e4Be8pOPBrYkw==}
 
@@ -7943,6 +8016,10 @@ packages:
   emojis-list@3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
+
+  empathic@2.0.0:
+    resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
+    engines: {node: '>=14'}
 
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
@@ -7999,11 +8076,6 @@ packages:
     engines: {node: '>=14.0.0'}
     peerDependencies:
       esbuild: '>=0.14.0 <=0.25.x'
-
-  esbuild-register@3.6.0:
-    resolution: {integrity: sha512-H2/S7Pm8a9CL1uhp9OvjwrBh5Pvx0H8qVOxNu8Wed9Y7qv56MPtq+GGM8RJpq6glYJn9Wspr8uw7l55uyinNeg==}
-    peerDependencies:
-      esbuild: '>=0.12 <1'
 
   esbuild@0.17.6:
     resolution: {integrity: sha512-TKFRp9TxrJDdRWfSsSERKEovm6v30iHnrjlcGhLBOtReE28Yp1VSBRfO3GTaOFMoxsNerx4TjrhzSuma9ha83Q==}
@@ -8238,6 +8310,10 @@ packages:
 
   facepaint@1.2.1:
     resolution: {integrity: sha512-oNvBekbhsm/0PNSOWca5raHNAi6dG960Bx6LJgxDPNF59WpuspgQ17bN5MKwOr7JcFdQYc7StW3VZ28DBZLavQ==}
+
+  fast-check@3.23.2:
+    resolution: {integrity: sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==}
+    engines: {node: '>=8.0.0'}
 
   fast-decode-uri-component@1.0.1:
     resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
@@ -8521,6 +8597,9 @@ packages:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
 
+  get-tsconfig@4.10.0:
+    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
+
   get-tsconfig@4.10.1:
     resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
 
@@ -8531,6 +8610,10 @@ packages:
   get-value@2.0.6:
     resolution: {integrity: sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==}
     engines: {node: '>=0.10.0'}
+
+  giget@2.0.0:
+    resolution: {integrity: sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==}
+    hasBin: true
 
   git-hooks-list@1.0.3:
     resolution: {integrity: sha512-Y7wLWcrLUXwk2noSka166byGCvhMtDRpgHdzCno1UQv/n/Hegp++a2xBWJL1lJarnKD3SWaljD+0z1ztqxuKyQ==}
@@ -9539,6 +9622,10 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
+  klona@2.0.6:
+    resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
+    engines: {node: '>= 8'}
+
   ky@1.9.1:
     resolution: {integrity: sha512-WGzpBn57klhxsqRTEABAqF4tqTtqCuxoTIv9m6nIZtMMFTVcrHp7bRDWblzFIfqkb47+OhTztOgHn6A4xItmqg==}
     engines: {node: '>=18'}
@@ -10370,6 +10457,9 @@ packages:
     engines: {node: '>=10.5.0'}
     deprecated: Use your platform's native DOMException instead
 
+  node-fetch-native@1.6.7:
+    resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
+
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -10433,6 +10523,11 @@ packages:
   nwsapi@2.2.21:
     resolution: {integrity: sha512-o6nIY3qwiSXl7/LuOU0Dmuctd34Yay0yeuZRLFmDPrrdHpXKFndPj3hM+YEPVHYC5fx2otBx4Ilc/gyYSAUaIA==}
 
+  nypm@0.6.1:
+    resolution: {integrity: sha512-hlacBiRiv1k9hZFiphPUkfSQ/ZfQzZDzC+8z0wL3lvDAOUu/2NnChkKuMoMjNur/9OpKuz2QsIeiPVN0xM5Q0w==}
+    engines: {node: ^14.16.0 || >=16.10.0}
+    hasBin: true
+
   oauth@0.10.2:
     resolution: {integrity: sha512-JtFnB+8nxDEXgNyniwz573xxbKSOu3R8D40xQKqcjwJ2CDkYqUDI53o6IuzDJBx60Z8VKCm271+t8iFjakrl8Q==}
 
@@ -10469,6 +10564,9 @@ packages:
   object.pick@1.3.0:
     resolution: {integrity: sha512-tqa/UMy/CCoYmj+H5qc07qvSL9dqcs/WZENZ1JbtWBlATP+iVOe778gE6MSijnyCnORzDuX6hU+LA4SZ09YjFQ==}
     engines: {node: '>=0.10.0'}
+
+  ohash@2.0.11:
+    resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
   oidc-token-hash@5.1.1:
     resolution: {integrity: sha512-D7EmwxJV6DsEB6vOFLrBM2OzsVgQzgPWyHlV2OOAVj772n+WTXpudC9e9u5BVKQnYwaD30Ivhi9b+4UeBcGu9g==}
@@ -10606,6 +10704,10 @@ packages:
   package-manager-detector@0.2.11:
     resolution: {integrity: sha512-BEnLolu+yuz22S56CU1SUKq3XC3PkwD5wv4ikR4MfGvnRVcmzXR9DwSlW2fEamyTPyXHomBJRzgapeuBvRNzJQ==}
 
+  package-up@5.0.0:
+    resolution: {integrity: sha512-MQEgDUvXCa3sGvqHg3pzHO8e9gqTCMPVrWUko3vPQGntwegmFo52mZb2abIVTjFnUcW0BcPz0D93jV5Cas1DWA==}
+    engines: {node: '>=18'}
+
   pako@0.2.9:
     resolution: {integrity: sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==}
 
@@ -10737,6 +10839,9 @@ packages:
 
   peek-stream@1.1.3:
     resolution: {integrity: sha512-FhJ+YbOSBb9/rIl2ZeE/QHEsWn7PqNYt8ARAY3kIgNGOk13g9FGyIY6JIl/xB/3TFRVoTv5as0l11weORrTekA==}
+
+  perfect-debounce@1.0.0:
+    resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
 
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
@@ -10922,8 +11027,8 @@ packages:
     peerDependencies:
       react: '>=16.0.0'
 
-  prisma@6.5.0:
-    resolution: {integrity: sha512-yUGXmWqv5F4PByMSNbYFxke/WbnyTLjnJ5bKr8fLkcnY7U5rU9rUTh/+Fja+gOrRxEgtCbCtca94IeITj4j/pg==}
+  prisma@6.16.1:
+    resolution: {integrity: sha512-MFkMU0eaDDKAT4R/By2IA9oQmwLTxokqv2wegAErr9Rf+oIe7W2sYpE/Uxq0H2DliIR7vnV63PkC1bEwUtl98w==}
     engines: {node: '>=18.18'}
     hasBin: true
     peerDependencies:
@@ -11085,6 +11190,9 @@ packages:
     resolution: {integrity: sha512-RmkhL8CAyCRPXCE28MMH0z2PNWQBNk2Q09ZdxM9IOOXwxwZbN+qbWaatPkdkWIKL2ZVDImrN/pK5HTRz2PcS4g==}
     engines: {node: '>= 0.8'}
 
+  rc9@2.1.2:
+    resolution: {integrity: sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==}
+
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
@@ -11163,6 +11271,10 @@ packages:
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
+
+  readdirp@4.1.2:
+    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
+    engines: {node: '>= 14.18.0'}
 
   real-require@0.2.0:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
@@ -12006,6 +12118,9 @@ packages:
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
 
+  tinyexec@1.0.1:
+    resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
+
   tinyglobby@0.2.14:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
     engines: {node: '>=12.0.0'}
@@ -12104,6 +12219,9 @@ packages:
   ts-log@2.2.7:
     resolution: {integrity: sha512-320x5Ggei84AxzlXp91QkIGSw5wgaLT6GeAH0KsqDmRZdVWW2OiSeVvElVoatk3f7nicwXlElXsoFkARiGE2yg==}
 
+  ts-pattern@5.6.2:
+    resolution: {integrity: sha512-d4IxJUXROL5NCa3amvMg6VQW2HVtZYmUTPfvVtO7zJWGYLJ+mry9v2OmYm+z67aniQoQ8/yFNadiEwtNS9qQiw==}
+
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
@@ -12197,6 +12315,10 @@ packages:
 
   uid2@0.0.4:
     resolution: {integrity: sha512-IevTus0SbGwQzYh3+fRsAMTVVPOoIVufzacXcHPmdlle1jUpq7BRL+mw3dgeLanvGZdwwbWhRV6XrcFNdBmjWA==}
+
+  ulid@3.0.0:
+    resolution: {integrity: sha512-yvZYdXInnJve6LdlPIuYmURdS2NP41ZoF4QW7SXwbUKYt53+0eDAySO+rGSvM2O/ciuB/G+8N7GQrZ1mCJpuqw==}
+    hasBin: true
 
   unc-path-regex@0.1.2:
     resolution: {integrity: sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==}
@@ -12852,6 +12974,8 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.30
+
+  '@antfu/ni@0.21.12': {}
 
   '@apollo/cache-control-types@1.0.3(graphql@16.11.0)':
     dependencies:
@@ -14358,6 +14482,8 @@ snapshots:
 
   '@babel/runtime@7.28.3': {}
 
+  '@babel/runtime@7.28.4': {}
+
   '@babel/template@7.27.2':
     dependencies:
       '@babel/code-frame': 7.27.1
@@ -14386,6 +14512,8 @@ snapshots:
   '@braintree/sanitize-url@6.0.4': {}
 
   '@braintree/sanitize-url@7.0.4': {}
+
+  '@bugsnag/cuid@3.2.1': {}
 
   '@changesets/apply-release-plan@7.0.12':
     dependencies:
@@ -16468,90 +16596,186 @@ snapshots:
 
   '@preconstruct/next@4.0.0': {}
 
-  '@prisma/client@6.5.0(prisma@6.5.0(typescript@5.9.2))(typescript@5.9.2)':
+  '@prisma/client-common@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
+    dependencies:
+      '@prisma/client-engine-runtime': 6.16.1
+      '@prisma/dmmf': 6.16.1
+      '@prisma/driver-adapter-utils': 6.16.1
+      '@prisma/generator': 6.16.1
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+    transitivePeerDependencies:
+      - magicast
+      - typescript
+
+  '@prisma/client-engine-runtime@6.16.1':
+    dependencies:
+      '@bugsnag/cuid': 3.2.1
+      '@opentelemetry/api': 1.9.0
+      '@paralleldrive/cuid2': 2.2.2
+      '@prisma/debug': 6.16.1
+      '@prisma/driver-adapter-utils': 6.16.1
+      decimal.js: 10.5.0
+      nanoid: 5.1.5
+      ulid: 3.0.0
+      uuid: 11.1.0
+
+  '@prisma/client-generator-js@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
+    dependencies:
+      '@antfu/ni': 0.21.12
+      '@prisma/client-common': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/debug': 6.16.1
+      '@prisma/dmmf': 6.16.1
+      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/fetch-engine': 6.16.1
+      '@prisma/generator': 6.16.1
+      '@prisma/get-platform': 6.16.1
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/ts-builders': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      ci-info: 4.2.0
+      env-paths: 2.2.1
+      indent-string: 4.0.0
+      klona: 2.0.6
+      package-up: 5.0.0
+      pluralize: 8.0.0
+      ts-pattern: 5.6.2
+    transitivePeerDependencies:
+      - magicast
+      - typescript
+
+  '@prisma/client-generator-registry@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
+    dependencies:
+      '@prisma/client-generator-js': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/client-generator-ts': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/generator': 6.16.1
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+    transitivePeerDependencies:
+      - magicast
+      - typescript
+
+  '@prisma/client-generator-ts@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
+    dependencies:
+      '@antfu/ni': 0.21.12
+      '@prisma/client-common': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/debug': 6.16.1
+      '@prisma/dmmf': 6.16.1
+      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/fetch-engine': 6.16.1
+      '@prisma/generator': 6.16.1
+      '@prisma/get-platform': 6.16.1
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/ts-builders': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      ci-info: 4.2.0
+      fast-glob: 3.3.3
+      get-tsconfig: 4.10.0
+      indent-string: 4.0.0
+      klona: 2.0.6
+      package-up: 5.0.0
+      pluralize: 8.0.0
+      ts-pattern: 5.6.2
+    transitivePeerDependencies:
+      - magicast
+      - typescript
+
+  '@prisma/client@6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
-      prisma: 6.5.0(typescript@5.9.2)
+      prisma: 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       typescript: 5.9.2
 
-  '@prisma/config@6.5.0':
+  '@prisma/config@6.16.1(magicast@0.3.5)':
     dependencies:
-      esbuild: 0.25.9
-      esbuild-register: 3.6.0(esbuild@0.25.9)
+      c12: 3.1.0(magicast@0.3.5)
+      deepmerge-ts: 7.1.5
+      effect: 3.16.12
+      empathic: 2.0.0
     transitivePeerDependencies:
-      - supports-color
+      - magicast
 
-  '@prisma/debug@6.15.0': {}
+  '@prisma/debug@6.16.1': {}
 
-  '@prisma/debug@6.5.0': {}
+  '@prisma/dmmf@6.16.1': {}
 
-  '@prisma/dmmf@6.15.0': {}
-
-  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60': {}
-
-  '@prisma/engines@6.5.0':
+  '@prisma/driver-adapter-utils@6.16.1':
     dependencies:
-      '@prisma/debug': 6.5.0
-      '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
-      '@prisma/fetch-engine': 6.5.0
-      '@prisma/get-platform': 6.5.0
+      '@prisma/debug': 6.16.1
 
-  '@prisma/fetch-engine@6.5.0':
+  '@prisma/engines-version@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43': {}
+
+  '@prisma/engines@6.16.1':
     dependencies:
-      '@prisma/debug': 6.5.0
-      '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
-      '@prisma/get-platform': 6.5.0
+      '@prisma/debug': 6.16.1
+      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/fetch-engine': 6.16.1
+      '@prisma/get-platform': 6.16.1
 
-  '@prisma/generator-helper@6.15.0':
+  '@prisma/fetch-engine@6.16.1':
     dependencies:
-      '@prisma/debug': 6.15.0
-      '@prisma/dmmf': 6.15.0
-      '@prisma/generator': 6.15.0
+      '@prisma/debug': 6.16.1
+      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/get-platform': 6.16.1
 
-  '@prisma/generator-helper@6.5.0':
+  '@prisma/generator-helper@6.16.1':
     dependencies:
-      '@prisma/debug': 6.5.0
+      '@prisma/debug': 6.16.1
+      '@prisma/dmmf': 6.16.1
+      '@prisma/generator': 6.16.1
 
-  '@prisma/generator@6.15.0': {}
+  '@prisma/generator@6.16.1': {}
 
-  '@prisma/get-platform@6.5.0':
+  '@prisma/get-platform@6.16.1':
     dependencies:
-      '@prisma/debug': 6.5.0
+      '@prisma/debug': 6.16.1
 
-  '@prisma/internals@6.5.0(typescript@5.9.2)':
+  '@prisma/internals@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
     dependencies:
-      '@prisma/config': 6.5.0
-      '@prisma/debug': 6.5.0
-      '@prisma/engines': 6.5.0
-      '@prisma/fetch-engine': 6.5.0
-      '@prisma/generator-helper': 6.5.0
-      '@prisma/get-platform': 6.5.0
-      '@prisma/prisma-schema-wasm': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
-      '@prisma/schema-files-loader': 6.5.0
+      '@prisma/config': 6.16.1(magicast@0.3.5)
+      '@prisma/debug': 6.16.1
+      '@prisma/dmmf': 6.16.1
+      '@prisma/driver-adapter-utils': 6.16.1
+      '@prisma/engines': 6.16.1
+      '@prisma/fetch-engine': 6.16.1
+      '@prisma/generator': 6.16.1
+      '@prisma/generator-helper': 6.16.1
+      '@prisma/get-platform': 6.16.1
+      '@prisma/prisma-schema-wasm': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/schema-engine-wasm': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/schema-files-loader': 6.16.1
       arg: 5.0.2
       prompts: 2.4.2
     optionalDependencies:
       typescript: 5.9.2
     transitivePeerDependencies:
-      - supports-color
+      - magicast
 
-  '@prisma/migrate@6.5.0(@prisma/generator-helper@6.15.0)(@prisma/internals@6.5.0(typescript@5.9.2))':
+  '@prisma/migrate@6.16.1(@prisma/internals@6.16.1(magicast@0.3.5)(typescript@5.9.2))(magicast@0.3.5)(typescript@5.9.2)':
     dependencies:
-      '@prisma/config': 6.5.0
-      '@prisma/debug': 6.5.0
-      '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
-      '@prisma/generator-helper': 6.15.0
-      '@prisma/get-platform': 6.5.0
-      '@prisma/internals': 6.5.0(typescript@5.9.2)
+      '@prisma/client-generator-registry': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+      '@prisma/config': 6.16.1(magicast@0.3.5)
+      '@prisma/debug': 6.16.1
+      '@prisma/driver-adapter-utils': 6.16.1
+      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
+      '@prisma/generator': 6.16.1
+      '@prisma/get-platform': 6.16.1
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
       prompts: 2.4.2
     transitivePeerDependencies:
-      - supports-color
+      - magicast
+      - typescript
 
-  '@prisma/prisma-schema-wasm@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60': {}
+  '@prisma/prisma-schema-wasm@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43': {}
 
-  '@prisma/schema-files-loader@6.5.0':
+  '@prisma/schema-engine-wasm@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43': {}
+
+  '@prisma/schema-files-loader@6.16.1':
     dependencies:
-      '@prisma/prisma-schema-wasm': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
+      '@prisma/prisma-schema-wasm': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
       fs-extra: 11.3.0
+
+  '@prisma/ts-builders@6.16.1(magicast@0.3.5)(typescript@5.9.2)':
+    dependencies:
+      '@prisma/internals': 6.16.1(magicast@0.3.5)(typescript@5.9.2)
+    transitivePeerDependencies:
+      - magicast
+      - typescript
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -18181,6 +18405,8 @@ snapshots:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
 
+  '@standard-schema/spec@1.0.0': {}
+
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.1
@@ -18196,7 +18422,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.27.1
-      '@babel/runtime': 7.28.3
+      '@babel/runtime': 7.28.4
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -19497,6 +19723,23 @@ snapshots:
 
   bytes@3.1.2: {}
 
+  c12@3.1.0(magicast@0.3.5):
+    dependencies:
+      chokidar: 4.0.3
+      confbox: 0.2.2
+      defu: 6.1.4
+      dotenv: 16.6.1
+      exsolve: 1.0.7
+      giget: 2.0.0
+      jiti: 2.5.1
+      ohash: 2.0.11
+      pathe: 2.0.3
+      perfect-debounce: 1.0.0
+      pkg-types: 2.3.0
+      rc9: 2.1.2
+    optionalDependencies:
+      magicast: 0.3.5
+
   cac@6.7.14: {}
 
   cacache@15.3.0:
@@ -19677,6 +19920,10 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  chokidar@4.0.3:
+    dependencies:
+      readdirp: 4.1.2
+
   chownr@1.1.4: {}
 
   chownr@2.0.0: {}
@@ -19685,7 +19932,13 @@ snapshots:
 
   ci-info@3.9.0: {}
 
+  ci-info@4.2.0: {}
+
   ci-info@4.3.0: {}
+
+  citty@0.1.6:
+    dependencies:
+      consola: 3.4.2
 
   cjs-module-lexer@1.4.3: {}
 
@@ -19846,6 +20099,8 @@ snapshots:
     dependencies:
       ini: 1.3.8
       proto-list: 1.2.4
+
+  consola@3.4.2: {}
 
   constant-case@3.0.4:
     dependencies:
@@ -20031,6 +20286,8 @@ snapshots:
 
   decamelize@1.2.0: {}
 
+  decimal.js@10.5.0: {}
+
   decimal.js@10.6.0: {}
 
   decode-named-character-reference@1.2.0:
@@ -20054,6 +20311,8 @@ snapshots:
   deep-is@0.1.4: {}
 
   deep-object-diff@1.1.9: {}
+
+  deepmerge-ts@7.1.5: {}
 
   deepmerge@4.3.1: {}
 
@@ -20082,6 +20341,8 @@ snapshots:
       is-descriptor: 1.0.3
       isobject: 3.0.1
 
+  defu@6.1.4: {}
+
   degenerator@5.0.1:
     dependencies:
       ast-types: 0.13.4
@@ -20095,6 +20356,8 @@ snapshots:
   dependency-graph@0.11.0: {}
 
   dequal@2.0.3: {}
+
+  destr@2.0.5: {}
 
   destroy@1.2.0: {}
 
@@ -20186,6 +20449,11 @@ snapshots:
 
   ee-first@1.1.1: {}
 
+  effect@3.16.12:
+    dependencies:
+      '@standard-schema/spec': 1.0.0
+      fast-check: 3.23.2
+
   electron-to-chromium@1.5.211: {}
 
   emery@1.4.4: {}
@@ -20201,6 +20469,8 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emojis-list@3.0.0: {}
+
+  empathic@2.0.0: {}
 
   encodeurl@1.0.2: {}
 
@@ -20255,13 +20525,6 @@ snapshots:
       esbuild: 0.17.6
       local-pkg: 1.1.2
       resolve.exports: 2.0.3
-
-  esbuild-register@3.6.0(esbuild@0.25.9):
-    dependencies:
-      debug: 4.4.1
-      esbuild: 0.25.9
-    transitivePeerDependencies:
-      - supports-color
 
   esbuild@0.17.6:
     optionalDependencies:
@@ -20665,6 +20928,10 @@ snapshots:
 
   facepaint@1.2.1: {}
 
+  fast-check@3.23.2:
+    dependencies:
+      pure-rand: 6.1.0
+
   fast-decode-uri-component@1.0.1: {}
 
   fast-deep-equal@2.0.1: {}
@@ -20976,6 +21243,10 @@ snapshots:
 
   get-stream@6.0.1: {}
 
+  get-tsconfig@4.10.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   get-tsconfig@4.10.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -20989,6 +21260,15 @@ snapshots:
       - supports-color
 
   get-value@2.0.6: {}
+
+  giget@2.0.0:
+    dependencies:
+      citty: 0.1.6
+      consola: 3.4.2
+      defu: 6.1.4
+      node-fetch-native: 1.6.7
+      nypm: 0.6.1
+      pathe: 2.0.3
 
   git-hooks-list@1.0.3: {}
 
@@ -22304,6 +22584,8 @@ snapshots:
 
   kleur@4.1.5: {}
 
+  klona@2.0.6: {}
+
   ky@1.9.1: {}
 
   lazy-require.macro@0.1.0:
@@ -23606,6 +23888,8 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
+  node-fetch-native@1.6.7: {}
+
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
@@ -23667,6 +23951,14 @@ snapshots:
 
   nwsapi@2.2.21: {}
 
+  nypm@0.6.1:
+    dependencies:
+      citty: 0.1.6
+      consola: 3.4.2
+      pathe: 2.0.3
+      pkg-types: 2.3.0
+      tinyexec: 1.0.1
+
   oauth@0.10.2: {}
 
   oauth@0.9.15: {}
@@ -23694,6 +23986,8 @@ snapshots:
   object.pick@1.3.0:
     dependencies:
       isobject: 3.0.1
+
+  ohash@2.0.11: {}
 
   oidc-token-hash@5.1.1: {}
 
@@ -23868,6 +24162,10 @@ snapshots:
     dependencies:
       quansync: 0.2.11
 
+  package-up@5.0.0:
+    dependencies:
+      find-up-simple: 1.0.1
+
   pako@0.2.9: {}
 
   param-case@3.0.4:
@@ -24013,6 +24311,8 @@ snapshots:
       buffer-from: 1.1.2
       duplexify: 3.7.1
       through2: 2.0.5
+
+  perfect-debounce@1.0.0: {}
 
   periscopic@3.1.0:
     dependencies:
@@ -24199,15 +24499,14 @@ snapshots:
       clsx: 2.1.1
       react: 19.1.1
 
-  prisma@6.5.0(typescript@5.9.2):
+  prisma@6.16.1(magicast@0.3.5)(typescript@5.9.2):
     dependencies:
-      '@prisma/config': 6.5.0
-      '@prisma/engines': 6.5.0
+      '@prisma/config': 6.16.1(magicast@0.3.5)
+      '@prisma/engines': 6.16.1
     optionalDependencies:
-      fsevents: 2.3.3
       typescript: 5.9.2
     transitivePeerDependencies:
-      - supports-color
+      - magicast
 
   prismjs@1.30.0: {}
 
@@ -24376,6 +24675,11 @@ snapshots:
       iconv-lite: 0.6.3
       unpipe: 1.0.0
 
+  rc9@2.1.2:
+    dependencies:
+      defu: 6.1.4
+      destr: 2.0.5
+
   rc@1.2.8:
     dependencies:
       deep-extend: 0.6.0
@@ -24473,6 +24777,8 @@ snapshots:
   readdirp@3.6.0:
     dependencies:
       picomatch: 2.3.1
+
+  readdirp@4.1.2: {}
 
   real-require@0.2.0: {}
 
@@ -25530,6 +25836,8 @@ snapshots:
 
   tinyexec@0.3.2: {}
 
+  tinyexec@1.0.1: {}
+
   tinyglobby@0.2.14:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
@@ -25614,6 +25922,8 @@ snapshots:
 
   ts-log@2.2.7: {}
 
+  ts-pattern@5.6.2: {}
+
   tsconfck@3.1.6(typescript@5.9.2):
     optionalDependencies:
       typescript: 5.9.2
@@ -25692,6 +26002,8 @@ snapshots:
   ufo@1.6.1: {}
 
   uid2@0.0.4: {}
+
+  ulid@3.0.0: {}
 
   unc-path-regex@0.1.2: {}
 
