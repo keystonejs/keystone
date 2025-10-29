@@ -52,7 +52,7 @@
     "tsx": "^4.0.0",
     "typescript": "^5.5.0",
     "typescript-eslint": "^8.0.0",
-    "vitest": "^3.0.4"
+    "vitest": "^4.0.0"
   },
   "preconstruct": {
     "packages": [
