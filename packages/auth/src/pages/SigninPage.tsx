@@ -1,4 +1,5 @@
 import NextHead from 'next/head'
+import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
@@ -11,7 +12,6 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 import type { AuthGqlNames } from '../types'
 
