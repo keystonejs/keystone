@@ -32,7 +32,7 @@
     "@keystar/ui": "^0.7.16",
     "fast-deep-equal": "^3.1.3",
     "graphql": "^16.8.1",
-    "next": "^15.5.2"
+    "next": "^16.0.0"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
