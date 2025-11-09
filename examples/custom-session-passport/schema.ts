@@ -1,9 +1,7 @@
 import { denyAll, allOperations } from '@keystone-6/core/access'
 import { list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
-
-import type { Session } from './auth'
+import type { Lists, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -44,4 +42,4 @@ export const lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists
