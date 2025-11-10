@@ -833,6 +833,43 @@ importers:
         specifier: ^5.5.0
         version: 5.9.3
 
+  examples/document-field-dynamic-components:
+    dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.19
+        version: 0.7.19(next@15.5.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@keystone-6/core':
+        specifier: ^6.5.1
+        version: link:../../packages/core
+      '@keystone-6/document-renderer':
+        specifier: ^1.1.2
+        version: link:../../packages/document-renderer
+      '@keystone-6/fields-document':
+        specifier: ^9.1.1
+        version: link:../../packages/fields-document
+      '@preconstruct/next':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@prisma/client':
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.9.3))(typescript@5.9.3)
+      next:
+        specifier: ^15.5.2
+        version: 15.5.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      prisma:
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.9.3)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
   examples/document-field-hooks:
     dependencies:
       '@keystone-6/core':
