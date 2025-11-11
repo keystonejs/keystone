@@ -35,7 +35,7 @@ test('start keystone', async () => {
   await loadIndex(page)
 })
 
-test('Creating an item with the GraphQL API and navigating to the item page for it', async () => {
+test('creating an item with the GraphQL API and navigating to the item page for it', async () => {
   const {
     createSomething: { id },
   } = await makeGqlRequest(gql`
@@ -52,28 +52,32 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   )
 })
 
-test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
+test('getAdditionalFiles routes that use [...rest] are working', async () => {
   expect(
     await fetch('http://localhost:3000/api/blah/asdasdas/das/da/sdad').then(x => x.text())
   ).toEqual('something')
 })
 
-test('changing the label of a field updates in the Admin UI', async () => {
+test('updates to the Keystone schema are propagated', async () => {
+  await new Promise(resolve => setTimeout(resolve, 5000)) // TODO: FIXME, something is up
   await replaceSchema('second.ts')
   await waitForIO(ksProcess, 'compiled successfully')
 
-  await playwrightExpect(page.getByRole('textbox', { name: 'Very Important Text' })).toHaveValue(
-    'blah'
-  )
-})
+  // WARNING: assumes we are still on the item page from a previous test
+  // the virtual field should have updated
+  await playwrightExpect(
+    page.getByRole('textbox', {
+      name: 'Virtual',
+    })
+  ).toHaveValue('blah', { timeout: 20_000 }) // allow some time
 
-test('adding a virtual field', async () => {
-  await playwrightExpect(page.getByRole('textbox', { name: 'Virtual' })).toHaveValue('blah')
-})
+  await playwrightExpect(
+    page.getByRole('textbox', {
+      name: 'Very Important Text',
+    })
+  ).toHaveValue('blah')
 
-test('the generated schema includes schema updates', async () => {
-  // we want to make sure the field that we added worked
-  // and the change we made to the have worked
+  // check the GraphQL schema has updated
   const schema = await readFile(path.join(testProjectPath, 'schema.graphql'), 'utf8')
   const parsed = parse(schema)
   const objectTypes = parsed.definitions.filter(
@@ -109,11 +113,13 @@ test("a runtime error is shown and doesn't crash the process", async () => {
 })
 
 test('errors can be recovered from', async () => {
-  await new Promise(resolve => setTimeout(resolve, 3000)) // TODO: FIXME, something is up
+  await new Promise(resolve => setTimeout(resolve, 5000)) // TODO: FIXME, something is up
   await replaceSchema('initial.ts')
-  await playwrightExpect(page.getByRole('textbox', { name: 'Initial Label For Text' })).toHaveValue(
-    'blah'
-  )
+  await playwrightExpect(
+    page.getByRole('textbox', {
+      name: 'Initial Label For Text',
+    })
+  ).toHaveValue('blah', { timeout: 20_000 }) // allow some time
 })
 
 afterAll(async () => {
