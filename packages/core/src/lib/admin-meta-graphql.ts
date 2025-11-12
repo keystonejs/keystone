@@ -86,7 +86,7 @@ const KeystoneAdminUIFieldMeta = g.object<FieldMetaSource>()({
           }),
           isRequired: g.field({
             type: g.nonNull(g.JSON),
-            resolve({ item, fieldKey, itemView, itemField, listKey }, _, context) {
+            resolve({ listKey, fieldKey, itemView, item, itemField }, _, context) {
               const { isRequired } = itemView
               if (typeof isRequired !== 'function') return isRequired
               return isRequired({
@@ -316,7 +316,12 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
     path: g.field({ type: g.nonNull(g.String) }),
 
     labelField: g.field({ type: g.nonNull(g.String) }),
-    fields: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))) }),
+    fields: g.field({
+      resolve: ({ fields, item }) => {
+        return fields.map(f => ({ ...f, item, itemField: item?.[f.key] ?? null }))
+      },
+      type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))),
+    }),
     groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
     actions: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))) }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
@@ -354,7 +359,12 @@ const adminMeta = g.object<AdminMetaSource>()({
         }
         // WARNING: do not use sudo
         const item = await context.db[key].findOne({ where: { id: itemId } })
-        if (!item) return null
+        if (!item) {
+          return {
+            ...source.listsByKey[key],
+            item: null,
+          }
+        }
         return {
           ...source.listsByKey[key],
           item,

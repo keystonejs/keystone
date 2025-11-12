@@ -89,7 +89,8 @@ function makeList({
         delete: boolean
       }
 }) {
-  const prefix = `List${fields.length}_Filt${yn(defaultIsFilterable)}_Ord${yn(defaultIsOrderable)}` as const
+  const prefix =
+    `List${fields.length}_Filt${yn(defaultIsFilterable)}_Ord${yn(defaultIsOrderable)}` as const
   const name__ = `${prefix}_Omit${
     typeof omit !== 'object'
       ? yn(omit)
@@ -118,7 +119,7 @@ const listsMatrix = [
             fields: fieldsMatrix,
             defaultIsFilterable,
             defaultIsOrderable,
-            omit
+            omit,
           })
         }
 

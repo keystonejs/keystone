@@ -14,7 +14,18 @@ export const lists = {
     fields: {
       title: text(),
       content: text(),
-      hidden: checkbox(),
+      hidden: checkbox({
+        ui: {
+          itemView: {
+            fieldMode: ({ item, itemField }) => {
+              // WARNING: none of this is access control
+              if (!item || item.votes === null) return 'edit'
+              if (itemField) return 'edit'
+              return item.votes > 0 ? 'read' : 'edit'
+            },
+          },
+        },
+      }),
       votes: integer({ defaultValue: 0 }),
       reportedAt: timestamp({
         ui: {
