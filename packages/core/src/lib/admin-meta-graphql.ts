@@ -352,6 +352,7 @@ const adminMeta = g.object<AdminMetaSource>()({
             item: null,
           }
         }
+        // WARNING: do not use sudo
         const item = await context.db[key].findOne({ where: { id: itemId } })
         if (!item) return null
         return {

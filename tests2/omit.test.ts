@@ -73,13 +73,13 @@ const fieldsMatrix = [
 
 function makeList({
   fields,
-  isFilterable,
-  isOrderable,
+  defaultIsFilterable,
+  defaultIsOrderable,
   omit,
 }: {
   fields: typeof fieldsMatrix
-  isFilterable: boolean
-  isOrderable: boolean
+  defaultIsFilterable: boolean
+  defaultIsOrderable: boolean
   omit:
     | boolean
     | {
@@ -89,21 +89,21 @@ function makeList({
         delete: boolean
       }
 }) {
-  const prefix = `List${fields.length}_Filt${yn(isFilterable)}_Ord${yn(isOrderable)}` as const
-  const __name = `${prefix}_Omit${
+  const prefix = `List${fields.length}_Filt${yn(defaultIsFilterable)}_Ord${yn(defaultIsOrderable)}` as const
+  const name__ = `${prefix}_Omit${
     typeof omit !== 'object'
       ? yn(omit)
       : [omit.query, omit.create, omit.update, omit.delete].map(yn).join('')
   }`
 
   return {
-    __name,
+    name__,
     access: allowAll,
     fields: Object.fromEntries(fields),
-    defaultIsFilterable: isFilterable,
-    defaultIsOrderable: isOrderable,
+    defaultIsFilterable,
+    defaultIsOrderable,
     graphql: {
-      plural: __name + 's',
+      plural: name__ + 's',
       omit,
     },
   } as const
@@ -111,10 +111,15 @@ function makeList({
 
 const listsMatrix = [
   ...(function* () {
-    for (const isFilterable of [false, true]) {
-      for (const isOrderable of [false, true]) {
+    for (const defaultIsFilterable of [false, true]) {
+      for (const defaultIsOrderable of [false, true]) {
         for (const omit of [false, true]) {
-          yield makeList({ fields: fieldsMatrix, isFilterable, isOrderable, omit })
+          yield makeList({
+            fields: fieldsMatrix,
+            defaultIsFilterable,
+            defaultIsOrderable,
+            omit
+          })
         }
 
         for (const query of [false, true]) {
@@ -123,8 +128,8 @@ const listsMatrix = [
               for (const delete_ of [false, true]) {
                 yield makeList({
                   fields: fieldsMatrix,
-                  isFilterable,
-                  isOrderable,
+                  defaultIsFilterable,
+                  defaultIsOrderable,
                   omit: {
                     query,
                     create,
@@ -135,8 +140,8 @@ const listsMatrix = [
 
                 yield makeList({
                   fields: [],
-                  isFilterable,
-                  isOrderable,
+                  defaultIsFilterable,
+                  defaultIsOrderable,
                   omit: {
                     query,
                     create,
@@ -156,24 +161,24 @@ const listsMatrix = [
 // TODO: FIXME: skip for now, MySQL has a limit on the number of indexes
 if (dbProvider !== 'mysql') {
   listsMatrix.push({
-    __name: 'RelatedToAll',
+    name__: 'RelatedToAll',
     access: allowAll,
     fields: Object.fromEntries(
       (function* () {
         for (const l of listsMatrix) {
           // WARNING: if names exceed some length, expect duplicate _AB_unique index errors
           yield [
-            `R${l.__name}_one`,
+            `R${l.name__}_one`,
             relationship({
-              ref: l.__name,
+              ref: l.name__,
               many: false,
             }),
           ] as const
 
           yield [
-            `R${l.__name}_many`,
+            `R${l.name__}_many`,
             relationship({
-              ref: l.__name,
+              ref: l.name__,
               many: true,
             }),
           ] as const
@@ -334,7 +339,7 @@ describe(`Omit (${dbProvider})`, () => {
 
   const suite = setupTestSuite({
     config: {
-      lists: Object.fromEntries(listsMatrix.map(({ __name, ...l }) => [__name, list(l)])),
+      lists: Object.fromEntries(listsMatrix.map(({ name__: __name, ...l }) => [__name, list(l)])),
     },
   })
 
@@ -342,7 +347,7 @@ describe(`Omit (${dbProvider})`, () => {
   const sudoData = suite().then(async ({ context }) => await introspectSchema(context.sudo()))
 
   for (const l of listsMatrix) {
-    const listName = l.__name
+    const listName = l.name__
     const omit = l.graphql.omit
 
     // common context is configurable
