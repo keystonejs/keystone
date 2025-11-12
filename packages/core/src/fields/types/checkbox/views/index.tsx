@@ -3,6 +3,7 @@ import { Icon } from '@keystar/ui/icon'
 import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
 import { Text, VisuallyHidden } from '@keystar/ui/typography'
 
+import { entriesTyped } from '../../../../lib/core/utils'
 import type {
   CellComponent,
   FieldController,
@@ -10,7 +11,6 @@ import type {
   FieldProps,
   SimpleFieldTypeInfo,
 } from '../../../../types'
-import { entriesTyped } from '../../../../lib/core/utils'
 
 export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   return (
