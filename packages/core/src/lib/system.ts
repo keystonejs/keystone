@@ -76,6 +76,10 @@ function getInternalGraphQLSchema(config: KeystoneConfig) {
                     return {
                       ...f,
                       graphql: { ...(f.graphql || {}), omit: false },
+
+                      // WARNING: this bypasses access control checks for filtering and ordering on the internal schema
+                      isFilterable: true, // TODO: remove when moved to .access.filter and .omit.filter
+                      isOrderable: true, // TODO: remove when moved to .access.filter and .omit.filter
                     }
                   },
                 ]
