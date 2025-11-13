@@ -47,7 +47,9 @@ export async function getOperationFieldAccess(
   fieldKey: string,
   context: KeystoneContext,
   operation: 'read'
-) {
+): Promise<boolean> {
+  if (context.__internal.sudo) return true
+
   const { listKey } = list
   let result
   try {
@@ -79,6 +81,8 @@ export async function getOperationAccess(
   context: KeystoneContext,
   operation: 'query' | 'create' | 'update' | 'delete'
 ) {
+  if (context.__internal.sudo) return true
+
   const { listKey } = list
   let result
   try {
@@ -131,6 +135,8 @@ export async function getAccessFilters(
   context: KeystoneContext,
   operation: keyof typeof list.access.filter
 ): Promise<boolean | InputFilter> {
+  if (context.__internal.sudo) return true
+
   try {
     let filters
     if (operation === 'query') {
@@ -178,6 +184,8 @@ export async function enforceListLevelAccessControl(
   inputData: Record<string, unknown>,
   item: BaseItem | undefined
 ) {
+  if (context.__internal.sudo) return
+
   let accepted: unknown // should be boolean, but dont trust, it might accidentally be a filter
   try {
     // apply access.item.* controls
@@ -238,6 +246,8 @@ export async function enforceFieldLevelAccessControl(
   inputData: Record<string, unknown>,
   item: BaseItem | undefined
 ) {
+  if (context.__internal.sudo) return
+
   const nonBooleans: { tag: string; returned: string }[] = []
   const fieldsDenied: string[] = []
   const accessErrors: { error: Error; tag: string }[] = []

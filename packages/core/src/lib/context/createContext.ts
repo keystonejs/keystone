@@ -8,15 +8,16 @@ import { getDbFactory, getQueryFactory } from './api'
 export function createContext({
   config,
   lists,
-  graphQLSchema,
-  graphQLSchemaSudo,
+  graphQLSchemas,
   prismaClient,
   prismaTypes,
 }: {
   config: KeystoneConfig
   lists: Record<string, InitialisedList>
-  graphQLSchema: GraphQLSchema
-  graphQLSchemaSudo: GraphQLSchema
+  graphQLSchemas: {
+    public: GraphQLSchema
+    internal: GraphQLSchema
+  }
   prismaClient: unknown
   prismaTypes: {
     DbNull: unknown
@@ -25,38 +26,40 @@ export function createContext({
 }) {
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
-    dbFactories[listKey] = getDbFactory(list, graphQLSchema)
+    dbFactories[listKey] = getDbFactory(list, graphQLSchemas.public)
   }
 
-  const dbFactoriesSudo: Record<string, ReturnType<typeof getDbFactory>> = {}
+  const dbFactoriesInternal: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
-    dbFactoriesSudo[listKey] = getDbFactory(list, graphQLSchemaSudo)
+    dbFactoriesInternal[listKey] = getDbFactory(list, graphQLSchemas.internal)
   }
 
   const queryFactories: Record<string, ReturnType<typeof getQueryFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
-    queryFactories[listKey] = getQueryFactory(list, graphQLSchema)
+    queryFactories[listKey] = getQueryFactory(list, graphQLSchemas.public)
   }
 
-  const queryFactoriesSudo: Record<string, ReturnType<typeof getQueryFactory>> = {}
+  const queryFactoriesInternal: Record<string, ReturnType<typeof getQueryFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
-    queryFactoriesSudo[listKey] = getQueryFactory(list, graphQLSchemaSudo)
+    queryFactoriesInternal[listKey] = getQueryFactory(list, graphQLSchemas.internal)
   }
 
   const construct = ({
     prisma,
-    session,
-    sudo,
     req,
     res,
+    session,
+    internal,
+    sudo,
   }: {
     prisma: any
-    session?: unknown
-    sudo: boolean
     req?: IncomingMessage
     res?: ServerResponse
+    session?: unknown
+    internal: boolean
+    sudo: boolean
   }) => {
-    const schema = sudo ? graphQLSchemaSudo : graphQLSchema
+    const schema = internal ? graphQLSchemas.internal : graphQLSchemas.public
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = async ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query)
       return (await graphql({
@@ -79,16 +82,15 @@ export function createContext({
       query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
 
-      sudo: () => construct({ prisma, session, sudo: true, req, res }),
-
       transaction: async (f, opts) => {
         return await prisma.$transaction(async (prisma_: any) => {
           const newContext = construct({
             prisma: prisma_,
-            session,
-            sudo,
             req,
             res,
+            session,
+            internal,
+            sudo,
           })
 
           return await f(newContext)
@@ -103,10 +105,11 @@ export function createContext({
       withRequest: async (newReq, newRes) => {
         const newContext = construct({
           prisma,
-          session,
-          sudo,
           req: newReq,
           res: newRes,
+          session,
+          internal,
+          sudo,
         })
         return newContext.withSession(
           (await config.session?.get({ context: newContext })) ?? undefined
@@ -114,10 +117,15 @@ export function createContext({
       },
 
       withSession: session => {
-        return construct({ prisma, session, sudo, req, res })
+        return construct({ prisma, req, res, session, internal, sudo })
       },
 
+      // privilege escalation
+      internal: () => construct({ prisma, req, res, session, internal: true, sudo }),
+      sudo: () => construct({ prisma, req, res, session, internal: true, sudo: true }),
+
       __internal: {
+        sudo,
         lists,
         prisma: {
           ...prismaTypes,
@@ -125,8 +133,8 @@ export function createContext({
       },
     }
 
-    const _dbFactories = sudo ? dbFactoriesSudo : dbFactories
-    const _queryFactories = sudo ? queryFactoriesSudo : queryFactories
+    const _dbFactories = sudo ? dbFactoriesInternal : dbFactories
+    const _queryFactories = sudo ? queryFactoriesInternal : queryFactories
 
     for (const listKey of Object.keys(lists)) {
       context.db[listKey] = _dbFactories[listKey](context)
@@ -138,7 +146,7 @@ export function createContext({
 
   return construct({
     prisma: prismaClient,
-    session: undefined,
+    internal: false,
     sudo: false,
   })
 }

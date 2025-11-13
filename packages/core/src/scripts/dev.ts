@@ -295,7 +295,7 @@ export async function dev(
     initKeystonePromiseResolve()
 
     const originalPrismaSchema = printPrismaSchema(system.config, system.lists)
-    let lastPrintedGraphQLSchema = printSchema(system.graphQLSchema)
+    let lastPrintedGraphQLSchema = printSchema(system.graphql.schemas.public)
     let lastApolloServer = apolloServer ?? null
 
     if (system.config.telemetry !== false) {
@@ -340,7 +340,7 @@ export async function dev(
         // because we will never need to write a new prisma schema here
         // and formatting the prisma schema leaves some listeners on the process
         // which means you get a "there's probably a memory leak" warning from node
-        const newPrintedGraphQLSchema = printSchema(newSystem.graphQLSchema)
+        const newPrintedGraphQLSchema = printSchema(newSystem.graphql.schemas.public)
         if (newPrintedGraphQLSchema !== lastPrintedGraphQLSchema) {
           await fsp.writeFile(
             paths.schema.graphql,

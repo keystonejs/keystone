@@ -60,7 +60,7 @@ export async function buildArtifacts(system: System) {
     })
 
     return {
-      graphql: getFormattedGraphQLSchema(printSchema(system.graphQLSchema)),
+      graphql: getFormattedGraphQLSchema(printSchema(system.graphql.schemas.public)),
       prisma: prismaSchema[0][1],
     }
   })
@@ -81,7 +81,7 @@ export async function generateTypes(cwd: string, system: System) {
     const paths = system.getPaths(cwd)
     const schema = printGeneratedTypes(
       paths.types.relativePrismaPath,
-      system.graphQLSchemaSudo,
+      system.graphql.schemas.internal,
       system.lists
     )
     await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })

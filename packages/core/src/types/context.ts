@@ -7,14 +7,9 @@ import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info'
 import type { MaybePromise } from './utils'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  req?: IncomingMessage
-  res?: ServerResponse
   db: KeystoneDbAPI<TypeInfo['lists']>
   query: KeystoneListsAPI<TypeInfo['lists']>
   graphql: KeystoneGraphQLAPI
-  sudo: () => KeystoneContext<TypeInfo>
-  withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
-  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
   prisma: TypeInfo['prisma']
   transaction: <T>(
     f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>,
@@ -27,13 +22,22 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     }
   ) => Promise<T>
 
+  req?: IncomingMessage
+  res?: ServerResponse
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
+  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
+  withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
+
+  // privilege escalation
+  internal: () => KeystoneContext<TypeInfo> // WARNING: name may change
+  sudo: () => KeystoneContext<TypeInfo>
 
   /**
    * WARNING: may change in patch
    */
   __internal: {
+    sudo: boolean
     lists: Record<string, InitialisedList>
     prisma: {
       DbNull: unknown

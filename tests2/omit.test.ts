@@ -345,7 +345,10 @@ describe(`Omit (${dbProvider})`, () => {
   })
 
   const data = suite().then(async ({ context }) => await introspectSchema(context))
-  const sudoData = suite().then(async ({ context }) => await introspectSchema(context.sudo()))
+  const dataInternal = suite().then(
+    async ({ context }) => await introspectSchema(context.internal())
+  )
+  const dataSudo = suite().then(async ({ context }) => await introspectSchema(context.sudo()))
 
   for (const l of listsMatrix) {
     const listName = l.name__
@@ -377,9 +380,21 @@ describe(`Omit (${dbProvider})`, () => {
       })
     })
 
-    // sudo context has everything, always
+    // internal context is unaffected by graphql.omit
+    describe(`Internal context for ${listName}`, () => {
+      testOmit(listName, dataInternal, {
+        type: true,
+        meta: true,
+        query: true,
+        create: true,
+        update: true,
+        delete: true,
+      })
+    })
+
+    // sudo context is unaffected by graphql.omit
     describe(`Sudo context for ${listName}`, () => {
-      testOmit(listName, sudoData, {
+      testOmit(listName, dataSudo, {
         type: true,
         meta: true,
         query: true,

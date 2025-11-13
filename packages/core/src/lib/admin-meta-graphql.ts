@@ -380,6 +380,8 @@ export const KeystoneMeta = g.object<{ adminMeta: AdminMetaSource }>()({
     adminMeta: g.field({
       type: g.nonNull(adminMeta),
       async resolve({ adminMeta }, _, context) {
+        if (context.__internal.sudo) return adminMeta
+
         const isAllowed = await adminMeta.isAccessAllowed(context)
         if (isAllowed) return adminMeta
 

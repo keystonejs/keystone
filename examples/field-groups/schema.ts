@@ -16,6 +16,14 @@ export const lists = {
       ...group({
         label: 'Meta',
         description: 'Some automatically updated meta fields',
+        ui: {
+          createView: {
+            defaultFieldMode: 'hidden',
+          },
+          itemView: {
+            defaultFieldMode: 'read',
+          },
+        },
         fields: {
           slug: text({
             access: {

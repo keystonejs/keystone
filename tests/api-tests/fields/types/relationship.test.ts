@@ -22,7 +22,7 @@ function getSchema(field: { ref: string; many?: boolean }) {
         }),
       },
     })
-  ).graphQLSchema
+  ).graphql.schemas.public
 }
 
 describe('Type Generation', () => {
@@ -139,7 +139,7 @@ describe('Reference errors', () => {
         db: { url: 'file:./thing.db', provider: 'sqlite' },
         lists,
       })
-    ).graphQLSchema
+    ).graphql.schemas.public
   }
 
   const fixtures = {

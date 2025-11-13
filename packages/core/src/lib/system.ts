@@ -1,8 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import path from 'node:path'
 
-import { allowAll } from '../access'
-import type { BaseKeystoneTypeInfo, FieldData, KeystoneConfig, KeystoneContext } from '../types'
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types'
 import { createAdminMeta } from './admin-meta'
 import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
@@ -56,45 +55,31 @@ function getSystemPaths(cwd: string, config: KeystoneConfig) {
   }
 }
 
-function getSudoGraphQLSchema(config: KeystoneConfig) {
-  // This function creates a GraphQLSchema based on a modified version of the provided config.
-  // The modifications are:
-  //  * All list level access control is disabled
-  //  * All field level access control is disabled
-  //  * All graphql.omit configuration is disabled
-  //  * All fields are explicitly made filterable and orderable
-  //
-  // These changes result in a schema without any restrictions on the CRUD
-  // operations that can be run.
-  //
-  // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
-  const transformedConfig: KeystoneConfig = {
+function getInternalGraphQLSchema(config: KeystoneConfig) {
+  // omit `graphql.omit`
+  const withoutOmit: KeystoneConfig = {
     ...config,
-    ui: {
-      ...config.ui,
-      isAccessAllowed: allowAll,
-    },
     lists: Object.fromEntries(
       Object.entries(config.lists).map(([listKey, list]) => {
         return [
           listKey,
           {
             ...list,
-            access: allowAll,
             graphql: { ...(list.graphql || {}), omit: false },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
                 if (fieldKey.startsWith('__group')) return [fieldKey, field]
                 return [
                   fieldKey,
-                  (data: FieldData) => {
+                  data => {
                     const f = field(data)
                     return {
                       ...f,
-                      access: allowAll,
-                      isFilterable: true,
-                      isOrderable: true,
                       graphql: { ...(f.graphql || {}), omit: false },
+
+                      // WARNING: this bypasses access control checks for filtering and ordering on the internal schema
+                      isFilterable: true, // TODO: remove when moved to .access.filter and .omit.filter
+                      isOrderable: true, // TODO: remove when moved to .access.filter and .omit.filter
                     }
                   },
                 ]
@@ -106,11 +91,9 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
     ),
   }
 
-  const lists = initialiseLists(transformedConfig)
-  const adminMeta = createAdminMeta(transformedConfig, lists)
-  return createGraphQLSchema(transformedConfig, lists, adminMeta, true)
-  // TODO: adminMeta not useful for sudo, remove in breaking change
-  // return createGraphQLSchema(transformedConfig, lists, null, true);
+  const lists = initialiseLists(withoutOmit)
+  const adminMeta = createAdminMeta(withoutOmit, lists)
+  return createGraphQLSchema(withoutOmit, lists, adminMeta, true)
 }
 
 function injectNewDefaults(prismaClient: unknown, lists: Record<string, InitialisedList>) {
@@ -164,13 +147,16 @@ function formatUrl(provider: KeystoneConfig['db']['provider'], url: string) {
 export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
-  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)
-  const graphQLSchemaSudo = getSudoGraphQLSchema(config)
+  const graphQLSchemas = {
+    public: createGraphQLSchema(config, lists, adminMeta, false),
+    internal: getInternalGraphQLSchema(config),
+  }
 
   return {
     config,
-    graphQLSchema,
-    graphQLSchemaSudo,
+    graphql: {
+      schemas: graphQLSchemas,
+    },
     adminMeta,
     lists,
     getPaths: (cwd: string) => getSystemPaths(cwd, config),
@@ -185,8 +171,7 @@ export function createSystem(config: KeystoneConfig) {
       const context = createContext({
         config,
         lists,
-        graphQLSchema,
-        graphQLSchemaSudo,
+        graphQLSchemas,
         prismaClient,
         prismaTypes: {
           DbNull: PM.Prisma.DbNull,
