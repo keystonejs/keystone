@@ -36,7 +36,7 @@ export async function resolveUniqueWhereInput(
 export async function resolveWhereInput(
   inputFilter: InputFilter,
   list: InitialisedList,
-  context: KeystoneContext,
+  context: KeystoneContext
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
