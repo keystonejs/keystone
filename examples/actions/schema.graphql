@@ -112,8 +112,6 @@ input PostUpdateInput {
   title: String
   content: String
   hidden: Boolean
-  votes: Int
-  reportedAt: DateTime
 }
 
 input PostUpdateArgs {
@@ -125,8 +123,6 @@ input PostCreateInput {
   title: String
   content: String
   hidden: Boolean
-  votes: Int
-  reportedAt: DateTime
 }
 
 """
