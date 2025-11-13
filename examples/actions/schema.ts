@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core'
-import { allowAll } from '@keystone-6/core/access'
+import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, integer, text, timestamp } from '@keystone-6/core/fields'
 
 import type { Lists } from '.keystone/types'
@@ -7,6 +7,29 @@ import type { Lists } from '.keystone/types'
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
+
+const readOnly = {
+  access: {
+    read: allowAll,
+    create: denyAll,
+    update: denyAll,
+  },
+  graphql: {
+    omit: {
+      create: true,
+      update: true,
+    },
+  },
+  ui: {
+    createView: {
+      fieldMode: 'hidden' as const,
+    },
+    itemView: {
+      fieldMode: 'read' as const,
+      fieldPosition: 'sidebar' as const,
+    },
+  },
+}
 
 export const lists = {
   Post: list({
@@ -26,15 +49,8 @@ export const lists = {
           },
         },
       }),
-      votes: integer({ defaultValue: 0 }),
-      reportedAt: timestamp({
-        ui: {
-          itemView: {
-            fieldMode: 'read' as const, // WARNING: this is not access control
-            fieldPosition: 'sidebar' as const,
-          },
-        },
-      }),
+      votes: integer({ defaultValue: 0, ...readOnly }),
+      reportedAt: timestamp({ ...readOnly }),
     },
     actions: {
       vote: {
