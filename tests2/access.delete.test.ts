@@ -6,112 +6,120 @@ import { config, lists, expectEqualItem, expectEqualItems, seed, seedMany } from
 describe(`*.access.delete tests (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
-  for (const l of lists) {
-    const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
+  for (const sudo of [false, true]) {
+    const suffix = sudo ? ' (sudo)' : ''
 
-    test(`deleteOne ${l.name}`, async () => {
-      const { context } = await suite
-      const seeded = await seed(l, context)
+    for (const l of lists) {
+      const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
 
-      // test list.access.*.delete
-      const deletePromise = context.query[l.name].deleteOne({
-        where: { id: seeded.id },
-        query: itemQuery,
-      })
-
-      if (!l.expect.delete) {
-        const error = deletePromise.catch(e => e.message)
-        assert.equal(
-          await error,
-          `Access denied: You cannot delete that ${l.name} - it may not exist`
-        )
-
-        // sudo required, as we might not have query/read access
-        const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
-        assert.equal(count, 1)
-        return
-      }
-
-      const item = await deletePromise
-      expectEqualItem(l, item, seeded)
-
-      // sudo required, as we might not have query/read access
-      const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
-      assert.equal(count, 0)
-    })
-
-    test(`deleteMany ${l.name}`, async () => {
-      const { context } = await suite
-      const seeded = await seedMany(l, context)
-
-      // test list.access.*.delete
-      const deletePromise = context.query[l.name].deleteMany({
-        where: seeded.map(({ id }) => ({
-          id,
-        })),
-        query: itemQuery,
-      })
-
-      if (!l.expect.delete) {
-        const error = deletePromise.catch(e => e.message)
-        assert.equal(
-          await error,
-          `Access denied: You cannot delete that ${l.name} - it may not exist`
-        )
-
-        const count = await context.prisma[l.name].count({
-          where: { id: { in: seeded.map(s => s.id) } },
-        })
-        assert.equal(count, seeded.length) // unchanged
-        return
-      }
-
-      const items = await deletePromise
-      expectEqualItems(l, items, seeded)
-
-      // sudo required, as we might not have query/read access
-      const count = await context.prisma[l.name].count({
-        where: { id: { in: seeded.map(s => s.id) } },
-      })
-      assert.equal(count, 0) // changed
-    })
-
-    // we test list delete operations previously^, skip
-    if (!l.expect.delete) continue
-
-    // field access tests
-    for (const f of l.fields) {
-      const fieldQuery = `id ${f.name}`
-
-      test(`deleteOne ${f.name}`, async () => {
-        const { context } = await suite
+      test(`deleteOne ${l.name}${suffix}`, async () => {
+        let { context } = await suite
+        if (sudo) context = context.sudo()
         const seeded = await seed(l, context)
 
         // test list.access.*.delete
-        const item = await context.query[l.name].deleteOne({
+        const deletePromise = context.query[l.name].deleteOne({
           where: { id: seeded.id },
-          query: fieldQuery,
+          query: itemQuery,
         })
 
-        // test field.access.read
-        expectEqualItem(l, item, seeded, [f.name])
+        if (!sudo && !l.expect.delete) {
+          const error = deletePromise.catch(e => e.message)
+          assert.equal(
+            await error,
+            `Access denied: You cannot delete that ${l.name} - it may not exist`
+          )
+
+          // sudo required, as we might not have query/read access
+          const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
+          assert.equal(count, 1)
+          return
+        }
+
+        const item = await deletePromise
+        expectEqualItem(l, item, seeded, [], sudo)
+
+        // sudo required, as we might not have query/read access
+        const count = await context.prisma[l.name].count({ where: { id: seeded.id } })
+        assert.equal(count, 0)
       })
 
-      test(`deleteMany ${f.name}`, async () => {
-        const { context } = await suite
+      test(`deleteMany ${l.name}${suffix}`, async () => {
+        let { context } = await suite
+        if (sudo) context = context.sudo()
         const seeded = await seedMany(l, context)
 
-        // test list.access.*.query
-        const items = await context.query[l.name].deleteMany({
+        // test list.access.*.delete
+        const deletePromise = context.query[l.name].deleteMany({
           where: seeded.map(({ id }) => ({
             id,
           })),
-          query: fieldQuery,
+          query: itemQuery,
         })
 
-        // test field.access.read
-        expectEqualItems(l, items, seeded, [f.name])
+        if (!sudo && !l.expect.delete) {
+          const error = deletePromise.catch(e => e.message)
+          assert.equal(
+            await error,
+            `Access denied: You cannot delete that ${l.name} - it may not exist`
+          )
+
+          const count = await context.prisma[l.name].count({
+            where: { id: { in: seeded.map(s => s.id) } },
+          })
+          assert.equal(count, seeded.length) // unchanged
+          return
+        }
+
+        const items = await deletePromise
+        expectEqualItems(l, items, seeded, [], true, sudo)
+
+        // sudo required, as we might not have query/read access
+        const count = await context.prisma[l.name].count({
+          where: { id: { in: seeded.map(s => s.id) } },
+        })
+        assert.equal(count, 0) // changed
       })
+
+      // we test list delete operations previously^, skip
+      if (!l.expect.delete) continue
+
+      // field access tests
+      for (const f of l.fields) {
+        const fieldQuery = `id ${f.name}`
+
+        test(`deleteOne ${f.name}${suffix}`, async () => {
+          let { context } = await suite
+          if (sudo) context = context.sudo()
+          const seeded = await seed(l, context)
+
+          // test list.access.*.delete
+          const item = await context.query[l.name].deleteOne({
+            where: { id: seeded.id },
+            query: fieldQuery,
+          })
+
+          // test field.access.read
+          expectEqualItem(l, item, seeded, [f.name], sudo)
+        })
+
+        test(`deleteMany ${f.name}${suffix}`, async () => {
+          let { context } = await suite
+          if (sudo) context = context.sudo()
+          const seeded = await seedMany(l, context)
+
+          // test list.access.*.query
+          const items = await context.query[l.name].deleteMany({
+            where: seeded.map(({ id }) => ({
+              id,
+            })),
+            query: fieldQuery,
+          })
+
+          // test field.access.read
+          expectEqualItems(l, items, seeded, [f.name], true, sudo)
+        })
+      }
     }
   }
 })

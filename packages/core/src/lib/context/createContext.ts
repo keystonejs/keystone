@@ -133,8 +133,8 @@ export function createContext({
       },
     }
 
-    const _dbFactories = sudo ? dbFactoriesInternal : dbFactories
-    const _queryFactories = sudo ? queryFactoriesInternal : queryFactories
+    const _dbFactories = internal ? dbFactoriesInternal : dbFactories
+    const _queryFactories = internal ? queryFactoriesInternal : queryFactories
 
     for (const listKey of Object.keys(lists)) {
       context.db[listKey] = _dbFactories[listKey](context)

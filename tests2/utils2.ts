@@ -19,12 +19,12 @@ export function countUniqueItems(items: readonly any[]) {
   return new Set(items.map(item => item.id)).size
 }
 
-export function expectEqualItem(l: List, a: any, b: any, keys: string[] = []) {
+export function expectEqualItem(l: List, a: any, b: any, keys: string[] = [], sudo = false) {
   assert.notEqual(a, null)
   if ('id' in b) assert.equal(a.id, b.id)
   for (const f of l.fields) {
     if (keys.length && !keys.includes(f.name)) continue
-    if (f.expect.read) {
+    if (sudo || f.expect.read) {
       assert.equal(a[f.name], b[f.name])
     } else {
       assert.equal(a[f.name], null)
@@ -37,7 +37,8 @@ export function expectEqualItems(
   a: readonly any[],
   b: any[],
   keys: string[] = [],
-  sort = true
+  sort = true,
+  sudo = false
 ) {
   assert.notEqual(a, null)
   assert.equal(a.length, b.length)
@@ -49,7 +50,7 @@ export function expectEqualItems(
   let i = 0
   for (const xa of sorteda) {
     const xb = sortedb[i++]
-    expectEqualItem(l, xa, xb, keys)
+    expectEqualItem(l, xa, xb, keys, sudo)
   }
 }
 
