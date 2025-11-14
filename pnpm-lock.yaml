@@ -157,7 +157,7 @@ importers:
         version: 15.0.0
       js-yaml:
         specifier: ^4.1.0
-        version: 4.1.0
+        version: 4.1.1
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -9651,8 +9651,8 @@ packages:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
     hasBin: true
 
-  js-yaml@4.1.0:
-    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
   jsdom@20.0.3:
@@ -15204,7 +15204,7 @@ snapshots:
       globals: 13.24.0
       ignore: 5.3.2
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -15218,7 +15218,7 @@ snapshots:
       globals: 14.0.0
       ignore: 5.3.2
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -15697,7 +15697,7 @@ snapshots:
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       jose: 5.10.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       lodash: 4.17.21
       scuid: 1.1.0
       tslib: 2.8.1
@@ -16415,7 +16415,7 @@ snapshots:
       idb-keyval: 6.2.2
       ignore: 5.3.2
       is-hotkey: 0.2.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       lib0: 0.2.114
       lru-cache: 10.4.3
       match-sorter: 6.3.4
@@ -19452,7 +19452,7 @@ snapshots:
       gray-matter: 4.0.3
       html-escaper: 3.0.3
       http-cache-semantics: 4.2.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       kleur: 4.1.5
       magic-string: 0.30.21
       magicast: 0.3.5
@@ -20199,7 +20199,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -20736,7 +20736,7 @@ snapshots:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
       lodash.merge: 4.6.2
@@ -22524,7 +22524,7 @@ snapshots:
       argparse: 1.0.10
       esprima: 4.0.1
 
-  js-yaml@4.1.0:
+  js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
 
@@ -24928,7 +24928,7 @@ snapshots:
     dependencies:
       estree-util-is-identifier-name: 1.1.0
       estree-util-value-to-estree: 1.3.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       toml: 3.0.0
 
   remark-parse@10.0.2:
