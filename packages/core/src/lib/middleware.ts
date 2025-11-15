@@ -23,7 +23,7 @@ export function createAdminUIMiddlewareWithNextApp(
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = new URL(req.url, 'http://ks')
 
-    if (pathname?.startsWith(`${basePath}/_next`) || pathname?.startsWith(`${basePath}/__next`)) {
+    if (pathname?.startsWith(`/_next`) || pathname?.startsWith(`/__next`)) {
       return handle(req, res)
     }
 

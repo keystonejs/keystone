@@ -1,8 +1,9 @@
 import isDeepEqual from 'fast-deep-equal'
 import type { GraphQLFormattedError } from 'graphql'
-import { useRouter } from 'next/router'
+import { useRouter, useSearchParams } from 'next/navigation'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
+import { use, type Usable } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
@@ -40,14 +41,20 @@ import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLi
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
-import { useList } from '../../../../admin-ui/context'
+import { useKeystone, useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
+import { searchParamsToUrlQuery, urlQueryToSearchParams } from './lib'
 
-type ListPageProps = { listKey: string }
+export * from './FilterAdd'
+export * from './lib'
+export * from './PaginationControls'
+export * from './Tag'
+
+type ListPageProps = { params: Usable<{ listKey: string }> }
 export type Filter = {
   field: string
   type: string
@@ -247,15 +254,24 @@ function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
   return params
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
+export function ListPage(props: ListPageProps) {
+  const { listKey } = use<{ listKey: string }>(props.params)
+
+  return <ListPageInternal listKey={listKey} />
+}
 
 type Selection = Set<string | number> | 'all'
-function ListPage({ listKey }: ListPageProps) {
+export function ListPageInternal({ listKey: _listKey }: { listKey: string }) {
+  const { adminPath, listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[_listKey]
+
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
-  const { query, replace: routerReplace, isReady } = useRouter()
   const [loaded, setLoaded] = useState(false)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = searchParamsToUrlQuery(searchParams)
   const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
   const [columns, setColumns] = useState<string[]>(list.initialColumns)
   const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
@@ -277,7 +293,7 @@ function ListPage({ listKey }: ListPageProps) {
   }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
-    if (!isReady) return
+    // if (!isReady) return
     if (loaded) return
     let localStorageQuery
     try {
@@ -291,10 +307,10 @@ function ListPage({ listKey }: ListPageProps) {
     setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
     setSearchString(typeof query.search === 'string' ? query.search : '')
     setLoaded(true)
-  }, [list, isReady])
+  }, [list /*, isReady*/])
 
   useEffect(() => {
-    if (!isReady) return
+    // if (!isReady) return
     if (!loaded) return // TODO: stop this race condition properly
     const updatedQuery: ParsedUrlQueryInput = {
       ...(columns.length ? { column: columns } : {}),
@@ -321,8 +337,8 @@ function ListPage({ listKey }: ListPageProps) {
     }
 
     localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
-    routerReplace({ query: updatedQuery })
-  }, [columns, sort, filters, currentPage, pageSize, searchString, list, loaded])
+    router.replace(urlQueryToSearchParams(updatedQuery))
+  }, [columns, sort, filters, currentPage, pageSize, searchString, list])
 
   const allowCreate = !(list.hideCreate ?? true)
   const isConstrained = Boolean(filters.length || query.search)
@@ -512,9 +528,10 @@ function ListPage({ listKey }: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           ) : null}
-          {isReady && loading && (
-            <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />
-          )}
+          {
+            /*isReady && */
+            loading && <ProgressCircle aria-label="Loading…" size="small" isIndeterminate />
+          }
         </HStack>
 
         {filters.length ? (
@@ -585,7 +602,7 @@ function ListPage({ listKey }: ListPageProps) {
             <TableBody items={data?.items ?? []}>
               {row => {
                 return (
-                  <Row href={`/${list.path}/${row?.id}`}>
+                  <Row href={`${adminPath}/${list.path}/${row?.id}`}>
                     {key => {
                       const field = list.fields[key]
                       const value = row[key]
@@ -779,8 +796,8 @@ function replace(
   return s
 }
 
-type ActionErrors = Record<string, GraphQLFormattedError[]>
-type ActionErrorResult = {
+export type ActionErrors = Record<string, GraphQLFormattedError[]>
+export type ActionErrorResult = {
   action: ActionMeta
   errors: ActionErrors
 }
