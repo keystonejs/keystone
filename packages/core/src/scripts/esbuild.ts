@@ -1,6 +1,7 @@
 // WARNING: be careful not to import this file within next
 import esbuild, { type BuildOptions } from 'esbuild'
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import nodePath from 'node:path'
 
 function identity(x: BuildOptions) {
@@ -52,7 +53,6 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
     outfile: '.keystone/config.js',
     format: 'cjs',
     platform: 'node',
-    conditions: [],
     plugins: [
       {
         name: 'external-node_modules',
@@ -78,7 +78,7 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
                 // even though they're symlinked into node_modules
                 resolved.path.includes('node_modules')
               ) {
-                const resolvedFromOutput = await build.resolve(path, {
+                const resolvedFromOutputMaybeEsm = await build.resolve(path, {
                   resolveDir,
                   importer,
                   kind: 'import-statement',
@@ -86,15 +86,18 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
                 })
                 // if Node will be able to resolve the module using the path written,
                 // we can emit imports that are the same as what was written
-                if (resolved.path === resolvedFromOutput.path) {
+                if (resolved.path === resolvedFromOutputMaybeEsm.path) {
                   return { path, external: true }
                 }
                 // otherwise, we need to use longer relative paths to exactly where the module is
                 // this might involve imports that look like
                 // ../../packages/something/node_modules/something/index.js
                 // which is unfortunate, but not really a significant problem
+                // we also want to resolve it with node:module createRequire
+                // so that we'll get the cjs version
+                const resolvedFromImporterCjs = createRequire(args.importer).resolve(path)
                 return {
-                  path: nodePath.relative('.keystone', resolved.path),
+                  path: nodePath.relative('.keystone', resolvedFromImporterCjs),
                   external: true,
                 }
               }
