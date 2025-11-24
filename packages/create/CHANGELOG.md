@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 0.0.0-rc-20251124015533
+
+### Major Changes
+
+- [#9253](https://github.com/keystonejs/keystone/pull/9253) [`b7d0f1b`](https://github.com/keystonejs/keystone/commit/b7d0f1bc01764df7f92ca07289cbba30ad1b467f) Thanks [@dcousens](https://github.com/dcousens)! - Updates the `keystone-app` configuration to the newest major version
+
 ## 10.0.3
 
 ### Patch Changes
