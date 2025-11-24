@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import isDeepEqual from 'fast-deep-equal'
 
 import type { ListMeta, ListSortDescriptor } from '../../../../types'
 import {
@@ -63,14 +64,11 @@ export function useApolloQuery(args: {
   const manipulatedSearch =
     state.kind === 'one' && state.value?.label === debouncedSearch ? '' : debouncedSearch
 
-  // TODO: rewrite
+  const searchFilter = useSearchFilter(manipulatedSearch, list, searchFields)
   const _where = {
-    OR: useSearchFilter(manipulatedSearch, list, searchFields),
+    OR: searchFilter,
   }
-  // memo is used for referential stability, not for performance
-  const where = useMemo(() => {
-    return args.filter ? { AND: [_where, args.filter] } : _where
-  }, [args.filter, _where])
+  const where = args.filter ? { AND: [_where, args.filter] } : _where
 
   const orderBy = useMemo(() => {
     return args.sort ? { [args.sort.field]: args.sort.direction.toLowerCase() } : undefined
@@ -129,7 +127,7 @@ export function useApolloQuery(args: {
       !loading &&
       skip &&
       data.items.length < count &&
-      (lastFetchMore?.where !== where ||
+      (!isDeepEqual(lastFetchMore?.where, where) ||
         lastFetchMore?.list !== list ||
         lastFetchMore?.skip !== skip)
     ) {
