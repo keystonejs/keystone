@@ -161,3 +161,17 @@ export async function spawnCommand3(cwd: string, commands: string[], waitOn: str
     exited: exitPromise,
   }
 }
+
+// TODO: use elsewhere in tests
+export async function callGraphQL(query: string, variables?: Record<string, any>) {
+  const result = await fetch('http://localhost:3000/api/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  }).then(res => res.json())
+  expect(result.errors).toBeUndefined()
+  return result.data
+}

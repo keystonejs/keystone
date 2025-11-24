@@ -1,6 +1,6 @@
 import type { Browser, Page } from 'playwright'
 import { expect } from 'playwright/test'
-import { adminUITests } from './utils'
+import { adminUITests, callGraphQL } from './utils'
 
 const gql = ([str]: TemplateStringsArray) => str
 
@@ -77,6 +77,32 @@ adminUITests('./tests/test-projects/basic', browserType => {
     )
     await page.getByText('My task').waitFor()
     await expect(page.getByText('A task')).toBeHidden()
+  })
+
+  test("the combobox having to paginate doesn't break the page", async () => {
+    await callGraphQL(
+      gql`
+        mutation ($data: [PersonCreateInput!]!) {
+          createPeople(data: $data) {
+            id
+          }
+        }
+      `,
+      {
+        data: [
+          { name: 'User to pick' },
+          ...Array.from({ length: 100 }, (_, i) => ({ name: `User ${i}` })),
+        ],
+      }
+    )
+
+    await page.goto(`http://localhost:3000/tasks/create`)
+    await page.getByRole('textbox', { name: 'Label' }).fill('some task')
+    await page.getByRole('combobox', { name: 'Assigned To' }).click()
+    await page.getByRole('button', { name: 'Show suggestions Assigned To' }).click()
+    await page.getByText('User to pick').click()
+    await page.getByRole('button', { name: 'Create' }).click()
+    await expect(page.getByText('Task created')).toBeVisible()
   })
 
   afterAll(async () => {
