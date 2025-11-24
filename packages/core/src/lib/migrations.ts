@@ -65,9 +65,11 @@ export async function withMigrate<T>(
       },
     })
   } finally {
-    await (migrate.engine as any).initPromise
+    // @ts-expect-error
+    await migrate.engine.initPromise
     const closePromise = new Promise<void>(resolve => {
-      ;(migrate.engine as any).child.once('exit', resolve)
+      // @ts-expect-error
+      migrate.engine.child.once('exit', resolve)
     })
     migrate.stop()
     await closePromise
