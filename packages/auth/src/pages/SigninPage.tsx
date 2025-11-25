@@ -9,7 +9,7 @@ import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { gql, TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
@@ -46,7 +46,10 @@ function SigninPage({
           message
         }
       }
-    }`,
+    }` as TypedDocumentNode<
+      { authenticate: { __typename: string; item?: { id: string }; message?: string } },
+      { identity: string; secret: string }
+    >,
     {
       refetchQueries: ['KsFetchAdminMeta'],
     }
@@ -64,7 +67,7 @@ function SigninPage({
         },
       })
 
-      if (data.authenticate.item) {
+      if (data?.authenticate.item) {
         router.push('/')
       }
     } catch (e) {
@@ -106,7 +109,7 @@ function SigninPage({
             Sign in
           </Heading>
 
-          <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
+          <GraphQLErrorNotice errors={[error]} />
 
           {data?.authenticate?.__typename === failureTypename && (
             <Notice tone="critical">

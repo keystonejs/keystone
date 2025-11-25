@@ -53,12 +53,7 @@ function CreateItemPage({ listKey }: { listKey: string }) {
           */}
           <button type="submit" style={{ display: 'none' }} />
           <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
-            <GraphQLErrorNotice
-              errors={[
-                createItem?.error?.networkError,
-                ...(createItem?.error?.graphQLErrors ?? []),
-              ]}
-            />
+            <GraphQLErrorNotice errors={[createItem.error]} />
             <Fields {...createItem.props} />
           </VStack>
 

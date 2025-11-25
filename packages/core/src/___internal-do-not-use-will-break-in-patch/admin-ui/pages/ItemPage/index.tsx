@@ -20,7 +20,7 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, useMutation } from '../../../../admin-ui/apollo'
+import { CombinedGraphQLErrors, gql, useMutation } from '../../../../admin-ui/apollo'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
@@ -203,14 +203,16 @@ function ItemForm({
     setForceValidation(newForceValidation)
     if (newForceValidation) return
 
-    const { errors } = await update({
+    const { error: _error } = await update({
       variables: {
         id: itemId,
         data: serializeValueToOperationItem('update', list.fields, value, initialValue),
       },
     })
 
-    const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
+    const error = CombinedGraphQLErrors.is(_error)
+      ? _error.errors.find(x => x.path === undefined || x.path?.length === 1)
+      : _error
     if (error) {
       toastQueue.critical('Unable to save item', {
         actionLabel: 'Details',
@@ -240,12 +242,11 @@ function ItemForm({
         <button type="submit" style={{ display: 'none' }} />
         <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
           <GraphQLErrorNotice
-            errors={[
-              error?.networkError,
-              // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-              // which are handled seperately and do not indicate a failure to update the item
-              ...(error?.graphQLErrors.filter(x => x.path?.length === 1) ?? []),
-            ]}
+            errors={
+              CombinedGraphQLErrors.is(error)
+                ? error.errors.filter(x => x.path === undefined || x.path?.length === 1)
+                : [error]
+            }
           />
           <Fields
             view="itemView"
@@ -334,14 +335,21 @@ function ItemPage({ listKey }: ItemPageProps) {
     const isRequireds = Object.fromEntries(
       Object.entries(list.fields).map(([k, v]) => [k, v.itemView.isRequired])
     )
-    for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
-      if (!field.itemView) continue
+    for (const field of data?.keystone?.adminMeta?.list?.fields ?? []) {
+      if (
+        !field?.itemView ||
+        !field.key ||
+        !field.itemView.fieldMode ||
+        !field.itemView.fieldPosition ||
+        !field.itemView.isRequired
+      )
+        continue
       fieldModes[field.key] = field.itemView.fieldMode
       fieldPositions[field.key] = field.itemView.fieldPosition
       isRequireds[field.key] = field.itemView.isRequired
     }
-    for (const action of data?.keystone.adminMeta.list?.actions ?? []) {
-      if (!action.itemView) continue
+    for (const action of data?.keystone?.adminMeta?.list?.actions ?? []) {
+      if (!action?.itemView?.actionMode || !action.key) continue
       actionModes[action.key] = action.itemView.actionMode
     }
 
@@ -362,7 +370,7 @@ function ItemPage({ listKey }: ItemPageProps) {
       fieldPositions,
       isRequireds,
     }
-  }, [data?.keystone.adminMeta, list.fields])
+  }, [data?.keystone?.adminMeta, list.fields])
 
   function onAction(action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView
@@ -397,7 +405,7 @@ function ItemPage({ listKey }: ItemPageProps) {
       ) : (
         <ColumnLayout>
           <Box marginY="xlarge">
-            <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
+            <GraphQLErrorNotice errors={[error]} />
             {item == null &&
               (list.isSingleton ? (
                 itemId === '1' ? (

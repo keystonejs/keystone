@@ -1,4 +1,4 @@
-import { createUploadLink } from 'apollo-upload-client'
+import UploadLink from 'apollo-upload-client/UploadHttpLink.mjs'
 import NextHead from 'next/head'
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
@@ -17,13 +17,12 @@ import type {
   ListMeta,
 } from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
-import type { ApolloError, QueryResult } from './apollo'
-import { ApolloClient, ApolloProvider, InMemoryCache, gql, useQuery } from './apollo'
+import { ApolloClient, ApolloProvider, ErrorLike, InMemoryCache, gql, useQuery } from './apollo'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
   apiPath: string | null
-  error?: ApolloError | null
+  error?: ErrorLike | null
   fieldViews: FieldViews
   lists: { [list: string]: ListMeta }
 }
@@ -185,8 +184,7 @@ export function KeystoneProvider(props: KeystoneProviderProps) {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        uri: props.apiPath,
-        link: createUploadLink({
+        link: new UploadLink({
           uri: props.apiPath,
           headers: { 'Apollo-Require-Preflight': 'true' },
         }),
@@ -223,7 +221,7 @@ export function useField(listKey: string, fieldKey: string) {
 export function useListItem(
   listKey: string,
   itemId: string | null
-): QueryResult<
+): useQuery.Result<
   {
     item: Record<string, unknown> | null
     keystone: {

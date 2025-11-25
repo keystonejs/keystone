@@ -1,6 +1,6 @@
 import NextHead from 'next/head'
 
-import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { gql, TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'
@@ -34,7 +34,8 @@ function InitPage({
     CreateInitialInput,
     ItemAuthenticationWithPasswordSuccess: successTypename,
   } = authGqlNames
-  const [tryCreateItem, { loading, error, data }] = useMutation(gql`
+  const [tryCreateItem, { loading, error, data }] = useMutation(
+    gql`
     mutation KsAuthCreateFirstItem ($data: ${CreateInitialInput}!) {
       authenticate: ${createInitialItem}(data: $data) {
         ... on ${successTypename} {
@@ -43,7 +44,11 @@ function InitPage({
           }
         }
       }
-    }`)
+    }` as TypedDocumentNode<
+      { authenticate: { __typename: string; item: { id: string } } },
+      { data: Record<string, unknown> }
+    >
+  )
 
   const onSubmit = async (e: React.FormEvent) => {
     if (e.target !== e.currentTarget) return
@@ -97,7 +102,7 @@ function InitPage({
           <Heading elementType="h1" size="regular">
             Create your first user
           </Heading>
-          <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
+          <GraphQLErrorNotice errors={[error]} />
           <Fields {...builder.props} />
           <Button alignSelf="start" isPending={pending} prominence="high" type="submit">
             Get started

@@ -1,4 +1,9 @@
-import type { ServerError, ServerParseError } from '@apollo/client'
+import {
+  CombinedGraphQLErrors,
+  type ErrorLike,
+  type ServerError,
+  type ServerParseError,
+} from '@apollo/client'
 import type { GraphQLError, GraphQLFormattedError } from 'graphql'
 
 import { VStack } from '@keystar/ui/layout'
@@ -17,9 +22,16 @@ export function GraphQLErrorNotice({
     | GraphQLError
     | GraphQLFormattedError
     | Error
+    | ErrorLike
   )[]
 }) {
-  const errors = errors_.filter((x): x is NonNullable<typeof x> => !!x)
+  let errors = errors_.flatMap(x => {
+    if (!x) return []
+    if (CombinedGraphQLErrors.is(x)) {
+      return x.errors
+    }
+    return x
+  })
   if (!errors.length) return null
 
   return (
@@ -40,7 +52,13 @@ export function GraphQLErrorNotice({
                   )
                 }
 
-                if ('result' in error && typeof error.result !== 'string') {
+                if (
+                  'result' in error &&
+                  typeof error.result === 'object' &&
+                  error.result !== null &&
+                  'errors' in error.result &&
+                  Array.isArray(error.result.errors)
+                ) {
                   for (const { message } of error.result.errors) {
                     if (typeof message !== 'string') continue
                     yield (
