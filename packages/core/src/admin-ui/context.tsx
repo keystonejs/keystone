@@ -17,7 +17,14 @@ import type {
   ListMeta,
 } from '../types'
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
-import { ApolloClient, ApolloProvider, type ErrorLike, InMemoryCache, gql, useQuery } from './apollo'
+import {
+  ApolloClient,
+  ApolloProvider,
+  type ErrorLike,
+  InMemoryCache,
+  gql,
+  useQuery,
+} from './apollo'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
