@@ -6,7 +6,7 @@ import { useList } from '../../../../admin-ui/context'
 import type { controller } from '.'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
-import { gql, useQuery } from '../../../../admin-ui/apollo'
+import { gql, type TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo'
 import { Text } from '@keystar/ui/typography'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components'
 import { PaginationControls } from '../../../../___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/PaginationControls'
@@ -79,7 +79,15 @@ export function RelationshipTable({
               ${selectedGqlFields}
             }
           }
-        `
+        ` as TypedDocumentNode<
+        { items: Record<string, unknown>[] },
+        {
+          where: Record<string, any>
+          take: number
+          skip: number
+          orderBy: { [key: string]: 'asc' | 'desc' }[]
+        }
+      >
     }, [list, selectedFields]),
     {
       fetchPolicy: 'cache-and-network',
@@ -92,7 +100,9 @@ export function RelationshipTable({
         },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
-        orderBy: [{ [sort.column]: sort.direction === 'ascending' ? 'asc' : 'desc' }],
+        orderBy: [
+          { [sort.column]: sort.direction === 'ascending' ? ('asc' as const) : ('desc' as const) },
+        ],
       },
     }
   )
@@ -115,7 +125,7 @@ export function RelationshipTable({
               loading ? (
                 <ProgressCircle isIndeterminate />
               ) : error ? (
-                <GraphQLErrorNotice errors={[error.networkError, ...(error.graphQLErrors ?? [])]} />
+                <GraphQLErrorNotice errors={[error]} />
               ) : (
                 <EmptyState
                   icon={textSelectIcon}

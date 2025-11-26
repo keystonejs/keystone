@@ -11,13 +11,13 @@ import {
   useInvalidFields,
 } from '../../admin-ui/utils'
 import type { ListMeta } from '../../types'
-import { type ApolloError, gql, useMutation } from '../apollo'
+import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
   shouldPreventNavigation: boolean
-  error?: ApolloError
+  error?: ErrorLike
   props: ComponentProps<typeof Fields>
   create: () => Promise<{ id: string; label: string | null } | undefined>
 }
@@ -30,7 +30,10 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         id
         label: ${list.labelField}
       }
-    }`
+    }` as TypedDocumentNode<
+      { item: { id: string; label: string | null } },
+      { data: Record<string, unknown> }
+    >
   )
 
   const isRequireds = useMemo(
@@ -96,11 +99,12 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
               })
             }
           },
-        }).then(x => x.data)
+        }).then(x => {
+          if (x.data) return x.data
+          if (x.error) throw x.error
+          throw new Error('Something went wrong during item creation.')
+        })
       } catch {
-        // TODO: what about `error` returned from the mutation? do we need
-        // to handle that too, should they be combined? does this code path
-        // even happen?
         toastQueue.critical(`Unable to create ${list.singular.toLocaleLowerCase()}`)
         return
       }
@@ -122,7 +126,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
 
 type BuildItemHookResult = {
   state: 'editing'
-  error?: ApolloError
+  error?: ErrorLike
   props: ComponentProps<typeof Fields>
   build: () => Promise<Record<string, unknown> | undefined>
 }

@@ -9,7 +9,7 @@ import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, useQuery } from '../../../../admin-ui/apollo'
+import { gql, type TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui/context'
@@ -19,7 +19,7 @@ export function HomePage() {
   const visibleLists = Object.values(lists).filter(list => !list.hideNavigation)
   const LIST_COUNTS_QUERY = useMemo(
     () =>
-      gql(`
+      gql`
     query KsFetchListCounts {
       ${[
         ...(function* () {
@@ -29,7 +29,9 @@ export function HomePage() {
           }
         })(),
       ].join('\n')}
-    }`),
+    }` as TypedDocumentNode<{
+        [key: string]: number | null
+      }>,
     [visibleLists]
   )
 
@@ -46,14 +48,7 @@ export function HomePage() {
         Lists
       </Text>
       <VStack paddingY="xlarge">
-        <GraphQLErrorNotice
-          errors={[
-            metaError?.networkError,
-            countsError?.networkError,
-            ...(metaError?.graphQLErrors ?? []),
-            ...(countsError?.graphQLErrors ?? []),
-          ]}
-        />
+        <GraphQLErrorNotice errors={[metaError, countsError]} />
         <Grid
           autoRows="element.xlarge"
           columns={`repeat(

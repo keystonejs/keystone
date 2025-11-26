@@ -234,7 +234,7 @@
   },
   "dependencies": {
     "@apollo/cache-control-types": "^1.0.3",
-    "@apollo/client": "^3.12.2",
+    "@apollo/client": "^4.0.9",
     "@apollo/server": "^4.10.0",
     "@babel/runtime": "^7.24.7",
     "@graphql-ts/extend": "^2.0.0",
@@ -253,7 +253,7 @@
     "@react-aria/utils": "^3.25.1",
     "@react-stately/data": "^3.11.6",
     "@sindresorhus/slugify": "^3.0.0",
-    "apollo-upload-client": "^17.0.0",
+    "apollo-upload-client": "^19.0.0",
     "bcryptjs": "^3.0.0",
     "body-parser": "^2.0.0",
     "bytes": "^3.1.1",
@@ -287,7 +287,7 @@
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "@types/apollo-upload-client": "17.0.5",
+    "@types/apollo-upload-client": "19.0.0",
     "@types/body-parser": "^1.19.2",
     "@types/bytes": "^3.1.1",
     "@types/cors": "^2.8.13",

@@ -35,7 +35,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { TextLink } from '@keystar/ui/link'
 import { Notice } from '@keystar/ui/notice'
 import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
-import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import { CombinedGraphQLErrors, gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
@@ -541,7 +541,7 @@ function ListPage({ listKey }: ListPageProps) {
           </Flex>
         ) : null}
 
-        <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
+        <GraphQLErrorNotice errors={[error]} />
 
         <ActionBarContainer flex minHeight="scale.3000">
           <TableView
@@ -813,20 +813,23 @@ function ActionItemsDialog({
 
   async function onTryAction() {
     try {
-      const { errors } = await actionOnItems()
-      const countFail = errors?.length ?? 0
-      const countSuccess = itemIds.length - countFail
+      const { error } = await actionOnItems()
       const failed = new Set<string>()
       const actionErrors: ActionErrors = {}
-      for (const error of errors ?? []) {
-        const i = error.path?.[1]
-        if (typeof i !== 'number') continue
-        const itemId = itemIds[i]
+      let countFail = 0
+      if (CombinedGraphQLErrors.is(error)) {
+        countFail = error.errors.length
+        for (const err of error.errors ?? []) {
+          const i = err.path?.[1]
+          if (typeof i !== 'number') continue
+          const itemId = itemIds[i]
 
-        failed.add(itemId)
-        actionErrors[itemId] ??= []
-        actionErrors[itemId].push(error)
+          failed.add(itemId)
+          actionErrors[itemId] ??= []
+          actionErrors[itemId].push(err)
+        }
       }
+      const countSuccess = itemIds.length - countFail
 
       if (countSuccess) {
         toastQueue.neutral(

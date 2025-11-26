@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
 import { Heading } from '@keystar/ui/typography'
-import { ApolloClient, gql, InMemoryCache, useSubscription, HttpLink } from '@apollo/client'
+import { ApolloClient, gql, InMemoryCache, HttpLink, type TypedDocumentNode } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { css } from '@emotion/css'
@@ -25,7 +26,7 @@ const TIME = gql`
       iso
     }
   }
-`
+` as TypedDocumentNode<{ time: { iso: string } }>
 
 // Setup the Post subscriptions
 const POST_PUBLISHED = gql`
@@ -39,7 +40,9 @@ const POST_PUBLISHED = gql`
       }
     }
   }
-`
+` as TypedDocumentNode<{
+  postPublished: { id: string; title: string; content: string; author: { name: string } }
+}>
 
 const POST_UPDATED = gql`
   subscription POST_UPDATED {
@@ -52,7 +55,9 @@ const POST_UPDATED = gql`
       }
     }
   }
-`
+` as TypedDocumentNode<{
+  postUpdated: { id: string; title: string; content: string; author: { name: string } }
+}>
 
 // Setup a backup http link for Apollo
 const httpLink = new HttpLink({
@@ -89,16 +94,16 @@ export default function CustomPage() {
   // Subscribe to `time` [using the Apollo client above]
   const { data, loading } = useSubscription(TIME, {
     client: subClient,
-    onSubscriptionData: ({ subscriptionData }) => {
-      appendTime(JSON.stringify(subscriptionData.data.time))
+    onData: ({ data }) => {
+      appendTime(JSON.stringify(data.data?.time))
     },
   })
 
   // Subscribe to `postPublished`
   const { data: updatedPostData, loading: updatedPostLoading } = useSubscription(POST_UPDATED, {
     client: subClient,
-    onSubscriptionData: ({ subscriptionData }) => {
-      setUpdatedPostRows([...updatedPostRows, JSON.stringify(subscriptionData.data.postUpdated)])
+    onData: ({ data }) => {
+      setUpdatedPostRows([...updatedPostRows, JSON.stringify(data?.data?.postUpdated)])
     },
   })
 
@@ -107,11 +112,8 @@ export default function CustomPage() {
     POST_PUBLISHED,
     {
       client: subClient,
-      onSubscriptionData: ({ subscriptionData }) => {
-        setPublishedPostRows([
-          ...publishedPostRows,
-          JSON.stringify(subscriptionData.data.postPublished),
-        ])
+      onData: ({ data }) => {
+        setPublishedPostRows([...publishedPostRows, JSON.stringify(data?.data?.postPublished)])
       },
     }
   )
@@ -123,6 +125,7 @@ export default function CustomPage() {
           <h4> Current Time </h4>
           <div>
             {!loading &&
+              !!data?.time?.iso &&
               new Date(data?.time?.iso).toLocaleDateString() +
                 ' ' +
                 new Date(data?.time?.iso).toLocaleTimeString()}

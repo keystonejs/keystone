@@ -5,7 +5,12 @@ import { Divider } from '@keystar/ui/layout'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 
-import { useQuery, useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
+import {
+  useQuery,
+  useMutation,
+  gql,
+  type TypedDocumentNode,
+} from '@keystone-6/core/admin-ui/apollo'
 import {
   DeveloperResourcesMenu,
   NavList,
@@ -67,7 +72,7 @@ const END_SESSION = gql`
   mutation KsAuthEndSession {
     endSession
   }
-`
+` as TypedDocumentNode<{ endSession: boolean }>
 
 function SignoutButton({ authItemLabel }: { authItemLabel: string }) {
   const router = useRouter()

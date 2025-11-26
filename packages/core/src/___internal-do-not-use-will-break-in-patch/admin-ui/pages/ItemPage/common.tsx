@@ -11,7 +11,7 @@ import { Grid, HStack } from '@keystar/ui/layout'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
-import { gql, useApolloClient } from '../../../../admin-ui/apollo'
+import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo'
 import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
 import type { ActionMeta, ListMeta } from '../../../../types'
@@ -29,7 +29,7 @@ export function ItemPageHeader({
   item: Record<string, unknown> | null
   label: string
   title: string
-  onAction: ((action: ActionMeta, resultId: string) => void) | null
+  onAction: ((action: ActionMeta, resultId: string | null) => void) | null
 }) {
   const router = useRouter()
 
@@ -102,7 +102,7 @@ function ItemActions({
   list: ListMeta
   item: Record<string, unknown>
   actions: ActionMeta[]
-  onAction: (action: ActionMeta, resultId: string) => void
+  onAction: (action: ActionMeta, resultId: string | null) => void
 }) {
   const apolloClient = useApolloClient()
   const actionItems = useMemo(
@@ -140,15 +140,15 @@ function ItemActions({
             result: ${action.graphql.names.one}(where: { id: $id }) {
               id
             }
-          }`,
-        variables: { id: item.id },
+          }` as TypedDocumentNode<{ result: { id: string } }, { id: string }>,
+        variables: { id: item.id as string },
       })
 
       if (!action.itemView.hideToast) {
         toastQueue.neutral(replace(m.success, list, { itemLabel }), { timeout: 5000 })
       }
 
-      onAction(action, data.data?.result?.id)
+      onAction(action, data.data?.result?.id ?? null)
     } catch (error: any) {
       toastQueue.critical(replace(m.fail, list, { itemLabel }), {
         actionLabel: 'Details',
