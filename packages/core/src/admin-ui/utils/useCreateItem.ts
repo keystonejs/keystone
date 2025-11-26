@@ -11,7 +11,7 @@ import {
   useInvalidFields,
 } from '../../admin-ui/utils'
 import type { ListMeta } from '../../types'
-import { ErrorLike, gql, TypedDocumentNode, useMutation } from '../apollo'
+import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo'
 import { usePreventNavigation } from './usePreventNavigation'
 
 type CreateItemHookResult = {

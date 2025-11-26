@@ -9,7 +9,7 @@ import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo'
+import { gql, type TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui/context'

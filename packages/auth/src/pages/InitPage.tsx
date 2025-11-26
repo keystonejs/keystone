@@ -1,6 +1,6 @@
 import NextHead from 'next/head'
 
-import { gql, TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'

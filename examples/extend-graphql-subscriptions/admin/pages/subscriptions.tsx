@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
 import { Heading } from '@keystar/ui/typography'
-import { ApolloClient, gql, InMemoryCache, HttpLink, TypedDocumentNode } from '@apollo/client'
+import { ApolloClient, gql, InMemoryCache, HttpLink, type TypedDocumentNode } from '@apollo/client'
 import { useSubscription } from '@apollo/client/react'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'

@@ -9,7 +9,7 @@ import { Content } from '@keystar/ui/slots'
 import { TextField } from '@keystar/ui/text-field'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import { gql, TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
