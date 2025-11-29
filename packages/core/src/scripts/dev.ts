@@ -19,6 +19,7 @@ import {
 } from '../artifacts'
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer'
 import { createExpressServer } from '../lib/express'
+import { SchemaRefreshServer } from '../lib/schemaRefresh'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
 import { withMigrate } from '../lib/migrations'
 import { confirmPrompt } from '../lib/prompts'
@@ -142,6 +143,7 @@ export async function dev(
   const httpServer = app ? createServer(app) : null
   let expressServer: express.Express | null = null
   let hasAddedAdminUIMiddleware = false
+  let schemaRefreshServer: SchemaRefreshServer | null = null
   const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware)
 
   const initKeystone = async () => {
@@ -247,10 +249,11 @@ export async function dev(
           }
 
           log('✨ Creating server')
-          const { apolloServer, expressServer } = await createExpressServer(
+          const { apolloServer, expressServer, schemaRefreshServer: newSchemaRefreshServer } = await createExpressServer(
             system.config,
             keystone.context
           )
+          schemaRefreshServer = newSchemaRefreshServer
           log(`✅ GraphQL API ready`)
 
           return {
@@ -363,6 +366,13 @@ export async function dev(
             expressServer = servers.expressServer
             const prevApolloServer = lastApolloServer
             lastApolloServer = servers.apolloServer
+            // Update schema refresh server
+            if (schemaRefreshServer) {
+              schemaRefreshServer.stop()
+            }
+            schemaRefreshServer = servers.schemaRefreshServer
+            // Notify clients about schema change
+            schemaRefreshServer.notifySchemaChange()
             await prevApolloServer.stop()
           }
         }

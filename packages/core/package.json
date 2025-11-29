@@ -283,7 +283,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resolve": "^1.20.0",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",

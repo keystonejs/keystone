@@ -1999,6 +1999,9 @@ importers:
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
+      ws:
+        specifier: ^8.14.2
+        version: 8.18.3
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^

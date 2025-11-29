@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app'
 import type { AdminConfig, FieldViews } from '../../../../types'
 import { ErrorBoundary } from '../../../../admin-ui/components'
 import { KeystoneProvider } from '../../../../admin-ui/context'
+import { SchemaRefreshListener } from './SchemaRefreshListener'
 
 type AppConfig = {
   adminConfig: AdminConfig
@@ -14,6 +15,7 @@ export const getApp =
   ({ Component, pageProps }: AppProps) => {
     return (
       <KeystoneProvider {...props}>
+        <SchemaRefreshListener />
         <ErrorBoundary>
           <Component {...pageProps} />
         </ErrorBoundary>

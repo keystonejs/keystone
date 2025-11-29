@@ -10,6 +10,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneContext, KeystoneConfig } from '../types'
+import { createSchemaRefreshServer, SchemaRefreshServer } from './schemaRefresh'
 
 /*
 NOTE: This creates the main Keystone express server, including the
@@ -57,9 +58,12 @@ export async function createExpressServer(
   expressServer: express.Express
   apolloServer: ApolloServer<KeystoneContext>
   httpServer: Server
+  schemaRefreshServer: SchemaRefreshServer
 }> {
   const expressServer = express()
   const httpServer = createServer(expressServer)
+  const schemaRefreshServer = createSchemaRefreshServer()
+  schemaRefreshServer.start(httpServer)
 
   if (config.server.cors !== null) {
     expressServer.use(cors(config.server.cors))
@@ -105,5 +109,5 @@ export async function createExpressServer(
     })
   )
 
-  return { expressServer, apolloServer, httpServer }
+  return { expressServer, apolloServer, httpServer, schemaRefreshServer }
 }
