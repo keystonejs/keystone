@@ -1,0 +1,15 @@
+{
+  "name": "usecase-rbac",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "../../packages/core/bin/cli.js dev",
+    "start": "../../packages/core/bin/cli.js start",
+    "build": "../../packages/core/bin/cli.js build",
+    "postinstall": "../../packages/core/bin/cli.js postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "file:../..",
+    "@prisma/client": "5.19.1"
+  }
+}

@@ -7,3 +7,5 @@ export type { ListConfig, BaseFields } from './types'
 // if this was an explicit list, it would change the re-export here
 // rather than the usage in their project
 export * from './types/schema'
+// 导出RBAC功能
+export * from './access-rbac'
