@@ -87,7 +87,7 @@
     "@react-stately/list": "^3.10.8",
     "@react-stately/overlays": "^3.6.10",
     "@react-aria/utils": "^3.25.1",
-    "@types/react": "^19.0.0",
+    "@types/react": "^19.2.7",
     "graphql": "^16.8.1",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^8.0.0",
