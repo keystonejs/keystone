@@ -23,15 +23,15 @@
     "graphql": "^16.8.1",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
-    "next": "^15.5.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^15.5.7",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
-    "@types/react-dom": "^19.0.0",
+    "@types/react-dom": "^19.2.1",
     "prisma": "6.5.0",
-    "react": "^19.0.0",
+    "react": "^19.2.1",
     "typescript": "^5.5.0"
   }
 }

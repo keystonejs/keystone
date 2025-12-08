@@ -13,7 +13,8 @@
     "@keystar/ui": "^0.7.16",
     "@keystone-6/core": "^6.5.1",
     "@prisma/client": "6.5.0",
-    "react": "^19.0.0"
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
     "prisma": "6.5.0",
