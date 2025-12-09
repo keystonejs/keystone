@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { text, timestamp } from '@keystone-6/core/fields'
+import { password, text, timestamp } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 
 import { type Lists } from '.keystone/types'
@@ -15,6 +15,11 @@ export const lists = {
 
     fields: {
       name: text({ validation: { isRequired: true } }),
+      email: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
+      }),
+      password: password(),
       about: document({
         formatting: true,
         dividers: true,

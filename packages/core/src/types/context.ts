@@ -1,15 +1,26 @@
-import type { IncomingMessage, ServerResponse } from 'http'
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists'
-import type { SessionStrategy } from './session'
 import type { BaseKeystoneTypeInfo, BaseListTypeInfo } from './type-info'
 import type { MaybePromise } from './utils'
+import type { IncomingMessage, OutgoingMessage } from 'node:http'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+  req?: { headers: Headers; nodeReq?: IncomingMessage }
+  res?: { headers: Headers }
   db: KeystoneDbAPI<TypeInfo['lists']>
   query: KeystoneListsAPI<TypeInfo['lists']>
   graphql: KeystoneGraphQLAPI
+  sudo: () => KeystoneContext<TypeInfo>
+  withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
+  withNodeRequest: (
+    req: IncomingMessage,
+    res?: OutgoingMessage
+  ) => Promise<KeystoneContext<TypeInfo>>
+  withRequest: (
+    req: NonNullable<KeystoneContext<TypeInfo>['req']>,
+    res?: KeystoneContext<TypeInfo>['res']
+  ) => Promise<KeystoneContext<TypeInfo>>
   prisma: TypeInfo['prisma']
   transaction: <T>(
     f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>,
@@ -22,9 +33,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
     }
   ) => Promise<T>
 
-  req?: IncomingMessage
-  res?: ServerResponse
-  sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>
   session?: TypeInfo['session']
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>

@@ -30,9 +30,10 @@ export function createAdminUIMiddlewareWithNextApp(
     try {
       // do nothing if this is a public page
       const isPublicPage = publicPages.includes(pathname!)
-      const context = await commonContext.withRequest(req, res)
+      const context = await commonContext.withNodeRequest(req)
       const wasAccessAllowed = isPublicPage ? true : await isAccessAllowed(context)
       const shouldRedirect = await pageMiddleware?.({
+        url: req.url,
         context,
         wasAccessAllowed,
         basePath,

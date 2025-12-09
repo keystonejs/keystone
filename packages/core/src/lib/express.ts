@@ -100,7 +100,7 @@ export async function createExpressServer(
     },
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
-        return await context.withRequest(req, res)
+        return await context.withNodeRequest(req, res)
       },
     })
   )

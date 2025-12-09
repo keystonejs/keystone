@@ -48,32 +48,23 @@ async function jwtVerify(token: string): Promise<OurJWTClaims | null> {
   })
 }
 
-const jwtSessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
-    if (!context.req) return
+async function jwtSessionStrategy({ context }: { context: Context }): Promise<Session | undefined> {
+  if (!context.req) return
 
-    const { cookie = '' } = context.req.headers
-    const [cookieName, jwt] = cookie.split('=')
-    if (cookieName !== 'user') return
+  const cookie = context.req.headers.get('cookie') ?? ''
+  const [cookieName, jwt] = cookie.split('=')
+  if (cookieName !== 'user') return
 
-    const jwtResult = await jwtVerify(jwt)
-    if (!jwtResult) return
+  const jwtResult = await jwtVerify(jwt)
+  if (!jwtResult) return
 
-    const { id } = jwtResult
-    const who = await context.sudo().db.User.findOne({ where: { id } })
-    if (!who) return
-    return {
-      id,
-      admin: who.admin,
-    }
-  },
-
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
-  async start() {},
-  async end() {},
+  const { id } = jwtResult
+  const who = await context.sudo().db.User.findOne({ where: { id } })
+  if (!who) return
+  return {
+    id,
+    admin: who.admin,
+  }
 }
 
 export default config<TypeInfo>({
