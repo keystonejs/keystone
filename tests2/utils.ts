@@ -1,8 +1,9 @@
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import { readdirSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import path, { join } from 'node:path'
+import path, { dirname, join } from 'node:path'
 import { after } from 'node:test'
 
 import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
@@ -82,6 +83,27 @@ async function getTestPrismaModule(prismaSchemaPath: string, schema: string) {
     .get(schema)!
 }
 
+function resolveDatabaseUrl (url: string, schema: string, cwd: string) {
+  if (!url) throw new TypeError('Missing DATABASE_URL')
+  if (url.startsWith('file:')) {
+    url = `file:${join(cwd, 'test.db')}` // unique files
+  }
+
+  if (url.startsWith('postgres:')) {
+    const parsed = new URL(url)
+    parsed.searchParams.set('schema', schema) // unique schemas
+    url = parsed.toString()
+  }
+
+  if (url.startsWith('mysql:')) {
+    const parsed = new URL(url)
+    parsed.pathname = schema // unique names
+    url = parsed.toString()
+  }
+
+  return url
+}
+
 type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<
   KeystoneConfigPre<TypeInfo>,
   'db'
@@ -104,25 +126,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     await fs.mkdir(cwd)
   }
 
-  let dbUrl = process.env.DATABASE_URL
-  if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
-
-  if (dbUrl.startsWith('file:')) {
-    dbUrl = `file:${join(cwd, 'test.db')}` // unique database files
-  }
-
-  if (dbUrl.startsWith('postgres:')) {
-    const parsed = new URL(dbUrl)
-    parsed.searchParams.set('schema', random.replace(/^pg_/g, 'p__')) // unique schema names, ^pg_ is reserved by postgres
-    dbUrl = parsed.toString()
-  }
-
-  if (dbUrl.startsWith('mysql:')) {
-    const parsed = new URL(dbUrl)
-    parsed.pathname = random // unique database names
-    dbUrl = parsed.toString()
-  }
-
+  const dbUrl = resolveDatabaseUrl(process.env.DATABASE_URL ?? '', random, cwd)
   const system = createSystem(
     wrap(
       config({
@@ -176,6 +180,77 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     config: system.config,
     disconnect,
   } as const
+}
+
+async function symlinkKeystoneDeps (cwd: string) {
+  for (const pkg of [
+    '@keystone-6/core',
+    '@prisma/engines',
+    '@prisma/client',
+    '@prisma/internals',
+    'next',
+    'prisma',
+    'react',
+    'react-dom',
+    'typescript',
+    '@types/react',
+    '@types/node',
+  ]) {
+    const targetPath = dirname(require.resolve(`${pkg}/package.json`))
+    const outputPath = path.join(cwd, `node_modules/${pkg}`)
+    await fs.mkdir(dirname(outputPath), { recursive: true })
+
+    const symlinkType = (await fs.stat(targetPath)).isDirectory() ? 'dir' : 'file'
+    await fs.symlink(targetPath, outputPath, symlinkType)
+  }
+}
+
+export async function spawnTestEnv(
+  files: { [path: string]: string },
+  commands: string[] = [],
+  env: Record<string, string> = {},
+  setupDatabase: boolean = false,
+) {
+  const random = randomBytes(10).toString('base64url').toLowerCase()
+    .replace(/^pg_/g, 'p__') // ^pg_ is reserved by postgres
+
+  const cwd = join(tmpdir(), `ks6-tests-${random}`)
+  try {
+    await fs.mkdir(cwd)
+  } catch (err) {
+    if ((err as any).code !== 'EEXIST') throw err
+    await fs.rm(cwd, { recursive: true })
+    await fs.mkdir(cwd)
+  }
+
+  for (const [path, contents] of Object.entries(files)) {
+    await fs.writeFile(join(cwd, path), contents)
+  }
+
+  const dbUrl = resolveDatabaseUrl(process.env.DATABASE_URL ?? '', random, cwd)
+  if (setupDatabase) await createDatabase(dbUrl, cwd)
+
+  await symlinkKeystoneDeps(cwd)
+  const binPath = require.resolve('@keystone-6/core/bin/cli.js')
+
+  return spawn('/opt/homebrew/bin/node', [binPath, ...commands], {
+    cwd,
+    env: {
+      NODE_ENV: 'test',
+      DATABASE_URL: dbUrl,
+      ...env,
+    },
+    detached: false,
+  })
+}
+
+export function collect (stream: NodeJS.ReadableStream) {
+  const chunks: Buffer[] = []
+  return new Promise<Buffer>((resolve, reject) => {
+    stream.on('data', (chunk: Buffer) => chunks.push(chunk))
+    stream.on('end', () => resolve(Buffer.concat(chunks)))
+    stream.on('error', reject)
+  })
 }
 
 export function setupTestSuite<TypeInfo extends BaseKeystoneTypeInfo>({

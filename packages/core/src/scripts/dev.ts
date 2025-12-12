@@ -46,6 +46,17 @@ function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
   }
 }
 
+function maybePrint (context: string, list: string[]) {
+  if (!list.length) return
+  console.error()
+  console.error(context)
+  console.error()
+  for (const item of list) {
+    console.error(`  • ${item}`)
+  }
+  console.error()
+}
+
 function resolvablePromise<T>() {
   let _resolve!: (value: T) => void
   const promise: any = new Promise<T>(resolve => {
@@ -173,19 +184,8 @@ export async function dev(
 
               // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
               if (migration_.unexecutable.length) {
-                console.error(
-                  `${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`
-                )
-                for (const item of migration_.unexecutable) {
-                  console.error(`  • ${item}`)
-                }
-
-                if (migration_.warnings.length) {
-                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
-                  for (const warning of migration_.warnings) {
-                    console.error(`  • ${warning}`)
-                  }
-                }
+                maybePrint(chalk.bold.red('⚠️ Some changes cannot be executed:'), migration_.unexecutable)
+                maybePrint(chalk.bold('⚠️  Warnings:'), migration_.warnings)
 
                 console.error('\nTo apply this migration, we need to reset the database')
                 if (
@@ -202,12 +202,7 @@ export async function dev(
               }
 
               if (migration_.warnings.length) {
-                if (migration_.warnings.length) {
-                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
-                  for (const warning of migration_.warnings) {
-                    console.error(`  • ${warning}`)
-                  }
-                }
+                maybePrint(chalk.bold('⚠️  Warnings:'), migration_.warnings)
 
                 if (
                   !(await confirmPrompt(

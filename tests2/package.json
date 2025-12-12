@@ -7,6 +7,9 @@
     "@prisma/client": "6.5.0",
     "@prisma/engines": "6.5.0",
     "@prisma/internals": "6.5.0",
-    "prisma": "6.5.0"
+    "next": "^15.5.2",
+    "prisma": "6.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

@@ -11,7 +11,6 @@ export default config({
     url: 'file:./app.db',
     prismaClientPath: 'node_modules/.testprisma/client',
   },
-  ui: { isDisabled: true },
   lists: {
     Todo: list({
       access: allowAll,
@@ -20,4 +19,5 @@ export default config({
       },
     }),
   },
+  ui: { isDisabled: true },
 })
