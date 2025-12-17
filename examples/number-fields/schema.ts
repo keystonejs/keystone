@@ -12,16 +12,19 @@ export const lists = {
     fields: {
       bigInt: bigInt(),
       bigIntDefaulted: bigInt({ defaultValue: 123n }),
-      bigIntIncremented: bigInt({
-        defaultValue: { kind: 'autoincrement' },
-      }),
+      // bigIntIncrementing: bigInt({ // WARNING: not supported by SQLite
+      //  defaultValue: { kind: 'autoincrement' },
+      // }),
       float: float(),
       floatDefaulted: float({ defaultValue: 456.321 }),
       integer: integer(),
       integerDefaulted: integer({ defaultValue: 789 }),
-      integerIncremented: integer({
-        defaultValue: { kind: 'autoincrement' },
-      }),
+      // integerIncrementing: integer({ // WARNING: not supported by SQLite
+      //   defaultValue: { kind: 'autoincrement' },
+      //   db: {
+      //     isNullable: false
+      //   },
+      // }),
       maximum: virtual({
         field: g.field({
           type: g.Int,
