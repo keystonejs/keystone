@@ -64,7 +64,7 @@ export function bigInt<ListTypeInfo extends BaseListTypeInfo>(
         )
       }
     }
-    if (
+    if ( // TODO: prefer typescript only?
       defaultValue !== null &&
       defaultValue !== 'autoincrement' &&
       typeof defaultValue !== 'bigint'
