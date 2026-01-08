@@ -1,3 +1,4 @@
+import { g } from '../../..'
 import type { SimpleFieldTypeInfo } from '../../../types'
 import {
   type BaseListTypeInfo,
@@ -6,9 +7,8 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../../../types'
-import { g } from '../../..'
 import { filters } from '../../filters'
-import { resolveDbNullable, makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
+import { defaultIsRequired, makeValidateHook } from '../../non-null-graphql'
 import type { controller } from './views'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
@@ -43,22 +43,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
     typeof defaultValue_ === 'number' ? defaultValue_ : (defaultValue_?.kind ?? null)
 
   return meta => {
-    if (defaultValue === 'autoincrement') {
-      if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
-        throw new Error(
-          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
-        )
-      }
-      const isNullable = resolveDbNullable(validation, config.db)
-      if (isNullable !== false) {
-        throw new Error(
-          `${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
-            `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
-            `https://github.com/prisma/prisma/issues/8663`
-        )
-      }
-    }
-    if (defaultValue !== null && !Number.isInteger(defaultValue)) {
+    if (typeof defaultValue === 'number' && !Number.isInteger(defaultValue)) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
       )
@@ -108,7 +93,8 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
               }
             }
           }
-        : undefined
+        : undefined,
+      defaultValue !== null,
     )
 
     return fieldType({
@@ -144,7 +130,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
           }),
           resolve(value) {
             if (value === undefined) {
-              if (defaultValue === 'autoincrement') return null
+              if (defaultValue === 'autoincrement') return undefined
               return defaultValue
             }
             return value
