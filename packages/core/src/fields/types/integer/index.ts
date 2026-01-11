@@ -94,7 +94,7 @@ export function integer<ListTypeInfo extends BaseListTypeInfo>(
             }
           }
         : undefined,
-      defaultValue !== null,
+      defaultValue !== null
     )
 
     return fieldType({

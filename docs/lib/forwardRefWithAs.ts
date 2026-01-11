@@ -22,7 +22,7 @@ type AsProp<Comp extends ElementType> = {
 } & Omit<ComponentPropsWithoutRef<Comp>, 'as'>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = {
-  displayName?: string
+  displayName?: string;
   <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement
 }
 
