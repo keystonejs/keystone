@@ -37,11 +37,12 @@ export function makeValidateHook<ListTypeInfo extends BaseListTypeInfo>(
       validate?: FieldHooks<ListTypeInfo, any>['validate']
     }
   },
-  f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>
+  f?: ValidateFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', BaseFieldTypeInfo>,
+  hasPrismaDefaultValue: boolean = false
 ) {
   const dbNullable = resolveDbNullable(config.validation, config.db)
   const mode = dbNullable ? ('optional' as const) : ('required' as const)
-  const valueRequired = config.validation?.isRequired || !dbNullable
+  const valueRequired = (config.validation?.isRequired || !dbNullable) && !hasPrismaDefaultValue
 
   assertReadIsNonNullAllowed(meta, config, dbNullable)
   const addValidation = config.db?.isNullable === false || config.validation?.isRequired
