@@ -2079,8 +2079,8 @@ importers:
         specifier: ^7.24.7
         version: 7.28.6
       '@braintree/sanitize-url':
-        specifier: 7.0.4
-        version: 7.0.4
+        specifier: 7.1.2
+        version: 7.1.2
       '@emotion/weak-memoize':
         specifier: ^0.4.0
         version: 0.4.0
@@ -3462,8 +3462,8 @@ packages:
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
 
-  '@braintree/sanitize-url@7.0.4':
-    resolution: {integrity: sha512-hPYRrKFoI+nuckPgDJfyYAkybFvheo4usS0Vw0HNAe+fmGBQA5Az37b/yStO284atBoqqdOUhKJ3d9Zw3PQkcQ==}
+  '@braintree/sanitize-url@7.1.2':
+    resolution: {integrity: sha512-jigsZK+sMF/cuiB7sERuo9V7N9jx+dhmHHnQyDSVdpZwVutaBu7WvNYqMDLSgFgfB30n452TP3vjDAvFC973mA==}
 
   '@changesets/apply-release-plan@7.0.14':
     resolution: {integrity: sha512-ddBvf9PHdy2YY0OUiEl3TV78mH9sckndJR14QAt87KLEbIov81XO0q0QAmvooBxXlqRRP8I9B7XOzZwQG7JkWA==}
@@ -14417,7 +14417,7 @@ snapshots:
 
   '@braintree/sanitize-url@6.0.4': {}
 
-  '@braintree/sanitize-url@7.0.4': {}
+  '@braintree/sanitize-url@7.1.2': {}
 
   '@changesets/apply-release-plan@7.0.14':
     dependencies:

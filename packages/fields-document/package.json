@@ -78,7 +78,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@braintree/sanitize-url": "7.0.4",
+    "@braintree/sanitize-url": "7.1.2",
     "@emotion/weak-memoize": "^0.4.0",
     "@keystar/ui": "^0.7.16",
     "@keystone-6/document-renderer": "workspace:^",
