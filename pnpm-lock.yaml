@@ -2148,8 +2148,8 @@ importers:
         specifier: ^0.113.1
         version: 0.113.1(slate@0.120.0)
       slate-react:
-        specifier: ^0.120.0
-        version: 0.120.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.123.0(slate@0.120.0))(slate@0.120.0)
+        specifier: ^0.123.0
+        version: 0.123.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.123.0(slate@0.120.0))(slate@0.120.0)
       zod:
         specifier: ^4.0.0
         version: 4.3.6
@@ -11652,13 +11652,13 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-react@0.120.0:
-    resolution: {integrity: sha512-CMEJzozriddBjVmbxNvc2erCkXUuEkgdXIdM+jEMvxWMb51z0zhIVzgoxbGprVpzwBXY8Kv7aZOUDVMomzWH/g==}
+  slate-react@0.123.0:
+    resolution: {integrity: sha512-nQwXL1FEacrY9ZFmatRhoBnsySNUX2x6qB77V3oNHd7wWxBJWuzz4GMrBXcVoRE8Gac7Angf8xaNGzb6zcPlHg==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
-      slate: '>=0.114.0'
-      slate-dom: '>=0.119.0'
+      slate: '>=0.121.0'
+      slate-dom: '>=0.119.1'
 
   slate-react@0.91.11:
     resolution: {integrity: sha512-2nS29rc2kuTTJrEUOXGyTkFATmTEw/R9KuUXadUYiz+UVwuFOUMnBKuwJWyuIBOsFipS+06SkIayEf5CKdARRQ==}
@@ -25168,7 +25168,7 @@ snapshots:
       is-plain-object: 5.0.0
       slate: 0.120.0
 
-  slate-react@0.120.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.123.0(slate@0.120.0))(slate@0.120.0):
+  slate-react@0.123.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.123.0(slate@0.120.0))(slate@0.120.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
