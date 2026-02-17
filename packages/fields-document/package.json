@@ -108,8 +108,8 @@
     "@keystone-6/core": "workspace:^",
     "@testing-library/react": "^16.0.0",
     "@types/is-hotkey": "^0.1.7",
-    "jest-diff": "^29.0.0",
-    "pretty-format": "^29.0.0",
+    "jest-diff": "^30.0.0",
+    "pretty-format": "^30.0.0",
     "slate-hyperscript": "^0.100.0"
   },
   "peerDependencies": {
