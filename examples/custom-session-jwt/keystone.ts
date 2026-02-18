@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { config } from '@keystone-6/core'
-import { lists, type Session } from './schema'
-import type { Context, TypeInfo } from '.keystone/types'
+import { lists } from './schema'
+import type { Context, TypeInfo, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted

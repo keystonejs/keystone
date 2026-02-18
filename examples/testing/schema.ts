@@ -2,13 +2,15 @@ import { list } from '@keystone-6/core'
 import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields'
 import { select } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
-import type { Lists } from '.keystone/types'
+import type { Lists, Session } from '.keystone/types'
 
 // needs to be compatible with withAuth
-export type Session = {
-  listKey: string
-  itemId: string
-  data: {}
+declare module '.keystone/types' {
+  interface Session {
+    listKey: string
+    itemId: string
+    data: {}
+  }
 }
 
 function isAssignedUserFilter({ session }: { session?: Session }) {
@@ -56,4 +58,4 @@ export const lists = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists

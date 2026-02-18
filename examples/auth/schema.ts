@@ -1,16 +1,17 @@
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text, checkbox, password } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import type { Lists, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
-
-export type Session = {
-  itemId: string
-  data: {
-    isAdmin: boolean
+declare module '.keystone/types' {
+  interface Session {
+    itemId: string
+    data: {
+      isAdmin: boolean
+    }
   }
 }
 
@@ -156,4 +157,4 @@ export const lists = {
       }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists

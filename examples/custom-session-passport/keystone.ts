@@ -3,9 +3,9 @@ import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { type TypeInfo } from '.keystone/types'
 import { lists } from './schema'
-import { type Session, session, passportMiddleware } from './auth'
+import { session, passportMiddleware } from './auth'
 
-export default config<TypeInfo<Session>>({
+export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
