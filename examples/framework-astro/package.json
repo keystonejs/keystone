@@ -16,13 +16,13 @@
   "dependencies": {
     "@astrojs/node": "^8.3.2",
     "@keystone-6/core": "^6.5.1",
-    "@prisma/client": "6.5.0",
+    "@prisma/client": "6.16.1",
     "astro": "^4.12.3"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
-    "@types/react-dom": "^19.0.0",
-    "prisma": "6.5.0",
+    "@types/react-dom": "^19.2.3",
+    "prisma": "6.16.1",
     "react": "^19.2.1",
     "typescript": "^5.9.0"
   }

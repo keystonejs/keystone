@@ -10,17 +10,17 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.5.1",
-    "@prisma/client": "6.5.0",
-    "bytes": "^3.1.1",
     "@aws-sdk/client-s3": "^3.83.0",
     "@aws-sdk/lib-storage": "^3.83.0",
     "@aws-sdk/s3-request-presigner": "^3.83.0",
+    "@keystone-6/core": "^6.5.1",
+    "@prisma/client": "6.16.1",
+    "bytes": "^3.1.1",
     "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.1",
-    "prisma": "6.5.0",
+    "prisma": "6.16.1",
     "typescript": "^5.9.0"
   }
 }

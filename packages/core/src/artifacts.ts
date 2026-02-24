@@ -1,8 +1,8 @@
-import type { ChildProcess } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { formatSchema, getGenerators } from '@prisma/internals'
+import { defaultRegistry } from '@prisma/client-generator-registry'
 import { printSchema } from 'graphql'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import { withSpan } from './lib/otel'
@@ -94,6 +94,7 @@ export async function generatePrismaClient(cwd: string, system: System) {
     const paths = system.getPaths(cwd)
     const generators = await getGenerators({
       schemaPath: paths.schema.prisma,
+      registry: defaultRegistry.toInternal(),
     })
 
     await Promise.all(
@@ -101,14 +102,7 @@ export async function generatePrismaClient(cwd: string, system: System) {
         try {
           await generator.generate()
         } finally {
-          const closePromise = new Promise<void>(resolve => {
-            const child = (generator as any).generatorProcess.child as ChildProcess
-            child.once('exit', () => {
-              resolve()
-            })
-          })
           generator.stop()
-          await closePromise
         }
       })
     )
