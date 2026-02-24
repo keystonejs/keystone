@@ -6,14 +6,18 @@ on:
       tag:
         description: 'The npm tag to publish to'
         required: true
+        type: choice
+        options:
+          - latest
+          - rc
 
 permissions:
   id-token: write
   contents: write
 
 jobs:
-  publish_snapshot:
-    name: Publish (Snapshot)
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: Release
