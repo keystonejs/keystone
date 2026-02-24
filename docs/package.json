@@ -56,7 +56,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/rss": "^0.0.32",
     "next-sitemap": "^4.0.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/docs"
 }

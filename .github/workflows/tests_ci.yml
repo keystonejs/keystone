@@ -23,9 +23,6 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: TypeScript
-        run: pnpm test:types
-
       - name: Preconstruct
         run: pnpm build
 
@@ -38,8 +35,8 @@ jobs:
       - name: Formatting
         run: pnpm format:check
 
-  linting-examples:
-    name: TypeScript
+  types:
+    name: Types
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -48,10 +45,9 @@ jobs:
 
       - run: pnpm run -r ks-examples-postinstall
 
-      - run: cd examples/graphql-gql.tada && pnpm check:tada-output
+      - run: pnpm test:types
 
-      - name: TypeScript
-        run: pnpm test:types
+      - run: cd examples/graphql-gql.tada && pnpm check:tada-output
 
   unit_tests:
     name: Package Unit Tests (Jest)
