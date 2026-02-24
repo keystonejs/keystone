@@ -234,7 +234,7 @@
   },
   "dependencies": {
     "@apollo/cache-control-types": "^1.0.3",
-    "@apollo/client": "^4.0.9",
+    "@apollo/client": "^4.1.6",
     "@apollo/server": "^4.10.0",
     "@babel/runtime": "^7.24.7",
     "@graphql-ts/extend": "^2.0.0",
