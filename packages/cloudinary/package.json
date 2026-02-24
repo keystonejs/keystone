@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystar/ui": "^0.7.16",
+    "@keystar/ui": "^0.7.19",
     "cloudinary": "^2.0.0",
-    "react": "^19.2.1"
+    "react": "^19.2.4"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@keystone-6/core": "^6.1.0",
     "@types/express": "^4.17.14",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.14",
     "graphql": "^16.8.1",
     "graphql-upload": "^15.0.2"
   },

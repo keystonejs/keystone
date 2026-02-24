@@ -12,7 +12,6 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-
 import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof SigninPage>[0]) => () => <SigninPage {...props} />
@@ -141,7 +140,7 @@ function SigninPage({
             />
           </VStack>
 
-          <Button isPending={pending} prominence="high" type="submit" alignSelf="start">
+          <Button alignSelf="start" isPending={pending} prominence="high" type="submit">
             Sign in
           </Button>
         </VStack>

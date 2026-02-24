@@ -9,12 +9,12 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystar/ui": "^0.7.16",
+    "@keystar/ui": "^0.7.19",
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "6.16.1",
-    "react": "^19.2.1"
+    "react": "^19.2.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {

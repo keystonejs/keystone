@@ -23,7 +23,7 @@
     "@types/node": "^20.14.10",
     "@types/react-dom": "^19.2.3",
     "prisma": "6.16.1",
-    "react": "^19.2.1",
+    "react": "^19.2.4",
     "typescript": "^5.9.0"
   }
 }

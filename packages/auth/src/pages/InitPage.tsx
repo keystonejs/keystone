@@ -1,16 +1,16 @@
 import NextHead from 'next/head'
 
-import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { useList } from '@keystone-6/core/admin-ui/context'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
-import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'
-import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
 import { Heading } from '@keystar/ui/typography'
 
-import { useRedirect } from '../lib/useFromRedirect'
+import { gql, type TypedDocumentNode, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { GraphQLErrorNotice, Logo } from '@keystone-6/core/admin-ui/components'
+import { useList } from '@keystone-6/core/admin-ui/context'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { Fields, useBuildItem } from '@keystone-6/core/admin-ui/utils'
 
+import { useRedirect } from '../lib/useFromRedirect'
 import type { AuthGqlNames } from '../types'
 
 export default (props: Parameters<typeof InitPage>[0]) => () => <InitPage {...props} />
