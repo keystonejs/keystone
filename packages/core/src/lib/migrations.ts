@@ -1,4 +1,5 @@
-import { toSchemasContainer } from '@prisma/internals'
+import { join, dirname } from 'node:path'
+import { toSchemasContainer, loadSchemaContext } from '@prisma/internals'
 import { Migrate } from '@prisma/migrate'
 
 import type { System } from './system'
@@ -26,7 +27,15 @@ export async function withMigrate<T>(
     schema: (_: string, force: boolean) => Promise<any>
   }) => Promise<T>
 ) {
-  const migrate = new Migrate(prismaSchemaPath)
+  const schemaContext = await loadSchemaContext({
+    schemaPathFromArg: prismaSchemaPath,
+    printLoadMessage: false,
+    ignoreEnvVarErrors: true,
+  })
+  const migrate = await Migrate.setup({
+    schemaContext,
+    migrationsDirPath: join(dirname(prismaSchemaPath), 'migrations'),
+  })
   async function run<T>(f: () => T) {
     // only required once - on child process start - but easiest to do this always
     const prevDBURLFromEnv = process.env.DATABASE_URL
@@ -61,7 +70,13 @@ export async function withMigrate<T>(
       async schema(schema, force) {
         const schemaContainer = toSchemasContainer([[prismaSchemaPath, schema]])
 
-        return run(() => migrate.engine.schemaPush({ force, schema: schemaContainer }))
+        return run(() =>
+          migrate.engine.schemaPush({
+            force,
+            schema: schemaContainer,
+            filters: { externalEnums: [], externalTables: [] },
+          })
+        )
       },
     })
   } finally {
