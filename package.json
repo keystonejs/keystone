@@ -10,7 +10,6 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "coverage": "jest --coverage",
-    "test": "jest",
     "test:vitest": "vitest ./packages/fields-document",
     "test:filters": "cd prisma-utils && pnpm verify",
     "test:types": "tsc",
@@ -63,23 +62,6 @@
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "keepDynamicImportAsDynamicImportInCommonJS": true,
       "importsConditions": true
-    }
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "collectCoverageFrom": [
-      "packages/**/*.{js,ts,tsx}",
-      "!**/*.d.ts",
-      "!packages/**/dist/**",
-      "!packages/core/src/fields/**/test-fixtures.{js,ts}"
-    ],
-    "transform": {
-      "^.+\\.[tj]sx?$": [
-        "esbuild-jest",
-        {
-          "target": "esnext"
-        }
-      ]
     }
   }
 }
