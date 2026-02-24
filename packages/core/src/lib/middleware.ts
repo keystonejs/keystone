@@ -21,15 +21,15 @@ export function createAdminUIMiddlewareWithNextApp(
   if (basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash')
 
   return async (req: express.Request, res: express.Response) => {
-    const { pathname } = new URL(req.url, 'http://ks')
+    const { path } = req
 
-    if (pathname?.startsWith(`${basePath}/_next`) || pathname?.startsWith(`${basePath}/__next`)) {
+    if (path.startsWith(`${basePath}/_next`) || path.startsWith(`${basePath}/__next`)) {
       return handle(req, res)
     }
 
     try {
       // do nothing if this is a public page
-      const isPublicPage = publicPages.includes(pathname!)
+      const isPublicPage = publicPages.includes(path)
       const context = await commonContext.withRequest(req, res)
       const wasAccessAllowed = isPublicPage ? true : await isAccessAllowed(context)
       const shouldRedirect = await pageMiddleware?.({
