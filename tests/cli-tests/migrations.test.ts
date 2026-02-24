@@ -269,6 +269,7 @@ describe('prisma', () => {
 
     expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
       "? GraphQL and Prisma schemas are up to date
+      Prisma schema loaded from schema.prisma
       "
     `)
   })
