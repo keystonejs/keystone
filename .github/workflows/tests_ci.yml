@@ -45,8 +45,7 @@ jobs:
 
       - run: pnpm run -r ks-examples-postinstall
 
-      - name: TypeScript
-        run: pnpm test:types
+      - run: pnpm test:types
 
       - run: cd examples/graphql-gql.tada && pnpm check:tada-output
 

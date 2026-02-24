@@ -19,6 +19,6 @@
     "@opentelemetry/sdk-trace-base": "^2.0.1",
     "prisma": "6.5.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   }
 }

@@ -16,7 +16,7 @@
     "@keystar/ui": "^0.7.16",
     "@prisma/client": "6.5.0",
     "react": "^19.2.1",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   },
   "devDependencies": {
     "prisma": "6.5.0"

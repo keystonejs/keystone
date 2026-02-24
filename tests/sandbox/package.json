@@ -19,6 +19,6 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {
     "prisma": "6.5.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   }
 }

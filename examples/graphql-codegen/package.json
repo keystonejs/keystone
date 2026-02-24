@@ -22,6 +22,6 @@
     "@graphql-codegen/cli": "^5.0.4",
     "eslint": "^8.0.0",
     "prisma": "6.5.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   }
 }

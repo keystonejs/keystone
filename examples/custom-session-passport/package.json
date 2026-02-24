@@ -23,6 +23,6 @@
     "@types/passport-github2": "^1.2.9",
     "@types/passport-oauth2": "^1.4.16",
     "prisma": "6.5.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.9.0"
   }
 }
