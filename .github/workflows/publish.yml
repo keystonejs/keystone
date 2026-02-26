@@ -2,6 +2,18 @@ name: Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The npm tag to publish to'
+        required: true
+        type: choice
+        options:
+          - latest
+          - rc
+
+permissions:
+  id-token: write
+  contents: write
 
 jobs:
   publish:
@@ -21,11 +33,23 @@ jobs:
           git config --global user.name 'Keystonejs Release Bot'
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
 
+      - name: version packages
+        if: inputs.tag != 'latest'
+        run: |
+          pnpm changeset version --snapshot ${{ inputs.tag }}
+          git commit -a -m 'rc'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - run: pnpm build
 
       - name: npm publish, git tag
-        run: pnpm changeset publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm changeset publish --tag ${{ inputs.tag }}
 
-      - run: git push origin --follow-tags
+      # reset, then we have a tagged dangling commit
+      - name: git push
+        if: inputs.tag != 'latest'
+        run: |
+          git reset HEAD~1 --hard
+
+      - run: git push origin --tags
