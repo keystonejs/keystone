@@ -23,12 +23,12 @@ export const components = {
 }
 ```
 
-If you have styling constraints, we recommend using the jsx export from the `@keystone-ui/core` package, as this will ensure that the version of emotion you're using conforms with the version of emotion used internally within Keystone.
+If you have styling constraints, we recommend using `@keystar/ui` components, which is the design system used internally by Keystone's Admin UI.
 
 ```tsx
 // admin/config.tsx
 
-import { jsx } from '@keystone-ui/core';
+import { Heading } from '@keystar/ui/typography';
 
 function CustomLogo () {
     return <h3 css={{

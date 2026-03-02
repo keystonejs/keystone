@@ -99,9 +99,9 @@ Finally, all hooks are provided with a `context` argument, which gives you acces
 ## Validating inputs
 
 Before writing the resolved data to the database you will often want to check that it conforms to certain rules, depending on your application's needs.
-For example, you might want to ensure that blog posts don't have a blank title.
+For example, you might want to ensure that blog posts do not have a blank title.
 An empty string, `""`, is a perfectly valid `String` value to pass into GraphQL.
-Let's use a validation hook to ensure that this value doesn't make it into our database.
+In the following example, we use a validation hook to check that this value is rejected when creating or updating a Post.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -115,10 +115,9 @@ export default config({
         content: text({ validation: { isRequired: true } }),
        },
       hooks: {
-        validateInput: ({ resolvedData, addValidationError }) => {
+        validate: ({ resolvedData, addValidationError }) => {
           const { title } = resolvedData;
           if (title === '') {
-            // We call addValidationError to indicate an invalid value.
             addValidationError('The title of a blog post cannot be the empty string');
           }
         }
@@ -128,15 +127,14 @@ export default config({
 });
 ```
 
-The `validateInput` hook is passed the `resolvedData` value after all defaults and `resolveInput` hooks have been completed.
-This is the value which will be written into the database if no validation errors are found.
+A `validate` hook is passed the `resolvedData` value after defaults and `resolveInput` hooks have been completed.
 
-We can check the values on this object and if there's a problem we call the function `addValidationError` with an error message.
-There might be multiple problems with the input, so you can call `addValidationError` multiple times to capture of all the different problems.
+We can check the values on this object and use the function `addValidationError` to return error messages.
+You use `addValidationError` multiple times to capture different problems.
 
 Keystone will abort the operation and convert these error messages into GraphQL errors which will be returned to the caller.
 
-The `validateInput` hook also receives the `operation`, `inputData`, `item` and `context` arguments if you want to perform more advanced checks.
+The `validate` hook also receives the `operation`, `inputData`, `item` and `context` arguments if you want to perform more advanced checks.
 
 {% hint kind="warn" %}
 Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](../config/access-control).
@@ -204,7 +202,7 @@ export default config({
         email: text({
           validation: { isRequired: true },
           hooks: {
-            validateInput: ({ addValidationError, resolvedData, fieldKey }) => {
+            validate: ({ addValidationError, resolvedData, fieldKey }) => {
               const email = resolvedData[fieldKey];
               if (email !== undefined && email !== null && !email.includes('@')) {
                 addValidationError(`The email address ${email} provided for the field ${fieldKey} must contain an '@' character`);
@@ -223,7 +221,7 @@ See the [Hooks API](../config/hooks) for the details of all the arguments availa
 ## Related resources
 
 {% related-content %}
-{% well  heading="Hooks API Reference" href="/docs/config/hooks" %}
+{% well heading="Hooks API Reference" href="/docs/config/hooks" %}
 The complete reference for executing code at different stages of the mutation lifecycle
 {% /well %}
 {% /related-content %}

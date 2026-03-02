@@ -73,7 +73,6 @@ The following elements will be added to the GraphQL API.
 ```graphql
 type Mutation {
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult!
-  endSession: Boolean!
 }
 
 type Query {

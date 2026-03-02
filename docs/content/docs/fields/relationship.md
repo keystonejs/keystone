@@ -12,9 +12,13 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 - `db.foreignKey`: When `true` or an object, ensures the foreign Key for two-sided relationships is stored in the table for this list (only available on single relationships, and not on both sides of a 1-to-1 relationship)
   - `map`: Changes the column name in the database
 - `ui`: Configures the display mode of the field in the Admin UI
-  - `displayMode` (default: `select`): If `count`, only `many: true` relationships are supported
+  - `displayMode` (default: `select`): Controls how the relationship is displayed in the Admin UI. Options: `'select'`, `'cards'`, `'count'`, or `'table'`.
+    - `'count'` and `'table'` only support `many: true` relationships (`'count'` will require `itemView: { fieldMode: 'read' }` to be set)
+    - `'table'` displays related items in a tabular format.
   - `labelField`: The field path from the related list to use for item labels in the select. Defaults to the `labelField` configured on the related list.
-  - `searchFields`: The fields used by the Admin UI when searching by this relationship on the list view and in relationship fields. Nominated fields need to support the `contains` filter. Defaults to `ui.listView.searchFieldon the related list.
+  - `searchFields`: The fields used by the Admin UI when searching by this relationship on the list view and in relationship fields. Nominated fields need to support the `contains` filter. Defaults to `ui.listView.searchField` on the related list.
+  - `filter`: A where input filter to apply when showing items in the select. Defaults to the `ui.listView.initialFilter` (if set) on the related list.
+  - `sort`: The sort to apply when showing items in the select, e.g. `{ field: 'name', direction: 'ASC' }`. Defaults to the `ui.listView.initialSort` (if set) on the related list.
   - `hideCreate` (default: `false`). If `true`, the "Create related item" button is not shown in the item view.
 
 ```typescript
@@ -57,3 +61,11 @@ export default config({
   /* ... */
 });
 ```
+
+## GraphQL
+
+For to-many relationships (`many: true`), the update input type includes `connect`, `disconnect`, and `set` fields:
+
+- `connect`: Nominate an item to relate to this item.
+- `disconnect`: Disconnect any relationships to this item.
+- `set`: Replace the set of related items (disconnects, then connects the nominated items).

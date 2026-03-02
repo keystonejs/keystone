@@ -13,6 +13,7 @@ export default config({
   lists: ({
     SomeListName: list({
       fields: { /* ... */ },
+      actions: { /* ... */ },
       access: { /* ... */ },
       ui: { /* ... */ },
       hooks: { /* ... */ },
@@ -61,6 +62,69 @@ export default config({
 
 For full details on the available field types and their configuration options please see the [Fields API](../fields/overview).
 
+## actions
+
+The `actions` property of the list configuration object is where you define actions that can triggered for items on your list.
+An action can be triggered on individual items or in bulk from the list view in the Admin UI, or directly using GraphQL.
+
+```typescript
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
+import { text, integer } from '@keystone-6/core/fields';
+
+export default config({
+  lists: {
+    Post: list({
+      access: allowAll,
+      fields: {
+        title: text(),
+        votes: integer({ defaultValue: 0 }),
+      },
+      actions: {
+        vote: {
+          access: allowAll,
+          async resolve ({ where }, context) {
+            if (!where) return null
+            return await context.prisma.post.update({
+              where: { id: where.id },
+              data: { votes: { increment: 1 } },
+            })
+          },
+          ui: {
+            label: 'Vote +1',
+            icon: 'voteIcon',
+          },
+        },
+      },
+    }),
+  },
+});
+```
+
+Each action accepts the following options:
+
+- `access` (**required**): An access control function that determines who can use this action. Receives `{ context, session, listKey, actionKey }`.
+- `resolve` (**required**): The function that performs the action. Receives `{ listKey, actionKey, where }` and `context`. Should return the updated item or `null`.
+- `graphql`: Options for the GraphQL schema output.
+  - `singular`: Override the name of the singular mutation (default: `{action}{list.graphql.singular}`, e.g. `votePost`).
+  - `plural`: Override the name of the plural mutation (default: `{action}{list.graphql.plural}`, e.g. `votePosts`).
+  - `description` (default: `undefined`): Sets the description of the associated GraphQL type in the GraphQL schema output.
+- `ui` (**required**): Controls how the action appears in the Admin UI.
+  - `label` (**required**): The label shown on the action button.
+  - `icon`: An icon name from `@keystar/ui/icon/all` to display alongside the label.
+  - `messages`: Locale messages for prompts and notifications. Supports template tags: `{singular}`, `{plural}`, `{singular|plural}`, `{itemLabel}`, `{count}`, `{countSuccess}`, `{countFail}`.
+    - `promptTitle`, `promptTitleMany`, `prompt`, `promptMany`: Confirmation dialog text.
+    - `promptConfirmLabel`, `promptConfirmLabelMany`: Confirm button text.
+    - `success`, `successMany`: Success toast messages.
+    - `fail`, `failMany`: Failure toast messages.
+  - `itemView`: Controls for the item view.
+    - `actionMode` (default: `'enabled'`): Can be `'enabled'`, `'disabled'`, or `'hidden'`, or a function that returns one of those values.
+    - `navigation` (default: `'follow'`): Controls navigation after the action completes. `'follow'` navigates to the returned item (or list view if `null`), `'refetch'` stays and refreshes the item, `'return'` goes back to the list view.
+    - `hidePrompt` (default: `false`): Do not show a confirmation dialog.
+    - `hideToast` (default: `false`): Do not show a toast notification.
+  - `listView`: Controls for the list view.
+    - `actionMode` (default: `'enabled'`): Can be `'enabled'` or `'hidden'`, or a function that returns one of those values.
+
 ## access
 
 The `access` option defines the [Access Control](../guides/auth-and-access-control) rules for the list.
@@ -79,7 +143,6 @@ Options:
 - `searchFields`: The fields used by the Admin UI when searching this list on the list view and in relationship fields. Nominated fields need to support the `contains` filter.
   It is always possible to search by an id and `'id'` should not be specified in this option.
   By default, the `labelField` is used if it has a string `contains` filter, otherwise none.
-- `description` (default: `undefined`): Sets the list description displayed in the Admin UI.
 - `hideNavigation` (default: `false`): Controls whether the list is visible in the navigation elements of the Admin UI.
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
 - `hideCreate` (default: `false`): Controls whether the `create` button is available in the Admin UI for this list.
@@ -106,6 +169,7 @@ Options:
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
   - `pageSize` (default: lower of `50` or [`graphql.maxTake`](#graphql)): Sets the number of items to show per page in the list view.
+  - `initialFilter` (default: `undefined`): Sets a default filter to apply to the list view. Accepts a where input object (excluding `AND`, `OR`, `NOT`), or an async function with an argument `{ session, context }` that returns a where input object.
 - `label`: The label used to identify the list in navigation etc.
 - `singular`: The singular form of the list key. It is used in sentences like `Are you sure you want to delete this {singular}?`
 - `plural`: The plural form of the list key. It is used in sentences like `Are you sure you want to delete these {plural}?`
@@ -121,7 +185,6 @@ export default config({
       fields: { name: text({ /* ... */ }) },
       ui: {
         label: 'Some List',
-        description: '...',
 
         singular: 'Item',
         plural: 'Items',
@@ -142,6 +205,7 @@ export default config({
           defaultFieldMode: ({ session, context }) => 'read',
           initialColumns: ['name', /* ... */],
           initialSort: { field: 'name', direction: 'ASC' },
+          initialFilter: { isPublished: { equals: true } },
           pageSize: 50,
         },
       },
@@ -161,12 +225,11 @@ See the [Hooks API](./hooks) for full details on the available hook options.
 
 ## graphql
 
-The `graphql` config option allows you to configure certain aspects of the GraphQL API.
+The `graphql` property allows you to configure certain aspects of the GraphQL API.
 
 Options:
 
-- `description` (default: `undefined`): Sets the description of the associated GraphQL type in the generated GraphQL API documentation.
-  Overrides the list-level `description` config option.
+- `description` (default: `undefined`): Sets the description of the associated GraphQL type in the GraphQL schema output.
 - `singular`: (default: Singular list key, e.g. `'User'`): Overrides the name used in singular mutations and queries (e.g. `user()`, `updateUser()`, etc).
 - `plural`: (default: Pluralised list key, e.g. `'Users'`): Overrides the name used in multiple mutations and queries (e.g. `users()`, `updateUsers()`, etc).
 - `maxTake` (default: `undefined`): Allows you to specify the maximum `take` number for query operations on this list in the GraphQL API.

@@ -172,6 +172,7 @@ export default config({
             mention: {
               listKey: 'Author',
               label: 'Mention',
+              labelField: 'name',
               selection: 'id name',
             },
           },
@@ -397,6 +398,8 @@ The placeholder is required though it can be an empty string if it'll be clear t
 By default, child fields can only contain plain text, if you'd like to enable other features of the document editor inside a child field, you can enable the features similarly to enabling them in the document field config.
 Unlike the document field config though, these options accept `'inherit'` instead of `true`, this is because if `'inherit'` is set then that feature will be enabled **if it's also enabled at the document field config level** so you can't enable features in a child field but not in the rest of the document field.
 
+Block child fields (`kind: 'block'`) also support `componentBlocks: 'inherit'` to allow component blocks to be nested inside a child field.
+
 In the preview, child fields appear as React nodes that should be rendered.
 Note that you **must** render child fields in the preview.
 If they are not rendered, you will receive errors.
@@ -441,7 +444,7 @@ component({
 
 `@keystone-6/core/component-blocks` ships with a set of form fields for common purposes:
 
-- `fields.text({ label: '...', defaultValue: '...' })`
+- `fields.text({ label: '...', defaultValue: '...', displayMode: 'input' | 'textarea' })`
 - `fields.integer({ label: '...', defaultValue: '...' })`
 - `fields.url({ label: '...', defaultValue: '...' })`
 - `fields.select({ label: '...', options: [{ label:'A', value:'a' }, { label:'B', value:'b' }] defaultValue: 'a' })`
@@ -512,7 +515,9 @@ import { fields } from '@keystone-6/fields-document/component-blocks';
 ...
   someField: fields.relationship({
     label: 'Authors',
+    description: 'The authors of this post',
     listKey: 'Author',
+    labelField: 'name',
     selection: 'id name posts { title }',
     many: true,
   });

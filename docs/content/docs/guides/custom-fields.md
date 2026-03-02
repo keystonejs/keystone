@@ -31,7 +31,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '@keystone-6/core/types'
-import { graphql } from '@keystone-6/core'
+import { g } from '@keystone-6/core'
 
 export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -51,11 +51,11 @@ export function myInt <ListTypeInfo extends BaseListTypeInfo>({
     })({
       ...config,
       input: {
-        create: { arg: graphql.arg({ type: graphql.Int }) },
-        update: { arg: graphql.arg({ type: graphql.Int }) },
-        orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+        create: { arg: g.arg({ type: g.Int }) },
+        update: { arg: g.arg({ type: g.Int }) },
+        orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
       },
-      output: graphql.field({ type: graphql.Int }),
+      output: g.field({ type: g.Int }),
       views: './view',
     })
 }
@@ -72,9 +72,9 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
-  create: { arg: graphql.arg({ type: graphql.Int }) },
-  update: { arg: graphql.arg({ type: graphql.Int }) },
-  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
+  create: { arg: g.arg({ type: g.Int }) },
+  update: { arg: g.arg({ type: g.Int }) },
+  orderBy: { arg: g.arg({ type: orderDirectionEnum }) },
 },
 ```
 
@@ -82,9 +82,9 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
-  create: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
-  update: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
-  orderBy: { arg: graphql.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
+  create: { arg: g.arg({ type: g.Int }), resolve: (val, context) => val },
+  update: { arg: g.arg({ type: g.Int }), resolve: (val, context) => val },
+  orderBy: { arg: g.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
 },
 ```
 
@@ -93,14 +93,14 @@ input: {
 The output field defines what can be fetched from the field:
 
 ```ts
-output: graphql.field({ type: graphql.Int })
+output: g.field({ type: g.Int })
 ```
 
 A resolver can also be provided:
 
 ```ts
-output: graphql.field({
-  type: graphql.Int,
+output: g.field({
+  type: g.Int,
   resolve({ value, item }, args, context, info) {
     return value
   }

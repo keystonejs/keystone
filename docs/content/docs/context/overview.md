@@ -37,6 +37,7 @@ const context = {
 
   // New context creators
   sudo,
+  internal,
   withRequest,
   withSession,
 
@@ -97,7 +98,9 @@ See the [session API](../config/session#session-context) for more details.
 When using the `context.query`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
 The following functions will create a new `Context` object with this behaviour modified.
 
-`sudo()`: A function which returns a new `Context` object with access control limitations removed, bypassing your `access` control configuration.
+`sudo()`: A function which returns a new `Context` object that bypasses your `access` control configuration when using `context.query`, `context.db` or `context.graphql`.
+
+`internal()`: A function which returns a new `Context` object that bypasses `graphql.omit` on lists and fields, allowing you to query and mutate data that is otherwise omitted from the GraphQL API.
 
 `withRequest(req, res)`: A function which returns a new `Context` object with the `.session` determined by your `sessionStrategy.get` function.
 
@@ -106,6 +109,9 @@ The following functions will create a new `Context` object with this behaviour m
 ### Database access
 
 The `Context` object exposes the underlying database driver directly via `context.prisma`, which is a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
+
+{% hint kind="tip" %}
+**\*Warning** Unlike other data access functions (`context.db`, `context.query` or `context.graphql`), `context.prisma` always bypasses the GraphQL schema and your access control. It is the equivalent of using `.sudo()` always.
 
 ### Images API
 
