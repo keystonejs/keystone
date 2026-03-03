@@ -10,7 +10,7 @@ Javascript `BigInt`s are used since [integers in Javascript are unsafe beyond 2{
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be either a bigint value or `{ kind: 'autoincrement' }`.
+- `defaultValue` (default: `undefined`): Can be either a bigint value, `null`, or `{ kind: 'autoincrement' }`.
   This value will be used for the field when creating items if no explicit value is set.
   `{ kind: 'autoincrement' }` is only supported on PostgreSQL.
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.

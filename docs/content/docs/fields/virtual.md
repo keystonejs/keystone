@@ -22,7 +22,7 @@ Options:
   or an enum or you need to provide arguments to the field.
 
 ```typescript
-import { config, createSchema, graphql, list } from '@keystone-6/core';
+import { config, createSchema, g, list } from '@keystone-6/core';
 import { virtual } from '@keystone-6/core/fields';
 
 export default config({
@@ -30,9 +30,9 @@ export default config({
     SomeListName: list({
       fields: {
         someFieldName: virtual({
-          field: graphql.field({
-            type: graphql.String,
-            args: { something: graphql.arg({ type: graphql.Int }) },
+          field: g.field({
+            type: g.String,
+            args: { something: g.arg({ type: g.Int }) },
             resolve(item, args, context, info) {
 
             }

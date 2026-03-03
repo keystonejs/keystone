@@ -7,7 +7,7 @@ A `decimal` field represents a decimal value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be a decimal value written as a string
+- `defaultValue` (default: `undefined`): Can be a decimal value written as a string, or `null`.
   This value will be used for the field when creating items if no explicit value is set.
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.

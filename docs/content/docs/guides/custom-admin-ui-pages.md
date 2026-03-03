@@ -62,12 +62,12 @@ With the above snippet, our custom page looks a lot more like the other pages in
 There's still a problem though, the header doesn't look right. If we compare the header of our custom page with the header for the Dashboard, there's quite a bit of difference in the styling and font-weight.
 ![example of the Dashboard header element](/assets/guides/custom-admin-ui-pages/header-prop.png)
 
-Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package to style the header, so let's use this to give our header the same styling.
+Keystone pages leverage components from `@keystar/ui` to style the header, so let's use this to give our header the same styling.
 
 ```tsx
 // admin/pages/custom-page.tsx.
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
-import { Heading } from '@keystone-ui/core'
+import { Heading } from '@keystar/ui/typography'
 
 export default function CustomPage () {
     return (
@@ -147,18 +147,16 @@ With all that in place, our custom Admin UI page is now navigable from the Admin
 ## Styling
 
 There are other styling considerations when adding a custom page to the Admin UI that go beyond making it _look_ and _feel_ like an Admin UI page.
-For this, we recommend using the `jsx` runtime export from the `@keystone-ui/core` package, as this will ensure that the version of [emotion](https://emotion.sh/docs/introduction) you're using conforms with the version of emotion used internally used by Keystone.
+For this, we recommend using `@keystar/ui`, which is the design system used internally by Keystone's Admin UI.
 
-The snippet below uses the emotion `jsx` runtime exported from `@keystone-ui/core` to help add some basic alignment and layout styling to the contents of our Admin UI custom page.
+The snippet below uses `@keystar/ui` components to help add some basic alignment and layout styling to the contents of our Admin UI custom page.
 
 ```tsx
 // admin/pages/custom-page.tsx
-/** @jsxRuntime classic */
 
 import Link from 'next/link'
-import { jsx } from '@keystone-ui/core'
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
-import { Heading } from '@keystone-ui/core'
+import { Heading } from '@keystar/ui/typography'
 
 export default function CustomPage () {
     return (

@@ -64,7 +64,7 @@ These database types are powered by their corresponding Prisma database provider
 - `url`: The connection URL for your database
 - `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
-- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid`, `nanoid`, `ulid`, or `autoincrement`.
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
@@ -145,7 +145,7 @@ Advanced configuration:
 
 - `publicPages` (default: `[]`): An array of page routes that bypass the `isAccessAllowed` function.
 - `pageMiddleware` (default: `undefined`): An async middleware function that can optionally return a redirect
-- `getAdditionalFiles` (default: `[]`): An async function returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
+- `getAdditionalFiles` (default: `undefined`): An async function that returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
   If the `mode` is `'write'`, then the code to be written to the file should be provided as the `src` argument.
   If the `mode` is `'copy'` then an `inputPath` value should be provided.
   The `outputPath` indicates where the file should be written or copied to
@@ -160,23 +160,21 @@ export default config<TypeInfo>({
 
     // advanced configuration
     publicPages: ['/welcome'],
-    getAdditionalFiles: [
-      async (config: KeystoneConfig) => [
-        {
-          mode: 'write',
-          src: `
-            import { jsx } from '@keystone-ui/core';
-            export default function Welcome() {
-              return (<h1>Welcome to my Keystone system</h1>);
-            }`,
-          outputPath: 'pages/welcome.js',
-        },
-        {
-          mode: 'copy',
-          inputPath: '...',
-          outputPath: 'pages/farewell.js',
-        }
-      ],
+    getAdditionalFiles: async () => [
+      {
+        mode: 'write',
+        src: `
+          import { Heading } from '@keystar/ui/typography';
+          export default function Welcome() {
+            return (<h1>Welcome to my Keystone system</h1>);
+          }`,
+        outputPath: 'pages/welcome.js',
+      },
+      {
+        mode: 'copy',
+        inputPath: '...',
+        outputPath: 'pages/farewell.js',
+      }
     ],
   },
   /* ... */
@@ -357,7 +355,7 @@ It has a TypeScript type of `(schema: import("graphql").GraphQLSchema) => import
 
 ```typescript
 import type { GraphQLSchema } from 'graphql'
-import { config, graphql } from '@keystone-6/core'
+import { config, g } from '@keystone-6/core'
 
 export default config<TypeInfo>({
   extendGraphqlSchema: (keystoneSchema: GraphQLSchema) => {
@@ -369,6 +367,12 @@ export default config<TypeInfo>({
 ```
 
 See the [schema extension guide](../guides/schema-extension) for more details and tooling options on how to extend your GraphQL API.
+
+## OpenTelemetry
+
+Keystone has built-in support for [OpenTelemetry](https://opentelemetry.io/) tracing via `@opentelemetry/api`. When you configure an OpenTelemetry SDK in your application, Keystone will automatically emit trace spans for its internal operations (such as CRUD resolvers and hooks).
+
+No additional Keystone configuration is required — just set up the OpenTelemetry SDK before Keystone starts. See the `logging-opentelemetry` example for a complete setup.
 
 ## Related resources
 

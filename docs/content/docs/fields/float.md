@@ -7,7 +7,7 @@ A `float` field represents a floating point value.
 
 Options:
 
-- `defaultValue` (default: `undefined`): Can be a finite float value.
+- `defaultValue` (default: `undefined`): Can be a finite float value, or `null`.
   This value will be used for the field when creating items if no explicit value is set.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.

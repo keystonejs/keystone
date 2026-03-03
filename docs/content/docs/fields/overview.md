@@ -79,31 +79,35 @@ Options:
 - `hooks`: The `hooks` option defines [hook](../guides/hooks) functions for the field.
   Hooks allow you to execute code at different stages of the mutation lifecycle.
   See the [Hooks API](../config/hooks) for full details on the available hook options.
-- `label`: The label displayed for this field in the Admin UI. Defaults to a human readable version of the field name.
 - `ui`: Controls how the field is displayed in the Admin UI.
+  - `label`: The label displayed for this field in the Admin UI. Defaults to a human readable version of the field name.
   - `views`: A module path that is resolved from where `keystone start` is run, resolving to a module containing code to replace or extend the Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
   - `createView.fieldMode` (default: `'edit'`): Controls the create view page of the Admin UI.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
     Defaults to the list's `ui.createView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
+  - `createView.isRequired` (default: `undefined`): Controls whether the field is marked as required in the create view. Can be a boolean or an async function with an argument `{ session, context }` that returns a boolean. When `true`, the Admin UI will show the field as required.
   - `itemView.fieldMode` (default: `'edit'`): Controls the item view page of the Admin UI.
-    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
+    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['edit', 'read', 'hidden']`. The `item` argument may be `null`.
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
 - `itemView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
-    Can be either `form` or `sidebar`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
+    Can be either `form` or `sidebar`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['form', 'sidebar']`. The `item` argument may be `null`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
+  - `itemView.isRequired` (default: `undefined`): Controls whether the field is marked as required in the item view. Can be a boolean or an async function with an argument `{ session, context }` that returns a boolean. When `true`, the Admin UI will show the field as required.
   - `listView.fieldMode` (default: `'read'`): Controls the list view page of the Admin UI.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
 - `graphql`: Configures certain aspects of the GraphQL API.
   - `cacheHint` (default: `undefined`): Allows you to specify the [dynamic cache control hints](https://www.apollographql.com/docs/apollo-server/performance/caching/#in-your-resolvers-dynamic) used for queries to this list.
-  - `isNonNull.read` (default: `false`): Changing this to `true` will change the GraphQL output type to be non-nullable.
-    If you have 'read' field access control, this will be rejected with a runtime `Error` as `null` may be returned if the access control returns false.
-  - `isNonNull.create` (default: `false`): Enforce that this field is non-nullable in the \*CreateInput for the respective list item.
-    Fields that have a `defaultValue` only have that default value included in the GraphQL if this field is `true`.
-  - `isNonNull.update` (default: `false`): Enforce that this field is non-nullable in the \*UpdateInput for the respective list item.
-    This field additionally results in the AdminUI always sending this particular field in updates, including when it has not changed.
+  - `isNonNull` (default: `undefined`): Controls whether this field uses non-nullable GraphQL types.
+    This option accepts either `true` to make the field non-nullable for all operations, or an object with the below fields.
+    - `isNonNull.read` (default: `false`): Changing this to `true` will change the GraphQL output type to be non-nullable.
+      If you have 'read' field access control, this will be rejected with a runtime `Error` as `null` may be returned if the access control returns false.
+    - `isNonNull.create` (default: `false`): Enforce that this field is non-nullable in the \*CreateInput for the respective list item.
+      Fields that have a `defaultValue` only have that default value included in the GraphQL if this field is `true`.
+    - `isNonNull.update` (default: `false`): Enforce that this field is non-nullable in the \*UpdateInput for the respective list item.
+      This field additionally results in the AdminUI always sending this particular field in updates, including when it has not changed.
   - `omit` (default: 'undefined'): Controls whether this field appears in the autogenerated types of the GraphQL API
     This option accepts either `true`, or an object with the below fields.
     If you specify `true` then the field will be excluded from all input and output types in the GraphQL API.
@@ -121,14 +125,14 @@ export default config({
           isOrderable: ({ context, session, fieldKey, listKey }) => true,
           access: { /* ... */ },
           hooks: { /* ... */ },
-          label: '...',
           ui: {
+            label: '...',
             views: './path/to/viewsModule',
             createView: {
               fieldMode: ({ session, context }) => 'edit',
             },
             itemView: {
-              fieldMode: ({ session, context, item }) => 'read',
+              fieldMode: ({ session, context, item, itemField }) => 'read',
             },
             listView: {
               fieldMode: ({ session, context }) => 'read',
@@ -179,6 +183,23 @@ export default config({
   },
   /* ... */
 });
+```
+
+Groups also support `defaultFieldMode` overrides for `createView`, `itemView`, and `listView`, which apply to all fields within the group unless overridden at the field level:
+
+```typescript
+...group({
+  label: 'Advanced',
+  description: 'Advanced settings',
+  ui: {
+    createView: { defaultFieldMode: 'hidden' },
+    itemView: { defaultFieldMode: 'read' },
+    listView: { defaultFieldMode: 'hidden' },
+  },
+  fields: {
+    someFieldName: text({ /* ... */ }),
+  },
+})
 ```
 
 ## Scalar types

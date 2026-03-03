@@ -174,6 +174,16 @@ input UserWhereUniqueInput {
 }
 ```
 
+If a field has `isIndexed: 'unique'`, or the list has a 1-to-1 relationship, a `WhereUniqueInput` type will be added to the GraphQL schema output:
+
+```graphql
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+  profile: ProfileWhereUniqueInput
+}
+```
+
 #### `users`
 
 ```graphql
@@ -451,7 +461,7 @@ The following error codes can be returned from the Keystone GraphQL API.
 - `KS_ACCESS_RETURN_ERROR`: An invalid value was returned from an access control function.
 - `KS_RESOLVER_ERROR`: An error occurred while resolving the input for a field.
 - `KS_RELATIONSHIP_ERROR`: An error occurred while resolving the input relationship field.
-- `KS_PRISMA_ERROR`: An error occurred while running a Prisma client operation.
+- `KS_PRISMA_ERROR`: An error occurred while running a Prisma client operation. Prisma error details may be stripped from GraphQL responses for security. You can use `graphql.apolloConfig.formatError` to customise this behaviour.
 
 > A note on `KS_ACCESS_DENIED`: Returning a "not found" error from a mutation like `updateUser({ where: { secretKey: 'abc' } })` but an "access denied" error from `updateUser({ where: { secretKey: 'def' } })` would reveal the existence of a user with the secret key "def". To prevent leaking private information in this way, Keystone will always say "access denied" when you try to perform a mutation on an item that can't be operated on, whether that is because there is no matching record in the database, or there was but the user performing the operation doesn't have access to it.
 

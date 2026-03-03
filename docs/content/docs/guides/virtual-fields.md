@@ -17,7 +17,7 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, graphql, list } from '@keystone-6/core';
+import { config, createSchema, g, list } from '@keystone-6/core';
 import { virtual } from '@keystone-6/core/fields';
 
 export default config({
@@ -25,8 +25,8 @@ export default config({
     Example: list({
       fields: {
         hello: virtual({
-          field: graphql.field({
-            type: graphql.String,
+          field: g.field({
+            type: g.String,
             resolve() {
               return "Hello, world!";
             },
@@ -57,18 +57,18 @@ which gives the response:
 
 The value of `hello` is generated from the `resolve` function, which returns the string `"Hello, world!"`.
 
-## The `graphql` API
+## The `g` API
 
-The `virtual` field is configured using functions from the `graphql` export from `@keystone-6/core`.
+The `virtual` field is configured using functions from the `g` export from `@keystone-6/core`.
 This API provides the interface required to create type-safe extensions to the Keystone GraphQL schema.
-The `graphql` API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
+The `g` API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
 
-The `virtual` field accepts a configuration option called `field`, which is a `graphql.field()` object.
+The `virtual` field accepts a configuration option called `field`, which is a `g.field()` object.
 
-In our example we passed in two required options to `graphql.field()`.
-The option `type: graphql.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
+In our example we passed in two required options to `g.field()`.
+The option `type: g.String` specifies the GraphQL type of our virtual field, and `resolve() { ... }` defines the [GraphQL resolver](https://graphql.org/learn/execution/#root-fields-resolvers) to be executed when this field is queried.
 
-The `graphql` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
+The `g` API provides support for the built in GraphQL scalar types `Int`, `Float`, `String`, `Boolean`, and `ID`, as well as the Keystone custom scalars `Upload` and `JSON`.
 
 ## Resolver arguments
 
@@ -91,8 +91,8 @@ export default config({
         content: text(),
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
-          field: graphql.field({
-            type: graphql.String,
+          field: g.field({
+            type: g.String,
             async resolve(item, args, context) {
               const { author } = await context.query.Post.findOne({
                 where: { id: item.id.toString() },
@@ -129,11 +129,11 @@ export default config({
       fields: {
         content: text(),
         excerpt: virtual({
-          field: graphql.field({
-            type: graphql.String,
+          field: g.field({
+            type: g.String,
             args: {
-              length: graphql.arg({
-                type: graphql.nonNull(graphql.Int),
+              length: g.arg({
+                type: g.nonNull(g.Int),
                 defaultValue: 200
               }),
             },
@@ -187,7 +187,7 @@ Had we not specified `defaultValue` in our field, the `ui.query` argument would 
 The examples above returned a scalar `String` value. Virtual fields can also be configured to return a GraphQL object.
 
 In our blog example we might want to provide some statistics on each blog post, such as the number of words, sentences, and paragraphs in the post.
-We can set up a GraphQL type called `PostCounts` to represent this data using the `graphql.object()` function.
+We can set up a GraphQL type called `PostCounts` to represent this data using the `g.object()` function.
 
 ```typescript
 export default config({
@@ -196,17 +196,17 @@ export default config({
       fields: {
         content: text(),
         counts: virtual({
-          field: graphql.field({
-            type: graphql.object<{
+          field: g.field({
+            type: g.object<{
               words: number;
               sentences: number;
               paragraphs: number;
             }>()({
               name: 'PostCounts',
               fields: {
-                words: graphql.field({ type: graphql.Int }),
-                sentences: graphql.field({ type: graphql.Int }),
-                paragraphs: graphql.field({ type: graphql.Int }),
+                words: g.field({ type: g.Int }),
+                sentences: g.field({ type: g.Int }),
+                paragraphs: g.field({ type: g.Int }),
               },
             }),
             resolve(item: any) {
@@ -235,19 +235,19 @@ This fragment tells the Keystone Admin UI which values to show in the item page 
 #### Self-referencing objects
 
 {% hint kind="tip" %}
-This information is specifically for TypeScript users of the `graphql.object()` function with a self-referential GraphQL type.
+This information is specifically for TypeScript users of the `g.object()` function with a self-referential GraphQL type.
 {% /hint %}
 
-GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<Source>` along with making `fields` a function that returns the object.
+GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `g.ObjectType<Source>` along with making `fields` a function that returns the object.
 
 ```ts
 type PersonSource = { name: string; friends: PersonSource[] };
 
-const Person: graphql.ObjectType<PersonSource> = graphql.object<PersonSource>()({
+const Person: g<typeof g.object<PersonSource>> = g.object<PersonSource>()({
   name: "Person",
   fields: () => ({
-    name: graphql.field({ type: graphql.String }),
-    friends: graphql.field({ type: graphql.list(Person) }),
+    name: g.field({ type: g.String }),
+    friends: g.field({ type: g.list(Person) }),
   }),
 });
 ```
@@ -257,7 +257,7 @@ const Person: graphql.ObjectType<PersonSource> = graphql.object<PersonSource>()(
 Rather than returning a custom GraphQL object, we might want to have a virtual field which returns one of the GraphQL types generated by Keystone itself.
 For example, for each `Author` we might want to return their `latestPost` as a `Post` object.
 
-To achieve this, rather than passing in `graphql.field({ ... })` as the `field` option, we pass in a function `lists => graphql.field({ ... })`.
+To achieve this, rather than passing in `g.field({ ... })` as the `field` option, we pass in a function `lists => g.field({ ... })`.
 The argument `lists` contains the type information for all of the Keystone lists.
 In our case, we want the output type of the `Post` list, so we specify `type: lists.Post.types.output`.
 
@@ -278,7 +278,7 @@ export const lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
       latestPost: virtual({
         field: lists =>
-          graphql.field({
+          g.field({
             type: lists.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.query.Author.findOne({
