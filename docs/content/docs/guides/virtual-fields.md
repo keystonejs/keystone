@@ -243,7 +243,7 @@ GraphQL types will often contain references to themselves and to make TypeScript
 ```ts
 type PersonSource = { name: string; friends: PersonSource[] };
 
-const Person: g.ObjectType<PersonSource> = g.object<PersonSource>()({
+const Person: g<typeof g.object<PersonSource>> = g.object<PersonSource>()({
   name: "Person",
   fields: () => ({
     name: g.field({ type: g.String }),
