@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.1",
-    "@prisma/client": "6.16.1",
+    "@prisma/client": "7.4.1",
     "pino-http": "^10.5.0"
   },
   "devDependencies": {
-    "prisma": "6.16.1",
+    "prisma": "7.4.1",
     "tsx": "^4.0.0",
     "typescript": "^5.9.0"
   }

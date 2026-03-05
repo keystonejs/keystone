@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "6.16.1"
+    "@prisma/client": "7.4.1"
   },
   "devDependencies": {
-    "prisma": "6.16.1",
+    "prisma": "7.4.1",
     "typescript": "^5.9.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/test-projects/live-reloading"
