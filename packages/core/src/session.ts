@@ -59,6 +59,17 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none'
 }
 
+function getToken (req: Request, cookieName: string) {
+  const authorization = req.headers.authorization ?? ''
+
+  if (authorization.startsWith('Bearer')) {
+    return req.headers.authorization.slice('Bearer '.length)
+  }
+
+  const cookies = cookie.parse(req.headers.cookie || '')
+  return cookies[cookieName]
+}
+
 export function statelessSessions<Session>({
   secret = randomBytes(32).toString('base64url'),
   maxAge = 60 * 60 * 8, // 8 hours,
@@ -78,9 +89,7 @@ export function statelessSessions<Session>({
     async get({ context }) {
       if (!context?.req) return
 
-      const cookies = cookie.parse(context.req.headers.cookie || '')
-      const bearer = context.req.headers.authorization?.replace('Bearer ', '')
-      const token = bearer || cookies[cookieName]
+      const token = getToken(context.req, cookieName)
       if (!token) return
       try {
         return await Iron.unseal(token, secret, ironOptions)
