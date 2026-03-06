@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
-import type { SessionStrategy, SessionStoreFunction } from '../types'
+import type { KeystoneContext, SessionStrategy, SessionStoreFunction } from '../types'
 
 // TODO: should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -59,11 +59,11 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none'
 }
 
-function getToken (req: Request, cookieName: string) {
+function getToken(req: NonNullable<KeystoneContext['req']>, cookieName: string) {
   const authorization = req.headers.authorization ?? ''
 
   if (authorization.startsWith('Bearer')) {
-    return req.headers.authorization.slice('Bearer '.length)
+    return authorization.slice('Bearer '.length)
   }
 
   const cookies = cookie.parse(req.headers.cookie || '')
