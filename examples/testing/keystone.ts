@@ -2,7 +2,6 @@ import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { lists } from './schema'
-import type { Session } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for TESTING purposes only
@@ -32,7 +31,7 @@ const { withAuth } = createAuth({
 })
 
 export default withAuth(
-  config<TypeInfo<Session>>({
+  config<TypeInfo>({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
