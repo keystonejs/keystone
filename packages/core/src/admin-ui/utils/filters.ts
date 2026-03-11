@@ -104,6 +104,10 @@ export function getQueriedFieldKeysWithActions(
   for (const action of actions) {
     if (!isPotentiallyVisibleAction(action[view])) continue
 
+    for (const fieldKey of action.graphql.fields) {
+      fieldKeys.add(fieldKey)
+    }
+
     for (const fieldKey of getConditionalFilterFieldKeys(action[view].actionMode)) {
       fieldKeys.add(fieldKey)
     }

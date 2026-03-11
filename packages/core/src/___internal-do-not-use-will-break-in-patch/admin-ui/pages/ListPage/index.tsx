@@ -41,6 +41,7 @@ import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
+import { serializeActionData } from '../../../../admin-ui/utils/actionData'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import {
@@ -343,6 +344,7 @@ function ListPage({ listKey }: ListPageProps) {
     () => columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean),
     [columns, list.fields]
   )
+
   const queriedFields = useMemo(
     () =>
       getQueriedFieldKeysWithActions(columns, list.actions, 'listView')
@@ -458,6 +460,7 @@ function ListPage({ listKey }: ListPageProps) {
           label: 'Delete',
           icon: 'trash2Icon',
           graphql: {
+            fields: [],
             names: {
               one: list.graphql.names.deleteMutationName,
               many: list.graphql.names.deleteManyMutationName,
@@ -707,6 +710,7 @@ function ListPage({ listKey }: ListPageProps) {
               return (
                 <ActionItemsDialog
                   itemIds={selectedItemIds}
+                  items={data?.items ?? []}
                   action={action}
                   list={list}
                   onSuccess={remaining => {
@@ -834,27 +838,47 @@ type ActionErrorResult = {
 function ActionItemsDialog({
   list,
   itemIds,
+  items,
   onSuccess,
   onErrors,
   action,
 }: {
   list: ListMeta
   itemIds: string[]
+  items: Record<string, unknown>[]
   onSuccess: (remaining: Set<string>) => void
   onErrors: (result: ActionErrorResult) => void
   action: ActionMeta
 }) {
-  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
-    gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
+  const actionMutation =
+    action.key === 'delete'
+      ? gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
       results: ${action.graphql.names.many}(where: $where) {
         id
       }
-    }`,
-    {
-      variables: { where: itemIds.map(id => ({ id })) },
-      errorPolicy: 'all',
-    }
-  )
+    }`
+      : gql`mutation($data: [${action.graphql.names.one[0].toUpperCase()}${action.graphql.names.one.slice(1)}Args!]!) {
+      results: ${action.graphql.names.many}(data: $data) {
+        id
+      }
+    }`
+  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(actionMutation, {
+    variables:
+      action.key === 'delete'
+        ? { where: itemIds.map(id => ({ id })) }
+        : {
+            data: itemIds.flatMap(id => {
+              const row = items.find(item => String(item.id) === id)
+              if (!row) {
+                return []
+              }
+              const deserialized = deserializeItemToValue(list.fields, row)
+              const data = serializeActionData(list, action, deserialized, deserialized)
+              return Object.keys(data).length ? { where: { id }, data } : { where: { id } }
+            }),
+          },
+    errorPolicy: 'all',
+  })
   const { messages: m } = action
 
   async function onTryAction() {
