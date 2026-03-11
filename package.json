@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@10.30.0",
   "scripts": {
     "coverage": "jest --coverage",
     "test:vitest": "vitest ./packages/fields-document",
