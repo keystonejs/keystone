@@ -25,6 +25,7 @@ import {
   gql,
   useQuery,
 } from './apollo'
+import { getQueriedFieldKeysWithActions } from './utils'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -264,11 +265,21 @@ export function useListItem(
 > {
   const list = useList(listKey)
   const query = useMemo(() => {
-    const selectedFields = Object.values(list.fields)
-      .filter(field => {
-        if (field.key === 'id') return true
-        return field.itemView.fieldMode !== 'hidden'
-      })
+    const selectedFieldKeys = new Set(
+      getQueriedFieldKeysWithActions(
+        Object.values(list.fields)
+          .filter(field => {
+            if (field.key === 'id') return true
+            return field.itemView.fieldMode !== 'hidden'
+          })
+          .map(field => field.key),
+        list.actions,
+        'itemView'
+      )
+    )
+    const selectedFields = [...selectedFieldKeys]
+      .map(fieldKey => list.fields[fieldKey])
+      .filter(Boolean)
       .map(field => field.controller.graphqlSelection)
       .join('\n')
 

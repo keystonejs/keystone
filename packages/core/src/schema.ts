@@ -2,9 +2,12 @@ import type { ListenOptions } from 'node:net'
 
 import { idFieldType } from './lib/id-field'
 import type {
+  Action,
+  ActionDataConfig,
   BaseFields,
   BaseKeystoneTypeInfo,
   BaseListTypeInfo,
+  DeclaredAction,
   IdFieldConfig,
   KeystoneConfig,
   KeystoneConfigPre,
@@ -210,4 +213,14 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
 
 export function list<ListTypeInfo extends BaseListTypeInfo>(listConfig: ListConfig<ListTypeInfo>) {
   return { ...listConfig }
+}
+
+export function action<
+  ListTypeInfo extends BaseListTypeInfo,
+  Data extends ActionDataConfig<ListTypeInfo> = undefined,
+>(action: Action<ListTypeInfo, Data>): DeclaredAction<ListTypeInfo> {
+  return {
+    ...action,
+    ___defineActionsWithActionFunction: true,
+  } as unknown as DeclaredAction<ListTypeInfo>
 }

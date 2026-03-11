@@ -154,6 +154,9 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
       type: g.object<ActionMetaSource['graphql']>()({
         name: 'KeystoneAdminUIActionMetaGraphQL',
         fields: {
+          fields: g.field({
+            type: g.nonNull(g.list(g.nonNull(g.String))),
+          }),
           names: g.field({
             type: g.nonNull(
               g.object<ActionMetaSource['graphql']['names']>()({
@@ -161,6 +164,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                 fields: {
                   one: g.field({ type: g.nonNull(g.String) }),
                   many: g.field({ type: g.String }),
+                  data: g.field({ type: g.String }),
                 },
               })
             ),
