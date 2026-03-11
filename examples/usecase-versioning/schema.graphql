@@ -113,6 +113,13 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  copyPost(where: PostWhereUniqueInput!, version: Int!): Post
+  copyPosts(data: [CopyPostArgs!]!): [Post]
+}
+
+input CopyPostArgs {
+  where: PostWhereUniqueInput!
+  version: Int!
 }
 
 type Query {
@@ -235,7 +242,14 @@ type KeystoneAdminUIActionMetaMessages {
 }
 
 type KeystoneAdminUIActionMetaGraphQL {
+  arguments: [KeystoneAdminUIActionMetaGraphQLArgument!]!
   names: KeystoneAdminUIActionMetaGraphQLNames!
+}
+
+type KeystoneAdminUIActionMetaGraphQLArgument {
+  name: String!
+  type: String!
+  source: JSON
 }
 
 type KeystoneAdminUIActionMetaGraphQLNames {

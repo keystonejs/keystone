@@ -1,5 +1,5 @@
 import type { Context, Lists } from '.keystone/types'
-import { gWithContext, list } from '@keystone-6/core'
+import { action, gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { checkbox, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 
@@ -211,7 +211,7 @@ export const lists = {
 
     actions: {
       // flagPost
-      flag: {
+      flag: action({
         access: moderatorsOrAbove,
         // null redirects the page, otherwise it updates the page
         async resolve({ where }, context) {
@@ -258,7 +258,7 @@ export const lists = {
             },
           },
         },
-      },
+      }),
     },
   }),
 

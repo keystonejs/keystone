@@ -25,6 +25,7 @@ import {
   gql,
   useQuery,
 } from './apollo'
+import { getConditionalFilterFieldKeys, isActionAvailable } from './utils/filters'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -264,11 +265,30 @@ export function useListItem(
 > {
   const list = useList(listKey)
   const query = useMemo(() => {
-    const selectedFields = Object.values(list.fields)
-      .filter(field => {
-        if (field.key === 'id') return true
-        return field.itemView.fieldMode !== 'hidden'
-      })
+    const selectedFieldKeys = new Set<string>()
+
+    for (const field of Object.values(list.fields)) {
+      if (field.key === 'id') continue // always in the query
+      if (field.itemView.fieldMode === 'hidden') continue
+      selectedFieldKeys.add(field.key)
+    }
+
+    for (const action of list.actions) {
+      if (!isActionAvailable(action.itemView)) continue
+
+      for (const fieldKey of getConditionalFilterFieldKeys(action.itemView.actionMode)) {
+        selectedFieldKeys.add(fieldKey)
+      }
+
+      for (const arg of action.graphql.arguments) {
+        if (!arg.source) continue
+        selectedFieldKeys.add(arg.source.itemField)
+      }
+    }
+
+    const selectedFields = [...selectedFieldKeys]
+      .map(fieldKey => list.fields[fieldKey])
+      .filter(Boolean)
       .map(field => field.controller.graphqlSelection)
       .join('\n')
 
@@ -295,6 +315,7 @@ export function useListItem(
           }
         }
         item: ${list.graphql.names.itemQueryName}(where: { id: $id }) {
+          id
           ${selectedFields}
         }
       }

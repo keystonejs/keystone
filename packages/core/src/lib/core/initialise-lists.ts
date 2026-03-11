@@ -1,7 +1,13 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import type { GArg, GInputType } from '@graphql-ts/schema'
+import { GInputObjectType, type GArg, type GInputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
-import { GraphQLString, isInputObjectType } from 'graphql'
+import {
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLString,
+  isInputObjectType,
+  type GraphQLType,
+} from 'graphql'
 
 import { g } from '../..'
 import { expandVoidHooks } from '../../fields/resolve-hooks'
@@ -53,9 +59,15 @@ export type InitialisedAction = {
   access: ResolvedActionAccessControl
   resolve: BaseActions<BaseListTypeInfo>[keyof BaseActions<BaseListTypeInfo>]['resolve']
   graphql: {
+    arguments: { name: string; type: string; source: { itemField: string } | null }[]
     names: {
       one: string
       many: string
+      args: string
+    }
+    types: {
+      arguments: Record<string, GArg<GInputType>>
+      args: GInputObjectType<Record<string, GArg<GInputType>>>
     }
   }
   otel: string
@@ -77,7 +89,26 @@ export type InitialisedAction = {
         BaseListTypeInfo
       >
     }
+    argSources: Record<string, { itemField: string }>
   }
+}
+
+function printGraphQLType(type: GraphQLType): string {
+  if (type instanceof GraphQLNonNull) return `${printGraphQLType(type.ofType)}!`
+  if (type instanceof GraphQLList) return `[${printGraphQLType(type.ofType)}]`
+  return type.name
+}
+
+function getArgSources(
+  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string]
+): Record<string, { itemField: string }> {
+  return Object.fromEntries(
+    Object.entries(action.args ?? {}).flatMap(([arg, value]) => {
+      const field = value.ui?.source?.itemField
+      if (!field) return []
+      return [[arg, { itemField: field }]]
+    })
+  )
 }
 
 export type InitialisedField = {
@@ -770,54 +801,7 @@ function getListsWithInitialisedFields(
 
       fields: resultFields,
       groups,
-      actions: [
-        ...(function* () {
-          for (const actionKey in listConfig.actions) {
-            const action = listConfig.actions[actionKey]
-            const { label } = action.ui
-            const label_ = label.toLowerCase()
-            const graphqlNames = {
-              one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
-              many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
-            }
-            yield {
-              actionKey,
-              ...action,
-              graphql: {
-                names: graphqlNames,
-              },
-              otel: humanize(graphqlNames.one, true).toLowerCase(),
-              ui: {
-                label,
-                icon: action.ui.icon ?? null,
-                messages: {
-                  promptTitle: `${label} {singular}`,
-                  promptTitleMany: `${label} {count} {singular|plural}`,
-                  prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
-                  promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
-                  promptConfirmLabel: `Yes, ${label_} this {singular}`,
-                  promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
-                  fail: `Could not ${label_} {singular}`,
-                  failMany: `Could not ${label_} {countFail} {singular|plural}`,
-                  success: `Completed ${label_} action for {singular}`,
-                  successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
-                  ...action.ui.messages,
-                } satisfies InitialisedAction['ui']['messages'],
-                // TODO: move to listWithDefaults
-                itemView: {
-                  actionMode: action.ui.itemView?.actionMode ?? 'enabled',
-                  navigation: action.ui.itemView?.navigation ?? 'follow',
-                  hidePrompt: action.ui.itemView?.hidePrompt ?? false,
-                  hideToast: action.ui.itemView?.hideToast ?? false,
-                } satisfies InitialisedAction['ui']['itemView'],
-                listView: {
-                  actionMode: action.ui.listView?.actionMode ?? 'enabled',
-                },
-              },
-            }
-          }
-        })(),
-      ],
+      actions: [],
 
       graphql: {
         types: {
@@ -946,6 +930,47 @@ function graphqlForOutputField(field: InitialisedField) {
   })
 }
 
+function getInitialisedActionGraphql(
+  list: Pick<InitialisedList, 'graphql'>,
+  listGraphqlNames: { singular: string; plural: string },
+  actionKey: string,
+  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string]
+): InitialisedAction['graphql'] {
+  const graphqlNames = {
+    one: action.graphql?.singular ?? `${actionKey}${listGraphqlNames.singular}`,
+    many: action.graphql?.plural ?? `${actionKey}${listGraphqlNames.plural}`,
+  }
+  const argsName = `${graphqlNames.one[0].toUpperCase()}${graphqlNames.one.slice(1)}Args`
+  const argumentFields = Object.fromEntries(
+    Object.entries(action.args ?? {}).map(([arg, value]) => [arg, value.graphql])
+  )
+
+  return {
+    arguments: Object.entries(argumentFields).map(([name, arg]) => ({
+      name,
+      type: printGraphQLType(arg.type as unknown as GraphQLType),
+      source: getArgSources(action)[name] ?? null,
+    })),
+    names: {
+      ...graphqlNames,
+      args: argsName,
+    },
+    types: {
+      arguments: argumentFields,
+      args: g.inputObject({
+        name: argsName,
+        isOneOf: false,
+        fields: {
+          where: g.arg({
+            type: g.nonNull(list.graphql.types.uniqueWhere),
+          }),
+          ...argumentFields,
+        },
+      }),
+    },
+  }
+}
+
 export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
@@ -981,7 +1006,16 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     })
   )
 
+  // fixup the GraphQL refs
   for (const list of Object.values(intermediateLists)) {
+    listsRef[list.listKey] = {
+      ...list,
+      lists: listsRef,
+    }
+  }
+
+  for (const list of Object.values(listsRef)) {
+    const listConfig = config.lists[list.listKey]
     let hasAnEnabledCreateField = false
     let hasAnEnabledUpdateField = false
 
@@ -1003,19 +1037,57 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       list.graphql.types.update = g.Empty
       list.graphql.names.updateInputName = 'Empty'
     }
+
+    list.actions = Object.entries(listConfig.actions ?? {}).map(
+      ([actionKey, action]): InitialisedAction => {
+        const { label } = action.ui
+        const graphql = getInitialisedActionGraphql(
+          list,
+          __getNames(list.listKey, listConfig).graphql,
+          actionKey,
+          action
+        )
+
+        return {
+          ...action,
+          actionKey,
+          graphql,
+          otel: humanize(graphql.names.one, true).toLowerCase(),
+          ui: {
+            label,
+            icon: action.ui.icon ?? null,
+            messages: {
+              promptTitle: `{Label} {singular}`,
+              promptTitleMany: `{Label} {count} {singular|plural}`,
+              prompt: `Are you sure you want to {label} {singular} "{itemLabel}"?`,
+              promptMany: `Are you sure you want to {label} {count} {singular|plural}?`,
+              promptConfirmLabel: `Yes, {label} this {singular}`,
+              promptConfirmLabelMany: `Yes, {label} {count} {singular|plural}`,
+              fail: `Could not {label} {singular}`,
+              failMany: `Could not {label} {countFail} {singular|plural}`,
+              success: `Completed {label} action for {singular}`,
+              successMany: `Completed {label} action for {countSuccess} {singular|plural}`,
+              ...action.ui.messages,
+            },
+            itemView: {
+              actionMode: action.ui.itemView?.actionMode ?? 'enabled',
+              navigation: action.ui.itemView?.navigation ?? 'follow',
+              hidePrompt: action.ui.itemView?.hidePrompt ?? false,
+              hideToast: action.ui.itemView?.hideToast ?? false,
+            },
+            listView: {
+              actionMode: action.ui.listView?.actionMode ?? 'enabled',
+            },
+            argSources: getArgSources(action),
+          },
+        }
+      }
+    )
   }
 
   // error checking
-  for (const list of Object.values(intermediateLists)) {
+  for (const list of Object.values(listsRef)) {
     assertFieldsValid(list)
-  }
-
-  // fixup the GraphQL refs
-  for (const list of Object.values(intermediateLists)) {
-    listsRef[list.listKey] = {
-      ...list,
-      lists: listsRef,
-    }
   }
 
   // do some introspection

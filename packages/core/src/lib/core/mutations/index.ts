@@ -138,6 +138,10 @@ type UpdateInput = {
   where: UniqueInputFilter
   data: InputData
 }
+type ActionInput = {
+  where: UniqueInputFilter
+  args: Record<string, unknown>
+}
 
 async function updateSingle__(
   { where, data: inputData }: UpdateInput,
@@ -238,7 +242,7 @@ async function actionSingle__(
   context: KeystoneContext,
   list: InitialisedList,
   action: InitialisedAction,
-  where: UniqueInputFilter
+  { where, args }: ActionInput
 ) {
   return await withSpan(
     action.otel,
@@ -251,6 +255,7 @@ async function actionSingle__(
           listKey: list.listKey,
           actionKey: action.actionKey,
           where,
+          args,
         },
         context
       )
@@ -373,7 +378,7 @@ async function deleteMany(
 }
 
 async function actionOne(
-  where: UniqueInputFilter,
+  input: ActionInput,
   list: InitialisedList,
   context: KeystoneContext,
   action: InitialisedAction
@@ -389,11 +394,11 @@ async function actionOne(
   // get list-level access control filters
   //   NOTHING - no filters for action operations
 
-  return actionSingle__(context, list, action, where)
+  return actionSingle__(context, list, action, input)
 }
 
 async function actionMany(
-  wheres: UniqueInputFilter[],
+  inputs: ActionInput[],
   list: InitialisedList,
   context: KeystoneContext,
   action: InitialisedAction
@@ -409,11 +414,11 @@ async function actionMany(
   // get list-level access control filters
   //   NOTHING - no filters for action operations
 
-  return wheres.map(async where => {
+  return inputs.map(async ({ where, ...args }) => {
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotActionForItem(action, list))
 
-    return actionSingle__(context, list, action, where)
+    return actionSingle__(context, list, action, { where, args })
   })
 }
 
@@ -864,12 +869,13 @@ export function getMutationsForList(list: InitialisedList) {
                     type: g.nonNull(list.graphql.types.uniqueWhere),
                     defaultValue: defaultUniqueWhereInput,
                   }),
+                  ...action.graphql.types.arguments,
                 },
-                async resolve(_, { where }, context, info) {
+                async resolve(_, { where, ...args }, context, info) {
                   return await withSpan(
                     `mutation ${info.fieldName}`,
                     async () => {
-                      return actionOne(where, list, context, action)
+                      return actionOne({ where, args }, list, context, action)
                     },
                     { 'keystone.list': list.listKey, 'keystone.action': action.actionKey }
                   )
@@ -881,16 +887,16 @@ export function getMutationsForList(list: InitialisedList) {
               g.field({
                 type: g.list(list.graphql.types.output),
                 args: {
-                  where: g.arg({
-                    type: g.nonNull(g.list(g.nonNull(list.graphql.types.uniqueWhere))),
+                  data: g.arg({
+                    type: g.nonNull(g.list(g.nonNull(action.graphql.types.args))),
                   }),
                 },
-                async resolve(_, { where }, context, info) {
+                async resolve(_, { data }, context, info) {
                   return await withSpan(
                     `mutation ${info.fieldName}`,
                     async () => {
                       return promisesButSettledWhenAllSettledAndInOrder(
-                        await actionMany(where, list, context, action)
+                        await actionMany(data as ActionInput[], list, context, action)
                       )
                     },
                     {

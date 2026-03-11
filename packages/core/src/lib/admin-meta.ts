@@ -280,7 +280,8 @@ export function createAdminMeta(
           ...action.ui.messages,
         },
         graphql: {
-          ...action.graphql,
+          arguments: action.graphql.arguments,
+          names: action.graphql.names,
         },
 
         // ActionMetaSource_
