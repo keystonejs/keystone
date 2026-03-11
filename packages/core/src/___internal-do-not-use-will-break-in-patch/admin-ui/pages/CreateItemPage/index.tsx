@@ -26,9 +26,11 @@ function CreateItemPage({ listKey }: { listKey: string }) {
         <ItemPageHeader
           list={list}
           actions={[]}
+          value={null}
           label="Create"
           title={`Create ${list.singular}`}
           item={null}
+          initialValue={null}
           onAction={null}
         />
       }

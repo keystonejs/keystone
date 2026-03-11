@@ -68,7 +68,7 @@ The `actions` property of the list configuration object is where you define acti
 An action can be triggered on individual items or in bulk from the list view in the Admin UI, or directly using GraphQL.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list, action } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text, integer } from '@keystone-6/core/fields';
 
@@ -81,7 +81,7 @@ export default config({
         votes: integer({ defaultValue: 0 }),
       },
       actions: {
-        vote: {
+        vote: action({
           access: allowAll,
           async resolve ({ where }, context) {
             if (!where) return null
@@ -94,7 +94,7 @@ export default config({
             label: 'Vote +1',
             icon: 'voteIcon',
           },
-        },
+        }),
       },
     }),
   },

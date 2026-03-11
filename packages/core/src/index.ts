@@ -1,4 +1,4 @@
-export { list, config, group } from './schema'
+export { list, config, group, action } from './schema'
 export type { ListConfig, BaseFields } from './types'
 // this re-exports `g` and `graphql`
 // note the usage of export * over explicitly listing the exports

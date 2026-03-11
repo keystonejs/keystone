@@ -138,9 +138,17 @@ type Mutation {
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   votePost(where: PostWhereUniqueInput!): Post
-  votePosts(where: [PostWhereUniqueInput!]!): [Post]
+  votePosts(data: [VotePostArgs!]!): [Post]
   reportAPost(where: PostWhereUniqueInput!): Post
-  reportSomePosts(where: [PostWhereUniqueInput!]!): [Post]
+  reportSomePosts(data: [ReportAPostArgs!]!): [Post]
+}
+
+input VotePostArgs {
+  where: PostWhereUniqueInput!
+}
+
+input ReportAPostArgs {
+  where: PostWhereUniqueInput!
 }
 
 type Query {
@@ -263,12 +271,14 @@ type KeystoneAdminUIActionMetaMessages {
 }
 
 type KeystoneAdminUIActionMetaGraphQL {
+  fields: [String!]!
   names: KeystoneAdminUIActionMetaGraphQLNames!
 }
 
 type KeystoneAdminUIActionMetaGraphQLNames {
   one: String!
   many: String
+  data: String
 }
 
 type KeystoneAdminUIActionMetaItemView {

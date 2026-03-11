@@ -162,6 +162,8 @@ function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
 function ItemForm({
   listKey,
   initialValue,
+  value,
+  onChange,
   itemLabel,
   onSaveSuccess,
   fieldModes,
@@ -170,6 +172,8 @@ function ItemForm({
 }: {
   listKey: string
   initialValue: Record<string, unknown>
+  value: Record<string, unknown>
+  onChange: (value: Record<string, unknown>) => void
   itemLabel: string
   onSaveSuccess: () => void
   fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
@@ -188,11 +192,9 @@ function ItemForm({
     { errorPolicy: 'all' }
   )
 
-  const [value, setValue] = useState(() => initialValue)
   function resetValueState() {
-    setValue(() => initialValue)
+    onChange(initialValue)
   }
-  useEffect(() => resetValueState(), [initialValue])
 
   const invalidFields = useInvalidFields(list.fields, value, isRequireds)
   const [forceValidation, setForceValidation] = useState(false)
@@ -257,7 +259,7 @@ function ItemForm({
             invalidFields={invalidFields}
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
-            onChange={useCallback(value => setValue(value), [setValue])}
+            onChange={onChange}
             value={value}
             isRequireds={isRequireds}
           />
@@ -271,7 +273,7 @@ function ItemForm({
             groups={list.groups}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
-            onChange={useCallback(value => setValue(value), [setValue])}
+            onChange={onChange}
             value={value}
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
@@ -321,6 +323,10 @@ function ItemPage({ listKey }: ItemPageProps) {
     if (!item) return null
     return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
+  const [value, setValue] = useState<Record<string, unknown> | null>(null)
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
 
   const { actionsInContext, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
     const actionModes = Object.fromEntries(
@@ -394,6 +400,8 @@ function ItemPage({ listKey }: ItemPageProps) {
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
           item={item ?? null}
+          value={value ?? initialValue}
+          initialValue={initialValue}
           onAction={onAction}
         />
       }
@@ -429,7 +437,7 @@ function ItemPage({ listKey }: ItemPageProps) {
                 </ItemNotFound>
               ))}
           </Box>
-          {initialValue && (
+          {initialValue && value && (
             <ItemForm
               fieldModes={fieldModes}
               fieldPositions={fieldPositions}
@@ -437,6 +445,8 @@ function ItemPage({ listKey }: ItemPageProps) {
               listKey={listKey}
               itemLabel={itemLabel}
               initialValue={initialValue}
+              value={value}
+              onChange={setValue}
               onSaveSuccess={refetch}
             />
           )}
