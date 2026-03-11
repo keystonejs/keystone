@@ -230,7 +230,7 @@ describe('conditional filters', () => {
     const actions = [
       {
         key: 'publish',
-        graphql: { names: { one: 'publishPost', many: 'publishPosts' } },
+        graphql: { fields: [], names: { one: 'publishPost', many: 'publishPosts' } },
         label: 'Publish',
         icon: null,
         messages: {
@@ -278,7 +278,7 @@ describe('conditional filters', () => {
     const actions = [
       {
         key: 'publish',
-        graphql: { names: { one: 'publishPost', many: 'publishPosts' } },
+        graphql: { fields: [], names: { one: 'publishPost', many: 'publishPosts' } },
         label: 'Publish',
         icon: null,
         messages: {

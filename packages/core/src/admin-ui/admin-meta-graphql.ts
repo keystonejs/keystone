@@ -69,9 +69,11 @@ export const adminMetaQuery = gql`
               successMany
             }
             graphql {
+              fields
               names {
                 one
                 many
+                data
               }
             }
             itemView {
