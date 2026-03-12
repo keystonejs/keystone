@@ -122,12 +122,12 @@ export const lists = {
             successMany: 'Successfully reported {countSuccess} {singular|plural}',
           },
           itemView: {
-            actionMode: () => 'enabled',
+            actionMode: { disabled: { hidden: { equals: true } } },
             navigation: 'refetch',
             hideToast: true,
           },
           listView: {
-            actionMode: 'enabled',
+            actionMode: { disabled: { hidden: { equals: true } } },
           },
         },
       },
