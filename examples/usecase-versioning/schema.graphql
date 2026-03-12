@@ -5,6 +5,7 @@ type Post {
   id: ID!
   title: String
   content: String
+  isPublished: Boolean
   version: Int
 }
 
@@ -19,6 +20,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
+  isPublished: BooleanFilter
   version: IntFilter
 }
 
@@ -61,6 +63,11 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input IntFilter {
   equals: Int
   in: [Int!]
@@ -76,6 +83,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
+  isPublished: OrderDirection
   version: OrderDirection
 }
 
@@ -113,6 +121,13 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  publishPost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  publishPosts(data: [PublishPostArgs!]!): [Post]
+}
+
+input PublishPostArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 type Query {
@@ -235,12 +250,14 @@ type KeystoneAdminUIActionMetaMessages {
 }
 
 type KeystoneAdminUIActionMetaGraphQL {
+  fields: [String!]!
   names: KeystoneAdminUIActionMetaGraphQLNames!
 }
 
 type KeystoneAdminUIActionMetaGraphQLNames {
   one: String!
   many: String
+  data: String
 }
 
 type KeystoneAdminUIActionMetaItemView {

@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { list, action } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, integer, text, timestamp } from '@keystone-6/core/fields'
 
@@ -34,9 +34,22 @@ const readOnly = {
 export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
+
     fields: {
       title: text(),
-      content: text(),
+      content: text({
+        hooks: {
+          validate: args => {
+            if (
+              typeof args.resolvedFieldData === 'string' &&
+              !args.context.session?.noValidation &&
+              !args.resolvedFieldData.includes('good content')
+            ) {
+              args.addValidationError('Content is not valid')
+            }
+          },
+        },
+      }),
       hidden: checkbox({
         ui: {
           itemView: {
@@ -53,7 +66,7 @@ export const lists = {
       reportedAt: timestamp({ ...readOnly }),
     },
     actions: {
-      vote: {
+      vote: action({
         access: ({ context }) => {
           const ua = context.req?.headers['user-agent'] ?? ''
           // only allow voting from Chrome browsers
@@ -83,14 +96,15 @@ export const lists = {
             successMany: 'Voted for {countSuccess} {singular|plural}',
           },
           itemView: {
+            actionMode: { disabled: { hidden: { equals: true } } },
             hidePrompt: true,
           },
           listView: {
             actionMode: 'hidden',
           },
         },
-      },
-      report: {
+      }),
+      report: action({
         access: allowAll,
         async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
@@ -130,7 +144,30 @@ export const lists = {
             actionMode: { disabled: { hidden: { equals: true } } },
           },
         },
-      },
+      }),
+      updateWithoutValidation: action({
+        access: allowAll,
+        async resolve({ where, data }, context) {
+          return context
+            .withSession({ ...context.session, noValidation: true })
+            .db.Post.updateOne({ where, data })
+        },
+        graphql: {
+          singular: 'updatePostWithoutValidation',
+          plural: 'updatePostsWithoutValidation',
+          __data: true,
+        },
+        ui: {
+          label: 'Save without validation',
+          itemView: {
+            navigation: 'refetch',
+            hideToast: true,
+          },
+          listView: {
+            actionMode: { disabled: { hidden: { equals: true } } },
+          },
+        },
+      }),
     },
     ui: {
       listView: {
@@ -141,4 +178,4 @@ export const lists = {
       },
     },
   }),
-} satisfies Lists
+} satisfies Lists<{ noValidation?: boolean }>
