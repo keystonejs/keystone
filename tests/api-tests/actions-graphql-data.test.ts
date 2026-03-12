@@ -32,6 +32,9 @@ const config = {
           },
           ui: {
             label: 'Publish',
+            itemView: {
+              actionMode: ({ item }) => (item == null || item.hidden ? 'enabled' : 'disabled'),
+            },
           },
         }),
         archive: action({
@@ -46,6 +49,9 @@ const config = {
           },
           ui: {
             label: 'Archive',
+            itemView: {
+              actionMode: ({ item }) => (item != null && item.hidden ? 'disabled' : 'enabled'),
+            },
           },
         }),
         revise: action({
@@ -173,6 +179,89 @@ test('graphql artifacts include action args types and __data input handling', as
       `revisePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post`
     )
     expect(artifacts.graphql).not.toContain('input ArchivePostData')
+  } finally {
+    await disconnect()
+  }
+})
+
+test('admin meta list actionMode functions receive the current item', async () => {
+  const { connect, disconnect, context } = await setupTestEnv(config)
+  await connect()
+  try {
+    const hiddenPost = await context.sudo().query.Post.createOne({
+      data: { title: 'Hidden', hidden: true },
+      query: 'id',
+    })
+    const visiblePost = await context.sudo().query.Post.createOne({
+      data: { title: 'Visible', hidden: false },
+      query: 'id',
+    })
+
+    const hiddenRes = await context.sudo().graphql.raw({
+      query: `
+        query ($key: String!, $id: ID!) {
+          keystone {
+            adminMeta {
+              list(key: $key, itemId: $id) {
+                actions {
+                  key
+                  itemView {
+                    actionMode
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: { key: 'Post', id: hiddenPost.id },
+    })
+    expect(hiddenRes.errors).toBeUndefined()
+    expect((hiddenRes.data as any)?.keystone.adminMeta.list.actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'publish',
+          itemView: { actionMode: 'enabled' },
+        }),
+        expect.objectContaining({
+          key: 'archive',
+          itemView: { actionMode: 'disabled' },
+        }),
+      ])
+    )
+
+    const visibleRes = await context.sudo().graphql.raw({
+      query: `
+        query ($key: String!, $id: ID!) {
+          keystone {
+            adminMeta {
+              list(key: $key, itemId: $id) {
+                actions {
+                  key
+                  itemView {
+                    actionMode
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: { key: 'Post', id: visiblePost.id },
+    })
+    expect(visibleRes.errors).toBeUndefined()
+    expect((visibleRes.data as any)?.keystone.adminMeta.list.actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'publish',
+          itemView: { actionMode: 'disabled' },
+        }),
+        expect.objectContaining({
+          key: 'archive',
+          itemView: { actionMode: 'enabled' },
+        }),
+      ])
+    )
   } finally {
     await disconnect()
   }

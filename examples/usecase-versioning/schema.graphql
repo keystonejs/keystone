@@ -121,17 +121,13 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  publishPost(where: PostWhereUniqueInput!, data: PublishPostData!): Post
+  publishPost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
   publishPosts(data: [PublishPostArgs!]!): [Post]
-}
-
-input PublishPostData {
-  version: Int!
 }
 
 input PublishPostArgs {
   where: PostWhereUniqueInput!
-  data: PublishPostData!
+  data: PostUpdateInput!
 }
 
 type Query {

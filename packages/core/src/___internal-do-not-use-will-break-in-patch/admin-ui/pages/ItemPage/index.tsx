@@ -29,7 +29,9 @@ import { useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
+  resolveConditionalActionMode,
   serializeValueToOperationItem,
+  serializeItemForConditionalFilters,
   useHasChanges,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
@@ -328,17 +330,19 @@ function ItemPage({ listKey }: ItemPageProps) {
     setValue(initialValue)
   }, [initialValue])
 
-  const { actionsInContext, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
-    const actionModes = Object.fromEntries(
-      Object.entries(list.actions).map(([k, v]) => [k, v.itemView.actionMode])
-    )
-    const fieldModes = Object.fromEntries(
-      Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldMode])
-    )
-    const fieldPositions = Object.fromEntries(
+  const { actionModes, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
+    const actionModes: Record<
+      string,
+      ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+    > = Object.fromEntries(list.actions.map(action => [action.key, action.itemView.actionMode]))
+    const fieldModes: Record<
+      string,
+      ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+    > = Object.fromEntries(Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldMode]))
+    const fieldPositions: Record<string, 'form' | 'sidebar'> = Object.fromEntries(
       Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldPosition])
     )
-    const isRequireds = Object.fromEntries(
+    const isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>> = Object.fromEntries(
       Object.entries(list.fields).map(([k, v]) => [k, v.itemView.isRequired])
     )
     for (const field of data?.keystone?.adminMeta?.list?.fields ?? []) {
@@ -359,24 +363,32 @@ function ItemPage({ listKey }: ItemPageProps) {
       actionModes[action.key] = action.itemView.actionMode
     }
 
-    // actions within context of an item
-    const actionsInContext = list.actions
-      .map(action => ({
-        ...action,
-        itemView: {
-          ...action.itemView,
-          actionMode: actionModes[action.key],
-        },
-      }))
-      .filter(action => action.itemView.actionMode !== 'hidden')
-
     return {
-      actionsInContext,
+      actionModes,
       fieldModes,
       fieldPositions,
       isRequireds,
     }
-  }, [data?.keystone?.adminMeta, list.fields])
+  }, [
+    data?.keystone?.adminMeta?.list?.actions,
+    data?.keystone?.adminMeta?.list?.fields,
+    list.actions,
+    list.fields,
+  ])
+
+  const actionsInContext = useMemo(() => {
+    if (!value) return []
+    const serializedValue = serializeItemForConditionalFilters(list.fields, value)
+    return list.actions
+      .map(action => ({
+        ...action,
+        itemView: {
+          ...action.itemView,
+          actionMode: resolveConditionalActionMode(actionModes[action.key], serializedValue),
+        },
+      }))
+      .filter(action => action.itemView.actionMode !== 'hidden')
+  }, [actionModes, list.actions, value])
 
   function onAction(action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView

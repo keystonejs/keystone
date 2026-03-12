@@ -50,25 +50,34 @@ export const lists = {
         },
       }),
     },
+    hooks: {
+      validate: ({ item, resolvedData, addValidationError }) => {
+        const resolvedIsPublished = resolvedData?.isPublished ?? item?.isPublished
+        const resolvedContent = resolvedData?.content ?? item?.content
+        if (resolvedIsPublished && !resolvedContent) {
+          addValidationError('Cannot publish a post without content')
+        }
+      },
+    },
     actions: {
       publish: action({
         access: allowAll,
         ui: {
           label: 'Publish',
-          itemView: { actionMode: { enabled: true } },
+          itemView: {
+            actionMode: {
+              enabled: { content: { not: { equals: '' } }, isPublished: { equals: false } },
+              disabled: { isPublished: { equals: false } },
+            },
+          },
         },
         graphql: {
-          __data: {
-            version: true,
-          },
+          __data: true,
         },
         resolve: async ({ where, data }, context) => {
           return context.sudo().db.Post.updateOne({
             where,
-            data: {
-              isPublished: true,
-              version: data.version,
-            },
+            data: { ...data, isPublished: true },
           })
         },
       }),
