@@ -87,11 +87,11 @@ export type FieldMeta = {
   search: 'default' | 'insensitive' | null
   isNonNull: ('read' | 'create' | 'update')[]
   createView: {
-    fieldMode: ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>
+    fieldMode: ConditionalFilter<'edit' | 'hidden', 'hidden', BaseListTypeInfo>
     isRequired: ConditionalFilterCase<BaseListTypeInfo>
   }
   itemView: {
-    fieldMode: ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+    fieldMode: ConditionalFilter<'edit' | 'read' | 'hidden', 'read' | 'hidden', BaseListTypeInfo>
     fieldPosition: 'form' | 'sidebar'
     isRequired: ConditionalFilterCase<BaseListTypeInfo>
   }
@@ -130,13 +130,21 @@ export type ActionMeta = {
     successMany: string
   }
   itemView: {
-    actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+    actionMode: ConditionalFilter<
+      'enabled' | 'disabled' | 'hidden',
+      'disabled' | 'hidden',
+      BaseListTypeInfo
+    >
     navigation: 'follow' | 'refetch' | 'return'
     hidePrompt: boolean
     hideToast: boolean
   }
   listView: {
-    actionMode: 'enabled' | 'hidden'
+    actionMode: ConditionalFilter<
+      'enabled' | 'disabled' | 'hidden',
+      'disabled' | 'hidden',
+      BaseListTypeInfo
+    >
   }
 }
 

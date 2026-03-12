@@ -41,6 +41,13 @@ import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
+import {
+  deserializeItemToValue,
+  getConditionalFilterFieldKeys,
+  isActionAvailable,
+  resolveActionMode,
+  serializeItemForConditionalFilters,
+} from '../../../../admin-ui/utils'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
@@ -332,7 +339,7 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
+
   const where = useMemo(
     () =>
       filters.map(filter => {
@@ -344,15 +351,29 @@ function ListPage({ listKey }: ListPageProps) {
     [list, filters]
   )
 
+  const actionsAvailable = useMemo(
+    () => list.actions.filter(x => isActionAvailable(x.listView)),
+    [list.actions]
+  )
   const search = useSearchFilter(searchString, list, list.initialSearchFields)
   const { data, error, refetch, loading } = useQuery(
     useMemo((): TypedDocumentNode<{
       items: Record<string, unknown>[] | null
       count: number | null
     }> => {
-      const selectedGqlFields = shownFields
-        .filter(field => field.key !== 'id') // id is always included
-        .map(field => field.controller.graphqlSelection)
+      const fieldKeys = new Set(columns) // only the shown columns
+
+      // and any fields needed by the action filters
+      for (const action of actionsAvailable) {
+        for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
+          fieldKeys.add(fieldKey)
+        }
+      }
+
+      const fieldsToQuery = [...fieldKeys]
+        .filter(fieldKey => fieldKey !== 'id') // id is always included
+        .map(fieldKey => list.fields[fieldKey]?.controller.graphqlSelection)
+        .filter(Boolean)
         .join('\n')
 
       // TODO: less interpolation
@@ -370,12 +391,12 @@ function ListPage({ listKey }: ListPageProps) {
             orderBy: $orderBy
           ) {
             id
-            ${selectedGqlFields}
+            ${fieldsToQuery}
           }
           count: ${list.graphql.names.listQueryCountName}(where: $where)
         }
       `
-    }, [list, shownFields]),
+    }, [list, list.fields, columns, actionsAvailable]),
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
@@ -410,13 +431,17 @@ function ListPage({ listKey }: ListPageProps) {
     selectedItems === 'all' ? (data?.items?.map(item => item.id) ?? []) : Array.from(selectedItems)
   ).map(String)
   const isEmpty = Boolean(data?.count === 0 && !isConstrained)
-  const headers = shownFields.map(field => {
-    return {
-      id: field.key,
-      label: field.label,
-      allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
-    }
-  })
+  const headers = columns
+    .map(column => {
+      const field = list.fields[column]
+      if (!field) return
+      return {
+        id: field.key,
+        label: field.label,
+        allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
+      }
+    })
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
 
   function onAddFilter(newFilter: Filter) {
     setFilters(prevFilters => [...prevFilters, newFilter])
@@ -431,11 +456,10 @@ function ListPage({ listKey }: ListPageProps) {
     setSort(defaultSort)
   }
 
-  const actions = list.actions.filter(action => action.listView.actionMode === 'enabled')
-  const actionsForList = list.hideDelete
-    ? actions
-    : [
-        ...actions,
+  const actionsList = [
+    ...actionsAvailable,
+    ...(list.hideDelete
+      ? [] : [
         {
           key: 'delete',
           label: 'Delete',
@@ -463,7 +487,39 @@ function ListPage({ listKey }: ListPageProps) {
           listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
         } as const,
       ]
-  const selectionMode = actionsForList.length > 0 ? 'multiple' : 'none'
+    ),
+  ]
+  const selectionMode = actionsList.length > 0 ? 'multiple' : 'none'
+  const selectedRows = useMemo(
+    () => data?.items?.filter(item => selectedItemIds.includes(String(item.id))) ?? [],
+    [data?.items, selectedItemIds]
+  )
+  const serializedSelectedRows = useMemo(
+    () =>
+      selectedRows.map(row =>
+        serializeItemForConditionalFilters(list.fields, deserializeItemToValue(list.fields, row))
+      ),
+    [list.fields, selectedRows]
+  )
+  const { actions, disabledKeys: disabledActionKeys } = useMemo(() => {
+    const disabledKeys: string[] = []
+    const actions: ActionMeta[] = []
+    for (const action of actionsList) {
+      let actionMode
+      for (const serializedValue of serializedSelectedRows) {
+        const mode = resolveActionMode(action.listView.actionMode, serializedValue)
+        if (mode === 'hidden') {
+          actionMode = 'hidden'
+          break
+        }
+        if (mode === 'disabled') actionMode = 'disabled'
+      }
+      if (actionMode === 'hidden') continue
+      if (actionMode === 'disabled') disabledKeys.push(action.key)
+      actions.push(action)
+    }
+    return { actions, disabledKeys }
+  }, [actionsList, serializedSelectedRows])
 
   return (
     <PageContainer
@@ -619,11 +675,12 @@ function ListPage({ listKey }: ListPageProps) {
                 boxShadow: `0 1px 4px ${tokenSchema.color.shadow.regular}`,
               },
             })}
+            disabledKeys={disabledActionKeys}
             onAction={setActiveAction}
           >
             {[
               ...(function* () {
-                for (const action of actionsForList) {
+                for (const action of actions) {
                   const iconComponent = action.icon ? KeystarIcons[action.icon] : null
                   yield (
                     <Item key={action.key} textValue={action.label}>
@@ -655,7 +712,7 @@ function ListPage({ listKey }: ListPageProps) {
             setActiveAction(null)
           }}
         >
-          {actionsForList
+          {actions
             .filter(action => action.key === activeAction)
             .map(action => {
               return (

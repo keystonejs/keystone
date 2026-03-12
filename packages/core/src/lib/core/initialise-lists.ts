@@ -66,11 +66,16 @@ export type InitialisedAction = {
     itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
       actionMode: MaybeItemActionFunctionWithFilter<
         'enabled' | 'disabled' | 'hidden',
+        'disabled' | 'hidden',
         BaseListTypeInfo
       >
     }
     listView: {
-      actionMode: MaybeSessionFunction<'enabled' | 'hidden', BaseListTypeInfo>
+      actionMode: MaybeSessionFunctionWithFilter<
+        'enabled' | 'disabled' | 'hidden',
+        'disabled' | 'hidden',
+        BaseListTypeInfo
+      >
     }
   }
 }
@@ -101,12 +106,13 @@ export type InitialisedField = {
     description: string
     views: string | null
     createView: {
-      fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', BaseListTypeInfo>
+      fieldMode: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', BaseListTypeInfo>
       isRequired: MaybeBooleanSessionFunctionWithFilter<BaseListTypeInfo>
     }
     itemView: {
       fieldMode: MaybeItemFieldFunctionWithFilter<
         'read' | 'edit' | 'hidden',
+        'read' | 'hidden',
         BaseListTypeInfo,
         BaseFieldTypeInfo
       >

@@ -20,8 +20,8 @@ export const lists = {
         ui: {
           createView: {
             fieldMode: {
-              edit: {
-                priority: { equals: 'high' },
+              hidden: {
+                priority: { not: { equals: 'high' } },
               },
             },
             isRequired: {
@@ -30,8 +30,8 @@ export const lists = {
           },
           itemView: {
             fieldMode: {
-              edit: {
-                priority: { equals: 'high' },
+              hidden: {
+                priority: { not: { equals: 'high' } },
               },
             },
             isRequired: {

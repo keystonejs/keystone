@@ -219,12 +219,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
           name: 'KeystoneAdminUIActionMetaListView',
           fields: {
             actionMode: g.field({
-              type: g.nonNull(
-                g.enum({
-                  name: 'KeystoneAdminUIActionMetaListViewActionMode',
-                  values: g.enumValues(['enabled', 'hidden']),
-                })
-              ),
+              type: g.nonNull(g.JSON),
             }),
           },
         })
@@ -323,7 +318,10 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
       type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))),
     }),
     groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
-    actions: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))) }),
+    actions: g.field({
+      resolve: ({ actions, item }) => actions.map(action => ({ ...action, item })),
+      type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))),
+    }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
 
     pageSize: g.field({ type: g.nonNull(g.Int) }),

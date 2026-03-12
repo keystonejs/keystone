@@ -30,12 +30,13 @@ type FieldMetaSource_ = {
   isFilterable: EmptyResolver<boolean>
 
   createView: {
-    fieldMode: EmptyResolver<ConditionalFilter<'edit' | 'hidden', BaseListTypeInfo>>
+    fieldMode: EmptyResolver<ConditionalFilter<'edit' | 'hidden', 'hidden', BaseListTypeInfo>>
     isRequired: EmptyResolver<ConditionalFilterCase<BaseListTypeInfo>>
   }
   itemView: {
     fieldMode: MaybeItemFieldFunctionWithFilter<
       'edit' | 'read' | 'hidden',
+      'read' | 'hidden',
       BaseListTypeInfo,
       BaseFieldTypeInfo
     >
@@ -56,11 +57,14 @@ type ActionMetaSource_ = {
   itemView: Omit<ActionMeta['itemView'], 'actionMode'> & {
     actionMode: MaybeItemActionFunctionWithFilter<
       'enabled' | 'disabled' | 'hidden',
+      'disabled' | 'hidden',
       BaseListTypeInfo
     >
   }
   listView: {
-    actionMode: EmptyResolver<'enabled' | 'hidden'>
+    actionMode: EmptyResolver<
+      ConditionalFilter<'enabled' | 'disabled' | 'hidden', 'disabled' | 'hidden', BaseListTypeInfo>
+    >
   }
   item: BaseItem | null
 }

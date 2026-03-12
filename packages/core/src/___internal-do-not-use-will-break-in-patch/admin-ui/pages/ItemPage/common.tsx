@@ -20,6 +20,8 @@ export function ItemPageHeader({
   list,
   actions,
   item,
+  value,
+  initialValue,
   label,
   title = label,
   onAction,
@@ -27,6 +29,8 @@ export function ItemPageHeader({
   list: ListMeta
   actions: ActionMeta[]
   item: Record<string, unknown> | null
+  value: Record<string, unknown> | null
+  initialValue: Record<string, unknown> | null
   label: string
   title: string
   onAction: ((action: ActionMeta, resultId: string | null) => void) | null
@@ -67,7 +71,14 @@ export function ItemPageHeader({
       )}
 
       {item && onAction && actions.length > 0 && (
-        <ItemActions list={list} item={item} actions={actions} onAction={onAction} />
+        <ItemActions
+          list={list}
+          item={item}
+          value={value}
+          initialValue={initialValue}
+          actions={actions}
+          onAction={onAction}
+        />
       )}
     </Grid>
   )
@@ -96,11 +107,15 @@ type ActionError = {
 function ItemActions({
   list,
   item,
+  value,
+  initialValue,
   actions,
   onAction,
 }: {
   list: ListMeta
   item: Record<string, unknown>
+  value: Record<string, unknown> | null
+  initialValue: Record<string, unknown> | null
   actions: ActionMeta[]
   onAction: (action: ActionMeta, resultId: string | null) => void
 }) {

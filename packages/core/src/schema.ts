@@ -172,10 +172,14 @@ export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
 
 type GroupUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   createView?: {
-    defaultFieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo>
+    defaultFieldMode?: MaybeSessionFunctionWithFilter<'hidden' | 'edit', 'hidden', ListTypeInfo>
   }
   itemView?: {
-    defaultFieldMode?: MaybeItemFunctionWithFilter<'edit' | 'read' | 'hidden', ListTypeInfo>
+    defaultFieldMode?: MaybeItemFunctionWithFilter<
+      'edit' | 'hidden' | 'read',
+      'hidden' | 'read',
+      ListTypeInfo
+    >
   }
   listView?: {
     defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
