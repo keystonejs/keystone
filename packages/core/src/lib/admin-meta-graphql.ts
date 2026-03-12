@@ -154,6 +154,9 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
       type: g.object<ActionMetaSource['graphql']>()({
         name: 'KeystoneAdminUIActionMetaGraphQL',
         fields: {
+          fields: g.field({
+            type: g.nonNull(g.list(g.nonNull(g.String))),
+          }),
           names: g.field({
             type: g.nonNull(
               g.object<ActionMetaSource['graphql']['names']>()({
@@ -161,6 +164,7 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
                 fields: {
                   one: g.field({ type: g.nonNull(g.String) }),
                   many: g.field({ type: g.String }),
+                  data: g.field({ type: g.String }),
                 },
               })
             ),
@@ -323,7 +327,10 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
       type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldMeta))),
     }),
     groups: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIFieldGroupMeta))) }),
-    actions: g.field({ type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))) }),
+    actions: g.field({
+      resolve: ({ actions, item }) => actions.map(action => ({ ...action, item })),
+      type: g.nonNull(g.list(g.nonNull(KeystoneAdminUIActionMeta))),
+    }),
     graphql: g.field({ type: g.nonNull(KeystoneAdminUIGraphQL) }),
 
     pageSize: g.field({ type: g.nonNull(g.Int) }),

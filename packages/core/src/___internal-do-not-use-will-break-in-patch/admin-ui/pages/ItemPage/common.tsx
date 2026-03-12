@@ -14,12 +14,15 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo'
 import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
+import { serializeActionData } from '../../../../admin-ui/utils/actionData'
 import type { ActionMeta, ListMeta } from '../../../../types'
 
 export function ItemPageHeader({
   list,
   actions,
   item,
+  value,
+  initialValue,
   label,
   title = label,
   onAction,
@@ -27,6 +30,8 @@ export function ItemPageHeader({
   list: ListMeta
   actions: ActionMeta[]
   item: Record<string, unknown> | null
+  value: Record<string, unknown> | null
+  initialValue: Record<string, unknown> | null
   label: string
   title: string
   onAction: ((action: ActionMeta, resultId: string | null) => void) | null
@@ -67,7 +72,14 @@ export function ItemPageHeader({
       )}
 
       {item && onAction && actions.length > 0 && (
-        <ItemActions list={list} item={item} actions={actions} onAction={onAction} />
+        <ItemActions
+          list={list}
+          item={item}
+          value={value}
+          initialValue={initialValue}
+          actions={actions}
+          onAction={onAction}
+        />
       )}
     </Grid>
   )
@@ -96,11 +108,15 @@ type ActionError = {
 function ItemActions({
   list,
   item,
+  initialValue,
+  value,
   actions,
   onAction,
 }: {
   list: ListMeta
   item: Record<string, unknown>
+  value: Record<string, unknown> | null
+  initialValue: Record<string, unknown> | null
   actions: ActionMeta[]
   onAction: (action: ActionMeta, resultId: string | null) => void
 }) {
@@ -135,13 +151,30 @@ function ItemActions({
 
     const { messages: m } = action
     try {
-      const data = await apolloClient.mutate({
-        mutation: gql`mutation ${action.graphql.names.one}($id: ID!) {
+      const dataForAction =
+        value && initialValue ? serializeActionData(list, action, value, initialValue) : {}
+      const mutation = (
+        action.graphql.fields.length && action.graphql.names.data
+          ? gql`mutation ${action.graphql.names.one}($id: ID!, $data: ${action.graphql.names.data}!) {
+            result: ${action.graphql.names.one}(where: { id: $id }, data: $data) {
+              id
+            }
+          }`
+          : gql`mutation ${action.graphql.names.one}($id: ID!) {
             result: ${action.graphql.names.one}(where: { id: $id }) {
               id
             }
-          }` as TypedDocumentNode<{ result: { id: string } }, { id: string }>,
-        variables: { id: item.id as string },
+          }`
+      ) as TypedDocumentNode<
+        { result: { id: string } },
+        { id: string; data?: Record<string, unknown> }
+      >
+      const data = await apolloClient.mutate({
+        mutation,
+        variables:
+          action.graphql.fields.length && action.graphql.names.data
+            ? { id: item.id as string, data: dataForAction }
+            : { id: item.id as string },
       })
 
       if (!action.itemView.hideToast) {

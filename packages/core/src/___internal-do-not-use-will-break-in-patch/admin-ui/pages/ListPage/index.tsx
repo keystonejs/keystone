@@ -41,8 +41,10 @@ import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
+import { serializeActionData } from '../../../../admin-ui/utils/actionData'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
+import { deserializeItemToValue } from '../../../../admin-ui/utils'
 import { FilterAdd } from './FilterAdd'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
@@ -332,7 +334,23 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
+  const shownFields = useMemo(
+    () => columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean),
+    [columns, list.fields]
+  )
+  const queriedFields = useMemo(() => {
+    return [
+      ...new Set([
+        ...columns,
+        ...list.actions
+          .filter(action => action.listView.actionMode === 'enabled')
+          .flatMap(action => action.graphql.fields),
+      ]),
+    ]
+      .map(fieldKey => list.fields[fieldKey])
+      .filter(Boolean)
+  }, [columns, list])
+
   const where = useMemo(
     () =>
       filters.map(filter => {
@@ -350,7 +368,7 @@ function ListPage({ listKey }: ListPageProps) {
       items: Record<string, unknown>[] | null
       count: number | null
     }> => {
-      const selectedGqlFields = shownFields
+      const selectedGqlFields = queriedFields
         .filter(field => field.key !== 'id') // id is always included
         .map(field => field.controller.graphqlSelection)
         .join('\n')
@@ -375,7 +393,7 @@ function ListPage({ listKey }: ListPageProps) {
           count: ${list.graphql.names.listQueryCountName}(where: $where)
         }
       `
-    }, [list, shownFields]),
+    }, [list, queriedFields]),
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
@@ -431,16 +449,16 @@ function ListPage({ listKey }: ListPageProps) {
     setSort(defaultSort)
   }
 
-  const actions = list.actions.filter(action => action.listView.actionMode === 'enabled')
   const actionsForList = list.hideDelete
-    ? actions
+    ? list.actions
     : [
-        ...actions,
+        ...list.actions,
         {
           key: 'delete',
           label: 'Delete',
           icon: 'trash2Icon',
           graphql: {
+            fields: [],
             names: {
               one: list.graphql.names.deleteMutationName,
               many: list.graphql.names.deleteManyMutationName,
@@ -661,6 +679,7 @@ function ListPage({ listKey }: ListPageProps) {
               return (
                 <ActionItemsDialog
                   itemIds={selectedItemIds}
+                  items={data?.items ?? []}
                   action={action}
                   list={list}
                   onSuccess={remaining => {
@@ -788,27 +807,47 @@ type ActionErrorResult = {
 function ActionItemsDialog({
   list,
   itemIds,
+  items,
   onSuccess,
   onErrors,
   action,
 }: {
   list: ListMeta
   itemIds: string[]
+  items: Record<string, unknown>[]
   onSuccess: (remaining: Set<string>) => void
   onErrors: (result: ActionErrorResult) => void
   action: ActionMeta
 }) {
-  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
-    gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
+  const actionMutation =
+    action.key === 'delete'
+      ? gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
       results: ${action.graphql.names.many}(where: $where) {
         id
       }
-    }`,
-    {
-      variables: { where: itemIds.map(id => ({ id })) },
-      errorPolicy: 'all',
-    }
-  )
+    }`
+      : gql`mutation($data: [${action.graphql.names.one[0].toUpperCase()}${action.graphql.names.one.slice(1)}Args!]!) {
+      results: ${action.graphql.names.many}(data: $data) {
+        id
+      }
+    }`
+  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(actionMutation, {
+    variables:
+      action.key === 'delete'
+        ? { where: itemIds.map(id => ({ id })) }
+        : {
+            data: itemIds.flatMap(id => {
+              const row = items.find(item => String(item.id) === id)
+              if (!row) {
+                return []
+              }
+              const deserialized = deserializeItemToValue(list.fields, row)
+              const data = serializeActionData(list, action, deserialized, deserialized)
+              return Object.keys(data).length ? { where: { id }, data } : { where: { id } }
+            }),
+          },
+    errorPolicy: 'all',
+  })
   const { messages: m } = action
 
   async function onTryAction() {

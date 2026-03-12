@@ -256,11 +256,22 @@ export function useListItem(
 > {
   const list = useList(listKey)
   const query = useMemo(() => {
-    const selectedFields = Object.values(list.fields)
-      .filter(field => {
-        if (field.key === 'id') return true
-        return field.itemView.fieldMode !== 'hidden'
-      })
+    const selectedFieldKeys = new Set<string>(
+      Object.values(list.fields)
+        .filter(field => {
+          if (field.key === 'id') return true
+          return field.itemView.fieldMode !== 'hidden'
+        })
+        .map(field => field.key)
+    )
+    for (const action of list.actions) {
+      for (const fieldKey of action.graphql.fields) {
+        selectedFieldKeys.add(fieldKey)
+      }
+    }
+    const selectedFields = [...selectedFieldKeys]
+      .map(fieldKey => list.fields[fieldKey])
+      .filter(Boolean)
       .map(field => field.controller.graphqlSelection)
       .join('\n')
 
@@ -278,6 +289,7 @@ export function useListItem(
                 }
               }
               actions {
+                key
                 itemView {
                   actionMode
                 }

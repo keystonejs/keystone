@@ -1,5 +1,5 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import type { GArg, GInputType } from '@graphql-ts/schema'
+import { GInputObjectType, type GArg, type GInputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
 import { GraphQLString, isInputObjectType } from 'graphql'
 
@@ -53,9 +53,19 @@ export type InitialisedAction = {
   access: ResolvedActionAccessControl
   resolve: BaseActions<BaseListTypeInfo>[keyof BaseActions<BaseListTypeInfo>]['resolve']
   graphql: {
+    fields: string[]
     names: {
       one: string
       many: string
+      args: string
+      data?: string
+    }
+    types: {
+      args: GInputObjectType<{
+        where: GArg<GNonNull<GraphQLTypesForList['uniqueWhere']>>
+        data?: GArg<GNonNull<GraphQLTypesForList['update']>>
+      }>
+      data?: GraphQLTypesForList['update']
     }
   }
   otel: string
@@ -764,54 +774,7 @@ function getListsWithInitialisedFields(
 
       fields: resultFields,
       groups,
-      actions: [
-        ...(function* () {
-          for (const actionKey in listConfig.actions) {
-            const action = listConfig.actions[actionKey]
-            const { label } = action.ui
-            const label_ = label.toLowerCase()
-            const graphqlNames = {
-              one: action.graphql?.singular ?? `${actionKey}${names.graphql.singular}`,
-              many: action.graphql?.plural ?? `${actionKey}${names.graphql.plural}`,
-            }
-            yield {
-              actionKey,
-              ...action,
-              graphql: {
-                names: graphqlNames,
-              },
-              otel: humanize(graphqlNames.one, true).toLowerCase(),
-              ui: {
-                label,
-                icon: action.ui.icon ?? null,
-                messages: {
-                  promptTitle: `${label} {singular}`,
-                  promptTitleMany: `${label} {count} {singular|plural}`,
-                  prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
-                  promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
-                  promptConfirmLabel: `Yes, ${label_} this {singular}`,
-                  promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
-                  fail: `Could not ${label_} {singular}`,
-                  failMany: `Could not ${label_} {countFail} {singular|plural}`,
-                  success: `Completed ${label_} action for {singular}`,
-                  successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
-                  ...action.ui.messages,
-                } satisfies InitialisedAction['ui']['messages'],
-                // TODO: move to listWithDefaults
-                itemView: {
-                  actionMode: action.ui.itemView?.actionMode ?? 'enabled',
-                  navigation: action.ui.itemView?.navigation ?? 'follow',
-                  hidePrompt: action.ui.itemView?.hidePrompt ?? false,
-                  hideToast: action.ui.itemView?.hideToast ?? false,
-                } satisfies InitialisedAction['ui']['itemView'],
-                listView: {
-                  actionMode: action.ui.listView?.actionMode ?? 'enabled',
-                },
-              },
-            }
-          }
-        })(),
-      ],
+      actions: [],
 
       graphql: {
         types: {
@@ -940,6 +903,85 @@ function graphqlForOutputField(field: InitialisedField) {
   })
 }
 
+function getInitialisedActionGraphql(
+  list: Pick<InitialisedList, 'graphql' | 'isSingleton' | 'listKey'>,
+  listGraphqlNames: { singular: string; plural: string },
+  actionKey: string,
+  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string]
+): InitialisedAction['graphql'] {
+  const graphqlNames = {
+    one: action.graphql?.singular ?? `${actionKey}${listGraphqlNames.singular}`,
+    many: action.graphql?.plural ?? `${actionKey}${listGraphqlNames.plural}`,
+  }
+  const argsName = `${graphqlNames.one[0].toUpperCase()}${graphqlNames.one.slice(1)}Args`
+  const configuredData = action.graphql?.__data
+
+  const updateType = list.graphql.types.update
+
+  let fields: string[] = []
+  let dataName: string | undefined
+  let dataType: GInputObjectType<any, false> | undefined
+  if (configuredData !== undefined) {
+    if (!(updateType instanceof GInputObjectType)) {
+      throw new Error(
+        `The action at ${list.listKey}.actions.${actionKey} sets graphql.__data but the list has no updateable fields`
+      )
+    }
+
+    if (configuredData === true) {
+      fields = Object.keys(updateType.getFields())
+      dataName = list.graphql.names.updateInputName
+      dataType = updateType
+    } else if (configuredData) {
+      const allUpdateFields = updateType.toConfig().fields
+      fields = Object.keys(configuredData)
+      dataName = `${graphqlNames.one[0].toUpperCase()}${graphqlNames.one.slice(1)}Data`
+      dataType = g.inputObject({
+        name: dataName,
+        fields: Object.fromEntries(
+          Object.keys(configuredData).map(fieldKey => {
+            const field = allUpdateFields[fieldKey]
+            if (!field) {
+              throw new Error(
+                `The action at ${list.listKey}.actions.${actionKey} specifies graphql.__data.${fieldKey} but that is not a valid field for update operations on this list`
+              )
+            }
+            return [fieldKey, field as GArg<GInputType>] as const
+          })
+        ),
+      })
+    }
+  }
+
+  return {
+    fields,
+    names: {
+      ...graphqlNames,
+      args: argsName,
+      data: dataName,
+    },
+    types: {
+      data: dataType,
+      args: g.inputObject({
+        name: argsName,
+        isOneOf: false,
+        fields: {
+          where: g.arg({
+            type: g.nonNull(list.graphql.types.uniqueWhere),
+          }),
+          ...(dataType
+            ? {
+                data: g.arg({
+                  type: g.nonNull(dataType),
+                }),
+              }
+            : {}),
+        },
+      }),
+    },
+  }
+}
+
 export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
   const listsRef: Record<string, InitialisedList> = {}
   let intermediateLists
@@ -975,7 +1017,16 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     })
   )
 
+  // fixup the GraphQL refs
   for (const list of Object.values(intermediateLists)) {
+    listsRef[list.listKey] = {
+      ...list,
+      lists: listsRef,
+    }
+  }
+
+  for (const list of Object.values(listsRef)) {
+    const listConfig = config.lists[list.listKey]
     let hasAnEnabledCreateField = false
     let hasAnEnabledUpdateField = false
 
@@ -997,19 +1048,57 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       list.graphql.types.update = g.Empty
       list.graphql.names.updateInputName = 'Empty'
     }
+
+    list.actions = Object.entries(listConfig.actions ?? {}).map(
+      ([actionKey, action]): InitialisedAction => {
+        const { label } = action.ui
+        const label_ = label.toLowerCase()
+        const graphql = getInitialisedActionGraphql(
+          list,
+          __getNames(list.listKey, listConfig).graphql,
+          actionKey,
+          action
+        )
+
+        return {
+          ...action,
+          actionKey,
+          graphql,
+          otel: humanize(graphql.names.one, true).toLowerCase(),
+          ui: {
+            label,
+            icon: action.ui.icon ?? null,
+            messages: {
+              promptTitle: `${label} {singular}`,
+              promptTitleMany: `${label} {count} {singular|plural}`,
+              prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
+              promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
+              promptConfirmLabel: `Yes, ${label_} this {singular}`,
+              promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
+              fail: `Could not ${label_} {singular}`,
+              failMany: `Could not ${label_} {countFail} {singular|plural}`,
+              success: `Completed ${label_} action for {singular}`,
+              successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
+              ...action.ui.messages,
+            },
+            itemView: {
+              actionMode: action.ui.itemView?.actionMode ?? 'enabled',
+              navigation: action.ui.itemView?.navigation ?? 'follow',
+              hidePrompt: action.ui.itemView?.hidePrompt ?? false,
+              hideToast: action.ui.itemView?.hideToast ?? false,
+            },
+            listView: {
+              actionMode: action.ui.listView?.actionMode ?? 'enabled',
+            },
+          },
+        }
+      }
+    )
   }
 
   // error checking
-  for (const list of Object.values(intermediateLists)) {
+  for (const list of Object.values(listsRef)) {
     assertFieldsValid(list)
-  }
-
-  // fixup the GraphQL refs
-  for (const list of Object.values(intermediateLists)) {
-    listsRef[list.listKey] = {
-      ...list,
-      lists: listsRef,
-    }
   }
 
   // do some introspection
