@@ -142,6 +142,8 @@ type Mutation {
   votePosts(data: [VotePostArgs!]!): [Post]
   reportAPost(where: PostWhereUniqueInput!): Post
   reportSomePosts(data: [ReportAPostArgs!]!): [Post]
+  updatePostWithoutValidation(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePostsWithoutValidation(data: [UpdatePostWithoutValidationArgs!]!): [Post]
 }
 
 input VotePostArgs {
@@ -150,6 +152,11 @@ input VotePostArgs {
 
 input ReportAPostArgs {
   where: PostWhereUniqueInput!
+}
+
+input UpdatePostWithoutValidationArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
 }
 
 type Query {
