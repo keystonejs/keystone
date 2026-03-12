@@ -321,7 +321,7 @@ type Mutation {
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   flagPost(where: PostWhereUniqueInput!): Post
-  flagPosts(where: [PostWhereUniqueInput!]!): [Post]
+  flagPosts(data: [FlagPostArgs!]!): [Post]
   createContributor(data: ContributorCreateInput!): Contributor
   createContributors(data: [ContributorCreateInput!]!): [Contributor]
   updateContributor(where: ContributorWhereUniqueInput!, data: ContributorUpdateInput!): Contributor
@@ -340,6 +340,10 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+}
+
+input FlagPostArgs {
+  where: PostWhereUniqueInput!
 }
 
 type Query {
@@ -471,12 +475,14 @@ type KeystoneAdminUIActionMetaMessages {
 }
 
 type KeystoneAdminUIActionMetaGraphQL {
+  fields: [String!]!
   names: KeystoneAdminUIActionMetaGraphQLNames!
 }
 
 type KeystoneAdminUIActionMetaGraphQLNames {
   one: String!
   many: String
+  data: String
 }
 
 type KeystoneAdminUIActionMetaItemView {
