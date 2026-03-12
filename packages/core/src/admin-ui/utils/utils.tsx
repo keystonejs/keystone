@@ -8,7 +8,7 @@ import type {
   FieldController,
   FieldMeta,
 } from '../../types'
-import { testFilter } from './Fields'
+import { serializeItemForConditionalFilters, testFilter } from './filters'
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {
@@ -37,10 +37,7 @@ export function useInvalidFields(
 ): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>()
-    const serialized: Record<string, unknown> = {}
-    for (const [fieldKey, field] of Object.entries(fields)) {
-      Object.assign(serialized, field.controller.serialize(item[fieldKey]))
-    }
+    const serialized = serializeItemForConditionalFilters(fields, item)
 
     for (const fieldKey in item) {
       const validateFn = fields[fieldKey]?.controller?.validate

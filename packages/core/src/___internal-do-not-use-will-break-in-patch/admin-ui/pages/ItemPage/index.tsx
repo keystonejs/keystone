@@ -29,7 +29,9 @@ import { useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
+  resolveActionMode,
   serializeValueToOperationItem,
+  serializeItemForConditionalFilters,
   useHasChanges,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
@@ -162,6 +164,8 @@ function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
 function ItemForm({
   listKey,
   initialValue,
+  value,
+  onChange,
   itemLabel,
   onSaveSuccess,
   fieldModes,
@@ -170,9 +174,14 @@ function ItemForm({
 }: {
   listKey: string
   initialValue: Record<string, unknown>
+  value: Record<string, unknown>
+  onChange: (value: Record<string, unknown>) => void
   itemLabel: string
   onSaveSuccess: () => void
-  fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
+  fieldModes: Record<
+    string,
+    ConditionalFilter<'edit' | 'read' | 'hidden', 'read' | 'hidden', BaseListTypeInfo>
+  >
   isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
 }) {
@@ -188,11 +197,9 @@ function ItemForm({
     { errorPolicy: 'all' }
   )
 
-  const [value, setValue] = useState(() => initialValue)
   function resetValueState() {
-    setValue(() => initialValue)
+    onChange(initialValue)
   }
-  useEffect(() => resetValueState(), [initialValue])
 
   const invalidFields = useInvalidFields(list.fields, value, isRequireds)
   const [forceValidation, setForceValidation] = useState(false)
@@ -257,7 +264,7 @@ function ItemForm({
             invalidFields={invalidFields}
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
-            onChange={useCallback(value => setValue(value), [setValue])}
+            onChange={onChange}
             value={value}
             isRequireds={isRequireds}
           />
@@ -271,7 +278,7 @@ function ItemForm({
             groups={list.groups}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
-            onChange={useCallback(value => setValue(value), [setValue])}
+            onChange={onChange}
             value={value}
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
@@ -321,18 +328,24 @@ function ItemPage({ listKey }: ItemPageProps) {
     if (!item) return null
     return deserializeItemToValue(list.fields, item)
   }, [list.fields, data?.item])
+  const [value, setValue] = useState<Record<string, unknown> | null>(null)
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
 
-  const { actionsInContext, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
-    const actionModes = Object.fromEntries(
-      Object.entries(list.actions).map(([k, v]) => [k, v.itemView.actionMode])
-    )
-    const fieldModes = Object.fromEntries(
-      Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldMode])
-    )
-    const fieldPositions = Object.fromEntries(
+  const { actionModes, fieldModes, fieldPositions, isRequireds } = useMemo(() => {
+    const actionModes: Record<
+      string,
+      ConditionalFilter<'enabled' | 'disabled' | 'hidden', 'disabled' | 'hidden', BaseListTypeInfo>
+    > = Object.fromEntries(list.actions.map(action => [action.key, action.itemView.actionMode]))
+    const fieldModes: Record<
+      string,
+      ConditionalFilter<'edit' | 'read' | 'hidden', 'read' | 'hidden', BaseListTypeInfo>
+    > = Object.fromEntries(Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldMode]))
+    const fieldPositions: Record<string, 'form' | 'sidebar'> = Object.fromEntries(
       Object.entries(list.fields).map(([k, v]) => [k, v.itemView.fieldPosition])
     )
-    const isRequireds = Object.fromEntries(
+    const isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>> = Object.fromEntries(
       Object.entries(list.fields).map(([k, v]) => [k, v.itemView.isRequired])
     )
     for (const field of data?.keystone?.adminMeta?.list?.fields ?? []) {
@@ -353,24 +366,32 @@ function ItemPage({ listKey }: ItemPageProps) {
       actionModes[action.key] = action.itemView.actionMode
     }
 
-    // actions within context of an item
-    const actionsInContext = list.actions
-      .map(action => ({
-        ...action,
-        itemView: {
-          ...action.itemView,
-          actionMode: actionModes[action.key],
-        },
-      }))
-      .filter(action => action.itemView.actionMode !== 'hidden')
-
     return {
-      actionsInContext,
+      actionModes,
       fieldModes,
       fieldPositions,
       isRequireds,
     }
-  }, [data?.keystone?.adminMeta, list.fields])
+  }, [
+    data?.keystone?.adminMeta?.list?.actions,
+    data?.keystone?.adminMeta?.list?.fields,
+    list.actions,
+    list.fields,
+  ])
+
+  const actionsInContext = useMemo(() => {
+    if (!value) return []
+    const serializedValue = serializeItemForConditionalFilters(list.fields, value)
+    return list.actions
+      .map(action => ({
+        ...action,
+        itemView: {
+          ...action.itemView,
+          actionMode: resolveActionMode(actionModes[action.key], serializedValue),
+        },
+      }))
+      .filter(action => action.itemView.actionMode !== 'hidden')
+  }, [actionModes, list.actions, value])
 
   function onAction(action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView
@@ -394,6 +415,8 @@ function ItemPage({ listKey }: ItemPageProps) {
           label={typeof pageLabel !== 'string' ? 'Loading...' : pageLabel}
           title={pageTitle}
           item={item ?? null}
+          value={value ?? initialValue}
+          initialValue={initialValue}
           onAction={onAction}
         />
       }
@@ -429,7 +452,7 @@ function ItemPage({ listKey }: ItemPageProps) {
                 </ItemNotFound>
               ))}
           </Box>
-          {initialValue && (
+          {initialValue && value && (
             <ItemForm
               fieldModes={fieldModes}
               fieldPositions={fieldPositions}
@@ -437,6 +460,8 @@ function ItemPage({ listKey }: ItemPageProps) {
               listKey={listKey}
               itemLabel={itemLabel}
               initialValue={initialValue}
+              value={value}
+              onChange={setValue}
               onSaveSuccess={refetch}
             />
           )}

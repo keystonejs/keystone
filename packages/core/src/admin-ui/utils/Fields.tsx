@@ -17,35 +17,7 @@ import type {
   FieldMeta,
 } from '../../types'
 import { EmptyState } from '../components/EmptyState'
-
-// with implicit ANDing
-function applyFilter<T>(
-  filter: {
-    equals?: T
-    in?: T[]
-  },
-  val: T
-): boolean {
-  if (filter.equals !== undefined && val !== filter.equals) return false
-  if (filter.in !== undefined && !filter.in.includes(val)) return false
-  return true
-}
-export function testFilter(
-  filter: ConditionalFilterCase<BaseListTypeInfo> | undefined,
-  serialized: Record<string, unknown>
-): boolean {
-  if (filter === undefined) return false
-  if (typeof filter === 'boolean') return filter
-  for (const [key, filterOnField] of Object.entries(filter)) {
-    if (!filterOnField) continue
-    const serializedValue = serialized[key]
-    if (!applyFilter(filterOnField, serializedValue)) return false
-    if (filterOnField.not !== undefined && applyFilter(filterOnField.not, serializedValue)) {
-      return false
-    }
-  }
-  return true
-}
+import { resolveFieldMode, serializeItemForConditionalFilters, testFilter } from './filters'
 
 export function Fields({
   view,
@@ -68,31 +40,24 @@ export function Fields({
   invalidFields: ReadonlySet<string>
   onChange(value: Record<string, unknown>): void
   value: Record<string, unknown>
-  fieldModes?: Record<string, ConditionalFilter<'read' | 'edit' | 'hidden', BaseListTypeInfo>>
+  fieldModes?: Record<
+    string,
+    ConditionalFilter<'read' | 'edit' | 'hidden', 'read' | 'hidden', BaseListTypeInfo>
+  >
   fieldPositions?: Record<string, 'form' | 'sidebar'>
   isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
 }) {
   const fieldDomByKey: Record<string, ReactNode> = {}
   let focused = false
-  const serialized: Record<string, unknown> = {}
-  for (const [fieldKey, field] of Object.entries(fields)) {
-    Object.assign(serialized, field.controller.serialize(itemValue[fieldKey]))
-  }
+  const serialized = serializeItemForConditionalFilters(fields, itemValue)
   for (const fieldKey in fields) {
     const field = fields[fieldKey]
     const fieldPosition = fieldPositions[fieldKey] ?? field.itemView.fieldPosition
     if (view === 'itemView' && fieldPosition !== position) continue
 
     const fieldModeFilter = fieldModes[fieldKey] ?? field[view].fieldMode
-    let fieldMode: 'read' | 'edit' | 'hidden'
-    if (typeof fieldModeFilter === 'string') {
-      fieldMode = fieldModeFilter
-    } else {
-      if (testFilter(fieldModeFilter.edit, serialized)) fieldMode = 'edit'
-      else if (view === 'itemView' && testFilter(fieldModeFilter.read, serialized))
-        fieldMode = 'read'
-      else fieldMode = 'hidden'
-    }
+
+    const fieldMode = resolveFieldMode(fieldModeFilter, serialized, view)
     if (fieldMode === 'hidden') continue
 
     const fieldValue = itemValue[fieldKey]

@@ -237,7 +237,11 @@ export function useListItem(
           fields: {
             key: string
             itemView: {
-              fieldMode: ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+              fieldMode: ConditionalFilter<
+                'edit' | 'read' | 'hidden',
+                'read' | 'hidden',
+                BaseListTypeInfo
+              >
               fieldPosition: 'form' | 'sidebar'
               isRequired: ConditionalFilterCase<BaseListTypeInfo>
             } | null
@@ -245,7 +249,11 @@ export function useListItem(
           actions: {
             key: string
             itemView: {
-              actionMode: ConditionalFilter<'enabled' | 'disabled' | 'hidden', BaseListTypeInfo>
+              actionMode: ConditionalFilter<
+                'enabled' | 'disabled' | 'hidden',
+                'disabled' | 'hidden',
+                BaseListTypeInfo
+              >
             } | null
           }[]
         } | null
@@ -278,6 +286,7 @@ export function useListItem(
                 }
               }
               actions {
+                key
                 itemView {
                   actionMode
                 }

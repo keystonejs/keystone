@@ -43,6 +43,13 @@ import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
+import {
+  deserializeItemToValue,
+  getQueriedFieldKeysWithActions,
+  isPotentiallyVisibleAction,
+  resolveActionMode,
+  serializeItemForConditionalFilters,
+} from '../../../../admin-ui/utils'
 import { FilterAdd } from './FilterAdd'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 import { Tag } from './Tag'
@@ -332,7 +339,18 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
+  const shownFields = useMemo(
+    () => columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean),
+    [columns, list.fields]
+  )
+  const queriedFields = useMemo(
+    () =>
+      getQueriedFieldKeysWithActions(columns, list.actions, 'listView')
+        .map(fieldKey => list.fields[fieldKey])
+        .filter(Boolean),
+    [columns, list.actions, list.fields]
+  )
+
   const where = useMemo(
     () =>
       filters.map(filter => {
@@ -350,7 +368,7 @@ function ListPage({ listKey }: ListPageProps) {
       items: Record<string, unknown>[] | null
       count: number | null
     }> => {
-      const selectedGqlFields = shownFields
+      const selectedGqlFields = queriedFields
         .filter(field => field.key !== 'id') // id is always included
         .map(field => field.controller.graphqlSelection)
         .join('\n')
@@ -375,7 +393,7 @@ function ListPage({ listKey }: ListPageProps) {
           count: ${list.graphql.names.listQueryCountName}(where: $where)
         }
       `
-    }, [list, shownFields]),
+    }, [list, queriedFields]),
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
@@ -431,11 +449,10 @@ function ListPage({ listKey }: ListPageProps) {
     setSort(defaultSort)
   }
 
-  const actions = list.actions.filter(action => action.listView.actionMode === 'enabled')
   const actionsForList = list.hideDelete
-    ? actions
+    ? list.actions.filter(x => isPotentiallyVisibleAction(x.listView))
     : [
-        ...actions,
+        ...list.actions.filter(x => isPotentiallyVisibleAction(x.listView)),
         {
           key: 'delete',
           label: 'Delete',
@@ -464,6 +481,34 @@ function ListPage({ listKey }: ListPageProps) {
         } as const,
       ]
   const selectionMode = actionsForList.length > 0 ? 'multiple' : 'none'
+  const selectedRows = useMemo(
+    () => data?.items?.filter(item => selectedItemIds.includes(String(item.id))) ?? [],
+    [data?.items, selectedItemIds]
+  )
+  const serializedSelectedRows = useMemo(
+    () =>
+      selectedRows.map(row =>
+        serializeItemForConditionalFilters(list.fields, deserializeItemToValue(list.fields, row))
+      ),
+    [list.fields, selectedRows]
+  )
+  const { visibleActions, disabledKeys } = useMemo(() => {
+    const disabledKeys: string[] = []
+    const visibleActions: ActionMeta[] = []
+    outer: for (const action of actionsForList) {
+      let isDisabled = false
+      for (const serializedValue of serializedSelectedRows) {
+        const rowActionMode = resolveActionMode(action.listView.actionMode, serializedValue)
+        if (rowActionMode === 'hidden') continue outer
+        if (rowActionMode === 'disabled') isDisabled = true
+      }
+      if (isDisabled) {
+        disabledKeys.push(action.key)
+      }
+      visibleActions.push(action)
+    }
+    return { visibleActions, disabledKeys }
+  }, [actionsForList, serializedSelectedRows])
 
   return (
     <PageContainer
@@ -619,11 +664,12 @@ function ListPage({ listKey }: ListPageProps) {
                 boxShadow: `0 1px 4px ${tokenSchema.color.shadow.regular}`,
               },
             })}
+            disabledKeys={disabledKeys}
             onAction={setActiveAction}
           >
             {[
               ...(function* () {
-                for (const action of actionsForList) {
+                for (const action of visibleActions) {
                   const iconComponent = action.icon ? KeystarIcons[action.icon] : null
                   yield (
                     <Item key={action.key} textValue={action.label}>
@@ -655,7 +701,7 @@ function ListPage({ listKey }: ListPageProps) {
             setActiveAction(null)
           }}
         >
-          {actionsForList
+          {visibleActions
             .filter(action => action.key === activeAction)
             .map(action => {
               return (
