@@ -182,6 +182,7 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   access: ListAccessControl<ListTypeInfo>
 
   fields: BaseFields<ListTypeInfo>
+  fieldDefaults?: FieldDefaults<ListTypeInfo>
   actions?: BaseActions<ListTypeInfo>
 
   /** Options for how this list should show in the Admin UI */
@@ -219,6 +220,24 @@ export type ListSortDescriptor<Fields extends string> = {
   direction: 'ASC' | 'DESC'
 }
 
+export type FieldDefaults<ListTypeInfo extends BaseListTypeInfo> = {
+  ui?: {
+    createView?: {
+      fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', ListTypeInfo>
+    }
+    itemView?: {
+      fieldMode?: MaybeItemFunctionWithFilter<
+        'edit' | 'read' | 'hidden',
+        'read' | 'hidden',
+        ListTypeInfo
+      >
+    }
+    listView?: {
+      fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
+    }
+  }
+}
+
 export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The label used to identify the list in navigation and etc.
@@ -249,7 +268,6 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * @default label.split(' ').join('-').toLowerCase()
    */
   path?: string
-
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
@@ -280,45 +298,7 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * @default false
    */
   hideDelete?: MaybeSessionFunction<boolean, ListTypeInfo>
-  /**
-   * Configuration specific to the create view in the Admin UI
-   */
-  createView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', ListTypeInfo>
-  }
-
-  /**
-   * Configuration specific to the item view in the Admin UI
-   */
-  itemView?: {
-    /**
-     * The default field mode for fields on the item view for this list.
-     * This controls what people can do for fields
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeItemFunctionWithFilter<
-      'edit' | 'read' | 'hidden',
-      'read' | 'hidden',
-      ListTypeInfo
-    >
-  }
-
-  /**
-   * Configuration specific to the list view in the Admin UI
-   */
   listView?: {
-    /**
-     * The default field mode for fields on the list view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'read'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
     /**
      * The columns(which refer to fields) that should be shown to users of the Admin UI.
      * Users of the Admin UI can select different columns to show in the UI.

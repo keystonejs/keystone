@@ -95,23 +95,27 @@ export const lists: Lists<Session> = {
         update: rules.canUpdatePeople,
       },
     },
+    fieldDefaults: {
+      ui: {
+        itemView: {
+          fieldMode: ({ session, item }: any) => {
+            // canEditOtherPeople can edit other people
+            if (session?.data.role?.canEditOtherPeople) return 'edit'
+
+            // edit themselves
+            if (session?.itemId === item?.id) return 'edit'
+
+            // else, default all fields to read mode
+            return 'read'
+          },
+        },
+      },
+    },
     ui: {
       hideCreate: args => !permissions.canManagePeople(args),
       hideDelete: args => !permissions.canManagePeople(args),
       listView: {
         initialColumns: ['name', 'role', 'tasks'],
-      },
-      itemView: {
-        defaultFieldMode: ({ session, item }) => {
-          // canEditOtherPeople can edit other people
-          if (session?.data.role?.canEditOtherPeople) return 'edit'
-
-          // edit themselves
-          if (session?.itemId === item?.id) return 'edit'
-
-          // else, default all fields to read mode
-          return 'read'
-        },
       },
     },
     fields: {
@@ -193,14 +197,18 @@ export const lists: Lists<Session> = {
         query: hasSession,
       },
     },
+    fieldDefaults: {
+      ui: {
+        itemView: {
+          fieldMode: (args: any) => (permissions.canManageRoles(args) ? 'edit' : 'read'),
+        },
+      },
+    },
     ui: {
       hideCreate: args => !permissions.canManageRoles(args),
       hideDelete: args => !permissions.canManageRoles(args),
       listView: {
         initialColumns: ['name', 'assignedTo'],
-      },
-      itemView: {
-        defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
       },
     },
     fields: {

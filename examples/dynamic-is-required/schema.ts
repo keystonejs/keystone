@@ -11,9 +11,11 @@ const hasHighPriority = {
 export const lists = {
   Issue: list({
     access: allowAll,
-    ui: {
-      itemView: {
-        defaultFieldMode: ({ item }) => (item?.open ? 'edit' : 'read'),
+    fieldDefaults: {
+      ui: {
+        itemView: {
+          fieldMode: ({ item }) => (item?.open ? 'edit' : 'read'),
+        },
       },
     },
     fields: {
