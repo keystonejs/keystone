@@ -361,7 +361,7 @@ test('array in to-one relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value: [] at one" ["one"]`)
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value at one" ["one"]`)
 })
 
 test('single item in many relationship', () => {
@@ -381,9 +381,7 @@ test('single item in many relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Invalid relationship value: {\\"id\\":\\"some-id\\",\\"label\\":\\"some label\\",\\"data\\":{\\"something\\":true}} at many" ["many"]`
-  )
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship many value at many" ["many"]`)
 })
 
 test('missing relationships', () => {
@@ -400,9 +398,24 @@ test('missing relationships', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Invalid relationship value: undefined at one" ["one"]`
-  )
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value at one" ["one"]`)
+})
+
+test('missing to-many relationship', () => {
+  expect(
+    validate([
+      {
+        type: 'component-block',
+        props: { one: null },
+        component: 'relationship',
+        children: [],
+      },
+      {
+        type: 'paragraph',
+        children: [{ text: '' }],
+      },
+    ])
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship many value at many" ["many"]`)
 })
 
 test('form prop validation', () => {
@@ -419,7 +432,24 @@ test('form prop validation', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value: {} at prop" ["prop"]`)
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid form prop value at prop" ["prop"]`)
+})
+
+test('missing form prop is replaced with its default during validation', () => {
+  const editor = validate([
+    {
+      type: 'component-block',
+      props: {},
+      component: 'basic',
+      children: [],
+    },
+    {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    },
+  ])
+
+  expect((editor as any).children[0].props).toEqual({ prop: '' })
 })
 
 test('object prop of wrong type', () => {
@@ -456,7 +486,7 @@ test('form prop failure inside of object', () => {
       },
     ])
   ).toMatchInlineSnapshot(
-    `PropValidationError "Invalid form prop value: false at prop.prop" ["prop","prop"]`
+    `PropValidationError "Invalid form prop value at prop.prop" ["prop","prop"]`
   )
 })
 
@@ -513,7 +543,7 @@ test('validation failure on discriminant', () => {
       },
     ])
   ).toMatchInlineSnapshot(
-    `PropValidationError "Invalid form prop value: \\"\\" at prop.discriminant" ["prop","discriminant"]`
+    `PropValidationError "Invalid form prop value at prop.discriminant" ["prop","discriminant"]`
   )
 })
 
@@ -532,6 +562,6 @@ test('validation failure on value', () => {
       },
     ])
   ).toMatchInlineSnapshot(
-    `PropValidationError "Invalid form prop value: false at prop.value" ["prop","value"]`
+    `PropValidationError "Invalid form prop value at prop.value" ["prop","value"]`
   )
 })
