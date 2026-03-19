@@ -22,6 +22,7 @@ const runner = setupTestRunner({
           many_many_many_dashes: text(),
           multi____dash: text({ isFilterable: true }),
           email: text({ isIndexed: 'unique', isFilterable: true, db: { isNullable: true } }),
+          uniqueButNotFilterable: text({ isIndexed: 'unique', isFilterable: () => false, db: { isNullable: true } }),
 
           filterFalse: integer({ isFilterable: false }),
           filterTrue: integer({ isFilterable: true }),
@@ -388,6 +389,42 @@ describe('isFilterable', () => {
           message: `Access denied: You cannot filter by SecondaryList.filterFunctionFalse, SecondaryList.filterFunctionFalse, User.filterFunctionFalse`,
         },
       ])
+    })
+  )
+})
+
+describe('isFilterable with cursor', () => {
+  test(
+    'cursor with isFilterable: () => false is denied',
+    runner(async ({ context }) => {
+      await context.query.User.createOne({
+        data: { uniqueButNotFilterable: 'secret-value' },
+      })
+      const { data, errors } = await context.graphql.raw({
+        query: '{ users(cursor: { uniqueButNotFilterable: "secret-value" }, take: 1) { id } }',
+      })
+      // cursor should be checked against isFilterable the same as where
+      expect(data).toEqual({ users: null })
+      expectFilterDenied(errors, [
+        {
+          path: ['users'],
+          message: 'Access denied: You cannot filter by User.uniqueButNotFilterable',
+        },
+      ])
+    })
+  )
+
+  test(
+    'cursor with isFilterable: true is allowed',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({
+        data: { email: 'cursor-allowed@example.com' },
+      })
+      const { data, errors } = await context.graphql.raw({
+        query: '{ users(cursor: { email: "cursor-allowed@example.com" }, take: 1) { id } }',
+      })
+      expect(errors).toBe(undefined)
+      expect(data).toEqual({ users: [{ id: item.id }] })
     })
   )
 })
