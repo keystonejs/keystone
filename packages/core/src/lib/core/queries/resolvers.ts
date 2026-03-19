@@ -125,6 +125,11 @@ export async function findMany (
   // check filter access (TODO: why isn't this using resolvedWhere)
   await checkFilterOrderAccess([...traverse(list, where)], context, 'filter')
 
+  // check filter access for cursor
+  if (cursor) {
+    await checkFilterOrderAccess([...traverse(list, cursor)], context, 'filter')
+  }
+
   // WARNING: this checks .isOrderable
   const orderBy = await resolveOrderBy(rawOrderBy, list, context)
 
