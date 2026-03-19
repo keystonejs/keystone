@@ -22,7 +22,11 @@ const runner = setupTestRunner({
           many_many_many_dashes: text(),
           multi____dash: text({ isFilterable: true }),
           email: text({ isIndexed: 'unique', isFilterable: true, db: { isNullable: true } }),
-          uniqueButNotFilterable: text({ isIndexed: 'unique', isFilterable: () => false, db: { isNullable: true } }),
+          uniqueButNotFilterable: text({
+            isIndexed: 'unique',
+            isFilterable: () => false,
+            db: { isNullable: true },
+          }),
 
           filterFalse: integer({ isFilterable: false }),
           filterTrue: integer({ isFilterable: true }),
