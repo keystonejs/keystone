@@ -1,5 +1,23 @@
 # @keystone-6/core
 
+## 6.5.2
+
+### Patch Changes
+
+- [`b880d9e`](https://github.com/keystonejs/keystone/commit/b880d9ee9f7eb306532eb8250b145190fb870ae5) Thanks [@n0wsh](https://github.com/n0wsh)! - Fix `isFilterable` bypass via `cursor` parameter in `findMany` query
+
+## 6.5.1
+
+### Patch Changes
+
+- [`9508e02`](https://github.com/keystonejs/keystone/commit/9508e020992dcddd221dbccd931bf124bf044235) Thanks [@emmatown](https://github.com/emmatown)! - Fix incompatible `Context` type export
+
+## 6.5.0
+
+### Minor Changes
+
+- [`0b29faf`](https://github.com/keystonejs/keystone/commit/0b29faf032c5e747099945881c78a8330915afe7) Thanks [@dcousens](https://github.com/dcousens)! - Add support for uniquely filtering items by 1-to-1 relationships
+
 ## 6.4.0
 
 ### Minor Changes
@@ -995,7 +1013,6 @@
   ```
 
   When updating to this change, and running `npm run dev`, Keystone will prompt you to update your schema.
-
   - If you are using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration. **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION** - unless you want to `DROP` your data.
 
   - If you are using `useMigrations: false`, Keystone will follow the typical flow and offer to automatically migrate your schema. Again, **DO NOT RUN THE AUTOMATIC MIGRATION** - unless you want to `DROP` your data.
@@ -1317,7 +1334,6 @@
 - [#6518](https://github.com/keystonejs/keystone/pull/6518) [`0218a4215`](https://github.com/keystonejs/keystone/commit/0218a421576fb3ceb38eb5f38223a9ef0af4c4d2) Thanks [@timleslie](https://github.com/timleslie)! - Removed the deprecated `config.db.adapter` option. Please use `config.db.provider` to indicate the database provider for your system.
 
 * [#6684](https://github.com/keystonejs/keystone/pull/6684) [`14bfa8a9b`](https://github.com/keystonejs/keystone/commit/14bfa8a9b33fae4c5eb3664ca23bb88850df5e50) Thanks [@timleslie](https://github.com/timleslie)! - \* Consolidated the `beforeChange`/`beforeDelete` and `afterChange`/`afterDelete` hooks into `beforeOperation` and `afterOperation`.
-
   - Renamed the `existingItem` argument for all hooks (except `afterOperation`) to `item`.
   - Renamed the `existingItem` argument for `afterOperation` to `originalItem`.
   - Renamed the `updatedItem` argument for `afterOperation` to `item`.
@@ -2426,7 +2442,6 @@
 ### Major Changes
 
 - [#5266](https://github.com/keystonejs/keystone/pull/5266) [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced `deploy`, `reset` and `generate` commands with `keystone-next prisma`. You can use these commands as replacements for the old commands:
-
   - `keystone-next deploy` -> `keystone-next prisma migrate deploy`
   - `keystone-next reset` -> `keystone-next prisma migrate reset`
   - `keystone-next generate` -> `keystone-next prisma migrate dev`
@@ -2530,7 +2545,6 @@
 - [#5148](https://github.com/keystonejs/keystone/pull/5148) [`e6b16d4e9`](https://github.com/keystonejs/keystone/commit/e6b16d4e9d95be8b3d3134931cf077b92a438806) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated `keystone-next deploy` to use Prisma's programmatic APIs to apply migrations
 
 * [#5155](https://github.com/keystonejs/keystone/pull/5155) [`215aed387`](https://github.com/keystonejs/keystone/commit/215aed387d35e9d4c896fe76991b12b54789cc55) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `keystone-next generate` so that it uses Prisma's programmatic APIs to generate migrations and it accepts the following options as command line arguments or as prompts:
-
   - `--name` to set the name of the migration
   - `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
   - `--allow-empty` to create an empty migration when there are no changes to the schema
