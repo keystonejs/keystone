@@ -114,10 +114,6 @@ export type KeystoneAdminUIActionMetaItemViewNavigation =
   | 'refetch'
   | 'return'
 
-export type KeystoneAdminUIActionMetaListViewActionMode =
-  | 'enabled'
-  | 'hidden'
-
 export type KeystoneAdminUISortDirection =
   | 'ASC'
   | 'DESC'

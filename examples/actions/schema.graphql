@@ -285,12 +285,7 @@ enum KeystoneAdminUIActionMetaItemViewNavigation {
 }
 
 type KeystoneAdminUIActionMetaListView {
-  actionMode: KeystoneAdminUIActionMetaListViewActionMode!
-}
-
-enum KeystoneAdminUIActionMetaListViewActionMode {
-  enabled
-  hidden
+  actionMode: JSON!
 }
 
 type KeystoneAdminUIGraphQL {
