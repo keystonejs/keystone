@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystar/ui": "^0.7.19",
+    "@keystar/ui": "^0.7.21",
     "cloudinary": "^2.0.0",
     "react": "^19.2.4"
   },
