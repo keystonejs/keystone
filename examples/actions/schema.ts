@@ -95,7 +95,7 @@ export const lists = {
         async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
           // throw new Error('Random failure, try again')
-          return await context.db.Post.updateOne({
+          return await context.sudo().db.Post.updateOne({
             where,
             data: {
               reportedAt: new Date(),
