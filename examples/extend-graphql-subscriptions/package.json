@@ -13,7 +13,7 @@
     "@apollo/client": "^4.1.6",
     "@emotion/css": "^11.7.1",
     "@graphql-tools/schema": "^9.0.0",
-    "@keystar/ui": "^0.7.19",
+    "@keystar/ui": "^0.7.21",
     "@keystone-6/core": "^6.5.2",
     "@prisma/client": "6.16.1",
     "graphql": "^16.8.1",
