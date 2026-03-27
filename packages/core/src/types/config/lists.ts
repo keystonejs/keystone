@@ -306,23 +306,33 @@ export type MaybeSessionFunction<T, ListTypeInfo extends BaseListTypeInfo> =
       session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
     }) => MaybePromise<T>)
 
+type ConditionalFilterFieldValue<Value> = {
+  equals?: Value
+  in?: Value[]
+  not?: {
+    equals?: Value
+    in?: Value[]
+  }
+}
+
+// this conditional type is to avoid inconvenient type errors
+// [] is just a placeholder for something that is never a valid BaseListTypeInfo so
+// ListTypeInfo must be `any`
+type ConditionalFilterObject<ListTypeInfo extends BaseListTypeInfo> = ListTypeInfo extends []
+  ? any
+  : {
+      AND?: ReadonlyArray<ConditionalFilterObject<ListTypeInfo>>
+      OR?: ReadonlyArray<ConditionalFilterObject<ListTypeInfo>>
+      NOT?: ConditionalFilterObject<ListTypeInfo>
+    } & {
+      [K in keyof ListTypeInfo['inputs']['update']]?: ConditionalFilterFieldValue<
+        ListTypeInfo['inputs']['update'][K]
+      >
+    }
+
 export type ConditionalFilterCase<ListTypeInfo extends BaseListTypeInfo> =
   | boolean
-  // this conditional type is to avoid inconvenient type errors
-  // [] is just a placeholder for something that is never a valid BaseListTypeInfo so
-  // ListTypeInfo must be `any`
-  | (ListTypeInfo extends []
-      ? any
-      : {
-          [K in keyof ListTypeInfo['inputs']['update']]?: {
-            equals?: ListTypeInfo['inputs']['update'][K]
-            in?: ListTypeInfo['inputs']['update'][K][]
-            not?: {
-              equals?: ListTypeInfo['inputs']['update'][K]
-              in?: ListTypeInfo['inputs']['update'][K][]
-            }
-          }
-        })
+  | ConditionalFilterObject<ListTypeInfo>
 
 export type ConditionalFilter<
   StaticState extends string,

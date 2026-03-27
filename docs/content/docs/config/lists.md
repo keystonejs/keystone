@@ -1,32 +1,46 @@
 ---
-title: "Lists API"
-description: "Reference docs for Keystone’s Lists API, which defines the data model of your system."
+title: 'Lists API'
+description: 'Reference docs for Keystone’s Lists API, which defines the data model of your system.'
 ---
 
 The `lists` property of the [system configuration](./config) object is where you define the data model, or schema, of your Keystone system.
 It accepts an object with list names as keys, and `list()` configurations as values.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core'
 
 export default config({
-  lists: ({
+  lists: {
     SomeListName: list({
-      fields: { /* ... */ },
-      actions: { /* ... */ },
-      access: { /* ... */ },
-      ui: { /* ... */ },
-      hooks: { /* ... */ },
-      graphql: { /* ... */ },
-      db: { /* ... */ },
+      fields: {
+        /* ... */
+      },
+      actions: {
+        /* ... */
+      },
+      access: {
+        /* ... */
+      },
+      ui: {
+        /* ... */
+      },
+      hooks: {
+        /* ... */
+      },
+      graphql: {
+        /* ... */
+      },
+      db: {
+        /* ... */
+      },
       isSingleton: false,
       defaultIsFilterable: false,
       defaultIsOrderable: false,
     }),
     /* ... */
-  }),
+  },
   /* ... */
-});
+})
 ```
 
 This document will explain the configuration options which can be used with the `list()` function.
@@ -43,21 +57,23 @@ The `fields` option defines the names, types, and configuration of the fields in
 This configuration option takes an object with field names as keys and configured field types as values.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
     SomeListName: list({
       fields: {
-        someFieldName: text({ /* ... */ }),
+        someFieldName: text({
+          /* ... */
+        }),
         /* ... */
       },
     }),
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 For full details on the available field types and their configuration options please see the [Fields API](../fields/overview).
@@ -68,9 +84,9 @@ The `actions` property of the list configuration object is where you define acti
 An action can be triggered on individual items or in bulk from the list view in the Admin UI, or directly using GraphQL.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { text, integer } from '@keystone-6/core/fields';
+import { config, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text, integer } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -83,7 +99,7 @@ export default config({
       actions: {
         vote: {
           access: allowAll,
-          async resolve ({ where }, context) {
+          async resolve({ where }, context) {
             if (!where) return null
             return await context.prisma.post.update({
               where: { id: where.id },
@@ -98,7 +114,7 @@ export default config({
       },
     }),
   },
-});
+})
 ```
 
 Each action accepts the following options:
@@ -118,12 +134,12 @@ Each action accepts the following options:
     - `success`, `successMany`: Success toast messages.
     - `fail`, `failMany`: Failure toast messages.
   - `itemView`: Controls for the item view.
-    - `actionMode` (default: `'enabled'`): Can be `'enabled'`, `'disabled'`, or `'hidden'`, or a function that returns one of those values.
+    - `actionMode` (default: `'enabled'`): Can be `'enabled'`, `'disabled'`, or `'hidden'`, a conditional filter object, or a function that returns one of those values. Conditional filter objects can combine field predicates with nested `AND`, `OR`, and `NOT` groups.
     - `navigation` (default: `'follow'`): Controls navigation after the action completes. `'follow'` navigates to the returned item (or list view if `null`), `'refetch'` stays and refreshes the item, `'return'` goes back to the list view.
     - `hidePrompt` (default: `false`): Do not show a confirmation dialog.
     - `hideToast` (default: `false`): Do not show a toast notification.
   - `listView`: Controls for the list view.
-    - `actionMode` (default: `'enabled'`): Can be `'enabled'` or `'hidden'`, or a function that returns one of those values.
+    - `actionMode` (default: `'enabled'`): Can be `'enabled'` or `'hidden'`, a conditional filter object, or a function that returns one of those values. Conditional filter objects can combine field predicates with nested `AND`, `OR`, and `NOT` groups.
 
 ## access
 
@@ -169,7 +185,7 @@ Options:
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
   - `pageSize` (default: lower of `50` or [`graphql.maxTake`](#graphql)): Sets the number of items to show per page in the list view.
-  - `initialFilter` (default: `undefined`): Sets a default filter to apply to the list view. Accepts a where input object (excluding `AND`, `OR`, `NOT`), or an async function with an argument `{ session, context }` that returns a where input object.
+  - `initialFilter` (default: `undefined`): Sets a default filter to apply to the list view. Accepts a where input object (excluding `AND`, `OR`, `NOT`), or an async function with an argument `{ session, context }` that returns a where input object. This is separate from the client-side conditional filters used by Admin UI `fieldMode`, `isRequired`, and `actionMode`.
 - `label`: The label used to identify the list in navigation etc.
 - `singular`: The singular form of the list key. It is used in sentences like `Are you sure you want to delete this {singular}?`
 - `plural`: The plural form of the list key. It is used in sentences like `Are you sure you want to delete these {plural}?`
@@ -243,7 +259,7 @@ Options:
   - `omit.delete` (default: `false`): If set to true, the delete mutation will be omitted from the GraphQL API for this list.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core'
 
 export default config({
   lists: {
@@ -266,7 +282,7 @@ export default config({
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 ## db
@@ -281,7 +297,7 @@ Options:
 - `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core'
 
 export default config({
   lists: {
@@ -295,7 +311,7 @@ export default config({
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 ## isSingleton

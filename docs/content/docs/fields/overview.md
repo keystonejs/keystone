@@ -1,6 +1,6 @@
 ---
-title: "Fields"
-description: "A reference of Keystone’s field types, and the configuration options they accept."
+title: 'Fields'
+description: 'A reference of Keystone’s field types, and the configuration options they accept.'
 ---
 
 {% hint kind="warn" %}
@@ -14,7 +14,7 @@ This document covers the different field types which are available and the confi
 To see how to access fields in the GraphQL API please see the [GraphQL API](../graphql/overview) docs.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core'
 import {
   // Scalar types
   checkbox,
@@ -39,24 +39,26 @@ import {
   // File types
   file,
   image,
-} from '@keystone-6/core/fields';
+} from '@keystone-6/core/fields'
 
 // Complex types
-import { document } from '@keystone-6/fields-document';
-import { cloudinaryImage } from '@keystone-6/cloudinary';
+import { document } from '@keystone-6/fields-document'
+import { cloudinaryImage } from '@keystone-6/cloudinary'
 
 export default config({
   lists: {
     SomeListName: list({
       fields: {
-        someFieldName: text({ /* ... */ }),
+        someFieldName: text({
+          /* ... */
+        }),
         /* ... */
       },
     }),
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 ## Common configuration
@@ -92,7 +94,7 @@ Options:
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
 - `itemView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
-    Can be either `form` or `sidebar`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['form', 'sidebar']`. The `item` argument may be `null`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
+  Can be either `form` or `sidebar`, or an async function with an argument `{ session, context, listKey, fieldKey, item, itemField }` that returns one of `['form', 'sidebar']`. The `item` argument may be `null`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
   - `itemView.isRequired` (default: `undefined`): Controls whether the field is marked as required in the item view. Can be a boolean or an async function with an argument `{ session, context }` that returns a boolean. When `true`, the Admin UI will show the field as required.
   - `listView.fieldMode` (default: `'read'`): Controls the list view page of the Admin UI.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
@@ -115,6 +117,8 @@ Options:
     - `omit.create` (default: `false`): If you specify `true`, then the field will be excluded from the list's CreateInput GraphQL type.
     - `omit.update` (default: `false`): If you specify `true`, then the field will be excluded from the list's UpdateInput GraphQL type.
 
+For Admin UI conditional config such as `fieldMode` and `isRequired`, filter objects can combine field predicates with nested `AND`, `OR`, and `NOT` groups. These are evaluated client-side in the Admin UI and do not change the GraphQL `where` input API.
+
 ```typescript
 export default config({
   lists: {
@@ -123,8 +127,12 @@ export default config({
         someFieldName: text({
           isFilterable: ({ context, session, fieldKey, listKey }) => true,
           isOrderable: ({ context, session, fieldKey, listKey }) => true,
-          access: { /* ... */ },
-          hooks: { /* ... */ },
+          access: {
+            /* ... */
+          },
+          hooks: {
+            /* ... */
+          },
           ui: {
             label: '...',
             views: './path/to/viewsModule',
@@ -132,7 +140,12 @@ export default config({
               fieldMode: ({ session, context }) => 'edit',
             },
             itemView: {
-              fieldMode: ({ session, context, item, itemField }) => 'read',
+              fieldMode: {
+                read: {
+                  status: { equals: 'archived' },
+                  NOT: { canEdit: { equals: true } },
+                },
+              },
             },
             listView: {
               fieldMode: ({ session, context }) => 'read',
@@ -145,7 +158,7 @@ export default config({
               create: true,
               update: true,
             },
-          }
+          },
         }),
         /* ... */
       },
@@ -153,7 +166,7 @@ export default config({
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 ## Groups
@@ -161,8 +174,8 @@ export default config({
 Fields can be grouped together in the Admin UI using the `group` function, with a customisable `label` and `description`.
 
 ```typescript
-import { config, list, group } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { config, list, group } from '@keystone-6/core'
+import { text } from '@keystone-6/core/fields'
 
 export default config({
   lists: {
@@ -172,7 +185,9 @@ export default config({
           label: 'Group label',
           description: 'Group description',
           fields: {
-            someFieldName: text({ /* ... */ }),
+            someFieldName: text({
+              /* ... */
+            }),
             /* ... */
           },
         }),
@@ -182,7 +197,7 @@ export default config({
     /* ... */
   },
   /* ... */
-});
+})
 ```
 
 Groups also support `defaultFieldMode` overrides for `createView`, `itemView`, and `listView`, which apply to all fields within the group unless overridden at the field level:
