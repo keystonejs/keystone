@@ -3,9 +3,9 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { checkbox, relationship, select, text, timestamp } from '@keystone-6/core/fields'
 
-const requiresHighPriorityReason = {
+const hasHighPriority = {
   priority: { equals: 'high' },
-  NOT: { isComplete: { equals: true } },
+  isComplete: { equals: false },
 } as const
 
 export const lists = {
@@ -24,20 +24,21 @@ export const lists = {
       reasonForHighPriority: text({
         ui: {
           createView: {
+            isRequired: hasHighPriority,
             fieldMode: {
               hidden: {
-                NOT: requiresHighPriorityReason,
+                NOT: hasHighPriority,
               },
             },
-            isRequired: requiresHighPriorityReason,
+
           },
           itemView: {
+            isRequired: hasHighPriority,
             fieldMode: {
               hidden: {
-                NOT: requiresHighPriorityReason,
+                NOT: hasHighPriority,
               },
             },
-            isRequired: requiresHighPriorityReason,
           },
         },
         hooks: {
