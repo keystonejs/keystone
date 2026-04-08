@@ -7,7 +7,6 @@ import type {
 } from '../../types'
 
 type SerializedItem = Record<string, unknown>
-const conditionalFilterOperators = new Set(['AND', 'OR', 'NOT'])
 type FieldFilter = {
   equals?: unknown
   in?: unknown[]
@@ -18,7 +17,7 @@ type FieldFilter = {
 }
 
 function isConditionalFilterOperator(key: string): key is 'AND' | 'OR' | 'NOT' {
-  return conditionalFilterOperators.has(key)
+  return key === 'AND' || key === 'OR' || key === 'NOT'
 }
 
 function isFieldFilter(value: unknown): value is FieldFilter {

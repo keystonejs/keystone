@@ -30,7 +30,6 @@ export const lists = {
                 NOT: hasHighPriority,
               },
             },
-
           },
           itemView: {
             isRequired: hasHighPriority,
