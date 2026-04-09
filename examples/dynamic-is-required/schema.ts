@@ -3,6 +3,11 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { checkbox, relationship, select, text, timestamp } from '@keystone-6/core/fields'
 
+const hasHighPriority = {
+  priority: { equals: 'high' },
+  isComplete: { equals: false },
+} as const
+
 export const lists = {
   Todo: list({
     access: allowAll,
@@ -19,23 +24,19 @@ export const lists = {
       reasonForHighPriority: text({
         ui: {
           createView: {
+            isRequired: hasHighPriority,
             fieldMode: {
               hidden: {
-                priority: { not: { equals: 'high' } },
+                NOT: hasHighPriority,
               },
-            },
-            isRequired: {
-              priority: { equals: 'high' },
             },
           },
           itemView: {
+            isRequired: hasHighPriority,
             fieldMode: {
               hidden: {
-                priority: { not: { equals: 'high' } },
+                NOT: hasHighPriority,
               },
-            },
-            isRequired: {
-              priority: { equals: 'high' },
             },
           },
         },

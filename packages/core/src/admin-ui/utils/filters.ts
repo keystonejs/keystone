@@ -7,6 +7,22 @@ import type {
 } from '../../types'
 
 type SerializedItem = Record<string, unknown>
+type FieldFilter = {
+  equals?: unknown
+  in?: unknown[]
+  not?: {
+    equals?: unknown
+    in?: unknown[]
+  }
+}
+
+function isConditionalFilterOperator(key: string): key is 'AND' | 'OR' | 'NOT' {
+  return key === 'AND' || key === 'OR' || key === 'NOT'
+}
+
+function isFieldFilter(value: unknown): value is FieldFilter {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
 
 function applyFilter<T>(
   filter: {
@@ -27,8 +43,19 @@ export function testFilter(
 ): boolean {
   if (filter === undefined) return false
   if (typeof filter === 'boolean') return filter
+
+  if (filter.AND !== undefined && !filter.AND.every(filter => testFilter(filter, serialized))) {
+    return false
+  }
+  if (filter.OR !== undefined && !filter.OR.some(filter => testFilter(filter, serialized))) {
+    return false
+  }
+  if (filter.NOT !== undefined && testFilter(filter.NOT, serialized)) {
+    return false
+  }
+
   for (const [key, filterOnField] of Object.entries(filter)) {
-    if (!filterOnField) continue
+    if (isConditionalFilterOperator(key) || !isFieldFilter(filterOnField)) continue
     const serializedValue = serialized[key]
     if (!applyFilter(filterOnField, serializedValue)) return false
     if (filterOnField.not !== undefined && applyFilter(filterOnField.not, serializedValue)) {
@@ -87,11 +114,30 @@ export function getConditionalFilterFieldKeys(
 ): string[] {
   if (typeof actionMode === 'string') return []
 
-  const fieldKeys: string[] = []
-  for (const conditionalFilter of Object.values(actionMode)) {
-    if (!conditionalFilter || typeof conditionalFilter !== 'object') continue
-    fieldKeys.push(...Object.keys(conditionalFilter))
+  const fieldKeys = new Set<string>()
+
+  function collectFieldKeys(filter: ConditionalFilterCase<BaseListTypeInfo> | undefined) {
+    if (!filter || typeof filter !== 'object') return
+
+    if (filter.AND !== undefined) {
+      filter.AND.forEach(collectFieldKeys)
+    }
+    if (filter.OR !== undefined) {
+      filter.OR.forEach(collectFieldKeys)
+    }
+    if (filter.NOT !== undefined) {
+      collectFieldKeys(filter.NOT)
+    }
+
+    for (const key of Object.keys(filter)) {
+      if (isConditionalFilterOperator(key)) continue
+      fieldKeys.add(key)
+    }
   }
 
-  return fieldKeys
+  for (const conditionalFilter of Object.values(actionMode)) {
+    collectFieldKeys(conditionalFilter)
+  }
+
+  return [...fieldKeys]
 }

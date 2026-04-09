@@ -31,6 +31,10 @@ const readOnly = {
   },
 }
 
+const isReportDisabled = {
+  OR: [{ hidden: { equals: true } }, { reportedAt: { not: { equals: null } } }],
+} as const
+
 export const lists = {
   Post: list({
     access: allowAll, // WARNING: public
@@ -124,12 +128,12 @@ export const lists = {
             successMany: 'Successfully reported {countSuccess} {singular|plural}',
           },
           itemView: {
-            actionMode: { disabled: { hidden: { equals: true } } },
+            actionMode: { disabled: isReportDisabled },
             navigation: 'refetch',
             hideToast: true,
           },
           listView: {
-            actionMode: { disabled: { hidden: { equals: true } } },
+            actionMode: { disabled: isReportDisabled },
           },
         },
       },
