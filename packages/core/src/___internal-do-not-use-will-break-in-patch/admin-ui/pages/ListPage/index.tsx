@@ -459,35 +459,35 @@ function ListPage({ listKey }: ListPageProps) {
   const actionsList = [
     ...actionsAvailable,
     ...(list.hideDelete
-      ? [] : [
-        {
-          key: 'delete',
-          label: 'Delete',
-          icon: 'trash2Icon',
-          graphql: {
-            names: {
-              one: list.graphql.names.deleteMutationName,
-              many: list.graphql.names.deleteManyMutationName,
+      ? []
+      : [
+          {
+            key: 'delete',
+            label: 'Delete',
+            icon: 'trash2Icon',
+            graphql: {
+              names: {
+                one: list.graphql.names.deleteMutationName,
+                many: list.graphql.names.deleteManyMutationName,
+              },
             },
-          },
-          messages: {
-            promptTitle: 'Delete {singular}?',
-            promptTitleMany: 'Delete {count} {singular|plural}?',
-            prompt: 'Are you sure you want to delete {singular}? This action cannot be undone.',
-            promptMany:
-              'Are you sure you want to delete {count} {singular|plural}? This action cannot be undone.',
-            promptConfirmLabel: 'Yes, delete',
-            promptConfirmLabelMany: 'Yes, delete',
-            success: 'Deleted {singular}.',
-            successMany: 'Deleted {countSuccess} {singular|plural}.',
-            fail: 'Unable to delete {singular}.',
-            failMany: 'Unable to delete {countFail} {singular|plural}.',
-          },
-          itemView: null as any, // unusud
-          listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
-        } as const,
-      ]
-    ),
+            messages: {
+              promptTitle: 'Delete {singular}?',
+              promptTitleMany: 'Delete {count} {singular|plural}?',
+              prompt: 'Are you sure you want to delete {singular}? This action cannot be undone.',
+              promptMany:
+                'Are you sure you want to delete {count} {singular|plural}? This action cannot be undone.',
+              promptConfirmLabel: 'Yes, delete',
+              promptConfirmLabelMany: 'Yes, delete',
+              success: 'Deleted {singular}.',
+              successMany: 'Deleted {countSuccess} {singular|plural}.',
+              fail: 'Unable to delete {singular}.',
+              failMany: 'Unable to delete {countFail} {singular|plural}.',
+            },
+            itemView: null as any, // unusud
+            listView: { actionMode: list.hideDelete ? 'hidden' : 'enabled' },
+          } as const,
+        ]),
   ]
   const selectionMode = actionsList.length > 0 ? 'multiple' : 'none'
   const selectedRows = useMemo(
