@@ -95,6 +95,8 @@ export const lists = {
         async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
           // throw new Error('Random failure, try again')
+
+          // WARNING: bypasses access control for the reportedAt field, be wary of this
           return await context.sudo().db.Post.updateOne({
             where,
             data: {
