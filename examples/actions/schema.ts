@@ -95,7 +95,9 @@ export const lists = {
         async resolve({ actionKey, where }, context) {
           console.log(`${actionKey}`, JSON.stringify({ where }))
           // throw new Error('Random failure, try again')
-          return await context.db.Post.updateOne({
+
+          // WARNING: bypasses access control for the reportedAt field, be wary of this
+          return await context.sudo().db.Post.updateOne({
             where,
             data: {
               reportedAt: new Date(),
@@ -122,12 +124,12 @@ export const lists = {
             successMany: 'Successfully reported {countSuccess} {singular|plural}',
           },
           itemView: {
-            actionMode: () => 'enabled',
+            actionMode: { disabled: { hidden: { equals: true } } },
             navigation: 'refetch',
             hideToast: true,
           },
           listView: {
-            actionMode: 'enabled',
+            actionMode: { disabled: { hidden: { equals: true } } },
           },
         },
       },

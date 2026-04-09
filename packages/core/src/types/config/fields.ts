@@ -50,12 +50,13 @@ export type CommonFieldConfig<
     description?: string
     views?: string
     createView?: {
-      fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', ListTypeInfo>
+      fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', ListTypeInfo>
       isRequired?: MaybeBooleanSessionFunctionWithFilter<ListTypeInfo>
     }
     itemView?: {
       fieldMode?: MaybeItemFieldFunctionWithFilter<
         'edit' | 'read' | 'hidden',
+        'read' | 'hidden',
         ListTypeInfo,
         FieldTypeInfo
       >

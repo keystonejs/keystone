@@ -7,12 +7,12 @@ const hiddenIfWrongKind = (kind: 'post' | 'link') =>
   ({
     createView: {
       fieldMode: {
-        edit: { type: { equals: kind } },
+        hidden: { type: { not: { equals: kind } } },
       },
     },
     itemView: {
       fieldMode: {
-        edit: { type: { equals: kind } },
+        hidden: { type: { not: { equals: kind } } },
       },
     },
     listView: {
