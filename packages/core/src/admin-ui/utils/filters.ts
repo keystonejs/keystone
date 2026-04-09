@@ -54,11 +54,13 @@ export function testFilter(
     return false
   }
 
-  for (const [key, filterOnField] of Object.entries(filter)) {
-    if (isConditionalFilterOperator(key) || !isFieldFilter(filterOnField)) continue
+  for (const [key, fieldFilter] of Object.entries(filter)) {
+    if (!isFieldFilter(fieldFilter)) continue
+    if (isConditionalFilterOperator(key)) continue
+
     const serializedValue = serialized[key]
-    if (!applyFilter(filterOnField, serializedValue)) return false
-    if (filterOnField.not !== undefined && applyFilter(filterOnField.not, serializedValue)) {
+    if (!applyFilter(fieldFilter, serializedValue)) return false
+    if (fieldFilter.not !== undefined && applyFilter(fieldFilter.not, serializedValue)) {
       return false
     }
   }
