@@ -1,5 +1,5 @@
+import { getConditionalFilterFieldKeys, testFilter } from '../src/admin-ui/utils/filters'
 import type { ActionMeta, ConditionalFilterCase } from '../src/types'
-import { getQueriedFieldKeysWithActions, testFilter } from '../src/admin-ui/utils/filters'
 
 describe('conditional filters', () => {
   test('flat field predicates still use implicit AND and field-level not', () => {
@@ -266,12 +266,14 @@ describe('conditional filters', () => {
       } as ActionMeta,
     ] satisfies ActionMeta[]
 
-    expect(getQueriedFieldKeysWithActions(['title'], actions, 'listView')).toEqual([
-      'title',
-      'status',
-      'priority',
-      'isComplete',
-    ])
+    const fieldKeys = new Set<string>(['title'])
+    for (const action of actions) {
+      for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
+        fieldKeys.add(fieldKey)
+      }
+    }
+
+    expect(fieldKeys).toEqual(['title', 'status', 'priority', 'isComplete'])
   })
 
   test('collects field dependencies from sibling AND, OR, NOT, and field predicates', () => {
@@ -312,13 +314,13 @@ describe('conditional filters', () => {
       } as ActionMeta,
     ] satisfies ActionMeta[]
 
-    expect(getQueriedFieldKeysWithActions(['title'], actions, 'listView')).toEqual([
-      'title',
-      'author',
-      'priority',
-      'featured',
-      'archived',
-      'status',
-    ])
+    const fieldKeys = new Set<string>(['title'])
+    for (const action of actions) {
+      for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
+        fieldKeys.add(fieldKey)
+      }
+    }
+
+    expect(fieldKeys).toEqual(['title', 'author', 'priority', 'featured', 'archived', 'status'])
   })
 })
