@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
-    "@types/react-dom": "^19.0.0",
+    "@types/react-dom": "^19.2.3",
     "prisma": "5.19.0",
-    "react": "^19.0.0",
+    "react": "^19.2.5",
     "typescript": "^5.5.0"
   }
 }
