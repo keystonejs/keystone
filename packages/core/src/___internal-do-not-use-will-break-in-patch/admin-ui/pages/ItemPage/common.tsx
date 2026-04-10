@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
+import isDeepEqual from 'fast-deep-equal'
 
 import { ActionGroup } from '@keystar/ui/action-group'
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
@@ -132,8 +133,13 @@ function ItemActions({
   )
   const [actionError, setActionError] = useState<ActionError | null>(null)
   const [activeAction, setActiveAction] = useState<ActionMeta | null>(null)
+  const [blockedAction, setBlockedAction] = useState<ActionMeta | null>(null)
   const itemLabel_ = item[list.labelField] ?? item.id
   const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (item.id as string)
+  const hasUnsavedChanges = useMemo(
+    () => value !== null && initialValue !== null && !isDeepEqual(value, initialValue),
+    [initialValue, value]
+  )
 
   const disabledKeys = useMemo(
     () =>
@@ -144,6 +150,11 @@ function ItemActions({
   async function onTryAction(action: ActionMeta, confirmed: boolean) {
     setActiveAction(null)
 
+    if (hasUnsavedChanges) {
+      setBlockedAction(action)
+      return
+    }
+
     if (!confirmed && !action.itemView.hidePrompt) {
       setActiveAction(action)
       return
@@ -152,7 +163,7 @@ function ItemActions({
     const { messages: m } = action
     try {
       const dataForAction =
-        value && initialValue ? serializeActionData(list, action, value, initialValue) : {}
+        initialValue ? serializeActionData(list, action, initialValue, initialValue) : {}
       const mutation = (
         action.graphql.fields.length && action.graphql.names.data
           ? gql`mutation ${action.graphql.names.one}($id: ID!, $data: ${action.graphql.names.data}!) {
@@ -224,6 +235,19 @@ function ItemActions({
             }}
           >
             {replace(activeAction.messages.prompt, list, { itemLabel })}
+          </AlertDialog>
+        )}
+      </DialogContainer>
+
+      <DialogContainer onDismiss={() => setBlockedAction(null)}>
+        {blockedAction && (
+          <AlertDialog
+            title="Unsaved changes"
+            cancelLabel="Cancel"
+            primaryActionLabel="Got it"
+            onPrimaryAction={() => setBlockedAction(null)}
+          >
+            Please save or reset your changes before running this action.
           </AlertDialog>
         )}
       </DialogContainer>
