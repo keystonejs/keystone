@@ -17,7 +17,7 @@ const config = {
         publish: action({
           access: allowAll,
           graphql: {
-            __data: {
+            data: {
               title: true,
             },
           },
@@ -67,7 +67,7 @@ const config = {
         revise: action({
           access: allowAll,
           graphql: {
-            __data: true,
+            data: true,
           },
           async resolve({ where, data }, context) {
             return context.db.Post.updateOne({
@@ -93,7 +93,7 @@ const emptyPrismaModule = {
   Prisma: {},
 }
 
-test('graphql.__data: true throws when the update input is Empty', () => {
+test('graphql.data: true throws when the update input is Empty', () => {
   expect(() =>
     getContext(
       defineConfig({
@@ -111,7 +111,7 @@ test('graphql.__data: true throws when the update input is Empty', () => {
               revise: action({
                 access: allowAll,
                 graphql: {
-                  __data: true,
+                  data: true,
                 },
                 resolve: () => null,
                 ui: {
@@ -125,11 +125,11 @@ test('graphql.__data: true throws when the update input is Empty', () => {
       emptyPrismaModule
     )
   ).toThrowErrorMatchingInlineSnapshot(
-    `"The action at Post.actions.revise sets graphql.__data but the list has no updateable fields"`
+    `"The action at Post.actions.revise sets graphql.data but the list has no updateable fields"`
   )
 })
 
-test('subset graphql.__data throws when the update input is Empty', () => {
+test('subset graphql.data throws when the update input is Empty', () => {
   expect(() =>
     getContext(
       defineConfig({
@@ -147,7 +147,7 @@ test('subset graphql.__data throws when the update input is Empty', () => {
               publish: action({
                 access: allowAll,
                 graphql: {
-                  __data: {
+                  data: {
                     title: true,
                   },
                 },
@@ -163,11 +163,11 @@ test('subset graphql.__data throws when the update input is Empty', () => {
       emptyPrismaModule
     )
   ).toThrowErrorMatchingInlineSnapshot(
-    `"The action at Post.actions.publish sets graphql.__data but the list has no updateable fields"`
+    `"The action at Post.actions.publish sets graphql.data but the list has no updateable fields"`
   )
 })
 
-test('graphql artifacts include action args types and __data input handling', async () => {
+test('graphql artifacts include action args types and data input handling', async () => {
   const { artifacts, disconnect } = await setupTestEnv(config)
   try {
     expect(artifacts.graphql).toContain(`input PublishPostArgs {

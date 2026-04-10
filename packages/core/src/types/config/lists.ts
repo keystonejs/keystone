@@ -67,8 +67,9 @@ export type Action<
     description?: string
     /**
      * Defines what fields the action should accept as input
+     * @experimental This feature is not yet stable.
      */
-    __data?: Data
+    data?: Data
   }
   ui: {
     /**

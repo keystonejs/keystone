@@ -920,7 +920,7 @@ function getInitialisedActionGraphql(
     many: action.graphql?.plural ?? `${actionKey}${listGraphqlNames.plural}`,
   }
   const argsName = `${graphqlNames.one[0].toUpperCase()}${graphqlNames.one.slice(1)}Args`
-  const configuredData = action.graphql?.__data
+  const configuredData = action.graphql?.data
 
   const updateType = list.graphql.types.update
 
@@ -930,7 +930,7 @@ function getInitialisedActionGraphql(
   if (configuredData !== undefined) {
     if (!(updateType instanceof GInputObjectType)) {
       throw new Error(
-        `The action at ${list.listKey}.actions.${actionKey} sets graphql.__data but the list has no updateable fields`
+        `The action at ${list.listKey}.actions.${actionKey} sets graphql.data but the list has no updateable fields`
       )
     }
 
@@ -949,7 +949,7 @@ function getInitialisedActionGraphql(
             const field = allUpdateFields[fieldKey]
             if (!field) {
               throw new Error(
-                `The action at ${list.listKey}.actions.${actionKey} specifies graphql.__data.${fieldKey} but that is not a valid field for update operations on this list`
+                `The action at ${list.listKey}.actions.${actionKey} specifies graphql.data.${fieldKey} but that is not a valid field for update operations on this list`
               )
             }
             return [fieldKey, field as GArg<GInputType>] as const
