@@ -46,7 +46,6 @@ export const lists = {
           validate: args => {
             if (
               typeof args.resolvedFieldData === 'string' &&
-              !args.context.session?.noValidation &&
               !args.resolvedFieldData.includes('good content')
             ) {
               args.addValidationError('Content is not valid')
@@ -151,29 +150,6 @@ export const lists = {
           },
         },
       }),
-      updateWithoutValidation: action({
-        access: allowAll,
-        async resolve({ where, data }, context) {
-          return context
-            .withSession({ ...context.session, noValidation: true })
-            .db.Post.updateOne({ where, data })
-        },
-        graphql: {
-          singular: 'updatePostWithoutValidation',
-          plural: 'updatePostsWithoutValidation',
-          data: true,
-        },
-        ui: {
-          label: 'Save without validation',
-          itemView: {
-            navigation: 'refetch',
-            hideToast: true,
-          },
-          listView: {
-            actionMode: { disabled: { hidden: { equals: true } } },
-          },
-        },
-      }),
     },
     ui: {
       listView: {
@@ -184,4 +160,4 @@ export const lists = {
       },
     },
   }),
-} satisfies Lists<{ noValidation?: boolean }>
+} satisfies Lists
