@@ -4,6 +4,7 @@
 type Something {
   id: ID!
   text: String
+  virtual: String
 }
 
 input SomethingWhereUniqueInput {
@@ -99,7 +100,7 @@ type Query {
   somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
   somethingsCount(where: SomethingWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  someNumber: Int
+  someNumber: Int!
 }
 
 type KeystoneMeta {
