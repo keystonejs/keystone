@@ -32,11 +32,11 @@
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "react": "^19.0.0"
+    "react": "^19.2.5"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0",
-    "react": "^19.0.0"
+    "react": "^19.2.5"
   },
   "preconstruct": {
     "entrypoints": [
