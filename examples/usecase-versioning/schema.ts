@@ -9,13 +9,13 @@ export const lists = {
     access: allowAll,
     ui: {
       listView: {
-        initialColumns: ['title', 'isPublished'],
+        initialColumns: ['title', 'published'],
       },
     },
     fields: {
       title: text({ validation: { isRequired: true } }),
       content: text(),
-      isPublished: checkbox({
+      published: checkbox({
         graphql: {
           omit: {
             create: true,
@@ -52,9 +52,9 @@ export const lists = {
     },
     hooks: {
       validate: ({ item, resolvedData, addValidationError }) => {
-        const resolvedIsPublished = resolvedData?.isPublished ?? item?.isPublished
+        const resolvedPublished = resolvedData?.published ?? item?.published
         const resolvedContent = resolvedData?.content ?? item?.content
-        if (resolvedIsPublished && !resolvedContent) {
+        if (resolvedPublished && !resolvedContent) {
           addValidationError('Cannot publish a post without content')
         }
       },
@@ -66,14 +66,14 @@ export const lists = {
           label: 'Publish',
           itemView: {
             actionMode: {
-              disabled: { content: { equals: '' }, isPublished: { equals: true } },
-              hidden: { isPublished: { equals: true } },
+              disabled: { content: { equals: '' }, published: { equals: true } },
+              hidden: { published: { equals: true } },
             },
           },
           listView: {
             actionMode: {
-              disabled: { content: { equals: '' }, isPublished: { equals: true } },
-              hidden: { isPublished: { equals: true } },
+              disabled: { content: { equals: '' }, published: { equals: true } },
+              hidden: { published: { equals: true } },
             },
           },
         },
@@ -83,7 +83,7 @@ export const lists = {
         resolve: async ({ where, data }, context) => {
           return context.sudo().db.Post.updateOne({
             where,
-            data: { ...data, isPublished: true },
+            data: { ...data, published: true },
           })
         },
       }),

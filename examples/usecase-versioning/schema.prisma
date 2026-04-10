@@ -16,6 +16,6 @@ model Post {
   id          String  @id @default(cuid())
   title       String  @default("")
   content     String  @default("")
-  isPublished Boolean @default(false)
+  published   Boolean @default(false)
   version     Int     @default(0)
 }
