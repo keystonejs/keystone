@@ -41,18 +41,7 @@ export const lists = {
 
     fields: {
       title: text(),
-      content: text({
-        hooks: {
-          validate: args => {
-            if (
-              typeof args.resolvedFieldData === 'string' &&
-              !args.resolvedFieldData.includes('good content')
-            ) {
-              args.addValidationError('Content is not valid')
-            }
-          },
-        },
-      }),
+      content: text(),
       hidden: checkbox({
         ui: {
           itemView: {
