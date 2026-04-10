@@ -78,7 +78,7 @@ export const lists = {
           },
         },
         graphql: {
-          __data: true,
+          data: true,
         },
         resolve: async ({ where, data }, context) => {
           return context.sudo().db.Post.updateOne({

@@ -161,7 +161,7 @@ export const lists = {
         graphql: {
           singular: 'updatePostWithoutValidation',
           plural: 'updatePostsWithoutValidation',
-          __data: true,
+          data: true,
         },
         ui: {
           label: 'Save without validation',
