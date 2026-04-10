@@ -162,8 +162,9 @@ function ItemActions({
 
     const { messages: m } = action
     try {
-      const dataForAction =
-        initialValue ? serializeActionData(list, action, initialValue, initialValue) : {}
+      const dataForAction = initialValue
+        ? serializeActionData(list, action, initialValue, initialValue)
+        : {}
       const mutation = (
         action.graphql.fields.length && action.graphql.names.data
           ? gql`mutation ${action.graphql.names.one}($id: ID!, $data: ${action.graphql.names.data}!) {
