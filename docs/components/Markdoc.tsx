@@ -1,6 +1,6 @@
 'use client'
 
-import React, { type ElementType, type ReactNode } from 'react'
+import React, { type ElementType, type ReactNode, type JSX } from 'react'
 import type { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc'
 import { isTag } from '../markdoc/isTag'
 import { Code, InlineCode } from './primitives/Code'
