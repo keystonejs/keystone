@@ -60,10 +60,7 @@ Prisma's `search` operator is a low-level Prisma feature not yet surfaced throug
 // 1. Use raw Prisma client to perform the full-text search
 const matches = await context.prisma.post.findMany({
   where: {
-    OR: [
-      { title: { search: query } },
-      { content: { search: query } },
-    ],
+    OR: [{ title: { search: query } }, { content: { search: query } }],
   },
   select: { id: true },
 })
@@ -77,12 +74,12 @@ return context.db.Post.findMany({ where: { id: { in: ids } } })
 
 The `query` argument accepts PostgreSQL's tsquery syntax:
 
-| Operator | Meaning | Example |
-|----------|---------|---------|
-| `&` | AND | `"cat & dog"` — must contain both |
-| `\|` | OR | `"cat \| dog"` — must contain either |
-| `!` | NOT | `"!cat"` — must not contain |
-| `<->` | Phrase/proximity | `"fox <-> dog"` — "dog" follows immediately after "fox" |
+| Operator | Meaning          | Example                                                 |
+| -------- | ---------------- | ------------------------------------------------------- |
+| `&`      | AND              | `"cat & dog"` — must contain both                       |
+| `\|`     | OR               | `"cat \| dog"` — must contain either                    |
+| `!`      | NOT              | `"!cat"` — must not contain                             |
+| `<->`    | Phrase/proximity | `"fox <-> dog"` — "dog" follows immediately after "fox" |
 
 ### Try it in the GraphQL Playground
 
