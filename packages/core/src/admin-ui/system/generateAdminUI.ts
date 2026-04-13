@@ -90,7 +90,16 @@ export async function generateAdminUI(
       if (err.code !== 'ENOENT') throw err
     }
 
-    let adminFiles = writeAdminFiles(config, adminMeta)
+    // Collect files into a map keyed by outputPath to handle duplicates
+    // User-provided files take precedence over internal files
+    const adminFilesMap = new Map<string, AdminFileToWrite>()
+
+    // Add internal files first
+    for (const file of writeAdminFiles(config, adminMeta)) {
+      adminFilesMap.set(file.outputPath, file)
+    }
+
+    // Add user page files (these override internal files)
     for (const { path } of userPagesEntries) {
       const outputFilename = Path.relative(adminConfigDir, path)
       const importPath = Path.relative(
@@ -98,18 +107,22 @@ export async function generateAdminUI(
         path
       )
       const serializedImportPath = serializePathForImport(importPath)
-      adminFiles.push({
+      adminFilesMap.set(outputFilename, {
         mode: 'write',
         outputPath: outputFilename,
         src: `export { default } from ${serializedImportPath}`,
       })
     }
 
-    adminFiles = adminFiles.filter(
+    // Filter out files already written by getAdditionalFiles() and convert to array
+    const adminFiles = Array.from(adminFilesMap.values()).filter(
       x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))
     )
 
-    await Promise.all(adminFiles.map(file => writeAdminFile(file, projectAdminPath)))
+    // Write files sequentially to prevent race conditions
+    for (const file of adminFiles) {
+      await writeAdminFile(file, projectAdminPath)
+    }
 
     // Because Next will re-compile things (or at least check things and log a bunch of stuff)
     // if we delete pages and then re-create them, we want to avoid that when live reloading
