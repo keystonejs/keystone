@@ -119,10 +119,10 @@ export async function generateAdminUI(
       x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))
     )
 
-    // Write files sequentially to prevent race conditions
-    for (const file of adminFiles) {
-      await writeAdminFile(file, projectAdminPath)
-    }
+    // Write distinct output paths in parallel after deterministic de-duplication
+    await Promise.all(
+      adminFiles.map(file => writeAdminFile(file, projectAdminPath))
+    )
 
     // Because Next will re-compile things (or at least check things and log a bunch of stuff)
     // if we delete pages and then re-create them, we want to avoid that when live reloading
