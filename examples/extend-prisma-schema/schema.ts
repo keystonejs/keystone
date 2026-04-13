@@ -14,7 +14,7 @@ export const lists = {
     db: {
       extendPrismaSchema: schema => {
         // add a (poor) example of a multi-column unique constraint
-        return schema.replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}')
+        return schema.slice(0, -1) + '@@unique([firstName, lastName])\n}'
       },
     },
   }),
