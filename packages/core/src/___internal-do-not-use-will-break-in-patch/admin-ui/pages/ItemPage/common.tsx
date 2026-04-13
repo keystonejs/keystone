@@ -89,10 +89,12 @@ export function ItemPageHeader({
 function replace(
   s: string,
   list: ListMeta,
-  args: {
+  args: ActionMeta & {
     itemLabel?: string
   }
 ) {
+  s = s.replaceAll('{Label}', args.label)
+  s = s.replaceAll('{label}', args.label.toLowerCase())
   if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
   if (s.includes('{Plural}')) s = s.replaceAll('{Plural}', list.plural)
   if (s.includes('{singular}')) s = s.replaceAll('{singular}', list.singular.toLowerCase())
@@ -190,12 +192,14 @@ function ItemActions({
       })
 
       if (!action.itemView.hideToast) {
-        toastQueue.neutral(replace(m.success, list, { itemLabel }), { timeout: 5000 })
+        toastQueue.neutral(replace(m.success, list, { ...action, itemLabel }), {
+          timeout: 5000,
+        })
       }
 
       onAction(action, data.data?.result?.id ?? null)
     } catch (error: any) {
-      toastQueue.critical(replace(m.fail, list, { itemLabel }), {
+      toastQueue.critical(replace(m.fail, list, { ...action, itemLabel }), {
         actionLabel: 'Details',
         onAction: () => setActionError({ action, error }),
         shouldCloseOnAction: true,
@@ -226,16 +230,17 @@ function ItemActions({
       <DialogContainer onDismiss={() => setActiveAction(null)}>
         {activeAction && (
           <AlertDialog
-            title={replace(activeAction.messages.promptTitle, list, { itemLabel })}
+            title={replace(activeAction.messages.promptTitle, list, { ...activeAction, itemLabel })}
             cancelLabel="Cancel"
             primaryActionLabel={replace(activeAction.messages.promptConfirmLabel, list, {
+              ...activeAction,
               itemLabel,
             })}
             onPrimaryAction={async () => {
               await onTryAction(activeAction, true)
             }}
           >
-            {replace(activeAction.messages.prompt, list, { itemLabel })}
+            {replace(activeAction.messages.prompt, list, { ...activeAction, itemLabel })}
           </AlertDialog>
         )}
       </DialogContainer>
@@ -248,7 +253,8 @@ function ItemActions({
             primaryActionLabel="Got it"
             onPrimaryAction={() => setBlockedAction(null)}
           >
-            Please save or reset your changes before running this action.
+            Please save or reset your changes before attempting to{' '}
+            {replace('{label}', list, blockedAction)}
           </AlertDialog>
         )}
       </DialogContainer>
@@ -256,7 +262,10 @@ function ItemActions({
       <DialogContainer onDismiss={() => setActionError(null)} isDismissable>
         {actionError && (
           <ErrorDetailsDialog
-            title={replace(actionError.action.messages.fail, list, { itemLabel })}
+            title={replace(actionError.action.messages.fail, list, {
+              ...actionError.action,
+              itemLabel,
+            })}
             error={actionError.error}
           />
         )}
