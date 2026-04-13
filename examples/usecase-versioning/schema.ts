@@ -41,7 +41,7 @@ export const lists = {
         },
         hooks: {
           resolveInput: {
-            update: async ({ resolvedData, operation, item }) => {
+            update: async ({ resolvedData, item }) => {
               if (resolvedData.version !== item.version) throw new Error('Out of sync')
 
               return item.version + 1

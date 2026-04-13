@@ -1058,7 +1058,6 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     list.actions = Object.entries(listConfig.actions ?? {}).map(
       ([actionKey, action]): InitialisedAction => {
         const { label } = action.ui
-        const label_ = label.toLowerCase()
         const graphql = getInitialisedActionGraphql(
           list,
           __getNames(list.listKey, listConfig).graphql,
@@ -1075,16 +1074,16 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
             label,
             icon: action.ui.icon ?? null,
             messages: {
-              promptTitle: `${label} {singular}`,
-              promptTitleMany: `${label} {count} {singular|plural}`,
-              prompt: `Are you sure you want to ${label_} {singular} "{itemLabel}"?`,
-              promptMany: `Are you sure you want to ${label_} {count} {singular|plural}?`,
-              promptConfirmLabel: `Yes, ${label_} this {singular}`,
-              promptConfirmLabelMany: `Yes, ${label_} {count} {singular|plural}`,
-              fail: `Could not ${label_} {singular}`,
-              failMany: `Could not ${label_} {countFail} {singular|plural}`,
-              success: `Completed ${label_} action for {singular}`,
-              successMany: `Completed ${label_} action for {countSuccess} {singular|plural}`,
+              promptTitle: `{Label} {singular}`,
+              promptTitleMany: `{Label} {count} {singular|plural}`,
+              prompt: `Are you sure you want to {label} {singular} "{itemLabel}"?`,
+              promptMany: `Are you sure you want to {label} {count} {singular|plural}?`,
+              promptConfirmLabel: `Yes, {label} this {singular}`,
+              promptConfirmLabelMany: `Yes, {label} {count} {singular|plural}`,
+              fail: `Could not {label} {singular}`,
+              failMany: `Could not {label} {countFail} {singular|plural}`,
+              success: `Completed {label} action for {singular}`,
+              successMany: `Completed {label} action for {countSuccess} {singular|plural}`,
               ...action.ui.messages,
             },
             itemView: {

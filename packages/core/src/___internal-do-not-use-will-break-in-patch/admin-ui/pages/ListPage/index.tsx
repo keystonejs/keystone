@@ -776,7 +776,12 @@ function ListPage({ listKey }: ListPageProps) {
                                 </Content>
                                 <div>
                                   <Heading>
-                                    {replace(action.messages.fail, list, { itemLabel }, false)}
+                                    {replace(
+                                      action.messages.fail,
+                                      list,
+                                      { ...action, itemLabel },
+                                      false
+                                    )}
                                   </Heading>
                                 </div>
                               </Notice>
@@ -817,7 +822,7 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
 function replace(
   s: string,
   list: ListMeta,
-  args: {
+  args: ActionMeta & {
     itemLabel?: string
     count?: number
     countFail?: number
@@ -825,6 +830,8 @@ function replace(
   },
   many: boolean
 ) {
+  s = s.replaceAll('{Label}', args.label)
+  s = s.replaceAll('{label}', args.label.toLowerCase())
   if (s.includes('{singular|plural}'))
     s = s.replaceAll('{singular|plural}', many ? '{plural}' : '{singular}')
   if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
@@ -916,6 +923,7 @@ function ActionItemsDialog({
             m.successMany,
             list,
             {
+              ...action,
               count: itemIds.length,
               countFail,
               countSuccess,
@@ -932,6 +940,7 @@ function ActionItemsDialog({
             m.failMany,
             list,
             {
+              ...action,
               count: itemIds.length,
               countFail,
               countSuccess,
@@ -955,17 +964,24 @@ function ActionItemsDialog({
   return (
     <AlertDialog
       tone={action.key === 'delete' ? 'critical' : 'neutral'}
-      title={replace(m.promptTitleMany, list, { count: itemIds.length }, itemIds.length > 1)}
+      title={replace(
+        m.promptTitleMany,
+        list,
+        { ...action, count: itemIds.length },
+        itemIds.length > 1
+      )}
       cancelLabel="Cancel"
       primaryActionLabel={replace(
         m.promptConfirmLabelMany,
         list,
-        { count: itemIds.length },
+        { ...action, count: itemIds.length },
         itemIds.length > 1
       )}
       onPrimaryAction={onTryAction}
     >
-      <Text>{replace(m.promptMany, list, { count: itemIds.length }, itemIds.length > 1)}</Text>
+      <Text>
+        {replace(m.promptMany, list, { ...action, count: itemIds.length }, itemIds.length > 1)}
+      </Text>
     </AlertDialog>
   )
 }

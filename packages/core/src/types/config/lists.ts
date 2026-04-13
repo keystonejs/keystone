@@ -92,6 +92,8 @@ export type Action<
 
     /**
      * The locale messages used in the Admin UI, with support for the following template tags:
+     * - {label}: The action label in lowercase
+     * - {Label}: The action label as-is
      * - {singular}: Uses {list}.ui.singular
      * - {plural}: Uses {list}.ui.plural
      * - {singular|plural}: Uses {list}.ui.singular if {count} is 1, otherwise uses {list}.ui.plural
