@@ -3,10 +3,10 @@
 import { jsx } from '@keystone-ui/core'
 import React, { useContext } from 'react'
 import { useMemo, type ReactElement } from 'react'
-import { type Element } from 'slate'
-import { type ComponentBlock } from './api-shared'
+import type { Element } from 'slate'
+import type { ComponentBlock } from './api-shared'
 import { createGetPreviewProps, getKeysForArrayValue } from './preview-props'
-import { type ReadonlyPropPath } from './utils'
+import type { ReadonlyPropPath } from './utils'
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({})
 
@@ -42,14 +42,14 @@ export function ComponentBlockRender ({
 
   const childrenByPath: Record<string, ReactElement> = {}
   let maybeChild: ReactElement | undefined
-  children.forEach((child: ReactElement) => {
+  for (const child of children) {
     const propPath = child.props.children.props.element.propPath
     if (propPath === undefined) {
       maybeChild = child
     } else {
       childrenByPath[JSON.stringify(propPathWithIndiciesToKeys(propPath, element.props))] = child
     }
-  })
+  }
 
   const ComponentBlockPreview = componentBlock.preview
 

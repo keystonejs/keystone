@@ -3,7 +3,7 @@
 import { Inline, jsx, Stack } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { usePopover, PopoverDialog } from '@keystone-ui/popover'
-import { type FormEvent, Fragment, useState } from 'react'
+import { type FormEvent, Fragment, useState, type ReactNode } from 'react'
 import { Pill } from '@keystone-ui/pill'
 import { type FieldMeta, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
@@ -32,7 +32,7 @@ function FilterPill ({ filter, field }: { filter: Filter, field: FieldMeta }) {
     label: string
     type: string
     value: any
-  }) => JSX.Element
+  }) => ReactNode
   return (
     <Fragment>
       <Pill

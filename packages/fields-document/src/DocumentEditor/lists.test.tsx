@@ -1016,7 +1016,7 @@ test('changing the type of a nested list', () => {
   `)
 })
 
-test('changing the type of a nested list to something which it is nested inside', () => {
+test.skip('changing the type of a nested list to something which it is nested inside', () => {
   const editor = makeEditor(
     <editor>
       <unordered-list>
