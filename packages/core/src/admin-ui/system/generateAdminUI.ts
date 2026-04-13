@@ -11,13 +11,18 @@ import { withSpan } from '../../lib/otel'
 
 const walk = promisify(_walk)
 
+function toPosixPath(p: string) {
+  return p.split(Path.sep).join('/')
+}
+
 function serializePathForImport(path: string) {
   // JSON.stringify is important here because it will escape windows style paths(and any thing else that might potentially be in there)
   return JSON.stringify(
-    path
-      // Next is unhappy about imports that include .ts/tsx in them because TypeScript is unhappy with them because when doing a TypeScript compilation with tsc, the imports won't be written so they would be wrong there
-      .replace(/\.tsx?$/, '')
-      .replace(new RegExp(`\\${Path.sep}`, 'g'), '/')
+    toPosixPath(
+      path
+        // Next is unhappy about imports that include .ts/tsx in them because TypeScript is unhappy with them because when doing a TypeScript compilation with tsc, the imports won't be written so they would be wrong there
+        .replace(/\.tsx?$/, '')
+    )
   )
 }
 
@@ -101,7 +106,7 @@ export async function generateAdminUI(
 
     // Add user page files (these override internal files)
     for (const { path } of userPagesEntries) {
-      const outputFilename = Path.relative(adminConfigDir, path)
+      const outputFilename = toPosixPath(Path.relative(adminConfigDir, path))
       const importPath = Path.relative(
         Path.dirname(Path.join(projectAdminPath, outputFilename)),
         path
@@ -120,9 +125,7 @@ export async function generateAdminUI(
     )
 
     // Write distinct output paths in parallel after deterministic de-duplication
-    await Promise.all(
-      adminFiles.map(file => writeAdminFile(file, projectAdminPath))
-    )
+    await Promise.all(adminFiles.map(file => writeAdminFile(file, projectAdminPath)))
 
     // Because Next will re-compile things (or at least check things and log a bunch of stuff)
     // if we delete pages and then re-create them, we want to avoid that when live reloading
