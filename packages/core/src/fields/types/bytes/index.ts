@@ -257,7 +257,7 @@ export function bytesScalar(opts: {
       // so that when you're doing a mutation in a resolver, you can just pass in a Uint8Array directly
       if (value instanceof Uint8Array) {
         // duplicate it though to avoid any weirdness with the array being mutated
-        // + ensuring that if you pass in a Buffer, resolvers recieve a normal Uint8Array
+        // + ensuring that if you pass in a Buffer, resolvers receive a normal Uint8Array
         return Uint8Array.from(value)
       }
       if (typeof value !== 'string') {

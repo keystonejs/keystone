@@ -99,7 +99,7 @@ export function Field(props: FieldProps<typeof controller>) {
 }
 
 function validate(value: Value, isRequired: boolean, label: string): string | undefined {
-  // if we recieve null initially on the item view and the current value is null,
+  // if we receive null initially on the item view and the current value is null,
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
