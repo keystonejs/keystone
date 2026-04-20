@@ -66,8 +66,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0(jiti@2.6.1)
       eslint-plugin-react-hooks:
-        specifier: 7.0.1
-        version: 7.0.1(eslint@10.0.0(jiti@2.6.1))
+        specifier: 7.1.1
+        version: 7.1.1(eslint@10.0.0(jiti@2.6.1))
       jest:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@24.10.13)(babel-plugin-macros@3.1.0)
@@ -8273,11 +8273,11 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-plugin-react-hooks@7.0.1:
-    resolution: {integrity: sha512-O0d0m04evaNzEPoSW+59Mezf8Qt0InfgGIBJnpC0h3NH/WjUAR7BIKUfysC6todmtiZ/A0oUVS8Gce0WhBrHsA==}
+  eslint-plugin-react-hooks@7.1.1:
+    resolution: {integrity: sha512-f2I7Gw6JbvCexzIInuSbZpfdQ44D7iqdWX01FKLvrPgqxoE7oMj8clOfto8U6vYiz4yd5oKu39rRSVOe1zRu0g==}
     engines: {node: '>=18'}
     peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
+      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0 || ^10.0.0
 
   eslint-scope@7.2.2:
     resolution: {integrity: sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg==}
@@ -20987,7 +20987,7 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-plugin-react-hooks@7.0.1(eslint@10.0.0(jiti@2.6.1)):
+  eslint-plugin-react-hooks@7.1.1(eslint@10.0.0(jiti@2.6.1)):
     dependencies:
       '@babel/core': 7.29.0
       '@babel/parser': 7.29.0
