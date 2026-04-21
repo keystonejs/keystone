@@ -77,7 +77,7 @@ export function ComboboxSingle({
     <Combobox
       {...props}
       isRequired={isRequired}
-      items={data?.items ?? []}
+      items={items}
       loadingState={loading || isLoading ? 'loading' : 'idle'}
       errorMessage={
         !!validationMessages.length && (shouldShowErrors || forceValidation)
