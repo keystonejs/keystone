@@ -273,23 +273,33 @@ export async function runTelemetry(
   dbProviderName: DatabaseProvider
 ) {
   try {
-    if (
-      ci.isCI || // don't run in CI
-      process.env.NODE_ENV === 'production' || // don't run in production
-      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // don't run if the user has disabled it
-    ) {
+    if (ci.isCI) {
+      console.log(`Keystone Telemetry is ${r`disabled`} (running in CI)`)
+      return
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`Keystone Telemetry is ${r`disabled`} (NODE_ENV is production)`)
+      return
+    }
+
+    if (process.env.KEYSTONE_TELEMETRY_DISABLED === '1') {
+      console.log(`Keystone Telemetry is ${r`disabled`} (via KEYSTONE_TELEMETRY_DISABLED env)`)
       return
     }
 
     const { telemetry, userConfig } = getTelemetryConfig()
 
-    // don't run if the user has opted out
-    //   or if somehow our defaults are problematic, do nothing
-    if (telemetry === false) return
+    if (telemetry === false) {
+      console.log(`Keystone Telemetry is ${r`disabled`} (via opt-out)`)
+      return
+    }
 
     // don't send telemetry before we inform the user, allowing opt-out
     const telemetryDefaulted = getDefault(telemetry)
     if (!telemetryDefaulted.informedAt) return inform(telemetryDefaulted, userConfig)
+
+    console.log(`Keystone Telemetry is ${g`enabled`}`)
 
     await sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetryDefaulted, userConfig)
     await sendDeviceTelemetryEvent(telemetryDefaulted, userConfig)
