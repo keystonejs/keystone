@@ -918,6 +918,22 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
+  examples/extend-full-text-search:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^6.5.2
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+    devDependencies:
+      prisma:
+        specifier: 6.16.1
+        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+
   examples/extend-graphql-schema-graphql-tools:
     dependencies:
       '@graphql-tools/schema':
