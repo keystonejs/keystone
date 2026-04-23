@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
+import isDeepEqual from 'fast-deep-equal'
 
 import { ActionGroup } from '@keystar/ui/action-group'
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
@@ -14,6 +15,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo'
 import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
+import { serializeActionData } from '../../../../admin-ui/utils/actionData'
 import type { ActionMeta, ListMeta } from '../../../../types'
 
 export function ItemPageHeader({
@@ -87,10 +89,12 @@ export function ItemPageHeader({
 function replace(
   s: string,
   list: ListMeta,
-  args: {
+  args: ActionMeta & {
     itemLabel?: string
   }
 ) {
+  s = s.replaceAll('{Label}', args.label)
+  s = s.replaceAll('{label}', args.label.toLowerCase())
   if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
   if (s.includes('{Plural}')) s = s.replaceAll('{Plural}', list.plural)
   if (s.includes('{singular}')) s = s.replaceAll('{singular}', list.singular.toLowerCase())
@@ -131,8 +135,13 @@ function ItemActions({
   )
   const [actionError, setActionError] = useState<ActionError | null>(null)
   const [activeAction, setActiveAction] = useState<ActionMeta | null>(null)
+  const [blockedAction, setBlockedAction] = useState<ActionMeta | null>(null)
   const itemLabel_ = item[list.labelField] ?? item.id
   const itemLabel = typeof itemLabel_ === 'string' ? itemLabel_ : (item.id as string)
+  const hasUnsavedChanges = useMemo(
+    () => value !== null && initialValue !== null && !isDeepEqual(value, initialValue),
+    [initialValue, value]
+  )
 
   const disabledKeys = useMemo(
     () =>
@@ -143,6 +152,11 @@ function ItemActions({
   async function onTryAction(action: ActionMeta, confirmed: boolean) {
     setActiveAction(null)
 
+    if (hasUnsavedChanges) {
+      setBlockedAction(action)
+      return
+    }
+
     if (!confirmed && !action.itemView.hidePrompt) {
       setActiveAction(action)
       return
@@ -150,22 +164,42 @@ function ItemActions({
 
     const { messages: m } = action
     try {
-      const data = await apolloClient.mutate({
-        mutation: gql`mutation ${action.graphql.names.one}($id: ID!) {
+      const dataForAction = initialValue
+        ? serializeActionData(list, action, initialValue, initialValue)
+        : {}
+      const mutation = (
+        action.graphql.fields.length && action.graphql.names.data
+          ? gql`mutation ${action.graphql.names.one}($id: ID!, $data: ${action.graphql.names.data}!) {
+            result: ${action.graphql.names.one}(where: { id: $id }, data: $data) {
+              id
+            }
+          }`
+          : gql`mutation ${action.graphql.names.one}($id: ID!) {
             result: ${action.graphql.names.one}(where: { id: $id }) {
               id
             }
-          }` as TypedDocumentNode<{ result: { id: string } }, { id: string }>,
-        variables: { id: item.id as string },
+          }`
+      ) as TypedDocumentNode<
+        { result: { id: string } },
+        { id: string; data?: Record<string, unknown> }
+      >
+      const data = await apolloClient.mutate({
+        mutation,
+        variables:
+          action.graphql.fields.length && action.graphql.names.data
+            ? { id: item.id as string, data: dataForAction }
+            : { id: item.id as string },
       })
 
       if (!action.itemView.hideToast) {
-        toastQueue.neutral(replace(m.success, list, { itemLabel }), { timeout: 5000 })
+        toastQueue.neutral(replace(m.success, list, { ...action, itemLabel }), {
+          timeout: 5000,
+        })
       }
 
       onAction(action, data.data?.result?.id ?? null)
     } catch (error: any) {
-      toastQueue.critical(replace(m.fail, list, { itemLabel }), {
+      toastQueue.critical(replace(m.fail, list, { ...action, itemLabel }), {
         actionLabel: 'Details',
         onAction: () => setActionError({ action, error }),
         shouldCloseOnAction: true,
@@ -196,16 +230,31 @@ function ItemActions({
       <DialogContainer onDismiss={() => setActiveAction(null)}>
         {activeAction && (
           <AlertDialog
-            title={replace(activeAction.messages.promptTitle, list, { itemLabel })}
+            title={replace(activeAction.messages.promptTitle, list, { ...activeAction, itemLabel })}
             cancelLabel="Cancel"
             primaryActionLabel={replace(activeAction.messages.promptConfirmLabel, list, {
+              ...activeAction,
               itemLabel,
             })}
             onPrimaryAction={async () => {
               await onTryAction(activeAction, true)
             }}
           >
-            {replace(activeAction.messages.prompt, list, { itemLabel })}
+            {replace(activeAction.messages.prompt, list, { ...activeAction, itemLabel })}
+          </AlertDialog>
+        )}
+      </DialogContainer>
+
+      <DialogContainer onDismiss={() => setBlockedAction(null)}>
+        {blockedAction && (
+          <AlertDialog
+            title="Unsaved changes"
+            cancelLabel="Cancel"
+            primaryActionLabel="Got it"
+            onPrimaryAction={() => setBlockedAction(null)}
+          >
+            Please save or reset your changes before attempting to{' '}
+            {replace('{label}', list, blockedAction)}
           </AlertDialog>
         )}
       </DialogContainer>
@@ -213,7 +262,10 @@ function ItemActions({
       <DialogContainer onDismiss={() => setActionError(null)} isDismissable>
         {actionError && (
           <ErrorDetailsDialog
-            title={replace(actionError.action.messages.fail, list, { itemLabel })}
+            title={replace(actionError.action.messages.fail, list, {
+              ...actionError.action,
+              itemLabel,
+            })}
             error={actionError.error}
           />
         )}

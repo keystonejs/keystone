@@ -273,12 +273,14 @@ type KeystoneAdminUIActionMetaMessages {
 }
 
 type KeystoneAdminUIActionMetaGraphQL {
+  fields: [String!]!
   names: KeystoneAdminUIActionMetaGraphQLNames!
 }
 
 type KeystoneAdminUIActionMetaGraphQLNames {
   one: String!
   many: String
+  data: String
 }
 
 type KeystoneAdminUIActionMetaItemView {
