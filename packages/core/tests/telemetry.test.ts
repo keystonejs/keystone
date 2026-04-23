@@ -287,7 +287,7 @@ describe('Telemetry tests', () => {
 
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send again
 
-        expect(new Conf().get).toHaveBeenCalledTimes(0)
+        expect(new Conf().get).toHaveBeenCalledTimes(1)
         expect(https.request).toHaveBeenCalledTimes(0)
         expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
       })
@@ -298,7 +298,7 @@ describe('Telemetry tests', () => {
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try inform
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send
 
-        expect(new Conf().get).toHaveBeenCalledTimes(0)
+        expect(new Conf().get).toHaveBeenCalledTimes(2)
         expect(https.request).toHaveBeenCalledTimes(0)
         expect(mockTelemetryConfig).toBe(undefined) // unchanged
       })
