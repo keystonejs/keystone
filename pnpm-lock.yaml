@@ -81,11 +81,11 @@ importers:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ^6.0.0
+        version: 6.0.3
       typescript-eslint:
         specifier: ^8.0.0
-        version: 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
+        version: 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
       vite:
         specifier: ^6.0.0
         version: 6.4.2(@types/node@24.12.2)(jiti@2.6.1)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
@@ -217,8 +217,8 @@ importers:
         specifier: ^4.0.0
         version: 4.2.3(next@15.5.15(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: ^6.0.0
+        version: 6.0.3
 
   examples/actions:
     dependencies:
@@ -982,7 +982,7 @@ importers:
         version: link:../../packages/core
       '@prisma/client':
         specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
         specifier: ^16.8.1
         version: 16.13.2
@@ -992,7 +992,7 @@ importers:
     devDependencies:
       prisma:
         specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
 
   examples/extend-graphql-subscriptions:
     dependencies:
@@ -1906,16 +1906,16 @@ importers:
         version: 1.9.1
       '@prisma/client':
         specifier: 6.19.3
-        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/client-generator-registry':
         specifier: ^6.16.1
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/internals':
         specifier: 6.19.3
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/migrate':
         specifier: 6.19.3
-        version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@5.9.3))(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3))(magicast@0.3.5)(typescript@6.0.3)
       '@react-aria/i18n':
         specifier: ^3.12.1
         version: 3.13.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2008,7 +2008,7 @@ importers:
         version: 8.0.0
       prisma:
         specifier: 6.19.3
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -2199,7 +2199,7 @@ importers:
         version: 6.19.3
       '@prisma/internals':
         specifier: ^6.16.1
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
@@ -2284,13 +2284,13 @@ importers:
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/engines':
         specifier: 6.16.1
         version: 6.16.1
       '@prisma/internals':
         specifier: ^6.16.1
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.25
@@ -2320,7 +2320,7 @@ importers:
         version: 2.1.3
       prisma:
         specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
       supertest:
         specifier: ^6.1.6
         version: 6.3.4
@@ -2369,13 +2369,13 @@ importers:
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/internals':
         specifier: ^6.16.1
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/migrate':
         specifier: ^6.16.1
-        version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@5.9.3))(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3))(magicast@0.3.5)(typescript@6.0.3)
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
@@ -2399,7 +2399,7 @@ importers:
         version: 2.1.3
       prisma:
         specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
 
   tests/examples-smoke-tests:
     devDependencies:
@@ -2511,16 +2511,16 @@ importers:
         version: link:../packages/core
       '@prisma/client':
         specifier: 6.19.3
-        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/engines':
         specifier: 6.19.3
         version: 6.19.3
       '@prisma/internals':
         specifier: 6.19.3
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       prisma:
         specifier: 6.19.3
-        version: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
 
 packages:
 
@@ -12897,6 +12897,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
 
@@ -17428,13 +17433,13 @@ snapshots:
 
   '@preconstruct/next@4.0.0': {}
 
-  '@prisma/client-common@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/client-common@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
       '@prisma/client-engine-runtime': 6.19.3
       '@prisma/dmmf': 6.19.3
       '@prisma/driver-adapter-utils': 6.19.3
       '@prisma/generator': 6.19.3
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
     transitivePeerDependencies:
       - magicast
       - typescript
@@ -17451,18 +17456,18 @@ snapshots:
       ulid: 3.0.0
       uuid: 11.1.0
 
-  '@prisma/client-generator-js@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/client-generator-js@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
       '@antfu/ni': 0.21.12
-      '@prisma/client-common': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/client-common': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/debug': 6.19.3
       '@prisma/dmmf': 6.19.3
       '@prisma/engines-version': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       '@prisma/fetch-engine': 6.19.3
       '@prisma/generator': 6.19.3
       '@prisma/get-platform': 6.19.3
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
-      '@prisma/ts-builders': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      '@prisma/ts-builders': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       ci-info: 4.2.0
       env-paths: 2.2.1
       indent-string: 4.0.0
@@ -17474,28 +17479,28 @@ snapshots:
       - magicast
       - typescript
 
-  '@prisma/client-generator-registry@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/client-generator-registry@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
-      '@prisma/client-generator-js': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
-      '@prisma/client-generator-ts': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/client-generator-js': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      '@prisma/client-generator-ts': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/generator': 6.19.3
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
     transitivePeerDependencies:
       - magicast
       - typescript
 
-  '@prisma/client-generator-ts@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/client-generator-ts@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
       '@antfu/ni': 0.21.12
-      '@prisma/client-common': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/client-common': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/debug': 6.19.3
       '@prisma/dmmf': 6.19.3
       '@prisma/engines-version': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       '@prisma/fetch-engine': 6.19.3
       '@prisma/generator': 6.19.3
       '@prisma/get-platform': 6.19.3
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
-      '@prisma/ts-builders': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      '@prisma/ts-builders': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       ci-info: 4.2.0
       fast-glob: 3.3.3
       get-tsconfig: 4.10.0
@@ -17513,10 +17518,15 @@ snapshots:
       prisma: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
       typescript: 5.9.3
 
-  '@prisma/client@6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)':
+  '@prisma/client@6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)':
     optionalDependencies:
-      prisma: 6.19.3(magicast@0.3.5)(typescript@5.9.3)
-      typescript: 5.9.3
+      prisma: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
+      typescript: 6.0.3
+
+  '@prisma/client@6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)':
+    optionalDependencies:
+      prisma: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      typescript: 6.0.3
 
   '@prisma/config@6.16.1(magicast@0.3.5)':
     dependencies:
@@ -17592,7 +17602,7 @@ snapshots:
     dependencies:
       '@prisma/debug': 6.19.3
 
-  '@prisma/internals@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
       '@prisma/config': 6.19.3(magicast@0.3.5)
       '@prisma/debug': 6.19.3
@@ -17609,20 +17619,20 @@ snapshots:
       arg: 5.0.2
       prompts: 2.4.2
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - magicast
 
-  '@prisma/migrate@6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@5.9.3))(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/migrate@6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3))(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
-      '@prisma/client-generator-registry': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/client-generator-registry': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/config': 6.19.3(magicast@0.3.5)
       '@prisma/debug': 6.19.3
       '@prisma/driver-adapter-utils': 6.19.3
       '@prisma/engines-version': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       '@prisma/generator': 6.19.3
       '@prisma/get-platform': 6.19.3
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       prompts: 2.4.2
     transitivePeerDependencies:
       - magicast
@@ -17637,9 +17647,9 @@ snapshots:
       '@prisma/prisma-schema-wasm': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       fs-extra: 11.3.0
 
-  '@prisma/ts-builders@6.19.3(magicast@0.3.5)(typescript@5.9.3)':
+  '@prisma/ts-builders@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:
-      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@5.9.3)
+      '@prisma/internals': 6.19.3(magicast@0.3.5)(typescript@6.0.3)
     transitivePeerDependencies:
       - magicast
       - typescript
@@ -19569,40 +19579,40 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@typescript-eslint/eslint-plugin@8.59.0(@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.59.0(@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3))(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
       '@typescript-eslint/scope-manager': 8.59.0
-      '@typescript-eslint/type-utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.59.0
       eslint: 10.2.1(jiti@2.6.1)
       ignore: 7.0.5
       natural-compare: 1.4.0
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.59.0
       '@typescript-eslint/types': 8.59.0
-      '@typescript-eslint/typescript-estree': 8.59.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.59.0(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.59.0
       debug: 4.4.3
       eslint: 10.2.1(jiti@2.6.1)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.59.0(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.59.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.59.0(typescript@5.9.3)
+      '@typescript-eslint/tsconfig-utils': 8.59.0(typescript@6.0.3)
       '@typescript-eslint/types': 8.59.0
       debug: 4.4.3
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -19616,19 +19626,19 @@ snapshots:
       '@typescript-eslint/types': 8.59.0
       '@typescript-eslint/visitor-keys': 8.59.0
 
-  '@typescript-eslint/tsconfig-utils@8.59.0(typescript@5.9.3)':
+  '@typescript-eslint/tsconfig-utils@8.59.0(typescript@6.0.3)':
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
-  '@typescript-eslint/type-utils@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.59.0
-      '@typescript-eslint/typescript-estree': 8.59.0(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.59.0(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
       debug: 4.4.3
       eslint: 10.2.1(jiti@2.6.1)
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -19651,18 +19661,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.59.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.59.0(typescript@5.9.3)
-      '@typescript-eslint/tsconfig-utils': 8.59.0(typescript@5.9.3)
+      '@typescript-eslint/project-service': 8.59.0(typescript@6.0.3)
+      '@typescript-eslint/tsconfig-utils': 8.59.0(typescript@6.0.3)
       '@typescript-eslint/types': 8.59.0
       '@typescript-eslint/visitor-keys': 8.59.0
       debug: 4.4.3
       minimatch: 10.2.5
       semver: 7.7.4
       tinyglobby: 0.2.16
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-api-utils: 2.5.0(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -19680,14 +19690,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@typescript-eslint/utils@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@10.2.1(jiti@2.6.1))
       '@typescript-eslint/scope-manager': 8.59.0
       '@typescript-eslint/types': 8.59.0
-      '@typescript-eslint/typescript-estree': 8.59.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.59.0(typescript@6.0.3)
       eslint: 10.2.1(jiti@2.6.1)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -25288,12 +25298,21 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  prisma@6.19.3(magicast@0.3.5)(typescript@5.9.3):
+  prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3):
+    dependencies:
+      '@prisma/config': 6.16.1(magicast@0.3.5)
+      '@prisma/engines': 6.16.1
+    optionalDependencies:
+      typescript: 6.0.3
+    transitivePeerDependencies:
+      - magicast
+
+  prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3):
     dependencies:
       '@prisma/config': 6.19.3(magicast@0.3.5)
       '@prisma/engines': 6.19.3
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - magicast
 
@@ -26702,9 +26721,9 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-api-utils@2.5.0(typescript@5.9.3):
+  ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   ts-log@2.2.7: {}
 
@@ -26770,18 +26789,20 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typescript-eslint@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3):
+  typescript-eslint@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.59.0(@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
-      '@typescript-eslint/parser': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
-      '@typescript-eslint/typescript-estree': 8.59.0(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.59.0(@typescript-eslint/parser@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3))(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
+      '@typescript-eslint/typescript-estree': 8.59.0(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)
       eslint: 10.2.1(jiti@2.6.1)
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
   typescript@5.9.3: {}
+
+  typescript@6.0.3: {}
 
   ufo@1.6.3: {}
 
