@@ -49,7 +49,7 @@
     "jest-environment-jsdom": "^29.0.0",
     "prettier": "^3.5.1",
     "tsx": "^4.0.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "typescript-eslint": "^8.0.0",
     "vite": "^6.0.0",
     "vitest": "^4.0.0"
