@@ -4,9 +4,9 @@
   "license": "MIT",
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "6.19.3",
-    "@prisma/engines": "6.19.3",
-    "@prisma/internals": "6.19.3",
-    "prisma": "6.19.3"
+    "@prisma/client": "7.8.0",
+    "@prisma/engines": "7.8.0",
+    "@prisma/internals": "7.8.0",
+    "prisma": "7.8.0"
   }
 }
