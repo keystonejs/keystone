@@ -116,9 +116,16 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
      * @default 'schema.graphql'
      */
     extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema
+
+    /**
+     * The maximum depth allowed for queries.
+     * @default 20
+     */
+    maxDepth?: number
   }
 
   lists: Record<string, ListConfig<any>>
+
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use Keystone's defaults */
     cors?: boolean | CorsOptions
