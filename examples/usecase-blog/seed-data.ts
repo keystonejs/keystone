@@ -27,8 +27,19 @@ async function main() {
       where: { name: { equals: post.author } },
     })
 
+    if (authors.length === 0) {
+      console.warn(`⚠️ No author found for post: ${post.title}`)
+      continue
+    }
+
+    const { author, content, ...postData } = post
+
     await context.db.Post.createOne({
-      data: { ...post, author: { connect: { id: authors[0].id } } },
+      data: {
+        ...postData,
+        content: [{ type: 'paragraph', children: [{ text: content }] }],
+        author: { connect: { id: authors[0].id } },
+      },
     })
   }
 
