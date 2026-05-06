@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 // see https://keystonejs.com/docs/fields/overview for the full list of fields
 //   this is a few common fields for an example
-import { text, relationship, timestamp, checkbox } from '@keystone-6/core/fields'
+import { text, relationship, timestamp, checkbox, select } from '@keystone-6/core/fields'
 
 // the document field is a more complicated field, so it has it's own package
 import { document } from '@keystone-6/fields-document'
@@ -56,6 +56,15 @@ export const lists = {
 
     fields: {
       title: text({ validation: { isRequired: true } }),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      publishDate: timestamp(),
 
       // the document field can be used for making rich editable content
       //   learn more at https://keystonejs.com/docs/guides/document-fields

@@ -23,12 +23,24 @@ async function main() {
   for (const post of posts) {
     console.log(`📝 Adding post: ${post.title}`)
 
-    const authors = await context.db.Author.findMany({
+    const authorsList = await context.db.Author.findMany({
       where: { name: { equals: post.author } },
     })
 
+    const authorItem = authorsList[0]
+    if (!authorItem) {
+      console.warn(`⚠️ No author found for post: ${post.title}`)
+      continue
+    }
+
+    const { author: _author, content, ...postData } = post
+
     await context.db.Post.createOne({
-      data: { ...post, author: { connect: { id: authors[0].id } } },
+      data: {
+        ...postData,
+        content: [{ type: 'paragraph', children: [{ text: content }] }],
+        author: { connect: { id: authorItem.id } },
+      },
     })
   }
 
