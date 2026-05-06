@@ -7,7 +7,7 @@ import { GraphQLError, type GraphQLFormattedError } from 'graphql'
 import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
-// @ts-expect-error
+
 import depthLimit from 'graphql-depth-limit'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
