@@ -1,5 +1,5 @@
 import { extensionError, validationFailureError } from './graphql-errors'
-import { type InitialisedList } from './initialise-lists'
+import type { InitialisedList } from './initialise-lists'
 
 export async function validate({
   list,
@@ -46,14 +46,21 @@ export async function validate({
     const addValidationError = (msg: string) => void messages.push(`${list.listKey}: ${msg}`)
     const hook = list.hooks.validate[operation]
 
+    let listHookError: any
     try {
       await hook({ ...hookArgs, addValidationError } as never) // TODO: FIXME
     } catch (error: any) {
-      throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }])
+      listHookError = error
     }
 
     if (messages.length) {
       throw validationFailureError(messages)
+    }
+
+    if (listHookError) {
+      throw extensionError('validateInput', [
+        { error: listHookError, tag: `${list.listKey}.hooks.validateInput` },
+      ])
     }
   }
 }
@@ -83,14 +90,14 @@ export async function runSideEffectOnlyHook<
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
-          await field.hooks[hookName][operation]({
+          await (field.hooks[hookName][operation] as any)({
             ...args,
             fieldKey,
             itemField: args.item?.[fieldKey],
             inputFieldData: args.inputData?.[fieldKey],
             resolvedFieldData: args.resolvedData?.[fieldKey],
             originalItemField: (args as any).originalItem?.[fieldKey],
-          } as any) // TODO: FIXME any
+          })
         } catch (error: any) {
           fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
         }
@@ -104,7 +111,7 @@ export async function runSideEffectOnlyHook<
 
   // list hooks
   try {
-    await list.hooks[hookName][operation](args as any) // TODO: FIXME any
+    await (list.hooks[hookName][operation] as any)(args)
   } catch (error: any) {
     throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }])
   }
