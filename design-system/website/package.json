@@ -24,7 +24,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/tinycolor2": "^1.4.3",
-    "next": "^15.5.15",
+    "next": "^15.5.16",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tinycolor2": "^1.4.2"
