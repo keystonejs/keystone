@@ -1,0 +1,14 @@
+exampleSlug: usecase-todo
+description: ''
+tags:
+  - standalone
+  - deployment
+previewFile:
+  discriminant: true
+  value:
+    fileName: schema.ts
+relatedDocs:
+  - fields/image
+  - fields/timestamp
+  - config/access-control
+  - fields/relationship
