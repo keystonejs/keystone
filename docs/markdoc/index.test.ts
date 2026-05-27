@@ -1,7 +1,22 @@
 import { type RenderableTreeNode } from '@markdoc/markdoc'
-import React, { type ReactNode } from 'react'
+import { type ReactElement, type ReactNode } from 'react'
 import { isTag } from './isTag'
 import { transformContent } from '.'
+
+function createSnapshotElement (
+  type: string,
+  props: Record<string, any>,
+  key: string | number | null
+): ReactElement {
+  return {
+    $$typeof: Symbol.for('react.element'),
+    type,
+    key: key == null ? null : String(key),
+    ref: null,
+    props,
+    _owner: null,
+  } as any
+}
 
 function renderableToReactElement (node: RenderableTreeNode, key = 1): ReactNode {
   if (
@@ -16,10 +31,10 @@ function renderableToReactElement (node: RenderableTreeNode, key = 1): ReactNode
     return node.map(renderableToReactElement)
   }
   if (isTag(node)) {
-    return React.createElement(
+    return createSnapshotElement(
       node.name,
-      { ...node.attributes, key },
-      node.children.map((child, i) => renderableToReactElement(child, i))
+      { ...node.attributes, children: node.children.map((child, i) => renderableToReactElement(child, i)) },
+      key
     )
   }
   return null
