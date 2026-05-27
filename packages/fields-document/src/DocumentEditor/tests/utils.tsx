@@ -1,7 +1,6 @@
 import {
   type MutableRefObject,
   type ReactElement,
-  createElement,
   useState
 } from 'react'
 import {
@@ -36,8 +35,17 @@ import { validateAndNormalizeDocument } from '../../validation'
 const oldConsoleError = console.error
 
 console.error = (...stuff: any[]) => {
+  if (stuff.some(x => typeof x === 'string' && x.includes('cannot contain a nested'))) {
+    return
+  }
   if (typeof stuff[0] === 'string') {
     if (stuff[0].includes('validateDOMNesting')) {
+      return
+    }
+    if (stuff[0].startsWith('In HTML, ') && stuff[0].includes(' cannot ')) {
+      return
+    }
+    if (stuff[0].startsWith('<') && stuff[0].includes(' cannot contain a nested <')) {
       return
     }
     // _somehow_ act is being used wrong
@@ -292,6 +300,17 @@ export function makeEditor (
   return editor
 }
 
+function createSnapshotElement (type: string, props: Record<string, any> = {}): ReactElement {
+  return {
+    $$typeof: Symbol.for('react.element'),
+    type,
+    key: null,
+    ref: null,
+    props,
+    _owner: null,
+  } as any
+}
+
 // we're converting the slate tree to react elements because Jest
 // knows how to pretty-print react elements in snapshots
 function nodeToReactElement (
@@ -309,10 +328,10 @@ function nodeToReactElement (
 
       if (isAnchorInCurrentText && isFocusInCurrentText) {
         if (selection.anchor.offset === selection.focus.offset) {
-          return createElement('text', {
+          return createSnapshotElement('text', {
             children: [
               text.slice(0, selection.focus.offset),
-              createElement('cursor'),
+              createSnapshotElement('cursor'),
               text.slice(selection.focus.offset),
             ].filter(x => x),
             ...marks,
@@ -320,12 +339,12 @@ function nodeToReactElement (
         }
         const [startPoint, endPoint] = Range.edges(selection)
         const isBackward = Range.isBackward(selection)
-        return createElement('text', {
+        return createSnapshotElement('text', {
           children: [
             text.slice(0, startPoint.offset),
-            createElement(isBackward ? 'focus' : 'anchor'),
+            createSnapshotElement(isBackward ? 'focus' : 'anchor'),
             text.slice(startPoint.offset, endPoint.offset),
-            createElement(isBackward ? 'anchor' : 'focus'),
+            createSnapshotElement(isBackward ? 'anchor' : 'focus'),
             text.slice(endPoint.offset),
           ].filter(x => x),
           ...marks,
@@ -333,17 +352,17 @@ function nodeToReactElement (
       }
       if (isAnchorInCurrentText || isFocusInCurrentText) {
         const point = isAnchorInCurrentText ? selection.anchor : selection.focus
-        return createElement('text', {
+        return createSnapshotElement('text', {
           children: [
             text.slice(0, point.offset),
-            createElement(isAnchorInCurrentText ? 'anchor' : 'focus'),
+            createSnapshotElement(isAnchorInCurrentText ? 'anchor' : 'focus'),
             text.slice(point.offset),
           ].filter(x => x),
           ...marks,
         })
       }
     }
-    return createElement('text', {
+    return createSnapshotElement('text', {
       // we want to show empty text nodes as <text />
       children: text === '' ? undefined : text,
       ...marks,
@@ -360,7 +379,7 @@ function nodeToReactElement (
     )
     const marks = Editor.marks(node)
 
-    return createElement('editor', {
+    return createSnapshotElement('editor', {
       children,
       ...(marks && Object.keys(marks).length ? { marks } : {}),
     })
@@ -374,10 +393,10 @@ function nodeToReactElement (
     computedData['@@isInline'] = true
   }
   if (type !== undefined) {
-    return createElement(type, { ...restNode, ...computedData, children })
+    return createSnapshotElement(type, { ...restNode, ...computedData, children })
   }
   // @ts-ignore TODO: can `type` actually be undefined?
-  return createElement('element', { ...node, ...computedData, children })
+  return createSnapshotElement('element', { ...node, ...computedData, children })
 }
 
 const editorSerializer: Parameters<typeof expect.addSnapshotSerializer>[0] = {
