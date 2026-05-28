@@ -19,7 +19,8 @@ export type BlogPost = NonNullable<
 >
 
 export default async function Page ({ params }) {
-  const post = await reader.collections.posts.read(params!.post, {
+  const _params = await params
+  const post = await reader.collections.posts.read(_params!.post, {
     resolveLinkedFiles: true,
   })
 
@@ -40,7 +41,8 @@ export default async function Page ({ params }) {
 
 // Dynamic SEO page metadata
 export async function generateMetadata ({ params }): Promise<Metadata> {
-  const post = await reader.collections.posts.read(params!.post)
+  const _params = await params
+  const post = await reader.collections.posts.read(_params!.post)
 
   const title = post?.title ? `${post.title} - Keystone 6 Blog` : 'Keystone 6 Blog'
 
