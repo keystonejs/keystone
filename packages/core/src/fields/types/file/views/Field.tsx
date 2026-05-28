@@ -68,7 +68,7 @@ function FileView ({
   errorMessage?: string
   value: FileValue
   onChange?: (value: FileValue) => void
-  inputRef: RefObject<HTMLInputElement>
+  inputRef: RefObject<HTMLInputElement | null>
 }) {
   return value.kind === 'from-server' || value.kind === 'upload' ? (
     <Stack gap="small" across align="center">
