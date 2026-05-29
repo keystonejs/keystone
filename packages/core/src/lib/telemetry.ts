@@ -280,6 +280,16 @@ export async function runTelemetry(
       return
     }
 
+    if (process.env.KEYSTONE_TELEMETRY_DISABLED === '1') {
+      console.log(`Keystone Telemetry is ${r`disabled`} (KEYSTONE_TELEMETRY_DISABLED is set)`)
+      return
+    }
+
+    if (process.env.DO_NOT_TRACK === '1') {
+      console.log(`Keystone Telemetry is ${r`disabled`} (DO_NOT_TRACK is set)`)
+      return
+    }
+
     if (ci.isCI) {
       console.log(`Keystone Telemetry is ${r`disabled`} (running in CI)`)
       return
@@ -287,16 +297,6 @@ export async function runTelemetry(
 
     if (process.env.NODE_ENV === 'production') {
       console.log(`Keystone Telemetry is ${r`disabled`} (NODE_ENV is production)`)
-      return
-    }
-
-    if (process.env.KEYSTONE_TELEMETRY_DISABLED === '1') {
-      console.log(`Keystone Telemetry is ${r`disabled`} (via KEYSTONE_TELEMETRY_DISABLED env)`)
-      return
-    }
-
-    if (process.env.DO_NOT_TRACK === '1') {
-      console.log(`Keystone Telemetry is ${r`disabled`} (DO_NOT_TRACK is set)`)
       return
     }
 
