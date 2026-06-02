@@ -120,7 +120,7 @@ jobs:
     timeout-minutes: 10
     services:
       mysql:
-        image: mariadb:12.2
+        image: mariadb:12.3
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -199,7 +199,7 @@ jobs:
     timeout-minutes: 10
     services:
       mysql:
-        image: mariadb:12.2
+        image: mariadb:12.3
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
@@ -264,7 +264,7 @@ jobs:
     timeout-minutes: 10
     services:
       mysql:
-        image: mariadb:12.2
+        image: mariadb:12.3
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
