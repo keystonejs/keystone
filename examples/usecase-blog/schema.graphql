@@ -141,6 +141,8 @@ input PostRelateToManyForCreateInput {
 type Post {
   id: ID!
   title: String
+  status: String
+  publishDate: DateTime
   content: Post_content_Document
   author: Author
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
@@ -161,8 +163,24 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
+  status: StringNullableFilter
+  publishDate: DateTimeNullableFilter
   author: AuthorWhereInput
   tags: TagManyRelationFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: StringNullableFilter
 }
 
 input TagManyRelationFilter {
@@ -174,10 +192,14 @@ input TagManyRelationFilter {
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
 }
 
 input PostUpdateInput {
   title: String
+  status: String
+  publishDate: DateTime
   content: JSON
   author: AuthorRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -203,6 +225,8 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
+  status: String
+  publishDate: DateTime
   content: JSON
   author: AuthorRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
