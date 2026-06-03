@@ -135,41 +135,57 @@ test('excess properties', () => {
       },
     ])
   ).toMatchInlineSnapshot(`
-[Error: Invalid document structure: [
-  {
-    "code": "invalid_union",
-    "errors": [
-      [
-        {
-          "code": "invalid_union",
-          "errors": [],
-          "note": "No matching discriminator",
-          "discriminator": "type",
-          "path": [
-            "type"
+    [Error: Invalid document structure: [
+      {
+        "code": "invalid_union",
+        "errors": [
+          [
+            {
+              "code": "invalid_union",
+              "errors": [],
+              "note": "No matching discriminator",
+              "discriminator": "type",
+              "options": [
+                "component-block",
+                "component-block-prop",
+                "component-inline-prop",
+                "blockquote",
+                "layout-area",
+                "code",
+                "divider",
+                "list-item",
+                "list-item-content",
+                "ordered-list",
+                "unordered-list",
+                "heading",
+                "layout",
+                "paragraph"
+              ],
+              "path": [
+                "type"
+              ],
+              "message": "Invalid discriminator value. Expected 'component-block' | 'component-block-prop' | 'component-inline-prop' | 'blockquote' | 'layout-area' | 'code' | 'divider' | 'list-item' | 'list-item-content' | 'ordered-list' | 'unordered-list' | 'heading' | 'layout' | 'paragraph'"
+            }
           ],
-          "message": "Invalid input"
-        }
-      ],
-      [
-        {
-          "code": "unrecognized_keys",
-          "keys": [
-            "somethingElse"
-          ],
-          "path": [],
-          "message": "Unrecognized key: \\"somethingElse\\""
-        }
-      ]
-    ],
-    "path": [
-      0,
-      "children",
-      0
-    ],
-    "message": "Invalid input"
-  }
-]]
+          [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "somethingElse"
+              ],
+              "path": [],
+              "message": "Unrecognized key: \\"somethingElse\\""
+            }
+          ]
+        ],
+        "path": [
+          0,
+          "children",
+          0
+        ],
+        "message": "Invalid input"
+      }
+    ]]
   `)
 })
 

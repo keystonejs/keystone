@@ -3,7 +3,7 @@ import type { RelationshipData } from './DocumentEditor/component-blocks/api-sha
 import { isValidURL } from './DocumentEditor/isValidURL'
 
 // leaf types
-const zMarkValue = z.union([z.literal(true), z.undefined()])
+const zMarkValue = z.literal(true).optional()
 
 const zText = z
   .object({
@@ -21,7 +21,7 @@ const zText = z
   })
   .strict()
 
-const zTextAlign = z.union([z.undefined(), z.literal('center'), z.literal('end')])
+const zTextAlign = z.literal('center').or(z.literal('end')).or(z.literal('right')).optional()
 const zUrl = z.string().refine(val => isValidURL(val), {
   error: `This type of URL is not accepted`,
 })
