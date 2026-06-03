@@ -22,12 +22,14 @@ model Author {
 }
 
 model Post {
-  id       String  @id @default(cuid())
-  title    String  @default("")
-  content  Json
-  author   Author? @relation("Post_author", fields: [authorId], references: [id])
-  authorId String? @map("author")
-  tags     Tag[]   @relation("Post_tags")
+  id          String    @id @default(cuid())
+  title       String    @default("")
+  status      String?   @default("draft")
+  publishDate DateTime?
+  content     Json
+  author      Author?   @relation("Post_author", fields: [authorId], references: [id])
+  authorId    String?   @map("author")
+  tags        Tag[]     @relation("Post_tags")
 
   @@index([authorId])
 }
