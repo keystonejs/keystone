@@ -88,13 +88,14 @@ export function controller(config: FieldControllerConfig): FieldController<{
 }
 
 function serializeValue(schema: ComponentSchema, value: any, kind: 'update' | 'create'): any {
+  if (value === null) value = getInitialPropsValue(schema)
+
   if (schema.kind === 'conditional') {
     return {
       [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
     }
   }
   if (schema.kind === 'array') {
-    if (value === null) return []
     return value.map((x: any) => serializeValue(schema.element, x, kind))
   }
   if (schema.kind === 'form') return value
