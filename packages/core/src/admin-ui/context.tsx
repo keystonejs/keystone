@@ -274,7 +274,7 @@ export function useListItem(
     }
 
     for (const action of list.actions) {
-      if (!isActionAvailable(action.itemView)) continue
+      if (!isActionAvailable(action, action.itemView)) continue
 
       for (const fieldKey of getConditionalFilterFieldKeys(action.itemView.actionMode)) {
         selectedFieldKeys.add(fieldKey)

@@ -42,16 +42,13 @@ import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLError
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useList } from '../../../../admin-ui/context'
 import {
-  getActionArguments,
-  hasActionArgSources,
-} from '../../../../admin-ui/utils/actionData'
-import {
   deserializeItemToValue,
   getConditionalFilterFieldKeys,
   isActionAvailable,
   resolveActionMode,
   serializeItemForConditionalFilters,
 } from '../../../../admin-ui/utils'
+import { getActionArguments } from '../../../../admin-ui/utils/actionData'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
@@ -355,7 +352,7 @@ function ListPage({ listKey }: ListPageProps) {
   )
 
   const actionsAvailable = useMemo(
-    () => list.actions.filter(x => hasActionArgSources(x) && isActionAvailable(x.listView)),
+    () => list.actions.filter(x => isActionAvailable(x, x.listView)),
     [list.actions]
   )
   const search = useSearchFilter(searchString, list, list.initialSearchFields)

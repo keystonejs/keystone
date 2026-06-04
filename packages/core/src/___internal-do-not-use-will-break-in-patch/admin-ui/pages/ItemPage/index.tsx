@@ -29,13 +29,13 @@ import { useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
+  isActionAvailable,
   resolveActionMode,
   serializeItemForConditionalFilters,
   serializeValueToOperationItem,
   useHasChanges,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
-import { hasActionArgSources } from '../../../../admin-ui/utils/actionData'
 import type {
   ActionMeta,
   BaseListTypeInfo,
@@ -388,7 +388,6 @@ function ItemPage({ listKey }: ItemPageProps) {
     if (!value) return []
     const serializedValue = serializeItemForConditionalFilters(list.fields, value)
     return list.actions
-      .filter(hasActionArgSources)
       .map(action => ({
         ...action,
         itemView: {
@@ -396,7 +395,7 @@ function ItemPage({ listKey }: ItemPageProps) {
           actionMode: resolveActionMode(actionModes[action.key], serializedValue),
         },
       }))
-      .filter(action => action.itemView.actionMode !== 'hidden')
+      .filter(action => isActionAvailable(action, action.itemView))
   }, [actionModes, list.actions, value])
 
   function onAction(action: ActionMeta, resultId: string | null) {
