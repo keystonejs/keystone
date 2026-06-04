@@ -863,6 +863,9 @@ importers:
 
   examples/dynamic-is-required:
     dependencies:
+      '@keystar/ui':
+        specifier: ^0.7.21
+        version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
         specifier: ^6.5.1
         version: link:../../packages/core

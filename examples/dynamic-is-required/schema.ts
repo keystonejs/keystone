@@ -1,18 +1,24 @@
 import type { Lists } from '.keystone/types'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { checkbox, relationship, select, text, timestamp } from '@keystone-6/core/fields'
+import { checkbox, relationship, select, text } from '@keystone-6/core/fields'
 
 const hasHighPriority = {
   priority: { equals: 'high' },
-  isComplete: { equals: false },
+  open: { equals: true },
 } as const
 
 export const lists = {
-  Todo: list({
+  Issue: list({
     access: allowAll,
+    ui: {
+      itemView: {
+        defaultFieldMode: ({ item }) => (item?.open ? 'edit' : 'read'),
+      },
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
+      description: text(),
       priority: select({
         type: 'enum',
         options: [
@@ -51,10 +57,21 @@ export const lists = {
           },
         },
       }),
-      isComplete: checkbox(),
-      finishBy: timestamp(),
+      open: checkbox({
+        defaultValue: true,
+        ui: {
+          label: 'Status',
+          views: './issue-status/views',
+          createView: { fieldMode: 'hidden' },
+          itemView: {
+            fieldMode: 'read',
+            fieldPosition: 'sidebar',
+          },
+          listView: { fieldMode: 'hidden' },
+        },
+      }),
       tags: relationship({
-        ref: 'Tag.todos',
+        ref: 'Tag.issues',
         many: true,
         ui: {
           createView: { isRequired: true },
@@ -62,13 +79,65 @@ export const lists = {
         },
       }),
     },
+    actions: {
+      close: {
+        access: allowAll,
+        async resolve({ where }, context) {
+          return await context.sudo().db.Issue.updateOne({
+            where,
+            data: { open: false },
+          })
+        },
+        ui: {
+          label: 'Close Issue',
+          messages: {
+            promptTitle: 'Close Issue',
+            prompt: 'Are you sure you want to close “{itemLabel}”?',
+            promptConfirmLabel: 'Yes, close',
+            success: '{Singular} closed',
+          },
+          itemView: {
+            actionMode: { hidden: { open: { equals: false } } },
+            navigation: 'refetch',
+          },
+          listView: {
+            actionMode: 'hidden',
+          },
+        },
+      },
+      reopen: {
+        access: allowAll,
+        async resolve({ where }, context) {
+          return await context.sudo().db.Issue.updateOne({
+            where,
+            data: { open: true },
+          })
+        },
+        ui: {
+          label: 'Re-open Issue',
+          messages: {
+            promptTitle: 'Re-open Issue',
+            prompt: 'Are you sure you want to re-open “{itemLabel}”?',
+            promptConfirmLabel: 'Yes, re-open',
+            success: '{Singular} re-opened',
+          },
+          itemView: {
+            actionMode: { hidden: { open: { equals: true } } },
+            navigation: 'refetch',
+          },
+          listView: {
+            actionMode: 'hidden',
+          },
+        },
+      },
+    },
   }),
   Tag: list({
     access: allowAll,
     fields: {
       name: text(),
-      todos: relationship({
-        ref: 'Todo.tags',
+      issues: relationship({
+        ref: 'Issue.tags',
         many: true,
       }),
     },

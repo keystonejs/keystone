@@ -12,18 +12,18 @@ generator client {
   output   = "node_modules/myprisma"
 }
 
-model Todo {
-  id                    String    @id @default(cuid())
-  label                 String    @default("")
+model Issue {
+  id                    String  @id @default(cuid())
+  label                 String  @default("")
+  description           String  @default("")
   priority              String?
-  reasonForHighPriority String    @default("")
-  isComplete            Boolean   @default(false)
-  finishBy              DateTime?
-  tags                  Tag[]     @relation("Tag_todos")
+  reasonForHighPriority String  @default("")
+  open                  Boolean @default(true)
+  tags                  Tag[]   @relation("Issue_tags")
 }
 
 model Tag {
-  id    String @id @default(cuid())
-  name  String @default("")
-  todos Todo[] @relation("Tag_todos")
+  id     String  @id @default(cuid())
+  name   String  @default("")
+  issues Issue[] @relation("Issue_tags")
 }
