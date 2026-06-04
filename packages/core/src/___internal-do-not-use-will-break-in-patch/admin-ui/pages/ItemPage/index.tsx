@@ -29,6 +29,7 @@ import { useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
+  isActionAvailable,
   resolveActionMode,
   serializeItemForConditionalFilters,
   serializeValueToOperationItem,
@@ -155,7 +156,7 @@ function ResetButton(props: { onReset: () => void; hasChanges?: boolean }) {
         autoFocusButton="primary"
         onPrimaryAction={props.onReset}
       >
-        Are you sure? Lost changes cannot be recovered.
+        Are you sure? Any unsaved changes will be lost and cannot be recovered.
       </AlertDialog>
     </DialogTrigger>
   )
@@ -394,7 +395,7 @@ function ItemPage({ listKey }: ItemPageProps) {
           actionMode: resolveActionMode(actionModes[action.key], serializedValue),
         },
       }))
-      .filter(action => action.itemView.actionMode !== 'hidden')
+      .filter(action => isActionAvailable(action, action.itemView))
   }, [actionModes, list.actions, value])
 
   function onAction(action: ActionMeta, resultId: string | null) {

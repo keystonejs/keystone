@@ -109,6 +109,7 @@ export type FieldGroupMeta = {
 export type ActionMeta = {
   key: string
   graphql: {
+    arguments: readonly { name: string; type: string; source: { itemField: string } | null }[]
     names: {
       one: string
       many: string

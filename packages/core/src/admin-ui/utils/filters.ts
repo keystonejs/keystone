@@ -103,12 +103,15 @@ export function resolveFieldMode(
   return 'edit'
 }
 
-export function isActionAvailable({
-  actionMode,
-}: ActionMeta['listView'] | ActionMeta['itemView']): boolean {
+export function isActionAvailable(
+  action: ActionMeta,
+  { actionMode }: ActionMeta['listView'] | ActionMeta['itemView']
+): boolean {
+  if (action.graphql.arguments.some(a => !a.source)) return false
+
   // conditional filters cannot be prefiltered ahead of time
   if (typeof actionMode !== 'string') return true
-  return actionMode === 'enabled'
+  return actionMode !== 'hidden'
 }
 
 export function getConditionalFilterFieldKeys(

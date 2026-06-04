@@ -48,6 +48,7 @@ import {
   resolveActionMode,
   serializeItemForConditionalFilters,
 } from '../../../../admin-ui/utils'
+import { getActionArguments } from '../../../../admin-ui/utils/actionData'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
@@ -339,7 +340,6 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-
   const where = useMemo(
     () =>
       filters.map(filter => {
@@ -352,7 +352,7 @@ function ListPage({ listKey }: ListPageProps) {
   )
 
   const actionsAvailable = useMemo(
-    () => list.actions.filter(x => isActionAvailable(x.listView)),
+    () => list.actions.filter(x => isActionAvailable(x, x.listView)),
     [list.actions]
   )
   const search = useSearchFilter(searchString, list, list.initialSearchFields)
@@ -367,6 +367,10 @@ function ListPage({ listKey }: ListPageProps) {
       for (const action of actionsAvailable) {
         for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
           fieldKeys.add(fieldKey)
+        }
+        for (const arg of action.graphql.arguments) {
+          if (!arg.source) continue
+          fieldKeys.add(arg.source.itemField)
         }
       }
 
@@ -466,6 +470,7 @@ function ListPage({ listKey }: ListPageProps) {
             label: 'Delete',
             icon: 'trash2Icon',
             graphql: {
+              arguments: [],
               names: {
                 one: list.graphql.names.deleteMutationName,
                 many: list.graphql.names.deleteManyMutationName,
@@ -718,6 +723,7 @@ function ListPage({ listKey }: ListPageProps) {
               return (
                 <ActionItemsDialog
                   itemIds={selectedItemIds}
+                  items={data?.items ?? []}
                   action={action}
                   list={list}
                   onSuccess={remaining => {
@@ -774,7 +780,12 @@ function ListPage({ listKey }: ListPageProps) {
                                 </Content>
                                 <div>
                                   <Heading>
-                                    {replace(action.messages.fail, list, { itemLabel }, false)}
+                                    {replace(
+                                      action.messages.fail,
+                                      list,
+                                      { ...action, itemLabel },
+                                      false
+                                    )}
                                   </Heading>
                                 </div>
                               </Notice>
@@ -815,7 +826,7 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
 function replace(
   s: string,
   list: ListMeta,
-  args: {
+  args: ActionMeta & {
     itemLabel?: string
     count?: number
     countFail?: number
@@ -823,6 +834,8 @@ function replace(
   },
   many: boolean
 ) {
+  s = s.replaceAll('{Label}', args.label)
+  s = s.replaceAll('{label}', args.label.toLowerCase())
   if (s.includes('{singular|plural}'))
     s = s.replaceAll('{singular|plural}', many ? '{plural}' : '{singular}')
   if (s.includes('{Singular}')) s = s.replaceAll('{Singular}', list.singular)
@@ -845,27 +858,47 @@ type ActionErrorResult = {
 function ActionItemsDialog({
   list,
   itemIds,
+  items,
   onSuccess,
   onErrors,
   action,
 }: {
   list: ListMeta
   itemIds: string[]
+  items: Record<string, unknown>[]
   onSuccess: (remaining: Set<string>) => void
   onErrors: (result: ActionErrorResult) => void
   action: ActionMeta
 }) {
-  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
-    gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
+  const actionMutation =
+    action.key === 'delete'
+      ? gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
       results: ${action.graphql.names.many}(where: $where) {
         id
       }
-    }`,
-    {
-      variables: { where: itemIds.map(id => ({ id })) },
-      errorPolicy: 'all',
-    }
-  )
+    }`
+      : gql`mutation($data: [${action.graphql.names.one[0].toUpperCase()}${action.graphql.names.one.slice(1)}Args!]!) {
+      results: ${action.graphql.names.many}(data: $data) {
+        id
+      }
+    }`
+  const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(actionMutation, {
+    variables:
+      action.key === 'delete'
+        ? { where: itemIds.map(id => ({ id })) }
+        : {
+            data: itemIds.flatMap(id => {
+              const row = items.find(item => String(item.id) === id)
+              if (!row) {
+                return []
+              }
+              const deserialized = deserializeItemToValue(list.fields, row)
+              const args = getActionArguments(list, action, deserialized)
+              return { where: { id }, ...args }
+            }),
+          },
+    errorPolicy: 'all',
+  })
   const { messages: m } = action
 
   async function onTryAction() {
@@ -894,6 +927,7 @@ function ActionItemsDialog({
             m.successMany,
             list,
             {
+              ...action,
               count: itemIds.length,
               countFail,
               countSuccess,
@@ -910,6 +944,7 @@ function ActionItemsDialog({
             m.failMany,
             list,
             {
+              ...action,
               count: itemIds.length,
               countFail,
               countSuccess,
@@ -933,17 +968,24 @@ function ActionItemsDialog({
   return (
     <AlertDialog
       tone={action.key === 'delete' ? 'critical' : 'neutral'}
-      title={replace(m.promptTitleMany, list, { count: itemIds.length }, itemIds.length > 1)}
+      title={replace(
+        m.promptTitleMany,
+        list,
+        { ...action, count: itemIds.length },
+        itemIds.length > 1
+      )}
       cancelLabel="Cancel"
       primaryActionLabel={replace(
         m.promptConfirmLabelMany,
         list,
-        { count: itemIds.length },
+        { ...action, count: itemIds.length },
         itemIds.length > 1
       )}
       onPrimaryAction={onTryAction}
     >
-      <Text>{replace(m.promptMany, list, { count: itemIds.length }, itemIds.length > 1)}</Text>
+      <Text>
+        {replace(m.promptMany, list, { ...action, count: itemIds.length }, itemIds.length > 1)}
+      </Text>
     </AlertDialog>
   )
 }

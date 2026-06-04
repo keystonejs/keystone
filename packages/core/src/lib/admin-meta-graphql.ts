@@ -154,6 +154,22 @@ const KeystoneAdminUIActionMeta = g.object<ActionMetaSource>()({
       type: g.object<ActionMetaSource['graphql']>()({
         name: 'KeystoneAdminUIActionMetaGraphQL',
         fields: {
+          arguments: g.field({
+            type: g.nonNull(
+              g.list(
+                g.nonNull(
+                  g.object<ActionMetaSource['graphql']['arguments'][number]>()({
+                    name: 'KeystoneAdminUIActionMetaGraphQLArgument',
+                    fields: {
+                      name: g.field({ type: g.nonNull(g.String) }),
+                      type: g.field({ type: g.nonNull(g.String) }),
+                      source: g.field({ type: g.JSON }),
+                    },
+                  })
+                )
+              )
+            ),
+          }),
           names: g.field({
             type: g.nonNull(
               g.object<ActionMetaSource['graphql']['names']>()({
