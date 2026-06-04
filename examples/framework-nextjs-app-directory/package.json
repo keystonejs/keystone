@@ -28,7 +28,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.14.10",
+    "@types/node": "catalog:",
     "@types/react-dom": "catalog:",
     "prisma": "catalog:",
     "typescript": "catalog:"

@@ -38,6 +38,6 @@
     "@types/uuid": "^9.0.0"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "catalog:"
   }
 }

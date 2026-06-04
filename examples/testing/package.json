@@ -16,7 +16,7 @@
     "@prisma/client": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.14.10",
+    "@types/node": "catalog:",
     "@prisma/engines": "catalog:",
     "prisma": "catalog:",
     "tsx": "^4.0.0",

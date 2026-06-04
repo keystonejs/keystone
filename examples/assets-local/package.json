@@ -13,7 +13,7 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "bytes": "^3.1.1",
-    "express": "^4.19.2"
+    "express": "catalog:"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.1",
