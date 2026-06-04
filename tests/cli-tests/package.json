@@ -14,6 +14,7 @@
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "catalog:",
+    "@prisma/engines": "catalog:",
     "@prisma/internals": "catalog:",
     "@prisma/migrate": "catalog:",
     "@types/ms": "^0.7.34",
