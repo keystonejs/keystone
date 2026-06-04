@@ -130,7 +130,8 @@ describe('dev', () => {
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server
-      ? GraphQL API ready"
+      ? GraphQL API ready
+      Keystone Telemetry is disabled (running in CI)"
     `)
     return cwd
   }
@@ -152,7 +153,8 @@ describe('dev', () => {
       ? Database unchanged
       ? Connecting to the database
       ? Creating server
-      ? GraphQL API ready"
+      ? GraphQL API ready
+      Keystone Telemetry is disabled (running in CI)"
     `)
   })
 
@@ -185,7 +187,8 @@ describe('dev', () => {
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server
-      ? GraphQL API ready"
+      ? GraphQL API ready
+      Keystone Telemetry is disabled (running in CI)"
     `)
 
     expect(await introspectDatabase(cwd, dbUrl)).toMatchInlineSnapshot(`

@@ -273,8 +273,12 @@ export async function runTelemetry(
   dbProviderName: DatabaseProvider
 ) {
   try {
-    const { telemetry, userConfig } = getTelemetryConfig()
+    if (ci.isCI) {
+      console.log(`Keystone Telemetry is ${r`disabled`} (running in CI)`)
+      return
+    }
 
+    const { telemetry, userConfig } = getTelemetryConfig()
     if (telemetry === false) {
       console.log(`Keystone Telemetry is ${r`disabled`} (via opt-out)`)
       return
@@ -287,11 +291,6 @@ export async function runTelemetry(
 
     if (process.env.DO_NOT_TRACK === '1') {
       console.log(`Keystone Telemetry is ${r`disabled`} (DO_NOT_TRACK is set)`)
-      return
-    }
-
-    if (ci.isCI) {
-      console.log(`Keystone Telemetry is ${r`disabled`} (running in CI)`)
       return
     }
 
