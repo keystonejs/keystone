@@ -7,6 +7,8 @@ import { GraphQLError, type GraphQLFormattedError } from 'graphql'
 import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
+
+import depthLimit from 'graphql-depth-limit'
 // @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneContext, KeystoneConfig } from '../types'
@@ -74,6 +76,10 @@ export async function createExpressServer(
     ...apolloConfig,
     formatError: formatError(config.graphql),
     schema: context.graphql.schema,
+    validationRules: [
+      depthLimit(config.graphql.maxDepth ?? 20),
+      ...(apolloConfig?.validationRules ?? []),
+    ],
     plugins:
       config.graphql.playground === 'apollo'
         ? apolloConfig?.plugins
