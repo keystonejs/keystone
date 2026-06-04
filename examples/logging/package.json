@@ -7,7 +7,7 @@
     "dev": "keystone dev --quiet",
     "start": "keystone start --quiet",
     "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.1",

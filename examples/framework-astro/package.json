@@ -9,7 +9,7 @@
     "build:keystone": "keystone build",
     "dev": "astro dev",
     "dev:keystone": "keystone dev",
-    "postinstall": "keystone postinstall",
+    "check": "keystone postinstall",
     "preview": "astro preview",
     "start": "astro dev"
   },

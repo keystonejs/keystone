@@ -8,7 +8,7 @@
     "dev:site": "next dev -p 3001",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.2",

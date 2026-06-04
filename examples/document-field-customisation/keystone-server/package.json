@@ -7,7 +7,7 @@
     "dev": "keystone dev --seed-database",
     "start": "keystone start --seed-database",
     "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@keystar/ui": "^0.7.21",

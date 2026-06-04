@@ -9,7 +9,7 @@
     "build": "keystone build && gql-tada check",
     "check:tada-output": "gql-tada generate output && git diff --exit-code tada.generated.d.ts",
     "build:tada-output": "gql-tada generate output",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@gql.tada/cli-utils": "^1.6.3",

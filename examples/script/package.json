@@ -7,7 +7,7 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall",
+    "check": "keystone postinstall",
     "go": "tsx script.ts"
   },
   "dependencies": {

@@ -12,3 +12,12 @@ packages:
   - 'tests2/'
   - 'prisma-utils'
   - '!**/node_modules/**'
+allowBuilds:
+  '@apollo/protobufjs': true
+  '@parcel/watcher': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  deasync: false
+  esbuild: true
+  prisma: true
+  sharp: false

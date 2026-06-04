@@ -10,7 +10,7 @@
     "next:dev": "next dev -p 4000",
     "next:build": "next build",
     "build": "pnpm keystone build --no-ui && pnpm next build",
-    "postinstall": "keystone postinstall",
+    "check": "keystone postinstall",
     "start": "next start"
   },
   "dependencies": {

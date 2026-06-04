@@ -8,7 +8,7 @@
     "build": "remix build",
     "dev": "remix dev",
     "start": "remix-serve build",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^6.5.2",

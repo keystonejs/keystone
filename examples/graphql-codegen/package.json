@@ -9,7 +9,7 @@
     "dev:graphql-codegen": "graphql-codegen --watch",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "check": "keystone postinstall"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.1.2",
