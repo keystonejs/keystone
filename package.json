@@ -20,7 +20,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "build": "preconstruct build",
-    "prepare": "preconstruct dev",
+    "postinstall": "preconstruct dev && pnpm -r check",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
