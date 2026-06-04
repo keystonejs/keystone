@@ -358,7 +358,7 @@ function ItemPage({ listKey }: ItemPageProps) {
         !field.key ||
         !field.itemView.fieldMode ||
         !field.itemView.fieldPosition ||
-        !field.itemView.isRequired
+        field.itemView.isRequired == null
       )
         continue
       fieldModes[field.key] = field.itemView.fieldMode
