@@ -12,6 +12,20 @@ packages:
   - 'tests2/'
   - 'prisma-utils'
   - '!**/node_modules/**'
+catalog:
+  '@prisma/client': ^6.19.3
+  '@prisma/client-generator-registry': ^6.19.3
+  '@prisma/engines': ^6.19.3
+  '@prisma/generator-helper': ^6.19.3
+  '@prisma/internals': ^6.19.3
+  '@prisma/migrate': ^6.19.3
+  '@types/react': ^19.2.14
+  '@types/react-dom': ^19.2.3
+  next: ^15.5.12
+  prisma: ^6.19.3
+  react: ^19.2.4
+  react-dom: ^19.2.4
+  typescript: ^6.0.0
 allowBuilds:
   '@apollo/protobufjs': true
   '@parcel/watcher': true
@@ -21,3 +35,4 @@ allowBuilds:
   esbuild: true
   prisma: true
   sharp: false
+minimumReleaseAge: 2880 # 2 days

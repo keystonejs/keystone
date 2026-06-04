@@ -53,7 +53,3 @@ which should give output ending with:
 ℹ todo 0
 ℹ duration_ms 0.072292
 ```
-
-## Try it out in CodeSandbox 🧪
-
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/testing>. You can also fork this sandbox to make your own changes.

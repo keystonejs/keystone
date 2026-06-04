@@ -24,7 +24,3 @@ To run the example for yourself you will perform the following step:
 # Notes
 
 The `astro.config.mjs` file contains a `vite` configuration object, this should not be required outside of the Keystone Monorepo
-
-## Try it out in CodeSandbox 🧪
-
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/framework-astro>. You can also fork this sandbox to make your own changes.

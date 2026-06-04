@@ -14,23 +14,23 @@
     "start": "next start"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.1.0",
-    "@keystone-6/core": "^6.5.2",
-    "@keystone-6/document-renderer": "^1.1.2",
-    "@keystone-6/fields-document": "^9.1.1",
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
+    "@keystone-6/document-renderer": "workspace:^",
+    "@keystone-6/fields-document": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "6.16.1",
+    "@prisma/client": "catalog:",
     "graphql": "^16.8.1",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
-    "next": "^15.5.12",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
-    "@types/react-dom": "^19.2.3",
-    "prisma": "6.16.1",
-    "typescript": "^5.9.0"
+    "@types/react-dom": "catalog:",
+    "prisma": "catalog:",
+    "typescript": "catalog:"
   }
 }

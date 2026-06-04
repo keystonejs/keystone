@@ -72,7 +72,3 @@ Here you will see the time feed changing every second in response to the time su
 
 After you create a post, on the post item page there is a button labeled "Publish Post".
 Clicking this will set the status to `Published` set the `publishDate` to `now()` and send the post to the `postPublished` subscription.
-
-## Try it out in CodeSandbox 🧪
-
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/extend-graphql-subscriptions>. You can also fork this sandbox to make your own changes.

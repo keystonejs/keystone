@@ -15,15 +15,15 @@
   },
   "dependencies": {
     "@astrojs/node": "^8.3.2",
-    "@keystone-6/core": "^6.5.2",
-    "@prisma/client": "6.16.1",
+    "@keystone-6/core": "workspace:^",
+    "@prisma/client": "catalog:",
     "astro": "^4.12.3"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
-    "@types/react-dom": "^19.2.3",
-    "prisma": "6.16.1",
-    "react": "^19.2.4",
-    "typescript": "^5.9.0"
+    "@types/react-dom": "catalog:",
+    "prisma": "catalog:",
+    "react": "catalog:",
+    "typescript": "catalog:"
   }
 }
