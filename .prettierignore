@@ -1,6 +1,7 @@
 tests/test-projects/live-reloading/schemas/syntax-error.js
 pnpm-lock.yaml
 *.graphql
+*.md
 docs/content
 docs/public
 examples/extend-graphql-schema-nexus/keystone-types.ts

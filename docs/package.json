@@ -37,11 +37,11 @@
     "globby": "^16.0.0",
     "js-yaml": "^4.1.0",
     "lodash.debounce": "^4.0.8",
-    "next": "^15.5.12",
+    "next": "catalog:",
     "next-compose-plugins": "^2.2.1",
     "prism-react-renderer": "^2.0.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-focus-lock": "^2.13.2",
     "rss": "^1.2.2",
     "tsx": "^4.0.0"
@@ -52,11 +52,11 @@
     "@types/gtag.js": "^0.0.20",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash.debounce": "^4.0.6",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@types/rss": "^0.0.32",
     "next-sitemap": "^4.0.0",
-    "typescript": "^6.0.0"
+    "typescript": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/docs"
 }

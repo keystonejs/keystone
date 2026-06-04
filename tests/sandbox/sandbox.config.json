@@ -1,7 +1,0 @@
-{
-  "template": "node",
-  "container": {
-    "startScript": "sandbox",
-    "node": "16"
-  }
-}

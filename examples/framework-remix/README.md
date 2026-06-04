@@ -18,7 +18,3 @@ To run the example for yourself you will perform the following step:
   - Run `pnpm dev`
   - Open a web browser at `http://localhost:3000`
   - See list of posts
-
-## Try it out in CodeSandbox 🧪
-
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/framework-remix>. You can also fork this sandbox to make your own changes.

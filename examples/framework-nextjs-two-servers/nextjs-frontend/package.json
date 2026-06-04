@@ -10,17 +10,17 @@
     "start": "next start --port 8000"
   },
   "dependencies": {
-    "@keystone-6/document-renderer": "^1.1.2",
+    "@keystone-6/document-renderer": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "graphql": "^16.8.1",
-    "next": "^15.5.12",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "graphql": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.14.10",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "typescript": "^5.9.0"
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
   }
 }

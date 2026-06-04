@@ -7,18 +7,19 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall",
+    "check": "keystone postinstall",
     "test": "node --import tsx --test example-test.ts"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.1.0",
-    "@keystone-6/core": "^6.5.2",
-    "@prisma/client": "6.16.1"
+    "@keystone-6/auth": "workspace:^",
+    "@keystone-6/core": "workspace:^",
+    "@prisma/client": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.14.10",
-    "prisma": "6.16.1",
+    "@types/node": "catalog:",
+    "@prisma/engines": "catalog:",
+    "prisma": "catalog:",
     "tsx": "^4.0.0",
-    "typescript": "^5.9.0"
+    "typescript": "catalog:"
   }
 }

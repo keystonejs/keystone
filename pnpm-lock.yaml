@@ -4,6 +4,60 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@prisma/client':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@prisma/client-generator-registry':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@prisma/engines':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@prisma/generator-helper':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@prisma/internals':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@prisma/migrate':
+      specifier: ^6.19.3
+      version: 6.19.3
+    '@types/express':
+      specifier: ^4.17.14
+      version: 4.17.25
+    '@types/node':
+      specifier: ^24.0.0
+      version: 24.12.2
+    '@types/react':
+      specifier: ^19.2.14
+      version: 19.2.14
+    '@types/react-dom':
+      specifier: ^19.2.3
+      version: 19.2.3
+    express:
+      specifier: ^4.19.2
+      version: 4.22.1
+    graphql:
+      specifier: ^16.8.1
+      version: 16.13.2
+    next:
+      specifier: ^15.5.12
+      version: 15.5.18
+    prisma:
+      specifier: ^6.19.3
+      version: 6.19.3
+    react:
+      specifier: ^19.2.4
+      version: 19.2.5
+    react-dom:
+      specifier: ^19.2.4
+      version: 19.2.5
+    typescript:
+      specifier: ^6.0.0
+      version: 6.0.3
+
 importers:
 
   .:
@@ -45,16 +99,16 @@ importers:
         specifier: ^29.0.0
         version: 29.5.14
       '@types/node':
-        specifier: ^24.0.0
+        specifier: 'catalog:'
         version: 24.12.2
       '@types/node-fetch':
         specifier: ^2.5.12
         version: 2.6.13
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       esbuild:
         specifier: ^0.28.0
@@ -81,7 +135,7 @@ importers:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^6.0.0
+        specifier: 'catalog:'
         version: 6.0.3
       typescript-eslint:
         specifier: ^8.0.0
@@ -165,7 +219,7 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-compose-plugins:
         specifier: ^2.2.1
@@ -174,10 +228,10 @@ importers:
         specifier: ^2.0.0
         version: 2.4.1(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
       react-focus-lock:
         specifier: ^2.13.2
@@ -205,10 +259,10 @@ importers:
         specifier: ^4.0.6
         version: 4.0.9
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       '@types/rss':
         specifier: ^0.0.32
@@ -217,52 +271,52 @@ importers:
         specifier: ^4.0.0
         version: 4.2.3(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))
       typescript:
-        specifier: ^6.0.0
+        specifier: 'catalog:'
         version: 6.0.3
 
   examples/actions:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/assets-local:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
-      '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.25
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       bytes:
         specifier: ^3.1.1
         version: 3.1.2
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
     devDependencies:
       '@types/bytes':
         specifier: ^3.1.1
         version: 3.1.5
+      '@types/express':
+        specifier: 'catalog:'
+        version: 4.17.25
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/assets-s3:
     dependencies:
@@ -276,11 +330,11 @@ importers:
         specifier: ^3.83.0
         version: 3.1037.0
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       bytes:
         specifier: ^3.1.1
         version: 3.1.2
@@ -292,99 +346,99 @@ importers:
         specifier: ^3.1.1
         version: 3.1.5
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/auth:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/auth-magic-link:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/better-list-search:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/byte-encoding:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/cloudinary:
     dependencies:
@@ -392,27 +446,27 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/cloudinary':
-        specifier: ^8.0.0
+        specifier: workspace:^
         version: link:../../packages/cloudinary
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-admin-ui-logo:
     dependencies:
@@ -420,27 +474,27 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-admin-ui-navigation:
     dependencies:
@@ -448,24 +502,24 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-admin-ui-pages:
     dependencies:
@@ -473,43 +527,43 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-esbuild:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-field:
     dependencies:
@@ -517,115 +571,115 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-id:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
         version: 2.3.1
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session-invalidation:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session-jwt:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.3
@@ -634,44 +688,44 @@ importers:
         specifier: ^9.0.2
         version: 9.0.10
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next-auth:
         specifier: ^4.24.11
         version: 4.24.14(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session-passport:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
       passport:
         specifier: ^0.7.0
@@ -681,7 +735,7 @@ importers:
         version: 0.1.12
     devDependencies:
       '@types/express':
-        specifier: ^4.17.14
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/passport':
         specifier: ^1.0.16
@@ -693,83 +747,83 @@ importers:
         specifier: ^1.4.16
         version: 1.8.0
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/custom-session-redis:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@redis/client':
         specifier: ^1.3.0
         version: 1.6.1
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/default-values:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/document-field-customisation:
     devDependencies:
@@ -783,83 +837,83 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
 
   examples/document-field-customisation/nextjs-frontend:
     dependencies:
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../../../packages/document-renderer
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/document-field-hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/dynamic-is-required:
     dependencies:
@@ -867,75 +921,75 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/empty-lists:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-express-app:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
-      '@types/express':
-        specifier: ^4.17.14
-        version: 4.17.25
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
     devDependencies:
+      '@types/express':
+        specifier: 'catalog:'
+        version: 4.17.25
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-full-text-search:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-graphql-schema-graphql-tools:
     dependencies:
@@ -943,37 +997,37 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.13.2)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-graphql-schema-graphql-ts:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-graphql-schema-nexus:
     dependencies:
@@ -981,21 +1035,21 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.13.2)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       nexus:
         specifier: ^1.3.0
         version: 1.3.0(graphql@16.13.2)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
 
   examples/extend-graphql-subscriptions:
     dependencies:
@@ -1012,13 +1066,13 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-subscriptions:
         specifier: ^2.0.0
@@ -1027,7 +1081,7 @@ importers:
         specifier: ^5.9.1
         version: 5.16.2(graphql@16.13.2)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       ws:
         specifier: ^8.8.0
@@ -1037,100 +1091,100 @@ importers:
         specifier: ^8.5.3
         version: 8.18.1
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/field-groups:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-astro:
     dependencies:
       '@astrojs/node':
         specifier: ^8.3.2
-        version: 8.3.4(astro@4.16.19(@types/node@20.19.39)(rollup@4.60.2)(terser@5.46.2)(typescript@5.9.3))
+        version: 8.3.4(astro@4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3))
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       astro:
         specifier: ^4.12.3
-        version: 4.16.19(@types/node@20.19.39)(rollup@4.60.2)(terser@5.46.2)(typescript@5.9.3)
+        version: 4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3)
     devDependencies:
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-nextjs-app-directory:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-request:
         specifier: ^5.0.0
@@ -1139,47 +1193,47 @@ importers:
         specifier: ^3.1.0
         version: 3.9.1(graphql@16.13.2)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-nextjs-pages-directory:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-request:
         specifier: ^5.0.0
@@ -1188,27 +1242,27 @@ importers:
         specifier: ^3.1.0
         version: 3.9.1(graphql@16.13.2)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-nextjs-two-servers:
     devDependencies:
@@ -1219,67 +1273,67 @@ importers:
   examples/framework-nextjs-two-servers/keystone-server:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-nextjs-two-servers/nextjs-frontend:
     dependencies:
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../../../packages/document-renderer
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/framework-remix:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@remix-run/node':
         specifier: ^1.18.0
         version: 1.19.3
@@ -1293,27 +1347,27 @@ importers:
         specifier: ^5.1.13
         version: 5.1.39
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@remix-run/dev':
         specifier: ^1.18.0
         version: 1.19.3(@remix-run/serve@1.19.3)(@types/node@24.12.2)(babel-plugin-macros@3.1.0)(terser@5.46.2)
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/graphql-codegen:
     dependencies:
@@ -1321,66 +1375,66 @@ importers:
         specifier: ^3.1.2
         version: 3.2.0(graphql@16.13.2)
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@parcel/watcher':
         specifier: ^2.5.1
         version: 2.5.6
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
     devDependencies:
       '@graphql-codegen/cli':
         specifier: ^5.0.4
-        version: 5.0.7(@parcel/watcher@2.5.6)(@types/node@24.12.2)(enquirer@2.4.1)(graphql@16.13.2)(typescript@5.9.3)
+        version: 5.0.7(@parcel/watcher@2.5.6)(@types/node@24.12.2)(enquirer@2.4.1)(graphql@16.13.2)(typescript@6.0.3)
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/graphql-gql.tada:
     dependencies:
       '@gql.tada/cli-utils':
         specifier: ^1.6.3
-        version: 1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@5.9.3))(graphql@16.13.2)(typescript@5.9.3)
+        version: 1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@6.0.3))(graphql@16.13.2)(typescript@6.0.3)
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       gql.tada:
         specifier: ^1.8.10
-        version: 1.9.2(graphql@16.13.2)(typescript@5.9.3)
+        version: 1.9.2(graphql@16.13.2)(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/graphql-ts-gql:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
     devDependencies:
       '@ts-gql/compiler':
@@ -1388,7 +1442,7 @@ importers:
         version: 0.16.8(graphql@16.13.2)
       '@ts-gql/eslint-plugin':
         specifier: ^0.9.1
-        version: 0.9.1(eslint@8.57.1)(graphql@16.13.2)(typescript@5.9.3)
+        version: 0.9.1(eslint@8.57.1)(graphql@16.13.2)(typescript@6.0.3)
       '@ts-gql/tag':
         specifier: ^0.7.3
         version: 0.7.3(graphql@16.13.2)
@@ -1396,73 +1450,73 @@ importers:
         specifier: ^8.0.0
         version: 8.57.1
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/limits:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/logging:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       pino-http:
         specifier: ^10.5.0
         version: 10.5.0
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/logging-opentelemetry:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -1471,328 +1525,331 @@ importers:
         specifier: ^2.0.1
         version: 2.7.0(@opentelemetry/api@1.9.1)
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       '@opentelemetry/sdk-trace-base':
         specifier: ^2.0.1
         version: 2.7.0(@opentelemetry/api@1.9.1)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/number-fields:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/omit:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/relationships:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/reuse:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/script:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/singleton:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/structure-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/testing:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
+      '@prisma/engines':
+        specifier: 'catalog:'
+        version: 6.19.3
       '@types/node':
-        specifier: ^20.14.10
-        version: 20.19.39
+        specifier: 'catalog:'
+        version: 24.12.2
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/transactions:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^9.1.1
+        specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-blog-moderated:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-relationship-union:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-roles:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^8.1.0
+        specifier: workspace:^
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/usecase-versioning:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/virtual-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^6.5.2
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   examples/virtual-field-banner:
     dependencies:
@@ -1800,18 +1857,18 @@ importers:
         specifier: ^0.7.21
         version: 0.7.21(@react-spectrum/provider@3.11.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(next@15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@keystone-6/core':
-        specifier: ^6.5.1
+        specifier: workspace:^
         version: link:../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   packages/auth:
     dependencies:
@@ -1825,17 +1882,17 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@keystone-6/core':
         specifier: workspace:^
         version: link:../core
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
 
   packages/cloudinary:
@@ -1850,20 +1907,20 @@ importers:
         specifier: ^2.0.0
         version: 2.10.0
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
     devDependencies:
       '@keystone-6/core':
-        specifier: ^6.1.0
+        specifier: workspace:^
         version: link:../core
       '@types/express':
-        specifier: ^4.17.14
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-upload:
         specifier: ^15.0.2
@@ -1908,16 +1965,16 @@ importers:
         specifier: ^1.9.0
         version: 1.9.1
       '@prisma/client':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/client-generator-registry':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/internals':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/migrate':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3))(magicast@0.3.5)(typescript@6.0.3)
       '@react-aria/i18n':
         specifier: ^3.12.1
@@ -1980,7 +2037,7 @@ importers:
         specifier: ^0.28.0
         version: 0.28.0
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
       fast-deep-equal:
         specifier: ^3.1.3
@@ -1989,7 +2046,7 @@ importers:
         specifier: ^11.0.0
         version: 11.3.4
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-upload:
         specifier: ^15.0.2
@@ -2004,22 +2061,22 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
       next:
-        specifier: ^15.5.12
+        specifier: 'catalog:'
         version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pluralize:
         specifier: ^8.0.0
         version: 8.0.0
       prisma:
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
       resolve:
         specifier: ^1.20.0
@@ -2044,7 +2101,7 @@ importers:
         specifier: ^2.8.13
         version: 2.8.19
       '@types/express':
-        specifier: ^4.17.14
+        specifier: 'catalog:'
         version: 4.17.25
       '@types/fs-extra':
         specifier: ^11.0.0
@@ -2056,10 +2113,10 @@ importers:
         specifier: ^2.0.14
         version: 2.4.9
       '@types/react':
-        specifier: ^19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       '@types/resolve':
         specifier: ^1.20.2
@@ -2092,7 +2149,7 @@ importers:
   packages/document-renderer:
     devDependencies:
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
 
   packages/fields-document:
@@ -2127,11 +2184,8 @@ importers:
       '@react-stately/overlays':
         specifier: ^3.6.10
         version: 3.7.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       is-hotkey:
         specifier: ^0.2.0
@@ -2155,10 +2209,10 @@ importers:
         specifier: 0.6.5
         version: 0.6.5
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
       react-dom:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
       scroll-into-view-if-needed:
         specifier: ^3.0.0
@@ -2185,6 +2239,9 @@ importers:
       '@types/is-hotkey':
         specifier: ^0.1.7
         version: 0.1.10
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
       jest-diff:
         specifier: ^29.0.0
         version: 29.7.0
@@ -2198,10 +2255,10 @@ importers:
   prisma-utils:
     devDependencies:
       '@prisma/generator-helper':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3
       '@prisma/internals':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       tsx:
         specifier: ^4.0.0
@@ -2228,10 +2285,10 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       ms:
         specifier: ^2.1.3
@@ -2245,26 +2302,8 @@ importers:
 
   tests/api-tests:
     dependencies:
-      '@types/body-parser':
-        specifier: ^1.19.2
-        version: 1.19.6
-      '@types/fs-extra':
-        specifier: ^11.0.0
-        version: 11.0.4
-      '@types/mime':
-        specifier: ^2.0.3
-        version: 2.0.3
-      '@types/superagent':
-        specifier: ^4.1.15
-        version: 4.1.24
-      '@types/supertest':
-        specifier: ^2.0.11
-        version: 2.0.16
-      '@types/uuid':
-        specifier: ^9.0.0
-        version: 9.0.8
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
     devDependencies:
       '@apollo/cache-control-types':
@@ -2286,20 +2325,38 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/engines':
-        specifier: 6.16.1
-        version: 6.16.1
+        specifier: 'catalog:'
+        version: 6.19.3
       '@prisma/internals':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.6
       '@types/express':
-        specifier: ^4.17.14
+        specifier: 'catalog:'
         version: 4.17.25
+      '@types/fs-extra':
+        specifier: ^11.0.0
+        version: 11.0.4
+      '@types/mime':
+        specifier: ^2.0.3
+        version: 2.0.3
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
+      '@types/superagent':
+        specifier: ^4.1.15
+        version: 4.1.24
+      '@types/supertest':
+        specifier: ^2.0.11
+        version: 2.0.16
+      '@types/uuid':
+        specifier: ^9.0.0
+        version: 9.0.8
       cookie-signature:
         specifier: ^1.1.0
         version: 1.2.2
@@ -2310,7 +2367,7 @@ importers:
         specifier: ^11.0.4
         version: 11.1.0
       graphql:
-        specifier: ^16.8.1
+        specifier: 'catalog:'
         version: 16.13.2
       graphql-upload:
         specifier: ^15.0.2
@@ -2322,8 +2379,8 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       supertest:
         specifier: ^6.1.6
         version: 6.3.4
@@ -2348,11 +2405,8 @@ importers:
 
   tests/cli-tests:
     dependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.0
-        version: 11.0.4
       express:
-        specifier: ^4.19.2
+        specifier: 'catalog:'
         version: 4.22.1
     devDependencies:
       '@apollo/cache-control-types':
@@ -2371,17 +2425,29 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      '@prisma/engines':
+        specifier: 'catalog:'
+        version: 6.19.3
       '@prisma/internals':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       '@prisma/migrate':
-        specifier: ^6.16.1
+        specifier: 'catalog:'
         version: 6.19.3(@prisma/internals@6.19.3(magicast@0.3.5)(typescript@6.0.3))(magicast@0.3.5)(typescript@6.0.3)
+      '@types/fs-extra':
+        specifier: ^11.0.0
+        version: 11.0.4
       '@types/ms':
         specifier: ^0.7.34
         version: 0.7.34
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.2
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -2400,9 +2466,21 @@ importers:
       ms:
         specifier: ^2.1.3
         version: 2.1.3
+      next:
+        specifier: 'catalog:'
+        version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.5(react@19.2.5)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
 
   tests/examples-smoke-tests:
     devDependencies:
@@ -2446,18 +2524,18 @@ importers:
         specifier: workspace:^
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       react:
-        specifier: ^19.2.4
+        specifier: 'catalog:'
         version: 19.2.5
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   tests/test-projects/basic:
     dependencies:
@@ -2465,15 +2543,15 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   tests/test-projects/crud-notifications:
     dependencies:
@@ -2481,15 +2559,15 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   tests/test-projects/live-reloading:
     dependencies:
@@ -2497,15 +2575,15 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: 6.16.1
-        version: 6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
     devDependencies:
       prisma:
-        specifier: 6.16.1
-        version: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: 'catalog:'
+        version: 6.0.3
 
   tests2:
     devDependencies:
@@ -2513,16 +2591,16 @@ importers:
         specifier: workspace:^
         version: link:../packages/core
       '@prisma/client':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/engines':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3
       '@prisma/internals':
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       prisma:
-        specifier: 6.19.3
+        specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
 
 packages:
@@ -4945,155 +5023,183 @@ packages:
     resolution: {integrity: sha512-9B+taZ8DlyyqzZQnoeIvDVR/2F4EbMepXMc/NdVbkzsJbzkUjhXv/70GQJ7tdLA4YJgNP25zukcxpX2/SueNrA==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-arm64@1.2.4':
     resolution: {integrity: sha512-excjX8DfsIcJ10x1Kzr4RcWe1edC9PquDRRPx3YVCvQv+U5p7Yin2s32ftzikXojb1PIFc/9Mt28/y+iRklkrw==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-arm@1.0.5':
     resolution: {integrity: sha512-gvcC4ACAOPRNATg/ov8/MnbxFDJqf/pDePbBnuBDcjsI8PssmjoKMAz4LtLaVi+OnSb5FK/yIOamqDwGmXW32g==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-arm@1.2.4':
     resolution: {integrity: sha512-bFI7xcKFELdiNCVov8e44Ia4u2byA+l3XtsAj+Q8tfCwO6BQ8iDojYdvoPMqsKDkuoOo+X6HZA0s0q11ANMQ8A==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-ppc64@1.2.4':
     resolution: {integrity: sha512-FMuvGijLDYG6lW+b/UvyilUWu5Ayu+3r2d1S8notiGCIyYU/76eig1UfMmkZ7vwgOrzKzlQbFSuQfgm7GYUPpA==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-riscv64@1.2.4':
     resolution: {integrity: sha512-oVDbcR4zUC0ce82teubSm+x6ETixtKZBh/qbREIOcI3cULzDyb18Sr/Wcyx7NRQeQzOiHTNbZFF1UwPS2scyGA==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-s390x@1.0.4':
     resolution: {integrity: sha512-u7Wz6ntiSSgGSGcjZ55im6uvTrOxSIS8/dgoVMoiGE9I6JAfU50yH5BoDlYA1tcuGS7g/QNtetJnxA6QEsCVTA==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-s390x@1.2.4':
     resolution: {integrity: sha512-qmp9VrzgPgMoGZyPvrQHqk02uyjA0/QrTO26Tqk6l4ZV0MPWIW6LTkqOIov+J1yEu7MbFQaDpwdwJKhbJvuRxQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-x64@1.0.4':
     resolution: {integrity: sha512-MmWmQ3iPFZr0Iev+BAgVMb3ZyC4KeFc3jFxnNbEPas60e1cIfevbtuyf9nDGIzOaW9PdnDciJm+wFFaTlj5xYw==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linux-x64@1.2.4':
     resolution: {integrity: sha512-tJxiiLsmHc9Ax1bz3oaOYBURTXGIRDODBqhveVHonrHJ9/+k89qbLl0bcJns+e4t4rvaNBxaEZsFtSfAdquPrw==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-libvips-linuxmusl-arm64@1.0.4':
     resolution: {integrity: sha512-9Ti+BbTYDcsbp4wfYib8Ctm1ilkugkA/uscUn6UXK1ldpC1JjiXbLfFZtRlBhjPZ5o1NCLiDbg8fhUPKStHoTA==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-libvips-linuxmusl-arm64@1.2.4':
     resolution: {integrity: sha512-FVQHuwx1IIuNow9QAbYUzJ+En8KcVm9Lk5+uGUQJHaZmMECZmOlix9HnH7n1TRkXMS0pGxIJokIVB9SuqZGGXw==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-libvips-linuxmusl-x64@1.0.4':
     resolution: {integrity: sha512-viYN1KX9m+/hGkJtvYYp+CCLgnJXwiQB39damAO7WMdKWlIhmYTfHjwSbQeUK/20vY154mwezd9HflVFM1wVSw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-libvips-linuxmusl-x64@1.2.4':
     resolution: {integrity: sha512-+LpyBk7L44ZIXwz/VYfglaX/okxezESc6UxDSoyo2Ks6Jxc4Y7sGjpgU9s4PMgqgjj1gZCylTieNamqA1MF7Dg==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-linux-arm64@0.33.5':
     resolution: {integrity: sha512-JMVv+AMRyGOHtO1RFBiJy/MBsgz0x4AWrT6QoEVVTyh1E39TrCUpTRI7mx9VksGX4awWASxqCYLCV4wBZHAYxA==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-arm64@0.34.5':
     resolution: {integrity: sha512-bKQzaJRY/bkPOXyKx5EVup7qkaojECG6NLYswgktOZjaXecSAeCWiZwwiFf3/Y+O1HrauiE3FVsGxFg8c24rZg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-arm@0.33.5':
     resolution: {integrity: sha512-JTS1eldqZbJxjvKaAkxhZmBqPRGmxgu+qFKSInv8moZ2AmT5Yib3EQ1c6gp493HvrvV8QgdOXdyaIBrhvFhBMQ==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-arm@0.34.5':
     resolution: {integrity: sha512-9dLqsvwtg1uuXBGZKsxem9595+ujv0sJ6Vi8wcTANSFpwV/GONat5eCkzQo/1O6zRIkh0m/8+5BjrRr7jDUSZw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-ppc64@0.34.5':
     resolution: {integrity: sha512-7zznwNaqW6YtsfrGGDA6BRkISKAAE1Jo0QdpNYXNMHu2+0dTrPflTLNkpc8l7MUP5M16ZJcUvysVWWrMefZquA==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-riscv64@0.34.5':
     resolution: {integrity: sha512-51gJuLPTKa7piYPaVs8GmByo7/U7/7TZOq+cnXJIHZKavIRHAP77e3N2HEl3dgiqdD/w0yUfiJnII77PuDDFdw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-s390x@0.33.5':
     resolution: {integrity: sha512-y/5PCd+mP4CA/sPDKl2961b+C9d+vPAveS33s6Z3zfASk2j5upL6fXVPZi7ztePZ5CuH+1kW8JtvxgbuXHRa4Q==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-s390x@0.34.5':
     resolution: {integrity: sha512-nQtCk0PdKfho3eC5MrbQoigJ2gd1CgddUMkabUj+rBevs8tZ2cULOx46E7oyX+04WGfABgIwmMC0VqieTiR4jg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-x64@0.33.5':
     resolution: {integrity: sha512-opC+Ok5pRNAzuvq1AG0ar+1owsu842/Ab+4qvU879ippJBHvyY5n2mxF1izXqkPYlGuP/M556uh53jRLJmzTWA==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linux-x64@0.34.5':
     resolution: {integrity: sha512-MEzd8HPKxVxVenwAa+JRPwEC7QFjoPWuS5NZnBt6B3pu7EG2Ge0id1oLHZpPJdn3OQK+BQDiw9zStiHBTJQQQQ==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@img/sharp-linuxmusl-arm64@0.33.5':
     resolution: {integrity: sha512-XrHMZwGQGvJg2V/oRSUfSAfjfPxO+4DkiRh6p2AFjLQztWUuY/o8Mq0eMQVIY7HJ1CDQUJlxGGZRw1a5bqmd1g==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-linuxmusl-arm64@0.34.5':
     resolution: {integrity: sha512-fprJR6GtRsMt6Kyfq44IsChVZeGN97gTD331weR1ex1c1rypDEABN6Tm2xa1wE6lYb5DdEnk03NZPqA7Id21yg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-linuxmusl-x64@0.33.5':
     resolution: {integrity: sha512-WT+d/cgqKkkKySYmqoZ8y3pxx7lx9vVejxW/W4DOFMYVSkErR+w7mf2u8m/y4+xHe7yY9DAXQMWQhpnMuFfScw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-linuxmusl-x64@0.34.5':
     resolution: {integrity: sha512-Jg8wNT1MUzIvhBFxViqrEhWDGzqymo3sV7z7ZsaWbZNDLXRJZoRGrjulp60YYtV4wfY8VIKcWidjojlLcWrd8Q==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@img/sharp-wasm32@0.33.5':
     resolution: {integrity: sha512-ykUW4LVGaMcU9lu9thv85CbRMAwfeadCJHRsg2GmeRa/cJxsVY9Rbd57JcMxBkKHag5U/x7TSBpScF4U8ElVzg==}
@@ -5340,24 +5446,28 @@ packages:
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-arm64-musl@15.5.18':
     resolution: {integrity: sha512-glaCczEWIrHsokFZ3pP08U4BpKxwIdnT+txdOM32OBgpL9Yw4aqx8NejmgtZQZOdstQ5f0L3CasIZudzCuD+nw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-linux-x64-gnu@15.5.18':
     resolution: {integrity: sha512-oUfg2EgJmU3R0OCOWiokGFUTvZiPfXtriXiuF3YNxRoROCdgvTedHIzYoeKH34gsZxS/V7mHbfq2hpAHwhH1/A==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@next/swc-linux-x64-musl@15.5.18':
     resolution: {integrity: sha512-JLxSP3KTd9iu/bvUMQxH7RJo9xKSHf55/6RPE4a6FTSZygGn7uvZbCej0AHXydwkggQGSD9UddSjwv6Xz5ESfA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@next/swc-win32-arm64-msvc@15.5.18':
     resolution: {integrity: sha512-ir1v7enP52K2HNz3tQQvwF+x7VNxBk1ciiZ18WBPvxf4C59IqdfmHPJYK3vH7rSxpuCVw/8C712wTXNAtEp+NA==}
@@ -5497,36 +5607,42 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.6':
     resolution: {integrity: sha512-Ve3gUCG57nuUUSyjBq/MAM0CzArtuIOxsBdQ+ftz6ho8n7s1i9E1Nmk/xmP323r2YL0SONs1EuwqBp2u1k5fxg==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.6':
     resolution: {integrity: sha512-f2g/DT3NhGPdBmMWYoxixqYr3v/UXcmLOYy16Bx0TM20Tchduwr4EaCbmxh1321TABqPGDpS8D/ggOTaljijOA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.6':
     resolution: {integrity: sha512-qb6naMDGlbCwdhLj6hgoVKJl2odL34z2sqkC7Z6kzir8b5W65WYDpLB6R06KabvZdgoHI/zxke4b3zR0wAbDTA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.6':
     resolution: {integrity: sha512-kbT5wvNQlx7NaGjzPFu8nVIW1rWqV780O7ZtkjuWaPUgpv2NMFpjYERVi0UYj1msZNyCzGlaCWEtzc+exjMGbQ==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.6':
     resolution: {integrity: sha512-1JRFeC+h7RdXwldHzTsmdtYR/Ku8SylLgTU/reMuqdVD7CtLwf0VR1FqeprZ0eHQkO0vqsbvFLXUmYm/uNKJBg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.6':
     resolution: {integrity: sha512-3ukyebjc6eGlw9yRt678DxVF7rjXatWiHvTXqphZLvo7aC5NdEgFufVwjFfY51ijYEWpXbqF5jtrK275z52D4Q==}
@@ -5601,18 +5717,6 @@ packages:
   '@prisma/client-generator-ts@6.19.3':
     resolution: {integrity: sha512-Beq1dD8alDiFtBklWoCAO4OYrOgtaR1Mt+viV6Kb2TKX8qhZfWabn50RyNKTsarBcyuGC3JIU4zY4qOrI5UZbQ==}
 
-  '@prisma/client@6.16.1':
-    resolution: {integrity: sha512-QaBCOY29lLAxEFFJgBPyW3WInCW52fJeQTmWx/h6YsP5u0bwuqP51aP0uhqFvhK9DaZPwvai/M4tSDYLVE9vRg==}
-    engines: {node: '>=18.18'}
-    peerDependencies:
-      prisma: '*'
-      typescript: '>=5.1.0'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-      typescript:
-        optional: true
-
   '@prisma/client@6.19.3':
     resolution: {integrity: sha512-mKq3jQFhjvko5LTJFHGilsuQs+W+T3Gm451NzuTDGQxwCzwXHYnIu2zGkRoW+Exq3Rob7yp2MfzSrdIiZVhrBg==}
     engines: {node: '>=18.18'}
@@ -5625,14 +5729,8 @@ packages:
       typescript:
         optional: true
 
-  '@prisma/config@6.16.1':
-    resolution: {integrity: sha512-sz3uxRPNL62QrJ0EYiujCFkIGZ3hg+9hgC1Ae1HjoYuj0BxCqHua4JNijYvYCrh9LlofZDZcRBX3tHBfLvAngA==}
-
   '@prisma/config@6.19.3':
     resolution: {integrity: sha512-CBPT44BjlQxEt8kiMEauji2WHTDoVBOKl7UlewXmUgBPnr/oPRZC3psci5chJnYmH0ivEIog2OU9PGWoki3DLQ==}
-
-  '@prisma/debug@6.16.1':
-    resolution: {integrity: sha512-RWv/VisW5vJE4cDRTuAHeVedtGoItXTnhuLHsSlJ9202QKz60uiXWywBlVcqXVq8bFeIZoCoWH+R1duZJPwqLw==}
 
   '@prisma/debug@6.19.3':
     resolution: {integrity: sha512-ljkJ+SgpXNktLG0Q/n4JGYCkKf0f8oYLyjImS2I8e2q2WCfdRRtWER062ZV/ixaNP2M2VKlWXVJiGzZaUgbKZw==}
@@ -5643,20 +5741,11 @@ packages:
   '@prisma/driver-adapter-utils@6.19.3':
     resolution: {integrity: sha512-UUxn6VLfKKVqm5n9vexOQgFJ9TCBIxupb7F5FzLQ6iM2VV0WZxhgzbQVqBDsGY+VmQLmqaSoKRusEfy3O5KZpA==}
 
-  '@prisma/engines-version@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43':
-    resolution: {integrity: sha512-ThvlDaKIVrnrv97ujNFDYiQbeMQpLa0O86HFA2mNoip4mtFqM7U5GSz2ie1i2xByZtvPztJlNRgPsXGeM/kqAA==}
-
   '@prisma/engines-version@7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7':
     resolution: {integrity: sha512-03bgb1VD5gvuumNf+7fVGBzfpJPjmqV423l/WxsWk2cNQ42JD0/SsFBPhN6z8iAvdHs07/7ei77SKu7aZfq8bA==}
 
-  '@prisma/engines@6.16.1':
-    resolution: {integrity: sha512-EOnEM5HlosPudBqbI+jipmaW/vQEaF0bKBo4gVkGabasINHR6RpC6h44fKZEqx4GD8CvH+einD2+b49DQrwrAg==}
-
   '@prisma/engines@6.19.3':
     resolution: {integrity: sha512-RSYxtlYFl5pJ8ZePgMv0lZ9IzVCOdTPOegrs2qcbAEFrBI1G33h6wyC9kjQvo0DnYEhEVY0X4LsuFHXLKQk88g==}
-
-  '@prisma/fetch-engine@6.16.1':
-    resolution: {integrity: sha512-fl/PKQ8da5YTayw86WD3O9OmKJEM43gD3vANy2hS5S1CnfW2oPXk+Q03+gUWqcKK306QqhjjIHRFuTZ31WaosQ==}
 
   '@prisma/fetch-engine@6.19.3':
     resolution: {integrity: sha512-tKtl/qco9Nt7LU5iKhpultD8O4vMCZcU2CHjNTnRrL1QvSUr5W/GcyFPjNL87GtRrwBc7ubXXD9xy4EvLvt8JA==}
@@ -5666,9 +5755,6 @@ packages:
 
   '@prisma/generator@6.19.3':
     resolution: {integrity: sha512-rzHJaIZEnEDUWNjjFAimsyMCS9osPxwbwiAbymwFprSHJSAglMxMDVU+xbQUCLeDsjUF09W5ag/aBPL2t3YqgA==}
-
-  '@prisma/get-platform@6.16.1':
-    resolution: {integrity: sha512-kUfg4vagBG7dnaGRcGd1c0ytQFcDj2SUABiuveIpL3bthFdTLI6PJeLEia6Q8Dgh+WhPdo0N2q0Fzjk63XTyaA==}
 
   '@prisma/get-platform@6.19.3':
     resolution: {integrity: sha512-xFj1VcJ1N3MKooOQAGO0W5tsd0W2QzIvW7DD7c/8H14Zmp4jseeWAITm+w2LLoLrlhoHdPPh0NMZ8mfL6puoHA==}
@@ -6482,66 +6568,79 @@ packages:
     resolution: {integrity: sha512-2QxQrM+KQ7DAW4o22j+XZ6RKdxjLD7BOWTP0Bv0tmjdyhXSsr2Ul1oJDQqh9Zf5qOwTuTc7Ek83mOFaKnodPjg==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.60.2':
     resolution: {integrity: sha512-TbziEu2DVsTEOPif2mKWkMeDMLoYjx95oESa9fkQQK7r/Orta0gnkcDpzwufEcAO2BLBsD7mZkXGFqEdMRRwfw==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.60.2':
     resolution: {integrity: sha512-bO/rVDiDUuM2YfuCUwZ1t1cP+/yqjqz+Xf2VtkdppefuOFS2OSeAfgafaHNkFn0t02hEyXngZkxtGqXcXwO8Rg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.60.2':
     resolution: {integrity: sha512-hr26p7e93Rl0Za+JwW7EAnwAvKkehh12BU1Llm9Ykiibg4uIr2rbpxG9WCf56GuvidlTG9KiiQT/TXT1yAWxTA==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.60.2':
     resolution: {integrity: sha512-pOjB/uSIyDt+ow3k/RcLvUAOGpysT2phDn7TTUB3n75SlIgZzM6NKAqlErPhoFU+npgY3/n+2HYIQVbF70P9/A==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.60.2':
     resolution: {integrity: sha512-2/w+q8jszv9Ww1c+6uJT3OwqhdmGP2/4T17cu8WuwyUuuaCDDJ2ojdyYwZzCxx0GcsZBhzi3HmH+J5pZNXnd+Q==}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.60.2':
     resolution: {integrity: sha512-11+aL5vKheYgczxtPVVRhdptAM2H7fcDR5Gw4/bTcteuZBlH4oP9f5s9zYO9aGZvoGeBpqXI/9TZZihZ609wKw==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.60.2':
     resolution: {integrity: sha512-i16fokAGK46IVZuV8LIIwMdtqhin9hfYkCh8pf8iC3QU3LpwL+1FSFGej+O7l3E/AoknL6Dclh2oTdnRMpTzFQ==}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.60.2':
     resolution: {integrity: sha512-49FkKS6RGQoriDSK/6E2GkAsAuU5kETFCh7pG4yD/ylj9rKhTmO3elsnmBvRD4PgJPds5W2PkhC82aVwmUcJ7A==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.60.2':
     resolution: {integrity: sha512-mjYNkHPfGpUR00DuM1ZZIgs64Hpf4bWcz9Z41+4Q+pgDx73UwWdAYyf6EG/lRFldmdHHzgrYyge5akFUW0D3mQ==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.60.2':
     resolution: {integrity: sha512-ALyvJz965BQk8E9Al/JDKKDLH2kfKFLTGMlgkAbbYtZuJt9LU8DW3ZoDMCtQpXAltZxwBHevXz5u+gf0yA0YoA==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.60.2':
     resolution: {integrity: sha512-UQjrkIdWrKI626Du8lCQ6MJp/6V1LAo2bOK9OTu4mSn8GGXIkPXk/Vsp4bLHCd9Z9Iz2OTEaokUE90VweJgIYQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.60.2':
     resolution: {integrity: sha512-bTsRGj6VlSdn/XD4CGyzMnzaBs9bsRxy79eTqTCBsA8TMIEky7qg48aPkvJvFe1HyzQ5oMZdg7AnVlWQSKLTnw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.60.2':
     resolution: {integrity: sha512-6d4Z3534xitaA1FcMWP7mQPq5zGwBmGbhphh2DwaA1aNIXUu3KTOfwrWpbwI4/Gr0uANo7NTtaykFyO2hPuFLg==}
@@ -7118,9 +7217,6 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
-
-  '@types/node@20.19.39':
-    resolution: {integrity: sha512-orrrD74MBUyK8jOAD/r0+lfa1I2MO6I+vAkmAWzMYbCcgrN4lCrmK52gRFQq/JRxfYPfonkr4b0jcY7Olqdqbw==}
 
   '@types/node@24.12.2':
     resolution: {integrity: sha512-A1sre26ke7HDIuY/M23nd9gfB+nrmhtYyMINbjI1zHJxYteKR6qSMX56FsmjMcDb3SMcjJg5BiRRgOCC/yBD0g==}
@@ -8580,9 +8676,6 @@ packages:
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
-
-  effect@3.16.12:
-    resolution: {integrity: sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==}
 
   effect@3.21.0:
     resolution: {integrity: sha512-PPN80qRokCd1f015IANNhrwOnLO7GrrMQfk4/lnZRE/8j7UPWrNNjPV0uBrZutI/nHzernbW+J0hdqQysHiSnQ==}
@@ -11646,16 +11739,6 @@ packages:
     peerDependencies:
       react: '>=16.0.0'
 
-  prisma@6.16.1:
-    resolution: {integrity: sha512-MFkMU0eaDDKAT4R/By2IA9oQmwLTxokqv2wegAErr9Rf+oIe7W2sYpE/Uxq0H2DliIR7vnV63PkC1bEwUtl98w==}
-    engines: {node: '>=18.18'}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=5.1.0'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   prisma@6.19.3:
     resolution: {integrity: sha512-++ZJ0ijLrDJF6hNB4t4uxg2br3fC4H9Yc9tcbjr2fcNFP3rh/SBNrAgjhsqBU4Ght8JPrVofG/ZkXfnSfnYsFg==}
     engines: {node: '>=18.18'}
@@ -12910,11 +12993,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
@@ -12933,9 +13011,6 @@ packages:
   unc-path-regex@0.1.2:
     resolution: {integrity: sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==}
     engines: {node: '>=0.10.0'}
-
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
@@ -13592,11 +13667,11 @@ snapshots:
     optionalDependencies:
       graphql: 16.13.2
 
-  '@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@5.9.3)':
+  '@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@6.0.3)':
     dependencies:
-      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@5.9.3)
+      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@6.0.3)
       graphql: 16.13.2
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   '@adobe/react-spectrum-ui@1.2.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
@@ -13805,9 +13880,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@8.3.4(astro@4.16.19(@types/node@20.19.39)(rollup@4.60.2)(terser@5.46.2)(typescript@5.9.3))':
+  '@astrojs/node@8.3.4(astro@4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3))':
     dependencies:
-      astro: 4.16.19(@types/node@20.19.39)(rollup@4.60.2)(terser@5.46.2)(typescript@5.9.3)
+      astro: 4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3)
       send: 0.19.2
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -15905,18 +15980,18 @@ snapshots:
 
   '@gar/promisify@1.1.3': {}
 
-  '@gql.tada/cli-utils@1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@5.9.3))(graphql@16.13.2)(typescript@5.9.3)':
+  '@gql.tada/cli-utils@1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@6.0.3))(graphql@16.13.2)(typescript@6.0.3)':
     dependencies:
-      '@0no-co/graphqlsp': 1.15.4(graphql@16.13.2)(typescript@5.9.3)
-      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@5.9.3)
+      '@0no-co/graphqlsp': 1.15.4(graphql@16.13.2)(typescript@6.0.3)
+      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@6.0.3)
       graphql: 16.13.2
-      typescript: 5.9.3
+      typescript: 6.0.3
 
-  '@gql.tada/internal@1.0.9(graphql@16.13.2)(typescript@5.9.3)':
+  '@gql.tada/internal@1.0.9(graphql@16.13.2)(typescript@6.0.3)':
     dependencies:
       '@0no-co/graphql.web': 1.2.0(graphql@16.13.2)
       graphql: 16.13.2
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   '@graphql-codegen/add@5.0.3(graphql@16.13.2)':
     dependencies:
@@ -15924,7 +15999,7 @@ snapshots:
       graphql: 16.13.2
       tslib: 2.6.3
 
-  '@graphql-codegen/cli@5.0.7(@parcel/watcher@2.5.6)(@types/node@24.12.2)(enquirer@2.4.1)(graphql@16.13.2)(typescript@5.9.3)':
+  '@graphql-codegen/cli@5.0.7(@parcel/watcher@2.5.6)(@types/node@24.12.2)(enquirer@2.4.1)(graphql@16.13.2)(typescript@6.0.3)':
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/template': 7.28.6
@@ -15944,11 +16019,11 @@ snapshots:
       '@graphql-tools/utils': 10.11.0(graphql@16.13.2)
       '@whatwg-node/fetch': 0.10.13
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.9.3)
+      cosmiconfig: 8.3.6(typescript@6.0.3)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.13.2
-      graphql-config: 5.1.6(@types/node@24.12.2)(graphql@16.13.2)(typescript@5.9.3)
+      graphql-config: 5.1.6(@types/node@24.12.2)(graphql@16.13.2)(typescript@6.0.3)
       inquirer: 8.2.7(@types/node@24.12.2)
       is-glob: 4.0.3
       jiti: 1.21.7
@@ -17533,29 +17608,10 @@ snapshots:
       - magicast
       - typescript
 
-  '@prisma/client@6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)':
-    optionalDependencies:
-      prisma: 6.16.1(magicast@0.3.5)(typescript@5.9.3)
-      typescript: 5.9.3
-
-  '@prisma/client@6.16.1(prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)':
-    optionalDependencies:
-      prisma: 6.16.1(magicast@0.3.5)(typescript@6.0.3)
-      typescript: 6.0.3
-
   '@prisma/client@6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)':
     optionalDependencies:
       prisma: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
       typescript: 6.0.3
-
-  '@prisma/config@6.16.1(magicast@0.3.5)':
-    dependencies:
-      c12: 3.1.0(magicast@0.3.5)
-      deepmerge-ts: 7.1.5
-      effect: 3.16.12
-      empathic: 2.0.0
-    transitivePeerDependencies:
-      - magicast
 
   '@prisma/config@6.19.3(magicast@0.3.5)':
     dependencies:
@@ -17566,8 +17622,6 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@prisma/debug@6.16.1': {}
-
   '@prisma/debug@6.19.3': {}
 
   '@prisma/dmmf@6.19.3': {}
@@ -17576,16 +17630,7 @@ snapshots:
     dependencies:
       '@prisma/debug': 6.19.3
 
-  '@prisma/engines-version@6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43': {}
-
   '@prisma/engines-version@7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7': {}
-
-  '@prisma/engines@6.16.1':
-    dependencies:
-      '@prisma/debug': 6.16.1
-      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
-      '@prisma/fetch-engine': 6.16.1
-      '@prisma/get-platform': 6.16.1
 
   '@prisma/engines@6.19.3':
     dependencies:
@@ -17593,12 +17638,6 @@ snapshots:
       '@prisma/engines-version': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       '@prisma/fetch-engine': 6.19.3
       '@prisma/get-platform': 6.19.3
-
-  '@prisma/fetch-engine@6.16.1':
-    dependencies:
-      '@prisma/debug': 6.16.1
-      '@prisma/engines-version': 6.16.0-7.1c57fdcd7e44b29b9313256c76699e91c3ac3c43
-      '@prisma/get-platform': 6.16.1
 
   '@prisma/fetch-engine@6.19.3':
     dependencies:
@@ -17613,10 +17652,6 @@ snapshots:
       '@prisma/generator': 6.19.3
 
   '@prisma/generator@6.19.3': {}
-
-  '@prisma/get-platform@6.16.1':
-    dependencies:
-      '@prisma/debug': 6.16.1
 
   '@prisma/get-platform@6.19.3':
     dependencies:
@@ -19218,11 +19253,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ts-gql/eslint-plugin@0.9.1(eslint@8.57.1)(graphql@16.13.2)(typescript@5.9.3)':
+  '@ts-gql/eslint-plugin@0.9.1(eslint@8.57.1)(graphql@16.13.2)(typescript@6.0.3)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@ts-gql/config': 0.9.2(graphql@16.13.2)
-      '@typescript-eslint/utils': 6.21.0(eslint@8.57.1)(typescript@5.9.3)
+      '@typescript-eslint/utils': 6.21.0(eslint@8.57.1)(typescript@6.0.3)
       find-pkg-json-field-up: 1.0.1
       graphql: 16.13.2
       slash: 3.0.0
@@ -19476,10 +19511,6 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
-  '@types/node@20.19.39':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@24.12.2':
     dependencies:
       undici-types: 7.16.0
@@ -19666,7 +19697,7 @@ snapshots:
 
   '@typescript-eslint/types@8.59.0': {}
 
-  '@typescript-eslint/typescript-estree@6.21.0(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@6.21.0(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/visitor-keys': 6.21.0
@@ -19675,9 +19706,9 @@ snapshots:
       is-glob: 4.0.3
       minimatch: 9.0.3
       semver: 7.7.4
-      ts-api-utils: 1.4.3(typescript@5.9.3)
+      ts-api-utils: 1.4.3(typescript@6.0.3)
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -19696,14 +19727,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@6.21.0(eslint@8.57.1)(typescript@5.9.3)':
+  '@typescript-eslint/utils@6.21.0(eslint@8.57.1)(typescript@6.0.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@8.57.1)
       '@types/json-schema': 7.0.15
       '@types/semver': 7.7.1
       '@typescript-eslint/scope-manager': 6.21.0
       '@typescript-eslint/types': 6.21.0
-      '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 6.21.0(typescript@6.0.3)
       eslint: 8.57.1
       semver: 7.7.4
     transitivePeerDependencies:
@@ -20082,7 +20113,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro@4.16.19(@types/node@20.19.39)(rollup@4.60.2)(terser@5.46.2)(typescript@5.9.3):
+  astro@4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3):
     dependencies:
       '@astrojs/compiler': 2.13.1
       '@astrojs/internal-helpers': 0.4.1
@@ -20135,17 +20166,17 @@ snapshots:
       semver: 7.7.4
       shiki: 1.29.2
       tinyexec: 0.3.2
-      tsconfck: 3.1.6(typescript@5.9.3)
+      tsconfck: 3.1.6(typescript@6.0.3)
       unist-util-visit: 5.1.0
       vfile: 6.0.3
-      vite: 5.4.21(@types/node@20.19.39)(terser@5.46.2)
-      vitefu: 1.1.3(vite@5.4.21(@types/node@20.19.39)(terser@5.46.2))
+      vite: 5.4.21(@types/node@24.12.2)(terser@5.46.2)
+      vitefu: 1.1.3(vite@5.4.21(@types/node@24.12.2)(terser@5.46.2))
       which-pm: 3.0.1
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
       zod: 3.25.76
       zod-to-json-schema: 3.25.2(zod@3.25.76)
-      zod-to-ts: 1.2.0(typescript@5.9.3)(zod@3.25.76)
+      zod-to-ts: 1.2.0(typescript@6.0.3)(zod@3.25.76)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
@@ -20905,14 +20936,14 @@ snapshots:
       path-type: 4.0.0
       yaml: 1.10.3
 
-  cosmiconfig@8.3.6(typescript@5.9.3):
+  cosmiconfig@8.3.6(typescript@6.0.3):
     dependencies:
       import-fresh: 3.3.1
       js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   create-jest@29.7.0(@types/node@24.12.2)(babel-plugin-macros@3.1.0):
     dependencies:
@@ -21192,11 +21223,6 @@ snapshots:
       safe-buffer: 5.2.1
 
   ee-first@1.1.1: {}
-
-  effect@3.16.12:
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      fast-check: 3.23.2
 
   effect@3.21.0:
     dependencies:
@@ -22155,13 +22181,13 @@ snapshots:
       p-cancelable: 2.1.1
       responselike: 2.0.1
 
-  gql.tada@1.9.2(graphql@16.13.2)(typescript@5.9.3):
+  gql.tada@1.9.2(graphql@16.13.2)(typescript@6.0.3):
     dependencies:
       '@0no-co/graphql.web': 1.2.0(graphql@16.13.2)
-      '@0no-co/graphqlsp': 1.15.4(graphql@16.13.2)(typescript@5.9.3)
-      '@gql.tada/cli-utils': 1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@5.9.3))(graphql@16.13.2)(typescript@5.9.3)
-      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@5.9.3)
-      typescript: 5.9.3
+      '@0no-co/graphqlsp': 1.15.4(graphql@16.13.2)(typescript@6.0.3)
+      '@gql.tada/cli-utils': 1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.13.2)(typescript@6.0.3))(graphql@16.13.2)(typescript@6.0.3)
+      '@gql.tada/internal': 1.0.9(graphql@16.13.2)(typescript@6.0.3)
+      typescript: 6.0.3
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
@@ -22173,7 +22199,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  graphql-config@5.1.6(@types/node@24.12.2)(graphql@16.13.2)(typescript@5.9.3):
+  graphql-config@5.1.6(@types/node@24.12.2)(graphql@16.13.2)(typescript@6.0.3):
     dependencies:
       '@graphql-tools/graphql-file-loader': 8.1.14(graphql@16.13.2)
       '@graphql-tools/json-file-loader': 8.0.28(graphql@16.13.2)
@@ -22181,7 +22207,7 @@ snapshots:
       '@graphql-tools/merge': 9.1.9(graphql@16.13.2)
       '@graphql-tools/url-loader': 9.1.2(@types/node@24.12.2)(graphql@16.13.2)
       '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
-      cosmiconfig: 8.3.6(typescript@5.9.3)
+      cosmiconfig: 8.3.6(typescript@6.0.3)
       graphql: 16.13.2
       jiti: 2.6.1
       minimatch: 10.2.5
@@ -25317,24 +25343,6 @@ snapshots:
       clsx: 2.1.1
       react: 19.2.5
 
-  prisma@6.16.1(magicast@0.3.5)(typescript@5.9.3):
-    dependencies:
-      '@prisma/config': 6.16.1(magicast@0.3.5)
-      '@prisma/engines': 6.16.1
-    optionalDependencies:
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - magicast
-
-  prisma@6.16.1(magicast@0.3.5)(typescript@6.0.3):
-    dependencies:
-      '@prisma/config': 6.16.1(magicast@0.3.5)
-      '@prisma/engines': 6.16.1
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - magicast
-
   prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3):
     dependencies:
       '@prisma/config': 6.19.3(magicast@0.3.5)
@@ -26747,9 +26755,9 @@ snapshots:
 
   trough@2.2.0: {}
 
-  ts-api-utils@1.4.3(typescript@5.9.3):
+  ts-api-utils@1.4.3(typescript@6.0.3):
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
@@ -26759,9 +26767,9 @@ snapshots:
 
   ts-pattern@5.6.2: {}
 
-  tsconfck@3.1.6(typescript@5.9.3):
+  tsconfck@3.1.6(typescript@6.0.3):
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
 
   tsconfig-paths@4.2.0:
     dependencies:
@@ -26830,8 +26838,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  typescript@5.9.3: {}
-
   typescript@6.0.3: {}
 
   ufo@1.6.3: {}
@@ -26841,8 +26847,6 @@ snapshots:
   ulid@3.0.0: {}
 
   unc-path-regex@0.1.2: {}
-
-  undici-types@6.21.0: {}
 
   undici-types@7.16.0: {}
 
@@ -27156,16 +27160,6 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.21(@types/node@20.19.39)(terser@5.46.2):
-    dependencies:
-      esbuild: 0.21.5
-      postcss: 8.5.14
-      rollup: 4.60.2
-    optionalDependencies:
-      '@types/node': 20.19.39
-      fsevents: 2.3.3
-      terser: 5.46.2
-
   vite@5.4.21(@types/node@24.12.2)(terser@5.46.2):
     dependencies:
       esbuild: 0.21.5
@@ -27192,9 +27186,9 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
-  vitefu@1.1.3(vite@5.4.21(@types/node@20.19.39)(terser@5.46.2)):
+  vitefu@1.1.3(vite@5.4.21(@types/node@24.12.2)(terser@5.46.2)):
     optionalDependencies:
-      vite: 5.4.21(@types/node@20.19.39)(terser@5.46.2)
+      vite: 5.4.21(@types/node@24.12.2)(terser@5.46.2)
 
   vitest@4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(jsdom@20.0.3)(vite@6.4.2(@types/node@24.12.2)(jiti@2.6.1)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
@@ -27454,9 +27448,9 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  zod-to-ts@1.2.0(typescript@5.9.3)(zod@3.25.76):
+  zod-to-ts@1.2.0(typescript@6.0.3)(zod@3.25.76):
     dependencies:
-      typescript: 5.9.3
+      typescript: 6.0.3
       zod: 3.25.76
 
   zod-validation-error@4.0.2(zod@4.4.3):

@@ -21,16 +21,16 @@
     "@babel/runtime": "^7.24.7",
     "@keystar/ui": "^0.7.21",
     "cloudinary": "^2.0.0",
-    "react": "^19.2.4"
+    "react": "catalog:"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "^6.1.0",
-    "@types/express": "^4.17.14",
-    "@types/react": "^19.2.14",
-    "graphql": "^16.8.1",
+    "@keystone-6/core": "workspace:^",
+    "@types/express": "catalog:",
+    "@types/react": "catalog:",
+    "graphql": "catalog:",
     "graphql-upload": "^15.0.2"
   },
   "preconstruct": {

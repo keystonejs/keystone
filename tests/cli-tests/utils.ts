@@ -72,7 +72,10 @@ export async function cliMock(cwd: string, args: string | string[]) {
 export async function spawnCommand(cwd: string, commands: string[]) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
-    const p = spawn('node', [cliBinPath, ...commands], { cwd })
+    const p = spawn('node', [cliBinPath, ...commands], {
+      cwd,
+      env: { ...process.env, FORCE_COLOR: '0' },
+    })
     p.stdout.on('data', data => (output += data.toString('utf-8')))
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
@@ -90,7 +93,10 @@ export async function spawnCommand2(cwd: string, commands: string[]) {
     exitCode: number | null
     output: string
   }>((resolve, reject) => {
-    const p = spawn('node', [cliBinPath, ...commands], { cwd })
+    const p = spawn('node', [cliBinPath, ...commands], {
+      cwd,
+      env: { ...process.env, FORCE_COLOR: '0' },
+    })
     p.stdout.on('data', data => (output += data.toString('utf-8')))
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
