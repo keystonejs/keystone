@@ -1,18 +1,20 @@
 import { list } from '@keystone-6/core'
 import { unfiltered } from '@keystone-6/core/access'
 import { text, password } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import type { Lists, Session } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
 // needs to be compatible with withAuth
-export type Session = {
-  listKey: string
-  itemId: string
-  data: {
-    something: string
+declare module '.keystone/types' {
+  interface Session {
+    listKey: string
+    itemId: string
+    data: {
+      something: string
+    }
   }
 }
 
@@ -62,4 +64,4 @@ export const lists = {
       }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists

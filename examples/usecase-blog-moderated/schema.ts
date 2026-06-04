@@ -1,4 +1,4 @@
-import type { Context, Lists } from '.keystone/types'
+import type { Context, Lists, Session } from '.keystone/types'
 import { gWithContext, list } from '@keystone-6/core'
 import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { checkbox, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
@@ -7,11 +7,13 @@ import { checkbox, relationship, text, timestamp, virtual } from '@keystone-6/co
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-export type Session = {
-  id: string
-  admin: boolean
-  moderator: null | { id: string }
-  contributor: null | { id: string }
+declare module '.keystone/types' {
+  interface Session {
+    id: string
+    admin: boolean
+    moderator: null | { id: string }
+    contributor: null | { id: string }
+  }
 }
 
 type Has<T, K extends keyof T> = {
@@ -339,4 +341,4 @@ export const lists = {
       }),
     },
   }),
-} satisfies Lists<Session>
+} satisfies Lists

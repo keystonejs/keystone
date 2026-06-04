@@ -1,21 +1,25 @@
-export type Session = {
-  itemId: string
-  listKey: string
-  data: {
-    name: string
-    role: {
-      id: string
+declare module '.keystone/types' {
+  export interface Session {
+    itemId: string
+    listKey: string
+    data: {
       name: string
-      canCreateTodos: boolean
-      canManageAllTodos: boolean
-      canSeeOtherPeople: boolean
-      canEditOtherPeople: boolean
-      canManagePeople: boolean
-      canManageRoles: boolean
-      canUseAdminUI: boolean
+      role: {
+        id: string
+        name: string
+        canCreateTodos: boolean
+        canManageAllTodos: boolean
+        canSeeOtherPeople: boolean
+        canEditOtherPeople: boolean
+        canManagePeople: boolean
+        canManageRoles: boolean
+        canUseAdminUI: boolean
+      }
     }
   }
 }
+
+import type { Session } from '.keystone/types'
 
 type AccessArgs = {
   session?: Session
