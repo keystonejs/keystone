@@ -16,7 +16,7 @@
     "@keystone-6/core": "workspace:^",
     "@parcel/watcher": "^2.5.1",
     "@prisma/client": "catalog:",
-    "graphql": "^16.8.1"
+    "graphql": "catalog:"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.4",

@@ -12,12 +12,12 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "@types/express": "^4.17.14",
     "express": "^4.19.2"
   },
   "devDependencies": {
     "prisma": "catalog:",
     "tsx": "^4.0.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/express": "catalog:"
   }
 }

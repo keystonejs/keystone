@@ -12,7 +12,7 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "graphql": "^16.8.1"
+    "graphql": "catalog:"
   },
   "devDependencies": {
     "@ts-gql/compiler": "^0.16.7",

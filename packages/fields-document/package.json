@@ -87,8 +87,7 @@
     "@react-aria/utils": "^3.25.1",
     "@react-stately/list": "^3.10.8",
     "@react-stately/overlays": "^3.6.10",
-    "@types/react": "catalog:",
-    "graphql": "^16.8.1",
+    "graphql": "catalog:",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^8.0.0",
     "mdast-util-from-markdown": "^0.8.5",
@@ -110,7 +109,8 @@
     "@types/is-hotkey": "^0.1.7",
     "jest-diff": "^29.0.0",
     "pretty-format": "^29.0.0",
-    "slate-hyperscript": "^0.100.0"
+    "slate-hyperscript": "^0.100.0",
+    "@types/react": "catalog:"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0"

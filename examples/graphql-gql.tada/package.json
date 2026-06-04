@@ -16,7 +16,7 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "gql.tada": "^1.8.10",
-    "graphql": "^16.8.1"
+    "graphql": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",
