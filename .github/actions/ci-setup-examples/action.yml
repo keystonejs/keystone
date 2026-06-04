@@ -13,7 +13,7 @@ runs:
         node-version: 24
         registry-url: 'https://registry.npmjs.org'
         cache: pnpm
-    - run: pnpm install --ignore-scripts
+    - run: pnpm install
       shell: bash
       env:
         PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
