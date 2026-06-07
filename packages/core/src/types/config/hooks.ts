@@ -65,7 +65,7 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
       }
 
   /**
-   * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
+   * Used to **cause side effects** before a create, update, or delete operation once all validate hooks have resolved
    */
   beforeOperation?:
     | BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
@@ -135,7 +135,7 @@ export type FieldHooks<
       }
 
   /**
-   * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
+   * Used to **cause side effects** before a create, update, or delete operation once all validate hooks have resolved
    */
   beforeOperation?:
     | BeforeOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldTypeInfo>

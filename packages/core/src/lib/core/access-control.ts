@@ -216,6 +216,7 @@ export async function enforceListLevelAccessControl(
         listKey: list.listKey,
         context,
         item,
+        inputData,
       })
     }
   } catch (error: any) {
@@ -428,7 +429,15 @@ export async function checkUniqueItemExists(
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
     if (item !== null) return uniqueWhere
-  } catch (err) {}
+  } catch (err: any) {
+    // If it's an access denied error from context.db, we swallow it and throw our own
+    // to keep the error message consistent with "item may not exist".
+    // But if it's a real database error (e.g. connection, timeout, malformed query),
+    // we MUST rethrow it so the developer knows what happened.
+    if (err?.extensions?.code !== 'KS_ACCESS_DENIED') {
+      throw err
+    }
+  }
 
   throw accessDeniedError(cannotForItem(operation, foreignList))
 }
