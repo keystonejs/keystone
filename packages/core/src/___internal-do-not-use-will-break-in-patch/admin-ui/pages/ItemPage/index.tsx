@@ -29,6 +29,7 @@ import { useList, useListItem } from '../../../../admin-ui/context'
 import {
   deserializeItemToValue,
   Fields,
+  getConditionalFilterFieldKeys,
   isActionAvailable,
   resolveActionMode,
   serializeItemForConditionalFilters,
@@ -36,6 +37,7 @@ import {
   useHasChanges,
   useInvalidFields,
 } from '../../../../admin-ui/utils'
+import { pick } from '../../../../admin-ui/utils/pick'
 import type {
   ActionMeta,
   BaseListTypeInfo,
@@ -386,17 +388,21 @@ function ItemPage({ listKey }: ItemPageProps) {
 
   const actionsInContext = useMemo(() => {
     if (!value) return []
-    const serializedValue = serializeItemForConditionalFilters(list.fields, value)
     return list.actions
-      .map(action => ({
-        ...action,
-        itemView: {
-          ...action.itemView,
-          actionMode: resolveActionMode(actionModes[action.key], serializedValue),
-        },
-      }))
+      .map(action => {
+        const fieldKeys = getConditionalFilterFieldKeys(actionModes[action.key])
+        const fields = pick(list.fields, fieldKeys)
+        const serializedValue = serializeItemForConditionalFilters(fields, value)
+        return {
+          ...action,
+          itemView: {
+            ...action.itemView,
+            actionMode: resolveActionMode(actionModes[action.key], serializedValue),
+          },
+        }
+      })
       .filter(action => isActionAvailable(action, action.itemView))
-  }, [actionModes, list.actions, value])
+  }, [actionModes, list.actions, list.fields, value])
 
   function onAction(action: ActionMeta, resultId: string | null) {
     const { navigation } = action.itemView

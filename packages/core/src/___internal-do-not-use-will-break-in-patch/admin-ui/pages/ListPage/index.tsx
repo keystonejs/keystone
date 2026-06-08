@@ -49,6 +49,7 @@ import {
   serializeItemForConditionalFilters,
 } from '../../../../admin-ui/utils'
 import { getActionArguments } from '../../../../admin-ui/utils/actionData'
+import { pick } from '../../../../admin-ui/utils/pick'
 import { useSearchFilter } from '../../../../fields/types/relationship/views/useFilter'
 import type { ActionMeta, FieldMeta, JSONValue, ListMeta } from '../../../../types'
 import { FilterAdd } from './FilterAdd'
@@ -355,6 +356,15 @@ function ListPage({ listKey }: ListPageProps) {
     () => list.actions.filter(x => isActionAvailable(x, x.listView)),
     [list.actions]
   )
+  const actionConditionalFilterFieldKeys = useMemo(() => {
+    const fieldKeys = new Set<string>()
+    for (const action of actionsAvailable) {
+      for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
+        fieldKeys.add(fieldKey)
+      }
+    }
+    return fieldKeys
+  }, [actionsAvailable])
   const search = useSearchFilter(searchString, list, list.initialSearchFields)
   const { data, error, refetch, loading } = useQuery(
     useMemo((): TypedDocumentNode<{
@@ -364,10 +374,10 @@ function ListPage({ listKey }: ListPageProps) {
       const fieldKeys = new Set(columns) // only the shown columns
 
       // and any fields needed by the action filters
+      for (const fieldKey of actionConditionalFilterFieldKeys) {
+        fieldKeys.add(fieldKey)
+      }
       for (const action of actionsAvailable) {
-        for (const fieldKey of getConditionalFilterFieldKeys(action.listView.actionMode)) {
-          fieldKeys.add(fieldKey)
-        }
         for (const arg of action.graphql.arguments) {
           if (!arg.source) continue
           fieldKeys.add(arg.source.itemField)
@@ -400,7 +410,7 @@ function ListPage({ listKey }: ListPageProps) {
           count: ${list.graphql.names.listQueryCountName}(where: $where)
         }
       `
-    }, [list, list.fields, columns, actionsAvailable]),
+    }, [list, list.fields, columns, actionsAvailable, actionConditionalFilterFieldKeys]),
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
@@ -499,12 +509,17 @@ function ListPage({ listKey }: ListPageProps) {
     () => data?.items?.filter(item => selectedItemIds.includes(String(item.id))) ?? [],
     [data?.items, selectedItemIds]
   )
+  const actionConditionalFilterFields = useMemo(
+    () => pick(list.fields, actionConditionalFilterFieldKeys),
+    [actionConditionalFilterFieldKeys, list.fields]
+  )
   const serializedSelectedRows = useMemo(
     () =>
-      selectedRows.map(row =>
-        serializeItemForConditionalFilters(list.fields, deserializeItemToValue(list.fields, row))
-      ),
-    [list.fields, selectedRows]
+      selectedRows.map(row => {
+        const value = deserializeItemToValue(actionConditionalFilterFields, row)
+        return serializeItemForConditionalFilters(actionConditionalFilterFields, value)
+      }),
+    [actionConditionalFilterFields, selectedRows]
   )
   const { actions, disabledKeys: disabledActionKeys } = useMemo(() => {
     const disabledKeys: string[] = []

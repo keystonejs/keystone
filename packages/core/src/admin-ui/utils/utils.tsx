@@ -66,8 +66,7 @@ export function deserializeItemToValue(
   item: Record<string, unknown | null>
 ) {
   const result: Record<string, unknown | null> = {}
-  for (const fieldKey in fields) {
-    const field = fields[fieldKey]
+  for (const [fieldKey, field] of Object.entries(fields)) {
     const itemForField: Record<string, unknown> = {}
     for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
       itemForField[graphqlField] = item?.[graphqlField] ?? null

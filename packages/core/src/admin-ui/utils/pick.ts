@@ -1,6 +1,6 @@
 export function pick<T extends Record<string, unknown>, K extends keyof T>(
   value: T,
-  keys: readonly K[]
+  keys: Iterable<K>
 ): Pick<T, K> {
   const result: Partial<Pick<T, K>> = {}
   for (const key of keys) {
