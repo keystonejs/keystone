@@ -13,12 +13,12 @@ packages:
   - 'prisma-utils'
   - '!**/node_modules/**'
 catalog:
-  '@prisma/client': ^6.19.3
-  '@prisma/client-generator-registry': ^6.19.3
-  '@prisma/engines': ^6.19.3
-  '@prisma/generator-helper': ^6.19.3
-  '@prisma/internals': ^6.19.3
-  '@prisma/migrate': ^6.19.3
+  '@prisma/client': ^7.0.0
+  '@prisma/client-generator-registry': ^7.0.0
+  '@prisma/engines': ^7.0.0
+  '@prisma/generator-helper': ^7.0.0
+  '@prisma/internals': ^7.0.0
+  '@prisma/migrate': ^7.0.0
   '@types/express': ^4.17.14
   '@types/node': ^24.0.0
   '@types/react': ^19.2.14
@@ -26,7 +26,7 @@ catalog:
   express: ^4.19.2
   graphql: ^16.8.1
   next: ^15.5.12
-  prisma: ^6.19.3
+  prisma: ^7.0.0
   react: ^19.2.4
   react-dom: ^19.2.4
   typescript: ^6.0.0
