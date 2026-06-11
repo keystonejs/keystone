@@ -428,7 +428,12 @@ export async function checkUniqueItemExists(
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput })
     if (item !== null) return uniqueWhere
-  } catch (err) {}
+  } catch (err) {
+    // Log access control errors for debugging — access will still be denied below
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[keystone] access-control: findOne failed for ${foreignList.listKey}:`, err)
+    }
+  }
 
   throw accessDeniedError(cannotForItem(operation, foreignList))
 }
