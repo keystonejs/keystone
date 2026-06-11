@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/cloudinary",
-  "version": "8.0.0",
+  "version": "0.0.0-rc-20260611070353",
   "license": "MIT",
   "main": "dist/keystone-6-cloudinary.cjs.js",
   "module": "dist/keystone-6-cloudinary.esm.js",
@@ -24,7 +24,7 @@
     "react": "catalog:"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^6.0.0"
+    "@keystone-6/core": "0.0.0-rc-20260611070353"
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
