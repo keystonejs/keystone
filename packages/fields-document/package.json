@@ -101,6 +101,7 @@
     "slate": "^0.120.0",
     "slate-history": "^0.113.1",
     "slate-react": "^0.120.0",
+    "slate-dom": "^0.119.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
