@@ -40,3 +40,6 @@ allowBuilds:
   prisma: true
   sharp: false
 minimumReleaseAge: 2880 # 2 days
+minimumReleaseAgeExclude:
+  # Renovate security update: esbuild@0.28.1
+  - esbuild@0.28.1
