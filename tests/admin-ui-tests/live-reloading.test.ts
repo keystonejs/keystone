@@ -39,7 +39,7 @@ test('start keystone', async () => {
   ;({
     process: ksProcess,
     exit,
-  } = await spawnCommand3(testProjectPath, ['dev']))
+  } = await spawnCommand3(testProjectPath, ['dev'], 'Admin UI ready'))
   browser = await chromium.launch()
   page = await browser.newPage()
 
@@ -72,8 +72,8 @@ test('api routes written with getAdditionalFiles containing [...rest] work', asy
 
 test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second.ts')
-  await waitForIO(ksProcess, 'compiled successfully')
 
+  // Waiting for the visible label is more reliable than waiting on a fast rebuild log line.
   const element = await page.waitForSelector('label:has-text("Very Important Text") >> .. >> input')
   const value = await element.inputValue()
   expect(value).toBe('blah')
