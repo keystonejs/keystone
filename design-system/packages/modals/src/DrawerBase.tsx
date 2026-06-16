@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, type KeyboardEvent, type MutableRefObject, type ReactNode, useCallback, useRef } from 'react'
+import { Fragment, type KeyboardEvent, type MutableRefObject, type ReactNode, useCallback } from 'react'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 import { makeId, useId, useTheme, Portal, jsx } from '@keystone-ui/core'
@@ -21,6 +21,7 @@ const easing = 'cubic-bezier(0.2, 0, 0, 1)'
 export type DrawerBaseProps = {
   children: ReactNode
   initialFocusRef?: MutableRefObject<any>
+  nodeRef: MutableRefObject<HTMLDivElement | HTMLFormElement | null>
   onClose: () => void
   transitionState: TransitionState
   onSubmit?: () => void
@@ -38,6 +39,7 @@ const blanketTransition = {
 export const DrawerBase = ({
   children,
   initialFocusRef,
+  nodeRef,
   onClose,
   onSubmit,
   width = 'narrow',
@@ -45,7 +47,6 @@ export const DrawerBase = ({
   ...props
 }: DrawerBaseProps) => {
   const theme = useTheme()
-  const containerRef = useRef(null)
 
   const id = useId()
   const uniqueKey = makeId('drawer', id)
@@ -98,7 +99,7 @@ export const DrawerBase = ({
               onSubmit={onSubmit}
               aria-modal="true"
               role="dialog"
-              ref={containerRef}
+              ref={nodeRef}
               tabIndex={-1}
               onKeyDown={onKeyDown}
               style={dialogTransition[transitionState]}

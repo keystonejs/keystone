@@ -26,7 +26,7 @@ export const Drawer = ({
   initialFocusRef,
   width = 'narrow',
 }: DrawerProps) => {
-  const transitionState = useDrawerControllerContext()
+  const { nodeRef, transitionState } = useDrawerControllerContext()
   const { cancel, confirm } = actions
   const { colors, spacing } = useTheme()
 
@@ -37,6 +37,7 @@ export const Drawer = ({
 
   return (
     <DrawerBase
+      nodeRef={nodeRef}
       transitionState={transitionState}
       aria-labelledby={headingId}
       initialFocusRef={initialFocusRef}
