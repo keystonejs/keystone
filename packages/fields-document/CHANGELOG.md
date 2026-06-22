@@ -1,5 +1,12 @@
 # @keystone-6/fields-document
 
+## 0.0.0-rc-20260622064920
+
+### Patch Changes
+
+- Updated dependencies [[`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd), [`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd)]:
+  - @keystone-6/core@0.0.0-rc-20260622064920
+
 ## 9.1.1
 
 ### Patch Changes
