@@ -1,5 +1,11 @@
 # @keystone-6/document-renderer
 
+## 0.0.0-rc-20260622070942
+
+### Major Changes
+
+- [`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @keystone-6/cloudinary
 
+## 0.0.0-rc-20260622070942
+
+### Major Changes
+
+- [`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd), [`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd)]:
+  - @keystone-6/core@0.0.0-rc-20260622070942
+  - @keystone-ui/button@0.0.0-rc-20260622070942
+  - @keystone-ui/core@0.0.0-rc-20260622070942
+  - @keystone-ui/fields@0.0.0-rc-20260622070942
+  - @keystone-ui/pill@0.0.0-rc-20260622070942
+
 ## 8.0.0
 
 ### Patch Changes
