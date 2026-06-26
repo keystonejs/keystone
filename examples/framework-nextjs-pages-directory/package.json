@@ -7,7 +7,7 @@
     "keystone:dev": "keystone dev",
     "keystone:build": "keystone build",
     "keystone:start": "keystone start",
-    "next:dev": "next dev -p 4000",
+    "next:dev": "next dev --webpack -p 4000",
     "next:build": "next build --webpack",
     "build": "keystone build --no-ui && next build --webpack",
     "check": "keystone postinstall",

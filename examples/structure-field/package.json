@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "keystone dev",
-    "dev:site": "next dev -p 3001",
+    "dev:site": "next dev --webpack -p 3001",
     "start": "keystone start",
     "build": "keystone build",
     "check": "keystone postinstall"

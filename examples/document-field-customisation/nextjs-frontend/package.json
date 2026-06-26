@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 8000",
+    "dev": "next dev --webpack --port 8000",
     "build": "next build --webpack",
     "export": "next build --webpack && next export",
     "start": "next start --port 8000"
