@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 8000",
-    "build": "next build",
-    "export": "next build && next export",
+    "build": "next build --webpack",
+    "export": "next build --webpack && next export",
     "start": "next start --port 8000"
   },
   "dependencies": {
