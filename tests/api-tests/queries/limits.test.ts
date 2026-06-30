@@ -75,6 +75,62 @@ describe('graphql.maxTake', () => {
 
     expect(errors).toMatchSnapshot()
   }))
+
+  test(
+    'enforces the default for negative take',
+    runner(async ({ gql }) => {
+      const { errors } = await gql({
+        query: `
+        query {
+          posts(take: -5) {
+            id
+          }
+        }
+      `,
+      })
+
+      expect(errors).toEqual([
+        {
+          locations: expect.any(Array),
+          extensions: { code: 'KS_LIMITS_EXCEEDED' },
+          message: 'Your request exceeded server limits',
+          path: ['posts'],
+        },
+      ])
+    })
+  )
+
+  test(
+    'enforces the default for negative take on relationships',
+    runner(async ({ context, gql }) => {
+      const user = await context.db.User.createOne({
+        data: {
+          name: 'Test',
+        },
+      })
+
+      const { errors } = await gql({
+        query: `
+        query {
+          user(where: { id: "${user.id}" }) {
+            posts(take: -5) {
+              id
+            }
+          }
+        }
+      `,
+      })
+
+      expect(errors).toEqual([
+        {
+          locations: expect.any(Array),
+          extensions: { code: 'KS_LIMITS_EXCEEDED' },
+          message: 'Your request exceeded server limits',
+          path: ['user', 'posts'],
+        },
+      ])
+    })
+  )
 })
 
 // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
