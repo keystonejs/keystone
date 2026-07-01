@@ -108,7 +108,7 @@ export async function findMany (
   extraFilter?: PrismaFilter
 ): Promise<BaseItem[]> {
   const maxTake = (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
-  if ((take ?? Infinity) > maxTake) {
+  if (Math.abs(take ?? Infinity) > maxTake) {
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake })
   }
 
