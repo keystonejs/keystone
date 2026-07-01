@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 6.5.3
+
+### Patch Changes
+
+- [#9859](https://github.com/keystonejs/keystone/pull/9859) [`9fb88b2`](https://github.com/keystonejs/keystone/commit/9fb88b246950ce4de754a43fe6416f20403577b1) Thanks [@emmatown](https://github.com/emmatown)! - Fix enforcement of `maxTake` for negative `take` values
+
 ## 6.5.2
 
 ### Patch Changes
