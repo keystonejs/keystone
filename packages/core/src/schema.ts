@@ -217,6 +217,13 @@ export function list<ListTypeInfo extends BaseListTypeInfo>(listConfig: ListConf
 
 export function action<
   ListTypeInfo extends BaseListTypeInfo,
+  Args extends ActionArgsConfig<ListTypeInfo>,
+>(action: Action<ListTypeInfo, Args> & { args: Args }): DeclaredAction<ListTypeInfo>
+export function action<ListTypeInfo extends BaseListTypeInfo>(
+  action: Action<ListTypeInfo, undefined>
+): DeclaredAction<ListTypeInfo>
+export function action<
+  ListTypeInfo extends BaseListTypeInfo,
   Args extends ActionArgsConfig<ListTypeInfo> | undefined = undefined,
 >(action: Action<ListTypeInfo, Args>): DeclaredAction<ListTypeInfo> {
   return {
