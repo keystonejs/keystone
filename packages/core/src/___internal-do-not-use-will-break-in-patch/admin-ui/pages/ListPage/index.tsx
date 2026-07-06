@@ -6,7 +6,7 @@ import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
-import { AlertDialog, Dialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
+import { Dialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { allIcons as KeystarIcons } from '@keystar/ui/icon/all'
 import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
@@ -36,6 +36,7 @@ import { TextLink } from '@keystar/ui/link'
 import { Notice } from '@keystar/ui/notice'
 import type { TypedDocumentNode } from '../../../../admin-ui/apollo'
 import { CombinedGraphQLErrors, gql, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import { ActionDialog } from '../../../../admin-ui/components/ActionDialog'
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink'
 import { EmptyState } from '../../../../admin-ui/components/EmptyState'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice'
@@ -379,8 +380,10 @@ function ListPage({ listKey }: ListPageProps) {
       }
       for (const action of actionsAvailable) {
         for (const arg of action.graphql.arguments) {
-          if (!arg.source) continue
-          fieldKeys.add(arg.source.itemField)
+          const itemField =
+            arg.source && 'itemField' in arg.source ? arg.source.itemField : undefined
+          if (!itemField) continue
+          fieldKeys.add(itemField)
         }
       }
 
@@ -898,27 +901,28 @@ function ActionItemsDialog({
       }
     }`
   const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(actionMutation, {
-    variables:
-      action.key === 'delete'
-        ? { where: itemIds.map(id => ({ id })) }
-        : {
-            data: itemIds.flatMap(id => {
-              const row = items.find(item => String(item.id) === id)
-              if (!row) {
-                return []
-              }
-              const deserialized = deserializeItemToValue(list.fields, row)
-              const args = getActionArguments(list, action, deserialized)
-              return { where: { id }, ...args }
-            }),
-          },
     errorPolicy: 'all',
   })
   const { messages: m } = action
 
-  async function onTryAction() {
+  async function onTryAction(actionArgValue: Record<string, unknown>) {
     try {
-      const { error } = await actionOnItems()
+      const { error } = await actionOnItems({
+        variables:
+          action.key === 'delete'
+            ? { where: itemIds.map(id => ({ id })) }
+            : {
+                data: itemIds.flatMap(id => {
+                  const row = items.find(item => String(item.id) === id)
+                  if (!row) {
+                    return []
+                  }
+                  const deserialized = deserializeItemToValue(list.fields, row)
+                  const args = getActionArguments(list, action, deserialized, actionArgValue)
+                  return { where: { id }, ...args }
+                }),
+              },
+      })
       const failed = new Set<string>()
       const actionErrors: ActionErrors = {}
       let countFail = 0
@@ -981,7 +985,8 @@ function ActionItemsDialog({
   }
 
   return (
-    <AlertDialog
+    <ActionDialog
+      action={action}
       tone={action.key === 'delete' ? 'critical' : 'neutral'}
       title={replace(
         m.promptTitleMany,
@@ -989,18 +994,14 @@ function ActionItemsDialog({
         { ...action, count: itemIds.length },
         itemIds.length > 1
       )}
-      cancelLabel="Cancel"
-      primaryActionLabel={replace(
+      prompt={replace(m.promptMany, list, { ...action, count: itemIds.length }, itemIds.length > 1)}
+      confirmLabel={replace(
         m.promptConfirmLabelMany,
         list,
         { ...action, count: itemIds.length },
         itemIds.length > 1
       )}
-      onPrimaryAction={onTryAction}
-    >
-      <Text>
-        {replace(m.promptMany, list, { ...action, count: itemIds.length }, itemIds.length > 1)}
-      </Text>
-    </AlertDialog>
+      onConfirm={onTryAction}
+    />
   )
 }

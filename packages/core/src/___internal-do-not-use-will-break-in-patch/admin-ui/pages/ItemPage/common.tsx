@@ -15,6 +15,7 @@ import { Heading, Text } from '@keystar/ui/typography'
 import { gql, type TypedDocumentNode, useApolloClient } from '../../../../admin-ui/apollo'
 import { Container, CONTAINER_MAX } from '../../../../admin-ui/components/Container'
 import { ErrorDetailsDialog } from '../../../../admin-ui/components/Errors'
+import { ActionDialog } from '../../../../admin-ui/components/ActionDialog'
 import {
   getActionArguments,
   getActionGraphQLArgs,
@@ -153,22 +154,12 @@ function ItemActions({
     [actions]
   )
 
-  async function onTryAction(action: ActionMeta, confirmed: boolean) {
-    setActiveAction(null)
-
-    if (hasUnsavedChanges) {
-      setBlockedAction(action)
-      return
-    }
-
-    if (!confirmed && !action.itemView.hidePrompt) {
-      setActiveAction(action)
-      return
-    }
-
+  async function runAction(action: ActionMeta, actionArgValue: Record<string, unknown>) {
     const { messages: m } = action
     try {
-      const argsForAction = initialValue ? getActionArguments(list, action, initialValue) : {}
+      const argsForAction = initialValue
+        ? getActionArguments(list, action, initialValue, actionArgValue)
+        : {}
       const graphqlArgs = getActionGraphQLArgs(action)
       const graphqlVariables = getActionGraphQLVariables(action)
       const mutation = (
@@ -217,7 +208,20 @@ function ItemActions({
         onAction={key => {
           const action = list.actions.find(action => action.key === key)
           if (!action) return
-          onTryAction(action, false)
+
+          setActiveAction(null)
+
+          if (hasUnsavedChanges) {
+            setBlockedAction(action)
+            return
+          }
+
+          if (!action.itemView.hidePrompt) {
+            setActiveAction(action)
+            return
+          }
+
+          runAction(action, {})
         }}
       >
         {item => (
@@ -229,19 +233,19 @@ function ItemActions({
       </ActionGroup>
       <DialogContainer onDismiss={() => setActiveAction(null)}>
         {activeAction && (
-          <AlertDialog
+          <ActionDialog
+            action={activeAction}
             title={replace(activeAction.messages.promptTitle, list, { ...activeAction, itemLabel })}
-            cancelLabel="Cancel"
-            primaryActionLabel={replace(activeAction.messages.promptConfirmLabel, list, {
+            prompt={replace(activeAction.messages.prompt, list, { ...activeAction, itemLabel })}
+            confirmLabel={replace(activeAction.messages.promptConfirmLabel, list, {
               ...activeAction,
               itemLabel,
             })}
-            onPrimaryAction={async () => {
-              await onTryAction(activeAction, true)
+            onConfirm={async actionArgValue => {
+              setActiveAction(null)
+              await runAction(activeAction, actionArgValue)
             }}
-          >
-            {replace(activeAction.messages.prompt, list, { ...activeAction, itemLabel })}
-          </AlertDialog>
+          />
         )}
       </DialogContainer>
 

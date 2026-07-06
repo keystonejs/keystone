@@ -141,6 +141,8 @@ type Mutation {
   votePosts(data: [VotePostArgs!]!): [Post]
   reportAPost(where: PostWhereUniqueInput!): Post
   reportSomePosts(data: [ReportAPostArgs!]!): [Post]
+  hideWithReasonPost(where: PostWhereUniqueInput!, reason: String!): Post
+  hideWithReasonPosts(data: [HideWithReasonPostArgs!]!): [Post]
 }
 
 input VotePostArgs {
@@ -149,6 +151,11 @@ input VotePostArgs {
 
 input ReportAPostArgs {
   where: PostWhereUniqueInput!
+}
+
+input HideWithReasonPostArgs {
+  where: PostWhereUniqueInput!
+  reason: String!
 }
 
 type Query {

@@ -3,6 +3,7 @@ import { GInputObjectType, type GArg, type GInputType } from '@graphql-ts/schema
 import { GNonNull } from '@graphql-ts/schema'
 import {
   GraphQLList,
+  type GraphQLNamedType,
   GraphQLNonNull,
   GraphQLString,
   isInputObjectType,
@@ -14,6 +15,7 @@ import { expandVoidHooks } from '../../fields/resolve-hooks'
 import { humanize } from '../../lib/utils'
 import type { GroupInfo } from '../../schema'
 import type {
+  ActionArgumentSourceMeta,
   ActionMeta,
   BaseFieldTypeInfo,
   BaseItem,
@@ -59,7 +61,11 @@ export type InitialisedAction = {
   access: ResolvedActionAccessControl
   resolve: BaseActions<BaseListTypeInfo>[keyof BaseActions<BaseListTypeInfo>]['resolve']
   graphql: {
-    arguments: { name: string; type: string; source: { itemField: string } | null }[]
+    arguments: {
+      name: string
+      type: string
+      source: ActionArgumentSourceMeta<InitialisedField>
+    }[]
     names: {
       one: string
       many: string
@@ -109,6 +115,37 @@ function getArgSources(
       return [[arg, { itemField: field }]]
     })
   )
+}
+
+function getArgFieldSources(
+  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string]
+): Record<string, FieldTypeFunc<BaseListTypeInfo>> {
+  return Object.fromEntries(
+    Object.entries(action.args ?? {}).flatMap(([arg, value]) => {
+      const field = value.ui?.source?.field
+      if (!field) return []
+      return [[arg, field as FieldTypeFunc<BaseListTypeInfo>]]
+    })
+  )
+}
+
+function unwrapNonNullGraphQLType(type: GraphQLType): GraphQLType {
+  return type instanceof GraphQLNonNull ? unwrapNonNullGraphQLType(type.ofType) : type
+}
+
+function isGraphQLInputTypeAssignable(source: GraphQLType, target: GraphQLType): boolean {
+  source = unwrapNonNullGraphQLType(source)
+  target = unwrapNonNullGraphQLType(target)
+
+  if (source instanceof GraphQLList || target instanceof GraphQLList) {
+    return (
+      source instanceof GraphQLList &&
+      target instanceof GraphQLList &&
+      isGraphQLInputTypeAssignable(source.ofType, target.ofType)
+    )
+  }
+
+  return (source as GraphQLNamedType).name === (target as GraphQLNamedType).name
 }
 
 export type InitialisedField = {
@@ -918,6 +955,102 @@ function graphqlArgForInputField(
   })
 }
 
+function initialiseActionArgField(
+  listKey: string,
+  actionKey: string,
+  argKey: string,
+  fieldFunc: FieldTypeFunc<BaseListTypeInfo>,
+  provider: KeystoneConfig['db']['provider'],
+  listsRef: Record<string, InitialisedList>
+): InitialisedField {
+  const f = fieldFunc({
+    provider,
+    lists: Object.fromEntries(
+      Object.entries(listsRef).map(([listKey, list]) => [listKey, { types: list.graphql.types }])
+    ),
+    listKey,
+    fieldKey: argKey,
+  })
+  const path = `${listKey}.${actionKey}.${argKey}`
+
+  if (f.access !== undefined) {
+    throw new Error(`${path} cannot define field access control`)
+  }
+  if (f.hooks?.resolveInput || f.hooks?.beforeOperation || f.hooks?.afterOperation) {
+    throw new Error(`${path} cannot define field hooks`)
+  }
+  if (f.ui?.createView?.fieldMode !== undefined) {
+    throw new Error(`${path} cannot define createView.fieldMode`)
+  }
+  if (f.ui?.itemView?.fieldPosition !== undefined) {
+    throw new Error(`${path} cannot define itemView.fieldPosition`)
+  }
+  if (f.ui?.itemView?.fieldMode !== undefined || f.ui?.listView?.fieldMode !== undefined) {
+    throw new Error(`${path} cannot define itemView or listView field modes`)
+  }
+  const typeName = f.__ksTelemetryFieldTypeName ?? 'unknown'
+
+  const createIsNonNull =
+    typeof f.graphql?.isNonNull === 'boolean'
+      ? f.graphql.isNonNull
+      : (f.graphql?.isNonNull?.create ?? false)
+  const createIsOmitted =
+    typeof f.graphql?.omit === 'boolean' ? f.graphql.omit : (f.graphql?.omit?.create ?? false)
+
+  const field: InitialisedField = {
+    fieldKey: argKey,
+    dbField: f.dbField as ResolvedDBField,
+    access: parseFieldAccessControl(undefined),
+    hooks: parseFieldHooks(f.hooks ?? {}),
+    graphql: {
+      cacheHint: undefined,
+      isEnabled: {
+        read: false,
+        create: !createIsOmitted,
+        update: false,
+        filter: false,
+        orderBy: false,
+      },
+      isNonNull: {
+        read: false,
+        create: createIsNonNull,
+        update: false,
+      },
+    },
+    ui: {
+      label: f.ui?.label || humanize(argKey),
+      description: f.ui?.description ?? '',
+      views: f.ui?.views ?? null,
+      createView: {
+        isRequired: f.ui?.createView?.isRequired ?? false,
+        fieldMode: 'edit',
+      },
+      itemView: {
+        isRequired: false,
+        fieldPosition: 'form',
+        fieldMode: 'hidden',
+      },
+      listView: {
+        fieldMode: 'hidden',
+      },
+    },
+    __ksTelemetryFieldTypeName: typeName,
+    extraOutputFields: undefined,
+    getAdminMeta: f.getAdminMeta,
+    input: { ...f.input },
+    output: undefined as any,
+    unreferencedConcreteInterfaceImplementations: undefined,
+    views: f.views ?? '',
+  }
+
+  const arg = graphqlArgForInputField(field, 'create', listsRef)
+  if (!arg) {
+    throw new Error(`${path} does not provide a create GraphQL input`)
+  }
+
+  return field
+}
+
 function graphqlForOutputField(field: InitialisedField) {
   const output = field.output
   if (!output || !field.graphql.isEnabled.read) return output
@@ -931,25 +1064,68 @@ function graphqlForOutputField(field: InitialisedField) {
 }
 
 function getInitialisedActionGraphql(
-  list: Pick<InitialisedList, 'graphql'>,
+  list: Pick<InitialisedList, 'graphql' | 'listKey'>,
   listGraphqlNames: { singular: string; plural: string },
   actionKey: string,
-  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string]
+  action: NonNullable<KeystoneConfig['lists'][string]['actions']>[string],
+  provider: KeystoneConfig['db']['provider'],
+  listsRef: Record<string, InitialisedList>
 ): InitialisedAction['graphql'] {
+  const actionArgFields = new Map<string, InitialisedField>()
   const graphqlNames = {
     one: action.graphql?.singular ?? `${actionKey}${listGraphqlNames.singular}`,
     many: action.graphql?.plural ?? `${actionKey}${listGraphqlNames.plural}`,
   }
   const argsName = `${graphqlNames.one[0].toUpperCase()}${graphqlNames.one.slice(1)}Args`
+  const argSources = getArgSources(action)
+  const argFieldSources = getArgFieldSources(action)
   const argumentFields = Object.fromEntries(
-    Object.entries(action.args ?? {}).map(([arg, value]) => [arg, value.graphql])
+    Object.entries(action.args ?? {}).map(([arg, value]) => {
+      if (value.ui?.source?.itemField && value.ui.source.field) {
+        throw new Error(
+          `${list.listKey}.${actionKey}.${arg} cannot define both ui.source.itemField and ui.source.field`
+        )
+      }
+      const fieldSource = argFieldSources[arg]
+      if (fieldSource) {
+        const field = initialiseActionArgField(
+          list.listKey,
+          actionKey,
+          arg,
+          fieldSource,
+          provider,
+          listsRef
+        )
+        const fieldArg = graphqlArgForInputField(field, 'create', listsRef)!
+        if (
+          !isGraphQLInputTypeAssignable(
+            fieldArg.type as unknown as GraphQLType,
+            value.graphql.type as unknown as GraphQLType
+          )
+        ) {
+          throw new Error(
+            `${list.listKey}.${actionKey}.${arg} field-rendered UI source type ${printGraphQLType(
+              fieldArg.type as unknown as GraphQLType
+            )} is not assignable to GraphQL arg type ${printGraphQLType(
+              value.graphql.type as unknown as GraphQLType
+            )}`
+          )
+        }
+        actionArgFields.set(arg, field)
+      }
+      return [arg, value.graphql]
+    })
   )
 
   return {
     arguments: Object.entries(argumentFields).map(([name, arg]) => ({
       name,
       type: printGraphQLType(arg.type as unknown as GraphQLType),
-      source: getArgSources(action)[name] ?? null,
+      source: actionArgFields.has(name)
+        ? { field: actionArgFields.get(name)! }
+        : argSources[name]
+          ? { itemField: argSources[name].itemField }
+          : null,
     })),
     names: {
       ...graphqlNames,
@@ -1041,11 +1217,19 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     list.actions = Object.entries(listConfig.actions ?? {}).map(
       ([actionKey, action]): InitialisedAction => {
         const { label } = action.ui
+        const hasFieldArgs = Object.values(action.args ?? {}).some(value => value.ui?.source?.field)
+        if (hasFieldArgs && action.ui.itemView?.hidePrompt === true) {
+          throw new Error(
+            `${list.listKey}.${actionKey} cannot set ui.itemView.hidePrompt when using field-rendered action arguments`
+          )
+        }
         const graphql = getInitialisedActionGraphql(
           list,
           __getNames(list.listKey, listConfig).graphql,
           actionKey,
-          action
+          action,
+          config.db.provider,
+          listsRef
         )
 
         return {
