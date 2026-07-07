@@ -114,11 +114,9 @@ export function isActionAvailable(
   return actionMode !== 'hidden'
 }
 
-export function getConditionalFilterFieldKeys(
-  actionMode: ConditionalFilter<string, string, BaseListTypeInfo>
+export function getConditionalFilterCaseFieldKeys(
+  filter: ConditionalFilterCase<BaseListTypeInfo> | null | undefined
 ): string[] {
-  if (typeof actionMode === 'string') return []
-
   const fieldKeys = new Set<string>()
 
   function collectFieldKeys(filter: ConditionalFilterCase<BaseListTypeInfo> | undefined) {
@@ -140,8 +138,21 @@ export function getConditionalFilterFieldKeys(
     }
   }
 
-  for (const conditionalFilter of Object.values(actionMode)) {
-    collectFieldKeys(conditionalFilter)
+  collectFieldKeys(filter ?? undefined)
+
+  return [...fieldKeys]
+}
+
+export function getConditionalFilterFieldKeys(
+  conditionalFilter: ConditionalFilter<string, string, BaseListTypeInfo> | null | undefined
+): string[] {
+  if (typeof conditionalFilter !== 'object' || conditionalFilter === null) return []
+
+  const fieldKeys = new Set<string>()
+  for (const filterCase of Object.values(conditionalFilter)) {
+    for (const fieldKey of getConditionalFilterCaseFieldKeys(filterCase)) {
+      fieldKeys.add(fieldKey)
+    }
   }
 
   return [...fieldKeys]

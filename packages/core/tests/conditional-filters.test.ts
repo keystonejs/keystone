@@ -1,4 +1,8 @@
-import { getConditionalFilterFieldKeys, testFilter } from '../src/admin-ui/utils/filters'
+import {
+  getConditionalFilterCaseFieldKeys,
+  getConditionalFilterFieldKeys,
+  testFilter,
+} from '../src/admin-ui/utils/filters'
 import type { ActionMeta, ConditionalFilterCase } from '../src/types'
 
 describe('conditional filters', () => {
@@ -273,7 +277,7 @@ describe('conditional filters', () => {
       }
     }
 
-    expect(fieldKeys).toEqual(['title', 'status', 'priority', 'isComplete'])
+    expect([...fieldKeys]).toEqual(['title', 'status', 'priority', 'isComplete'])
   })
 
   test('collects field dependencies from sibling AND, OR, NOT, and field predicates', () => {
@@ -321,6 +325,42 @@ describe('conditional filters', () => {
       }
     }
 
-    expect(fieldKeys).toEqual(['title', 'author', 'priority', 'featured', 'archived', 'status'])
+    expect([...fieldKeys]).toEqual([
+      'title',
+      'author',
+      'priority',
+      'featured',
+      'archived',
+      'status',
+    ])
+  })
+
+  test('collects field dependencies from item field mode filters', () => {
+    const fieldKeys = new Set<string>()
+    const fieldModes = {
+      title: {
+        hidden: {
+          status: { equals: 'draft' },
+          OR: [{ archived: { equals: true } }, { priority: { equals: 'low' } }],
+        },
+      },
+      status: 'hidden',
+    } as const
+
+    for (const fieldMode of Object.values(fieldModes)) {
+      for (const fieldKey of getConditionalFilterFieldKeys(fieldMode)) {
+        fieldKeys.add(fieldKey)
+      }
+    }
+
+    expect([...fieldKeys]).toEqual(['archived', 'priority', 'status'])
+  })
+
+  test('collects field dependencies from item isRequired filters', () => {
+    const filter: ConditionalFilterCase<any> = {
+      AND: [{ status: { equals: 'published' } }, { NOT: { archived: { equals: true } } }],
+    }
+
+    expect(getConditionalFilterCaseFieldKeys(filter)).toEqual(['status', 'archived'])
   })
 })
