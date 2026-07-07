@@ -64,7 +64,7 @@ export const lists = {
           views: './issue-status/views',
           createView: { fieldMode: 'hidden' },
           itemView: {
-            fieldMode: 'read',
+            fieldMode: 'hidden',
             fieldPosition: 'sidebar',
           },
           listView: { fieldMode: 'hidden' },

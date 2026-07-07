@@ -25,7 +25,11 @@ import {
   gql,
   useQuery,
 } from './apollo'
-import { getConditionalFilterFieldKeys, isActionAvailable } from './utils/filters'
+import {
+  getConditionalFilterCaseFieldKeys,
+  getConditionalFilterFieldKeys,
+  isActionAvailable,
+} from './utils/filters'
 
 type KeystoneContextType = {
   adminConfig: AdminConfig | null
@@ -269,6 +273,12 @@ export function useListItem(
 
     for (const field of Object.values(list.fields)) {
       if (field.key === 'id') continue // always in the query
+      for (const fieldKey of getConditionalFilterFieldKeys(field.itemView.fieldMode)) {
+        selectedFieldKeys.add(fieldKey)
+      }
+      for (const fieldKey of getConditionalFilterCaseFieldKeys(field.itemView.isRequired)) {
+        selectedFieldKeys.add(fieldKey)
+      }
       if (field.itemView.fieldMode === 'hidden') continue
       selectedFieldKeys.add(field.key)
     }
