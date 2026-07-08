@@ -132,6 +132,85 @@ describe('Type Generation', () => {
   })
 })
 
+describe('Admin UI display modes', () => {
+  function getAdminMetaForField(field: Parameters<typeof relationship>[0]) {
+    return createSystem(
+      config({
+        db: { url: 'file:./thing.db', provider: 'sqlite' },
+        lists: {
+          Foo: list({
+            access: allowAll,
+            fields: {
+              bar: relationship(field),
+            },
+          }),
+          Bar: list({
+            access: allowAll,
+            fields: {
+              foo: relationship({ ref: 'Foo.bar' }),
+            },
+          }),
+        },
+      })
+    ).adminMeta.listsByKey.Foo.fieldsByKey.bar.fieldMeta
+  }
+
+  test('table display mode allows dynamic itemView.fieldMode', () => {
+    expect(() => {
+      getAdminMetaForField({
+        ref: 'Bar.foo',
+        many: true,
+        ui: {
+          displayMode: 'table',
+          itemView: { fieldMode: () => 'read' },
+        },
+      })
+    }).not.toThrow()
+  })
+
+  test('count display mode allows dynamic itemView.fieldMode', () => {
+    expect(() => {
+      getAdminMetaForField({
+        ref: 'Bar.foo',
+        many: true,
+        ui: {
+          displayMode: 'count',
+          itemView: { fieldMode: () => 'read' },
+        },
+      })
+    }).not.toThrow()
+  })
+
+  test('table display mode rejects missing itemView.fieldMode', () => {
+    expect(() => {
+      getAdminMetaForField({
+        ref: 'Bar.foo',
+        many: true,
+        ui: {
+          displayMode: 'table',
+        },
+      } as any)
+    }).toThrow(
+      "displayMode: 'table' on relationship fields requires itemView.fieldMode to be 'read', 'hidden', or a dynamic field mode but Foo.bar does not have this set"
+    )
+  })
+
+  test('table display mode rejects static editable itemView.fieldMode', () => {
+    expect(() => {
+      getAdminMetaForField({
+        ref: 'Bar.foo',
+        many: true,
+        ui: {
+          displayMode: 'table',
+          itemView: { fieldMode: 'edit' },
+        },
+      } as any)
+    }).toThrow(
+      "displayMode: 'table' on relationship fields requires itemView.fieldMode to be 'read', 'hidden', or a dynamic field mode but Foo.bar does not have this set"
+    )
+  })
+})
+
 describe('Reference errors', () => {
   function tryf(lists: KeystoneConfigPre['lists']) {
     return createSystem(
