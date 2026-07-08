@@ -6,6 +6,7 @@ import {
   type FieldTypeFunc,
   type JSONValue,
   type ListSortDescriptor,
+  type MaybeItemFieldFunctionWithFilter,
   fieldType,
 } from '../../../types'
 import type { controller } from './views'
@@ -40,18 +41,18 @@ type SelectDisplayConfig<ListTypeInfo extends BaseListTypeInfo, Ref extends stri
   }
 }
 
-type CountDisplayConfig = {
+type CountDisplayConfig<ListTypeInfo extends BaseListTypeInfo> = {
   many: true
   ui?: {
     // Sets the relationship to display as a count
     displayMode: 'count'
     itemView: {
-      fieldMode: 'read'
+      fieldMode: ReadOnlyItemViewFieldMode<ListTypeInfo>
     }
   }
 }
 
-type TableDisplayConfig = {
+type TableDisplayConfig<ListTypeInfo extends BaseListTypeInfo> = {
   ref: `${string}.${string}`
   many: true
   ui?: {
@@ -60,7 +61,7 @@ type TableDisplayConfig = {
     columns?: string[]
 
     itemView: {
-      fieldMode: 'read'
+      fieldMode: ReadOnlyItemViewFieldMode<ListTypeInfo>
     }
   }
 }
@@ -145,6 +146,27 @@ type FieldTypeInfo = {
   }
 }
 
+type ReadOnlyItemViewFieldMode<ListTypeInfo extends BaseListTypeInfo> =
+  MaybeItemFieldFunctionWithFilter<
+    'read' | 'hidden',
+    'read' | 'hidden',
+    ListTypeInfo,
+    FieldTypeInfo
+  >
+
+function assertReadOnlyFieldMode(
+  fieldMode: unknown,
+  displayMode: 'count' | 'table',
+  listKey: string,
+  fieldKey: string
+) {
+  if (fieldMode === undefined || fieldMode === 'edit') {
+    throw new Error(
+      `displayMode: '${displayMode}' on relationship fields requires itemView.fieldMode to be 'read', 'hidden', or a dynamic field mode but ${listKey}.${fieldKey} does not have this set`
+    )
+  }
+}
+
 export type RelationshipFieldConfig<
   ListTypeInfo extends BaseListTypeInfo,
   Ref extends `${keyof ListTypeInfo['all']['lists'] & string}${'' | `.${string}`}`,
@@ -155,7 +177,11 @@ export type RelationshipFieldConfig<
     hideCreate?: boolean
   }
 } & (OneDbConfig | ManyDbConfig) &
-  (SelectDisplayConfig<ListTypeInfo, Ref> | CountDisplayConfig | TableDisplayConfig)
+  (
+    | SelectDisplayConfig<ListTypeInfo, Ref>
+    | CountDisplayConfig<ListTypeInfo>
+    | TableDisplayConfig<ListTypeInfo>
+  )
 
 export function relationship<
   ListTypeInfo extends BaseListTypeInfo,
@@ -196,11 +222,7 @@ export function relationship<
         }
 
         if (config.ui?.displayMode === 'count') {
-          if (config.ui.itemView?.fieldMode !== 'read') {
-            throw new Error(
-              `displayMode: 'count' on relationship fields requires itemView.fieldMode to be 'read' but ${listKey}.${fieldKey} does not have this set`
-            )
-          }
+          assertReadOnlyFieldMode(config.ui.itemView?.fieldMode, 'count', listKey, fieldKey)
           return {
             displayMode: 'count',
             refListKey: foreignListKey,
@@ -218,11 +240,7 @@ export function relationship<
               `Using a two-sided relationship (\`ref\` must specify "List.fieldKey", not just "List") is required when using displayMode: 'table' for relationship fields but ${listKey}.${fieldKey} has \`ref: ${JSON.stringify(ref)}\``
             )
           }
-          if (config.ui.itemView?.fieldMode !== 'read') {
-            throw new Error(
-              `displayMode: 'table' on relationship fields currently requires itemView.fieldMode to be 'read' but ${listKey}.${fieldKey} does not have this set`
-            )
-          }
+          assertReadOnlyFieldMode(config.ui.itemView?.fieldMode, 'table', listKey, fieldKey)
           for (const key of config.ui.columns ?? []) {
             if (!(key in foreignListMeta.fieldsByKey)) {
               throw new Error(
