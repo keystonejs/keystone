@@ -77,12 +77,20 @@ export function Toolbar({
           )}
           <EditorToolbarSeparator />
           {(hasAlignment || hasLists) && (
-            <EditorToolbarGroup>
+            <EditorToolbarGroup
+              aria-label={
+                hasAlignment && hasLists
+                  ? 'Alignment and lists'
+                  : hasAlignment
+                    ? 'Alignment'
+                    : 'Lists'
+              }
+            >
               {hasAlignment && <TextAlignMenu alignment={documentFeatures.formatting.alignment} />}
               {hasLists && <ListButtons lists={documentFeatures.formatting.listTypes} />}
             </EditorToolbarGroup>
           )}
-          <EditorToolbarGroup>
+          <EditorToolbarGroup aria-label="Block formatting">
             {documentFeatures.dividers && dividerButton}
             {documentFeatures.links && linkButton}
             {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
@@ -94,7 +102,7 @@ export function Toolbar({
           {useMemo(() => {
             return (
               viewState && (
-                <EditorToolbarGroup>
+                <EditorToolbarGroup aria-label="View options">
                   <TooltipTrigger>
                     <EditorToolbarButton
                       isSelected={viewState.expanded}
