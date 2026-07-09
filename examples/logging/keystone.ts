@@ -78,7 +78,6 @@ export default config<TypeInfo>({
 
           // defaults from packages/core/src/templates/next-config.ts
           bundlePagesRouterDependencies: true,
-          eslint: { ignoreDuringBuilds: true },
           typescript: { ignoreBuildErrors: true },
           transpilePackages: ['../../admin'],
         })}`,
