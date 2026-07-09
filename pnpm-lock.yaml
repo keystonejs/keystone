@@ -185,9 +185,6 @@ importers:
       '@markdoc/markdoc':
         specifier: ^0.5.0
         version: 0.5.7(@types/react@19.2.14)(react@19.2.5)
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@sindresorhus/slugify':
         specifier: ^3.0.0
         version: 3.0.0
@@ -802,9 +799,6 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
@@ -864,9 +858,6 @@ importers:
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../../../packages/document-renderer
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
@@ -1177,9 +1168,6 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
@@ -1226,9 +1214,6 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
@@ -1297,9 +1282,6 @@ importers:
       '@keystone-6/document-renderer':
         specifier: workspace:^
         version: link:../../../packages/document-renderer
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
@@ -1654,9 +1636,6 @@ importers:
       '@keystone-6/fields-document':
         specifier: workspace:^
         version: link:../../packages/fields-document
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
@@ -5701,9 +5680,6 @@ packages:
 
   '@preconstruct/hook@0.4.0':
     resolution: {integrity: sha512-a7mrlPTM3tAFJyz43qb4pPVpUx8j8TzZBFsNFqcKcE/sEakNXRlQAuCT4RGZRf9dQiiUnBahzSIWawU4rENl+Q==}
-
-  '@preconstruct/next@4.0.0':
-    resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
 
   '@prisma/client-common@6.19.3':
     resolution: {integrity: sha512-qNyjOZ7LRRk6OWgRD1km8r+LWJOthzcrFhZ+Et07Fjw46mQuS7aBh2y78DBAkexAqk7Q+rhpUEjS6NBnjNc8aQ==}
@@ -17528,8 +17504,6 @@ snapshots:
       source-map-support: 0.5.21
     transitivePeerDependencies:
       - supports-color
-
-  '@preconstruct/next@4.0.0': {}
 
   '@prisma/client-common@6.19.3(magicast@0.3.5)(typescript@6.0.3)':
     dependencies:

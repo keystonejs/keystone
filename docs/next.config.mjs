@@ -1,10 +1,12 @@
-// you don't need this if you're building something outside of the Keystone repo
-import withPreconstruct from '@preconstruct/next'
 import redirects from './redirects.mjs'
 
-export default withPreconstruct({
+export default {
   env: {
     siteUrl: 'https://keystonejs.com',
+  },
+  // You don't need this if you're building something outside of the Keystone repo
+  experimental: {
+    externalDir: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -15,4 +17,4 @@ export default withPreconstruct({
     ignoreBuildErrors: true,
   },
   redirects,
-})
+}
