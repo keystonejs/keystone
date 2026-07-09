@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/keystone-6-fields-document.cjs.js",

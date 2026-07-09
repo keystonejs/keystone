@@ -2,6 +2,7 @@
   "name": "@keystone-6/auth",
   "version": "9.0.0",
   "license": "MIT",
+  "type": "module",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
   "exports": {

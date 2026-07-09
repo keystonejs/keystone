@@ -1,6 +1,7 @@
 {
   "name": "@keystone-6/node-tests",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "devDependencies": {
     "@keystone-6/core": "workspace:^",

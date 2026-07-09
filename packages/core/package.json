@@ -3,6 +3,7 @@
   "version": "7.0.0",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
+  "type": "module",
   "main": "dist/keystone-6-core.cjs.js",
   "module": "dist/keystone-6-core.esm.js",
   "exports": {
