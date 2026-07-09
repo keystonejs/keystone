@@ -1,5 +1,4 @@
 import UploadLink from 'apollo-upload-client/UploadHttpLink.mjs'
-import NextHead from 'next/head'
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
@@ -188,13 +187,11 @@ function InternalKeystoneProvider({
   return (
     <KeystarProvider router={keystarRouter}>
       <ClientSideOnlyDocumentElement bodyBackground="surface" />
-      <NextHead>
-        <meta key="viewport" name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </NextHead>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
 
       <KeystoneContext.Provider
         value={{

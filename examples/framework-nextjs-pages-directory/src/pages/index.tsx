@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import Head from 'next/head'
 import { gql } from 'graphql-request'
 import { client } from '../util/request'
 import { keystoneContext } from '../keystone/context'
@@ -12,14 +11,12 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
         padding: '0 2rem',
       }}
     >
-      <Head>
-        <title>Keystone + Next.js</title>
-        <meta
-          name="description"
-          content="Example to use Keystone APIs in a Next.js server environment."
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <title>Keystone + Next.js</title>
+      <meta
+        name="description"
+        content="Example to use Keystone APIs in a Next.js server environment."
+      />
+      <link rel="icon" href="/favicon.ico" />
 
       <main style={{ display: 'flex', justifyContent: 'center' }}>
         <section>

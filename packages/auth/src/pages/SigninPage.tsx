@@ -1,4 +1,3 @@
-import NextHead from 'next/head'
 import { useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
@@ -79,9 +78,7 @@ function SigninPage({
 
   return (
     <>
-      <NextHead>
-        <title key="title">Keystone - Sign in</title>
-      </NextHead>
+      <title>Keystone - Sign in</title>
       <Grid
         alignItems="center"
         marginX="auto"

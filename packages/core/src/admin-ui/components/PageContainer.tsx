@@ -1,4 +1,3 @@
-import NextHead from 'next/head'
 import { type HTMLAttributes, type ReactNode, useState } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -98,9 +97,7 @@ export function PageContainer({ children, header, title }: PageContainerProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   return (
     <PageWrapper>
-      <NextHead>
-        <title key="title">{title ? `Keystone - ${title}` : 'Keystone'}</title>
-      </NextHead>
+      <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
       <HStack
         alignItems="center"
         borderBottom="neutral"
