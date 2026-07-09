@@ -187,6 +187,7 @@ test(
               initialSearchFields: ['name'],
               initialSort: null,
               initialFilter: {},
+              hiddenFilter: null,
               key: 'User',
               label: 'Users',
               labelField: 'name',
@@ -245,6 +246,67 @@ test(
     })
     expect(res.data!).toEqual({
       keystone: { adminMeta: { list: names } },
+    })
+  })
+)
+
+const runner3 = setupTestRunner({
+  config: {
+    lists: {
+      Test: list({
+        access: allowAll,
+        fields: { name: text(), something: integer() },
+        ui: {
+          listView: {
+            hiddenFilter: ({ session }) =>
+              session
+                ? {
+                    name: {
+                      contains: 'session',
+                    },
+                  }
+                : {
+                    something: {
+                      gt: 10,
+                    },
+                  },
+          },
+        },
+      }),
+    },
+  },
+})
+
+test(
+  'ui.listView.hiddenFilter is returned in the admin meta',
+  runner3(async ({ context }) => {
+    const data = await context.sudo().graphql.run({
+      query: gql`
+        query {
+          keystone {
+            adminMeta {
+              list(key: "Test") {
+                initialFilter
+                hiddenFilter
+              }
+            }
+          }
+        }
+      `,
+    })
+    expect(data).toEqual({
+      keystone: {
+        adminMeta: {
+          list: {
+            initialFilter: {},
+            hiddenFilter: {
+              something: {
+                gt: 10,
+              },
+            },
+          },
+        },
+      },
     })
   })
 )

@@ -127,6 +127,7 @@ export const adminMetaQuery = gql`
             direction
           }
           initialFilter
+          hiddenFilter
           isSingleton
 
           hideNavigation
@@ -157,6 +158,7 @@ export type AdminMetaQuery = {
         initialSearchFields: string[]
         initialSort: ListMeta['initialSort'] | null
         initialFilter: JSONValue
+        hiddenFilter: JSONValue | null
         isSingleton: boolean
 
         hideNavigation: boolean
