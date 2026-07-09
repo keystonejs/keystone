@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "react", "import"],
+  "jsPlugins": ["./scripts/eslint-plugin-esm-imports.mjs"],
   "categories": {
     "correctness": "off"
   },
@@ -15,5 +16,13 @@
   "env": {
     "builtin": true
   },
+  "overrides": [
+    {
+      "files": ["packages/**/*", "tests2/**/*", "tests/api-tests/**/*"],
+      "rules": {
+        "esm-imports/node-esm-imports": "error"
+      }
+    }
+  ],
   "ignorePatterns": ["tests/test-projects/live-reloading/schemas/syntax-error.js"]
 }
