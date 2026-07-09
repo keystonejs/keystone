@@ -1,4 +1,4 @@
-import { list, action } from '@keystone-6/core'
+import { list, action, g } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, integer, text, timestamp } from '@keystone-6/core/fields'
 
@@ -136,6 +136,57 @@ export const lists = {
           },
           listView: {
             actionMode: { disabled: isReportDisabled },
+          },
+        },
+      }),
+      hideWithReason: action({
+        access: allowAll,
+        args: {
+          reason: {
+            graphql: g.arg({ type: g.nonNull(g.String) }),
+            ui: {
+              source: {
+                field: text({
+                  validation: { isRequired: true },
+                  ui: {
+                    label: 'Reason',
+                    description: 'This is collected for the action only, not stored on the post.',
+                    displayMode: 'textarea',
+                  },
+                }),
+              },
+            },
+          },
+        },
+        async resolve({ actionKey, where, args }, context) {
+          console.log(`${actionKey}`, JSON.stringify({ where, reason: args.reason }))
+
+          return await context.sudo().db.Post.updateOne({
+            where,
+            data: {
+              hidden: true,
+            },
+          })
+        },
+        ui: {
+          label: 'Hide with reason',
+          icon: 'eyeOffIcon',
+          messages: {
+            promptTitle: 'Hide {singular}',
+            promptTitleMany: 'Hide {count} {singular|plural}',
+            prompt: 'Provide a reason before hiding “{itemLabel}”.',
+            promptMany: 'Provide a reason before hiding {count} {singular|plural}.',
+            promptConfirmLabel: 'Hide',
+            promptConfirmLabelMany: 'Hide {count} {singular|plural}',
+            success: '{Singular} hidden',
+            successMany: 'Successfully hid {countSuccess} {singular|plural}',
+          },
+          itemView: {
+            actionMode: { disabled: { hidden: { equals: true } } },
+            navigation: 'refetch',
+          },
+          listView: {
+            actionMode: { disabled: { hidden: { equals: true } } },
           },
         },
       }),

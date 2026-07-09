@@ -8,19 +8,28 @@ import type { MaybePromise } from '../utils'
 import type { ListAccessControl, ActionAccessControlFunction } from './access-control'
 import type { BaseFields, BaseFieldTypeInfo } from './fields'
 import type { ListHooks } from './hooks'
+import type { FieldTypeFunc } from '../next-fields'
 
 export type ActionArgumentsConfig = Record<string, GArg<any, any>>
 
+export type ActionArgConfig<ListTypeInfo extends BaseListTypeInfo> = {
+  graphql: GArg<any, any>
+  ui?: {
+    source?:
+      | {
+          itemField: ListTypeInfo['fields']
+          field?: never
+        }
+      | {
+          field: FieldTypeFunc<ListTypeInfo>
+          itemField?: never
+        }
+  }
+}
+
 export type ActionArgsConfig<ListTypeInfo extends BaseListTypeInfo> = Record<
   string,
-  {
-    graphql: GArg<any, any>
-    ui?: {
-      source?: {
-        itemField: ListTypeInfo['fields']
-      }
-    }
-  }
+  ActionArgConfig<ListTypeInfo>
 >
 
 type ActionArgs<Args extends ActionArgsConfig<any> | undefined> =

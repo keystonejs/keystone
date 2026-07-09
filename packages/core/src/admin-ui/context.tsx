@@ -81,7 +81,7 @@ function InternalKeystoneProvider({
         groups: [],
       }
 
-      for (const field of listData.fields) {
+      function hydrateField(field: (typeof listData.fields)[number]) {
         for (const exportName of expectedExports) {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
@@ -105,10 +105,10 @@ function InternalKeystoneProvider({
           }
         }
 
-        lists[listData.key].fields[field.key] = {
+        return {
           ...field,
           createView: {
-            fieldMode: field.createView?.fieldMode ?? null,
+            fieldMode: field.createView?.fieldMode ?? 'edit',
             isRequired: field.createView?.isRequired ?? false,
           },
           itemView: {
@@ -131,6 +131,10 @@ function InternalKeystoneProvider({
         }
       }
 
+      for (const field of listData.fields) {
+        lists[listData.key].fields[field.key] = hydrateField(field)
+      }
+
       for (const group of listData.groups) {
         lists[listData.key].groups.push({
           label: group.label,
@@ -138,6 +142,23 @@ function InternalKeystoneProvider({
           fields: group.fields.map(field => lists[listData.key].fields[field.key]),
         })
       }
+
+      lists[listData.key].actions = listData.actions.map(action => ({
+        ...action,
+        graphql: {
+          ...action.graphql,
+          arguments: action.graphql.arguments.map(arg =>
+            arg.source && 'field' in arg.source
+              ? {
+                  ...arg,
+                  source: {
+                    field: hydrateField(arg.source.field as (typeof listData.fields)[number]),
+                  },
+                }
+              : arg
+          ),
+        },
+      }))
     }
 
     return lists
@@ -291,8 +312,9 @@ export function useListItem(
       }
 
       for (const arg of action.graphql.arguments) {
-        if (!arg.source) continue
-        selectedFieldKeys.add(arg.source.itemField)
+        const itemField = arg.source && 'itemField' in arg.source ? arg.source.itemField : undefined
+        if (!itemField) continue
+        selectedFieldKeys.add(itemField)
       }
     }
 

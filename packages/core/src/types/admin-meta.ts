@@ -106,10 +106,25 @@ export type FieldGroupMeta = {
   fields: FieldMeta[]
 }
 
+export type ActionArgumentSourceMeta<Field = FieldMeta> =
+  | null
+  | {
+      itemField: string
+      field?: never
+    }
+  | {
+      field: Field
+      itemField?: never
+    }
+
 export type ActionMeta = {
   key: string
   graphql: {
-    arguments: readonly { name: string; type: string; source: { itemField: string } | null }[]
+    arguments: readonly {
+      name: string
+      type: string
+      source: ActionArgumentSourceMeta<any>
+    }[]
     names: {
       one: string
       many: string

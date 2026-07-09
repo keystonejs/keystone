@@ -207,11 +207,7 @@ export function createAdminMeta(
 
     const listMeta = adminMetaRoot.listsByKey[listKey]
 
-    // populate .fields
-    for (const [fieldKey, field] of Object.entries(list.fields)) {
-      // if the field is a relationship field and is related to an omitted list, skip.
-      if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
-      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
+    function getFieldMeta(fieldKey: string, field: InitialisedList['fields'][string]) {
       assertValidView(
         field.views,
         `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
@@ -221,7 +217,7 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       )
-      const fieldMeta = {
+      return {
         // FieldMeta
         key: fieldKey,
         label: field.ui.label,
@@ -264,6 +260,14 @@ export function createAdminMeta(
         item: null, // part of resolver
         itemField: null, // part of resolver
       } satisfies FieldMetaSource
+    }
+
+    // populate .fields
+    for (const [fieldKey, field] of Object.entries(list.fields)) {
+      // if the field is a relationship field and is related to an omitted list, skip.
+      if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
+      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
+      const fieldMeta = getFieldMeta(fieldKey, field)
 
       listMeta.fields.push(fieldMeta)
       listMeta.fieldsByKey[fieldKey] = fieldMeta
@@ -280,7 +284,26 @@ export function createAdminMeta(
           ...action.ui.messages,
         },
         graphql: {
-          arguments: action.graphql.arguments,
+          arguments: action.graphql.arguments.map(arg => ({
+            name: arg.name,
+            type: arg.type,
+            source: (() => {
+              const field = arg.source && 'field' in arg.source ? arg.source.field : undefined
+              if (!field) return arg.source
+              return {
+                field: {
+                  ...getFieldMeta(arg.name, field),
+                  createView: {
+                    fieldMode: 'edit' as const,
+                    isRequired:
+                      typeof field.ui.createView.isRequired === 'boolean'
+                        ? field.ui.createView.isRequired
+                        : false,
+                  },
+                },
+              }
+            })(),
+          })),
           names: action.graphql.names,
         },
 
@@ -322,6 +345,31 @@ export function createAdminMeta(
         fieldMetaSource.fieldMeta = list.fields[fieldMetaSource.fieldKey].getAdminMeta?.() ?? null
       } finally {
         currentAdminMeta = undefined
+      }
+    }
+    for (const actionMetaSource of adminMetaRoot.listsByKey[key].actions) {
+      for (const arg of actionMetaSource.graphql.arguments) {
+        if (!arg.source || !('field' in arg.source)) continue
+
+        const action = list.actions.find(action => action.actionKey === actionMetaSource.key)
+        const initialisedArg = action?.graphql.arguments.find(
+          initialisedArg =>
+            initialisedArg.name === arg.name &&
+            initialisedArg.source &&
+            'field' in initialisedArg.source
+        )
+        const field =
+          initialisedArg?.source && 'field' in initialisedArg.source
+            ? initialisedArg.source.field
+            : undefined
+        if (!field) continue
+
+        currentAdminMeta = adminMetaRoot
+        try {
+          arg.source.field.fieldMeta = field.getAdminMeta?.() ?? null
+        } finally {
+          currentAdminMeta = undefined
+        }
       }
     }
   }
