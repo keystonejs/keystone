@@ -1,5 +1,3 @@
-import NextHead from 'next/head'
-
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
 import { Heading } from '@keystar/ui/typography'
@@ -74,9 +72,7 @@ function InitPage({
 
   return (
     <>
-      <NextHead>
-        <title key="title">Welcome to KeystoneJS</title>
-      </NextHead>
+      <title>Welcome to KeystoneJS</title>
       <Grid
         alignItems="center"
         marginX="auto"
