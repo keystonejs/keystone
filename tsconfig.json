@@ -6,15 +6,17 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "types": ["node"]
+    "types": ["node"],
+    "customConditions": ["custom-keystone-6-document-editor"]
   },
   "include": ["**/*"],
   "exclude": ["docs/", "**/node_modules/**/*", "packages/create/starter"]

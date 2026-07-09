@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/keystone-6-fields-document.cjs.js",
@@ -132,6 +133,7 @@
   },
   "imports": {
     "#fields-ui": {
+      "custom-keystone-6-document-editor": "./src/DocumentEditor/component-blocks/fields-ui.tsx",
       "node": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
       "react-server": "./src/DocumentEditor/component-blocks/fields-ui-empty.tsx",
       "default": "./src/DocumentEditor/component-blocks/fields-ui.tsx"
