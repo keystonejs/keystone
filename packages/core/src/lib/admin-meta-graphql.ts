@@ -345,6 +345,7 @@ const KeystoneAdminUIListMeta = g.object<ListMetaSource>()({
     initialSearchFields: g.field({ type: g.nonNull(g.list(g.nonNull(g.String))) }),
     initialSort: g.field({ type: KeystoneAdminUISort }),
     initialFilter: g.field({ type: g.JSON }),
+    hiddenFilter: g.field({ type: g.JSON }),
     isSingleton: g.field({ type: g.nonNull(g.Boolean) }),
     hideNavigation: g.field({ type: g.nonNull(g.Boolean) }),
     hideCreate: g.field({ type: g.nonNull(g.Boolean) }),

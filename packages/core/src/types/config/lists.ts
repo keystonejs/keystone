@@ -329,6 +329,17 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
       Omit<ListTypeInfo['inputs']['where'], 'AND' | 'OR' | 'NOT'>,
       ListTypeInfo
     >
+    /**
+     * A hidden filter that is always applied to the list view in the Admin UI.
+     * This filter is not shown in the UI and cannot be removed by users.
+     *
+     * Note this is _not_ access control, it is only a filter applied to the list view in the Admin UI.
+     * If you want to restrict access to certain items, use access control instead.
+     */
+    hiddenFilter?: MaybeSessionFunction<
+      ListTypeInfo['inputs']['where'] | null | undefined,
+      ListTypeInfo
+    >
     initialSort?: ListSortDescriptor<ListTypeInfo['fields']>
 
     // TODO: rename to initialItemsPerPage or initialPageSize?

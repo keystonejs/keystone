@@ -83,6 +83,7 @@ type ListMetaSource_ = {
   pageSize: number
   initialColumns: string[]
   initialFilter: EmptyResolver<JSONValue>
+  hiddenFilter: EmptyResolver<JSONValue | null | undefined>
   initialSearchFields: string[]
   initialSort: ListSortDescriptor<string> | null
   isSingleton: boolean
@@ -175,6 +176,7 @@ export function createAdminMeta(
       initialSort:
         (listConfig.ui?.listView?.initialSort as ListSortDescriptor<string> | undefined) ?? null,
       initialFilter: normalizeMaybeSessionFunction(listConfig.ui?.listView?.initialFilter ?? {}),
+      hiddenFilter: normalizeMaybeSessionFunction(listConfig.ui?.listView?.hiddenFilter ?? null),
       isSingleton: list.isSingleton,
 
       hideNavigation: normalizeMaybeSessionFunction(listConfig.ui?.hideNavigation ?? false),
@@ -398,9 +400,9 @@ function assertValidView(view: string, location: string) {
   }
 }
 
-function normalizeMaybeSessionFunction<Return extends string | boolean | object | null | number>(
-  input: MaybeSessionFunction<Return, BaseListTypeInfo>
-): EmptyResolver<Return> {
+function normalizeMaybeSessionFunction<
+  Return extends string | boolean | object | null | number | undefined,
+>(input: MaybeSessionFunction<Return, BaseListTypeInfo>): EmptyResolver<Return> {
   if (typeof input !== 'function') return () => input
   return (_, context) => input({ context, session: context.session })
 }

@@ -342,7 +342,7 @@ function ListPage({ listKey }: ListPageProps) {
     label: f.label,
     isDisabled: f.listView.fieldMode === 'read',
   }))
-  const where = useMemo(
+  const visibleWhere = useMemo(
     () =>
       filters.map(filter => {
         return list.fields[filter.field].controller.filter!.graphql({
@@ -367,6 +367,11 @@ function ListPage({ listKey }: ListPageProps) {
     return fieldKeys
   }, [actionsAvailable])
   const search = useSearchFilter(searchString, list, list.initialSearchFields)
+  const whereAnd = [
+    list.hiddenFilter,
+    ...visibleWhere,
+    ...(search.length ? [{ OR: search }] : []),
+  ].filter(Boolean)
   const { data, error, refetch, loading } = useQuery(
     useMemo((): TypedDocumentNode<{
       items: Record<string, unknown>[] | null
@@ -419,8 +424,7 @@ function ListPage({ listKey }: ListPageProps) {
       errorPolicy: 'all',
       variables: {
         where: {
-          ...(where.length ? { AND: where } : {}),
-          ...(search.length ? { OR: search } : {}),
+          ...(whereAnd.length ? { AND: whereAnd } : {}),
         },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
