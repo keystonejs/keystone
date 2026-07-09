@@ -13,7 +13,6 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
-    "@preconstruct/next": "^4.0.0",
     "@prisma/client": "catalog:",
     "next": "catalog:",
     "react": "catalog:",

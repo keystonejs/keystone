@@ -18,7 +18,6 @@
     "@keystone-6/core": "workspace:^",
     "@keystone-6/document-renderer": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
-    "@preconstruct/next": "^4.0.0",
     "@prisma/client": "catalog:",
     "graphql": "catalog:",
     "graphql-request": "^5.0.0",

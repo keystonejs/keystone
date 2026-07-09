@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@keystone-6/document-renderer": "workspace:^",
-    "@preconstruct/next": "^4.0.0",
     "graphql": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
