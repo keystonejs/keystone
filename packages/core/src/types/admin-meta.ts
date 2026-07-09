@@ -184,6 +184,7 @@ export type ListMeta = {
   initialSearchFields: string[]
   initialSort: ListSortDescriptor<string>
   initialFilter: JSONValue
+  hiddenFilter: JSONValue | null
   isSingleton: boolean
 
   hideNavigation: boolean
