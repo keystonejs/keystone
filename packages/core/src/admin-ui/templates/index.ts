@@ -4,6 +4,7 @@ import type { AdminMetaSource } from '../../lib/admin-meta'
 import type { KeystoneConfig } from '../../types'
 import { appTemplate } from './app'
 import { createItemTemplate } from './create-item'
+import { documentTemplate } from './document'
 import { homeTemplate } from './home'
 import { itemTemplate } from './item'
 import { listTemplate } from './list'
@@ -33,6 +34,11 @@ export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSour
       mode: 'write' as const,
       src: appTemplate(config, adminMeta),
       outputPath: 'pages/_app.js',
+    },
+    {
+      mode: 'write' as const,
+      src: documentTemplate,
+      outputPath: 'pages/_document.js',
     },
     { mode: 'write' as const, src: homeTemplate, outputPath: 'pages/index.js' },
     ...adminMeta.lists.flatMap(({ path, key }) => [
