@@ -279,6 +279,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -301,6 +304,9 @@ importers:
       express:
         specifier: 'catalog:'
         version: 4.22.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@types/bytes':
         specifier: ^3.1.1
@@ -338,6 +344,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@types/bytes':
         specifier: ^3.1.1
@@ -360,6 +369,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -407,6 +419,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -426,6 +441,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -457,6 +475,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -504,6 +525,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -554,6 +578,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -573,6 +600,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -592,6 +622,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -639,6 +672,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -658,6 +694,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -680,6 +719,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.3
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -699,6 +741,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-auth:
         specifier: ^4.24.11
         version: 4.24.14(next@16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -724,6 +769,9 @@ importers:
       express:
         specifier: 'catalog:'
         version: 4.22.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -764,6 +812,9 @@ importers:
       '@redis/client':
         specifier: ^1.3.0
         version: 1.6.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -780,6 +831,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -842,6 +896,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -898,6 +955,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -917,6 +977,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -933,6 +996,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -952,6 +1018,9 @@ importers:
       express:
         specifier: 'catalog:'
         version: 4.22.1
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@types/express':
         specifier: 'catalog:'
@@ -974,6 +1043,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -996,6 +1068,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1012,6 +1087,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1034,6 +1112,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       nexus:
         specifier: ^1.3.0
         version: 1.3.0(graphql@16.13.2)
@@ -1071,6 +1152,9 @@ importers:
       graphql-ws:
         specifier: ^5.9.1
         version: 5.16.2(graphql@16.13.2)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -1099,6 +1183,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1115,6 +1202,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1137,6 +1227,9 @@ importers:
       astro:
         specifier: ^4.12.3
         version: 4.16.19(@types/node@24.12.2)(rollup@4.60.2)(terser@5.46.2)(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -1269,6 +1362,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1328,6 +1424,9 @@ importers:
       isbot:
         specifier: ^5.1.13
         version: 5.1.39
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -1368,6 +1467,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@graphql-codegen/cli':
         specifier: ^5.0.4
@@ -1399,6 +1501,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1418,6 +1523,9 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@ts-gql/compiler':
         specifier: ^0.16.7
@@ -1446,6 +1554,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1462,6 +1573,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1481,6 +1595,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pino-http:
         specifier: ^10.5.0
         version: 10.5.0
@@ -1509,6 +1626,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@opentelemetry/sdk-trace-base':
         specifier: ^2.0.1
@@ -1531,6 +1651,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1547,6 +1670,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1566,6 +1692,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1582,6 +1711,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1598,6 +1730,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1617,6 +1752,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1667,6 +1805,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@prisma/engines':
         specifier: 'catalog:'
@@ -1692,6 +1833,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1711,6 +1855,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1733,6 +1880,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1749,6 +1899,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1768,6 +1921,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1784,6 +1940,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1803,6 +1962,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1822,6 +1984,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1841,6 +2006,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -1904,6 +2072,9 @@ importers:
       graphql-upload:
         specifier: ^15.0.2
         version: 15.0.2(@types/express@4.17.25)(graphql@16.13.2)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
 
   packages/core:
     dependencies:
@@ -2039,9 +2210,6 @@ importers:
       meow:
         specifier: ^9.0.0
         version: 9.0.0
-      next:
-        specifier: 'catalog:'
-        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pluralize:
         specifier: ^8.0.0
         version: 8.0.0
@@ -2103,6 +2271,9 @@ importers:
       '@types/uuid':
         specifier: ^11.0.0
         version: 11.0.0
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
 
   packages/create:
     dependencies:
@@ -2227,6 +2398,9 @@ importers:
       jest-diff:
         specifier: ^29.0.0
         version: 29.7.0
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pretty-format:
         specifier: ^29.0.0
         version: 29.7.0
@@ -2275,6 +2449,9 @@ importers:
       ms:
         specifier: ^2.1.3
         version: 2.1.3
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       playwright:
         specifier: ^1.60.0
         version: 1.60.0
@@ -2360,6 +2537,9 @@ importers:
       ms:
         specifier: ^2.1.3
         version: 2.1.3
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       prisma:
         specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
@@ -2381,6 +2561,9 @@ importers:
       cookie-signature:
         specifier: ^1.1.0
         version: 1.2.2
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       testcheck:
         specifier: ^1.0.0-rc.2
         version: 1.0.0-rc.2
@@ -2508,6 +2691,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react:
         specifier: 'catalog:'
         version: 19.2.5
@@ -2527,6 +2713,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -2543,6 +2732,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -2559,6 +2751,9 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@6.0.3))(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       prisma:
         specifier: 'catalog:'
@@ -2581,6 +2776,9 @@ importers:
       '@prisma/internals':
         specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)
+      next:
+        specifier: 'catalog:'
+        version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       prisma:
         specifier: 'catalog:'
         version: 6.19.3(magicast@0.3.5)(typescript@6.0.3)

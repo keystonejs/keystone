@@ -12,7 +12,8 @@
   "dependencies": {
     "@keystar/ui": "^0.7.21",
     "@keystone-6/core": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@prisma/client": "catalog:",
+    "next": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

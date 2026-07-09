@@ -15,7 +15,8 @@
     "@keystone-6/cloudinary": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "next": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

@@ -13,7 +13,8 @@
     "@keystone-6/core": "workspace:^",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/sdk-trace-node": "^2.0.1",
-    "@prisma/client": "catalog:"
+    "@prisma/client": "catalog:",
+    "next": "catalog:"
   },
   "devDependencies": {
     "@opentelemetry/sdk-trace-base": "^2.0.1",

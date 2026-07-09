@@ -19,6 +19,7 @@
     "graphql": "catalog:",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.1",
+    "next": "catalog:",
     "react": "catalog:",
     "ws": "^8.8.0"
   },

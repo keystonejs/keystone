@@ -31,7 +31,8 @@
     "@types/express": "catalog:",
     "@types/react": "catalog:",
     "graphql": "catalog:",
-    "graphql-upload": "^15.0.2"
+    "graphql-upload": "^15.0.2",
+    "next": "catalog:"
   },
   "preconstruct": {
     "entrypoints": [
