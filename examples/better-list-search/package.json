@@ -12,7 +12,8 @@
   "dependencies": {
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
-    "@prisma/client": "catalog:"
+    "@prisma/client": "catalog:",
+    "next": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

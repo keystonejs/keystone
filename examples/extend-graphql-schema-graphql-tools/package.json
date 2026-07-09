@@ -13,7 +13,8 @@
     "@graphql-tools/schema": "^9.0.0",
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "graphql": "catalog:"
+    "graphql": "catalog:",
+    "next": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",
