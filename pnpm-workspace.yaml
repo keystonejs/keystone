@@ -40,3 +40,5 @@ allowBuilds:
   prisma: true
   sharp: false
 minimumReleaseAge: 2880 # 2 days
+minimumReleaseAgeExclude:
+  - '@keystar/ui@0.7.22'
