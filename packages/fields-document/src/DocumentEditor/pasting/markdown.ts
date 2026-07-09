@@ -1,11 +1,8 @@
-import mdASTUtilFromMarkdown from 'mdast-util-from-markdown'
-// @ts-expect-error
-import autoLinkLiteralFromMarkdownExtension from 'mdast-util-gfm-autolink-literal/from-markdown'
-// @ts-expect-error
-import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-literal'
-// @ts-expect-error
-import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown'
-import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough'
+import { fromMarkdown } from 'mdast-util-from-markdown'
+import { gfmAutolinkLiteralFromMarkdown } from 'mdast-util-gfm-autolink-literal'
+import { gfmStrikethroughFromMarkdown } from 'mdast-util-gfm-strikethrough'
+import { gfmStrikethrough } from 'micromark-extension-gfm-strikethrough'
+import { gfmAutolinkLiteral } from 'micromark-extension-gfm-autolink-literal'
 import { type Block } from '../editor-shared'
 import {
   type InlineFromExternalPaste,
@@ -15,12 +12,12 @@ import {
 } from './utils'
 
 const markdownConfig = {
-  mdastExtensions: [autoLinkLiteralFromMarkdownExtension, gfmStrikethroughFromMarkdownExtension],
-  extensions: [autoLinkLiteralMarkdownSyntax, gfmStrikethroughMarkdownSyntax()],
+  mdastExtensions: [gfmAutolinkLiteralFromMarkdown(), gfmStrikethroughFromMarkdown()],
+  extensions: [gfmAutolinkLiteral(), gfmStrikethrough()],
 }
 
 export function deserializeMarkdown(markdown: string) {
-  const root = mdASTUtilFromMarkdown(markdown, markdownConfig)
+  const root = fromMarkdown(markdown, markdownConfig)
   let nodes = root.children
   if (nodes.length === 1 && nodes[0].type === 'paragraph') {
     nodes = nodes[0].children
@@ -28,7 +25,7 @@ export function deserializeMarkdown(markdown: string) {
   return deserializeChildren(nodes, markdown)
 }
 
-type MDNode = ReturnType<typeof mdASTUtilFromMarkdown>['children'][number]
+type MDNode = ReturnType<typeof fromMarkdown>['children'][number]
 
 function deserializeChildren(nodes: MDNode[], input: string) {
   const outputNodes: (InlineFromExternalPaste | Block)[] = []
