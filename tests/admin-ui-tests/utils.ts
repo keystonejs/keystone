@@ -7,7 +7,7 @@ import type { ExecaChildProcess } from 'execa'
 import ms from 'ms'
 import * as playwright from 'playwright'
 
-jest.setTimeout(ms('20 minutes'))
+vi.setConfig({ testTimeout: ms('20 minutes') })
 
 export async function loadIndex(page: playwright.Page) {
   try {

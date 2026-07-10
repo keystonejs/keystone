@@ -18,7 +18,7 @@ async function replaceSchema(schema: string) {
   )
 }
 
-jest.setTimeout(ms('20 minutes'))
+vi.setConfig({ testTimeout: ms('20 minutes') })
 
 let exit = async () => {}
 let ksProcess = undefined as any

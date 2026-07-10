@@ -50,7 +50,7 @@ jobs:
       - run: cd examples/graphql-gql.tada && pnpm check:tada-output
 
   unit_tests:
-    name: Package Unit Tests (Jest)
+    name: Package Unit Tests (Vitest)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -58,7 +58,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: DATABASE_URL=file:./test.db pnpm jest --ci packages/core/tests/telemetry.test.ts tests/cli-tests
+        run: DATABASE_URL=file:./test.db pnpm vitest run packages/core/tests/telemetry.test.ts tests/cli-tests
 
   vitest:
     name: Package Unit Tests (Vitest)
@@ -93,7 +93,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests --shard=${{ matrix.index }}/4 --exclude=tests/api-tests/fields/crud.test.ts
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
 
@@ -110,7 +110,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests --shard=${{ matrix.index }}/4 --exclude=tests/api-tests/fields/crud.test.ts
         env:
           DATABASE_URL: file:./test.db
 
@@ -134,7 +134,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --shard=${{ matrix.index }}/4 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests --shard=${{ matrix.index }}/4 --exclude=tests/api-tests/fields/crud.test.ts
         env:
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
@@ -159,7 +159,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests/fields/crud.test.ts
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -182,7 +182,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests/fields/crud.test.ts
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -212,7 +212,7 @@ jobs:
         run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
-        run: pnpm jest --ci tests/api-tests/fields/crud
+        run: pnpm vitest run tests/api-tests/fields/crud.test.ts
         env:
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
@@ -340,7 +340,7 @@ jobs:
         run: cd tests/examples-smoke-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci tests/examples-smoke-tests/${{ matrix.test }}
+        run: pnpm vitest run tests/examples-smoke-tests/${{ matrix.test }}
 
   admin_ui_integration_tests:
     name: Integration tests for Admin UI
@@ -371,4 +371,4 @@ jobs:
         run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --forceExit tests/admin-ui-tests/${{ matrix.test }}
+        run: pnpm vitest run --maxWorkers=1 tests/admin-ui-tests/${{ matrix.test }}

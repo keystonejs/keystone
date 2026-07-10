@@ -10,7 +10,7 @@ import ms from 'ms'
 
 import { cli } from '@keystone-6/core/scripts/cli'
 
-jest.setTimeout(ms('30 seconds'))
+vi.setConfig({ testTimeout: ms('30 seconds') })
 
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
@@ -67,6 +67,21 @@ export async function cliMock(cwd: string, args: string | string[]) {
   if (typeof proc === 'function') {
     await proc()
   }
+}
+
+export function setPromptHandler(
+  handler: (
+    args:
+      | { name: 'value'; type: 'text'; message: string }
+      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
+  ) => { value: string | boolean }
+) {
+  const prompts = require('prompts')
+  prompts.inject((args: Parameters<typeof handler>[0]) => {
+    const result = handler(args)
+    console.log(`Prompt: ${args.message} ${result.value}`)
+    return result.value
+  })
 }
 
 export async function spawnCommand(cwd: string, commands: string[]) {

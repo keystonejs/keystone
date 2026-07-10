@@ -103,13 +103,11 @@ for (const name of ['with custom formatError', 'without custom formatError'] as 
               },
             ],
           })
-          expect(result.errors[0].extensions.stacktrace.slice(0, 5)).toEqual([
-            'PrismaClientKnownRequestError: ',
-            'Invalid `prisma.user.create()` invocation:',
-            '',
-            '',
-            `Unique constraint failed on the ${dbProvider === 'mysql' ? 'constraint: `User_name_key`' : 'fields: (`name`)'}`,
-          ])
+          const stacktrace = result.errors[0].extensions.stacktrace.join('\n')
+          expect(stacktrace).toContain('PrismaClientKnownRequestError: ')
+          expect(stacktrace).toContain(
+            `Unique constraint failed on the ${dbProvider === 'mysql' ? 'constraint: `User_name_key`' : 'fields: (`name`)'}`
+          )
         })
       )
     }

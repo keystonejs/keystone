@@ -1,4 +1,5 @@
-import { assertInputObjectType, assertObjectType, parse, printType } from 'graphql'
+const { assertInputObjectType, assertObjectType, parse, printType } =
+  require('graphql') as typeof import('graphql')
 
 import { config, list } from '@keystone-6/core'
 import type { KeystoneConfigPre } from '@keystone-6/core/types'

@@ -13,7 +13,7 @@ const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-f
 })
 
 for (const modulePath of testModules) {
-  const mod = require(modulePath)
+  const mod = await import(modulePath)
   if (mod.skipCrudTest) continue
   if (mod.unSupportedAdapterList?.includes(dbProvider)) continue
 

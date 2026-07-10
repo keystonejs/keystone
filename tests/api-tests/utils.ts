@@ -19,10 +19,10 @@ export const dbProvider = (function () {
   throw new Error(`Unsupported environment DATABASE_URL="${dbUrl}"`)
 })()
 
-const workerId = process.env.JEST_WORKER_ID
+const workerId = process.env.VITEST_WORKER_ID
 
 if (workerId === undefined) {
-  throw new Error('expected JEST_WORKER_ID to be set')
+  throw new Error('expected VITEST_WORKER_ID to be set')
 }
 
 export type ContextFromRunner<Runner extends ReturnType<typeof setupTestRunner>> = Parameters<
