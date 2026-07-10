@@ -1,5 +1,6 @@
 import path from 'path'
 import { promisify } from 'util'
+import { DatabaseSync } from 'node:sqlite'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
@@ -20,16 +21,34 @@ export async function loadIndex(page: playwright.Page) {
 }
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
-  const prisma = new PrismaClient()
+  const database = new DatabaseSync(path.join(projectDir, 'keystone-example.db'), {
+    timeout: 10_000,
+  })
 
-  await prisma.$transaction(
-    Object.values(prisma)
-      .filter((x: any) => x?.deleteMany)
-      .map((x: any) => x?.deleteMany?.({}))
-  )
+  try {
+    const tables = database
+      .prepare(
+        `SELECT name FROM sqlite_master
+         WHERE type = 'table'
+           AND name NOT LIKE 'sqlite_%'
+           AND name != '_prisma_migrations'`
+      )
+      .all() as { name: string }[]
 
-  await prisma.$disconnect()
+    database.exec('PRAGMA foreign_keys = OFF; BEGIN')
+    try {
+      for (const { name } of tables) {
+        const tableName = `"${name.replaceAll('"', '""')}"`
+        database.prepare(`DELETE FROM ${tableName}`).run()
+      }
+      database.exec('COMMIT')
+    } catch (error) {
+      database.exec('ROLLBACK')
+      throw error
+    }
+  } finally {
+    database.close()
+  }
 }
 
 const treeKill = promisify(_treeKill)
@@ -70,6 +89,10 @@ export const exampleProjectTests = (
   tests: (browser: playwright.BrowserType<playwright.Browser>, mode: 'dev' | 'prod') => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName)
+  const env = {
+    ...process.env,
+    DATABASE_URL: `file:${path.join(projectDir, 'keystone-example.db')}`,
+  }
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {}
 
@@ -80,7 +103,7 @@ export const exampleProjectTests = (
     async function startKeystone(command: 'start' | 'dev') {
       const ksProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
-        env: process.env,
+        env,
       })
 
       cleanupKeystoneProcess = async () => {
@@ -99,7 +122,7 @@ export const exampleProjectTests = (
       test('build keystone', async () => {
         const keystoneBuildProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
-          env: process.env,
+          env,
         })
         if (process.env.VERBOSE) {
           const logChunk = (chunk: any) => {

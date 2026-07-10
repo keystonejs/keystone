@@ -1,28 +1,44 @@
 ---
-title: "System Configuration"
-description: "API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options."
+title: 'System Configuration'
+description: 'API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options.'
 ---
 
 The `keystone` [CLI](../guides/cli) expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
 
 ```typescript filename=keystone.ts
-import { config } from '@keystone-6/core';
+import { config } from '@keystone-6/core'
 
-export default config({ /* ... */ });
+export default config({
+  /* ... */
+})
 ```
 
 The `config` function accepts an object representing all the configurable parts of the system:
 
 ```typescript
 export default config({
-  lists: { /* ... */ },
-  db: { /* ... */ },
-  ui: { /* ... */ },
-  server: { /* ... */ },
-  session: { /* ... */ },
-  graphql: { /* ... */ },
-  extendGraphqlSchema: { /* ... */ },
-});
+  lists: {
+    /* ... */
+  },
+  db: {
+    /* ... */
+  },
+  ui: {
+    /* ... */
+  },
+  server: {
+    /* ... */
+  },
+  session: {
+    /* ... */
+  },
+  graphql: {
+    /* ... */
+  },
+  extendGraphqlSchema: {
+    /* ... */
+  },
+})
 ```
 
 We will cover each of these options below.
@@ -33,9 +49,11 @@ This type definition should be considered the source of truth for the available 
 Note: It is important to pass a `TypeInfo` type argument to the config function as it ensures proper typing for the [Keystone Context](../context/overview). This type is automatically created in `.keystone/types`. You can customize the output path of the generated type by specifying it in the config object.
 
 ```typescript
-import { TypeInfo } from ".keystone/types";
+import { TypeInfo } from '.keystone/types'
 
-export default config<TypeInfo>({ /* ... */ });
+export default config<TypeInfo>({
+  /* ... */
+})
 ```
 
 ## lists
@@ -45,13 +63,15 @@ This is where you define and configure the `lists` and their `fields` of the dat
 See the [Lists API](./lists) docs for details on how to use this function.
 
 ```typescript
-import { config } from '@keystone-6/core';
-import { TypeInfo } from ".keystone/types";
+import { config } from '@keystone-6/core'
+import { TypeInfo } from '.keystone/types'
 
 export default config<TypeInfo>({
-  lists: { /* ... */ },
+  lists: {
+    /* ... */
+  },
   /* ... */
-});
+})
 ```
 
 ## db
@@ -61,61 +81,77 @@ Keystone supports the database types **PostgreSQL**, **MySQL** and **SQLite**.
 These database types are powered by their corresponding Prisma database providers; `postgresql`, `mysql` and `sqlite`.
 
 - `provider`: The database provider to use, it can be one of `postgresql`, `mysql` or `sqlite`.
-- `url`: The connection URL for your database
+- `prismaClientOptions`: A function returning the options for the Prisma client. This must include an `adapter` for your database.
+- `prismaClientPath` (default: `generated/prisma`): The output directory for the generated Prisma client.
+- `prismaSchemaPath` (default: `schema.prisma`): The path where Keystone writes its generated Prisma schema.
+- `extendPrismaClient`: A function that receives the generated Prisma Client instance and returns a client extended with custom functionality.
+- `extendPrismaSchema`: A function that receives the generated Prisma schema and returns a customised schema.
 - `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
-- `enableLogging` (default: `false`): Enable logging from the Prisma client.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid`, `nanoid`, `ulid`, or `autoincrement`.
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
-- `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
+
+The Database URL used by the Prisma CLI and `prisma db push` used in `keystone dev` are defined in the `prisma.config.ts`. Keystone creates an initial config if it is missing, but never overwrites the config.
 
 ### postgresql
 
 ```typescript
+import { PrismaPg } from '@prisma/adapter-pg'
+
 export default config<TypeInfo>({
   db: {
     provider: 'postgresql',
-    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
+    prismaClientOptions: () => ({
+      adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
+      log: ['warn', 'error'],
+    }),
+    onConnect: async context => {
+      /* ... */
+    },
     idField: { kind: 'uuid' },
-    shadowDatabaseUrl: 'postgres://dbuser:dbpass@localhost:5432/shadowdb'
   },
   /* ... */
-});
+})
 ```
 
 ### mysql
 
 ```typescript
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+
 export default config<TypeInfo>({
   db: {
     provider: 'mysql',
-    url: 'mysql://dbuser:dbpass@localhost:3306/keystone',
-    onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
+    prismaClientOptions: () => ({
+      adapter: new PrismaMariaDb(process.env.DATABASE_URL!),
+    }),
+    onConnect: async context => {
+      /* ... */
+    },
     idField: { kind: 'uuid' },
   },
   /* ... */
-});
+})
 ```
 
 ### sqlite
 
 ```typescript
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+
 export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
-    onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
+    onConnect: async context => {
+      /* ... */
+    },
     idField: { kind: 'uuid' },
   },
   /* ... */
-});
+})
 ```
 
 #### Limitations
@@ -156,7 +192,7 @@ Advanced configuration:
 export default config<TypeInfo>({
   ui: {
     isDisabled: false,
-    isAccessAllowed: async (context) => context.session !== undefined,
+    isAccessAllowed: async context => context.session !== undefined,
 
     // advanced configuration
     publicPages: ['/welcome'],
@@ -174,11 +210,11 @@ export default config<TypeInfo>({
         mode: 'copy',
         inputPath: '...',
         outputPath: 'pages/farewell.js',
-      }
+      },
     ],
   },
   /* ... */
-});
+})
 ```
 
 ## server
@@ -202,11 +238,15 @@ export default config<TypeInfo>({
     cors: { origin: ['http://localhost:7777'], credentials: true },
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
-    extendExpressApp: async (app, commonContext) => { /* ... */ },
-    extendHttpServer: async (httpServer, commonContext) => { /* ... */ },
+    extendExpressApp: async (app, commonContext) => {
+      /* ... */
+    },
+    extendHttpServer: async (httpServer, commonContext) => {
+      /* ... */
+    },
   },
   /* ... */
-});
+})
 ```
 
 ### extendExpressApp
@@ -223,14 +263,14 @@ For example, you could add your own request logging middleware:
 ```ts
 export default config<TypeInfo>({
   server: {
-    extendExpressApp: (app) => {
+    extendExpressApp: app => {
       app.use((req, res, next) => {
-        console.log('A request!');
-        next();
-      });
+        console.log('A request!')
+        next()
+      })
     },
   },
-});
+})
 ```
 
 Or add a custom route handler:
@@ -238,13 +278,13 @@ Or add a custom route handler:
 ```ts
 export default config<TypeInfo>({
   server: {
-    extendExpressApp: (app) => {
+    extendExpressApp: app => {
       app.get('/_version', (req, res) => {
-        res.send('v6.0.0-rc.2');
-      });
+        res.send('v6.0.0-rc.2')
+      })
     },
   },
-});
+})
 ```
 
 You could also use it to add custom REST endpoints to your server, by creating a context for the request and using the Query API Keystone provides:
@@ -254,13 +294,13 @@ export default config<TypeInfo>({
   server: {
     extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = await commonContext.withRequest(req, res);
-        const users = await context.query.User.findMany();
-        res.json(users);
-      });
+        const context = await commonContext.withRequest(req, res)
+        const users = await context.query.User.findMany()
+        res.json(users)
+      })
     },
   },
-});
+})
 ```
 
 The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
@@ -279,8 +319,8 @@ The function is passed in 3 arguments:
 For example, this function could be used to listen for `'upgrade'` requests for a WebSocket server when adding support for GraphQL subscriptions
 
 ```ts
-import { WebSocketServer } from 'ws';
-import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
+import { WebSocketServer } from 'ws'
+import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws'
 
 export default config<TypeInfo>({
   server: {
@@ -288,12 +328,12 @@ export default config<TypeInfo>({
       const wss = new WebSocketServer({
         server: httpServer,
         path: '/api/graphql',
-      });
+      })
 
-      wsUseServer({ schema: commonContext.graphql.schema }, wss);
+      wsUseServer({ schema: commonContext.graphql.schema }, wss)
     },
   },
-});
+})
 ```
 
 _Note_: when using `keystone dev`, `extendHttpServer` is only called once on startup - you will need to restart your process for any updates
@@ -304,14 +344,15 @@ The `session` config option allows you to configure session management of your K
 
 In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
 
-
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/core/session'
 
 export default config<TypeInfo>({
-  session: statelessSessions({ /* ... */ }),
+  session: statelessSessions({
+    /* ... */
+  }),
   /* ... */
-});
+})
 ```
 
 See the [Session API](./session) for more details on how to configure session management in Keystone.
@@ -343,7 +384,7 @@ export default config<TypeInfo>({
     },
   },
   /* ... */
-});
+})
 ```
 
 ## extendGraphqlSchema
@@ -361,7 +402,7 @@ export default config<TypeInfo>({
   extendGraphqlSchema: (keystoneSchema: GraphQLSchema) => {
     /* ... */
     return newExtendedSchema
-  }
+  },
   /* ... */
 })
 ```

@@ -25,13 +25,12 @@ test('when not specifying foreignKey in a one to one relationship, the side is p
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {
@@ -69,13 +68,12 @@ test('when specifying foreignKey: true in a one to one relationship, that side h
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {
@@ -113,13 +111,12 @@ test('when specifying foreignKey: { map } in a one to one relationship, that sid
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {
@@ -230,13 +227,12 @@ test('foreignKey: { map } in a many to one relationship sets the @map attribute 
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {

@@ -25,13 +25,12 @@ test('when not specifying relationName in a many to many relationship, the name 
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {
@@ -68,13 +67,12 @@ test("the ordering of the lists doesn't affect the relation name", async () => {
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {
@@ -111,13 +109,12 @@ test('when specifying relationName in a many to many relationship, the relation 
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model A {

@@ -1,8 +1,8 @@
 ---
 title: 'Lesson 4: Auth & Sessions'
 description: 'Learn Keystone: Lesson 4'
-
 ---
+
 Learn how to add passwords, session data and authentication to your Keystone app.
 
 ## Where we left off
@@ -11,8 +11,9 @@ In the [last lesson](/docs/walkthroughs/lesson-3) we setup a publishing workflow
 
 ```ts
 //keystone.ts
-import { list, config } from '@keystone-6/core';
-import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { list, config } from '@keystone-6/core'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
 
 const lists = {
   User: list({
@@ -37,15 +38,17 @@ const lists = {
       author: relationship({ ref: 'User.posts' }),
     },
   }),
-};
+}
 
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
-});
+})
 ```
 
 We're now going to add auth to our app so that different types of users have access to different types of things.
@@ -57,8 +60,9 @@ Keystone's [password](/docs/fields/password) field adheres to typical password s
 
 Let's add a password field to our `User` list so users can authenticate with Keystone:
 
-```ts{2,10}[13-27,29-500]
+```ts{3,11}[14-28,30-500]
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
@@ -90,7 +94,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -118,16 +124,16 @@ And add the following code:
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth';
+import { createAuth } from '@keystone-6/auth'
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   sessionData: 'name',
   secretField: 'password',
-});
+})
 
-export { withAuth };
+export { withAuth }
 ```
 
 This code says:
@@ -170,9 +176,10 @@ Back over in our keystone file, we want to import our `withAuth` function, and o
 
 Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
-```ts{4,32-33,39-42}[7-29]
+```ts{5,33-34,42-45}[8-30]
 //keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
@@ -206,7 +213,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
@@ -258,8 +267,8 @@ Now, if you open Admin UI, you can check out the sign in flow. If you have no us
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth'
+import { statelessSessions } from '@keystone-6/core/session'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -269,24 +278,25 @@ const { withAuth } = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
   },
-});
+})
 
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24; // 24 hours
+let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+let sessionMaxAge = 60 * 60 * 24 // 24 hours
 
 const session = statelessSessions({
   maxAge: sessionMaxAge,
   secret: sessionSecret,
-});
+})
 
 export { withAuth, session }
 ```
 
 ```ts
 //keystone.ts
-import { list, config } from '@keystone-6/core';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
-import { withAuth, session } from './auth';
+import { list, config } from '@keystone-6/core'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { withAuth, session } from './auth'
 
 const lists = {
   User: list({
@@ -294,7 +304,7 @@ const lists = {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      password: password({ validation: { isRequired: true } })
+      password: password({ validation: { isRequired: true } }),
     },
   }),
   Post: list({
@@ -312,21 +322,23 @@ const lists = {
       author: relationship({ ref: 'User.posts' }),
     },
   }),
-};
+}
 
 export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
     ui: {
-      isAccessAllowed: (context) => !!context.session?.data,
+      isAccessAllowed: context => !!context.session?.data,
     },
   })
-);
+)
 ```
 
 ## Next lesson

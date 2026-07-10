@@ -39,6 +39,29 @@ test('build works with typescript without the user defining a babel config', asy
   expect(result.stdout.includes('Generating static pages')).toBe(true)
   expect(result.stdout.includes('Finalizing page optimization')).toBe(true)
   expect(result.exitCode).toBe(0)
+  expect(require(`${cwd}/.keystone/config.js`)).toEqual(
+    expect.objectContaining({ default: expect.any(Object) })
+  )
+  expect(require(`${cwd}/.keystone/prisma.js`)).toEqual(expect.any(Object))
+})
+
+test('build --no-prisma bundles an existing generated client separately', async () => {
+  const cwd = await testdir({
+    ...symlinkKeystoneDeps,
+    ...schemas,
+    'keystone.js': basicKeystoneConfig,
+  })
+
+  await cliMock(cwd, ['build', '--no-ui'])
+  await cliMock(cwd, ['build', '--no-ui', '--no-prisma'])
+
+  const configPath = `${cwd}/.keystone/config.js`
+  const prismaPath = `${cwd}/.keystone/prisma.js`
+  const result = await execa('node', [
+    '-e',
+    `const config = require(${JSON.stringify(configPath)}).default; const prisma = require(${JSON.stringify(prismaPath)}); process.stdout.write(String(!!config && !!prisma.PrismaClient))`,
+  ])
+  expect(result.stdout).toBe('true')
 })
 
 test('process.env.NODE_ENV is production in production', async () => {

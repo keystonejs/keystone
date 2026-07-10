@@ -26,11 +26,6 @@
       "module": "./session/dist/keystone-6-core-session.esm.js",
       "default": "./session/dist/keystone-6-core-session.cjs.js"
     },
-    "./testing": {
-      "types": "./testing/dist/keystone-6-core-testing.cjs.js",
-      "module": "./testing/dist/keystone-6-core-testing.esm.js",
-      "default": "./testing/dist/keystone-6-core-testing.cjs.js"
-    },
     "./graphql-ts": {
       "types": "./graphql-ts/dist/keystone-6-core-graphql-ts.cjs.js",
       "module": "./graphql-ts/dist/keystone-6-core-graphql-ts.esm.js",
@@ -56,6 +51,16 @@
       "module": "./scripts/dist/keystone-6-core-scripts.esm.js",
       "default": "./scripts/dist/keystone-6-core-scripts.cjs.js"
     },
+    "./testing/mysql": {
+      "types": "./testing/mysql/dist/keystone-6-core-testing-mysql.cjs.js",
+      "module": "./testing/mysql/dist/keystone-6-core-testing-mysql.esm.js",
+      "default": "./testing/mysql/dist/keystone-6-core-testing-mysql.cjs.js"
+    },
+    "./testing/sqlite": {
+      "types": "./testing/sqlite/dist/keystone-6-core-testing-sqlite.cjs.js",
+      "module": "./testing/sqlite/dist/keystone-6-core-testing-sqlite.esm.js",
+      "default": "./testing/sqlite/dist/keystone-6-core-testing-sqlite.cjs.js"
+    },
     "./admin-ui/image": {
       "types": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js",
       "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
@@ -75,6 +80,11 @@
       "types": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.js",
       "module": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js",
       "default": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.js"
+    },
+    "./testing/postgresql": {
+      "types": "./testing/postgresql/dist/keystone-6-core-testing-postgresql.cjs.js",
+      "module": "./testing/postgresql/dist/keystone-6-core-testing-postgresql.esm.js",
+      "default": "./testing/postgresql/dist/keystone-6-core-testing-postgresql.cjs.js"
     },
     "./admin-ui/utils": {
       "types": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.cjs.js",
@@ -246,10 +256,6 @@
     "@keystar/ui": "catalog:",
     "@nodelib/fs.walk": "^3.0.0",
     "@opentelemetry/api": "^1.9.0",
-    "@prisma/client": "catalog:",
-    "@prisma/client-generator-registry": "catalog:",
-    "@prisma/internals": "catalog:",
-    "@prisma/migrate": "catalog:",
     "@sindresorhus/slugify": "^3.0.0",
     "apollo-upload-client": "^19.0.0",
     "bcryptjs": "^3.0.0",
@@ -271,14 +277,17 @@
     "image-size": "^2.0.0",
     "meow": "^9.0.0",
     "pluralize": "^8.0.0",
-    "prisma": "catalog:",
-    "prompts": "^2.4.2",
     "react-aria": "catalog:",
     "react-stately": "catalog:",
     "resolve": "^1.20.0",
     "uuid": "^14.0.0"
   },
   "peerDependencies": {
+    "@prisma/client": "~7.8.0",
+    "better-sqlite3": "^12.6.0",
+    "mariadb": "^3.4.5",
+    "pg": "^8.16.3",
+    "prisma": "~7.8.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -295,17 +304,28 @@
     },
     "react-stately": {
       "optional": true
+    },
+    "better-sqlite3": {
+      "optional": true
+    },
+    "mariadb": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
     }
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
+    "@prisma/client": "catalog:",
     "@types/apollo-upload-client": "19.0.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/body-parser": "^1.19.2",
     "@types/bytes": "^3.1.1",
     "@types/cors": "^2.8.13",
     "@types/express": "catalog:",
+    "@types/pg": "^8.15.6",
     "@types/pluralize": "^0.0.33",
-    "@types/prompts": "^2.0.14",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/resolve": "^1.20.2",
@@ -322,7 +342,9 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",
-      "testing.ts",
+      "testing/mysql.ts",
+      "testing/postgresql.ts",
+      "testing/sqlite.ts",
       "session.ts",
       "graphql-ts.ts",
       "scripts/index.ts",

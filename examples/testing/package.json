@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@prisma/engines": "catalog:",
     "prisma": "catalog:",
     "tsx": "^4.0.0",
     "typescript": "catalog:"
