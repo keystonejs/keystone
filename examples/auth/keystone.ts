@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { config } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
@@ -35,7 +36,11 @@ export default withAuth<TypeInfo<Session>>(
   config<TypeInfo>({
     db: {
       provider: 'sqlite',
-      url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({
+          url: process.env.DATABASE_URL ?? 'file:./keystone-example.db',
+        }),
+      }),
       async onConnect(context) {
         // this creates an initial user if none exist so you can log in for development
         // WARNING: do not use this in production
@@ -48,9 +53,6 @@ export default withAuth<TypeInfo<Session>>(
           console.log(`Created initial user: admin / ${password}`)
         })().catch(error => console.error('Failed to create initial user:', error))
       },
-
-      // WARNING: this is only needed for our monorepo examples, dont do this
-      prismaClientPath: 'node_modules/myprisma',
     },
     lists,
     ui: {
