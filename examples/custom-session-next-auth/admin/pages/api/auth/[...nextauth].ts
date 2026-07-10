@@ -1,7 +1,7 @@
 import NextAuth, { type DefaultUser } from 'next-auth'
 import { nextAuthOptions } from '../../../../session'
 // WARNING: this is only needed for our monorepo examples, dont do this
-import * as Prisma from 'myprisma'
+import * as Prisma from '../../../../generated/prisma/client'
 // import * as Prisma from '@prisma/client' // <-- do this
 import { getContext } from '@keystone-6/core/context'
 import keystoneConfig from '../../../../keystone'

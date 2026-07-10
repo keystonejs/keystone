@@ -4,9 +4,6 @@ export default {
   experimental: {
     externalDir: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },

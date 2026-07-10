@@ -6,7 +6,7 @@ import { Passport } from 'passport'
 import type { VerifyCallback } from 'passport-oauth2'
 import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
-import type { Author } from 'myprisma'
+import type { Author } from './generated/prisma/client'
 import type { TypeInfo } from '.keystone/types'
 
 export type Session = Author

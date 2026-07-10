@@ -47,7 +47,8 @@ This produces a generator block like:
 
 ```prisma
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
   previewFeatures = ["fullTextSearchPostgres"]
 }
 ```

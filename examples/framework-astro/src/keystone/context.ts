@@ -1,5 +1,5 @@
 import { getContext } from '@keystone-6/core/context'
-import * as PrismaModule from 'myprisma'
+import * as PrismaModule from '../../generated/prisma/client'
 import config from '../../keystone'
 import type { Context } from '.keystone/types'
 
