@@ -14,6 +14,7 @@
     "@prisma/client": "catalog:",
     "dotenv": "^16.0.0",
     "express": "catalog:",
+    "next": "catalog:",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12"
   },

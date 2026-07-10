@@ -8,9 +8,6 @@ export default {
   experimental: {
     externalDir: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     // next attempts to use Typescript, but it's not using our configuration
     //   we check Typescript elsewhere

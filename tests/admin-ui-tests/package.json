@@ -17,6 +17,7 @@
     "express": "catalog:",
     "graphql": "catalog:",
     "ms": "^2.1.3",
+    "next": "catalog:",
     "playwright": "^1.60.0",
     "treekill": "^1.0.0"
   },

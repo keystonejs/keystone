@@ -13,7 +13,8 @@
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "@redis/client": "^1.3.0"
+    "@redis/client": "^1.3.0",
+    "next": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

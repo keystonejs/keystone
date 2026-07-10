@@ -11,6 +11,7 @@
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
+    "next": "catalog:",
     "typescript": "catalog:"
   }
 }
