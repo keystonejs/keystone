@@ -2,12 +2,14 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '../test-runner'
-import { dbProvider, monitorLogs, waitFor } from '../utils'
+import { dbProvider, monitorLogs, prismaClientOptions, waitFor } from '../utils'
 
 const runner = setupTestRunner({
   identifier: 'toqb',
   config: {
-    db: { enableLogging: true },
+    db: {
+      prismaClientOptions: url => ({ ...prismaClientOptions(url), log: ['query'] }),
+    },
     lists: {
       Post: list({
         access: {
@@ -49,9 +51,9 @@ test(
       await waitFor(() => {
         expect(monitor.logs).toHaveLength(
           {
-            mysql: 130,
-            postgresql: 70,
-            sqlite: 70,
+            mysql: 100,
+            postgresql: 60,
+            sqlite: 60,
           }[dbProvider]
         )
       })
@@ -82,16 +84,16 @@ test(
 
       const expectedSql = {
         sqlite: [
-          'SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ? ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ?',
-          'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE (`main`.`User`.`id` IN (?,?,?,?,?,?,?,?,?,?) AND `main`.`User`.`name` LIKE ?) LIMIT ? OFFSET ?',
+          "SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ('%' || ? || '%') ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ?",
+          "SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE (`main`.`User`.`id` IN (?,?,?,?,?,?,?,?,?,?) AND `main`.`User`.`name` LIKE ('%' || ? || '%')) LIMIT ? OFFSET ?",
         ],
         postgresql: [
-          `SELECT "toqb"."Post"."id", "toqb"."Post"."title", "toqb"."Post"."author" FROM "toqb"."Post" WHERE "toqb"."Post"."title"::text NOT LIKE $1 ORDER BY "toqb"."Post"."title" ASC OFFSET $2`,
-          `SELECT "toqb"."User"."id", "toqb"."User"."name" FROM "toqb"."User" WHERE ("toqb"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "toqb"."User"."name"::text LIKE $11) OFFSET $12`,
+          `SELECT "toqb"."Post"."id", "toqb"."Post"."title", "toqb"."Post"."author" FROM "toqb"."Post" WHERE "toqb"."Post"."title"::text NOT LIKE ('%' || $1 || '%') ORDER BY "toqb"."Post"."title" ASC OFFSET $2`,
+          `SELECT "toqb"."User"."id", "toqb"."User"."name" FROM "toqb"."User" WHERE ("toqb"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "toqb"."User"."name"::text LIKE ('%' || $11 || '%')) OFFSET $12`,
         ],
         mysql: [
-          `SELECT \`toqb\`.\`Post\`.\`id\`, \`toqb\`.\`Post\`.\`title\`, \`toqb\`.\`Post\`.\`author\` FROM \`toqb\`.\`Post\` WHERE \`toqb\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`toqb\`.\`Post\`.\`title\` ASC`,
-          `SELECT \`toqb\`.\`User\`.\`id\`, \`toqb\`.\`User\`.\`name\` FROM \`toqb\`.\`User\` WHERE (\`toqb\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`toqb\`.\`User\`.\`name\` LIKE ?)`,
+          `SELECT \`Post\`.\`id\`, \`Post\`.\`title\`, \`Post\`.\`author\` FROM \`Post\` WHERE \`Post\`.\`title\` NOT LIKE CONCAT('%', ?, '%') ORDER BY \`Post\`.\`title\` ASC`,
+          `SELECT \`User\`.\`id\`, \`User\`.\`name\` FROM \`User\` WHERE (\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`User\`.\`name\` LIKE CONCAT('%', ?, '%'))`,
         ],
       }[dbProvider]
       const sql = monitor.logs.map(([, query]) => query)

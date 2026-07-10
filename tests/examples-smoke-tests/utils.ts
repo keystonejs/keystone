@@ -1,5 +1,6 @@
 import path from 'path'
 import { promisify } from 'util'
+import { DatabaseSync } from 'node:sqlite'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
@@ -20,20 +21,33 @@ export async function loadIndex(page: playwright.Page) {
 }
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
-  const prisma = new PrismaClient()
+  const database = new DatabaseSync(path.join(projectDir, 'keystone-example.db'), {
+    timeout: 10_000,
+  })
 
   try {
-    await prisma.$transaction(
-      Object.values(prisma)
-        .filter((x: any) => x?.deleteMany)
-        .map((x: any) => x?.deleteMany?.({}))
-    )
-  } catch (error: any) {
-    // The database may not have been created yet on a clean checkout.
-    if (error.code !== 'P2021') throw error
+    const tables = database
+      .prepare(
+        `SELECT name FROM sqlite_master
+         WHERE type = 'table'
+           AND name NOT LIKE 'sqlite_%'
+           AND name != '_prisma_migrations'`
+      )
+      .all() as { name: string }[]
+
+    database.exec('PRAGMA foreign_keys = OFF; BEGIN')
+    try {
+      for (const { name } of tables) {
+        const tableName = `"${name.replaceAll('"', '""')}"`
+        database.prepare(`DELETE FROM ${tableName}`).run()
+      }
+      database.exec('COMMIT')
+    } catch (error) {
+      database.exec('ROLLBACK')
+      throw error
+    }
   } finally {
-    await prisma.$disconnect()
+    database.close()
   }
 }
 
@@ -81,6 +95,10 @@ export const exampleProjectTests = (
   options: { waitForInitialUser?: boolean } = {}
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName)
+  const env = {
+    ...process.env,
+    DATABASE_URL: `file:${path.join(projectDir, 'keystone-example.db')}`,
+  }
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {}
     let initialUser: InitialUser | undefined
@@ -93,7 +111,7 @@ export const exampleProjectTests = (
       await deleteAllData(projectDir)
       const ksProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
-        env: process.env,
+        env,
       })
 
       cleanupKeystoneProcess = async () => {
@@ -122,7 +140,7 @@ export const exampleProjectTests = (
       test('build keystone', async () => {
         const keystoneBuildProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
-          env: process.env,
+          env,
         })
         if (process.env.VERBOSE) {
           const logChunk = (chunk: any) => {

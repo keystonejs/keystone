@@ -3,6 +3,7 @@ import esbuild, { type BuildOptions } from 'esbuild'
 import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import nodePath from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 function identity(x: BuildOptions) {
   return x
@@ -33,10 +34,15 @@ async function getEsbuildConfigFn(
   }
 }
 
-export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
+async function getEsbuildConfigForEntry(
+  cwd: string,
+  entryPoint: string,
+  outfile: string,
+  define?: BuildOptions['define']
+): Promise<BuildOptions> {
   const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
   const resolveDir = nodePath.join(cwd, '.keystone')
-  const importer = nodePath.join(cwd, '.keystone/config.js')
+  const importer = outfile
   // we need the .keystone directory to exist so when we resolve from it below, it actually exists
   await fs.mkdir(resolveDir, {
     // while we don't need to actually make this recursive,
@@ -44,13 +50,14 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
     recursive: true,
   })
   return esbuildFn({
-    entryPoints: ['./keystone'],
+    entryPoints: [entryPoint],
     absWorkingDir: cwd,
     bundle: true,
+    ...(define ? { define } : {}),
     sourcemap: true,
     jsx: 'automatic',
     // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-    outfile: '.keystone/config.js',
+    outfile,
     format: 'cjs',
     platform: 'node',
     plugins: [
@@ -96,8 +103,9 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
                 // we also want to resolve it with node:module createRequire
                 // so that we'll get the cjs version
                 const resolvedFromImporterCjs = createRequire(args.importer).resolve(path)
+                const relativePath = nodePath.relative(resolveDir, resolvedFromImporterCjs)
                 return {
-                  path: nodePath.relative('.keystone', resolvedFromImporterCjs),
+                  path: relativePath.startsWith('.') ? relativePath : `./${relativePath}`,
                   external: true,
                 }
               }
@@ -116,5 +124,19 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
         },
       },
     ],
+  })
+}
+
+export function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
+  return getEsbuildConfigForEntry(cwd, './keystone', nodePath.join(cwd, '.keystone/config.js'))
+}
+
+export function getEsbuildPrismaConfig(
+  cwd: string,
+  prismaClientPath: string
+): Promise<BuildOptions> {
+  const outfile = nodePath.join(cwd, '.keystone/prisma.js')
+  return getEsbuildConfigForEntry(cwd, prismaClientPath, outfile, {
+    'import.meta.url': JSON.stringify(pathToFileURL(outfile).href),
   })
 }

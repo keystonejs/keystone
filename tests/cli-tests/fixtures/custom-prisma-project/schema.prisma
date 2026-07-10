@@ -2,14 +2,13 @@
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "postgresql"
-  schemas           = ["first", "second"]
+  provider = "postgresql"
+  schemas  = ["first", "second"]
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
   previewFeatures = ["multiSchema"]
 }
 

@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import execa from 'execa'
 
 import {
@@ -39,6 +39,25 @@ test('build works with typescript without the user defining a babel config', asy
   expect(result.stdout.includes('Generating static pages')).toBe(true)
   expect(result.stdout.includes('Finalizing page optimization')).toBe(true)
   expect(result.exitCode).toBe(0)
+  expect(require(`${cwd}/.keystone/config.js`)).toEqual(
+    expect.objectContaining({ default: expect.any(Object) })
+  )
+  expect(require(`${cwd}/.keystone/prisma.js`)).toEqual(expect.any(Object))
+})
+
+test('build --no-prisma does not bundle the Prisma client', async () => {
+  const cwd = await testdir({
+    ...symlinkKeystoneDeps,
+    ...schemas,
+    'keystone.js': basicKeystoneConfig,
+  })
+
+  await cliMock(cwd, ['build', '--no-ui'])
+  const prismaPath = `${cwd}/.keystone/prisma.js`
+  await writeFile(prismaPath, 'existing Prisma bundle')
+  await cliMock(cwd, ['build', '--no-ui', '--no-prisma'])
+
+  expect(await readFile(prismaPath, 'utf8')).toBe('existing Prisma bundle')
 })
 
 test('process.env.NODE_ENV is production in production', async () => {

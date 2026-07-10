@@ -63,6 +63,7 @@ async function normalizeArgs() {
       '_gitignore',
       'schema.ts',
       'package.json',
+      'prisma.config.ts',
       'tsconfig.json',
       'keystone.ts',
       'auth.ts',

@@ -235,10 +235,10 @@ export const lists = {
 export default config({
   db: {
     provider: 'postgresql',
-    url: process.env.DATABASE_URL ?? '',
-
-    // WARNING: this is only needed for our monorepo examples, don't do this
-    prismaClientPath: 'node_modules/myprisma',
+    prismaClientOptions: () => ({
+      adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL ?? '' }),
+    }),
   },
   lists,
 })
+import { PrismaPg } from '@prisma/adapter-pg'

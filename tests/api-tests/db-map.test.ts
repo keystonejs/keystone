@@ -23,13 +23,12 @@ test('db.map at the list level adds @@map with the value to the Prisma schema', 
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model SomeList {
@@ -93,13 +92,12 @@ test(`db.map for the field text field adds @map with the value to the Prisma sch
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "generated/prisma"
 }
 
 model SomeList {

@@ -20,6 +20,8 @@ export const schemas = {
   'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
 }
 
+const prismaConfig = fs.readFileSync(`${__dirname}/prisma.config.ts`, 'utf8')
+
 export function recordConsole() {
   const oldConsole = { ...console }
   const contents: string[] = []
@@ -35,22 +37,37 @@ export function recordConsole() {
   }
 }
 
-export const symlinkKeystoneDeps = Object.fromEntries(
-  [
-    '@keystone-6/core',
-    '@prisma/engines',
-    '@prisma/client',
-    'typescript',
-    '@types/react',
-    '@types/node',
-    'next',
-    'react',
-    'react-dom',
-  ].map(pkg => [
-    `node_modules/${pkg}`,
-    { kind: 'symlink' as const, path: path.dirname(require.resolve(`${pkg}/package.json`)) },
-  ])
-)
+function packageDirectory(packageName: string) {
+  try {
+    return path.dirname(require.resolve(`${packageName}/package.json`))
+  } catch (error: any) {
+    if (!['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) throw error
+    let directory = path.dirname(require.resolve(packageName))
+    while (!fs.existsSync(path.join(directory, 'package.json'))) {
+      directory = path.dirname(directory)
+    }
+    return directory
+  }
+}
+
+export const symlinkKeystoneDeps = {
+  ...Object.fromEntries(
+    [
+      '@keystone-6/core',
+      '@prisma/adapter-better-sqlite3',
+      '@prisma/adapter-pg',
+      '@prisma/client',
+      'prisma',
+      'typescript',
+      '@types/react',
+      '@types/node',
+      'next',
+      'react',
+      'react-dom',
+    ].map(pkg => [`node_modules/${pkg}`, { kind: 'symlink' as const, path: packageDirectory(pkg) }])
+  ),
+  'prisma.config.ts': prismaConfig,
+}
 
 type Fixture = {
   [key: string]: string | Buffer | { kind: 'symlink'; path: string }
@@ -64,34 +81,23 @@ export async function cliMock(cwd: string, args: string | string[]) {
   }
 }
 
-export function setPromptHandler(
-  handler: (
-    args:
-      | { name: 'value'; type: 'text'; message: string }
-      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
-  ) => { value: string | boolean }
-) {
-  const prompts = require('prompts')
-  prompts.inject((args: Parameters<typeof handler>[0]) => {
-    const result = handler(args)
-    console.log(`Prompt: ${args.message} ${result.value}`)
-    return result.value
-  })
-}
-
 export async function spawnCommand(cwd: string, commands: string[]) {
   let output = ''
   return new Promise<string>((resolve, reject) => {
     const p = spawn('node', [cliBinPath, ...commands], {
       cwd,
-      env: { ...process.env, FORCE_COLOR: '0' },
+      env: {
+        ...process.env,
+        FORCE_COLOR: '0',
+        PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION: 'yes',
+      },
     })
     p.stdout.on('data', data => (output += data.toString('utf-8')))
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
       if (typeof exitCode === 'number' && exitCode !== 0)
-        return reject(`${commands.join(' ')} returned ${exitCode}`)
+        return reject(`${commands.join(' ')} returned ${exitCode}:\n${output}`)
       resolve(output)
     })
   })
@@ -217,9 +223,12 @@ export async function introspectDatabase(cwd: string, url: string) {
     p.stderr.on('data', data => (output += data.toString('utf-8')))
     p.on('error', err => reject(err))
     p.on('exit', exitCode => {
+      output = output.replace(/^Loaded Prisma config from .+\.\n\n/, '')
       if (output.includes('P4001')) return resolve('') // empty database
       if (typeof exitCode === 'number' && exitCode !== 0)
-        return reject(`Introspect process returned ${exitCode}`)
+        return reject(
+          `Introspect process returned ${exitCode}:\n${output}\nFiles: ${fs.readdirSync(cwd).join(', ')}`
+        )
       resolve(output)
     })
   })

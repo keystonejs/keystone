@@ -94,9 +94,6 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     throw new TypeError(`"db.provider" only supports "sqlite", "postgresql" or "mysql"`)
   }
 
-  // WARNING: Typescript should prevent this, but any string is useful for Prisma errors
-  config.db.url ??= 'postgres://'
-
   const defaultIdField = config.db.idField ?? { kind: 'cuid' }
   const cors =
     config.server?.cors === true
@@ -121,19 +118,12 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
     },
     db: {
       ...config.db,
-      shadowDatabaseUrl: config.db?.shadowDatabaseUrl ?? '',
       extendPrismaSchema: config.db?.extendPrismaSchema ?? identity,
       extendPrismaClient: config.db?.extendPrismaClient ?? identity,
       onConnect: config.db.onConnect ?? noop,
-      prismaClientPath: config.db?.prismaClientPath ?? '@prisma/client',
+      prismaClientPath: config.db?.prismaClientPath ?? 'generated/prisma',
       prismaSchemaPath: config.db?.prismaSchemaPath ?? 'schema.prisma',
       idField: config.db?.idField ?? defaultIdField,
-      enableLogging:
-        config.db.enableLogging === true
-          ? ['query']
-          : config.db.enableLogging === false
-            ? []
-            : (config.db.enableLogging ?? []),
     },
     graphql: {
       ...config.graphql,
