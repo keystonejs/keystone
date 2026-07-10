@@ -36,7 +36,7 @@ const extendGraphqlSchema = g.extend(base => ({
 for (const name of ['with custom formatError', 'without custom formatError'] as const) {
   describe(name, () => {
     const extraExtensions = name === 'with custom formatError' ? { someCustomThing: true } : {}
-    const runner = (debug: boolean) =>
+    const createRunner = (debug: boolean) =>
       setupTestRunner({
         serve: true,
         config: {
@@ -65,6 +65,11 @@ for (const name of ['with custom formatError', 'without custom formatError'] as 
           },
         },
       })
+    const runners = {
+      enabled: createRunner(true),
+      disabled: createRunner(false),
+    }
+    const runner = (debug: boolean) => (debug ? runners.enabled : runners.disabled)
 
     for (const query of [
       'createUser',

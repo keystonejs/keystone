@@ -13,7 +13,7 @@ const initialData = {
   ],
 }
 
-function setup(options?: any) {
+function testOptions(options?: any) {
   const { withAuth } = createAuth({
     listKey: 'User',
     identityField: 'email',
@@ -22,7 +22,7 @@ function setup(options?: any) {
     ...options,
   })
 
-  return setupTestRunner({
+  return {
     config: withAuth({
       lists: {
         Post: list({
@@ -44,7 +44,13 @@ function setup(options?: any) {
       session: statelessSessions(),
     } as any) as any,
     serve: true,
-  })
+  }
+}
+
+const runner = setupTestRunner(testOptions())
+
+function setup(options?: any) {
+  return setupTestRunner(testOptions(options))
 }
 
 async function login(
@@ -71,7 +77,7 @@ async function login(
 describe('Auth testing', () => {
   test(
     'Gives access denied when not logged in',
-    setup()(async ({ context }) => {
+    runner(async ({ context }) => {
       await seed(context, initialData)
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' })
       expect(data).toEqual({ users: [] })
@@ -122,7 +128,7 @@ describe('Auth testing', () => {
   describe('logged in', () => {
     test(
       'Allows access with bearer token',
-      setup()(async ({ context, gqlSuper }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
         const { sessionToken } = await login(
           gqlSuper,
@@ -144,7 +150,7 @@ describe('Auth testing', () => {
 
     test(
       'Allows access with cookie',
-      setup()(async ({ context, gqlSuper }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
         const { sessionToken } = await login(
           gqlSuper,
@@ -167,7 +173,7 @@ describe('Auth testing', () => {
 
     test(
       'Invalid session receives nothing',
-      setup()(async ({ context, gqlSuper }) => {
+      runner(async ({ context, gqlSuper }) => {
         await seed(context, initialData)
         const { body } = await gqlSuper({ query: '{ users { id } }' }).set(
           'Cookie',
@@ -183,7 +189,7 @@ describe('Auth testing', () => {
 
     test(
       'Session is dropped if user is removed',
-      setup()(async ({ context, gqlSuper }) => {
+      runner(async ({ context, gqlSuper }) => {
         const { User: users } = await seed(context, initialData)
         const { sessionToken } = await login(
           gqlSuper,
