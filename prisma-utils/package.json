@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "private": true,
   "devDependencies": {
-    "@prisma/generator-helper": "catalog:",
+    "@prisma/client": "catalog:",
     "@prisma/internals": "catalog:",
     "tsx": "^4.0.0"
   },

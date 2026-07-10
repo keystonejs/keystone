@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import type { DMMF } from '@prisma/generator-helper'
+import type { DMMF } from '@prisma/client/runtime/client'
 import { getDMMF } from '@prisma/internals'
 
 // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types
@@ -28,12 +28,12 @@ const GRAPHQL_SCALARS = {
 function getSchemaForProvider(provider: Provider) {
   return `
 datasource ${provider} {
-  url = env("DATABASE_URL")
   provider = "${provider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output = "./generated/prisma"
 }
 
 model Optional {

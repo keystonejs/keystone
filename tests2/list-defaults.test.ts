@@ -19,7 +19,7 @@ test('listDefaults are normalized and inherited by lists', () => {
   const resolved = config({
     db: {
       provider: 'sqlite',
-      url: 'file:./test.db',
+      prismaClientOptions: () => ({}),
     },
     listDefaults: {
       graphql: {
@@ -79,7 +79,7 @@ test('listDefaults are normalized and inherited by lists', () => {
   const booleanDefaults = config({
     db: {
       provider: 'sqlite',
-      url: 'file:./test.db',
+      prismaClientOptions: () => ({}),
     },
     listDefaults: {
       graphql: {
@@ -122,7 +122,7 @@ test('listDefaults are present when omitted', () => {
   const resolved = config({
     db: {
       provider: 'sqlite',
-      url: 'file:./test.db',
+      prismaClientOptions: () => ({}),
     },
     lists: {},
   })

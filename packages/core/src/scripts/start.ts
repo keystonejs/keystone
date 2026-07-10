@@ -1,18 +1,14 @@
-import { createRequire } from 'node:module'
-import path from 'node:path'
-
 import next from 'next'
 
 import { createSystem } from '../lib/system'
 import { createExpressServer } from '../lib/express'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
-import { withMigrate } from '../lib/migrations'
 import type { Flags } from './cli'
-import { importBuiltKeystoneConfiguration } from './utils'
+import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils'
 
 export async function start(
   cwd: string,
-  { quiet, server, ui, withMigrations }: Pick<Flags, 'quiet' | 'server' | 'ui' | 'withMigrations'>
+  { quiet, server, ui }: Pick<Flags, 'quiet' | 'server' | 'ui'>
 ) {
   function log(message: string) {
     if (quiet) return
@@ -23,19 +19,9 @@ export async function start(
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   const paths = system.getPaths(cwd)
 
-  if (withMigrations) {
-    log('✨ Applying any database migrations')
-    const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, m => m.apply())
-    log(
-      appliedMigrationNames.length === 0
-        ? `✨ No database migrations to apply`
-        : `✨ Database migrated`
-    )
-  }
-
   if (!server) return
 
-  const prismaClient = createRequire(path.join(cwd, 'package.json'))(paths.prisma)
+  const prismaClient = await importBuiltPrismaModule(cwd)
   const keystone = system.getKeystone(prismaClient)
 
   log('✨ Connecting to the database')

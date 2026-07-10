@@ -15,8 +15,6 @@
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "catalog:",
-    "@prisma/engines": "catalog:",
-    "@prisma/internals": "catalog:",
     "@types/body-parser": "^1.19.2",
     "@types/express": "catalog:",
     "@types/mime": "^2.0.3",
@@ -34,7 +32,13 @@
     "react-dom": "catalog:",
     "supertest": "^6.1.6",
     "testcheck": "^1.0.0-rc.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/adapter-mariadb": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
+    "better-sqlite3": "catalog:",
+    "pg": "catalog:",
+    "mariadb": "catalog:"
   },
   "dependencies": {
     "express": "catalog:"

@@ -10,7 +10,7 @@ test('errors with nested field groups', () => {
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://',
+          prismaClientOptions: () => ({}),
         },
         lists: {
           User: list({
@@ -43,7 +43,7 @@ test('errors if you write a group manually differently to the group function', (
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://',
+          prismaClientOptions: () => ({}),
         },
         lists: {
           User: list({

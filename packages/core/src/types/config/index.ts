@@ -25,13 +25,6 @@ export type * from './access-control'
 export type * from './fields'
 export type * from './lists'
 
-// copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`, as we dont have them
-type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
-type PrismaLogDefinition = {
-  level: PrismaLogLevel
-  emit: 'stdout' | 'event'
-}
-
 export type ListDefaults = {
   graphql?: Pick<ListGraphQLConfig<any>, 'omit' | 'maxTake'>
 }
@@ -43,13 +36,11 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
 
   db: {
     provider: DatabaseProvider
-    url: string
-
-    shadowDatabaseUrl?: string
+    prismaClientOptions: () => NonNullable<TypeInfo['prismaClientOptions']>
     onConnect?: (context: KeystoneContext<TypeInfo>) => Promise<void>
-    enableLogging?: boolean | Array<PrismaLogLevel | PrismaLogDefinition>
     idField?: IdFieldConfig
     prismaClientPath?: string
+    /** Path for Keystone's generated Prisma schema. @default 'schema.prisma' */
     prismaSchemaPath?: string
 
     extendPrismaSchema?: (schema: string) => string
@@ -182,9 +173,7 @@ export type KeystoneConfigPre<TypeInfo extends BaseKeystoneTypeInfo = BaseKeysto
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   types: KeystoneConfigPre<TypeInfo>['types']
-  db: Omit<Required<KeystoneConfigPre<TypeInfo>['db']>, 'enableLogging'> & {
-    enableLogging: PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>
-  }
+  db: Required<KeystoneConfigPre<TypeInfo>['db']>
   graphql: NonNullable<KeystoneConfigPre<TypeInfo>['graphql']> & {
     path: string
   }

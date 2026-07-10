@@ -23,13 +23,11 @@ test('isIndexed: true and db.map on a text field generates a valid Prisma schema
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${dbProvider}"
+  provider = "${dbProvider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "${config.db.prismaClientPath}"
 }
 
@@ -69,13 +67,11 @@ if (dbProvider === 'postgresql') {
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "postgresql"
+  provider = "postgresql"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "${config.db.prismaClientPath}"
 }
 

@@ -28,7 +28,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://',
+          prismaClientOptions: () => ({}),
         },
         lists: {
           A: list({
@@ -58,7 +58,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://',
+          prismaClientOptions: () => ({}),
         },
         lists: {
           A: list({
@@ -88,7 +88,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
       config({
         db: {
           provider: 'sqlite',
-          url: 'file://',
+          prismaClientOptions: () => ({}),
         },
         lists: {
           A: list({
