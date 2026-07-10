@@ -1,93 +1,74 @@
-import https from 'node:https'
-import Conf from 'conf'
-
+import * as https from 'node:https'
 import path from 'path'
 import type { InitialisedList } from '../src/lib/core/initialise-lists'
 import { runTelemetry, disableTelemetry } from '../src/lib/telemetry'
 
+const mocks = vi.hoisted(() => ({
+  confGet: vi.fn(),
+}))
+
 const mockProjectRoot = path.resolve(__dirname, '..', '..', '..')
 const mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic')
-const mockPackageVersions = {
-  '@keystone-6/core': '14.1.0',
-  '@keystone-6/auth': '9.0.1',
-  '@keystone-6/fields-document': '18.0.2',
-  '@keystone-6/cloudinary': '0.0.1',
-}
-
-jest.mock(
-  '@keystone-6/core/package.json',
-  () => {
-    return { version: mockPackageVersions['@keystone-6/core'] }
-  },
-  { virtual: true }
-)
-jest.mock(
-  '@keystone-6/auth/package.json',
-  () => {
-    return { version: mockPackageVersions['@keystone-6/auth'] }
-  },
-  { virtual: true }
-)
-jest.mock(
-  '@keystone-6/fields-document/package.json',
-  () => {
-    return { version: mockPackageVersions['@keystone-6/fields-document'] }
-  },
-  { virtual: true }
-)
-jest.mock(
-  '@keystone-6/cloudinary/package.json',
-  () => {
-    return { version: mockPackageVersions['@keystone-6/cloudinary'] }
-  },
-  { virtual: true }
+const mockPackageVersions = Object.fromEntries(
+  [
+    '@keystone-6/core',
+    '@keystone-6/auth',
+    '@keystone-6/fields-document',
+    '@keystone-6/cloudinary',
+  ].map(packageName => [packageName, require(`${packageName}/package.json`).version])
 )
 
 let mockTelemetryConfig: any = undefined
 
-jest.mock('conf', () => {
-  const getMockTelemetryConfig = jest.fn(() => {
+function configureConfMock() {
+  mocks.confGet.mockImplementation(() => {
     if (mockTelemetryConfig === 'THROW') throw new Error('JSON.parse error')
     return mockTelemetryConfig
   })
+}
 
-  return function Conf() {
-    return {
-      get: getMockTelemetryConfig,
-      set: (key: string, newState: any) => {
-        if (key !== 'telemetry') throw new Error(`Unexpected conf key ${key}`)
-        mockTelemetryConfig = newState
-      },
-      delete: () => {
-        mockTelemetryConfig = undefined
-      },
-    }
+vi.mock('conf', () => {
+  configureConfMock()
+
+  return {
+    default: function Conf() {
+      return {
+        get: mocks.confGet,
+        set: (key: string, newState: any) => {
+          if (key !== 'telemetry') throw new Error(`Unexpected conf key ${key}`)
+          mockTelemetryConfig = newState
+        },
+        delete: () => {
+          mockTelemetryConfig = undefined
+        },
+      }
+    },
   }
 })
 
-jest.mock('node:https', () => {
-  const once = jest.fn()
-  const end = jest.fn()
-  const request = jest.fn().mockImplementation((_, __, f) => {
+vi.mock('node:https', () => {
+  const once = vi.fn()
+  const end = vi.fn()
+  const request = vi.fn().mockImplementation((_, __, f) => {
     setTimeout(() => f(), 100)
     return { once, end }
   })
   // added for reach by toHaveBeenCalledWith
   ;(request as any).once = once
   ;(request as any).end = end
-  return { request }
+  return { request, default: { request } }
 })
 
-jest.mock('node:os', () => {
+vi.mock('node:os', async () => {
   return {
-    ...jest.requireActual('node:os'),
+    ...(await vi.importActual<typeof import('node:os')>('node:os')),
     platform: () => 'keystone-os',
   }
 })
 
 // required as CI is set for tests
-jest.mock('ci-info', () => {
-  return { isCI: false }
+vi.mock('ci-info', () => {
+  return { default: { isCI: false }, isCI: false }
 })
 
 const lists: Record<string, InitialisedList> = {
@@ -123,7 +104,7 @@ const lists: Record<string, InitialisedList> = {
 
 describe('Telemetry tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     mockTelemetryConfig = undefined // reset state
   })
 
@@ -185,7 +166,7 @@ describe('Telemetry tests', () => {
   test('Telemetry writes out an empty configuration, and sends nothing on first run', async () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
 
-    expect(new Conf().get).toHaveBeenCalledTimes(1)
+    expect(mocks.confGet).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(0)
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
@@ -199,7 +180,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
 
     expectDidSend(null)
-    expect(new Conf().get).toHaveBeenCalledTimes(2)
+    expect(mocks.confGet).toHaveBeenCalledTimes(2)
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${today}`)),
@@ -216,7 +197,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, same day
 
     expectDidSend(null)
-    expect(new Conf().get).toHaveBeenCalledTimes(3)
+    expect(mocks.confGet).toHaveBeenCalledTimes(3)
     expect(https.request).toHaveBeenCalledTimes(2) // would be 4 if sent twice
   })
 
@@ -226,7 +207,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, different day
 
     expectDidSend(mockYesterday)
-    expect(new Conf().get).toHaveBeenCalledTimes(1)
+    expect(mocks.confGet).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(2)
     expect(mockTelemetryConfig).toStrictEqual({
       informedAt: expect.stringMatching(new RegExp(`^${mockYesterday}`)),
@@ -250,7 +231,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send, same day
 
-    expect(new Conf().get).toHaveBeenCalledTimes(3)
+    expect(mocks.confGet).toHaveBeenCalledTimes(3)
     expect(https.request).toHaveBeenCalledTimes(0)
     expect(mockTelemetryConfig).toBe(false)
   })
@@ -261,7 +242,7 @@ describe('Telemetry tests', () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite') // inform
     await runTelemetry(mockProjectDir, lists, 'sqlite') // send
 
-    expect(new Conf().get).toHaveBeenCalledTimes(2)
+    expect(mocks.confGet).toHaveBeenCalledTimes(2)
     expect(https.request).toHaveBeenCalledTimes(0)
     expect(mockTelemetryConfig).toStrictEqual('THROW') // nothing changes
   })
@@ -287,7 +268,7 @@ describe('Telemetry tests', () => {
 
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send again
 
-        expect(new Conf().get).toHaveBeenCalledTimes(1)
+        expect(mocks.confGet).toHaveBeenCalledTimes(1)
         expect(https.request).toHaveBeenCalledTimes(0)
         expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
       })
@@ -298,7 +279,7 @@ describe('Telemetry tests', () => {
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try inform
         await runTelemetry(mockProjectDir, lists, 'sqlite') // try send
 
-        expect(new Conf().get).toHaveBeenCalledTimes(2)
+        expect(mocks.confGet).toHaveBeenCalledTimes(2)
         expect(https.request).toHaveBeenCalledTimes(0)
         expect(mockTelemetryConfig).toBe(undefined) // unchanged
       })
@@ -307,11 +288,12 @@ describe('Telemetry tests', () => {
 
   describe('when something throws internally', () => {
     let runTelemetryThrows: any
-    beforeEach(() => {
+    beforeEach(async () => {
       // this is a nightmare, don't touch it
-      jest.resetAllMocks()
-      jest.resetModules()
-      runTelemetryThrows = require('../src/lib/telemetry').runTelemetry
+      vi.resetAllMocks()
+      vi.resetModules()
+      configureConfMock()
+      runTelemetryThrows = (await import('../src/lib/telemetry')).runTelemetry
     })
 
     test(`nothing actually throws`, async () => {
@@ -319,7 +301,7 @@ describe('Telemetry tests', () => {
 
       await runTelemetryThrows(mockProjectDir, lists, 'sqlite') // send
 
-      // expect(new Conf().get).toHaveBeenCalledTimes(1) // nightmare
+      // expect(mocks.confGet).toHaveBeenCalledTimes(1) // nightmare
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
     })
@@ -327,14 +309,15 @@ describe('Telemetry tests', () => {
 
   describe('when running in CI', () => {
     let runTelemetryCI: any
-    beforeEach(() => {
+    beforeEach(async () => {
       // this is a nightmare, don't touch it
-      jest.resetAllMocks()
-      jest.resetModules()
-      jest.mock('ci-info', () => {
-        return { isCI: true }
+      vi.resetAllMocks()
+      vi.resetModules()
+      configureConfMock()
+      vi.doMock('ci-info', () => {
+        return { default: { isCI: true }, isCI: true }
       })
-      runTelemetryCI = require('../src/lib/telemetry').runTelemetry
+      runTelemetryCI = (await import('../src/lib/telemetry')).runTelemetry
     })
 
     test(`when initialised, nothing is sent`, async () => {
@@ -342,7 +325,7 @@ describe('Telemetry tests', () => {
 
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try send again
 
-      expect(new Conf().get).toHaveBeenCalledTimes(0)
+      expect(mocks.confGet).toHaveBeenCalledTimes(0)
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised) // unchanged
     })
@@ -353,7 +336,7 @@ describe('Telemetry tests', () => {
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try inform
       await runTelemetryCI(mockProjectDir, lists, 'sqlite') // try send
 
-      expect(new Conf().get).toHaveBeenCalledTimes(0)
+      expect(mocks.confGet).toHaveBeenCalledTimes(0)
       expect(https.request).toHaveBeenCalledTimes(0)
       expect(mockTelemetryConfig).toBe(undefined) // nothing changed
     })

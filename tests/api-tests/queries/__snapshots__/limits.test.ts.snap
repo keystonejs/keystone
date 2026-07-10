@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`graphql.maxTake enforces the default 1`] = `
+exports[`graphql.maxTake > enforces the default 1`] = `
 [
   {
     "extensions": {

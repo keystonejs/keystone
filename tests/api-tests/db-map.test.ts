@@ -46,7 +46,7 @@ const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
 })
 
 for (const modulePath of testModules) {
-  const mod = require(modulePath)
+  const mod = await import(modulePath)
   if (mod.supportsDbMap) continue
   if (mod.unSupportedAdapterList?.includes(dbProvider)) continue
 

@@ -10,7 +10,7 @@ const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-f
 })
 
 for (const modulePath of testModules) {
-  const mod = require(modulePath)
+  const mod = await import(modulePath)
   if (mod.skipRequiredTest) continue
   if (mod.unSupportedAdapterList?.includes(dbProvider)) continue
 

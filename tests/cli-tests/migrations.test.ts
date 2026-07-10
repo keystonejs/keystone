@@ -10,6 +10,7 @@ import {
   spawnCommand,
   symlinkKeystoneDeps,
   testdir,
+  setPromptHandler,
 } from './utils'
 
 const dbUrl = 'file:./app.db'
@@ -58,14 +59,14 @@ model Todo {
 
 let mockPromptResponseEntries: [string, string | boolean][] = []
 
-jest.setTimeout(ms('1 minute')) // these tests are slow
+vi.setConfig({ testTimeout: ms('1 minute') }) // these tests are slow
 
-jest.mock('prompts', () => {
-  return function (
+setPromptHandler(
+  (
     args:
       | { name: 'value'; type: 'text'; message: string }
       | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
-  ) {
+  ) => {
     const getPromptAnswer = (message: string) => {
       message = message.replace(/[^ -~\n]+/g, '?')
       const response = mockPromptResponseEntries.shift()!
@@ -90,20 +91,18 @@ jest.mock('prompts', () => {
           `The answer to "${args.message}" is a string but the question is a confirm prompt that should return a boolean`
         )
       }
-      console.log(`Prompt: ${args.message} ${answer}`)
-      return { value: answer }
-    } else {
-      const answer = getPromptAnswer(args.message)
-      if (typeof answer === 'boolean') {
-        throw new Error(
-          `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
-        )
-      }
-      console.log(`Prompt: ${args.message} ${answer}`)
       return { value: answer }
     }
+
+    const answer = getPromptAnswer(args.message)
+    if (typeof answer === 'boolean') {
+      throw new Error(
+        `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
+      )
+    }
+    return { value: answer }
   }
-})
+)
 
 function getPrismaClient(cwd: string) {
   return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
@@ -183,7 +182,6 @@ describe('dev', () => {
       ?  Warnings:
 
         ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost true
       ? Database synchronized with Prisma schema
       ? Connecting to the database
       ? Creating server
@@ -225,7 +223,9 @@ describe('dev', () => {
 
     mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]]
     const stopRecording = recordConsole()
-    await expect(cliMock(cwd, 'dev')).rejects.toEqual(new Error('Database push cancelled by user'))
+    await expect(cliMock(cwd, 'dev')).rejects.toMatchObject({
+      message: 'Database push cancelled by user',
+    })
 
     expect(await introspectDatabase(cwd, dbUrl)).toEqual(schema1)
     expect(stopRecording()).toMatchInlineSnapshot(`
@@ -236,8 +236,7 @@ describe('dev', () => {
 
       ?  Warnings:
 
-        ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost false"
+        ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values."
     `)
   })
 })
@@ -247,7 +246,7 @@ async function getDatabaseFiles(cwd: string) {
 }
 
 describe('prisma', () => {
-  test.concurrent('prisma db push --force-reset works', async () => {
+  test('prisma db push --force-reset works', async () => {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,
@@ -279,7 +278,7 @@ describe('prisma', () => {
 })
 
 describe('start --with-migrations', () => {
-  test.concurrent('apply init migrations', async () => {
+  test('apply init migrations', async () => {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,
@@ -306,7 +305,7 @@ describe('start --with-migrations', () => {
     `)
   })
 
-  test.concurrent('apply any migrations', async () => {
+  test('apply any migrations', async () => {
     // step 1, init
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
@@ -341,7 +340,7 @@ describe('start --with-migrations', () => {
     `)
   })
 
-  test.concurrent('no migrations', async () => {
+  test('no migrations', async () => {
     const cwd = await testdir({
       ...symlinkKeystoneDeps,
       'keystone.js': config1,

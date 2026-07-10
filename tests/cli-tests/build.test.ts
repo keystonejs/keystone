@@ -11,7 +11,7 @@ import {
   testdir,
 } from './utils'
 
-jest.setTimeout(ms('2 minutes')) // these tests are slow
+vi.setConfig({ testTimeout: ms('2 minutes') }) // these tests are slow
 
 test("start errors when a build hasn't happened", async () => {
   const cwd = await testdir({

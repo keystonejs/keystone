@@ -9,9 +9,9 @@ const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-f
   absolute: true,
 })
 
-const unsupportedModules = testModules
-  .map(require)
-  .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(dbProvider))
+const unsupportedModules = (
+  await Promise.all(testModules.map(modulePath => import(modulePath)))
+).filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(dbProvider))
 if (unsupportedModules.length > 0) {
   unsupportedModules.forEach(mod => {
     ;(mod.testMatrix ?? ['default']).forEach((matrixValue: string) => {

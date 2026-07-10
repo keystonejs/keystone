@@ -74,7 +74,7 @@ declare global {
     interface Matchers<R, T> {
       toEqualEditor(
         expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'
-      ): CustomMatcherResult
+      ): R
     }
   }
 }

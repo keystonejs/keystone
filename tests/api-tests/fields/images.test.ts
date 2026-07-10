@@ -16,7 +16,7 @@ import { Readable } from 'stream'
 import { randomBytes } from 'crypto'
 import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/types'
 
-jest.setTimeout(10000)
+vi.setConfig({ testTimeout: 10000 })
 
 function getRunner(args: Parameters<typeof image>[0]) {
   return setupTestRunner({

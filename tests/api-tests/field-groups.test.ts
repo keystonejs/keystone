@@ -33,7 +33,7 @@ test('errors with nested field groups', () => {
       }),
       {}
     )
-  ).toThrowErrorMatchingInlineSnapshot(`"groups cannot be nested"`)
+  ).toThrowError('groups cannot be nested')
 })
 
 test('errors if you write a group manually differently to the group function', () => {
@@ -60,5 +60,5 @@ test('errors if you write a group manually differently to the group function', (
       }),
       {}
     )
-  ).toThrowErrorMatchingInlineSnapshot(`"unexpected value for a group at User.__group0"`)
+  ).toThrowError('unexpected value for a group at User.__group0')
 })

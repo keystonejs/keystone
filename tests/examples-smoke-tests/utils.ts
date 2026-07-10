@@ -5,7 +5,7 @@ import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
 import ms from 'ms'
 
-jest.setTimeout(ms('20 minutes'))
+vi.setConfig({ testTimeout: ms('20 minutes') })
 
 export async function loadIndex(page: playwright.Page) {
   await page.goto('http://localhost:3000')

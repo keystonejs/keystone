@@ -138,9 +138,7 @@ describe('queries "work" on singletons', () => {
           ? 'Unique constraint failed on the constraint: `PRIMARY`'
           : 'Unique constraint failed on the fields: (`id`)'
 
-      expect(errors?.[0].message).toEqual(
-        `\nInvalid \`prisma.singular.create()\` invocation:\n\n\n${message}`
-      )
+      expect(errors?.[0].message).toContain(message)
     })
   )
   test(

@@ -17,4 +17,4 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: pnpm jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        run: pnpm vitest run --maxWorkers=1 --exclude='tests/admin-ui-tests/**' --exclude='tests/api-tests/**' --exclude='tests/examples-smoke-tests/**'

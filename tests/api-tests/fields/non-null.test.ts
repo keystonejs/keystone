@@ -3,7 +3,8 @@ import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 
-import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql'
+const { assertInputObjectType, assertObjectType, GraphQLNonNull } =
+  require('graphql') as typeof import('graphql')
 
 import { setupTestEnv } from '../test-runner'
 import { dbProvider } from '../utils'
@@ -14,8 +15,7 @@ const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-f
   absolute: true,
 })
 
-testModules
-  .map(require)
+;(await Promise.all(testModules.map(modulePath => import(modulePath))))
   .filter(
     ({ unSupportedAdapterList = [], name }) =>
       name !== 'ID' && !unSupportedAdapterList.includes(dbProvider)
