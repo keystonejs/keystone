@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import 'dotenv/config'
 
 import { config } from '@keystone-6/core'
@@ -8,10 +9,9 @@ import { type Session, session, passportMiddleware } from './auth'
 export default config<TypeInfo<Session>>({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
-
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    prismaClientPath: 'node_modules/myprisma',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
   session,

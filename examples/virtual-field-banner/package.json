@@ -12,8 +12,10 @@
   "dependencies": {
     "@keystar/ui": "^0.7.22",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

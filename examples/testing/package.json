@@ -13,8 +13,10 @@
   "dependencies": {
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

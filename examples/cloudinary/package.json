@@ -14,9 +14,11 @@
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/cloudinary": "workspace:^",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "dotenv": "^16.0.0",
-    "next": "catalog:"
+    "next": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

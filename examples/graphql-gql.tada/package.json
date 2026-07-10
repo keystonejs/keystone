@@ -14,10 +14,12 @@
   "dependencies": {
     "@gql.tada/cli-utils": "^1.6.3",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "gql.tada": "^1.8.10",
     "graphql": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

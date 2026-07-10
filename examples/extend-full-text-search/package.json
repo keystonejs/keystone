@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "pg": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

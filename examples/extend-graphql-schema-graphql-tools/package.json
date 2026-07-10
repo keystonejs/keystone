@@ -12,9 +12,11 @@
   "dependencies": {
     "@graphql-tools/schema": "^9.0.0",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "graphql": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",
