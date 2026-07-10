@@ -1,8 +1,9 @@
 // WARNING: be careful not to import this file within next
-import esbuild, { type BuildOptions } from 'esbuild'
+import esbuild, { type BuildOptions, type PluginBuild } from 'esbuild'
 import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import nodePath from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 function identity(x: BuildOptions) {
   return x
@@ -33,7 +34,10 @@ async function getEsbuildConfigFn(
   }
 }
 
-export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
+export async function getEsbuildConfig(
+  cwd: string,
+  prismaClientPath?: string
+): Promise<BuildOptions> {
   const esbuildFn = (await getEsbuildConfigFn(cwd)) ?? identity
   const resolveDir = nodePath.join(cwd, '.keystone')
   const importer = nodePath.join(cwd, '.keystone/config.js')
@@ -43,17 +47,46 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
     // this will make mkdir not error when the directory already exists
     recursive: true,
   })
+  const outfile = nodePath.join(cwd, '.keystone/config.js')
   return esbuildFn({
-    entryPoints: ['./keystone'],
+    entryPoints: [prismaClientPath ? 'keystone:runtime' : './keystone'],
     absWorkingDir: cwd,
     bundle: true,
+    ...(prismaClientPath
+      ? {
+          define: { 'import.meta.url': JSON.stringify(pathToFileURL(outfile).href) },
+          supported: { 'dynamic-import': false },
+        }
+      : {}),
     sourcemap: true,
     jsx: 'automatic',
     // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-    outfile: '.keystone/config.js',
+    outfile,
     format: 'cjs',
     platform: 'node',
     plugins: [
+      ...(prismaClientPath
+        ? [
+            {
+              name: 'keystone-runtime-entry',
+              setup(build: PluginBuild) {
+                build.onResolve({ filter: /^keystone:runtime$/ }, () => ({
+                  path: 'keystone:runtime',
+                  namespace: 'keystone-runtime',
+                }))
+                build.onLoad({ filter: /.*/, namespace: 'keystone-runtime' }, () => ({
+                  contents: `
+import config from ${JSON.stringify(nodePath.join(cwd, 'keystone'))}
+import * as prisma from ${JSON.stringify(prismaClientPath)}
+export { config, prisma }
+`,
+                  loader: 'ts',
+                  resolveDir: cwd,
+                }))
+              },
+            },
+          ]
+        : []),
       {
         name: 'external-node_modules',
         setup(build) {
@@ -96,8 +129,9 @@ export async function getEsbuildConfig(cwd: string): Promise<BuildOptions> {
                 // we also want to resolve it with node:module createRequire
                 // so that we'll get the cjs version
                 const resolvedFromImporterCjs = createRequire(args.importer).resolve(path)
+                const relativePath = nodePath.relative(resolveDir, resolvedFromImporterCjs)
                 return {
-                  path: nodePath.relative('.keystone', resolvedFromImporterCjs),
+                  path: relativePath.startsWith('.') ? relativePath : `./${relativePath}`,
                   external: true,
                 }
               }

@@ -87,10 +87,15 @@ import { config, list } from '@keystone-6/core';
 import { checkbox, password, text } from '@keystone-6/core/fields';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 const db = {
   provider: 'sqlite',
-  url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+  prismaClientOptions: () => ({
+    adapter: new PrismaBetterSqlite3({
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+    }),
+  }),
 };
 
 const { withAuth } = createAuth({

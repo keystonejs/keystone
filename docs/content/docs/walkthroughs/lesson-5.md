@@ -11,6 +11,7 @@ We have a working backend for a collection of interconnected posts and authors (
 ```ts
 //keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
@@ -44,7 +45,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
@@ -69,9 +72,10 @@ npm install @keystone-6/fields-document
 
 Next, we add the document field to our `post` list:
 
-```ts{4,28}[8-14,31-500]
+```ts{5,29}[9-15,32-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { withAuth, session } from './auth';
@@ -106,7 +110,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
@@ -131,9 +137,10 @@ Let’s start by adding four [formatting](/docs/guides/document-fields#formattin
 - dividers
 - layouts
 
-```ts{28-39}[1-6,8-14,17-27,42-500]
+```ts{29-40}[1-7,9-15,18-28,43-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { withAuth, session } from './auth';
@@ -179,7 +186,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
@@ -199,6 +208,7 @@ For a full guide on using the document field, including rendering this in your o
 ```ts
 // keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { withAuth, session } from './auth';
@@ -244,7 +254,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,

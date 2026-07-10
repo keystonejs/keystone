@@ -14,9 +14,10 @@
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
     "@keystone-6/fields-document": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/adapter-mariadb": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
-    "@prisma/engines": "catalog:",
-    "@prisma/internals": "catalog:",
     "@types/express": "catalog:",
     "cookie-signature": "^1.1.0",
     "globby": "^11.0.4",
@@ -32,7 +33,10 @@
     "@types/mime": "^2.0.3",
     "@types/superagent": "^4.1.15",
     "@types/supertest": "^2.0.11",
-    "@types/uuid": "^9.0.0"
+    "@types/uuid": "^9.0.0",
+    "better-sqlite3": "catalog:",
+    "pg": "catalog:",
+    "mariadb": "catalog:"
   },
   "dependencies": {
     "express": "catalog:"

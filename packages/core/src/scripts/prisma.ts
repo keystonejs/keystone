@@ -1,49 +1,18 @@
-import { spawn } from 'node:child_process'
-
 import { validateArtifacts } from '../artifacts'
+import { ensurePrismaConfig } from '../lib/prisma-config'
+import { runPrismaCommand } from '../lib/prisma-cli'
 import { createSystem } from '../lib/system'
-import { ExitError, importBuiltKeystoneConfiguration } from './utils'
-
-async function spawnPrisma3(
-  cwd: string,
-  system: {
-    config: {
-      db: {
-        url: string
-      }
-    }
-  },
-  commands: string[]
-) {
-  return new Promise<{
-    exitCode: number | null
-  }>((resolve, reject) => {
-    const p = spawn(
-      'node',
-      ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands],
-      {
-        cwd,
-        env: {
-          ...process.env,
-          DATABASE_URL: system.config.db.url,
-          PRISMA_HIDE_UPDATE_MESSAGE: '1',
-        },
-        stdio: 'inherit',
-      }
-    )
-    p.on('error', err => reject(err))
-    p.on('exit', exitCode => resolve({ exitCode }))
-  })
-}
+import { importBuiltKeystoneConfiguration } from './utils'
 
 export async function prisma(cwd: string, args: string[], frozen: boolean) {
   // TODO: should build unless --frozen?
+  const configArgIndex = args.findIndex(arg => arg === '--config')
+  const inlineConfigArg = args.find(arg => arg.startsWith('--config='))
+  const configFile =
+    configArgIndex === -1 ? inlineConfigArg?.slice('--config='.length) : args[configArgIndex + 1]
 
+  if (!configFile) await ensurePrismaConfig(cwd, frozen)
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   await validateArtifacts(cwd, system)
-
-  const { exitCode } = await spawnPrisma3(cwd, system, args)
-  if (typeof exitCode === 'number' && exitCode !== 0) {
-    throw new ExitError(exitCode)
-  }
+  await runPrismaCommand(cwd, args)
 }

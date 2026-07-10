@@ -4,10 +4,14 @@
   "license": "MIT",
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/adapter-mariadb": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
-    "@prisma/engines": "catalog:",
-    "@prisma/internals": "catalog:",
     "next": "catalog:",
-    "prisma": "catalog:"
+    "prisma": "catalog:",
+    "better-sqlite3": "catalog:",
+    "pg": "catalog:",
+    "mariadb": "catalog:"
   }
 }

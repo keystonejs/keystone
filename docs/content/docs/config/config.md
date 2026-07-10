@@ -61,26 +61,32 @@ Keystone supports the database types **PostgreSQL**, **MySQL** and **SQLite**.
 These database types are powered by their corresponding Prisma database providers; `postgresql`, `mysql` and `sqlite`.
 
 - `provider`: The database provider to use, it can be one of `postgresql`, `mysql` or `sqlite`.
-- `url`: The connection URL for your database
+- `prismaClientOptions`: A factory returning the complete options passed to the generated Prisma client's constructor. Applications must install and construct their database adapter here.
+- `prismaClientPath` (default: `generated/prisma`): The output directory for the generated Prisma client.
+- `prismaSchemaPath` (default: `schema.prisma`): The path where Keystone writes its generated Prisma schema.
+- `extendPrismaClient`: A function that receives the generated Prisma Client instance and returns a client extended with custom functionality.
+- `extendPrismaSchema`: A function that receives the generated Prisma schema and returns a customised schema.
 - `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
-- `enableLogging` (default: `false`): Enable logging from the Prisma client.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid`, `nanoid`, `ulid`, or `autoincrement`.
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
-- `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
+
+Database URLs used by Prisma CLI and migration commands belong in the `prisma.config.ts`. Keystone creates an initial config if it is missing, but never overwrites the config.
 
 ### postgresql
 
 ```typescript
+import { PrismaPg } from '@prisma/adapter-pg';
+
 export default config<TypeInfo>({
   db: {
     provider: 'postgresql',
-    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    prismaClientOptions: () => ({
+      adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
+      log: ['warn', 'error'],
+    }),
     onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
     idField: { kind: 'uuid' },
-    shadowDatabaseUrl: 'postgres://dbuser:dbpass@localhost:5432/shadowdb'
   },
   /* ... */
 });
@@ -89,13 +95,15 @@ export default config<TypeInfo>({
 ### mysql
 
 ```typescript
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+
 export default config<TypeInfo>({
   db: {
     provider: 'mysql',
-    url: 'mysql://dbuser:dbpass@localhost:3306/keystone',
+    prismaClientOptions: () => ({
+      adapter: new PrismaMariaDb(process.env.DATABASE_URL!),
+    }),
     onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
     idField: { kind: 'uuid' },
   },
   /* ... */
@@ -105,13 +113,15 @@ export default config<TypeInfo>({
 ### sqlite
 
 ```typescript
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+
 export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
     onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    enableLogging: true,
     idField: { kind: 'uuid' },
   },
   /* ... */

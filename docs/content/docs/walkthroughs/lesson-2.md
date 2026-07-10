@@ -11,13 +11,16 @@ In the [first lesson](/docs/walkthroughs/lesson-1) we got our Keystone blog proj
 ```js
 // keystone.ts
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists: {
     User: list({
@@ -37,8 +40,9 @@ We’re now going to create a post list type, and connect it to users with relat
 
 Before we define fields for a `post` type, let's pull lists out into its own object so it's easier to reason about going forward:
 
-```js{5-13,20}
+```js{6-14,23}
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
@@ -55,7 +59,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -69,8 +75,9 @@ export default config({
 
 To create a post type we add a second `Post` key to the lists object. Let’s add another `text` field for the post’s `title` to begin with:
 
-```js{13-18}[1-4,21-27]
+```js{14-19}[1-5,22-30]
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
@@ -93,7 +100,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -116,8 +125,9 @@ Now that we have two lists, let's make a relationship between them. When decidin
 
 Let’s say that a post can be associated with only one user, but a user can have many posts. To create this relationship, we will add a [relationship](/docs/guides/relationships) field to each list that defines their connection to one another:
 
-```js{3,11,18}[22-29]
+```js{4,12,19}[23-32]
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -142,7 +152,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -165,9 +177,10 @@ In our current schema, the `author` field provides a `select` input to connect a
 
 In Keystone it's possible to change that display to suit your needs. This is achieved with a field's `ui` option. Each field comes with different `ui` options that you can explore. for the `author` field we’ll make a few changes to improve the editing experience for Admin UI users:
 
-```js{21-27}[2-14,31-38]
+```js{22-28}[2-15,32-41]
 //keystone.ts
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -200,7 +213,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -223,6 +238,7 @@ Our app has a new `post` list with a title and a link to `users` via the `author
 ```ts
 // keystone.ts
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -256,7 +272,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });

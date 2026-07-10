@@ -1,11 +1,9 @@
 import { randomBytes } from 'node:crypto'
-import { readdirSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import path, { join } from 'node:path'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
-import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
-import { createDatabase, getConfig, getDMMF, parseEnvValue } from '@prisma/internals'
 import supertest from 'supertest'
 
 import { config } from '@keystone-6/core'
@@ -13,7 +11,8 @@ import {
   createExpressServer,
   createSystem,
   generateArtifacts,
-  withMigrate,
+  generatePrismaClient,
+  pushPrismaSchema,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import type {
   BaseKeystoneTypeInfo,
@@ -21,66 +20,15 @@ import type {
   KeystoneConfigPre,
 } from '@keystone-6/core/types'
 
-import { dbProvider } from './utils'
-
-// prisma checks
-{
-  const prismaEnginesDir = path.dirname(require.resolve('@prisma/engines/package.json'))
-  const prismaEnginesDirEntries = readdirSync(prismaEnginesDir)
-  const queryEngineFilename = prismaEnginesDirEntries.find(dir => dir.startsWith('libquery_engine'))
-  if (!queryEngineFilename) throw new Error('Could not find query engine')
-  process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
-}
-
-async function getTestPrismaModuleInner(prismaSchemaPath: string, schema: string) {
-  const config = await getConfig({ datamodel: schema, ignoreEnvVarErrors: true })
-  const { datamodel } = await getDMMF({ datamodel: schema, previewFeatures: [] })
-  const models = Object.values(datamodel.models).reduce<
-    Record<string, (typeof datamodel.models)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-  const enums = Object.values(datamodel.enums).reduce<
-    Record<string, (typeof datamodel.enums)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-  const types = Object.values(datamodel.types).reduce<
-    Record<string, (typeof datamodel.types)[number]>
-  >((a, x) => ((a[x.name] = x), a), {})
-
-  return {
-    PrismaClient: getPrismaClient({
-      inlineDatasources: {}, // uh
-      inlineSchemaHash: '', // uh
-      relativeEnvPaths: {}, // uh
-      relativePath: '', // uh
-
-      activeProvider: config.datasources[0].activeProvider,
-      clientVersion: '0.0.0',
-      datasourceNames: config.datasources.map(d => d.name),
-      dirname: path.dirname(prismaSchemaPath),
-      engineVersion: '0000000000000000000000000000000000000000',
-      generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
-      inlineSchema: schema,
-      runtimeDataModel: { models, enums, types },
-    }),
-    Prisma: {
-      DbNull: objectEnumValues.instances.DbNull,
-      JsonNull: objectEnumValues.instances.JsonNull,
-    },
-  }
-}
-
-const prismaModuleCache = new Map<string, unknown>()
-async function getTestPrismaModule(prismaSchemaPath: string, schema: string) {
-  if (prismaModuleCache.has(schema)) return prismaModuleCache.get(schema)!
-  return prismaModuleCache
-    .set(schema, await getTestPrismaModuleInner(prismaSchemaPath, schema))
-    .get(schema)!
-}
+import { dbProvider, prismaClientOptions } from './utils'
 
 type FloatingConfig<TypeInfo extends BaseKeystoneTypeInfo> = Omit<
   KeystoneConfigPre<TypeInfo>,
   'db'
 > & {
-  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'url'>
+  db?: Omit<KeystoneConfigPre<TypeInfo>['db'], 'provider' | 'prismaClientOptions'> & {
+    prismaClientOptions?: (url: string) => unknown
+  }
 }
 
 export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
@@ -98,12 +46,25 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     await fs.rm(cwd, { recursive: true })
     await fs.mkdir(cwd)
   }
+  await fs.mkdir(join(cwd, 'node_modules/@prisma'), { recursive: true })
+  await fs.symlink(
+    join(require.resolve('prisma/package.json'), '..'),
+    join(cwd, 'node_modules/prisma'),
+    'dir'
+  )
+  await fs.symlink(
+    join(require.resolve('@prisma/client/package.json'), '..'),
+    join(cwd, 'node_modules/@prisma/client'),
+    'dir'
+  )
 
   let dbUrl = process.env.DATABASE_URL
   if (!dbUrl) throw new TypeError('Missing DATABASE_URL')
 
   if (dbUrl.startsWith('file:')) {
-    dbUrl = `file:${join(cwd, 'test.db')}` // unique database files
+    const dbPath = join(cwd, 'test.db')
+    await fs.writeFile(dbPath, '')
+    dbUrl = `file:${dbPath}` // unique database files
   }
 
   if (dbUrl.startsWith('postgres:')) {
@@ -118,16 +79,23 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     dbUrl = parsed.toString()
   }
 
+  const schemaPath = join(cwd, 'test-schema.prisma')
+  await fs.writeFile(
+    join(cwd, 'prisma.config.ts'),
+    `import { defineConfig } from 'prisma/config'\nexport default defineConfig({ schema: 'test-schema.prisma', datasource: { url: ${JSON.stringify(dbUrl)} } })\n`
+  )
+  const { prismaClientOptions: createPrismaClientOptions, ...dbConfig } = config_.db ?? {}
   const system = createSystem(
     wrap(
       config({
         ...config_,
         db: {
           provider: dbProvider,
-          url: dbUrl,
           prismaClientPath: '.prisma',
           prismaSchemaPath: 'test-schema.prisma',
-          ...config_.db,
+          ...dbConfig,
+          prismaClientOptions: () =>
+            createPrismaClientOptions?.(dbUrl) ?? prismaClientOptions(dbUrl),
         },
         types: {
           path: 'test-types.ts',
@@ -146,17 +114,12 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
   )
 
   const artifacts = await generateArtifacts(cwd, system)
-  const paths = system.getPaths(cwd)
-
-  await createDatabase(system.config.db.url, cwd)
-  await withMigrate(paths.schema.prisma, system, async m => {
-    await m.reset()
-    await m.schema(artifacts.prisma, false)
-  })
-
-  const { context, connect, disconnect } = system.getKeystone(
-    await getTestPrismaModule(paths.schema.prisma, artifacts.prisma)
+  await generatePrismaClient(cwd, system, 'capture')
+  await pushPrismaSchema(cwd, schemaPath, 'capture')
+  const prismaModule = await import(
+    `${pathToFileURL(join(cwd, '.prisma/client.ts')).href}?${random}`
   )
+  const { context, connect, disconnect } = system.getKeystone(prismaModule)
 
   if (dbProvider === 'sqlite') {
     await connect()

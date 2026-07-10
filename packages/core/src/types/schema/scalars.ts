@@ -1,9 +1,13 @@
 import type { ReadStream } from 'node:fs'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
-import { GraphQLError, GraphQLScalarType } from 'graphql'
+import type { GraphQLScalarType as GraphQLScalarTypeType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { JSONValue } from '../utils'
+
+// Keep these constructors in the same module realm as @graphql-ts/schema, which is CommonJS.
+// GraphQL rejects types constructed by a second ESM/test-runner instance of the package.
+const { GraphQLError, GraphQLScalarType } = require('graphql') as typeof import('graphql')
 
 export const JSON = new GraphQLScalarType<JSONValue>({
   name: 'JSON',
@@ -76,7 +80,7 @@ type FileUpload = {
   createReadStream(): ReadStream
 }
 
-export const Upload: GraphQLScalarType<Promise<FileUpload>, {}> = GraphQLUpload
+export const Upload: GraphQLScalarTypeType<Promise<FileUpload>, {}> = GraphQLUpload
 
 // - Decimal.js throws on invalid inputs
 // - Decimal.js can represent +Infinity and -Infinity, these aren't values in Postgres' decimal,

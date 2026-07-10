@@ -28,12 +28,12 @@ const GRAPHQL_SCALARS = {
 function getSchemaForProvider(provider: Provider) {
   return `
 datasource ${provider} {
-  url = env("DATABASE_URL")
   provider = "${provider}"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output = "./generated/prisma"
 }
 
 model Optional {

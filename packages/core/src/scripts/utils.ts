@@ -18,5 +18,14 @@ export async function importBuiltKeystoneConfiguration(cwd: string): Promise<Key
   if (!(await fs.stat(builtConfigPath).catch(() => null))) {
     throw new Error('You need to run "keystone build"')
   }
-  return require(builtConfigPath).default
+  const runtime = require(builtConfigPath)
+  return runtime.config ?? runtime.default
+}
+
+export async function importBuiltPrismaModule(cwd: string): Promise<unknown> {
+  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
+  delete require.cache[require.resolve(builtConfigPath)]
+  const runtime = require(builtConfigPath)
+  if (!runtime.prisma) throw new Error('You need to run "keystone build"')
+  return runtime.prisma
 }

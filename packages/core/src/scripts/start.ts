@@ -3,13 +3,13 @@ import next from 'next'
 import { createSystem } from '../lib/system'
 import { createExpressServer } from '../lib/express'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/middleware'
-import { withMigrate } from '../lib/migrations'
+import { ensurePrismaConfig } from '../lib/prisma-config'
 import type { Flags } from './cli'
-import { importBuiltKeystoneConfiguration } from './utils'
+import { importBuiltKeystoneConfiguration, importBuiltPrismaModule } from './utils'
 
 export async function start(
   cwd: string,
-  { quiet, server, ui, withMigrations }: Pick<Flags, 'quiet' | 'server' | 'ui' | 'withMigrations'>
+  { quiet, server, ui }: Pick<Flags, 'quiet' | 'server' | 'ui'>
 ) {
   function log(message: string) {
     if (quiet) return
@@ -17,29 +17,65 @@ export async function start(
   }
   log('✨ Starting Keystone')
 
-  const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
+  await ensurePrismaConfig(cwd, false)
+  const keystoneConfig = await importBuiltKeystoneConfiguration(cwd)
+  const system = createSystem(keystoneConfig)
   const paths = system.getPaths(cwd)
-
-  if (withMigrations) {
-    log('✨ Applying any database migrations')
-    const { appliedMigrationNames } = await withMigrate(paths.schema.prisma, system, m => m.apply())
-    log(
-      appliedMigrationNames.length === 0
-        ? `✨ No database migrations to apply`
-        : `✨ Database migrated`
-    )
-  }
 
   if (!server) return
 
-  const prismaClient = require(paths.prisma)
+  const prismaClient = await importBuiltPrismaModule(cwd)
   const keystone = system.getKeystone(prismaClient)
 
   log('✨ Connecting to the database')
   await keystone.connect()
 
   log('✨ Creating server')
-  const { expressServer, httpServer } = await createExpressServer(system.config, keystone.context)
+  const { expressServer, httpServer, apolloServer } = await createExpressServer(
+    system.config,
+    keystone.context
+  )
+
+  let isShuttingDown = false
+  let disconnectPromise: Promise<void> | undefined
+  function disconnect() {
+    return (disconnectPromise ??= keystone.disconnect())
+  }
+  async function shutdown() {
+    if (isShuttingDown) return
+    isShuttingDown = true
+    try {
+      if (httpServer.listening) {
+        await new Promise<void>((resolve, reject) => {
+          httpServer.close(error => (error ? reject(error) : resolve()))
+        })
+      }
+    } finally {
+      try {
+        await apolloServer.stop()
+      } finally {
+        await disconnect()
+      }
+    }
+  }
+
+  httpServer.once('close', () => {
+    void disconnect().catch(error => {
+      if (!isShuttingDown) console.error(error)
+    })
+  })
+
+  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+    process.once(signal, () => {
+      void shutdown().then(
+        () => process.exit(0),
+        error => {
+          console.error(error)
+          process.exit(1)
+        }
+      )
+    })
+  }
 
   log(`✅ GraphQL API ready`)
   if (!system.config.ui?.isDisabled && ui) {
@@ -63,7 +99,10 @@ export async function start(
   }
 
   httpServer.listen(system.config.server.options, (err?: any) => {
-    if (err) throw err
+    if (err) {
+      void disconnect()
+      throw err
+    }
 
     const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host)
       ? 'localhost'

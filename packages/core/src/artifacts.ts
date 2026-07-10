@@ -1,12 +1,16 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { formatSchema, getGenerators } from '@prisma/internals'
-import { defaultRegistry } from '@prisma/client-generator-registry'
 import { printSchema } from 'graphql'
 import { printPrismaSchema } from './lib/core/prisma-schema-printer'
 import { withSpan } from './lib/otel'
 import type { System } from './lib/system'
+import {
+  formatPrismaSchema,
+  generatePrisma,
+  pushPrismaSchema,
+  type PrismaOutput,
+} from './lib/prisma-cli'
 import { printGeneratedTypes } from './lib/typescript-schema-printer'
 
 export function getFormattedGraphQLSchema(schema: string) {
@@ -30,7 +34,7 @@ async function readFileOrUndefined(path: string) {
 export async function validateArtifacts(cwd: string, system: System) {
   await withSpan('validating artifacts', async () => {
     const paths = system.getPaths(cwd)
-    const artifacts = await buildArtifacts(system)
+    const artifacts = await buildArtifacts(cwd, system, paths.prismaGeneratorOutput)
     const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
       readFileOrUndefined(paths.schema.graphql),
       readFileOrUndefined(paths.schema.prisma),
@@ -51,17 +55,20 @@ export async function validateArtifacts(cwd: string, system: System) {
 }
 
 // exported for tests
-export async function buildArtifacts(system: System) {
+export async function buildArtifacts(
+  cwd: string,
+  system: System,
+  prismaGeneratorOutput = system.config.db.prismaClientPath
+) {
   return await withSpan('building artifacts', async () => {
-    const prismaSchema = await formatSchema({
-      schemas: [
-        [system.config.db.prismaSchemaPath, printPrismaSchema(system.config, system.lists)],
-      ],
-    })
+    const prismaSchema = await formatPrismaSchema(
+      cwd,
+      printPrismaSchema(system.config, system.lists, prismaGeneratorOutput)
+    )
 
     return {
       graphql: getFormattedGraphQLSchema(printSchema(system.graphql.schemas.public)),
-      prisma: prismaSchema[0][1],
+      prisma: prismaSchema,
     }
   })
 }
@@ -69,7 +76,8 @@ export async function buildArtifacts(system: System) {
 export async function generateArtifacts(cwd: string, system: System) {
   return await withSpan('generating artifacts', async () => {
     const paths = system.getPaths(cwd)
-    const artifacts = await buildArtifacts(system)
+    const artifacts = await buildArtifacts(cwd, system, paths.prismaGeneratorOutput)
+    await fs.mkdir(path.dirname(paths.schema.prisma), { recursive: true })
     await fs.writeFile(paths.schema.graphql, artifacts.graphql)
     await fs.writeFile(paths.schema.prisma, artifacts.prisma)
     return artifacts
@@ -89,22 +97,19 @@ export async function generateTypes(cwd: string, system: System) {
   })
 }
 
-export async function generatePrismaClient(cwd: string, system: System) {
+export async function generatePrismaClient(
+  cwd: string,
+  system: System,
+  output: PrismaOutput = 'inherit'
+) {
   return await withSpan('generating prisma client', async () => {
     const paths = system.getPaths(cwd)
-    const generators = await getGenerators({
-      schemaPath: paths.schema.prisma,
-      registry: defaultRegistry.toInternal(),
-    })
-
-    await Promise.all(
-      generators.map(async generator => {
-        try {
-          await generator.generate()
-        } finally {
-          generator.stop()
-        }
-      })
-    )
+    await generatePrisma(cwd, paths.schema.prisma, output)
   })
 }
+
+export async function pushPrisma(cwd: string, system: System, output: PrismaOutput = 'inherit') {
+  await pushPrismaSchema(cwd, system.getPaths(cwd).schema.prisma, output)
+}
+
+export { generatePrisma, pushPrismaSchema }

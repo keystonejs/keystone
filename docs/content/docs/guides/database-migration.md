@@ -3,158 +3,118 @@ title: "Database Migration"
 description: "How to manage and apply database migrations in Keystone."
 ---
 
-If you are working on a local project, you can use `keystone dev` for rapid development and prototyping, automatically applying database schema changes as you go.
-However, when moving to production or collaborating with a team, you typically want to use database migrations to manage schema changes reliably, and keep your database rebased on top of your team's work.
+For rapid local development, `keystone dev` uses Prisma [`db push`](https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema) to make the connected database match Keystone's generated Prisma schema.
 
-## Overview
-Keystone provides tooling to help manage data migrations in your project.
-This tooling supports you in tracking and applying schema changes safely in development and production environments without needing to understand the intrinsics of how `Prisma` and `Keystone` interact.
+For production and collaborative development, manage migration files with Prisma Migrate through Keystone's transparent Prisma passthrough. Keystone does not create migrations, apply migrations, or deploy migrations during startup.
 
-If you don't need to manage migrations, you can continue using `keystone dev` which uses [`db push`](https://www.prisma.io/docs/concepts/components/prisma-migrate/db-push) to apply changes automatically as you make them.
-However, **be aware that `db push` modifies the connected database's schema immediately and may lead to frequent data loss and or database resets.**
+## Prerequisites
 
-## Creating and Applying migrations in development
-Before running `keystone start` with a production database, your database schema should be up to date with your Keystone schema.
-Keystone can help you manage this process by generating migration files, which can then be committed with your code and used in a production environment.
+Configure the datasource and migrations directory in the `prisma.config.ts`:
 
-### Pre-requisites
-If you haven't configured a shadow database, `keystone migrate` will attempt to use a derivative of your `db.url` to make a random temporary database.
-Alternatively, you can add a `shadowDatabaseUrl` in your Keystone configuration.
+```ts
+import { defineConfig } from 'prisma/config'
 
-If you don't know what a shadow database is, please see the [Prisma documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
-
-{% hint kind="warn" %}
-The current state of your database schema is **NOT** taken into account by `keystone migrate create`, only the current state of your Keystone schema and database migration history.
-This is an intentional feature to help the process stay deterministic when there are changes that may have been pushed to your local development database using `db push`.
-{% /hint %}
-
-Please ensure the state of your Keystone schema (`.schema` in `keystone.ts`) is up to date with the changes you want to generate a migration for.
-
-### Creating a migration in development
-
-Follow the following steps to create a migration in your local development environment:
-
-1. Run the following command to create a migration file:
-
-   ```sh
-   keystone migrate create
-   ```
-
-1. You should be shown any changes that part of your migration, and additionally asked to name the migration, for example
-
-   ``` sh
-   [+] Added tables
-     - Example
-   
-   [*] Changed the `Example` table
-     [+] Added unique index on columns (name)
-   
-   ✔ Name of migration … test
-   ✨ Generated SQL migration at migrations/20250306120000_test/migration.sql
-    ```
-
-1. As needed, open the generated files in `migrations/*` to review and modify them to your needs
-
-You are now ready to apply your migration in development for testing, and when satisfied with the result, apply the migration in production using `--with-migrations`.
-
-### Testing your migration in development
-{% hint kind="warn" %}
-`keystone migrate apply` is an interactive process, and is *not* intended for unattended migrations.
-If you want to migrate a database in production please read [Applying migrations in production](#applying_migrations_in_production).
-{% /hint %}
-
-{% hint kind="warn" %}
-If your database has had changes using `keystone dev`, you may be asked to delete data
-{% /hint %}
-
-Follow the following steps to apply any pending migrations in your local development environment:
-
-   ```sh
-   keystone migrate apply
-   ```
-
-You can now continue development using Keystone.
-
-### Applying other migrations in development
-If you need to rebase your work and apply pending migrations, always run `keystone migrate apply` _before_ using `keystone dev`.
-If you run `keystone dev` first, keystone will `db push`, which can result in unnecessary schema updates and may be asked to delete data.
-
-Your workflow should be:
-```sh
-keystone migrate apply
-keystone dev
-# ...
+export default defineConfig({
+  schema: 'schema.prisma',
+  migrations: { path: 'migrations' },
+  datasource: { url: process.env.DATABASE_URL },
+})
 ```
 
-If you do not want `keystone dev` to update your database schema during development, you can opt out of `db push` behaviour by using the flag `--no-db-push`:
+Keystone creates this file from its static template when it is absent, but does not interpret or overwrite an existing file. Keystone-owned operations use `config.db.prismaSchemaPath` and pass that path explicitly to Prisma.
+
+When your provider requires a shadow database, configure it according to the [Prisma shadow database documentation](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database).
+
+## Creating migrations in development
+
+First build the current Keystone schema, then ask Prisma to create and apply a development migration:
 
 ```sh
+keystone build --no-ui
+keystone prisma migrate dev --name add-example
+```
+
+Prisma compares the generated schema, migration history, and development database. Review the generated `migrations/<timestamp>_add-example/migration.sql` and commit the migration directory with your schema changes.
+
+To create a migration without applying it immediately, use Prisma's `--create-only` option:
+
+```sh
+keystone prisma migrate dev --name add-example --create-only
+```
+
+Because `keystone dev` runs `db push`, it can make the development database drift from migration history. When actively developing migrations, either apply pending migrations before starting Keystone or disable automatic schema push:
+
+```sh
+keystone prisma migrate dev
 keystone dev --no-db-push
 ```
 
-This prevents automatic schema updates, leaving you responsible for applying migrations before testing changes.
-If the database schema is outdated agaist your Keystone schema, GraphQL and Prisma runtime errors may occur as result of missing columns or tables.
+If the database does not match the generated schema, Prisma Client and GraphQL operations may fail because expected tables or columns are missing.
 
-### Applying migrations in production
-Unlike development, how exactly you apply migrations to your production environment will vary depending on your infrastructure.
-The process is non-interactive by nature.
+## Applying migrations in production
 
-To apply migrations as part of the startup of your Keystone server, you can use the `--with-migrations` flag on your `keystone start`:
+Apply committed migrations with Prisma's non-interactive deployment command:
 
 ```sh
-keystone start --with-migrations
+keystone prisma migrate deploy
+keystone start
 ```
 
-If you want to run your migrations without starting a server, you can use the `--no-server` flag.
+Run `migrate deploy` as a distinct release or deployment step before starting new application instances. Do not run production migrations from preview or staging builds that point at a production database.
+
+Keystone does not provide a startup migration flag. If your platform only accepts one command, compose the two operations in a package script or entrypoint while ensuring only the appropriate release process performs migrations.
+
+For example:
+
+```json
+{
+  "scripts": {
+    "migrate": "keystone prisma migrate deploy",
+    "start": "keystone start"
+  }
+}
+```
+
+## Inspecting and resolving migration state
+
+The passthrough supports Prisma's other migration commands unchanged:
 
 ```sh
-keystone start --with-migrations --no-server
+keystone prisma migrate status
+keystone prisma migrate resolve --rolled-back "<migration_name>"
 ```
 
-## Troubleshooting Common Problems
+See the [Prisma Migrate documentation](https://www.prisma.io/docs/orm/prisma-migrate) for baselining existing databases, resolving failed migrations, generating down migrations, and handling migration conflicts.
 
-### "I ran `keystone dev` before applying migrations. What should I do?"
-Prisma will likely suggest resetting your database before applying migrations.
-In most cases, resetting is the best option and is recommended.
+## Resetting a development database
 
-If you want to avoid losing your local development database, follow these steps:
-
-1. Try rolling back your local branch to match the expected state of the migration.
-2. Use `keystone dev` to bring your database closer to the expected schema.
-
-You may still be prompted to delete data, and avoiding this completely can be difficult depending on what has changed.
-
-### "How do I roll back a migration?"
-Prisma provides tools for rolling back migrations. To revert a migration, use:
+Prisma can reset a development database and reapply its migration history:
 
 ```sh
-prisma migrate resolve --rolled-back "<migration_name>"
+keystone prisma migrate reset
 ```
 
-For more details, see [Prisma's documentation](https://www.prisma.io/docs/orm/prisma-migrate/workflows/generating-down-migrations).
+For schema prototyping without migration files, you can instead force `db push` to recreate the database:
 
-### "I'm getting a shadow database error in CI."
-Ensure that the `shadowDatabaseUrl` is correctly set in your Keystone configuration.
+```sh
+keystone prisma db push --force-reset
+```
 
-## Using Prisma Migrate for Advanced Workflows
-For more complex migration workflows, refer to the official [Prisma Migrate documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate).
-Prisma provides additional commands for resolving conflicts, checking migration history, and handling manual migration steps.
+{% hint kind="error" %}
+Both reset workflows destroy data. Never run them against a production database.
+{% /hint %}
 
 ## Related Resources
+
 {% related-content %}
 {% well
-heading="Getting Started with Keystone"
-href="/docs/getting-started" %}
-Learn how to create a new Keystone project with an Admin UI and GraphQL Playground.
+heading="Database Configuration"
+href="/docs/config/config#db" %}
+Configure Keystone's database provider and Prisma driver adapter.
 {% /well %}
 {% well
-heading="How Keystone Uses Prisma"
-href="/docs/guides/prisma-integration" %}
-Understand Keystone’s integration with Prisma and how migrations work.
-{% /well %}
-{% well
-heading="Deploying Keystone with a Database"
-href="/docs/guides/deploying-keystone" %}
-Learn best practices for handling Keystone migrations in production.
+heading="Keystone CLI"
+href="/docs/guides/cli#using-the-prisma-cli" %}
+Learn how Keystone's CLI fits alongside the Prisma CLI.
 {% /well %}
 {% /related-content %}

@@ -1,20 +1,13 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { timestamp } from '@keystone-6/core/fields'
-
-// our monorepo tests have their @prisma/client dependencies hoisted
-//   to build them and use them without conflict, we need to ensure .prisma/client
-//   resolves to somewhere else
-//
-//   we use node_modules/.testprisma to differentiate from node_modules/.prisma, but
-//   still use node_modules/... to skip the painful experience that is jest/babel
-//   transforms
-export const fixPrismaPath = {
-  prismaClientPath: 'node_modules/.testprisma/client',
-}
 
 export const dbConfig = {
   provider: 'sqlite' as const,
-  url: process.env.DATABASE_URL ?? 'file:./dev.db',
-  ...fixPrismaPath,
+  prismaClientOptions: () => ({
+    adapter: new PrismaBetterSqlite3({
+      url: process.env.DATABASE_URL ?? 'file:./dev.db',
+    }),
+  }),
 }
 
 export const trackingFields = {

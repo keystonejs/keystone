@@ -2,14 +2,12 @@
 // Modify your Keystone config when you want to change this.
 
 datasource sqlite {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "sqlite"
+  provider = "sqlite"
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "node_modules/.testprisma/client"
+  provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 model Something {

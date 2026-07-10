@@ -4,28 +4,56 @@ description: "Learn how to write tests that check the behaviour of Keystone appl
 ---
 
 When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
-In this guide we'll show you how to use `@keystone-6/core/testing` and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
+In this guide we'll show you how to use `@keystone-6/core/testing` and [Vitest](https://vitest.dev/) to write tests that check the behaviour of your GraphQL API.
 
 ## What tests might look like
 
 Typically you will use tests to verify the behaviour of your code.
 You might typically test things like your access control, hooks, virtual fields et cetera.
 
+The `resetDatabase` helper resets the database and then applies the `migration.sql` files from the migrations directory in order. It does not read `schema.prisma` or run Prisma `db push`.
+
+Before using it, make sure your migrations are up to date with your schema:
+
+```sh
+keystone build --no-ui
+prisma migrate dev
+```
+
+Running `keystone dev` by itself is not enough because `db push` does not create migration files. See the [database migration guide](./database-migration) for the complete migration workflow.
+
 ```typescript
+import path from 'node:path';
+
 import { getContext } from '@keystone-6/core/context';
 import { resetDatabase } from '@keystone-6/core/testing';
-import * as PrismaModule from '.prisma/client';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { afterAll, beforeEach, expect, test } from 'vitest';
+import * as PrismaModule from './generated/prisma/client';
 import baseConfig from './keystone';
 
-const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
-const prismaSchemaPath = path.join(__dirname, 'schema.prisma');
-const config = { ...baseConfig, db: { ...baseConfig.db, url: dbUrl } };
+const dbUrl = `file:./test-${process.env.VITEST_WORKER_ID}.db`;
+const config = {
+  ...baseConfig,
+  db: {
+    ...baseConfig.db,
+    prismaClientOptions: () => ({ adapter: new PrismaBetterSqlite3({ url: dbUrl }) }),
+  },
+};
 
 beforeEach(async () => {
-  await resetDatabase(dbUrl, prismaSchemaPath);
+  const migrationsDirectory = path.join(__dirname, 'migrations');
+  const adapter = await new PrismaBetterSqlite3({ url: dbUrl }).connect();
+  try {
+    await resetDatabase(adapter, migrationsDirectory);
+  } finally {
+    await adapter.dispose();
+  }
 });
 
 const context = getContext(config, PrismaModule);
+
+afterAll(() => context.prisma.$disconnect());
 
 test('Your unit test', async () => {
   // ...
@@ -33,7 +61,7 @@ test('Your unit test', async () => {
 ```
 
 {% hint kind="tip" %}
-We're setting the database url as `file:./test-${process.env.JEST_WORKER_ID}.db` so that our tests can use one database per Jest worker thread and run each test suite in parallel
+We're setting the database URL as `file:./test-${process.env.VITEST_WORKER_ID}.db` so that our tests can use one database per Vitest worker and run each test suite in parallel.
 {% /hint %}
 
 ### Context API

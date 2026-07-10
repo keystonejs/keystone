@@ -12,6 +12,7 @@ In the [last lesson](/docs/walkthroughs/lesson-3) we setup a publishing workflow
 ```ts
 //keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
@@ -42,7 +43,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -57,8 +60,9 @@ Keystone's [password](/docs/fields/password) field adheres to typical password s
 
 Let's add a password field to our `User` list so users can authenticate with Keystone:
 
-```ts{2,10}[13-27,29-500]
+```ts{3,11}[14-28,30-500]
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
@@ -90,7 +94,9 @@ const lists = {
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists,
 });
@@ -170,9 +176,10 @@ Back over in our keystone file, we want to import our `withAuth` function, and o
 
 Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
-```ts{4,32-33,39-42}[7-29]
+```ts{5,33-34,42-45}[8-30]
 //keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
@@ -206,7 +213,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,
@@ -285,6 +294,7 @@ export { withAuth, session }
 ```ts
 //keystone.ts
 import { list, config } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
@@ -318,7 +328,9 @@ export default config(
   withAuth({
     db: {
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     lists,
     session,

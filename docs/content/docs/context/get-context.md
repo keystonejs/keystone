@@ -15,7 +15,7 @@ Using the `getContext` function does not use the typical Keystone entry point - 
 ```typescript
 import { getContext } from '@keystone-6/core/context';
 import config from './keystone';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from './generated/prisma/client';
 
 const context = getContext(config, PrismaModule);
 
