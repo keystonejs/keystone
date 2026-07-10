@@ -314,6 +314,25 @@ test('a link stays in the same block', () => {
   `)
 })
 
+test('a literal URL in pasted plain text becomes a link', () => {
+  expect(deserializeMarkdown(`Visit https://keystonejs.com for more information`).children).toEqual(
+    [
+      {
+        type: 'paragraph',
+        children: [
+          { text: 'Visit ' },
+          {
+            type: 'link',
+            href: 'https://keystonejs.com',
+            children: [{ text: 'https://keystonejs.com' }],
+          },
+          { text: ' for more information' },
+        ],
+      },
+    ]
+  )
+})
+
 test('a link nested inside bold', () => {
   expect(deserializeMarkdown(`__content [link](https://keystonejs.com) content__`))
     .toMatchInlineSnapshot(`
