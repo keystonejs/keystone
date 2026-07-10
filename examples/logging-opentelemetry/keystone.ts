@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { createHash } from 'node:crypto'
 import { config } from '@keystone-6/core'
 
@@ -14,10 +15,11 @@ function sha256(q: string) {
 export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
-    url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    prismaClientPath: 'node_modules/myprisma',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({
+        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+      }),
+    }),
   },
   graphql: {
     apolloConfig: {

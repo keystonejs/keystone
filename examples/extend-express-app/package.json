@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "express": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",
