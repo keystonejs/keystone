@@ -235,13 +235,21 @@ async function clearDatabase(createAdapter: () => SqlDriverAdapterFactory) {
     }
 
     if (adapter.provider === 'postgres') {
+      const schemaName = adapter.getConnectionInfo?.().schemaName
+      if (!schemaName) throw new Error('PostgreSQL test adapter did not provide a schema name')
+      const schema = schemaName.replaceAll("'", "''")
       const tables = await adapterRows(
         adapter,
-        "SELECT tablename AS name FROM pg_tables WHERE schemaname = current_schema() AND tablename <> '_prisma_migrations'"
+        `SELECT tablename AS name FROM pg_tables WHERE schemaname = '${schema}' AND tablename <> '_prisma_migrations'`
       )
       if (tables.length) {
         await adapter.executeScript(
-          `TRUNCATE TABLE ${tables.map(({ name }) => quoteIdentifier(String(name), '"')).join(', ')} RESTART IDENTITY CASCADE`
+          `TRUNCATE TABLE ${tables
+            .map(
+              ({ name }) =>
+                `${quoteIdentifier(schemaName, '"')}.${quoteIdentifier(String(name), '"')}`
+            )
+            .join(', ')} RESTART IDENTITY CASCADE`
         )
       }
       return

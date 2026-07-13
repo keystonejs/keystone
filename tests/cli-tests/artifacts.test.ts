@@ -22,26 +22,11 @@ describe.each(['postinstall', ['build', '--frozen']])('%s', command => {
   })
 })
 
-describe('prisma migrate status', () => {
-  test('logs an error and exits with 1 when the schemas do not exist', async () => {
-    const cwd = await testdir({
-      ...symlinkKeystoneDeps,
-      'keystone.js': basicKeystoneConfig,
-    })
-    await expect(cliMock(cwd, ['build', '--no-ui', '--frozen'])).rejects.toEqual(
-      new Error('Your Prisma and GraphQL schemas are not up to date')
-    )
-    await expect(cliMock(cwd, ['prisma', '--frozen', 'migrate', 'status'])).rejects.toEqual(
-      new Error('Your Prisma and GraphQL schemas are not up to date')
-    )
-  })
-})
-
 const schemasMatch = ['schema.prisma', 'schema.graphql']
 
-// a lot of these cases are also the same for prisma and build commands but we don't include them here
-// because when they're slow and then run the same code as the postinstall command
-// (and in the case of the build command we need to spawn a child process which would make each case take a _very_ long time)
+// A lot of these cases are also the same for the build command, but we don't include them here
+// because they're slow and run the same code as the postinstall command. The build command also
+// needs to spawn a child process, which would make each case take a _very_ long time.
 describe('postinstall', () => {
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
     const cwd = await testdir({

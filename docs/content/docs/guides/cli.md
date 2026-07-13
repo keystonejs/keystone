@@ -19,7 +19,6 @@ Commands
   postinstall   build the project (for development, optional)
   build         build the project (required by \`keystone start\`)
   start         start the project
-  prisma        run Prisma CLI commands safely
   telemetry     sets telemetry preference (enable/disable/status)
 Options
   --frozen (build)
@@ -56,7 +55,7 @@ We recommend adding the following scripts to your project's `package.json` file:
     "build": "keystone build",
     "dev": "keystone dev",
     "postinstall": "keystone postinstall",
-    "migrate": "keystone prisma migrate deploy",
+    "migrate": "prisma migrate deploy",
     "start": "keystone start"
   }
 }
@@ -93,7 +92,7 @@ When using `keystone dev` the default behaviour is for Keystone to update your d
 
 - Running `keystone dev --no-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable.
 
-See [`prisma` command](#prisma) below for more information on database migrations.
+See [Using the Prisma CLI](#using-the-prisma-cli) below for more information on database migrations.
 
 {% hint kind="tip" %}
 Be careful of running `keystone dev` while pointing to a production database as this can cause data loss.
@@ -105,7 +104,7 @@ From time to time, in development you may want to reset the database and recreat
 You can do this by using Prisma:
 
 ```bash
-$ keystone prisma db push --force-reset
+$ prisma db push --force-reset
 ```
 
 {% hint kind="error" %}
@@ -165,22 +164,22 @@ It will not generate or apply any database migrations - these should be run duri
 - `--no-server` - Don't start the Express server
 - `--no-ui` - Don't serve the AdminUI
 
-## prisma
+## Using the Prisma CLI
 
 ```bash
-$ keystone prisma [command]
+$ prisma [command]
 ```
 
-Keystone's CLI includes a `prisma` command which runs the [project-local Prisma CLI](https://www.prisma.io/docs/reference/api-reference/command-reference/) within your Keystone project.
+Use the [Prisma CLI](https://www.prisma.io/docs/reference/api-reference/command-reference/) directly within your Keystone project.
 
-It ensures Keystone's generated files, importantly the Prisma schema, are in sync before passing your arguments and standard streams through to Prisma unchanged. Prisma reads its datasource and migration settings from your `prisma.config.ts`.
+Run `keystone build` or `keystone dev` first when Keystone's generated files, particularly the Prisma schema, need updating. Prisma reads its datasource and migration settings from your `prisma.config.ts`.
 
 ### Working with Migrations
 
 The primary reason you'll need to use the Prisma CLI in your Keystone project is to work with Prisma Migrate. For example, to deploy your migrations in production, you would run:
 
 ```bash
-$ keystone prisma migrate deploy
+$ prisma migrate deploy
 ```
 
 This will run the Prisma [`migrate deploy`](https://www.prisma.io/docs/reference/api-reference/command-reference/#migrate-deploy) command.
@@ -201,7 +200,7 @@ This will also run in CI, which means your lint rules and tests will be using th
 
 ### Developing your project
 
-Use `keystone dev` to start Keystone for development. Commit changes to generated files, including the Prisma and GraphQL schema files. When using migrations, create and commit them separately with `keystone prisma migrate dev`.
+Use `keystone dev` to start Keystone for development. Commit changes to generated files, including the Prisma and GraphQL schema files. When using migrations, create and commit them separately with `prisma migrate dev`.
 
 ### Deploying to production
 
@@ -212,7 +211,7 @@ Most application hosting platforms allow you to specify a `build` script (for ne
 Install the project dependencies, generate the build and deploy migrations:
 
 ```bash
-npm i && npx keystone build && npx keystone prisma migrate deploy
+npm i && npx keystone build && npx prisma migrate deploy
 ```
 
 {% hint kind="error" %}
@@ -227,7 +226,7 @@ Start Keystone in production mode:
 npx keystone start
 ```
 
-Run `keystone prisma migrate deploy` as a separate step before starting Keystone. `keystone start` does not apply migrations automatically.
+Run `prisma migrate deploy` as a separate step before starting Keystone. `keystone start` does not apply migrations automatically.
 
 #### Notes
 
