@@ -5,7 +5,7 @@ description: 'How to manage and apply database migrations in Keystone.'
 
 For rapid local development, `keystone dev` uses Prisma [`db push`](https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema) to make the connected database match Keystone's generated Prisma schema.
 
-For production and collaborative development, manage migration files with Prisma Migrate through Keystone's transparent Prisma passthrough. Keystone does not create migrations, apply migrations, or deploy migrations during startup.
+For production and collaborative development, manage migration files by using the Prisma CLI directly. Keystone does not create or apply migrations.
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ First build the current Keystone schema, then ask Prisma to create and apply a d
 
 ```sh
 keystone build --no-ui
-keystone prisma migrate dev --name add-example
+prisma migrate dev --name add-example
 ```
 
 Prisma compares the generated schema, migration history, and development database. Review the generated `migrations/<timestamp>_add-example/migration.sql` and commit the migration directory with your schema changes.
@@ -39,13 +39,13 @@ Prisma compares the generated schema, migration history, and development databas
 To create a migration without applying it immediately, use Prisma's `--create-only` option:
 
 ```sh
-keystone prisma migrate dev --name add-example --create-only
+prisma migrate dev --name add-example --create-only
 ```
 
 Because `keystone dev` runs `db push`, it can make the development database drift from migration history. When actively developing migrations, either apply pending migrations before starting Keystone or disable automatic schema push:
 
 ```sh
-keystone prisma migrate dev
+prisma migrate dev
 keystone dev --no-db-push
 ```
 
@@ -56,7 +56,7 @@ If the database does not match the generated schema, Prisma Client and GraphQL o
 Apply committed migrations with Prisma's non-interactive deployment command:
 
 ```sh
-keystone prisma migrate deploy
+prisma migrate deploy
 keystone start
 ```
 
@@ -67,7 +67,7 @@ For example:
 ```json
 {
   "scripts": {
-    "migrate": "keystone prisma migrate deploy",
+    "migrate": "prisma migrate deploy",
     "start": "keystone start"
   }
 }
@@ -75,11 +75,11 @@ For example:
 
 ## Inspecting and resolving migration state
 
-The passthrough supports Prisma's other migration commands unchanged:
+Use Prisma's other migration commands directly:
 
 ```sh
-keystone prisma migrate status
-keystone prisma migrate resolve --rolled-back "<migration_name>"
+prisma migrate status
+prisma migrate resolve --rolled-back "<migration_name>"
 ```
 
 See the [Prisma Migrate documentation](https://www.prisma.io/docs/orm/prisma-migrate) for baselining existing databases, resolving failed migrations, generating down migrations, and handling migration conflicts.
@@ -89,13 +89,13 @@ See the [Prisma Migrate documentation](https://www.prisma.io/docs/orm/prisma-mig
 Prisma can reset a development database and reapply its migration history:
 
 ```sh
-keystone prisma migrate reset
+prisma migrate reset
 ```
 
 For schema prototyping without migration files, you can instead force `db push` to recreate the database:
 
 ```sh
-keystone prisma db push --force-reset
+prisma db push --force-reset
 ```
 
 {% hint kind="error" %}

@@ -70,7 +70,3 @@ export async function pushPrismaSchema(
 ) {
   await runPrisma(cwd, ['db', 'push', '--schema', schemaPath], output)
 }
-
-export async function runPrismaCommand(cwd: string, args: string[]) {
-  await runPrisma(cwd, args, 'inherit')
-}
