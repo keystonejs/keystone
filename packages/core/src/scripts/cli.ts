@@ -1,7 +1,6 @@
 import meow from 'meow'
 import { build } from './build'
 import { dev } from './dev'
-import { prisma } from './prisma'
 import { start } from './start'
 import { telemetry } from './telemetry'
 import { ExitError } from './utils'
@@ -47,11 +46,9 @@ export async function cli(cwd: string, argv: string[]) {
     Commands
         dev             start the project in development mode (default)
         postinstall     build the project for development
-        build           build the project (required by \`keystone start\` and \`keystone prisma\`)
-        telemetry       sets telemetry preference (enable/disable/status)
-
+        build           build the project (required by \`keystone start\`)
         start           start the project
-        prisma          use prisma commands in a Keystone context
+        telemetry       sets telemetry preference (enable/disable/status)
 
     Options
       --frozen (build)
@@ -87,10 +84,6 @@ export async function cli(cwd: string, argv: string[]) {
 
   if (command === 'start') {
     return start(cwd, defaultFlags(flags, { server: true, ui: true }))
-  }
-
-  if (command.startsWith('prisma')) {
-    return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
   }
 
   if (command.startsWith('telemetry')) {
