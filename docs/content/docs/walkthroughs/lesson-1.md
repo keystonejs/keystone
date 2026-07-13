@@ -111,7 +111,7 @@ export default config({
 The adapter connects Keystone's runtime to the local `./keystone.db` database. The matching URL in `prisma.config.ts` is used by Prisma CLI commands.
 
 {% hint kind="tip" %}
-Keystone uses [Prisma](https://www.prisma.io/) for database access and development-time schema pushes. For production, manage migration files with the [project-local Prisma CLI](/docs/guides/cli#working-with-migrations).
+Keystone uses [Prisma](https://www.prisma.io/) for database access and development-time schema pushes. For production, manage migration files with the [Prisma CLI](/docs/guides/cli#working-with-migrations).
 {% /hint %}
 
 ### Create your first List
