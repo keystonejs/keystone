@@ -1,6 +1,6 @@
 import type { ExecutionResult } from 'graphql'
 
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer } from '@keystone-6/core/fields'
@@ -13,7 +13,7 @@ import {
   type ContextFromRunner,
 } from '../utils'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   serve: true,
   config: {
     lists: {

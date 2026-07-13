@@ -2,7 +2,7 @@ import { g, list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestRunner } from './test-runner'
+import { setupTestSuiteRunner } from './test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { dbProvider } from './utils'
 
@@ -36,8 +36,8 @@ const extendGraphqlSchema = g.extend(base => ({
 for (const name of ['with custom formatError', 'without custom formatError'] as const) {
   describe(name, () => {
     const extraExtensions = name === 'with custom formatError' ? { someCustomThing: true } : {}
-    const runner = (debug: boolean) =>
-      setupTestRunner({
+    const createRunner = (debug: boolean) =>
+      setupTestSuiteRunner({
         serve: true,
         config: {
           lists: {
@@ -65,6 +65,11 @@ for (const name of ['with custom formatError', 'without custom formatError'] as 
           },
         },
       })
+    const runners = {
+      enabled: createRunner(true),
+      disabled: createRunner(false),
+    }
+    const runner = (debug: boolean) => (debug ? runners.enabled : runners.disabled)
 
     for (const query of [
       'createUser',

@@ -1,10 +1,10 @@
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '../test-runner'
+import { setupTestSuiteRunner } from '../test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { document } from '@keystone-6/fields-document'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       Post: list({

@@ -1,6 +1,6 @@
 import { file, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import {
   noopStorageStrategy,
@@ -17,20 +17,46 @@ import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/typ
 
 vi.setConfig({ testTimeout: 10000 })
 
-function getRunner(opts: Parameters<typeof file>[0]) {
-  return setupTestRunner({
-    config: {
-      lists: {
-        Test: list({
-          access: allowAll,
-          fields: {
-            name: text(),
-            secretFile: file(opts),
-          },
-        }),
-      },
+let activeStorage: StorageStrategy<BaseKeystoneTypeInfo>
+let activeTransformName: Parameters<typeof file>[0]['transformName']
+
+const storage: StorageStrategy<BaseKeystoneTypeInfo> = {
+  put: (...args) => activeStorage.put(...args),
+  delete: (...args) => activeStorage.delete(...args),
+  url: (...args) => activeStorage.url(...args),
+}
+
+const runner = setupTestSuiteRunner({
+  config: {
+    lists: {
+      Test: list({
+        access: allowAll,
+        fields: {
+          name: text(),
+          secretFile: file({
+            storage,
+            transformName: originalFilename => {
+              if (activeTransformName) return activeTransformName(originalFilename)
+              const [, name, extension] = originalFilename.match(
+                /^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/
+              ) as RegExpMatchArray
+              const id = randomBytes(16).toString('base64url')
+              return `${name.replace(/[^A-Za-z0-9]/g, '-')}-${id}${extension ?? ''}`
+            },
+          }),
+        },
+      }),
     },
-  })
+  },
+})
+
+function getRunner(opts: Parameters<typeof file>[0]) {
+  return (testFn: Parameters<typeof runner>[0]) =>
+    runner(async result => {
+      activeStorage = opts.storage
+      activeTransformName = opts.transformName
+      await testFn(result)
+    })
 }
 
 const createItem = (context: any) =>

@@ -4,10 +4,10 @@ import { list } from '@keystone-6/core'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 import { allowAll } from '@keystone-6/core/access'
 
-import { setupTestEnv, setupTestRunner } from '../../test-runner'
+import { setupTestEnv, setupTestSuiteRunner } from '../../test-runner'
 import { type ContextFromRunner, expectInternalServerError } from '../../utils'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   serve: true,
   config: {
     lists: {

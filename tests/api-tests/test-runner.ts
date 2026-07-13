@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 import supertest from 'supertest'
+import type { SqlDriverAdapterFactory } from '@prisma/client/runtime/client'
 
 import { config } from '@keystone-6/core'
 import {
@@ -120,6 +121,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
     `${pathToFileURL(join(cwd, '.prisma/client.ts')).href}?${random}`
   )
   const { context, connect, disconnect } = system.getKeystone(prismaModule)
+  const createDatabaseAdapter = () => prismaClientOptions(dbUrl).adapter as SqlDriverAdapterFactory
 
   if (dbProvider === 'sqlite') {
     await connect()
@@ -149,6 +151,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
 
     return {
       artifacts,
+      createDatabaseAdapter,
       connect,
       context,
       config: system.config,
@@ -166,6 +169,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>(
 
   return {
     artifacts,
+    createDatabaseAdapter,
     connect,
     context,
     config: system.config,
@@ -200,6 +204,121 @@ export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
         return await testFn(result)
       } finally {
         await result.disconnect()
+      }
+    }
+}
+
+function quoteIdentifier(identifier: string, quote: '`' | '"') {
+  return quote + identifier.replaceAll(quote, quote + quote) + quote
+}
+
+type SqlDriverAdapter = Awaited<ReturnType<SqlDriverAdapterFactory['connect']>>
+type SqlQueryable = Pick<SqlDriverAdapter, 'executeRaw' | 'queryRaw'>
+
+const adapterQuery = (sql: string) => ({ sql, args: [], argTypes: [] })
+
+async function adapterRows(adapter: SqlQueryable, sql: string) {
+  const result = await adapter.queryRaw(adapterQuery(sql))
+  return result.rows.map(row =>
+    Object.fromEntries(result.columnNames.map((column, index) => [column, row[index]]))
+  ) as Record<string, unknown>[]
+}
+
+async function clearDatabase(createAdapter: () => SqlDriverAdapterFactory) {
+  const adapter = await createAdapter().connect()
+  try {
+    if (adapter.provider === 'sqlite') {
+      await adapter.executeScript('PRAGMA foreign_keys = OFF')
+      try {
+        const tables = await adapterRows(
+          adapter,
+          "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+        )
+        for (const { name } of tables) {
+          await adapter.executeScript(`DELETE FROM ${quoteIdentifier(String(name), '"')}`)
+        }
+        const sequences = await adapterRows(
+          adapter,
+          "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sqlite_sequence'"
+        )
+        if (sequences.length) await adapter.executeScript('DELETE FROM sqlite_sequence')
+      } finally {
+        await adapter.executeScript('PRAGMA foreign_keys = ON')
+      }
+      return
+    }
+
+    if (adapter.provider === 'postgres') {
+      const tables = await adapterRows(
+        adapter,
+        "SELECT tablename AS name FROM pg_tables WHERE schemaname = current_schema() AND tablename <> '_prisma_migrations'"
+      )
+      if (tables.length) {
+        await adapter.executeScript(
+          `TRUNCATE TABLE ${tables.map(({ name }) => quoteIdentifier(String(name), '"')).join(', ')} RESTART IDENTITY CASCADE`
+        )
+      }
+      return
+    }
+
+    const transaction = await adapter.startTransaction()
+    let autoIncrementTables: string[]
+    try {
+      await transaction.executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 0'))
+      const tables = await adapterRows(
+        transaction,
+        "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME <> '_prisma_migrations'"
+      )
+      autoIncrementTables = (
+        await adapterRows(
+          transaction,
+          "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND AUTO_INCREMENT IS NOT NULL"
+        )
+      ).map(({ name }) => String(name))
+      for (const { name } of tables) {
+        await transaction.executeRaw(
+          adapterQuery(`DELETE FROM ${quoteIdentifier(String(name), '`')}`)
+        )
+      }
+      await transaction.executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 1'))
+    } catch (error) {
+      await transaction
+        .executeRaw(adapterQuery('SET FOREIGN_KEY_CHECKS = 1'))
+        .catch(() => undefined)
+      await transaction.rollback()
+      throw error
+    }
+    await transaction.commit()
+    for (const name of autoIncrementTables) {
+      await adapter.executeRaw(
+        adapterQuery(`ALTER TABLE ${quoteIdentifier(name, '`')} AUTO_INCREMENT = 1`)
+      )
+    }
+  } finally {
+    await adapter.dispose()
+  }
+}
+
+/**
+ * Like setupTestRunner, but generates the artifacts and Prisma client once for all tests using
+ * this runner. The database is emptied before each test to retain setupTestRunner's isolation.
+ */
+export function setupTestSuiteRunner<TypeInfo extends BaseKeystoneTypeInfo>(
+  args: Parameters<typeof setupTestRunner<TypeInfo>>[0]
+) {
+  let result: ReturnType<typeof setupTestEnv<TypeInfo>> | undefined
+  const getResult = () =>
+    (result ??= setupTestEnv(args.config, args.serve, args.identifier, args.wrap))
+
+  return (testFn: (args: Awaited<ReturnType<typeof setupTestEnv<TypeInfo>>>) => Promise<void>) =>
+    async () => {
+      const value = await getResult()
+      await value.connect()
+      try {
+        await clearDatabase(value.createDatabaseAdapter)
+        return await testFn(value)
+      } finally {
+        await value.disconnect()
       }
     }
 }

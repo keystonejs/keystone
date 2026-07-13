@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { validate as isUuid } from 'uuid'
 import { dbProvider, expectBadUserInput } from './utils'
 
@@ -105,7 +105,7 @@ const fixtures = [
 
 for (const fixture of fixtures) {
   const { expect: expectFn, error, hooks = {}, ...idField } = fixture
-  const runner = setupTestRunner({
+  const runner = setupTestSuiteRunner({
     config: {
       db: {
         idField,
@@ -213,7 +213,7 @@ for (const fixture of fixtures) {
 // TODO: remove, this should be on the user
 describe('case insensitive id filters', () => {
   {
-    const runner = setupTestRunner({
+    const runner = setupTestSuiteRunner({
       config: {
         db: { idField: { kind: 'uuid' } },
         lists: {

@@ -1,11 +1,11 @@
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 
 type IdType = any
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       User: list({

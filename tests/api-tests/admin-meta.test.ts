@@ -1,11 +1,11 @@
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestRunner, setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
 import { dbProvider } from './utils'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     ui: {
       isAccessAllowed: () => false,

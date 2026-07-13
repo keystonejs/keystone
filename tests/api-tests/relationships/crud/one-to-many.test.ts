@@ -1,7 +1,7 @@
 import { gen, sampleOne } from 'testcheck'
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import type { KeystoneContext } from '@keystone-6/core/types'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { type ContextFromRunner } from '../../utils'
@@ -86,7 +86,7 @@ const createReadData = async (context: ContextFromRunner<typeof runner>) => {
   )
 }
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       Company: list({
@@ -107,7 +107,7 @@ const runner = setupTestRunner({
   },
 })
 
-const runnerWithDeny = setupTestRunner({
+const runnerWithDeny = setupTestSuiteRunner({
   config: {
     lists: {
       Company: list({

@@ -1,11 +1,11 @@
 import { list } from '@keystone-6/core'
 import { integer } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { type FieldTypeFunc, type BaseListTypeInfo } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
 function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
-  return setupTestRunner({
+  return setupTestSuiteRunner({
     config: {
       lists: {
         Test: list({
@@ -45,12 +45,13 @@ type Match = (
 ) => void
 
 export function filterTests(field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: Match) => void) {
+  const runner = filterTestRunner(field)
   for (const kind of ['without negation', 'with negation'] as const) {
     describe(kind, () => {
       const match: Match = (inputValues, where, expectedIndexes) =>
         test(
           JSON.stringify(where),
-          filterTestRunner(field)(async ({ context }) => {
+          runner(async ({ context }) => {
             for (const [idx, data] of inputValues.entries()) {
               await context.query.Test.createOne({ data: { index: idx, testField: data } })
             }
@@ -116,9 +117,10 @@ export function uniqueEqualityFilterTest(
   values: readonly unknown[],
   isNullable: boolean
 ) {
+  const runner = filterTestRunner(field)
   test(
     'unique filter',
-    filterTestRunner(field)(async ({ context }) => {
+    runner(async ({ context }) => {
       for (const [idx, value] of values.entries()) {
         await context.query.Test.createOne({ data: { index: idx, testField: value } })
       }
@@ -137,7 +139,7 @@ export function uniqueEqualityFilterTest(
   if (isNullable) {
     test(
       'unique filter with null returns null',
-      filterTestRunner(field)(async ({ context }) => {
+      runner(async ({ context }) => {
         const result = await context.query.Test.findOne({
           where: { testField: null },
           query: 'index',

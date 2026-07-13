@@ -1,7 +1,7 @@
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { dbProvider, expectValidationError } from '../utils'
 
@@ -38,7 +38,7 @@ for (const modulePath of testModules) {
       })
 
       const fieldConfig = mod.fieldConfig?.(matrixValue) ?? {}
-      const runner = setupTestRunner({
+      const runner = setupTestSuiteRunner({
         config: {
           lists: {
             Test: list({

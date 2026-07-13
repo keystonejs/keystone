@@ -2,13 +2,13 @@ import { gen, sampleOne } from 'testcheck'
 
 import { text, relationship } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { type ListKeyFromRunner } from '../utils'
 
 const alphanumGenerator = gen.alphaNumString.notEmpty()
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       Post: list({

@@ -2,7 +2,7 @@ import { text, password } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { setupTestSuiteRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { expectInternalServerError, expectValidationError, seed } from './utils'
 
@@ -25,7 +25,7 @@ const auth = createAuth({
   },
 })
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   serve: true,
   config: {
     lists: {

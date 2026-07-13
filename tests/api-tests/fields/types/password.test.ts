@@ -1,7 +1,7 @@
 import { password } from '@keystone-6/core/fields'
 import { filterTests } from './utils'
 import { list } from '@keystone-6/core'
-import { setupTestRunner } from '../../test-runner'
+import { setupTestSuiteRunner } from '../../test-runner'
 import { allowAll } from '@keystone-6/core/access'
 
 // note that while password fields can be non-nullable
@@ -13,7 +13,7 @@ filterTests(password(), match => {
   match(values, { isSet: true }, [1, 2])
 })
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   serve: true,
   config: {
     lists: {

@@ -2,10 +2,10 @@ import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { type KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
-import { setupTestRunner } from '../test-runner'
+import { setupTestSuiteRunner } from '../test-runner'
 import { dbProvider } from '../utils'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       Singular: list({

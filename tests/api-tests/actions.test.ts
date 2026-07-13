@@ -3,9 +3,9 @@ import { allowAll } from '@keystone-6/core/access'
 import { text } from '@keystone-6/core/fields'
 
 import { adminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql'
-import { setupTestRunner } from './test-runner'
+import { setupTestRunner, setupTestSuiteRunner } from './test-runner'
 
-const runner = setupTestRunner({
+const runner = setupTestSuiteRunner({
   config: {
     lists: {
       Task: list({
