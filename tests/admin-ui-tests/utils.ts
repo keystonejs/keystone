@@ -4,10 +4,9 @@ import path from 'node:path'
 
 import dotenv from 'dotenv'
 import type { ExecaChildProcess } from 'execa'
-import ms from 'ms'
 import * as playwright from 'playwright'
 
-vi.setConfig({ testTimeout: ms('20 minutes') })
+vi.setConfig({ testTimeout: 1_200_000 })
 
 export async function loadIndex(page: playwright.Page) {
   try {

@@ -3,9 +3,8 @@ import { promisify } from 'util'
 import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
-import ms from 'ms'
 
-vi.setConfig({ testTimeout: ms('20 minutes') })
+vi.setConfig({ testTimeout: 1_200_000, hookTimeout: 30_000 })
 
 export async function loadIndex(page: playwright.Page) {
   await page.goto('http://localhost:3000')

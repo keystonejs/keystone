@@ -1,5 +1,4 @@
 import { parse, print } from 'graphql'
-import ms from 'ms'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -18,7 +17,7 @@ async function replaceSchema(schema: string) {
   )
 }
 
-vi.setConfig({ testTimeout: ms('20 minutes') })
+vi.setConfig({ testTimeout: 1_200_000 })
 
 let exit = async () => {}
 let ksProcess = undefined as any
