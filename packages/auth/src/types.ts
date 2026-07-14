@@ -48,10 +48,3 @@ export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** Extra input to add for the create mutation */
   itemData?: Partial<ListTypeInfo['inputs']['create']>
 }
-
-export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED'
-
-export type SecretFieldImpl = {
-  generateHash: (secret: string) => Promise<string>
-  compare: (secret: string, hash: string) => Promise<boolean>
-}
