@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns'
 import { constructTimestamp } from '../utils'
 
 const STUBVALIDDATE = '2020-10-31'
@@ -11,6 +10,6 @@ describe('constructTimestamp()', () => {
   })
   it('should take two valid timestamp values and construct them into a valid ISO string', () => {
     const result = constructTimestamp({ dateValue: STUBVALIDDATE, timeValue: STUBVALIDTIME })
-    expect(Boolean(parseISO(result).toISOString())).toBe(true)
+    expect(Boolean(Temporal.Instant.from(result).toString())).toBe(true)
   })
 })

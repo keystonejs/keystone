@@ -8,6 +8,7 @@ import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
 import PageClient from './page-client'
 import { type Metadata } from 'next'
+import { blogDateFormatter } from '../../../../lib/date'
 
 export type BlogPost = NonNullable<
   Omit<
@@ -25,6 +26,8 @@ export default async function Page({ params }) {
   })
 
   if (!post) return notFound()
+  const publishedDate = post.publishDate
+  const formattedDateStr = blogDateFormatter.format(Temporal.PlainDate.from(publishedDate))
 
   return (
     <PageClient
@@ -35,6 +38,7 @@ export default async function Page({ params }) {
           content: transform(post.content.node, baseMarkdocConfig),
         })
       )}
+      formattedDate={formattedDateStr}
     />
   )
 }
