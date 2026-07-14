@@ -3,8 +3,6 @@ import path from 'node:path'
 import { format } from 'node:util'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import * as fse from 'fs-extra'
-import fastGlob from 'fast-glob'
 import chalk from 'chalk'
 
 import { cli } from '@keystone-6/core/scripts/cli'
@@ -138,7 +136,8 @@ export async function testdir(dir: Fixture) {
       const output = dir[filename]
       const fullPath = path.join(temp, filename)
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
-        await fse.outputFile(fullPath, output)
+        await fsp.mkdir(path.dirname(fullPath), { recursive: true })
+        await fsp.writeFile(fullPath, output)
 
         // symlink
       } else {
@@ -182,7 +181,14 @@ export async function getFiles(
   glob: string[] = ['**', '!node_modules/**'],
   encoding: 'utf8' | null = 'utf8'
 ) {
-  const files = await fastGlob(glob, { cwd: dir })
+  const patterns = glob.filter(pattern => !pattern.startsWith('!'))
+  const exclude = glob.filter(pattern => pattern.startsWith('!')).map(pattern => pattern.slice(1))
+  const entries = await Array.fromAsync(
+    fsp.glob(patterns, { cwd: dir, exclude, withFileTypes: true })
+  )
+  const files = entries
+    .filter(entry => !entry.isDirectory())
+    .map(entry => path.relative(dir, path.join(entry.parentPath, entry.name)))
   const result: Record<string, string | Buffer> = {
     [dirPrintingSymbol]: true,
   }

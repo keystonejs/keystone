@@ -21,15 +21,12 @@
     "@types/react": "catalog:",
     "chalk": "^4.1.2",
     "execa": "^5.1.1",
-    "fast-glob": "^3.2.12",
-    "fs-extra": "^11.0.0",
     "mime": "^3.0.0",
     "next": "catalog:",
     "prisma": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "typescript": "catalog:",
-    "@types/fs-extra": "^11.0.0"
+    "typescript": "catalog:"
   },
   "dependencies": {
     "express": "catalog:"
