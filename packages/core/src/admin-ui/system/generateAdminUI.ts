@@ -1,5 +1,4 @@
 import { type Entry, walk as _walk } from '@nodelib/fs.walk'
-import fse from 'fs-extra'
 import fs from 'node:fs/promises'
 import Path from 'node:path'
 import { promisify } from 'node:util'
@@ -34,7 +33,7 @@ export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: s
         `An inputPath of "${file.inputPath}" was provided to copy but inputPaths must be absolute`
       )
     }
-    await fse.ensureDir(Path.dirname(outputFilename))
+    await fs.mkdir(Path.dirname(outputFilename), { recursive: true })
     // TODO: should we use copyFile or copy?
     await fs.copyFile(file.inputPath, outputFilename)
   }
@@ -45,7 +44,8 @@ export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: s
     if (err.code !== 'ENOENT') throw err
   }
   if (file.mode === 'write' && content !== file.src) {
-    await fse.outputFile(outputFilename, file.src)
+    await fs.mkdir(Path.dirname(outputFilename), { recursive: true })
+    await fs.writeFile(outputFilename, file.src)
   }
   return Path.normalize(outputFilename)
 }
