@@ -1,5 +1,4 @@
 import fs from 'fs/promises'
-import { isMatch } from 'date-fns'
 import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
 import { load } from 'js-yaml'
 import { baseMarkdocConfig } from './config'
@@ -148,16 +147,10 @@ export function extractBlogFrontmatter(content: string): BlogFrontmatter {
   if (typeof obj.publishDate !== 'string') {
     throw new Error(`Expected frontmatter to contain publishDate`)
   } else {
-    const publishDate = obj.publishDate
-    // making sure months are always MM and not M, same with dd and d
-    // Eg. 2022-04-01 is correct
-    // 2022-4-1 is incorrect
-    // why do we do this manually? because date-fns isMatch doesn't validate this
-    if (publishDate.split('-').some(s => s.length < 2)) {
-      throw new Error(`Frontmatter publishDate format should be yyyy-MM-dd`)
-    }
-    const isValidDateFormat = isMatch(publishDate, 'yyyy-MM-dd')
-    if (!isValidDateFormat) {
+    try {
+      const publishDate = Temporal.PlainDate.from(obj.publishDate)
+      if (publishDate.toString() !== obj.publishDate) throw new RangeError()
+    } catch {
       throw new Error(`Frontmatter publishDate format should be yyyy-MM-dd`)
     }
   }

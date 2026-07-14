@@ -1,10 +1,7 @@
-import { parse, format } from 'date-fns'
-
 import { reader } from '../../../keystatic/reader'
+import { blogDateFormatter } from '../../../lib/date'
 import ClientPage from './page-client'
 import { type Metadata } from 'next'
-
-const today = new Date()
 
 export const metadata: Metadata = {
   title: 'Keystone Blog',
@@ -26,12 +23,10 @@ export default async function Docs() {
   const sortedPosts = transformedPosts
     .map(p => {
       const publishedDate = p.frontmatter.publishDate
-      const parsedDate = parse(publishedDate, 'yyyy-M-d', today)
-      const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
+      const formattedDateStr = blogDateFormatter.format(Temporal.PlainDate.from(publishedDate))
       return {
         ...p,
         frontmatter: { ...p.frontmatter },
-        parsedDate: parsedDate,
         formattedDateStr: formattedDateStr,
       }
     })

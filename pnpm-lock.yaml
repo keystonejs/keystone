@@ -98,9 +98,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
-      '@types/node-fetch':
-        specifier: ^2.5.12
-        version: 2.6.13
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14
@@ -185,9 +182,6 @@ importers:
       clipboard-copy:
         specifier: ^4.0.1
         version: 4.0.1
-      date-fns:
-        specifier: ^4.0.0
-        version: 4.1.0
       dedent:
         specifier: ^1.0.0
         version: 1.7.2(babel-plugin-macros@3.1.0)
@@ -2157,9 +2151,6 @@ importers:
       dataloader:
         specifier: ^2.1.0
         version: 2.2.3
-      date-fns:
-        specifier: ^4.0.0
-        version: 4.1.0
       decimal.js:
         specifier: ^10.4.1
         version: 10.6.0
@@ -8217,9 +8208,6 @@ packages:
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
-
-  date-fns@4.1.0:
-    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   deasync@0.1.31:
     resolution: {integrity: sha512-/6/cXqkw4LPqBVK6H0Y3L4zT7yI3pxykxPXErQ2tDCw0LJyThWL5VpBCpUOWX0vPq2OnF1pzcXvlNnvCiOQJuA==}
@@ -19752,8 +19740,6 @@ snapshots:
   dataloader@1.4.0: {}
 
   dataloader@2.2.3: {}
-
-  date-fns@4.1.0: {}
 
   deasync@0.1.31:
     dependencies:

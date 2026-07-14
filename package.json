@@ -36,7 +36,6 @@
     "@eslint/js": "^10.0.0",
     "@preconstruct/cli": "^2.8.9",
     "@types/node": "catalog:",
-    "@types/node-fetch": "^2.5.12",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "esbuild": "^0.28.0",

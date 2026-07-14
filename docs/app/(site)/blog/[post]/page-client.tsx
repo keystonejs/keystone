@@ -4,7 +4,6 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { parse, format } from 'date-fns'
 
 import { Markdoc } from '../../../../components/Markdoc'
 import { BlogPage } from '../../../../components/Page'
@@ -13,13 +12,9 @@ import { Type } from '../../../../components/primitives/Type'
 import { type BlogPost } from './page'
 import { extractHeadings } from '../../../../markdoc/headings'
 
-export default function Page({ post }: { post: BlogPost }) {
+export default function Page({ post, formattedDate }: { post: BlogPost; formattedDate: string }) {
   const params = useParams()
   const headings = [{ id: 'title', depth: 1, label: post.title }, ...extractHeadings(post.content)]
-
-  const publishedDate = post.publishDate
-  const parsedDate = parse(publishedDate, 'yyyy-M-d', new Date())
-  const formattedDateStr = format(parsedDate, 'MMMM do, yyyy')
 
   return (
     <BlogPage headings={headings} editPath={`blog/${params?.post}.md`}>
@@ -37,7 +32,7 @@ export default function Page({ post }: { post: BlogPost }) {
         }}
       >
         <em>
-          <span>Published on {formattedDateStr}</span>
+          <span>Published on {formattedDate}</span>
           {post.authorHandle ? (
             <span>
               {' '}
