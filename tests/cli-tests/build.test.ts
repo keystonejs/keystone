@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises'
 import execa from 'execa'
-import ms from 'ms'
 
 import {
   basicKeystoneConfig,
@@ -11,7 +10,7 @@ import {
   testdir,
 } from './utils'
 
-vi.setConfig({ testTimeout: ms('2 minutes') }) // these tests are slow
+vi.setConfig({ testTimeout: 120_000 }) // these tests are slow
 
 test("start errors when a build hasn't happened", async () => {
   const cwd = await testdir({

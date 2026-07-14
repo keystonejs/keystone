@@ -2422,9 +2422,6 @@ importers:
       '@manypkg/find-root':
         specifier: ^1.1.0
         version: 1.1.0
-      '@types/ms':
-        specifier: ^0.7.34
-        version: 0.7.34
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
@@ -2437,9 +2434,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.13.2
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2495,9 +2489,6 @@ importers:
       '@types/mime':
         specifier: ^2.0.3
         version: 2.0.3
-      '@types/ms':
-        specifier: ^0.7.34
-        version: 0.7.34
       '@types/superagent':
         specifier: ^4.1.15
         version: 4.1.24
@@ -2525,9 +2516,6 @@ importers:
       mime:
         specifier: ^3.0.0
         version: 3.0.0
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2595,9 +2583,6 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.0
         version: 11.0.4
-      '@types/ms':
-        specifier: ^0.7.34
-        version: 0.7.34
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
@@ -2619,9 +2604,6 @@ importers:
       mime:
         specifier: ^3.0.0
         version: 3.0.0
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
       next:
         specifier: 'catalog:'
         version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -2643,9 +2625,6 @@ importers:
       '@types/async-retry':
         specifier: ^1.4.3
         version: 1.4.9
-      '@types/ms':
-        specifier: ^0.7.34
-        version: 0.7.34
       '@types/tough-cookie':
         specifier: ^4.0.1
         version: 4.0.5
@@ -2655,9 +2634,6 @@ importers:
       execa:
         specifier: ^5.1.1
         version: 5.1.1
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
       playwright:
         specifier: ^1.60.0
         version: 1.60.0

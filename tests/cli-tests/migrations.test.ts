@@ -1,7 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import ms from 'ms'
 import {
   getFiles,
   introspectDatabase,
@@ -59,7 +58,7 @@ model Todo {
 
 let mockPromptResponseEntries: [string, string | boolean][] = []
 
-vi.setConfig({ testTimeout: ms('1 minute') }) // these tests are slow
+vi.setConfig({ testTimeout: 60_000 }) // these tests are slow
 
 setPromptHandler(
   (

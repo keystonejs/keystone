@@ -6,11 +6,10 @@ import fsp from 'node:fs/promises'
 import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
-import ms from 'ms'
 
 import { cli } from '@keystone-6/core/scripts/cli'
 
-vi.setConfig({ testTimeout: ms('30 seconds') })
+vi.setConfig({ testTimeout: 30_000 })
 
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js')
 
