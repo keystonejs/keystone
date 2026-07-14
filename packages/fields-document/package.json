@@ -111,7 +111,7 @@
     "jest-diff": "^29.0.0",
     "next": "catalog:",
     "pretty-format": "^29.0.0",
-    "slate-hyperscript": "^0.100.0",
+    "slate-hyperscript": "^0.125.0",
     "@types/react": "catalog:"
   },
   "peerDependencies": {

@@ -2370,8 +2370,8 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0
       slate-hyperscript:
-        specifier: ^0.100.0
-        version: 0.100.0(slate@0.120.0)
+        specifier: ^0.125.0
+        version: 0.125.0(slate@0.120.0)
 
   prisma-utils:
     devDependencies:
@@ -11694,10 +11694,10 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-hyperscript@0.100.0:
-    resolution: {integrity: sha512-fb2KdAYg6RkrQGlqaIi4wdqz3oa0S4zKNBJlbnJbNOwa23+9FLD6oPVx9zUGqCSIpy+HIpOeqXrg0Kzwh/Ii4A==}
+  slate-hyperscript@0.125.0:
+    resolution: {integrity: sha512-tH6AYvTrTnSdUo+L5cUvqcHRzQ3muEkcSEN7APM9NtEdWk9L7lqEbmpyeKfv7oyzCUW2WbR/lPhlnOSu8/jUcA==}
     peerDependencies:
-      slate: '>=0.65.3'
+      slate: '>=0.114.3'
 
   slate-react@0.120.0:
     resolution: {integrity: sha512-CMEJzozriddBjVmbxNvc2erCkXUuEkgdXIdM+jEMvxWMb51z0zhIVzgoxbGprVpzwBXY8Kv7aZOUDVMomzWH/g==}
@@ -24189,9 +24189,8 @@ snapshots:
       is-plain-object: 5.0.0
       slate: 0.91.4
 
-  slate-hyperscript@0.100.0(slate@0.120.0):
+  slate-hyperscript@0.125.0(slate@0.120.0):
     dependencies:
-      is-plain-object: 5.0.0
       slate: 0.120.0
 
   slate-react@0.120.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(slate-dom@0.119.0(slate@0.120.0))(slate@0.120.0):
