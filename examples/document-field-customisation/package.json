@@ -4,9 +4,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"cd keystone-server && pnpm dev\" \"cd nextjs-frontend && pnpm dev\""
-  },
-  "devDependencies": {
-    "concurrently": "^7.3.0"
+    "dev": "pnpm --parallel --filter ./keystone-server --filter ./nextjs-frontend dev"
   }
 }

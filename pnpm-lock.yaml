@@ -864,11 +864,7 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  examples/document-field-customisation:
-    devDependencies:
-      concurrently:
-        specifier: ^7.3.0
-        version: 7.6.0
+  examples/document-field-customisation: {}
 
   examples/document-field-customisation/keystone-server:
     dependencies:
@@ -1333,11 +1329,7 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  examples/framework-nextjs-two-servers:
-    devDependencies:
-      concurrently:
-        specifier: ^7.3.0
-        version: 7.6.0
+  examples/framework-nextjs-two-servers: {}
 
   examples/framework-nextjs-two-servers/keystone-server:
     dependencies:
@@ -8071,11 +8063,6 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@7.6.0:
-    resolution: {integrity: sha512-BKtRgvcJGeZ4XttiDiNcFiRlxoAeZOseqUvyYRUp/Vtd+9p1ULmeoSqGsDA+2ivdeDFpqrJvGvmI+StKfKl5hw==}
-    engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
-    hasBin: true
-
   conf@10.2.0:
     resolution: {integrity: sha512-8fLl9F04EJqjSqH+QjITQfJF8BrOVaYr1jewVgSRAEWePfxT0sku4w2hrGQ60BC/TNLGQ2pgxNlTbWQmMPFvXg==}
     engines: {node: '>=12'}
@@ -8230,10 +8217,6 @@ packages:
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
-
-  date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
 
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
@@ -11815,9 +11798,6 @@ packages:
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
 
-  spawn-command@0.0.2:
-    resolution: {integrity: sha512-zC8zGoGkmc8J9ndvml8Xksr1Amk9qBujgbF0JAIWO7kXr43w0h/0GJNM/Vustixu+YE8N/MTrQ7N31FvHUACxQ==}
-
   spawndamnit@3.0.1:
     resolution: {integrity: sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==}
 
@@ -11985,10 +11965,6 @@ packages:
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
-
-  supports-color@8.1.1:
-    resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
-    engines: {node: '>=10'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -19625,18 +19601,6 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@7.6.0:
-    dependencies:
-      chalk: 4.1.2
-      date-fns: 2.30.0
-      lodash: 4.18.1
-      rxjs: 7.8.2
-      shell-quote: 1.8.3
-      spawn-command: 0.0.2
-      supports-color: 8.1.1
-      tree-kill: 1.2.2
-      yargs: 17.7.2
-
   conf@10.2.0:
     dependencies:
       ajv: 8.20.0
@@ -19788,10 +19752,6 @@ snapshots:
   dataloader@1.4.0: {}
 
   dataloader@2.2.3: {}
-
-  date-fns@2.30.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
 
   date-fns@4.1.0: {}
 
@@ -24357,8 +24317,6 @@ snapshots:
 
   space-separated-tokens@2.0.2: {}
 
-  spawn-command@0.0.2: {}
-
   spawndamnit@3.0.1:
     dependencies:
       cross-spawn: 7.0.6
@@ -24514,10 +24472,6 @@ snapshots:
       - supports-color
 
   supports-color@7.2.0:
-    dependencies:
-      has-flag: 4.0.0
-
-  supports-color@8.1.1:
     dependencies:
       has-flag: 4.0.0
 
