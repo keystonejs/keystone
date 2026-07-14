@@ -273,7 +273,6 @@
     "graphql": "catalog:",
     "graphql-upload": "^15.0.2",
     "image-size": "^2.0.0",
-    "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
     "pluralize": "^8.0.0",
     "prisma": "catalog:",
