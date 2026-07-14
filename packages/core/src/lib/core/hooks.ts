@@ -1,15 +1,12 @@
 import { extensionError, validationFailureError } from './graphql-errors'
-import { type InitialisedList } from './initialise-lists'
+import type { InitialisedList } from './initialise-lists'
 
-export async function validate({
+async function validate({
   list,
   hookArgs,
 }: {
   list: InitialisedList
-  hookArgs: Omit<
-    Parameters<InitialisedList['hooks']['validate']['create' | 'update' | 'delete']>[0],
-    'addValidationError'
-  >
+  hookArgs: any
 }) {
   const messages: string[] = []
   const fieldsErrors: { error: Error; tag: string }[] = []
@@ -32,13 +29,13 @@ export async function validate({
           resolvedFieldData: hookArgs.resolvedData?.[fieldKey],
         } as never) // TODO: FIXME
       } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` })
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validate` })
       }
     })
   )
 
   if (fieldsErrors.length) {
-    throw extensionError('validateInput', fieldsErrors)
+    throw extensionError('validate', fieldsErrors)
   }
 
   // list validation hooks
@@ -46,24 +43,26 @@ export async function validate({
     const addValidationError = (msg: string) => void messages.push(`${list.listKey}: ${msg}`)
     const hook = list.hooks.validate[operation]
 
+    let listHookError: any
     try {
       await hook({ ...hookArgs, addValidationError } as never) // TODO: FIXME
     } catch (error: any) {
-      throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }])
+      listHookError = error
     }
 
     if (messages.length) {
       throw validationFailureError(messages)
     }
+
+    if (listHookError) {
+      throw extensionError('validate', [{ error: listHookError, tag: `${list.listKey}.hooks.validate` }])
+    }
   }
 }
 
-export async function runSideEffectOnlyHook<
+async function runSideEffectOnlyHook<
   HookName extends 'beforeOperation' | 'afterOperation',
-  Args extends Parameters<
-    NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
-  >[0],
->(list: InitialisedList, hookName: HookName, args: Args) {
+>(list: InitialisedList, hookName: HookName, args: any) {
   const { operation } = args
 
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean
@@ -109,3 +108,5 @@ export async function runSideEffectOnlyHook<
     throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }])
   }
 }
+
+export { validate, runSideEffectOnlyHook }
