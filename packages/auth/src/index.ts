@@ -45,7 +45,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   secretField,
   initFirstItem,
   identityField,
-  sessionData = 'id',
+  sessionData = 'id', // WARNING: uses sudo to retrieve this data
 }: AuthConfig<ListTypeInfo>) {
   /**
    * getAdditionalFiles

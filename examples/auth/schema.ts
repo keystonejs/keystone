@@ -1,7 +1,7 @@
+import type { Lists } from '.keystone/types'
 import { list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
-import { text, checkbox, password } from '@keystone-6/core/fields'
-import type { Lists } from '.keystone/types'
+import { checkbox, password, text } from '@keystone-6/core/fields'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -91,20 +91,19 @@ export const lists = {
     },
     fields: {
       // the user's name, used as the identity field for authentication
-      //   should not be publicly visible
-      //
-      //   we use isIndexed to enforce names are unique
-      //     that may not be suitable for your application
       name: text({
         access: {
           // only the respective user, or an admin can read this field
-          read: isAdminOrSameUser,
+          read: {
+            item: isAdminOrSameUser,
+            // WARNING: dont support oracles either
+            filter: denyAll,
+            order: denyAll,
+          },
 
           // only admins can update this field
           update: isAdmin,
         },
-        isFilterable: false,
-        isOrderable: false,
         isIndexed: 'unique',
         validation: {
           isRequired: true,
@@ -112,10 +111,16 @@ export const lists = {
       }),
 
       // the user's password, used as the secret field for authentication
-      //   should not be publicly visible
       password: password({
         access: {
-          read: denyAll, // TODO: is this required?
+          read: {
+            item: denyAll, // passed into the session, using sudo
+            // WARNING: dont support oracles either
+            filter: denyAll,
+            order: denyAll,
+          },
+
+          // only the respective user, or an admin can update this field
           update: isAdminOrSameUser,
         },
         validation: {
@@ -137,7 +142,12 @@ export const lists = {
       isAdmin: checkbox({
         access: {
           // only the respective user, or an admin can read this field
-          read: isAdminOrSameUser,
+          read: {
+            item: isAdminOrSameUser,
+            // WARNING: dont support oracles either
+            filter: denyAll,
+            order: denyAll,
+          },
 
           // only admins can create, or update this field
           create: isAdmin,

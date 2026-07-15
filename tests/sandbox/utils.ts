@@ -19,7 +19,11 @@ export const dbConfig = {
 
 export const trackingFields = {
   createdAt: timestamp({
-    access: { read: () => true, create: () => false, update: () => false },
+    access: {
+      read: { item: () => true, filter: () => false, order: () => false },
+      create: () => false,
+      update: () => false,
+    },
     graphql: { omit: { create: true, update: true } },
     defaultValue: { kind: 'now' },
     ui: {
@@ -28,7 +32,11 @@ export const trackingFields = {
     },
   }),
   updatedAt: timestamp({
-    access: { read: () => true, create: () => false, update: () => false },
+    access: {
+      read: { item: () => true, filter: () => false, order: () => false },
+      create: () => false,
+      update: () => false,
+    },
     graphql: { omit: { create: true, update: true } },
     db: { updatedAt: true },
     ui: {

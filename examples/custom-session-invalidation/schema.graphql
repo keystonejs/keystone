@@ -23,6 +23,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  passwordChangedAt: DateTimeNullableFilter
 }
 
 input IDFilter {
@@ -34,6 +35,17 @@ input IDFilter {
   gt: ID
   gte: ID
   not: IDFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
 }
 
 input UserOrderByInput {

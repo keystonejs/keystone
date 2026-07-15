@@ -12,7 +12,11 @@ import type {
   KeystoneContext,
   NextFieldType,
 } from '../../../types'
-import { getAccessFilters, getOperationAccess, getOperationFieldAccess } from '../access-control'
+import {
+  getAccessFilters,
+  getOperationFieldAccess,
+  getOperationQueryAccess,
+} from '../access-control'
 import type { InitialisedList } from '../initialise-lists'
 import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships'
 import { type IdType, getDBFieldKeyForFieldOnMultiField, weakMemoize } from '../utils'
@@ -88,7 +92,7 @@ async function fetchRelatedItems(
   idFieldKey: string,
   toFetch: readonly IdType[]
 ) {
-  const operationAccess = await getOperationAccess(foreignList, context, 'query')
+  const operationAccess = await getOperationQueryAccess(foreignList, context, 'one')
   if (!operationAccess) {
     return toFetch.map(() => undefined)
   }

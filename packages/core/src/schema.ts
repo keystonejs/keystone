@@ -39,8 +39,6 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
           listKey,
           {
             listKey,
-            defaultIsFilterable: true, // TODO: move to access control?
-            defaultIsOrderable: true, // TODO: move to access control?
             isSingleton: false,
             ...list,
             db: {

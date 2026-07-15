@@ -3,7 +3,7 @@ import { type GraphQLResolveInfo } from 'graphql'
 import type { BaseItem, FindManyArgsValue, KeystoneContext, OrderDirection } from '../../../types'
 import { type PrismaFilter, type UniquePrismaFilter } from '../../../types/prisma'
 
-import { getOperationAccess, getAccessFilters } from '../access-control'
+import { getAccessFilters, getOperationQueryAccess } from '../access-control'
 import {
   type UniqueInputFilter,
   type InputFilter,
@@ -14,7 +14,7 @@ import {
 import { limitsExceededError, userInputError } from '../graphql-errors'
 import type { InitialisedList } from '../initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from '../utils'
-import { checkFilterOrderAccess } from '../filter-order-access'
+import { checkFilterOrderAccess } from '../access-control'
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
@@ -79,7 +79,7 @@ export async function findOne(
   info: GraphQLResolveInfo
 ) {
   // check operation permission to pass into single operation
-  const operationAccess = await getOperationAccess(list, context, 'query')
+  const operationAccess = await getOperationQueryAccess(list, context, 'one')
   if (!operationAccess) return null
 
   const accessFilters = await getAccessFilters(list, context, 'query')
@@ -125,7 +125,7 @@ export async function findMany(
   }
 
   // check operation permission to pass into single operation
-  const operationAccess = await getOperationAccess(list, context, 'query')
+  const operationAccess = await getOperationQueryAccess(list, context, 'many')
   if (!operationAccess) return []
 
   const accessFilters = await getAccessFilters(list, context, 'query')
@@ -191,7 +191,7 @@ async function resolveOrderBy(
     fieldKey: Object.keys(orderBySelection)[0],
     list,
   }))
-  await checkFilterOrderAccess(orderByKeys, context, 'orderBy')
+  await checkFilterOrderAccess(orderByKeys, context, 'order')
 
   return await Promise.all(
     orderBy.map(async orderBySelection => {
@@ -228,7 +228,7 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  const operationAccess = await getOperationAccess(list, context, 'query')
+  const operationAccess = await getOperationQueryAccess(list, context, 'count')
   if (!operationAccess) return 0
 
   const accessFilters = await getAccessFilters(list, context, 'query')

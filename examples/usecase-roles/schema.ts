@@ -2,41 +2,16 @@ import { list } from '@keystone-6/core'
 import { allOperations, denyAll } from '@keystone-6/core/access'
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
 
-import { isSignedIn as hasSession, permissions, rules } from './access'
-import type { Session } from './access'
 import type { Lists } from '.keystone/types'
+import type { Session } from './access'
+import { isSignedIn as hasSession, permissions, rules } from './access'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-/*
-  The set of permissions a role could have would change based on application requirements, so the
-  checkboxes in the Role list below are fairly arbitary to demonstrate the idea.
-
-  The default permissions (not assigned with roles) in this example are:
-  - All users can sign into the Admin UI
-  - All users can see and manage todo items assigned to themselves
-*/
-
 export const lists: Lists<Session> = {
   Todo: list({
-    /*
-      SPEC
-      - [x] Block all public access
-      - [x] Restrict list create based on canCreateTodos
-      - [x] Restrict list read based on canManageAllTodos and isPrivate
-        - [x] Users without canManageAllTodos can only see their own todo items
-        - [x] Users can never see todo items with isPrivate unless assigned to themselves
-      - [x] Restrict list update / delete based on canManageAllTodos
-        - [x] Users can always update / delete their own todo items
-        - [x] Users can only update / delete todo items assigned to other people with canManageAllTodos
-      - [ ] Validate assignment on create based on canManageAllTodos
-        - [ ] Users without canManageAllTodos can only create Todos assigned to themselves
-        - [ ] Users with canManageAllTodos can create and assign Todos to anyone
-        - [ ] Nobody can create private users assigned to another user
-      - [ ] Extend the Admin UI to stop people creating private Todos assigned to someone else
-    */
     access: {
       operation: {
         ...allOperations(hasSession),
@@ -120,13 +95,9 @@ export const lists: Lists<Session> = {
     },
     fields: {
       // the user's name, used as the identity field for authentication
-      //   should not be publicly visible
       //
-      //   we use isIndexed to enforce names are unique
-      //     that may not suitable for your application
+      //   we enforce names are unique, that may not suitable for your application
       name: text({
-        isFilterable: false,
-        isOrderable: false,
         isIndexed: 'unique',
         validation: {
           isRequired: true,
@@ -136,13 +107,12 @@ export const lists: Lists<Session> = {
       //   should not be publicly visible
       password: password({
         access: {
-          read: denyAll, // TODO: is this required?
+          read: denyAll,
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session?.itemId === item.id,
         },
         validation: { isRequired: true },
       }),
-      /* The role assigned to the user */
       role: relationship({
         ref: 'Role.assignedTo',
         access: {
@@ -155,7 +125,6 @@ export const lists: Lists<Session> = {
           },
         },
       }),
-      /* Todo items assigned to the user */
       tasks: relationship({
         ref: 'Todo.assignedTo',
         many: true,
@@ -181,16 +150,6 @@ export const lists: Lists<Session> = {
     },
   }),
   Role: list({
-    /*
-      SPEC
-      - [x] Block all public access
-      - [x] Restrict edit access based on canManageRoles
-      - [ ] Prevent users from deleting their own role
-      - [ ] Add a pre-save hook that ensures some permissions are selected when others are:
-          - [ ] when canEditOtherPeople is true, canSeeOtherPeople must be true
-          - [ ] when canManagePeople is true, canEditOtherPeople and canSeeOtherPeople must be true
-      - [ ] Extend the Admin UI with client-side validation based on the same set of rules
-    */
     access: {
       operation: {
         ...allOperations(permissions.canManageRoles),

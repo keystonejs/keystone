@@ -27,7 +27,6 @@ import type {
   KeystoneConfig,
   ListGraphQLTypes,
   ListHooks,
-  MaybeFieldFunction,
   NextFieldType,
 } from '../../types'
 import { QueryMode } from '../../types'
@@ -159,8 +158,8 @@ export type InitialisedField = {
       read: boolean
       create: boolean
       update: boolean
-      filter: MaybeFieldFunction<BaseListTypeInfo>
-      orderBy: MaybeFieldFunction<BaseListTypeInfo>
+      filter: boolean
+      order: boolean
     }
     isNonNull: {
       read: boolean
@@ -222,12 +221,14 @@ export type InitialisedList = {
     names: GraphQLNames
     isEnabled: {
       type: boolean
-      query: boolean
+      query: {
+        one: boolean
+        many: boolean
+        count: boolean
+      }
       create: boolean
       update: boolean
       delete: boolean
-      filter: MaybeFieldFunction<BaseListTypeInfo>
-      orderBy: MaybeFieldFunction<BaseListTypeInfo>
     }
   }
 
@@ -250,65 +251,106 @@ export type InitialisedList = {
   cacheHint: ((args: CacheHintArgs<BaseListTypeInfo>) => CacheHint) | undefined
 }
 
-function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
-  if (['boolean', 'undefined', 'function'].includes(typeof x)) return
-  throw new Error(
-    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`
-  )
-}
-
 type ListConfigType = KeystoneConfig['lists'][string]
 type FieldConfigType = ReturnType<FieldTypeFunc<any>>
 type PartiallyInitialisedList1 = { graphql: { isEnabled: InitialisedList['graphql']['isEnabled'] } }
 type PartiallyInitialisedList2 = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
+type FieldOmit = NonNullable<NonNullable<FieldConfigType['graphql']>['omit']>
+type ResolvedFieldOmit = {
+  type: boolean
+  read: { item: boolean; filter: boolean; order: boolean }
+  create: boolean
+  update: boolean
+}
+
+function normalizeFieldOmit(omit: FieldOmit | undefined): ResolvedFieldOmit {
+  if (typeof omit === 'boolean') {
+    return {
+      type: omit,
+      read: { item: omit, filter: omit, order: omit },
+      create: omit,
+      update: omit,
+    }
+  }
+
+  const read = omit?.read
+  return {
+    type: false,
+    read:
+      typeof read === 'boolean'
+        ? { item: read, filter: read, order: read }
+        : {
+            item: read?.item ?? false,
+            filter: read?.filter ?? false,
+            order: read?.order ?? false,
+          },
+    create: omit?.create ?? false,
+    update: omit?.update ?? false,
+  }
+}
+
+function resolveFieldOmit(
+  fieldOmit: FieldOmit | undefined,
+  defaultOmit: FieldOmit | undefined
+): ResolvedFieldOmit {
+  const resolvedDefault = normalizeFieldOmit(defaultOmit)
+  if (fieldOmit === undefined) return resolvedDefault
+  if (typeof fieldOmit === 'boolean') return normalizeFieldOmit(fieldOmit)
+
+  const read = fieldOmit.read
+  return {
+    type: false,
+    read:
+      read === undefined
+        ? resolvedDefault.read
+        : typeof read === 'boolean'
+          ? { item: read, filter: read, order: read }
+          : read,
+    create: fieldOmit.create ?? resolvedDefault.create,
+    update: fieldOmit.update ?? resolvedDefault.update,
+  }
+}
 
 // TODO: move to defaultLists?
-function getIsEnabled(listKey: string, listConfig: ListConfigType) {
-  const omit = listConfig.graphql.omit ?? false
-  const { defaultIsFilterable, defaultIsOrderable } = listConfig
-
-  throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable')
-  throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable')
+function getIsEnabled(listConfig: ListConfigType) {
+  const omit = listConfig.graphql?.omit ?? false
 
   if (typeof omit === 'boolean') {
     const notOmit = !omit
     return {
       type: notOmit,
-      query: notOmit,
+      query: { one: notOmit, many: notOmit, count: notOmit },
       create: notOmit,
       update: notOmit,
       delete: notOmit,
-      filter: notOmit ? defaultIsFilterable : false,
-      orderBy: notOmit ? defaultIsOrderable : false,
     }
   }
 
+  const queryOmit = omit.query
+  const query =
+    typeof queryOmit === 'boolean'
+      ? { one: !queryOmit, many: !queryOmit, count: !queryOmit }
+      : {
+          one: !(queryOmit?.one ?? false),
+          many: !(queryOmit?.many ?? false),
+          count: !(queryOmit?.count ?? false),
+        }
+
   return {
     type: true,
-    query: !omit.query,
+    query,
     create: !omit.create,
     update: !omit.update,
     delete: !omit.delete,
-    filter: defaultIsFilterable,
-    orderBy: defaultIsOrderable,
   }
 }
 
 function getIsEnabledField(
   f: FieldConfigType,
-  listKey: string,
-  list: PartiallyInitialisedList1,
-  lists: Record<string, PartiallyInitialisedList1>
+  lists: Record<string, PartiallyInitialisedList1>,
+  defaultOmit: FieldOmit | undefined
 ) {
-  const omit = f.graphql?.omit ?? false
-  const {
-    isFilterable = list.graphql.isEnabled.filter,
-    isOrderable = list.graphql.isEnabled.orderBy,
-  } = f
-
-  // TODO: check types in initConfig
-  throwIfNotAFilter(isFilterable, listKey, 'isFilterable')
-  throwIfNotAFilter(isOrderable, listKey, 'isOrderable')
+  const omit = resolveFieldOmit(f.graphql?.omit, defaultOmit)
 
   if (f.dbField.kind === 'relation') {
     if (!lists[f.dbField.list].graphql.isEnabled.type) {
@@ -318,30 +360,18 @@ function getIsEnabledField(
         create: false,
         update: false,
         filter: false,
-        orderBy: false,
+        order: false,
       }
     }
   }
 
-  if (typeof omit === 'boolean') {
-    const notOmit = !omit
-    return {
-      type: notOmit,
-      read: notOmit,
-      create: notOmit,
-      update: notOmit,
-      filter: notOmit ? isFilterable : false,
-      orderBy: notOmit ? isOrderable : false,
-    }
-  }
-
   return {
-    type: true,
-    read: !omit.read,
+    type: !omit.type,
+    read: !omit.read.item,
     create: !omit.create,
     update: !omit.update,
-    filter: !omit.read ? isFilterable : false, // prevent filtering if read is false
-    orderBy: !omit.read ? isOrderable : false, // prevent ordering if read is false
+    filter: !omit.read.filter,
+    order: !omit.read.order,
   }
 }
 
@@ -410,7 +440,7 @@ function getListsWithInitialisedFields(
       listConfig.listKey,
       {
         graphql: {
-          isEnabled: getIsEnabled(listConfig.listKey, listConfig),
+          isEnabled: getIsEnabled(listConfig),
         },
       },
     ])
@@ -431,27 +461,32 @@ function getListsWithInitialisedFields(
         return {
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([fieldPath, field]) => {
-              if (
-                !field.output ||
-                !field.graphql.isEnabled.read ||
-                (field.dbField.kind === 'relation' &&
-                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
-              ) {
+              if (!field.output || !field.graphql.isEnabled.read) {
                 return []
               }
 
               const outputFieldRoot = graphqlForOutputField(field)
-              return [
+              let outputFields = [
                 [fieldPath, outputFieldRoot] as const,
                 ...Object.entries(field.extraOutputFields || {}),
-              ].map(([outputTypeFieldName, outputField]) => {
+              ]
+
+              if (field.dbField.kind === 'relation') {
+                const relation = field.dbField
+                const query = intermediateLists[field.dbField.list].graphql.isEnabled.query
+                outputFields = outputFields.filter(([outputTypeFieldName]) =>
+                  outputTypeFieldName === fieldPath ? query[relation.mode] : query.count
+                )
+              }
+
+              return outputFields.map(([outputTypeFieldName, outputField]) => {
                 return [
                   outputTypeFieldName,
                   outputTypeField(
                     outputField,
                     field.dbField,
                     field.graphql?.cacheHint,
-                    field.access.read,
+                    field.access.read.item,
                     listKey,
                     fieldPath,
                     listsRef
@@ -471,11 +506,7 @@ function getListsWithInitialisedFields(
         return {
           ...Object.fromEntries(
             Object.entries(fields).flatMap(([key, field]) => {
-              if (
-                !field.input?.uniqueWhere?.arg ||
-                !field.graphql.isEnabled.read ||
-                !field.graphql.isEnabled.filter
-              ) {
+              if (!field.input?.uniqueWhere?.arg || !field.graphql.isEnabled.filter) {
                 return []
               }
 
@@ -516,7 +547,6 @@ function getListsWithInitialisedFields(
           ...Object.entries(fields).map(
             ([fieldKey, field]) =>
               field.input?.where?.arg &&
-              field.graphql.isEnabled.read &&
               field.graphql.isEnabled.filter && { [fieldKey]: field.input?.where?.arg }
           )
         )
@@ -561,11 +591,7 @@ function getListsWithInitialisedFields(
         const { fields } = listsRef[listKey]
         return Object.fromEntries(
           Object.entries(fields).flatMap(([key, field]) => {
-            if (
-              !field.input?.orderBy?.arg ||
-              !field.graphql.isEnabled.read ||
-              !field.graphql.isEnabled.orderBy
-            ) {
+            if (!field.input?.orderBy?.arg || !field.graphql.isEnabled.order) {
               return []
             }
             return [[key, field.input.orderBy.arg]] as const
@@ -703,6 +729,7 @@ function getListsWithInitialisedFields(
   for (const listConfig of Object.values(listsConfig)) {
     const { listKey } = listConfig
     const intermediateList = intermediateLists[listKey]
+    const fieldAccessDefault = listConfig.fieldDefaults?.access
     const resultFields: Record<string, InitialisedField> = {}
     const groups: GroupInfo<BaseListTypeInfo>[] = []
     const fieldKeys = Object.keys(listConfig.fields)
@@ -739,12 +766,16 @@ function getListsWithInitialisedFields(
         fieldKey,
       })
 
-      const isEnabledField = getIsEnabledField(f, listKey, intermediateList, intermediateLists)
+      const isEnabledField = getIsEnabledField(
+        f,
+        intermediateLists,
+        listConfig.fieldDefaults?.graphql?.omit
+      )
       resultFields[fieldKey] = {
         fieldKey,
 
         dbField: f.dbField as ResolvedDBField,
-        access: parseFieldAccessControl(f.access),
+        access: parseFieldAccessControl(f.access, fieldAccessDefault),
         hooks: parseFieldHooks(f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
@@ -1000,7 +1031,7 @@ function initialiseActionArgField(
   const field: InitialisedField = {
     fieldKey: argKey,
     dbField: f.dbField as ResolvedDBField,
-    access: parseFieldAccessControl(undefined),
+    access: parseFieldAccessControl(undefined, undefined),
     hooks: parseFieldHooks(f.hooks ?? {}),
     graphql: {
       cacheHint: undefined,
@@ -1009,7 +1040,7 @@ function initialiseActionArgField(
         create: !createIsOmitted,
         update: false,
         filter: false,
-        orderBy: false,
+        order: false,
       },
       isNonNull: {
         read: false,

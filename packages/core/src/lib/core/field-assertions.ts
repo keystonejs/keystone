@@ -15,7 +15,7 @@ export function assertFieldsValid(list: ListForValidation) {
 
 function assertFieldsIsNonNullAllowed(list: ListForValidation) {
   for (const [fieldKey, field] of Object.entries(list.fields)) {
-    if (field.access.read !== allowAll) {
+    if (field.access.read.item !== allowAll) {
       if (field.graphql.isNonNull.read) {
         throw new Error(
           `The field at ${list.listKey}.${fieldKey} sets graphql.isNonNull.read: true, and has 'read' field access control, this is not allowed.\n` +

@@ -1,13 +1,12 @@
 import { text, relationship, integer } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { allowAll } from '@keystone-6/core/access'
+import { allowAll, denyAll } from '@keystone-6/core/access'
 import {
-  type ContextFromRunner,
+  expectAccessDenied,
   expectAccessReturnError,
   expectBadUserInput,
   expectGraphQLValidationError,
-  expectFilterDenied,
 } from '../utils'
 
 const runner = setupTestRunner({
@@ -20,88 +19,107 @@ const runner = setupTestRunner({
           noDash: text(),
           single_dash: text(),
           many_many_many_dashes: text(),
-          multi____dash: text({ isFilterable: true }),
-          email: text({ isIndexed: 'unique', isFilterable: true, db: { isNullable: true } }),
+          multi____dash: text(),
+          email: text({ isIndexed: 'unique', db: { isNullable: true } }),
           uniqueButNotFilterable: text({
             isIndexed: 'unique',
-            isFilterable: () => false,
+            access: { read: { item: allowAll, filter: denyAll, order: allowAll } },
             db: { isNullable: true },
           }),
 
-          filterFalse: integer({ isFilterable: false }),
-          filterTrue: integer({ isFilterable: true }),
-          filterFunctionFalse: integer({ isFilterable: () => false }),
-          filterFunctionTrue: integer({ isFilterable: () => true }),
-          filterFunctionOtherFalsey: integer({ isFilterable: () => null } as any), // as any for tests
-          filterFunctionOtherTruthy: integer({ isFilterable: () => ({}) } as any), // as any for tests
+          filterFalse: integer({
+            graphql: { omit: { read: { item: false, filter: true, order: false } } },
+          }),
+          filterTrue: integer(),
+          filterFunctionFalse: integer({
+            access: { read: { item: allowAll, filter: denyAll, order: allowAll } },
+          }),
+          filterFunctionTrue: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+          }),
+          filterFunctionOtherFalsey: integer({
+            access: { read: { item: allowAll, filter: () => null, order: allowAll } },
+          } as any), // as any for tests
+          filterFunctionOtherTruthy: integer({
+            access: { read: { item: allowAll, filter: () => ({}), order: allowAll } },
+          } as any), // as any for tests
         },
       }),
       SecondaryList: list({
         access: allowAll,
         fields: {
-          filterFunctionFalse: integer({ isFilterable: () => false }),
-          someUser: relationship({ ref: 'User', isFilterable: true }),
-          otherUsers: relationship({ ref: 'User', isFilterable: true, many: true }),
+          filterFunctionFalse: integer({
+            access: { read: { item: allowAll, filter: () => false, order: allowAll } },
+          }),
+          someUser: relationship({ ref: 'User' }),
+          otherUsers: relationship({ ref: 'User', many: true }),
         },
       }),
-
       DefaultFilterUndefined: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultFilterFalse: list({
+      DefaultFilterOmitted: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: false,
+        fieldDefaults: {
+          graphql: { omit: { read: { item: false, filter: true, order: false } } },
+        },
+        fields: {
+          a: integer(),
+          b: integer({
+            graphql: { omit: { read: { item: false, filter: false, order: false } } },
+          }),
+        },
       }),
-      DefaultFilterTrue: list({
+      DefaultFilterRetained: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: true as any, // not actually allowed
+        fieldDefaults: {
+          graphql: { omit: { read: { item: false, filter: false, order: false } } },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultFilterFunctionFalse: list({
+      DefaultFilterAccessDenied: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: () => false,
+        fieldDefaults: {
+          access: { read: { item: allowAll, filter: denyAll, order: allowAll } },
+        },
+        fields: {
+          a: integer(),
+          b: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+          }),
+        },
       }),
-      DefaultFilterFunctionTrue: list({
+      DefaultFilterAccessAllowed: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: () => true,
+        fieldDefaults: {
+          access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultFilterFunctionFalsey: list({
+      DefaultFilterAccessFalsey: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: (() => null) as any, // not actually allowed
+        fieldDefaults: {
+          access: {
+            // @ts-expect-error
+            read: { item: allowAll, filter: () => null, order: allowAll },
+          },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultFilterFunctionTruthy: list({
+      DefaultFilterAccessTruthy: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isFilterable: true }) },
-        defaultIsFilterable: () => ({}) as any, // not actually allowed
+        fieldDefaults: {
+          access: {
+            // @ts-expect-error
+            read: { item: allowAll, filter: () => ({}), order: allowAll },
+          },
+        },
+        fields: { a: integer(), b: integer() },
       }),
     },
   },
 })
-
-async function initialiseData({ context }: { context: ContextFromRunner<typeof runner> }) {
-  // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.query) as Array<keyof (typeof context)['query']>) {
-    if (listKey === 'User' || listKey === 'SecondaryList') continue
-    await context.query[listKey].createMany({
-      data: [
-        { a: 1, b: 10 },
-        { a: 1, b: 30 },
-        { a: 1, b: 20 },
-        { a: 3, b: 30 },
-        { a: 3, b: 10 },
-        { a: 3, b: 20 },
-        { a: 2, b: 30 },
-        { a: 2, b: 20 },
-        { a: 2, b: 10 },
-      ],
-    })
-  }
-}
 
 describe('filtering on field name', () => {
   test(
@@ -322,10 +340,10 @@ describe('isFilterable', () => {
         query: '{ users(where: { filterFunctionFalse: { equals: 10 } }) { id } }',
       })
       expect(data).toEqual({ users: null })
-      expectFilterDenied(errors, [
+      expectAccessDenied(errors, [
         {
           path: ['users'],
-          message: `Access denied: You cannot filter by User.filterFunctionFalse`,
+          msg: 'You cannot filter that User - you cannot filter the fields filterFunctionFalse',
         },
       ])
     })
@@ -352,7 +370,9 @@ describe('isFilterable', () => {
       expectAccessReturnError(errors, [
         {
           path: ['users'],
-          errors: [{ tag: 'User.filterFunctionOtherFalsey.isFilterable', returned: 'object' }],
+          errors: [
+            { tag: 'User.filterFunctionOtherFalsey.access.read.filter', returned: 'object' },
+          ],
         },
       ])
     })
@@ -368,7 +388,9 @@ describe('isFilterable', () => {
       expectAccessReturnError(errors, [
         {
           path: ['users'],
-          errors: [{ tag: 'User.filterFunctionOtherTruthy.isFilterable', returned: 'object' }],
+          errors: [
+            { tag: 'User.filterFunctionOtherTruthy.access.read.filter', returned: 'object' },
+          ],
         },
       ])
     })
@@ -387,10 +409,10 @@ describe('isFilterable', () => {
         } ) { id } }`,
       })
       expect(data).toEqual({ secondaryLists: null })
-      expectFilterDenied(errors, [
+      expectAccessDenied(errors, [
         {
           path: ['secondaryLists'],
-          message: `Access denied: You cannot filter by SecondaryList.filterFunctionFalse, SecondaryList.filterFunctionFalse, User.filterFunctionFalse`,
+          msg: 'You cannot filter that SecondaryList - you cannot filter the fields filterFunctionFalse',
         },
       ])
     })
@@ -409,10 +431,10 @@ describe('isFilterable with cursor', () => {
       })
       // cursor should be checked against isFilterable the same as where
       expect(data).toEqual({ users: null })
-      expectFilterDenied(errors, [
+      expectAccessDenied(errors, [
         {
           path: ['users'],
-          message: 'Access denied: You cannot filter by User.uniqueButNotFilterable',
+          msg: 'You cannot filter that User - you cannot filter the fields uniqueButNotFilterable',
         },
       ])
     })
@@ -433,9 +455,9 @@ describe('isFilterable with cursor', () => {
   )
 })
 
-describe('defaultIsFilterable', () => {
+describe('fieldDefaults filter', () => {
   test(
-    'defaultIsFilterable: undefined',
+    'undefined retains filter fields',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
         query: '{ defaultFilterUndefineds(where: { a: { equals: 10 } }) { id } }',
@@ -446,86 +468,97 @@ describe('defaultIsFilterable', () => {
   )
 
   test(
-    'defaultIsFilterable: false',
-    runner(async ({ gqlSuper }) => {
+    'fieldDefaults.graphql.omit.read.filter omits filter fields and can be overridden',
+    runner(async ({ context, gqlSuper }) => {
       const { body } = await gqlSuper({
-        query: '{ defaultFilterFalses(where: { a: { equals: 10 } }) { id } }',
+        query: '{ defaultFilterOmitteds(where: { a: { equals: 10 } }) { id } }',
       })
       expectGraphQLValidationError(body.errors, [
         {
           message:
-            'Field "a" is not defined by type "DefaultFilterFalseWhereInput". Did you mean "b"?',
+            'Field "a" is not defined by type "DefaultFilterOmittedWhereInput". Did you mean "b"?',
         },
       ])
-    })
-  )
 
-  test(
-    'defaultIsFilterable: true',
-    runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultFilterTrues(where: { a: { equals: 10 } }) { id } }',
+        query: '{ defaultFilterOmitteds(where: { b: { equals: 10 } }) { id } }',
       })
-      expect(data).toEqual({ defaultFilterTrues: [] })
+      expect(data).toEqual({ defaultFilterOmitteds: [] })
       expect(errors).toBe(undefined)
     })
   )
 
   test(
-    'defaultIsFilterable: () => false',
+    'fieldDefaults.graphql.omit.read.filter false retains filter fields',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultFilterFunctionFalses(where: { a: { equals: 10 } }) { id } }',
+        query: '{ defaultFilterRetaineds(where: { a: { equals: 10 } }) { id } }',
       })
-      expect(data).toEqual({ defaultFilterFunctionFalses: null })
-      expectFilterDenied(errors, [
-        {
-          path: ['defaultFilterFunctionFalses'],
-          message: `Access denied: You cannot filter by DefaultFilterFunctionFalse.a`,
-        },
-      ])
-    })
-  )
-
-  test(
-    'defaultIsFilterable: () => true',
-    runner(async ({ context }) => {
-      await initialiseData({ context })
-      const { data, errors } = await context.graphql.raw({
-        query: '{ defaultFilterFunctionTrues(where: { a: { equals: 10 } }) { id } }',
-      })
-      expect(data).toEqual({ defaultFilterFunctionTrues: [] })
+      expect(data).toEqual({ defaultFilterRetaineds: [] })
       expect(errors).toBe(undefined)
     })
   )
 
   test(
-    'defaultIsFilterable: () => null',
+    'fieldDefaults.access.read.filter denyAll denies filtering and can be overridden',
+    runner(async ({ context }) => {
+      const denied = await context.graphql.raw({
+        query: '{ defaultFilterAccessDenieds(where: { a: { equals: 10 } }) { id } }',
+      })
+      expect(denied.data).toEqual({ defaultFilterAccessDenieds: null })
+      expectAccessDenied(denied.errors, [
+        {
+          path: ['defaultFilterAccessDenieds'],
+          msg: 'You cannot filter that DefaultFilterAccessDenied - you cannot filter the fields a',
+        },
+      ])
+
+      const { data, errors } = await context.graphql.raw({
+        query: '{ defaultFilterAccessDenieds(where: { b: { equals: 10 } }) { id } }',
+      })
+      expect(data).toEqual({ defaultFilterAccessDenieds: [] })
+      expect(errors).toBe(undefined)
+    })
+  )
+
+  test(
+    'fieldDefaults.access.read.filter allowAll allows filtering',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultFilterFunctionFalseys(where: { a: { equals: 10 } }) { id } }',
+        query: '{ defaultFilterAccessAlloweds(where: { a: { equals: 10 } }) { id } }',
       })
-      expect(data).toEqual({ defaultFilterFunctionFalseys: null })
+      expect(data).toEqual({ defaultFilterAccessAlloweds: [] })
+      expect(errors).toBe(undefined)
+    })
+  )
+
+  test(
+    'fieldDefaults.access.read.filter returning null reports an invalid access return',
+    runner(async ({ context }) => {
+      const { data, errors } = await context.graphql.raw({
+        query: '{ defaultFilterAccessFalseys(where: { a: { equals: 10 } }) { id } }',
+      })
+      expect(data).toEqual({ defaultFilterAccessFalseys: null })
       expectAccessReturnError(errors, [
         {
-          path: ['defaultFilterFunctionFalseys'],
-          errors: [{ tag: 'DefaultFilterFunctionFalsey.a.isFilterable', returned: 'object' }],
+          path: ['defaultFilterAccessFalseys'],
+          errors: [{ tag: 'DefaultFilterAccessFalsey.a.access.read.filter', returned: 'object' }],
         },
       ])
     })
   )
 
   test(
-    'defaultIsFilterable: () => ({})',
+    'fieldDefaults.access.read.filter returning an object reports an invalid access return',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultFilterFunctionTruthies(where: { a: { equals: 10 } }) { id } }',
+        query: '{ defaultFilterAccessTruthies(where: { a: { equals: 10 } }) { id } }',
       })
-      expect(data).toEqual({ defaultFilterFunctionTruthies: null })
+      expect(data).toEqual({ defaultFilterAccessTruthies: null })
       expectAccessReturnError(errors, [
         {
-          path: ['defaultFilterFunctionTruthies'],
-          errors: [{ tag: 'DefaultFilterFunctionTruthy.a.isFilterable', returned: 'object' }],
+          path: ['defaultFilterAccessTruthies'],
+          errors: [{ tag: 'DefaultFilterAccessTruthy.a.access.read.filter', returned: 'object' }],
         },
       ])
     })

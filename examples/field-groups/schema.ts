@@ -29,7 +29,11 @@ export const lists = {
         fields: {
           slug: text({
             access: {
-              read: allowAll,
+              read: {
+                item: allowAll,
+                filter: denyAll,
+                order: denyAll,
+              },
               create: denyAll,
               update: denyAll,
             },

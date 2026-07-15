@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict'
-import { randomInt } from 'node:crypto'
 import { describe, test } from 'node:test'
 import { dbProvider, setupTestSuite } from './utils'
 import {
@@ -20,16 +19,22 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
 
   for (const l of lists) {
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
+    const coveredPairKinds = new Set<string>()
 
-    for (const f1 of l.fields) {
-      for (const f2 of l.fields) {
-        if (f1 === f2) continue
-        if (randomInt(100) < 90) continue
+    for (let i = 0; i < l.fields.length; i++) {
+      for (let j = i + 1; j < l.fields.length; j++) {
+        const f1 = l.fields[i]
+        const f2 = l.fields[j]
+        const pairKind = [f1, f2]
+          .map(field => `${field.expect.filter}:${field.expect.unique}`)
+          .join(',')
+        if (coveredPairKinds.has(pairKind)) continue
+        coveredPairKinds.add(pairKind)
 
         const fields = [f1, f2]
-        const filterable = fields.every(f => f.expect.filterable)
+        const filterable = fields.every(f => f.expect.filter)
         const unique = fields.every(f => f.expect.unique)
-        const label = `${fields.map(x => x.name).join(', ')} filterable: ${filterable}`
+        const label = `${fields.map(x => x.name).join(', ')} filter: ${filterable}`
 
         if (unique) {
           test(`findOne (F>1) ${label}`, async () => {
@@ -43,8 +48,8 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
               query: itemQuery,
             })
 
-            // access.filter's happen after .filterable
-            if (!l.expect.query && l.expect.type !== 'filter') {
+            // access.read.filter checks happen after list access filters
+            if (!l.expect.query.one && l.expect.type !== 'filter') {
               assert.equal(await findPromise, null)
               return
             }
@@ -56,7 +61,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             }
 
             const item = await findPromise
-            if (!l.expect.query) {
+            if (!l.expect.query.one) {
               assert.equal(item, null)
               return
             }
@@ -81,8 +86,8 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             query: itemQuery,
           })
 
-          // access.filter's happen after .filterable
-          if (!l.expect.query && l.expect.type !== 'filter') {
+          // access.read.filter checks happen after list access filters
+          if (!l.expect.query.many && l.expect.type !== 'filter') {
             assert.deepEqual(await findPromise, [])
             return
           }
@@ -94,7 +99,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           }
 
           const items = await findPromise
-          if (!l.expect.query) {
+          if (!l.expect.query.many) {
             assert.deepEqual(items, [])
             return
           }
@@ -114,8 +119,8 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             query: itemQuery,
           })
 
-          // access.filter's happen after .filterable
-          if (!l.expect.query && l.expect.type !== 'filter') {
+          // access.read.filter checks happen after list access filters
+          if (!l.expect.query.many && l.expect.type !== 'filter') {
             assert.deepEqual(await findPromise, [])
             return
           }
@@ -127,7 +132,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           }
 
           const items = await findPromise
-          if (!l.expect.query) {
+          if (!l.expect.query.many) {
             assert.deepEqual(items, [])
             return
           }
@@ -147,8 +152,8 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
             query: itemQuery,
           })
 
-          // access.filter's happen after .filterable
-          if (!l.expect.query && l.expect.type !== 'filter') {
+          // access.read.filter checks happen after list access filters
+          if (!l.expect.query.many && l.expect.type !== 'filter') {
             assert.deepEqual(await findPromise, [])
             return
           }
@@ -160,7 +165,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
           }
 
           const items = await findPromise
-          if (!l.expect.query) {
+          if (!l.expect.query.many) {
             assert.deepEqual(items, [])
             return
           }
@@ -185,7 +190,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
               query: updateQuery,
             })
 
-            // access.filter's happen after .filterable
+            // access.read.filter checks happen after list access filters
             if (!l.expect.update && l.expect.type !== 'filter') {
               assert.equal(await updatePromise, null)
               return
@@ -220,7 +225,7 @@ describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
               query: itemQuery,
             })
 
-            // access.filter's happen after .filterable
+            // access.read.filter checks happen after list access filters
             if (!l.expect.delete && l.expect.type !== 'filter') {
               assert.equal(await deletePromise, null)
               return
