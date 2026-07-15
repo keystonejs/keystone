@@ -125,6 +125,7 @@ type PasswordState {
 
 input UserWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input UserWhereInput {
@@ -132,6 +133,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
   role: RoleWhereInput
   tasks: TodoManyRelationFilter
 }
@@ -144,6 +146,7 @@ input TodoManyRelationFilter {
 
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
 }
 
 input UserUpdateInput {

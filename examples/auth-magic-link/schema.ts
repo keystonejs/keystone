@@ -16,6 +16,17 @@ function hasSession({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
+function isSameUser({ session, item }: { session?: Session; item: Lists.User.Item | null }) {
+  // you need to have a session to do this
+  if (!session) return false
+
+  // no item? then no
+  if (!item) return false
+
+  // only yourself
+  return item.id === session.itemId
+}
+
 function isSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false
@@ -51,9 +62,10 @@ export const lists = {
     access: {
       operation: {
         query: allowAll,
+        // WARNING: anyone can create a user
         create: allowAll,
 
-        // what a user can update is limited by
+        // WARNING: what a user can update is limited by
         //   the access.filter.* access controls
         update: hasSession,
         delete: hasSession,
@@ -63,12 +75,15 @@ export const lists = {
       },
     },
     fields: {
-      // the user's name, used as the identity field for authentication
-      //   should not be publicly visible
-      //
-      //   we use isIndexed to enforce names are unique
-      //     that may not be suitable for your application
       name: text({
+        access: {
+          read: {
+            item: isSameUser,
+            // WARNING: dont support oracles either
+            filter: denyAll,
+            order: denyAll,
+          },
+        },
         isIndexed: 'unique',
         validation: {
           isRequired: true,
@@ -111,7 +126,7 @@ export const extendGraphqlSchema = g.extend(base => {
         args: { userId: g.arg({ type: g.nonNull(g.String) }) },
 
         async resolve(args, { userId }, context) {
-          // run asynchronously to reduce timing attacks
+          // run async to reduce timing attacks
           ;(async function () {
             const ott = randomBytes(16).toString('base64url')
             const sudoContext = context.sudo()

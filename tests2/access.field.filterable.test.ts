@@ -21,7 +21,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
     // field access tests
     for (const f of l.fields) {
       if (f.expect.unique) {
-        test(`findOne by ${f.name} (filterable: ${f.expect.filterable})`, async () => {
+        test(`findOne by ${f.name} (filter: ${f.expect.filter})`, async () => {
           const { context } = await suite
           const seeded = await seed(l, context)
 
@@ -31,13 +31,13 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
             query: itemQuery,
           })
 
-          // access.filter's happen after .filterable
-          if (!l.expect.query && l.expect.type !== 'filter') {
+          // access.read.filter checks happen after list access filters
+          if (!l.expect.query.one && l.expect.type !== 'filter') {
             assert.equal(await findPromise, null)
             return
           }
 
-          if (!f.expect.filterable) {
+          if (!f.expect.filter) {
             const error = findPromise.catch((e: any) => e.message)
             assert.match(await error, /^Access denied: You cannot filter/)
             return
@@ -45,7 +45,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
 
           // test field.access.read
           const item = await findPromise
-          if (!l.expect.query) {
+          if (!l.expect.query.one) {
             assert.equal(item, null)
             return
           }
@@ -54,7 +54,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
         })
       }
 
-      test(`findMany by ${f.name} (filterable: ${f.expect.filterable})`, async () => {
+      test(`findMany by ${f.name} (filter: ${f.expect.filter})`, async () => {
         const { context } = await suite
         const seeded = await seedMany(l, context)
 
@@ -64,13 +64,13 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
           query: itemQuery,
         })
 
-        // access.filter's happen after .filterable
-        if (!l.expect.query && l.expect.type !== 'filter') {
+        // access.read.filter checks happen after list access filters
+        if (!l.expect.query.many && l.expect.type !== 'filter') {
           assert.deepEqual(await findPromise, [])
           return
         }
 
-        if (!f.expect.filterable) {
+        if (!f.expect.filter) {
           const error = findPromise.catch((e: any) => e.message)
           assert.match(await error, /^Access denied: You cannot filter/)
           return
@@ -78,7 +78,7 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
 
         // test field.access.read
         const items = await findPromise
-        if (!l.expect.query) {
+        if (!l.expect.query.many) {
           assert.deepEqual(items, [])
           return
         }

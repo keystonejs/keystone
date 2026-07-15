@@ -72,7 +72,9 @@ const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-f
           test('Throws when graphql.isNonNull.read and read access control is set', async () => {
             const error = await getSchema({
               graphql: { isNonNull: { read: true } },
-              access: { read: () => false },
+              access: {
+                read: { item: () => false, filter: () => false, order: () => false },
+              },
             }).catch(x => x)
             expect(error).toBeInstanceOf(Error)
             expect(error.message).toEqual(

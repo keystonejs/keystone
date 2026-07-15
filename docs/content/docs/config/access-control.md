@@ -89,7 +89,11 @@ export default config({
     ListKey: list({
       access: {
         operation: {
-          query: ({ session, context, listKey, operation }) => true,
+          query: {
+            one: ({ session, context, listKey, operation, kind }) => true,
+            many: ({ session, context, listKey, operation, kind }) => true,
+            count: ({ session, context, listKey, operation, kind }) => true,
+          },
           create: ({ session, context, listKey, operation }) => true,
           update: ({ session, context, listKey, operation }) => true,
           delete: ({ session, context, listKey, operation }) => true,
@@ -128,9 +132,9 @@ export default config({
     ListKey: list({
       access: {
         operation: {
-          ...allOperations(denyAll)
+          ...allOperations(denyAll),
           // hint: unconditionally returning `true` is equivalent to using allowAll for this operation
-          query: ({ session, context, listKey, operation }) => true,
+          query: ({ session, context, listKey, operation, kind }) => true,
         }
       },
     }),
@@ -140,6 +144,7 @@ export default config({
 
 {% hint kind="warn" %}
 The `query` access control is applied only when running GraphQL query operations.
+It can be a shared function receiving `kind: 'one' | 'many' | 'count'`, or an object with required `one`, `many`, and `count` functions.
 A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
 If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/config/access-control#field-access-control).
 {% /hint %}
@@ -243,6 +248,7 @@ List-level access control functions are passed a collection of arguments which c
 | `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                     |
 | `listKey`   | The key of the list being operated on.                                                                        |
 | `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
+| `kind`      | For operation access on `query`, the query kind (`'one'`, `'many'`, or `'count'`).                            |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
 | `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
 
@@ -273,6 +279,8 @@ No errors will be returned for `read` access denied.
 The `read` access control is applied to fields returned from both **queries** and **mutations**.
 {% /hint %}
 
+`read` may be a shared function receiving `kind: 'item' | 'filter' | 'order'`, or an object with all three functions. The `item` argument is only present for the `item` kind.
+
 {% hint kind="tip" %}
 `read` access control is applied as part of GraphQL resolving the output types.
 If a mutation returns an item type that has field access control defined, field access control will apply.
@@ -292,7 +300,11 @@ export default config({
       fields: {
         fieldName: text({
           access: {
-            read: ({ session, context, listKey, fieldKey, operation, item }) => true,
+            read: {
+              item: ({ session, context, listKey, fieldKey, operation, kind, item }) => true,
+              filter: ({ session, context, listKey, fieldKey, operation, kind }) => true,
+              order: ({ session, context, listKey, fieldKey, operation, kind }) => true,
+            },
             create: ({ session, context, listKey, fieldKey, operation, inputData }) => true,
             update: ({ session, context, listKey, fieldKey, operation, inputData, item }) => true,
           },
@@ -318,5 +330,6 @@ Field-level access control functions are passed a collection of arguments which 
 | `listKey`   | The key of the list being operated on.                                                      |
 | `fieldKey`  | The key of the field being operated on.                                                     |
 | `operation` | The operation being performed (`'read'`, `'create'`, `'update'`).                           |
+| `kind`      | For `read`, the kind being checked (`'item'`, `'filter'`, or `'order'`).                    |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. |
-| `item`      | The existing item being read/updated in `read` and `update` operations.                     |
+| `item`      | The existing item. For `read`, this is present only when `kind` is `'item'`.                |

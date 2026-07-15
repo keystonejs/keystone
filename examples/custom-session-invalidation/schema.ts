@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core'
-import { denyAll, unfiltered } from '@keystone-6/core/access'
+import { allowAll, denyAll, unfiltered } from '@keystone-6/core/access'
 import { text, password, timestamp } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 
@@ -46,8 +46,12 @@ export const lists = {
     fields: {
       // the user's name, used as the identity field for authentication
       name: text({
-        isFilterable: false,
-        isOrderable: false,
+        access: {
+          read: { item: allowAll, filter: denyAll, order: denyAll },
+        },
+        graphql: {
+          omit: { read: { item: false, filter: true, order: true } },
+        },
         isIndexed: 'unique',
         validation: {
           isRequired: true,
@@ -59,13 +63,11 @@ export const lists = {
         validation: {
           isRequired: true,
         },
-        // TODO: is anything else required
       }),
 
       // a passwordChangedAt field, invalidates a session if changed
       passwordChangedAt: timestamp({
         access: denyAll,
-        isFilterable: false,
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'hidden' },

@@ -10,7 +10,6 @@ import type {
   KeystoneContext,
   ListSortDescriptor,
   MaybeBooleanItemFunctionWithFilter,
-  MaybeFieldFunction,
   MaybeItemActionFunctionWithFilter,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
@@ -120,7 +119,7 @@ export function createAdminMeta(
     const listConfig = lists[listKey]
 
     // TODO: is this reasonable?
-    if (list.graphql.isEnabled.query === false) {
+    if (!list.graphql.isEnabled.query.one && !list.graphql.isEnabled.query.many) {
       omittedLists.push(listKey)
       continue
     }
@@ -215,7 +214,6 @@ export function createAdminMeta(
         `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
       )
 
-      const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       )
@@ -238,11 +236,27 @@ export function createAdminMeta(
         fieldKey: fieldKey,
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,
-          baseOrderFilterArgs
+          context =>
+            field.access.read.filter({
+              context,
+              session: context.session,
+              listKey: list.listKey,
+              operation: 'read',
+              kind: 'filter',
+              fieldKey,
+            })
         ),
         isOrderable: normalizeIsOrderFilter(
-          field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
-          baseOrderFilterArgs
+          field.input?.orderBy ? field.graphql.isEnabled.order : false,
+          context =>
+            field.access.read.order({
+              context,
+              session: context.session,
+              listKey: list.listKey,
+              operation: 'read',
+              kind: 'order',
+              fieldKey,
+            })
         ),
 
         isNonNull,
@@ -336,7 +350,7 @@ export function createAdminMeta(
   // we do this seperately to the above so that fields can check other fields to validate their config or etc.
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
-    if (list.graphql.isEnabled.query === false) continue
+    if (!list.graphql.isEnabled.query.one && !list.graphql.isEnabled.query.many) continue
     for (const fieldMetaSource of adminMetaRoot.listsByKey[key].fields) {
       // if the field is a relationship field and is related to an omitted list, skip.
       const dbField = list.fields[fieldMetaSource.fieldKey].dbField
@@ -408,12 +422,9 @@ function normalizeMaybeSessionFunction<
 }
 
 function normalizeIsOrderFilter(
-  input: MaybeFieldFunction<BaseListTypeInfo>,
-  baseOrderFilterArgs: {
-    listKey: string
-    fieldKey: string
-  }
+  isEnabled: boolean,
+  access: (context: KeystoneContext) => MaybePromise<boolean>
 ): EmptyResolver<boolean> {
-  if (typeof input !== 'function') return () => input
-  return (_, context) => input({ context, session: context.session, ...baseOrderFilterArgs })
+  if (!isEnabled) return () => false
+  return (_, context) => (context.__internal.sudo ? true : access(context))
 }
