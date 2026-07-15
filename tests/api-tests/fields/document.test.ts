@@ -120,7 +120,7 @@ test(
     ).rejects.toHaveProperty(
       'message',
       `An error occurred while resolving input fields.
-  - Post.document: Invalid form prop value: "javascript:bad" at url`
+  - Post.document: Invalid form prop value at url`
     )
   })
 )
