@@ -148,6 +148,10 @@ These rules determine which of the CRUD (create, read, update, delete) operation
 
 See the [Access Control API](./access-control) for full details on the available access control options.
 
+## fieldDefaults
+
+The `fieldDefaults` option provides defaults using the same nesting as field configuration. It supports `ui.createView/itemView/listView.fieldMode`. Per-field configuration takes precedence; group UI defaults take precedence over list UI defaults.
+
 ## ui
 
 The `ui` option controls how the list is displayed and interacted with in the Admin UI.
@@ -165,21 +169,7 @@ Options:
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
 - `hideDelete` (default: `false`): Controls whether the `delete` button is available in the Admin UI for this list.
   Can be either a boolean value or an async function with an argument `{ session, context }` that returns a boolean value.
-- `createView`: Controls the create view page of the Admin UI.
-  - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `ui.createView.fieldMode` config.
-    See the [Fields API](../fields/overview#common-configuration) for details.
-    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
-- `itemView`: Controls the item view page of the Admin UI.
-  - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `ui.itemView.fieldMode` config.
-    See the [Fields API](../fields/overview#common-configuration) for details.
-    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
 - `listView`: Controls the list view page of the Admin UI.
-  - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
-    Can be overridden by per-field values in the `ui.listView.fieldMode` config.
-    See the [Fields API](../fields/overview#common-configuration) for details.
-    Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
   - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
   - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
@@ -193,7 +183,7 @@ Options:
 
 ```typescript
 import { config, list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields`;
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -204,25 +194,25 @@ export default config({
 
         singular: 'Item',
         plural: 'Items',
-        path: 'some-list'
+        path: 'some-list',
 
         labelField: 'name',
         searchFields: ['name', 'alternativeName'],
         hideNavigation: ({ session, context }) => false,
         hideCreate: ({ session, context }) => false,
         hideDelete: ({ session, context }) => false,
-        createView: {
-          defaultFieldMode: ({ session, context }) => 'edit',
-        },
-        itemView: {
-          defaultFieldMode: ({ session, context, item }) => 'edit',
-        },
         listView: {
-          defaultFieldMode: ({ session, context }) => 'read',
           initialColumns: ['name', /* ... */],
           initialSort: { field: 'name', direction: 'ASC' },
           initialFilter: { isPublished: { equals: true } },
           pageSize: 50,
+        },
+      },
+      fieldDefaults: {
+        ui: {
+          createView: { fieldMode: ({ session, context }) => 'edit' },
+          itemView: { fieldMode: ({ session, context, item }) => 'edit' },
+          listView: { fieldMode: ({ session, context }) => 'read' },
         },
       },
     }),

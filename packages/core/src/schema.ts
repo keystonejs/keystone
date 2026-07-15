@@ -57,6 +57,9 @@ function listsWithDefaults(config: KeystoneConfigPre, defaultIdField: IdFieldCon
                     ...list.fields,
                   }),
             },
+            fieldDefaults: {
+              ...list.fieldDefaults,
+            },
             actions: {
               ...list.actions,
             },
@@ -170,29 +173,29 @@ export type GroupInfo<ListTypeInfo extends BaseListTypeInfo> = {
   fields: string[]
   label: string
   description: string
-  ui: GroupUIConfig<ListTypeInfo> | undefined
+  fieldDefaults: { ui?: GroupUIConfig<ListTypeInfo> } | undefined
 }
 
 type GroupUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   createView?: {
-    defaultFieldMode?: MaybeSessionFunctionWithFilter<'hidden' | 'edit', 'hidden', ListTypeInfo>
+    fieldMode?: MaybeSessionFunctionWithFilter<'hidden' | 'edit', 'hidden', ListTypeInfo>
   }
   itemView?: {
-    defaultFieldMode?: MaybeItemFunctionWithFilter<
+    fieldMode?: MaybeItemFunctionWithFilter<
       'edit' | 'hidden' | 'read',
       'hidden' | 'read',
       ListTypeInfo
     >
   }
   listView?: {
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
+    fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>
   }
 }
 
 export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   label: string
   description?: string
-  ui?: GroupUIConfig<ListTypeInfo>
+  fieldDefaults?: { ui?: GroupUIConfig<ListTypeInfo> }
   fields: BaseFields<ListTypeInfo>
 }) {
   const keys = Object.keys(config.fields)
@@ -205,7 +208,7 @@ export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
       fields: keys,
       label: config.label,
       description: config.description ?? '',
-      ui: config.ui,
+      fieldDefaults: config.fieldDefaults,
     } satisfies GroupInfo<ListTypeInfo>,
     ...config.fields,
   } as BaseFields<ListTypeInfo> // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields

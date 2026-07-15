@@ -772,8 +772,8 @@ function getListsWithInitialisedFields(
             isRequired: f.ui?.createView?.isRequired ?? false,
             fieldMode: isEnabledField.create
               ? (f.ui?.createView?.fieldMode ??
-                group?.ui?.createView?.defaultFieldMode ??
-                listConfig.ui.createView?.defaultFieldMode ??
+                group?.fieldDefaults?.ui?.createView?.fieldMode ??
+                listConfig.fieldDefaults?.ui?.createView?.fieldMode ??
                 'edit')
               : 'hidden',
           },
@@ -783,13 +783,13 @@ function getListsWithInitialisedFields(
             fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
             fieldMode: isEnabledField.update
               ? (f.ui?.itemView?.fieldMode ??
-                group?.ui?.itemView?.defaultFieldMode ??
-                listConfig.ui.itemView?.defaultFieldMode ??
+                group?.fieldDefaults?.ui?.itemView?.fieldMode ??
+                listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
                 'edit')
               : isEnabledField.read
                 ? (f.ui?.itemView?.fieldMode ??
-                  group?.ui?.itemView?.defaultFieldMode ??
-                  listConfig.ui.itemView?.defaultFieldMode ??
+                  group?.fieldDefaults?.ui?.itemView?.fieldMode ??
+                  listConfig.fieldDefaults?.ui?.itemView?.fieldMode ??
                   'read')
                 : 'hidden',
           },
@@ -797,8 +797,8 @@ function getListsWithInitialisedFields(
           listView: {
             fieldMode: isEnabledField.read
               ? (f.ui?.listView?.fieldMode ??
-                group?.ui?.listView?.defaultFieldMode ??
-                listConfig.ui.listView?.defaultFieldMode ??
+                group?.fieldDefaults?.ui?.listView?.fieldMode ??
+                listConfig.fieldDefaults?.ui?.listView?.fieldMode ??
                 'read')
               : 'hidden',
           },

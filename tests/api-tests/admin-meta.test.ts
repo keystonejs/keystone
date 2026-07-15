@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { group, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { integer, text } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
@@ -13,10 +13,12 @@ const runner = setupTestRunner({
     lists: {
       User: list({
         access: allowAll,
-        ui: {
-          createView: { defaultFieldMode: 'hidden' },
-          itemView: { defaultFieldMode: 'read' },
-          listView: { defaultFieldMode: 'hidden' },
+        fieldDefaults: {
+          ui: {
+            createView: { fieldMode: 'hidden' },
+            itemView: { fieldMode: 'read' },
+            listView: { fieldMode: 'hidden' },
+          },
         },
         fields: {
           name: text({
@@ -378,5 +380,110 @@ test(
         },
       }
     `)
+  })
+)
+
+const fieldDefaultsRunner = setupTestRunner({
+  config: {
+    lists: {
+      FieldDefault: list({
+        access: allowAll,
+        fieldDefaults: {
+          ui: {
+            createView: { fieldMode: 'hidden' },
+            itemView: { fieldMode: 'read' },
+            listView: { fieldMode: 'hidden' },
+          },
+        },
+        fields: {
+          listDefault: text(),
+          ...group({
+            label: 'Group defaults',
+            fieldDefaults: {
+              ui: {
+                createView: { fieldMode: 'edit' },
+                itemView: { fieldMode: 'hidden' },
+                listView: { fieldMode: 'read' },
+              },
+            },
+            fields: {
+              groupDefault: text(),
+              fieldOverride: text({
+                ui: {
+                  createView: { fieldMode: 'hidden' },
+                  itemView: { fieldMode: 'edit' },
+                  listView: { fieldMode: 'hidden' },
+                },
+              }),
+            },
+          }),
+        },
+      }),
+    },
+  },
+})
+
+test(
+  'fieldDefaults are applied in field, group, and list precedence order',
+  fieldDefaultsRunner(async ({ context }) => {
+    const data = await context.sudo().graphql.run({
+      query: gql`
+        query {
+          keystone {
+            adminMeta {
+              list(key: "FieldDefault") {
+                fields {
+                  key
+                  createView {
+                    fieldMode
+                  }
+                  itemView {
+                    fieldMode
+                  }
+                  listView {
+                    fieldMode
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+    })
+
+    expect(data).toEqual({
+      keystone: {
+        adminMeta: {
+          list: {
+            fields: [
+              {
+                key: 'id',
+                createView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'read' },
+                listView: { fieldMode: 'hidden' },
+              },
+              {
+                key: 'listDefault',
+                createView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'read' },
+                listView: { fieldMode: 'hidden' },
+              },
+              {
+                key: 'groupDefault',
+                createView: { fieldMode: 'edit' },
+                itemView: { fieldMode: 'hidden' },
+                listView: { fieldMode: 'read' },
+              },
+              {
+                key: 'fieldOverride',
+                createView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'edit' },
+                listView: { fieldMode: 'hidden' },
+              },
+            ],
+          },
+        },
+      },
+    })
   })
 )
