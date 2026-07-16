@@ -20,6 +20,7 @@
     "lint:fix": "eslint --fix",
     "build": "preconstruct build",
     "postinstall": "preconstruct dev && pnpm -r check",
+    "resolve:create-starter-catalog": "node scripts/resolve-create-starter-catalog.mts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -46,7 +47,8 @@
     "typescript": "catalog:",
     "typescript-eslint": "^8.0.0",
     "vite": "^6.0.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "yaml": "^2.8.3"
   },
   "preconstruct": {
     "packages": [
