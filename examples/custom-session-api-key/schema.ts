@@ -70,7 +70,7 @@ export const lists = {
     access: {
       operation: {
         create: allowAll,
-        query: allowAll,
+        query: hasSession,
 
         // what a user can update is limited by
         //   the access.filter.* and access.item.* access controls
@@ -80,6 +80,7 @@ export const lists = {
         delete: isAdmin,
       },
       filter: {
+        query: isAdminOrSameUserFilter,
         update: isAdminOrSameUserFilter,
       },
       item: {
@@ -122,7 +123,7 @@ export const lists = {
       //   should not be publicly visible
       password: password({
         access: {
-          read: denyAll, // TODO: is this required?
+          read: denyAll,
           update: isAdminOrSameUser,
         },
         validation: {
@@ -134,7 +135,7 @@ export const lists = {
             fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
-            fieldMode: 'hidden', // TODO: is this required?
+            fieldMode: 'hidden',
           },
         },
       }),
@@ -146,6 +147,12 @@ export const lists = {
           create: isAdminOrSameUserCreate,
           update: isAdminOrSameUser,
         },
+        graphql: {
+          omit: {
+            create: true,
+          },
+        },
+        isFilterable: false,
         validation: {
           length: {
             min: 32,
@@ -166,9 +173,16 @@ export const lists = {
       apiKeyExpiresAt: timestamp({
         access: {
           read: isAdminOrSameUser,
-          create: isAdminOrSameUserCreate,
-          update: isAdminOrSameUser,
+          create: isAdmin,
+          update: isAdmin,
         },
+        graphql: {
+          omit: {
+            create: true,
+          },
+        },
+        isFilterable: false,
+        isOrderable: false,
         ui: {
           itemView: {
             fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
@@ -188,6 +202,13 @@ export const lists = {
           update: isAdmin,
         },
         defaultValue: false,
+        graphql: {
+          omit: {
+            create: true,
+          },
+        },
+        isFilterable: false,
+        isOrderable: false,
         ui: {
           // only admins can edit this field
           createView: {
