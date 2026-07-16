@@ -16,7 +16,9 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "dotenv": "^16.0.0",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

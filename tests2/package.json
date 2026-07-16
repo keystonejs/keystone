@@ -8,6 +8,8 @@
     "@prisma/engines": "catalog:",
     "@prisma/internals": "catalog:",
     "next": "catalog:",
-    "prisma": "catalog:"
+    "prisma": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   }
 }

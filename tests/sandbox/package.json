@@ -15,7 +15,8 @@
     "@keystone-6/fields-document": "workspace:^",
     "@prisma/client": "catalog:",
     "next": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {

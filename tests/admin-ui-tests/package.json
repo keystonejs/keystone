@@ -17,6 +17,8 @@
     "graphql": "catalog:",
     "next": "catalog:",
     "playwright": "^1.60.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "treekill": "^1.0.0"
   },
   "scripts": {

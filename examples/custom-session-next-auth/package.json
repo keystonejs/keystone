@@ -13,7 +13,9 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "next": "catalog:",
-    "next-auth": "^4.24.11"
+    "next-auth": "^4.24.11",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

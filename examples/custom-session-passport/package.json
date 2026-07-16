@@ -16,7 +16,9 @@
     "express": "catalog:",
     "next": "catalog:",
     "passport": "^0.7.0",
-    "passport-github2": "^0.1.12"
+    "passport-github2": "^0.1.12",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@types/express": "catalog:",

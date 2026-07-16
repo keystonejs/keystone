@@ -36,11 +36,13 @@
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
-    "react": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0",
-    "react": "catalog:"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "preconstruct": {
     "entrypoints": [

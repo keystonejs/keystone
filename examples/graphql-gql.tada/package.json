@@ -17,7 +17,9 @@
     "@prisma/client": "catalog:",
     "gql.tada": "^1.8.10",
     "graphql": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",
