@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core'
+import { group, list } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { text, checkbox, timestamp } from '@keystone-6/core/fields'
-import { password } from './api-key-field'
+import { apiKey, password } from './api-key-field'
 import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
@@ -57,12 +57,6 @@ function isAdmin({ session }: { session?: Session }) {
 
   // otherwise, no
   return false
-}
-
-function isAdminOrSameUserCreate({ session, inputData }: { session?: Session; inputData: any }) {
-  if (!session) return false
-  if (session.data.isAdmin) return true
-  return inputData.id === session.itemId
 }
 
 export const lists = {
@@ -135,58 +129,64 @@ export const lists = {
             fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
+            // UI-only. Field access above is the security boundary.
             fieldMode: 'hidden',
           },
         },
       }),
 
-      // the API key secret is hashed by the password field before it is stored
-      apiKey: password({
-        access: {
-          read: isAdminOrSameUser,
-          create: isAdminOrSameUserCreate,
-          update: isAdminOrSameUser,
-        },
-        graphql: {
-          omit: {
-            create: true,
-          },
-        },
-        isFilterable: false,
-        validation: {
-          length: {
-            min: 32,
-          },
-        },
-        ui: {
-          description:
-            'Use as the secret in the Keystone-Example-API-Key-Secret header, with the user id in Keystone-Example-API-Key-ID.',
-          itemView: {
-            fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
-          },
-          listView: {
-            fieldMode: 'hidden',
-          },
-        },
-      }),
+      ...group({
+        label: 'API key',
+        fields: {
+          // the API key secret is hashed by the password field before it is stored
+          apiKey: apiKey({
+            label: 'API key secret',
+            access: {
+              read: isAdminOrSameUser,
+              create: isAdmin,
+              update: isAdminOrSameUser,
+            },
+            graphql: {
+              omit: {
+                create: true,
+              },
+            },
+            isFilterable: false,
+            validation: {
+              length: {
+                min: 32,
+              },
+            },
+            ui: {
+              itemView: {
+                fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
+              },
+              listView: {
+                fieldMode: 'hidden',
+              },
+            },
+          }),
 
-      apiKeyExpiresAt: timestamp({
-        access: {
-          read: isAdminOrSameUser,
-          create: isAdmin,
-          update: isAdmin,
-        },
-        graphql: {
-          omit: {
-            create: true,
-          },
-        },
-        isFilterable: false,
-        isOrderable: false,
-        ui: {
-          itemView: {
-            fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
-          },
+          apiKeyExpiresAt: timestamp({
+            label: 'API key expires at',
+            access: {
+              read: isAdminOrSameUser,
+              create: isAdmin,
+              update: isAdmin,
+            },
+            graphql: {
+              omit: {
+                create: true,
+              },
+            },
+            isFilterable: false,
+            isOrderable: false,
+            ui: {
+              itemView: {
+                fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
+              },
+            },
+          }),
         },
       }),
 

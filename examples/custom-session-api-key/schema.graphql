@@ -25,9 +25,6 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  apiKey: PasswordFilter
-  apiKeyExpiresAt: DateTimeNullableFilter
-  isAdmin: BooleanFilter
 }
 
 input IDFilter {
@@ -41,30 +38,8 @@ input IDFilter {
   not: IDFilter
 }
 
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input DateTimeNullableFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeNullableFilter
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input UserOrderByInput {
   id: OrderDirection
-  apiKeyExpiresAt: OrderDirection
-  isAdmin: OrderDirection
 }
 
 enum OrderDirection {
@@ -88,9 +63,6 @@ input UserUpdateArgs {
 input UserCreateInput {
   name: String
   password: String
-  apiKey: String
-  apiKeyExpiresAt: DateTime
-  isAdmin: Boolean
 }
 
 """
