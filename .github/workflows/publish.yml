@@ -43,6 +43,9 @@ jobs:
 
       - run: pnpm build
 
+      - name: Resolve starter catalog dependencies
+        run: pnpm resolve:create-starter-catalog
+
       - name: npm publish, git tag
         run: pnpm changeset publish --tag ${{ inputs.tag }}
 
