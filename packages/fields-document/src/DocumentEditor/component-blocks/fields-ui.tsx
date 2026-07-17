@@ -1,4 +1,4 @@
-import { useFilter } from '@react-aria/i18n'
+import { useFilter } from 'react-aria/useFilter'
 import { useState } from 'react'
 
 import { sanitizeUrl } from '@braintree/sanitize-url'

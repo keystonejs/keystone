@@ -1,5 +1,5 @@
 import { CalendarDate, getLocalTimeZone, now, parseDate } from '@internationalized/date'
-import { useDateFormatter } from '@react-aria/i18n'
+import { useDateFormatter } from 'react-aria/useDateFormatter'
 import { useMemo, useReducer, useState } from 'react'
 
 import { ToggleButton } from '@keystar/ui/button'

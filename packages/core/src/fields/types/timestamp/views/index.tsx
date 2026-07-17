@@ -1,5 +1,5 @@
 import { getLocalTimeZone, now, parseAbsoluteToLocal } from '@internationalized/date'
-import { useDateFormatter } from '@react-aria/i18n'
+import { useDateFormatter } from 'react-aria/useDateFormatter'
 import { useReducer, useState } from 'react'
 
 import { ToggleButton } from '@keystar/ui/button'

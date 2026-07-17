@@ -1,5 +1,4 @@
-import { useId } from '@react-aria/utils'
-import { useState } from 'react'
+import { useState, useId } from 'react'
 
 import { Button, ButtonGroup } from '@keystar/ui/button'
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'

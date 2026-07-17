@@ -1,7 +1,7 @@
 // @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
 import { useEffect, useId, useRef, useState } from 'react'
-import { useSlotId } from '@react-aria/utils'
+import { useSlotId } from 'react-aria/private/utils/useId'
 
 import { ActionButton, ToggleButton } from '@keystar/ui/button'
 import { Checkbox } from '@keystar/ui/checkbox'
@@ -155,7 +155,6 @@ export function Field(props: FieldProps<typeof controller>) {
             autoFocus
             aria-label={`new ${field.label}`}
             aria-describedby={[descriptionId, messageId].filter(Boolean).join(' ')}
-            // @ts-expect-error — needs to be fixed in "@keystar/ui"
             isInvalid={!!validationMessage}
             onBlur={() => setTouched({ ...touched, value: true })}
             onChange={text => onChange({ ...value, value: text })}
@@ -168,7 +167,6 @@ export function Field(props: FieldProps<typeof controller>) {
           <TextField
             aria-label={`confirm ${field.label}`}
             aria-describedby={messageId} // don't repeat the description announcement for the confirm field
-            // @ts-expect-error — needs to be fixed in "@keystar/ui"
             isInvalid={!!validationMessage}
             onBlur={() => setTouched({ ...touched, confirm: true })}
             onChange={text => onChange({ ...value, confirm: text })}

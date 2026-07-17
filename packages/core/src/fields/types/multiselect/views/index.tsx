@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useFilter, useListFormatter } from '@react-aria/i18n'
+import { useFilter } from 'react-aria/useFilter'
+import { useListFormatter } from 'react-aria/useListFormatter'
 
 import { Checkbox, CheckboxGroup } from '@keystar/ui/checkbox'
 import { Combobox, Item } from '@keystar/ui/combobox'

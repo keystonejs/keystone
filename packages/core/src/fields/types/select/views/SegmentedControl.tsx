@@ -1,4 +1,4 @@
-import { useField } from '@react-aria/label'
+import { useField } from 'react-aria/useField'
 
 import { type ActionGroupProps, ActionGroup } from '@keystar/ui/action-group'
 import { type FieldProps, FieldPrimitive } from '@keystar/ui/field'
