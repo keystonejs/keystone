@@ -53,6 +53,8 @@
     ],
     "exports": true,
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
+      "typeModule": true,
+      "distInRoot": true,
       "keepDynamicImportAsDynamicImportInCommonJS": true,
       "importsConditions": true
     }
