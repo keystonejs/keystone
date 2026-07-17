@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import * as cookie from 'cookie'
 import Iron from '@hapi/iron'
-import type { KeystoneContext, SessionStrategy, SessionStoreFunction } from '../types'
+import type { KeystoneContext, SessionStrategy, SessionStoreFunction } from './types'
 
 // TODO: should we also accept httpOnly?
 type StatelessSessionsOptions = {

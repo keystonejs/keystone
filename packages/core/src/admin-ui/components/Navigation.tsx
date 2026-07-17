@@ -1,5 +1,4 @@
 import { type ReactNode, type PropsWithChildren, useState } from 'react'
-import { useRouter } from 'next/router'
 
 import { ActionButton } from '@keystar/ui/button'
 import { DialogContainer } from '@keystar/ui/dialog'
@@ -21,6 +20,7 @@ import { Text } from '@keystar/ui/typography'
 
 import type { ListMeta } from '../../types'
 import { useKeystone } from '../context'
+import { useRouter } from '../router'
 import { WelcomeDialog } from './WelcomeDialog'
 
 type NavItemProps = {

@@ -2,7 +2,7 @@ import { css, tokenSchema } from '@keystar/ui/style'
 import { Prose } from '@keystar/ui/typography'
 
 import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
-import isHotkey from 'is-hotkey'
+import { isHotkey } from 'is-hotkey'
 import { useCallback, useMemo } from 'react'
 import {
   type Descendant,
@@ -16,7 +16,7 @@ import {
 } from 'slate'
 import { Editable, ReactEditor, Slate, withReact, useSlate } from 'slate-react'
 
-import type { EditableProps } from 'slate-react/dist/components/editable'
+import type { EditableProps } from 'slate-react/dist/components/editable.js'
 import type { ComponentBlock } from '../component-blocks'
 import type { DocumentFeatures } from '../views'
 import { wrapLink } from './link-shared'

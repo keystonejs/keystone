@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from '../../../../admin-ui/router'
 
 import { Button } from '@keystar/ui/button'
 import { VStack } from '@keystar/ui/layout'

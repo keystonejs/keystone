@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
@@ -12,6 +11,7 @@ import {
 } from '../../admin-ui/utils'
 import type { ListMeta } from '../../types'
 import { type ErrorLike, gql, type TypedDocumentNode, useMutation } from '../apollo'
+import { useRouter } from '../router'
 import { usePreventNavigation } from './usePreventNavigation'
 
 type CreateItemHookResult = {

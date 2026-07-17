@@ -1,4 +1,4 @@
-import router, { useRouter } from 'next/router'
+import { useRouter } from '../../../../admin-ui/router'
 import {
   type FormEvent,
   Fragment,
@@ -317,7 +317,8 @@ export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} 
 
 function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey)
-  const id_ = useRouter().query.id
+  const router = useRouter()
+  const id_ = router.query.id
   const [itemId] = Array.isArray(id_) ? id_ : [id_]
   const { data, error, loading, refetch } = useListItem(listKey, itemId ?? null)
   const item = data?.item

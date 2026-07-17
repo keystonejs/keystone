@@ -1,4 +1,4 @@
-import type { AppProps } from 'next/app'
+import type { AppProps } from 'next/app.js'
 import type { AdminConfig, FieldViews } from '../../../../types'
 import { ErrorBoundary } from '../../../../admin-ui/components'
 import { KeystoneProvider } from '../../../../admin-ui/context'
