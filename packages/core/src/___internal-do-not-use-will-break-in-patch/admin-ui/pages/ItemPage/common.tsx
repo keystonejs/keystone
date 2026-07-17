@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from '../../../../admin-ui/router'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
 import isDeepEqual from 'fast-deep-equal'

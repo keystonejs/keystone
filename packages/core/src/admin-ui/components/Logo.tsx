@@ -1,10 +1,10 @@
 import type { SVGAttributes } from 'react'
-import Link from 'next/link'
 
 import { css, tokenSchema } from '@keystar/ui/style'
 import { Heading } from '@keystar/ui/typography'
 
 import { useKeystone } from '../context'
+import { Link } from '../router'
 
 export function Logo() {
   const { adminConfig } = useKeystone()

@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js'
+import { Decimal } from 'decimal.js'
 import { g } from '../types/schema'
 import type { BaseListTypeInfo } from './type-info'
 import type { BaseFieldTypeInfo, CommonFieldConfig } from './config'

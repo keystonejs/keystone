@@ -5,7 +5,7 @@ import { ReactEditor, Slate, withReact } from 'slate-react'
 import { KeystarProvider } from '@keystar/ui/core'
 import { act, render } from '@testing-library/react'
 import { diff } from 'jest-diff'
-import prettyFormat, { type Plugin, plugins } from 'pretty-format'
+import { format, type Plugin, plugins } from 'pretty-format'
 import { DocumentEditorEditable } from '..'
 import { type ComponentBlock } from '../../component-blocks'
 import { validateDocumentStructure } from '../../structure-validation'
@@ -64,7 +64,7 @@ console.error = (...stuff: any[]) => {
 }
 
 function formatEditor(editor: Node) {
-  return prettyFormat(editor, {
+  return format(editor, {
     plugins: [plugins.ReactElement, editorSerializer as Plugin],
   })
 }

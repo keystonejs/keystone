@@ -1,6 +1,6 @@
 import type { GraphQLError, GraphQLInputType, GraphQLSchema, VariableDefinitionNode } from 'graphql'
 import { Kind } from 'graphql'
-import { getVariableValues } from 'graphql/execution/values'
+import { getVariableValues } from 'graphql/execution/values.js'
 
 import { getTypeNodeForType } from './context/graphql'
 
