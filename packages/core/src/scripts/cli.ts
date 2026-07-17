@@ -69,6 +69,7 @@ export async function cli(cwd: string, argv: string[]) {
     `,
     {
       argv,
+      importMeta: import.meta,
     }
   )
 
