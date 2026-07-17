@@ -280,11 +280,11 @@
     "react-stately": "catalog:"
   },
   "peerDependencies": {
-    "@prisma/client": "~7.8.0",
+    "@prisma/client": "^7.9.0",
     "better-sqlite3": "^12.6.0",
     "mariadb": "^3.4.5",
     "pg": "^8.16.3",
-    "prisma": "~7.8.0",
+    "prisma": "^7.9.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
