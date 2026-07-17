@@ -7,8 +7,7 @@ import path from 'node:path'
 import esbuild, { type BuildResult } from 'esbuild'
 import express from 'express'
 import { printSchema } from 'graphql/index.js'
-import next from 'next'
-
+import { createNextServer } from '../next.ts'
 import { generateAdminUI } from '../admin-ui/system/index.ts'
 import {
   generateArtifacts,
@@ -215,7 +214,7 @@ export async function dev(
       await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
       log('✨ Preparing Admin UI')
-      nextApp = next({ dev: true, dir: paths.admin })
+      nextApp = createNextServer({ dev: true, dir: paths.admin })
       await nextApp.prepare()
       expressServer.use(createAdminUIMiddlewareWithNextApp(system.config, context, nextApp))
       log(`✅ Admin UI ready`)
