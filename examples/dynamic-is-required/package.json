@@ -10,10 +10,12 @@
     "check": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "workspace:^",
     "@keystar/ui": "^0.7.21",
+    "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

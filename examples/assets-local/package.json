@@ -14,7 +14,9 @@
     "@prisma/client": "catalog:",
     "bytes": "^3.1.1",
     "express": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.1",

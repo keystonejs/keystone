@@ -14,7 +14,9 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "jsonwebtoken": "^9.0.0",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",

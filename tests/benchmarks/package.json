@@ -14,6 +14,8 @@
     "@keystone-6/core": "workspace:^",
     "cookie-signature": "^1.1.0",
     "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "testcheck": "^1.0.0-rc.2"
   }
 }

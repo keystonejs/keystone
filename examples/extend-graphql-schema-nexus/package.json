@@ -15,7 +15,9 @@
     "@prisma/client": "catalog:",
     "graphql": "catalog:",
     "next": "catalog:",
-    "nexus": "^1.3.0"
+    "nexus": "^1.3.0",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:"

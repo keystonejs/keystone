@@ -1,5 +1,8 @@
 ---
-"@keystone-6/core": major
+'@keystone-6/core': major
+'@keystone-6/fields-document': major
+'@keystone-6/cloudinary': major
+'@keystone-6/auth': major
 ---
 
-Upgrades React major version to 19
+Upgrades React major version to 19. `react` and `react-dom` are also now peer dependencies.

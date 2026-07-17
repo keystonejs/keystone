@@ -21,6 +21,7 @@
     "graphql-ws": "^5.9.1",
     "next": "catalog:",
     "react": "catalog:",
+    "react-dom": "catalog:",
     "ws": "^8.8.0"
   },
   "devDependencies": {

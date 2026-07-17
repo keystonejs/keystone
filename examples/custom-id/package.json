@@ -14,7 +14,9 @@
     "@keystone-6/core": "workspace:^",
     "@paralleldrive/cuid2": "^2.2.1",
     "@prisma/client": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "prisma": "catalog:",

@@ -18,7 +18,9 @@
     "@keystone-6/core": "workspace:^",
     "@prisma/client": "catalog:",
     "astro": "^4.12.3",
-    "next": "catalog:"
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
