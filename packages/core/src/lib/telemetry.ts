@@ -1,9 +1,9 @@
 import { platform } from 'node:os'
 import https from 'node:https'
+import { styleText } from 'node:util'
 
 import ci from 'ci-info'
 import Conf from 'conf'
-import { bold, blue as b, yellow as y, red as r, green as g, grey } from 'chalk'
 import type { Device, Project, TelemetryVersion1, TelemetryVersion2 } from '../types/telemetry'
 import type { DatabaseProvider } from '../types'
 import type { InitialisedList } from './core/initialise-lists'
@@ -136,36 +136,38 @@ async function collectPackageVersions() {
 
 function printNext(telemetry: Telemetry) {
   if (!telemetry) {
-    console.log(`Telemetry data will ${r`not`} be sent by this system user`)
+    console.log(`Telemetry data will ${styleText('red', 'not')} be sent by this system user`)
     return
   }
-  console.log(`Telemetry data will be sent the next time you run ${g`"keystone dev"`}`)
+  console.log(
+    `Telemetry data will be sent the next time you run ${styleText('green', '"keystone dev"')}`
+  )
 }
 
 function printTelemetryStatus(telemetry: Telemetry, updated = false) {
   const auxverb = updated ? 'has been' : 'is'
 
   if (telemetry === undefined) {
-    console.log(`Keystone telemetry ${auxverb} ${y`uninitialized`}`)
+    console.log(`Keystone telemetry ${auxverb} ${styleText('yellow', 'uninitialized')}`)
     console.log()
     printNext(telemetry)
     return
   }
 
   if (telemetry === false) {
-    console.log(`Keystone telemetry ${auxverb} ${r`disabled`}`)
+    console.log(`Keystone telemetry ${auxverb} ${styleText('red', 'disabled')}`)
     console.log()
     printNext(telemetry)
     return
   }
 
-  console.log(`Keystone telemetry ${auxverb} ${g`enabled`}`)
+  console.log(`Keystone telemetry ${auxverb} ${styleText('green', 'enabled')}`)
   console.log()
 
   console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`)
   for (const [projectPath, project] of Object.entries(telemetry.projects)) {
     console.log(
-      `  Project telemetry for "${y(projectPath)}" was last sent on ${project?.lastSentDate}`
+      `  Project telemetry for "${styleText('yellow', projectPath)}" was last sent on ${project?.lastSentDate}`
     )
   }
 
@@ -175,10 +177,12 @@ function printTelemetryStatus(telemetry: Telemetry, updated = false) {
 
 function inform(telemetry: TelemetryOK, userConfig: Configuration) {
   console.log() // gap to help visiblity
-  console.log(`${bold('Keystone Telemetry')}`)
-  console.log(`${y`Keystone collects anonymous data when you run`} ${g`"keystone dev"`}`)
+  console.log(styleText('bold', 'Keystone Telemetry'))
   console.log(
-    `You can use ${g`"keystone telemetry --help"`} to update your preferences at any time`
+    `${styleText('yellow', 'Keystone collects anonymous data when you run')} ${styleText('green', '"keystone dev"')}`
+  )
+  console.log(
+    `You can use ${styleText('green', '"keystone telemetry --help"')} to update your preferences at any time`
   )
   if (telemetry.informedAt === null) {
     console.log()
@@ -188,7 +192,7 @@ function inform(telemetry: TelemetryOK, userConfig: Configuration) {
   printNext(telemetry)
   console.log() // gap to help visiblity
   console.log(
-    `For more information, including how to opt-out see ${grey`https://keystonejs.com/telemetry`} (updated ${b`2024-08-20`})`
+    `For more information, including how to opt-out see ${styleText('gray', 'https://keystonejs.com/telemetry')} (updated ${styleText('blue', '2024-08-20')})`
   )
 
   // update the informedAt
@@ -274,28 +278,30 @@ export async function runTelemetry(
 ) {
   try {
     if (ci.isCI) {
-      console.log(`Keystone Telemetry is ${r`disabled`} (running in CI)`)
+      console.log(`Keystone Telemetry is ${styleText('red', 'disabled')} (running in CI)`)
       return
     }
 
     const { telemetry, userConfig } = getTelemetryConfig()
     if (telemetry === false) {
-      console.log(`Keystone Telemetry is ${r`disabled`} (via opt-out)`)
+      console.log(`Keystone Telemetry is ${styleText('red', 'disabled')} (via opt-out)`)
       return
     }
 
     if (process.env.KEYSTONE_TELEMETRY_DISABLED === '1') {
-      console.log(`Keystone Telemetry is ${r`disabled`} (KEYSTONE_TELEMETRY_DISABLED is set)`)
+      console.log(
+        `Keystone Telemetry is ${styleText('red', 'disabled')} (KEYSTONE_TELEMETRY_DISABLED is set)`
+      )
       return
     }
 
     if (process.env.DO_NOT_TRACK === '1') {
-      console.log(`Keystone Telemetry is ${r`disabled`} (DO_NOT_TRACK is set)`)
+      console.log(`Keystone Telemetry is ${styleText('red', 'disabled')} (DO_NOT_TRACK is set)`)
       return
     }
 
     if (process.env.NODE_ENV === 'production') {
-      console.log(`Keystone Telemetry is ${r`disabled`} (NODE_ENV is production)`)
+      console.log(`Keystone Telemetry is ${styleText('red', 'disabled')} (NODE_ENV is production)`)
       return
     }
 
@@ -303,7 +309,7 @@ export async function runTelemetry(
     const telemetryDefaulted = getDefault(telemetry)
     if (!telemetryDefaulted.informedAt) return inform(telemetryDefaulted, userConfig)
 
-    console.log(`Keystone Telemetry is ${g`enabled`}`)
+    console.log(`Keystone Telemetry is ${styleText('green', 'enabled')}`)
 
     await sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetryDefaulted, userConfig)
     await sendDeviceTelemetryEvent(telemetryDefaulted, userConfig)

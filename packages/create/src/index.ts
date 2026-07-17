@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { styleText } from 'node:util'
 
-import c from 'chalk'
 import enquirer from 'enquirer'
 import execa from 'execa'
 import getPackageJson from 'package-json'
@@ -49,7 +49,9 @@ async function normalizeArgs() {
 
 ;(async () => {
   process.stdout.write('\n')
-  console.log(`✨ You're about to generate a project using ${c.bold('Keystone 6')} packages.`)
+  console.log(
+    `✨ You're about to generate a project using ${styleText('bold', 'Keystone 6')} packages.`
+  )
 
   await checkVersion()
   const normalizedArgs = await normalizeArgs()
@@ -87,17 +89,17 @@ async function normalizeArgs() {
 
   const relativeProjectDir = path.relative(process.cwd(), normalizedArgs.directory)
   process.stdout.write('\n')
-  console.log(`🎉  Keystone created a starter project in: ${c.bold(relativeProjectDir)}
+  console.log(`🎉  Keystone created a starter project in: ${styleText('bold', relativeProjectDir)}
 
-  ${c.bold('To launch your app, run:')}
+  ${styleText('bold', 'To launch your app, run:')}
 
   - cd ${relativeProjectDir}
   - ${packageManager} run dev
 
-  ${c.bold('Next steps:')}
+  ${styleText('bold', 'Next steps:')}
 
-  - Read ${c.bold(`${relativeProjectDir}${path.sep}README.md`)} for additional getting started details.
-  - Edit ${c.bold(`${relativeProjectDir}${path.sep}keystone.ts`)} to customize your app.
+  - Read ${styleText('bold', `${relativeProjectDir}${path.sep}README.md`)} for additional getting started details.
+  - Edit ${styleText('bold', `${relativeProjectDir}${path.sep}keystone.ts`)} to customize your app.
   - Star Keystone on GitHub (https://github.com/keystonejs/keystone)
 `)
 })().catch(err => {

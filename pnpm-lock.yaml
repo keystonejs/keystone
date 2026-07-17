@@ -2442,9 +2442,6 @@ importers:
       bytes:
         specifier: ^3.1.1
         version: 3.1.2
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
       ci-info:
         specifier: ^4.0.0
         version: 4.4.0
@@ -2560,9 +2557,6 @@ importers:
 
   packages/create:
     dependencies:
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
       enquirer:
         specifier: ^2.4.1
         version: 2.4.1
@@ -2881,9 +2875,6 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
       execa:
         specifier: ^5.1.1
         version: 5.1.1
