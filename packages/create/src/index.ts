@@ -9,9 +9,10 @@ import getPackageJson from 'package-json'
 import meow from 'meow'
 import ora from 'ora'
 
-import thisPackage from '../package.json'
-
 async function checkVersion() {
+  const thisPackage = JSON.parse(
+    await fs.readFile(new URL('../package.json', import.meta.url), 'utf-8')
+  )
   const { version: upstream } = await getPackageJson('create-keystone-app')
   if (upstream === thisPackage.version) return
 
@@ -25,10 +26,13 @@ class UserError extends Error {}
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const starterDir = path.normalize(`${__dirname}/../starter`)
 
-const cli = meow(`
+const cli = meow(
+  `
 Usage
   $ create-keystone-app [directory]
-`)
+`,
+  { importMeta: import.meta }
+)
 
 async function normalizeArgs() {
   let directory = cli.input[0]
