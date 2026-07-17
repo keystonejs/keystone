@@ -13,12 +13,18 @@ export { Router, useRouter, withRouter } from 'next/router.js'
 export type { NextRouter } from 'next/router.js'
 
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link.js'
-import type { AnchorHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
 export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export const Link = NextLink
+// the next modules are CJS with `.default` exports so:
+// - in Node ESM, they will be on `.default` from the default export
+// - in Next proper/moduleResolution: bundler, they will be on the default export itself
+// we need to handle both cases and type it explicitly not relying on the default export
+export const Link: (props: LinkProps) => ReactNode =
+  'default' in NextLink ? NextLink.default : NextLink
 
 import NextHead from 'next/head.js'
 
-export const Head = NextHead
+export const Head: (props: { children: ReactNode }) => ReactNode =
+  'default' in NextHead ? NextHead.default : NextHead
