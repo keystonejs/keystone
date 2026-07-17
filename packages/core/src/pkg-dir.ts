@@ -1,6 +1,4 @@
 import path from 'path'
-import { createRequire } from 'node:module'
+import { fileURLToPath } from 'url'
 
-export const pkgDir = path.dirname(
-  createRequire(__dirname).resolve('@keystone-6/core/package.json')
-)
+export const pkgDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)))

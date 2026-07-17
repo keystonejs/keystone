@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('../scripts')
+import '@keystone-6/core/scripts'
