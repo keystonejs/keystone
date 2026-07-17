@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react"],
+  "categories": {
+    "correctness": "off"
+  },
+  "rules": {
+    "react/rules-of-hooks": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": ["tests/test-projects/live-reloading/schemas/syntax-error.js"]
+}
