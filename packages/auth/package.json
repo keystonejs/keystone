@@ -42,7 +42,13 @@
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@keystar/ui": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@keystar/ui": {
+      "optional": true
+    }
   },
   "preconstruct": {
     "entrypoints": [

@@ -281,7 +281,21 @@
   "peerDependencies": {
     "next": "^16.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@keystar/ui": "catalog:",
+    "react-aria": "catalog:",
+    "react-stately": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@keystar/ui": {
+      "optional": true
+    },
+    "react-aria": {
+      "optional": true
+    },
+    "react-stately": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",
