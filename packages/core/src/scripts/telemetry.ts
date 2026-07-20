@@ -1,4 +1,4 @@
-import { bold } from 'chalk'
+import { styleText } from 'node:util'
 import {
   disableTelemetry,
   enableTelemetry,
@@ -27,7 +27,7 @@ For more details visit: https://keystonejs.com/telemetry
   if (command === 'status') return statusTelemetry()
   if (command === 'inform') return informTelemetry()
   if (command === '--help') {
-    console.error(`${bold('Keystone Telemetry')}`)
+    console.error(styleText('bold', 'Keystone Telemetry'))
     console.error(usageText)
     return
   }

@@ -2,8 +2,8 @@ import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import fs from 'node:fs/promises'
 import { join } from 'node:path'
+import { styleText } from 'node:util'
 
-import chalk from 'chalk'
 import esbuild from 'esbuild'
 
 import { withMigrate } from '../lib/migrations'
@@ -100,7 +100,7 @@ provider = ${system.config.db.provider}`
     } catch (err) {
       console.error(err)
       console.error(
-        chalk.red('Failed to create shadow database, db.shadowDatabaseUrl may be required')
+        styleText('red', 'Failed to create shadow database, db.shadowDatabaseUrl may be required')
       )
       throw new ExitError(1)
     }
@@ -200,7 +200,7 @@ export async function migrateApply(
     if (diagnostic.action.tag === 'reset') {
       console.error(diagnostic.action.reason)
       const consent = await confirmPrompt(
-        `Do you want to continue? ${chalk.red('The database will be reset')}`
+        `Do you want to continue? ${styleText('red', 'The database will be reset')}`
       )
       if (!consent) throw new ExitError(1, 'Database reset cancelled by user')
 

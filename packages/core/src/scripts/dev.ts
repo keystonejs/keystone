@@ -2,9 +2,9 @@ import fsp from 'node:fs/promises'
 import { createServer } from 'node:http'
 import type { ListenOptions } from 'node:net'
 import path from 'node:path'
+import { styleText } from 'node:util'
 
 import { createDatabase } from '@prisma/internals'
-import chalk from 'chalk'
 import esbuild, { type BuildResult } from 'esbuild'
 import express from 'express'
 import { printSchema } from 'graphql'
@@ -174,14 +174,14 @@ export async function dev(
               // if there are unexecutable steps, we need to reset the database [or the user can use migrations]
               if (migration_.unexecutable.length) {
                 console.error(
-                  `${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`
+                  styleText(['bold', 'red'], '\n⚠️ We found changes that cannot be executed:\n')
                 )
                 for (const item of migration_.unexecutable) {
                   console.error(`  • ${item}`)
                 }
 
                 if (migration_.warnings.length) {
-                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
+                  console.error(styleText('bold', `\n⚠️  Warnings:\n`))
                   for (const warning of migration_.warnings) {
                     console.error(`  • ${warning}`)
                   }
@@ -190,7 +190,7 @@ export async function dev(
                 console.error('\nTo apply this migration, we need to reset the database')
                 if (
                   !(await confirmPrompt(
-                    `Do you want to continue? ${chalk.red('The database will be reset')}`,
+                    `Do you want to continue? ${styleText('red', 'The database will be reset')}`,
                     false
                   ))
                 ) {
@@ -203,7 +203,7 @@ export async function dev(
 
               if (migration_.warnings.length) {
                 if (migration_.warnings.length) {
-                  console.error(chalk.bold(`\n⚠️  Warnings:\n`))
+                  console.error(styleText('bold', `\n⚠️  Warnings:\n`))
                   for (const warning of migration_.warnings) {
                     console.error(`  • ${warning}`)
                   }
@@ -211,7 +211,7 @@ export async function dev(
 
                 if (
                   !(await confirmPrompt(
-                    `Do you want to continue? ${chalk.red('Some data will be lost')}`,
+                    `Do you want to continue? ${styleText('red', 'Some data will be lost')}`,
                     false
                   ))
                 ) {

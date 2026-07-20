@@ -3,7 +3,6 @@ import path from 'node:path'
 import { format } from 'node:util'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import chalk from 'chalk'
 
 import { cli } from '@keystone-6/core/scripts/cli'
 
@@ -59,7 +58,6 @@ type Fixture = {
 
 export async function cliMock(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args
-  chalk.level = 0 // disable ANSI colouring for this
   const proc = await cli(cwd, argv)
   if (typeof proc === 'function') {
     await proc()
