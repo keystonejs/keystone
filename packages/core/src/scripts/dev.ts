@@ -1,5 +1,6 @@
 import fsp from 'node:fs/promises'
 import { createServer } from 'node:http'
+import { createRequire } from 'node:module'
 import type { ListenOptions } from 'node:net'
 import path from 'node:path'
 import { styleText } from 'node:util'
@@ -233,7 +234,7 @@ export async function dev(
             log('⚠️ Skipping database schema push')
           }
 
-          const prismaClientModule = require(paths.prisma)
+          const prismaClientModule = createRequire(path.join(cwd, 'package.json'))(paths.prisma)
           const keystone = system.getKeystone(prismaClientModule)
 
           log('✨ Connecting to the database')
@@ -311,8 +312,9 @@ export async function dev(
 
         // wipe the require cache
         {
-          const resolved = require.resolve(paths.config)
-          delete require.cache[resolved]
+          const requireFromConfig = createRequire(paths.config)
+          const resolved = requireFromConfig.resolve(paths.config)
+          delete requireFromConfig.cache[resolved]
         }
 
         const newConfigWithHttp = await importBuiltKeystoneConfiguration(cwd)

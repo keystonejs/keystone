@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { styleText } from 'node:util'
 
@@ -39,7 +40,11 @@ export async function spawnPrisma(
   }>((resolve, reject) => {
     const p = spawn(
       'node',
-      ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands],
+      [
+        '--title=prisma',
+        createRequire(join(cwd, 'package.json')).resolve('prisma/build/index.js'),
+        ...commands,
+      ],
       {
         cwd,
         env: {

@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
 
 import { getBuiltKeystoneConfigurationPath } from '../lib/system'
 import type { KeystoneConfig } from '../types'
@@ -18,5 +19,5 @@ export async function importBuiltKeystoneConfiguration(cwd: string): Promise<Key
   if (!(await fs.stat(builtConfigPath).catch(() => null))) {
     throw new Error('You need to run "keystone build"')
   }
-  return require(builtConfigPath).default
+  return createRequire(builtConfigPath)(builtConfigPath).default
 }

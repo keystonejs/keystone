@@ -1,5 +1,7 @@
 import { platform } from 'node:os'
 import https from 'node:https'
+import { createRequire } from 'node:module'
+import path from 'node:path'
 import { styleText } from 'node:util'
 
 import ci from 'ci-info'
@@ -109,10 +111,11 @@ function collectFieldCount(lists: Record<string, InitialisedList>) {
   return fields
 }
 
-async function collectPackageVersions() {
+async function collectPackageVersions(cwd: string) {
   const packages: Project['packages'] = {
     '@keystone-6/core': '0.0.0', // "unknown"
   }
+  const requireFromProject = createRequire(path.join(cwd, 'package.json'))
 
   for (const packageName of [
     '@keystone-6/core',
@@ -123,8 +126,7 @@ async function collectPackageVersions() {
     '@opensaas/keystone-nextjs-auth',
   ]) {
     try {
-      const packageJson = require(`${packageName}/package.json`)
-      // const packageJson = await import(`${packageName}/package.json`, { assert: { type: 'json' } }) // TODO: broken in jest
+      const packageJson = requireFromProject(`${packageName}/package.json`)
       packages[packageName] = packageJson.version
     } catch (err) {
       // do nothing, the package is probably not installed
@@ -242,7 +244,7 @@ async function sendProjectTelemetryEvent(
 
   await sendEvent('project', {
     lastSentDate,
-    packages: await collectPackageVersions(),
+    packages: await collectPackageVersions(cwd),
     database: dbProviderName,
     lists: Object.keys(lists).length,
     fields: collectFieldCount(lists),
