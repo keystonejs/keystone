@@ -253,7 +253,7 @@
     "@sindresorhus/slugify": "^3.0.0",
     "apollo-upload-client": "^19.0.0",
     "bcryptjs": "^3.0.0",
-    "body-parser": "^2.0.0",
+    "body-parser": "^2.3.0",
     "bytes": "^3.1.1",
     "ci-info": "^4.0.0",
     "clipboard-copy": "^4.0.1",
