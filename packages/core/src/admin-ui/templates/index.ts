@@ -10,8 +10,7 @@ import { itemTemplate } from './item'
 import { listTemplate } from './list'
 import { nextConfigTemplate } from './next-config'
 import { noAccessTemplate } from './no-access'
-
-const pkgDir = path.dirname(require.resolve('@keystone-6/core/package.json'))
+import { pkgDir } from '../../pkg-dir'
 
 export function writeAdminFiles(config: KeystoneConfig, adminMeta: AdminMetaSource) {
   return [
