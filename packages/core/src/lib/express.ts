@@ -1,7 +1,7 @@
 import { type Server, createServer } from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
-import { expressMiddleware } from '@apollo/server/express4'
+import { expressMiddleware } from '@as-integrations/express4'
 import express from 'express'
 import { GraphQLError, type GraphQLFormattedError } from 'graphql'
 import { type ApolloServerOptions, ApolloServer } from '@apollo/server'

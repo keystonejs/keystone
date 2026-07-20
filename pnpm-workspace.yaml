@@ -24,7 +24,7 @@ catalog:
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
   express: ^4.19.2
-  graphql: ^16.8.1
+  graphql: ^16.14.2
   next: ^16.2.10
   prisma: ^6.19.3
   react: ^19.2.4
