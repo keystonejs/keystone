@@ -10,6 +10,7 @@ import {
   introspectionTypes,
 } from 'graphql'
 import type { InitialisedList } from './core/initialise-lists'
+import type { DatabaseProvider } from '../types'
 
 const introspectionTypesSet = new Set(introspectionTypes)
 
@@ -103,7 +104,8 @@ function printInterimType<L extends InitialisedList>(
 export function printGeneratedTypes(
   prismaClientPath: string,
   graphQLSchema: GraphQLSchema,
-  lists: Record<string, InitialisedList>
+  lists: Record<string, InitialisedList>,
+  dbProvider: DatabaseProvider
 ) {
   prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`)
 
@@ -212,6 +214,7 @@ export function printGeneratedTypes(
     `  }`,
     `  prisma: import('${prismaClientPath}').PrismaClient`,
     `  session: Session`,
+    `  dbProvider: '${dbProvider}'`,
     `}`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`

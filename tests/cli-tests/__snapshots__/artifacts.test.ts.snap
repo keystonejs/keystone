@@ -146,6 +146,7 @@ export type TypeInfo<Session = any> = {
   }
   prisma: import('@prisma/client').PrismaClient
   session: Session
+  dbProvider: 'sqlite'
 }
 
 type __TypeInfo<Session = any> = TypeInfo<Session>
