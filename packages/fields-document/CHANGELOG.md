@@ -98,7 +98,7 @@
 
 ### Patch Changes
 
-- [#8021](https://github.com/keystonejs/keystone/pull/8021) [`8502b356c`](https://github.com/keystonejs/keystone/commit/8502b356c309aad7855bde445c96eb56e100aed3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes selection for component blocks without child fields
+- [#8021](https://github.com/keystonejs/keystone/pull/8021) [`8502b356c`](https://github.com/keystonejs/keystone/commit/8502b356c309aad7855bde445c96eb56e100aed3) Thanks [@emmatown](https://github.com/emmatown)! - Fixes selection for component blocks without child fields
 
 ## 5.0.0
 
@@ -111,7 +111,7 @@
 
 ### Patch Changes
 
-- [`4fe98b20d`](https://github.com/keystonejs/keystone/commit/4fe98b20d7e3502d96e44c925e38f769722d86bc) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes a broken code path for conditional component-blocks when fields are missing - this previously resulted in invalid data structures within the document editor
+- [`4fe98b20d`](https://github.com/keystonejs/keystone/commit/4fe98b20d7e3502d96e44c925e38f769722d86bc) Thanks [@emmatown](https://github.com/emmatown)! - Fixes a broken code path for conditional component-blocks when fields are missing - this previously resulted in invalid data structures within the document editor
 
 ## 4.1.1
 
@@ -127,15 +127,15 @@
 
 ### Patch Changes
 
-- [#7783](https://github.com/keystonejs/keystone/pull/7783) [`e6e13158f`](https://github.com/keystonejs/keystone/commit/e6e13158f60d71e8b566286e26769a8bb2bfaf82) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes long lines in code blocks in the document editor overflowing the editor
+- [#7783](https://github.com/keystonejs/keystone/pull/7783) [`e6e13158f`](https://github.com/keystonejs/keystone/commit/e6e13158f60d71e8b566286e26769a8bb2bfaf82) Thanks [@emmatown](https://github.com/emmatown)! - Fixes long lines in code blocks in the document editor overflowing the editor
 
-* [`6cb00be9a`](https://github.com/keystonejs/keystone/commit/6cb00be9afe8a77aaee9a2ff1d98d42b276889db) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes pasting plain text in the document editor removing markdown link definition and usages
+* [`6cb00be9a`](https://github.com/keystonejs/keystone/commit/6cb00be9afe8a77aaee9a2ff1d98d42b276889db) Thanks [@emmatown](https://github.com/emmatown)! - Fixes pasting plain text in the document editor removing markdown link definition and usages
 
-- [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor removing whitespace when pasting from HTML with inline elements that only contain whitespace
+- [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@emmatown](https://github.com/emmatown)! - Fixes the document editor removing whitespace when pasting from HTML with inline elements that only contain whitespace
 
-* [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor erroring when handling HTML in certain cases
+* [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@emmatown](https://github.com/emmatown)! - Fixes the document editor erroring when handling HTML in certain cases
 
-- [#7766](https://github.com/keystonejs/keystone/pull/7766) [`99d8f062e`](https://github.com/keystonejs/keystone/commit/99d8f062e5e7d86664d6ab3802a35e2e4c32f61a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Adds support for pasting a url onto text to create a link
+- [#7766](https://github.com/keystonejs/keystone/pull/7766) [`99d8f062e`](https://github.com/keystonejs/keystone/commit/99d8f062e5e7d86664d6ab3802a35e2e4c32f61a) Thanks [@emmatown](https://github.com/emmatown)! - Adds support for pasting a url onto text to create a link
 
 * [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
 
@@ -152,9 +152,9 @@
 
 ### Patch Changes
 
-- [#7701](https://github.com/keystonejs/keystone/pull/7701) [`047a84262`](https://github.com/keystonejs/keystone/commit/047a84262b559dda3bd73d87e0bfd257182bde29) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates slate and slate-react to ^0.81.1
+- [#7701](https://github.com/keystonejs/keystone/pull/7701) [`047a84262`](https://github.com/keystonejs/keystone/commit/047a84262b559dda3bd73d87e0bfd257182bde29) Thanks [@emmatown](https://github.com/emmatown)! - Updates slate and slate-react to ^0.81.1
 
-* [#7700](https://github.com/keystonejs/keystone/pull/7700) [`d3fce3e37`](https://github.com/keystonejs/keystone/commit/d3fce3e37933494d930875cd13a89c008b48ade7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes inline relationships being removed when loading/saving an item in the Admin UI (#7685)
+* [#7700](https://github.com/keystonejs/keystone/pull/7700) [`d3fce3e37`](https://github.com/keystonejs/keystone/commit/d3fce3e37933494d930875cd13a89c008b48ade7) Thanks [@emmatown](https://github.com/emmatown)! - Fixes inline relationships being removed when loading/saving an item in the Admin UI (#7685)
 
 ## 4.0.0
 
@@ -164,11 +164,11 @@
 
 ### Patch Changes
 
-- [#7604](https://github.com/keystonejs/keystone/pull/7604) [`d591e31c6`](https://github.com/keystonejs/keystone/commit/d591e31c61297c88ca5b0c24d4b855c3b12324b2) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the layout and component block floating toolbars from being shown behind other elements
+- [#7604](https://github.com/keystonejs/keystone/pull/7604) [`d591e31c6`](https://github.com/keystonejs/keystone/commit/d591e31c61297c88ca5b0c24d4b855c3b12324b2) Thanks [@emmatown](https://github.com/emmatown)! - Fixes the layout and component block floating toolbars from being shown behind other elements
 
-* [#7626](https://github.com/keystonejs/keystone/pull/7626) [`4ad95f0ef`](https://github.com/keystonejs/keystone/commit/4ad95f0ef8a6223808f47cd9ef2b50c46fd29c5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moves the remove button in component block array fields from inside a menu on the drag handle to the right of the drag handle
+* [#7626](https://github.com/keystonejs/keystone/pull/7626) [`4ad95f0ef`](https://github.com/keystonejs/keystone/commit/4ad95f0ef8a6223808f47cd9ef2b50c46fd29c5b) Thanks [@emmatown](https://github.com/emmatown)! - Moves the remove button in component block array fields from inside a menu on the drag handle to the right of the drag handle
 
-- [#7674](https://github.com/keystonejs/keystone/pull/7674) [`8b2194bb1`](https://github.com/keystonejs/keystone/commit/8b2194bb1159227383a58f5553afd6ed5e1c9c85) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor from breaking when the underlying schema for a component has a new field added.
+- [#7674](https://github.com/keystonejs/keystone/pull/7674) [`8b2194bb1`](https://github.com/keystonejs/keystone/commit/8b2194bb1159227383a58f5553afd6ed5e1c9c85) Thanks [@emmatown](https://github.com/emmatown)! - Fixes the document editor from breaking when the underlying schema for a component has a new field added.
   Please note that new fields will still be missing for existing data when fetched from GraphQL
 - Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`f5fe35573`](https://github.com/keystonejs/keystone/commit/f5fe35573d0e12e9a624a717c464817031cfe760), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`a48fe5e81`](https://github.com/keystonejs/keystone/commit/a48fe5e818421524a6e1f5c52f21431444e003c7), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`7f83b438b`](https://github.com/keystonejs/keystone/commit/7f83b438b0001c19058b09b0532dc3ef485696bb), [`153eb6778`](https://github.com/keystonejs/keystone/commit/153eb67784cf18417831598715d2689c0173296b), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`ffb9ab744`](https://github.com/keystonejs/keystone/commit/ffb9ab74442a036f9c6bc7546bf0fa61c770445b), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`86569dd75`](https://github.com/keystonejs/keystone/commit/86569dd751dc63d41103f69509abb882e45f9c54), [`f9ca9eddf`](https://github.com/keystonejs/keystone/commit/f9ca9eddf69864e8f85c5df1ea56a5400c9916e2)]:
   - @keystone-6/core@2.1.0
@@ -182,7 +182,6 @@
   The breaking changes are only for defining components, _no database migration is needed_.
 
   The primary breaking changes for component blocks are:
-
   - For the arguments to the `component` function from `@keystone-6/fields-document/component-blocks`, the following properties have been renamed
     - `component` -> `preview`
     - `props` -> `schema`
@@ -190,7 +189,6 @@
 
   For example, `props.fields.title` instead of `props.title`.
   For a nested example, `props.fields.someObject.fields.title` instead of `props.someObject.title`.
-
   - The React element to render for a child field is now `props.{innerFieldName}.element` instead of `props.{innerFieldName}`.
 
   See [#7428](https://github.com/keystonejs/keystone/pull/7428) for detailed instructions if you need to upgrade your code.
@@ -235,7 +233,7 @@
 
 ### Major Changes
 
-- [#7264](https://github.com/keystonejs/keystone/pull/7264) [`c9ec91c8d`](https://github.com/keystonejs/keystone/commit/c9ec91c8d971063169c10e94e93e4626c3d52298) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The config for relationships in props on component blocks in the document field has moved so that it's configured at the relationship prop rather than in the `relationships` key on the document field config. The `relationships` key in the document field config now exclusively refers to inline relationships.
+- [#7264](https://github.com/keystonejs/keystone/pull/7264) [`c9ec91c8d`](https://github.com/keystonejs/keystone/commit/c9ec91c8d971063169c10e94e93e4626c3d52298) Thanks [@emmatown](https://github.com/emmatown)! - The config for relationships in props on component blocks in the document field has moved so that it's configured at the relationship prop rather than in the `relationships` key on the document field config. The `relationships` key in the document field config now exclusively refers to inline relationships.
 
 ### Patch Changes
 
@@ -252,13 +250,13 @@
 
 ### Patch Changes
 
-- [#7030](https://github.com/keystonejs/keystone/pull/7030) [`26213c6f3`](https://github.com/keystonejs/keystone/commit/26213c6f3c49dd47392c0e31389339aae3f10806) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the input in the link dialog not being focusable
+- [#7030](https://github.com/keystonejs/keystone/pull/7030) [`26213c6f3`](https://github.com/keystonejs/keystone/commit/26213c6f3c49dd47392c0e31389339aae3f10806) Thanks [@emmatown](https://github.com/emmatown)! - Fixed the input in the link dialog not being focusable
 
 ## 1.0.0
 
 ### Major Changes
 
-- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Released Keystone 6
+- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@emmatown](https://github.com/emmatown)! - Released Keystone 6
 
 * [#7005](https://github.com/keystonejs/keystone/pull/7005) [`f4554980f`](https://github.com/keystonejs/keystone/commit/f4554980f6243a6545eee6c887d946ff25cd90e3) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - - The following types have been renamed:
   - `BaseGeneratedListTypes` → `BaseListTypeInfo`
@@ -300,7 +298,7 @@
 
 ### Patch Changes
 
-- [#6944](https://github.com/keystonejs/keystone/pull/6944) [`2be0e18a1`](https://github.com/keystonejs/keystone/commit/2be0e18a142c85072df1f07af11dae49e4eb8324) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed clear button in inline relationships
+- [#6944](https://github.com/keystonejs/keystone/pull/6944) [`2be0e18a1`](https://github.com/keystonejs/keystone/commit/2be0e18a142c85072df1f07af11dae49e4eb8324) Thanks [@emmatown](https://github.com/emmatown)! - Fixed clear button in inline relationships
 
 - Updated dependencies [[`f2b41df9f`](https://github.com/keystonejs/keystone/commit/f2b41df9f77cf340e5e138cf60bacd6aec8e4548), [`04c54a4eb`](https://github.com/keystonejs/keystone/commit/04c54a4eb4aa6076cf87d441060eaa2091bc903b), [`748538649`](https://github.com/keystonejs/keystone/commit/748538649645d3b0ef32b0baba8fa310f2a493fe), [`4e96c23bb`](https://github.com/keystonejs/keystone/commit/4e96c23bb6c3a134f1324ec7879adac3abf90132), [`76ec35c97`](https://github.com/keystonejs/keystone/commit/76ec35c97a72dcb023e1b0da5b47e876896b6a03), [`760ae82ac`](https://github.com/keystonejs/keystone/commit/760ae82ac0fac5f73e123e2b36f7ba6320312ca6), [`0a7b75838`](https://github.com/keystonejs/keystone/commit/0a7b7583887e3811c23b0b74f4f97633fd484e08), [`622e57689`](https://github.com/keystonejs/keystone/commit/622e57689cf27dbecba7f64c02f0a3b6499d3218), [`bbedee845`](https://github.com/keystonejs/keystone/commit/bbedee84541d22c91a6816872902f6cce8e6aee3), [`82539faa5`](https://github.com/keystonejs/keystone/commit/82539faa53c495be1f5f470deb9eae9861cd31a0), [`18e3168aa`](https://github.com/keystonejs/keystone/commit/18e3168aae5739f5596c7811cd30c8d1f47ad77a), [`760ae82ac`](https://github.com/keystonejs/keystone/commit/760ae82ac0fac5f73e123e2b36f7ba6320312ca6), [`96fd2e220`](https://github.com/keystonejs/keystone/commit/96fd2e22041de84a042f5a0df2cab75ba0dacc35), [`04c54a4eb`](https://github.com/keystonejs/keystone/commit/04c54a4eb4aa6076cf87d441060eaa2091bc903b), [`82539faa5`](https://github.com/keystonejs/keystone/commit/82539faa53c495be1f5f470deb9eae9861cd31a0), [`de8cf44e7`](https://github.com/keystonejs/keystone/commit/de8cf44e7b328ab98e1466d7191d9ee65a57b02a), [`748538649`](https://github.com/keystonejs/keystone/commit/748538649645d3b0ef32b0baba8fa310f2a493fe), [`7a7450009`](https://github.com/keystonejs/keystone/commit/7a7450009d68f70173a2af55eb3a845ea3799c99)]:
   - @keystone-next/keystone@29.0.0
@@ -341,7 +339,7 @@
 
 - [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
 
-* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated dist filenames
+* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@emmatown](https://github.com/emmatown)! - Updated dist filenames
 
 * Updated dependencies [[`73544fd19`](https://github.com/keystonejs/keystone/commit/73544fd19b865be9fbf3ea9ae68fae5f039eb13f), [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`fac96cbd1`](https://github.com/keystonejs/keystone/commit/fac96cbd14febcc01bdffbecd1aceee391f6a20a), [`3d289eb3d`](https://github.com/keystonejs/keystone/commit/3d289eb3d00c3e6a0c26ce962fb0f942a08c400a), [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`6e4a0cf56`](https://github.com/keystonejs/keystone/commit/6e4a0cf56ce35b2446db7970763c55446de3db0e), [`d64bd4a7f`](https://github.com/keystonejs/keystone/commit/d64bd4a7f3da87e13e9cac41f0eb9757b771835f), [`abeceaf90`](https://github.com/keystonejs/keystone/commit/abeceaf902c231aabe9cf3a383ecf29c09b8f4dd), [`704f68b38`](https://github.com/keystonejs/keystone/commit/704f68b38f970860137380e21c36e04d2c51a7a4), [`576f341e6`](https://github.com/keystonejs/keystone/commit/576f341e61b31bbcf076ba70002d137c7b7ff9a9)]:
   - @keystone-next/keystone@26.1.0
@@ -356,9 +354,9 @@
 
 ### Major Changes
 
-- [#6689](https://github.com/keystonejs/keystone/pull/6689) [`67492f37d`](https://github.com/keystonejs/keystone/commit/67492f37dd9fbcd94234c15a072e9c826fa7a665) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`
+- [#6689](https://github.com/keystonejs/keystone/pull/6689) [`67492f37d`](https://github.com/keystonejs/keystone/commit/67492f37dd9fbcd94234c15a072e9c826fa7a665) Thanks [@emmatown](https://github.com/emmatown)! - Moved `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`
 
-* [#6564](https://github.com/keystonejs/keystone/pull/6564) [`b6c8c3bff`](https://github.com/keystonejs/keystone/commit/b6c8c3bff9d3d98f743c47c015ae27e63db0271e) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `document` field is now non-nullable in the database. The field no longer has `defaultValue` or `isRequired` options. The same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively. The field will default to `[{ "type": "paragraph", "children": [{ "text": "" }] }]`. The output type has also been renamed to `ListKey_fieldKey_Document`
+* [#6564](https://github.com/keystonejs/keystone/pull/6564) [`b6c8c3bff`](https://github.com/keystonejs/keystone/commit/b6c8c3bff9d3d98f743c47c015ae27e63db0271e) Thanks [@emmatown](https://github.com/emmatown)! - The `document` field is now non-nullable in the database. The field no longer has `defaultValue` or `isRequired` options. The same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively. The field will default to `[{ "type": "paragraph", "children": [{ "text": "" }] }]`. The output type has also been renamed to `ListKey_fieldKey_Document`
 
   If you're using SQLite, Prisma will generate a migration that makes the column non-nullable and sets any rows that have null values to an empty paragraph.
 
@@ -416,7 +414,7 @@
 
 ### Major Changes
 
-- [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
+- [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@emmatown](https://github.com/emmatown)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
 
 * [#6426](https://github.com/keystonejs/keystone/pull/6426) [`8f2786535`](https://github.com/keystonejs/keystone/commit/8f2786535272976678427fd13758e63b2c59d955) Thanks [@timleslie](https://github.com/timleslie)! - Update the Access Control API. This is a breaking change which impacts the security of all Keystone systems.
 
@@ -424,13 +422,13 @@
 
 ### Patch Changes
 
-- [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
+- [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@emmatown](https://github.com/emmatown)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
 
-* [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
+* [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
 
-- [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
+- [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@emmatown](https://github.com/emmatown)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
 
-* [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
+* [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
 
 - [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
 
@@ -447,7 +445,7 @@
 
 ### Major Changes
 
-- [#6095](https://github.com/keystonejs/keystone/pull/6095) [`272b97b3a`](https://github.com/keystonejs/keystone/commit/272b97b3a10c0dfada782171d55ef7ac6f47c98f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated filters to be nested instead of flattened and add top-level `NOT` operator. See the [Query Filter API docs](https://keystonejs.com/docs/apis/filters) and the upgrade guide for more information.
+- [#6095](https://github.com/keystonejs/keystone/pull/6095) [`272b97b3a`](https://github.com/keystonejs/keystone/commit/272b97b3a10c0dfada782171d55ef7ac6f47c98f) Thanks [@emmatown](https://github.com/emmatown)! - Updated filters to be nested instead of flattened and add top-level `NOT` operator. See the [Query Filter API docs](https://keystonejs.com/docs/apis/filters) and the upgrade guide for more information.
 
   ```graphql
   query {
@@ -466,7 +464,7 @@
 
 - [#6207](https://github.com/keystonejs/keystone/pull/6207) [`69f47bfed`](https://github.com/keystonejs/keystone/commit/69f47bfed1eaa1269cfdc42071268a914bd4aa17) Thanks [@timleslie](https://github.com/timleslie)! - Suppressed error logging during tests.
 
-* [#6197](https://github.com/keystonejs/keystone/pull/6197) [`4d9f89f88`](https://github.com/keystonejs/keystone/commit/4d9f89f884e2bf984fdd74ca2cbb7874b25b9cda) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The generated CRUD queries, and some of the input types, in the GraphQL API have been renamed.
+* [#6197](https://github.com/keystonejs/keystone/pull/6197) [`4d9f89f88`](https://github.com/keystonejs/keystone/commit/4d9f89f884e2bf984fdd74ca2cbb7874b25b9cda) Thanks [@emmatown](https://github.com/emmatown)! - The generated CRUD queries, and some of the input types, in the GraphQL API have been renamed.
 
   If you have a list called `Item`, the query for multiple values, `allItems` will be renamed to `items`. The query for a single value, `Item`, will be renamed to `item`.
 
@@ -482,7 +480,7 @@
 
 ### Patch Changes
 
-- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed issues with React hooks dependency arrays
+- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@emmatown](https://github.com/emmatown)! - Fixed issues with React hooks dependency arrays
 
 - Updated dependencies [[`3f03b8c1f`](https://github.com/keystonejs/keystone/commit/3f03b8c1fa7005b37371e1cc401c3a03334a4f7a), [`ea0712aa2`](https://github.com/keystonejs/keystone/commit/ea0712aa22487325bd898818ea4fbca543c9dcf1), [`93f1e5d30`](https://github.com/keystonejs/keystone/commit/93f1e5d302701c610b6cba74e0c5c86a3ac8aacc), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`7716315ea`](https://github.com/keystonejs/keystone/commit/7716315ea823dd91d17d54dcbb9155b5445cd956), [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3), [`e5f61ad50`](https://github.com/keystonejs/keystone/commit/e5f61ad50133a328fcb32299b838fd9eac574c3f), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`e4e6cf9b5`](https://github.com/keystonejs/keystone/commit/e4e6cf9b59eec461d2b53acfa3b350e4f5a06fc4), [`2ef6fe82c`](https://github.com/keystonejs/keystone/commit/2ef6fe82cee6df7796935d35d1c12cab29aecc75), [`dd7e811e7`](https://github.com/keystonejs/keystone/commit/dd7e811e7ce084c1e832acefc6ed773af371ac9e), [`587a8d0b0`](https://github.com/keystonejs/keystone/commit/587a8d0b074ccecb239d120275359f72779f306f), [`597edbdd8`](https://github.com/keystonejs/keystone/commit/597edbdd81df80982dd3df3d9d600003ef8a15e9), [`1172e1853`](https://github.com/keystonejs/keystone/commit/1172e18531064df6412c06412e74da3b85740b35), [`fbe698461`](https://github.com/keystonejs/keystone/commit/fbe6984616de7a302db7c2b0082851db89c2e314), [`32e9879db`](https://github.com/keystonejs/keystone/commit/32e9879db9cfee77f067eb8105262df65bca6c06)]:
   - @keystone-next/keystone@23.0.0
@@ -520,7 +518,7 @@
 
 ### Major Changes
 
-- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@emmatown](https://github.com/emmatown)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
 
 ### Patch Changes
 
@@ -610,7 +608,7 @@
 
 * [#5400](https://github.com/keystonejs/keystone/pull/5400) [`d7e8cad4f`](https://github.com/keystonejs/keystone/commit/d7e8cad4fca5d8ffefa235c2ff30ec8e2e0d6276) Thanks [@timleslie](https://github.com/timleslie)! - Moved the `Implementation` base class from the `fields-legacy` package into the `fields` package.
 
-- [#5371](https://github.com/keystonejs/keystone/pull/5371) [`8eebf9195`](https://github.com/keystonejs/keystone/commit/8eebf9195ac625f6642c76ea145642f075e725fe) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed undo on shortcuts like `->` to `→` undoing the whole shortcut rather than just the replacement
+- [#5371](https://github.com/keystonejs/keystone/pull/5371) [`8eebf9195`](https://github.com/keystonejs/keystone/commit/8eebf9195ac625f6642c76ea145642f075e725fe) Thanks [@emmatown](https://github.com/emmatown)! - Fixed undo on shortcuts like `->` to `→` undoing the whole shortcut rather than just the replacement
 
 - Updated dependencies [[`9e060fe83`](https://github.com/keystonejs/keystone/commit/9e060fe83459269bc5d257f31a23c164d2283624), [`637ae05d3`](https://github.com/keystonejs/keystone/commit/637ae05d3f8a138902c2d03c5b342cb93c440767), [`d0adec53f`](https://github.com/keystonejs/keystone/commit/d0adec53ff20c2246dfe955b449b7c6e1afe96fb), [`c7aecec3c`](https://github.com/keystonejs/keystone/commit/c7aecec3c768eec742e0ce9c5506331e902e5124), [`f059f6349`](https://github.com/keystonejs/keystone/commit/f059f6349bee3dce8bbf4a0584b235e97872851c), [`7498fcabb`](https://github.com/keystonejs/keystone/commit/7498fcabba3ef6b411dd3bf67a20821702442ebc), [`11f5bb631`](https://github.com/keystonejs/keystone/commit/11f5bb6316b90ec603aa034db1b9259c911204ed), [`8ab2c9bb6`](https://github.com/keystonejs/keystone/commit/8ab2c9bb6633c2f85844e658f534582c30a39a57), [`637ae05d3`](https://github.com/keystonejs/keystone/commit/637ae05d3f8a138902c2d03c5b342cb93c440767), [`fe55e9289`](https://github.com/keystonejs/keystone/commit/fe55e9289b898bdcb937eb5e981dba2bb58a672f), [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b), [`1d85d7ff4`](https://github.com/keystonejs/keystone/commit/1d85d7ff4e8d7795d6e0f82484cf7108d11925db), [`2bef01aaa`](https://github.com/keystonejs/keystone/commit/2bef01aaacd32eb746353bde11dd5e37c67fb43e), [`be60812f2`](https://github.com/keystonejs/keystone/commit/be60812f29d7768ce65a5f5e8c40597d4742c5d7), [`0e74d8123`](https://github.com/keystonejs/keystone/commit/0e74d81238d5d00cc3eb968c95c02f25cb3a5a78), [`be60812f2`](https://github.com/keystonejs/keystone/commit/be60812f29d7768ce65a5f5e8c40597d4742c5d7), [`d7e8cad4f`](https://github.com/keystonejs/keystone/commit/d7e8cad4fca5d8ffefa235c2ff30ec8e2e0d6276), [`ecf07393a`](https://github.com/keystonejs/keystone/commit/ecf07393a19714f1686772bd082de7d229065aa2), [`be60812f2`](https://github.com/keystonejs/keystone/commit/be60812f29d7768ce65a5f5e8c40597d4742c5d7), [`89b869e8d`](https://github.com/keystonejs/keystone/commit/89b869e8d492151449f2146108767a7e5e5ecdfa), [`58a793988`](https://github.com/keystonejs/keystone/commit/58a7939888ec84d0f089d77ca1ce9d94ef0d9a85), [`115b06130`](https://github.com/keystonejs/keystone/commit/115b06130d801e00dec88935a5d400e71f089853)]:
   - @keystone-next/admin-ui@14.0.0
@@ -659,7 +657,7 @@
 
 ### Minor Changes
 
-- [#5173](https://github.com/keystonejs/keystone/pull/5173) [`7debecb86`](https://github.com/keystonejs/keystone/commit/7debecb86ea41eed98da80324482bd1c63781005) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added support for SQLite with Prisma
+- [#5173](https://github.com/keystonejs/keystone/pull/5173) [`7debecb86`](https://github.com/keystonejs/keystone/commit/7debecb86ea41eed98da80324482bd1c63781005) Thanks [@emmatown](https://github.com/emmatown)! - Added support for SQLite with Prisma
 
 ### Patch Changes
 
@@ -707,19 +705,19 @@
 
 ### Major Changes
 
-- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `NotEditable` component from rendering a div to a span so it can be used for inline elements
+- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@emmatown](https://github.com/emmatown)! - Changed `NotEditable` component from rendering a div to a span so it can be used for inline elements
 
 ### Minor Changes
 
-- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `fields.multiselect` prop field
+- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@emmatown](https://github.com/emmatown)! - Added `fields.multiselect` prop field
 
 ### Patch Changes
 
 - [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
 
-* [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `fields.select` not passing options to the select
+* [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@emmatown](https://github.com/emmatown)! - Fixed `fields.select` not passing options to the select
 
-- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed documentation in JSDocs for component blocks API
+- [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6) [#4836](https://github.com/keystonejs/keystone/pull/4836) Thanks [@emmatown](https://github.com/emmatown)! - Fixed documentation in JSDocs for component blocks API
 
 * [`d53eb872f`](https://github.com/keystonejs/keystone/commit/d53eb872ffb0396fcdcae34c380acf9739c8ca5d) [#4883](https://github.com/keystonejs/keystone/pull/4883) Thanks [@JedWatson](https://github.com/JedWatson)! - Allowed the document field toolbar to wrap on smaller screens
 
@@ -747,11 +745,11 @@
 
 ### Patch Changes
 
-- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Stopped unwrapping headings when in the middle of a heading
+- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@emmatown](https://github.com/emmatown)! - Stopped unwrapping headings when in the middle of a heading
 
-* [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated slate to 0.60.3
+* [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@emmatown](https://github.com/emmatown)! - Updated slate to 0.60.3
 
-- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed editor so that when the user is at the end of a text node with a mark and a break is inserted, the mark is removed
+- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@emmatown](https://github.com/emmatown)! - Changed editor so that when the user is at the end of a text node with a mark and a break is inserted, the mark is removed
 
 - Updated dependencies [[`ee019cfc5`](https://github.com/keystonejs/keystone/commit/ee019cfc51a831d005524e5427d0ebe1c71a1dee), [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf), [`208722a42`](https://github.com/keystonejs/keystone/commit/208722a4234434e116846756bab18f7e11674ec8), [`ad75e3d61`](https://github.com/keystonejs/keystone/commit/ad75e3d61c73ba1239fd21b58f175aac01d9f302), [`a0931858e`](https://github.com/keystonejs/keystone/commit/a0931858e499d9504e4e822b850dcf89c3cdac60), [`d8f64887f`](https://github.com/keystonejs/keystone/commit/d8f64887f2aa428ea8ac35d0efa50ce05534f40b), [`45b047ad0`](https://github.com/keystonejs/keystone/commit/45b047ad015fc9d72cf8c2b85529ffe3abbc189e), [`74f428353`](https://github.com/keystonejs/keystone/commit/74f428353b90958f97669cbcb78e18ca44438765), [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d), [`954350389`](https://github.com/keystonejs/keystone/commit/9543503894c3e78a9b69a75cbfb3ca6b85ae34e8), [`e29ae2749`](https://github.com/keystonejs/keystone/commit/e29ae2749321c103dd494eba6778ee4137bb2aa3), [`ee019cfc5`](https://github.com/keystonejs/keystone/commit/ee019cfc51a831d005524e5427d0ebe1c71a1dee), [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0)]:
   - @keystone-next/admin-ui@9.0.0
@@ -783,7 +781,7 @@
 
 ### Major Changes
 
-- [`2ed7ee700`](https://github.com/keystonejs/keystone/commit/2ed7ee70047c4c2bb6b855ec51a2fa58e4c7474d) [#4720](https://github.com/keystonejs/keystone/pull/4720) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Initial release
+- [`2ed7ee700`](https://github.com/keystonejs/keystone/commit/2ed7ee70047c4c2bb6b855ec51a2fa58e4c7474d) [#4720](https://github.com/keystonejs/keystone/pull/4720) Thanks [@emmatown](https://github.com/emmatown)! - Initial release
 
 ### Patch Changes
 

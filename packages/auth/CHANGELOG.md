@@ -154,7 +154,7 @@
 
 ### Major Changes
 
-- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Released Keystone 6
+- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@emmatown](https://github.com/emmatown)! - Released Keystone 6
 
 * [#7005](https://github.com/keystonejs/keystone/pull/7005) [`f4554980f`](https://github.com/keystonejs/keystone/commit/f4554980f6243a6545eee6c887d946ff25cd90e3) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - - The following types have been renamed:
   - `BaseGeneratedListTypes` → `BaseListTypeInfo`
@@ -195,7 +195,7 @@
 
 ### Patch Changes
 
-- [#6934](https://github.com/keystonejs/keystone/pull/6934) [`528cc5e6b`](https://github.com/keystonejs/keystone/commit/528cc5e6b8196a38bc9cbc76e0146908b8d1246a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the init/sign in page showing for a short amount of time after submitting on the init/sign in page and seeing a loading spinner.
+- [#6934](https://github.com/keystonejs/keystone/pull/6934) [`528cc5e6b`](https://github.com/keystonejs/keystone/commit/528cc5e6b8196a38bc9cbc76e0146908b8d1246a) Thanks [@emmatown](https://github.com/emmatown)! - Fixed the init/sign in page showing for a short amount of time after submitting on the init/sign in page and seeing a loading spinner.
 
 - Updated dependencies [[`f2b41df9f`](https://github.com/keystonejs/keystone/commit/f2b41df9f77cf340e5e138cf60bacd6aec8e4548), [`04c54a4eb`](https://github.com/keystonejs/keystone/commit/04c54a4eb4aa6076cf87d441060eaa2091bc903b), [`748538649`](https://github.com/keystonejs/keystone/commit/748538649645d3b0ef32b0baba8fa310f2a493fe), [`4e96c23bb`](https://github.com/keystonejs/keystone/commit/4e96c23bb6c3a134f1324ec7879adac3abf90132), [`76ec35c97`](https://github.com/keystonejs/keystone/commit/76ec35c97a72dcb023e1b0da5b47e876896b6a03), [`760ae82ac`](https://github.com/keystonejs/keystone/commit/760ae82ac0fac5f73e123e2b36f7ba6320312ca6), [`0a7b75838`](https://github.com/keystonejs/keystone/commit/0a7b7583887e3811c23b0b74f4f97633fd484e08), [`622e57689`](https://github.com/keystonejs/keystone/commit/622e57689cf27dbecba7f64c02f0a3b6499d3218), [`bbedee845`](https://github.com/keystonejs/keystone/commit/bbedee84541d22c91a6816872902f6cce8e6aee3), [`82539faa5`](https://github.com/keystonejs/keystone/commit/82539faa53c495be1f5f470deb9eae9861cd31a0), [`760ae82ac`](https://github.com/keystonejs/keystone/commit/760ae82ac0fac5f73e123e2b36f7ba6320312ca6), [`96fd2e220`](https://github.com/keystonejs/keystone/commit/96fd2e22041de84a042f5a0df2cab75ba0dacc35), [`04c54a4eb`](https://github.com/keystonejs/keystone/commit/04c54a4eb4aa6076cf87d441060eaa2091bc903b), [`82539faa5`](https://github.com/keystonejs/keystone/commit/82539faa53c495be1f5f470deb9eae9861cd31a0), [`de8cf44e7`](https://github.com/keystonejs/keystone/commit/de8cf44e7b328ab98e1466d7191d9ee65a57b02a), [`748538649`](https://github.com/keystonejs/keystone/commit/748538649645d3b0ef32b0baba8fa310f2a493fe), [`7a7450009`](https://github.com/keystonejs/keystone/commit/7a7450009d68f70173a2af55eb3a845ea3799c99)]:
   - @keystone-next/keystone@29.0.0
@@ -209,7 +209,7 @@
 
 ### Patch Changes
 
-- [#6912](https://github.com/keystonejs/keystone/pull/6912) [`8ca316455`](https://github.com/keystonejs/keystone/commit/8ca31645568adf29ba6a161b482f8895a6624bb1) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored
+- [#6912](https://github.com/keystonejs/keystone/pull/6912) [`8ca316455`](https://github.com/keystonejs/keystone/commit/8ca31645568adf29ba6a161b482f8895a6624bb1) Thanks [@emmatown](https://github.com/emmatown)! - When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored
 
 - Updated dependencies [[`70eb86237`](https://github.com/keystonejs/keystone/commit/70eb86237bd3eafd36b0579f66ad3f1e173357b1), [`990b56291`](https://github.com/keystonejs/keystone/commit/990b56291e677077656b201b935086754c6257f1), [`70eb86237`](https://github.com/keystonejs/keystone/commit/70eb86237bd3eafd36b0579f66ad3f1e173357b1), [`b981f4c3e`](https://github.com/keystonejs/keystone/commit/b981f4c3ee135a1184188deb5ed8de22f718080c)]:
   - @keystone-next/keystone@28.0.0
@@ -219,11 +219,11 @@
 
 ### Major Changes
 
-- [#6856](https://github.com/keystonejs/keystone/pull/6856) [`f3e8aac31`](https://github.com/keystonejs/keystone/commit/f3e8aac31efb3eb1573eb340e07a25920084a4aa) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated the way the schema extension is added, this may result in schema re-ordering.
+- [#6856](https://github.com/keystonejs/keystone/pull/6856) [`f3e8aac31`](https://github.com/keystonejs/keystone/commit/f3e8aac31efb3eb1573eb340e07a25920084a4aa) Thanks [@emmatown](https://github.com/emmatown)! - Updated the way the schema extension is added, this may result in schema re-ordering.
 
 ### Patch Changes
 
-- [#6790](https://github.com/keystonejs/keystone/pull/6790) [`f683dcfe3`](https://github.com/keystonejs/keystone/commit/f683dcfe37d013b3d17f1fbad3df335b2f2ee51c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Readonly arrays are now accepted where previously mutable arrays were required. This means that if you use `as const` when writing an array and then pass it to various APIs in keystone, that will now work.
+- [#6790](https://github.com/keystonejs/keystone/pull/6790) [`f683dcfe3`](https://github.com/keystonejs/keystone/commit/f683dcfe37d013b3d17f1fbad3df335b2f2ee51c) Thanks [@emmatown](https://github.com/emmatown)! - Readonly arrays are now accepted where previously mutable arrays were required. This means that if you use `as const` when writing an array and then pass it to various APIs in keystone, that will now work.
 
 * [#6841](https://github.com/keystonejs/keystone/pull/6841) [`36174f867`](https://github.com/keystonejs/keystone/commit/36174f867aeda02bad6acfe27f534b4dc01e5c5b) Thanks [@dcousens](https://github.com/dcousens)! - Don't fill `context.session` if the session is invalid.
 
@@ -236,7 +236,7 @@
 
 - [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
 
-* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated dist filenames
+* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@emmatown](https://github.com/emmatown)! - Updated dist filenames
 
 * Updated dependencies [[`73544fd19`](https://github.com/keystonejs/keystone/commit/73544fd19b865be9fbf3ea9ae68fae5f039eb13f), [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`fac96cbd1`](https://github.com/keystonejs/keystone/commit/fac96cbd14febcc01bdffbecd1aceee391f6a20a), [`3d289eb3d`](https://github.com/keystonejs/keystone/commit/3d289eb3d00c3e6a0c26ce962fb0f942a08c400a), [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`6e4a0cf56`](https://github.com/keystonejs/keystone/commit/6e4a0cf56ce35b2446db7970763c55446de3db0e), [`d64bd4a7f`](https://github.com/keystonejs/keystone/commit/d64bd4a7f3da87e13e9cac41f0eb9757b771835f), [`abeceaf90`](https://github.com/keystonejs/keystone/commit/abeceaf902c231aabe9cf3a383ecf29c09b8f4dd), [`704f68b38`](https://github.com/keystonejs/keystone/commit/704f68b38f970860137380e21c36e04d2c51a7a4), [`576f341e6`](https://github.com/keystonejs/keystone/commit/576f341e61b31bbcf076ba70002d137c7b7ff9a9)]:
   - @keystone-next/keystone@26.1.0
@@ -258,7 +258,7 @@
   - `UserAuthenticationWithPasswordFailure` no longer has a `code` value.
   - `MagicLinkRedemptionErrorCode` and `PasswordResetRedemptionErrorCode` no longer have the values `IDENTITY_NOT_FOUND`, `MULTIPLE_IDENTITY_MATCHES`, `TOKEN_NOT_SET`, or `TOKEN_MISMATCH`.
 
-- [#6682](https://github.com/keystonejs/keystone/pull/6682) [`b2349ca3b`](https://github.com/keystonejs/keystone/commit/b2349ca3bc8dfa989af8e2eea6089ef2f0015117) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `sendItemMagicAuthLink` and `sendItemPasswordResetLink` mutations now always return `true` instead of always returning `null`
+- [#6682](https://github.com/keystonejs/keystone/pull/6682) [`b2349ca3b`](https://github.com/keystonejs/keystone/commit/b2349ca3bc8dfa989af8e2eea6089ef2f0015117) Thanks [@emmatown](https://github.com/emmatown)! - The `sendItemMagicAuthLink` and `sendItemPasswordResetLink` mutations now always return `true` instead of always returning `null`
 
 * [#6520](https://github.com/keystonejs/keystone/pull/6520) [`1b0a2f516`](https://github.com/keystonejs/keystone/commit/1b0a2f516d7d9ffce2e470dcd9ea870a3274500b) Thanks [@timleslie](https://github.com/timleslie)! - Renamed the `skipAccessControl` argument to `createContext` to `sudo` for consistency with `context.sudo()`.
 
@@ -285,17 +285,17 @@
 
 ### Major Changes
 
-- [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
+- [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@emmatown](https://github.com/emmatown)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
 
-* [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
+* [#6367](https://github.com/keystonejs/keystone/pull/6367) [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208) Thanks [@emmatown](https://github.com/emmatown)! - Moved `@keystone-next/admin-ui-utils` to `@keystone-next/keystone/admin-ui/utils`
 
 ### Patch Changes
 
-- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
 
-* [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
+* [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@emmatown](https://github.com/emmatown)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
 
-- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
 
 * [#6432](https://github.com/keystonejs/keystone/pull/6432) [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `typescript` dependency to `^4.4.2`.
 
@@ -310,7 +310,7 @@
 
 ### Major Changes
 
-- [#6211](https://github.com/keystonejs/keystone/pull/6211) [`d214e2f72`](https://github.com/keystonejs/keystone/commit/d214e2f72bae1c798e2415a38410d6063c333e2e) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The update mutations now accept `where` unique inputs instead of only an `id` and the `where` and `data` arguments are non-null.
+- [#6211](https://github.com/keystonejs/keystone/pull/6211) [`d214e2f72`](https://github.com/keystonejs/keystone/commit/d214e2f72bae1c798e2415a38410d6063c333e2e) Thanks [@emmatown](https://github.com/emmatown)! - The update mutations now accept `where` unique inputs instead of only an `id` and the `where` and `data` arguments are non-null.
 
   If you have a list called `Item`, the update mutations now look like this:
 
@@ -341,11 +341,11 @@
 
 ### Major Changes
 
-- [#6179](https://github.com/keystonejs/keystone/pull/6179) [`ee8a51498`](https://github.com/keystonejs/keystone/commit/ee8a51498204cd7de4998af0bb05871301bfb26a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The field passed to the `identityField` option is now required to have `isUnique: true`.
+- [#6179](https://github.com/keystonejs/keystone/pull/6179) [`ee8a51498`](https://github.com/keystonejs/keystone/commit/ee8a51498204cd7de4998af0bb05871301bfb26a) Thanks [@emmatown](https://github.com/emmatown)! - The field passed to the `identityField` option is now required to have `isUnique: true`.
 
 ### Patch Changes
 
-- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed issues with React hooks dependency arrays
+- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@emmatown](https://github.com/emmatown)! - Fixed issues with React hooks dependency arrays
 
 - Updated dependencies [[`3f03b8c1f`](https://github.com/keystonejs/keystone/commit/3f03b8c1fa7005b37371e1cc401c3a03334a4f7a), [`ea0712aa2`](https://github.com/keystonejs/keystone/commit/ea0712aa22487325bd898818ea4fbca543c9dcf1), [`93f1e5d30`](https://github.com/keystonejs/keystone/commit/93f1e5d302701c610b6cba74e0c5c86a3ac8aacc), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`7716315ea`](https://github.com/keystonejs/keystone/commit/7716315ea823dd91d17d54dcbb9155b5445cd956), [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3), [`e5f61ad50`](https://github.com/keystonejs/keystone/commit/e5f61ad50133a328fcb32299b838fd9eac574c3f), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`e4e6cf9b5`](https://github.com/keystonejs/keystone/commit/e4e6cf9b59eec461d2b53acfa3b350e4f5a06fc4), [`2ef6fe82c`](https://github.com/keystonejs/keystone/commit/2ef6fe82cee6df7796935d35d1c12cab29aecc75), [`dd7e811e7`](https://github.com/keystonejs/keystone/commit/dd7e811e7ce084c1e832acefc6ed773af371ac9e), [`587a8d0b0`](https://github.com/keystonejs/keystone/commit/587a8d0b074ccecb239d120275359f72779f306f), [`597edbdd8`](https://github.com/keystonejs/keystone/commit/597edbdd81df80982dd3df3d9d600003ef8a15e9), [`1172e1853`](https://github.com/keystonejs/keystone/commit/1172e18531064df6412c06412e74da3b85740b35), [`fbe698461`](https://github.com/keystonejs/keystone/commit/fbe6984616de7a302db7c2b0082851db89c2e314), [`32e9879db`](https://github.com/keystonejs/keystone/commit/32e9879db9cfee77f067eb8105262df65bca6c06)]:
   - @keystone-next/keystone@23.0.0
@@ -391,9 +391,9 @@
 
 ### Major Changes
 
-- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@emmatown](https://github.com/emmatown)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
 
-* [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The way that the implementations of `generateHash` and `compare` are passed from the password field to auth has changed to be in the extensions object of the GraphQL output field. Unless you've written your own password field implementation or you're using mismatching versions of @keystone-next/auth and @keystone-next/fields, this won't affect you.
+* [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@emmatown](https://github.com/emmatown)! - The way that the implementations of `generateHash` and `compare` are passed from the password field to auth has changed to be in the extensions object of the GraphQL output field. Unless you've written your own password field implementation or you're using mismatching versions of @keystone-next/auth and @keystone-next/fields, this won't affect you.
 
 ### Patch Changes
 
@@ -681,7 +681,7 @@
 
 - [`a00a382ff`](https://github.com/keystonejs/keystone/commit/a00a382ffe2ce4769d6e134dec7eacbaaeff193a) [#4965](https://github.com/keystonejs/keystone/pull/4965) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a bug when using `passwordResetLink` with a `secretField` other than `'password'`. If you used a `secretField` other than `'password'` then the generated fields in your schema will change.
 
-* [`c63e5d75c`](https://github.com/keystonejs/keystone/commit/c63e5d75cd77cf26f8762bda8143d1c1db6d0e3e) [#4857](https://github.com/keystonejs/keystone/pull/4857) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed all syntax that is not ES5 + ES Modules in the generated Admin UI pages.
+* [`c63e5d75c`](https://github.com/keystonejs/keystone/commit/c63e5d75cd77cf26f8762bda8143d1c1db6d0e3e) [#4857](https://github.com/keystonejs/keystone/pull/4857) Thanks [@emmatown](https://github.com/emmatown)! - Removed all syntax that is not ES5 + ES Modules in the generated Admin UI pages.
 
 ### Minor Changes
 
@@ -897,7 +897,7 @@
 
 - [`1cf445cad`](https://github.com/keystonejs/keystone/commit/1cf445cad1017b2ad8b7337649783e75ba4fe7d4) [#4380](https://github.com/keystonejs/keystone/pull/4380) Thanks [@timleslie](https://github.com/timleslie)! - Renamed `attemptAuthentication` to `validateSecret`.
 
-* [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b) [#4387](https://github.com/keystonejs/keystone/pull/4387) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usage of `Fields` component
+* [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b) [#4387](https://github.com/keystonejs/keystone/pull/4387) Thanks [@emmatown](https://github.com/emmatown)! - Updated usage of `Fields` component
 
 - [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567) [#4414](https://github.com/keystonejs/keystone/pull/4414) Thanks [@JedWatson](https://github.com/JedWatson)! - Typed keystone context
 
@@ -923,7 +923,7 @@
 
 ### Minor Changes
 
-- [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213) [#4302](https://github.com/keystonejs/keystone/pull/4302) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Add optional `allowedExportsOnCustomViews` export to field views
+- [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213) [#4302](https://github.com/keystonejs/keystone/pull/4302) Thanks [@emmatown](https://github.com/emmatown)! - Add optional `allowedExportsOnCustomViews` export to field views
 
 ### Patch Changes
 
@@ -993,7 +993,7 @@
 
 ### Patch Changes
 
-- [`71b74161d`](https://github.com/keystonejs/keystone/commit/71b74161dfc9d7f0b918a3451cf545935afce94d) [#4146](https://github.com/keystonejs/keystone/pull/4146) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Keep showing the loading state on the init first item page while the next page is loading after the mutation has finished
+- [`71b74161d`](https://github.com/keystonejs/keystone/commit/71b74161dfc9d7f0b918a3451cf545935afce94d) [#4146](https://github.com/keystonejs/keystone/pull/4146) Thanks [@emmatown](https://github.com/emmatown)! - Keep showing the loading state on the init first item page while the next page is loading after the mutation has finished
 
 - Updated dependencies [[`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`71b74161d`](https://github.com/keystonejs/keystone/commit/71b74161dfc9d7f0b918a3451cf545935afce94d), [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`f3c0f79e3`](https://github.com/keystonejs/keystone/commit/f3c0f79e3005aa6a8e867efef4431b83bbdf9898), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797)]:
   - @keystone-next/types@2.0.0
@@ -1005,7 +1005,7 @@
 
 ### Major Changes
 
-- [`9d360a67b`](https://github.com/keystonejs/keystone/commit/9d360a67b69ec38e3018fe132b1e34f24956f86c) [#4106](https://github.com/keystonejs/keystone/pull/4106) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Initial release
+- [`9d360a67b`](https://github.com/keystonejs/keystone/commit/9d360a67b69ec38e3018fe132b1e34f24956f86c) [#4106](https://github.com/keystonejs/keystone/pull/4106) Thanks [@emmatown](https://github.com/emmatown)! - Initial release
 
 ### Patch Changes
 

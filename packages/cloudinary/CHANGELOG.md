@@ -64,7 +64,7 @@
 
 ### Patch Changes
 
-- [#7803](https://github.com/keystonejs/keystone/pull/7803) [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `graphql-upload` to `15.0.2`
+- [#7803](https://github.com/keystonejs/keystone/pull/7803) [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de) Thanks [@emmatown](https://github.com/emmatown)! - Updates `graphql-upload` to `15.0.2`
 
 * [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
 
@@ -117,7 +117,7 @@
 
 ### Major Changes
 
-- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Released Keystone 6
+- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@emmatown](https://github.com/emmatown)! - Released Keystone 6
 
 * [#7005](https://github.com/keystonejs/keystone/pull/7005) [`f4554980f`](https://github.com/keystonejs/keystone/commit/f4554980f6243a6545eee6c887d946ff25cd90e3) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - - The following types have been renamed:
   - `BaseGeneratedListTypes` → `BaseListTypeInfo`
@@ -190,7 +190,7 @@
 
 - [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
 
-* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated dist filenames
+* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@emmatown](https://github.com/emmatown)! - Updated dist filenames
 
 * Updated dependencies [[`73544fd19`](https://github.com/keystonejs/keystone/commit/73544fd19b865be9fbf3ea9ae68fae5f039eb13f), [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`fac96cbd1`](https://github.com/keystonejs/keystone/commit/fac96cbd14febcc01bdffbecd1aceee391f6a20a), [`3d289eb3d`](https://github.com/keystonejs/keystone/commit/3d289eb3d00c3e6a0c26ce962fb0f942a08c400a), [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35), [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0), [`6e4a0cf56`](https://github.com/keystonejs/keystone/commit/6e4a0cf56ce35b2446db7970763c55446de3db0e), [`d64bd4a7f`](https://github.com/keystonejs/keystone/commit/d64bd4a7f3da87e13e9cac41f0eb9757b771835f), [`abeceaf90`](https://github.com/keystonejs/keystone/commit/abeceaf902c231aabe9cf3a383ecf29c09b8f4dd), [`704f68b38`](https://github.com/keystonejs/keystone/commit/704f68b38f970860137380e21c36e04d2c51a7a4), [`576f341e6`](https://github.com/keystonejs/keystone/commit/576f341e61b31bbcf076ba70002d137c7b7ff9a9)]:
   - @keystone-next/keystone@26.1.0
@@ -203,9 +203,9 @@
 
 ### Major Changes
 
-- [#6513](https://github.com/keystonejs/keystone/pull/6513) [`4048991ba`](https://github.com/keystonejs/keystone/commit/4048991ba7db234a694287000beaf2ea052cd24e) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `isRequired` and `defaultValue` from the `cloudinaryImage` field. If you were using these options, the same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively.
+- [#6513](https://github.com/keystonejs/keystone/pull/6513) [`4048991ba`](https://github.com/keystonejs/keystone/commit/4048991ba7db234a694287000beaf2ea052cd24e) Thanks [@emmatown](https://github.com/emmatown)! - Removed `isRequired` and `defaultValue` from the `cloudinaryImage` field. If you were using these options, the same behaviour can be re-created with the `validateInput` and `resolveInput` hooks respectively.
 
-* [#6689](https://github.com/keystonejs/keystone/pull/6689) [`67492f37d`](https://github.com/keystonejs/keystone/commit/67492f37dd9fbcd94234c15a072e9c826fa7a665) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`
+* [#6689](https://github.com/keystonejs/keystone/pull/6689) [`67492f37d`](https://github.com/keystonejs/keystone/commit/67492f37dd9fbcd94234c15a072e9c826fa7a665) Thanks [@emmatown](https://github.com/emmatown)! - Moved `graphql` export of `@keystone-next/keystone/types` to `@keystone-next/keystone`
 
 ### Patch Changes
 
@@ -217,9 +217,9 @@
 
 ### Major Changes
 
-- [#6323](https://github.com/keystonejs/keystone/pull/6323) [`3904a9cf7`](https://github.com/keystonejs/keystone/commit/3904a9cf73e16ef192faae833f2f39ed05f2d707) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed unused legacy filter code
+- [#6323](https://github.com/keystonejs/keystone/pull/6323) [`3904a9cf7`](https://github.com/keystonejs/keystone/commit/3904a9cf73e16ef192faae833f2f39ed05f2d707) Thanks [@emmatown](https://github.com/emmatown)! - Removed unused legacy filter code
 
-* [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
+* [#6371](https://github.com/keystonejs/keystone/pull/6371) [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22) Thanks [@emmatown](https://github.com/emmatown)! - Moved `@keystone-next/types` to `@keystone-next/keystone/types`
 
 - [#6426](https://github.com/keystonejs/keystone/pull/6426) [`8f2786535`](https://github.com/keystonejs/keystone/commit/8f2786535272976678427fd13758e63b2c59d955) Thanks [@timleslie](https://github.com/timleslie)! - Update the Access Control API. This is a breaking change which impacts the security of all Keystone systems.
 
@@ -227,11 +227,11 @@
 
 ### Patch Changes
 
-- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Updated usages of `jsx` from `@keystone-ui/core` to explicitly use `/** @jsxRuntime classic */`
 
-* [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
+* [#6437](https://github.com/keystonejs/keystone/pull/6437) [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b) Thanks [@emmatown](https://github.com/emmatown)! - Changed `isUnique: true` config in fields to `isIndexed: 'unique'`
 
-- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
+- [#6414](https://github.com/keystonejs/keystone/pull/6414) [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f) Thanks [@emmatown](https://github.com/emmatown)! - Changed the way the package directory for resolving views is obtained to use `__dirname` rather than `require.resolve('pkg/package.json')` because in Next.js 11 `require.resolve` returns a numeric id instead of the path.
 
 - Updated dependencies [[`2a901a121`](https://github.com/keystonejs/keystone/commit/2a901a1210a0b3de0ccd22ca93e9cbcc8ed0f951), [`3008c5110`](https://github.com/keystonejs/keystone/commit/3008c5110a0ebc524eb3609bd8ba901f664f83d3), [`3904a9cf7`](https://github.com/keystonejs/keystone/commit/3904a9cf73e16ef192faae833f2f39ed05f2d707), [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`2e3f3666b`](https://github.com/keystonejs/keystone/commit/2e3f3666b5340b8eb778104a1d4a3f4d52be6528), [`44f2ef60e`](https://github.com/keystonejs/keystone/commit/44f2ef60e29912f3c85b91fc704e09a7d5a15b22), [`9651aff8e`](https://github.com/keystonejs/keystone/commit/9651aff8eb9a51c0fbda6f51b1be0fedb07571da), [`9c5991f43`](https://github.com/keystonejs/keystone/commit/9c5991f43e8f909e576f6b51fd87aab3bbead504), [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c), [`4f36a81af`](https://github.com/keystonejs/keystone/commit/4f36a81afb03591354acc1d0141eff8fe54ff208), [`c76bfc0a2`](https://github.com/keystonejs/keystone/commit/c76bfc0a2ad5aeffb68b8d2006225f608e855a19), [`bc9088f05`](https://github.com/keystonejs/keystone/commit/bc9088f0574af27be6a068483a789a80f7a46a41), [`ee54522d5`](https://github.com/keystonejs/keystone/commit/ee54522d513a9376c1ed1e472a7ff91657e4e693), [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`bd120c7c2`](https://github.com/keystonejs/keystone/commit/bd120c7c296c9adaaefe9bf93cbb384cc7528715), [`595922b48`](https://github.com/keystonejs/keystone/commit/595922b48c909053fa9d34bb1c42177ad41c72d5), [`069265b9c`](https://github.com/keystonejs/keystone/commit/069265b9cdd5898f4501535793f56debaa247c1c), [`8f2786535`](https://github.com/keystonejs/keystone/commit/8f2786535272976678427fd13758e63b2c59d955), [`b3eefc1c3`](https://github.com/keystonejs/keystone/commit/b3eefc1c336a9a366c39f7aa2cf5251baaf843fd), [`0aa02a333`](https://github.com/keystonejs/keystone/commit/0aa02a333d989c30647cd10e25325d4d2db61be6), [`bf9b5605f`](https://github.com/keystonejs/keystone/commit/bf9b5605fc684975d9e2cad604c8e0d978eac40a), [`3957c0981`](https://github.com/keystonejs/keystone/commit/3957c098131b3b055cb94b07f1ce55ec82640908), [`af5e59bf4`](https://github.com/keystonejs/keystone/commit/af5e59bf4215aa297495ae603239b1e3510be39b), [`cbc5a68aa`](https://github.com/keystonejs/keystone/commit/cbc5a68aa7547ea55d1254ee5c3b1e543cdc78e2), [`32f024738`](https://github.com/keystonejs/keystone/commit/32f0247384ecf3bce5c3ef14ad8d367c9888459f), [`783290796`](https://github.com/keystonejs/keystone/commit/78329079606d74a2eedd63f96a985116bf0b449c), [`0a189d5d0`](https://github.com/keystonejs/keystone/commit/0a189d5d0e618ee5598e9beaccea0290d2a3f8d9), [`944bce1e8`](https://github.com/keystonejs/keystone/commit/944bce1e834be4d0f4c79f35cd53ccbabb92f555), [`e0f935eb2`](https://github.com/keystonejs/keystone/commit/e0f935eb2ef8ac311a43423c6691e56cd27b6bed), [`2324fa027`](https://github.com/keystonejs/keystone/commit/2324fa027a6c2beabef4724c69a9ad05338a0cf3), [`f2311781a`](https://github.com/keystonejs/keystone/commit/f2311781a990c0ccd3302ac8e7aa889138f70e47), [`88b03bd79`](https://github.com/keystonejs/keystone/commit/88b03bd79112c7d8f0d41c592c8bd4bb226f5f71), [`0aa02a333`](https://github.com/keystonejs/keystone/commit/0aa02a333d989c30647cd10e25325d4d2db61be6), [`5ceccd821`](https://github.com/keystonejs/keystone/commit/5ceccd821b513e2abec3eb24278e7c30bdcdf6d6), [`fd744dcaa`](https://github.com/keystonejs/keystone/commit/fd744dcaa513efb2a8ae954bb2d5d1fa7f0723d6), [`489e128fe`](https://github.com/keystonejs/keystone/commit/489e128fe0835968eda0908b199a8867c0e72a5b), [`bb0c6c626`](https://github.com/keystonejs/keystone/commit/bb0c6c62610eda20ae93a6b67185276bdbba3248)]:
   - @keystone-next/keystone@25.0.0
@@ -252,7 +252,7 @@
 
 ### Patch Changes
 
-- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed issues with React hooks dependency arrays
+- [#6180](https://github.com/keystonejs/keystone/pull/6180) [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3) Thanks [@emmatown](https://github.com/emmatown)! - Fixed issues with React hooks dependency arrays
 
 - Updated dependencies [[`93f1e5d30`](https://github.com/keystonejs/keystone/commit/93f1e5d302701c610b6cba74e0c5c86a3ac8aacc), [`a11e54d69`](https://github.com/keystonejs/keystone/commit/a11e54d692d3cec4ec2439cbf743b590688fb7d3), [`e5f61ad50`](https://github.com/keystonejs/keystone/commit/e5f61ad50133a328fcb32299b838fd9eac574c3f), [`9e2deac5f`](https://github.com/keystonejs/keystone/commit/9e2deac5f340b4baeb03b01ae065f2bec5977523), [`e4e6cf9b5`](https://github.com/keystonejs/keystone/commit/e4e6cf9b59eec461d2b53acfa3b350e4f5a06fc4), [`2ef6fe82c`](https://github.com/keystonejs/keystone/commit/2ef6fe82cee6df7796935d35d1c12cab29aecc75)]:
   - @keystone-next/types@23.0.0
@@ -273,7 +273,7 @@
 
 ### Patch Changes
 
-- [#6031](https://github.com/keystonejs/keystone/pull/6031) [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `cloudinaryImage` field not passing through access control, hooks, ui and graphql options to Keystone.
+- [#6031](https://github.com/keystonejs/keystone/pull/6031) [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5) Thanks [@emmatown](https://github.com/emmatown)! - Fixed `cloudinaryImage` field not passing through access control, hooks, ui and graphql options to Keystone.
 
 - Updated dependencies [[`038cd09a2`](https://github.com/keystonejs/keystone/commit/038cd09a201081e3f56ffd75577e6b74a6eb19e5), [`0988f08c2`](https://github.com/keystonejs/keystone/commit/0988f08c2a88a0da6b85a385caf48ff093e1f9e5)]:
   - @keystone-next/fields@11.0.3
@@ -303,7 +303,7 @@
 
 ### Major Changes
 
-- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
+- [#5665](https://github.com/keystonejs/keystone/pull/5665) [`a3b07ea16`](https://github.com/keystonejs/keystone/commit/a3b07ea16ffc0f6741c0c0e5e281622a1831e0e7) Thanks [@emmatown](https://github.com/emmatown)! - The core of Keystone has been re-implemented to make implementing fields and new features in Keystone easier. While the observable changes for most users should be minimal, there could be breakage. If you implemented a custom field type, you will need to change it to the new API, see fields in the `@keystone-next/fields` package for inspiration on how to do this.
 
 ### Patch Changes
 
@@ -554,7 +554,7 @@
 
 ### Patch Changes
 
-- [`549a9a06d`](https://github.com/keystonejs/keystone/commit/549a9a06d9dbeb514aad724ece603a3fa7fc8cb6) [#4197](https://github.com/keystonejs/keystone/pull/4197) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improved field UI when fields have `itemView: { fieldMode: 'read'}`
+- [`549a9a06d`](https://github.com/keystonejs/keystone/commit/549a9a06d9dbeb514aad724ece603a3fa7fc8cb6) [#4197](https://github.com/keystonejs/keystone/pull/4197) Thanks [@emmatown](https://github.com/emmatown)! - Improved field UI when fields have `itemView: { fieldMode: 'read'}`
 
 * [`400a6e50c`](https://github.com/keystonejs/keystone/commit/400a6e50cba643f4b142858bb1cac83a50ab020d) [#4243](https://github.com/keystonejs/keystone/pull/4243) Thanks [@timleslie](https://github.com/timleslie)! - Improved internal consistency of field definition code.
 
@@ -583,7 +583,7 @@
 
 ### Major Changes
 
-- [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec) [#4138](https://github.com/keystonejs/keystone/pull/4138) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Initial release
+- [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec) [#4138](https://github.com/keystonejs/keystone/pull/4138) Thanks [@emmatown](https://github.com/emmatown)! - Initial release
 
 ### Patch Changes
 
