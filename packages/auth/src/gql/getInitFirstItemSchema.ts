@@ -1,10 +1,20 @@
 import type { BaseItem, KeystoneContext } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
-import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
+import {
+  assertInputObjectType,
+  GraphQLError,
+  GraphQLInputObjectType,
+  type GraphQLSchema,
+} from 'graphql'
 import { type AuthGqlNames, type InitFirstItemConfig } from '../types'
 import type { Extension } from '@keystone-6/core/graphql-ts'
 
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
+
+function isTransactionConflict(error: unknown): boolean {
+  if (error instanceof GraphQLError) return isTransactionConflict(error.originalError)
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2034'
+}
 
 export function getInitFirstItemSchema({
   authGqlNames,
@@ -47,22 +57,33 @@ export function getInitFirstItemSchema({
         async resolve(rootVal, { data }, context: KeystoneContext) {
           if (!context.sessionStrategy) throw new Error('No session strategy on context')
 
-          const sudoContext = context.sudo()
+          let item: BaseItem
+          try {
+            item = await context.transaction(
+              async transactionContext => {
+                const sudoContext = transactionContext.sudo()
 
-          // should approximate hasInitFirstItemConditions
-          const count = await sudoContext.db[listKey].count()
-          if (count !== 0) throw AUTHENTICATION_FAILURE
+                // should approximate hasInitFirstItemConditions
+                const count = await sudoContext.db[listKey].count()
+                if (count !== 0) throw AUTHENTICATION_FAILURE
 
-          // Update system state
-          // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
-          // (this is also mostly fine, the chance that people are using things where
-          // the input value can't round-trip like the Upload scalar here is quite low)
-          const item = await sudoContext.db[listKey].createOne({
-            data: {
-              ...defaultItemData,
-              ...data,
-            },
-          })
+                // Update system state
+                // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
+                // (this is also mostly fine, the chance that people are using things where
+                // the input value can't round-trip like the Upload scalar here is quite low)
+                return await sudoContext.db[listKey].createOne({
+                  data: {
+                    ...defaultItemData,
+                    ...data,
+                  },
+                })
+              },
+              { isolationLevel: 'Serializable' }
+            )
+          } catch (error) {
+            if (isTransactionConflict(error)) throw AUTHENTICATION_FAILURE
+            throw error
+          }
 
           const sessionToken = await context.sessionStrategy.start({
             data: {
