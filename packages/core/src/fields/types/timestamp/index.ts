@@ -9,7 +9,7 @@ import {
 import { g } from '../../..'
 import { filters } from '../../filters'
 import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import { type TimestampFieldMeta } from './views'
+import type { TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,
