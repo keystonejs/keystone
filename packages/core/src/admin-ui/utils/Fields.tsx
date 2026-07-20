@@ -1,4 +1,4 @@
-import { useSlotId } from '@react-aria/utils'
+import { useSlotId } from 'react-aria/private/utils/useId'
 import { type ReactNode, useId } from 'react'
 
 import { FieldButton } from '@keystar/ui/button'

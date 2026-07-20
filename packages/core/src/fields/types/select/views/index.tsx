@@ -1,4 +1,4 @@
-import { useListFormatter } from '@react-aria/i18n'
+import { useListFormatter } from 'react-aria/useListFormatter'
 import { type Key, useMemo, useState } from 'react'
 
 import { FieldLabel } from '@keystar/ui/field'

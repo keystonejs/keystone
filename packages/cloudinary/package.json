@@ -19,13 +19,19 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@keystar/ui": "^0.7.22",
+    "@keystar/ui": "catalog:",
     "cloudinary": "^2.0.0"
   },
   "peerDependencies": {
     "@keystone-6/core": "^6.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@keystar/ui": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@keystar/ui": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@keystone-6/core": "workspace:^",

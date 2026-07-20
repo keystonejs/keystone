@@ -30,6 +30,9 @@ catalog:
   react: ^19.2.4
   react-dom: ^19.2.4
   typescript: ^6.0.0
+  '@keystar/ui': 0.8.0
+  react-aria: 3.50.0
+  react-stately: 3.48.0
 allowBuilds:
   '@apollo/protobufjs': true
   '@parcel/watcher': true
@@ -41,4 +44,5 @@ allowBuilds:
   sharp: false
 minimumReleaseAge: 2880 # 2 days
 minimumReleaseAgeExclude:
-  - '@keystar/ui@0.7.22'
+  - '@keystar/ui'
+  - '@keystatic/core'

@@ -1,4 +1,4 @@
-import { useLocale } from '@react-aria/i18n'
+import { useLocale } from 'react-aria/I18nProvider'
 import bytes, { type BytesOptions } from 'bytes'
 import { extname } from 'path'
 import {

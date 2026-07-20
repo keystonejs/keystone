@@ -1,11 +1,11 @@
+import { useOverlay } from 'react-aria/useOverlay'
+import { useOverlayPosition } from 'react-aria/useOverlayPosition'
+import type { AriaPopoverProps, PopoverAria } from 'react-aria/usePopover'
+import { mergeProps } from 'react-aria/mergeProps'
 import {
-  type AriaPopoverProps,
-  type PopoverAria,
-  useOverlay,
-  useOverlayPosition,
-} from '@react-aria/overlays'
-import { mergeProps, useLayoutEffect } from '@react-aria/utils'
-import { type OverlayTriggerState, useOverlayTriggerState } from '@react-stately/overlays'
+  type OverlayTriggerState,
+  useOverlayTriggerState,
+} from 'react-stately/useOverlayTriggerState'
 import {
   cloneElement,
   createContext,
@@ -17,6 +17,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useLayoutEffect,
 } from 'react'
 import { type Element, Editor } from 'slate'
 

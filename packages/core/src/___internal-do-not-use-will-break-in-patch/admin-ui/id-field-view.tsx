@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { useListFormatter } from '@react-aria/i18n'
+import { useListFormatter } from 'react-aria/useListFormatter'
 import copyToClipboard from 'clipboard-copy'
 
 import { ActionButton } from '@keystar/ui/button'
