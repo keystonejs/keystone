@@ -1,5 +1,17 @@
 # @keystone-ui/modals
 
+## 0.0.0-rc-20260720030613
+
+### Major Changes
+
+- [`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`ab4f183`](https://github.com/keystonejs/keystone/commit/ab4f183e071fa5ec0de438c694509f31f796efdd)]:
+  - @keystone-ui/button@0.0.0-rc-20260720030613
+  - @keystone-ui/core@0.0.0-rc-20260720030613
+
 ## 6.0.3
 
 ### Patch Changes

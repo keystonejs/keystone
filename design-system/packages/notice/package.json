@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/notice",
-  "version": "6.0.2",
+  "version": "0.0.0-rc-20260720030613",
   "license": "MIT",
   "main": "dist/keystone-ui-notice.cjs.js",
   "module": "dist/keystone-ui-notice.esm.js",
