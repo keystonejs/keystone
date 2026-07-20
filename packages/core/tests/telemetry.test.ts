@@ -1,4 +1,5 @@
 import * as https from 'node:https'
+import { createRequire } from 'node:module'
 import path from 'path'
 import type { InitialisedList } from '../src/lib/core/initialise-lists'
 import { runTelemetry, disableTelemetry } from '../src/lib/telemetry'
@@ -9,13 +10,14 @@ const mocks = vi.hoisted(() => ({
 
 const mockProjectRoot = path.resolve(__dirname, '..', '..', '..')
 const mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic')
+const requireFromTest = createRequire(__filename)
 const mockPackageVersions = Object.fromEntries(
   [
     '@keystone-6/core',
     '@keystone-6/auth',
     '@keystone-6/fields-document',
     '@keystone-6/cloudinary',
-  ].map(packageName => [packageName, require(`${packageName}/package.json`).version])
+  ].map(packageName => [packageName, requireFromTest(`${packageName}/package.json`).version])
 )
 
 let mockTelemetryConfig: any = undefined

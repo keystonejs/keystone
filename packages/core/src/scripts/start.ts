@@ -1,3 +1,6 @@
+import { createRequire } from 'node:module'
+import path from 'node:path'
+
 import next from 'next'
 
 import { createSystem } from '../lib/system'
@@ -32,7 +35,7 @@ export async function start(
 
   if (!server) return
 
-  const prismaClient = require(paths.prisma)
+  const prismaClient = createRequire(path.join(cwd, 'package.json'))(paths.prisma)
   const keystone = system.getKeystone(prismaClient)
 
   log('✨ Connecting to the database')

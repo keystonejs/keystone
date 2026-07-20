@@ -27,7 +27,7 @@ async function getEsbuildConfigFn(
     return
   }
   try {
-    return require(require.resolve(`${cwd}/.keystone/esbuild.js`)).default
+    return createRequire(nodePath.join(cwd, 'package.json'))('./.keystone/esbuild.js').default
   } catch (err: any) {
     if (err.code !== 'MODULE_NOT_FOUND') throw err
   }

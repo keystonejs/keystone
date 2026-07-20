@@ -1,4 +1,6 @@
 import { spawn } from 'node:child_process'
+import { createRequire } from 'node:module'
+import { join } from 'node:path'
 
 import { validateArtifacts } from '../artifacts'
 import { createSystem } from '../lib/system'
@@ -20,7 +22,11 @@ async function spawnPrisma3(
   }>((resolve, reject) => {
     const p = spawn(
       'node',
-      ['--title=prisma', require.resolve('prisma/build/index.js'), ...commands],
+      [
+        '--title=prisma',
+        createRequire(join(cwd, 'package.json')).resolve('prisma/build/index.js'),
+        ...commands,
+      ],
       {
         cwd,
         env: {
