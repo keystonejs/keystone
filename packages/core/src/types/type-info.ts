@@ -1,5 +1,6 @@
 import type { BaseItem } from './next-fields'
 import type { KeystoneContext } from '../types'
+import type { DatabaseProvider } from './core'
 
 type GraphQLInput = Record<string, any>
 
@@ -35,4 +36,5 @@ export type BaseKeystoneTypeInfo<Session = any> = {
   lists: Record<string, BaseListTypeInfo<Session>>
   prisma: any
   session: Session
+  dbProvider: DatabaseProvider
 }

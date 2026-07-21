@@ -11,16 +11,21 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   query: KeystoneListsAPI<TypeInfo['lists']>
   graphql: KeystoneGraphQLAPI
   prisma: TypeInfo['prisma']
-  transaction: <T>(
+  // note this using the method syntax is important because we want TypeInfo['dbProvider'] to be bivariant, not contravariant
+  // essentially so you don't get errors when assigning between contexts, this is technically unsound in the same way arrays in TS are unsound,
+  // but not doing this would make things much harder to use
+  transaction<T>(
     f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>,
     options?: {
       maxWait?: number
       timeout?: number
       isolationLevel?: {
-        Serializable: 'Serializable'
-      }
+        sqlite: 'Serializable'
+        mysql: 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Serializable'
+        postgresql: 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Serializable'
+      }[TypeInfo['dbProvider']]
     }
-  ) => Promise<T>
+  ): Promise<T>
 
   req?: IncomingMessage
   res?: ServerResponse

@@ -82,7 +82,8 @@ export async function generateTypes(cwd: string, system: System) {
     const schema = printGeneratedTypes(
       paths.types.relativePrismaPath,
       system.graphql.schemas.internal,
-      system.lists
+      system.lists,
+      system.config.db.provider
     )
     await fs.mkdir(path.dirname(paths.schema.types), { recursive: true })
     await fs.writeFile(paths.schema.types, schema)
