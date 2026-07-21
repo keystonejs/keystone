@@ -1,5 +1,30 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20260721030804
+
+### Major Changes
+
+- [`f574cb8`](https://github.com/keystonejs/keystone/commit/f574cb832f5de1cc4f7c86f4871e5ec28f63183c) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades Next major version to 15
+
+- [`f574cb8`](https://github.com/keystonejs/keystone/commit/f574cb832f5de1cc4f7c86f4871e5ec28f63183c) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`f574cb8`](https://github.com/keystonejs/keystone/commit/f574cb832f5de1cc4f7c86f4871e5ec28f63183c), [`8bb54ea`](https://github.com/keystonejs/keystone/commit/8bb54ea386ad7d38bd90cd1185717b2ba0111d19)]:
+  - @keystone-ui/button@0.0.0-rc-20260721030804
+  - @keystone-ui/core@0.0.0-rc-20260721030804
+  - @keystone-ui/fields@0.0.0-rc-20260721030804
+  - @keystone-ui/icons@0.0.0-rc-20260721030804
+  - @keystone-ui/loading@0.0.0-rc-20260721030804
+  - @keystone-ui/modals@0.0.0-rc-20260721030804
+  - @keystone-ui/notice@0.0.0-rc-20260721030804
+  - @keystone-ui/options@0.0.0-rc-20260721030804
+  - @keystone-ui/pill@0.0.0-rc-20260721030804
+  - @keystone-ui/popover@0.0.0-rc-20260721030804
+  - @keystone-ui/segmented-control@0.0.0-rc-20260721030804
+  - @keystone-ui/toast@0.0.0-rc-20260721030804
+  - @keystone-ui/tooltip@0.0.0-rc-20260721030804
+
 ## 6.5.3
 
 ### Patch Changes
@@ -1019,6 +1044,7 @@
   ```
 
   When updating to this change, and running `npm run dev`, Keystone will prompt you to update your schema.
+
   - If you are using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration. **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION** - unless you want to `DROP` your data.
 
   - If you are using `useMigrations: false`, Keystone will follow the typical flow and offer to automatically migrate your schema. Again, **DO NOT RUN THE AUTOMATIC MIGRATION** - unless you want to `DROP` your data.
@@ -1340,6 +1366,7 @@
 - [#6518](https://github.com/keystonejs/keystone/pull/6518) [`0218a4215`](https://github.com/keystonejs/keystone/commit/0218a421576fb3ceb38eb5f38223a9ef0af4c4d2) Thanks [@timleslie](https://github.com/timleslie)! - Removed the deprecated `config.db.adapter` option. Please use `config.db.provider` to indicate the database provider for your system.
 
 * [#6684](https://github.com/keystonejs/keystone/pull/6684) [`14bfa8a9b`](https://github.com/keystonejs/keystone/commit/14bfa8a9b33fae4c5eb3664ca23bb88850df5e50) Thanks [@timleslie](https://github.com/timleslie)! - \* Consolidated the `beforeChange`/`beforeDelete` and `afterChange`/`afterDelete` hooks into `beforeOperation` and `afterOperation`.
+
   - Renamed the `existingItem` argument for all hooks (except `afterOperation`) to `item`.
   - Renamed the `existingItem` argument for `afterOperation` to `originalItem`.
   - Renamed the `updatedItem` argument for `afterOperation` to `item`.

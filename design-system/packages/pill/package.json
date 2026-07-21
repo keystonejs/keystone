@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/pill",
-  "version": "7.0.2",
+  "version": "0.0.0-rc-20260721030804",
   "license": "MIT",
   "main": "dist/keystone-ui-pill.cjs.js",
   "module": "dist/keystone-ui-pill.esm.js",

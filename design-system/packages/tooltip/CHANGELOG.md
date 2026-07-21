@@ -1,5 +1,17 @@
 # @keystone-ui/tooltip
 
+## 0.0.0-rc-20260721030804
+
+### Major Changes
+
+- [`f574cb8`](https://github.com/keystonejs/keystone/commit/f574cb832f5de1cc4f7c86f4871e5ec28f63183c) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`f574cb8`](https://github.com/keystonejs/keystone/commit/f574cb832f5de1cc4f7c86f4871e5ec28f63183c)]:
+  - @keystone-ui/core@0.0.0-rc-20260721030804
+  - @keystone-ui/popover@0.0.0-rc-20260721030804
+
 ## 6.0.2
 
 ### Patch Changes
