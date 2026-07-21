@@ -188,6 +188,40 @@ describe('Auth testing', () => {
     )
 
     test(
+      'Failure - concurrent requests only create one initial item',
+      runner(async ({ context, gqlSuper }) => {
+        const createInitialUser = (email: string) =>
+          gqlSuper({
+            query: `
+              mutation($email: String!, $password: String!) {
+                createInitialUser(data: { email: $email, password: $password }) {
+                  sessionToken
+                  item { id email }
+                }
+              }
+            `,
+            variables: { email, password: 'new_password' },
+          }) as Promise<any>
+
+        const results = await Promise.all([
+          createInitialUser('first@example.com'),
+          createInitialUser('second@example.com'),
+        ])
+        const failures = results.filter(({ body }) => body.errors)
+
+        expect(results.filter(({ body }) => body.data?.createInitialUser).length).toBe(1)
+        expect(failures).toHaveLength(1)
+        expectInternalServerError(failures[0].body.errors, [
+          {
+            path: ['createInitialUser'],
+            message: 'Unexpected error value: "Authentication failed."',
+          },
+        ])
+        expect(await context.db.User.count()).toBe(1)
+      })
+    )
+
+    test(
       'Failure - no required field value',
       runner(async ({ gqlSuper }) => {
         const { body, res } = (await gqlSuper({
