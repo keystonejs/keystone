@@ -133,6 +133,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.7
         version: 7.26.0
+      '@daypicker/react':
+        specifier: ^10.0.1
+        version: 10.0.1(@types/react@19.2.14)(react@19.2.5)
       '@keystone-ui/core':
         specifier: workspace:^
         version: link:../core
@@ -148,9 +151,6 @@ importers:
       react:
         specifier: ^19.2.5
         version: 19.2.5
-      react-day-picker:
-        specifier: ^9.0.0
-        version: 9.3.1(react@19.2.5)
       react-dom:
         specifier: ^19.2.5
         version: 19.2.5(react@19.2.5)
@@ -3768,8 +3768,18 @@ packages:
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
-  '@date-fns/tz@1.2.0':
-    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+  '@date-fns/tz@1.5.0':
+    resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
+
+  '@daypicker/react@10.0.1':
+    resolution: {integrity: sha512-lH4YQz4iMBWP8hsI1bD9Eg0T7t503IkSUR/WDGGkV5mKZvwVv+ukCkJz7yN+uVFBv7vHTK+ww7a5EvlkeFwPYQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': '>=16.8.0'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@dnd-kit/accessibility@3.1.0':
     resolution: {integrity: sha512-ea7IkhKvlJUv9iSHJOnxinBcoOI3ppGnnL+VDJ75O45Nss6HtZd8IdN8touXPDtASfeI2T2LImb8VOZcL47wjQ==}
@@ -11024,11 +11034,15 @@ packages:
     peerDependencies:
       react: ^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
-  react-day-picker@9.3.1:
-    resolution: {integrity: sha512-cljrZdUy5EHe+iwOPuyp9nsCqHUZwFZRkM0XrOOPMaXjdNR2An+4NyJxgT3Ruxy8zBbU8Cz5u8XoDCCIZFvVrw==}
+  react-day-picker@10.0.1:
+    resolution: {integrity: sha512-eNh6BlwcYInWaJtRv18mXQ06Ys/H6rdTZAnTaSdOYJuTpwP1JMCHNd1FDRadA+gbeinq+psdULN5Xnowy9mV8w==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@types/react': '>=16.8.0'
       react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-dom@19.2.5:
     resolution: {integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==}
@@ -14484,7 +14498,14 @@ snapshots:
 
   '@corex/deepmerge@4.0.43': {}
 
-  '@date-fns/tz@1.2.0': {}
+  '@date-fns/tz@1.5.0': {}
+
+  '@daypicker/react@10.0.1(@types/react@19.2.14)(react@19.2.5)':
+    dependencies:
+      react: 19.2.5
+      react-day-picker: 10.0.1(@types/react@19.2.14)(react@19.2.5)
+    optionalDependencies:
+      '@types/react': 19.2.14
 
   '@dnd-kit/accessibility@3.1.0(react@19.2.5)':
     dependencies:
@@ -23877,11 +23898,13 @@ snapshots:
       '@babel/runtime': 7.26.0
       react: 19.2.5
 
-  react-day-picker@9.3.1(react@19.2.5):
+  react-day-picker@10.0.1(@types/react@19.2.14)(react@19.2.5):
     dependencies:
-      '@date-fns/tz': 1.2.0
+      '@date-fns/tz': 1.5.0
       date-fns: 4.1.0
       react: 19.2.5
+    optionalDependencies:
+      '@types/react': 19.2.14
 
   react-dom@19.2.5(react@19.2.5):
     dependencies:
