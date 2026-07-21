@@ -25,7 +25,9 @@ export type DatePickerProps = {
   value: DateType
 }
 
-export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+export function useEventCallback<Func extends (...args: any) => any>(
+  callback: Func
+): Func {
   const callbackRef = useRef(callback)
   const cb = useCallback((...args: any[]) => {
     return callbackRef.current(...args)
@@ -91,12 +93,17 @@ export const DatePicker = ({
   // and in the opinion of the author not really something to do
   // before other more important performance optimisations
   const selectedDay = deserializeDate(value)
-  const formattedDate: DateInputValue = value ? formatDate(selectedDay) : undefined
+  const formattedDate: DateInputValue = value
+    ? formatDate(selectedDay)
+    : undefined
 
   return (
     <Fragment>
       <InputButton
-        aria-label={'Choose date' + (formattedDate ? `, selected date is ${formattedDate}` : '')}
+        aria-label={
+          'Choose date' +
+          (formattedDate ? `, selected date is ${formattedDate}` : '')
+        }
         onClick={() => setOpen(true)}
         onClear={
           value
@@ -116,9 +123,18 @@ export const DatePicker = ({
         {formattedDate || dateFormatPlaceholder}
       </InputButton>
       {isOpen && (
-        <PopoverDialog arrow={arrow} isVisible ref={dialog.ref} {...dialog.props}>
+        <PopoverDialog
+          arrow={arrow}
+          isVisible
+          ref={dialog.ref}
+          {...dialog.props}
+        >
           <FocusLock autoFocus returnFocus disabled={!isOpen}>
-            <Calendar onDayClick={handleDayClick} selected={selectedDay} />
+            <Calendar
+              mode="single"
+              onDayClick={handleDayClick}
+              selected={selectedDay}
+            />
           </FocusLock>
         </PopoverDialog>
       )}

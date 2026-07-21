@@ -1,4 +1,4 @@
-import React, { type ReactNode, useContext } from 'react'
+import React, { type ReactNode, useContext, useRef } from 'react'
 import { Transition } from 'react-transition-group'
 
 import { type TransitionState } from './types'
@@ -8,7 +8,10 @@ type DrawerControllerProps = {
   children: ReactNode
 }
 
-const DrawerControllerContext = React.createContext<null | TransitionState>(null)
+const DrawerControllerContext = React.createContext<null | {
+  nodeRef: React.RefObject<HTMLDivElement | HTMLFormElement | null>
+  transitionState: TransitionState
+}>(null)
 
 export const DrawerControllerContextProvider = DrawerControllerContext.Provider
 
@@ -24,10 +27,12 @@ export const useDrawerControllerContext = () => {
 }
 
 export const DrawerController = ({ isOpen, children }: DrawerControllerProps) => {
+  const nodeRef = useRef<HTMLDivElement | HTMLFormElement | null>(null)
+
   return (
-    <Transition appear mountOnEnter unmountOnExit in={isOpen} timeout={150}>
+    <Transition appear mountOnEnter unmountOnExit in={isOpen} nodeRef={nodeRef} timeout={150}>
       {transitionState => (
-        <DrawerControllerContextProvider value={transitionState}>
+        <DrawerControllerContextProvider value={{ nodeRef, transitionState }}>
           {children}
         </DrawerControllerContextProvider>
       )}

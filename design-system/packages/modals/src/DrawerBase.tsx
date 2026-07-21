@@ -1,7 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, type KeyboardEvent, type MutableRefObject, type ReactNode, useCallback, useRef } from 'react'
+import {
+  Fragment,
+  type FormEvent,
+  type KeyboardEvent,
+  type MutableRefObject,
+  type ReactNode,
+  useCallback,
+} from 'react'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 import { makeId, useId, useTheme, Portal, jsx } from '@keystone-ui/core'
@@ -21,6 +28,7 @@ const easing = 'cubic-bezier(0.2, 0, 0, 1)'
 export type DrawerBaseProps = {
   children: ReactNode
   initialFocusRef?: MutableRefObject<any>
+  nodeRef: MutableRefObject<HTMLDivElement | HTMLFormElement | null>
   onClose: () => void
   transitionState: TransitionState
   onSubmit?: () => void
@@ -38,6 +46,7 @@ const blanketTransition = {
 export const DrawerBase = ({
   children,
   initialFocusRef,
+  nodeRef,
   onClose,
   onSubmit,
   width = 'narrow',
@@ -45,7 +54,6 @@ export const DrawerBase = ({
   ...props
 }: DrawerBaseProps) => {
   const theme = useTheme()
-  const containerRef = useRef(null)
 
   const id = useId()
   const uniqueKey = makeId('drawer', id)
@@ -68,19 +76,37 @@ export const DrawerBase = ({
 
   const dialogTransition = getDialogTransition(drawerDepth)
 
-  let Tag: 'div' | 'form' = 'div'
-  if (onSubmit) {
-    Tag = 'form'
-    const oldOnSubmit = onSubmit
-    // @ts-expect-error
-    onSubmit = (event: any) => {
-      if (!event.defaultPrevented) {
-        event.preventDefault()
-        event.stopPropagation()
-        oldOnSubmit()
+  const handleSubmit = onSubmit
+    ? (event: FormEvent<HTMLFormElement>) => {
+        if (!event.defaultPrevented) {
+          event.preventDefault()
+          event.stopPropagation()
+          onSubmit()
+        }
       }
-    }
-  }
+    : undefined
+
+  const drawerContent = (
+    <DrawerControllerContextProvider value={null}>
+      {children}
+    </DrawerControllerContextProvider>
+  )
+
+  const drawerCss = {
+    backgroundColor: theme.colors.background,
+    bottom: 0,
+    boxShadow: theme.shadow.s400,
+    outline: 0,
+    position: 'fixed',
+    right: 0,
+    top: 0,
+    transition: `transform 150ms ${easing}`,
+    width: DRAWER_WIDTHS[width],
+
+    // flex layout must be applied here so content will grow/shrink properly
+    display: 'flex',
+    flexDirection: 'column',
+  } as const
 
   return (
     <Portal>
@@ -94,35 +120,34 @@ export const DrawerBase = ({
         />
         <FocusLock autoFocus returnFocus onActivation={activateFocusLock}>
           <RemoveScroll enabled>
-            <Tag
-              onSubmit={onSubmit}
-              aria-modal="true"
-              role="dialog"
-              ref={containerRef}
-              tabIndex={-1}
-              onKeyDown={onKeyDown}
-              style={dialogTransition[transitionState]}
-              css={{
-                backgroundColor: theme.colors.background,
-                bottom: 0,
-                boxShadow: theme.shadow.s400,
-                outline: 0,
-                position: 'fixed',
-                right: 0,
-                top: 0,
-                transition: `transform 150ms ${easing}`,
-                width: DRAWER_WIDTHS[width],
-
-                // flex layout must be applied here so content will grow/shrink properly
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-              {...props}
-            >
-              <DrawerControllerContextProvider value={null}>
-                {children}
-              </DrawerControllerContextProvider>
-            </Tag>
+            {handleSubmit ? (
+              <form
+                onSubmit={handleSubmit}
+                aria-modal="true"
+                role="dialog"
+                ref={nodeRef as MutableRefObject<HTMLFormElement | null>}
+                tabIndex={-1}
+                onKeyDown={onKeyDown}
+                style={dialogTransition[transitionState]}
+                css={drawerCss}
+                {...props}
+              >
+                {drawerContent}
+              </form>
+            ) : (
+              <div
+                aria-modal="true"
+                role="dialog"
+                ref={nodeRef as MutableRefObject<HTMLDivElement | null>}
+                tabIndex={-1}
+                onKeyDown={onKeyDown}
+                style={dialogTransition[transitionState]}
+                css={drawerCss}
+                {...props}
+              >
+                {drawerContent}
+              </div>
+            )}
           </RemoveScroll>
         </FocusLock>
       </Fragment>

@@ -21,12 +21,12 @@
     "@keystone-ui/toast": "workspace:^",
     "@keystone-ui/tooltip": "workspace:^",
     "@preconstruct/next": "^4.0.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@types/tinycolor2": "^1.4.3",
-    "next": "^14.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "next": "^15.5.16",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
     "tinycolor2": "^1.4.2"
   },
   "devDependencies": {
