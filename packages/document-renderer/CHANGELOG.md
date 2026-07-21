@@ -1,5 +1,11 @@
 # @keystone-6/document-renderer
 
+## 1.2.0
+
+### Minor Changes
+
+- [#9906](https://github.com/keystonejs/keystone/pull/9906) [`caf3e99`](https://github.com/keystonejs/keystone/commit/caf3e99a9db3bc623812365763012e9c36d86aa6) Thanks [@emmatown](https://github.com/emmatown)! - Allow React 19 in peer dependencies
+
 ## 1.1.2
 
 ### Patch Changes

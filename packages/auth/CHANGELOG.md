@@ -1,5 +1,21 @@
 # @keystone-6/auth
 
+## 9.0.0
+
+### Major Changes
+
+- [#9809](https://github.com/keystonejs/keystone/pull/9809) [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875), [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875), [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875)]:
+  - @keystone-6/core@7.0.0
+  - @keystone-ui/button@8.0.0
+  - @keystone-ui/core@6.0.0
+  - @keystone-ui/fields@8.0.0
+  - @keystone-ui/loading@7.0.0
+  - @keystone-ui/notice@7.0.0
+
 ## 8.1.0
 
 ### Minor Changes

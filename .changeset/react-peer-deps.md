@@ -5,4 +5,4 @@
 '@keystone-6/auth': major
 ---
 
-Upgrades React major version to 19. `react` and `react-dom` are also now peer dependencies.
+`react` and `react-dom` are also now peer dependencies.
