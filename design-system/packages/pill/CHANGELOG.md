@@ -1,5 +1,17 @@
 # @keystone-ui/pill
 
+## 8.0.0
+
+### Major Changes
+
+- [#9809](https://github.com/keystonejs/keystone/pull/9809) [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875)]:
+  - @keystone-ui/core@6.0.0
+  - @keystone-ui/icons@7.0.0
+
 ## 7.0.2
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @keystone-6/fields-document
 
+## 10.0.0
+
+### Major Changes
+
+- [#9809](https://github.com/keystonejs/keystone/pull/9809) [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875) Thanks [@AlanBreck](https://github.com/AlanBreck)! - Upgrades React major version to 19
+
+### Patch Changes
+
+- Updated dependencies [[`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875), [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875), [`5bbdf14`](https://github.com/keystonejs/keystone/commit/5bbdf1402a8a007ec7aae755b178c9d4d6819875), [`caf3e99`](https://github.com/keystonejs/keystone/commit/caf3e99a9db3bc623812365763012e9c36d86aa6)]:
+  - @keystone-6/core@7.0.0
+  - @keystone-ui/button@8.0.0
+  - @keystone-ui/core@6.0.0
+  - @keystone-ui/fields@8.0.0
+  - @keystone-ui/icons@7.0.0
+  - @keystone-ui/modals@7.0.0
+  - @keystone-ui/popover@7.0.0
+  - @keystone-ui/tooltip@7.0.0
+  - @keystone-6/document-renderer@1.2.0
+
 ## 9.1.1
 
 ### Patch Changes

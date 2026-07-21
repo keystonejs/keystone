@@ -10,14 +10,14 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.1.0",
-    "@keystone-6/core": "^6.5.3",
-    "@keystone-6/fields-document": "^9.1.1",
-    "@keystone-ui/button": "^7.0.1",
-    "@keystone-ui/core": "^5.0.1",
-    "@keystone-ui/fields": "^7.2.0",
-    "@keystone-ui/icons": "^6.0.1",
-    "@keystone-ui/tooltip": "^6.0.1",
+    "@keystone-6/auth": "^9.0.0",
+    "@keystone-6/core": "^7.0.0",
+    "@keystone-6/fields-document": "^10.0.0",
+    "@keystone-ui/button": "^8.0.0",
+    "@keystone-ui/core": "^6.0.0",
+    "@keystone-ui/fields": "^8.0.0",
+    "@keystone-ui/icons": "^7.0.0",
+    "@keystone-ui/tooltip": "^7.0.0",
     "@prisma/client": "5.19.0",
     "react": "^19.2.5",
     "typescript": "^5.5.0"

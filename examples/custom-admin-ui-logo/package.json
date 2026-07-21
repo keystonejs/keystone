@@ -10,8 +10,8 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "^6.5.3",
-    "@keystone-ui/core": "^5.0.2",
+    "@keystone-6/core": "^7.0.0",
+    "@keystone-ui/core": "^6.0.0",
     "@prisma/client": "5.19.0",
     "next": "^15.5.16",
     "react": "^19.2.5",
