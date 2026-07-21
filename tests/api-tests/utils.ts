@@ -1,4 +1,7 @@
 import { config } from '@keystone-6/core'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaPg } from '@prisma/adapter-pg'
 import type {
   BaseKeystoneTypeInfo,
   KeystoneContext,
@@ -18,6 +21,20 @@ export const dbProvider = (function () {
   if (dbUrl.startsWith('mysql:')) return 'mysql' as const
   throw new Error(`Unsupported environment DATABASE_URL="${dbUrl}"`)
 })()
+
+export function prismaClientOptions(url: string) {
+  if (dbProvider === 'sqlite') return { adapter: new PrismaBetterSqlite3({ url }) }
+  if (dbProvider === 'postgresql') {
+    const parsed = new URL(url)
+    return {
+      adapter: new PrismaPg(
+        { connectionString: url },
+        { schema: parsed.searchParams.get('schema') ?? undefined }
+      ),
+    }
+  }
+  return { adapter: new PrismaMariaDb(url) }
+}
 
 const workerId = process.env.VITEST_WORKER_ID
 
@@ -205,7 +222,7 @@ export async function getPrismaSchema<TypeInfo extends BaseKeystoneTypeInfo>({
       lists,
       db: {
         provider: dbProvider,
-        url: '',
+        prismaClientOptions: () => prismaClientOptions(process.env.DATABASE_URL ?? ''),
       },
       // default to a disabled UI
       ui: {
@@ -213,7 +230,7 @@ export async function getPrismaSchema<TypeInfo extends BaseKeystoneTypeInfo>({
       },
     })
   )
-  return (await buildArtifacts(system)).prisma
+  return (await buildArtifacts(process.cwd(), system)).prisma
 }
 
 // TODO: use `using monitor = monitorLogs();` when `using` is in node

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 
-import { getBuiltKeystoneConfigurationPath } from '../lib/system'
+import { getBuiltKeystoneConfigurationPath, getBuiltPrismaModulePath } from '../lib/system'
 import type { KeystoneConfig } from '../types'
 
 export class ExitError extends Error {
@@ -20,4 +20,12 @@ export async function importBuiltKeystoneConfiguration(cwd: string): Promise<Key
     throw new Error('You need to run "keystone build"')
   }
   return createRequire(builtConfigPath)(builtConfigPath).default
+}
+
+export async function importBuiltPrismaModule(cwd: string): Promise<unknown> {
+  const builtPrismaPath = getBuiltPrismaModulePath(cwd)
+  if (!(await fs.stat(builtPrismaPath).catch(() => null))) {
+    throw new Error('You need to run "keystone build"')
+  }
+  return createRequire(builtPrismaPath)(builtPrismaPath)
 }

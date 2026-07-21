@@ -9,6 +9,8 @@
     "check": "keystone postinstall"
   },
   "dependencies": {
+    "@prisma/adapter-better-sqlite3": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
     "@keystar/ui": "catalog:",
     "@keystone-6/auth": "workspace:^",
     "@keystone-6/core": "workspace:^",
@@ -16,7 +18,9 @@
     "@prisma/client": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "better-sqlite3": "catalog:",
+    "pg": "catalog:"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox",
   "devDependencies": {

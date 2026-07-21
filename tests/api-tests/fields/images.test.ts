@@ -18,20 +18,41 @@ import type { BaseKeystoneTypeInfo, StorageStrategy } from '@keystone-6/core/typ
 
 vi.setConfig({ testTimeout: 10000 })
 
-function getRunner(args: Parameters<typeof image>[0]) {
-  return setupTestRunner({
-    config: {
-      lists: {
-        Test: list({
-          access: allowAll,
-          fields: {
-            name: text(),
-            avatar: image(args),
-          },
-        }),
-      },
+let activeStorage: StorageStrategy<BaseKeystoneTypeInfo>
+let activeTransformName: Parameters<typeof image>[0]['transformName']
+
+const storage: StorageStrategy<BaseKeystoneTypeInfo> = {
+  put: (...args) => activeStorage.put(...args),
+  delete: (...args) => activeStorage.delete(...args),
+  url: (...args) => activeStorage.url(...args),
+}
+
+const runner = setupTestRunner({
+  config: {
+    lists: {
+      Test: list({
+        access: allowAll,
+        fields: {
+          name: text(),
+          avatar: image({
+            storage,
+            transformName: (originalFilename, extension) =>
+              activeTransformName?.(originalFilename, extension) ??
+              randomBytes(16).toString('base64url'),
+          }),
+        },
+      }),
     },
-  })
+  },
+})
+
+function getRunner(args: Parameters<typeof image>[0]) {
+  return (testFn: Parameters<typeof runner>[0]) =>
+    runner(async result => {
+      activeStorage = args.storage
+      activeTransformName = args.transformName
+      await testFn(result)
+    })
 }
 
 const createItem = async (context: any, filename: string) =>

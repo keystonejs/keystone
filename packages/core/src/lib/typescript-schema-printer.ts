@@ -213,6 +213,7 @@ export function printGeneratedTypes(
     })(),
     `  }`,
     `  prisma: import('${prismaClientPath}').PrismaClient`,
+    `  prismaClientOptions: import('${prismaClientPath}').Prisma.PrismaClientOptions`,
     `  session: Session`,
     `  dbProvider: '${dbProvider}'`,
     `}`,

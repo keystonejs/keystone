@@ -10,8 +10,9 @@ import {
   validateArtifacts,
 } from '../artifacts'
 import { createSystem } from '../lib/system'
+import { ensurePrismaConfig } from '../lib/prisma-config'
 import type { Flags } from './cli'
-import { getEsbuildConfig } from './esbuild'
+import { getEsbuildConfig, getEsbuildPrismaConfig } from './esbuild'
 import { importBuiltKeystoneConfiguration } from './utils'
 
 export async function build(
@@ -26,6 +27,7 @@ export async function build(
   // log('✨ Building Keystone configuration')
   await esbuild.build(await getEsbuildConfig(cwd))
 
+  await ensurePrismaConfig(cwd, frozen)
   const system = createSystem(await importBuiltKeystoneConfiguration(cwd))
   if (prisma) {
     if (frozen) {
@@ -40,10 +42,12 @@ export async function build(
     await generatePrismaClient(cwd, system)
   }
 
+  const paths = system.getPaths(cwd)
+  await esbuild.build(await getEsbuildPrismaConfig(cwd, paths.prisma))
+
   if (system.config.ui?.isDisabled || !ui) return
 
   log('✨ Generating Admin UI code')
-  const paths = system.getPaths(cwd)
   await generateAdminUI(system.config, system.adminMeta, paths.admin, false)
 
   log('✨ Building Admin UI')

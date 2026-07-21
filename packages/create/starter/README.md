@@ -20,20 +20,28 @@ If you want an overview of all the features Keystone offers, check out our [feat
 
 ### Changing the database
 
-We've set you up with an [SQLite database](https://keystonejs.com/docs/apis/config#sqlite) for ease-of-use. If you're wanting to use PostgreSQL, you can!
+We've set you up with an [SQLite database](https://keystonejs.com/docs/config/config#sqlite) for ease of use. To switch to PostgreSQL, install its Prisma adapter and driver:
 
-Just change the `db` property on line 16 of the Keystone file [./keystone.ts](./keystone.ts) to
+```shell
+npm install @prisma/adapter-pg pg
+```
+
+Import `PrismaPg` and replace the `db` property in [./keystone.ts](./keystone.ts):
 
 ```typescript
+import { PrismaPg } from '@prisma/adapter-pg'
+
 db: {
-    provider: 'postgresql',
-    url: process.env.DATABASE_URL || 'DATABASE_URL_TO_REPLACE',
+  provider: 'postgresql',
+  prismaClientOptions: () => ({
+    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
+  }),
 }
 ```
 
-And provide your database url from PostgreSQL.
+Also change the `datasource.url` in [./prisma.config.ts](./prisma.config.ts) to `process.env.DATABASE_URL`. The Prisma CLI reads its connection URL from that file for migrations, while Keystone's runtime uses the adapter configured above.
 
-For more on database configuration, check out or [DB API Docs](https://keystonejs.com/docs/apis/config#db)
+For more on database configuration, see the [database configuration docs](https://keystonejs.com/docs/config/config#db).
 
 ### Auth
 

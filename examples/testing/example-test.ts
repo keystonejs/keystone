@@ -1,18 +1,20 @@
 import assert from 'node:assert/strict'
-import { test, beforeEach } from 'node:test'
+import { test, beforeEach, afterEach } from 'node:test'
 import path from 'node:path'
 
-import { resetDatabase } from '@keystone-6/core/testing'
+import { resetDatabase } from '@keystone-6/core/testing/sqlite'
 import { getContext } from '@keystone-6/core/context'
 import config from './keystone'
-import * as PrismaModule from 'myprisma'
+import * as PrismaModule from './generated/prisma/client'
 
-const prismaSchemaPath = path.join(__dirname, 'schema.prisma')
+const migrationsDirectory = path.join(__dirname, 'migrations')
+const databaseUrl = process.env.DATABASE_URL || 'file:./keystone-example.db'
 const context = getContext(config, PrismaModule)
 
 beforeEach(async () => {
-  await resetDatabase(config.db.url, prismaSchemaPath)
+  await resetDatabase({ url: databaseUrl }, migrationsDirectory)
 })
+afterEach(async () => context.prisma.$disconnect())
 
 test('Create a User using context.query', async () => {
   const person = await context.query.User.createOne({

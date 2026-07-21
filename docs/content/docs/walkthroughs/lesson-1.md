@@ -2,6 +2,7 @@
 title: 'Lesson 1: Installing Keystone'
 description: 'Learn Keystone: Lesson 1'
 ---
+
 Learn how to install Keystone, create your first content type, and get an app up and running with an intuitive editing environment.
 
 ## Introduction
@@ -35,10 +36,10 @@ npm init
 We’ll be using `npm` for installing packages, but you can use any other package manager you prefer.
 {% /hint %}
 
-Now add the Keystone package:
+Now add Keystone, Prisma, and the SQLite driver adapter:
 
 ```bash
-npm install @keystone-6/core
+npm install @keystone-6/core @prisma/adapter-better-sqlite3 @prisma/client better-sqlite3 prisma
 ```
 
 ## Configure Keystone
@@ -47,7 +48,7 @@ Keystone looks for a file named `keystone.ts` (or `keystone.js`) at the project 
 
 ```js
 // keystone.ts
-export default {};
+export default {}
 ```
 
 And add TypeScript as a dependency:
@@ -67,7 +68,20 @@ Your folder structure should now look like this:
 ├── node_modules        # Dependencies
 ├── keystone.ts         # Keystone config
 ├── package.json        # With Keystone and TypeScript as dependencies
+├── prisma.config.ts    # Prisma CLI and migration configuration
 └── package-lock.json   # Your npm lock file
+```
+
+Create `prisma.config.ts` alongside `keystone.ts` so the Prisma CLI knows where to find the generated schema and database:
+
+```ts
+import { defineConfig } from 'prisma/config'
+
+export default defineConfig({
+  schema: 'schema.prisma',
+  migrations: { path: 'migrations' },
+  datasource: { url: 'file:./keystone.db' },
+})
 ```
 
 We now need to configure `keystone.ts` with two parts to get our project running:
@@ -80,21 +94,24 @@ We now need to configure `keystone.ts` with two parts to get our project running
 We’ll use [SQLite](/docs/config/config#sqlite) in this project to keep things simple, but you can also use [Postgres](/docs/config/config#postgresql). The minimum config for SQLite looks like this:
 
 ```ts
-import { config } from '@keystone-6/core';
+import { config } from '@keystone-6/core'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
-  lists: {} // ...
-});
+  lists: {}, // ...
+})
 ```
 
-This will use the local path `./keystone.db` for your database storage.
+The adapter connects Keystone's runtime to the local `./keystone.db` database. The matching URL in `prisma.config.ts` is used by Prisma CLI commands.
 
 {% hint kind="tip" %}
-Keystone uses [Prisma](https://www.prisma.io/) to take care of database admin including [migrations](/docs/guides/cli#working-with-migrations). Keystone owns the Prisma workflow so you can focus on building apps instead of DB admin chores.
+Keystone uses [Prisma](https://www.prisma.io/) for database access and development-time schema pushes. For production, manage migration files with the [Prisma CLI](/docs/guides/cli#working-with-migrations).
 {% /hint %}
 
 ### Create your first List
@@ -103,15 +120,18 @@ Now that we have a database configured, let’s connect some content to it!
 
 We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/fields/text) fields for their `name` and `email`:
 
-```js{2,9-15}[5-8]
+```js{3,11-18}[6-10]
 import { config, list } from '@keystone-6/core';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
   db: {
     provider: 'sqlite',
-    url: 'file:./keystone.db',
+    prismaClientOptions: () => ({
+      adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+    }),
   },
   lists: {
     User: list({

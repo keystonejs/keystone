@@ -1,8 +1,6 @@
 import meow from 'meow'
 import { build } from './build'
 import { dev } from './dev'
-import { migrateApply, migrateCreate } from './migrate'
-import { prisma } from './prisma'
 import { start } from './start'
 import { telemetry } from './telemetry'
 import { ExitError } from './utils'
@@ -14,7 +12,6 @@ export type Flags = {
   server: boolean
   quiet: boolean
   ui: boolean
-  withMigrations: boolean
 }
 
 function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
@@ -48,17 +45,13 @@ export async function cli(cwd: string, argv: string[]) {
 
     Commands
         dev             start the project in development mode (default)
-        migrate create  build the project for development and create a migration from the Prisma diff
-        migrate apply   build the project for development and apply any pending migrations
         postinstall     build the project for development
-        build           build the project (required by \`keystone start\` and \`keystone prisma\`)
+        build           build the project (required by \`keystone start\`)
+        start           start the project
         telemetry       sets telemetry preference (enable/disable/status)
 
-        start           start the project
-        prisma          use prisma commands in a Keystone context
-
     Options
-      --frozen (build, migrate)
+      --frozen (build)
         don't build the graphql or prisma schemas, only validate them
 
       --no-db-push (dev)
@@ -73,8 +66,6 @@ export async function cli(cwd: string, argv: string[]) {
       --no-ui (build, dev, start)
         don't build and serve the AdminUI
 
-      --with-migrations (start)
-        trigger prisma to run migrations as part of startup
     `,
     {
       argv,
@@ -87,24 +78,12 @@ export async function cli(cwd: string, argv: string[]) {
     return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }))
   }
 
-  if (command === 'migrate create') {
-    return migrateCreate(cwd, defaultFlags(flags, { ui: false }))
-  }
-
-  if (command === 'migrate apply') {
-    return migrateApply(cwd, defaultFlags(flags, { ui: false }))
-  }
-
   if (command === 'build') {
     return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }))
   }
 
   if (command === 'start') {
-    return start(cwd, defaultFlags(flags, { server: true, ui: true, withMigrations: false }))
-  }
-
-  if (command.startsWith('prisma')) {
-    return prisma(cwd, argv.slice(1), Boolean(flags.frozen))
+    return start(cwd, defaultFlags(flags, { server: true, ui: true }))
   }
 
   if (command.startsWith('telemetry')) {

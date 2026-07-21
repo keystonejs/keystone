@@ -13,7 +13,17 @@ const AUTHENTICATION_FAILURE = 'Authentication failed.' as const
 
 function isTransactionConflict(error: unknown): boolean {
   if (error instanceof GraphQLError) return isTransactionConflict(error.originalError)
-  return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2034'
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (('code' in error && error.code === 'P2034') ||
+      // postgres (prisma doesn't seem to normalise this)
+      ('cause' in error &&
+        typeof error.cause === 'object' &&
+        error.cause !== null &&
+        'originalCode' in error.cause &&
+        error.cause.originalCode === '40001'))
+  )
 }
 
 export function getInitFirstItemSchema({

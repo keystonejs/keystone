@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-6-core-testing-postgresql.cjs.js",
+  "module": "dist/keystone-6-core-testing-postgresql.esm.js"
+}

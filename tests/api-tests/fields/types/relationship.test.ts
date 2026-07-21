@@ -12,7 +12,7 @@ const fieldKey = 'foo'
 function getSchema(field: { ref: string; many?: boolean }) {
   return createSystem(
     config({
-      db: { url: 'file:./thing.db', provider: 'sqlite' },
+      db: { prismaClientOptions: () => ({}), provider: 'sqlite' },
       lists: {
         Zip: list({ fields: { thing: text() }, access: allowAll }),
         Test: list({
@@ -137,7 +137,7 @@ describe('Admin UI display modes', () => {
   function getAdminMetaForField(field: Parameters<typeof relationship>[0]) {
     return createSystem(
       config({
-        db: { url: 'file:./thing.db', provider: 'sqlite' },
+        db: { prismaClientOptions: () => ({}), provider: 'sqlite' },
         lists: {
           Foo: list({
             access: allowAll,
@@ -216,7 +216,7 @@ describe('Reference errors', () => {
   function tryf(lists: KeystoneConfigPre['lists']) {
     return createSystem(
       config({
-        db: { url: 'file:./thing.db', provider: 'sqlite' },
+        db: { prismaClientOptions: () => ({}), provider: 'sqlite' },
         lists,
       })
     ).graphql.schemas.public

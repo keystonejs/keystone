@@ -1,3 +1,4 @@
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 // Welcome to Keystone!
 //
 // This file is what Keystone uses as the entry-point to your headless backend
@@ -21,7 +22,9 @@ export default withAuth(
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: 'sqlite',
-      url: 'file:./keystone.db',
+      prismaClientOptions: () => ({
+        adapter: new PrismaBetterSqlite3({ url: 'file:./keystone.db' }),
+      }),
     },
     apolloConfig: {
       plugins: [

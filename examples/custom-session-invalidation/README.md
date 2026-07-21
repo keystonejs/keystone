@@ -120,12 +120,18 @@ const myAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
 We now wrap our `withAuth` function inside the `myAuth` function which injects the custom session validation in the correct sequence.
 
 ```typescript
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+
 export default myAuth(
   withAuth(
     config({
       db: {
         provider: 'sqlite',
-        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+        prismaClientOptions: () => ({
+          adapter: new PrismaBetterSqlite3({
+            url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+          }),
+        }),
       },
       lists,
       // We add our session configuration to the system here.

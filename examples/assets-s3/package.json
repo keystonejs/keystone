@@ -14,12 +14,14 @@
     "@aws-sdk/lib-storage": "^3.83.0",
     "@aws-sdk/s3-request-presigner": "^3.83.0",
     "@keystone-6/core": "workspace:^",
+    "@prisma/adapter-better-sqlite3": "catalog:",
     "@prisma/client": "catalog:",
     "bytes": "^3.1.1",
     "dotenv": "^16.0.0",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "better-sqlite3": "catalog:"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.1",
