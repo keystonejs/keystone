@@ -325,15 +325,6 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   }
 }
 
-export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
-  | boolean
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      fieldKey: ListTypeInfo['fields']
-    }) => MaybePromise<boolean>)
-
 export type MaybeSessionFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
   | ((args: {
