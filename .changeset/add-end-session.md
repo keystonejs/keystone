@@ -2,4 +2,4 @@
 "@keystone-6/auth": minor
 ---
 
-Adds the `EndSession` GraphQL mutation addition when `context.session.end` is defined
+Adds the `endSession` GraphQL mutation addition when `context.session.end` is defined
