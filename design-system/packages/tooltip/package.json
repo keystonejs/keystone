@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/tooltip",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "license": "MIT",
   "main": "dist/keystone-ui-tooltip.cjs.js",
   "module": "dist/keystone-ui-tooltip.esm.js",
