@@ -65,7 +65,7 @@ export function getInitFirstItemSchema({
 
                 // should approximate hasInitFirstItemConditions
                 const count = await sudoContext.db[listKey].count()
-                if (count !== 0) throw AUTHENTICATION_FAILURE
+                if (count !== 0) throw new GraphQLError(AUTHENTICATION_FAILURE)
 
                 // Update system state
                 // this is strictly speaking incorrect. the db API will do GraphQL coercion on a value which has already been coerced
@@ -81,7 +81,7 @@ export function getInitFirstItemSchema({
               { isolationLevel: 'Serializable' }
             )
           } catch (error) {
-            if (isTransactionConflict(error)) throw AUTHENTICATION_FAILURE
+            if (isTransactionConflict(error)) throw new GraphQLError(AUTHENTICATION_FAILURE)
             throw error
           }
 
@@ -94,7 +94,7 @@ export function getInitFirstItemSchema({
           })
 
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
-            throw AUTHENTICATION_FAILURE
+            throw new GraphQLError(AUTHENTICATION_FAILURE)
           }
 
           return {

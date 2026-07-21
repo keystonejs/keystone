@@ -180,7 +180,7 @@ describe('Auth testing', () => {
         expectInternalServerError(body.errors, [
           {
             path: ['createInitialUser'],
-            message: 'Unexpected error value: "Authentication failed."',
+            message: 'Authentication failed.',
           },
         ])
         expect(body.data).toEqual(null)
@@ -214,7 +214,7 @@ describe('Auth testing', () => {
         expectInternalServerError(failures[0].body.errors, [
           {
             path: ['createInitialUser'],
-            message: 'Unexpected error value: "Authentication failed."',
+            message: 'Authentication failed.',
           },
         ])
         expect(await context.db.User.count()).toBe(1)
