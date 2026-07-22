@@ -87,8 +87,8 @@ export const extendGraphqlSchema = g.extend(base => {
         },
       }),
 
-      // only add this mutation for a sudo Context (this is not usable from the API)
-      ...(base.schema.extensions.sudo
+      // only add this mutation to the internal schema (this is not usable from the API)
+      ...(base.schema.extensions.scope === 'internal'
         ? {
             banPost: g.field({
               type: base.object('Post'),

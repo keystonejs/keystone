@@ -6,6 +6,7 @@ import { setupTestRunner } from './test-runner'
 import { expectInternalServerError } from './utils'
 
 const falseFn: (...args: any) => boolean = () => false
+const observedSchemaExtensions: unknown[] = []
 
 function withAccessCheck<T, Args extends unknown[]>(
   access: boolean | ((...args: Args) => boolean),
@@ -33,7 +34,8 @@ const runner = setupTestRunner({
       }),
     },
     graphql: {
-      extendGraphqlSchema: g.extend(() => {
+      extendGraphqlSchema: g.extend(base => {
+        observedSchemaExtensions.push(base.schema.extensions)
         return {
           mutation: {
             triple: g.field({
@@ -61,6 +63,16 @@ const runner = setupTestRunner({
 })
 
 describe('extendGraphqlSchema', () => {
+  it(
+    'Identifies whether the schema is public or internal',
+    runner(async () => {
+      expect(observedSchemaExtensions.slice(-2)).toEqual([
+        { scope: 'public' },
+        { scope: 'internal' },
+      ])
+    })
+  )
+
   it(
     'Executes custom queries correctly',
     runner(async ({ context }) => {

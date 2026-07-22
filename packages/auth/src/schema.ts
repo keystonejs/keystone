@@ -28,7 +28,7 @@ export const getSchemaExtension = ({
     )
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField]
     if (
-      base.schema.extensions.sudo &&
+      base.schema.extensions.scope === 'internal' &&
       identityFieldOnUniqueWhere?.type !== GraphQLString &&
       identityFieldOnUniqueWhere?.type !== GraphQLID
     ) {
@@ -48,25 +48,27 @@ export const getSchemaExtension = ({
       base,
     })
 
-    // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
-    // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
-    // they want to add a GraphQL field, they'll probably use a virtual field
-    const query = `query($id: ID!) { ${authGqlNames.itemQueryName}(where: { id: $id }) { ${sessionData} } }`
+    if (base.schema.extensions.scope === 'internal') {
+      // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
+      // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
+      // they want to add a GraphQL field, they'll probably use a virtual field
+      const query = `query($id: ID!) { ${authGqlNames.itemQueryName}(where: { id: $id }) { ${sessionData} } }`
 
-    let ast
-    try {
-      ast = parse(query)
-    } catch (err) {
-      throw new Error(
-        `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`
-      )
-    }
+      let ast
+      try {
+        ast = parse(query)
+      } catch (err) {
+        throw new Error(
+          `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`
+        )
+      }
 
-    const errors = validate(base.schema, ast)
-    if (errors.length) {
-      throw new Error(
-        `The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join('\n')}`
-      )
+      const errors = validate(base.schema, ast)
+      if (errors.length) {
+        throw new Error(
+          `The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join('\n')}`
+        )
+      }
     }
 
     return [
