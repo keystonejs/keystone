@@ -1,5 +1,5 @@
 import retry from 'async-retry'
-import { type Browser, type Page } from 'playwright'
+import type { Browser, Page } from 'playwright'
 
 import { exampleProjectTests, loadIndex } from './utils'
 

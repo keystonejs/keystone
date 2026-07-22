@@ -6,7 +6,7 @@ import {
   GraphQLInputObjectType,
   type GraphQLSchema,
 } from 'graphql'
-import { type AuthGqlNames, type InitFirstItemConfig } from '../types'
+import type { AuthGqlNames, InitFirstItemConfig } from '../types'
 import type { Extension } from '@keystone-6/core/graphql-ts'
 
 const AUTHENTICATION_FAILURE = 'Authentication failed.' as const

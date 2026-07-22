@@ -14,7 +14,7 @@ import { TableOfContents } from './TableOfContents'
 
 import { useMediaQuery } from '../../lib/media'
 import { DocsFooter } from '../Footer'
-import { type HeadingType } from '../../markdoc/headings'
+import type { HeadingType } from '../../markdoc/headings'
 
 export function DocsLayoutClient({
   children,

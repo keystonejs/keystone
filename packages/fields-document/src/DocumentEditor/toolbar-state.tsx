@@ -1,8 +1,8 @@
 import React, { type ReactNode, useContext } from 'react'
 import { useSlate } from 'slate-react'
-import { type DocumentFeatures } from '../views'
+import type { DocumentFeatures } from '../views'
 import { ComponentBlockContext } from './component-blocks'
-import { type ComponentBlock } from './component-blocks/api'
+import type { ComponentBlock } from './component-blocks/api'
 import { LayoutOptionsProvider } from './layouts'
 import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship'
 

@@ -5,7 +5,7 @@
 import { Well } from '../../primitives/Well'
 import { useMediaQuery } from '../../../lib/media'
 import { Markdoc } from '../../Markdoc'
-import { type FeaturedExamples } from '.'
+import type { FeaturedExamples } from '.'
 import { Type } from '../../primitives/Type'
 
 export default function ExamplesList({ featuredExamples }: { featuredExamples: FeaturedExamples }) {

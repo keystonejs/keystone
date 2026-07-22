@@ -7,7 +7,7 @@ import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { Icon } from '@keystar/ui/icon'
 import { Divider, Flex } from '@keystar/ui/layout'
 
-import { type PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 
 import { alertOctagonIcon } from '@keystar/ui/icon/icons/alertOctagonIcon'
 import { alertTriangleIcon } from '@keystar/ui/icon/icons/alertTriangleIcon'

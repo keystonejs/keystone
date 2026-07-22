@@ -3,7 +3,7 @@
 import type { HTMLAttributes, JSX } from 'react'
 
 import { Type } from '../primitives/Type'
-import { type IconProps } from '../icons/util'
+import type { IconProps } from '../icons/util'
 
 type CustomerCardProps = {
   icon: (props: IconProps) => JSX.Element

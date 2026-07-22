@@ -9,7 +9,7 @@ import { Markdoc } from '../../../../components/Markdoc'
 import { BlogPage } from '../../../../components/Page'
 import { Heading } from '../../../../components/docs/Heading'
 import { Type } from '../../../../components/primitives/Type'
-import { type BlogPost } from './page'
+import type { BlogPost } from './page'
 import { extractHeadings } from '../../../../markdoc/headings'
 
 export default function Page({ post, formattedDate }: { post: BlogPost; formattedDate: string }) {

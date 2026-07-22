@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes } from 'react'
+import type { HTMLAttributes } from 'react'
 
 import { useMediaQuery } from '../../lib/media'
 import { Quote as QuoteIcon } from '../icons/Quote'

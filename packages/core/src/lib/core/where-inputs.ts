@@ -1,7 +1,7 @@
-import { type DBField, type KeystoneContext } from '../../types'
-import { type PrismaFilter, type UniquePrismaFilter } from '../../types/prisma'
+import type { DBField, KeystoneContext } from '../../types'
+import type { PrismaFilter, UniquePrismaFilter } from '../../types/prisma'
 import { userInputError } from './graphql-errors'
-import { type InitialisedList } from './initialise-lists'
+import type { InitialisedList } from './initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from './utils'
 
 export type InputFilter = Record<string, any> & {

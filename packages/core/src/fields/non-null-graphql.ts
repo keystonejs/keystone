@@ -1,7 +1,7 @@
 import type { BaseFieldTypeInfo, CommonFieldConfig } from '../types'
-import { type BaseListTypeInfo, type FieldData } from '../types'
+import type { BaseListTypeInfo, FieldData } from '../types'
 import type { FieldHooks } from '../types/config/hooks'
-import { type ValidateFieldHook } from '../types/config/hooks'
+import type { ValidateFieldHook } from '../types/config/hooks'
 import { merge } from './resolve-hooks'
 
 export function resolveDbNullable(

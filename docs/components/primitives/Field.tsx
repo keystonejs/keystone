@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes } from 'react'
 import { Stack } from './Stack'
 import { Type } from './Type'
 

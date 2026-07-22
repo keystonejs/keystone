@@ -1,4 +1,4 @@
-import { type MaybePromise } from '../types'
+import type { MaybePromise } from '../types'
 
 function mergeVoidFn<
   Args,

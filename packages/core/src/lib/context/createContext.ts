@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { type ExecutionResult, type GraphQLSchema, graphql, print } from 'graphql'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
-import { type InitialisedList } from '../core/initialise-lists'
+import type { InitialisedList } from '../core/initialise-lists'
 import { getDbFactory, getQueryFactory } from './api'
 
 export function createContext({

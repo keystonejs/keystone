@@ -1,5 +1,5 @@
 import { ImageResponse } from '@vercel/og'
-import { type NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { siteBaseUrl } from '../../../lib/og-util'
 
 const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`

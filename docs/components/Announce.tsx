@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes, type ReactNode } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 
 import { Wrapper } from './primitives/Wrapper'
 

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes, type ElementType } from 'react'
+import type { HTMLAttributes, ElementType } from 'react'
 
 const styleMap = {
   grad1: {

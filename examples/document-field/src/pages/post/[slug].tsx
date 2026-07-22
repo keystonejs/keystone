@@ -1,4 +1,4 @@
-import { type GetStaticPathsResult, type GetStaticPropsContext } from 'next'
+import type { GetStaticPathsResult, GetStaticPropsContext } from 'next'
 import Link from 'next/link'
 import { DocumentRenderer, type DocumentRendererProps } from '@keystone-6/document-renderer'
 import { fetchGraphQL, gql } from '../../utils'

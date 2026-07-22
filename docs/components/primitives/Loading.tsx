@@ -3,7 +3,7 @@
 'use client'
 
 import { keyframes } from '@emotion/react'
-import { type HTMLAttributes } from 'react'
+import type { HTMLAttributes } from 'react'
 
 const loading = keyframes({
   '0%, 80%, 100%': {

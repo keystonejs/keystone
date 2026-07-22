@@ -3,13 +3,13 @@
 'use client'
 
 import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { type DocumentFeatures } from '@keystone-6/fields-document/views'
+import type { DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
   type ComponentBlock,
   type InferRenderersForComponentBlocks,
   fields,
 } from '@keystone-6/fields-document/component-blocks'
-import { type document } from '@keystone-6/fields-document'
+import type { document } from '@keystone-6/fields-document'
 import { Global } from '@emotion/react'
 
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'

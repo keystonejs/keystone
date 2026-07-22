@@ -2,9 +2,9 @@
 
 'use client'
 
-import { type Tag } from '@markdoc/markdoc'
+import type { Tag } from '@markdoc/markdoc'
 
-import { type GroupedExamples } from './page'
+import type { GroupedExamples } from './page'
 import { GitHubExamplesCTA } from '../../../../components/docs/GitHubExamplesCTA'
 import { Type } from '../../../../components/primitives/Type'
 import { FeaturedCard, SplitCardContainer } from '../../../../components/docs/FeaturedCard'

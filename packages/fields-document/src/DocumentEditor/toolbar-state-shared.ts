@@ -1,6 +1,6 @@
 import { Element, Editor, Range, Text } from 'slate'
-import { type DocumentFeatures } from '../views-shared'
-import { type ComponentBlock } from './component-blocks/api-shared'
+import type { DocumentFeatures } from '../views-shared'
+import type { ComponentBlock } from './component-blocks/api-shared'
 import {
   type DocumentFeaturesForChildField,
   getSchemaAtPropPath,

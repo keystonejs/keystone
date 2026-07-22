@@ -5,7 +5,7 @@ import { Type } from '../../primitives/Type'
 
 import { Markdoc } from '../../Markdoc'
 import { FeaturedCard, FullWidthCardContainer, SplitCardContainer } from '../FeaturedCard'
-import { type FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map'
+import type { FeaturedDocsMap } from '../../../keystatic/get-featured-docs-map'
 
 export function FeaturedDocsClient({ featuredDocsMap }: { featuredDocsMap: FeaturedDocsMap }) {
   if (!featuredDocsMap) return null

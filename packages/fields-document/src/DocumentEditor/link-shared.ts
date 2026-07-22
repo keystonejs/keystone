@@ -1,9 +1,9 @@
 import { Element, Editor, Node, Range, Transforms, Text } from 'slate'
 
-import { type DocumentFeatures } from '../views'
+import type { DocumentFeatures } from '../views'
 import { EditorAfterButIgnoringingPointsWithNoContent, isElementActive } from './utils'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state-shared'
-import { type ComponentBlock } from './component-blocks/api'
+import type { ComponentBlock } from './component-blocks/api'
 import { isInlineContainer } from './editor-shared'
 
 const isLinkActive = (editor: Editor) => {

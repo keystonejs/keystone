@@ -4,7 +4,7 @@
 import React, { type ReactElement } from 'react'
 import { jsx, makeEditor } from '../tests/utils'
 import { component, fields } from '../../component-blocks'
-import { type ArrayField, type ChildField, type ObjectField, type PreviewProps } from './api'
+import type { ArrayField, ChildField, ObjectField, PreviewProps } from './api'
 
 type ListItems = ArrayField<
   ObjectField<{

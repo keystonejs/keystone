@@ -4,10 +4,10 @@ import { notFound } from 'next/navigation'
 import { getOgAbsoluteUrl } from '../../../../lib/og-util'
 import { reader } from '../../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../../markdoc/config'
-import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
+import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
 import PageClient from './page-client'
-import { type Metadata } from 'next'
+import type { Metadata } from 'next'
 import { blogDateFormatter } from '../../../../lib/date'
 
 export type BlogPost = NonNullable<

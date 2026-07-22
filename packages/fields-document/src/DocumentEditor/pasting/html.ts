@@ -1,7 +1,7 @@
 // very loosely based on https://github.com/ianstormtaylor/slate/blob/d22c76ae1313fe82111317417912a2670e73f5c9/site/examples/paste-html.tsx
 import { Node } from 'slate'
 import { type Block, isBlock } from '../editor-shared'
-import { type Mark } from '../utils'
+import type { Mark } from '../utils'
 import {
   type InlineFromExternalPaste,
   addMarksToChildren,

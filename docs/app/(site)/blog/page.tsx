@@ -1,7 +1,7 @@
 import { reader } from '../../../keystatic/reader'
 import { blogDateFormatter } from '../../../lib/date'
 import ClientPage from './page-client'
-import { type Metadata } from 'next'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Keystone Blog',

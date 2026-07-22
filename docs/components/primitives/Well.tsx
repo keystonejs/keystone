@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import Link from 'next/link'
-import { type AnchorHTMLAttributes, type ReactNode } from 'react'
+import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
 import { Type } from './Type'
 import { Badge } from './Badge'
