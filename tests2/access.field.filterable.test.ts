@@ -85,6 +85,30 @@ describe(`field.access.filterable tests (${dbProvider})`, () => {
 
         expectEqualItems(l, items, seeded)
       })
+
+      test(`count by ${f.name} (filter: ${f.expect.filter})`, async () => {
+        const { context } = await suite
+        const seeded = await seedMany(l, context)
+
+        // test list.access.*.query
+        const countPromise = context.query[l.name].count({
+          where: makeWhereFilter([f], seeded),
+        })
+
+        // access.read.filter checks happen after list access filters
+        if (!l.expect.query.count && l.expect.type !== 'filter') {
+          assert.equal(await countPromise, 0)
+          return
+        }
+
+        if (!f.expect.filter) {
+          const error = countPromise.catch((e: any) => e.message)
+          assert.match(await error, /^Access denied: You cannot filter/)
+          return
+        }
+
+        assert.equal(await countPromise, l.expect.query.count ? seeded.length : 0)
+      })
     }
   }
 })
