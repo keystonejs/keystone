@@ -8,9 +8,6 @@ export type AuthGqlNames = {
   ItemAuthenticationWithPasswordResult: string
   ItemAuthenticationWithPasswordSuccess: string
   ItemAuthenticationWithPasswordFailure: string
-
-  CreateInitialInput: string
-  createInitialItem: string
 }
 
 export type SendTokenFn = (args: {
@@ -34,21 +31,10 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   identityField: ListTypeInfo['fields']
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: ListTypeInfo['fields']
-  /** The initial user/db seeding functionality */
-  initFirstItem?: InitFirstItemConfig<ListTypeInfo>
   /**
    * Session data population
    *
    * WARNING: uses sudo to retrieve this data
    */
   sessionData?: string
-}
-
-export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  /** Array of fields to collect, e.g ['name', 'email', 'password'] */
-  fields: readonly ListTypeInfo['fields'][]
-  /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
-  skipKeystoneWelcome?: boolean
-  /** Extra input to add for the create mutation */
-  itemData?: Partial<ListTypeInfo['inputs']['create']>
 }

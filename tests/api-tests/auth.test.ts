@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
-import { expectInternalServerError, expectValidationError, seed } from './utils'
+import { seed } from './utils'
 
 const initialData = {
   User: [
@@ -19,10 +19,6 @@ const auth = createAuth({
   identityField: 'email',
   secretField: 'password',
   sessionData: 'id name',
-  initFirstItem: {
-    fields: ['email', 'password'],
-    itemData: { name: 'First User' },
-  },
 })
 
 const runner = setupTestRunner({
@@ -127,123 +123,6 @@ describe('Auth testing', () => {
         expect(body.data).toEqual({
           authenticateUserWithPassword: { message: 'Authentication failed.' },
         })
-      })
-    )
-  })
-  describe('createInitialItem', () => {
-    test(
-      'Success - set token in header and return value',
-      runner(async ({ gqlSuper }) => {
-        const { body, res } = (await gqlSuper({
-          query: `
-          mutation($email: String!, $password: String!) {
-            createInitialUser(data: { email: $email, password: $password }) {
-              sessionToken
-              item { id name email }
-            }
-          }
-        `,
-          variables: { email: 'new@example.com', password: 'new_password' },
-        })) as any
-        const sessionHeader = res.rawHeaders
-          .find((h: string) => h.startsWith('keystonejs-session'))
-          .split(';')[0]
-          .split('=')[1]
-        expect(body.errors).toBe(undefined)
-        expect(body.data).toEqual({
-          createInitialUser: {
-            sessionToken: sessionHeader,
-            item: { id: expect.any(String), name: 'First User', email: 'new@example.com' },
-          },
-        })
-      })
-    )
-
-    test(
-      'Failure - items already exist',
-      runner(async ({ context, gqlSuper }) => {
-        await seed(context, initialData)
-
-        const { body, res } = (await gqlSuper({
-          query: `
-          mutation($email: String!, $password: String!) {
-            createInitialUser(data: { email: $email, password: $password }) {
-              sessionToken
-              item { id name email }
-            }
-          }
-        `,
-          variables: { email: 'new@example.com', password: 'new_password' },
-        })) as any
-        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
-        expect(sessionHeader).toBe(undefined)
-        expectInternalServerError(body.errors, [
-          {
-            path: ['createInitialUser'],
-            message: 'Authentication failed.',
-          },
-        ])
-        expect(body.data).toEqual(null)
-      })
-    )
-
-    test(
-      'Failure - concurrent requests only create one initial item',
-      runner(async ({ context, gqlSuper }) => {
-        const createInitialUser = (email: string) =>
-          gqlSuper({
-            query: `
-              mutation($email: String!, $password: String!) {
-                createInitialUser(data: { email: $email, password: $password }) {
-                  sessionToken
-                  item { id email }
-                }
-              }
-            `,
-            variables: { email, password: 'new_password' },
-          }) as Promise<any>
-
-        const results = await Promise.all([
-          createInitialUser('first@example.com'),
-          createInitialUser('second@example.com'),
-        ])
-        const failures = results.filter(({ body }) => body.errors)
-
-        expect(results.filter(({ body }) => body.data?.createInitialUser).length).toBe(1)
-        expect(failures).toHaveLength(1)
-        expectInternalServerError(failures[0].body.errors, [
-          {
-            path: ['createInitialUser'],
-            message: 'Authentication failed.',
-          },
-        ])
-        expect(await context.db.User.count()).toBe(1)
-      })
-    )
-
-    test(
-      'Failure - no required field value',
-      runner(async ({ gqlSuper }) => {
-        const { body, res } = (await gqlSuper({
-          query: `
-          mutation($password: String!) {
-            createInitialUser(data: { password: $password }) {
-              sessionToken
-              item { id name email }
-            }
-          }
-        `,
-          variables: { password: 'new_password' },
-        })) as any
-        const sessionHeader = res.rawHeaders.find((h: string) => h.startsWith('keystonejs-session'))
-        expect(sessionHeader).toBe(undefined)
-        expectValidationError(body.errors, [
-          {
-            path: ['createUser'], // I don't like this!
-            messages: ['User.email: value must not be empty'],
-          },
-        ])
-        expect(body.data).toEqual(null)
       })
     )
   })

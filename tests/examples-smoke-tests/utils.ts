@@ -23,32 +23,38 @@ async function deleteAllData(projectDir: string) {
   const { PrismaClient } = require(path.join(projectDir, 'node_modules/myprisma'))
   const prisma = new PrismaClient()
 
-  await prisma.$transaction(
-    Object.values(prisma)
-      .filter((x: any) => x?.deleteMany)
-      .map((x: any) => x?.deleteMany?.({}))
-  )
-
-  await prisma.$disconnect()
+  try {
+    await prisma.$transaction(
+      Object.values(prisma)
+        .filter((x: any) => x?.deleteMany)
+        .map((x: any) => x?.deleteMany?.({}))
+    )
+  } catch (error: any) {
+    // The database may not have been created yet on a clean checkout.
+    if (error.code !== 'P2021') throw error
+  } finally {
+    await prisma.$disconnect()
+  }
 }
 
 const treeKill = promisify(_treeKill)
 
-export function initFirstItemTest(getPage: () => playwright.Page) {
-  test('init first item', async () => {
+type InitialUser = { identity: string; password: string }
+
+export function initialUserTest(getPage: () => playwright.Page, getInitialUser: () => InitialUser) {
+  test('sign in as the initial user', async () => {
     const page = getPage()
-    await page.getByLabel('Name').fill('Admin')
-    await page.getByText('Set Password').click()
-    await page.getByPlaceholder('New').fill('password')
-    await page.getByPlaceholder('Confirm').fill('password')
-    await page.getByRole('button', { name: 'Get started' }).click()
+    const initialUser = getInitialUser()
+    await page.getByLabel('Name').fill(initialUser.identity)
+    await page.getByRole('textbox', { name: 'Password' }).fill(initialUser.password)
+    await page.getByRole('button', { name: 'Sign in' }).click()
     await page.getByRole('button', { name: 'Sign out' }).waitFor()
   })
 }
 
 // TODO: merge with tests/admin-ui-tests/utils.ts copy
 export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
-  return await new Promise(resolve => {
+  return await new Promise<string>(resolve => {
     let output = ''
     function listener(chunk: Buffer) {
       output += chunk.toString('utf8')
@@ -67,17 +73,24 @@ export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
 
 export const exampleProjectTests = (
   exampleName: string,
-  tests: (browser: playwright.BrowserType<playwright.Browser>, mode: 'dev' | 'prod') => void
+  tests: (
+    browser: playwright.BrowserType<playwright.Browser>,
+    mode: 'dev' | 'prod',
+    getInitialUser: () => InitialUser
+  ) => void,
+  options: { waitForInitialUser?: boolean } = {}
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName)
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {}
+    let initialUser: InitialUser | undefined
 
     afterAll(async () => {
       await cleanupKeystoneProcess()
     })
 
     async function startKeystone(command: 'start' | 'dev') {
+      await deleteAllData(projectDir)
       const ksProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
         env: process.env,
@@ -86,7 +99,17 @@ export const exampleProjectTests = (
       cleanupKeystoneProcess = async () => {
         await treeKill(ksProcess.pid!)
       }
-      await waitForIO(ksProcess, 'Admin UI ready')
+      const output = await Promise.all([
+        waitForIO(ksProcess, 'Admin UI ready'),
+        options.waitForInitialUser
+          ? waitForIO(ksProcess, 'Created initial user:')
+          : Promise.resolve(''),
+      ])
+      if (options.waitForInitialUser) {
+        const match = output[1].match(/Created initial user: (.+) \/ ([0-9a-f]+)/)
+        if (!match) throw new Error('Could not parse the initial user credentials')
+        initialUser = { identity: match[1], password: match[2] }
+      }
     }
 
     if (mode === 'dev') {
@@ -116,11 +139,10 @@ export const exampleProjectTests = (
     }
 
     describe('browser tests', () => {
-      beforeAll(async () => {
-        await deleteAllData(projectDir)
+      tests(playwright.chromium, mode, () => {
+        if (!initialUser) throw new Error('Initial user credentials are not available')
+        return initialUser
       })
-
-      tests(playwright.chromium, mode)
     })
   })
 }

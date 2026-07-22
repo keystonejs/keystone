@@ -15,7 +15,6 @@
 // If you want to learn more about how our out-of-the-box authentication works, please
 // read https://keystonejs.com/docs/apis/auth#authentication-api
 
-import { randomBytes } from 'node:crypto'
 import { createAuth } from '@keystone-6/auth'
 
 // see https://keystonejs.com/docs/apis/session for the session docs
@@ -31,18 +30,6 @@ const { withAuth } = createAuth({
   //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
   sessionData: 'name createdAt',
   secretField: 'password',
-
-  // WARNING: remove initFirstItem functionality in production
-  //   see https://keystonejs.com/docs/config/auth#init-first-item for more
-  initFirstItem: {
-    // if there are no items in the database, by configuring this field
-    //   you are asking the Keystone AdminUI to create a new user
-    //   providing inputs for these fields
-    fields: ['name', 'email', 'password'],
-
-    // it uses context.sudo() to do this, which bypasses any access control you might have
-    //   you shouldn't use this in production
-  },
 })
 
 // statelessSessions uses cookies for session tracking

@@ -11,7 +11,6 @@ import type { AuthConfig, AuthGqlNames } from './types'
 import { getSchemaExtension } from './schema'
 import configTemplate from './templates/config'
 import signinTemplate from './templates/signin'
-import initTemplate from './templates/init'
 
 export type AuthSession = {
   itemId: string | number // TODO: use ListTypeInfo
@@ -28,9 +27,6 @@ function getAuthGqlNames(singular: string): AuthGqlNames {
     ItemAuthenticationWithPasswordResult: `${singular}AuthenticationWithPasswordResult`,
     ItemAuthenticationWithPasswordSuccess: `${singular}AuthenticationWithPasswordSuccess`,
     ItemAuthenticationWithPasswordFailure: `${singular}AuthenticationWithPasswordFailure`,
-
-    CreateInitialInput: `CreateInitial${singular}Input`,
-    createInitialItem: `createInitial${singular}`,
   } as const
 }
 
@@ -43,7 +39,6 @@ function getAuthGqlNames(singular: string): AuthGqlNames {
 export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
   secretField,
-  initFirstItem,
   identityField,
   sessionData = 'id',
 }: AuthConfig<ListTypeInfo>) {
@@ -53,7 +48,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * This function adds files to be generated into the Admin UI build. Must be added to the
    * ui.getAdditionalFiles config.
    *
-   * The signin page is always included, and the init page is included when initFirstItem is set
+   * The signin page is always included.
    */
   const authGetAdditionalFiles = (config: KeystoneConfig) => {
     // TODO: FIXME: this is a duplication of initialise-lists:747
@@ -81,13 +76,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         outputPath: 'config.ts',
       },
     ]
-    if (initFirstItem) {
-      filesToWrite.push({
-        mode: 'write',
-        src: initTemplate({ authGqlNames, listKey, initFirstItem }),
-        outputPath: 'pages/init.js',
-      })
-    }
     return filesToWrite
   }
 
@@ -107,12 +95,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
     if (!(secretField in list.fields)) {
       throw new Error(`withAuth cannot find the secret field "${listKey}.${secretField}"`)
-    }
-
-    for (const fieldKey of initFirstItem?.fields || []) {
-      if (fieldKey in list.fields) continue
-
-      throw new Error(`initFirstItem.fields has unknown field "${listKey}.${fieldKey}"`)
     }
   }
 
@@ -153,41 +135,13 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
   }
 
-  async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo>(
-    context: KeystoneContext<TypeInfo>
-  ) {
-    // do nothing if they aren't using this feature
-    if (!initFirstItem) return false
-
-    // if they have a session, there is no initialisation necessary
-    if (context.session) return false
-
-    const count = await context.sudo().db[listKey].count({})
-    return count === 0
-  }
-
-  async function authMiddleware<TypeInfo extends BaseKeystoneTypeInfo>({
-    context,
+  function authMiddleware({
     wasAccessAllowed,
     basePath,
   }: {
-    context: KeystoneContext<TypeInfo>
     wasAccessAllowed: boolean
     basePath: string
-  }): Promise<{ kind: 'redirect'; to: string } | void> {
-    const { req } = context
-    const { pathname } = new URL(req!.url!, 'http://_')
-
-    // redirect to init if initFirstItem conditions are met
-    if (pathname !== `${basePath}/init` && (await hasInitFirstItemConditions(context))) {
-      return { kind: 'redirect', to: `${basePath}/init` }
-    }
-
-    // redirect to / if attempting to /init and initFirstItem conditions are not met
-    if (pathname === `${basePath}/init` && !(await hasInitFirstItemConditions(context))) {
-      return { kind: 'redirect', to: basePath }
-    }
-
+  }): { kind: 'redirect'; to: string } | void {
     // don't redirect if we have access
     if (wasAccessAllowed) return
 
@@ -229,13 +183,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
           ...authGetAdditionalFiles(config),
         ],
 
-        isAccessAllowed: async (context: KeystoneContext) => {
-          if (await hasInitFirstItemConditions(context)) return true
-          return isAccessAllowed(context)
-        },
+        isAccessAllowed,
 
         pageMiddleware: async args => {
-          const shouldRedirect = await authMiddleware(args)
+          const shouldRedirect = authMiddleware(args)
           if (shouldRedirect) return shouldRedirect
           return pageMiddleware?.(args)
         },
@@ -259,7 +210,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       listKey,
       identityField,
       secretField,
-      initFirstItem,
       sessionData,
     })
 

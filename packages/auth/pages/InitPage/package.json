@@ -1,4 +1,0 @@
-{
-  "main": "dist/keystone-6-auth-pages-InitPage.cjs.js",
-  "module": "dist/keystone-6-auth-pages-InitPage.esm.js"
-}

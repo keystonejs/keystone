@@ -1,23 +1,20 @@
 import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql'
 
 import { g } from '@keystone-6/core'
-import type { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig } from './types'
+import type { AuthGqlNames, AuthTokenTypeConfig } from './types'
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema'
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
 
 export const getSchemaExtension = ({
   authGqlNames,
   listKey,
   identityField,
   secretField,
-  initFirstItem,
   sessionData,
 }: {
   authGqlNames: AuthGqlNames
   listKey: string
   identityField: string
   secretField: string
-  initFirstItem?: InitFirstItemConfig<any>
   passwordResetLink?: AuthTokenTypeConfig
   magicAuthLink?: AuthTokenTypeConfig
   sessionData: string
@@ -71,16 +68,5 @@ export const getSchemaExtension = ({
       }
     }
 
-    return [
-      baseSchema.extension,
-      initFirstItem &&
-        getInitFirstItemSchema({
-          authGqlNames,
-          listKey,
-          fields: initFirstItem.fields,
-          defaultItemData: initFirstItem.itemData,
-          graphQLSchema: base.schema,
-          ItemAuthenticationWithPasswordSuccess: baseSchema.ItemAuthenticationWithPasswordSuccess,
-        }),
-    ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined)
+    return baseSchema.extension
   })

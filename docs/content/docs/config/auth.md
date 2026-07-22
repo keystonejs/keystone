@@ -1,10 +1,9 @@
 ---
-title: "Authentication"
-description: "API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-6/auth` package."
+title: 'Authentication'
+description: 'API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-6/auth` package.'
 ---
 
 Keystone allows you to extend your Keystone system to support authentication against a `password` field using the `createAuth()` function in the `@keystone-6/auth` package.
-Additional options to this function provide support for creating an initial item in your database, sending password reset tokens, and sending one-time authentication tokens.
 
 For examples of how to use authentication in your system please see the [authentication guide](../guides/auth-and-access-control).
 
@@ -20,12 +19,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   // Additional options
-  sessionData: 'id name email',
-  initFirstItem: {
-    fields: ['email', 'password'],
-    itemData: { isAdmin: true },
-    skipKeystoneWelcome: false,
-  },
+  sessionData: 'id email',
 })
 
 export default withAuth(
@@ -38,7 +32,9 @@ export default withAuth(
           isAdmin: checkbox(),
         },
       }),
-      session: { /* ... */ },
+    },
+    session: {
+      /* ... */
     },
   })
 )
@@ -72,7 +68,10 @@ The following elements will be added to the GraphQL API.
 
 ```graphql
 type Mutation {
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
 }
 
 type Query {
@@ -81,7 +80,9 @@ type Query {
 
 union AuthenticatedItem = User
 
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult =
+  | UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -100,16 +101,13 @@ The argument names for this function are the values of `identityField` and `secr
 
 ```graphql
 mutation {
-  authenticateUserWithPassword(
-    email: "username@example.com",
-    password: "password"
-  ) {
-   ... on UserAuthenticationWithPasswordSuccess {
-    item {
-      id
-      email
+  authenticateUserWithPassword(email: "username@example.com", password: "password") {
+    ... on UserAuthenticationWithPasswordSuccess {
+      item {
+        id
+        email
+      }
     }
-  }
     ... on UserAuthenticationWithPasswordFailure {
       message
     }
@@ -157,61 +155,6 @@ const { withAuth } = createAuth({
   sessionData: 'id name isAdmin',
 })
 ```
-
-### initFirstItem
-
-This option adds support for bootstrapping the first user into the system via the Admin UI.
-If this option is enabled and there are no users in the system, the Admin UI will present a form to create an initial user in the system.
-Once the user is created, they will be presented with a Keystone Welcome screen, and prompted to sign up to the Keystone mailing list to receive updates about the project.
-
-#### Options {% #init-first-item-options %}
-
-- `fields` (required): A list of fields to include in the initial user form.
-- `itemData` (default: `{}`): An object containing extra data to add to the initial user.
-- `skipKeystoneWelcome` (default: `false`): A flag to skip display of the Keystone Welcome screen.
-
-```typescript
-import { createAuth } from '@keystone-6/auth';
-
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  secretField: 'password',
-
-  initFirstItem: {
-    fields: ['email', 'password'],
-    itemData: { isAdmin: true },
-    skipKeystoneWelcome: false,
-  },
-});
-```
-
-#### GraphQL API {% #init-first-item-graphql-api %}
-
-Enabling `initFirstItem` will add the following elements to the GraphQL API.
-
-```graphql
-type Mutation {
-  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
-}
-```
-
-##### createInitialUser
-
-This mutation will create a new user in the system.
-If a user already exists an error will be returned.
-The available input fields are based on the `fields` options.
-This mutation is used by the Admin UI's initial user screen and should generally not be called directly.
-
-#### Admin UI {% #init-first-item-admin-ui %}
-
-The initial user screen is added at `/init`, and users are redirected here if there is no active session and no users in the system.
 
 ## Related resources
 
