@@ -234,30 +234,35 @@ export function createAdminMeta(
         // FieldMetaSource_
         listKey: listKey,
         fieldKey: fieldKey,
-        isFilterable: normalizeIsOrderFilter(
-          field.input?.where ? field.graphql.isEnabled.filter : false,
-          context =>
-            field.access.read.filter({
-              context,
-              session: context.session,
-              listKey: list.listKey,
-              operation: 'read',
-              kind: 'filter',
-              fieldKey,
-            })
-        ),
-        isOrderable: normalizeIsOrderFilter(
-          field.input?.orderBy ? field.graphql.isEnabled.order : false,
-          context =>
-            field.access.read.order({
-              context,
-              session: context.session,
-              listKey: list.listKey,
-              operation: 'read',
-              kind: 'order',
-              fieldKey,
-            })
-        ),
+        isFilterable:
+          field.input?.where && field.graphql.isEnabled.filter
+            ? (_, context) =>
+                context.__internal.sudo
+                  ? true
+                  : field.access.read.filter({
+                      context,
+                      session: context.session,
+                      listKey: list.listKey,
+                      operation: 'read',
+                      kind: 'filter',
+                      fieldKey,
+                    })
+            : () => false,
+
+        isOrderable:
+          field.input?.orderBy && field.graphql.isEnabled.order
+            ? (_, context) =>
+                context.__internal.sudo
+                  ? true
+                  : field.access.read.order({
+                      context,
+                      session: context.session,
+                      listKey: list.listKey,
+                      operation: 'read',
+                      kind: 'order',
+                      fieldKey,
+                    })
+            : () => false,
 
         isNonNull,
         createView: {
@@ -419,12 +424,4 @@ function normalizeMaybeSessionFunction<
 >(input: MaybeSessionFunction<Return, BaseListTypeInfo>): EmptyResolver<Return> {
   if (typeof input !== 'function') return () => input
   return (_, context) => input({ context, session: context.session })
-}
-
-function normalizeIsOrderFilter(
-  isEnabled: boolean,
-  access: (context: KeystoneContext) => MaybePromise<boolean>
-): EmptyResolver<boolean> {
-  if (!isEnabled) return () => false
-  return (_, context) => (context.__internal.sudo ? true : access(context))
 }
