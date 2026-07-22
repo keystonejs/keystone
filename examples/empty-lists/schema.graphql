@@ -4,12 +4,12 @@
 type Post {
   id: ID!
   description: String
-  groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
-  groupsCount(where: GroupWhereInput! = {}): Int
-  reactions(where: ReactionWhereInput! = {}, orderBy: [ReactionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReactionWhereUniqueInput): [Reaction!]
-  reactionsCount(where: ReactionWhereInput! = {}): Int
-  logs(where: LogWhereInput! = {}, orderBy: [LogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LogWhereUniqueInput): [Log!]
-  logsCount(where: LogWhereInput! = {}): Int
+  groups(where: GroupWhereInput! = {  }, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
+  groupsCount(where: GroupWhereInput! = {  }): Int
+  reactions(where: ReactionWhereInput! = {  }, orderBy: [ReactionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReactionWhereUniqueInput): [Reaction!]
+  reactionsCount(where: ReactionWhereInput! = {  }): Int
+  logs(where: LogWhereInput! = {  }, orderBy: [LogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LogWhereUniqueInput): [Log!]
+  logsCount(where: LogWhereInput! = {  }): Int
 }
 
 input PostWhereUniqueInput {
@@ -352,23 +352,23 @@ type Mutation {
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
+  users(where: UserWhereInput! = {  }, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  usersCount(where: UserWhereInput! = {  }): Int
   category(where: CategoryWhereUniqueInput!): Category
-  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
-  categoriesCount(where: CategoryWhereInput! = {}): Int
+  categories(where: CategoryWhereInput! = {  }, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {  }): Int
   group(where: GroupWhereUniqueInput!): Group
-  groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
-  groupsCount(where: GroupWhereInput! = {}): Int
+  groups(where: GroupWhereInput! = {  }, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
+  groupsCount(where: GroupWhereInput! = {  }): Int
   reaction(where: ReactionWhereUniqueInput!): Reaction
-  reactions(where: ReactionWhereInput! = {}, orderBy: [ReactionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReactionWhereUniqueInput): [Reaction!]
-  reactionsCount(where: ReactionWhereInput! = {}): Int
+  reactions(where: ReactionWhereInput! = {  }, orderBy: [ReactionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReactionWhereUniqueInput): [Reaction!]
+  reactionsCount(where: ReactionWhereInput! = {  }): Int
   log(where: LogWhereUniqueInput!): Log
-  logs(where: LogWhereInput! = {}, orderBy: [LogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LogWhereUniqueInput): [Log!]
-  logsCount(where: LogWhereInput! = {}): Int
+  logs(where: LogWhereInput! = {  }, orderBy: [LogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LogWhereUniqueInput): [Log!]
+  logsCount(where: LogWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

@@ -38,7 +38,7 @@
     "@types/express": "catalog:",
     "@types/react": "catalog:",
     "graphql": "catalog:",
-    "graphql-upload": "^15.0.2",
+    "graphql-upload": "^17.1.0",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"

@@ -1,4 +1,4 @@
-import UploadLink from 'apollo-upload-client/UploadHttpLink.mjs'
+import UploadHttpLink from 'apollo-upload-client/UploadHttpLink.mjs'
 import { type ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
 import { ClientSideOnlyDocumentElement, KeystarProvider } from '@keystar/ui/core'
@@ -17,6 +17,7 @@ import type {
 import { type AdminMetaQuery, adminMetaQuery } from './admin-meta-graphql'
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
   type ErrorLike,
   InMemoryCache,
@@ -210,17 +211,19 @@ function InternalKeystoneProvider({
 }
 
 export function KeystoneProvider(props: KeystoneProviderProps) {
-  const apolloClient = useMemo(
-    () =>
-      new ApolloClient({
-        cache: new InMemoryCache(),
-        link: new UploadLink({
-          uri: props.apiPath,
-          headers: { 'Apollo-Require-Preflight': 'true' },
-        }),
-      }),
-    [props.apiPath]
-  )
+  const apolloClient = useMemo(() => {
+    const httpLink = new UploadHttpLink({
+      uri: props.apiPath,
+      headers: {
+        'Apollo-Require-Preflight': 'true',
+      },
+    })
+
+    return new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.from([httpLink]),
+    })
+  }, [props.apiPath])
 
   return (
     <ApolloProvider client={apolloClient}>

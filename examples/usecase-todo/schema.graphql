@@ -144,8 +144,8 @@ input PersonRelateToOneForCreateInput {
 type Person {
   id: ID!
   name: String
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
+  tasks(where: TaskWhereInput! = {  }, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
+  tasksCount(where: TaskWhereInput! = {  }): Int
 }
 
 input PersonWhereUniqueInput {
@@ -223,11 +223,11 @@ type Mutation {
 
 type Query {
   task(where: TaskWhereUniqueInput!): Task
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
+  tasks(where: TaskWhereInput! = {  }, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
+  tasksCount(where: TaskWhereInput! = {  }): Int
   person(where: PersonWhereUniqueInput!): Person
-  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
-  peopleCount(where: PersonWhereInput! = {}): Int
+  people(where: PersonWhereInput! = {  }, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
+  peopleCount(where: PersonWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

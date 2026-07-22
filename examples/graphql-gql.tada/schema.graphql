@@ -116,8 +116,8 @@ input AuthorRelateToOneForCreateInput {
 type Author {
   id: ID!
   name: String
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   latestPost: Post
 }
 
@@ -195,11 +195,11 @@ type Mutation {
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   author(where: AuthorWhereUniqueInput!): Author
-  authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
-  authorsCount(where: AuthorWhereInput! = {}): Int
+  authors(where: AuthorWhereInput! = {  }, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
+  authorsCount(where: AuthorWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

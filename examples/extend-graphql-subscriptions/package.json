@@ -10,7 +10,7 @@
     "check": "keystone postinstall"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.6",
+    "@apollo/client": "^4.2.6",
     "@emotion/css": "^11.7.1",
     "@graphql-tools/schema": "^9.0.0",
     "@keystar/ui": "catalog:",

@@ -12,11 +12,11 @@ type Thing {
   password: PasswordState
   toOneRelationship: User
   toOneRelationshipAlternateLabel: User
-  toManyRelationship(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
-  toManyRelationshipCount(where: TodoWhereInput! = {}): Int
+  toManyRelationship(where: TodoWhereInput! = {  }, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
+  toManyRelationshipCount(where: TodoWhereInput! = {  }): Int
   toOneRelationshipCard: User
-  toManyRelationshipCard(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
-  toManyRelationshipCardCount(where: TodoWhereInput! = {}): Int
+  toManyRelationshipCard(where: TodoWhereInput! = {  }, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
+  toManyRelationshipCardCount(where: TodoWhereInput! = {  }): Int
   calendarDay: CalendarDay
   randomNumberVirtual: Float
   select: String
@@ -517,8 +517,8 @@ type User {
   name: String
   email: String
   password: PasswordState
-  tasks(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
-  tasksCount(where: TodoWhereInput! = {}): Int
+  tasks(where: TodoWhereInput! = {  }, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
+  tasksCount(where: TodoWhereInput! = {  }): Int
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -603,7 +603,7 @@ input SettingsUpdateInput {
 }
 
 input SettingsUpdateArgs {
-  where: SettingsWhereUniqueInput! = {id: 1}
+  where: SettingsWhereUniqueInput! = { id: 1 }
   data: SettingsUpdateInput!
 }
 
@@ -639,25 +639,25 @@ type Mutation {
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createSettings(data: SettingsCreateInput!): Settings
   createManySettings(data: [SettingsCreateInput!]!): [Settings]
-  updateSettings(where: SettingsWhereUniqueInput! = {id: 1}, data: SettingsUpdateInput!): Settings
+  updateSettings(where: SettingsWhereUniqueInput! = { id: 1 }, data: SettingsUpdateInput!): Settings
   updateManySettings(data: [SettingsUpdateArgs!]!): [Settings]
-  deleteSettings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  deleteSettings(where: SettingsWhereUniqueInput! = { id: 1 }): Settings
   deleteManySettings(where: [SettingsWhereUniqueInput!]!): [Settings]
 }
 
 type Query {
   thing(where: ThingWhereUniqueInput!): Thing
-  things(where: ThingWhereInput! = {}, orderBy: [ThingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ThingWhereUniqueInput): [Thing!]
-  thingsCount(where: ThingWhereInput! = {}): Int
+  things(where: ThingWhereInput! = {  }, orderBy: [ThingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ThingWhereUniqueInput): [Thing!]
+  thingsCount(where: ThingWhereInput! = {  }): Int
   todo(where: TodoWhereUniqueInput!): Todo
-  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
-  todosCount(where: TodoWhereInput! = {}): Int
+  todos(where: TodoWhereInput! = {  }, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
+  todosCount(where: TodoWhereInput! = {  }): Int
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
-  settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
-  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
-  manySettingsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
+  users(where: UserWhereInput! = {  }, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  usersCount(where: UserWhereInput! = {  }): Int
+  settings(where: SettingsWhereUniqueInput! = { id: 1 }): Settings
+  manySettings(where: SettingsWhereInput! = { id: { equals: 1 } }, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
+  manySettingsCount(where: SettingsWhereInput! = { id: { equals: 1 } }): Int
   keystone: KeystoneMeta!
 }
 

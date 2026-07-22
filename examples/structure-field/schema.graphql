@@ -62,7 +62,7 @@ input PostRelateToManyForUpdateInput {
 }
 
 input HomepageUpdateArgs {
-  where: HomepageWhereUniqueInput! = {id: 1}
+  where: HomepageWhereUniqueInput! = { id: 1 }
   data: HomepageUpdateInput!
 }
 
@@ -151,9 +151,9 @@ scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 type Mutation {
   createHomepage(data: HomepageCreateInput!): Homepage
   createHomepages(data: [HomepageCreateInput!]!): [Homepage]
-  updateHomepage(where: HomepageWhereUniqueInput! = {id: 1}, data: HomepageUpdateInput!): Homepage
+  updateHomepage(where: HomepageWhereUniqueInput! = { id: 1 }, data: HomepageUpdateInput!): Homepage
   updateHomepages(data: [HomepageUpdateArgs!]!): [Homepage]
-  deleteHomepage(where: HomepageWhereUniqueInput! = {id: 1}): Homepage
+  deleteHomepage(where: HomepageWhereUniqueInput! = { id: 1 }): Homepage
   deleteHomepages(where: [HomepageWhereUniqueInput!]!): [Homepage]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
@@ -164,12 +164,12 @@ type Mutation {
 }
 
 type Query {
-  homepage(where: HomepageWhereUniqueInput! = {id: 1}): Homepage
-  homepages(where: HomepageWhereInput! = {id: {equals: 1}}, orderBy: [HomepageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: HomepageWhereUniqueInput): [Homepage!]
-  homepagesCount(where: HomepageWhereInput! = {id: {equals: 1}}): Int
+  homepage(where: HomepageWhereUniqueInput! = { id: 1 }): Homepage
+  homepages(where: HomepageWhereInput! = { id: { equals: 1 } }, orderBy: [HomepageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: HomepageWhereUniqueInput): [Homepage!]
+  homepagesCount(where: HomepageWhereInput! = { id: { equals: 1 } }): Int
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

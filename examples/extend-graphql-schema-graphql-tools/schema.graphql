@@ -139,8 +139,8 @@ type Author {
   id: ID!
   name: String
   email: String
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
 }
 
 input AuthorWhereUniqueInput {
@@ -228,11 +228,11 @@ type Mutation {
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   author(where: AuthorWhereUniqueInput!): Author
-  authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
-  authorsCount(where: AuthorWhereInput! = {}): Int
+  authors(where: AuthorWhereInput! = {  }, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
+  authorsCount(where: AuthorWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 
   """ Return all posts for a user from the last <seconds> seconds """

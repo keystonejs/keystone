@@ -119,8 +119,8 @@ input PostCreateInput {
 type Contributor {
   id: ID!
   bio: String
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   user: User
 }
 
@@ -193,8 +193,8 @@ input UserRelateToOneForCreateInput {
 
 type Moderator {
   id: ID!
-  hidden(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  hiddenCount(where: PostWhereInput! = {}): Int
+  hidden(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  hiddenCount(where: PostWhereInput! = {  }): Int
   user: User
 }
 
@@ -348,17 +348,17 @@ input FlagPostArgs {
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   contributor(where: ContributorWhereUniqueInput!): Contributor
-  contributors(where: ContributorWhereInput! = {}, orderBy: [ContributorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContributorWhereUniqueInput): [Contributor!]
-  contributorsCount(where: ContributorWhereInput! = {}): Int
+  contributors(where: ContributorWhereInput! = {  }, orderBy: [ContributorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContributorWhereUniqueInput): [Contributor!]
+  contributorsCount(where: ContributorWhereInput! = {  }): Int
   moderator(where: ModeratorWhereUniqueInput!): Moderator
-  moderators(where: ModeratorWhereInput! = {}, orderBy: [ModeratorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ModeratorWhereUniqueInput): [Moderator!]
-  moderatorsCount(where: ModeratorWhereInput! = {}): Int
+  moderators(where: ModeratorWhereInput! = {  }, orderBy: [ModeratorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ModeratorWhereUniqueInput): [Moderator!]
+  moderatorsCount(where: ModeratorWhereInput! = {  }): Int
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
+  users(where: UserWhereInput! = {  }, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  usersCount(where: UserWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

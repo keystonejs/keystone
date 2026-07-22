@@ -145,8 +145,8 @@ type User {
   id: ID!
   name: String
   password: PasswordState
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
+  tasks(where: TaskWhereInput! = {  }, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
+  tasksCount(where: TaskWhereInput! = {  }): Int
 }
 
 type PasswordState {
@@ -243,11 +243,11 @@ type UserAuthenticationWithPasswordFailure {
 
 type Query {
   task(where: TaskWhereUniqueInput!): Task
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
-  tasksCount(where: TaskWhereInput! = {}): Int
+  tasks(where: TaskWhereInput! = {  }, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
+  tasksCount(where: TaskWhereInput! = {  }): Int
   user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
-  usersCount(where: UserWhereInput! = {}): Int
+  users(where: UserWhereInput! = {  }, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  usersCount(where: UserWhereInput! = {  }): Int
   keystone: KeystoneMeta!
   authenticatedItem: User
 }

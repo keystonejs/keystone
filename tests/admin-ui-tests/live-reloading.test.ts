@@ -93,8 +93,8 @@ test('updates to the Keystone schema are propagated', async () => {
 
         type Query {
           something(where: SomethingWhereUniqueInput!): Something
-          somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
-          somethingsCount(where: SomethingWhereInput! = {}): Int
+          somethings(where: SomethingWhereInput! = {  }, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
+          somethingsCount(where: SomethingWhereInput! = {  }): Int
           keystone: KeystoneMeta!
           someNumber: Int!
         }"
