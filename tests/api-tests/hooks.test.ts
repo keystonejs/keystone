@@ -233,9 +233,21 @@ describe(`Hooks`, () => {
     },
   })
 
+  // generate the schema & prisma client first with a long timeout
+  beforeAll(async () => {
+    await suite()
+  }, 30_000)
+
   for (const list of listsMatrix) {
     describe(`${list.__name}`, () => {
-      const d = suite().then(async ({ context }) => await runOperations(context, list))
+      let d: ReturnType<typeof runOperations>
+
+      beforeAll(async () => {
+        const { context } = await suite()
+        d = runOperations(context, list)
+        await (await d).everything()
+      })
+
       const { create1, createM, update1, updateM, delete1, deleteM } = list.__outputs
 
       // field hooks have precedence
@@ -300,9 +312,7 @@ describe(`Hooks`, () => {
           deleteMany: [{ basis: { in: deleteM.map(x => x.basis) } }, deleteM.length] as const,
         })) {
           test(`${context} was blocked`, async () => {
-            await (
-              await d
-            ).everything
+            await (await d).everything()
 
             const { context } = await suite()
             const count = await context.db[list.__name].count({ where })
@@ -356,9 +366,7 @@ describe(`Hooks`, () => {
           deleteMany: [{ basis: { in: deleteM.map(x => x.basis) } }, 0] as const,
         })) {
           test(`${context} was successful`, async () => {
-            await (
-              await d
-            ).everything
+            await (await d).everything()
 
             const { context } = await suite()
             const count = await context.db[list.__name].count({ where })
