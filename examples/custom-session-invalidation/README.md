@@ -63,10 +63,11 @@ const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
   secretField: 'password',
-  initFirstItem: { fields: ['name', 'email', 'password'] },
   sessionData: 'id passwordChangedAt',
 })
 ```
+
+The initial person is created from `db.onConnect` in the main Keystone config.
 
 ### Session
 

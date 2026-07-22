@@ -1,6 +1,6 @@
 ---
-title: "Getting started"
-description: "Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface."
+title: 'Getting started'
+description: 'Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.'
 ---
 
 ![A terminal with the output of create-keystone-app](/assets/getting-started/cover.svg)
@@ -26,6 +26,7 @@ Open your preferred shell and make sure you’re in the folder you want to creat
 ```sh
 npm create keystone-app@latest
 ```
+
 ### npx
 
 Use npm's [`npx`](https://docs.npmjs.com/cli/v7/commands/npx):
@@ -51,11 +52,9 @@ cd my-app
 npm run dev
 ```
 
-This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on <http://localhost:3000>. When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
+This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on <http://localhost:3000>. The first time the project starts, it creates an initial user and logs its email address and randomly generated password in the terminal.
 
-![The welcome screen giving you the ability the create a new user to log into the Admin UI](/assets/getting-started/welcome-screen.png)
-
-Go ahead and create your first user. The email address and password will be used to login to Keystone’s Admin UI. Once you've created your user, you’ll be logged in to a new Keystone Admin UI that comes with two [lists](/docs/config/config#lists).
+Use those credentials to sign in. You’ll see a new Keystone Admin UI that comes with two [lists](/docs/config/config#lists).
 From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at <http://localhost:3000/api/graphql>.
 
 ![The Admin UI of Keystone showing the two lists: User and Posts](/assets/getting-started/adminui.png)

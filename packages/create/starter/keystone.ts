@@ -22,6 +22,20 @@ export default withAuth(
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: 'sqlite',
       url: 'file:./keystone.db',
+      async onConnect(context) {
+        // this creates an initial user if none exist so you can log in for development
+        // WARNING: do not use this in production
+        ;(async () => {
+          const sudoContext = context.sudo()
+          if ((await sudoContext.db.User.count()) !== 0) return
+
+          const password = crypto.getRandomValues(new Uint8Array(16)).toHex()
+          await sudoContext.db.User.createOne({
+            data: { name: 'admin', email: 'admin@example.com', password },
+          })
+          console.log(`Created initial user: admin@example.com / ${password}`)
+        })().catch(error => console.error('Failed to create initial user:', error))
+      },
     },
     apolloConfig: {
       plugins: [

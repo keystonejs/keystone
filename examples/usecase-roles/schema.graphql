@@ -312,7 +312,6 @@ type Mutation {
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
   authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
-  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
 union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
@@ -324,11 +323,6 @@ type UserAuthenticationWithPasswordSuccess {
 
 type UserAuthenticationWithPasswordFailure {
   message: String!
-}
-
-input CreateInitialUserInput {
-  name: String
-  password: String
 }
 
 type Query {

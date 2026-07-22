@@ -19,16 +19,6 @@ const { withAuth } = createAuth({
   // a secret field must be a password field type
   secretField: 'password',
 
-  // initFirstItem enables the "First User" experience, this will add an interface form
-  //   adding a new User item if the database is empty
-  //
-  // WARNING: do not use initFirstItem in production
-  //   see https://keystonejs.com/docs/config/auth#init-first-item for more
-  initFirstItem: {
-    // the following fields are used by the "Create First User" form
-    fields: ['name', 'password'],
-  },
-
   sessionData: 'passwordChangedAt',
 })
 
@@ -71,6 +61,18 @@ export default withSessionInvalidation(
       db: {
         provider: 'sqlite',
         url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+        async onConnect(context) {
+          // this creates an initial user if none exist so you can log in for development
+          // WARNING: do not use this in production
+          ;(async () => {
+            const sudoContext = context.sudo()
+            if ((await sudoContext.db.User.count()) !== 0) return
+
+            const password = crypto.getRandomValues(new Uint8Array(16)).toHex()
+            await sudoContext.db.User.createOne({ data: { name: 'admin', password } })
+            console.log(`Created initial user: admin / ${password}`)
+          })().catch(error => console.error('Failed to create initial user:', error))
+        },
 
         // WARNING: this is only needed for our monorepo examples, dont do this
         prismaClientPath: 'node_modules/myprisma',

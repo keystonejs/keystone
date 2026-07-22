@@ -1,8 +1,8 @@
 ---
 title: 'Lesson 4: Auth & Sessions'
 description: 'Learn Keystone: Lesson 4'
-
 ---
+
 Learn how to add passwords, session data and authentication to your Keystone app.
 
 ## Where we left off
@@ -11,8 +11,8 @@ In the [last lesson](/docs/walkthroughs/lesson-3) we setup a publishing workflow
 
 ```ts
 //keystone.ts
-import { list, config } from '@keystone-6/core';
-import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { list, config } from '@keystone-6/core'
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields'
 
 const lists = {
   User: list({
@@ -37,7 +37,7 @@ const lists = {
       author: relationship({ ref: 'User.posts' }),
     },
   }),
-};
+}
 
 export default config({
   db: {
@@ -45,7 +45,7 @@ export default config({
     url: 'file:./keystone.db',
   },
   lists,
-});
+})
 ```
 
 We're now going to add auth to our app so that different types of users have access to different types of things.
@@ -118,16 +118,16 @@ And add the following code:
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth';
+import { createAuth } from '@keystone-6/auth'
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   sessionData: 'name',
   secretField: 'password',
-});
+})
 
-export { withAuth };
+export { withAuth }
 ```
 
 This code says:
@@ -217,76 +217,42 @@ export default config(
 );
 ```
 
-## Adding init first item
+## Adding an initial user
 
-With our new set-up, we'll be locked out of Admin UI! What's more, if we don't have a user in our database yet,
-or, if a new person clones our project, they won't be able to access Admin UI. Thankfully, Keystone has a feature
-so that if there are no existing users, you can create one when you first launch Admin UI. This is the `initFirstItem`
-feature in the `auth` package:
+With our new set-up, we'll be locked out of Admin UI if the database has no users. We can use `db.onConnect` to create an initial user with a random password and log the credentials when Keystone starts.
 
-```ts{10-12}
-// auth.ts
-import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
-
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  sessionData: 'name',
-  secretField: 'password',
-  initFirstItem: {
-    fields: ['name', 'email', 'password'],
-  },
-});
-
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24; // 24 hours
-
-const session = statelessSessions({
-  maxAge: sessionMaxAge,
-  secret: sessionSecret,
-});
-
-export { withAuth, session }
-```
-
-Now, if you open Admin UI, you can check out the sign in flow. If you have no users, you’ll be presented with fields to create the first user:
-
-![Create user screen in Admin UI showing name, email, and password fields](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-4/keystone-admin-ui-signin.png)
+The creation runs in the background so it does not delay startup. This is convenient for development; production systems should use a secure provisioning process instead.
 
 ## What we have now
 
 ```ts
 // auth.ts
-import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth'
+import { statelessSessions } from '@keystone-6/core/session'
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   sessionData: 'name',
   secretField: 'password',
-  initFirstItem: {
-    fields: ['name', 'email', 'password'],
-  },
-});
+})
 
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24; // 24 hours
+let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+let sessionMaxAge = 60 * 60 * 24 // 24 hours
 
 const session = statelessSessions({
   maxAge: sessionMaxAge,
   secret: sessionSecret,
-});
+})
 
 export { withAuth, session }
 ```
 
 ```ts
 //keystone.ts
-import { list, config } from '@keystone-6/core';
-import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
-import { withAuth, session } from './auth';
+import { list, config } from '@keystone-6/core'
+import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields'
+import { withAuth, session } from './auth'
 
 const lists = {
   User: list({
@@ -294,7 +260,7 @@ const lists = {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      password: password({ validation: { isRequired: true } })
+      password: password({ validation: { isRequired: true } }),
     },
   }),
   Post: list({
@@ -312,21 +278,35 @@ const lists = {
       author: relationship({ ref: 'User.posts' }),
     },
   }),
-};
+}
 
 export default config(
   withAuth({
     db: {
       provider: 'sqlite',
       url: 'file:./keystone.db',
+      async onConnect(context) {
+        // this creates an initial user if none exist so you can log in for development
+        // WARNING: do not use this in production
+        ;(async () => {
+          const sudoContext = context.sudo()
+          if ((await sudoContext.db.User.count()) !== 0) return
+
+          const password = crypto.getRandomValues(new Uint8Array(16)).toHex()
+          await sudoContext.db.User.createOne({
+            data: { name: 'admin', email: 'admin@example.com', password },
+          })
+          console.log(`Created initial user: admin@example.com / ${password}`)
+        })().catch(error => console.error('Failed to create initial user:', error))
+      },
     },
     lists,
     session,
     ui: {
-      isAccessAllowed: (context) => !!context.session?.data,
+      isAccessAllowed: context => !!context.session?.data,
     },
   })
-);
+)
 ```
 
 ## Next lesson
