@@ -182,9 +182,6 @@ importers:
       classnames:
         specifier: ^2.3.1
         version: 2.5.1
-      clipboard-copy:
-        specifier: ^4.0.1
-        version: 4.0.1
       dedent:
         specifier: ^1.0.0
         version: 1.7.2(babel-plugin-macros@3.1.0)
@@ -2442,9 +2439,6 @@ importers:
       ci-info:
         specifier: ^4.0.0
         version: 4.4.0
-      clipboard-copy:
-        specifier: ^4.0.1
-        version: 4.0.1
       conf:
         specifier: ^10.2.0
         version: 10.2.0
@@ -7665,9 +7659,6 @@ packages:
 
   client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
-
-  clipboard-copy@4.0.1:
-    resolution: {integrity: sha512-wOlqdqziE/NNTUJsfSgXmBMIrYmfd5V0HCGsR8uAKHcg+h9NENWINcfRjtWGU77wDHC8B8ijV4hMTGYbrKovng==}
 
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -18067,8 +18058,6 @@ snapshots:
   cli-width@3.0.0: {}
 
   client-only@0.0.1: {}
-
-  clipboard-copy@4.0.1: {}
 
   cliui@8.0.1:
     dependencies:

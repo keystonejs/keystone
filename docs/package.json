@@ -29,7 +29,6 @@
     "@sindresorhus/slugify": "^3.0.0",
     "@vercel/og": "^0.11.0",
     "classnames": "^2.3.1",
-    "clipboard-copy": "^4.0.1",
     "dedent": "^1.0.0",
     "facepaint": "^1.2.1",
     "globby": "^16.0.0",

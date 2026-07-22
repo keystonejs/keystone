@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { type HTMLAttributes, useEffect, useState } from 'react'
-import copy from 'clipboard-copy'
 
 import { Icon } from '@keystar/ui/icon'
 import { checkIcon } from '@keystar/ui/icon/icons/checkIcon'
@@ -22,7 +21,7 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
 
   const handleCopy = async () => {
     try {
-      await copy(code)
+      await navigator.clipboard.writeText(code)
       setDidJustCopy(true)
       // we don't want to do anything if the copy fails
     } catch {}
