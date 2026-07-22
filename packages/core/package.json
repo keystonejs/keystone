@@ -274,8 +274,7 @@
     "prisma": "catalog:",
     "prompts": "^2.4.2",
     "react-aria": "catalog:",
-    "react-stately": "catalog:",
-    "resolve": "^1.20.0"
+    "react-stately": "catalog:"
   },
   "peerDependencies": {
     "next": "^16.0.0",
@@ -307,7 +306,6 @@
     "@types/prompts": "^2.0.14",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/resolve": "^1.20.2",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
