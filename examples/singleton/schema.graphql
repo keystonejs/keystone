@@ -5,8 +5,8 @@ type Settings {
   id: ID!
   websiteName: String
   copyrightText: String
-  highlightedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  highlightedPostsCount(where: PostWhereInput! = {}): Int
+  highlightedPosts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  highlightedPostsCount(where: PostWhereInput! = {  }): Int
 }
 
 input SettingsWhereUniqueInput {
@@ -93,7 +93,7 @@ input PostRelateToManyForUpdateInput {
 }
 
 input SettingsUpdateArgs {
-  where: SettingsWhereUniqueInput! = {id: 1}
+  where: SettingsWhereUniqueInput! = { id: 1 }
   data: SettingsUpdateInput!
 }
 
@@ -175,9 +175,9 @@ scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 type Mutation {
   createSettings(data: SettingsCreateInput!): Settings
   createManySettings(data: [SettingsCreateInput!]!): [Settings]
-  updateSettings(where: SettingsWhereUniqueInput! = {id: 1}, data: SettingsUpdateInput!): Settings
+  updateSettings(where: SettingsWhereUniqueInput! = { id: 1 }, data: SettingsUpdateInput!): Settings
   updateManySettings(data: [SettingsUpdateArgs!]!): [Settings]
-  deleteSettings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  deleteSettings(where: SettingsWhereUniqueInput! = { id: 1 }): Settings
   deleteManySettings(where: [SettingsWhereUniqueInput!]!): [Settings]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
@@ -188,12 +188,12 @@ type Mutation {
 }
 
 type Query {
-  settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
-  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
-  manySettingsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
+  settings(where: SettingsWhereUniqueInput! = { id: 1 }): Settings
+  manySettings(where: SettingsWhereInput! = { id: { equals: 1 } }, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
+  manySettingsCount(where: SettingsWhereInput! = { id: { equals: 1 } }): Int
   post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {  }, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

@@ -3,8 +3,8 @@
 
 type Order {
   id: ID!
-  items(where: ItemWhereInput! = {}, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
-  itemsCount(where: ItemWhereInput! = {}): Int
+  items(where: ItemWhereInput! = {  }, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
+  itemsCount(where: ItemWhereInput! = {  }): Int
   createdAt: DateTime
 }
 
@@ -273,14 +273,14 @@ type Mutation {
 
 type Query {
   order(where: OrderWhereUniqueInput!): Order
-  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
-  ordersCount(where: OrderWhereInput! = {}): Int
+  orders(where: OrderWhereInput! = {  }, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
+  ordersCount(where: OrderWhereInput! = {  }): Int
   item(where: ItemWhereUniqueInput!): Item
-  items(where: ItemWhereInput! = {}, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
-  itemsCount(where: ItemWhereInput! = {}): Int
+  items(where: ItemWhereInput! = {  }, orderBy: [ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ItemWhereUniqueInput): [Item!]
+  itemsCount(where: ItemWhereInput! = {  }): Int
   product(where: ProductWhereUniqueInput!): Product
-  products(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
-  productsCount(where: ProductWhereInput! = {}): Int
+  products(where: ProductWhereInput! = {  }, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
+  productsCount(where: ProductWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

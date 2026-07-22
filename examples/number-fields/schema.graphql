@@ -129,8 +129,8 @@ type Mutation {
 
 type Query {
   example(where: ExampleWhereUniqueInput!): Example
-  examples(where: ExampleWhereInput! = {}, orderBy: [ExampleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExampleWhereUniqueInput): [Example!]
-  examplesCount(where: ExampleWhereInput! = {}): Int
+  examples(where: ExampleWhereInput! = {  }, orderBy: [ExampleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExampleWhereUniqueInput): [Example!]
+  examplesCount(where: ExampleWhereInput! = {  }): Int
   keystone: KeystoneMeta!
 }
 

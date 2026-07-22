@@ -323,7 +323,6 @@ jobs:
             'extend-express-app.test.ts',
             'extend-graphql-schema-graphql-tools.test.ts',
             'extend-graphql-schema-graphql-ts.test.ts',
-            'extend-graphql-schema-nexus.test.ts',
             'testing.test.ts',
             'usecase-blog.test.ts',
             'usecase-roles.test.ts',

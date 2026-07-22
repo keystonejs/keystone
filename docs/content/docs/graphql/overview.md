@@ -51,13 +51,13 @@ This system will generate the following GraphQL API.
 ```graphql
 type Query {
   users(
-    where: UserWhereInput! = {}
+    where: UserWhereInput! = {  }
     orderBy: [UserOrderByInput!]! = []
     take: Int
     skip: Int! = 0
   ): [User!]
   user(where: UserWhereUniqueInput!): User
-  usersCount(where: UserWhereInput! = {}): Int
+  usersCount(where: UserWhereInput! = {  }): Int
 }
 
 type User {
@@ -189,7 +189,7 @@ input UserWhereUniqueInput {
 ```graphql
 type Query {
   users(
-    where: UserWhereInput! = {}
+    where: UserWhereInput! = {  }
     orderBy: [UserOrderByInput!]! = []
     take: Int
     skip: Int! = 0
@@ -269,7 +269,7 @@ enum OrderDirection {
 
 ```graphql
 type Query {
-  usersCount(where: UserWhereInput! = {}): Int
+  usersCount(where: UserWhereInput! = {  }): Int
 }
 
 input UserWhereInput {

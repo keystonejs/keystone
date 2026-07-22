@@ -123,7 +123,4 @@ A full keystone project illustrating how to extend your GraphQL schema using gra
 {% well heading="Example Project: Extend GraphQL Schema with GraphQL-Tools" href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-tools" %}
 A full keystone project illustrating how to extend your GraphQL schema using @graphql-tools/schema.
 {% /well %}
-{% well heading="Example Project: Extend GraphQL Schema with Nexus" href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus" %}
-A full keystone project illustrating how to extend your GraphQL schema using Nexus and @graphql-tools/schema.
-{% /well %}
 {% /related-content %}

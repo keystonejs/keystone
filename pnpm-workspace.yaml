@@ -24,7 +24,7 @@ catalog:
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
   express: ^4.19.2
-  graphql: ^16.14.2
+  graphql: ^17.0.2
   next: ^16.2.10
   prisma: ^6.19.3
   react: ^19.2.4
@@ -66,3 +66,4 @@ minimumReleaseAgeExclude:
   - '@oxlint/binding-win32-ia32-msvc@1.75.0'
   - '@oxlint/binding-win32-x64-msvc@1.75.0'
   - oxlint@1.75.0
+  - graphql-upload@17.1.0
