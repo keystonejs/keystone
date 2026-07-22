@@ -1,12 +1,12 @@
 import {
-  BaseFieldTypeInfo,
+  type BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
-import { controller } from './views'
+import type { controller } from './views'
 
 type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

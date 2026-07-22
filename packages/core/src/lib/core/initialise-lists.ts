@@ -1,5 +1,5 @@
 import type { CacheHint } from '@apollo/cache-control-types'
-import { GInputObjectType, type GArg, type GInputType } from '@graphql-ts/schema'
+import type { GInputObjectType, GArg, GInputType } from '@graphql-ts/schema'
 import { GNonNull } from '@graphql-ts/schema'
 import {
   GraphQLList,

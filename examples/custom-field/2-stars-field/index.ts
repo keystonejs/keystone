@@ -1,5 +1,5 @@
 import {
-  BaseFieldTypeInfo,
+  type BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
@@ -7,7 +7,7 @@ import {
   orderDirectionEnum,
 } from '@keystone-6/core/types'
 import { g } from '@keystone-6/core'
-import { controller } from './views'
+import type { controller } from './views'
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range

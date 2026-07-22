@@ -3,7 +3,7 @@ import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, text, timestamp } from '@keystone-6/core/fields'
 
 import type { Lists } from '.keystone/types'
-import { BaseListTypeInfo } from '@keystone-6/core/types'
+import type { BaseListTypeInfo } from '@keystone-6/core/types'
 
 const systemField = {
   access: {
