@@ -6,7 +6,11 @@
   },
   "rules": {
     "react/rules-of-hooks": "error",
-    "import/consistent-type-specifier-style": ["error", "prefer-top-level-if-only-type-imports"]
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level-if-only-type-imports"],
+    "typescript/consistent-type-imports": [
+      "error",
+      { "fixStyle": "inline-type-imports", "disallowTypeAnnotations": false }
+    ]
   },
   "env": {
     "builtin": true

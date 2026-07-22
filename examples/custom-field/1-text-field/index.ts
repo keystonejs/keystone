@@ -1,13 +1,13 @@
 import { g } from '@keystone-6/core'
 import {
-  BaseFieldTypeInfo,
+  type BaseFieldTypeInfo,
   type BaseListTypeInfo,
   type CommonFieldConfig,
   type FieldTypeFunc,
   fieldType,
   orderDirectionEnum,
 } from '@keystone-6/core/types'
-import { controller } from './views'
+import type { controller } from './views'
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   ListTypeInfo,

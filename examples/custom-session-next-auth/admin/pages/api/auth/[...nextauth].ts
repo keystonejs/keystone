@@ -1,4 +1,4 @@
-import NextAuth, { DefaultUser } from 'next-auth'
+import NextAuth, { type DefaultUser } from 'next-auth'
 import { nextAuthOptions } from '../../../../session'
 // WARNING: this is only needed for our monorepo examples, dont do this
 import * as Prisma from 'myprisma'
