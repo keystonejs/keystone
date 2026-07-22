@@ -13,12 +13,13 @@ packages:
   - 'prisma-utils'
   - '!**/node_modules/**'
 catalog:
-  '@prisma/adapter-better-sqlite3': ~7.8.0
-  '@prisma/adapter-mariadb': ~7.8.0
-  '@prisma/adapter-pg': ~7.8.0
-  '@prisma/client': ~7.8.0
-  '@prisma/generator-helper': 7.8.0
-  '@prisma/internals': 7.8.0
+  '@prisma/adapter-better-sqlite3': ^7.9.0
+  '@prisma/adapter-mariadb': ^7.9.0
+  '@prisma/adapter-pg': ^7.9.0
+  '@prisma/client': ^7.9.0
+  '@prisma/generator-helper': 7.9.0
+  '@prisma/internals': 7.9.0
+  prisma: ^7.9.0
   better-sqlite3: ^12.6.0
   '@types/express': ^4.17.14
   '@types/node': ^24.0.0
@@ -29,7 +30,6 @@ catalog:
   next: ^16.2.10
   mariadb: 3.4.5
   pg: ^8.16.3
-  prisma: ~7.8.0
   react: ^19.2.4
   react-dom: ^19.2.4
   typescript: ^6.0.0
@@ -70,3 +70,21 @@ minimumReleaseAgeExclude:
   - '@oxlint/binding-win32-ia32-msvc@1.75.0'
   - '@oxlint/binding-win32-x64-msvc@1.75.0'
   - oxlint@1.75.0
+  - '@prisma/adapter-better-sqlite3@7.9.0'
+  - '@prisma/adapter-mariadb@7.9.0'
+  - '@prisma/adapter-pg@7.9.0'
+  - '@prisma/client-runtime-utils@7.9.0'
+  - '@prisma/client@7.9.0'
+  - '@prisma/config@7.9.0'
+  - '@prisma/debug@7.9.0'
+  - '@prisma/dmmf@7.9.0'
+  - '@prisma/driver-adapter-utils@7.9.0'
+  - '@prisma/engines@7.9.0'
+  - '@prisma/fetch-engine@7.9.0'
+  - '@prisma/generator-helper@7.9.0'
+  - '@prisma/generator@7.9.0'
+  - '@prisma/get-dmmf@7.9.0'
+  - '@prisma/get-platform@7.9.0'
+  - '@prisma/internals@7.9.0'
+  - '@prisma/schema-files-loader@7.9.0'
+  - prisma@7.9.0
