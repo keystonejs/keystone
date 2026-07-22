@@ -68,6 +68,7 @@ export const lists = {
       // a passwordChangedAt field, invalidates a session if changed
       passwordChangedAt: timestamp({
         access: denyAll,
+        graphql: { omit: true },
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'hidden' },
