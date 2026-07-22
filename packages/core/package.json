@@ -275,8 +275,7 @@
     "prompts": "^2.4.2",
     "react-aria": "catalog:",
     "react-stately": "catalog:",
-    "resolve": "^1.20.0",
-    "uuid": "^14.0.0"
+    "resolve": "^1.20.0"
   },
   "peerDependencies": {
     "next": "^16.0.0",
@@ -309,7 +308,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/resolve": "^1.20.2",
-    "@types/uuid": "^11.0.0",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
