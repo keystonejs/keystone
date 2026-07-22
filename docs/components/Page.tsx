@@ -13,7 +13,7 @@ import { Breadcrumbs } from './Breadcrumbs'
 import { Stack } from './primitives/Stack'
 import { Header } from './Header'
 import { Footer } from './Footer'
-import { type HeadingType } from './Markdoc'
+import type { HeadingType } from './Markdoc'
 
 export function BlogPage({
   children,

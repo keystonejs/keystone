@@ -7,12 +7,12 @@
 // ideally Slate would use generics instead of module augmentation so this
 // wouldn't be a problem but for now, it is so
 // DO NOT IMPORT THIS FILE
-import { type BaseEditor, type BaseElement, type BaseRange } from 'slate'
-import { type HistoryEditor } from 'slate-history'
-import { type ReactEditor } from 'slate-react'
-import { type RelationshipData } from './component-blocks/api'
-import { type ReadonlyPropPath } from './component-blocks/utils'
-import { type Mark } from './utils'
+import type { BaseEditor, BaseElement, BaseRange } from 'slate'
+import type { HistoryEditor } from 'slate-history'
+import type { ReactEditor } from 'slate-react'
+import type { RelationshipData } from './component-blocks/api'
+import type { ReadonlyPropPath } from './component-blocks/utils'
+import type { Mark } from './utils'
 
 type Link = {
   type: 'link'

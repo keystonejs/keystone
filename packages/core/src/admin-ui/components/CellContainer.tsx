@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Cell } from '@keystar/ui/table'
 
 export function CellContainer({ children, ...props }: { children: ReactNode }) {

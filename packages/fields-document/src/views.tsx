@@ -7,7 +7,7 @@ import { Node } from 'slate'
 
 import { DocumentEditor } from './DocumentEditor'
 import { ForceValidationProvider } from './DocumentEditor/utils-hooks'
-import { type controller, type DocumentFeatures } from './views-shared'
+import type { controller, DocumentFeatures } from './views-shared'
 
 export { controller } from './views-shared'
 export { type DocumentFeatures }

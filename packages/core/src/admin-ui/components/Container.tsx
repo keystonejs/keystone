@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 import { type BoxProps, Box } from '@keystar/ui/layout'
 
 export const CONTAINER_MAX = 'container.large'

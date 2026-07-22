@@ -8,7 +8,7 @@ import {
 
 import { css, tokenSchema } from '@keystar/ui/style'
 
-import { type ComponentBlock } from './api-shared'
+import type { ComponentBlock } from './api-shared'
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
 import { useElementWithSetNodes, useEventCallback } from '../utils-hooks'
 import { getInitialValue } from './initial-values'

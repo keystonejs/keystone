@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes } from 'react'
+import type { HTMLAttributes } from 'react'
 
 type PillProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6'

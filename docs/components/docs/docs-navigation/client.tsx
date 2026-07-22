@@ -2,7 +2,7 @@
 
 'use client'
 
-import { type NavigationMap } from '.'
+import type { NavigationMap } from '.'
 import { Badge } from '../../primitives/Badge'
 import { NavItem, NavSection } from '../Navigation'
 

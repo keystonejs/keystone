@@ -1,4 +1,4 @@
-import { type RenderableTreeNode } from '@markdoc/markdoc'
+import type { RenderableTreeNode } from '@markdoc/markdoc'
 import React, { type ReactNode } from 'react'
 import { isTag } from './isTag'
 import { transformContent } from '.'

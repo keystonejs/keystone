@@ -1,7 +1,7 @@
 import { config, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, timestamp } from '@keystone-6/core/fields'
-import { type TypeInfo } from '.keystone/types'
+import type { TypeInfo } from '.keystone/types'
 
 export default config<TypeInfo>({
   db: {

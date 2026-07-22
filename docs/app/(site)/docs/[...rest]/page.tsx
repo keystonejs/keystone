@@ -5,7 +5,7 @@ import { reader } from '../../../../keystatic/reader'
 import { baseMarkdocConfig } from '../../../../markdoc/config'
 import { extractHeadings } from '../../../../markdoc/headings'
 import PageClient from './page-client'
-import { type EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
+import type { EntryWithResolvedLinkedFiles } from '@keystatic/core/reader'
 import type keystaticConfig from '../../../../keystatic.config'
 import { DocsLayout } from '../../../../components/docs/DocsLayout'
 

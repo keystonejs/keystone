@@ -1,6 +1,6 @@
 'use client'
 
-import { type Document } from './page'
+import type { Document } from './page'
 
 import { Markdoc } from '../../../../components/Markdoc'
 

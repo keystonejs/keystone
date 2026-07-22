@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { type HTMLAttributes } from 'react'
+import type { HTMLAttributes } from 'react'
 
 import { Twitter } from './icons/Twitter'
 // import { YouTube } from './icons/YouTube';

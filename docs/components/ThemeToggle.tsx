@@ -2,7 +2,7 @@
 
 import { Fragment, useState, useEffect, type HTMLAttributes } from 'react'
 
-import { type COLORS } from '../lib/TOKENS'
+import type { COLORS } from '../lib/TOKENS'
 import { LightMode } from './icons/LightMode'
 import { DarkMode } from './icons/DarkMode'
 import { useThemeContext } from '../app/(site)/layout-client'

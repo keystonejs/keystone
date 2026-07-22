@@ -1,11 +1,12 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "react"],
+  "plugins": ["typescript", "react", "import"],
   "categories": {
     "correctness": "off"
   },
   "rules": {
-    "react/rules-of-hooks": "error"
+    "react/rules-of-hooks": "error",
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level-if-only-type-imports"]
   },
   "env": {
     "builtin": true

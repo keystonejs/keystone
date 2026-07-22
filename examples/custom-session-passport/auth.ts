@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import { statelessSessions } from '@keystone-6/core/session'
-import { type KeystoneContext } from '@keystone-6/core/types'
+import type { KeystoneContext } from '@keystone-6/core/types'
 
 import { Passport } from 'passport'
-import { type VerifyCallback } from 'passport-oauth2'
+import type { VerifyCallback } from 'passport-oauth2'
 import { Strategy, type StrategyOptions, type Profile } from 'passport-github2'
 
-import { type Author } from 'myprisma'
-import { type TypeInfo } from '.keystone/types'
+import type { Author } from 'myprisma'
+import type { TypeInfo } from '.keystone/types'
 
 export type Session = Author
 

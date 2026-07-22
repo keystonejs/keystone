@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 
 import { Icon } from '@keystar/ui/icon'
 import { Flex } from '@keystar/ui/layout'

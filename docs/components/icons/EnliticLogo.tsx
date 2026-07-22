@@ -1,6 +1,6 @@
 import { jsx } from '@emotion/react'
 
-import { type IconProps } from './util'
+import type { IconProps } from './util'
 
 export function EnliticLogo(props: IconProps) {
   return (

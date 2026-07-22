@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core'
 import { integer } from '@keystone-6/core/fields'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { type FieldTypeFunc, type BaseListTypeInfo } from '@keystone-6/core/types'
+import type { FieldTypeFunc, BaseListTypeInfo } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 
 function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {

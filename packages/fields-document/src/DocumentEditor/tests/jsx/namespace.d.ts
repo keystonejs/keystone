@@ -1,6 +1,6 @@
-import { type Node } from 'slate'
-import { type ReadonlyPropPath } from '../../component-blocks/utils'
-import { type Mark } from '../../utils'
+import type { Node } from 'slate'
+import type { ReadonlyPropPath } from '../../component-blocks/utils'
+import type { Mark } from '../../utils'
 
 export const __jsx: any
 

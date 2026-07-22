@@ -1,7 +1,7 @@
 import { g } from '@keystone-6/core'
 import type { KeystoneContext } from '@keystone-6/core/types'
-import { type FieldData } from '@keystone-6/core/types'
-import { type ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
+import type { FieldData } from '@keystone-6/core/types'
+import type { ComponentSchema } from './DocumentEditor/component-blocks/api-shared'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 import type { GArg, GField, GInputType, GOutputType } from '@keystone-6/core/graphql-ts'
 

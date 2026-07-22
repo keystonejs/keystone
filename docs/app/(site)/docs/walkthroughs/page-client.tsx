@@ -3,7 +3,7 @@
 'use client'
 
 import { Type } from '../../../../components/primitives/Type'
-import { type FeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map'
+import type { FeaturedDocsMap } from '../../../../keystatic/get-featured-docs-map'
 import {
   FeaturedCard,
   FullWidthCardContainer,

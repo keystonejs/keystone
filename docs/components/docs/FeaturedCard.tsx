@@ -6,7 +6,7 @@ import { useId } from 'react'
 import { Well } from '../primitives/Well'
 import { Markdoc } from '../Markdoc'
 import { useMediaQuery } from '../../lib/media'
-import { type Gradient } from '../../keystatic/gradient-selector'
+import type { Gradient } from '../../keystatic/gradient-selector'
 import { RenderableTreeNode, type Tag } from '@markdoc/markdoc'
 
 export function FeaturedCard({
