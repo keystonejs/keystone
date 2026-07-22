@@ -21,7 +21,7 @@ function getGraphQLSchema(
       GField<unknown, any, GOutputType<KeystoneContext>, unknown, KeystoneContext>
     >
   },
-  sudo: boolean
+  scope: 'public' | 'internal'
 ) {
   const query = g.object()({
     name: 'Query',
@@ -51,7 +51,7 @@ function getGraphQLSchema(
     mutation,
     types: [...collectedTypes, g.JSON, mutation],
     extensions: {
-      sudo,
+      scope,
     },
   })
 }
@@ -60,7 +60,7 @@ export function createGraphQLSchema(
   config: KeystoneConfig,
   lists: Record<string, InitialisedList>,
   adminMeta: AdminMetaSource | null,
-  sudo: boolean
+  scope: 'public' | 'internal'
 ) {
   const graphQLSchema = getGraphQLSchema(
     lists,
@@ -75,7 +75,7 @@ export function createGraphQLSchema(
           }
         : {},
     },
-    sudo
+    scope
   )
 
   // merge in the user defined graphQL API

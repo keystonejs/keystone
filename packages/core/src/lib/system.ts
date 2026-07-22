@@ -93,7 +93,7 @@ function getInternalGraphQLSchema(config: KeystoneConfig) {
 
   const lists = initialiseLists(withoutOmit)
   const adminMeta = createAdminMeta(withoutOmit, lists)
-  return createGraphQLSchema(withoutOmit, lists, adminMeta, true)
+  return createGraphQLSchema(withoutOmit, lists, adminMeta, 'internal')
 }
 
 function injectNewDefaults(prismaClient: unknown, lists: Record<string, InitialisedList>) {
@@ -148,7 +148,7 @@ export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchemas = {
-    public: createGraphQLSchema(config, lists, adminMeta, false),
+    public: createGraphQLSchema(config, lists, adminMeta, 'public'),
     internal: getInternalGraphQLSchema(config),
   }
 
