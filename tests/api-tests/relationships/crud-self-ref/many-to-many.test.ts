@@ -234,13 +234,13 @@ describe(`Many-to-many relationships`, () => {
         })) as { id: IdType; friends: any[] }[]
         // Both companies should have a location, and the location should have two companies
         const linkedUsers = _users.filter(({ id }) => id === user.id || id === User.id)
+        const linkedUserIds = linkedUsers.map(({ id }) => id.toString()).sort()
         linkedUsers.forEach(({ friends }) => {
           expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([Friend.id.toString()])
+          expect(friends[0].friendOf.map(({ id }: { id: IdType }) => id.toString()).sort()).toEqual(
+            linkedUserIds
+          )
         })
-        expect(linkedUsers[0].friends[0].friendOf).toEqual([
-          { id: linkedUsers[0].id },
-          { id: linkedUsers[1].id },
-        ])
       })
     )
 
@@ -268,14 +268,20 @@ describe(`Many-to-many relationships`, () => {
         const users = (await context.query.User.findMany({
           query: 'id friends { id friendOf { id } }',
         })) as { id: IdType; friends: any[] }[]
+        const linkedUserIds = users
+          .filter(({ id }) => id !== Friend.id)
+          .map(({ id }) => id.toString())
+          .sort()
         users.forEach(({ id, friends }) => {
           if (id === Friend.id) {
             expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([])
           } else {
             expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([Friend.id.toString()])
+            expect(
+              friends[0].friendOf.map(({ id }: { id: IdType }) => id.toString()).sort()
+            ).toEqual(linkedUserIds)
           }
         })
-        expect(users[0].friends[0].friendOf).toEqual([{ id: users[0].id }, { id: users[2].id }])
       })
     )
 
