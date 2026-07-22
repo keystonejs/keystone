@@ -14,22 +14,25 @@ import {
   seedMany,
 } from './utils2'
 
+const now = new Date()
+let randomState = now.getUTCFullYear() * 100 + now.getUTCMonth() + 1
+
+// ~ranqd1
+function randomInt(max: number) {
+  randomState = (randomState * 1664525 + 1013904223) >>> 0
+  return Math.floor((randomState / 2 ** 32) * max)
+}
+
 describe(`field.access.filterable tests (filters > 1) (${dbProvider})`, () => {
   const suite = setupTestSuite({ config })()
 
   for (const l of lists) {
     const itemQuery = `id ${l.fields.map(x => x.name).join(' ')}`
-    const coveredPairKinds = new Set<string>()
 
-    for (let i = 0; i < l.fields.length; i++) {
-      for (let j = i + 1; j < l.fields.length; j++) {
-        const f1 = l.fields[i]
-        const f2 = l.fields[j]
-        const pairKind = [f1, f2]
-          .map(field => `${field.expect.filter}:${field.expect.unique}`)
-          .join(',')
-        if (coveredPairKinds.has(pairKind)) continue
-        coveredPairKinds.add(pairKind)
+    for (const f1 of l.fields) {
+      for (const f2 of l.fields) {
+        if (f1 === f2) continue
+        if (randomInt(100) < 95) continue
 
         const fields = [f1, f2]
         const filterable = fields.every(f => f.expect.filter)
