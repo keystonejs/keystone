@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { useListFormatter } from 'react-aria/useListFormatter'
-import copyToClipboard from 'clipboard-copy'
 
 import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
@@ -26,7 +25,7 @@ export function Field({ value }: FieldProps<typeof controller>) {
 
   const onCopy = useCallback(async () => {
     try {
-      if (value) await copyToClipboard(value)
+      if (value) await navigator.clipboard.writeText(value)
       setTooltipState({ isOpen: true, tone: 'positive' })
     } catch (err: any) {
       setTooltipState({ isOpen: true, tone: 'critical' })
