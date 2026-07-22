@@ -2,13 +2,13 @@ import type { ExecutionResult } from 'graphql'
 
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { list } from '@keystone-6/core'
-import { allowAll } from '@keystone-6/core/access'
+import { allowAll, denyAll } from '@keystone-6/core/access'
 import { integer } from '@keystone-6/core/fields'
 
 import {
+  expectAccessDenied,
   expectAccessReturnError,
   expectBadUserInput,
-  expectFilterDenied,
   expectGraphQLValidationError,
   type ContextFromRunner,
 } from '../utils'
@@ -22,52 +22,88 @@ const runner = setupTestRunner({
         fields: {
           a: integer(),
           b: integer(),
-          orderFalse: integer({ isOrderable: false }),
-          orderTrue: integer({ isOrderable: true }),
-          orderFunctionFalse: integer({ isOrderable: () => false }),
-          orderFunctionTrue: integer({ isOrderable: () => true }),
-          // @ts-expect-error
-          orderFunctionOtherFalsey: integer({ isOrderable: () => null }),
-          // @ts-expect-error
-          orderFunctionOtherTruthy: integer({ isOrderable: () => ({}) }),
-          orderFunctionFalseToo: integer({ isOrderable: () => false }),
+          orderFalse: integer({
+            graphql: { omit: { read: { item: false, filter: false, order: true } } },
+          }),
+          orderTrue: integer(),
+          orderFunctionFalse: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: denyAll } },
+          }),
+          orderFunctionTrue: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+          }),
+          orderFunctionOtherFalsey: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: () => null } },
+          } as any),
+          orderFunctionOtherTruthy: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: () => ({}) } },
+          } as any),
+          orderFunctionFalseToo: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: denyAll } },
+          }),
         },
       }),
       DefaultOrderUndefined: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultOrderFalse: list({
+      DefaultOrderOmitted: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        defaultIsOrderable: false,
+        fieldDefaults: {
+          graphql: { omit: { read: { item: false, filter: false, order: true } } },
+        },
+        fields: {
+          a: integer(),
+          b: integer({
+            graphql: { omit: { read: { item: false, filter: false, order: false } } },
+          }),
+        },
       }),
-      DefaultOrderTrue: list({
+      DefaultOrderRetained: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        defaultIsOrderable: true,
+        fieldDefaults: {
+          graphql: { omit: { read: { item: false, filter: false, order: false } } },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultOrderFunctionFalse: list({
+      DefaultOrderAccessDenied: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        defaultIsOrderable: () => false,
+        fieldDefaults: {
+          access: { read: { item: allowAll, filter: allowAll, order: denyAll } },
+        },
+        fields: {
+          a: integer(),
+          b: integer({
+            access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+          }),
+        },
       }),
-      DefaultOrderFunctionTrue: list({
+      DefaultOrderAccessAllowed: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        defaultIsOrderable: () => true,
+        fieldDefaults: {
+          access: { read: { item: allowAll, filter: allowAll, order: allowAll } },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultOrderFunctionFalsey: list({
+      DefaultOrderAccessFalsey: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-expect-error
-        defaultIsOrderable: () => null,
+        fieldDefaults: {
+          access: {
+            // @ts-expect-error
+            read: { item: allowAll, filter: allowAll, order: () => null },
+          },
+        },
+        fields: { a: integer(), b: integer() },
       }),
-      DefaultOrderFunctionTruthy: list({
+      DefaultOrderAccessTruthy: list({
         access: allowAll,
-        fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-expect-error
-        defaultIsOrderable: () => ({}),
+        fieldDefaults: {
+          access: {
+            // @ts-expect-error
+            read: { item: allowAll, filter: allowAll, order: () => ({}) },
+          },
+        },
+        fields: { a: integer(), b: integer() },
       }),
     },
   },
@@ -392,10 +428,10 @@ describe('isOrderable', () => {
         query: '{ users(orderBy: [{orderFunctionFalse: asc}]) { id } }',
       })
       expect(data).toEqual({ users: null })
-      expectFilterDenied(errors, [
+      expectAccessDenied(errors, [
         {
           path: ['users'],
-          message: 'Access denied: You cannot orderBy by User.orderFunctionFalse',
+          msg: 'You cannot order that User - you cannot order the fields orderFunctionFalse',
         },
       ])
     })
@@ -424,7 +460,7 @@ describe('isOrderable', () => {
       expectAccessReturnError(errors, [
         {
           path: ['users'],
-          errors: [{ tag: 'User.orderFunctionOtherFalsey.isOrderable', returned: 'object' }],
+          errors: [{ tag: 'User.orderFunctionOtherFalsey.access.read.order', returned: 'object' }],
         },
       ])
     })
@@ -441,7 +477,7 @@ describe('isOrderable', () => {
       expectAccessReturnError(errors, [
         {
           path: ['users'],
-          errors: [{ tag: 'User.orderFunctionOtherTruthy.isOrderable', returned: 'object' }],
+          errors: [{ tag: 'User.orderFunctionOtherTruthy.access.read.order', returned: 'object' }],
         },
       ])
     })
@@ -456,20 +492,19 @@ describe('isOrderable', () => {
           '{ users(orderBy: [{orderFunctionTrue: asc}, {orderFunctionFalse: asc}, {orderFunctionFalseToo: asc}]) { id } }',
       })
       expect(data).toEqual({ users: null })
-      expectFilterDenied(errors, [
+      expectAccessDenied(errors, [
         {
           path: ['users'],
-          message:
-            'Access denied: You cannot orderBy by User.orderFunctionFalse, User.orderFunctionFalseToo',
+          msg: 'You cannot order that User - you cannot order the fields orderFunctionFalse',
         },
       ])
     })
   )
 })
 
-describe('defaultIsOrderable', () => {
+describe('fieldDefaults order', () => {
   test(
-    'defaultIsOrderable: undefined',
+    'undefined retains order fields',
     runner(async ({ context }) => {
       await initialiseData({ context })
       const { data, errors } = (await context.graphql.raw({
@@ -481,91 +516,103 @@ describe('defaultIsOrderable', () => {
   )
 
   test(
-    'defaultIsOrderable: false',
+    'fieldDefaults.graphql.omit.read.order omits order fields and can be overridden',
     runner(async ({ context, gqlSuper }) => {
       await initialiseData({ context })
       const { body } = await gqlSuper({
-        query: '{ defaultOrderFalses(orderBy: [{a: asc}]) { id } }',
+        query: '{ defaultOrderOmitteds(orderBy: [{a: asc}]) { id } }',
       })
       expectGraphQLValidationError(body.errors, [
         {
           message:
-            'Field "a" is not defined by type "DefaultOrderFalseOrderByInput". Did you mean "b"?',
+            'Field "a" is not defined by type "DefaultOrderOmittedOrderByInput". Did you mean "b"?',
         },
       ])
-    })
-  )
 
-  test(
-    'defaultIsOrderable: true',
-    runner(async ({ context }) => {
-      await initialiseData({ context })
       const { data, errors } = (await context.graphql.raw({
-        query: '{ defaultOrderTrues(orderBy: [{a: asc}]) { id } }',
-      })) as ExecutionResult<{ defaultOrderTrues: { id: number }[] }>
-      expect(data!.defaultOrderTrues).toHaveLength(9)
+        query: '{ defaultOrderOmitteds(orderBy: [{b: asc}]) { id } }',
+      })) as ExecutionResult<{ defaultOrderOmitteds: { id: number }[] }>
+      expect(data!.defaultOrderOmitteds).toHaveLength(9)
       expect(errors).toBe(undefined)
     })
   )
 
   test(
-    'defaultIsOrderable: () => false',
-    runner(async ({ context }) => {
-      await initialiseData({ context })
-      const { data, errors } = await context.graphql.raw({
-        query: '{ defaultOrderFunctionFalses(orderBy: [{a: asc}]) { id } }',
-      })
-      expect(data).toEqual({ defaultOrderFunctionFalses: null })
-      expectFilterDenied(errors, [
-        {
-          path: ['defaultOrderFunctionFalses'],
-          message: 'Access denied: You cannot orderBy by DefaultOrderFunctionFalse.a',
-        },
-      ])
-    })
-  )
-
-  test(
-    'defaultIsOrderable: () => true',
+    'fieldDefaults.graphql.omit.read.order false retains order fields',
     runner(async ({ context }) => {
       await initialiseData({ context })
       const { data, errors } = (await context.graphql.raw({
-        query: '{ defaultOrderFunctionTrues(orderBy: [{a: asc}]) { id } }',
-      })) as ExecutionResult<{ defaultOrderFunctionTrues: { id: number }[] }>
-      expect(data!.defaultOrderFunctionTrues).toHaveLength(9)
+        query: '{ defaultOrderRetaineds(orderBy: [{a: asc}]) { id } }',
+      })) as ExecutionResult<{ defaultOrderRetaineds: { id: number }[] }>
+      expect(data!.defaultOrderRetaineds).toHaveLength(9)
       expect(errors).toBe(undefined)
     })
   )
 
   test(
-    'defaultIsOrderable: () => null',
+    'fieldDefaults.access.read.order denyAll denies ordering and can be overridden',
+    runner(async ({ context }) => {
+      await initialiseData({ context })
+      const denied = await context.graphql.raw({
+        query: '{ defaultOrderAccessDenieds(orderBy: [{a: asc}]) { id } }',
+      })
+      expect(denied.data).toEqual({ defaultOrderAccessDenieds: null })
+      expectAccessDenied(denied.errors, [
+        {
+          path: ['defaultOrderAccessDenieds'],
+          msg: 'You cannot order that DefaultOrderAccessDenied - you cannot order the fields a',
+        },
+      ])
+
+      const { data, errors } = (await context.graphql.raw({
+        query: '{ defaultOrderAccessDenieds(orderBy: [{b: asc}]) { id } }',
+      })) as ExecutionResult<{ defaultOrderAccessDenieds: { id: number }[] }>
+      expect(data!.defaultOrderAccessDenieds).toHaveLength(9)
+      expect(errors).toBe(undefined)
+    })
+  )
+
+  test(
+    'fieldDefaults.access.read.order allowAll allows ordering',
+    runner(async ({ context }) => {
+      await initialiseData({ context })
+      const { data, errors } = (await context.graphql.raw({
+        query: '{ defaultOrderAccessAlloweds(orderBy: [{a: asc}]) { id } }',
+      })) as ExecutionResult<{ defaultOrderAccessAlloweds: { id: number }[] }>
+      expect(data!.defaultOrderAccessAlloweds).toHaveLength(9)
+      expect(errors).toBe(undefined)
+    })
+  )
+
+  test(
+    'fieldDefaults.access.read.order returning null reports an invalid access return',
     runner(async ({ context }) => {
       await initialiseData({ context })
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultOrderFunctionFalseys(orderBy: [{a: asc}]) { id } }',
+        query: '{ defaultOrderAccessFalseys(orderBy: [{a: asc}]) { id } }',
       })
-      expect(data).toEqual({ defaultOrderFunctionFalseys: null })
+      expect(data).toEqual({ defaultOrderAccessFalseys: null })
       expectAccessReturnError(errors, [
         {
-          path: ['defaultOrderFunctionFalseys'],
-          errors: [{ tag: 'DefaultOrderFunctionFalsey.a.isOrderable', returned: 'object' }],
+          path: ['defaultOrderAccessFalseys'],
+          errors: [{ tag: 'DefaultOrderAccessFalsey.a.access.read.order', returned: 'object' }],
         },
       ])
     })
   )
 
   test(
-    'defaultIsOrderable: () => ({})',
+    'fieldDefaults.access.read.order returning an object reports an invalid access return',
     runner(async ({ context }) => {
       await initialiseData({ context })
       const { data, errors } = await context.graphql.raw({
-        query: '{ defaultOrderFunctionTruthies(orderBy: [{a: asc}]) { id } }',
+        query: '{ defaultOrderAccessTruthies(orderBy: [{a: asc}]) { id } }',
       })
-      expect(data).toEqual({ defaultOrderFunctionTruthies: null })
+      expect(data).toEqual({ defaultOrderAccessTruthies: null })
       expectAccessReturnError(errors, [
         {
-          path: ['defaultOrderFunctionTruthies'],
-          errors: [{ tag: 'DefaultOrderFunctionTruthy.a.isOrderable', returned: 'object' }],
+          path: ['defaultOrderAccessTruthies'],
+          errors: [{ tag: 'DefaultOrderAccessTruthy.a.access.read.order', returned: 'object' }],
         },
       ])
     })

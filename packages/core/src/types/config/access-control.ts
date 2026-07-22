@@ -9,13 +9,26 @@ export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
 }
 
 export type AccessOperation = 'create' | 'query' | 'update' | 'delete'
+export type QueryOperationKind = 'one' | 'many' | 'count'
 export type FilterOperation = 'query' | 'update' | 'delete'
 export type ItemOperation = 'create' | 'update' | 'delete'
 
 export type ListOperationAccessControl<
   Operation extends AccessOperation,
   ListTypeInfo extends BaseListTypeInfo,
-> = (args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }) => MaybePromise<boolean>
+> = (
+  args: BaseAccessArgs<ListTypeInfo> &
+    (Operation extends 'query'
+      ? { operation: 'query'; kind: QueryOperationKind }
+      : { operation: Operation })
+) => MaybePromise<boolean>
+
+export type ListQueryAccessControl<
+  Kind extends QueryOperationKind,
+  ListTypeInfo extends BaseListTypeInfo,
+> = (
+  args: BaseAccessArgs<ListTypeInfo> & { operation: 'query'; kind: Kind }
+) => MaybePromise<boolean>
 
 export type ListFilterAccessControl<
   Operation extends FilterOperation,
@@ -70,7 +83,11 @@ export type DeleteListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   ListItemAccessControl<'delete', ListTypeInfo>
 
 type ListAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
-  args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }
+  args: BaseAccessArgs<ListTypeInfo> &
+    (
+      | { operation: 'query'; kind: QueryOperationKind }
+      | { operation: Exclude<AccessOperation, 'query'> }
+    )
 ) => MaybePromise<boolean>
 
 type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
@@ -78,7 +95,13 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   operation:
     | ListOperationAccessControl<AccessOperation, ListTypeInfo>
     | {
-        query: ListOperationAccessControl<'query', ListTypeInfo>
+        query:
+          | ListQueryAccessControl<QueryOperationKind, ListTypeInfo>
+          | {
+              one: ListQueryAccessControl<'one', ListTypeInfo>
+              many: ListQueryAccessControl<'many', ListTypeInfo>
+              count: ListQueryAccessControl<'count', ListTypeInfo>
+            }
         create: ListOperationAccessControl<'create', ListTypeInfo>
         update: ListOperationAccessControl<'update', ListTypeInfo>
         delete: ListOperationAccessControl<'delete', ListTypeInfo>
@@ -143,6 +166,7 @@ export type FieldCreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
 export type FieldReadItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   BaseAccessArgs<ListTypeInfo> & {
     operation: 'read'
+    kind: 'item'
     fieldKey: string
     /**
      * The item being read
@@ -164,15 +188,41 @@ export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
     inputData: ListTypeInfo['inputs']['update']
   }
 
+export type FieldFilterItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'read'
+    kind: 'filter'
+    fieldKey: string
+  }
+
+export type FieldOrderItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'read'
+    kind: 'order'
+    fieldKey: string
+  }
+
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   | FieldAccessControlFunction<
       | FieldReadItemAccessArgs<ListTypeInfo>
+      | FieldFilterItemAccessArgs<ListTypeInfo>
+      | FieldOrderItemAccessArgs<ListTypeInfo>
       | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldUpdateItemAccessArgs<ListTypeInfo>
       // delete: not supported
     >
   | {
-      read?: FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>
+      read?:
+        | FieldAccessControlFunction<
+            | FieldReadItemAccessArgs<ListTypeInfo>
+            | FieldFilterItemAccessArgs<ListTypeInfo>
+            | FieldOrderItemAccessArgs<ListTypeInfo>
+          >
+        | {
+            item: FieldAccessControlFunction<FieldReadItemAccessArgs<ListTypeInfo>>
+            filter: FieldAccessControlFunction<FieldFilterItemAccessArgs<ListTypeInfo>>
+            order: FieldAccessControlFunction<FieldOrderItemAccessArgs<ListTypeInfo>>
+          }
       create?: FieldAccessControlFunction<FieldCreateItemAccessArgs<ListTypeInfo>>
       update?: FieldAccessControlFunction<FieldUpdateItemAccessArgs<ListTypeInfo>>
       // delete: not supported

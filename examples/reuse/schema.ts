@@ -7,7 +7,7 @@ import type { BaseListTypeInfo } from '@keystone-6/core/types'
 
 const systemField = {
   access: {
-    read: allowAll,
+    read: { item: allowAll, filter: denyAll, order: denyAll },
     create: denyAll,
     update: denyAll,
   },

@@ -68,7 +68,7 @@ const contributorsOrAbove = forUsers({
 
 function readOnlyBy(f: ({ session }: { session?: Session }) => boolean) {
   return {
-    read: f,
+    read: { item: f, filter: denyAll, order: denyAll },
     create: denyAll,
     update: denyAll,
   }
@@ -77,7 +77,7 @@ function readOnlyBy(f: ({ session }: { session?: Session }) => boolean) {
 function systemField(f: ({ session }: { session?: Session }) => boolean) {
   return {
     access: {
-      read: f,
+      read: { item: f, filter: denyAll, order: denyAll },
       create: denyAll,
       update: denyAll,
     },

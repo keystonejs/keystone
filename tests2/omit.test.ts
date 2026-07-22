@@ -1,108 +1,121 @@
-import assert from 'node:assert/strict'
-import { describe, test } from 'node:test'
-import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
+import { relationship, text } from '@keystone-6/core/fields'
 import type { KeystoneContext } from '@keystone-6/core/types'
-import { setupTestSuite, dbProvider } from './utils'
+import assert from 'node:assert/strict'
+import { describe, test } from 'node:test'
+import { dbProvider, setupTestSuite } from './utils'
+import { booleanVariations, makeName } from './utils2'
 
 function yn(x: boolean) {
   return x ? '1' : '0'
 }
 
+function makeOmitName(x: boolean | Record<string, boolean>) {
+  return makeName(x, 'OMIT', 'RETAIN')
+}
+
 function makeField({
-  isFilterable,
-  isOrderable,
   omit,
 }: {
-  isFilterable: boolean
-  isOrderable: boolean
   omit:
     | boolean
     | {
-        read: boolean
+        read: { item: boolean; filter: boolean; order: boolean }
         create: boolean
         update: boolean
       }
 }) {
-  const suffix = [
-    `Filt${yn(isFilterable)}`,
-    `Ord${yn(isOrderable)}`,
-    `Omit${
-      typeof omit !== 'object' ? yn(omit) : [omit.read, omit.create, omit.update].map(yn).join('')
-    }`,
-  ].join('')
-
   return [
-    `Field_${suffix}`,
+    `Field_${
+      typeof omit === 'boolean'
+        ? makeOmitName(omit)
+        : [omit.read.item, omit.read.filter, omit.read.order, omit.create, omit.update]
+            .map(yn)
+            .join('')
+    }`,
     text({
       graphql: { omit },
-      isFilterable,
-      isOrderable,
     }),
   ] as const
 }
 
 const fieldsMatrix = [
   ...(function* () {
-    for (const isFilterable of [false, true]) {
-      for (const isOrderable of [false, true]) {
-        for (const omit of [false, true]) {
-          yield makeField({ isFilterable, isOrderable, omit })
-        }
+    for (const omit of [false, true]) {
+      yield makeField({ omit })
+    }
 
-        for (const read of [false, true]) {
-          for (const create of [false, true]) {
-            for (const update of [false, true]) {
-              yield makeField({
-                isFilterable,
-                isOrderable,
-                omit: {
-                  read,
-                  create,
-                  update,
-                },
-              })
-            }
-          }
-        }
-      }
+    for (const { read, create, update, filter, order } of booleanVariations([
+      'read',
+      'create',
+      'update',
+      'filter',
+      'order',
+    ])) {
+      yield makeField({
+        omit: {
+          read: { item: read, filter, order },
+          create,
+          update,
+        },
+      })
     }
   })(),
 ]
 
 function makeList({
   fields,
-  defaultIsFilterable,
-  defaultIsOrderable,
   omit,
+  fieldDefaultOmit,
 }: {
   fields: typeof fieldsMatrix
-  defaultIsFilterable: boolean
-  defaultIsOrderable: boolean
   omit:
     | boolean
     | {
-        query: boolean
+        query:
+          | boolean
+          | {
+              one: boolean
+              many: boolean
+              count: boolean
+            }
         create: boolean
         update: boolean
         delete: boolean
       }
+  fieldDefaultOmit?:
+    | boolean
+    | {
+        read?: boolean | { item: boolean; filter: boolean; order: boolean }
+        create?: boolean
+        update?: boolean
+      }
 }) {
-  const prefix =
-    `List${fields.length}_Filt${yn(defaultIsFilterable)}_Ord${yn(defaultIsOrderable)}` as const
-  const name__ = `${prefix}_Omit${
+  const query = typeof omit === 'object' ? omit.query : omit
+  const queryBits =
+    typeof query === 'boolean'
+      ? `${yn(query)}${yn(query)}${yn(query)}`
+      : `${yn(query.one)}${yn(query.many)}${yn(query.count)}`
+  const omitKind =
+    typeof omit === 'boolean'
+      ? makeOmitName(omit)
+      : typeof omit.query === 'boolean'
+        ? 'BOOLEAN'
+        : 'OBJECT'
+  const name__ = `List${fields.length}_${omitKind}_Omit${
     typeof omit !== 'object'
       ? yn(omit)
-      : [omit.query, omit.create, omit.update, omit.delete].map(yn).join('')
+      : `${queryBits}${[omit.create, omit.update, omit.delete].map(yn).join('')}`
   }`
 
   return {
     name__,
     access: allowAll,
     fields: Object.fromEntries(fields),
-    defaultIsFilterable,
-    defaultIsOrderable,
+    ...(fieldDefaultOmit !== undefined && {
+      fieldDefaults: { graphql: { omit: fieldDefaultOmit } },
+    }),
     graphql: {
       plural: name__ + 's',
       omit,
@@ -111,50 +124,74 @@ function makeList({
 }
 
 const listsMatrix = [
+  {
+    name__: 'List_fieldDefaults_FILTER',
+    access: allowAll,
+    fields: {
+      hidden: text(),
+      shown: text({
+        graphql: { omit: { read: { item: false, filter: false, order: false } } },
+      }),
+    },
+    fieldDefaults: {
+      graphql: {
+        omit: { read: { item: false, filter: true, order: false } },
+      },
+    },
+    graphql: {
+      plural: 'List_fieldDefaults_FILTERs',
+      omit: false,
+    },
+  },
+  {
+    name__: 'List_fieldDefaults_BOOLEAN',
+    access: allowAll,
+    fields: {
+      hidden: text(),
+      createShown: text({ graphql: { omit: { create: false } } }),
+      visible: text({ graphql: { omit: false } }),
+    },
+    fieldDefaults: { graphql: { omit: true } },
+    graphql: {
+      plural: 'List_fieldDefaults_BOOLEANs',
+      omit: false,
+    },
+  },
+  makeList({
+    fields: [],
+    omit: {
+      query: true,
+      create: true,
+      update: true,
+      delete: true,
+    },
+  }),
+  makeList({
+    fields: fieldsMatrix,
+    omit: {
+      query: { one: true, many: true, count: true },
+      create: true,
+      update: true,
+      delete: true,
+    },
+  }),
   ...(function* () {
-    for (const defaultIsFilterable of [false, true]) {
-      for (const defaultIsOrderable of [false, true]) {
-        for (const omit of [false, true]) {
-          yield makeList({
-            fields: fieldsMatrix,
-            defaultIsFilterable,
-            defaultIsOrderable,
-            omit,
-          })
-        }
-
-        for (const query of [false, true]) {
-          for (const create of [false, true]) {
-            for (const update of [false, true]) {
-              for (const delete_ of [false, true]) {
-                yield makeList({
-                  fields: fieldsMatrix,
-                  defaultIsFilterable,
-                  defaultIsOrderable,
-                  omit: {
-                    query,
-                    create,
-                    update,
-                    delete: delete_,
-                  },
-                })
-
-                yield makeList({
-                  fields: [],
-                  defaultIsFilterable,
-                  defaultIsOrderable,
-                  omit: {
-                    query,
-                    create,
-                    update,
-                    delete: delete_,
-                  },
-                })
-              }
-            }
-          }
-        }
+    for (const { one, many, count, create, update, delete: delete_ } of booleanVariations([
+      'one',
+      'many',
+      'count',
+      'create',
+      'update',
+      'delete',
+    ])) {
+      const omit = {
+        query: { one, many, count },
+        create,
+        update,
+        delete: delete_,
       }
+      yield makeList({ fields: fieldsMatrix, omit })
+      yield makeList({ fields: [], omit })
     }
   })(),
 ]
@@ -186,8 +223,6 @@ if (dbProvider !== 'mysql') {
         }
       })()
     ),
-    defaultIsFilterable: true,
-    defaultIsOrderable: true,
     graphql: {
       plural: 'RelatedToAlls',
       omit: false,
@@ -201,9 +236,8 @@ async function introspectSchema(context: KeystoneContext) {
       __schema: {
         types: {
           name: string
-          fields: {
-            name: string
-          }[]
+          fields: { name: string }[] | null
+          inputFields: { name: string }[] | null
         }[]
         queryType: {
           fields: {
@@ -220,6 +254,10 @@ async function introspectSchema(context: KeystoneContext) {
         adminMeta: {
           lists: {
             key: string
+            fields: {
+              key: string
+              isFilterable: boolean
+            }[]
           }[]
         }
       }
@@ -231,6 +269,9 @@ async function introspectSchema(context: KeystoneContext) {
         types {
           name
           fields {
+            name
+          }
+          inputFields {
             name
           }
         }
@@ -249,6 +290,10 @@ async function introspectSchema(context: KeystoneContext) {
         adminMeta {
           lists {
             key
+            fields {
+              key
+              isFilterable
+            }
           }
         }
       }
@@ -259,7 +304,19 @@ async function introspectSchema(context: KeystoneContext) {
     queries: data.__schema.queryType.fields.map(x => x.name.toLowerCase()),
     mutations: data.__schema.mutationType.fields.map(x => x.name.toLowerCase()),
     adminMetaLists: data.keystone.adminMeta.lists.map(x => x.key.toLowerCase()),
+    adminMetaFieldsByList: Object.fromEntries(
+      data.keystone.adminMeta.lists.map(x => [
+        x.key.toLowerCase(),
+        Object.fromEntries(x.fields.map(f => [f.key.toLowerCase(), f.isFilterable])),
+      ])
+    ),
     schemaTypes: data.__schema.types.map(x => x.name.toLowerCase()),
+    schemaFieldsByType: Object.fromEntries(
+      data.__schema.types.map(x => [
+        x.name.toLowerCase(),
+        (x.fields ?? x.inputFields ?? []).map(f => f.name.toLowerCase()),
+      ])
+    ),
   }
 }
 
@@ -270,18 +327,31 @@ describe(`Omit (${dbProvider})`, () => {
     expected: {
       type: boolean
       meta: boolean
-      query: boolean
+      one: boolean
+      many: boolean
+      count: boolean
       create: boolean
       update: boolean
       delete: boolean
     }
   ) {
     const listName = listName_.toLowerCase()
+    // RelatedToAll's relationship mutation inputs reference each target's unique where input.
+    const hasRelatedToAllReference = dbProvider !== 'mysql' && listName !== 'relatedtoall'
+    const hasUniqueWhereInput =
+      expected.one ||
+      expected.many ||
+      expected.update ||
+      expected.delete ||
+      hasRelatedToAllReference
 
-    if (expected.query)
+    if (expected.one)
       test('does have find', async () => assert.ok((await d).queries.includes(listName)))
-    if (expected.query)
+    if (expected.many)
       test('does have findMany', async () => assert.ok((await d).queries.includes(listName + 's')))
+    if (expected.count)
+      test('does have count', async () =>
+        assert.ok((await d).queries.includes(listName + 'scount')))
     if (expected.create)
       test('does have create', async () =>
         assert.ok((await d).mutations.includes(`create${listName}`)))
@@ -306,12 +376,18 @@ describe(`Omit (${dbProvider})`, () => {
     if (expected.type)
       test('does have a GraphQL schema type', async () =>
         assert.ok((await d).schemaTypes.includes(listName)))
+    if (hasUniqueWhereInput)
+      test('does have a unique where input type', async () =>
+        assert.ok((await d).schemaTypes.includes(`${listName}whereuniqueinput`)))
 
-    if (!expected.query)
+    if (!expected.one)
       test('does not have find', async () => assert.ok(!(await d).queries.includes(listName)))
-    if (!expected.query)
+    if (!expected.many)
       test('does not have findMany', async () =>
         assert.ok(!(await d).queries.includes(listName + 's')))
+    if (!expected.count)
+      test('does not have count', async () =>
+        assert.ok(!(await d).queries.includes(listName + 'scount')))
     if (!expected.create)
       test('does not have create', async () =>
         assert.ok(!(await d).mutations.includes(`create${listName}`)))
@@ -336,6 +412,9 @@ describe(`Omit (${dbProvider})`, () => {
     if (!expected.type)
       test('does not have a GraphQL schema type', async () =>
         assert.ok(!(await d).schemaTypes.includes(listName)))
+    if (!hasUniqueWhereInput)
+      test('does not have a unique where input type', async () =>
+        assert.ok(!(await d).schemaTypes.includes(`${listName}whereuniqueinput`)))
   }
 
   const suite = setupTestSuite({
@@ -360,7 +439,9 @@ describe(`Omit (${dbProvider})`, () => {
         testOmit(listName, data, {
           type: !omit,
           meta: !omit,
-          query: !omit,
+          one: !omit,
+          many: !omit,
+          count: !omit,
           create: !omit,
           update: !omit,
           delete: !omit,
@@ -369,11 +450,21 @@ describe(`Omit (${dbProvider})`, () => {
         return
       }
 
+      const query =
+        typeof omit.query === 'boolean'
+          ? { one: !omit.query, many: !omit.query, count: !omit.query }
+          : {
+              one: !omit.query.one,
+              many: !omit.query.many,
+              count: !omit.query.count,
+            }
       testOmit(listName, data, {
         type: true,
         // TODO: see create-admin-meta.ts#L102
-        meta: !omit.query,
-        query: !omit.query,
+        meta: query.one || query.many,
+        one: query.one,
+        many: query.many,
+        count: query.count,
         create: !omit.create,
         update: !omit.update,
         delete: !omit.delete,
@@ -385,7 +476,9 @@ describe(`Omit (${dbProvider})`, () => {
       testOmit(listName, dataInternal, {
         type: true,
         meta: true,
-        query: true,
+        one: true,
+        many: true,
+        count: true,
         create: true,
         update: true,
         delete: true,
@@ -397,11 +490,28 @@ describe(`Omit (${dbProvider})`, () => {
       testOmit(listName, dataSudo, {
         type: true,
         meta: true,
-        query: true,
+        one: true,
+        many: true,
+        count: true,
         create: true,
         update: true,
         delete: true,
       })
     })
   }
+
+  test('fieldDefaults.graphql.omit is overridden by field.graphql.omit', async () => {
+    const fields = (await data).adminMetaFieldsByList.list_fielddefaults_filter
+    assert.equal(fields.hidden, false)
+    assert.equal(fields.shown, true)
+  })
+
+  test('normalizes boolean field omission defaults before merging overrides', async () => {
+    const schema = await data
+    assert.deepEqual(schema.schemaFieldsByType.list_fielddefaults_boolean, ['id', 'visible'])
+    assert.deepEqual(schema.schemaFieldsByType.list_fielddefaults_booleancreateinput, [
+      'createshown',
+      'visible',
+    ])
+  })
 })

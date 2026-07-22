@@ -5,8 +5,12 @@ import type { GArg, InferValueFromArgs } from '@graphql-ts/schema'
 import type { KeystoneContext } from '../context'
 import type { BaseListTypeInfo } from '../type-info'
 import type { MaybePromise } from '../utils'
-import type { ListAccessControl, ActionAccessControlFunction } from './access-control'
-import type { BaseFields, BaseFieldTypeInfo } from './fields'
+import type {
+  FieldAccessControl,
+  ListAccessControl,
+  ActionAccessControlFunction,
+} from './access-control'
+import type { BaseFields, BaseFieldTypeInfo, FieldGraphQLOmit } from './fields'
 import type { ListHooks } from './hooks'
 import type { FieldTypeFunc } from '../next-fields'
 
@@ -203,16 +207,6 @@ export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
    * @see https://keystonejs.com/docs/config/lists#is-singleton
    */
   isSingleton?: boolean
-
-  /**
-   * The default value to use for graphql.isEnabled.filter on all fields for this list
-   */
-  defaultIsFilterable?: MaybeFieldFunction<ListTypeInfo>
-
-  /**
-   * The default value to use for graphql.isEnabled.orderBy on all fields for this list
-   */
-  defaultIsOrderable?: MaybeFieldFunction<ListTypeInfo>
 }
 
 export type ListSortDescriptor<Fields extends string> = {
@@ -221,6 +215,10 @@ export type ListSortDescriptor<Fields extends string> = {
 }
 
 export type FieldDefaults<ListTypeInfo extends BaseListTypeInfo> = {
+  access?: FieldAccessControl<ListTypeInfo>
+  graphql?: {
+    omit?: FieldGraphQLOmit
+  }
   ui?: {
     createView?: {
       fieldMode?: MaybeSessionFunctionWithFilter<'edit' | 'hidden', 'hidden', ListTypeInfo>
@@ -326,15 +324,6 @@ export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
     pageSize?: number // default number of items to display per page on the list screen
   }
 }
-
-export type MaybeFieldFunction<ListTypeInfo extends BaseListTypeInfo> =
-  | boolean
-  | ((args: {
-      context: KeystoneContext<ListTypeInfo['all']>
-      session?: ListTypeInfo['all']['session'] // TODO: use context.session, remove in breaking change
-      listKey: ListTypeInfo['key']
-      fieldKey: ListTypeInfo['fields']
-    }) => MaybePromise<boolean>)
 
 export type MaybeSessionFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
@@ -499,7 +488,9 @@ export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
   cacheHint?: ((args: CacheHintArgs<ListTypeInfo>) => CacheHint) | CacheHint
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.
   // Queries:
-  //   'query':  Does item()/items() exist?
+  //   'query.one':   Does item() exist, including singular relationships?
+  //   'query.many':  Does items() exist, including many relationships?
+  //   'query.count': Does itemsCount() exist, including relationship counts?
   // Mutations:
   //   'create': Does createItem/createItems exist? Does `create` exist on the RelationshipInput types?
   //   'update': Does updateItem/updateItems exist?
@@ -511,7 +502,13 @@ export type ListGraphQLConfig<ListTypeInfo extends BaseListTypeInfo> = {
   omit?:
     | boolean
     | {
-        query?: boolean
+        query?:
+          | boolean
+          | {
+              one: boolean
+              many: boolean
+              count: boolean
+            }
         create?: boolean
         update?: boolean
         delete?: boolean

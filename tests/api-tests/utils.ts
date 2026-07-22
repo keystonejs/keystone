@@ -126,16 +126,6 @@ export function expectAccessReturnError(
   )
 }
 
-export function expectFilterDenied(
-  errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
-) {
-  const unpackedErrors = unpackErrors(errors)
-  expect(unpackedErrors).toEqual(
-    args.map(({ path, message }) => ({ extensions: { code: 'KS_FILTER_DENIED' }, path, message }))
-  )
-}
-
 function expectResolverError(
   errors: readonly any[] | undefined,
   args: { path: (string | number)[]; messages: string[]; debug: any[] }[]

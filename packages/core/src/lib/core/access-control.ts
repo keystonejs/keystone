@@ -10,12 +10,16 @@ import type {
   FieldAccessControl,
   FieldAccessControlFunction,
   FieldCreateItemAccessArgs,
+  FieldFilterItemAccessArgs,
+  FieldOrderItemAccessArgs,
   FieldReadItemAccessArgs,
   FieldUpdateItemAccessArgs,
   KeystoneContext,
-  ListAccessControl,
+  ListAccessControl as ListAccessControlPre,
   ListFilterAccessControl,
   ListOperationAccessControl,
+  ListQueryAccessControl,
+  QueryOperationKind,
   UpdateListItemAccessControl,
 } from '../../types'
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput'
@@ -53,8 +57,9 @@ export async function getOperationFieldAccess(
   const { listKey } = list
   let result
   try {
-    result = await list.fields[fieldKey].access.read({
+    result = await list.fields[fieldKey].access.read.item({
       operation: 'read',
+      kind: 'item',
       session: context.session,
       listKey,
       fieldKey,
@@ -63,13 +68,13 @@ export async function getOperationFieldAccess(
     })
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${list.listKey}.${fieldKey}.access.${operation}` },
+      { error, tag: `${list.listKey}.${fieldKey}.access.${operation}.item` },
     ])
   }
 
   if (typeof result !== 'boolean') {
     throw accessReturnError([
-      { tag: `${listKey}.access.operation.${operation}`, returned: typeof result },
+      { tag: `${listKey}.${fieldKey}.access.${operation}.item`, returned: typeof result },
     ])
   }
 
@@ -79,21 +84,14 @@ export async function getOperationFieldAccess(
 export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
-  operation: 'query' | 'create' | 'update' | 'delete'
+  operation: 'create' | 'update' | 'delete'
 ) {
   if (context.__internal.sudo) return true
 
   const { listKey } = list
   let result
   try {
-    if (operation === 'query') {
-      result = await list.access.operation.query({
-        operation,
-        session: context.session,
-        listKey,
-        context,
-      })
-    } else if (operation === 'create') {
+    if (operation === 'create') {
       result = await list.access.operation.create({
         operation,
         session: context.session,
@@ -124,6 +122,44 @@ export async function getOperationAccess(
   if (typeof result !== 'boolean') {
     throw accessReturnError([
       { tag: `${listKey}.access.operation.${operation}`, returned: typeof result },
+    ])
+  }
+
+  return result
+}
+
+export async function getOperationQueryAccess(
+  list: InitialisedList,
+  context: KeystoneContext,
+  kind: QueryOperationKind
+) {
+  if (context.__internal.sudo) return true
+
+  const { listKey } = list
+  let result
+  try {
+    const args = {
+      operation: 'query' as const,
+      session: context.session,
+      listKey,
+      context,
+    }
+    if (kind === 'one') {
+      result = await list.access.operation.query.one({ ...args, kind })
+    } else if (kind === 'many') {
+      result = await list.access.operation.query.many({ ...args, kind })
+    } else {
+      result = await list.access.operation.query.count({ ...args, kind })
+    }
+  } catch (error: any) {
+    throw extensionError('Access control', [
+      { error, tag: `${listKey}.access.operation.query.${kind}` },
+    ])
+  }
+
+  if (typeof result !== 'boolean') {
+    throw accessReturnError([
+      { tag: `${listKey}.access.operation.query.${kind}`, returned: typeof result },
     ])
   }
 
@@ -311,28 +347,117 @@ export async function enforceFieldLevelAccessControl(
   }
 }
 
+export async function checkFilterOrderAccess(
+  things: { fieldKey: string; list: InitialisedList }[],
+  context: KeystoneContext,
+  kind: 'filter' | 'order'
+) {
+  if (context.__internal.sudo) return
+
+  const accessErrors: { error: Error; tag: string }[] = []
+
+  for (const { fieldKey, list } of things) {
+    const field = list.fields[fieldKey]
+    let accepted: unknown
+
+    try {
+      const args = {
+        context,
+        session: context.session,
+        listKey: list.listKey,
+        operation: 'read' as const,
+        fieldKey,
+      }
+      if (kind === 'filter') {
+        accepted = await field.access.read.filter({ ...args, kind })
+      } else if (kind === 'order') {
+        accepted = await field.access.read.order({ ...args, kind })
+      }
+    } catch (error: any) {
+      accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.read.${kind}` })
+      continue
+    }
+
+    // short circuit the safe path
+    if (accepted === true) continue
+
+    // wrong type?
+    if (typeof accepted !== 'boolean') {
+      throw accessReturnError([
+        {
+          tag: `${list.listKey}.${fieldKey}.access.read.${kind}`,
+          returned: typeof accepted,
+        },
+      ])
+    }
+
+    // only the first
+    throw accessDeniedError(cannotForItemFields(kind, list, [fieldKey]))
+  }
+
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors)
+  }
+}
+
 export type ResolvedFieldAccessControl = {
-  read: FieldAccessControlFunction<FieldReadItemAccessArgs<BaseListTypeInfo>>
+  read: {
+    item: FieldAccessControlFunction<FieldReadItemAccessArgs<BaseListTypeInfo>>
+    filter: FieldAccessControlFunction<FieldFilterItemAccessArgs<BaseListTypeInfo>>
+    order: FieldAccessControlFunction<FieldOrderItemAccessArgs<BaseListTypeInfo>>
+  }
   create: FieldAccessControlFunction<FieldCreateItemAccessArgs<BaseListTypeInfo>>
   update: FieldAccessControlFunction<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
   // delete: not supported
 }
 
 export function parseFieldAccessControl(
-  access: FieldAccessControl<BaseListTypeInfo> | undefined
+  access: FieldAccessControl<BaseListTypeInfo> | undefined,
+  defaultAccess: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
+  const defaultResolvedAccess = defaultAccess
+    ? parseFieldAccessControl(defaultAccess, undefined)
+    : {
+        read: {
+          item: allowAll,
+          filter: allowAll,
+          order: allowAll,
+        },
+        create: allowAll,
+        update: allowAll,
+      }
+
+  if (!access) {
+    return defaultResolvedAccess
+  }
+
   if (typeof access === 'function') {
     return {
-      read: access,
+      read: {
+        item: access,
+        filter: access,
+        order: access,
+      },
       create: access,
       update: access,
     }
   }
 
+  let read = defaultResolvedAccess.read
+  if (typeof access.read === 'function') {
+    read = {
+      item: access.read,
+      filter: access.read,
+      order: access.read,
+    }
+  } else if (access.read !== undefined) {
+    read = access.read
+  }
+
   return {
-    read: access?.read ?? allowAll,
-    create: access?.create ?? allowAll,
-    update: access?.update ?? allowAll,
+    read,
+    create: access.create ?? defaultResolvedAccess.create,
+    update: access.update ?? defaultResolvedAccess.update,
   }
 }
 
@@ -340,7 +465,11 @@ export type ResolvedActionAccessControl = ActionAccessControlFunction<BaseListTy
 
 export type ResolvedListAccessControl = {
   operation: {
-    query: ListOperationAccessControl<'query', BaseListTypeInfo>
+    query: {
+      one: ListQueryAccessControl<'one', BaseListTypeInfo>
+      many: ListQueryAccessControl<'many', BaseListTypeInfo>
+      count: ListQueryAccessControl<'count', BaseListTypeInfo>
+    }
     create: ListOperationAccessControl<'create', BaseListTypeInfo>
     update: ListOperationAccessControl<'update', BaseListTypeInfo>
     delete: ListOperationAccessControl<'delete', BaseListTypeInfo>
@@ -360,12 +489,16 @@ export type ResolvedListAccessControl = {
 }
 
 export function parseListAccessControl(
-  access: ListAccessControl<BaseListTypeInfo>
+  access: ListAccessControlPre<BaseListTypeInfo>
 ): ResolvedListAccessControl {
   if (typeof access === 'function') {
     return {
       operation: {
-        query: access,
+        query: {
+          one: access,
+          many: access,
+          count: access,
+        },
         create: access,
         update: access,
         delete: access,
@@ -393,9 +526,14 @@ export function parseListAccessControl(
     }
   }
 
+  const query =
+    typeof operation.query === 'function'
+      ? { one: operation.query, many: operation.query, count: operation.query }
+      : operation.query
+
   return {
     operation: {
-      query: operation.query,
+      query,
       create: operation.create,
       update: operation.update,
       delete: operation.delete,

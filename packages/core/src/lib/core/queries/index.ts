@@ -4,7 +4,8 @@ import { withSpan } from '../../otel'
 import * as queries from './resolvers'
 
 export function getQueriesForList(list: InitialisedList) {
-  if (!list.graphql.isEnabled.query) return {}
+  const { query } = list.graphql.isEnabled
+  if (!query.one && !query.many && !query.count) return {}
 
   const findOne = g.field({
     type: list.graphql.types.output,
@@ -59,8 +60,14 @@ export function getQueriesForList(list: InitialisedList) {
   })
 
   return {
-    [list.graphql.names.itemQueryName]: findOne,
-    [list.graphql.names.listQueryName]: findMany,
-    [list.graphql.names.listQueryCountName]: countQuery,
+    ...(query.one && {
+      [list.graphql.names.itemQueryName]: findOne,
+    }),
+    ...(query.many && {
+      [list.graphql.names.listQueryName]: findMany,
+    }),
+    ...(query.count && {
+      [list.graphql.names.listQueryCountName]: countQuery,
+    }),
   }
 }

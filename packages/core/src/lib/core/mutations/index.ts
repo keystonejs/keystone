@@ -13,7 +13,7 @@ import {
   getAccessFilters,
   getOperationAccess,
 } from '../access-control'
-import { checkFilterOrderAccess } from '../filter-order-access'
+import { checkFilterOrderAccess } from '../access-control'
 import {
   accessDeniedError,
   extensionError,
@@ -810,24 +810,25 @@ export function getMutationsForList(list: InitialisedList) {
 
   const collectedTypes: GraphQLNamedType[] = []
   const { isEnabled } = list.graphql
+  const hasItemQuery = isEnabled.query.one || isEnabled.query.many
   if (isEnabled.type) {
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
     collectedTypes.push(list.graphql.types.output)
-    if (isEnabled.query || isEnabled.update || isEnabled.delete) {
+    if (hasItemQuery || isEnabled.update || isEnabled.delete) {
       collectedTypes.push(list.graphql.types.uniqueWhere)
     }
-    if (isEnabled.query) {
+    if (hasItemQuery) {
       for (const field of Object.values(list.fields)) {
-        if (
-          isEnabled.query &&
-          field.graphql.isEnabled.read &&
-          field.unreferencedConcreteInterfaceImplementations
-        ) {
+        if (field.graphql.isEnabled.read && field.unreferencedConcreteInterfaceImplementations) {
           // this _IS_ actually necessary since they aren't implicitly referenced by other types, unlike the types above
           collectedTypes.push(...field.unreferencedConcreteInterfaceImplementations)
         }
       }
+    }
+    if (isEnabled.query.many || isEnabled.query.count) {
       collectedTypes.push(list.graphql.types.where)
+    }
+    if (isEnabled.query.many) {
       collectedTypes.push(list.graphql.types.orderBy)
     }
     if (isEnabled.update) {

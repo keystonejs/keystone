@@ -13,13 +13,13 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const { context } = await suite
       const seeded = await seed(l, context)
 
-      // test list.access.*.query
+      // test list.access.operation.query.one
       const item = await context.query[l.name].findOne({
         where: { id: seeded.id },
         query: itemQuery,
       })
 
-      if (!l.expect.query) {
+      if (!l.expect.query.one) {
         assert.equal(item, null)
         return
       }
@@ -32,7 +32,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const { context } = await suite
       const seeded = await seedMany(l, context)
 
-      // test list.access.*.query
+      // test list.access.operation.query.many
       const items = await context.query[l.name].findMany({
         where: {
           id: {
@@ -42,7 +42,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
         query: itemQuery,
       })
 
-      if (!l.expect.query) {
+      if (!l.expect.query.many) {
         assert.deepEqual(items, [])
         return
       }
@@ -55,7 +55,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
       const { context } = await suite
       const seeded = await seedMany(l, context)
 
-      // test list.access.*.query
+      // test list.access.operation.query.count
       const count = await context.query[l.name].count({
         where: {
           id: {
@@ -64,7 +64,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
         },
       })
 
-      if (l.expect.query) {
+      if (l.expect.query.count) {
         assert.equal(count, seeded.length)
       } else {
         assert.equal(count, 0)
@@ -85,7 +85,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
           query: fieldQuery,
         })
 
-        if (!l.expect.query) {
+        if (!l.expect.query.one) {
           assert.equal(item, null)
           return
         }
@@ -108,7 +108,7 @@ describe(`*.access.[query/read] tests (${dbProvider})`, () => {
           query: fieldQuery,
         })
 
-        if (!l.expect.query) {
+        if (!l.expect.query.many) {
           assert.deepEqual(items, [])
           return
         }

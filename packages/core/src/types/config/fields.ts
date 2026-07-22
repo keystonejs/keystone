@@ -6,7 +6,6 @@ import type { FieldAccessControl } from './access-control'
 import type { FieldHooks } from './hooks'
 import type {
   MaybeBooleanSessionFunctionWithFilter,
-  MaybeFieldFunction,
   MaybeItemFieldFunction,
   MaybeItemFieldFunctionWithFilter,
   MaybeSessionFunction,
@@ -38,6 +37,20 @@ export type BaseFieldTypeInfo = {
     update: any
   }
 }
+
+export type FieldGraphQLOmit =
+  | boolean
+  | {
+      read?:
+        | boolean
+        | {
+            item: boolean
+            filter: boolean
+            order: boolean
+          }
+      create?: boolean
+      update?: boolean
+    }
 
 export type CommonFieldConfig<
   ListTypeInfo extends BaseListTypeInfo,
@@ -80,17 +93,6 @@ export type CommonFieldConfig<
           update?: boolean
         }
 
-    omit?:
-      | boolean
-      | {
-          // whether this field is omitted from the {List} GraphQL type
-          read?: boolean
-          // whether this field is omitted from the {List}CreateInput GraphQL type
-          create?: boolean
-          // whether this field is omitted from the {List}UpdateInput GraphQL type
-          update?: boolean
-        }
+    omit?: FieldGraphQLOmit
   }
-  isFilterable?: MaybeFieldFunction<ListTypeInfo>
-  isOrderable?: MaybeFieldFunction<ListTypeInfo>
 }

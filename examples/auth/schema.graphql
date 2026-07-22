@@ -14,6 +14,7 @@ type PasswordState {
 
 input UserWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input UserWhereInput {
@@ -21,6 +22,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  name: StringFilter
   isAdmin: BooleanFilter
 }
 
@@ -35,6 +37,34 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
 input BooleanFilter {
   equals: Boolean
   not: BooleanFilter
@@ -42,6 +72,7 @@ input BooleanFilter {
 
 input UserOrderByInput {
   id: OrderDirection
+  name: OrderDirection
   isAdmin: OrderDirection
 }
 

@@ -8,6 +8,7 @@ import {
   fieldType,
   orderDirectionEnum,
 } from '../types'
+import { allowAll } from '../access'
 import { g } from '../types/schema'
 import { userInputError } from './core/graphql-errors'
 
@@ -180,8 +181,14 @@ export function idFieldType(config: IdFieldConfig): FieldTypeFunc<BaseListTypeIn
       ...config,
 
       // the ID field is always filterable and orderable
-      isFilterable: true, // TODO: should it be?
-      isOrderable: true, // TODO: should it be?
+      access: {
+        read: {
+          item: allowAll,
+          filter: allowAll, // TODO: should it be?
+          order: allowAll, // TODO: should it be?
+        },
+      },
+      graphql: { omit: false },
 
       input: {
         where: {

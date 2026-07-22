@@ -36,7 +36,11 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   secretField: ListTypeInfo['fields']
   /** The initial user/db seeding functionality */
   initFirstItem?: InitFirstItemConfig<ListTypeInfo>
-  /** Session data population */
+  /**
+   * Session data population
+   *
+   * WARNING: uses sudo to retrieve this data
+   */
   sessionData?: string
 }
 
