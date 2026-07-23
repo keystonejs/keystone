@@ -35,9 +35,8 @@ async function createTestDatabase(cwd: string): Promise<TestDatabase> {
 
   if (dbProvider === 'sqlite') {
     const filename = path.join(cwd, `${identifier}.db`)
-    const config = { url: `file:${filename}` }
     return {
-      reset: migrationsDirectory => resetSqliteDatabase(config, migrationsDirectory),
+      reset: migrationsDirectory => resetSqliteDatabase({ filename }, migrationsDirectory),
       async execute(sql) {
         new Database(filename).exec(sql).close()
       },

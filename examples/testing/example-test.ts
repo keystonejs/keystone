@@ -12,7 +12,7 @@ const databaseUrl = process.env.DATABASE_URL || 'file:./keystone-example.db'
 const context = getContext(config, PrismaModule)
 
 beforeEach(async () => {
-  await resetDatabase({ url: databaseUrl }, migrationsDirectory)
+  await resetDatabase({ filename: databaseUrl.replace('file:./', '') }, migrationsDirectory)
 })
 afterEach(async () => context.prisma.$disconnect())
 

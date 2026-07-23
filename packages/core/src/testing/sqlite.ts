@@ -5,15 +5,10 @@ import Database, { type Options } from 'better-sqlite3'
 
 import { applyMigrations } from './migrations'
 
-export type SqliteDatabaseConfig = Options & {
-  url: ':memory:' | (string & {})
-}
-
 export async function resetDatabase(
-  { url, ...options }: SqliteDatabaseConfig,
+  { filename, ...options }: Options & { filename: string },
   migrationsDirectory: string
 ) {
-  const filename = url.replace(/^file:/, '')
   if (filename !== ':memory:') {
     await fs.mkdir(path.dirname(path.resolve(filename)), { recursive: true })
     await Promise.all(
