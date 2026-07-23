@@ -1,7 +1,7 @@
 import { type Server, createServer } from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
-import { expressMiddleware } from '@as-integrations/express4'
+import { expressMiddleware } from '@as-integrations/express5'
 import express from 'express'
 import { GraphQLError, type GraphQLFormattedError } from 'graphql'
 import { type ApolloServerOptions, ApolloServer } from '@apollo/server'
@@ -93,11 +93,6 @@ export async function createExpressServer(
   expressServer.use(
     config.graphql.path,
     json(config.graphql.bodyParser),
-    (req, res, next) => {
-      // WARNING: body-parser@^2 only sets .body if a .body is parsed, Apollo always wants .body to be set
-      req.body ??= {}
-      next()
-    },
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
         return await context.withRequest(req, res)
