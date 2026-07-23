@@ -5,7 +5,7 @@ import * as Prisma from 'myprisma'
 // import * as Prisma from '@prisma/client' // <-- do this
 import { getContext } from '@keystone-6/core/context'
 import keystoneConfig from '../../../../keystone'
-import type { Context } from '.keystone/types'
+import type { Context } from '../../../../generated/keystone/types'
 
 let _keystoneContext: Context = (globalThis as any)._keystoneContext
 

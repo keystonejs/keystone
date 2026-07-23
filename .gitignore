@@ -2,8 +2,7 @@
 .next/
 dist/
 node_modules/
-**/generated/prisma/
-**/generated/custom-prisma/
+**/generated/
 *.db
 *.log
 .env

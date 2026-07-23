@@ -2,7 +2,7 @@ import { list, action, g } from '@keystone-6/core'
 import { allowAll, denyAll } from '@keystone-6/core/access'
 import { checkbox, integer, text, timestamp } from '@keystone-6/core/fields'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted

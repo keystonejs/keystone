@@ -4,7 +4,7 @@ import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { gql } from '@ts-gql/tag/no-transform'
 
-import type { Lists, Context } from '.keystone/types'
+import type { Lists, Context } from './generated/keystone/types'
 
 const LatestPostQuery = gql`
   query LastestPostQuery($id: ID!) {

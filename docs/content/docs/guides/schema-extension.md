@@ -10,7 +10,7 @@ The `extendGraphqlSchema` option expects a function that takes the GraphQL Schem
 
 ## Using Keystone's g.extend
 
-Keystone exports `g` from `@keystone-6/core`, this uses [@graphql-ts/schema](https://docsmill.dev/npm/@graphql-ts/schema) which can be used in combination with `Context` from `.keystone/types` to extend your GraphQL schema in a type-safe way. The `g` export is pre-bound to Keystone's `Context` type. If you need to bind `g` to a custom context type, you can use `gWithContext` from `@keystone-6/core` instead.
+Keystone exports `g` from `@keystone-6/core`, this uses [@graphql-ts/schema](https://docsmill.dev/npm/@graphql-ts/schema) which can be used in combination with `Context` from `generated/keystone/types` to extend your GraphQL schema in a type-safe way. The `g` export is pre-bound to Keystone's `Context` type. If you need to bind `g` to a custom context type, you can use `gWithContext` from `@keystone-6/core` instead.
 
 You can then import this into your Keystone configuration file
 
@@ -25,7 +25,7 @@ It then returns the Post that is updated which has a GraphQL type of `Post` that
 
 ```ts
 import { g, config } from '@keystone-6/core';
-import { Context } from '.keystone/types';
+import { Context } from './generated/keystone/types';
 
 export default config({
   {/* ... */},

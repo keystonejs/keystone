@@ -117,7 +117,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(
   return {
     types: {
       ...config.types,
-      path: config.types?.path ?? 'node_modules/.keystone/types.ts',
+      path: config.types?.path ?? 'generated/keystone/types.ts',
     },
     db: {
       ...config.db,

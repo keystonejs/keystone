@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, image, file } from '@keystone-6/core/fields'
 import fs from 'node:fs/promises'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 export const lists = {
   Post: list({

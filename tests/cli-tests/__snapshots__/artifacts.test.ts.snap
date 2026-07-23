@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`postinstall > writes the correct node_modules files 1`] = `
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+exports[`postinstall > writes the correct generated files 1`] = `
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ generated/keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 /* eslint-disable */
 
 export type TodoWhereUniqueInput = {

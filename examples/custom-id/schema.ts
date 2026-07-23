@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { relationship, text, timestamp } from '@keystone-6/core/fields'
 import { createId } from '@paralleldrive/cuid2'
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 function makeCustomIdentifier(listKey: string) {
   return `${listKey.toUpperCase()}_${createId()}`

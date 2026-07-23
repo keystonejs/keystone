@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { allOperations, denyAll } from '@keystone-6/core/access'
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 import type { Session } from './access'
 import { isSignedIn as hasSession, permissions, rules } from './access'
 

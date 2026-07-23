@@ -4,7 +4,7 @@ import { WebSocketServer } from 'ws'
 import { PubSub } from 'graphql-subscriptions'
 import { parse } from 'graphql'
 
-import type { Context } from '.keystone/types'
+import type { Context } from './generated/keystone/types'
 
 // Setup pubsub as a Global variable in dev so it survives Hot Reloads.
 declare global {

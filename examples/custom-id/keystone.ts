@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
-import type { TypeInfo } from '.keystone/types'
+import type { TypeInfo } from './generated/keystone/types'
 
 export default config<TypeInfo>({
   db: {

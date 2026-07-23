@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import type { DefaultJWT } from 'next-auth/jwt'
 import type { DefaultSession } from 'next-auth'
 import GithubProvider from 'next-auth/providers/github'
-import type { Context } from '.keystone/types'
+import type { Context } from './generated/keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted

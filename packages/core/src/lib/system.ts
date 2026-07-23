@@ -26,7 +26,7 @@ function getSystemPaths(cwd: string, config: KeystoneConfig) {
 
   const builtTypesPath = config.types?.path
     ? path.join(cwd, config.types.path) // TODO: enforce initConfig before getSystemPaths
-    : path.join(cwd, 'node_modules/.keystone/types.ts')
+    : path.join(cwd, 'generated/keystone/types.ts')
 
   const builtPrismaPath = config.db?.prismaSchemaPath
     ? path.join(cwd, config.db.prismaSchemaPath) // TODO: enforce initConfig before getSystemPaths

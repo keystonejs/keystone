@@ -1,4 +1,4 @@
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 import { action, list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { checkbox, relationship, select, text } from '@keystone-6/core/fields'

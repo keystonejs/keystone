@@ -11,7 +11,7 @@ The APIs provided by the `Context` object can be used to write the business logi
 The `Context` object has the following properties, which are documented below.
 
 ```typescript
-import type { Context } from '.keystone/types'
+import type { Context } from './generated/keystone/types'
 
 const context = {
   // Query API

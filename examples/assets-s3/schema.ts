@@ -5,7 +5,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3, GetObjectCommand } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 
-import type { Lists } from '.keystone/types'
+import type { Lists } from './generated/keystone/types'
 
 const {
   S3_BUCKET_NAME: bucketName = 'keystone-test',

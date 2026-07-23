@@ -39,7 +39,7 @@ Importing Keystone's `getContext`
 
 import { getContext } from '@keystone-6/core/context';
 import config from '../../keystone';
-import { Context } from '.keystone/types';
+import { Context } from '../../generated/keystone/types';
 import * as PrismaModule from '.prisma/client';
 
 // Making sure multiple prisma clients are not created during dev hot reloading
