@@ -56,15 +56,15 @@
       "module": "./scripts/dist/keystone-6-core-scripts.esm.js",
       "default": "./scripts/dist/keystone-6-core-scripts.cjs.js"
     },
-    "./admin-ui/image": {
-      "types": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js",
-      "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
-      "default": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js"
-    },
     "./admin-ui/apollo": {
       "types": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.cjs.js",
       "module": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.esm.js",
       "default": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.cjs.js"
+    },
+    "./admin-ui/image": {
+      "types": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js",
+      "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
+      "default": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js"
     },
     "./admin-ui/router": {
       "types": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.js",
@@ -323,7 +323,7 @@
       "scripts/index.ts",
       "scripts/cli.ts",
       "admin-ui/components/index.ts",
-      "admin-ui/apollo.tsx",
+      "admin-ui/apollo.ts",
       "admin-ui/context.tsx",
       "admin-ui/router.tsx",
       "admin-ui/image.tsx",
