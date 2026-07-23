@@ -5,7 +5,7 @@ import type { ApolloServerOptions } from '@apollo/server'
 import type { Options as BodyParserOptions } from 'body-parser'
 import type { CorsOptions } from 'cors'
 import type express from 'express'
-import type { GraphQLSchema } from 'graphql'
+import type { GraphQLSchema } from 'graphql/index.js'
 
 import type { BaseKeystoneTypeInfo, DatabaseProvider, KeystoneContext } from '..'
 import type { SessionStrategy } from '../session'

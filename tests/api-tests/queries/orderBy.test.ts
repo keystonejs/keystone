@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import type { ExecutionResult } from 'graphql'
+import type { ExecutionResult } from 'graphql/index.js'
 
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { list } from '@keystone-6/core'

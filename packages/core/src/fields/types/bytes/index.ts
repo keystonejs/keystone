@@ -8,7 +8,7 @@ import {
 import { g } from '../../..'
 import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
 import { weakMemoize } from '../../../lib/core/utils'
-import { GraphQLError } from 'graphql'
+import { GraphQLError } from 'graphql/index.js'
 import type {
   GArg,
   GInputObjectType,

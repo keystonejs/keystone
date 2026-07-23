@@ -1,4 +1,4 @@
-import { getNamedType, isLeafType } from 'graphql'
+import { getNamedType, isLeafType } from 'graphql/index.js'
 import {
   type BaseItem,
   type BaseListTypeInfo,

@@ -1,4 +1,4 @@
-import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql'
+import { assertInputObjectType, GraphQLString, GraphQLID, parse, validate } from 'graphql/index.js'
 
 import { g } from '@keystone-6/core'
 import type { AuthGqlNames, AuthTokenTypeConfig } from './types'

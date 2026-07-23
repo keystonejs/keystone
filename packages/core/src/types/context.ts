@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
+import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists'
 import type { SessionStrategy } from './session'

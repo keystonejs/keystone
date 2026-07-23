@@ -1,7 +1,7 @@
 import type { ReadStream } from 'node:fs'
 // @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
-import { GraphQLError, GraphQLScalarType } from 'graphql'
+import { GraphQLError, GraphQLScalarType } from 'graphql/index.js'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { JSONValue } from '../utils'
 

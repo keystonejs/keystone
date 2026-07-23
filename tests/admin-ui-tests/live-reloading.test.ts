@@ -1,5 +1,5 @@
 import { afterAll, expect, test, vi } from 'vitest'
-import { parse, print } from 'graphql'
+import { parse, print } from 'graphql/index.js'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 

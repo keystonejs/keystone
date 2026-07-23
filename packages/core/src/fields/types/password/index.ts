@@ -10,7 +10,7 @@ import {
 } from '../../../types'
 import { g } from '../../..'
 import { makeValidateHook, defaultIsRequired } from '../../non-null-graphql'
-import { isObjectType, type GraphQLSchema } from 'graphql'
+import { isObjectType, type GraphQLSchema } from 'graphql/index.js'
 import type { InferValueFromInputType } from '@graphql-ts/schema'
 import type { controller } from './views'
 

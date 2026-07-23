@@ -1,4 +1,4 @@
-import { assertInputObjectType } from 'graphql'
+import { assertInputObjectType } from 'graphql/index.js'
 
 import { allowAll } from '../../access'
 import type {

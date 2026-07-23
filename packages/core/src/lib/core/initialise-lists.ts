@@ -8,7 +8,7 @@ import {
   GraphQLString,
   isInputObjectType,
   type GraphQLType,
-} from 'graphql'
+} from 'graphql/index.js'
 
 import { g } from '../..'
 import { expandVoidHooks } from '../../fields/resolve-hooks'

@@ -1,5 +1,5 @@
 import type { GField, GOutputType } from '@graphql-ts/schema'
-import { type GraphQLNamedType, GraphQLSchema } from 'graphql'
+import { type GraphQLNamedType, GraphQLSchema } from 'graphql/index.js'
 
 import type { KeystoneConfig, KeystoneContext } from '../types'
 import { g } from '../types/schema'

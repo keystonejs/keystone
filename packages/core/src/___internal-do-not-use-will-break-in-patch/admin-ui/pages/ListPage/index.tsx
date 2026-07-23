@@ -1,5 +1,5 @@
 import isDeepEqual from 'fast-deep-equal'
-import type { GraphQLFormattedError } from 'graphql'
+import type { GraphQLFormattedError } from 'graphql/index.js'
 import { useRouter } from '../../../../admin-ui/router'
 import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
 import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'

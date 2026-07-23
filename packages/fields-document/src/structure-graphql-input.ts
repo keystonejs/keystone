@@ -6,7 +6,7 @@ import type {
   GraphQLTypesForList,
   KeystoneContext,
 } from '@keystone-6/core/types'
-import type { GraphQLResolveInfo } from 'graphql'
+import type { GraphQLResolveInfo } from 'graphql/index.js'
 
 import type { ComponentSchema } from './DocumentEditor/component-blocks/api'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'

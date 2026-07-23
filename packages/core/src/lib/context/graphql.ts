@@ -28,7 +28,7 @@ import {
   type TypeNode,
   validate,
   type VariableDefinitionNode,
-} from 'graphql'
+} from 'graphql/index.js'
 
 import type { KeystoneContext } from '../../types'
 

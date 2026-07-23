@@ -4,7 +4,7 @@ import {
   type ServerError,
   type ServerParseError,
 } from '@apollo/client'
-import type { GraphQLError, GraphQLFormattedError } from 'graphql'
+import type { GraphQLError, GraphQLFormattedError } from 'graphql/index.js'
 
 import { VStack } from '@keystar/ui/layout'
 import { Notice } from '@keystar/ui/notice'

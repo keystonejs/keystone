@@ -1,5 +1,5 @@
 import isDeepEqual from 'fast-deep-equal'
-import { type FragmentDefinitionNode, type SelectionSetNode, parse } from 'graphql'
+import { type FragmentDefinitionNode, type SelectionSetNode, parse } from 'graphql/index.js'
 import { useMemo } from 'react'
 
 import type {

@@ -1,5 +1,5 @@
 import { GInputObjectType, type GNullableInputType } from '@graphql-ts/schema'
-import type { GraphQLNamedType } from 'graphql'
+import type { GraphQLNamedType } from 'graphql/index.js'
 
 import type { BaseItem, KeystoneContext } from '../../../types'
 import type { UniquePrismaFilter } from '../../../types/prisma'

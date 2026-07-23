@@ -8,7 +8,7 @@ import {
   GraphQLNonNull,
   GraphQLScalarType,
   introspectionTypes,
-} from 'graphql'
+} from 'graphql/index.js'
 import type { InitialisedList } from './core/initialise-lists'
 import type { DatabaseProvider } from '../types'
 
